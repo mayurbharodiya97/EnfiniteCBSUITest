@@ -4,19 +4,11 @@ import { AppBar } from "./appBar";
 import { Drawer } from "./drawer";
 import { MySideBar } from "./sideBar";
 import { Content } from "./content";
-import { TechnicalSupport } from "./pages/technicalSupport";
 // import "react-perfect-scrollbar/dist/css/styles.css";
 import { useStyles } from "./style";
-import { OperationsMenu } from "./pages/operations";
 import { AllScreensGridWrapper } from "./pages/allScreens";
-import { ConfigurationsMenu } from "./pages/configurations";
-import { ConfirmationMenu } from "./pages/confirmations/confirmation";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
-// import { ChatMessageBox } from "./pages/chatMessage";
-import { Reports } from "./pages/reports";
-import { DynamicReports } from "./pages/reports/dynamicReports";
-import { UserManagementMenu } from "./pages/userManagement";
 
 export const PagesAudit = (props) => {
   const classes = useStyles();
@@ -37,22 +29,11 @@ export const PagesAudit = (props) => {
             {isValidURL ? (
               <>
                 <Route
-                  path="technical-support/*"
-                  element={<TechnicalSupport />}
-                />
-                <Route path="operation/*" element={<OperationsMenu />} />
-                <Route
                   path="all-screens/*"
                   element={<AllScreensGridWrapper />}
                 />
-                <Route path="config/*" element={<ConfigurationsMenu />} />
-                <Route path="adminuser/*" element={<UserManagementMenu />} />
-                <Route path="confirm/*" element={<ConfirmationMenu />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
-                <Route path="report/*" element={<DynamicReports />} />
-                <Route path="reports/*" element={<Reports />} />
-                {/* <Route path="report/*" element={<DynamicReports />} /> */}
               </>
             ) : null}
             <Route
