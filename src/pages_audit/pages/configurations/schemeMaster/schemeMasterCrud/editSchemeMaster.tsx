@@ -13,12 +13,14 @@ import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
 import { useMutation, useQueries } from "react-query";
 import { useLocation } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
-import Dialog from "@material-ui/core/Dialog";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import IconButton from "@mui/material/IconButton";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import Dialog from "@mui/material/Dialog";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Alert } from "components/common/alert";
+import { SubmitFnType } from "packages/form";
 import * as API from "../api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
@@ -27,6 +29,7 @@ import { format } from "date-fns";
 import { AuthContext } from "pages_audit/auth";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { schemeMasterDetailsMetaData } from "./schemeMasterMetaData";
+import { GeneralAPI } from "registry/fns/functions";
 interface updateMasterDataType {
   data: object;
   displayData?: object;
@@ -87,32 +90,32 @@ const ViewEditSchemeMaster: FC<{
       },
     }
   );
-
-  const mutationConfirm = useMutation(API.confirmSchemeMasterData, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-      onActionCancel();
-    },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-      isDataChangedRef.current = true;
-      if (typeof closeDialog === "function") {
-        closeDialog();
-      }
-      onActionCancel();
-    },
-    onSettled: () => {
-      onActionCancel();
-    },
-  });
+  const mutationConfirm = useMutation(
+    updateMasterDataWrapperFn(API.updateMastersData()),
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      },
+      onSuccess: (data) => {
+        enqueueSnackbar(data, {
+          variant: "success",
+        });
+        isDataChangedRef.current = true;
+        if (typeof closeDialog === "function") {
+          closeDialog();
+        }
+      },
+      onSettled: () => {
+        onActionCancel();
+      },
+    }
+  );
   const onSubmitHandler = ({ data, displayData, endSubmit, setFieldError }) => {
     //@ts-ignore
     if (Boolean(data["EFFECTIVE_DT"])) {
@@ -145,6 +148,7 @@ const ViewEditSchemeMaster: FC<{
       mutation.mutate({ data, endSubmit, displayData, setFieldError });
       //endSubmit(true);
     }
+    // console.log(data);
 
     //mutation.mutate({ data, displayData, endSubmit, setFieldError });
   };
@@ -216,28 +220,23 @@ const ViewEditSchemeMaster: FC<{
     });
   };
   const onPopupYesAccept = (rows) => {
-    console.log(">>rows", rows);
-    mutationConfirm.mutate({
-      compCode: rows?.COMP_CD ?? "",
-      branchCode: rows?.BRANCH_CD ?? "",
-      tranCode: rows?.TRAN_CD ?? "",
-      confirmed: "Y",
-    });
+    onActionCancel();
+    // result.mutate({
+    //   UserName: rows[0]?.data?.CUSTOMER_ID ?? "",
+    //   Confirmed: "Y",
+    // });
   };
   const onPopupYesReject = (rows) => {
-    console.log(">>onPopupYesReject", rows);
-    mutationConfirm.mutate({
-      compCode: rows?.COMP_CD ?? "",
-      branchCode: rows?.BRANCH_CD ?? "",
-      tranCode: rows?.TRAN_CD ?? "",
-      confirmed: "Y",
-    });
+    onActionCancel();
+    // result.mutate({
+    //   UserName: rows[0]?.data?.CUSTOMER_ID ?? "",
+    //   Confirmed: "R",
+    // });
   };
   const onActionCancel = () => {
     setOpenAccept(false);
     setOpenReject(false);
   };
-
   const renderResult = loading ? (
     <div style={{ margin: "2rem" }}>
       <LoaderPaperComponent />
@@ -268,7 +267,7 @@ const ViewEditSchemeMaster: FC<{
     </>
   ) : formMode === "view" ? (
     <MasterDetailsForm
-      key={"schemeMaster-" + formMode}
+      key={"schemeMaster" + formMode}
       metaData={metaData}
       ref={myRef}
       initialData={{
@@ -287,9 +286,9 @@ const ViewEditSchemeMaster: FC<{
         overflowX: "hidden",
       }}
       containerstyle={{ padding: "10px" }}
-      formNameMaster={"SchemeMaster"}
     >
       {({ isSubmitting, handleSubmit }) => {
+        //console.log(formMode, isSubmitting);
         return (
           <>
             <Button
@@ -387,6 +386,7 @@ const ViewEditSchemeMaster: FC<{
         containerstyle={{ padding: "10px" }}
       >
         {({ isSubmitting, handleSubmit }) => {
+          //console.log(formMode, isSubmitting);
           return (
             <>
               <Button
@@ -395,7 +395,7 @@ const ViewEditSchemeMaster: FC<{
                 color={"primary"}
                 onClick={(event) => {
                   if (reqData[0].data?.LAST_ENTERED_BY === authState.user.id) {
-                    enqueueSnackbar("You can not confirm your own entry.", {
+                    enqueueSnackbar("You can not confirm your own Entry.", {
                       variant: "warning",
                     });
                   } else {
@@ -411,7 +411,7 @@ const ViewEditSchemeMaster: FC<{
                 color={"primary"}
                 onClick={(event) => {
                   if (reqData[0].data?.LAST_ENTERED_BY === authState.user.id) {
-                    enqueueSnackbar("You can not reject your own entry.", {
+                    enqueueSnackbar("You can not reject your own Entry.", {
                       variant: "warning",
                     });
                   } else {

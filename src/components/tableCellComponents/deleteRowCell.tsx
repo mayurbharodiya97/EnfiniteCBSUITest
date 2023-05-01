@@ -1,4 +1,4 @@
-import Button from "@material-ui/core/Button";
+import { Button } from "@mui/material";
 import { CellWrapper } from "./cellWrapper";
 
 export const DeleteRowButton = (props) => {

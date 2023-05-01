@@ -1,5 +1,5 @@
 import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
-import Dialog from "@material-ui/core/Dialog";
+import Dialog from "@mui/material/Dialog";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Transition } from "pages_audit/common";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
@@ -16,10 +16,10 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { useQuery } from "react-query";
 import * as API from "../api";
 import { Alert } from "components/common/alert";
-import { AppBar, CircularProgress } from "@material-ui/core";
+import { AppBar, CircularProgress } from "@mui/material";
 import { ActionTypes } from "components/dataTable";
 import FormWrapper from "components/dyanmicForm";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 import { extractMetaData, utilFunction } from "components/utils";
 import { format, parse } from "date-fns";
 import { clone } from "lodash";
@@ -211,7 +211,9 @@ const ClubMemberMasterData = ({
       try {
         initSince = parse(initSince, "dd/MM/yyyy", new Date());
         initSince = format(initSince, "dd/MMM/yyyy");
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
       localinit.MEMBER_SINCE = initSince;
     }
     return localinit;
@@ -243,6 +245,7 @@ const ClubMemberMasterData = ({
     } else {
       reqData = { ...reqData, _isNewRow: true };
     }
+    console.log(reqData);
   };
   return (
     <Dialog

@@ -5,14 +5,13 @@ import {
   DialogContentText,
   DialogTitle,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { Fragment, useState, useRef, useEffect } from "react";
 import OTPInput, { ResendOTP } from "otp-input-react";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import IconButton from "@material-ui/core/IconButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { CircularProgress, IconButton } from "@mui/material";
 import clsx from "clsx";
 export const OTPModel = ({
   classes,
@@ -24,13 +23,7 @@ export const OTPModel = ({
   setOTPError,
 }) => {
   const [OTP, setOTP] = useState("");
-  const [showPasswordTime, setShowPasswordTime] = useState(0);
-  const showPassword = Date.now() < showPasswordTime;
-  const [, forceUpdate] = useState<any | null>();
-  const timerRef = useRef<any>(null);
-  useEffect(() => {
-    return () => clearTimeout(timerRef.current);
-  }, []);
+  const [showPassword, setShowPassword] = useState(true);
   const [btnshow, setbtnshow] = useState(false);
   const inputButtonRef = useRef<any>(null);
   const renderButton = (buttonProps) => {
@@ -78,7 +71,7 @@ export const OTPModel = ({
       <Dialog fullWidth={false} open={open}>
         <DialogTitle>OTP Verification</DialogTitle>
         <DialogContent>
-          <DialogContentText>Please Enter OTP</DialogContentText>
+          <DialogContentText>Please Verify OTP</DialogContentText>
           <div
             className={classes.divflex}
             onKeyPress={(e) => {
@@ -94,26 +87,18 @@ export const OTPModel = ({
               OTPLength={6}
               otpType="number"
               disabled={false}
-              secure={!showPassword}
+              secure={showPassword}
               className={classes.otpinputpadding}
             />
 
             <IconButton
               aria-label="toggle password visibility"
-              onClick={() => {
-                if (!showPassword) {
-                  setShowPasswordTime(Date.now() + 5000);
-                  timerRef.current = setTimeout(
-                    () => forceUpdate(Date.now()),
-                    5000
-                  );
-                } else if (showPassword) setShowPasswordTime(0);
-              }}
+              onClick={() => setShowPassword((old) => !old)}
               onMouseDown={(e) => e.preventDefault()}
               disabled={loginState.otploading}
               className={classes.ibtnvisible}
             >
-              {showPassword ? <Visibility /> : <VisibilityOff />}
+              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </IconButton>
           </div>
           {Boolean(OTPError) ? (

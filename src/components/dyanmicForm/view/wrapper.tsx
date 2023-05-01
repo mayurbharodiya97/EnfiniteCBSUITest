@@ -3,8 +3,6 @@ import { renderValuesByGroup } from "../utils/groupWiserenderer";
 import { MoveSequenceToRender } from "../utils/fixSequenceInMetaData";
 import { attachValuesToMetaData } from "../utils/attachValuesToMetaData";
 import { ViewFormWrapperProps } from "./types";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
 import { GroupedView } from "./groupedView";
 import { SimpleView } from "./simpleView";
 import {
@@ -14,6 +12,7 @@ import {
 } from "../types";
 import { InitialValuesType } from "packages/form";
 import { useStyles } from "../style";
+import { Container, Typography } from "@mui/material";
 
 const attachGroupExcludedProps = (
   groupWiseFields: GroupWiseRenderedFieldsType,

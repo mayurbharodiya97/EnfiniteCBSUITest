@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
+import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 import * as API from "../api";
 import { UniversityMasterDetailsMetaData } from "./universityMetaData";
 import { MasterDetailsForm } from "components/formcomponent";

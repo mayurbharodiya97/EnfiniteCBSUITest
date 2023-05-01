@@ -2,12 +2,6 @@ import { useEffect, FC, Fragment, useMemo, useCallback } from "react";
 import { useLocation, Routes, Route, useNavigate } from "react-router-dom";
 import { useQueries } from "react-query";
 import { queryClient } from "cache";
-import Dialog from "@material-ui/core/Dialog";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import { Transition } from "pages_audit/common";
 import GridWrapper from "components/dataTableStatic";
@@ -20,6 +14,7 @@ import * as API from "./api";
 import { checklistDetailsGridMetaData } from "./metadata/grid";
 import { ViewEditChargeTempMasterWrapper } from "../crud";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Button, Dialog, Toolbar, Typography } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {
@@ -85,6 +80,7 @@ const ChargeTempDetails: FC<any> = ({
   //@ts-ignore
   let errorMsg = `${result[0].error?.error_msg}`;
   errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
+  //console.log("result=>", result);
   const renderResult = loading ? (
     <div
       style={{

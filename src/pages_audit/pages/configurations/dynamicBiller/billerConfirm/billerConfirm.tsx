@@ -4,9 +4,10 @@ import GridWrapper from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GridMetaDataType } from "components/dataTable/types";
-import { Dialog, makeStyles } from "@material-ui/core";
+import { Dialog } from "@mui/material";
 import BillerDetailRefresh from "../refreshBillerData/billerDetailRefresh/billerDetailRefresh";
 import { Transition } from "pages_audit/common";
+import { makeStyles } from "@mui/styles";
 
 export const useDialogStyles = makeStyles({
   topScrollPaper: {

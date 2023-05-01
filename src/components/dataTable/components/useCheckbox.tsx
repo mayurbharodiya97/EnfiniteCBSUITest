@@ -1,5 +1,4 @@
-import Checkbox from "@material-ui/core/Checkbox";
-import TableCell from "@material-ui/core/TableCell";
+import { Checkbox, TableCell } from "@mui/material";
 
 export const useCheckboxColumn = (visible) => (hooks) => {
   if (Boolean(visible)) {

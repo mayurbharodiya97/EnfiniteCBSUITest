@@ -1,10 +1,10 @@
 import { FC, useState, useRef } from "react";
 import { useQuery } from "react-query";
-import Dialog from "@material-ui/core/Dialog";
+import Dialog from "@mui/material/Dialog";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import { Transition } from "pages_audit/common/transition";
 import * as API from "../api";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import {
   AppBar,
   Box,
@@ -13,15 +13,15 @@ import {
   List,
   ListItem,
   ListItemText,
-  makeStyles,
   TextField,
   Toolbar,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { useDrag, useDrop } from "react-dnd";
+import { makeStyles } from "@mui/styles";
 
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

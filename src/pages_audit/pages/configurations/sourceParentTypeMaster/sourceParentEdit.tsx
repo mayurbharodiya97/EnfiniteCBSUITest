@@ -1,14 +1,17 @@
-import { useRef, useState, useMemo } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import { makeStyles } from "@material-ui/styles";
+import { useRef, useState, forwardRef, useMemo } from "react";
+import AppBar from "@mui/material/AppBar";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { CreateDetailsRequestData, utilFunction } from "components/utils";
+import { useSnackbar } from "notistack";
+import { EngLocalMsgAPIWrapper } from "../validationMessages/engLocalMsg/engLocalMsg";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",
@@ -27,7 +30,10 @@ export const useDialogStyles = makeStyles({
 const initialData = {
   _isNewRow: true,
 };
-
+const initlanguageData: { isOpen: boolean; rowdata: any } = {
+  isOpen: false,
+  rowdata: [],
+};
 export const SourceParentGridUpdate = (
   {
     metadata,
@@ -41,15 +47,17 @@ export const SourceParentGridUpdate = (
     mode = "view",
     isEditableForm = false,
     refID = {},
-    onSubmit = ({}: any) => {},
-    refetch = () => {},
   },
   ref
 ) => {
   const [girdData, setGridData] = useState<any>(initConfigData);
   const classes = useDialogStyles();
   const myGridRef = useRef<any>(null);
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const [rowData, setRowData] = useState({});
   const [serverError, setServerError] = useState("");
+  const [languageData, setLanguageData] = useState(initlanguageData);
   const handelCloseEvent = () => {
     //SetOpen(false);
     ClosedEventCall();
@@ -96,6 +104,13 @@ export const SourceParentGridUpdate = (
       }
     } else if (data.name === "save") {
       handleSubmit();
+    } else if (data.name === "messages") {
+      setLanguageData({ isOpen: true, rowdata: data?.rows });
+    } else if (data.name === "view-details") {
+      setRowData(data?.rows);
+      navigate(data?.name, {
+        state: data?.rows,
+      });
     }
   };
   const handleSubmit = async () => {
@@ -110,12 +125,23 @@ export const SourceParentGridUpdate = (
       finalResult = CreateDetailsRequestData(finalResult);
       let data = {
         ...refID,
-        ...finalResult,
+        reqData: finalResult,
       };
-      onSubmit({ data, mode, setServerError });
+      // onSubmit({ data, mode, setServerError });
     }
   };
-
+  const onSubmitSetMessages = (engMsg, localMsg, rows) => {
+    onActionCancel();
+  };
+  const onActionCancel = () => {
+    setLanguageData({ isOpen: false, rowdata: [] });
+  };
+  // const ClosedEventCall = useCallback(() => {
+  //   navigate(".");
+  //   //   if (isDataChangedRef.current === true) {
+  //   //     isDataChangedRef.current = false;
+  //   //   }
+  // }, [navigate]);
   return (
     <div>
       {isError ? (
@@ -159,6 +185,13 @@ export const SourceParentGridUpdate = (
       ) : (
         children
       )}
+      {/* <FormComponentView
+          key={"DetailsHeadersView"}
+          finalMetaData={HeaderMetaData as FilterFormMetaType}
+          onAction={ClickEventManage}
+          loading={isLoading}
+          data={HeaderData ?? {}}
+        ></FormComponentView> */}
       {isLoading ? (
         <LoaderPaperComponent />
       ) : (
@@ -170,7 +203,7 @@ export const SourceParentGridUpdate = (
           loading={isEditableForm ? mode === "view" : isLoading}
           actions={actions}
           setAction={handelActionEvent}
-          refetchData={() => refetch()}
+          refetchData={null}
           ref={myGridRef}
         />
       )}

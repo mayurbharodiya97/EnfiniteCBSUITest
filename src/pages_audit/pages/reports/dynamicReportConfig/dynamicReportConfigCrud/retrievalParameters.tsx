@@ -1,16 +1,24 @@
 import {
   AppBar,
   Button,
+  CircularProgress,
   Dialog,
-  makeStyles,
   Toolbar,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Transition } from "pages_audit/common";
+import { Alert } from "components/common/alert";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { useContext, useEffect, useRef, useState } from "react";
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { useMutation, useQuery } from "react-query";
+import { AuthContext } from "pages_audit/auth";
+import * as API from "../api";
 import { ClearCacheContext, queryClient } from "cache";
+import { useSnackbar } from "notistack";
+import { CreateDetailsRequestData, utilFunction } from "components/utils";
 import { RetrievalParametersGridMetaData } from "./retrievalParametersMetadata";
+import { makeStyles } from "@mui/styles";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",
@@ -36,6 +44,7 @@ export const RetrievalParametersGrid = ({
   const [girdData, setGridData] = useState<any>(rowsData);
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     return () => {

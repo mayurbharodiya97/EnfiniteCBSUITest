@@ -1,8 +1,11 @@
-import { makeStyles } from "@material-ui/core/styles";
+// import { createTheme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
-export const useStyles = makeStyles((theme) => ({
+// const theme = createTheme();
+
+export const useStyles = makeStyles((theme: any) => ({
   wrapper: {
-    marginTop: "60px",
+    marginTop: "120px",
     minHeight: "calc(100vh - 165px)",
     boxShadow: "0 3px 6px rgba(0,0,0,0.03)",
     display: "flex",
@@ -10,7 +13,7 @@ export const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
   successImg: {
-    maxHeight: "calc(100vh - 200px)",
+    maxHeight: "calc(100vh - 400px)",
   },
   center: {
     textAlign: "center",

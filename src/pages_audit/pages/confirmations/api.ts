@@ -1,8 +1,6 @@
 import { UserLimitConfirmGridMetaData } from "./metaData/userLimitMetaData";
 import { AuthSDK } from "registry/fns/auth";
 import { DefaultErrorObject } from "components/utils";
-import { useContext } from "react";
-import { AuthContext } from "pages_audit/auth";
 
 export const getGridFormMetaData =
   ({ gridCode }) =>
@@ -16,7 +14,7 @@ export const getGridFormMetaData =
     }
   };
 
-export const getConfirmationGridData = async ({ screenFlag, compCode }) => {
+export const getConfirmationGridData = async (screenFlag) => {
   let APIURL;
   let parameters = {};
   if (screenFlag === "userLimit") {
@@ -29,9 +27,6 @@ export const getConfirmationGridData = async ({ screenFlag, compCode }) => {
     parameters = { FLAG: "PEND" };
   } else if (screenFlag === "serviceConfig") {
     APIURL = "GETSERVICECONFIRMGRID";
-  } else if (screenFlag === "operatorMaster") {
-    APIURL = "GETOPERATORMSTCONFIRMGRID";
-    parameters = { COMP_CD: compCode };
   }
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(APIURL, parameters);
@@ -39,42 +34,5 @@ export const getConfirmationGridData = async ({ screenFlag, compCode }) => {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const updateOperatorMSTConfirm = async ({
-  confirmed,
-  companyCode,
-  tranCode,
-}) => {
-  if (!Boolean(confirmed)) {
-    throw DefaultErrorObject(
-      "Required value missing for confirmed.",
-      "warning"
-    );
-  } else if (!Boolean(companyCode)) {
-    throw DefaultErrorObject(
-      "Required value missing for Company Code.",
-      "warning"
-    );
-  } else if (!Boolean(tranCode)) {
-    throw DefaultErrorObject(
-      "Required value missing for Transaction Code.",
-      "warning"
-    );
-  } else {
-    const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-      "OPERATORMSTCONFIRM",
-      {
-        CONFIRMED: confirmed,
-        COMP_CD: companyCode,
-        TRAN_CD: tranCode,
-      }
-    );
-    if (status === "0") {
-      return message;
-    } else {
-      throw DefaultErrorObject(message, "error", messageDetails);
-    }
   }
 };

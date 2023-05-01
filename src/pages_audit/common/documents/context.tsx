@@ -13,6 +13,7 @@ interface DOCCRUDProviderType {
   getDocumentEditGridMetaData: CRUDFNType;
   generateDocumentDownloadURL: CRUDFNType;
   previewDocument: CRUDFNType;
+  children?: any;
 }
 
 export const DOCCRUDContext = createContext<DOCCRUDProviderType>(

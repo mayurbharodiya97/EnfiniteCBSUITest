@@ -23,9 +23,6 @@ import { CustomerActivationConfirm } from "./customerActivation/customerActivati
 import { CustomerActivationConfirmGridMetaData } from "./metaData/customerActivationMetaData";
 import { ServiceConfigConfirmGridMetaData } from "./metaData/serviceConfigMetaData";
 import { ServiceConfigEditViewWrapper } from "../configurations/serviceWiseConfig/viewEditDetail";
-import { OperatorMasterGridMetaData } from "./metaData/operatorMasterMetaData";
-import { AuthContext } from "pages_audit/auth";
-import { OperatorMstConfirmDetails } from "./operatorMaster/operatorViewDetail";
 
 const actions: ActionTypes[] = [
   {
@@ -39,13 +36,12 @@ export const Confirmations = ({ screenFlag }) => {
   const myGridRef = useRef<any>(null);
   const isRefreshRef = useRef<any>(false);
   const { getEntries } = useContext(ClearCacheContext);
-  const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   const setCurrentAction = useCallback(
     (data) => {
-      let confirmed = data?.rows[0]?.data?.CONFIRMED;
+      let confirmed = data?.rows[0]?.data.CONFIRMED;
       if (confirmed === "Y") {
         enqueueSnackbar("Request has been already accepted.", {
           variant: "warning",
@@ -69,7 +65,7 @@ export const Confirmations = ({ screenFlag }) => {
   });
 
   useEffect(() => {
-    result.mutate({ screenFlag: screenFlag, compCode: authState.companyID });
+    result.mutate(screenFlag);
     return () => {
       let entries = getEntries() as any[];
       entries.forEach((one) => {
@@ -81,7 +77,7 @@ export const Confirmations = ({ screenFlag }) => {
   const ClosedEventCall = useCallback(() => {
     navigate(".");
     if (isRefreshRef.current) {
-      result.mutate({ screenFlag: screenFlag, compCode: authState.companyID });
+      result.mutate(screenFlag);
       isRefreshRef.current = false;
     }
   }, [navigate]);
@@ -95,8 +91,6 @@ export const Confirmations = ({ screenFlag }) => {
     gridMetaData = CustomerActivationConfirmGridMetaData;
   } else if (screenFlag === "serviceConfig") {
     gridMetaData = ServiceConfigConfirmGridMetaData;
-  } else if (screenFlag === "operatorMaster") {
-    gridMetaData = OperatorMasterGridMetaData;
   }
 
   return (
@@ -118,23 +112,18 @@ export const Confirmations = ({ screenFlag }) => {
           loading={result.isLoading}
           actions={actions}
           setAction={setCurrentAction}
-          refetchData={() =>
-            result.mutate({
-              screenFlag: screenFlag,
-              compCode: authState.companyID,
-            })
-          }
+          refetchData={() => result.mutate(screenFlag)}
           ref={myGridRef}
-          // defaultFilter={[
-          //   {
-          //     id: "CONFIRM_STATUS",
-          //     value: {
-          //       columnName: "Status",
-          //       condition: "equal",
-          //       value: "Confirmation Pending",
-          //     },
-          //   },
-          // ]}
+          defaultFilter={[
+            {
+              id: "CONFIRM_STATUS",
+              value: {
+                columnName: "Status",
+                condition: "equal",
+                value: "Confirmation Pending",
+              },
+            },
+          ]}
         />
         <Routes>
           <Route
@@ -162,12 +151,6 @@ export const Confirmations = ({ screenFlag }) => {
                   isDataChangedRef={isRefreshRef}
                   moduleType={"serviceConfigConfirm"}
                   defaultView={"confirm"}
-                />
-              ) : screenFlag === "operatorMaster" ? (
-                <OperatorMstConfirmDetails
-                  isRefreshRef={isRefreshRef}
-                  ClosedEventCall={ClosedEventCall}
-                  defaultmode={"view"}
                 />
               ) : (
                 <></>

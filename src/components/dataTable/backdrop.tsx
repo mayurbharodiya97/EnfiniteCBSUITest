@@ -1,5 +1,5 @@
-import Backdrop from "@material-ui/core/Backdrop";
-import { withStyles } from "@material-ui/core/styles";
+import { Backdrop } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 export const CustomBackdrop = withStyles(() => ({
   root: {

@@ -70,7 +70,7 @@ export const ParameterConfirmGridWrapper = () => {
     (data) => {
       setRowData(data?.rows);
       let confirmed = data?.rows[0]?.data?.CONFIRMED;
-      let enteredBy = data?.rows[0]?.data?.LAST_ENTERED_BY;
+      let enteredBy = data?.rows[0]?.data?.ENTERED_BY;
       if (confirmed === "Y") {
         enqueueSnackbar("Request has been already accepted.", {
           variant: "warning",
@@ -85,23 +85,14 @@ export const ParameterConfirmGridWrapper = () => {
             (enteredBy || "").toLowerCase() ===
             (authController?.authState?.user?.id || "").toLowerCase()
           ) {
-            enqueueSnackbar("You can not accept your own entry.", {
+            enqueueSnackbar("You can not accept your own Entry.", {
               variant: "warning",
             });
           } else {
             setIsOpenAccept(true);
           }
         } else if (data.name === "reject") {
-          if (
-            (enteredBy || "").toLowerCase() ===
-            (authController?.authState?.user?.id || "").toLowerCase()
-          ) {
-            enqueueSnackbar("You can not reject your own entry.", {
-              variant: "warning",
-            });
-          } else {
-            setIsOpenReject(true);
-          }
+          setIsOpenReject(true);
         } else {
           navigate(data?.name, {
             state: data?.rows,

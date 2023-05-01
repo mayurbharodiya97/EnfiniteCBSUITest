@@ -1,5 +1,5 @@
-import Slider from "@material-ui/core/Slider";
-import { withStyles } from "@material-ui/core/styles";
+import { Slider } from "@mui/material";
+import { withStyles } from "@mui/styles";
 export const StyledSlider = withStyles({
   root: {
     color: "#26A456",

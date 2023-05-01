@@ -1,6 +1,6 @@
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { GetMiscValue } from "../api";
 // import { getCardCategorySource } from "registry/fns/functions/calculation";
+import { GetLeafTemplateDD, GetParentTypeDD } from "../api";
 
 export const cardCategoryMasterDetailsMetaData: MasterDetailsMetaData = {
   masterForm: {
@@ -32,56 +32,44 @@ export const cardCategoryMasterDetailsMetaData: MasterDetailsMetaData = {
       },
       {
         render: {
-          componentType: "select",
+          componentType: "textField",
         },
         name: "CARD_PERFIX",
         label: "Card Prefix",
-        placeholder: "Select Card Prefix",
+        placeholder: "Enter Card Prefix",
         type: "text",
+        isReadOnly: false,
         fullWidth: true,
         required: true,
-        options: [
-          { label: "1", value: 1 },
-          { label: "2", value: 2 },
-          { label: "3", value: 3 },
-          { label: "4", value: 4 },
-          { label: "5", value: 5 },
-          { label: "6", value: 6 },
-          { label: "7", value: 7 },
-          { label: "8", value: 8 },
-          { label: "9", value: 9 },
-          { label: "10", value: 10 },
-        ],
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["Card Prefix is required."] }],
         },
         GridProps: {
           xs: 12,
-          md: 3,
-          sm: 3,
+          md: 4,
+          sm: 4,
         },
       },
       {
         render: {
-          componentType: "select",
+          componentType: "textField",
         },
         name: "CATEGORY_CD",
         label: "Card Category",
-        placeholder: "Select Card Category",
+        placeholder: "Enter Card Category",
         type: "text",
+        isReadOnly: false,
         fullWidth: true,
         required: true,
-        options: () => GetMiscValue(),
-        _optionsKey: "GetMiscValue",
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["Card Category is required."] }],
         },
         GridProps: {
           xs: 12,
-          md: 3,
-          sm: 3,
+          md: 4,
+          sm: 4,
         },
       },
       {
@@ -103,8 +91,8 @@ export const cardCategoryMasterDetailsMetaData: MasterDetailsMetaData = {
         },
         GridProps: {
           xs: 12,
-          md: 6,
-          sm: 6,
+          md: 4,
+          sm: 4,
         },
       },
     ],

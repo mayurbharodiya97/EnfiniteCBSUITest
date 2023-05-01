@@ -26,7 +26,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 import { LoadingTextAnimation } from "components/common/loader";
 import { Alert } from "components/common/alert";
 import { ServiceConfigGridUpdate } from "./serviceConfigEdit";
@@ -168,7 +168,7 @@ export const ServiceConfigGrid = () => {
             metadata={ServiceActiveConfigViewGridMetaData as GridMetaDataType}
             ClosedEventCall={ClosedEventCall}
             data={[]}
-            // isEditableForm={true}
+            isEditableForm={true}
             isLoading={isLoading}
             SetMode={SetMode}
           ></ServiceConfigGridUpdate>
@@ -178,7 +178,7 @@ export const ServiceConfigGrid = () => {
             metadata={ServiceActiveConfigViewGridMetaData as GridMetaDataType}
             ClosedEventCall={ClosedEventCall}
             data={[]}
-            // isEditableForm={true}
+            isEditableForm={true}
             isError={isError}
             ErrorMessage={error?.error_msg ?? "Error"}
             SetMode={SetMode}

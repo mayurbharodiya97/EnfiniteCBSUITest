@@ -1,9 +1,9 @@
 import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
+import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 import * as API from "../api";
 import { cardCategoryMasterDetailsMetaData } from "./cardCategoryMasterMetaData";
 import { MasterDetailsForm } from "components/formcomponent";
@@ -65,7 +65,12 @@ const AddCardCategoryMaster = ({ isDataChangedRef, closeDialog }) => {
       setLoading(isLoading);
       endSubmit(isLoading, error_msg, error_detail);
     };
-
+    if (Boolean(data["EFFECTIVE_DT"])) {
+      data["EFFECTIVE_DT"] = format(
+        new Date(data["EFFECTIVE_DT"]),
+        "dd/MM/yyyy"
+      );
+    }
     data["COMP_CD"] = authState.companyID;
     data["BRANCH_CD"] = authState.user.branchCode;
     mutation.mutate({ data, SetLoadingOWN, endSubmit });

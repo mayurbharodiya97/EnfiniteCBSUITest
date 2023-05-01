@@ -1,14 +1,14 @@
 import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import {
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { useState, useContext } from "react";
 import { useStyles } from "pages_audit/auth/style";
 import { AuthSDK } from "registry/fns/auth";
@@ -22,6 +22,7 @@ export const ReleaseUsersAPIWrapper = ({
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
+
   const VerifyBtn = async () => {
     const UserListData = rows.map((item) => {
       return {
@@ -67,8 +68,7 @@ export const ReleaseUsersAPIWrapper = ({
           <DialogContentText
             style={{ color: "black", marginTop: "8px", marginBottom: "6px" }}
           >
-            Are you sure you want to release{" "}
-            {rows.length === 1 ? "this user" : "these users"}?
+            Are you sure you want to release these users?
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.verifybutton}>

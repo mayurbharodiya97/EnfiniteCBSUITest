@@ -1,10 +1,10 @@
 import { useRef, useState, useMemo } from "react";
-import { makeStyles } from "@material-ui/styles";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
 import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { CreateDetailsRequestData, utilFunction } from "components/utils";
+import { makeStyles } from "@mui/styles";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",

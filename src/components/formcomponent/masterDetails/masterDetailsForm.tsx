@@ -1,6 +1,7 @@
 import {
   forwardRef,
   Fragment,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -10,14 +11,14 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { MasterDetailsMetaData } from "./types";
 import { Alert } from "components/common/alert";
-import { AppBar } from "@material-ui/core";
 import {
   utilFunction,
   extractMetaData,
   extractGridMetaData,
 } from "components/utils";
 import { CreateDetailsRequestData } from "components/utils";
-import { CSSProperties } from "@material-ui/core/styles/withStyles";
+import { CSSProperties } from "@mui/styles";
+import { AppBar } from "@mui/material";
 export interface MasterDetailsArgumentType {
   metaData: MasterDetailsMetaData;
   children?: any;

@@ -6,22 +6,24 @@ import {
   useResizeColumns,
 } from "react-table";
 import { useMutation } from "react-query";
-import Paper from "@material-ui/core/Paper";
-import Toolbar from "@material-ui/core/Toolbar";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import { Alert } from "components/common/alert";
 import { useCheckboxColumn } from "./components/useCheckbox";
 import { RowContextProvider } from "./components/rowContext";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
 /* eslint-disable  react-hooks/exhaustive-deps */
 interface GridTableType {

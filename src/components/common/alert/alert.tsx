@@ -1,14 +1,15 @@
 import { FC, useState } from "react";
-import Alert, { AlertProps } from "@material-ui/lab/Alert";
-import Dialog from "@material-ui/core/Dialog";
-import Button from "@material-ui/core/Button";
+import { GradientButton } from "components/styledComponent/button";
 import {
+  Alert,
+  AlertProps,
+  Button,
+  Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@material-ui/core";
-import { GradientButton } from "components/styledComponent/button";
+} from "@mui/material";
 interface MyAlertProps {
   errorMsg: string;
   errorDetail?: string;

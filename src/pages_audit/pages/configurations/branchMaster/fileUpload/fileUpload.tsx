@@ -6,7 +6,6 @@ import { useContext, useState } from "react";
 // import { BankMasterUploadMetadata } from "./fileUploadMetadata";
 // import { BankMasterUpdateViewMetaData } from "../gridMetadata";
 import { useMutation } from "react-query";
-import * as API from "../api";
 import { useSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
 import { LoadingTextAnimation } from "components/common/loader";
@@ -17,7 +16,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { BranchMasterGridMetaData } from "../gridMetadata";
 
@@ -72,6 +71,7 @@ export const UploadFileData = ({
       let jsonData = ConvertExcelToJSONData({
         data: element,
       });
+      // console.log(jsonData);
       let { blob, ...other } = element;
       let data: any = getJsonData(
         other,

@@ -41,6 +41,7 @@ export const CardCategoryMasterConfirm = () => {
     ["getMastersGridData"],
     API.getMastersGridData
   );
+  //console.log(data, isLoading, isFetching, isError, error);
   const setCurrentAction = useCallback(
     (data) => {
       let confirmed = data?.rows[0]?.data.CONFIRMED;

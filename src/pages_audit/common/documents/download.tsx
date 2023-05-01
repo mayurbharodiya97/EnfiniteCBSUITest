@@ -1,9 +1,7 @@
 import { Fragment, useContext, useEffect, useState } from "react";
 import { DOCCRUDContext } from "./context";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
 import { downloadFile } from "../download";
+import { Button, DialogActions, DialogTitle } from "@mui/material";
 
 export const Download = ({ docData, closeDialog, maxDownloadLimit = 3 }) => {
   const { generateDocumentDownloadURL, context } = useContext(DOCCRUDContext);

@@ -1,16 +1,15 @@
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { useState, useEffect, useMemo } from "react";
 import { CellWrapper } from "./cellWrapper";
 import {
   ThemeProvider,
   unstable_createMuiStrictModeTheme,
-} from "@material-ui/core/styles";
+} from "@mui/material/styles";
 import DateFnsUtils from "@date-io/date-fns";
-import {
-  KeyboardDateTimePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+import { KeyboardDateTimePicker } from "@material-ui/pickers";
 import { theme2 } from "app/audit/theme";
+import { FormHelperText } from "@mui/material";
+
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
 export const EditableDatetimePicker = (props) => {
@@ -79,7 +78,7 @@ export const EditableDatetimePicker = (props) => {
   return (
     <CellWrapper showBorder {...props}>
       <ThemeProvider theme={themeObj}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <LocalizationProvider utils={DateFnsUtils}>
           <KeyboardDateTimePicker
             format={dateFormat || "dd/MM/yyyy HH:mm:ss"}
             KeyboardButtonProps={{
@@ -99,7 +98,7 @@ export const EditableDatetimePicker = (props) => {
             minDate={mindate || new Date("1900-01-01")}
             InputProps={{ disableUnderline: true }}
           />
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
       </ThemeProvider>
       {Boolean(externalTouched) && Boolean(externalError) ? (
         <FormHelperText style={{ whiteSpace: "break-spaces" }} error={true}>

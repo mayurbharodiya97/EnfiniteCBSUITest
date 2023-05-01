@@ -1,6 +1,27 @@
 import { DefaultErrorObject } from "components/utils";
+import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 import { filters } from "components/report";
+
+export const getRegisterCustDetails = async (reportID, filter) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETREGISTERCUSTRPTDATA", {
+      //   body: JSON.stringify({
+      //     request_data: {},
+      //   }),
+      FROM_DT: format(
+        new Date(filter?.[0]?.value ?? new Date()),
+        "dd/MMM/yyyy"
+      ),
+      TO_DT: format(new Date(filter?.[1]?.value ?? new Date()), "dd/MMM/yyyy"),
+      filter: filter,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 export const getDynamicReportMetaData = async (reportID) => {
   const { data, status, message, messageDetails } =

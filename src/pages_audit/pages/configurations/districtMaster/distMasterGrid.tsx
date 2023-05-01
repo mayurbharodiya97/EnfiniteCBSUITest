@@ -25,7 +25,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 //import { ReleaseUsersAPIWrapper } from "../releaseUsers";
 const actions: ActionTypes[] = [
   {
@@ -187,6 +187,7 @@ const DeleteDistMaster = ({ closeDialog, isDataChangedRef, rows }) => {
     }
   );
   const onDeleteEvent = () => {
+    //console.log(rows);
     mutation.mutate({ data: { ...rows?.data, _isDeleteRow: true } });
   };
   return (

@@ -1,4 +1,4 @@
-import { getChargeAllow, GetChargeTemplates } from "../api";
+import { GetChargeTemplates } from "../api";
 
 export const DynBillerChargeMetadata = {
   form: {
@@ -76,7 +76,7 @@ export const DynBillerChargeMetadata = {
       GridProps: {
         xs: 12,
         md: 2,
-        sm: 4,
+        sm: 6,
       },
     },
     {
@@ -99,7 +99,7 @@ export const DynBillerChargeMetadata = {
       GridProps: {
         xs: 12,
         md: 3,
-        sm: 4,
+        sm: 6,
       },
     },
     {
@@ -122,22 +122,30 @@ export const DynBillerChargeMetadata = {
       GridProps: {
         xs: 12,
         md: 3,
-        sm: 4,
+        sm: 6,
       },
     },
     {
-      render: { componentType: "select" },
-      name: "CHARGE_ALLOW",
-      sequence: 2,
-      label: "Charge",
+      render: {
+        componentType: "textField",
+      },
+      name: "PULL_ACCT_NO",
+      label: "Pull Account",
       placeholder: "",
-      GridProps: { xs: 12, md: 3, sm: 4 },
-      fullWidth: true,
-      //   required: true,
-      //   validate: "getValidateValue",
-      disableCaching: true,
-      options: () => getChargeAllow(),
-      _optionsKey: "getChargeAllow",
+      type: "text",
+      // required: true,
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [
+      //     { name: "required", params: ["Biller ID is required."] },
+      //     { name: "DATATYPE_CD", params: ["Please enter Sub Biller ID."] },
+      //   ],
+      // },
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 6,
+      },
     },
     {
       render: { componentType: "select" },
@@ -145,89 +153,13 @@ export const DynBillerChargeMetadata = {
       sequence: 2,
       label: "Service Charge Template",
       placeholder: "",
-      GridProps: { xs: 12, md: 3, sm: 4 },
+      GridProps: { xs: 12, md: 3, sm: 6 },
       fullWidth: true,
       //   required: true,
       //   validate: "getValidateValue",
       disableCaching: true,
       options: () => GetChargeTemplates(),
       _optionsKey: "GetChargeTemplates",
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "POOl_ACCT_NO",
-      label: "Finacle Pool Account",
-      placeholder: "",
-      type: "text",
-      maxLength: 20,
-      // required: true,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [
-      //     { name: "required", params: ["Biller ID is required."] },
-      //     { name: "DATATYPE_CD", params: ["Please enter Sub Biller ID."] },
-      //   ],
-      // },
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ABABIL_POOl_ACCT_NO",
-      label: "Ababil Pool Account",
-      placeholder: "",
-      type: "text",
-      maxLength: 20,
-      // required: true,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [
-      //     { name: "required", params: ["Biller ID is required."] },
-      //     { name: "DATATYPE_CD", params: ["Please enter Sub Biller ID."] },
-      //   ],
-      // },
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "MERCHANT_ID",
-      label: "Merchant ID",
-      placeholder: "",
-      type: "text",
-      maxLength: 20,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "TERMINAL_ID",
-      label: "Terminal ID",
-      placeholder: "",
-      type: "text",
-      maxLength: 20,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 4,
-      },
     },
   ],
 };

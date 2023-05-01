@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect, useRef } from "react";
 import { TextField } from "components/styledComponent/textfield";
 import { GradientButton } from "components/styledComponent/button";
-import { CircularProgress, FormHelperText } from "@material-ui/core";
+import { CircularProgress, FormHelperText } from "@mui/material";
 
 export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
   const [input, setInput] = useState({

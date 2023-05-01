@@ -1,10 +1,19 @@
-import { ClearCacheProvider, ClearCacheContext } from "cache";
-import { Fragment, useContext, useRef, useCallback, useMemo } from "react";
+import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
+import { useQuery } from "react-query";
+import {
+  Fragment,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert } from "components/common/alert";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
 import { ActionTypes } from "components/dataTable";
+import * as API from "./api";
 import { AllScreensGridMetaData } from "./gridMetadata";
 import { AuthContext } from "pages_audit/auth";
 import { utilFunction } from "components/utils/utilFunctions";
@@ -29,6 +38,7 @@ export const ReleaseUsers = () => {
     );
     return responseData;
   }, [authState.menulistdata]);
+  // console.log(allScreenData);
   const setCurrentAction = useCallback(
     (data) => {
       if ((data?.name ?? "") === "allScreens") {

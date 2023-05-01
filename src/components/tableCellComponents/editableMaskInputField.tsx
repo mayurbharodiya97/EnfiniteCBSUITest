@@ -1,8 +1,7 @@
+import { FormHelperText, Input } from "@mui/material";
 import { useState } from "react";
 import { IMaskInput as IMask } from "react-imask";
-import Input from "@material-ui/core/Input";
 import { CellWrapper } from "./cellWrapper";
-import FormHelperText from "@material-ui/core/FormHelperText";
 
 function InputMaskCustom(props) {
   const { inputRef, onChange, MaskProps, ...other } = props;

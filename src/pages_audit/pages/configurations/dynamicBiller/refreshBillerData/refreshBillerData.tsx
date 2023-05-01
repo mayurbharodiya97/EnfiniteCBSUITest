@@ -9,7 +9,7 @@ import { ClearCacheContext, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { useSnackbar } from "notistack";
-import { Dialog } from "@material-ui/core";
+import { Dialog } from "@mui/material";
 import BillerDetailRefresh from "./billerDetailRefresh/billerDetailRefresh";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { StringtoUnicode } from "components/utils";

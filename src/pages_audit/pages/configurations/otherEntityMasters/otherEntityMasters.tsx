@@ -7,7 +7,7 @@ import { ActionTypes } from "components/dataTable";
 import GridWrapper from "components/dataTableStatic";
 import {
   AddUniversityMasterWrapper,
-  DeleteOtherEntityMasterWrapper,
+  DeleteUniversityMasterWrapper,
   ViewEditUniversityMasterWrapper,
 } from "./universityMaster";
 
@@ -63,7 +63,7 @@ export const OtherEntityMasters = ({ entityType }) => {
     ["getMastersGridData", entityType],
     () => API.getMastersGridData(entityType)
   );
-
+  //console.log(data, isLoading, isFetching, isError, error);
   const setCurrentAction = useCallback(
     (data) => {
       navigate(data?.name, {
@@ -93,9 +93,6 @@ export const OtherEntityMasters = ({ entityType }) => {
   } else if (entityType === "P") {
     OtherEntityMastersGridMetaData.gridConfig.gridLabel = "Utility Master";
   }
-  if (entityType === "I") {
-    OtherEntityMastersGridMetaData.gridConfig.gridLabel = "Insurance Master";
-  }
   useEffect(() => {
     if (entityType === "C") {
       actions.push({
@@ -107,7 +104,7 @@ export const OtherEntityMasters = ({ entityType }) => {
       myGridNameRef.current = "Club";
     }
   }, []);
-
+  //console.log(entityType, actions);
   return (
     <Fragment>
       {isError === true ? (
@@ -164,10 +161,16 @@ export const OtherEntityMasters = ({ entityType }) => {
         <Route
           path="delete"
           element={
-            <DeleteOtherEntityMasterWrapper
-              isDataChangedRef={isDataChangedRef}
-              closeDialog={handleDialogClose}
-            />
+            entityType === "U" ? (
+              <DeleteUniversityMasterWrapper
+                isDataChangedRef={isDataChangedRef}
+                closeDialog={handleDialogClose}
+              />
+            ) : entityType === "C" ? (
+              <></>
+            ) : (
+              <></>
+            )
           }
         />
         <Route

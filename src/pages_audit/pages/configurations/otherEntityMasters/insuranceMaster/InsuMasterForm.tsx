@@ -1,32 +1,26 @@
 import { FC, useEffect, useState, useContext, useRef } from "react";
-import { useMutation } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { ClearCacheContext, queryClient } from "cache";
 import { InitialValuesType, SubmitFnType } from "packages/form";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 import FormWrapper from "components/dyanmicForm";
 import { useSnackbar } from "notistack";
+import { cloneDeep } from "lodash-es";
 import { useLocation } from "react-router-dom";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import { Transition } from "pages_audit/common/transition";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import * as API from "../api";
 import { InsuMasterMetadata } from "./metaData";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { StringtoUnicode, utilFunction } from "components/utils";
-import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
-interface updateMasterDataType {
-  data: any;
-  displayData?: any;
-  endSubmit?: any;
-  setFieldError?: any;
+interface updateAUTHDetailDataType {
+  formView: any;
+
+  rows: any;
 }
-
-const updateMasterDataWrapperFn =
-  (updateAUTHDetailData) =>
-  async ({ data }: updateMasterDataType) => {
-    return updateAUTHDetailData({ data });
-  };
 
 const InsuMasterForm: FC<{
   isDataChangedRef: any;
@@ -37,10 +31,17 @@ const InsuMasterForm: FC<{
   const isErrorFuncRef = useRef<any>(null);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const { state: rows }: any = useLocation();
-  const authController = useContext(AuthContext);
+  //const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
+  // const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
+
+  // const result = useQuery(
+  //   ["getinsuMasterFormData", formView, insuCode],
+  //   () => API.getinsuMasterFormData({ formView, insuCode })
+  // );
 
   const mutation = useMutation(
-    updateMasterDataWrapperFn(API.updateOtherEntityData()),
+    API.updateOtherEntData(),
+
     {
       onError: (error: any) => {
         let errorMsg = "Unknown Error occured";
@@ -66,7 +67,6 @@ const InsuMasterForm: FC<{
           variant: "success",
         });
         isDataChangedRef.current = true;
-        setIsOpenSave(false);
         closeDialog();
       },
     }
@@ -75,12 +75,15 @@ const InsuMasterForm: FC<{
     setIsOpenSave(false);
   };
   const onPopupYes = (rows) => {
+    console.log("onPopup>>");
     mutation.mutate({
-      ...isErrorFuncRef.current,
+      formView: formView,
+      rows: rows,
+      entityType: "I",
     });
   };
   const onSubmitHandler: SubmitFnType = (
-    data: any,
+    data,
     displayData,
     endSubmit,
     setFieldError,
@@ -88,38 +91,8 @@ const InsuMasterForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
-    let newData = {
-      ...data,
-      POLICY_LABEL_BN: StringtoUnicode(data?.POLICY_LABEL_BN ?? "").replaceAll(
-        "\\u",
-        "\\"
-      ),
-    };
-
-    let oldData = {
-      ...rows?.[0]?.data,
-      POLICY_LABEL_BN: StringtoUnicode(
-        rows?.[0]?.data?.POLICY_LABEL_BN ?? ""
-      ).replaceAll("\\u", "\\"),
-    };
-    let upd = utilFunction.transformDetailsData(newData, oldData);
-
-    isErrorFuncRef.current = {
-      data: {
-        ...newData,
-        ...upd,
-        COMP_CD: authController.authState.companyID,
-        ENTITY_TYPE: "I",
-        _isNewRow: formView === "add" ? true : false,
-      },
-      displayData,
-      endSubmit,
-      setFieldError,
-    };
-    if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
-    } else {
-      setIsOpenSave(true);
-    }
+    isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
+    setIsOpenSave(true);
   };
 
   useEffect(() => {
@@ -127,7 +100,34 @@ const InsuMasterForm: FC<{
       queryClient.removeQueries(["getInsuMasterFormData", formView]);
     };
   }, [formView]);
-  console.log(">>Insurance", rows?.[0]?.data);
+  // const dataUniqueKey = `${result.dataUpdatedAt}`;
+  // const loading = result.isLoading || result.isFetching;
+  // let isError = result.isError;
+  // //@ts-ignore
+  // let errorMsg = `${result.error?.error_msg}`;
+  // errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
+
+  // let formEditData = [];
+  // if (Array.isArray(result.data) && result.data.length > 0) {
+  //   formEditData = Object.assign({}, result.data[0]);
+  // }
+
+  // if (result.isSuccess) {
+  //   const formStateFromInitValues =
+  //     typeof setEditFormStateFromInitValues === "function"
+  //       ? setEditFormStateFromInitValues(result.data[0])
+  //       : undefined;
+  //   viewEditMetaData = cloneDeep(AUTHDetailMetadata) as MetaDataType;
+
+  //   viewEditMetaData.form.formState = {
+  //     formCode: viewEditMetaData.form.name,
+  //     ...formStateFromInitValues,
+  //   };
+  //   viewEditMetaData.form.name = `${viewEditMetaData.form.name}-edit`;
+  //   if (viewEditMetaData?.form?.render?.renderType === "stepper") {
+  //     viewEditMetaData.form.render.renderType = "tabs";
+  //   }
+  // }
   return (
     <>
       <FormWrapper
@@ -136,12 +136,12 @@ const InsuMasterForm: FC<{
         initialValues={rows?.[0]?.data as InitialValuesType}
         onSubmitHandler={onSubmitHandler}
         //@ts-ignore
-        displayMode={formView}
+        // displayMode={formMode}
         formStyle={{
           background: "white",
-          // height: "30vh",
-          // overflowY: "auto",
-          // overflowX: "hidden",
+          height: "30vh",
+          overflowY: "auto",
+          overflowX: "hidden",
         }}
       >
         {({ isSubmitting, handleSubmit }) => (
@@ -195,6 +195,9 @@ export const InsuMasterFormWrapper = ({
   formView,
 }) => {
   const classes = useDialogStyles();
+  const { state: rows }: any = useLocation();
+  const { getEntries } = useContext(ClearCacheContext);
+  //console.log("1");
   return (
     <>
       <Dialog

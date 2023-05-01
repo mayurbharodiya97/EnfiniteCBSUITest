@@ -1,14 +1,19 @@
 import { FC, useCallback, useState } from "react";
-import Select, { SelectProps } from "@material-ui/core/Select";
-import Input, { InputProps } from "@material-ui/core/Input";
-import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
+import MenuItem from "@material-ui/core/MenuItem";
 import CircularProgress, {
   CircularProgressProps,
 } from "@material-ui/core/CircularProgress";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { OptionsProps, Merge, OptionsFn } from "../types";
 import { getLabelFromValues, useOptionsFetcherSimple } from "../utils";
+import {
+  Input,
+  InputAdornment,
+  InputProps,
+  MenuItemProps,
+  Select,
+  SelectProps,
+} from "@mui/material";
 
 interface MySelectExtendedProps {
   MenuItemProps?: MenuItemProps;

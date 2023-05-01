@@ -1,14 +1,11 @@
 import { useState, useMemo, forwardRef } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import { makeStyles } from "@material-ui/styles";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { useSnackbar } from "notistack";
+import { makeStyles } from "@mui/styles";
+import { AppBar, Button, Toolbar, Typography } from "@mui/material";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",

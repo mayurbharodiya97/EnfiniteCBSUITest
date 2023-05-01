@@ -4,7 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Alert } from "components/common/alert";
 import { LoadingTextAnimation } from "components/common/loader";
 import { useSnackbar } from "notistack";

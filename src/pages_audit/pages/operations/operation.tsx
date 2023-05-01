@@ -7,9 +7,6 @@ import { LoanClosureGridWrapper } from "./loanClosure/loanClosure";
 import { CustomerActivationForm } from "./customerActivation";
 import { PrimaryIDChangeForm } from "./primaryIDChange";
 import { PrimaryIDChangeConfirm } from "./primaryIDChange/Confirmation";
-import { AccountDeletionReqWrapper } from "./accountDeletion";
-import { MerchantOnboardingGrid } from "./merchantOnboarding/merchantOnboardingGrid";
-import { FromSourceTemplateGridWrapper } from "./fromSourceTemplate";
 export const OperationsMenu = () => (
   <Routes>
     <Route path="customer-searching/*" element={<CustomerSearchingForm />} />
@@ -49,20 +46,6 @@ export const OperationsMenu = () => (
     <Route path="customer-activation/*" element={<CustomerActivationForm />} />
     <Route path="primary-id-change/*" element={<PrimaryIDChangeForm />} />
     <Route path="primary-id-confirm/*" element={<PrimaryIDChangeConfirm />} />
-    <Route
-      path="acct-delete-checker/*"
-      element={<AccountDeletionReqWrapper screenFlag={"N"} />}
-    />
-    <Route
-      path="acct-delete-approval/*"
-      element={<AccountDeletionReqWrapper screenFlag={"P"} />}
-    />
-
-    <Route path="merchant-onboard/*" element={<MerchantOnboardingGrid />} />
-    <Route
-      path="from-source-template/*"
-      element={<FromSourceTemplateGridWrapper />}
-    />
     {/* <Route
       path="pass_reset_conf/*"
       element={<ConfirmationGridWrapper screenFlag="passReset" />}

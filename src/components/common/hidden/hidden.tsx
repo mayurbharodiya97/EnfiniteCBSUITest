@@ -4,7 +4,7 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
-import { GridProps } from "@material-ui/core/Grid";
+import { GridProps } from "@mui/material";
 
 interface MyGridExtendedProps {
   GridProps?: GridProps;

@@ -1,12 +1,14 @@
 import { Fragment, useContext } from "react";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import Alert from "@material-ui/lab/Alert";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { useMutation } from "react-query";
 import { DOCCRUDContext } from "./context";
 import { useSnackbar } from "notistack";
+import {
+  Alert,
+  Button,
+  DialogActions,
+  DialogTitle,
+  LinearProgress,
+} from "@mui/material";
 
 interface DeleteFormDataType {
   docType: string;

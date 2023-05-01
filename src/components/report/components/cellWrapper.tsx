@@ -1,7 +1,7 @@
-import TableCell from "@material-ui/core/TableCell";
-import IconButton from "@material-ui/core/IconButton";
-import ArrowRightSharpIcon from "@material-ui/icons/ArrowRightSharp";
-import ArrowDropDownSharpIcon from "@material-ui/icons/ArrowDropDownSharp";
+import ArrowRightSharpIcon from "@mui/icons-material/ArrowRightSharp";
+import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
+
+import { IconButton, TableCell } from "@mui/material";
 
 export const CellWrapper = ({ children, ...others }) => {
   const {

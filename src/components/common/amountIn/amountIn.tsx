@@ -1,12 +1,11 @@
 import { useState, FC } from "react";
 import { TextField } from "components/styledComponent";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import { SelectProps } from "@material-ui/core/Select";
 import { useField, UseFieldHookProps } from "packages/form";
-import { TextFieldProps } from "@material-ui/core/TextField";
 import { OptionsProps, Merge, dependentOptionsFn } from "../types";
-import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
 import { getLabelFromValues, useOptionsFetcher } from "../utils";
+import { Grid, GridProps, MenuItemProps, SelectProps } from "@mui/material";
+import { MenuItem } from "@material-ui/core";
+import { TextFieldProps } from "@material-ui/core";
 
 interface MyAmountInProps {
   leftName: string;

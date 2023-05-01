@@ -1,6 +1,6 @@
-import { Theme } from "@material-ui/core/styles";
+import { createTheme } from "@mui/material/styles";
 
-export const theme: Theme = {
+export const theme = createTheme({
   palette: {
     //@ts-ignore
     primary: {
@@ -11,8 +11,17 @@ export const theme: Theme = {
       main: "rgb(128, 0, 0)",
     },
   },
-};
-export const theme2: Theme = {
+  // breakpoints: {
+  //   values: {
+  //     xs: 600,
+  //     sm: 960,
+  //     md: 1024,
+  //     lg: 1280,
+  //     xl: 1920,
+  //   },
+  // },
+});
+export const theme2 = createTheme({
   palette: {
     //@ts-ignore
     primary: {
@@ -23,4 +32,13 @@ export const theme2: Theme = {
       main: "#fff",
     },
   },
-};
+  // breakpoints: {
+  //   values: {
+  //     xs: 600,
+  //     sm: 960,
+  //     md: 1024,
+  //     lg: 1280,
+  //     xl: 1920,
+  //   },
+  // },
+});

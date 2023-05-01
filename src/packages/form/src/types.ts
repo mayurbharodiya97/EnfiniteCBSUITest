@@ -19,7 +19,7 @@ export interface FormContextType {
   validationRun?: ValidationRunType;
   resetFieldOnUnmount?: boolean;
   initialValues?: InitialValuesType;
-  validationSchema?: AnyObjectSchema;
+  validationSchema?: any;
   formState: any;
   defaultArrayFieldValues?: InitialValuesType;
 }

@@ -1,8 +1,8 @@
 import { SelectForGrid } from "components/common/select/renderForGrid";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { useState, useEffect } from "react";
 import { CellWrapper } from "./cellWrapper";
 import { CircularProgressProps } from "@material-ui/core";
+import { FormHelperText } from "@mui/material";
 
 export const DisableSelect = (props) => {
   const {

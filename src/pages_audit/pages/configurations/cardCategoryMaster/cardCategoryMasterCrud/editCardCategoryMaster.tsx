@@ -13,12 +13,10 @@ import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
 import { useMutation, useQueries } from "react-query";
 import { useLocation } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
-import Dialog from "@material-ui/core/Dialog";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Alert } from "components/common/alert";
+import { SubmitFnType } from "packages/form";
 import * as API from "../api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
@@ -27,6 +25,8 @@ import { format } from "date-fns";
 import { AuthContext } from "pages_audit/auth";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { cardCategoryMasterDetailsMetaData } from "./cardCategoryMasterMetaData";
+import { GeneralAPI } from "registry/fns/functions";
+import { Button, CircularProgress, Dialog, IconButton } from "@mui/material";
 interface updateMasterDataType {
   data: object;
   displayData?: object;
@@ -145,6 +145,7 @@ const ViewEditCardCategoryMaster: FC<{
       mutation.mutate({ data, endSubmit, displayData, setFieldError });
       //endSubmit(true);
     }
+    // console.log(data);
 
     //mutation.mutate({ data, displayData, endSubmit, setFieldError });
   };
@@ -265,6 +266,7 @@ const ViewEditCardCategoryMaster: FC<{
       }}
     >
       {({ isSubmitting, handleSubmit }) => {
+        //console.log(formMode, isSubmitting);
         return (
           <>
             <Button
@@ -360,6 +362,7 @@ const ViewEditCardCategoryMaster: FC<{
         }}
       >
         {({ isSubmitting, handleSubmit }) => {
+          //console.log(formMode, isSubmitting);
           return (
             <>
               <Button

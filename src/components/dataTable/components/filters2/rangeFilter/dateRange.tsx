@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { SelectRenderOnly } from "components/common/select/render";
 import { KeyboardDatePicker } from "components/styledComponent/datetime";
-import Grid from "@material-ui/core/Grid";
 import dateFormat from "date-fns/format";
 import subDays from "date-fns/subDays";
+import { Grid } from "@mui/material";
 
 const options = [
   { label: "All", value: "all" },

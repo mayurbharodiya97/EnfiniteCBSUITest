@@ -1,6 +1,6 @@
-import Button from "@material-ui/core/Button";
 import { useMemo } from "react";
 import { CellWrapper } from "./cellWrapper";
+import Button from "@mui/material/Button";
 
 export const ButtonRowCell = (props) => {
   const {

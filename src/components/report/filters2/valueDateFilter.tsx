@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { KeyboardDatePicker } from "components/styledComponent/datetime";
-import Grid from "@material-ui/core/Grid";
+import { Grid } from "@mui/material";
 
 export const ValueDateFilter = ({
   filterValue,

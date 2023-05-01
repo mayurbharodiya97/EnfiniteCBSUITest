@@ -10,21 +10,24 @@ import {
   Suspense,
 } from "react";
 import { TextFieldProps } from "@material-ui/core/TextField";
-import CircularProgress, {
-  CircularProgressProps,
-} from "@material-ui/core/CircularProgress";
 import Autocomplete, {
   AutocompleteProps,
-  createFilterOptions,
+  // createFilterOptions,
 } from "@material-ui/lab/Autocomplete";
 import { CreateFilterOptionsConfig } from "@material-ui/lab/useAutocomplete";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
 import { Merge, OptionsProps, OptionsFn } from "../types";
-import Chip, { ChipProps } from "@material-ui/core/Chip";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { useOptionsFetcherSimple } from "../utils";
+import {
+  Chip,
+  ChipProps,
+  CircularProgress,
+  CircularProgressProps,
+  createFilterOptions,
+} from "@mui/material";
 
 const ListBoxComponentVirtualized = lazy(() =>
   import("./virtualized").then((module) => ({

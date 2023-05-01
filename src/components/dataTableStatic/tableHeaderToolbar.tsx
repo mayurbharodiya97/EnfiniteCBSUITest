@@ -1,16 +1,15 @@
-import { forwardRef, useImperativeHandle, useMemo } from "react";
-import Typography from "@material-ui/core/Typography";
-import Toolbar from "@material-ui/core/Toolbar";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import IconButton from "@material-ui/core/IconButton";
-import { makeStyles } from "@material-ui/core/styles";
+import { forwardRef, useImperativeHandle } from "react";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { GlobalFilter } from "./components/filters";
 import { RenderActions } from "components/dataTable/tableActionToolbar";
 import { useAutoRefresh } from "../utils/autoRefresh";
 import { CircularProgressWithLabel } from "../utils/circularProgressWithLabel";
 import { TableFilterComponent } from "../dataTable/tableFilterComponent";
 import { ColumnVisibility } from "../dataTable/columnVisibility";
-const useStyles = makeStyles((theme) => ({
+import { IconButton, Toolbar, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -59,16 +58,6 @@ export const TableHeaderToolbar = forwardRef<any, any>(
     const { progress, enabled, intervalElapsed, pause, resume } =
       useAutoRefresh(refetchData, autoRefreshInterval);
     const classes = useStyles();
-    const newselectedRows = useMemo(
-      () =>
-        selectedFlatRows.map((one) => {
-          return {
-            data: one.original,
-            id: one.id,
-          };
-        }),
-      [selectedFlatRows]
-    );
     useImperativeHandle(ref, () => ({
       pause: pause,
       resume: resume,
@@ -130,7 +119,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
         )}
         <RenderActions
           key="alwaysRender"
-          selectedRows={newselectedRows}
+          selectedRows={selectedFlatRows}
           setAction={setGridAction}
           actions={alwaysAvailableAction ?? []}
         />

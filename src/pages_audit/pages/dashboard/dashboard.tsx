@@ -1,7 +1,7 @@
 import { Transactions } from "../../../components/dashboard/transactions";
 import { TrafficByDevice } from "../../../components/dashboard/traffic-by-device";
 import { DashboardLayout } from "./dashboard-layout";
-import { Box, Container, Grid } from "@material-ui/core";
+import { Box, Container, Grid } from "@mui/material";
 import { DashboardBox } from "components/dashboard/dashboardBox";
 import { Alert } from "components/common/alert";
 import { useQuery } from "react-query";

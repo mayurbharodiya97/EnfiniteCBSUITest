@@ -88,8 +88,8 @@ export const FromSourceMetaData = {
       defaultValue: "",
       GridProps: { xs: 12, md: 3, sm: 3 },
       fullWidth: true,
-      required: true,
-      validate: "getValidateValue",
+      //   required: true,
+      //   validate: "getValidateValue",
       disableCaching: true,
       options: () => getChargeAllow(),
       _optionsKey: "getChargeAllow",
@@ -102,8 +102,8 @@ export const FromSourceMetaData = {
       placeholder: "",
       GridProps: { xs: 12, md: 3, sm: 3 },
       fullWidth: true,
-      required: true,
-      validate: "getValidateValue",
+      //   required: true,
+      //   validate: "getValidateValue",
       disableCaching: true,
       options: () => GetChargeTemplates(),
       _optionsKey: "GetChargeTemplates",
@@ -120,18 +120,6 @@ export const FromSourceMetaData = {
       fullWidth: true,
       __VIEW__: { isReadOnly: true },
       __EDIT__: { isReadOnly: false },
-      runValidationOnDependentFieldsChange: true,
-      dependentFields: ["CHARGE_ALLOW_0"],
-      validate: (currentField, dependentFields) => {
-        if (
-          dependentFields?.CHARGE_ALLOW_0?.value === "Y" &&
-          !currentField?.value
-        ) {
-          return "This field is required";
-        } else {
-          return "";
-        }
-      },
     },
     {
       render: { componentType: "textField", group: 0 },
@@ -145,18 +133,6 @@ export const FromSourceMetaData = {
       fullWidth: true,
       __VIEW__: { isReadOnly: true },
       __EDIT__: { isReadOnly: false },
-      runValidationOnDependentFieldsChange: true,
-      dependentFields: ["CHARGE_ALLOW_0"],
-      validate: (currentField, dependentFields) => {
-        if (
-          dependentFields?.CHARGE_ALLOW_0?.value === "Y" &&
-          !currentField?.value
-        ) {
-          return "This field is required";
-        } else {
-          return "";
-        }
-      },
     },
     {
       render: { componentType: "formbutton", group: 0 },

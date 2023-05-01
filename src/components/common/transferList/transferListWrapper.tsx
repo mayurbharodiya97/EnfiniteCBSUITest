@@ -1,9 +1,9 @@
 import { FC, useState } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 import { OptionsProps, Merge, dependentOptionsFn } from "../types";
 import { useOptionsFetcher } from "../utils";
 import { TransferList, TransferListProps } from "./transferList";
+import { Grid, GridProps } from "@mui/material";
 
 interface extendedFieldProps extends UseFieldHookProps {
   leftOptions?: OptionsProps[] | dependentOptionsFn;

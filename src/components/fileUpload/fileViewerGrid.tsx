@@ -1,10 +1,4 @@
 import { useState, Fragment, useMemo, useRef } from "react";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import CardHeader from "@material-ui/core/CardHeader";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
 import Grid from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
 import { GridColumnType } from "components/dataTableStatic";
@@ -12,6 +6,14 @@ import metaData from "./metaData";
 import { transformMetaDataByMutating } from "./utils";
 import { FileObjectType } from "./type";
 import { PDFViewer, ImageViewer, NoPreview } from "./preView";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Dialog,
+} from "@mui/material";
 
 const actions: ActionTypes[] = [
   {

@@ -14,12 +14,13 @@ export const getGridFormMetaData =
     }
   };
 
-export const getLoanReqGridData = async ({ fromDate, toDate, screenID }) => {
+export const getLoanReqGridData = async ({ fromDate, toDate }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("LOANAPPLYREQ", {
       FROM_DATE: fromDate,
       TO_DATE: toDate,
-      SCREEN_ID: screenID,
+      DISPLAY_LANGUAGE: "en",
+      ACTION: "",
     });
   if (status === "0") {
     return data;

@@ -1,5 +1,4 @@
-import { Avatar } from "@material-ui/core";
-import Tooltip from "@material-ui/core/Tooltip";
+import { Avatar, Tooltip } from "@mui/material";
 import { utilFunction } from "components/utils";
 import { useEffect, useState } from "react";
 //import { boolean } from "yup";
@@ -12,7 +11,6 @@ export const IconRowCellRenderer = (props) => {
       showTooltip = false,
       transform = (value) => value,
       isAutoSequence = false,
-      isImageURL = false,
     },
     row,
   } = props;
@@ -27,17 +25,11 @@ export const IconRowCellRenderer = (props) => {
   //console.log(newValue);
   useEffect(() => {
     if (Boolean(newValue)) {
-      let url = "";
-      if (isImageURL) {
-        url = newValue;
-      } else {
-        let blob = utilFunction.base64toBlob(newValue);
-
-        url =
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "";
-      }
+      let blob = utilFunction.base64toBlob(newValue);
+      let url =
+        typeof blob === "object" && Boolean(blob)
+          ? URL.createObjectURL(blob)
+          : "";
       setProfilePictureURL(url);
     }
   }, [newValue]);

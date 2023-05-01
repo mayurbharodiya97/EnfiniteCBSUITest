@@ -1,13 +1,11 @@
 import { useReducer, useContext, useEffect, useState } from "react";
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 import { useNavigate } from "react-router-dom";
-//import loginImg from "assets/images/SEO-bro.svg";
-import loginImg from "assets/images/login-animation.svg";
+import loginImg from "assets/images/login.svg";
 import { useStyles } from "./style";
 import { UsernamePasswordField } from "./usernamePassword";
 import { AuthContext } from "./authContext";
-//import * as API from "./api";
-import logo from "assets/images/logo1.png";
+import logo from "assets/images/logo.jpg";
 import { OTPModel } from "./otpPopup";
 import { veirfyUsernameandPassword, verifyOTP } from "./api";
 import { useSnackbar } from "notistack";
@@ -161,12 +159,12 @@ export const AuthLoginController = () => {
   const [open, setOpen] = useState(false);
   const [openpwdreset, setOpenPwdReset] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
+  // console.log(audio);
   useEffect(() => {
     if (isLoggedIn()) {
-      navigate("/admin-panel", { replace: true });
+      navigate("/audit", { replace: true });
     }
   }, [navigate, isLoggedIn]);
   const verifyUsernamePassword = async (username, password) => {
@@ -231,7 +229,7 @@ export const AuthLoginController = () => {
   const VerifyOTP = async (OTPNumber) => {
     if (Boolean(OTPNumber) && OTPNumber.toString().length === 6) {
       dispath({ type: "inititateOTPVerification" });
-      const { status, data, message, menuapierror } = await verifyOTP(
+      const { status, data, message } = await verifyOTP(
         loginState.transactionID,
         loginState.username,
         OTPNumber,
@@ -243,15 +241,10 @@ export const AuthLoginController = () => {
         // try {
         //   audio.play();
         // } catch (error) {
+        //   console.log(error);
         // }
         dispath({ type: "OTPVerificationComplate" });
-        console.log(data);
         login(data);
-      } else if (menuapierror) {
-        navigate("/error", {
-          replace: true,
-          state: { status: status, message: message },
-        });
       } else if (status === "999") {
         dispath({
           type: "OTPVerificationFailed",
@@ -299,7 +292,7 @@ export const AuthLoginController = () => {
         width={1 / 2}
         className={classes.loginRight}
       >
-        <img src={logo} alt="Logo" width="180px" height="auto" />
+        <img src={logo} alt="Logo" width="auto" height="auto" />
         <h2>Login</h2>
 
         <UsernamePasswordField

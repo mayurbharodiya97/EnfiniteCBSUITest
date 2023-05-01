@@ -11,33 +11,31 @@ import {
 import { queryClient } from "cache";
 import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQueries, useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
-import Dialog from "@material-ui/core/Dialog";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import IconButton from "@mui/material/IconButton";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import Dialog from "@mui/material/Dialog";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Alert } from "components/common/alert";
+import { SubmitFnType } from "packages/form";
 import * as API from "../api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { MasterDetailsForm } from "components/formcomponent";
+import { format } from "date-fns";
 import { AuthContext } from "pages_audit/auth";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { EditViewDynamicReportConfigMetaData } from "./metaData";
-import {
-  AppBar,
-  Grid,
-  makeStyles,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
+import { GeneralAPI } from "registry/fns/functions";
+import { AppBar, Grid, TextField, Toolbar, Typography } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { RetrievalParametersGrid } from "./retrievalParameters";
+import { makeStyles } from "@mui/styles";
 
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
@@ -102,56 +100,56 @@ const ViewEditDynamicReportConfig: FC<{
   const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
   const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
   const { authState } = useContext(AuthContext);
-  // const mutation = useMutation(
-  //   updateMasterDataWrapperFn(API.updateMastersData()),
-  //   {
-  //     onError: (error: any, { endSubmit }) => {
-  //       let errorMsg = "Unknown Error occured";
-  //       if (typeof error === "object") {
-  //         errorMsg = error?.error_msg ?? errorMsg;
-  //       }
-  //       endSubmit(false, errorMsg, error?.error_detail ?? "");
-  //     },
-  //     onSuccess: (data, { endSubmit }) => {
-  //       // queryClient.refetchQueries(["getFormData", transactionID]);
-  //       endSubmit(true, "");
-  //       enqueueSnackbar(data, {
-  //         variant: "success",
-  //       });
-  //       isDataChangedRef.current = true;
-  //       moveToViewMode();
-  //       if (typeof closeDialog === "function") {
-  //         closeDialog();
-  //       }
-  //     },
-  //   }
-  // );
-  // const mutationConfirm = useMutation(
-  //   updateMasterDataWrapperFn(API.updateMastersData()),
-  //   {
-  //     onError: (error: any) => {
-  //       let errorMsg = "Unknown Error occured";
-  //       if (typeof error === "object") {
-  //         errorMsg = error?.error_msg ?? errorMsg;
-  //       }
-  //       enqueueSnackbar(errorMsg, {
-  //         variant: "error",
-  //       });
-  //     },
-  //     onSuccess: (data) => {
-  //       enqueueSnackbar(data, {
-  //         variant: "success",
-  //       });
-  //       isDataChangedRef.current = true;
-  //       if (typeof closeDialog === "function") {
-  //         closeDialog();
-  //       }
-  //     },
-  //     onSettled: () => {
-  //       onActionCancel();
-  //     },
-  //   }
-  // );
+  const mutation = useMutation(
+    updateMasterDataWrapperFn(API.updateMastersData()),
+    {
+      onError: (error: any, { endSubmit }) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        endSubmit(false, errorMsg, error?.error_detail ?? "");
+      },
+      onSuccess: (data, { endSubmit }) => {
+        // queryClient.refetchQueries(["getFormData", transactionID]);
+        endSubmit(true, "");
+        enqueueSnackbar(data, {
+          variant: "success",
+        });
+        isDataChangedRef.current = true;
+        moveToViewMode();
+        if (typeof closeDialog === "function") {
+          closeDialog();
+        }
+      },
+    }
+  );
+  const mutationConfirm = useMutation(
+    updateMasterDataWrapperFn(API.updateMastersData()),
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      },
+      onSuccess: (data) => {
+        enqueueSnackbar(data, {
+          variant: "success",
+        });
+        isDataChangedRef.current = true;
+        if (typeof closeDialog === "function") {
+          closeDialog();
+        }
+      },
+      onSettled: () => {
+        onActionCancel();
+      },
+    }
+  );
   const verifySql = useMutation(API.verifyDynRptSqlSyntax, {
     onError: (error: any) => {},
     onSuccess: (data, { detailsData }) => {
@@ -159,6 +157,7 @@ const ViewEditDynamicReportConfig: FC<{
       setLocalError(false);
       let newDetailsData = data?.[0]?.DETAILS;
       let oldDetailsData = myRef.current?.GetGirdData();
+      console.log(newDetailsData, oldDetailsData);
       const getDifference = (array1, array2) => {
         return array1.filter((object1) => {
           return !array2.some((object2) => {
@@ -251,6 +250,8 @@ const ViewEditDynamicReportConfig: FC<{
       };
       data["_UPDATEDCOLUMNS"] = [...data["_UPDATEDCOLUMNS"], "SQL_ANSI_SYNTAX"];
     }
+
+    console.log(data);
 
     //mutation.mutate({ data, displayData, endSubmit, setFieldError });
   };
@@ -495,6 +496,7 @@ const ViewEditDynamicReportConfig: FC<{
                     }}
                   >
                     {({ isSubmitting, handleSubmit }) => {
+                      //console.log(formMode, isSubmitting);
                       return (
                         <>
                           <Button
@@ -560,7 +562,7 @@ const ViewEditDynamicReportConfig: FC<{
                       onActionNo={() => onActionCancel()}
                       rows={reqData[0].data}
                       open={openAccept}
-                      // loading={mutationConfirm.isLoading}
+                      loading={mutationConfirm.isLoading}
                     />
                   ) : null}
                   {openReject ? (
@@ -571,7 +573,7 @@ const ViewEditDynamicReportConfig: FC<{
                       onActionNo={() => onActionCancel()}
                       rows={reqData[0].data}
                       open={openReject}
-                      // loading={mutationConfirm.isLoading}
+                      loading={mutationConfirm.isLoading}
                     />
                   ) : null}
                 </>

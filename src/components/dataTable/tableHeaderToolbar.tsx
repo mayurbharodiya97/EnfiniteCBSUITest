@@ -1,16 +1,14 @@
 import { forwardRef } from "react";
-import Typography from "@material-ui/core/Typography";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import { makeStyles } from "@material-ui/core/styles";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { ColumnVisibility } from "./columnVisibility";
 import { RenderActions } from "./tableActionToolbar";
 import { TableFilterComponent } from "./tableFilterComponent";
 import { useAutoRefresh } from "../utils/autoRefresh";
 import { CircularProgressWithLabel } from "../utils/circularProgressWithLabel";
+import { IconButton, Toolbar, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),

@@ -1,5 +1,4 @@
-import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
+import { useMediaQuery, useTheme } from "@mui/material";
 import {
   cloneElement,
   createContext,
@@ -41,7 +40,7 @@ const useResetCache = (data) => {
 };
 
 export const ListBoxComponent = forwardRef<HTMLDivElement>((props, ref) => {
-  const { children, ...other } = props;
+  const { children, ...other } = props as any;
   const itemData = Children.toArray(children);
   const theme = useTheme();
   const smUp = useMediaQuery(theme.breakpoints.up("sm"), { noSsr: true });

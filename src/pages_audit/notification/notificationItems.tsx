@@ -1,11 +1,8 @@
 import { useState, Fragment } from "react";
-import ListItem from "@material-ui/core/ListItem";
-import Badge from "@material-ui/core/Badge";
-import Divider from "@material-ui/core/Divider";
 import { useMutation } from "react-query";
 import { validateDate } from "./fns";
 import * as API from "./api";
-import { Typography } from "@material-ui/core";
+import { Badge, Divider, ListItem, Typography } from "@mui/material";
 
 interface notificationDataType {
   activityID: string;

@@ -1,14 +1,3 @@
-import {
-  AppBar,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-} from "@material-ui/core";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { Transition } from "pages_audit/common";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
@@ -26,10 +15,21 @@ import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { Alert } from "components/common/alert";
 import { useSnackbar } from "notistack";
 import { SpecialAmountGrid } from "./specialAmount";
+import {
+  AppBar,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  IconButton,
+} from "@mui/material";
 
 interface updateOperatorMasterDetailsDataType {
   data: object;
@@ -197,6 +197,7 @@ export const OperatorMasterDetails = ({
             }
           }
         );
+        //console.log(metadataold);
         setMetadata(metadataold);
         setFormName("OperatorMaster-Internet");
       }
@@ -426,6 +427,7 @@ export const OperatorMasterDetails = ({
             formNameMaster={"OperatorMaster"}
             onFormButtonClickHandel={onFormButtonClickHandel}
             onClickActionEvent={(index, id, data) => {
+              //console.log(index, id, data);
               mysubdtlRef.current = {
                 ...mysubdtlRef.current,
                 SR_CD: data?.SR_CD,
@@ -527,6 +529,7 @@ const ImgaeViewerandUpdate = ({
           Boolean(filesObj?.[0]?.blob)
             ? await URL.createObjectURL(filesObj?.[0]?.blob as any)
             : null;
+        //console.log(filesObj);
         setImageData(filesObj?.[0]?.blob);
         //submitBtnRef.current?.click?.();
         setFilecnt(filecnt + 1);

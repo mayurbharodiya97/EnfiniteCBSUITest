@@ -185,7 +185,7 @@ export const transformDetailsData = (newData, oldData) => {
   return { _UPDATEDCOLUMNS: _UPDATEDCOLUMNS, _OLDROWVALUE: _OLDROWVALUE };
 };
 
-export const isValidDate = (dat) => {
+const isValidDate = (dat) => {
   try {
     let dt: any = new Date(dat);
     //console.log(dat, dt, !isNaN(dt), isNaN(dat));

@@ -1,5 +1,7 @@
-import { FC, useRef } from "react";
-import Dialog from "@material-ui/core/Dialog";
+import React, { FC, useEffect, useContext, useRef } from "react";
+import { ClearCacheContext, queryClient } from "cache";
+import Dialog from "@mui/material/Dialog";
+import { useLocation } from "react-router-dom";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import { Transition } from "pages_audit/common/transition";
 import {
@@ -8,15 +10,15 @@ import {
   Grid,
   ListItem,
   ListItemText,
-  makeStyles,
   Toolbar,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { useDrag } from "react-dnd";
-import EmailEditor from "react-email-editor";
+import { makeStyles } from "@mui/styles";
+// import EmailEditor from "react-email-editor";
 
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
@@ -56,9 +58,11 @@ const EmailTemplate: FC<{
     } else {
       try {
         designJson = JSON.parse(mailMsgJSON);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     }
-
+    console.log(designJson);
     if (
       JSON.stringify(designJson) !== "{}" &&
       Boolean(designJson) &&
@@ -66,6 +70,7 @@ const EmailTemplate: FC<{
     ) {
       emailEditorRef?.current?.editor?.loadDesign?.(designJson);
     }
+    //console.log(emailEditorRef?.current);
   };
 
   return (
@@ -100,7 +105,7 @@ const EmailTemplate: FC<{
                 onClick={() => {
                   emailEditorRef?.current?.editor.exportHtml((data) => {
                     const { design, html } = data;
-
+                    //console.log(emailEditorRef?.current, data);
                     onSaveData(design, html);
                   });
                 }}
@@ -120,7 +125,7 @@ const EmailTemplate: FC<{
             padding: "10px",
           }}
         >
-          <EmailEditor ref={emailEditorRef} onLoad={onLoad} onReady={onReady} />
+          {/* <EmailEditor ref={emailEditorRef} onLoad={onLoad} onReady={onReady} /> */}
         </Grid>
       </Grid>
     </>
@@ -186,13 +191,13 @@ export const EmailTemplateWrapper = ({
           paperScrollBody: classes.topPaperScrollBody,
         }}
       >
-        <EmailTemplate
+        {/* <EmailTemplate
           isDataChangedRef={isDataChangedRef}
           closeDialog={handleDialogClose}
           onSaveData={onSaveData}
           mailMsgContent={reqdata?.MAIL_MSG ?? ""}
           mailMsgJSON={reqdata?.MAIL_MSG_JSON ?? ""}
-        />
+        /> */}
       </Dialog>
     </>
   );

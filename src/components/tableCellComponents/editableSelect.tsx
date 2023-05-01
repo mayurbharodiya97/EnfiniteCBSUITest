@@ -1,8 +1,8 @@
 import { SelectForGrid } from "components/common/select/renderForGrid";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { useState, useEffect, useMemo } from "react";
 import { CellWrapper } from "./cellWrapper";
-import { CircularProgressProps } from "@material-ui/core";
+import { CircularProgressProps } from "@mui/material";
+import { FormHelperText } from "@mui/material";
 
 export const EditableSelect = (props) => {
   const {
@@ -19,7 +19,6 @@ export const EditableSelect = (props) => {
       requestProps,
       isReadOnly,
       __EDIT__,
-      dependentOptionField,
     },
     updateGridData,
     gridProps,
@@ -39,7 +38,7 @@ export const EditableSelect = (props) => {
     }
     return false;
   }, [isReadOnly, original?._isNewRow, __EDIT__]);
-  let CircularProgressProps = {
+  let CircularProgressProps: any = {
     color: "secondary",
     size: 20,
   } as CircularProgressProps;
@@ -49,15 +48,7 @@ export const EditableSelect = (props) => {
     typeof requestProps !== "undefined"
       ? requestProps
       : gridProps;
-
-  let modifiedRequestProps = Boolean(dependentOptionField)
-    ? original[dependentOptionField]
-    : requestProps;
-
-  // console.log("<<>>optionsParameter", dependentOptionField);
-  // console.log("<<>>optionsParameter", original[dependentOptionField]);
-  // console.log("<<>>modifiedRequestProps", modifiedRequestProps);
-  // console.log(requestProps, typeof requestProps);
+  //console.log(requestProps, typeof requestProps);
   const prevRows = rows
     .slice(0, index)
     .map((one) => one?.original)
@@ -99,7 +90,7 @@ export const EditableSelect = (props) => {
         loading={loadingcall}
         disabled={loadingcall || loading || isReadOnlyLocal}
         _optionsKey={_optionsKey}
-        optionsProps={modifiedRequestProps}
+        optionsProps={requestProps}
         disableCaching={disableCachingOptions}
         defaultOptionLabel={defaultOptionLabel}
         CircularProgressProps={CircularProgressProps}

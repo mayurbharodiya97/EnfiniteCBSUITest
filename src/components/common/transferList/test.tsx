@@ -1,6 +1,5 @@
+import { Grid, TextField } from "@mui/material";
 import { TransferList } from "./transferList";
-import Grid from "@material-ui/core/Grid";
-import { TextField } from "@material-ui/core";
 
 const leftOptions = [
   {

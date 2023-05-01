@@ -1,7 +1,7 @@
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
-import Dialog from "@material-ui/core/Dialog";
+import Dialog from "@mui/material/Dialog";
 import * as API from "../api";
 import { DynamicReportConfigMetaData } from "./metaData";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
@@ -10,17 +10,17 @@ import {
   AppBar,
   CircularProgress,
   Grid,
-  makeStyles,
   TextField,
   Toolbar,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { MasterDetailsForm } from "components/formcomponent";
 import { Alert } from "components/common/alert";
 import { RetrievalParametersGrid } from "./retrievalParameters";
+import { makeStyles } from "@mui/styles";
 
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
@@ -60,11 +60,6 @@ const AddDynamicReportConfig = ({ isDataChangedRef, closeDialog }) => {
   const [isOpenRerieval, setIsOpenRerieval] = useState(false);
   const [formName, setformName] = useState("");
   const [sqlSyntax, setSqlSyntax] = useState("");
-  const mynewSqlSyntaxRef = useRef<any>("");
-  const [errorObjData, seterrorObjData] = useState({
-    isError: false,
-    error: { error_msg: "", error_detail: "" },
-  });
   const mutation = useMutation(
     addMasterFormDataFnWrapper(API.insertMastersData()),
     {
@@ -109,11 +104,6 @@ const AddDynamicReportConfig = ({ isDataChangedRef, closeDialog }) => {
     setFieldErrors,
     actionFlag,
   }) => {
-    if (!mySqlSyntaxRef.current) {
-      setLocalError(true, "Please Verify Query..", "");
-      endSubmit(true, "Please Verify Query..");
-      return;
-    }
     setLoading(true);
     const SetLoadingOWN = (isLoading, error_msg = "", error_detail = "") => {
       setLoading(isLoading);
@@ -121,15 +111,7 @@ const AddDynamicReportConfig = ({ isDataChangedRef, closeDialog }) => {
     };
 
     data.PARAMETERS = myparameterDataRef.current;
-    data.SQL_ANSI_SYNTAX = mynewSqlSyntaxRef.current;
     mutation.mutate({ data, SetLoadingOWN, endSubmit });
-  };
-
-  const setLocalError = (isError, error_msg = "", error_detail = "") => {
-    seterrorObjData({
-      isError: isError,
-      error: { error_msg: error_msg, error_detail: error_detail },
-    });
   };
 
   const onCloseDialog = () => {
@@ -206,8 +188,6 @@ const AddDynamicReportConfig = ({ isDataChangedRef, closeDialog }) => {
               overflowX: "hidden",
             }}
             hideHeader={true}
-            isError={errorObjData.isError}
-            errorObj={errorObjData.error}
           >
             {({ isSubmitting, handleSubmit }) => {
               return <></>;
@@ -245,7 +225,6 @@ const AddDynamicReportConfig = ({ isDataChangedRef, closeDialog }) => {
                 shrink: true,
               }}
               onChange={(event) => {
-                mynewSqlSyntaxRef.current = event.target.value;
                 setSqlSyntax(event.target.value);
                 mySqlSyntaxRef.current = false;
               }}

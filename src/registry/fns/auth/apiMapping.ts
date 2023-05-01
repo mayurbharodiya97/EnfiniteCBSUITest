@@ -27,7 +27,7 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/LOGOUTADMIN",
     packageName: "",
   },
-  GETMENULIST: {
+  MENULIST: {
     url: "adminPanelCommonServiceAPI/GETMENULIST",
     packageName: "",
   },
@@ -48,7 +48,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   MESSAGEVALIDATION: {
-    url: "adminPanelCommonServiceAPI/configuration/GETVALIDATIONMESSAGEGRID",
+    url: "adminPanelCommonServiceAPI/configuration/MESSAGEVALIDATION",
     packageName: "",
   },
   MESSAGEVALIDATIONUPDATE: {
@@ -80,7 +80,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   UPDATEPASSRESET: {
-    url: "adminPanelCommonServiceAPI/operation/UPDATEPASSRESET",
+    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/UPDATEPASSRESET",
     packageName: "",
   },
   GETCUSTREGISTERREQ: {
@@ -164,7 +164,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   LOANREQDBRACCEPT: {
-    url: "adminPanelCommonServiceAPI/operation/LOANREQDBRACCEPT",
+    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/LOANREQDBRACCEPT",
     packageName: "",
   },
   LOANAPPROVALPROCESS_AUTH: {
@@ -188,7 +188,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   CONFPRIMARYSOURCE: {
-    url: "adminPanelCommonServiceAPI/operation/CONFPRIMARYSOURCE",
+    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/CONFPRIMARYSOURCE",
     packageName: "",
   },
   TAGREQUEST: {
@@ -219,8 +219,8 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFIELDOPTIONLIST",
     packageName: "",
   },
-  SERVICECHARGEDML: {
-    url: "adminPanelCommonServiceAPI/configuration/SERVICECHARGEDML",
+  DMLOPRATION_SERVICE_CHARGE_OPERATION: {
+    url: "adminPanelCommonServiceAPI/DMLOPRATION/SERVICE_CHARGE_OPERATION",
     packageName: "",
   },
   SERVICEWISECONFIGGRID: {
@@ -295,32 +295,32 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETEMAILACCTCONFIGDROPDOWN",
     packageName: "",
   },
-  USERSLIMITDML: {
-    url: "adminPanelCommonServiceAPI/operation/USERSLIMITDML",
+  DMLOPRATION_USERS_LIMIT_UPDATE: {
+    url: "adminPanelCommonServiceAPI/DMLOPRATION/USERS_LIMIT_UPDATE",
     packageName: "",
   },
-  BANKMASTERUPDATEDML: {
-    url: "adminPanelCommonServiceAPI/configuration/BANKMASTERUPDATEDML",
+  DMLOPRATION_BANK_MASTER_UPDATE: {
+    url: "adminPanelCommonServiceAPI/DMLOPRATION/BANK_MASTER_UPDATE",
     packageName: "",
   },
-  BANKMASTERDELETEDML: {
-    url: "adminPanelCommonServiceAPI/configuration/BANKMASTERDELETEDML",
+  DMLOPRATION_BANK_MASTER_DELETE: {
+    url: "adminPanelCommonServiceAPI/DMLOPRATION/BANK_MASTER_DELETE",
     packageName: "",
   },
   FILEUPDBANKMASTER: {
     url: "adminPanelCommonServiceAPI/BANKMASTER",
     packageName: "",
   },
-  OPERATORMSTDML: {
-    url: "adminPanelCommonServiceAPI/configuration/OPERATORMSTDML",
+  OPERATOROPERATION: {
+    url: "adminPanelCommonServiceAPI/configuration/OPERATOROPERATION",
     packageName: "",
   },
   GETOPERATORSDTGRIDDATA: {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETOPERATORSDTGRIDDATA",
     packageName: "",
   },
-  OPERATORSUBDETAILDML: {
-    url: "adminPanelCommonServiceAPI/configuration/OPERATORSUBDETAILDML",
+  OPERATORSUBDETAILOPERATION: {
+    url: "adminPanelCommonServiceAPI/configuration/OPERATORSUBDETAILOPERATION",
     packageName: "",
   },
   GETSCHEMEMASTERGRIDDATA: {
@@ -355,8 +355,8 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETOTHERENTITYDETAILDATA",
     packageName: "",
   },
-  OTHERENTITYDML: {
-    url: "adminPanelCommonServiceAPI/configuration/OTHERENTITYDML",
+  OTHERENTITYOPERATION: {
+    url: "adminPanelCommonServiceAPI/configuration/OTHERENTITYOPERATION",
     packageName: "",
   },
   UPDATESERVICEWISECONFIG: {
@@ -367,7 +367,7 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/configuration/SERVICEWISECONFIGCONFIRM",
     packageName: "",
   },
-  REGISTRATIONCUSTRPT: {
+  GETREGISTERCUSTRPTDATA: {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETREGISTERCUSTRPTDATA",
     packageName: "",
   },
@@ -376,15 +376,11 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   UPDDISTMSTFORMDATA: {
-    url: "adminPanelCommonServiceAPI/configuration/DISTRICTMSTDML",
+    url: "adminPanelCommonServiceAPI/configuration/DISTRICTMST",
     packageName: "",
   },
   GETSOURCEPARENTTYPEGRID: {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETSOURCEPARENTTYPEGRID",
-    packageName: "",
-  },
-  UPDSOURCEPARENTTYPE: {
-    url: "adminPanelCommonServiceAPI/configuration/SOURCEPARENTTYPEDML",
     packageName: "",
   },
   GETDYNAMICREPORTMETADATA: {
@@ -403,16 +399,12 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETCARDCATEGORYDTLGRID",
     packageName: "",
   },
-  CARDCATEGORYDML: {
-    url: "/adminPanelCommonServiceAPI/configuration/CARDCATEGORYDML",
-    packageName: "",
-  },
   VERIFYDYNREPORTQUERY: {
     url: "adminPanelCommonServiceAPI/report/VERIFYDYNREPORTQUERY",
     packageName: "",
   },
-  SCHEMEMSTDML: {
-    url: "adminPanelCommonServiceAPI/configuration/SCHEMEMSTDML",
+  SCHEMEOPERATION: {
+    url: "adminPanelCommonServiceAPI/configuration/SCHEMEOPERATION",
     packageName: "",
   },
   GETDYNRPTCONFIGDATA: {
@@ -427,16 +419,16 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/configuration/REFRESHBILLERMETADATA",
     packageName: "",
   },
-  SERVICEACTIVEDEACTIVEMSTDML: {
-    url: "adminPanelCommonServiceAPI/configuration/SERVICEACTIVEDEACTIVEMSTDML",
+  SERVICEACTIVEDEACTIVEMST: {
+    url: "adminPanelCommonServiceAPI/configuration/SERVICEACTIVEDEACTIVEMST",
     packageName: "",
   },
-  SERVICEACTIVEDEACTIVEDTLDML: {
-    url: "adminPanelCommonServiceAPI/configuration/SERVICEACTIVEDEACTIVEDTLDML",
+  SERVICEACTIVEDEACTIVEDTL: {
+    url: "adminPanelCommonServiceAPI/configuration/SERVICEACTIVEDEACTIVEDTL",
     packageName: "",
   },
-  EMAILMSGCONFIGUPDATEDML: {
-    url: "adminPanelCommonServiceAPI/configuration/EMAILMSGCONFIGUPDATEDML",
+  EMAILMSGCONFIGUPDATE: {
+    url: "adminPanelCommonServiceAPI/configuration/EMAILMSGCONFIGUPDATE",
     packageName: "",
   },
   GETBILLERCONFIRMDATA: {
@@ -451,24 +443,20 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETBILLERCHARGEDATA",
     packageName: "",
   },
-  BILLERCHARGECONFIGDML: {
-    url: "adminPanelCommonServiceAPI/configuration/BILLERCHARGECONFIGDML",
+  UPDBILLERCHARGECONFIG: {
+    url: "adminPanelCommonServiceAPI/configuration/UPDBILLERCHARGECONFIG",
     packageName: "",
   },
   GETADMINUSERGRID: {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETADMINUSERGRID",
     packageName: "",
   },
-  GETACCTDELETIONCONFIRMLIST: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETACCTDELETIONCONFIRMLIST",
-    packageName: "",
-  },
   GETSECURITYGROUPINGLIST: {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETSECURITYGROUPINGLIST",
     packageName: "",
   },
-  SECURITYUSERDML: {
-    url: "adminPanelCommonServiceAPI/configuration/SECURITYUSERDML",
+  SECURITYUSEROPERATION: {
+    url: "adminPanelCommonServiceAPI/configuration/SECURITYUSEROPERATION",
     packageName: "",
   },
   GETUSERSNOTIFTEMPLIST: {
@@ -483,194 +471,6 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETCLUBMEMBERDATALIST",
     packageName: "",
   },
-  GETCHARGETEMPLATEGRID: {
-    url: "adminPanelCommonServiceAPI/configuration/GETCHARGETEMPLATEGRID",
-    packageName: "",
-  },
-  GETCHARGETEMPLATEDTL: {
-    url: "adminPanelCommonServiceAPI/configuration/GETCHARGETEMPLATEDTL",
-    packageName: "",
-  },
-  GETSCREENNOTEGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETSCREENNOTEGRIDDATA",
-    packageName: "",
-  },
-  UPDSCREENNOTECONFIG: {
-    url: "adminPanelCommonServiceAPI/configuration/UPDSCREENNOTECONFIG",
-    packageName: "",
-  },
-  DYNAMICREPORTCONFIGINSERT: {
-    url: "adminPanelCommonServiceAPI/report/DYNAMICREPORTCONFIGINSERT",
-    packageName: "",
-  },
-  ACCTDELETIONRPT: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETACCTDELETERPT",
-    packageName: "",
-  },
-  LOGINHISTORYRPT: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETLOGINHISTORYRPT",
-    packageName: "",
-  },
-  GETOPERATORMSTCONFIRMGRID: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETOPERATORMSTCONFIRMGRID",
-    packageName: "",
-  },
-  GETMARQUEEMESSAGEGRID: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETMARQUEEMESSAGEGRID",
-    packageName: "",
-  },
-  GETMERCHONBOARDGRID: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETMERCHONBOARDGRID",
-    packageName: "",
-  },
-  GETMERCHANTMASTERDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETPGWMERCHANTMASTERDATA",
-    packageName: "",
-  },
-  GETBILLERCHARGECONFIRMDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETBILLERCHARGECONFIRMDATA",
-    packageName: "",
-  },
-  DYNBILLERCHARGEMSTCONFIRM: {
-    url: "adminPanelCommonServiceAPI/configuration/DYNBILLERCHARGEMSTCONFIRM",
-    packageName: "",
-  },
-  GETFROMSOURCECONFIGGRID: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFROMSOURCECONFIGGRID",
-    packageName: "",
-  },
-  GETFROMSOURCECONFIGDTLDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFROMSOURCECONFIGDTLDATA",
-    packageName: "",
-  },
-  GETFROMSOURCETEMPLATEDD: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFROMSOURCETEMPLATEDD",
-    packageName: "",
-  },
-  GETFROMSOURCECONFIGSDTDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFROMSOURCECONFIGSDTDATA",
-    packageName: "",
-  },
-  GETFROMSOURCETEMPLATEGRID: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFROMSOURCETEMPLATEGRID",
-    packageName: "",
-  },
-  GETFROMSOURCETEMPLATEDTLDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFROMSOURCETEMPLATEDTLDATA",
-    packageName: "",
-  },
-  GETAPPVERSIONMSTGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETAPPVERSIONMSTGRIDDATA",
-    packageName: "",
-  },
-  GETUSERBLOCKCONFIGGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETUSERBLOCKCONFIGGRIDDATA",
-    packageName: "",
-  },
-  GETMFSCONFIGGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETMFSCONFIGGRIDDATA",
-    packageName: "",
-  },
-  GETMERCHANTGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETMERCHANTGRIDDATA",
-    packageName: "",
-  },
-  GETPGWMERUSERGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETPGWMERUSERGRIDDATA",
-    packageName: "",
-  },
-  GETUSERGROUPGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETUSERGROUPGRIDDATA",
-    packageName: "",
-  },
-  GETUSERPUSHGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETUSERPUSHGRIDDATA",
-    packageName: "",
-  },
-  GETUSERPUSHDTLDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETUSERPUSHDTLDATA",
-    packageName: "",
-  },
-  GETCARDBINIMGGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETCARDBINIMGGRIDDATA",
-    packageName: "",
-  },
-  GETATMLOCGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETATMLOCGRIDDATA",
-    packageName: "",
-  },
-  GETEMISCGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETEMISCGRIDDATA",
-    packageName: "",
-  },
-  GETBENERESGRIDDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETBENERESGRIDDATA",
-    packageName: "",
-  },
-  GETFDCONFIGDATA: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFDCONFIGDATA",
-    packageName: "",
-  },
-  GETFILECONFIGDATA: {
-    url: "/adminPanelCommonServiceAPI/GETDYNAMICDATA/GETFILECONFIGDATA",
-    packageName: "",
-  },
-  GETGUESSPWDDATA: {
-    url: "/adminPanelCommonServiceAPI/GETDYNAMICDATA/GETGUESSPWDDATA",
-    packageName: "",
-  },
-  UPDSECURITYGROUPING: {
-    url: "adminPanelCommonServiceAPI/userAccessManagement/SECURITYGROUPINGDML",
-    packageName: "",
-  },
-  UPDUSERNOTIFTMPL: {
-    url: "adminPanelCommonServiceAPI/userAccessManagement/USERNOTIFTEMPDML",
-    packageName: "",
-  },
-  UPDBENRESFORMDATA: {
-    url: "/adminPanelCommonServiceAPI/configuration/BENEFICIARYRESTRICTIONCONFIG",
-    packageName: "",
-  },
-  UPDGUESSPWDDATA: {
-    url: "/adminPanelCommonServiceAPI/configuration/GUESSABLEPASSWORD",
-    packageName: "",
-  },
-  UPDMISCDATA: {
-    url: "/adminPanelCommonServiceAPI/configuration/MISCMASTER",
-    packageName: "",
-  },
-  UPDFDSCHEMEDATA: {
-    url: "/adminPanelCommonServiceAPI/configuration/FDRSCHEMEMASTER",
-    packageName: "",
-  },
-  UPDFILECONFIGDATA: {
-    url: "/adminPanelCommonServiceAPI/configuration/GUIDELINEFILECONFIG",
-    packageName: "",
-  },
-  UPDMERCHMSTDATA: {
-    url: "/adminPanelCommonServiceAPI/operation/MERCHANTMASTERDML",
-    packageName: "",
-  },
-  USERMARQEEMSGDML: {
-    url: "/adminPanelCommonServiceAPI/configuration/USERMARQEEMSGDML",
-    packageName: "",
-  },
-  GETCONFCHARGETEMPLATEGRID: {
-    url: "/adminPanelCommonServiceAPI/configuration/GETCONFCHARGETEMPLATEGRID",
-    packageName: "",
-  },
-  CONFIRMSCHEMEMASTER: {
-    url: "/adminPanelCommonServiceAPI/configuration/CONFIRMSCHEMEMASTER",
-    packageName: "",
-  },
-  OPERATORMSTCONFIRM: {
-    url: "/adminPanelCommonServiceAPI/configuration/OPERATORMSTCONFIRM",
-    packageName: "",
-  },
-  FROMACCOUNTCONFIGDML: {
-    url: "/adminPanelCommonServiceAPI/operation/FROMACCOUNTCONFIGDML",
-    packageName: "",
-  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
@@ -682,6 +482,7 @@ export const GetAPIURLFromAction = (action, pname) => {
       url = UrlData?.url;
     }
     PackageName = UrlData?.packageName ?? PackageName;
+    //console.log(url, PackageName, Boolean(PackageName));
   }
   let apiurl = Boolean(PackageName)
     ? "./" +
@@ -696,5 +497,6 @@ export const GetAPIURLFromAction = (action, pname) => {
     : url.startsWith("/")
     ? "." + url
     : "./" + url;
+  //console.log(apiurl);
   return apiurl;
 };

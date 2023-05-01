@@ -147,67 +147,6 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  const GetPGWMerchantList = async () => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETMERCHANTMASTERDATA", {});
-    if (status === "0") {
-      let responseData = data;
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ TRAN_CD, DESCRIPTION }) => {
-          return {
-            value: TRAN_CD,
-            label: DESCRIPTION,
-          };
-        });
-      }
-      return responseData;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
-  const GetPGWList = async () => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETMERCHONBOARDGRID", {});
-    if (status === "0") {
-      let responseData = data;
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ TRAN_CD, PID }) => {
-          return {
-            value: TRAN_CD,
-            label: PID,
-          };
-        });
-      }
-      return responseData;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
-  const GetFromSourceTemplateList = async (ReqData) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher(
-        "GETFROMSOURCETEMPLATEDD",
-        { A_DB_COLUMN: ReqData },
-        {
-          UNIQUE_REQ_ID: "32627636893400",
-          APITOKEN: "MzI2Mjc2MzY4OTM0MDA=",
-        }
-      );
-    if (status === "0") {
-      let responseData = data;
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ TRAN_CD, DESCRIPTION }) => {
-          return {
-            value: TRAN_CD,
-            label: DESCRIPTION,
-          };
-        });
-      }
-      return responseData;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -218,9 +157,6 @@ const GeneralAPISDK = () => {
     setDocumentName,
     GetSecurityGroupingList,
     GetUsersNotificationTemplateList,
-    GetPGWMerchantList,
-    GetPGWList,
-    GetFromSourceTemplateList,
   };
 };
 

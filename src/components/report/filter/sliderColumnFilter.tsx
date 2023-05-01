@@ -1,5 +1,5 @@
+import { Slider } from "@mui/material";
 import { useMemo } from "react";
-import Slider from "@material-ui/core/Slider";
 
 export const SliderColumnFilter = ({
   column: { filterValue, setFilter, preFilteredRows, id },

@@ -13,11 +13,11 @@ import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
 import { useMutation, useQueries } from "react-query";
 import { useLocation } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
-import Dialog from "@material-ui/core/Dialog";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import IconButton from "@mui/material/IconButton";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import Dialog from "@mui/material/Dialog";
 import { Alert } from "components/common/alert";
 import * as API from "../api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
@@ -56,12 +56,14 @@ const ViewEditUniversityMaster: FC<{
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const [formMode, setFormMode] = useState(defaultView);
+  const [openAccept, setOpenAccept] = useState(false);
+  const [openReject, setOpenReject] = useState(false);
   const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
   const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
   const { authState } = useContext(AuthContext);
   const myRef = useRef<any>(null);
   const mutation = useMutation(
-    updateMasterDataWrapperFn(API.updateOtherEntityData()),
+    updateMasterDataWrapperFn(API.updateMastersData()),
     {
       onError: (error: any, { endSubmit }) => {
         let errorMsg = "Unknown Error occured";
@@ -85,7 +87,7 @@ const ViewEditUniversityMaster: FC<{
     }
   );
   const mutationConfirm = useMutation(
-    updateMasterDataWrapperFn(API.updateOtherEntityData()),
+    updateMasterDataWrapperFn(API.updateMastersData()),
     {
       onError: (error: any) => {
         let errorMsg = "Unknown Error occured";
@@ -106,7 +108,7 @@ const ViewEditUniversityMaster: FC<{
         }
       },
       onSettled: () => {
-        // onActionCancel();
+        onActionCancel();
       },
     }
   );
@@ -142,6 +144,7 @@ const ViewEditUniversityMaster: FC<{
       mutation.mutate({ data, endSubmit, displayData, setFieldError });
       //endSubmit(true);
     }
+    // console.log(data);
 
     //mutation.mutate({ data, displayData, endSubmit, setFieldError });
   };
@@ -194,6 +197,24 @@ const ViewEditUniversityMaster: FC<{
   const AddNewRow = () => {
     myRef.current?.addNewRow(true);
   };
+  const onPopupYesAccept = (rows) => {
+    onActionCancel();
+    // result.mutate({
+    //   UserName: rows[0]?.data?.CUSTOMER_ID ?? "",
+    //   Confirmed: "Y",
+    // });
+  };
+  const onPopupYesReject = (rows) => {
+    onActionCancel();
+    // result.mutate({
+    //   UserName: rows[0]?.data?.CUSTOMER_ID ?? "",
+    //   Confirmed: "R",
+    // });
+  };
+  const onActionCancel = () => {
+    setOpenAccept(false);
+    setOpenReject(false);
+  };
   const renderResult = loading ? (
     <div style={{ margin: "2rem" }}>
       <LoaderPaperComponent />
@@ -244,6 +265,7 @@ const ViewEditUniversityMaster: FC<{
       }}
     >
       {({ isSubmitting, handleSubmit }) => {
+        //console.log(formMode, isSubmitting);
         return (
           <>
             <Button

@@ -27,7 +27,7 @@ export const updateBankMastersData = async (formData: any) => {
     message,
     messageDetails,
     isPrimaryKeyError = false,
-  } = await AuthSDK.internalFetcher("BANKMASTERUPDATEDML", formData);
+  } = await AuthSDK.internalFetcher("DMLOPRATION_BANK_MASTER_UPDATE", formData);
   if (status === "0") {
     return message;
   } else {
@@ -46,7 +46,7 @@ export const updateBankMastersData = async (formData: any) => {
 
 export const updateBankMastersDataDelete = async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "BANKMASTERDELETEDML",
+    "DMLOPRATION_BANK_MASTER_DELETE",
     formData
   );
   if (status === "0") {

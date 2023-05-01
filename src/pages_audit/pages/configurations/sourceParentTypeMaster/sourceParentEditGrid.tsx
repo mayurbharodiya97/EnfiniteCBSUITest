@@ -1,5 +1,5 @@
 import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import {
   Fragment,
   useEffect,
@@ -7,7 +7,6 @@ import {
   useRef,
   useCallback,
   useMemo,
-  useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { GridMetaDataType } from "components/dataTable/types";
@@ -15,9 +14,6 @@ import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
 import { SourceParentGridMetaData } from "./gridMetadata";
 import { SourceParentGridUpdate } from "./sourceParentEdit";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { useSnackbar } from "notistack";
-import { AuthContext } from "pages_audit/auth";
 
 const actions: ActionTypes[] = [
   {
@@ -49,42 +45,14 @@ const transformData = (data: any) => {
   }
 };
 export const SourceParentGrid = () => {
-  const { enqueueSnackbar } = useSnackbar();
   const isDataChangedRef = useRef(false);
-  const isSubmitDataRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
-  const [isOpenSave, setIsOpenSave] = useState(false);
-  const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
   >(["getSourceParentGridData"], () => API.getSourceParentGridData());
-  const mutation = useMutation(API.updSourceParentGridData, {
-    onError: (error: any, { setServerError }) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      setServerError(errorMsg);
-      // if (isErrorFuncRef.current == null) {
-      enqueueSnackbar(errorMsg, {
-        variant: "error",
-      });
-
-      onActionCancel();
-    },
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-      isDataChangedRef.current = true;
-      setIsOpenSave(false);
-      refetch();
-    },
-  });
-
   useEffect(() => {
     return () => {
       let entries = getEntries() as any[];
@@ -101,40 +69,17 @@ export const SourceParentGrid = () => {
     }
   }, [navigate]);
   const GidData = useMemo(() => transformData(data), [data]);
-  const submitHandel = ({ data, mode, setServerError }) => {
-    if (
-      data?.isDeleteRow?.length === 0 &&
-      data?.isUpdatedRow?.length === 0 &&
-      data?.isNewRow?.length === 0
-    ) {
-    } else {
-      let RedData = {
-        DETAILS_DATA: data,
-        COMP_CD: authState.companyID,
-      };
-      isSubmitDataRef.current = { data: RedData, mode, setServerError };
-      setIsOpenSave(true);
-    }
-  };
-  const onActionCancel = () => {
-    setIsOpenSave(false);
-  };
-  const onPopupYes = (rows) => {
-    mutation.mutate({
-      ...isSubmitDataRef.current,
-    });
-  };
   return (
     <>
       <Fragment>
-        {isLoading || isFetching ? (
+        {isLoading ? (
           <SourceParentGridUpdate
             key={"Loading-SourceParentUpdate"}
             metadata={SourceParentGridMetaData as GridMetaDataType}
             ClosedEventCall={ClosedEventCall}
             data={[]}
             isEditableForm={true}
-            isLoading={isLoading || isFetching}
+            isLoading={isLoading}
           >
             {({ handelCloseEvent, handleSubmit, classes }) => <></>}
           </SourceParentGridUpdate>
@@ -161,8 +106,6 @@ export const SourceParentGrid = () => {
             mode={"edit"}
             //@ts-ignore
             actions={actions}
-            refetch={refetch}
-            onSubmit={submitHandel}
           >
             {({
               handelCloseEvent,
@@ -178,17 +121,6 @@ export const SourceParentGrid = () => {
             element={<SourceParentConfigDetail trnType={""} configType={""} />}
           />
         </Routes> */}
-        {isOpenSave ? (
-          <PopupMessageAPIWrapper
-            MessageTitle="Confirmation"
-            Message="Do you want to save this Request?"
-            onActionYes={(rowVal) => onPopupYes(rowVal)}
-            onActionNo={() => onActionCancel()}
-            rows={{}}
-            open={isOpenSave}
-            loading={mutation.isLoading}
-          />
-        ) : null}
       </Fragment>
     </>
   );

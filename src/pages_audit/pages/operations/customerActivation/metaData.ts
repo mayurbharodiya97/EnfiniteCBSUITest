@@ -22,7 +22,7 @@ export const CustomerSearchingFilterForm: FilterFormMetaType = {
       type: "select",
       optiondata: [
         { label: "Account Number", value: "A" },
-        { label: "Card Number", value: "C" },
+        { label: "Credit Card Number", value: "C" },
       ],
       validate: (columnValue, allField, flag) => {
         if (!Boolean(columnValue)) {

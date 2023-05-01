@@ -1,5 +1,5 @@
-import Tabs from "@material-ui/core/Tabs";
-import { withStyles } from "@material-ui/core/styles";
+import { Tabs } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 const StyledTabs = withStyles((theme) => ({
   root: {

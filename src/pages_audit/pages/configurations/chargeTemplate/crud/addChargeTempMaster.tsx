@@ -1,9 +1,6 @@
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
 import * as API from "../api";
 import { chargeTempMasterDetailsMetaData } from "../metadata/form";
 import { MasterDetailsForm } from "components/formcomponent";
@@ -11,6 +8,7 @@ import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/ty
 import { useContext, useRef, useState } from "react";
 import { format } from "date-fns/esm";
 import { AuthContext } from "pages_audit/auth";
+import { Button, CircularProgress, Dialog } from "@mui/material";
 interface addMasterDataType {
   data: object;
   displayData?: object;

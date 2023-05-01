@@ -27,7 +27,7 @@ export const getOperatorDetailGridData = async (reqdata) => {
 };
 export const updateOperatorMasterDetailGridData = async (reqdata) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("OPERATORMSTDML", reqdata);
+    await AuthSDK.internalFetcher("OPERATOROPERATION", reqdata);
   if (status === "0") {
     return data;
   } else {
@@ -49,7 +49,7 @@ export const updateOperatorMasterSubDetailGridData = async ({
   data: reqdata,
 }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("OPERATORSUBDETAILDML", reqdata);
+    await AuthSDK.internalFetcher("OPERATORSUBDETAILOPERATION", reqdata);
   if (status === "0") {
     return message;
   } else {

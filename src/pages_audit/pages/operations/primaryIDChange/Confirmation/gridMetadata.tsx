@@ -19,7 +19,7 @@ export const PrimaryIDChangeGridMetaData: GridMetaDataType = {
       min: "60vh",
       max: "75vh",
     },
-    allowFilter: false,
+    allowFilter: true,
     allowColumnHiding: false,
     allowRowSelection: true,
     //isCusrsorFocused: true,

@@ -13,6 +13,7 @@ import { ConfigurationsMenu } from "./pages/configurations";
 import { ConfirmationMenu } from "./pages/confirmations/confirmation";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
+// import { ChatMessageBox } from "./pages/chatMessage";
 import { Reports } from "./pages/reports";
 import { DynamicReports } from "./pages/reports/dynamicReports";
 import { UserManagementMenu } from "./pages/userManagement";
@@ -51,6 +52,7 @@ export const PagesAudit = (props) => {
                 <Route path="dashboard/*" element={<Dashboard />} />
                 <Route path="report/*" element={<DynamicReports />} />
                 <Route path="reports/*" element={<Reports />} />
+                {/* <Route path="report/*" element={<DynamicReports />} /> */}
               </>
             ) : null}
             <Route

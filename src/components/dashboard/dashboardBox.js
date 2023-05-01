@@ -11,14 +11,14 @@ import {
   DialogTitle,
   Grid,
   Typography,
-} from "@material-ui/core";
+  Tooltip,
+} from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import "pages_audit/sideBar/icons";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import "./style.css";
-import Tooltip from "@material-ui/core/Tooltip";
 export const DashboardBox = ({
   title = "",
   body = "",

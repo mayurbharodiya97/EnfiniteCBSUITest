@@ -137,7 +137,6 @@ export const ReleaseCardUserGridMetaData: GridMetaDataType = {
       minWidth: 80,
       maxWidth: 200,
       isAutoSequence: true,
-      isColumnHidingDisabled: true,
     },
     {
       accessor: "CUSTOM_USER_NM",
@@ -148,7 +147,6 @@ export const ReleaseCardUserGridMetaData: GridMetaDataType = {
       width: 120,
       minWidth: 100,
       maxWidth: 200,
-      isColumnHidingDisabled: true,
     },
     {
       accessor: "CUST_NAME",
@@ -159,7 +157,6 @@ export const ReleaseCardUserGridMetaData: GridMetaDataType = {
       width: 200,
       minWidth: 100,
       maxWidth: 400,
-      isColumnHidingDisabled: true,
     },
     {
       accessor: "BLOCK_DATE",

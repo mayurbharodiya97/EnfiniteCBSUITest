@@ -1,7 +1,7 @@
-import Tab from "@material-ui/core/Tab";
-import { withStyles } from "@material-ui/core/styles";
+import { Tab } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
-const StyledTab = withStyles((theme) => ({
+const StyledTab = withStyles((theme: any) => ({
   root: {
     textTransform: "none",
     minWidth: 72,

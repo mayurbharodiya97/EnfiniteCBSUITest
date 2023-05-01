@@ -2,15 +2,17 @@
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
 import { Alert } from "components/common/alert";
-import DialogContent from "@material-ui/core/DialogContent";
 import * as API from "../api";
-import Dialog from "@material-ui/core/Dialog";
 import { useContext } from "react";
 import { AuthContext } from "pages_audit/auth";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 
 interface DeleteFormDataType {
   transactionID?: number;

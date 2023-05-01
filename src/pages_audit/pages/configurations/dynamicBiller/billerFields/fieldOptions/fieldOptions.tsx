@@ -7,17 +7,12 @@ import { GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheContext, queryClient } from "cache";
 import { useQuery } from "react-query";
 import * as API from "./api";
-import {
-  AppBar,
-  Dialog,
-  makeStyles,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
+import { AppBar, Dialog, Toolbar, Typography } from "@mui/material";
 import { useDialogStyles } from "components/detailPopupGridData";
 import { GradientButton } from "components/styledComponent/button";
 import { useLocation } from "react-router-dom";
-const useHeaderStyles = makeStyles((theme) => ({
+import { makeStyles } from "@mui/styles";
+const useHeaderStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

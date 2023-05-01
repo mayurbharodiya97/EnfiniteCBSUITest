@@ -1,6 +1,5 @@
+import { MenuItem, TextField } from "@mui/material";
 import { useMemo } from "react";
-import TextField from "@material-ui/core/TextField";
-import MenuItem from "@material-ui/core/MenuItem";
 
 export const SelectColumnFilter = ({
   column: { filterValue, setFilter, preFilteredRows, id, multiple },

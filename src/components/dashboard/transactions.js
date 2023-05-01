@@ -11,8 +11,8 @@ import {
   DialogTitle,
   Divider,
   useTheme,
-} from "@material-ui/core";
-import Tooltip from "@material-ui/core/Tooltip";
+  Tooltip,
+} from "@mui/material";
 import { Chart, CategoryScale, registerables } from "chart.js";
 import { useMutation } from "react-query";
 import * as API from "./api";
@@ -37,7 +37,7 @@ export const Transactions = (props) => {
   );
   useEffect(() => {
     result.mutate({ type: "D" });
-  }, [result]);
+  }, []);
   const showErrorData = () => {
     setShowMore(true);
   };

@@ -1,13 +1,14 @@
 import { useRef, FC, Fragment, useEffect } from "react";
-import Input, { InputProps } from "@material-ui/core/Input";
-import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useStyles } from "./style";
-import SearchIcon from "@material-ui/icons/Search";
-import FormHelperText, {
+import {
+  FormHelperText,
   FormHelperTextProps,
-} from "@material-ui/core/FormHelperText";
-
+  Input,
+  InputProps,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 export const SearchBar: FC<InputProps> = (props) => {
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up("sm"));

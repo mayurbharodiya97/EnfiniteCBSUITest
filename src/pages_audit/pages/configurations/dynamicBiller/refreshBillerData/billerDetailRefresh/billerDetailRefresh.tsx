@@ -1,24 +1,27 @@
-import { useRef, FC, useState, useCallback, Fragment } from "react";
+import { useRef, FC, useContext, useState, useCallback, Fragment } from "react";
 import { Tab } from "components/styledComponent/tab";
 import { Tabs } from "components/styledComponent/tabs";
+import { ClearCacheContext } from "cache";
 import { Transition } from "pages_audit/common";
 import { useStyles } from "pages_audit/common/tabStyles";
-import { AppBar, Dialog, makeStyles, Toolbar } from "@material-ui/core";
 import { useDialogStyles } from "components/detailPopupGridData";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import { GradientButton } from "components/styledComponent/button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import GridWrapper from "components/dataTableStatic";
 import { BillerFieldsGridMetaData } from "../../billerFields/gridMetadata";
 import { ActionTypes, GridMetaDataType } from "components/dataTable";
 import { BillerParametersGridMetaData } from "../../billerDetail/parameterGridMetadata";
 import { BillerFieldOptionsRefresh } from "./fieldOptionsRefresh";
+import { makeStyles } from "@mui/styles";
+import { AppBar, Dialog, Toolbar, createTheme } from "@mui/material";
 
 const TabPanel = ({ value, index, children }) => {
   return Number(value) === Number(index) ? children : null;
 };
+// const theme = createTheme();
 
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

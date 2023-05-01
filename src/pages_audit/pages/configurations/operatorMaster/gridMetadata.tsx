@@ -74,17 +74,6 @@ export const OperatorMasterGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "OPERATOR_IMAGE",
-      columnName: "Operator Image",
-      sequence: 4,
-      alignment: "left",
-      componentType: "icondefault",
-      placeholder: "",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-    {
       accessor: "CONFIRMED_STATUS",
       columnName: "Confirmed Status",
       sequence: 5,
@@ -121,7 +110,7 @@ export const OperatorMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LAST_ENTERED_BY",
-      columnName: "Modified By",
+      columnName: "Last Entered By",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -132,7 +121,7 @@ export const OperatorMasterGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LAST_MODIFIED_DATE",
-      columnName: "Modified Date",
+      columnName: "Last Entered Date",
       sequence: 9,
       alignment: "left",
       componentType: "date",

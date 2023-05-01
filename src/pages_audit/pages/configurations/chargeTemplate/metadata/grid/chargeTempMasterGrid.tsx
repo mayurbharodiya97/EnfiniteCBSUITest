@@ -104,13 +104,12 @@ export const chargeTempMasterConfirmationGridMetaData = {
     {
       columnName: "ID",
       componentType: "default",
-      accessor: "id",
+      accessor: "TRAN_CD",
       sequence: 1,
       alignment: "left",
       width: 70,
       maxWidth: 100,
       minWidth: 50,
-      isAutoSequence: true,
     },
     {
       columnName: "Effective Date",

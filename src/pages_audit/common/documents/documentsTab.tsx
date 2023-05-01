@@ -1,7 +1,4 @@
 import { Fragment, useState, FC, useContext, useEffect } from "react";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Button from "@material-ui/core/Button";
 import { DocumentGridCRUD as DocGrid } from "./documentGridCRUD";
 import { DOCCRUDContextProvider, DocAPICrudProviderGenerator } from "./context";
 import { useQuery } from "react-query";
@@ -9,6 +6,7 @@ import { ClearCacheContext } from "cache";
 import { useStyles } from "./style";
 import * as API from "./api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Button, Tab, Tabs } from "@mui/material";
 
 const TabPanel = ({ value, index, children }) => {
   return Number(value) === Number(index) ? children : null;

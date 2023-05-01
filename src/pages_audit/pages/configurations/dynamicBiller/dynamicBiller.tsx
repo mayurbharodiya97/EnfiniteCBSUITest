@@ -59,6 +59,7 @@ export const DynamicBillers = () => {
   const navigate = useNavigate();
   const setCurrentAction = useCallback(
     (data) => {
+      console.log(data);
       setRowData(data?.rows);
       if (data.name === "delete") {
         setIsOpenDeleteDialog(true);
@@ -111,6 +112,7 @@ export const DynamicBillers = () => {
     setIsOpenDeleteDialog(false);
   };
 
+  console.log(">>rowData", rowData);
   return (
     <Fragment>
       {isError && (
@@ -164,7 +166,6 @@ export const DynamicBillers = () => {
             <BillerChargeConfigWrapper
               handleDialogClose={ClosedEventCall}
               isDataChangedRef={isDataChangedRef}
-              defaultmode={"view"}
             />
           }
         />

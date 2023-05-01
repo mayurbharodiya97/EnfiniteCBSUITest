@@ -1,8 +1,8 @@
-import Button from "@material-ui/core/Button";
-import ErrorImg from "assets/images/error.svg";
+import SuccessImg from "assets/images/success.svg";
 import { useNavigate } from "react-router";
 import { useStyles } from "./style";
-import "app/audit/index.css";
+import Button from "@mui/material/Button";
+
 export const ErrorPage = () => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -11,14 +11,11 @@ export const ErrorPage = () => {
   };
   return (
     <div className={classes.wrapper}>
-      <img alt="" src={ErrorImg} className={classes.successImg} />
+      <img alt="" src={SuccessImg} className={classes.successImg} />
       <div className={classes.center}>
-        <h3 style={{ color: "black" }}>Something Unexpected Happened</h3>
+        <h3 className="theme-color2">Something Unexpected Happened</h3>
       </div>
-      <Button
-        onClick={returnToHomePage}
-        style={{ color: "var(--theme-color1)" }}
-      >
+      <Button onClick={returnToHomePage} color="primary">
         Return to Home Page
       </Button>
     </div>

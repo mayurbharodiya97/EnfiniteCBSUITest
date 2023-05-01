@@ -3,10 +3,10 @@ import { PasswordResetForm } from "./metaData";
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import * as API from "./api";
 import { PasswordResetGridMetaData } from "./gridMetadata";
 import { GridMetaDataType } from "components/dataTable/types";
@@ -124,7 +124,7 @@ export const CustomerActivationConfirm = ({
                     (rows[0]?.data?.LAST_ENTERED_BY || "").toLowerCase() ===
                     (authController?.authState?.user?.id || "").toLowerCase()
                   ) {
-                    enqueueSnackbar("You can not accept your own entry.", {
+                    enqueueSnackbar("You can not accept your own Entry.", {
                       variant: "warning",
                     });
                   } else {
@@ -137,16 +137,16 @@ export const CustomerActivationConfirm = ({
               </Button>
               <Button
                 onClick={(event) => {
-                  if (
-                    (rows[0]?.data?.LAST_ENTERED_BY || "").toLowerCase() ===
-                    (authController?.authState?.user?.id || "").toLowerCase()
-                  ) {
-                    enqueueSnackbar("You can not reject your own entry.", {
-                      variant: "warning",
-                    });
-                  } else {
-                    setIsOpenReject(true);
-                  }
+                  // if (
+                  //   (rows[0]?.data?.LAST_ENTERED_BY || "").toLowerCase() ===
+                  //   (authController?.authState?.user?.id || "").toLowerCase()
+                  // ) {
+                  //   enqueueSnackbar("You can not reject your own Entry.", {
+                  //     variant: "warning",
+                  //   });
+                  // } else {
+                  setIsOpenReject(true);
+                  // }
                 }}
                 color="primary"
               >

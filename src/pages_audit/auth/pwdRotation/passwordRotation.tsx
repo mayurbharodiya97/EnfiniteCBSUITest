@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
 import { TextField } from "components/styledComponent/textfield";
 import { GradientButton } from "components/styledComponent/button";
 import { Fragment, useRef, useState } from "react";

@@ -9,28 +9,30 @@ import {
   useExpanded,
   useGlobalFilter,
 } from "react-table";
-import Paper from "@material-ui/core/Paper";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Switch from "@material-ui/core/Switch";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import GetAppIcon from "@material-ui/icons/GetApp";
-import CloseIcon from "@material-ui/icons/Close";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import CloseIcon from "@mui/icons-material/GetApp";
 import { FixedSizeList } from "react-window";
 import { createNewWorkbook } from "./export";
 import { useSequenceColumn } from "./components/useSequence";
 import { GlobalFilter } from "./filter/globalFilter";
 import { FilterComponent, TableFilterStatusBar } from "./filterComponent";
 import { AmountSelect } from "./amountContext";
+import {
+  Button,
+  FormControlLabel,
+  IconButton,
+  LinearProgress,
+  Paper,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
 interface GridTableType {
   columns: any;

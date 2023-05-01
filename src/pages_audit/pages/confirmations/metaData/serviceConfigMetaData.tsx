@@ -20,7 +20,7 @@ export const ServiceConfigConfirmGridMetaData: GridMetaDataType = {
       min: "68vh",
       max: "68vh",
     },
-    allowFilter: false,
+    allowFilter: true,
     allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,

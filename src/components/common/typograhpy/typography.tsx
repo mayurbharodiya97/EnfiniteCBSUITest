@@ -1,6 +1,5 @@
+import { Grid, GridProps, Typography, TypographyProps } from "@mui/material";
 import { FC, Fragment } from "react";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import Typography, { TypographyProps } from "@material-ui/core/Typography";
 
 export interface AllTypographyProps {
   TypographyProps?: TypographyProps;

@@ -1,5 +1,5 @@
-import { withStyles } from "@material-ui/core/styles";
-import TableRow from "@material-ui/core/TableRow";
+import { TableRow } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 export const MyTableRow = withStyles((theme) => {
   return {

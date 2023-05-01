@@ -7,6 +7,3 @@ registerFn("GetMiscValue", GeneralAPI.GetMiscValue);
 registerFn("getValidateValue", GeneralAPI.getValidateValue);
 registerFn("GetChargeTemplates", GeneralAPI.GetChargeTemplates);
 registerFn("GetEmailAcctConfigDD", GetEmailAcctConfigDD);
-registerFn("GetPGWMerchantList", GeneralAPI.GetPGWMerchantList);
-registerFn("GetPGWList", GeneralAPI.GetPGWList);
-registerFn("GetFromSourceTemplateList", GeneralAPI.GetFromSourceTemplateList);

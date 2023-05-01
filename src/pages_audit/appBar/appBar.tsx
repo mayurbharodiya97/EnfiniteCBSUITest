@@ -1,20 +1,22 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import MenuItem from "@material-ui/core/MenuItem";
-import IconButton from "@material-ui/core/IconButton";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import MenuIcon from "@material-ui/icons/Menu";
-// import Logo from "assets/images/netbankinglogo.png";
-import Logo from "assets/images/EasyNetPro.png";
-import Avatar from "@material-ui/core/Avatar";
-import Popover from "@material-ui/core/Popover";
-import Button from "@material-ui/core/Button";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
+import Logo from "assets/images/netbankinglogo.png";
+// import Popover from "@material-ui/core/Popover";
 import { AuthContext } from "../auth";
 import { useStyles } from "./style";
+import {
+  AppBar,
+  Avatar,
+  Button,
+  IconButton,
+  MenuItem,
+  Popover,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 //import { ShowEntities, ShowProducts } from "./entities";
 // import { NotificationWrapper } from "../notification";
 
@@ -53,7 +55,7 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
             className={classes.logo}
             onClick={(e) => {
               e.preventDefault();
-              navigate("./dashboard");
+              navigate("./");
             }}
           />
         ) : null}
@@ -99,7 +101,7 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
             elevation={3}
-            getContentAnchorEl={null}
+            // getContentAnchorEl={null}
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "right",

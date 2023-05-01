@@ -1,6 +1,5 @@
 import { FC, useMemo, useState, useRef, useEffect, useCallback } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 import cloneDeep from "lodash-es/cloneDeep";
 import { modifyMetaData } from "./utils";
 import { constructNewRowObj } from "./utils/methods";
@@ -8,6 +7,7 @@ import { HeaderColumnCell } from "./components/headerCell2";
 import { DefaultCell } from "./components/defaultCell";
 import { GridTable } from "./gridTable";
 import { GridColumnType } from "./types";
+import { Grid, GridProps } from "@mui/material";
 
 interface DataTableProps {
   _columns: GridColumnType[];

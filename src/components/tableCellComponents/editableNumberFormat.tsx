@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import NumberFormat from "react-number-format";
-import Input from "@material-ui/core/Input";
-import FormHelperText from "@material-ui/core/FormHelperText";
+import { NumericFormat } from "react-number-format";
 import { CellWrapper } from "./cellWrapper";
 import { numWords } from "components/common/utils";
+import { FormHelperText, Input } from "@mui/material";
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, FormatProps, ...other } = props;
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={inputRef}
       onValueChange={(values) => {

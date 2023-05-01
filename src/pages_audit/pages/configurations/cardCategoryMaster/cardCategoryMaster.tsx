@@ -57,6 +57,7 @@ export const CardCategoryMaster = () => {
     ["getMastersGridData"],
     API.getMastersGridData
   );
+  //console.log(data, isLoading, isFetching, isError, error);
   const setCurrentAction = useCallback(
     (data) => {
       navigate(data?.name, {

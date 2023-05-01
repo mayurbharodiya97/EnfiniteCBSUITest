@@ -17,13 +17,18 @@ export const ProtectedRoutes = ({ children }) => {
     }
     return timeout;
   }, []);
-
+  // console.log("isTimeoutData=>", isTimeoutData);
   const onIdle = () => {
+    console.log("logout");
+    alert("logout");
     logout();
   };
 
-  const onActive = (event) => {};
+  const onActive = (event) => {
+    //console.log("onActive");
+  };
   const onAction = (event) => {
+    //console.log("onAction =>", idleTimer.isPrompted(), !idleTimer.isIdle());
     if (idleTimer.isPrompted() && !idleTimer.isIdle()) {
       idleTimer.start();
     }
@@ -51,9 +56,10 @@ export const ProtectedRoutes = ({ children }) => {
       }
     );
   };
-
+  //console.log(idleTimer);
   useEffect(() => {
     if (!isLoggedIn()) {
+      //console.log("isLoggedIn()=>", isLoggedIn());
       navigate("/netbanking/login");
     }
   }, [navigate, isLoggedIn]);
@@ -61,6 +67,7 @@ export const ProtectedRoutes = ({ children }) => {
     return utilFunction.GetAllChieldMenuData(authState.menulistdata, false);
   }, [authState.menulistdata]);
   const isValidateURL = (allActiveURL, thisURL) => {
+    //console.log(thisURL, (thisURL || "").length);
     if ((thisURL || "").length < 12) {
       return true;
     }
@@ -68,6 +75,7 @@ export const ProtectedRoutes = ({ children }) => {
     let isReturn = false;
     allActiveURL.forEach((item, index) => {
       if (urldata.startsWith(item.href)) {
+        //console.log(item.href, urldata, index);
         isReturn = true;
         return;
       }

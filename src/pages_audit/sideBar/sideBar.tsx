@@ -34,6 +34,7 @@ export const MySideBar: FC<{
     }
   }, []);
   let newMetaData = { navItems: authState.menulistdata };
+  // console.log(newMetaData, metaData);
   let filteredMetaDataSideBar = transformMetaDataAsPerRole(
     newMetaData,
     Number(authState.role),

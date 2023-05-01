@@ -1,17 +1,20 @@
 import { Fragment, useState, useMemo, useRef, useEffect } from "react";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
 import { TextField } from "components/styledComponent/textfield";
 import { GradientButton } from "components/styledComponent/button";
 import { ColumnVisibility } from "components/dataTable/columnVisibility";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { SelectRenderOnly } from "components/common/select";
 import { Spacer } from "components/common";
+import {
+  CircularProgress,
+  Grid,
+  Paper,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 //import { Label } from "reactstrap";
-const useStyles = makeStyles((theme) => ({
+
+const useStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

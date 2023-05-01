@@ -39,11 +39,12 @@ const authAPI = () => {
       USERNAME: id,
       USERROLE: role,
       BROWSER_FINGERPRINT: browserFingerPrint,
-      MACHINE_NAME_FRONT: "",
+      MACHINE_NAME: "Auto",
     };
   };
   const setToken = (argaccessToken) => {
     accessToken = argaccessToken;
+    // console.log(accessToken);
   };
   const removeToken = () => {
     accessToken = null;
@@ -72,7 +73,6 @@ const authAPI = () => {
       if (!Boolean(timeout)) {
         timeout = 120000;
       }
-
       let response = await fetchWithTimeout(new URL(apiurl, baseURL).href, {
         method: "POST",
         headers: { ...header, "Content-Type": "application/json" },
@@ -80,12 +80,6 @@ const authAPI = () => {
           ACTION: "",
           DISPLAY_LANGUAGE: "en",
           BROWSER_FINGERPRINT: browserFingerPrint,
-          LOGINUSERDETAILS: {
-            USERNAME: payload.USER_ID ?? loginuserDetailsData?.USERNAME ?? "",
-            USERROLE: loginuserDetailsData?.USERROLE ?? "role",
-            BROWSER_FINGERPRINT: browserFingerPrint,
-            MACHINE_NAME_FRONT: "",
-          },
           ...payload,
         }),
         timeout: timeout,
@@ -104,6 +98,7 @@ const authAPI = () => {
           access_token: data?.ACCESS_TOKEN ?? data,
         };
       } else {
+        //console.log(response);
         return {
           status: "999",
           message: await GetStatusMessage(response),
@@ -116,7 +111,6 @@ const authAPI = () => {
         };
       }
     } catch (e) {
-      console.log(e);
       return {
         status: "999",
         data: [],
@@ -177,6 +171,7 @@ const authAPI = () => {
           timeout: timeout,
         }
       );
+      //console.log(response.headers);
 
       if (String(response.status) === "200") {
         let data = await response.json();
@@ -214,6 +209,7 @@ const authAPI = () => {
           ),
         };
       } else {
+        //console.log(response);
         return {
           status: "999",
           message: await GetStatusMessage(response),
@@ -260,11 +256,7 @@ const authAPI = () => {
     return response;
   };
   const GetStatusMessage = async (response) => {
-    console.log(response);
-    let responsedata = "";
-    try {
-      responsedata = await response?.json();
-    } catch (error) {}
+    let responsedata = await response?.json();
 
     if (response.status === 404 && process.env.NODE_ENV !== "production") {
       return "'भटकने वाले सभी खो नहीं जाते' वाह, यह काफी गहरा है! सिवाय ... इस बार डेवलपर निश्चित रूप से विचलित है, क्योंकि यह समापन बिंदु नहीं मिला है!";
@@ -273,27 +265,12 @@ const authAPI = () => {
         ? responsedata?.[0]?.MESSAGE
         : "";
       if (Boolean(message)) {
-        return (
-          message +
-          (process.env.NODE_ENV !== "production"
-            ? " Status:" + response.status + " Message:" + response.statusText
-            : "")
-        );
+        return message;
       } else {
-        return (
-          "Something went to wrong ! Please try after some time." +
-          (process.env.NODE_ENV !== "production"
-            ? " Status:" + response.status + " Message:" + response.statusText
-            : "")
-        );
+        return "Something went to wrong ! Please try after some time.";
       }
     } else {
-      return (
-        "Something went to wrong ! Please try after some time." +
-        (process.env.NODE_ENV !== "production"
-          ? " Status:" + response.status + " Message:" + response.statusText
-          : "")
-      );
+      return "Something went to wrong ! Please try after some time.";
     }
   };
   const GetDetailsMessage = (status, statusMessage, url) => {

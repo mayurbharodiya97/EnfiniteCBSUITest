@@ -48,7 +48,7 @@ export const calculateFinalLoanAmt = (dependentFields) => {
   }
 };
 
-export const getSchemeSource = (dependentFields, valueCol) => {
+export const getSchemeSource = (dependentFields) => {
   const value = dependentFields["PARENT_TYPE"]?.value;
   let optionData = dependentFields["PARENT_TYPE"]?.optionData;
   let source = "";
@@ -64,9 +64,7 @@ export const getSchemeSource = (dependentFields, valueCol) => {
       source = optionData["SOURCE"];
     }
   }
-  if (!Boolean(source) && JSON.stringify(optionData) === "{}") {
-    return null;
-  }
+  //console.log(">>source", dependentFields);
   return source;
 };
 // export const getSchemeSource = async (dependentFields: any): Promise<any> => {

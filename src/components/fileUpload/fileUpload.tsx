@@ -6,19 +6,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import CardHeader from "@material-ui/core/CardHeader";
-import Collapse from "@material-ui/core/Collapse";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import Alert from "@material-ui/lab/Alert";
 import Grid from "components/dataTableStatic";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { ActionTypes } from "components/dataTable";
 import { GridColumnType } from "components/dataTableStatic";
 import metaData from "./metaData";
@@ -35,7 +23,21 @@ import {
 } from "./utils";
 import { FileObjectType } from "./type";
 import { PDFViewer, ImageViewer, NoPreview } from "./preView";
-import { CircularProgress } from "@material-ui/core";
+import {
+  Alert,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+} from "@mui/material";
 
 const actions: ActionTypes[] = [
   {

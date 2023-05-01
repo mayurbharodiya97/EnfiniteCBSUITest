@@ -1,4 +1,4 @@
-//import { AnyKindOfDictionary } from "lodash";
+import { AnyKindOfDictionary } from "lodash";
 import { OptionsProps } from "../types";
 
 export const getLabelFromValues =

@@ -1,7 +1,9 @@
-import { useRef, useState, useMemo } from "react";
-import { makeStyles } from "@material-ui/styles";
+import { useRef, useState, forwardRef, useMemo } from "react";
+import { FormComponentView } from "components/formcomponent";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
+import { DetailsGridWithHeaderArguType } from "components/detailPopupGridData/GridDetailsWithHeader/type";
+import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import {
@@ -13,6 +15,8 @@ import { useSnackbar } from "notistack";
 import { EngLocalMsgAPIWrapper } from "../validationMessages/engLocalMsg/engLocalMsg";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { ServiceActiveConfigDetail } from "./serviceConfigDetail";
+import { ActionTypes } from "components/dataTable";
+import { makeStyles } from "@mui/styles";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",
@@ -48,7 +52,7 @@ export const ServiceConfigGridUpdate = (
     ErrorMessage = "",
     actions = [],
     mode = "view",
-    // isEditableForm = false,
+    isEditableForm = false,
     refID = {},
     SetMode,
     onSubmit = ({}: any) => {},
@@ -126,6 +130,7 @@ export const ServiceConfigGridUpdate = (
     } else if (data.name === "cancel") {
       SetMode("view");
     } else if (data.name === "messages") {
+      //console.log(data?.rows, girdData);
       let msgdata = girdData.filter((item, index) => {
         if (item?.TRN_TYPE === data?.rows?.[0]?.data?.TRN_TYPE) {
           return true;
@@ -154,6 +159,7 @@ export const ServiceConfigGridUpdate = (
   };
   const handleSubmit = async () => {
     let { hasError, data } = await myGridRef.current?.validate(true);
+    //console.log(hasError, data);
     if (hasError === true) {
       if (data) {
         setGridData(data);
@@ -176,11 +182,13 @@ export const ServiceConfigGridUpdate = (
           ...refID,
           DETAILS_DATA: finalResult,
         };
+        //console.log(data);
         onSubmit({ data, mode, setServerError });
       }
     }
   };
   const onSubmitSetMessages = (engMsg, localMsg, rows) => {
+    console.log(engMsg, localMsg, rows);
     let _trnType = rows?.[0]?.TRN_TYPE;
     if (Boolean(_trnType)) {
       myLanguageRef.current = {

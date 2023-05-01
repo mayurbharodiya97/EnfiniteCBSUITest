@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import TextField from "@material-ui/core/TextField";
 import { RowContext } from "./rowContext";
 import { DefaultCell } from "./defaultCell";
+import { TextField } from "@mui/material";
 
 /* eslint-disable  no-self-compare */
 

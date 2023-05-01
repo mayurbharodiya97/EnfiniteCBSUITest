@@ -1,7 +1,6 @@
-import MenuItem from "@material-ui/core/MenuItem";
-import { withStyles } from "@material-ui/core/styles";
-
-export const StyledMenuItem = withStyles((theme) => ({
+import { MenuItem } from "@mui/material";
+import { withStyles } from "@mui/styles";
+export const StyledMenuItem = withStyles((theme: any) => ({
   root: {
     "& .MuiCheckbox-root": {
       padding: "2px 6px",

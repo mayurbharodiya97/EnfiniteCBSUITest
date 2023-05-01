@@ -11,13 +11,6 @@ import {
   useExpanded,
   usePagination,
 } from "react-table";
-import Paper from "@material-ui/core/Paper";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TablePagination from "@material-ui/core/TablePagination";
 import { TableHeaderToolbar } from "./tableHeaderToolbar";
 import { StickyTableHead } from "components/dataTable/stickyTableHead";
 import { MyTableRow } from "components/dataTable/focusableTableRow";
@@ -28,7 +21,6 @@ import {
 } from "components/dataTable/tableActionToolbar";
 import { TablePaginationActions } from "components/dataTable/tablePaginationToolbar";
 import { useCheckboxColumn } from "./components/useCheckbox";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { CustomBackdrop } from "components/dataTable/backdrop";
 import {
@@ -38,7 +30,17 @@ import {
 } from "components/dataTable/utils";
 import { TableFilterStatusBar } from "components/dataTable/tableFilterStatusBar";
 import { AuthContext } from "pages_audit/auth";
-import { Grid } from "@material-ui/core";
+import {
+  Grid,
+  LinearProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
 let data2: any[] = [];
 export const DataGrid = ({
   label,
@@ -137,6 +139,7 @@ export const DataGrid = ({
     useRowSelect,
     useResizeColumns,
     useBlockLayout,
+
     useCheckboxColumn(allowRowSelection)
   );
 
@@ -369,7 +372,6 @@ export const DataGrid = ({
               const rightClickHandler = handleContextMenuOpen(row);
               const thisRowDblClickHandler = handleRowDoubleClickAction(row);
               let rowColorStyle: any[] = [];
-
               if (Boolean(row?.original?._rowColor)) {
                 rowColorStyle = [
                   { style: { background: row?.original?._rowColor } },
@@ -428,7 +430,7 @@ export const DataGrid = ({
         />
       ) : (
         <TableCell style={{ display: "flex" }}>
-          Total No. of Records: {rowCount}
+          Total No of Records: {rowCount}
         </TableCell>
       )}
     </Paper>

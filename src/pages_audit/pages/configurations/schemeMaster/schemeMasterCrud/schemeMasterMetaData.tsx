@@ -32,6 +32,24 @@ export const schemeMasterDetailsMetaData: MasterDetailsMetaData = {
       },
       {
         render: {
+          componentType: "textField",
+        },
+        name: "APP_INDICATOR",
+        label: "Source",
+        placeholder: "",
+        type: "text",
+        isReadOnly: true,
+        fullWidth: true,
+        dependentFields: ["PARENT_TYPE"],
+        setValueOnDependentFieldsChange: getSchemeSource,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
           componentType: "select",
         },
         name: "PARENT_TYPE",
@@ -55,25 +73,6 @@ export const schemeMasterDetailsMetaData: MasterDetailsMetaData = {
           sm: 3,
         },
       },
-      {
-        render: {
-          componentType: "textField",
-        },
-        name: "APP_INDICATOR",
-        label: "Source",
-        placeholder: "",
-        type: "text",
-        isReadOnly: true,
-        fullWidth: true,
-        dependentFields: ["PARENT_TYPE"],
-        setValueOnDependentFieldsChange: getSchemeSource,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
-      },
-
       {
         render: { componentType: "textField" },
         name: "SCHEME_CD",

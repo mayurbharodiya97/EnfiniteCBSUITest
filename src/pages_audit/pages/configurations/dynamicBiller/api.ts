@@ -3,7 +3,6 @@ import { AuthSDK } from "registry/fns/auth";
 import { DefaultErrorObject } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 
-export const getChargeAllow = () => GeneralAPI.GetMiscValue("CHARGE_ALLOW");
 export const GetChargeTemplates = () => GeneralAPI.GetChargeTemplates();
 
 export const getGridFormMetaData =
@@ -28,21 +27,9 @@ export const getBillerGridData = async () => {
   }
 };
 
-export const getBillerConfirmGridData = async ({ isDelete }) => {
+export const getBillerConfirmGridData = async () => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETBILLERCONFIRMDATA", {
-      IS_DELETE: isDelete,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getBillerChargeConfirmGridData = async () => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETBILLERCHARGECONFIRMDATA", {});
+    await AuthSDK.internalFetcher("GETBILLERCONFIRMDATA", {});
   if (status === "0") {
     return data;
   } else {
@@ -81,31 +68,12 @@ export const deleteBillerConfigConfirm = async ({
   }
 };
 
-export const updBillerChargeConfigConfirm = async ({
-  categoryID,
-  subCategoryID,
-  billerID,
-  confirmed,
-}) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DYNBILLERCHARGEMSTCONFIRM", {
-      CATEGORY_ID: categoryID,
-      SUB_CATEGORY_ID: subCategoryID,
-      BILLER_ID: billerID,
-      CONFIRMED: confirmed,
-    });
-  if (status === "0") {
-    return message;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
 export const getBillerChargeData = async ({
   categoryID,
   subCategoryID,
   billerID,
 }) => {
+  console.log(">>dsfsdf", categoryID, subCategoryID, billerID);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETBILLERCHARGEDATA", {
       CATEGORY_ID: categoryID,
@@ -119,10 +87,14 @@ export const getBillerChargeData = async ({
   }
 };
 
-export const updateBillerChargeConfig = async (formData) => {
+export const updateBillerChargeConfig = async ({ formData }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("BILLERCHARGECONFIGDML", {
-      formData,
+    await AuthSDK.internalFetcher("UPDBILLERCHARGECONFIG", {
+      CATEGORY_ID: formData?.CATEGORY_ID,
+      SUB_CATEGORY_ID: formData?.SUB_CATEGORY_ID,
+      BILLER_ID: formData?.BILLER_ID,
+      PULL_ACCT_NO: formData?.PULL_ACCT_NO,
+      CHRG_TEMP_TRAN_CD: formData?.CHRG_TEMP_TRAN_CD,
     });
   if (status === "0") {
     return message;

@@ -2,9 +2,8 @@ import { FC, CSSProperties, useRef } from "react";
 import { NativeTypes } from "react-dnd-html5-backend";
 import { useDrop } from "react-dnd";
 import { TargetBoxType } from "./type";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import { useStyles } from "./style";
+import { Button, Typography } from "@mui/material";
 
 const style = ({ disabled }): CSSProperties => ({
   pointerEvents: disabled ? "none" : "all",
@@ -24,7 +23,7 @@ export const UploadTarget: FC<TargetBoxType> = (props) => {
     accept: [NativeTypes.FILE],
     drop(item, monitor) {
       if (typeof onDrop === "function") {
-        const files = Array.from(monitor.getItem().files) as File[];
+        const files = Array.from((monitor as any).getItem().files) as File[];
         onDrop(files, existingFiles);
       }
     },

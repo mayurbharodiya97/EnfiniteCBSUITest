@@ -45,7 +45,7 @@ export const updateUserLimitData = async ({
   isNewRow,
 }) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "USERSLIMITDML",
+    "DMLOPRATION_USERS_LIMIT_UPDATE",
     data
   );
   if (status === "0") {

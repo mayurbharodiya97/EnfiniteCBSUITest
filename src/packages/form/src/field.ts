@@ -421,6 +421,7 @@ export const useField = ({
               finalResult = error;
             } else {
               finalResult = "unkown error check console";
+              console.log("unknown error type", error);
             }
             if (!Boolean(touchAndValidate)) {
               setFieldData((old) => {
@@ -454,6 +455,7 @@ export const useField = ({
               finalResult = err.message;
             } else {
               finalResult = "unkown error type check console";
+              console.log("unknown error type", err);
             }
             if (!Boolean(touchAndValidate)) {
               setFieldData((old) => {

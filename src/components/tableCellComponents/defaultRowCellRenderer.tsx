@@ -1,5 +1,4 @@
-import Tooltip from "@material-ui/core/Tooltip";
-//import { boolean } from "yup";
+import { Tooltip } from "@mui/material";
 import { CellWrapper } from "./cellWrapper";
 
 export const DefaultRowCellRenderer = (props) => {

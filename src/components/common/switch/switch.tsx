@@ -1,15 +1,18 @@
 import { FC } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import FormControlLabel, {
-  FormControlLabelProps,
-} from "@material-ui/core/FormControlLabel";
-import FormControl, { FormControlProps } from "@material-ui/core/FormControl";
-import Switch, { SwitchProps } from "@material-ui/core/Switch";
-import FormHelperText, {
-  FormHelperTextProps,
-} from "@material-ui/core/FormHelperText";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 import { Merge } from "../types";
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelProps,
+  FormControlProps,
+  FormHelperText,
+  FormHelperTextProps,
+  Grid,
+  GridProps,
+  Switch,
+  SwitchProps,
+} from "@mui/material";
 
 interface extendedFiledProps extends UseFieldHookProps {
   label: string;

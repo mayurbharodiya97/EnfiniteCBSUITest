@@ -1,13 +1,11 @@
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
 import * as API from "../api";
 import { ChecklistDetailsNewMetadata } from "../metadata/form";
+import { Button, CircularProgress, Dialog } from "@mui/material";
 
 interface addMasterDataType {
   data: object;

@@ -16,6 +16,8 @@ import { ClearCacheContext, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { useSnackbar } from "notistack";
+import { RefreshBillersData } from "./refreshBillerData";
+import BillerDetailRefresh from "./refreshBillerData/billerDetailRefresh/billerDetailRefresh";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { DynamicBillerConfirmGrid } from "./billerConfirm";
 
@@ -40,7 +42,8 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const DynamicBillerConfirm = ({ isDelete }) => {
+export const DynamicBillerConfirm = () => {
+  const isDataChangedRef = useRef(false);
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
   const { enqueueSnackbar } = useSnackbar();
@@ -66,9 +69,7 @@ export const DynamicBillerConfirm = ({ isDelete }) => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getBillerConfirmGridData"], () =>
-    API.getBillerConfirmGridData({ isDelete: isDelete })
-  );
+  >(["getBillerConfirmGridData"], () => API.getBillerConfirmGridData());
 
   const result = useMutation(API.updateBillerConfigConfirm, {
     onSuccess: (response: any) => {
@@ -105,15 +106,6 @@ export const DynamicBillerConfirm = ({ isDelete }) => {
     setIsOpenAcceptDialog(false);
     setIsOpenRejectDialog(false);
   };
-
-  if (isDelete === "Y") {
-    DynamicBillerConfirmGridMetaData.gridConfig.gridLabel =
-      "Dynamic Biller Deletion Request Confirmation";
-  } else {
-    DynamicBillerConfirmGridMetaData.gridConfig.gridLabel =
-      "Dynamic Biller Confirmation";
-  }
-
   return (
     <Fragment>
       {isError && (

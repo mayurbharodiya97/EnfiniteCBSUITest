@@ -1,19 +1,21 @@
 import { Suspense, Fragment, useState, useRef, cloneElement } from "react";
-import Tab from "@material-ui/core/Tab";
-import Tabs from "@material-ui/core/Tabs";
 import { Alert } from "components/common/alert";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Chip from "@material-ui/core/Chip";
 import { useRecoilValue } from "recoil";
 import {
   formFieldsExcludedAtom,
   formFieldsErrorWatcherAtom,
 } from "packages/form";
-import Grid from "@material-ui/core/Grid";
 import { isGroupExcluded, isGroupHavingError } from "./groupUtils";
-import Container from "@material-ui/core/Container";
+import {
+  AppBar,
+  Chip,
+  Container,
+  Grid,
+  Tab,
+  Tabs,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
 export const TabsFormWrapper = ({
   fields,

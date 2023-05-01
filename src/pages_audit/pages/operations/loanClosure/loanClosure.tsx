@@ -78,13 +78,11 @@ export const LoanClosureRequest = () => {
   //     isDataChangedRef.current = false;
   //   }
   // };
-  const selectedDates = (retrievalValues) => {
+  const selectedDates = (fromDate, toDate) => {
     setOpen(false);
     result.mutate({
-      fromDate:
-        retrievalValues?.[0]?.value?.value ?? format(new Date(), "dd/MM/yyyy"),
-      toDate:
-        retrievalValues?.[1]?.value?.value ?? format(new Date(), "dd/MM/yyyy"),
+      fromDate: format(fromDate, "dd/MM/yyyy"),
+      toDate: format(toDate, "dd/MM/yyyy"),
     });
   };
   const handleClose = () => {
@@ -156,7 +154,7 @@ export const LoanClosureRequest = () => {
         open={open}
         handleClose={handleClose}
         loginState={ClosedEventCall}
-        retrievalParaValues={selectedDates}
+        selectedDates={selectedDates}
       />
     </Fragment>
   );

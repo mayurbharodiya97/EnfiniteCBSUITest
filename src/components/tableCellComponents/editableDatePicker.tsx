@@ -1,16 +1,16 @@
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { useState, useEffect } from "react";
 import { CellWrapper } from "./cellWrapper";
 import {
   ThemeProvider,
   unstable_createMuiStrictModeTheme,
-} from "@material-ui/core/styles";
+} from "@mui/material/styles";
 import DateFnsUtils from "@date-io/date-fns";
-import {
-  KeyboardDatePicker,
-  MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
 import { theme2 } from "app/audit/theme";
+import { FormHelperText } from "@mui/material";
+
+// import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import DatePicker from "@mui/lab/DatePicker";
 
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
 export const EditableDatePicker = (props) => {
@@ -59,8 +59,8 @@ export const EditableDatePicker = (props) => {
   return (
     <CellWrapper showBorder {...props}>
       <ThemeProvider theme={themeObj}>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
+        <LocalizationProvider utils={DateFnsUtils}>
+          <DatePicker
             format={dateFormat ?? "dd/MM/yyyy HH:mm:ss"}
             KeyboardButtonProps={{
               "aria-label": "Select Date",
@@ -77,7 +77,7 @@ export const EditableDatePicker = (props) => {
             disabled={loadingcall || loading}
             // error={Boolean(externalTouched) && Boolean(externalError)}
           />
-        </MuiPickersUtilsProvider>
+        </LocalizationProvider>
       </ThemeProvider>
       {Boolean(externalTouched) && Boolean(externalError) ? (
         <FormHelperText style={{ whiteSpace: "break-spaces" }} error={true}>

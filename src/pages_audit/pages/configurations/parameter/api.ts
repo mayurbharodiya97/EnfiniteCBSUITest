@@ -18,17 +18,7 @@ export const getParametersGridData = async (paraType) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPARAMETERSLIST", { PARA_TYPE: paraType });
   if (status === "0") {
-    return data.map((item) => {
-      if (item?.CONFIRMED === "N") {
-        return {
-          ...item,
-          _rowColor: "var(--theme-color3)",
-          __isRowSelection: false,
-        };
-      } else {
-        return { ...item };
-      }
-    });
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

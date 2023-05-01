@@ -1,12 +1,14 @@
+import {
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  MenuList,
+  Paper,
+  Popover,
+} from "@mui/material";
 import { useState } from "react";
-import MenuList from "@material-ui/core/MenuList";
 import { StyledMenuItem } from "./styledComponents";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Paper from "@material-ui/core/Paper";
-import ViewColumnOutlinedIcon from "@material-ui/icons/ViewColumnOutlined";
-import IconButton from "@material-ui/core/IconButton";
-import Popover from "@material-ui/core/Popover";
+import ViewColumnOutlinedIcon from "@mui/icons-material/ViewColumnOutlined";
 
 const ITEM_HEIGHT = 48;
 

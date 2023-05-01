@@ -1,11 +1,12 @@
 import { FC, useEffect, useState, useContext, useRef } from "react";
 import { useQuery } from "react-query";
 import { ClearCacheContext, queryClient } from "cache";
-import Dialog from "@material-ui/core/Dialog";
+import Dialog from "@mui/material/Dialog";
+import { useLocation } from "react-router-dom";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import { Transition } from "pages_audit/common/transition";
 import * as API from "../api";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import {
   AppBar,
   Box,
@@ -14,15 +15,15 @@ import {
   List,
   ListItem,
   ListItemText,
-  makeStyles,
   TextField,
   Toolbar,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { useDrag, useDrop } from "react-dnd";
+import { makeStyles } from "@mui/styles";
 
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
@@ -61,7 +62,7 @@ const SMSTemplate: FC<{
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: "string",
     drop: (item, monitor) => {
-      let data = String(monitor.getItem()?.id ?? "");
+      let data = String((monitor as any).getItem()?.id ?? "");
       if (myTextFieldPositionRef.current >= 0 && Boolean(data)) {
         let startText = smsText.substring(0, myTextFieldPositionRef.current);
         let endText = smsText.substring(myTextFieldPositionRef.current);
@@ -70,6 +71,7 @@ const SMSTemplate: FC<{
         SetSmsText(startText + "" + data + "" + endText);
       } else if (Boolean(data)) {
         SetSmsText(smsText + "" + data + "");
+        //console.log("smsText + + data  =>", smsText + "" + data + "");
       }
     },
     collect: (monitor) => ({

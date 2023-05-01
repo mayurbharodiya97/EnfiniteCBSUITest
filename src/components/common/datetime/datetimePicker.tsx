@@ -1,10 +1,10 @@
 import { FC, useRef, useEffect } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import { KeyboardDateTimePickerProps } from "@material-ui/pickers";
 import { KeyboardDateTimePicker } from "components/styledComponent/datetime";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 
 import { Omit, Merge } from "../types";
+import { Grid, GridProps } from "@mui/material";
+import { KeyboardDateTimePickerProps } from "@material-ui/pickers";
 
 type KeyboardDateTimePickerPropsSubset = Omit<
   KeyboardDateTimePickerProps,

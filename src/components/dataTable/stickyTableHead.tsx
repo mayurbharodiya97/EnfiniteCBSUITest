@@ -1,5 +1,5 @@
-import { withStyles } from "@material-ui/core/styles";
-import TableHead from "@material-ui/core/TableHead";
+import { TableHead } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 export const StickyTableHead = withStyles(() => ({
   root: {

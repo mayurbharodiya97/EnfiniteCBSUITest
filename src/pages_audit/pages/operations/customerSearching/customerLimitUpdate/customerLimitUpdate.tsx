@@ -1,14 +1,13 @@
 import { Fragment, useMemo, useState } from "react";
-import Dialog from "@material-ui/core/Dialog";
+import Dialog from "@mui/material/Dialog";
 import { Transition } from "pages_audit/common";
 import { GridMetaDataType } from "components/dataTable/types";
 import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { ActionTypes } from "components/dataTable";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/styles";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import * as API from "./api";
 import {
   CustomerDetailsGridMetaData,
@@ -22,7 +21,8 @@ import {
 } from "components/utils";
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 const actions: ActionTypes[] = [
   {
     actionName: "Add",
@@ -118,6 +118,7 @@ export const CustomerLimitUpdate = ({
     } else {
       MainReqData["_isNewRow"] = false;
     }
+    //console.log(MainReqData);
     if (
       (DetailData?.isNewRow?.length ?? 0) === 0 &&
       (DetailData?.isDeleteRow?.length ?? 0) === 0 &&

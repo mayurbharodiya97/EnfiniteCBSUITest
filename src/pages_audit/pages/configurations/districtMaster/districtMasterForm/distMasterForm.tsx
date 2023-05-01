@@ -2,8 +2,8 @@ import { FC, useEffect, useState, useContext, useRef, useMemo } from "react";
 import { useQuery, useMutation } from "react-query";
 import { ClearCacheContext, queryClient } from "cache";
 import { InitialValuesType, SubmitFnType } from "packages/form";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useSnackbar } from "notistack";
 import { useLocation } from "react-router-dom";
@@ -40,6 +40,7 @@ const DistMasterForm: FC<{
   const { state: rows }: any = useLocation();
   const authController = useContext(AuthContext);
 
+  // console.log("2");
   const mutation = useMutation(
     updateAUTHDetailDataWrapperFn(API.updDistMasterFormData),
 
@@ -113,9 +114,9 @@ const DistMasterForm: FC<{
         displayMode={formView}
         formStyle={{
           background: "white",
-          // height: "40vh",
-          // overflowY: "auto",
-          // overflowX: "hidden",
+          height: "40vh",
+          overflowY: "auto",
+          overflowX: "hidden",
         }}
       >
         {({ isSubmitting, handleSubmit }) => (
@@ -171,6 +172,7 @@ export const DistMasterFormWrapper = ({
       });
     };
   }, [getEntries]);
+  console.log("1");
   return (
     <>
       <Dialog

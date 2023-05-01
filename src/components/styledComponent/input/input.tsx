@@ -1,6 +1,5 @@
-import Input from "@material-ui/core/Input";
-
-import { withStyles } from "@material-ui/core/styles";
+import Input from "@mui/material/Input";
+import { withStyles } from "@mui/styles";
 
 const MyInput = withStyles({
   root: {

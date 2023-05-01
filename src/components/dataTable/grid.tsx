@@ -17,13 +17,6 @@ import {
   useColumnOrder,
   useAsyncDebounce,
 } from "react-table";
-import Paper from "@material-ui/core/Paper";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import TableContainer from "@material-ui/core/TableContainer";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
 import { TableHeaderToolbar } from "./tableHeaderToolbar";
 import { StickyTableHead } from "./stickyTableHead";
 import { MyTableRow } from "./focusableTableRow";
@@ -37,6 +30,15 @@ import { filterAction } from "./utils";
 import { TableFilterStatusBar } from "./tableFilterStatusBar";
 import { AuthContext } from "pages_audit/auth";
 import { useAutoRefreshControls } from "components/utils/autoRefresh";
+import {
+  LinearProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
 
 export const DataGrid = forwardRef<any, any>(
   (

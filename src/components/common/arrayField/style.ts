@@ -1,10 +1,9 @@
-import { makeStyles } from "@material-ui/core/styles";
-
-export const useStyles = makeStyles((theme) => ({
+import { makeStyles } from "@mui/styles";
+export const useStyles = makeStyles((theme: any) => ({
   arrayRowContainer: {
     position: "relative",
     boxShadow: theme.shadows[3],
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(2),
   },
   arrayRowRemoveBtn: {
     position: "absolute",

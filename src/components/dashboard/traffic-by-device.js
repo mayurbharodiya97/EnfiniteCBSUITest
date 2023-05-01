@@ -14,13 +14,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@material-ui/core";
-import LaptopMacIcon from "@material-ui/icons/LaptopMac";
-import PhoneAndroidIcon from "@material-ui/icons/PhoneAndroid";
-import PhoneIphoneIcon from "@material-ui/icons/PhoneIphone";
+  Tooltip,
+} from "@mui/material";
+
+import LaptopMacIcon from "@mui/icons-material/LaptopMac";
+import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 import { useQuery } from "react-query";
 import * as API from "./api";
-import Tooltip from "@material-ui/core/Tooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { GradientButton } from "components/styledComponent/button";

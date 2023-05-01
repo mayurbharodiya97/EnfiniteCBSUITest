@@ -1,14 +1,13 @@
 import { useReducer, useContext, useEffect, useState } from "react";
-import Box from "@material-ui/core/Box";
 import { useNavigate } from "react-router-dom";
 import loginImg from "assets/images/login.svg";
 import { useStyles } from "./style";
-//import * as API from "./api";
 import logo from "assets/images/logo.jpg";
 import { ForgotPasswordFields } from "./forgotPasswordField";
 import { OTPModel } from "./otpPopup";
 import { utilFunction } from "components/utils/utilFunctions";
 import { useSnackbar } from "notistack";
+import { Box } from "@mui/material";
 const inititalState = {
   isUsernameError: false,
   userMessageforusername: "",
@@ -139,6 +138,7 @@ export const ForgotPasswordController = () => {
   };
 
   const verifyRequestData = (data, flag) => {
+    //console.log(data, flag);
     if (flag === 0) {
       let validationData = {
         isUsernameError: false,

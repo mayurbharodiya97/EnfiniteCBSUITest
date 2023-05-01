@@ -1,14 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
-import List from "@material-ui/core/List";
-import IconButton from "@material-ui/core/IconButton";
-import Badge from "@material-ui/core/Badge";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import Popover from "@material-ui/core/Popover";
 import { useQuery } from "react-query";
 import { NotificationItems } from "./notificationItems";
 import { useStyles } from "./style";
 import * as API from "./api";
 import { useAutoRefresh } from "components/utils/autoRefresh";
+import IconButton from "@mui/material/IconButton";
+import Badge from "@mui/material/Badge";
+import { List, Popover } from "@mui/material";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 export const Notification = () => {
   const classes = useStyles();
@@ -84,7 +83,7 @@ export const Notification = () => {
           open={Boolean(showNotification)}
           onClose={handleCloseNotification}
           elevation={3}
-          getContentAnchorEl={null}
+          // getContentAnchorEl={null}
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "right",

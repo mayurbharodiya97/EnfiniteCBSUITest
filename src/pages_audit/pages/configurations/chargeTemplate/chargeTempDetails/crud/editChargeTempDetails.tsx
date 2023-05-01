@@ -4,17 +4,14 @@ import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
 import { useMutation, useQueries } from "react-query";
 import { useLocation } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
-import Dialog from "@material-ui/core/Dialog";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Alert } from "components/common/alert";
 import { SubmitFnType } from "packages/form";
 import * as API from "../api";
 import { ChecklistDetailsEditViewMetadata } from "../metadata/form";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Button, CircularProgress, Dialog, IconButton } from "@mui/material";
 
 interface updateChecklistDetailsDataType {
   data: object;

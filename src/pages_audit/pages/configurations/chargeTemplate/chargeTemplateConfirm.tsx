@@ -33,14 +33,15 @@ export const ChargeTemplateMasterConfirm = () => {
           queryClient.removeQueries(one);
         });
       }
-      queryClient.removeQueries(["getChargeConfirmationGridData"]);
+      queryClient.removeQueries(["getMastersGridData"]);
     };
   }, [getEntries]);
 
   const { refetch, data, isLoading, isFetching, isError, error } = useQuery(
-    ["getChargeConfirmationGridData"],
-    API.getChargeConfirmationGridData
+    ["getMastersGridData"],
+    API.getMastersGridData
   );
+  //console.log(data, isLoading, isFetching, isError, error);
   const setCurrentAction = useCallback(
     (data) => {
       let confirmed = data?.rows[0]?.data.CONFIRMED;
@@ -92,17 +93,17 @@ export const ChargeTemplateMasterConfirm = () => {
         loading={isLoading || isFetching}
         refetchData={refetch}
         ref={myGridRef}
-        // defaultSortOrder={[{ id: "LAST_MODIFIED_DATE", desc: true }]}
-        // defaultFilter={[
-        //   {
-        //     id: "CONFIRM_STATUS",
-        //     value: {
-        //       columnName: "Status",
-        //       condition: "equal",
-        //       value: "Confirmation Pending",
-        //     },
-        //   },
-        // ]}
+        defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
+        defaultFilter={[
+          {
+            id: "CONFIRM_STATUS",
+            value: {
+              columnName: "Status",
+              condition: "equal",
+              value: "Confirmation Pending",
+            },
+          },
+        ]}
       />
       <Routes>
         <Route

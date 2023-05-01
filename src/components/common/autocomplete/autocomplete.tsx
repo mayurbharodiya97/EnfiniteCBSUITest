@@ -10,24 +10,25 @@ import {
   Suspense,
   useCallback,
 } from "react";
-import { TextFieldProps } from "@material-ui/core/TextField";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import CircularProgress, {
-  CircularProgressProps,
-} from "@material-ui/core/CircularProgress";
-import Autocomplete, {
-  AutocompleteProps,
-  createFilterOptions,
-} from "@material-ui/lab/Autocomplete";
-import { CreateFilterOptionsConfig } from "@material-ui/lab/useAutocomplete";
+import { Chip, TextFieldProps, ChipProps } from "@material-ui/core";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
 import { useField, UseFieldHookProps } from "packages/form";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
-import Chip, { ChipProps } from "@material-ui/core/Chip";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { useOptionsFetcher } from "../utils";
+import Autocomplete, {
+  AutocompleteProps,
+} from "@material-ui/lab/Autocomplete/Autocomplete";
+import {
+  CircularProgress,
+  CircularProgressProps,
+  createFilterOptions,
+  CreateFilterOptionsConfig,
+  Grid,
+  GridProps,
+} from "@mui/material";
 
 const ListBoxComponentVirtualized = lazy(() =>
   import("./virtualized").then((module) => ({

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { InputMaskCustom } from "components/derived/inputMask";
 import { TextFieldForSelect as TextField } from "components/styledComponent/textfield";
 import { RowContext } from "./rowContext";
-import Typography from "@material-ui/core/Typography";
+import { Typography } from "@mui/material";
 
 export const DisplayCell = ({ value }) => {
   return (

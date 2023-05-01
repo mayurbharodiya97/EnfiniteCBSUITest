@@ -1,5 +1,4 @@
 import { useContext, useRef, useState, Fragment, FC } from "react";
-import Dialog, { DialogProps } from "@material-ui/core/Dialog";
 import { ActionTypes } from "components/dataTable";
 import { FormNew } from "./formNew";
 import { FormViewEdit } from "./formViewEdit";
@@ -11,6 +10,7 @@ import { SimpleCRUD } from "./simpleCRUD";
 import { InvalidAction } from "pages_audit/common/invalidAction";
 import { CRUDContextProvider, crudAPIContextGenerator } from "./context";
 import { useDialogStyles } from "../dialogStyles";
+import { Dialog, DialogProps } from "@mui/material";
 const actions: ActionTypes[] = [
   {
     actionName: "View",

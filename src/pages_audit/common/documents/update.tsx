@@ -1,16 +1,18 @@
 import { useContext, useRef, useState, useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
-import Alert from "@material-ui/lab/Alert";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import GridWrapper from "components/dataTableStatic";
 import { ClearCacheContext } from "cache";
 import { DOCCRUDContext } from "./context";
 import { useSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import Alert from "@mui/material/Alert";
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+} from "@mui/material";
 
 interface DeleteFormDataType {
   docType: string;

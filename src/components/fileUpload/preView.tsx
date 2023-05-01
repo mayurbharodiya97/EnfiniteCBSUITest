@@ -1,10 +1,12 @@
+import {
+  DialogActions,
+  DialogContent,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { Fragment, FC, useEffect, useRef } from "react";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
-import Close from "@material-ui/icons/Close";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import CloseIcon from "@mui/icons-material/Close";
 import { downloadFile } from "./utils";
 
 export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
@@ -36,11 +38,11 @@ export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
           color="secondary"
           onClick={() => downloadFile(blob, fileName)}
         >
-          <GetAppRoundedIcon />
+          <GetAppIcon />
         </IconButton>
         {typeof onClose === "function" ? (
           <IconButton color="secondary" onClick={onClose}>
-            <Close />
+            <CloseIcon />
           </IconButton>
         ) : null}
       </DialogActions>
@@ -80,11 +82,11 @@ export const ImageViewer: FC<{
           color="secondary"
           onClick={() => downloadFile(blob, fileName)}
         >
-          <GetAppRoundedIcon />
+          <GetAppIcon />
         </IconButton>
         {typeof onClose === "function" ? (
           <IconButton color="secondary" onClick={onClose}>
-            <Close />
+            <CloseIcon />
           </IconButton>
         ) : null}
       </DialogActions>
@@ -109,7 +111,7 @@ export const NoPreview: FC<{
       <div style={{ flexGrow: 1 }}></div>
       {typeof onClose === "function" ? (
         <IconButton color="secondary" onClick={onClose}>
-          <Close />
+          <CloseIcon />
         </IconButton>
       ) : null}
     </DialogActions>

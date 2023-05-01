@@ -8,11 +8,6 @@ import { SelectProps } from "@material-ui/core/Select";
 import { TextFieldProps } from "@material-ui/core/TextField";
 import { TextField } from "components/styledComponent";
 import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import CircularProgress, {
-  CircularProgressProps,
-} from "@material-ui/core/CircularProgress";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { OptionsProps, Merge, dependentOptionsFn } from "../types";
 import {
@@ -20,6 +15,13 @@ import {
   getSelectedOptionData,
   useOptionsFetcher,
 } from "../utils";
+import {
+  CircularProgress,
+  CircularProgressProps,
+  Grid,
+  GridProps,
+  InputAdornment,
+} from "@mui/material";
 
 interface extendedFieldProps extends UseFieldHookProps {
   options?: OptionsProps[] | dependentOptionsFn;

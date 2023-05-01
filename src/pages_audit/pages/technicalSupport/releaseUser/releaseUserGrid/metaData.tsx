@@ -42,7 +42,7 @@ export const ReleaseUserFilterForm: FilterFormMetaType = {
         { label: "Login Password", value: "LOGINPASS" },
         { label: "Login PIN", value: "LOGIN" },
         { label: "OTP PIN", value: "OTP" },
-        // { label: "Transaction PIN", value: "TPIN" },
+        { label: "Transaction PIN", value: "TPIN" },
       ],
       dependFields: ["release_type"],
       dependFieldsonchange: (colomnValue, value, name, extraData) => {

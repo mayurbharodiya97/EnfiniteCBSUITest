@@ -1,5 +1,5 @@
+import { Grid, GridProps } from "@mui/material";
 import { FC } from "react";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 
 interface MyGridExtendedProps {
   GridProps?: GridProps;

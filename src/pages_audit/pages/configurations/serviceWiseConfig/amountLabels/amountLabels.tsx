@@ -1,15 +1,18 @@
-import { useRef, useState, useMemo } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import { makeStyles } from "@material-ui/styles";
+import { useRef, useState, forwardRef, useMemo } from "react";
+import { FormComponentView } from "components/formcomponent";
+import AppBar from "@mui/material/AppBar";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { DetailsGridWithHeaderArguType } from "components/detailPopupGridData/GridDetailsWithHeader/type";
+import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
+import { makeStyles } from "@mui/styles";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",
@@ -124,7 +127,6 @@ export const AmountLabelDetailsUpdate = (
         ...refID,
         reqData: finalResult,
       };
-      console.log(">>data", data);
       // onSubmit({ data, mode, setServerError });
     }
   };
@@ -191,7 +193,6 @@ export const AmountLabelDetailsUpdate = (
           setAction={handelActionEvent}
           refetchData={null}
           ref={myGridRef}
-          hideFooter={true}
         />
       )}
     </div>

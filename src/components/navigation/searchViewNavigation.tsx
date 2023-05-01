@@ -1,14 +1,12 @@
 import { FC, useMemo, useState } from "react";
 import clsx from "clsx";
 import { SearchBar } from "components/derived";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useStylesSideBar } from "./style";
 import { filterMetaDataByValue } from "./filterMetaData";
 import { SideBarNav } from "./sideBarNavigation";
 import { SideBarRendererType } from "./types";
+import { ListItem, ListItemIcon, ListItemText } from "@mui/material";
 
 interface NewSideBarNav extends SideBarRendererType {
   label: string;
@@ -36,7 +34,7 @@ export const SearchViewNavigation: FC<NewSideBarNav> = ({
 
   const myIcon = icon ? (
     <ListItemIcon className={classes.listIcon}>
-      <ArrowBackIosIcon />
+      <ArrowBackIosNewIcon />
     </ListItemIcon>
   ) : null;
   const handleClick = () => {

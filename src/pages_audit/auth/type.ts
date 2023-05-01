@@ -3,7 +3,6 @@ export interface AuthStateType {
   isLoggedIn: any;
   role: string;
   roleName: string;
-  userSubType: string;
   access: any;
   companyName: string;
   companyID: string;

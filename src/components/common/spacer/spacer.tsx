@@ -1,6 +1,5 @@
+import { Grid, GridProps, Hidden, HiddenProps } from "@mui/material";
 import { FC, Fragment } from "react";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import Hidden, { HiddenProps } from "@material-ui/core/Hidden";
 
 export interface SpacerProps {
   HiddenProps?: HiddenProps;

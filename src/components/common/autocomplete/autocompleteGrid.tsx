@@ -9,17 +9,20 @@ import {
   Suspense,
   useCallback,
 } from "react";
-import CircularProgress, {
+import {
+  Chip,
+  ChipProps,
+  CircularProgress,
   CircularProgressProps,
-} from "@material-ui/core/CircularProgress";
+  CreateFilterOptionsConfig,
+  Input,
+  createFilterOptions,
+} from "@mui/material";
 import Autocomplete, {
   AutocompleteProps,
-  createFilterOptions,
+  // createFilterOptions,
 } from "@material-ui/lab/Autocomplete";
-import Input from "@material-ui/core/Input";
-import { CreateFilterOptionsConfig } from "@material-ui/lab/useAutocomplete";
 import { Checkbox } from "components/styledComponent/checkbox";
-import Chip, { ChipProps } from "@material-ui/core/Chip";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";

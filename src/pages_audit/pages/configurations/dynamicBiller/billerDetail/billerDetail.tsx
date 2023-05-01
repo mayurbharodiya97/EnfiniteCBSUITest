@@ -14,12 +14,13 @@ import * as API from "./api";
 import { API as CRUD2API } from "pages_audit/common/crud2";
 import { queryClient, ClearCacheProvider } from "cache";
 import { useStyles } from "pages_audit/common/tabStyles";
-import { AppBar, Dialog, makeStyles, Toolbar } from "@material-ui/core";
+import { AppBar, Dialog, Toolbar } from "@mui/material";
 import { useDialogStyles } from "components/detailPopupGridData";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import { GradientButton } from "components/styledComponent/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BillerFields } from "../billerFields";
+import { makeStyles } from "@mui/styles";
 
 const TabPanel = ({ value, index, children }) => {
   return Number(value) === Number(index) ? children : null;
@@ -66,7 +67,7 @@ const bankCrudAPIArgs = (flag, categoryID, subCategoryID, billerID) => ({
   },
 });
 
-const useTypeStyles = makeStyles((theme) => ({
+const useTypeStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

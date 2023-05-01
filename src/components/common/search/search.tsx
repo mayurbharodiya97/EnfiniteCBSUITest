@@ -8,15 +8,19 @@ import {
   createElement,
 } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import { TextFieldProps } from "@material-ui/core/TextField";
-import { TextField } from "components/styledComponent";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from "@material-ui/core/IconButton";
-import SearchIcon from "@material-ui/icons/Search";
+import {
+  Dialog,
+  FormHelperText,
+  Grid,
+  GridProps,
+  IconButton,
+  InputAdornment,
+  TextFieldProps,
+} from "@mui/material";
 import { Merge } from "../types";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Dialog from "@material-ui/core/Dialog";
+import { TextField } from "components/styledComponent";
+// import SearchIcon from "@material-ui/icons/Search";
+import Search from "@mui/icons-material/Search";
 
 interface MyGridExtendedProps {
   maxLength?: number;
@@ -190,7 +194,8 @@ const MySearchField: FC<MySearchFieldProps> = ({
                 aria-label="toggle password visibility"
                 onClick={() => setOpenSearch(true)}
               >
-                <SearchIcon />
+                {/* <SearchIcon /> */}
+                <Search />
               </IconButton>
             </InputAdornment>
           ),

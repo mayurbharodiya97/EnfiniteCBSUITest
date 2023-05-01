@@ -182,32 +182,6 @@ export const ClubMasterMetadata: MetaDataType = {
         sm: 6,
       },
     },
-    {
-      render: { componentType: "hidden" },
-      name: "POLICY_LABEL_EN",
-      label: "Policy Label(English)",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 6,
-      },
-    },
-    {
-      render: { componentType: "hidden" },
-      name: "POLICY_LABEL_BN",
-      label: "Policy Label(English)",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 6,
-      },
-    },
   ],
 };
 

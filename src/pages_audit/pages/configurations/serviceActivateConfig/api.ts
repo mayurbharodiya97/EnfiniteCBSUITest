@@ -22,7 +22,7 @@ export const getServiceActiveConfigGridData = async () => {
 };
 export const updateServiceActiveDeactiveConfig = async (reqdata) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("SERVICEACTIVEDEACTIVEMSTDML", reqdata);
+    await AuthSDK.internalFetcher("SERVICEACTIVEDEACTIVEMST", reqdata);
   if (status === "0") {
     return message;
   } else {

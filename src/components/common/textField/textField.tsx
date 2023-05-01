@@ -4,16 +4,18 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
-import { TextFieldProps } from "@material-ui/core/TextField";
-import { TextField } from "components/styledComponent";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import CircularProgress, {
-  CircularProgressProps,
-} from "@material-ui/core/CircularProgress";
 import { Merge } from "../types";
 import { numWords } from "components/common/utils";
-import FormHelperText from "@material-ui/core/FormHelperText";
+import {
+  CircularProgress,
+  CircularProgressProps,
+  FormHelperText,
+  Grid,
+  GridProps,
+  InputAdornment,
+  TextField,
+  TextFieldProps,
+} from "@mui/material";
 
 interface MyGridExtendedProps {
   enableNumWords?: boolean;
@@ -127,8 +129,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
       let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues),
-        value
+        transformDependentFieldsState(dependentValues)
       );
       if (result !== undefined && result !== null) {
         handleChange(result);

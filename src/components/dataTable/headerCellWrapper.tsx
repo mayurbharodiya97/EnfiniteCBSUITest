@@ -1,4 +1,4 @@
-import TableCell from "@material-ui/core/TableCell";
+import { TableCell } from "@mui/material";
 
 export const HeaderCellWrapper = ({ column, children }) => {
   const stickyHeaderCell =

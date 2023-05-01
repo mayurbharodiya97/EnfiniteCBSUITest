@@ -1,4 +1,4 @@
-import NumberFormat, { NumberFormatProps } from "react-number-format";
+import { NumericFormat } from "react-number-format";
 import { TextField, TextFieldProps } from "components/common/textField";
 import { Merge } from "components/common/types";
 
@@ -6,7 +6,7 @@ export function NumberFormatCustom(props) {
   const { inputRef, onChange, FormatProps, ...other } = props;
   const { formattedValue, ...others } = FormatProps;
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={inputRef}
       onValueChange={(values) => {
@@ -29,7 +29,7 @@ export function NumberFormatCustom(props) {
 }
 
 interface extendedProps {
-  FormatProps: NumberFormatProps;
+  FormatProps: any;
   formattedValue?: boolean;
 }
 

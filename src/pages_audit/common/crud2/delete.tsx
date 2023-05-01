@@ -1,12 +1,14 @@
 import { Fragment, useContext, useRef } from "react";
 import { useMutation } from "react-query";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
 import { Alert } from "components/common/alert";
-import DialogContent from "@material-ui/core/DialogContent";
 import { CRUDContext } from "./context";
 import { cacheWrapperKeyGen } from "cache";
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 
 interface DeleteFormDataType {
   serialNo?: string;

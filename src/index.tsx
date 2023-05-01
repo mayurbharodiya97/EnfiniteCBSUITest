@@ -1,5 +1,5 @@
 import { StrictMode, useEffect, lazy, Suspense } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -10,7 +10,6 @@ import { FullScreenLoader } from "components/common/loaderPaper";
 const AUD = lazy(() => import("app/audit"));
 const ErrorPage = lazy(() => import("app/error"));
 
-require("dotenv").config();
 const Redirect = () => {
   const navigate = useNavigate();
   useEffect(() => {
@@ -18,6 +17,7 @@ const Redirect = () => {
   }, [navigate]);
   return null;
 };
+
 const App = () => (
   <StrictMode>
     <DndProvider backend={HTML5Backend}>
@@ -36,7 +36,11 @@ const App = () => (
   </StrictMode>
 );
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const container: any = document.getElementById("root");
+const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+root.render(<App />);
+
+//ReactDOM.render(<App />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster,yarh some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA

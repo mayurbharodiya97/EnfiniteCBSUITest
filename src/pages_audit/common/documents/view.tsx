@@ -1,13 +1,15 @@
 import { useContext, useEffect, useState, Fragment, FC, useRef } from "react";
 import { DOCCRUDContext } from "./context";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
-import Close from "@material-ui/icons/Close";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import Close from "@mui/icons-material/Close";
 import { downloadFile } from "components/fileUpload/utils";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import {
+  DialogActions,
+  DialogContent,
+  IconButton,
+  Typography,
+} from "@mui/material";
 
 export const PreviewWrapper = ({
   fileType,
@@ -61,7 +63,7 @@ export const FileViewer: FC<{
             color="primary"
             onClick={() => downloadFile(blob as File, fileName)}
           >
-            <GetAppRoundedIcon />
+            <GetAppIcon />
           </IconButton>
         ) : null}
         {typeof onClose === "function" ? (

@@ -41,10 +41,6 @@ export interface GridColumnType {
   isReadOnly?: boolean;
   __EDIT__?: any;
   buttonLabel?: string;
-  dependentOptionField?: string;
-  isVisibleField?: any;
-  isImageURL?: boolean;
-  isColumnHidingDisabled?: boolean;
 }
 
 export interface GridConfigType {

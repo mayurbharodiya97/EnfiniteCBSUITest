@@ -1,10 +1,11 @@
 import { Checkbox } from "components/common/checkbox";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { useState, useEffect } from "react";
 import { CellWrapper } from "./cellWrapper";
-import { CircularProgressProps, Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-const useStyles = makeStyles((theme) => ({
+import { CircularProgressProps } from "@material-ui/core";
+import { FormHelperText } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles((theme: any) => ({
   wrapperclass: {
     textAlign: "center",
     "& div": {

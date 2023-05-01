@@ -1,7 +1,6 @@
+import { TextField, Typography } from "@mui/material";
 import { useContext, useState, useEffect } from "react";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import NumberFormat from "react-number-format";
+import { NumericFormat } from "react-number-format";
 import { RowContext } from "./rowContext";
 
 let currencyFormatter = new Intl.NumberFormat("en-IN", {
@@ -12,7 +11,7 @@ let currencyFormatter = new Intl.NumberFormat("en-IN", {
 function NumberFormatCustom(props) {
   const { inputRef, onChange, FormatProps, setChange, side, ...other } = props;
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={inputRef}
       onChange={(e) => {

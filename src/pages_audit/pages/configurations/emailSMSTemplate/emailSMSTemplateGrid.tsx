@@ -1,6 +1,13 @@
 import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
-import { Fragment, useEffect, useContext, useRef, useCallback } from "react";
+import {
+  Fragment,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+  useState,
+} from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Alert } from "components/common/alert";
 import GridWrapper from "components/dataTableStatic";
@@ -19,6 +26,10 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
   },
 ];
+const initlanguageData: { isOpen: boolean; rowdata: any } = {
+  isOpen: false,
+  rowdata: [],
+};
 export const EMailSMSTemplate = () => {
   const isDataChangedRef = useRef(false);
   const myGridRef = useRef<any>(null);

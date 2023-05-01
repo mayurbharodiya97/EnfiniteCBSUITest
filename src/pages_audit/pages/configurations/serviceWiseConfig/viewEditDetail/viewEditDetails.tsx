@@ -9,10 +9,10 @@ import {
 import { useQuery, useMutation } from "react-query";
 import { ClearCacheContext, queryClient } from "cache";
 import { InitialValuesType, SubmitFnType } from "packages/form";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
-import Dialog from "@material-ui/core/Dialog";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import Dialog from "@mui/material/Dialog";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useSnackbar } from "notistack";
 import { cloneDeep } from "lodash-es";
@@ -27,8 +27,7 @@ import { AmountLabelsGridWrapper } from "../amountLabels";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { TranParticularsWrapper } from "../tranParticulers";
 import { ObjectMappingKeys } from "components/utils";
-import { AuthContext } from "pages_audit/auth";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import { format } from "date-fns";
 
 const ServiceWiseConfigViewEdit: FC<{
@@ -50,7 +49,6 @@ const ServiceWiseConfigViewEdit: FC<{
   setEditFormStateFromInitValues,
   rowsdata,
 }) => {
-  const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   //const [tranParticulars, setTranParticulars] = useState<any>(null);
@@ -89,26 +87,12 @@ const ServiceWiseConfigViewEdit: FC<{
     },
   });
 
-  const confirmMutation = useMutation(API.confirmServiceWiseConfigReq, {
-    onSuccess: (response: any) => {
-      enqueueSnackbar(response, { variant: "success" });
-      isDataChangedRef.current = true;
-      closeDialog();
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg ?? "error", { variant: "error" });
-      onActionCancel();
-    },
-    onSettled: () => {
-      onActionCancel();
-    },
-  });
-
   const onSubmitHandler: SubmitFnType = (
     data,
     displayData,
     endSubmit,
-    setFieldError
+    setFieldError,
+    actionFlag
   ) => {
     //@ts-ignore
     //endSubmit(true);
@@ -253,11 +237,24 @@ const ServiceWiseConfigViewEdit: FC<{
       ...formStateFromInitValues,
     };
     viewEditMetaData.form.name = `${viewEditMetaData.form.name}-edit`;
-    // if (viewEditMetaData?.form?.render?.renderType === "stepper") {
-    //   viewEditMetaData.form.render.renderType = "tabs";
-    // }
+    if (viewEditMetaData?.form?.render?.renderType === "stepper") {
+      viewEditMetaData.form.render.renderType = "tabs";
+    }
   }
 
+  const confirmMutation = useMutation(API.confirmServiceWiseConfigReq, {
+    onSuccess: (response: any) => {
+      enqueueSnackbar(response, { variant: "success" });
+      closeDialog();
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg ?? "error", { variant: "error" });
+      onActionCancel();
+    },
+    onSettled: () => {
+      onActionCancel();
+    },
+  });
   const onAcceptPopupYes = (rows) => {
     confirmMutation.mutate({
       confirmed: "Y",
@@ -293,6 +290,11 @@ const ServiceWiseConfigViewEdit: FC<{
     });
   };
   const onSaveTranParticulars = (tranParticulars) => {
+    console.log(
+      isTranPerticulerDialog,
+      tranParticulars,
+      isTranPerticulerDialog.buttonName === "TRAN_PARTICULARS_BTN_0"
+    );
     if (isTranPerticulerDialog.buttonName === "TRAN_PARTICULARS_BTN_0") {
       isTranparticularRef.current = {
         ...isTranparticularRef.current,
@@ -335,7 +337,6 @@ const ServiceWiseConfigViewEdit: FC<{
     }
     ClosedEventCall();
   };
-
   const renderResult = loading ? (
     <>
       <LoaderPaperComponent />
@@ -376,16 +377,7 @@ const ServiceWiseConfigViewEdit: FC<{
       >
         <Button
           onClick={() => {
-            if (
-              (result?.data?.[0]?.LAST_ENTERED_BY || "").toLowerCase() ===
-              (authController?.authState?.user?.id || "").toLowerCase()
-            ) {
-              enqueueSnackbar("You can not accept your own entry.", {
-                variant: "warning",
-              });
-            } else {
-              setIsOpenAccept(true);
-            }
+            setIsOpenAccept(true);
           }}
           color={"primary"}
         >
@@ -393,16 +385,7 @@ const ServiceWiseConfigViewEdit: FC<{
         </Button>
         <Button
           onClick={() => {
-            if (
-              (result?.data?.[0]?.LAST_ENTERED_BY || "").toLowerCase() ===
-              (authController?.authState?.user?.id || "").toLowerCase()
-            ) {
-              enqueueSnackbar("You can not revert your own entry.", {
-                variant: "warning",
-              });
-            } else {
-              setIsOpenReject(true);
-            }
+            setIsOpenReject(true);
           }}
           color={"primary"}
         >

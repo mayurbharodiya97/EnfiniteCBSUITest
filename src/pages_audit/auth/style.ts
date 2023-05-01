@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/styles";
 
-export const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme: any) => ({
   wrapper: {
     minHeight: "100vh",
     boxShadow: "0 3px 6px rgba(0,0,0,0.03)",

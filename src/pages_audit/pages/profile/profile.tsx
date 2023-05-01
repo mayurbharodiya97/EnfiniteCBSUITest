@@ -16,12 +16,12 @@ import {
   Paper,
   Toolbar,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { utilFunction } from "components/utils/utilFunctions";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { ChangePassword } from "./changePassword";
-import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import "./style.css";
 import { ProfilePhotoUpdate } from "./profilePhotoUpload";
 import { GeneralAPI } from "registry/fns/functions";
@@ -63,6 +63,7 @@ export const Profile = () => {
     }
   }, [queryData.data]);
   const handleProfileUploadClose = (flag, imgdata) => {
+    //console.log(Boolean(flag), flag === "Y", typeof imgdata, Boolean(imgdata));
     if (
       Boolean(flag) &&
       flag === "Y" &&
@@ -81,6 +82,7 @@ export const Profile = () => {
     const files = e.target.files;
     const filesArray = Array.from(files);
     if (filesArray.length > 0) {
+      // console.log(filesArray);
       setFilesData(filesArray);
       setProfileUpdate(true);
     }

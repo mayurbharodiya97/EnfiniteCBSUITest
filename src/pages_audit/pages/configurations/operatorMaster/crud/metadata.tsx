@@ -46,6 +46,7 @@ export const operatorMasterDetailsMetaData: MasterDetailsMetaData = {
         },
         autoComplete: "off",
         validate: ({ value }) => {
+          //console.log(value);
           //@ts-ignore
           if (typeof window?._CHANGE_OPERATOR_TYPE === "function") {
             //@ts-ignore
@@ -211,6 +212,7 @@ export const operatorMasterDetailsMetaData: MasterDetailsMetaData = {
           },
         },
         validation: (value, data) => {
+          //console.log(data);
           if (!Boolean(value) || !Boolean(data["MAX_AMT"])) {
             return "";
           }
@@ -247,6 +249,7 @@ export const operatorMasterDetailsMetaData: MasterDetailsMetaData = {
           },
         },
         validation: (value, data) => {
+          //console.log(data);
           if (!Boolean(value) || !Boolean(data["MIN_AMT"])) {
             return "";
           }

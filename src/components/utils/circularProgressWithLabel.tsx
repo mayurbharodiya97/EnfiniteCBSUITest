@@ -1,9 +1,7 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
-import IconButton from "@material-ui/core/IconButton";
-import PlayArrowIcon from "@material-ui/icons/PlayArrow";
-import PauseIcon from "@material-ui/icons/Pause";
-import Typography from "@material-ui/core/Typography";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 import { useState } from "react";
+import { CircularProgress, IconButton, Typography } from "@mui/material";
 
 export const CircularProgressWithLabel = ({
   value,

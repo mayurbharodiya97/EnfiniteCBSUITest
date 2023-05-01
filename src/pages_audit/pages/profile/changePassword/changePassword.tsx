@@ -1,15 +1,14 @@
 import { Fragment, useRef, useContext } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
 import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { PasswordChangeMetaData } from "./metaData";
 import * as API from "../api";
-import { CircularProgress, Dialog } from "@material-ui/core";
+import { CircularProgress, Dialog } from "@mui/material";
 import { Transition } from "pages_audit/common";
 import { GradientButton } from "components/styledComponent/button";
+import { DialogActions } from "@mui/material";
 
 interface UpdatePasswordFnType {
   data: object;

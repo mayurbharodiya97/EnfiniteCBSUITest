@@ -1,7 +1,6 @@
+import { Divider, Grid } from "@mui/material";
 import { FC, Suspense, useRef } from "react";
-import Grid from "@material-ui/core/Grid";
 import { FormProps } from "./types";
-import Divider from "@material-ui/core/Divider";
 
 export const SimpleView: FC<FormProps> = ({ fields, formRenderConfig }) => {
   const fieldGroups = useRef<string[]>(Object.keys(fields).sort());

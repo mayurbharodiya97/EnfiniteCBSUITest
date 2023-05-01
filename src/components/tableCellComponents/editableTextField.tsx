@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import Input from "@material-ui/core/Input";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from "@material-ui/core/IconButton";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import FormHelperText from "@material-ui/core/FormHelperText";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { CellWrapper } from "./cellWrapper";
+import {
+  FormHelperText,
+  IconButton,
+  Input,
+  InputAdornment,
+} from "@mui/material";
 
 export const EditableTextField = (props) => {
   const {
@@ -94,7 +96,11 @@ export const EditableTextField = (props) => {
                 onClick={toggleInputType}
                 onMouseDown={handleMouseDownPassword}
               >
-                {inputType === "password" ? <Visibility /> : <VisibilityOff />}
+                {inputType === "password" ? (
+                  <VisibilityIcon />
+                ) : (
+                  <VisibilityOffIcon />
+                )}
               </IconButton>
             </InputAdornment>
           ) : null

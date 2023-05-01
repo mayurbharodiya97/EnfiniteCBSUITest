@@ -7,7 +7,7 @@ import {
   Grid,
   Slider,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { Transition } from "pages_audit/common";
 import { useRef, CSSProperties, useState, useMemo, useEffect } from "react";
@@ -49,6 +49,7 @@ export const ProfilePhotoUpdate = ({ open, onClose, files, userID }) => {
       enqueueSnackbar("Profile picture updated successfully.", {
         variant: "success",
       });
+      //console.log(data, blob);
       onClose("Y", blob);
     },
   });
@@ -61,6 +62,7 @@ export const ProfilePhotoUpdate = ({ open, onClose, files, userID }) => {
           ? await URL.createObjectURL(filesObj?.[0]?.blob as any)
           : null;
       setFilesData(filesObj);
+      //console.log(fileURL.current, filesObj);
     } else {
       setFilesData([]);
       fileURL.current = null;
@@ -82,6 +84,7 @@ export const ProfilePhotoUpdate = ({ open, onClose, files, userID }) => {
       onDropFile(files);
     }
   }, [files, onDropFile]);
+  // console.log(filesdata);
 
   return (
     <Dialog

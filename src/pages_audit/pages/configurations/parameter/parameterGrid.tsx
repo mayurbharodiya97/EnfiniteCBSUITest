@@ -1,5 +1,5 @@
 import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import {
   Fragment,
   useEffect,
@@ -42,9 +42,12 @@ export const Parameters = () => {
   const { getEntries } = useContext(ClearCacheContext);
   const [actionMenu, setActionMenu] = useState(actions);
   const [paraType, setParaType] = useState("H");
+  const [rowData, setRowData] = useState([]);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const setCurrentAction = useCallback(
     (data) => {
+      setRowData(data?.rows);
       if (data.name === "global") {
         setActionMenu((values: any) => {
           return values.map((item) => {

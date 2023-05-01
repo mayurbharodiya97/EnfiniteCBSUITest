@@ -1,14 +1,12 @@
 import { Fragment, useContext, useState } from "react";
-import Dialog from "@material-ui/core/Dialog";
+import Dialog from "@mui/material/Dialog";
 import { GridMetaDataType } from "components/dataTable/types";
 import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { ActionTypes } from "components/dataTable";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import { makeStyles } from "@material-ui/styles";
-
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import { CustomerConfirmMetaData, CustomerDetailsForm } from "./gridMetadata";
 import { CustomerLimitDetailsUpdate } from "./detailUpdateGrid";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,6 +16,7 @@ import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
 import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import { makeStyles } from "@mui/styles";
 
 const actions: ActionTypes[] = [
   {
@@ -240,11 +239,8 @@ export const CustomerLimitConfirmation = ({
                   </Typography>
                   <Button
                     onClick={(event) => {
-                      if (
-                        (headerData?.LAST_ENTERED_BY || "").toLowerCase() ===
-                        (authState.user.id || "").toLowerCase()
-                      ) {
-                        enqueueSnackbar("You can not confirm your own entry.", {
+                      if (authState.user.id === headerData?.LAST_ENTERED_BY) {
+                        enqueueSnackbar("You can not confirm your own Entry.", {
                           variant: "warning",
                         });
                       } else {
@@ -258,11 +254,8 @@ export const CustomerLimitConfirmation = ({
                   <Button
                     onClick={(event) => {
                       //handleSubmit(event, "Reject");
-                      if (
-                        (headerData?.LAST_ENTERED_BY || "").toLowerCase() ===
-                        (authState.user.id || "").toLowerCase()
-                      ) {
-                        enqueueSnackbar("You can not reject your own entry.", {
+                      if (authState.user.id === headerData?.LAST_ENTERED_BY) {
+                        enqueueSnackbar("You can not reject your own Entry.", {
                           variant: "warning",
                         });
                       } else {

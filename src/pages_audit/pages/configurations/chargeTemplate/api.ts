@@ -3,7 +3,7 @@ import { AuthSDK } from "registry/fns/auth";
 
 export const insertMastersData = () => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "SERVICECHARGEDML",
+    "DMLOPRATION_SERVICE_CHARGE_OPERATION",
     formData
   );
   if (status === "0") {
@@ -14,9 +14,12 @@ export const insertMastersData = () => async (formData: any) => {
 };
 export const getDetailsGridData = async (transactionID: number) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(`GETCHARGETEMPLATEDTL`, {
-      TRAN_CD: transactionID + "",
-    });
+    await AuthSDK.internalFetcher(
+      `/adminPanelCommonServiceAPI/GETCHARGETEMPLATEDTL`,
+      {
+        TRAN_CD: transactionID + "",
+      }
+    );
   if (status === "0") {
     return data.map((item) => {
       return {
@@ -35,44 +38,16 @@ export const getDetailsGridData = async (transactionID: number) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getMastersFormData = async (transactionID: number) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(
-      `GETCHARGETEMPLATEMST`,
-      {
-        TRAN_CD: transactionID + "",
-      },
-      {
-        UNIQUE_REQ_ID: "32627636893400",
-        APITOKEN: "MzI2Mjc2MzY4OTM0MDA=",
-      }
-    );
-  if (status === "0") {
-    return data[0];
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
 
 export const getMastersGridData = async () => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(`GETCHARGETEMPLATEGRID`, {
-      COMP_CD: "001 ",
-      BRANCH_CD: "001 ",
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getChargeConfirmationGridData = async () => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(`GETCONFCHARGETEMPLATEGRID`, {
-      COMP_CD: "001 ",
-      BRANCH_CD: "001 ",
-    });
+    await AuthSDK.internalFetcher(
+      `/adminPanelCommonServiceAPI/GETCHARGETEMPLATEGRID`,
+      {
+        COMP_CD: "001 ",
+        BRANCH_CD: "001 ",
+      }
+    );
   if (status === "0") {
     return data;
   } else {
@@ -82,7 +57,7 @@ export const getChargeConfirmationGridData = async () => {
 
 export const updateMastersData = () => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "SERVICECHARGEDML",
+    "DMLOPRATION_SERVICE_CHARGE_OPERATION",
     formData
   );
   if (status === "0") {
@@ -94,7 +69,7 @@ export const updateMastersData = () => async (formData: any) => {
 
 export const deleteBytransactionID = (data) => async () => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "SERVICECHARGEDML" /*`/adminPanelCommonServiceAPI/UPDCHARGETEMPLATEMST`*/,
+    "DMLOPRATION_SERVICE_CHARGE_OPERATION" /*`/adminPanelCommonServiceAPI/UPDCHARGETEMPLATEMST`*/,
     data
   );
   if (status === "0") {

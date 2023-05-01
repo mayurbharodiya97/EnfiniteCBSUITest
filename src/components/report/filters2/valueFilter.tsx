@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TextField } from "components/styledComponent/textfield";
 import { SelectRenderOnly } from "components/common/select/render";
-import Grid from "@material-ui/core/Grid";
+import { Grid } from "@mui/material";
 
 const options = [
   { label: "starts with", value: "startsWith" },

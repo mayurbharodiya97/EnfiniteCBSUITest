@@ -17,12 +17,14 @@ export const transformMetaDataAsPerRole = (
     access,
     products
   );
+  //console.log(navItems);
   let newnavItem = navItems.map((item) => {
     let { children, ...newItem } = item;
     if (Array.isArray(children) && children.length > 5) {
       if (!Boolean(newItem.seperateView)) {
         newItem.seperateView = true;
         newItem.viewName = "newfilterview";
+        //console.log(newItem);
       }
     }
     return { ...newItem, children: children };
@@ -131,6 +133,7 @@ const ishrefisNotNull = (item) => {
     !(Array.isArray(item.children) && item.children.length > 0) &&
     !Boolean(item.href)
   ) {
+    //console.log(item);
     return false;
   }
   return true;

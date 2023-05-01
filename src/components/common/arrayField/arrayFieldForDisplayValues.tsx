@@ -1,8 +1,4 @@
 import { FC, Fragment } from "react";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardHeader from "@material-ui/core/CardHeader";
 import { renderValue } from "components/dyanmicForm/utils/valueRenderer";
 import { FieldMetaDataType } from "components/dyanmicForm";
 import { cloneDeep } from "lodash-es";
@@ -10,6 +6,7 @@ import { cloneDeep } from "lodash-es";
 import { attachValuesToMetaData } from "components/dyanmicForm/utils/attachValuesToMetaData";
 //import { MetaDataType } from "components/dyanmicForm";
 import { useStyles } from "./style";
+import { Card, CardContent, CardHeader, Grid, GridProps } from "@mui/material";
 export interface ArrayField2Props {
   fieldKey: string;
   name: string;

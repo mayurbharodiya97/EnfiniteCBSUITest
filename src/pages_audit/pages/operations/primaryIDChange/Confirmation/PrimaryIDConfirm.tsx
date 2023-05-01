@@ -85,23 +85,14 @@ export const PrimaryIDChangeConfirm = () => {
             (enteredBy || "").toLowerCase() ===
             (authController?.authState?.user?.id || "").toLowerCase()
           ) {
-            enqueueSnackbar("You can not accept your own entry.", {
+            enqueueSnackbar("You can not accept your own Entry.", {
               variant: "warning",
             });
           } else {
             setIsOpenAccept(true);
           }
         } else if (data.name === "reject") {
-          if (
-            (enteredBy || "").toLowerCase() ===
-            (authController?.authState?.user?.id || "").toLowerCase()
-          ) {
-            enqueueSnackbar("You can not reject your own entry.", {
-              variant: "warning",
-            });
-          } else {
-            setIsOpenReject(true);
-          }
+          setIsOpenReject(true);
         } else {
           navigate(data?.name, {
             state: data?.rows,
@@ -179,16 +170,16 @@ export const PrimaryIDChangeConfirm = () => {
         setAction={setCurrentAction}
         refetchData={() => refetch()}
         ref={myGridRef}
-        // defaultFilter={[
-        //   {
-        //     id: "STATUS",
-        //     value: {
-        //       columnName: "Status",
-        //       condition: "equal",
-        //       value: "Pending",
-        //     },
-        //   },
-        // ]}
+        defaultFilter={[
+          {
+            id: "STATUS",
+            value: {
+              columnName: "Status",
+              condition: "equal",
+              value: "Pending",
+            },
+          },
+        ]}
       />
       {isOpenAccept ? (
         <PopupMessageAPIWrapper

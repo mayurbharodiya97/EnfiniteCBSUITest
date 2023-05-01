@@ -1,15 +1,17 @@
 import { useRef, useCallback, useState, createElement } from "react";
-import FilterListTwoToneIcon from "@material-ui/icons/FilterListTwoTone";
-import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+import FilterListTwoToneIcon from "@mui/icons-material/FilterListTwoTone";
+import IconButton from "@mui/material/IconButton";
+import {
+  AppBar,
+  Button,
+  CardContent,
+  Drawer,
+  Grid,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
 export const filterReducer = (state: any = [], action: any = {}) => {
   switch (action.type) {
@@ -109,7 +111,7 @@ export const TableFilterComponent = ({
   }
   //console.log("TableFilterComponent", filterColumns);
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <LocalizationProvider utils={AdapterDateFns}>
       <IconButton
         aria-label="more"
         aria-controls="long-menu"
@@ -147,6 +149,6 @@ export const TableFilterComponent = ({
           </Grid>
         </CardContent>
       </Drawer>
-    </MuiPickersUtilsProvider>
+    </LocalizationProvider>
   );
 };

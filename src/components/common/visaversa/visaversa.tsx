@@ -4,11 +4,10 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 import { TextField } from "components/styledComponent";
-import { TextFieldProps } from "@material-ui/core/TextField";
-import NumberFormat from "react-number-format";
+import { NumericFormat } from "react-number-format";
 import { Merge } from "../types";
+import { Grid, GridProps, TextFieldProps } from "@mui/material";
 
 /* eslint-disable  react-hooks/exhaustive-deps */
 interface VisaversaProps {
@@ -29,7 +28,7 @@ export type MyVisaversaProps = UseFieldHookProps & MyTextFieldAllProps;
 function NumberFormatCustom(props) {
   const { inputRef, onChange, FormatProps, ...other } = props;
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={inputRef}
       onValueChange={(values) => {
@@ -51,7 +50,7 @@ function NumberFormatCustom(props) {
 function PercentageFormatCustom(props) {
   const { inputRef, onChange, FormatProps, ...other } = props;
   return (
-    <NumberFormat
+    <NumericFormat
       {...other}
       getInputRef={inputRef}
       onValueChange={(values) => {

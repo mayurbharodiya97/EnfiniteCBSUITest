@@ -1,5 +1,5 @@
 import Report from "components/report";
-import { getDateRetrievalReportData } from "../staticReports/api";
+import { getRegisterCustDetails } from "../api";
 import { useLocation } from "react-router-dom";
 import * as API from "../api";
 import { useQuery } from "react-query";
@@ -8,7 +8,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 export const DynamicReports = () => {
   const location = useLocation();
-  const { search } = location;
+  const { key, search } = location;
   let params = new URLSearchParams(search);
   const reportID = params.get("reportID");
   const { data, isLoading, isFetching, isError, error } = useQuery<any, any>(
@@ -18,7 +18,7 @@ export const DynamicReports = () => {
 
   return (
     <>
-      {isLoading || isFetching ? (
+      {isLoading ? (
         <LoaderPaperComponent />
       ) : isError ? (
         <Alert
@@ -31,7 +31,7 @@ export const DynamicReports = () => {
         <Report
           reportID={reportID}
           reportName={"reportID-" + reportID}
-          dataFetcher={getDateRetrievalReportData}
+          dataFetcher={getRegisterCustDetails}
           metaData={data}
           disableFilters
           maxHeight={window.innerHeight - 250}

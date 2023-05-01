@@ -3,10 +3,9 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  makeStyles,
   Toolbar,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Transition } from "pages_audit/common";
 import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
@@ -19,6 +18,7 @@ import * as API from "../api";
 import { ClearCacheContext, queryClient } from "cache";
 import { useSnackbar } from "notistack";
 import { CreateDetailsRequestData, utilFunction } from "components/utils";
+import { makeStyles } from "@mui/styles";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",
@@ -154,6 +154,7 @@ export const SpecialAmountGrid = ({
             ...reqDataRef.current,
             DETAILS_DATA: finalResult,
           };
+          //console.log(reqData);
           mutation.mutate({ data: reqData });
         }
       }

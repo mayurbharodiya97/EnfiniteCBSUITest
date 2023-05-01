@@ -1,4 +1,3 @@
-import { Button, CircularProgress, Dialog } from "@material-ui/core";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import FormWrapper from "components/dyanmicForm";
 import { Transition } from "pages_audit/common";
@@ -11,6 +10,7 @@ import { extractMetaData, utilFunction } from "components/utils";
 import { useMutation } from "react-query";
 import * as API from "../api";
 import { AuthContext } from "pages_audit/auth";
+import { Button, CircularProgress, Dialog } from "@mui/material";
 interface updateBankMasterDataType {
   data: object;
   displayData?: object;
@@ -43,7 +43,7 @@ export const CRUDBankMaster = ({
           errorMsg = error?.error_msg ?? errorMsg;
           isPrimaryKeyError = error?.isPrimaryKeyError;
         }
-
+        console.log(isPrimaryKeyError);
         if (Boolean(isPrimaryKeyError)) {
           endSubmit(false, errorMsg);
           setFieldError({ ROUTING_NO: isPrimaryKeyError });
@@ -73,8 +73,9 @@ export const CRUDBankMaster = ({
       return;
     }
   }, [rows, enqueueSnackbar, ClosedEventCall]);
-
+  //console.log(rows);
   const onSubmitHandler = (data, displayData, endSubmit, setFieldErrors) => {
+    //console.log(data);
     let updateValue: any = {};
     if (formMode !== "new") {
       updateValue = utilFunction.transformDetailsData(

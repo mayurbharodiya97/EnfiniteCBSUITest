@@ -1,17 +1,13 @@
 import { useRef, useState, forwardRef, useMemo } from "react";
-import Dialog from "@material-ui/core/Dialog";
 import { Transition } from "pages_audit/common";
 import { FormComponentView } from "components/formcomponent";
-import AppBar from "@material-ui/core/AppBar";
-import { makeStyles } from "@material-ui/styles";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 import { DetailsGridWithHeaderArguType } from "./type";
 import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { Alert } from "components/common/alert";
+import { AppBar, Button, Dialog, Toolbar, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",

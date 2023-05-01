@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { SelectWithoutOptions } from "components/common/select/render2";
-import Grid from "@material-ui/core/Grid";
 import { useOptionsFetcherSimpleWithRemoveCache } from "components/common/utils";
+import { Grid } from "@mui/material";
 
 export const OptionsFilter = ({
   filterValue,

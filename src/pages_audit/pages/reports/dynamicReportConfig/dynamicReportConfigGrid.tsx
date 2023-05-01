@@ -1,5 +1,5 @@
-import { ClearCacheContext, queryClient } from "cache";
-import { useQuery } from "react-query";
+import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
+import { useMutation, useQuery } from "react-query";
 import {
   Fragment,
   useEffect,
@@ -15,6 +15,7 @@ import { GridMetaDataType } from "components/dataTable/types";
 import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
 import { DynamicReportConfigGridMData } from "./gridMetadata";
+import { useSnackbar } from "notistack";
 import {
   AddDynamicReportConfigWrapper,
   ViewEditDynamicReportConfigWrapper,
@@ -40,9 +41,12 @@ export const DynamicReportConfig = () => {
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
   const [actionMenu, setActionMenu] = useState(actions);
+  const [rowData, setRowData] = useState([]);
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
   const setCurrentAction = useCallback(
     (data) => {
+      setRowData(data?.rows);
       if (data.name === "global") {
         setActionMenu((values: any) => {
           return values.map((item) => {

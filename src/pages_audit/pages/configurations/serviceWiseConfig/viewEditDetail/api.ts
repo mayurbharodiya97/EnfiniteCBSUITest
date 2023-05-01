@@ -13,23 +13,11 @@ export const getServiceConfigFormData = async (tranCD) => {
     return data.map((item) => {
       return {
         ...item,
-        START_TIME:
-          parse(
-            item.START_TIME,
-            "dd/MM/yyyy HH:mm:ss",
-            new Date()
-          ).toString() !== "Invalid Date"
-            ? parse(item.START_TIME, "dd/MM/yyyy HH:mm:ss", new Date())
-            : "",
-        END_TIME: parse(
-          item.END_TIME,
-          "dd/MM/yyyy HH:mm:ss",
-          new Date()
-        ).toString()
-          ? parse(item.END_TIME, "dd/MM/yyyy HH:mm:ss", new Date())
-          : "",
+        START_TIME: parse(item.START_TIME, "dd/MM/yyyy HH:mm:ss", new Date()),
+        END_TIME: parse(item.END_TIME, "dd/MM/yyyy HH:mm:ss", new Date()),
       };
     });
+    //console.log(response);
     //return response;
   } else {
     throw DefaultErrorObject(message, messageDetails);

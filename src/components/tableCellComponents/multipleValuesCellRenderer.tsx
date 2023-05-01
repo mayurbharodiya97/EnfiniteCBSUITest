@@ -1,7 +1,7 @@
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import { withStyles, Theme } from "@material-ui/core/styles";
-import Tooltip from "@material-ui/core/Tooltip";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { withStyles } from "@mui/styles";
 import { CellWrapper } from "./cellWrapper";
+import { Theme, Tooltip } from "@mui/material";
 
 const HtmlTooltip = withStyles((theme: Theme) => ({
   tooltip: {

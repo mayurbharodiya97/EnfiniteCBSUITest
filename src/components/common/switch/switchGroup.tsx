@@ -1,22 +1,26 @@
 import { FC, useCallback, useState } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import FormLabel, { FormLabelProps } from "@material-ui/core/FormLabel";
-import FormGroup, { FormGroupProps } from "@material-ui/core/FormGroup";
-import FormControlLabel, {
-  FormControlLabelProps,
-} from "@material-ui/core/FormControlLabel";
-import FormControl, { FormControlProps } from "@material-ui/core/FormControl";
-import Switch, { SwitchProps } from "@material-ui/core/Switch";
-import FormHelperText, {
-  FormHelperTextProps,
-} from "@material-ui/core/FormHelperText";
-import Grid, { GridProps } from "@material-ui/core/Grid";
-import CircularProgress, {
-  CircularProgressProps,
-} from "@material-ui/core/CircularProgress";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import { Merge, OptionsProps } from "../types";
 import { getLabelFromValues, useOptionsFetcher } from "../utils";
+import {
+  CircularProgress,
+  CircularProgressProps,
+  FormControl,
+  FormControlLabel,
+  FormControlLabelProps,
+  FormControlProps,
+  FormGroup,
+  FormGroupProps,
+  FormHelperText,
+  FormHelperTextProps,
+  FormLabel,
+  FormLabelProps,
+  Grid,
+  GridProps,
+  InputAdornment,
+  Switch,
+  SwitchProps,
+} from "@mui/material";
 
 interface extendedFiledProps extends UseFieldHookProps {
   options: OptionsProps[];

@@ -11,8 +11,8 @@ import { useQueries } from "react-query";
 import { ClearCacheContext, cacheWrapperKeyGen } from "cache";
 import { ActionTypes, GridMetaDataType } from "components/dataTable";
 import { DOCCRUDContext } from "./context";
-import Alert from "@material-ui/lab/Alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import Alert from "@mui/material/Alert";
 
 type GridWrapperType = {
   actions: ActionTypes[];

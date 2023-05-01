@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { ChipTextField } from "components/styledComponent/textfield";
-import Chip from "@material-ui/core/Chip";
-import Grid from "@material-ui/core/Grid";
+import { Chip, Grid } from "@mui/material";
 
 const getChipProps = (index) => ({
   "data-tag-index": index,

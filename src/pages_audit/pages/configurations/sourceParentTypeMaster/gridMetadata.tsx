@@ -1,6 +1,4 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-import { AuthContext } from "pages_audit/auth";
-
 export const SourceParentGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
@@ -67,18 +65,6 @@ export const SourceParentGridMetaData: GridMetaDataType = {
         type: "string",
         rules: [{ name: "required", params: ["This field is required"] }],
       },
-    },
-    {
-      accessor: "COMP_CD",
-      columnName: "COMP_CD",
-      sequence: 2,
-      alignment: "left",
-      componentType: "editableTextField",
-      placeholder: "",
-      width: 120,
-      minWidth: 120,
-      isVisible: false,
-      maxWidth: 400,
     },
     {
       accessor: "SOURCE_TYPE",

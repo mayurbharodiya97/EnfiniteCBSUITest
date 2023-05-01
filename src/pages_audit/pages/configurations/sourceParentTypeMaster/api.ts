@@ -16,15 +16,3 @@ export const getSourceParentGridData = async () => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
-export const updSourceParentGridData = async ({ data, setServerError }) => {
-  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "UPDSOURCEPARENTTYPE",
-    data
-  );
-  if (status === "0") {
-    return message;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};

@@ -1,5 +1,5 @@
+import { TableSortLabel } from "@mui/material";
 import { useRef } from "react";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
 import { useDrag, useDrop } from "react-dnd";
 
 export const DefaultHeaderColumnRenderer = ({
@@ -10,11 +10,12 @@ export const DefaultHeaderColumnRenderer = ({
 }) => {
   //Column change order using drag and drop
   const [{ isDragging }, drag] = useDrag({
+    type: "Column",
     item: { type: "Column" },
     collect: (monitor) => ({ isDragging: !!monitor.isDragging() }),
     end: (_, monitor) => {
       if (monitor.didDrop()) {
-        const { id } = monitor.getDropResult();
+        const { id }: any = monitor.getDropResult();
         const columns = visibleColumns.map((one) => one.id);
         const toIndex = columns.indexOf(id);
         const fromIndex = columns.indexOf(column.id);

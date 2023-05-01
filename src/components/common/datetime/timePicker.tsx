@@ -2,17 +2,14 @@ import { FC, useEffect, useRef } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
 import { KeyboardTimePickerProps } from "@material-ui/pickers";
 import { KeyboardTimePicker } from "components/styledComponent/datetime";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 
 import { Omit, Merge } from "../types";
 
-//import { theme2 } from "app/audit/theme";
+import { theme2 } from "app/audit/theme";
 import "./styleTimepicker.css";
-// import {
-//   ThemeProvider,
-//   unstable_createMuiStrictModeTheme,
-// } from "@material-ui/core";
-// const themeObj = unstable_createMuiStrictModeTheme(theme2);
+import { unstable_createMuiStrictModeTheme } from "@mui/material/styles";
+import { Grid, GridProps } from "@mui/material";
+const themeObj = unstable_createMuiStrictModeTheme(theme2);
 
 type KeyboardTimePickerPropsSubset = Omit<
   KeyboardTimePickerProps,

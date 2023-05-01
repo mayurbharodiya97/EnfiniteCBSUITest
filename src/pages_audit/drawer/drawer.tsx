@@ -1,13 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import Drawer from "@material-ui/core/Drawer";
-import Divider from "@material-ui/core/Divider";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import IconButton from "@material-ui/core/IconButton";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import clsx from "clsx";
-// import Logo from "assets/images/netbankinglogo.png";
-import Logo from "assets/images/EasyNetPro.png";
+import Logo from "assets/images/netbankinglogo.png";
 
 import { useStyles } from "./style";
+import { Divider, Drawer, IconButton } from "@mui/material";
 
 export const MyDrawer = ({ open, handleDrawerClose, children }) => {
   const classes = useStyles();
@@ -27,7 +24,7 @@ export const MyDrawer = ({ open, handleDrawerClose, children }) => {
           className={classes.logo}
           onClick={(e) => {
             e.preventDefault();
-            navigate("./dashboard");
+            navigate("./");
           }}
         />
         <IconButton onClick={handleDrawerClose}>

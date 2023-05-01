@@ -1,14 +1,14 @@
 import { useState, useRef } from "react";
-import { TextField } from "components/styledComponent/textfield";
+import { GradientButton } from "components/styledComponent/button";
+import { useStyles } from "pages_audit/auth/style";
 import {
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
-import { GradientButton } from "components/styledComponent/button";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { useStyles } from "pages_audit/auth/style";
+  TextField,
+} from "@mui/material";
 const inititalState = {
   loading: false,
   isError: false,

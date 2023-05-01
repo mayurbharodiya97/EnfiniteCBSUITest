@@ -1,4 +1,4 @@
-import Checkbox from "@material-ui/core/Checkbox";
+import { Checkbox } from "@mui/material";
 
 export const useCheckboxColumn = (visible) => (hooks) => {
   if (Boolean(visible)) {

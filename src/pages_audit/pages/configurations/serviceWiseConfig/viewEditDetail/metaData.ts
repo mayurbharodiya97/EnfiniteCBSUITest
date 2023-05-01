@@ -74,8 +74,6 @@ export const ServiceWiseConfigMetadata = {
       label: "Description",
       placeholder: "",
       type: "text",
-      required: true,
-      validate: "getValidateValue",
       GridProps: {
         xs: 12,
         md: 3,
@@ -90,8 +88,6 @@ export const ServiceWiseConfigMetadata = {
       label: "Daily Limit",
       placeholder: "",
       type: "text",
-      required: true,
-      validate: "getValidateValue",
       GridProps: {
         xs: 12,
         md: 3,
@@ -111,18 +107,6 @@ export const ServiceWiseConfigMetadata = {
         md: 3,
         sm: 2,
       },
-      dependentFields: ["DAILY_AMT"],
-      runValidationOnDependentFieldsChange: true,
-      validate: (currentField, dependentFields) => {
-        if (
-          Number(dependentFields?.DAILY_AMT?.value) >
-          Number(currentField?.value)
-        ) {
-          return "Weekly Limit should greater than or equal to Daily Limit";
-        } else {
-          return "";
-        }
-      },
     },
     {
       render: {
@@ -136,23 +120,6 @@ export const ServiceWiseConfigMetadata = {
         xs: 12,
         md: 3,
         sm: 2,
-      },
-      dependentFields: ["DAILY_AMT", "WEEKLY_AMT"],
-      runValidationOnDependentFieldsChange: true,
-      validate: (currentField, dependentFields) => {
-        if (
-          Number(dependentFields?.DAILY_AMT?.value) >
-          Number(currentField?.value)
-        ) {
-          return "Monthly Limit should greater than or equal to Daily Limit";
-        } else if (
-          Number(dependentFields?.WEEKLY_AMT?.value) >
-          Number(currentField?.value)
-        ) {
-          return "Monthly Limit should greater than or equal to Weekly Limit";
-        } else {
-          return "";
-        }
       },
     },
 
@@ -169,8 +136,6 @@ export const ServiceWiseConfigMetadata = {
         md: 3,
         sm: 2,
       },
-      required: true,
-      validate: "getValidateValue",
     },
 
     {
@@ -186,19 +151,6 @@ export const ServiceWiseConfigMetadata = {
         md: 3,
         sm: 2,
       },
-      runValidationOnDependentFieldsChange: true,
-      dependentFields: ["MIN_AMT"],
-      validate: (currentField, dependentFields) => {
-        if (!currentField?.value) {
-          return "This field is required";
-        } else if (
-          Number(dependentFields?.MIN_AMT?.value) > Number(currentField?.value)
-        ) {
-          return "Maximum Amount should greater than or equal to Minimum Amount";
-        } else {
-          return "";
-        }
-      },
     },
     {
       render: {
@@ -213,8 +165,6 @@ export const ServiceWiseConfigMetadata = {
         md: 3,
         sm: 2,
       },
-      required: true,
-      validate: "getValidateValue",
     },
     {
       render: {
@@ -258,18 +208,6 @@ export const ServiceWiseConfigMetadata = {
         md: 3,
         sm: 2,
       },
-      runValidationOnDependentFieldsChange: true,
-      dependentFields: ["TRAN_TIME"],
-      validate: (currentField, dependentFields) => {
-        if (
-          dependentFields?.TRAN_TIME?.value !== "24" &&
-          !currentField?.value
-        ) {
-          return "This field is required";
-        } else {
-          return "";
-        }
-      },
     },
     {
       render: {
@@ -285,24 +223,6 @@ export const ServiceWiseConfigMetadata = {
         md: 3,
         sm: 2,
       },
-      runValidationOnDependentFieldsChange: true,
-      dependentFields: ["TRAN_TIME", "START_TIME"],
-      validate: (currentField, dependentFields) => {
-        if (
-          dependentFields?.TRAN_TIME?.value !== "24" &&
-          !currentField?.value
-        ) {
-          return "This field is required";
-        } else if (
-          dependentFields?.TRAN_TIME?.value !== "24" &&
-          new Date(dependentFields?.START_TIME?.value).getTime() >=
-            new Date(currentField?.value).getTime()
-        ) {
-          return "End Time should greater than Start Time";
-        } else {
-          return "";
-        }
-      },
     },
     {
       render: {
@@ -317,22 +237,6 @@ export const ServiceWiseConfigMetadata = {
         xs: 12,
         md: 3,
         sm: 2,
-      },
-      maxLength: 3,
-      showMaxLength: false,
-      FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: true,
-        decimalScale: 0,
-        isAllowed: (values) => {
-          if (values?.value?.length > 3) {
-            return false;
-          }
-          if (values?.value > 100) {
-            return false;
-          }
-          return true;
-        },
       },
     },
     {
@@ -385,8 +289,6 @@ export const ServiceWiseConfigMetadata = {
         md: 3,
         sm: 2,
       },
-      required: true,
-      validate: "getValidateValue",
     },
     {
       render: {
@@ -471,42 +373,6 @@ export const ServiceWiseConfigMetadata = {
         md: 3,
         sm: 2,
       },
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "ENTERED_BY",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "ENTERED_DATE",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "MACHINE_NM",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "LAST_ENTERED_BY",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "LAST_MODIFIED_DATE",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "LAST_MACHINE_NM",
     },
   ],
 };

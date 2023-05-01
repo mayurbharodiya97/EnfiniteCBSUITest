@@ -1,16 +1,14 @@
 import { FC, useContext, useRef, useEffect } from "react";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { useMutation, useQuery } from "react-query";
 import { SubmitFnType } from "packages/form";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { cacheWrapperKeyGen, ClearCacheContext } from "cache";
 import { cloneDeep } from "lodash-es";
 import { CRUDContext } from "./context";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { useSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Button, CircularProgress, IconButton } from "@mui/material";
 
 interface InsertFormDataFnType {
   data: object;

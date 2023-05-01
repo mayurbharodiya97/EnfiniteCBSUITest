@@ -7,7 +7,6 @@ import {
   useContext,
   FC,
 } from "react";
-import Dialog from "@material-ui/core/Dialog";
 import { ActionTypes } from "components/dataTable";
 import { queryClient } from "cache";
 import { MyGridWrapper } from "./gridWrapper";
@@ -19,6 +18,7 @@ import { Download } from "./download";
 import { PreviewWrapper } from "./view";
 import { InvalidAction } from "pages_audit/common/invalidAction";
 import { DOCCRUDContext } from "./context";
+import { Dialog } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {

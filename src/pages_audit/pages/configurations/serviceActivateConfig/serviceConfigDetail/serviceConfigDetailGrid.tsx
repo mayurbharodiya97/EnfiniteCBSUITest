@@ -1,7 +1,15 @@
-import { ClearCacheContext, queryClient } from "cache";
+import { ClearCacheProvider, ClearCacheContext, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
-import { useEffect, useContext, useRef, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
+import {
+  Fragment,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { GridMetaDataType } from "components/dataTable/types";
 import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
@@ -14,12 +22,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Transition } from "pages_audit/common/transition";
 import { useSnackbar } from "notistack";
 import { LoadingTextAnimation } from "components/common/loader";
 import { Alert } from "components/common/alert";
 import { format } from "date-fns";
+import { extractGridMetaData } from "components/utils";
 const actions: ActionTypes[] = [
   {
     actionName: "Add",
@@ -111,6 +120,7 @@ export const ServiceConfigDetail = ({ ClosedEventCall }) => {
         };
       }
     );
+    //console.log(data);
     isDataUpdateRef.current = { data, mode, setServerError };
     SetConfirmation(true);
   };

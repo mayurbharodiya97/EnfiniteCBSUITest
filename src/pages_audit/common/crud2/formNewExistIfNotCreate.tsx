@@ -4,10 +4,9 @@ import { ClearCacheContext } from "cache";
 import { FormNew } from "./formNew";
 import { CRUDContext } from "./context";
 import { cacheWrapperKeyGen } from "cache";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
-import Alert from "@material-ui/lab/Alert";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert, IconButton } from "@mui/material";
 
 export const FormNewExistsIfNotCreate = ({
   isDataChangedRef,

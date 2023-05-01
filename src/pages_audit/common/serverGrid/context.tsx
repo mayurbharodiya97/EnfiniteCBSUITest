@@ -9,6 +9,7 @@ interface CRUDFNType {
 interface ServerGridProviderType {
   getGridMetaData: CRUDFNType;
   getGridData: CRUDFNType;
+  children?: any;
 }
 
 export const ServerGridContext = createContext<ServerGridProviderType>(

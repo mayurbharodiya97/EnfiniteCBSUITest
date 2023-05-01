@@ -49,7 +49,7 @@ export const GetLeafTemplateDD = async () => {
 };
 export const insertMastersData = () => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "SCHEMEMSTDML",
+    "SCHEMEOPERATION",
     formData
   );
   if (status === "0") {
@@ -75,7 +75,6 @@ export const getMastersGridData = async () => {
     await AuthSDK.internalFetcher(`GETSCHEMEMASTERGRIDDATA`, {
       COMP_CD: "001 ",
       BRANCH_CD: "001 ",
-      CONFIRMED: "ALL",
     });
   if (status === "0") {
     return data;
@@ -86,7 +85,7 @@ export const getMastersGridData = async () => {
 
 export const updateMastersData = () => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "SCHEMEMSTDML",
+    "SCHEMEOPERATION",
     formData
   );
   if (status === "0") {
@@ -98,59 +97,12 @@ export const updateMastersData = () => async (formData: any) => {
 
 export const deleteBytransactionID = (data) => async () => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "SCHEMEMSTDML" /*`/adminPanelCommonServiceAPI/UPDCHARGETEMPLATEMST`*/,
+    "SCHEMEOPERATION" /*`/adminPanelCommonServiceAPI/UPDCHARGETEMPLATEMST`*/,
     data
   );
   if (status === "0") {
     return message;
   } else {
     throw DefaultErrorObject(message);
-  }
-};
-
-export const getMastersConfirmGridData = async () => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(`GETSCHEMEMASTERGRIDDATA`, {
-      COMP_CD: "001 ",
-      BRANCH_CD: "001 ",
-      CONFIRMED: "N",
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const confirmSchemeMasterData = async ({
-  compCode,
-  branchCode,
-  tranCode,
-  confirmed,
-}) => {
-  console.log(">>compCode", compCode);
-  if (!Boolean(compCode)) {
-    throw DefaultErrorObject("Company Code is not valid");
-  } else if (!Boolean(branchCode)) {
-    throw DefaultErrorObject("Branch Code is not valid");
-  } else if (!Boolean(tranCode)) {
-    throw DefaultErrorObject("Transaction Code is not valid");
-  } else if (!Boolean(confirmed)) {
-    throw DefaultErrorObject("Confirmed is not valid");
-  } else {
-    const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-      "CONFIRMSCHEMEMASTER",
-      {
-        COMP_CD: compCode,
-        BRANCH_CD: branchCode,
-        TRAN_CD: tranCode,
-        CONFIRMED: confirmed,
-      }
-    );
-    if (status === "0") {
-      return message;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
   }
 };

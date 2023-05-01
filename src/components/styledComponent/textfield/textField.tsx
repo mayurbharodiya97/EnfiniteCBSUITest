@@ -1,7 +1,6 @@
 import TextField from "@material-ui/core/TextField";
 
-import { withStyles } from "@material-ui/core/styles";
-
+import { withStyles } from "@mui/styles";
 const StyledTextField = withStyles({
   root: {
     "& .MuiInputLabel-formControl": {

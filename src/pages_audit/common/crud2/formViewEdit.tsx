@@ -6,10 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import HighlightOffOutlinedIcon from "@material-ui/icons/HighlightOffOutlined";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType, InitialValuesType } from "packages/form";
 import { useMutation, useQueries } from "react-query";
@@ -18,6 +15,7 @@ import { cloneDeep } from "lodash-es";
 import { CRUDContext } from "./context";
 import { useSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Button, CircularProgress, IconButton } from "@mui/material";
 
 interface updateFormDataType {
   data: object;

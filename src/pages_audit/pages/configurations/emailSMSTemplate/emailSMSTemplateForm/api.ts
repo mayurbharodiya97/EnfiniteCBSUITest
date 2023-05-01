@@ -35,7 +35,7 @@ export const getEmailSMSConfigDtlList = async (tranCode) => {
 };
 export const updateEmailSMSConfig = async (reqdata) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "EMAILMSGCONFIGUPDATEDML",
+    "EMAILMSGCONFIGUPDATE",
     reqdata
   );
   if (status === "0") {

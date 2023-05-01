@@ -1,6 +1,6 @@
+import { Grid } from "@mui/material";
 import { DateRange } from "./dateRange";
 import { ValueRange } from "./valueRange";
-import Grid from "@material-ui/core/Grid";
 
 export const RangeFilter = (props) => {
   const { filterProps } = props;

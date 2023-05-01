@@ -1,6 +1,8 @@
-import { makeStyles } from "@material-ui/core/styles";
+// import { createTheme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+// const theme = createTheme();
 
-export const useStylesBootstrapNav = makeStyles((theme) => ({
+export const useStylesBootstrapNav = makeStyles((theme: any) => ({
   navBarCSS: {
     padding: "4px 1rem ",
     backgroundColor: "#fff !important",
@@ -48,7 +50,7 @@ export const useStylesBootstrapNav = makeStyles((theme) => ({
   },
 }));
 
-export const useStylesSideBar = makeStyles((theme) => ({
+export const useStylesSideBar = makeStyles((theme: any) => ({
   root: {
     justifyContent: "left",
   },

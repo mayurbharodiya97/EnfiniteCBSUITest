@@ -1,9 +1,8 @@
 import styles from "./styles";
 
-import { KeyboardDatePicker } from "@material-ui/pickers";
+import DatePicker from "@mui/lab/DatePicker";
 
-import { withStyles } from "@material-ui/core/styles";
-
-const StyledKeyboardDatePicker = withStyles(styles)(KeyboardDatePicker);
+import { withStyles } from "@mui/styles";
+const StyledKeyboardDatePicker = withStyles(styles)(DatePicker);
 
 export default StyledKeyboardDatePicker;

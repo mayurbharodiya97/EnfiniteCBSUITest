@@ -1,4 +1,4 @@
-import TableSortLabel from "@material-ui/core/TableSortLabel";
+import { TableSortLabel } from "@mui/material";
 import { Fragment } from "react";
 
 export const HeaderColumnCell = (props) => {

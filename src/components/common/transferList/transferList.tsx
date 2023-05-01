@@ -1,18 +1,20 @@
 import { useState, FC, Fragment, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
-import List from "@material-ui/core/List";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import Checkbox from "@material-ui/core/Checkbox";
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { useStyles } from "./style";
 import { OptionsProps } from "../types";
-import { Typography } from "@material-ui/core";
+import {
+  Button,
+  Card,
+  CardHeader,
+  Checkbox,
+  Divider,
+  FormHelperText,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 
 const not = (a: OptionsProps[], b: OptionsProps[]) => {
   return a.filter(

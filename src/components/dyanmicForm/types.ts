@@ -1,4 +1,4 @@
-import { GridSize, GridSpacing, GridDirection } from "@material-ui/core/Grid";
+import { GridDirection, GridSize, GridSpacing } from "@mui/material";
 import {
   AllTextFieldProps,
   AllSelectFieldProps,
@@ -250,4 +250,5 @@ export interface FormProps {
   formName: string;
   handleSubmitPartial?: any;
   handleSubmit?: any;
+  children?: any;
 }

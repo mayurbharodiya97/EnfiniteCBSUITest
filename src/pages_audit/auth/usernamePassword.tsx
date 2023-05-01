@@ -1,25 +1,17 @@
 import { Fragment, useState, useEffect, useRef } from "react";
 import { TextField } from "components/styledComponent/textfield";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { GradientButton } from "components/styledComponent/button";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import IconButton from "@material-ui/core/IconButton";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
 export const UsernamePasswordField = ({
   classes,
   loginState,
   verifyUsernamePassword,
 }) => {
   const [input, setInput] = useState({ userName: "", password: "" });
-  const [showPasswordTime, setShowPasswordTime] = useState(0);
-  const showPassword = Date.now() < showPasswordTime;
-  const [, forceUpdate] = useState<any | null>();
-  const timerRef = useRef<any>(null);
-  useEffect(() => {
-    return () => clearTimeout(timerRef.current);
-  }, []);
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -55,7 +47,7 @@ export const UsernamePasswordField = ({
   }, [loginState.otpmodelClose]);
   return (
     <Fragment>
-      <div className="text">Login with your Username and Password</div>
+      <div className="text">Login with your userID and Password</div>
       <div className={classes.formWrap}>
         <TextField
           autoFocus={true}
@@ -118,19 +110,11 @@ export const UsernamePasswordField = ({
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => {
-                      if (!showPassword) {
-                        setShowPasswordTime(Date.now() + 5000);
-                        timerRef.current = setTimeout(
-                          () => forceUpdate(Date.now()),
-                          5000
-                        );
-                      } else if (showPassword) setShowPasswordTime(0);
-                    }}
+                    onClick={() => setShowPassword((old) => !old)}
                     onMouseDown={(e) => e.preventDefault()}
                     disabled={loginState.loading}
                   >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
                   </IconButton>
                 </InputAdornment>
               ),

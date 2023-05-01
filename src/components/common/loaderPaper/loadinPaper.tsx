@@ -1,4 +1,4 @@
-import { Paper } from "@material-ui/core";
+import { Paper } from "@mui/material";
 import { LoadingTextAnimation } from "../loader/textLoading";
 import "./loader.css";
 export const LoaderPaperComponent = (props) => {

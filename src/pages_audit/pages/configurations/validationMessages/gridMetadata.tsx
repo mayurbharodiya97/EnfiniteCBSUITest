@@ -66,7 +66,6 @@ export const ValidationMessagesGridMetaData: GridMetaDataType = {
       minWidth: 60,
       maxWidth: 100,
       isAutoSequence: true,
-      isColumnHidingDisabled: true,
     },
     {
       accessor: "MSG_ID",
@@ -101,7 +100,6 @@ export const ValidationMessagesGridMetaData: GridMetaDataType = {
       minWidth: 400,
       maxWidth: 800,
       showTooltip: true,
-      isColumnHidingDisabled: true,
     },
     {
       accessor: "MSG_TEXT_BN",
@@ -113,7 +111,6 @@ export const ValidationMessagesGridMetaData: GridMetaDataType = {
       minWidth: 400,
       maxWidth: 800,
       showTooltip: true,
-      isColumnHidingDisabled: true,
     },
   ],
 };

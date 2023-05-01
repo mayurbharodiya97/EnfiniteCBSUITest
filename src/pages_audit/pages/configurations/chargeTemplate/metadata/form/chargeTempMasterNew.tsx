@@ -4,8 +4,8 @@ export const chargeTempMasterDetailsMetaData: MasterDetailsMetaData = {
   masterForm: {
     form: {
       name: "addChargeTemp",
-      label: "Service Charge Template Confirmation",
-      resetFieldOnUmnount: false,
+      label: "Charge Template",
+      resetFieldOnUnmount: false,
       validationRun: "onBlur",
       render: {
         ordering: "auto",

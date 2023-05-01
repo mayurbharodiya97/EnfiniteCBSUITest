@@ -6,11 +6,14 @@ import { GridMetaDataType } from "components/dataTable/types";
 import { ActionTypes } from "components/dataTable";
 import * as API from "../api";
 import { AmountLabelsGridMetaData } from "./gridMetadata";
+import { useSnackbar } from "notistack";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
-import { AppBar, Button, Dialog, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Button, Dialog, Toolbar, Typography } from "@mui/material";
 import { Transition } from "pages_audit/common/transition";
 import { GradientButton } from "components/styledComponent/button";
 import { AmountLabelDetailsUpdate } from "./amountLabels";
+import { CreateDetailsRequestData } from "components/utils";
+import { makeStyles } from "@mui/styles";
 //import { ReleaseUsersAPIWrapper } from "../releaseUsers";
 const actions: ActionTypes[] = [
   {
@@ -21,6 +24,25 @@ const actions: ActionTypes[] = [
   },
 ];
 
+const useHeaderStyles = makeStyles((theme: any) => ({
+  root: {
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
+    background: "var(--theme-color1)",
+  },
+  title: {
+    flex: "1 1 100%",
+    color: "var(--white)",
+    letterSpacing: "1px",
+    fontSize: "1.5rem",
+  },
+  refreshiconhover: {
+    // "&:hover": {
+    //   backgroundColor: "var(--theme-color2)",
+    //   color: "var(--theme-color1)",
+    // },
+  },
+}));
 const transformData = (data: any) => {
   if (Array.isArray(data)) {
     return data.map((one, index) => ({
@@ -38,7 +60,29 @@ export const ServiceAmountLabels = ({ closeDialog, rowData }) => {
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
   const navigate = useNavigate();
-
+  const headerClasses = useHeaderStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const onSubmitForm = ({ data, mode, setServerError }) => {
+    let { reqData, DETAILS_DATA, ...other } = data;
+    let DetailData = CreateDetailsRequestData(reqData);
+    // let reqmstdata = ObjectMappingKeys(other, "CUSTOMER_ID", "USER_NAME");
+    // let MainReqData = { ...reqmstdata, ...DetailData };
+    // if (
+    //   (DetailData?.isNewRow?.length ?? 0) === 0 &&
+    //   (DetailData?.isDeleteRow?.length ?? 0) === 0 &&
+    //   (DetailData?.isUpdatedRow?.length ?? 0) === 0
+    // ) {
+    //   setMode("view");
+    // }
+  };
+  const setCurrentAction = useCallback(
+    (data) => {
+      navigate(data?.name, {
+        state: data?.rows,
+      });
+    },
+    [navigate]
+  );
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -65,7 +109,7 @@ export const ServiceAmountLabels = ({ closeDialog, rowData }) => {
   return (
     <>
       <div style={{ padding: "9px" }}>
-        {isLoading || isFetching ? (
+        {isLoading ? (
           <AmountLabelDetailsUpdate
             key={"Loading-CustomerLimitDetailsUpdate"}
             metadata={AmountLabelsGridMetaData as GridMetaDataType}

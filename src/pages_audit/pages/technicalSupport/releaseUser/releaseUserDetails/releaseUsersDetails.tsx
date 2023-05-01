@@ -1,4 +1,4 @@
-import { Dialog } from "@material-ui/core";
+import { Dialog } from "@mui/material";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 //import { useLocation } from "react-router-dom";
 export const ReleaseUsersEditViewWrapper = ({

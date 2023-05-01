@@ -1,8 +1,7 @@
-import TableCell from "@material-ui/core/TableCell";
-import IconButton from "@material-ui/core/IconButton";
-import ArrowRightSharpIcon from "@material-ui/icons/ArrowRightSharp";
-import ArrowDropDownSharpIcon from "@material-ui/icons/ArrowDropDownSharp";
-import { makeStyles } from "@material-ui/core/styles";
+import ArrowRightSharpIcon from "@mui/icons-material/ArrowRightSharp";
+import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
+import { IconButton, TableCell } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
   root: {
@@ -23,20 +22,14 @@ export const CellWrapper = ({
   const {
     value,
     cell,
-    column: {
-      color = "initial",
-      TableCellProps,
-      isVisibleField = (data) => {
-        return true;
-      },
-    },
+    column: { color = "initial", TableCellProps },
     row,
   } = others;
 
   const classes = useStyles();
+
   let myColor = typeof color === "function" ? color(value, row) : color;
   let result = children;
-  let isVisibleData = isVisibleField(row?.original);
   if (cell?.isGrouped) {
     result = (
       <>
@@ -78,7 +71,7 @@ export const CellWrapper = ({
         },
       ])}
     >
-      {isVisibleData ? result : null}
+      {result}
     </TableCell>
   );
 };

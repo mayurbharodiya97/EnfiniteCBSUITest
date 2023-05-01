@@ -1,5 +1,4 @@
-import Checkbox from "@material-ui/core/Checkbox";
-import TableCell from "@material-ui/core/TableCell";
+import { Checkbox, TableCell } from "@mui/material";
 
 export const useCheckboxColumn = (allowRowSelection) => (hooks) => {
   if (Boolean(allowRowSelection)) {
@@ -20,37 +19,33 @@ export const useCheckboxColumn = (allowRowSelection) => (hooks) => {
 
 const CheckboxCellRenderer = ({ row, cell }) => {
   return (
-    <>
-      <TableCell
-        component="div"
-        variant="head"
-        {...cell.getCellProps([
+    <TableCell
+      component="div"
+      variant="head"
+      {...cell.getCellProps([
+        {
+          style: {
+            display: "block",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            padding: "0px 10px",
+            lineHeight: "34px",
+          },
+        },
+      ])}
+    >
+      <Checkbox
+        size="small"
+        {...row.getToggleRowSelectedProps([
           {
             style: {
-              display: "block",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              padding: "0px 10px",
-              lineHeight: "34px",
+              padding: 0,
             },
           },
         ])}
-      >
-        {Boolean(row?.original?.__isRowSelection ?? true) ? (
-          <Checkbox
-            size="small"
-            {...row.getToggleRowSelectedProps([
-              {
-                style: {
-                  padding: 0,
-                },
-              },
-            ])}
-          />
-        ) : null}
-      </TableCell>
-    </>
+      />
+    </TableCell>
   );
 };
 

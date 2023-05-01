@@ -1,6 +1,5 @@
-import InputLabel from "@material-ui/core/InputLabel";
-
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
+import { InputLabel } from "@mui/material";
 
 const MyInputLabel = withStyles({
   root: {

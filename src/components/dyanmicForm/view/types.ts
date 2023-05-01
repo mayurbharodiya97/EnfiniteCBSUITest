@@ -13,6 +13,7 @@ export interface ViewFormWrapperProps {
   isSubmitting?: boolean;
   onAccept?: Function;
   onReject?: Function;
+  children?: any;
 }
 
 export interface FormProps {

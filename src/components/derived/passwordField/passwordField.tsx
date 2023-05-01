@@ -1,9 +1,8 @@
 import { useState, useCallback } from "react";
 import { TextField, TextFieldProps } from "components/common/textField";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import IconButton from "@material-ui/core/IconButton";
+import { IconButton, InputAdornment } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 const PasswordField: React.FC<TextFieldProps> = ({
   allowToggleVisiblity,
@@ -26,7 +25,7 @@ const PasswordField: React.FC<TextFieldProps> = ({
               edge="end"
               tabIndex={-1}
             >
-              {passwordVisibility ? <Visibility /> : <VisibilityOff />}
+              {passwordVisibility ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </IconButton>
           </InputAdornment>
         ) : null,

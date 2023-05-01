@@ -1,4 +1,4 @@
-import Chip from "@material-ui/core/Chip";
+import { Chip } from "@mui/material";
 import { CellWrapper } from "./cellWrapper";
 
 export const ChipCellRenderer = (props) => {

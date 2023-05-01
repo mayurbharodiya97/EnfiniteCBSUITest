@@ -1,4 +1,4 @@
-import Button from "@material-ui/core/Button";
+import { Button } from "@mui/material";
 import { Fragment } from "react";
 
 export const ActionCell = ({

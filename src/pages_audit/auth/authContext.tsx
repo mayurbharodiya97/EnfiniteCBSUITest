@@ -6,22 +6,20 @@ import {
   useState,
 } from "react";
 import { useNavigate, useLocation } from "react-router";
-//import { AuthSDK } from "registry/fns/auth";
 import { queryClient } from "cache";
 import { AuthContextType, AuthStateType, ActionType } from "./type";
 import * as API from "./api";
-import LinearProgress from "@material-ui/core/LinearProgress";
 import { AuthSDK } from "registry/fns/auth";
 import { RefreshTokenData } from "./api";
 import { utilFunction } from "components/utils/utilFunctions";
 import { GeneralAPI } from "registry/fns/functions";
 import CRC32C from "crc-32";
+import { LinearProgress } from "@mui/material";
 const inititalState: AuthStateType = {
   access_token: {},
   isLoggedIn: false,
   role: "",
   roleName: "",
-  userSubType: "",
   companyID: "",
   companyName: "",
   access: {},
@@ -88,11 +86,6 @@ export const AuthProvider = ({ children }) => {
       if (stopNavigation) {
         return;
       }
-      console.log(
-        comingFromRoute,
-        comingFromRoute === "/netbanking/login",
-        state
-      );
       if (comingFromRoute === "/netbanking/login") {
         navigate("/netbanking", {
           replace: true,
@@ -144,20 +137,22 @@ export const AuthProvider = ({ children }) => {
   window.addEventListener("storage", async () => {
     let result = localStorage.getItem("authDetails");
     if (result === null) {
-      logout();
+      //logout();
+      console.log("logout result null");
     } else {
       // localStorage.getItem("tokenchecksum");
       let checksumdata = localStorage.getItem("tokenchecksum");
       let genChecksum = await GenerateCRC32(
         localStorage.getItem("authDetails") || ""
       );
-
+      //console.log(checksumdata, genChecksum);
       if (checksumdata !== genChecksum) {
         if (Boolean(timeoutLogout)) {
           clearTimeout(timeoutLogout);
         }
         timeoutLogout = setTimeout(() => {
           logout();
+          console.log("logout");
         }, 1500);
       }
     }
@@ -209,10 +204,10 @@ export const AuthProvider = ({ children }) => {
       let geneTime = Number.parseInt(generateTime);
       let exTime = Number.parseInt(expireTime);
       let totalTime = (utilFunction.getCurrentDateinLong() - geneTime) / 1000;
-      exTime = exTime - totalTime - 10;
+      exTime = exTime - totalTime - 50;
       if (exTime > 0) {
         exTime = exTime * 1000;
-
+        //console.log(exTime);
         if (Boolean(timeoutID)) {
           clearTimeout(timeoutID);
         }
@@ -227,6 +222,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
   const setnewToken = (access_token) => {
+    //console.log(access_token, Boolean(access_token));
     if (!Boolean(access_token)) return;
     let result = localStorage.getItem("authDetails");
     if (result !== null) {

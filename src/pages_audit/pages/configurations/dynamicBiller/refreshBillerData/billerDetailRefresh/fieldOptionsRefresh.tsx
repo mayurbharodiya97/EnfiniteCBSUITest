@@ -3,18 +3,13 @@ import { Transition } from "pages_audit/common";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheContext, queryClient } from "cache";
-import {
-  AppBar,
-  Dialog,
-  makeStyles,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
+import { AppBar, Dialog, Toolbar, Typography } from "@mui/material";
 import { useDialogStyles } from "components/detailPopupGridData";
 import { GradientButton } from "components/styledComponent/button";
 import { BillerFieldOptionsGridMetaData } from "../../billerFields/fieldOptions/gridMetadata";
+import { makeStyles } from "@mui/styles";
 
-const useHeaderStyles = makeStyles((theme) => ({
+const useHeaderStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),

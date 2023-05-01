@@ -2,19 +2,21 @@ import { FC } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Collapse from "@material-ui/core/Collapse";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandLess";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavItemType, SideBarRendererType } from "./types";
 import { useStylesSideBar } from "./style";
 import ScrollBar from "react-perfect-scrollbar";
-import { Tooltip } from "@material-ui/core";
 import { GeneralAPI } from "registry/fns/functions";
+import {
+  Collapse,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+} from "@mui/material";
 let localdrawerOpen = true;
 export const SideBarNav: FC<SideBarRendererType> = ({
   metaData,
@@ -348,7 +350,7 @@ const NestedListItem: FC<{
           color="primary"
           className={classes.link}
         ></ListItemText>
-        {open ? <ExpandLess /> : <ExpandMore />}
+        {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
       </ListItem>
 
       <Collapse in={open} timeout="auto" unmountOnExit>

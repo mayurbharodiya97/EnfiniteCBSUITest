@@ -1,19 +1,14 @@
 import { FC, useRef, useEffect } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import { KeyboardDatePickerProps } from "@material-ui/pickers";
 import { KeyboardDatePicker } from "components/styledComponent/datetime";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 import { Omit, Merge } from "../types";
-import Button from "@material-ui/core/Button";
-//import { theme2 } from "app/audit/theme";
+import { theme2 } from "app/audit/theme";
 import "./style.css";
-//import { createTheme, TextField } from "@material-ui/core";
-//import {
-//  ThemeProvider,
-//  unstable_createMuiStrictModeTheme,
-//} from "@material-ui/core/styles";
+import { unstable_createMuiStrictModeTheme } from "@mui/material/styles";
+import { Button, Grid, GridProps } from "@mui/material";
+import { KeyboardDatePickerProps } from "@material-ui/pickers";
 
-//const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
+const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 type KeyboardDatePickerPropsSubset = Omit<
   KeyboardDatePickerProps,

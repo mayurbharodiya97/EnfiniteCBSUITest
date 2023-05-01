@@ -3,7 +3,7 @@ import { NumberFormatCustom } from "components/derived/numberFormat";
 import { TextFieldForSelect as TextField } from "components/styledComponent/textfield";
 import { RowContext } from "./rowContext";
 import { numWords } from "components/common/utils";
-import Typography from "@material-ui/core/Typography";
+import { Typography } from "@mui/material";
 
 let currencyFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",

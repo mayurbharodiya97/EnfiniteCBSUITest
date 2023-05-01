@@ -23,8 +23,6 @@ import { AUTHDetailEditViewWrapper } from "./authDetails";
 import { DateRetrievalDialog } from "components/custom/dateRetrievalPara";
 import { useStyles } from "pages_audit/style";
 import { format } from "date-fns";
-import { AuthContext } from "pages_audit/auth";
-import { AppBar } from "@material-ui/core";
 
 const actions: ActionTypes[] = [
   {
@@ -88,14 +86,11 @@ export const LoanRequest = ({ screenFlag }) => {
     onError: (error: any) => {},
   });
 
-  const selectedDates = (retrievalValues) => {
+  const selectedDates = (fromDate, toDate) => {
     setOpen(false);
     result.mutate({
-      fromDate:
-        retrievalValues?.[0]?.value?.value ?? format(new Date(), "dd/MM/yyyy"),
-      toDate:
-        retrievalValues?.[1]?.value?.value ?? format(new Date(), "dd/MM/yyyy"),
-      screenID: screenFlag,
+      fromDate: format(fromDate, "dd/MM/yyyy"),
+      toDate: format(toDate, "dd/MM/yyyy"),
     });
   };
   const handleClose = () => {
@@ -112,7 +107,6 @@ export const LoanRequest = ({ screenFlag }) => {
     result.mutate({
       fromDate: format(new Date(), "dd/MM/yyyy"),
       toDate: format(new Date(), "dd/MM/yyyy"),
-      screenID: screenFlag,
     });
     return () => {
       let entries = getEntries() as any[];
@@ -164,7 +158,6 @@ export const LoanRequest = ({ screenFlag }) => {
             result.mutate({
               fromDate: format(new Date(), "dd/MM/yyyy"),
               toDate: format(new Date(), "dd/MM/yyyy"),
-              screenID: screenFlag,
             })
           }
           ref={myGridRef}
@@ -202,7 +195,7 @@ export const LoanRequest = ({ screenFlag }) => {
           open={open}
           handleClose={handleClose}
           loginState={ClosedEventCall}
-          retrievalParaValues={selectedDates}
+          selectedDates={selectedDates}
         />
       </Fragment>
     </StrictMode>
@@ -210,22 +203,9 @@ export const LoanRequest = ({ screenFlag }) => {
 };
 
 export const LoanRequestsGridWrapper = ({ screenFlag }) => {
-  const { authState } = useContext(AuthContext);
   return (
     <ClearCacheProvider>
-      {authState.userSubType === screenFlag ? (
-        <LoanRequest
-          key={screenFlag + "-LoanRequest"}
-          screenFlag={screenFlag}
-        />
-      ) : (
-        <AppBar position="relative" color="primary">
-          <h2>
-            Hey {authState.user.name}, You Can't access the {screenFlag} User
-            Screen.
-          </h2>
-        </AppBar>
-      )}
+      <LoanRequest key={screenFlag + "-LoanRequest"} screenFlag={screenFlag} />
     </ClearCacheProvider>
   );
 };

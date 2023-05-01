@@ -133,6 +133,7 @@ export const BankMasterGrid = () => {
       return data;
     }
   }, [data]);
+  //console.log(isLoading, isFetching, isError, data, GidData);
   return (
     <>
       <Fragment>

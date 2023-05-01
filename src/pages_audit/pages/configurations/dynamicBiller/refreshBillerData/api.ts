@@ -7,13 +7,12 @@ export const getBillerInfoRefreshData = async () => {
     await AuthSDK.internalFetcher("BILLERINFO", {});
   if (status === "0") {
     let responseData = data;
-
     if (!Array.isArray(responseData)) {
       responseData = [responseData];
     }
     let billerData: any = [];
 
-    responseData.forEach((category, categoryIndex) => {
+    responseData?.forEach((category, categoryIndex) => {
       category?.subCategories.forEach((subCategory, subCategoryIndex) => {
         subCategory?.billerInformationList.forEach((biller, billerIndex) => {
           let billerFields: any = [];
@@ -93,7 +92,7 @@ export const getBillerInfoRefreshData = async () => {
         });
       });
     });
-
+    console.log(">>billerData", billerData);
     return { billerData: billerData, mainData: data };
   } else {
     throw DefaultErrorObject(message, "error", messageDetails);

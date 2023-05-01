@@ -49,7 +49,7 @@ export const GetLeafTemplateDD = async () => {
 };
 export const insertMastersData = () => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "OTHERENTITYDML",
+    "OTHERENTITYOPERATION",
     formData
   );
   if (status === "0") {
@@ -87,28 +87,34 @@ export const getMastersGridData = async (entityType) => {
   }
 };
 
-// export const updateMastersData = () => async (formData: any) => {
-//   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-//     "OTHERENTITYDML",
-//     formData
-//   );
-//   if (status === "0") {
-//     return message;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
+export const updateMastersData = () => async (formData: any) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "OTHERENTITYOPERATION",
+    formData
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
-export const updateOtherEntityData =
+export const updateOtherEntData =
   () =>
-  async ({ data }) => {
+  async ({ formView, rows, entityType }) => {
+    console.log(">>rows", rows);
     const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-      "OTHERENTITYDML",
-      data,
-
+      "UPDCLUBMASTERDATA",
       {
-        UNIQUE_REQ_ID: "32627636893400",
-        APITOKEN: "MzI2Mjc2MzY4OTM0MDA=",
+        ENTITY_TYPE: entityType,
+        ENTITY_CD: rows?.ENTITY_CD,
+        DESCRIPTION: rows?.DESCRIPTION,
+        ACCT_CD: rows?.ACCT_CD,
+        REMARKS: rows?.REMARKS,
+        TRN_PERTICULERS: rows?.TRN_PERTICULERS,
+        TRN_PERTICULERS2: rows?.TRN_PERTICULERS2,
+        TO_SOURCE: rows?.TO_SOURCE,
+        TRAN_CD: rows?.TRAN_CD,
       }
     );
     if (status === "0") {
@@ -120,12 +126,8 @@ export const updateOtherEntityData =
 
 export const deleteBytransactionID = (data) => async () => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "OTHERENTITYDML",
-    data,
-    {
-      UNIQUE_REQ_ID: "32627636893400",
-      APITOKEN: "MzI2Mjc2MzY4OTM0MDA=",
-    }
+    "OTHERENTITYOPERATION",
+    data
   );
   if (status === "0") {
     return message;

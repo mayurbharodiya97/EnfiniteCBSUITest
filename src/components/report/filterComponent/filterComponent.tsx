@@ -1,11 +1,11 @@
-import { useRef, useCallback, useState } from "react";
-import Button from "@material-ui/core/Button";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { useRef, useCallback, useState, createElement } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateRetrievalDialog } from "components/custom/dateRetrievalPara";
 import { useStyles } from "pages_audit/style";
+import { format } from "date-fns";
 import { CustomRetrievalWrapper } from "pages_audit/pages/reports/reportsRetrieval/customRetrieval";
-import { DateUserRetrievalDialog } from "pages_audit/pages/reports/reportsRetrieval/dateUserRetrieval";
+import { Button } from "@mui/material";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
 export const filterReducer = (state: any = [], action: any = {}) => {
   switch (action.type) {
@@ -54,7 +54,7 @@ export const FilterComponent = ({
   retrievalType,
 }) => {
   const [open, setOpen] = useState(false);
-  // const { filterState, dispatch } = useFilterState(filterReducer);
+  const { filterState, dispatch } = useFilterState(filterReducer);
   const classes = useStyles();
 
   const handleClose = () => {
@@ -65,45 +65,35 @@ export const FilterComponent = ({
     setOpen(true);
   };
 
-  // const handleFilterChange = () => {
-  //   setQueryFilters(filterState.current);
-  //   setOpen(false);
-  // };
+  const handleFilterChange = () => {
+    setQueryFilters(filterState.current);
+    setOpen(false);
+  };
 
-  // const selectedDates = (fromDate, toDate) => {
-  //   setQueryFilters([
-  //     {
-  //       id: "FROM_DT",
-  //       value: {
-  //         condition: "equal",
-  //         value: format(
-  //           new Date(fromDate.toISOString() ?? new Date()),
-  //           "dd/MM/yyyy"
-  //         ),
-  //         columnName: "From Date",
-  //       },
-  //     },
-  //     {
-  //       id: "TO_DT",
-  //       value: {
-  //         condition: "equal",
-  //         value: format(
-  //           new Date(toDate.toISOString() ?? new Date()),
-  //           "dd/MM/yyyy"
-  //         ),
-  //         columnName: "To Date",
-  //       },
-  //     },
-  //   ]);
-  //   setOpen(false);
-  // };
-
-  const retrievalParaValues = (retrievalValues) => {
-    setQueryFilters(retrievalValues);
+  const selectedDates = (fromDate, toDate) => {
+    setQueryFilters([
+      {
+        id: "FROM_DT",
+        value: {
+          condition: "equal",
+          value: fromDate.toISOString(),
+          columnName: "From Date",
+        },
+      },
+      {
+        id: "TO_DT",
+        value: {
+          condition: "equal",
+          value: toDate.toISOString(),
+          columnName: "To Date",
+        },
+      },
+    ]);
     setOpen(false);
   };
 
   const setRetrievalData = (data) => {
+    console.log(">>data", data);
     setQueryFilters([data]);
     setOpen(false);
   };
@@ -134,7 +124,7 @@ export const FilterComponent = ({
   //   });
   // }
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <LocalizationProvider utils={DateFnsUtils}>
       <Button onClick={handleOpen} color="primary">
         Retrive Data
       </Button>
@@ -168,15 +158,7 @@ export const FilterComponent = ({
           open={open}
           handleClose={handleClose}
           loginState={{}}
-          retrievalParaValues={retrievalParaValues}
-        />
-      ) : open && retrievalType === "DATEUSERNM" ? (
-        <DateUserRetrievalDialog
-          classes={classes}
-          open={open}
-          handleClose={handleClose}
-          loginState={{}}
-          retrievalParaValues={retrievalParaValues}
+          selectedDates={selectedDates}
         />
       ) : open && retrievalType === "CUSTOM" ? (
         <CustomRetrievalWrapper
@@ -189,6 +171,6 @@ export const FilterComponent = ({
       ) : (
         <></>
       )}
-    </MuiPickersUtilsProvider>
+    </LocalizationProvider>
   );
 };

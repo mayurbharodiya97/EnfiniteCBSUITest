@@ -1,5 +1,5 @@
+import { TextField } from "@mui/material";
 import { useMemo } from "react";
-import TextField from "@material-ui/core/TextField";
 
 export const NumberRangeColumnFilter = ({
   column: { filterValue = [], preFilteredRows, setFilter, id },

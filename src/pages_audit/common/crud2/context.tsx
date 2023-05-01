@@ -11,6 +11,7 @@ interface CRUDProviderType {
   getFormData: CRUDFNType;
   getGridFormMetaData: CRUDFNType;
   getGridFormData: CRUDFNType;
+  children?: any;
 }
 
 export const CRUDContext = createContext<CRUDProviderType>(

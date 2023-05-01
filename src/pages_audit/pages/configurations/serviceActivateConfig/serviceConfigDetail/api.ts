@@ -24,7 +24,7 @@ export const getServiceConfigDetailGridData = async ({
 
 export const updateServiceActiveDeactiveConfigDetails = async (reqdata) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("SERVICEACTIVEDEACTIVEDTLDML", reqdata);
+    await AuthSDK.internalFetcher("SERVICEACTIVEDEACTIVEDTL", reqdata);
   if (status === "0") {
     return message;
   } else {

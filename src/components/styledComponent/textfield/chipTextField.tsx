@@ -1,7 +1,6 @@
-import TextField from "@material-ui/core/TextField";
-
-import { withStyles } from "@material-ui/core/styles";
-
+import { TextField } from "@mui/material";
+import { withStyles } from "@mui/styles";
+// import withStyles
 const ChipTextField = withStyles({
   root: {
     "& .MuiInputLabel-formControl": {

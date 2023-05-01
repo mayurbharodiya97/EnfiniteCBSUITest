@@ -1,11 +1,11 @@
 import { useState, useContext } from "react";
 import { SelectWithoutOptions } from "../../select/render2";
 import { RowContext } from "./rowContext";
-import Typography from "@material-ui/core/Typography";
 import {
   getLabelFromValues,
   useOptionsFetcherSimpleWithRemoveCache,
 } from "../../utils";
+import { Typography } from "@mui/material";
 
 export const SelectFieldCell = (props) => {
   const {

@@ -1,9 +1,14 @@
 import { FC, Fragment, useState, useCallback } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import Rating, { RatingProps } from "@material-ui/lab/Rating";
-import InputLabel, { InputLabelProps } from "@material-ui/core/InputLabel";
-import Grid, { GridProps } from "@material-ui/core/Grid";
 import { Merge } from "../types";
+import {
+  Grid,
+  GridProps,
+  InputLabel,
+  InputLabelProps,
+  Rating,
+  RatingProps,
+} from "@mui/material";
 
 interface ExtendedFieldProps extends UseFieldHookProps {
   label: string;

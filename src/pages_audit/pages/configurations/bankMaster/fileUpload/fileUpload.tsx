@@ -17,7 +17,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 
 const actions: ActionTypes[] = [
   {
@@ -161,7 +161,7 @@ export const UploadFileData = ({
       let jsonData = ConvertExcelToJSONData({
         data: element,
       });
-
+      // console.log(jsonData);
       let { blob, ...other } = element;
       let data: any = getJsonData(
         other,
@@ -169,7 +169,7 @@ export const UploadFileData = ({
         proccessFunc,
         10 + proccessLength * (index + 1)
       );
-
+      //console.log(data);
       if (data?.TYPE === "ALL") {
         mainJSONArr = {
           ...mainJSONArr,
@@ -296,7 +296,7 @@ export const UploadFileData = ({
           : "000" + item?.BANK_CD ?? "",
       };
     });
-
+    //console.log(orgData, mainJson);
     proccessFunc(99);
     setFileData({
       view: orgData,
@@ -305,6 +305,7 @@ export const UploadFileData = ({
     setTimeout(() => {
       setFileUpload(false);
     }, 1000);
+    //console.log(mainJson);
   };
   return (
     <div>

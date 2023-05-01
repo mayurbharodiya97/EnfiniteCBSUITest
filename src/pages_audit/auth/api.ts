@@ -1,25 +1,18 @@
 import { utilFunction } from "components/utils/utilFunctions";
 import { format } from "date-fns";
-import { AuthSDK, CryptoSDK } from "registry/fns/auth";
+import { AuthSDK } from "registry/fns/auth";
 import { AuthStateType } from "./type";
 
 export const veirfyUsernameandPassword = async (
   username: any,
   password: any
 ) => {
+  //console.log(CryptoSDK.GetEncryptData(password));
   const { data, status, message, messageDetails, responseType, access_token } =
     await AuthSDK.internalFetcherPreLogin("LOGIN", {
       USER_ID: username,
       PASSWORD: password,
     });
-  console.log(
-    data,
-    status,
-    message,
-    messageDetails,
-    responseType,
-    access_token
-  );
   if (status === "0") {
     return {
       data: data[0],
@@ -40,6 +33,7 @@ export const verifyOTP = async (
   access_token,
   token_type
 ) => {
+  //console.log(transactionId, username, otpnumber);
   const {
     data,
     status,
@@ -84,7 +78,6 @@ export const verifyOTP = async (
         status,
         message,
         messageDetails,
-        menuapierror: false,
       };
     } else {
       return {
@@ -92,11 +85,10 @@ export const verifyOTP = async (
         data: dataa,
         message: messagea,
         messageDetails: messageDetailsa,
-        menuapierror: true,
       };
     }
   } else {
-    return { status, data, message, messageDetails, menuapierror: false };
+    return { status, data, message, messageDetails };
   }
 };
 
@@ -108,7 +100,7 @@ export const RefreshTokenData = async (refreshToken) => {
       grant_type: "refresh_token",
     }
   );
-
+  //console.log(status, !Boolean(status), typeof status, typeof access_token);
   if (Boolean(status) && status === "0") {
     return {
       generateTime: utilFunction.getCurrentDateinLong(),
@@ -145,7 +137,7 @@ export const GetMenuData = async ({
   AuthSDK.loginUserDetails(fulldata);
   AuthSDK.setToken(fulldata.access_token);
   const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETMENULIST", {
+    await AuthSDK.internalFetcher("MENULIST", {
       USER_NM: userID,
       MACHINE_IP: "",
       COMP_CD: COMP_CD,
@@ -211,7 +203,6 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
     access_token: access_token,
     role: data?.USER_LEVEL,
     roleName: data?.USER_ROLE,
-    userSubType: data?.USER_SUB_TYPE,
     isLoggedIn: false,
     companyName: data?.COMPANYNAME,
     companyID: data?.COMPANYID,
@@ -243,7 +234,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
 
 //     return (prev[current?.branchCode] = { ...current, products });
 //   }, {});
-
+//   console.log(result);
 //   return result;
 // };
 

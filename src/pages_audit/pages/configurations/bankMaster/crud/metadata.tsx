@@ -37,7 +37,7 @@ export const CRUDBankMasterMetadata = {
         allowLeadingZeros: true,
         decimalScale: 0,
         isAllowed: (values) => {
-          if (values?.value?.length > 11) {
+          if (values?.value?.length > 8) {
             return false;
           }
           if (values.floatValue === 0) {

@@ -1,12 +1,14 @@
 import { FC, useRef, Suspense } from "react";
-import Grid from "@material-ui/core/Grid";
 import { FormProps } from "./types";
-import Container from "@material-ui/core/Container";
 import { Alert } from "components/common/alert";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Chip from "@material-ui/core/Chip";
+import {
+  AppBar,
+  Chip,
+  Container,
+  Grid,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
 export const SimpleForm: FC<FormProps> = ({
   fields,

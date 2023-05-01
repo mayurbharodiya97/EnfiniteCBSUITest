@@ -1,14 +1,16 @@
 import { Fragment, useContext, useState } from "react";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import Button from "@material-ui/core/Button";
-import Alert from "@material-ui/lab/Alert";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import TextField from "@material-ui/core/TextField";
 import { useMutation } from "react-query";
 import { DOCCRUDContext } from "./context";
 import { useSnackbar } from "notistack";
+import {
+  Alert,
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+  TextField,
+} from "@mui/material";
 
 interface VerifyFormDataType {
   docType: string;
@@ -83,7 +85,7 @@ export const VerifyDocumentAction = ({
           onChange={(e) => setRemarks(e.target.value)}
           multiline={true}
           rows={4}
-          rowsMax={4}
+          // rowsMax={4}
           error={Boolean(error)}
           helperText={error}
           fullWidth={true}

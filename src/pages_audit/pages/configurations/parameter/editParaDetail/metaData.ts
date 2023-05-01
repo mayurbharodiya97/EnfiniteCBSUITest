@@ -110,7 +110,6 @@ export const ParaDetailMetadata = {
         { label: "CHARACTER/STRING", value: "C" },
         { label: "DATE", value: "D" },
       ],
-      isReadOnly: true,
       defaultValue: "",
       required: true,
       schemaValidation: {

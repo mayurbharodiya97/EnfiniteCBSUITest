@@ -1,6 +1,5 @@
-import Button from "@material-ui/core/Button";
-
-import { withStyles } from "@material-ui/core/styles";
+import { Button } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 const GradientButton = withStyles({
   root: {

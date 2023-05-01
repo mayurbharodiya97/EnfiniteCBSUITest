@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Grid from "@material-ui/core/Grid";
 import { InputLabel } from "components/styledComponent/inputLabel";
 import { Input } from "components/styledComponent/input";
+import { FormControl, FormHelperText, Grid } from "@mui/material";
 
 export const ValueRange = ({
   filterValue,
