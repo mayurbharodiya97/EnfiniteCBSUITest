@@ -1,0 +1,60 @@
+import { FilterFormMetaType } from "components/formcomponent";
+
+export const TagAccountsFilterForm: FilterFormMetaType = {
+  gridConfig: {
+    dense: true,
+    title: "Tag Account Request",
+    allowColumnHiding: false,
+    submitButtonName: "Search",
+  },
+  fields: [
+    {
+      name: "search_para",
+      defaultValue: "username",
+      isVisible: true,
+      gridconfig: { xs: 6, sm: 4 },
+      defaultfocus: true,
+      label: "Searching Parameters",
+      autoComplete: "off",
+      placeholder: "",
+      isColumnHidingDisabled: true,
+      entertoSubmit: true,
+      type: "select",
+      optiondata: [
+        { label: "Login ID", value: "username" },
+        { label: "Account Number", value: "acct_cd" },
+      ],
+    },
+    {
+      name: "search",
+      defaultValue: "",
+      isVisible: true,
+      gridconfig: { xs: 6, sm: 4 },
+      defaultfocus: true,
+      label: "",
+      autoComplete: "off",
+      placeholder: "",
+      isColumnHidingDisabled: true,
+      entertoSubmit: true,
+      type: "text",
+    },
+    {
+      name: "status",
+      defaultValue: "P",
+      isVisible: true,
+      gridconfig: { xs: 6, sm: 4 },
+      defaultfocus: true,
+      label: "Status",
+      autoComplete: "off",
+      placeholder: "Please select status",
+      isColumnHidingDisabled: true,
+      entertoSubmit: true,
+      type: "select",
+      optiondata: [
+        { label: "Pending", value: "P" },
+        { label: "Accept", value: "Y" },
+        { label: "Reject", value: "R" },
+      ],
+    },
+  ],
+};

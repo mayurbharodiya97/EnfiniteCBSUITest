@@ -1,0 +1,53 @@
+export const ITROtherEdit = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "ITR Document Update",
+    rowIdColumn: "docUUID",
+    defaultColumnConfig: { width: 150, maxWidth: 250, minWidth: 100 },
+    allowColumnReordering: true,
+    disableSorting: true,
+    disableGlobalFilter: true,
+    disableGroupBy: true,
+    containerHeight: { min: "30vh", max: "30vh" },
+    hideFooter: true,
+    hideHeader: true,
+    disableLoader: true,
+    enablePagination: false,
+  },
+  columns: [
+    {
+      columnName: "File Name",
+      componentType: "default",
+      accessor: "fileName",
+      sequence: 1,
+      alignment: "left",
+      width: 300,
+      maxWidth: 300,
+      minWidth: 100,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["This is a required field"] }],
+      },
+    },
+    {
+      columnName: "Document Type",
+      componentType: "editableSelect",
+      accessor: "docTypeID",
+      sequence: 5,
+      alignment: "left",
+      options: "getITRDocTypeOther",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["required"] }],
+      },
+    },
+    {
+      columnName: "Password",
+      componentType: "editableTextField",
+      accessor: "password",
+      sequence: 6,
+      alignment: "left",
+      isPassword: true,
+    },
+  ],
+};
