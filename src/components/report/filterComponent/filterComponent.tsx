@@ -3,7 +3,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import { DateRetrievalDialog } from "components/custom/dateRetrievalPara";
 import { useStyles } from "pages_audit/style";
 import { format } from "date-fns";
-import { CustomRetrievalWrapper } from "pages_audit/pages/reports/reportsRetrieval/customRetrieval";
+// import { CustomRetrievalWrapper } from "pages_audit/pages/reports/reportsRetrieval/customRetrieval";
 import { Button } from "@mui/material";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
@@ -160,15 +160,15 @@ export const FilterComponent = ({
           loginState={{}}
           selectedDates={selectedDates}
         />
-      ) : open && retrievalType === "CUSTOM" ? (
-        <CustomRetrievalWrapper
-          open={open}
-          handleDialogClose={handleClose}
-          metaData={filterMeta}
-          defaultData={filterData}
-          retrievalData={setRetrievalData}
-        />
       ) : (
+        // ) : open && retrievalType === "CUSTOM" ? (
+        //   <CustomRetrievalWrapper
+        //     open={open}
+        //     handleDialogClose={handleClose}
+        //     metaData={filterMeta}
+        //     defaultData={filterData}
+        //     retrievalData={setRetrievalData}
+        //   />
         <></>
       )}
     </LocalizationProvider>

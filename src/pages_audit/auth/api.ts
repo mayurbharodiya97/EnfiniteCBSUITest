@@ -8,23 +8,38 @@ export const veirfyUsernameandPassword = async (
   password: any
 ) => {
   //console.log(CryptoSDK.GetEncryptData(password));
-  const { data, status, message, messageDetails, responseType, access_token } =
-    await AuthSDK.internalFetcherPreLogin("LOGIN", {
-      USER_ID: username,
-      PASSWORD: password,
-    });
-  if (status === "0") {
-    return {
-      data: data[0],
-      status,
-      message,
-      messageDetails,
-      responseType,
-      access_token,
-    };
-  } else {
-    return { status, data, message, messageDetails };
-  }
+  // const { data, status, message, messageDetails, responseType, access_token } =
+  //   await AuthSDK.internalFetcherPreLogin("LOGIN", {
+  //     USER_ID: username,
+  //     PASSWORD: password,
+  //   });
+  // if (status === "0") {
+  //   return {
+  //     data: data[0],
+  //     status,
+  //     message,
+  //     messageDetails,
+  //     responseType,
+  //     access_token,
+  //   };
+  // } else {
+  //   return { status, data, message, messageDetails };
+  // }
+
+  return {
+    data: {
+      REQUEST_CD: "110432",
+    },
+    status: "0",
+    message: "OTP Sent successfully.",
+    messageDetails: "OTP Sent successfully.",
+    responseType: "D",
+    access_token: {
+      access_token: "7cf0b9ce-a9bc-490a-923d-82bf56e2e285",
+      token_type: "bearer",
+      expires_in: "299",
+    },
+  };
 };
 export const verifyOTP = async (
   transactionId,
@@ -34,26 +49,61 @@ export const verifyOTP = async (
   token_type
 ) => {
   //console.log(transactionId, username, otpnumber);
-  const {
+  // const {
+  //   data,
+  //   status,
+  //   message,
+  //   messageDetails,
+  //   access_token: accesstoken,
+  // } = await AuthSDK.internalFetcherPreLogin(
+  //   "VERIFYOTP",
+  //   {
+  //     USER_ID: username,
+  //     REQUEST_CD: transactionId,
+  //     OTP: otpnumber,
+  //   },
+  //   {
+  //     Authorization: utilFunction.getAuthorizeTokenText(
+  //       access_token,
+  //       token_type
+  //     ),
+  //   }
+  // );
+  let {
     data,
     status,
     message,
     messageDetails,
     access_token: accesstoken,
-  } = await AuthSDK.internalFetcherPreLogin(
-    "VERIFYOTP",
-    {
-      USER_ID: username,
-      REQUEST_CD: transactionId,
-      OTP: otpnumber,
+  } = {
+    data: [
+      {
+        USER_SUB_TYPE: "DBR",
+        COMPANYNAME: "Demo Bank",
+        COMPANYID: "001 ",
+        USER_ROLE: "ADMIN",
+        USER: {
+          BRANCH: "Demo Bank Back Office Configuration",
+          LASTLOGINDATE: "02/05/2023 11:21:58",
+          BRANCHCODE: "001 ",
+          ID: "admin",
+          NAME: "ADMIN",
+        },
+        USER_LEVEL: "4",
+        ACCESS: {},
+      },
+    ],
+    status: "0",
+    message: "",
+    messageDetails: "",
+    access_token: {
+      access_token: "9b0a0c1f-599c-42a5-8171-36ca8323d2e4",
+      refresh_token: "93cfaba6-055b-4e75-aed6-9556b02809d0",
+      scope: "read write trust",
+      token_type: "bearer",
+      expires_in: "299",
     },
-    {
-      Authorization: utilFunction.getAuthorizeTokenText(
-        access_token,
-        token_type
-      ),
-    }
-  );
+  };
   if (status === "0") {
     let transformData = transformAuthData(data[0], {
       generateTime: utilFunction.getCurrentDateinLong(),
@@ -133,23 +183,41 @@ export const GetMenuData = async ({
   GROUP_NAME,
   fulldata,
 }) => {
-  await AuthSDK.Getfingerprintdata();
-  AuthSDK.loginUserDetails(fulldata);
-  AuthSDK.setToken(fulldata.access_token);
-  const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("MENULIST", {
-      USER_NM: userID,
-      MACHINE_IP: "",
-      COMP_CD: COMP_CD,
-      BASE_BRANCH_CD: BRANCH_CD,
-      BRANCH_CD: BRANCH_CD,
-      ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
-      GROUP_NAME: GROUP_NAME,
-      IMG_PATH: "",
-      FLAG: "ALL_SCREENS",
-      APP_TRAN_CD: "1",
-    });
-  return { status, data, message, messageDetails };
+  // await AuthSDK.Getfingerprintdata();
+  // AuthSDK.loginUserDetails(fulldata);
+  // AuthSDK.setToken(fulldata.access_token);
+  // const { status, data, message, messageDetails } =
+  //   await AuthSDK.internalFetcher("MENULIST", {
+  //     USER_NM: userID,
+  //     MACHINE_IP: "",
+  //     COMP_CD: COMP_CD,
+  //     BASE_BRANCH_CD: BRANCH_CD,
+  //     BRANCH_CD: BRANCH_CD,
+  //     ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
+  //     GROUP_NAME: GROUP_NAME,
+  //     IMG_PATH: "",
+  //     FLAG: "ALL_SCREENS",
+  //     APP_TRAN_CD: "1",
+  //   });
+  return {
+    status: "0",
+    data: [
+      {
+        isRouterLink: "true",
+        icon: "grip-horizontal",
+        label: "Dashboard",
+        href: "dashboard",
+      },
+      {
+        isRouterLink: "true",
+        icon: "file-lines",
+        label: "All Screens",
+        href: "all-screens",
+      },
+    ],
+    message: "",
+    messageDetails: "",
+  };
 };
 // export const verifyPasswordAndLogin = async (
 //   transactionId,

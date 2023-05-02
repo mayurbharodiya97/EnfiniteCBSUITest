@@ -166,9 +166,9 @@ export const AuthProvider = ({ children }) => {
       window.__logout = null;
     };
   }, [logout]);
-  useEffect(() => {
-    GeneralAPI.putOpenWindowName(window.location.pathname);
-  }, [window.location.pathname]);
+  // useEffect(() => {
+  //   GeneralAPI.putOpenWindowName(window.location.pathname);
+  // }, [window.location.pathname]);
   useEffect(() => {
     let result = localStorage.getItem("authDetails");
     if (result !== null) {
