@@ -13,7 +13,7 @@ const ErrorPage = lazy(() => import("app/error"));
 const Redirect = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    navigate("netbanking");
+    navigate("cbsenfinity");
   }, [navigate]);
   return null;
 };
@@ -25,7 +25,7 @@ const App = () => (
         <Suspense fallback={<FullScreenLoader />}>
           {/* <ErrorBoundary> */}
           <Routes>
-            <Route path="netbanking/*" element={<AUD />} />
+            <Route path="cbsenfinity/*" element={<AUD />} />
             <Route path="error/*" element={<ErrorPage />} />
             <Route path="*" element={<Redirect />} />
           </Routes>

@@ -86,8 +86,8 @@ export const AuthProvider = ({ children }) => {
       if (stopNavigation) {
         return;
       }
-      if (comingFromRoute === "/netbanking/login") {
-        navigate("/netbanking", {
+      if (comingFromRoute === "/cbsenfinity/login") {
+        navigate("/cbsenfinity", {
           replace: true,
         });
       } else {
@@ -119,9 +119,9 @@ export const AuthProvider = ({ children }) => {
       clearTimeout(timeoutID);
     }
     queryClient.clear();
-    if (window.location.pathname === "/netbanking/forgotpassword") {
+    if (window.location.pathname === "/cbsenfinity/forgotpassword") {
     } else {
-      navigate("/netbanking/login");
+      navigate("/cbsenfinity/login");
     }
   }, [dispatch, navigate]);
 

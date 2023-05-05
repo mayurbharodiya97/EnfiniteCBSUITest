@@ -61,8 +61,8 @@ const RedirectComponent = ({ isValidURL }) => {
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-    if (location.pathname === "/netbanking") {
-      navigate("/netbanking/dashboard");
+    if (location.pathname === "/cbsenfinity") {
+      navigate("/cbsenfinity/dashboard");
       // } else if (!isValidURL) {
       //   navigate("/error");
     } else {

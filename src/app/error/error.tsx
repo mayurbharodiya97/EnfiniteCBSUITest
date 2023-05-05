@@ -7,7 +7,7 @@ export const ErrorPage = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const returnToHomePage = () => {
-    navigate("/netbanking");
+    navigate("/cbsenfinity");
   };
   return (
     <div className={classes.wrapper}>

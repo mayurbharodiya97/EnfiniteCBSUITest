@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import clsx from "clsx";
-import Logo from "assets/images/netbankinglogo.png";
+import Logo from "assets/images/cbsenfinitylogo.png";
 
 import { useStyles } from "./style";
 import { Divider, Drawer, IconButton } from "@mui/material";
@@ -20,7 +20,7 @@ export const MyDrawer = ({ open, handleDrawerClose, children }) => {
       <div className={classes.toolbarIcon}>
         <img
           src={Logo}
-          alt="Netbanking"
+          alt="CBS"
           className={classes.logo}
           onClick={(e) => {
             e.preventDefault();
