@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
-import Logo from "assets/images/cbsenfinitylogo.png";
+import Logo from "assets/images/netbankinglogo.png";
 // import Popover from "@material-ui/core/Popover";
 import { AuthContext } from "../auth";
 import { useStyles } from "./style";

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import clsx from "clsx";
-import Logo from "assets/images/cbsenfinitylogo.png";
+import Logo from "assets/images/netbankinglogo.png";
 
 import { useStyles } from "./style";
 import { Divider, Drawer, IconButton } from "@mui/material";
