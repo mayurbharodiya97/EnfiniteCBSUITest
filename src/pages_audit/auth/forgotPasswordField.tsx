@@ -167,8 +167,17 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             flexDirection: "row-reverse",
           }}
         >
-          <div>
+          <div
+            style={{
+              flex: "auto",
+              textAlign: "center",
+              marginTop: "5px",
+              marginBottom: "17px",
+            }}
+          >
             <GradientButton
+              style={{ borderRadius: "10px" }}
+              fullWidth
               disabled={loginState.loading}
               endIcon={
                 loginState.loading ? <CircularProgress size={20} /> : null

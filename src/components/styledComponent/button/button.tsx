@@ -3,24 +3,26 @@ import { withStyles } from "@mui/styles";
 
 const GradientButton = withStyles({
   root: {
-    background: "var(--theme-color1)",
+    background: "var(--theme-color3)",
     border: 0,
-    color: "#fff !important",
+    //Comment By Bhavyata to Change color on OTP verify screen.
+    // color: "#fff !important",
+    color: "#fff",
     fontWeight: 700,
     minWidth: "80px",
     letterSpacing: "0.02857em",
     boxShadow: "none",
     textTransform: "capitalize",
     "&:hover": {
-      background: "rgb(200,0,0)",
+      background: "#4462bbbd",
       boxShadow: "none",
     },
     "&:active": {
-      background: "rgb(200,0,0)",
+      background: "#4462bbbd",
       boxShadow: "none",
     },
     "&:focus": {
-      background: "rgb(200,0,0)",
+      background: "#4462bbbd",
       boxShadow: "none",
     },
   },

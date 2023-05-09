@@ -24,10 +24,14 @@ const StyledTextField = withStyles({
     },
 
     "& .MuiInputBase-root": {
-      border: "1px solid #BABABA",
+      // border: "1px solid #BABABA",
       marginTop: "26px",
-      borderRadius: 5,
-      backgroundColor: "#fff",
+      // borderRadius: 5,
+      // backgroundColor: "#fff",
+      // background: "var(--theme-color2)",
+      background: "rgba(235, 237, 238, 0.2)",
+      borderRadius: "10px",
+      border: "0.929198px solid #EBEDEE",
       "@media (max-width: 1200px)": {
         fontSize: "0.875rem",
       },
@@ -58,7 +62,7 @@ const StyledTextField = withStyles({
       borderBottom: "0",
     },
     "& .MuiInput-underline:after": {
-      borderBottom: "3px solid var(--theme-color1)",
+      borderBottom: "3px solid var(--theme-color3)",
       transition: "transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms",
     },
     "&:hover .MuiInput-underline:before": {
