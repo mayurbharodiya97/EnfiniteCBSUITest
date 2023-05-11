@@ -9,6 +9,7 @@ import { useStyles } from "./style";
 import { AllScreensGridWrapper } from "./pages/allScreens";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
+import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 
 export const PagesAudit = (props) => {
   const classes = useStyles();
@@ -21,7 +22,11 @@ export const PagesAudit = (props) => {
       <div className={classes.root}>
         {/* {alert("Test")} */}
         <AppBar open={drawerOpen} handleDrawerOpen={handleDrawerOpen} />
-        <Drawer open={drawerOpen} handleDrawerClose={handleDrawerClose}>
+        <Drawer
+          open={drawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          handleDrawerOpen={handleDrawerOpen}
+        >
           <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
         </Drawer>
         <Content>
@@ -34,6 +39,10 @@ export const PagesAudit = (props) => {
                 />
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
+                {/* <Route
+                  path="branch-selection/*"
+                  element={<BranchSelectionGridWrapper />}
+                /> */}
               </>
             ) : null}
             <Route
@@ -61,8 +70,8 @@ const RedirectComponent = ({ isValidURL }) => {
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-    if (location.pathname === "/cbsenfinity") {
-      navigate("/cbsenfinity/dashboard");
+    if (location.pathname === "/netbanking") {
+      navigate("/netbanking/branch-selection");
       // } else if (!isValidURL) {
       //   navigate("/error");
     } else {

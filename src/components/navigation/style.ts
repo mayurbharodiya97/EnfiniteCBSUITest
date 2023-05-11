@@ -61,10 +61,11 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   item: {
     display: "flex",
     borderBottom: "1px solid #ddd",
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(2),
     background: "var(--theme-color1)",
     "& svg": {
+      // color: theme.palette.primary.main,
       color: theme.palette.primary.main,
     },
   },
@@ -82,16 +83,16 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     justifyContent: "left ",
   },
   navLinks: {
-    height: "calc(100vh - 71px)",
     overflowY: "auto",
     overflowX: "hidden",
+    height: "calc(100vh - 170px)",
     background: "var(--theme-color1)",
+    marginTop: "25px",
   },
   navLinksforseparateView: {
-    height: "calc(100vh - 150px)",
     overflowY: "auto",
     overflowX: "hidden",
-    background: "var(--theme-color1)",
+    height: "calc(100vh - 194px)",
   },
   nestedMenuLevel1: {
     paddingLeft: "20px",
@@ -112,14 +113,15 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     minWidth: "32px !important",
     color: "white",
     fontWeight: 700,
-    fontSize: "1.25rem",
+    fontSize: "1.75rem",
   },
   link: {
-    color: "white",
     fontSize: "1rem ",
     marginTop: "2px",
     marginBottom: "2px",
     textOverflow: "ellipsis",
+    color: "white",
+    marginLeft: "15px",
     "& span": {
       fontWeight: 500,
     },
@@ -128,13 +130,14 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     },
   },
   linktext: {
-    backgroundColor: "var(--theme-color1)",
+    backgroundColor: "var(--theme-color2)",
     "&:hover": {
+      background: "var(--theme-color1)",
       "& div": {
-        color: "var(--theme-color1) !important",
+        color: "var(--theme-color2) !important",
       },
       "& div > svg": {
-        color: "var(--theme-color1) !important",
+        color: "var(--theme-color2) !important",
       },
     },
   },
@@ -164,7 +167,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   activeMenuItem: {
     backgroundColor: "var(--white)!important", //"var(--theme-color2)!important",
     "& > div": {
-      color: "var(--theme-color1)",
+      color: "var(--theme-color3)",
     },
     "& svg": {
       color: theme.palette.secondary.main,

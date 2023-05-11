@@ -6,7 +6,7 @@ import { AuthContext } from "./authContext";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
 
-export const AuthLoginLeftImage = () => {
+export const BankDetails = () => {
   const { isLoggedIn, login } = useContext(AuthContext);
   const classes = useStyles();
   const navigate = useNavigate();

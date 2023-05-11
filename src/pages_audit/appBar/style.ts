@@ -5,15 +5,21 @@ const drawerWidth = 250;
 
 export const useStyles = makeStyles((theme: any) => ({
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    // zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     backgroundColor: "var(--white)",
     color: "#0063A3",
+    height: "100px",
+    background: "rgba(250, 251, 255, 0.9)",
+    borderBottom: "1px solid #949597",
+    // boxShadow: "0px 1px 0px -0.5px #DEE0E2",
+    paddingLeft: "70px",
   },
   appBarShift: {
+    paddingLeft: "0px",
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
@@ -21,22 +27,25 @@ export const useStyles = makeStyles((theme: any) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
+  heading_user_dtl: {
+    width: "458px",
+    height: "73px",
+    left: "37px",
+    top: "calc(50% - 73px/2)",
+  },
+  heading_user_img: {
+    width: "50px",
+    height: "50px",
+  },
+  heading_user_img_border: {
+    border: "2px dashed #4263C7",
+    borderRadius: "50%",
+    padding: "4px",
+  },
   toolbar: {
-    paddingRight: theme.spacing(2),
-    paddingLeft: theme.spacing(2),
-    minHeight: "70px",
-    height: "70px",
-  },
-  menuButton: {
-    marginRight: 0,
-    //background: "var(--theme-color2)",
-    color: "var(--theme-color1)",
-    "&:hover": {
-      background: "var(--theme-color2)",
-    },
-  },
-  menuButtonHidden: {
-    display: "none",
+    minHeight: "100px",
+    paddingLeft: "0px",
+    height: "100px",
   },
   title: {
     flexGrow: 1,
@@ -104,6 +113,7 @@ export const useStyles = makeStyles((theme: any) => ({
   logo: {
     height: "50px",
     marginRight: theme.spacing(2),
+    display: "block",
   },
   userDesignation: {
     margin: "0px",
@@ -123,5 +133,9 @@ export const useStyles = makeStyles((theme: any) => ({
     "&:hover": {
       backgroundColor: "var(--theme-color2)",
     },
+  },
+  lang_svg: {
+    marginRight: "10px",
+    width: "20px",
   },
 }));
