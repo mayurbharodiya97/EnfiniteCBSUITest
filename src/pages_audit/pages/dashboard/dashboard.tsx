@@ -20,6 +20,8 @@ const Dashboard = () => {
       <Box
         component="main"
         sx={{
+          backgroundColor: "transparent",
+          height: "83vh",
           flexGrow: 1,
           // backgroundColor: "red",
           // backgroundColor: "transparent",
@@ -29,7 +31,7 @@ const Dashboard = () => {
       >
         <Container>
           <Grid container spacing={2}>
-            {isLoading || isFetching ? (
+            {/* {isLoading || isFetching ? (
               <Grid item lg={12} md={12} xl={12} xs={12}>
                 <LoaderPaperComponent />
               </Grid>
@@ -94,8 +96,7 @@ const Dashboard = () => {
                   </Grid>
                 ) : null}
               </>
-            )}
-
+            )} */}
             {/* <Grid item lg={4} md={6} xl={3} xs={12}>
             <LatestProducts sx={{ height: "100%" }} />
           </Grid>

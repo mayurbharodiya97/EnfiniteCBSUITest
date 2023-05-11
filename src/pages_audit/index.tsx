@@ -1,12 +1,13 @@
 import { Fragment, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
-import {
-  AuthProvider,
-  AuthLoginController,
-  ProtectedRoutes,
-  ForgotPasswordController,
-} from "./auth";
 import { PagesAudit } from "./pages_audit";
+import {
+  AuthLoginController,
+  AuthProvider,
+  ForgotPasswordController,
+  ProtectedRoutes,
+} from "./auth";
+import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 //alert("EntryPoint");
 const EntryPoint = () => (
   <Fragment>
@@ -14,6 +15,10 @@ const EntryPoint = () => (
       <Routes>
         <Route path="login" element={<AuthLoginController />} />
         <Route path="forgotpassword" element={<ForgotPasswordController />} />
+        <Route
+          path="branch-selection/*"
+          element={<BranchSelectionGridWrapper />}
+        />
         <Route
           path="*"
           element={

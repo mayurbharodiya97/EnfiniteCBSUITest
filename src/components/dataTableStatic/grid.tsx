@@ -236,6 +236,7 @@ export const DataGrid = ({
     <Paper
       style={{
         width: "100%",
+        boxShadow: "none",
       }}
     >
       {Boolean(hideHeader) ? null : (

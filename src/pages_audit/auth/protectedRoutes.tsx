@@ -88,6 +88,7 @@ export const ProtectedRoutes = ({ children }) => {
       window.location.pathname === "/netbanking" ||
       window.location.pathname === "/netbanking/dashboard" ||
       window.location.pathname === "/netbanking/profile" ||
+      window.location.pathname === "/netbanking/branch-selection" ||
       isValidateURL(allActiveURL, window.location.pathname)
     ) {
       return true;
