@@ -25,7 +25,6 @@ export const App = () => {
           <CssBaseline />
           <QueryClientProvider client={queryClient}>
             <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
-              {/* <h1>Hello</h1> */}
               <IndexPage />
             </SnackbarProvider>
             {/* {process.env.NODE_ENV !== "production" ? (

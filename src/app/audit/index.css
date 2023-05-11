@@ -1,8 +1,8 @@
 :root {
-  --theme-color1: rgb(128, 0, 0);
-  --theme-color2: #fedad8;
-  --theme-color3: #fe0000;
-  --theme-color4: #fcbab7;
+  --theme-color1: #07288e;
+  --theme-color2: #ffffff;
+  --theme-color3: #4263c7;
+  --theme-color4: #eceff9;
   --white: rgb(255, 255, 255);
   --white-dim: rgb(255, 255, 255, 0.54);
   /* font-family: "Montserrat", Helvetica, Arial, Lucida, sans-serif !important; */
