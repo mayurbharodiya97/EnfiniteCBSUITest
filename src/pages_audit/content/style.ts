@@ -6,9 +6,10 @@ export const useStyles = makeStyles((theme: any) => ({
     flexGrow: 1,
     height: "100vh",
     overflowY: "auto",
+    paddingTop: "32px",
   },
   container: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
     height: "100%",
     // height: `calc(100vh - 70px)`,
   },

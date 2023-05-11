@@ -21,7 +21,11 @@ export const PagesAudit = (props) => {
       <div className={classes.root}>
         {/* {alert("Test")} */}
         <AppBar open={drawerOpen} handleDrawerOpen={handleDrawerOpen} />
-        <Drawer open={drawerOpen} handleDrawerClose={handleDrawerClose}>
+        <Drawer
+          open={drawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          handleDrawerOpen={handleDrawerOpen}
+        >
           <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
         </Drawer>
         <Content>

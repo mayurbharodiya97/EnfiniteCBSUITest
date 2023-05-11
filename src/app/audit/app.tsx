@@ -28,9 +28,9 @@ export const App = () => {
               {/* <h1>Hello</h1> */}
               <IndexPage />
             </SnackbarProvider>
-            {process.env.NODE_ENV !== "production" ? (
+            {/* {process.env.NODE_ENV !== "production" ? (
               <ReactQueryDevtools />
-            ) : null}
+            ) : null} */}
           </QueryClientProvider>
         </StyledEngineProvider>
       </ThemeProvider>

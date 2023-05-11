@@ -36,7 +36,7 @@ export const SearchBar: FC<InputProps> = (props) => {
         }}
       />
       <div className={classes.search}>
-        <SearchIcon color="secondary" />
+        <SearchIcon color="info" />
       </div>
     </div>
   );
