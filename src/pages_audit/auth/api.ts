@@ -29,6 +29,7 @@ export const veirfyUsernameandPassword = async (
   return {
     data: {
       REQUEST_CD: "110432",
+      VERIFY_THROUGH: "O",
     },
     status: "0",
     message: "OTP Sent successfully.",
@@ -323,3 +324,56 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
 //   }, {});
 //   return { entities: result, products: products };
 // };
+export const capture = async () => {
+  var MFS100Request = {
+    Quality: 60,
+    TimeOut: 10,
+  };
+  var jsondata = JSON.stringify(MFS100Request);
+  const rawResponse = await fetch("http://localhost:8004/mfs100/capture", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: jsondata,
+  });
+  const content = await rawResponse.json();
+  return content;
+};
+export const verifyUserFinger = async (username, token) => {
+  const { data, status } = await AuthSDK.internalFetcher(
+    `./cbs/employee/verifyFinger`,
+    {
+      body: JSON.stringify({
+        requestData: {
+          userID: username,
+        },
+        channel: "W",
+      }),
+    },
+    token
+  );
+  if (status === "success") {
+    return { status, data: data?.responseData };
+  } else {
+    return { status, data: data?.errorData };
+  }
+};
+
+export const biometricStatusUpdate = async (username, token, verifyStatus) => {
+  const { data, status } = await AuthSDK.internalFetcher(
+    `./cbs/employee/updateBiometricStatus`,
+    {
+      body: JSON.stringify({
+        requestData: {
+          userID: username,
+          status: verifyStatus,
+        },
+        channel: "W",
+      }),
+    },
+    token
+  );
+  return { status, data };
+};

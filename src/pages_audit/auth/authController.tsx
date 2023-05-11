@@ -1,16 +1,22 @@
-import { useReducer, useContext, useEffect, useState } from "react";
-import Box from "@mui/material/Box";
+import { useReducer, useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import loginImg from "assets/images/login.svg";
+import loginImg from "../../assets/images/login.png";
+
 import { useStyles } from "./style";
 import { UsernamePasswordField } from "./usernamePassword";
 import { AuthContext } from "./authContext";
-import logo from "assets/images/logo.jpg";
+import logo from "../../assets/images/logo.jpg";
 import { OTPModel } from "./otpPopup";
 import { veirfyUsernameandPassword, verifyOTP } from "./api";
 import { useSnackbar } from "notistack";
 import { PasswordRotation } from "./pwdRotation";
+import { VerifyFinger } from "./verifyFinger";
 
+import * as API from "./api";
+import { matchFinger } from "./biometric";
+import { Grid } from "@mui/material";
+import { Container } from "@mui/material";
+import { AuthLoginLeftImage } from "./authLoginLeftImage";
 const inititalState = {
   username: "",
   firstName: "",
@@ -29,10 +35,26 @@ const inititalState = {
   access_token: "",
   token_type: "",
   otpmodelClose: false,
+  verifyThrough: "",
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case "inititateUserNameVerification":
+    case "inititatePasswordVerification":
+    case "inititateUserFingerVerification":
+    case "inititateOTPVerification": {
+      return {
+        ...state,
+        loading: true,
+        isError: false,
+        isUsernameError: false,
+        isPasswordError: false,
+        isOTPError: false,
+        isBiometricError: false,
+        userMessage: "",
+      };
+    }
     case "usernameandpasswordrequired": {
       return {
         ...state,
@@ -118,6 +140,8 @@ const reducer = (state, action) => {
         access_token: action?.payload?.access_token,
         token_type: action?.payload?.token_type,
         otpmodelClose: false,
+        currentFlow: "OTP",
+        verifyThrough: action?.payload?.verifyThrough,
       };
     }
     case "inititateOTPVerification": {
@@ -129,6 +153,22 @@ const reducer = (state, action) => {
         otpmodelClose: false,
       };
     }
+    case "biometricVerificationFailure":
+      return {
+        ...state,
+        loading: false,
+        isError: true,
+        isBiometricError: true,
+        userMessage: action?.payload?.error,
+      };
+    case "biometricVerificationSuccessful":
+      return {
+        ...state,
+        loading: false,
+        isError: false,
+        isBiometricError: false,
+        state: action.payload,
+      };
     case "OTPVerificationComplate": {
       return {
         ...state,
@@ -145,6 +185,9 @@ const reducer = (state, action) => {
         otpmodelClose: Boolean(action?.payload?.otpmodelclose),
       };
     }
+    case "backToUsernameVerification": {
+      return inititalState;
+    }
     default: {
       return state;
     }
@@ -159,6 +202,7 @@ export const AuthLoginController = () => {
   const [open, setOpen] = useState(false);
   const [openpwdreset, setOpenPwdReset] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const failureCount = useRef(0);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
   // console.log(audio);
@@ -190,6 +234,7 @@ export const AuthLoginController = () => {
             username: username,
             access_token: access_token?.access_token,
             token_type: access_token?.token_type,
+            verifyThrough: data?.VERIFY_THROUGH,
           },
         });
         setOpen(true);
@@ -264,9 +309,7 @@ export const AuthLoginController = () => {
       });
     }
   };
-  const handleClose = () => {
-    setOpen(false);
-  };
+
   const handlePasswordRotationClose = (flag) => {
     if (flag === "0") {
       dispath({
@@ -276,58 +319,150 @@ export const AuthLoginController = () => {
     }
     setOpenPwdReset(false);
   };
+  const changeUserName = () => {
+    dispath({
+      type: "backToUsernameVerification",
+    });
+  };
+  const verifyFinger = async () => {
+    dispath({ type: "inititateUserFingerVerification" });
+    try {
+      const fingerResponse = await API.capture();
+      if (fingerResponse?.ErrorCode === "0") {
+        const result = await API.verifyUserFinger(
+          loginState.username,
+          loginState.token
+        );
+        if (result.status === "success") {
+          const promise: any = await matchFinger(
+            result.data,
+            fingerResponse.IsoTemplate
+          );
+          if (promise.status) {
+            dispath({ type: "biometricVerificationSuccessful" });
+            login({
+              username: loginState.username,
+              token: loginState.token,
+              role: loginState.role,
+              roleName: loginState.roleName,
+              isLoggedIn: false,
+              fullname: loginState.fullname,
+              branch: loginState.branch,
+              branchCode: loginState.branchCode,
+              lastLogin: loginState.lastLogin,
+              access: loginState.accessBranch,
+              bankName: loginState.bankName,
+              menurights: result.data,
+            });
+            await API.biometricStatusUpdate(
+              loginState.username,
+              loginState.token,
+              "S"
+            );
+          } else {
+            failureCount.current = failureCount.current + 1;
+            dispath({
+              type: "biometricVerificationFailure",
+              payload: {
+                error: "Finger Not Match.Please Try Again",
+              },
+            });
+            await API.biometricStatusUpdate(
+              loginState.username,
+              loginState.token,
+              "F"
+            );
+            if (failureCount.current >= 3) changeUserName();
+          }
+        } else {
+          dispath({
+            type: "biometricVerificationFailure",
+            payload: {
+              error: result?.data?.errorMessage ?? "Unknown error occured",
+            },
+          });
+        }
+      } else {
+        dispath({
+          type: "biometricVerificationFailure",
+          payload: {
+            error: fingerResponse?.ErrorMessage ?? "MFS100 Not Found",
+          },
+        });
+      }
+    } catch (e: any) {
+      dispath({
+        type: "biometricVerificationFailure",
+        payload: {
+          error: e?.message ?? "Unknown error occured",
+        },
+      });
+    }
+  };
   return (
-    <Box display="flex" width={1} className={classes.wrapper}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        width={1 / 2}
-        className={classes.loginLeft}
-      >
-        <img alt="Bank Logo" src={loginImg} className={classes.loginImg} />
-      </Box>
-      <Box
-        display="flex"
-        flexDirection="column"
-        width={1 / 2}
-        className={classes.loginRight}
-      >
-        <img src={logo} alt="Logo" width="auto" height="auto" />
-        <h2>Login</h2>
+    <>
+      <Grid container style={{ height: "100vh", overflow: "hidden" }}>
+        <AuthLoginLeftImage />
+        <Grid item xs={11} md={6} lg={6} sm={6}>
+          <Grid
+            container
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            padding={"31px"}
+          >
+            <img src={logo} alt="Logo" />
+          </Grid>
 
-        <UsernamePasswordField
-          key="username"
-          classes={classes}
-          loginState={loginState}
-          verifyUsernamePassword={verifyUsernamePassword}
-        />
-        {open ? (
-          <OTPModel
-            classes={classes}
-            open={open}
-            handleClose={handleClose}
-            loginState={loginState}
-            VerifyOTP={VerifyOTP}
-            OTPError={loginState?.OtpuserMessage ?? ""}
-            setOTPError={(error) => {
-              dispath({
-                type: "OTPVerificationFailed",
-                payload: { error: error },
-              });
-            }}
-          />
-        ) : null}
-        {openpwdreset ? (
-          <PasswordRotation
-            classes={classes}
-            open={openpwdreset}
-            username={loginState.username}
-            accessToken={loginState.access_token}
-            tokenType={loginState.token_type}
-            handleClose={handlePasswordRotationClose}
-          />
-        ) : null}
-      </Box>
-    </Box>
+          {loginState.currentFlow === "username" ? (
+            <UsernamePasswordField
+              key="username"
+              classes={classes}
+              loginState={loginState}
+              verifyUsernamePassword={verifyUsernamePassword}
+            />
+          ) : (
+            <>
+              {loginState.verifyThrough === "O" ? (
+                <OTPModel
+                  key="otp"
+                  classes={classes}
+                  loginState={loginState}
+                  VerifyOTP={VerifyOTP}
+                  previousStep={changeUserName}
+                  OTPError={loginState?.OtpuserMessage ?? ""}
+                  setOTPError={(error) => {
+                    dispath({
+                      type: "OTPVerificationFailed",
+                      payload: { error: error },
+                    });
+                  }}
+                  open={undefined}
+                  handleClose={undefined}
+                />
+              ) : (
+                <VerifyFinger
+                  key="biometric"
+                  classes={classes}
+                  loginState={loginState}
+                  verifyFinger={verifyFinger}
+                  previousStep={changeUserName}
+                />
+              )}
+            </>
+          )}
+        </Grid>
+      </Grid>
+      {/* {openpwdreset ? (
+          //   <PasswordRotation
+          //     classes={classes}
+          //     open={openpwdreset}
+          //     username={loginState.username}
+          //     accessToken={loginState.access_token}
+          //     tokenType={loginState.token_type}
+          //     handleClose={handlePasswordRotationClose}
+          //   />
+          // ) : null} */}
+    </>
   );
 };
