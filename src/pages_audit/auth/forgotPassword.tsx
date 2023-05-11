@@ -8,7 +8,7 @@ import { OTPModel } from "./otpPopup";
 import { utilFunction } from "components/utils/utilFunctions";
 import { useSnackbar } from "notistack";
 import { Box, Container, Grid } from "@mui/material";
-import { AuthLoginLeftImage } from "./authLoginLeftImage";
+import { BankDetails } from "./bankDetails";
 const inititalState = {
   isUsernameError: false,
   userMessageforusername: "",
@@ -220,7 +220,7 @@ export const ForgotPasswordController = () => {
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-        <AuthLoginLeftImage />
+        <BankDetails />
         <Grid item xs={6} md={6} lg={6} sm={6}>
           <Grid
             container

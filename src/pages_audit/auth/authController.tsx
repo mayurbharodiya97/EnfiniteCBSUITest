@@ -16,7 +16,7 @@ import * as API from "./api";
 import { matchFinger } from "./biometric";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
-import { AuthLoginLeftImage } from "./authLoginLeftImage";
+import { BankDetails } from "./bankDetails";
 const inititalState = {
   username: "",
   firstName: "",
@@ -402,7 +402,7 @@ export const AuthLoginController = () => {
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-        <AuthLoginLeftImage />
+        <BankDetails />
         <Grid item xs={11} md={6} lg={6} sm={6}>
           <Grid
             container

@@ -10,3 +10,4 @@ export const getDashboardData = async () => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getDashboardDatad = async () => {};
