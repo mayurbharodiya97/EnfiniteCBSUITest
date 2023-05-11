@@ -9,6 +9,7 @@ import { useStyles } from "./style";
 import { AllScreensGridWrapper } from "./pages/allScreens";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
+import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 
 export const PagesAudit = (props) => {
   const classes = useStyles();
@@ -34,6 +35,10 @@ export const PagesAudit = (props) => {
                 />
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
+                {/* <Route
+                  path="branch-selection/*"
+                  element={<BranchSelectionGridWrapper />}
+                /> */}
               </>
             ) : null}
             <Route
@@ -62,7 +67,7 @@ const RedirectComponent = ({ isValidURL }) => {
   const location = useLocation();
   useEffect(() => {
     if (location.pathname === "/netbanking") {
-      navigate("/netbanking/dashboard");
+      navigate("/netbanking/branch-selection");
       // } else if (!isValidURL) {
       //   navigate("/error");
     } else {

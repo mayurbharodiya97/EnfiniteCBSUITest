@@ -11,5 +11,8 @@
     "**/package.json"
   ],
   "editor.bracketPairColorization.enabled": true,
-  "editor.guides.bracketPairs": "active"
+  "editor.guides.bracketPairs": "active",
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

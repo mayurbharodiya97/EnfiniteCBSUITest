@@ -23,6 +23,7 @@ export const HeaderCellWrapper = ({ column, children }) => {
             padding: "0px 10px",
             lineHeight: "34px",
             ...stickyHeaderCell,
+            borderBottom: "none",
           },
         },
       ])}
