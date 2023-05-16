@@ -21,6 +21,8 @@
 .name-heading {
   font-weight: 400;
   color: var(--theme-color1);
+  position: relative;
+  z-index: 1;
 }
 .name-heading span {
   color: var(--theme-color1);

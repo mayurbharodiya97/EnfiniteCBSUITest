@@ -95,6 +95,8 @@ export const RenderActions: FC<RenderActionType> = ({
   setAction,
   selectedRows,
   buttonTextColor = "var(--white)",
+  buttonBackground = "inherit",
+  style = {},
 }) => {
   if (Array.isArray(actions) && actions.length > 0) {
     return actions.map((one) => (
@@ -113,8 +115,9 @@ export const RenderActions: FC<RenderActionType> = ({
           //   marginRight: "10px",
           // }}
           style={{
-            //background: "rgb(239, 224, 224)",
-            color: buttonTextColor,
+            background: one.actionBackground ?? buttonBackground,
+            color: one.actionTextColor ?? buttonTextColor,
+            ...style,
             //marginRight: "10px",
           }}
         >

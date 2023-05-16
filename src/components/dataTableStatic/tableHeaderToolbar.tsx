@@ -52,6 +52,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
       visibleColumns,
       defaultHiddenColumns,
       allowColumnHiding,
+      headerToolbarStyle,
     },
     ref
   ) => {
@@ -63,7 +64,11 @@ export const TableHeaderToolbar = forwardRef<any, any>(
       resume: resume,
     }));
     return (
-      <Toolbar className={classes.root} variant={dense ? "dense" : "regular"}>
+      <Toolbar
+        className={classes.root}
+        variant={dense ? "dense" : "regular"}
+        style={{ ...headerToolbarStyle }}
+      >
         <Typography
           className={classes.title}
           color="inherit"

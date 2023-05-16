@@ -2,16 +2,18 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const BranchSelectionGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Branch Selection",
+    gridLabel: "",
     rowIdColumn: "BRANCH_CD",
+
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
       minWidth: 300,
     },
+
     allowColumnReordering: false,
-    disableSorting: true,
-    hideHeader: true,
+    disableSorting: false,
+    hideHeader: false,
     disableGroupBy: true,
     enablePagination: false,
     containerHeight: {

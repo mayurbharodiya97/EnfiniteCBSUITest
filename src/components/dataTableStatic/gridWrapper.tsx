@@ -54,6 +54,9 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
       hideFooter = false,
       autoRefreshInterval = 0,
       onClickActionEvent = () => {},
+      controlsAtBottom = false,
+      headerToolbarStyle = {},
+      onlySingleSelectionAllow = false,
     },
     ref
   ) => {
@@ -309,6 +312,9 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         defaultFilter={mydefaultFilter}
         isCusrsorFocused={metaData.gridConfig?.isCusrsorFocused ?? false}
         onButtonActionHandel={onButtonActionHandel}
+        controlsAtBottom={controlsAtBottom}
+        headerToolbarStyle={headerToolbarStyle}
+        onlySingleSelectionAllow={onlySingleSelectionAllow}
       />
     );
   }

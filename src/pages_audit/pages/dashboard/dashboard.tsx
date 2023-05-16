@@ -8,6 +8,7 @@ import { useQuery } from "react-query";
 import * as API from "./api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Fragment } from "react";
+import { QuickAccessTableGridWrapper } from "./QuickAccessTableGrid/QuickAccessTableGrid";
 
 const Dashboard = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
@@ -28,6 +29,7 @@ const Dashboard = () => {
       >
         <Container>
           <Grid container spacing={2}>
+            <QuickAccessTableGridWrapper />
             {/* {isLoading || isFetching ? (
               <Grid item lg={12} md={12} xl={12} xs={12}>
                 <LoaderPaperComponent />

@@ -9,7 +9,6 @@ export const StickyTableHead = withStyles(() => ({
     backgroundColor: "var( --theme-color4)",
     display: "block",
     borderRadius: "10px",
-    padding: "6px 0px",
     margin: "0px 0px 10px 0px",
   },
 }))(TableHead);
