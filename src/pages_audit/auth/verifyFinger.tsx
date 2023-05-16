@@ -7,6 +7,7 @@ import * as API from "./api";
 import { TextField } from "@material-ui/core";
 import { Container } from "@mui/material";
 import { Grid } from "@mui/material";
+import "./verify.css";
 export const VerifyFinger = ({
   classes,
   loginState,
@@ -22,14 +23,13 @@ export const VerifyFinger = ({
             style={{
               marginRight: "25px",
               width: "102%",
-              marginBottom: "55px",
+              // marginBottom: "55px",
             }}
           >
             {/* <Typography variant="h6" color="primary">
           Hi{`, ${loginState?.fullname ?? ""}`}
         </Typography> */}
             <br />
-
             <div
               style={{
                 color: "#000000",
@@ -42,7 +42,7 @@ export const VerifyFinger = ({
                 marginBottom: "10px",
               }}
             >
-              Biomatrix Authentication
+              Biometrix Authentication
             </div>
             <div
               style={{
@@ -56,7 +56,7 @@ export const VerifyFinger = ({
                 // marginBottom: "10px",
               }}
             >
-              Kindly place you finger on biomatrix machine
+              Kindly place you finger on biometrix machine
             </div>
             <br />
             <Typography variant="h5" style={{ color: "#000000" }}>
@@ -70,31 +70,82 @@ export const VerifyFinger = ({
                   : classes.fingerUi
               }
             >
-              <FingerprintSharpIcon
-                sx={{
-                  fontSize: "80px",
-                  color: "#949597",
-                  // width: "5em",
-                  // border: "1px solid #1AA748",
-                  // boxShadow: "0 0 0 1px #1AA748 inset, 0 0 0 2px #1AA748 inset",
-                  // borderRadius: "50%",
-                  display: "flex",
-                  margin: "0 auto",
-                  "&:after": {
-                    borderBottom: "2px solid #26A456",
-                    color: "#1AA748",
-                  },
-                }}
-                className={
-                  loginState?.isBiometricError ? classes.FingerIcon : null
-                }
-              />
+              <div className="spinner-wrap">
+                {/* <img src="assets/img/scnner.png" alt="" className="image" /> */}
+                <FingerprintSharpIcon
+                  sx={{
+                    fontSize: "80px",
+                    //color: "#949597",
+                    opacity: "0.4",
+                    // width: "5em",
+                    // border: "1px solid #949597",
+                    // boxShadow: "0 0 0 1px #1AA748 inset, 0 0 0 2px #1AA748 inset",
+                    borderRadius: "50%",
+                    display: "flex",
+                    margin: "0 auto",
+                    "&:after": {
+                      borderBottom: "2px solid #26A456",
+                      //color: "#1AA748",
+                    },
+                  }}
+                  className={
+                    loginState?.isBiometricError ? classes.FingerIcon : null
+                  }
+                  color={loginState?.isBiometricError ? "error" : "inherit"}
+                />
+                <div
+                  className="spinner-item"
+                  style={{
+                    border: loginState?.isBiometricError
+                      ? "1px solid red"
+                      : "1px solid #949597",
+                  }}
+                ></div>
+                <div
+                  className="spinner-item spinner-item--2"
+                  style={{
+                    border: loginState?.isBiometricError
+                      ? "1px solid red"
+                      : "1px solid #949597",
+                  }}
+                ></div>
+                <div
+                  className="spinner-item spinner-item--3"
+                  style={{
+                    border: loginState?.isBiometricError
+                      ? "1px solid red"
+                      : "1px solid #949597",
+                  }}
+                ></div>
+              </div>
             </div>
+
             <div className={classes.biometric}>
-              <TextField
+              <div style={{ marginTop: "50px" }}>
+                <div className="progress">
+                  <div className="bar"></div>
+                </div>
+                <h3
+                  style={{
+                    display: "flex",
+                    marginTop: "20px",
+                    justifyContent: "space-around",
+                    color: loginState?.isBiometricError
+                      ? "rgb(255 0 0 / 65%)"
+                      : "inherit",
+                  }}
+                >
+                  {loginState?.isBiometricError
+                    ? loginState?.userMessage
+                    : loginState?.loading
+                    ? "Scanning..."
+                    : "Loading..."}
+                </h3>
+              </div>
+              {/* <TextField
                 key="biometric"
                 name="biometric"
-                hidden={true}
+                // hidden={true}
                 style={{
                   // marginTop: "-20px",
                   width: "40%",
@@ -102,7 +153,7 @@ export const VerifyFinger = ({
                   margin: "0 auto",
                   top: "20px",
                   // background: "#1AA748",
-                  // borderRadius: "5%",
+                  borderRadius: "5%",
                   // height: "3px",
                 }}
                 error={loginState.isBiometricError}
@@ -110,16 +161,16 @@ export const VerifyFinger = ({
                   loginState.isBiometricError ? loginState.userMessage : ""
                 }
                 disabled={true}
-              />
+              /> */}
             </div>
           </div>
           <div
             style={{
               display: "flex",
               justifyContent: "center",
-              margin: "28px 0 0 0",
+              margin: "38px 0 0 0",
               gap: "10px",
-              padding: "10px",
+              // padding: "10px",
             }}
           >
             {/* <GradientButton onClick={previousStep} fullWidth>
@@ -145,7 +196,7 @@ export const VerifyFinger = ({
                 size="large"
                 className={classes.otpButtons}
               >
-                Next
+                Verify
               </GradientButton>
             </Container>
           </div>

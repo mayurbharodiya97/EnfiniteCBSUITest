@@ -6,14 +6,14 @@ import { AuthContext } from "./authContext";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
 
-export const AuthLoginLeftImage = () => {
+export const BankDetails = ({ imageData }: any) => {
   const { isLoggedIn, login } = useContext(AuthContext);
   const classes = useStyles();
   const navigate = useNavigate();
 
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
-  // console.log(audio);
+
   useEffect(() => {
     if (isLoggedIn()) {
       navigate("/audit", { replace: true });
@@ -24,7 +24,17 @@ export const AuthLoginLeftImage = () => {
     <>
       {/* <Grid container style={{ height: "100vh", overflow: "hidden" }}> */}
       <Grid item xs={6} md={6} lg={6} className={classes.loginLeft}>
-        <Grid item xs={12} md={12} lg={12} style={{ height: "30em" }}>
+        <Grid item xs={12} md={12} lg={12} style={{ height: "70vh" }}>
+          {/* <div
+            style={{
+              backgroundImage: `url(${loginImg})`,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              width: "100%",
+              height: "100%",
+            }}
+          ></div> */}
           <img
             alt=""
             style={{
@@ -42,7 +52,7 @@ export const AuthLoginLeftImage = () => {
           md={12}
           lg={12}
           style={{
-            height: "15em",
+            height: "30vh",
             background: "var(--theme-color5)",
           }}
         >
@@ -56,9 +66,9 @@ export const AuthLoginLeftImage = () => {
                 paddingTop: "30px",
               }}
             >
-              Welcome to
+              {`${imageData?.[0]?.APP_NM ?? ""}`}
               <span style={{ marginLeft: "8px", fontWeight: "900" }}>
-                EasyBank
+                {/* EasyBank */}
               </span>
             </div>
             <div
@@ -71,9 +81,7 @@ export const AuthLoginLeftImage = () => {
                 maxWidth: "464px",
               }}
             >
-              It is an enterprise browser-based multi-channel banking solution
-              that enables full range of banking services and customers with
-              different user profiles, efficiently and reliably.
+              {`${imageData?.[0]?.NOTE ?? ""}`}
             </div>
           </Container>
         </Grid>

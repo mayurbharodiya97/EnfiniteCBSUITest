@@ -12,6 +12,7 @@ export const useStyles = makeStyles((theme: any) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     border: "none",
+    overflow: "hidden",
   },
   drawerPaperClose: {
     overflowX: "hidden",

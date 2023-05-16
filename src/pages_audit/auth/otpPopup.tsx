@@ -170,7 +170,7 @@ export const OTPModel = ({
                 // margin: "0px 5px ",
                 gap: "10px",
                 // padding: "60px",
-                margin: "50px 0 0 37px",
+                margin: "42px 0 0 42px",
 
                 width: "60%",
               }}
