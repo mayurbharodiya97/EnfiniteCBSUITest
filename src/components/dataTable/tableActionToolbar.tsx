@@ -94,7 +94,7 @@ export const RenderActions: FC<RenderActionType> = ({
   actions,
   setAction,
   selectedRows,
-  buttonTextColor = "var(--white)",
+  buttonTextColor = "var( --theme-color2)",
   buttonBackground = "inherit",
   style = {},
 }) => {
@@ -111,7 +111,7 @@ export const RenderActions: FC<RenderActionType> = ({
           //color="secondary"
           // style={{
           //   //background: "var(--theme-color1)",
-          //   color: "var(--theme-color3)", //"var(--white)",
+          //   color: "var(--theme-color3)", //"var(--theme-color2)",
           //   marginRight: "10px",
           // }}
           style={{

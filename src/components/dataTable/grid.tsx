@@ -235,7 +235,7 @@ export const DataGrid = forwardRef<any, any>(
       <Paper
         style={{
           width: "100%",
-          background: "var(--white)",
+          background: "var(--theme-color2)",
         }}
       >
         <TableHeaderToolbar
