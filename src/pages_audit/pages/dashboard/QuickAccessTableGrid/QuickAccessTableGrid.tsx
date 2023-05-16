@@ -51,7 +51,7 @@ const QuickAccessTableGrid = () => {
   console.log("gridRef.current", gridRef.current);
   return (
     <>
-      <Grid
+      {/* <Grid
         item
         lg={7}
         md={7}
@@ -64,28 +64,27 @@ const QuickAccessTableGrid = () => {
         //     //   justifyContent: "center",
         //   }
         // }
-      >
-        {" "}
-        <GridWrapper
-          key={`quickAccessGrid`}
-          finalMetaData={QuickAccessTableGridMetaData as GridMetaDataType}
-          data={data}
-          setData={() => null}
-          actions={actions}
-          setAction={setCurrentAction}
-          // controlsAtBottom={true}
-          headerToolbarStyle={{
-            borderTop: "2px solid var(--theme-color4)",
-            borderLeft: "2px solid var(--theme-color4)",
-            borderRight: "2px solid var(--theme-color4)",
-            backgroundColor: "inherit",
-            borderTopLeftRadius: "20px",
+      > */}{" "}
+      <GridWrapper
+        key={`quickAccessGrid`}
+        finalMetaData={QuickAccessTableGridMetaData as GridMetaDataType}
+        data={data}
+        setData={() => null}
+        actions={actions}
+        setAction={setCurrentAction}
+        // controlsAtBottom={true}
+        headerToolbarStyle={{
+          borderTop: "2px solid var(--theme-color4)",
+          borderLeft: "2px solid var(--theme-color4)",
+          borderRight: "2px solid var(--theme-color4)",
+          backgroundColor: "inherit",
+          borderTopLeftRadius: "20px",
 
-            borderTopRightRadius: "20px",
-            color: "black",
-          }}
-        />
-      </Grid>
+          borderTopRightRadius: "20px",
+          color: "black",
+        }}
+      />
+      {/* </Grid> */}
     </>
   );
 };

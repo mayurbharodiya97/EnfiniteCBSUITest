@@ -28,7 +28,6 @@ const Dashboard = () => {
       >
         <Container>
           <Grid container spacing={2}>
-            <QuickAccessTableGridWrapper />
             {isLoading || isFetching ? (
               <Grid item lg={12} md={12} xl={12} xs={12}>
                 <LoaderPaperComponent />
@@ -67,6 +66,7 @@ const Dashboard = () => {
                           </Grid>
                         ))}
                       </Grid>
+                      <QuickAccessTableGridWrapper />
                     </Grid>
                     <Grid item xs={5}>
                       <Container maxWidth="sm">
