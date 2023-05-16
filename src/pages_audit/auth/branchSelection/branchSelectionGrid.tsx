@@ -102,13 +102,13 @@ const BranchSelectionGrid = () => {
   };
 
   const handleNavigate = () => {
-    if (selectedBranch) {
-      // Change 3: Check if a branch is selected
-      navigate("/netbanking/dashboard"); // Replace '/dashboard' with the actual URL of your dashboard page
-    } else {
-      setError(true); // Change 4: Set error state if no branch is selected
-    }
-    console.log("APIAPIDATADATA", apiData);
+    // if (selectedBranch) {
+    // Change 3: Check if a branch is selected
+    navigate("/netbanking/dashboard"); // Replace '/dashboard' with the actual URL of your dashboard page
+    // } else {
+    //   setError(true); // Change 4: Set error state if no branch is selected
+    // }
+    // console.log("APIAPIDATADATA", apiData);
   };
 
   const gridRef = useRef();

@@ -17,6 +17,10 @@ import { matchFinger } from "./biometric";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
 import { BankDetails } from "./bankDetails";
+import { useQuery } from "react-query";
+import { ClearCacheContext, queryClient } from "cache";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { utilFunction } from "components/utils";
 const inititalState = {
   username: "",
   firstName: "",
@@ -203,6 +207,9 @@ export const AuthLoginController = () => {
   const [openpwdreset, setOpenPwdReset] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const failureCount = useRef(0);
+  const [dashboardLogoURL, setDashboardLogoURL] = useState<any | null>(null);
+  const urlObj = useRef<any>(null);
+  // const [image, setImage] = useState<any>(null);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
   // console.log(audio);
@@ -211,6 +218,32 @@ export const AuthLoginController = () => {
       navigate("/audit", { replace: true });
     }
   }, [navigate, isLoggedIn]);
+
+  const {
+    data: imageData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery<any, any>(["getLoginImageData"], () => API.getLoginImageData());
+
+  useEffect(() => {
+    if (Boolean(imageData?.[0]?.DASHBOARD_APP_LOGO)) {
+      let blob = utilFunction.base64toBlob(imageData?.[0]?.DASHBOARD_APP_LOGO);
+      urlObj.current =
+        typeof blob === "object" && Boolean(blob)
+          ? URL.createObjectURL(blob)
+          : "";
+      setDashboardLogoURL(urlObj.current);
+    }
+  }, [imageData]);
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getLoginImageData"]);
+    };
+  }, []);
   const verifyUsernamePassword = async (username, password) => {
     if (Boolean(username) && Boolean(password)) {
       dispath({ type: "inititatePasswordVerification" });
@@ -402,18 +435,24 @@ export const AuthLoginController = () => {
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-        <BankDetails />
+        <BankDetails imageData={imageData} />
         <Grid item xs={11} md={6} lg={6} sm={6}>
-          <Grid
-            container
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="center"
-            padding={"31px"}
-          >
-            <img src={logo} alt="Logo" />
-          </Grid>
-
+          {isLoading || isFetching ? (
+            <LoaderPaperComponent />
+          ) : (
+            <Grid
+              container
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="center"
+              padding={"31px"}
+            >
+              <img
+                src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
+                alt="Logo"
+              />
+            </Grid>
+          )}
           {loginState.currentFlow === "username" ? (
             <UsernamePasswordField
               key="username"

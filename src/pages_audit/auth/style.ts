@@ -99,7 +99,7 @@ export const useStyles = makeStyles((theme: any) => ({
     display: "flex",
     alignItems: "center",
     // justifyContent: "space-between",
-    // marginBottom: "15px",
+    marginBottom: "12px",
     "& p": {
       color: "#1C1C1C",
       fonWeight: "400",

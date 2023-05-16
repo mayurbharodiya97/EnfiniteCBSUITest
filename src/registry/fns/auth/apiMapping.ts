@@ -23,6 +23,10 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/GETMISCVALUE",
     packageName: "",
   },
+  GETLOGINIMGDATA: {
+    url: "enfinityCommonServiceAPI/GETLOGINIMGDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
