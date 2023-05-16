@@ -23,19 +23,21 @@ export const MyDrawer = ({
       open={open}
     >
       <div className={classes.toolbarIcon}>
-        <div style={{ marginLeft: "auto" }}>
+        <div>
           {open ? (
             <>
-              <img
-                src={Logo}
-                alt="Netbanking"
-                className={classes.logo}
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("./");
-                }}
-              />
-              <p className={classes.version01}>V: 1.12.03.1</p>
+              <div style={{ marginLeft: "20px" }}>
+                <img
+                  src={Logo}
+                  alt="Netbanking"
+                  className={classes.logo}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate("./");
+                  }}
+                />
+                <p className={classes.version01}>V: 1.12.03.1</p>
+              </div>
             </>
           ) : (
             <div style={{ marginLeft: "15px" }}>

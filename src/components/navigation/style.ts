@@ -63,10 +63,10 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     borderBottom: "1px solid #ddd",
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(2),
-    background: "var(--theme-color1)",
+    background: "var(--theme-color2)",
     "& svg": {
       // color: theme.palette.primary.main,
-      color: theme.palette.primary.main,
+      color: "var(--theme-color6)",
     },
   },
   button: {
@@ -86,7 +86,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     overflowY: "auto",
     overflowX: "hidden",
     height: "calc(100vh - 170px)",
-    background: "var(--theme-color1)",
+    background: "var(--theme-color2)",
     marginTop: "25px",
   },
   navLinksforseparateView: {
@@ -111,7 +111,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   },
   listIcon: {
     minWidth: "32px !important",
-    color: "white",
+    color: "var(--theme-color6)",
     fontWeight: 700,
     fontSize: "1.75rem",
   },
@@ -120,7 +120,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     marginTop: "2px",
     marginBottom: "2px",
     textOverflow: "ellipsis",
-    color: "white",
+    color: "var(--theme-color6)",
     marginLeft: "15px",
     "& span": {
       fontWeight: 500,
@@ -165,12 +165,12 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     paddingBottom: "4px",
   },
   activeMenuItem: {
-    backgroundColor: "var(--white)!important", //"var(--theme-color2)!important",
+    backgroundColor: "var(--theme-color2)!important", //"var(--theme-color2)!important",
     "& > div": {
       color: "var(--theme-color3)",
     },
     "& svg": {
-      color: theme.palette.secondary.main,
+      color: "var(--theme-color1)",
     },
     "& hover": {
       "& > div": {

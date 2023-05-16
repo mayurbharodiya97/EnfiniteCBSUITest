@@ -8,6 +8,7 @@ import { useQuery } from "react-query";
 import * as API from "./api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Fragment } from "react";
+import Imagecarousel from "../transactionSummeryCard/imagecarousel";
 
 const Dashboard = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
@@ -21,7 +22,7 @@ const Dashboard = () => {
         component="main"
         sx={{
           backgroundColor: "transparent",
-          height: "83vh",
+          height: "81vh",
           flexGrow: 1,
           // py: 8,
         }}
@@ -75,6 +76,15 @@ const Dashboard = () => {
             <LatestOrders />
           </Grid> */}
           </Grid>
+          <Box
+            sx={{
+              background: "#F9FAFE",
+              border: "2px solid #EBEDEE",
+              borderRadius: "20px",
+            }}
+          >
+            <Imagecarousel />
+          </Box>
         </Container>
       </Box>
     </>
