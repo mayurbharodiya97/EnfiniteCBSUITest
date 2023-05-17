@@ -18,6 +18,7 @@ import { HeaderCellWrapper } from "components/dataTable/headerCellWrapper";
 import {
   TableActionToolbar,
   ActionContextMenu,
+  RenderActions,
 } from "components/dataTable/tableActionToolbar";
 import { TablePaginationActions } from "components/dataTable/tablePaginationToolbar";
 import { useCheckboxColumn } from "./components/useCheckbox";
@@ -82,6 +83,9 @@ export const DataGrid = ({
   defaultFilter,
   isCusrsorFocused,
   onButtonActionHandel,
+  controlsAtBottom,
+  headerToolbarStyle,
+  onlySingleSelectionAllow,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -104,6 +108,7 @@ export const DataGrid = ({
     state: { pageIndex, pageSize },
     setSortBy,
     columns: availableColumns,
+    toggleAllRowsSelected,
   } = useTable(
     {
       initialState: {
@@ -143,7 +148,7 @@ export const DataGrid = ({
     useCheckboxColumn(allowRowSelection)
   );
 
-  //console.log("filter", filter);
+  // console.log(">>others", others);
   //console.log("defaultHiddenColumns=>", defaultHiddenColumns);
   const { authState } = useContext(AuthContext);
 
@@ -232,6 +237,7 @@ export const DataGrid = ({
     setPageSize(Number(event.target.value));
   };
   //console.log("rowsToDisplay", rowsToDisplay);
+
   return (
     <Paper
       style={{
@@ -261,15 +267,18 @@ export const DataGrid = ({
           visibleColumns={availableColumns}
           defaultHiddenColumns={defaultHiddenColumns}
           allowColumnHiding={allowColumnHiding}
+          headerToolbarStyle={headerToolbarStyle}
         />
       )}
-      <TableActionToolbar
-        dense={dense}
-        selectedFlatRows={selectedFlatRows}
-        multipleActions={multipleActions}
-        singleActions={singleActions}
-        setGridAction={setGridAction} //for single/multiple actions
-      />
+      {Boolean(controlsAtBottom) ? null : (
+        <TableActionToolbar
+          dense={dense}
+          selectedFlatRows={selectedFlatRows}
+          multipleActions={multipleActions}
+          singleActions={singleActions}
+          setGridAction={setGridAction} //for single/multiple actions
+        />
+      )}
       <ActionContextMenu
         contextMenuRow={contextMenuRow}
         selectedFlatRows={selectedFlatRows}
@@ -385,6 +394,9 @@ export const DataGrid = ({
                   rowColorStyle = [{ style: { cursor: "pointer" } }];
                 }
               }
+              // if (row.id == "0002") {
+              //   row.toggleRowSelected(true);
+              // }
               return (
                 <MyTableRow
                   {...row.getRowProps(rowColorStyle)}
@@ -394,6 +406,12 @@ export const DataGrid = ({
                   selected={
                     row.isSelected || contextMenuSelectedRowId === row.id
                   }
+                  onClick={() => {
+                    if (Boolean(onlySingleSelectionAllow)) {
+                      toggleAllRowsSelected(false);
+                      row.toggleRowSelected(true);
+                    }
+                  }}
                   onContextMenu={rightClickHandler}
                   onDoubleClick={
                     Boolean(doubleClickAction)
@@ -434,6 +452,31 @@ export const DataGrid = ({
           Total No of Records: {rowCount}
         </TableCell>
       )}
+
+      {Boolean(controlsAtBottom) ? (
+        <div
+          className="test"
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          <RenderActions
+            key="singleFilters"
+            actions={singleActions}
+            setAction={setGridAction}
+            selectedRows={selectedFlatRows}
+            buttonTextColor={"var(--theme-color2)"}
+            buttonBackground={"var(--theme-color3)"}
+            style={{
+              border: "1px solid var(--theme-color3)",
+              width: "8rem",
+              margin: "5px",
+            }}
+          />
+        </div>
+      ) : null}
     </Paper>
   );
 };

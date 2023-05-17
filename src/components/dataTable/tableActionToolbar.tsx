@@ -94,7 +94,9 @@ export const RenderActions: FC<RenderActionType> = ({
   actions,
   setAction,
   selectedRows,
-  buttonTextColor = "var(--white)",
+  buttonTextColor = "var( --theme-color2)",
+  buttonBackground = "inherit",
+  style = {},
 }) => {
   if (Array.isArray(actions) && actions.length > 0) {
     return actions.map((one) => (
@@ -109,12 +111,13 @@ export const RenderActions: FC<RenderActionType> = ({
           //color="secondary"
           // style={{
           //   //background: "var(--theme-color1)",
-          //   color: "var(--theme-color3)", //"var(--white)",
+          //   color: "var(--theme-color3)", //"var(--theme-color2)",
           //   marginRight: "10px",
           // }}
           style={{
-            //background: "rgb(239, 224, 224)",
-            color: buttonTextColor,
+            background: one.actionBackground ?? buttonBackground,
+            color: one.actionTextColor ?? buttonTextColor,
+            ...style,
             //marginRight: "10px",
           }}
         >

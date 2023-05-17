@@ -1,8 +1,9 @@
 import { useState, useContext } from "react";
 // import { useStyles } from "./style";
-import WifiTetheringSharpIcon from "@mui/icons-material/WifiTetheringSharp";
 import quickview from "assets/images/Quick_view.png";
 import IconButton from "@mui/material/IconButton";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { AuthContext } from "../auth";
 import {
   Button,
   Box,
@@ -13,8 +14,9 @@ import {
   Popover,
 } from "@mui/material";
 
-export const Wifi_App = () => {
+export const Quick_View = () => {
   //   const classes = useStyles();
+  const authController = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClickd = (event) => {
     setAnchorEl(event.currentTarget);
@@ -32,7 +34,7 @@ export const Wifi_App = () => {
           borderRadius: "10px",
         }}
       >
-        <WifiTetheringSharpIcon />
+        <RemoveRedEyeIcon />
       </IconButton>
       <Popover
         anchorEl={anchorEl}
@@ -149,7 +151,14 @@ export const Wifi_App = () => {
                       disablePadding
                       sx={{ pt: 1, display: "list-item" }}
                     >
-                      <ListItemButton>Log Out</ListItemButton>
+                      <ListItemButton
+                        onClick={() => {
+                          authController?.logout();
+                          // handleClose();
+                        }}
+                      >
+                        Log Out
+                      </ListItemButton>
                     </ListItem>
                   </List>
                 </Grid>

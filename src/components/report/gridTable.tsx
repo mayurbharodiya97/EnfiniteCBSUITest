@@ -234,7 +234,7 @@ export const GridTable: FC<GridTableType> = ({
                 color="primary"
               />
             }
-            style={{ color: "var(--white)" }}
+            style={{ color: "var(--theme-color2)" }}
             label="show Filters"
           />
           <FormControlLabel
@@ -246,7 +246,7 @@ export const GridTable: FC<GridTableType> = ({
                 size="small"
               />
             }
-            style={{ color: "var(--white)" }}
+            style={{ color: "var(--theme-color2)" }}
             label="Expand Rows"
           />
           <FormControlLabel
@@ -259,7 +259,7 @@ export const GridTable: FC<GridTableType> = ({
                 <GetAppIcon />
               </IconButton>
             }
-            style={{ color: "var(--white)" }}
+            style={{ color: "var(--theme-color2)" }}
             label="Download"
           />
           {typeof onClose === "function" ? (

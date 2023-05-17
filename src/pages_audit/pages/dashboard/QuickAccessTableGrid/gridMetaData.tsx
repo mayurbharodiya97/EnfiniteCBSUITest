@@ -1,0 +1,71 @@
+import { GridMetaDataType } from "components/dataTableStatic";
+export const QuickAccessTableGridMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Quick Access",
+    rowIdColumn: "SR_NO",
+
+    defaultColumnConfig: {
+      width: 200,
+      maxWidth: 300,
+      minWidth: 200,
+    },
+
+    allowColumnReordering: false,
+    disableSorting: false,
+    hideHeader: false,
+    disableGroupBy: true,
+    enablePagination: false,
+    containerHeight: {
+      min: "380px",
+      max: "380px",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    isCusrsorFocused: true,
+    hideFooter: true,
+  },
+  columns: [
+    {
+      accessor: "SR_NO",
+      columnName: "SR_NO",
+      sequence: 1,
+      alignment: "left",
+      componentType: "default",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 120,
+    },
+    {
+      accessor: "NAME",
+      columnName: "NAME",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 160,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+    {
+      accessor: "CUST_ID",
+      columnName: "CUST_ID",
+      sequence: 3,
+      alignment: "left",
+      componentType: "default",
+      width: 160,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+    {
+      accessor: "MOBILE_NO",
+      columnName: "MOBILE_NO",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 160,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+  ],
+};

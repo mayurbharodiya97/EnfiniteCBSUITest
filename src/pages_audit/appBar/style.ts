@@ -10,9 +10,9 @@ export const useStyles = makeStyles((theme: any) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: "var(--white)",
+    // backgroundColor: "var(--theme-color2)",
     color: "#0063A3",
-    height: "100px",
+    height: "88px",
     background: "rgba(250, 251, 255, 0.9)",
     borderBottom: "1px solid #949597",
     // boxShadow: "0px 1px 0px -0.5px #DEE0E2",
@@ -34,8 +34,8 @@ export const useStyles = makeStyles((theme: any) => ({
     top: "calc(50% - 73px/2)",
   },
   heading_user_img: {
-    width: "50px",
-    height: "50px",
+    width: "45px",
+    height: "45px",
   },
   heading_user_img_border: {
     border: "2px dashed #4263C7",
@@ -43,9 +43,9 @@ export const useStyles = makeStyles((theme: any) => ({
     padding: "4px",
   },
   toolbar: {
-    minHeight: "100px",
+    minHeight: "88px",
     paddingLeft: "0px",
-    height: "100px",
+    height: "88px",
   },
   title: {
     flexGrow: 1,
@@ -136,6 +136,7 @@ export const useStyles = makeStyles((theme: any) => ({
   },
   lang_svg: {
     marginRight: "10px",
-    width: "20px",
+    width: "19px",
+    height: "19px",
   },
 }));

@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthContext } from "../auth";
 import { useStyles } from "./style";
@@ -9,17 +9,36 @@ import userimage from "assets/images/BecomePartnerImg.svg";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
-import { AppBar, Avatar, Box, Stack, Toolbar, Typography } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Stack,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { Notification_App } from "./notification";
-import { Wifi_App } from "./wifi";
+import { Quick_View } from "./quickView";
 import { Language_App } from "./language";
+import MySearchField from "components/common/search/search";
 //import { ShowEntities, ShowProducts } from "./entities";
 // import { NotificationWrapper } from "../notification";
 
 export const MyAppBar = ({ handleDrawerOpen, open }) => {
   const authController = useContext(AuthContext);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const classes = useStyles();
+  const handleNavigate = () => {
+    // if (selectedBranch) {
+    // Change 3: Check if a branch is selected
+    navigate("/netbanking/profile"); // Replace '/dashboard' with the actual URL of your dashboard page
+    // } else {
+    //   setError(true); // Change 4: Set error state if no branch is selected
+    // }
+    // console.log("APIAPIDATADATA", apiData);
+  };
 
   return (
     <AppBar
@@ -34,6 +53,7 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
               className={classes.heading_user_img}
               alt="Remy Sharp"
               src={userimage}
+              onClick={handleNavigate}
             />
           </Box>
         </Stack>
@@ -44,7 +64,7 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
           noWrap
           className={classes.title}
         >
-          <div style={{ margin: "3px 0", fontSize: "27px", color: "#1C1C1C" }}>
+          <div style={{ margin: "3px 0", fontSize: "23px", color: "#1C1C1C" }}>
             {authController?.authState?.companyName}
             <span style={{ marginLeft: "7px" }}>
               <img src={Waving_hand} alt="Waving_hand not found" />
@@ -72,7 +92,12 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
           </div>
         </Typography>
 
-        <Paper
+        <MySearchField
+          fieldKey="dashboardSearch"
+          name="dashboardSearch"
+          enableGrid={true}
+        />
+        {/* <Paper
           component="form"
           sx={{
             display: "flex",
@@ -90,13 +115,28 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
             placeholder="Search here..."
             inputProps={{ "aria-label": "search google maps" }}
           />
-        </Paper>
+        </Paper> */}
 
         <Language_App />
 
-        <Box width={100} display={"flex"} justifyContent={"space-evenly"}>
-          <Wifi_App />
+        <Box width={130} display={"flex"} justifyContent={"space-evenly"}>
+          <Quick_View />
           <Notification_App />
+          <IconButton
+            // size="large"
+            onClick={() => {
+              authController?.logout();
+              // handleClose();
+            }}
+            sx={{
+              backgroundColor: "rgba(235, 237, 238, 0.45)",
+              borderRadius: "10px",
+            }}
+            aria-label="show 4 new mails"
+            color="inherit"
+          >
+            <LogoutIcon color="inherit" />
+          </IconButton>
         </Box>
       </Toolbar>
     </AppBar>

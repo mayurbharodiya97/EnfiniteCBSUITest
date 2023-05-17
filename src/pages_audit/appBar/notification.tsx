@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useStyles } from "./style";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import IconButton from "@mui/material/IconButton";
@@ -8,7 +8,6 @@ import { Badge, Box, Grid, Popover } from "@mui/material";
 export const Notification_App = () => {
   //   const classes = useStyles();
   const [anchorEl1, setAnchorEl1] = useState(null);
-
   const handleClick = (event) => {
     setAnchorEl1(event.currentTarget);
   };

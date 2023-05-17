@@ -98,6 +98,9 @@ export interface GridWrapperPropTypes {
   hideFooter?: boolean;
   autoRefreshInterval?: any;
   onClickActionEvent?: any;
+  controlsAtBottom?: boolean;
+  headerToolbarStyle?: {};
+  onlySingleSelectionAllow?: boolean;
 }
 
 export interface YupSchemaMetaDataType {

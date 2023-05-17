@@ -7,10 +7,11 @@ export const useStyles = makeStyles((theme: any) => ({
     height: "100vh",
     overflowY: "auto",
     paddingTop: "32px",
+    background: "rgba(250, 251, 255, 0.9)",
   },
   container: {
-    padding: theme.spacing(1),
-    height: "100%",
-    // height: `calc(100vh - 70px)`,
+    // padding: theme.spacing(1),
+    // height: "100%",
+    height: `calc(100vh - 109px)`,
   },
 }));

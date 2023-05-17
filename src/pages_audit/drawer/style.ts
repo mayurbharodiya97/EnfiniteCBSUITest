@@ -12,6 +12,7 @@ export const useStyles = makeStyles((theme: any) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     border: "none",
+    overflow: "hidden",
   },
   drawerPaperClose: {
     overflowX: "hidden",
@@ -29,19 +30,19 @@ export const useStyles = makeStyles((theme: any) => ({
     alignItems: "center",
     zIndex: 9999,
     ...theme.mixins.toolbar,
-    background: "var(--white)",
+    background: "var(--theme-color2)",
     justifyContent: "center",
-    height: "100px",
+    height: "88px",
     borderBottom: "1px solid #949597",
   },
   hrCSS: {
     zIndex: 9999,
   },
   logo: {
-    height: "50px",
+    height: "38px",
   },
   logo2: {
-    height: "40px",
+    height: "37px",
     paddingLeft: "30px",
     display: "block",
     margin: "auto",
@@ -50,10 +51,11 @@ export const useStyles = makeStyles((theme: any) => ({
     margin: "0",
     textAlign: "center",
     color: "var(--theme-color3)",
+    fontSize: "11px",
   },
   version02: {
     margin: "5px 0 0 36px",
-    fontSize: "11px",
+    fontSize: "9px",
     textAlign: "end",
     color: "var(--theme-color3)",
   },
@@ -85,8 +87,8 @@ export const useStyles = makeStyles((theme: any) => ({
     },
     width: "30px",
     height: "30px",
-    left: "0px",
-    top: "51px",
+    left: "31px",
+    top: "43px",
     boxShadow:
       "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
   },
@@ -100,8 +102,8 @@ export const useStyles = makeStyles((theme: any) => ({
     "&:hover": {
       background: "var(--theme-color4)",
     },
-    left: "-12px",
-    top: "51px",
+    left: "-11px",
+    top: "43px",
     boxShadow:
       "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
   },

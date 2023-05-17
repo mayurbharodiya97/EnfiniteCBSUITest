@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: any) => ({
   },
   title: {
     flex: "1 1 100%",
-    color: "var(--white)",
+    color: "var(--theme-color2)",
     letterSpacing: "1px",
     fontSize: "1.5rem",
   },
@@ -52,6 +52,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
       visibleColumns,
       defaultHiddenColumns,
       allowColumnHiding,
+      headerToolbarStyle,
     },
     ref
   ) => {
@@ -63,7 +64,11 @@ export const TableHeaderToolbar = forwardRef<any, any>(
       resume: resume,
     }));
     return (
-      <Toolbar className={classes.root} variant={dense ? "dense" : "regular"}>
+      <Toolbar
+        className={classes.root}
+        variant={dense ? "dense" : "regular"}
+        style={{ ...headerToolbarStyle }}
+      >
         <Typography
           className={classes.title}
           color="inherit"

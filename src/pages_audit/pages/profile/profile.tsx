@@ -13,7 +13,10 @@ import {
   Button,
   Grid,
   IconButton,
+  InputLabel,
   Paper,
+  Stack,
+  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -25,6 +28,27 @@ import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import "./style.css";
 import { ProfilePhotoUpdate } from "./profilePhotoUpload";
 import { GeneralAPI } from "registry/fns/functions";
+import SaveIcon from "@mui/icons-material/Save";
+import { styled, alpha } from "@mui/material/styles";
+// import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+// import Toolbar from "@mui/material/Toolbar";
+// import IconButton from "@mui/material/IconButton";
+// import Typography from "@mui/material/Typography";
+import InputBase from "@mui/material/InputBase";
+import Badge from "@mui/material/Badge";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MailIcon from "@mui/icons-material/Mail";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import MoreIcon from "@mui/icons-material/MoreVert";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
+import User_profile from "assets/images/user_profile_bg.jpg";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -37,6 +61,9 @@ export const Profile = () => {
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
   //typeof blob === "object" && Boolean(blob) ? URL.createObjectURL(blob) : ""
   //);
+
+  const drawerWidth = 240;
+
   const queryData = useQuery<any, any, any>(["getUserDetails"], () =>
     API.getUserDetails({ userID })
   );
@@ -87,6 +114,13 @@ export const Profile = () => {
       setProfileUpdate(true);
     }
   };
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  }));
   return (
     <Fragment>
       {queryData.isLoading ||
@@ -94,35 +128,42 @@ export const Profile = () => {
       userActivityData.isLoading ||
       userActivityData.isFetching ? (
         <LoaderPaperComponent />
-      ) : queryData.isError || userActivityData.isError ? (
-        <Alert
-          severity={
-            queryData.isError
-              ? queryData.error?.severity ?? "error"
-              : userActivityData.error?.severity ?? "error"
-          }
-          errorMsg={
-            queryData.isError
-              ? queryData.error?.error_msg ?? "Unknown error occured"
-              : userActivityData.error?.error_msg ?? "Unknown error occured"
-          }
-          errorDetail={
-            queryData.isError
-              ? queryData.error?.error_detail ?? ""
-              : userActivityData.error?.error_detail ?? ""
-          }
-        />
       ) : (
+        // : queryData.isError || userActivityData.isError ? (
+        // <Alert
+        //   severity={
+        //     queryData.isError
+        //       ? queryData.error?.severity ?? "error"
+        //       : userActivityData.error?.severity ?? "error"
+        //   }
+        //   errorMsg={
+        //     queryData.isError
+        //       ? queryData.error?.error_msg ?? "Unknown error occured"
+        //       : userActivityData.error?.error_msg ?? "Unknown error occured"
+        //   }
+        //   errorDetail={
+        //     queryData.isError
+        //       ? queryData.error?.error_detail ?? ""
+        //       : userActivityData.error?.error_detail ?? ""
+        //   }
+        // />
+        // )
         <>
           <Grid
             key={"mainGrid"}
             container
-            spacing={2}
-            justifyContent="flex-start"
-            alignItems="center"
-            direction="row"
+            spacing={0}
+            // justifyContent="flex-start"
+            px={4}
+            // alignItems="center"
+            direction="column"
+            style={{
+              background: "rgba(250, 251, 255, 0.9)",
+              display: "block",
+            }}
+            // height={500}
           >
-            <Grid
+            {/* <Grid
               key={"Griditem1"}
               item
               xs={12}
@@ -146,7 +187,7 @@ export const Profile = () => {
                     color="inherit"
                     style={{
                       flex: "1 1 100%",
-                      color: "var(--white)",
+                      color: "var(--theme-color2)",
                       letterSpacing: "1px",
                       fontSize: "1.5rem",
                     }}
@@ -165,8 +206,8 @@ export const Profile = () => {
                   </Button>
                 </Toolbar>
               </AppBar>
-            </Grid>
-            <Grid
+            </Grid> */}
+            {/* <Grid
               key={"Griditem2"}
               item
               xs={12}
@@ -273,10 +314,9 @@ export const Profile = () => {
                     {(queryData.data?.USER_LEVEL || "").toLowerCase()}
                   </div>
                 </div>
-                {/* <CardProfile /> */}
               </Paper>
-            </Grid>
-            <Grid
+            </Grid> */}
+            {/* <Grid
               key={"Griditem3"}
               item
               xs={12}
@@ -310,8 +350,8 @@ export const Profile = () => {
                   hideHeader={true}
                 />
               </Paper>
-            </Grid>
-            <Grid
+            </Grid> */}
+            {/* <Grid
               key={"Griditem4"}
               item
               xs={12}
@@ -334,7 +374,357 @@ export const Profile = () => {
                 refetchData={() => {}}
                 ref={myGridRef}
               />
-            </Grid>
+            </Grid> */}
+            <Box sx={{ my: 3, display: "block" }}>
+              <AppBar
+                position="static"
+                sx={{
+                  background: "#FFFFFF",
+                  borderRadius: "10px",
+                }}
+              >
+                <Toolbar style={{ minHeight: "53px" }}>
+                  <Typography
+                    variant="h5"
+                    noWrap
+                    component="div"
+                    sx={{
+                      display: { xs: "none", sm: "block" },
+                      fontWeight: 500,
+                    }}
+                  >
+                    My Profile
+                  </Typography>
+
+                  <Box sx={{ flexGrow: 1 }} />
+                  <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                    <Button
+                      size="small"
+                      sx={{ backgroundColor: "#ECEFF9", mr: 2 }}
+                      variant="contained"
+                      startIcon={<SaveIcon color="info" />}
+                    >
+                      Save
+                    </Button>
+                    <IconButton
+                      // size="large"
+                      sx={{
+                        background: "#ECEFF9",
+                        borderRadius: "10px",
+                        mx: 1,
+                      }}
+                      aria-label="show 4 new mails"
+                      color="inherit"
+                    >
+                      <BorderColorIcon color="info" />
+                    </IconButton>
+                    <IconButton
+                      // size="large"
+                      sx={{
+                        background: "#ECEFF9",
+                        borderRadius: "10px",
+                        mx: 1,
+                      }}
+                      aria-label="show 4 new mails"
+                      color="inherit"
+                    >
+                      <DeleteOutlineIcon color="info" />
+                    </IconButton>
+                    <IconButton
+                      // size="large"
+                      aria-label="show 4 new mails"
+                      color="inherit"
+                      sx={{
+                        background: "#ECEFF9",
+                        borderRadius: "10px",
+                        ml: 2,
+                      }}
+                    >
+                      <CancelPresentationIcon color="info" />
+                    </IconButton>
+                  </Box>
+                </Toolbar>
+              </AppBar>
+            </Box>
+            <Box sx={{ flexGrow: 1 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={3}>
+                  <Item>xs=8</Item>
+                </Grid>
+                <Grid item xs={9}>
+                  <Box sx={{ width: "100%" }}>
+                    <Stack spacing={2}>
+                      <Item sx={{ height: "30vh", p: 0, borderRadius: "20px" }}>
+                        <Stack>
+                          <Item
+                            sx={{
+                              height: "19vh",
+                              p: 0,
+                              borderRadius: "20px",
+                              backgroundImage: `url(${User_profile})`,
+                              backgroundSize: "cover",
+                              borderBottomLeftRadius: 0,
+                              borderBottomRightRadius: 0,
+                            }}
+                          >
+                            {/* <img src={User_profile} alt="" /> */}
+                          </Item>
+                          <Item
+                            sx={{
+                              height: "11vh",
+                              background: "#1C1C1C",
+                              p: 0,
+                              borderRadius: "20px",
+                              borderTopLeftRadius: 0,
+                              borderTopRightRadius: 0,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "15vh",
+                                height: "15vh",
+                                // margin: "auto",
+                                border: "1px dashed #9a9a9a",
+                                borderRadius: "50%",
+                                padding: "6px",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                position: "relative",
+                                top: "-50px",
+                                left: "35px",
+                              }}
+                            >
+                              <div className="image-data">
+                                <Avatar
+                                  key={"ProfilePicture"}
+                                  alt="User"
+                                  src={
+                                    Boolean(ProfilePictureURL)
+                                      ? ProfilePictureURL
+                                      : ""
+                                  }
+                                  style={{
+                                    width: "100%",
+                                    height: "100%",
+                                  }}
+                                >
+                                  {(queryData.data?.NAME || userID)
+                                    .toUpperCase()
+                                    .substring(0, 1)}
+                                </Avatar>
+                              </div>
+                              <div
+                                className="image-upload-icon"
+                                onClick={() =>
+                                  fileUploadControl?.current?.click()
+                                }
+                              >
+                                <IconButton>
+                                  <AddAPhotoIcon htmlColor="white" />
+                                </IconButton>
+                                <Typography
+                                  component={"span"}
+                                  style={{
+                                    margin: "0",
+                                    color: "white",
+                                    lineHeight: "1.5",
+                                    fontSize: "0.75rem",
+                                    fontFamily: "Public Sans,sans-serif",
+                                    fontWeight: "400",
+                                  }}
+                                >
+                                  Update Photo
+                                </Typography>
+                                <input
+                                  name="fileselect"
+                                  type="file"
+                                  style={{ display: "none" }}
+                                  ref={fileUploadControl}
+                                  onChange={handleFileSelect}
+                                  accept=".png,.jpg,.jpeg"
+                                  onClick={(e) => {
+                                    //to clear the file uploaded state to reupload the same file (AKA allow our handler to handle duplicate file)
+                                    //@ts-ignore
+                                    e.target.value = "";
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </Item>
+                        </Stack>
+                      </Item>
+                      <Item
+                        sx={{
+                          p: 2,
+                          borderRadius: "20px",
+                          border: "2px solid #EBEDEE",
+                        }}
+                      >
+                        <Typography
+                          align="left"
+                          variant="h4"
+                          fontWeight={500}
+                          my={1}
+                          color={"var(--theme-color3)"}
+                        >
+                          About me
+                        </Typography>
+                        <Typography
+                          fontSize={16}
+                          align="left"
+                          variant="body1"
+                          gutterBottom
+                        >
+                          Hello,I’m Anshan Handgun Creative Graphic Designer &
+                          User Experience Designer based in Website, I create
+                          digital Products a more Beautiful and usable place.
+                          Morbid accusant ipsum. Nam nec tellus at.
+                        </Typography>
+                      </Item>
+                      <Item
+                        sx={{
+                          borderRadius: "20px",
+                          border: "2px solid #EBEDEE",
+                        }}
+                      >
+                        <Box
+                          component="form"
+                          sx={{
+                            "& .MuiTextField-root": {
+                              width: "35ch",
+                              height: "6ch",
+                              marginTop: "10px",
+                            },
+                          }}
+                          noValidate
+                          autoComplete="off"
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            <div style={{ margin: "10px" }}>
+                              <InputLabel
+                                style={{
+                                  display: "flex",
+                                  color: "var(--theme-color6)",
+                                  fontSize: "16px",
+                                }}
+                              >
+                                First Name
+                              </InputLabel>
+                              <TextField
+                                variant="standard"
+                                style={{
+                                  background: "rgba(235, 237, 238, 0.2)",
+                                  borderRadius: "15px",
+                                  border: "1px solid #EBEDEE",
+                                }}
+                                InputProps={{
+                                  disableUnderline: true,
+                                }}
+                              />
+                            </div>
+                            <div style={{ margin: "10px" }}>
+                              <InputLabel
+                                style={{
+                                  display: "flex",
+                                  color: "var(--theme-color6)",
+                                  fontSize: "16px",
+                                }}
+                              >
+                                Last Name
+                              </InputLabel>
+                              <TextField
+                                variant="standard"
+                                style={{
+                                  background: "rgba(235, 237, 238, 0.2)",
+                                  borderRadius: "15px",
+                                  border: "1px solid #EBEDEE",
+                                }}
+                                InputProps={{
+                                  disableUnderline: true,
+                                }}
+                              />
+                            </div>
+                            <div style={{ margin: "10px" }}>
+                              <InputLabel
+                                style={{
+                                  display: "flex",
+                                  color: "var(--theme-color6)",
+                                  fontSize: "16px",
+                                }}
+                              >
+                                Bio
+                              </InputLabel>
+                              <TextField
+                                variant="standard"
+                                style={{
+                                  background: "rgba(235, 237, 238, 0.2)",
+                                  borderRadius: "15px",
+                                  border: "1px solid #EBEDEE",
+                                }}
+                                InputProps={{
+                                  disableUnderline: true,
+                                }}
+                              />
+                            </div>
+                            <div style={{ margin: "10px" }}>
+                              <InputLabel
+                                style={{
+                                  display: "flex",
+                                  color: "var(--theme-color6)",
+                                  fontSize: "16px",
+                                }}
+                              >
+                                Email address
+                              </InputLabel>
+                              <TextField
+                                variant="standard"
+                                style={{
+                                  background: "rgba(235, 237, 238, 0.2)",
+                                  borderRadius: "15px",
+                                  border: "1px solid #EBEDEE",
+                                }}
+                                InputProps={{
+                                  disableUnderline: true,
+                                }}
+                              />
+                            </div>
+                            <div style={{ margin: "10px" }}>
+                              <InputLabel
+                                style={{
+                                  display: "flex",
+                                  color: "var(--theme-color6)",
+                                  fontSize: "16px",
+                                }}
+                              >
+                                Phone
+                              </InputLabel>
+                              <TextField
+                                variant="standard"
+                                style={{
+                                  background: "rgba(235, 237, 238, 0.2)",
+                                  borderRadius: "15px",
+                                  border: "1px solid #EBEDEE",
+                                }}
+                                InputProps={{
+                                  disableUnderline: true,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </Box>
+                      </Item>
+                    </Stack>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
           </Grid>
           <ChangePassword
             showProfile={showProfile}
