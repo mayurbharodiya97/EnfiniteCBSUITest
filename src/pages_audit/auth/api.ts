@@ -124,6 +124,7 @@ export const verifyOTP = async (
     });
     if (statusa === "0") {
       transformData.menulistdata = dataa;
+
       return {
         data: transformData,
         status,
@@ -215,6 +216,22 @@ export const GetMenuData = async ({
         label: "All Screens",
         href: "all-screens",
       },
+      {
+        children: [
+          {
+            user_code: "NETM/001",
+            accessUserLevel: "1",
+            isRouterLink: "true",
+            icon: "user-plus",
+            windowsPara: "",
+            system_code: "NETM/001",
+            label: "Cheque Book Entry",
+            href: "operation/chequebook-entry",
+          },
+        ],
+        icon: "users-gear",
+        label: "Operation",
+      },
     ],
     message: "",
     messageDetails: "",
@@ -275,6 +292,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
     isLoggedIn: false,
     companyName: data?.COMPANYNAME,
     companyID: data?.COMPANYID,
+    workingDate: data?.WORKINGDATE,
     menulistdata: [],
     user: {
       branch: data?.USER?.BRANCH,

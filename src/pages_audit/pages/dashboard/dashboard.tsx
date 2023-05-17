@@ -13,7 +13,7 @@ const Dashboard = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getDashboardData"], () => API.getDashboardDatad());
+  >(["getDashboardData"], () => API.getDashboardData());
 
   return (
     <>
@@ -25,7 +25,7 @@ const Dashboard = () => {
           flexGrow: 1,
           // backgroundColor: "red",
           // backgroundColor: "transparent",
-          height: "83vh",
+          // height: "83vh",
           // py: 8,
         }}
       >
@@ -85,18 +85,17 @@ const Dashboard = () => {
                     />
                   </Grid>
                 ))} */}
-                {data?.[0]?.CHART1?.ISCHARTVISIBLE ? (
-                  <Grid item lg={8} md={12} xl={8} xs={12}>
-                    <Transactions />
-                  </Grid>
-                ) : null}
-                {data?.[0]?.CHART2?.ISCHARTVISIBLE ? (
-                  <Grid item lg={4} md={6} xl={4} xs={12}>
-                    <TrafficByDevice sx={{ height: "100%" }} />
-                  </Grid>
-                ) : null}
-              </>
-            )} */}
+            {data?.[0]?.CHART1?.ISCHARTVISIBLE ? (
+              <Grid item lg={8} md={12} xl={8} xs={12}>
+                <Transactions />
+              </Grid>
+            ) : null}
+            {data?.[0]?.CHART2?.ISCHARTVISIBLE ? (
+              <Grid item lg={4} md={6} xl={4} xs={12}>
+                <TrafficByDevice sx={{ height: "100%" }} />
+              </Grid>
+            ) : null}
+
             {/* <Grid item lg={4} md={6} xl={3} xs={12}>
             <LatestProducts sx={{ height: "100%" }} />
           </Grid>

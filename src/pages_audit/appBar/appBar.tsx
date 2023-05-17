@@ -65,7 +65,7 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
               <Typography variant="caption" display="inline" marginLeft={1}>
                 Working Date:{" "}
                 {checkDateAndDisplay(
-                  authController?.authState?.user?.lastLogin ?? ""
+                  authController?.authState?.workingDate ?? ""
                 )}
               </Typography>
             </div>

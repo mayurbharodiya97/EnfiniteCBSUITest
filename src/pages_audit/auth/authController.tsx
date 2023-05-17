@@ -208,7 +208,7 @@ export const AuthLoginController = () => {
   // console.log(audio);
   useEffect(() => {
     if (isLoggedIn()) {
-      navigate("/audit", { replace: true });
+      navigate("/cbsenfinity", { replace: true });
     }
   }, [navigate, isLoggedIn]);
   const verifyUsernamePassword = async (username, password) => {

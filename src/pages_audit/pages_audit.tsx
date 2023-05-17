@@ -10,6 +10,7 @@ import { AllScreensGridWrapper } from "./pages/allScreens";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
 import { BranchSelectionGridWrapper } from "./auth/branchSelection";
+import { OperationsMenu } from "./pages/operations";
 
 export const PagesAudit = (props) => {
   const classes = useStyles();
@@ -17,6 +18,7 @@ export const PagesAudit = (props) => {
   const handleDrawerOpen = () => setDrawerState(true);
   const handleDrawerClose = () => setDrawerState(false);
   const isValidURL = props?.isValidURL ?? true;
+
   return (
     <Fragment>
       <div className={classes.root}>
@@ -39,6 +41,7 @@ export const PagesAudit = (props) => {
                 />
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
+                <Route path="operation/*" element={<OperationsMenu />} />
                 {/* <Route
                   path="branch-selection/*"
                   element={<BranchSelectionGridWrapper />}
@@ -70,8 +73,8 @@ const RedirectComponent = ({ isValidURL }) => {
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-    if (location.pathname === "/netbanking") {
-      navigate("/netbanking/branch-selection");
+    if (location.pathname === "/cbsenfinity") {
+      navigate("/cbsenfinity/login");
       // } else if (!isValidURL) {
       //   navigate("/error");
     } else {

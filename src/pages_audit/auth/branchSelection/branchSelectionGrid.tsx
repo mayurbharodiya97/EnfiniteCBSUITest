@@ -104,7 +104,8 @@ const BranchSelectionGrid = () => {
   const handleNavigate = () => {
     if (selectedBranch) {
       // Change 3: Check if a branch is selected
-      navigate("/netbanking/dashboard"); // Replace '/dashboard' with the actual URL of your dashboard page
+      //navigate("/cbsenfinity/dashboard"); // Replace '/dashboard' with the actual URL of your dashboard page
+      navigate("/cbsenfinity/dashboard");
     } else {
       setError(true); // Change 4: Set error state if no branch is selected
     }

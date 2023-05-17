@@ -5,6 +5,7 @@ export interface AuthStateType {
   roleName: string;
   access: any;
   companyName: string;
+  workingDate: string;
   companyID: string;
   menulistdata: any;
   user: {
