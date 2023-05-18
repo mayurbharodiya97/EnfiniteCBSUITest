@@ -61,6 +61,21 @@ export const useStyles = makeStyles((theme: any) => ({
       display: "none",
     },
   },
+  loginRight: {
+    background: "#fff",
+    padding: theme.spacing(2, 4),
+    display: "flex",
+    maxWidth: "400px",
+    margin: "auto",
+    boxShadow: "0 0 20px rgba(0,0,0,0.06)",
+    borderRadius: "8px",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
+    "& img": {
+      alignSelf: "center",
+    },
+  },
 
   loginImg: {},
 

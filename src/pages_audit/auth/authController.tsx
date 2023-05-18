@@ -44,21 +44,6 @@ const inititalState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "inititateUserNameVerification":
-    case "inititatePasswordVerification":
-    case "inititateUserFingerVerification":
-    case "inititateOTPVerification": {
-      return {
-        ...state,
-        loading: true,
-        isError: false,
-        isUsernameError: false,
-        isPasswordError: false,
-        isOTPError: false,
-        isBiometricError: false,
-        userMessage: "",
-      };
-    }
     case "usernameandpasswordrequired": {
       return {
         ...state,
@@ -144,8 +129,6 @@ const reducer = (state, action) => {
         access_token: action?.payload?.access_token,
         token_type: action?.payload?.token_type,
         otpmodelClose: false,
-        currentFlow: "OTP",
-        verifyThrough: action?.payload?.verifyThrough,
       };
     }
     case "inititateOTPVerification": {
@@ -157,22 +140,6 @@ const reducer = (state, action) => {
         otpmodelClose: false,
       };
     }
-    case "biometricVerificationFailure":
-      return {
-        ...state,
-        loading: false,
-        isError: true,
-        isBiometricError: true,
-        userMessage: action?.payload?.error,
-      };
-    case "biometricVerificationSuccessful":
-      return {
-        ...state,
-        loading: false,
-        isError: false,
-        isBiometricError: false,
-        state: action.payload,
-      };
     case "OTPVerificationComplate": {
       return {
         ...state,
@@ -189,15 +156,11 @@ const reducer = (state, action) => {
         otpmodelClose: Boolean(action?.payload?.otpmodelclose),
       };
     }
-    case "backToUsernameVerification": {
-      return inititalState;
-    }
     default: {
       return state;
     }
   }
 };
-
 export const AuthLoginController = () => {
   const { isLoggedIn, login } = useContext(AuthContext);
   const classes = useStyles();
@@ -304,6 +267,7 @@ export const AuthLoginController = () => {
       });
     }
   };
+
   const VerifyOTP = async (OTPNumber) => {
     if (Boolean(OTPNumber) && OTPNumber.toString().length === 6) {
       dispath({ type: "inititateOTPVerification" });
@@ -468,7 +432,7 @@ export const AuthLoginController = () => {
                   classes={classes}
                   loginState={loginState}
                   VerifyOTP={VerifyOTP}
-                  previousStep={changeUserName}
+                  // previousStep={changeUserName}
                   OTPError={loginState?.OtpuserMessage ?? ""}
                   setOTPError={(error) => {
                     dispath({

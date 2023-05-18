@@ -76,9 +76,7 @@ export const UsernamePasswordField = ({
               lineHeight: "33px",
               width: "360px",
             }}
-          >
-            Please provide your email and password
-          </div>
+          ></div>
           <div className={classes.formWrap}>
             <TextField
               autoFocus={true}
