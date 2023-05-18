@@ -342,7 +342,7 @@ export const ForgotPasswordController = () => {
             </Grid>
           </Container>
 
-          <OTPModel
+          {/* <OTPModel
             classes={classes}
             open={open}
             handleClose={handleClose}
@@ -356,7 +356,7 @@ export const ForgotPasswordController = () => {
               });
             }}
             previousStep={changeUserName}
-          />
+          /> */}
         </Grid>
       </Grid>
     </>
