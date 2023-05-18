@@ -23,6 +23,7 @@ export const UsernamePasswordField = ({
     if (name === "password" && value) {
       loginState.isPasswordError = false;
     }
+    // console.log(">>name " + name);
     setInput((values) => ({ ...values, [name]: value }));
   };
   const inputRef = useRef<any>(null);

@@ -268,6 +268,12 @@ export const ForgotPasswordController = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const changeUserName = () => {
+    dispath({
+      type: "backToUsernameVerification",
+    });
+  };
+
   const VerifyOTP = async (OTPNumber) => {
     if (Boolean(OTPNumber) && OTPNumber.toString().length === 6) {
       dispath({ type: "inititateOTPVerification" });
@@ -349,6 +355,7 @@ export const ForgotPasswordController = () => {
                 payload: { error: error },
               });
             }}
+            previousStep={changeUserName}
           />
         </Grid>
       </Grid>
