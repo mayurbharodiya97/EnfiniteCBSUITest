@@ -8,7 +8,7 @@ export const theme = createTheme({
     },
     //@ts-ignore
     secondary: {
-      main: "rgb(128, 0, 0)",
+      main: "#4263c7",
     },
   },
   // breakpoints: {
@@ -25,7 +25,7 @@ export const theme2 = createTheme({
   palette: {
     //@ts-ignore
     primary: {
-      main: "rgb(128, 0, 0)",
+      main: "#4263c7",
     },
     //@ts-ignore
     secondary: {

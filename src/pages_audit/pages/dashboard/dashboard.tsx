@@ -19,6 +19,7 @@ import { Announcement } from "components/dashboard/annoucment";
 import Grid from "@mui/material/Grid";
 import TvIcon from "@mui/icons-material/Tv";
 import { AllScreensGridWrapper, ReleaseUsers } from "../allScreens";
+import { TodaysTransactionTableGridWrapper } from "./Today'sTransactionGrid/TodaysTransactionTableGrid";
 
 const Dashboard = () => {
   const [isOpenSave, setIsOpenSave] = useState<any>(false);
@@ -193,6 +194,7 @@ const Dashboard = () => {
           >
             <Imagecarousel />
           </Box>
+          <TodaysTransactionTableGridWrapper />
         </Container>
       </Box>
       {isOpenSave ? (
