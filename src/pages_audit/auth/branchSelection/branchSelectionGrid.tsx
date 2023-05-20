@@ -35,9 +35,7 @@ const actions: ActionTypes[] = [
 
 const BranchSelectionGrid = () => {
   const navigate = useNavigate();
-  const [apiData, setApiData] = useState<any[]>([]);
-  const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [selectedBranch, setSelectedBranch] = useState<any>(false);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
@@ -67,20 +65,8 @@ const BranchSelectionGrid = () => {
     [navigate]
   );
 
-  useEffect(() => {
-    if (data) {
-      setApiData(data);
-      setFilteredData(data);
-    }
-  }, [data]);
-
-  const gridRef = useRef();
-  console.log("gridRef.current", gridRef.current);
   return (
     <>
-      {/* <Container
-        style={{ maxWidth: "100%", height: "100vh", padding: "0px !important" }}
-      > */}
       <Grid
         container
         style={{
@@ -104,16 +90,13 @@ const BranchSelectionGrid = () => {
           xl={11}
           xs={11}
           style={{
-            // backgroundColor: "white",
             display: "flex",
             justifyContent: "center",
           }}
         >
           <Grid
             container
-            // spacing={2}
             style={{
-              // backgroundColor: "blue",
               minHeight: "100vh",
               padding: "10px 0px 0px 0px",
             }}
@@ -125,13 +108,9 @@ const BranchSelectionGrid = () => {
             <Grid
               container
               style={{
-                // backgroundColor: "aqua",
-
                 margin: "0",
                 padding: "0",
-                minHeight: "86px",
-                maxHeight: "86px",
-                // maxHeight: "79px",
+                height: "12vh",
               }}
               lg={12}
               md={12}
@@ -144,6 +123,7 @@ const BranchSelectionGrid = () => {
                 md={6}
                 xl={6}
                 xs={6}
+                sm={8}
                 style={{
                   justifyContent: "center",
                 }}
@@ -164,6 +144,7 @@ const BranchSelectionGrid = () => {
                 md={6}
                 xl={6}
                 xs={6}
+                sm={4}
                 style={{
                   margin: "4px 0px 0 0",
                   padding: "0",
@@ -172,43 +153,29 @@ const BranchSelectionGrid = () => {
                   height: "fit-content",
                 }}
               >
-                <p className="bank-name">Bank Name : Easybank Ltd.</p>
+                <p className="bank-name">
+                  Bank Name : Easyban sfffffffffffffffffffffffffffffffffk Ltd.
+                </p>
 
                 <p className="emp-id">Emp. Id : 001156</p>
               </Grid>
             </Grid>
 
-            {/* <Grid
-              container
-              style={{
-                // backgroundColor: "orange",
-                margin: "0",
-                padding: "0",
-                minHeight: "407px",
-              }}
-              lg={12}
-              md={12}
-              xl={12}
-              xs={12}
-            > */}
             <GridWrapper
               key={`branchSelection`}
               finalMetaData={BranchSelectionGridMetaData as GridMetaDataType}
-              data={apiData}
-              setData={(row) => setSelectedBranch(row)}
+              data={data ?? []}
+              setData={() => null}
               actions={actions}
               setAction={setCurrentAction}
-              ref={gridRef}
               controlsAtBottom={true}
               headerToolbarStyle={{
                 background: "white",
-                float: "right",
-                marginBottom: "13px",
               }}
+              onlySingleSelectionAllow={true}
             />
-            {/* </Grid> */}
           </Grid>
-          {/* <Box
+          <Box
             style={{
               background: "var(--theme-color4)",
               height: "fit-content",
@@ -223,7 +190,7 @@ const BranchSelectionGrid = () => {
             }}
           >
             <ExpandMoreIcon style={{ color: "var(--theme-color3)" }} />
-          </Box> */}
+          </Box>
         </Grid>
       </Grid>
     </>

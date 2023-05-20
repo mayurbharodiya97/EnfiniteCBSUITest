@@ -4,9 +4,9 @@ import { withStyles } from "@mui/styles";
 export const MyTableRow = withStyles((theme) => {
   return {
     root: {
-      margin: "10px 0px",
-      borderRadius: "10px",
-      border: "1px solid var(--theme-color4)",
+      // margin: "10px 0px",
+      // borderRadius: "10px",
+      // border: "1px solid var(--theme-color4)",
       "&:focus": {
         outline: "none !important",
         // border: "1.42444px solid var(--theme-color3)",

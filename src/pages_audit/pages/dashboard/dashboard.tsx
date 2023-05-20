@@ -9,6 +9,7 @@ import { Fragment } from "react";
 import { QuickAccessTableGridWrapper } from "./QuickAccessTableGrid/QuickAccessTableGrid";
 import Imagecarousel from "../transactionSummeryCard/imagecarousel";
 import { Announcement } from "components/dashboard/annoucment";
+import { TodaysTransactionTableGridWrapper } from "./Today'sTransactionGrid/TodaysTransactionTableGrid";
 
 const Dashboard = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
@@ -107,6 +108,7 @@ const Dashboard = () => {
           >
             <Imagecarousel />
           </Box>
+          <TodaysTransactionTableGridWrapper />
         </Container>
       </Box>
     </>

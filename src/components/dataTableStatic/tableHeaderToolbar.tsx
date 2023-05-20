@@ -74,6 +74,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
           color="inherit"
           variant={"h6"}
           component="div"
+          style={{ ...headerToolbarStyle }}
         >
           {label}
         </Typography>
