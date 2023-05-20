@@ -77,7 +77,7 @@ export const UsernamePasswordField = ({
               width: "360px",
             }}
           >
-            Please provide your email and password
+            Please provide your UserID and password
           </div>
           <div className={classes.formWrap}>
             <TextField
@@ -184,12 +184,14 @@ export const UsernamePasswordField = ({
                 }}
               >
                 <GradientButton
-                  style={{ borderRadius: "10px" }}
+                  style={{
+                    borderRadius: loginState.loading ? "50%" : "10px",
+                    height: loginState.loading ? "40px" : "100%",
+                    width: loginState.loading ? "0px" : "100%",
+                    minWidth: loginState.loading ? "40px" : "80px",
+                  }}
                   fullWidth
                   disabled={loginState.loading}
-                  endIcon={
-                    loginState.loading ? <CircularProgress size={20} /> : null
-                  }
                   onClick={() =>
                     verifyUsernamePassword(
                       (input.userName || "").toLowerCase(),
@@ -198,7 +200,11 @@ export const UsernamePasswordField = ({
                   }
                   ref={inputButtonRef}
                 >
-                  Next
+                  {loginState.loading ? (
+                    <CircularProgress size={25} thickness={4.6} />
+                  ) : (
+                    "Next"
+                  )}
                 </GradientButton>
               </div>
             </div>

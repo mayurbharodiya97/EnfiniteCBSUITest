@@ -5,9 +5,12 @@ import { useStyles } from "./style";
 import { AuthContext } from "./authContext";
 import { Grid } from "@mui/material";
 import { Container } from "@mui/material";
+import { utilFunction } from "components/utils";
 
 export const BankDetails = ({ imageData }: any) => {
   const { isLoggedIn, login } = useContext(AuthContext);
+  const [loginImageURL, setLoginImageURL] = useState<any | null>(null);
+  const urlObj = useRef<any>(null);
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -19,22 +22,22 @@ export const BankDetails = ({ imageData }: any) => {
       navigate("/audit", { replace: true });
     }
   }, [navigate, isLoggedIn]);
-
+  useEffect(() => {
+    if (Boolean(imageData?.[0]?.COMP_LOGO)) {
+      let blob = utilFunction.base64toBlob(imageData?.[0]?.COMP_LOGO);
+      urlObj.current =
+        typeof blob === "object" && Boolean(blob)
+          ? URL.createObjectURL(blob)
+          : "";
+      setLoginImageURL(urlObj.current);
+    }
+  }, [imageData]);
+  console.log("imafedata", imageData);
   return (
     <>
       {/* <Grid container style={{ height: "100vh", overflow: "hidden" }}> */}
       <Grid item xs={6} md={6} lg={6} className={classes.loginLeft}>
         <Grid item xs={12} md={12} lg={12} style={{ height: "70vh" }}>
-          {/* <div
-            style={{
-              backgroundImage: `url(${loginImg})`,
-              backgroundPosition: "center",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              width: "100%",
-              height: "100%",
-            }}
-          ></div> */}
           <img
             alt=""
             style={{
@@ -43,7 +46,7 @@ export const BankDetails = ({ imageData }: any) => {
               objectFit: "cover",
               objectPosition: "center",
             }}
-            src={loginImg}
+            src={Boolean(loginImageURL) ? loginImageURL : ""}
           />
         </Grid>
         <Grid

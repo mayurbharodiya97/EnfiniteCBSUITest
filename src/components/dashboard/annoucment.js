@@ -20,10 +20,10 @@ export const Announcement = ({
 
   return (
     <>
-      <Grid item xl={12} lg={12} sm={12} xs={12}>
+      <Grid containerSize={100}>
         <Box
           sx={{
-            height: "80px",
+            height: "70px",
             backgroundColor:
               title === "Announcement"
                 ? "var(--theme-color4)"
@@ -35,21 +35,21 @@ export const Announcement = ({
                 ? "#FFE5EB"
                 : null,
             borderRadius: "20px",
-            padding: "15px",
+            padding: "12px",
             display: "flex",
             justifyContent: "space-between",
-            marginBottom: "15px",
+            marginBottom: "12px",
             cursor: "pointer",
           }}
           onClick={handleClick}
         >
-          <Grid item xl={4} lg={9} sm={9} xs={12}>
+          <Grid item xl={12} lg={8} xs={12} sm={6} md={4}>
             <Typography
               // gutterBottom
               // variant="overline"
               style={{
                 color: "#black",
-                fontSize: "21px",
+                fontSize: "20px",
                 fontWeight: "500",
                 lineHeight: "24px",
                 letterSpacing: "0.01em",
@@ -61,7 +61,7 @@ export const Announcement = ({
             <Typography
               variant="h3"
               style={{
-                fontSize: "16px",
+                fontSize: "15px",
                 fontWeight: "400",
                 color: "#949597",
                 lineHeight: "27px",
@@ -72,7 +72,13 @@ export const Announcement = ({
             </Typography>
           </Grid>
 
-          <Grid style={{ display: "flex" }} item xl={12} lg={4} sm={5} xs={2}>
+          <Grid
+            style={{ display: "flex", justifyContent: "end" }}
+            item
+            xs={12}
+            sm={6}
+            md={4}
+          >
             <Box
               sx={{
                 height: "38px",
@@ -125,13 +131,13 @@ export const Announcement = ({
                 <LoaderPaperComponent />
               ) : ( */}
       {toggle ? (
-        <Grid item xs={12} sm={12} md={12} style={{ marginTop: "15px" }}>
+        <Grid item xs={12} sm={12} md={12} style={{ margin: "5px" }}>
           <Box
             sx={{
               width: "100%",
               // maxWidth: 400,
               bgcolor: "background.paper",
-              height: "26vh",
+              height: "25vh",
               overflowY: "auto",
               borderRadius: "20px",
               boxShadow: "0px 11px 20px rgba(226, 236, 249, 0.5)",

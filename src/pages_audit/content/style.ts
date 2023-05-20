@@ -6,7 +6,7 @@ export const useStyles = makeStyles((theme: any) => ({
     flexGrow: 1,
     height: "100vh",
     overflowY: "auto",
-    paddingTop: "32px",
+    paddingTop: "24px",
     background: "rgba(250, 251, 255, 0.9)",
   },
   container: {

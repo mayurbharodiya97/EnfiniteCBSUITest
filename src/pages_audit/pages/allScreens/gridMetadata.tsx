@@ -11,7 +11,7 @@ export const AllScreensGridMetaData: GridMetaDataType = {
     },
     allowColumnReordering: true,
     disableSorting: false,
-    hideHeader: false,
+    hideHeader: true,
     disableGroupBy: true,
     enablePagination: true,
     pageSizes: [15, 30, 50],

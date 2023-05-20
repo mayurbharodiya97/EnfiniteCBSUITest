@@ -1,8 +1,8 @@
 import styles from "./styles";
 
-import { KeyboardDateTimePicker } from "@material-ui/pickers";
+import DateTimePicker from "@mui/lab/DateTimePicker";
 
 import { withStyles } from "@mui/styles";
-const StyledKeyboardDateTimePicker = withStyles(styles)(KeyboardDateTimePicker);
+const StyledKeyboardDateTimePicker = withStyles(styles)(DateTimePicker);
 
 export default StyledKeyboardDateTimePicker;

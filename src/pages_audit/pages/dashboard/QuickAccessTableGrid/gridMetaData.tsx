@@ -17,8 +17,8 @@ export const QuickAccessTableGridMetaData: GridMetaDataType = {
     disableGroupBy: true,
     enablePagination: false,
     containerHeight: {
-      min: "380px",
-      max: "380px",
+      min: "250px",
+      max: "250px",
     },
     allowFilter: false,
     allowColumnHiding: false,

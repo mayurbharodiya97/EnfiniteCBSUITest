@@ -5,10 +5,9 @@ import {
   unstable_createMuiStrictModeTheme,
 } from "@mui/material/styles";
 import DateFnsUtils from "@date-io/date-fns";
-import { KeyboardDateTimePicker } from "@material-ui/pickers";
 import { theme2 } from "app/audit/theme";
 import { FormHelperText } from "@mui/material";
-
+import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
@@ -79,7 +78,7 @@ export const EditableDatetimePicker = (props) => {
     <CellWrapper showBorder {...props}>
       <ThemeProvider theme={themeObj}>
         <LocalizationProvider utils={DateFnsUtils}>
-          <KeyboardDateTimePicker
+          <DateTimePicker
             format={dateFormat || "dd/MM/yyyy HH:mm:ss"}
             KeyboardButtonProps={{
               "aria-label": "Select Date",

@@ -4,10 +4,10 @@ import { KeyboardDateTimePicker } from "components/styledComponent/datetime";
 
 import { Omit, Merge } from "../types";
 import { Grid, GridProps } from "@mui/material";
-import { KeyboardDateTimePickerProps } from "@material-ui/pickers";
+import { DateTimePickerProps } from "@mui/lab/DateTimePicker";
 
 type KeyboardDateTimePickerPropsSubset = Omit<
-  KeyboardDateTimePickerProps,
+  DateTimePickerProps<any>,
   "onChange" | "value"
 >;
 

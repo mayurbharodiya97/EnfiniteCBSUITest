@@ -33,10 +33,10 @@ export const PagesAudit = (props) => {
           <Routes>
             {isValidURL ? (
               <>
-                <Route
+                {/* <Route
                   path="all-screens/*"
                   element={<AllScreensGridWrapper />}
-                />
+                /> */}
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
                 {/* <Route
