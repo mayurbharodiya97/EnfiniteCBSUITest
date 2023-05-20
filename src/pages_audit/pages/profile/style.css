@@ -4,10 +4,12 @@
   height: 100%;
 }
 .image-upload-icon {
-  width: 13.2vh;
-  height: 13.2vh;
+  /* width: 22.2vh;
+  height: 22.2vh; */
+  width: 150px;
+  height: 150px;
   overflow: hidden;
-  border-radius: 50%;
+  border-radius: 15px;
   display: flex;
   position: absolute;
   align-items: center;

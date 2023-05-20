@@ -100,9 +100,11 @@ const Dashboard = () => {
           </Grid>
           <Box
             sx={{
-              background: "#F9FAFE",
+              background: "var(--theme-color2)",
               border: "2px solid #EBEDEE",
               borderRadius: "20px",
+              margin: "20px 12px 0 0",
+              padding: "10px",
             }}
           >
             <Imagecarousel />

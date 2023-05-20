@@ -16,11 +16,12 @@ export const Language_App = () => {
 
   return (
     <>
-      <FormControl size="small" style={{ margin: " 0 15px 0 25px" }}>
+      <FormControl size="small" style={{ marginLeft: "13px" }}>
         <Select
           style={{
             maxWidth: "100px",
             width: "100px",
+            display: "flex",
           }}
           disableUnderline
           variant="standard"
@@ -28,30 +29,60 @@ export const Language_App = () => {
           onChange={handleChange}
           displayEmpty
           inputProps={{ "aria-label": "Without label" }}
+          sx={{
+            "& .MuiInput-input": {
+              display: "contents",
+              background: "red",
+            },
+            "& .MuiSelect-icon": {
+              paddingBottom: "4px",
+            },
+          }}
         >
-          <MenuItem style={{ width: "150px" }} value="">
+          <MenuItem
+            style={{
+              display: "flex",
+            }}
+            value=""
+          >
             <div key="Language" style={{ display: "flex" }}>
               <img src={english} alt="" className={classes.lang_svg} />
-              English
             </div>
+            English
           </MenuItem>
 
-          <MenuItem value="romanian" style={{ position: "static" }}>
+          <MenuItem
+            value="romanian"
+            style={{
+              display: "flex",
+            }}
+          >
             <div key="Language" style={{ display: "flex" }}>
-              <img src={romanian} alt="" className={classes.lang_svg} /> Roman
+              <img src={romanian} alt="" className={classes.lang_svg} />
             </div>
+            Roman
           </MenuItem>
-          <MenuItem value="french">
+          <MenuItem
+            value="french"
+            style={{
+              display: "flex",
+            }}
+          >
             <div key="Language" style={{ display: "flex" }}>
               <img src={french} alt="" className={classes.lang_svg} />
-              French
             </div>
+            French
           </MenuItem>
-          <MenuItem value="chinese">
+          <MenuItem
+            value="chinese"
+            style={{
+              display: "flex",
+            }}
+          >
             <div key="" style={{ display: "flex" }}>
               <img src={chinese} alt="" className={classes.lang_svg} />
-              Chinese
             </div>
+            Chinese
           </MenuItem>
         </Select>
       </FormControl>

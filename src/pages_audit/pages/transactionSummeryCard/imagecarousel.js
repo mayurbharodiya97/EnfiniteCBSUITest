@@ -1,48 +1,155 @@
-import React, { useRef } from "react";
-import Mycard from "./mycard";
+import React from "react";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import {
+  TableRow,
+  TableHead,
+  TableCell,
+  TableBody,
+  Table,
+  Card,
+  CardContent,
+  Typography,
+} from "@mui/material";
+import Left from "assets/images/pre-next.png";
 import "./imagecarousel.css";
+const Rescarousel = () => {
+  // const [value, setValue] = React.useState(0);
 
-const Imagecarousel = () => {
-  const boxRef = useRef(null);
-
-  const btnpressprev = () => {
-    const box = boxRef.current;
-    const width = box.clientWidth;
-    box.scrollLeft = box.scrollLeft - width;
-    console.log(box.current, box.clientWidth, box.scrollLeft);
+  // const handleChange = (event, newValue) => {
+  //   setValue(newValue);
+  // };
+  function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+  const rows = [
+    createData("Frozen yoghurt", 159, 6.0),
+    createData("Ice-cream sandwich", 237, 9.0),
+    createData("Eclair", 262, 16.0),
+  ];
+  const items = [1, 2, 3, 4, 5, 6, 7];
+  const arrowStyles = {
+    position: "absolute",
+    zIndex: 2,
+    top: "calc(50% - 30px)",
+    width: 36,
+    height: 36,
+    cursor: "pointer",
+    outline: "none",
+    background: "#ECEFF9",
+    borderRadius: "10px",
+    border: "none",
+    transition: "opacity 0.2s ease-in-out",
+    boxShadow: "0px 5px 10px rgba(8, 15, 35, 0.2)",
+    transform: "matrix(-1, 0, 0, 1, 0, 0)",
   };
 
-  const btnpressnext = () => {
-    const box = boxRef.current;
-    const width = box.clientWidth;
-    box.scrollLeft = box.scrollLeft + width;
+  const arrowPrevStyles = {
+    ...arrowStyles,
+    left: 1,
   };
 
+  const arrowNextStyles = {
+    ...arrowStyles,
+    right: 1,
+  };
   return (
-    <div className="product-carousel">
-      <button className="pre-btn" onClick={btnpressprev}>
-        <p>&gt;</p>
-      </button>
-      <button className="next-btn" onClick={btnpressnext}>
-        <p>&lt;</p>
-      </button>
-
-      <div className="product-container" ref={boxRef}>
-        <Mycard cardno="1" />
-        <Mycard cardno="2" />
-        <Mycard cardno="3" />
-        <Mycard cardno="4" />
-        <Mycard cardno="5" />
-        <Mycard cardno="6" />
-        <Mycard cardno="7" />
-        <Mycard cardno="8" />
-        <Mycard cardno="9" />
-        <Mycard cardno="10" />
-        <Mycard cardno="11" />
-        <Mycard cardno="12" />
-      </div>
-    </div>
+    <>
+      <Carousel
+        showArrows={true}
+        showThumbs={false}
+        showStatus={false}
+        infiniteLoop={true}
+        centerMode={true}
+        centerSlidePercentage={33.33}
+        swipeScrollTolerance={5}
+        selectedItem={1}
+        emulateTouch={true}
+        width="100%"
+        renderArrowPrev={(onClickHandler, hasPrev, label) =>
+          hasPrev && (
+            <button
+              type="button"
+              onClick={onClickHandler}
+              title={label}
+              style={arrowPrevStyles}
+            >
+              <img src={Left} />
+            </button>
+          )
+        }
+        renderArrowNext={(onClickHandler, hasNext, label) =>
+          hasNext && (
+            <button
+              type="button"
+              onClick={onClickHandler}
+              title={label}
+              style={arrowNextStyles}
+            >
+              <img src={Left} style={{ transform: "rotate(180deg)" }} />
+            </button>
+          )
+        }
+      >
+        {items.map((val, index) => {
+          return (
+            <Card
+              key={index}
+              sx={{
+                color: "white",
+                // mx: 2,
+                // mb: 5,
+                margin: "16px 16px 40px 16px",
+                background:
+                  "linear-gradient(61.76deg, #4285F4 8.02%, #885DF5 108.35%)",
+                borderRadius: "20px",
+              }}
+            >
+              <CardContent>
+                <Typography ml={1} variant="h5" align="left" component="div">
+                  {index + 1}
+                </Typography>
+                <Table aria-label="caption table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ p: 1, color: "white" }}>Type</TableCell>
+                      <TableCell sx={{ p: 1, color: "white" }}>
+                        Amount
+                      </TableCell>
+                      <TableCell sx={{ p: 1, color: "white" }}>Count</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <TableRow key={row.name}>
+                        <TableCell
+                          sx={{ p: 1, color: "white", border: "none" }}
+                          component="th"
+                          scope="row"
+                        >
+                          {row.name}
+                        </TableCell>
+                        <TableCell
+                          sx={{ p: 1, color: "white", border: "none" }}
+                        >
+                          {row.calories}
+                        </TableCell>
+                        <TableCell
+                          sx={{ p: 1, color: "white", border: "none" }}
+                        >
+                          {row.fat}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </Carousel>
+    </>
   );
 };
 
-export default Imagecarousel;
+export default Rescarousel;

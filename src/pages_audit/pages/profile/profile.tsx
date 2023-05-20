@@ -1,5 +1,12 @@
 import { AuthContext } from "pages_audit/auth";
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { queryClient } from "cache";
@@ -11,11 +18,14 @@ import {
   AppBar,
   Avatar,
   Button,
+  Container,
   Grid,
   IconButton,
   InputLabel,
   Paper,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   Toolbar,
   Typography,
@@ -28,27 +38,13 @@ import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import "./style.css";
 import { ProfilePhotoUpdate } from "./profilePhotoUpload";
 import { GeneralAPI } from "registry/fns/functions";
-import SaveIcon from "@mui/icons-material/Save";
 import { styled, alpha } from "@mui/material/styles";
-// import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-// import Toolbar from "@mui/material/Toolbar";
-// import IconButton from "@mui/material/IconButton";
-// import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
-import Badge from "@mui/material/Badge";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import MoreIcon from "@mui/icons-material/MoreVert";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
-import User_profile from "assets/images/user_profile_bg.jpg";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
+import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
+import { useNavigate } from "react-router-dom";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -59,10 +55,17 @@ export const Profile = () => {
   const [profileUpdate, setProfileUpdate] = useState(false);
   const [filesdata, setFilesData] = useState<any>([]);
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
+  const [value, setValue] = useState("one");
+  const [mode, setMode] = useState<string>("userLogin");
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   //typeof blob === "object" && Boolean(blob) ? URL.createObjectURL(blob) : ""
   //);
-
-  const drawerWidth = 240;
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate("/netbanking/dashboard");
+  };
 
   const queryData = useQuery<any, any, any>(["getUserDetails"], () =>
     API.getUserDetails({ userID })
@@ -129,252 +132,18 @@ export const Profile = () => {
       userActivityData.isFetching ? (
         <LoaderPaperComponent />
       ) : (
-        // : queryData.isError || userActivityData.isError ? (
-        // <Alert
-        //   severity={
-        //     queryData.isError
-        //       ? queryData.error?.severity ?? "error"
-        //       : userActivityData.error?.severity ?? "error"
-        //   }
-        //   errorMsg={
-        //     queryData.isError
-        //       ? queryData.error?.error_msg ?? "Unknown error occured"
-        //       : userActivityData.error?.error_msg ?? "Unknown error occured"
-        //   }
-        //   errorDetail={
-        //     queryData.isError
-        //       ? queryData.error?.error_detail ?? ""
-        //       : userActivityData.error?.error_detail ?? ""
-        //   }
-        // />
-        // )
         <>
           <Grid
             key={"mainGrid"}
             container
             spacing={0}
-            // justifyContent="flex-start"
             px={4}
-            // alignItems="center"
             direction="column"
             style={{
               background: "rgba(250, 251, 255, 0.9)",
               display: "block",
             }}
-            // height={500}
           >
-            {/* <Grid
-              key={"Griditem1"}
-              item
-              xs={12}
-              md={12}
-              lg={12}
-              container
-              spacing={1}
-              justifyContent="center"
-              alignItems="center"
-              style={{
-                marginBottom: "1px",
-                marginTop: "5px",
-                marginRight: "12px",
-              }}
-            >
-              <AppBar position="relative" color="secondary">
-                <Toolbar variant="dense">
-                  <Typography
-                    component="div"
-                    variant="h6"
-                    color="inherit"
-                    style={{
-                      flex: "1 1 100%",
-                      color: "var(--theme-color2)",
-                      letterSpacing: "1px",
-                      fontSize: "1.5rem",
-                    }}
-                  >
-                    {UserProfileMetaData?.form?.label ?? "User Details"}
-                  </Typography>
-                  <div style={{ flexGrow: 1 }}></div>
-                  <Button
-                    onClick={() => {
-                      setShowProfile(true);
-                    }}
-                    color="primary"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    Change Password
-                  </Button>
-                </Toolbar>
-              </AppBar>
-            </Grid> */}
-            {/* <Grid
-              key={"Griditem2"}
-              item
-              xs={12}
-              md={3}
-              lg={3}
-              container
-              spacing={1}
-              justifyContent="flex-end"
-              alignItems="flex-end"
-              style={{ marginBottom: "1px" }}
-            >
-              <Paper
-                style={{
-                  width: "100%",
-                  height: "43vh",
-                  padding: "50px 24px",
-                  // borderRadius: "5%",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      width: "18vh",
-                      height: "18vh",
-                      margin: "auto",
-                      border: "1px dashed #9a9a9a",
-                      borderRadius: "50%",
-                      padding: "6px",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      position: "relative",
-                    }}
-                  >
-                    <div className="image-data">
-                      <Avatar
-                        key={"ProfilePicture"}
-                        alt="User"
-                        src={
-                          Boolean(ProfilePictureURL) ? ProfilePictureURL : ""
-                        }
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      >
-                        {(queryData.data?.NAME || userID)
-                          .toUpperCase()
-                          .substring(0, 1)}
-                      </Avatar>
-                    </div>
-                    <div
-                      className="image-upload-icon"
-                      onClick={() => fileUploadControl?.current?.click()}
-                    >
-                      <IconButton>
-                        <AddAPhotoIcon htmlColor="white" />
-                      </IconButton>
-                      <Typography
-                        component={"span"}
-                        style={{
-                          margin: "0",
-                          color: "white",
-                          lineHeight: "1.5",
-                          fontSize: "0.75rem",
-                          fontFamily: "Public Sans,sans-serif",
-                          fontWeight: "400",
-                        }}
-                      >
-                        Update Photo
-                      </Typography>
-                      <input
-                        name="fileselect"
-                        type="file"
-                        style={{ display: "none" }}
-                        ref={fileUploadControl}
-                        onChange={handleFileSelect}
-                        accept=".png,.jpg,.jpeg"
-                        onClick={(e) => {
-                          //to clear the file uploaded state to reupload the same file (AKA allow our handler to handle duplicate file)
-                          //@ts-ignore
-                          e.target.value = "";
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div style={{ marginTop: "10px", textAlign: "center" }}>
-                  <div
-                    style={{
-                      fontSize: "x-large",
-                      fontFamily: "serif",
-                      fontWeight: "bold",
-                      color: "var(--theme-color1)",
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {(queryData.data?.NAME || userID).toLowerCase()}
-                  </div>
-                  <div
-                    style={{ fontSize: "small", textTransform: "capitalize" }}
-                  >
-                    {(queryData.data?.USER_LEVEL || "").toLowerCase()}
-                  </div>
-                </div>
-              </Paper>
-            </Grid> */}
-            {/* <Grid
-              key={"Griditem3"}
-              item
-              xs={12}
-              md={9}
-              lg={9}
-              container
-              spacing={1}
-              justifyContent="flex-start"
-              alignItems="center"
-              style={{ marginBottom: "1px" }}
-            >
-              <Paper
-                className="paddingPaper"
-                style={{
-                  width: "100%",
-                }}
-              >
-                <FormWrapper
-                  key="UserProfile"
-                  metaData={UserProfileMetaData as MetaDataType}
-                  initialValues={queryData.data}
-                  onSubmitHandler={() => {}}
-                  displayMode={"view"}
-                  hideDisplayModeInTitle={true}
-                  formStyle={{
-                    background: "white",
-                    height: "40vh",
-                    overflowY: "auto",
-                    overflowX: "hidden",
-                  }}
-                  hideHeader={true}
-                />
-              </Paper>
-            </Grid> */}
-            {/* <Grid
-              key={"Griditem4"}
-              item
-              xs={12}
-              md={12}
-              lg={12}
-              container
-              spacing={1}
-              justifyContent="flex-start"
-              alignItems="center"
-              style={{ marginBottom: "0px", marginRight: "12px" }}
-            >
-              <GridWrapper
-                key={`UserLoginReqGrid`}
-                finalMetaData={UserLoginDtlGridMetaData as GridMetaDataType}
-                data={userActivityData.data ?? []}
-                setData={() => null}
-                //loading={result.isLoading}
-                actions={[]}
-                setAction={() => {}}
-                refetchData={() => {}}
-                ref={myGridRef}
-              />
-            </Grid> */}
             <Box sx={{ my: 3, display: "block" }}>
               <AppBar
                 position="static"
@@ -398,7 +167,7 @@ export const Profile = () => {
 
                   <Box sx={{ flexGrow: 1 }} />
                   <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                    <Button
+                    {/* <Button
                       size="small"
                       sx={{ backgroundColor: "#ECEFF9", mr: 2 }}
                       variant="contained"
@@ -429,7 +198,7 @@ export const Profile = () => {
                       color="inherit"
                     >
                       <DeleteOutlineIcon color="info" />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton
                       // size="large"
                       aria-label="show 4 new mails"
@@ -439,297 +208,255 @@ export const Profile = () => {
                         borderRadius: "10px",
                         ml: 2,
                       }}
+                      onClick={handleNavigate}
                     >
-                      <CancelPresentationIcon color="info" />
+                      <CancelOutlinedIcon color="info" fontSize="medium" />
                     </IconButton>
                   </Box>
                 </Toolbar>
               </AppBar>
             </Box>
-            <Box sx={{ flexGrow: 1 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={3}>
-                  <Item>xs=8</Item>
-                </Grid>
-                <Grid item xs={9}>
-                  <Box sx={{ width: "100%" }}>
-                    <Stack spacing={2}>
-                      <Item sx={{ height: "30vh", p: 0, borderRadius: "20px" }}>
-                        <Stack>
-                          <Item
-                            sx={{
-                              height: "19vh",
-                              p: 0,
-                              borderRadius: "20px",
-                              backgroundImage: `url(${User_profile})`,
-                              backgroundSize: "cover",
-                              borderBottomLeftRadius: 0,
-                              borderBottomRightRadius: 0,
-                            }}
-                          >
-                            {/* <img src={User_profile} alt="" /> */}
-                          </Item>
-                          <Item
-                            sx={{
-                              height: "11vh",
-                              background: "#1C1C1C",
-                              p: 0,
-                              borderRadius: "20px",
-                              borderTopLeftRadius: 0,
-                              borderTopRightRadius: 0,
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: "15vh",
-                                height: "15vh",
-                                // margin: "auto",
-                                border: "1px dashed #9a9a9a",
-                                borderRadius: "50%",
-                                padding: "6px",
-                                cursor: "pointer",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                position: "relative",
-                                top: "-50px",
-                                left: "35px",
-                              }}
-                            >
-                              <div className="image-data">
-                                <Avatar
-                                  key={"ProfilePicture"}
-                                  alt="User"
-                                  src={
-                                    Boolean(ProfilePictureURL)
-                                      ? ProfilePictureURL
-                                      : ""
-                                  }
-                                  style={{
-                                    width: "100%",
-                                    height: "100%",
-                                  }}
-                                >
-                                  {(queryData.data?.NAME || userID)
-                                    .toUpperCase()
-                                    .substring(0, 1)}
-                                </Avatar>
-                              </div>
-                              <div
-                                className="image-upload-icon"
-                                onClick={() =>
-                                  fileUploadControl?.current?.click()
-                                }
-                              >
-                                <IconButton>
-                                  <AddAPhotoIcon htmlColor="white" />
-                                </IconButton>
-                                <Typography
-                                  component={"span"}
-                                  style={{
-                                    margin: "0",
-                                    color: "white",
-                                    lineHeight: "1.5",
-                                    fontSize: "0.75rem",
-                                    fontFamily: "Public Sans,sans-serif",
-                                    fontWeight: "400",
-                                  }}
-                                >
-                                  Update Photo
-                                </Typography>
-                                <input
-                                  name="fileselect"
-                                  type="file"
-                                  style={{ display: "none" }}
-                                  ref={fileUploadControl}
-                                  onChange={handleFileSelect}
-                                  accept=".png,.jpg,.jpeg"
-                                  onClick={(e) => {
-                                    //to clear the file uploaded state to reupload the same file (AKA allow our handler to handle duplicate file)
-                                    //@ts-ignore
-                                    e.target.value = "";
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          </Item>
-                        </Stack>
-                      </Item>
-                      <Item
-                        sx={{
-                          p: 2,
-                          borderRadius: "20px",
-                          border: "2px solid #EBEDEE",
+            <Container
+              sx={{
+                background: "white",
+                borderRadius: "10px",
+                p: "15px",
+              }}
+            >
+              <Grid>
+                <Box
+                  height={"216px"}
+                  sx={{
+                    // backgroundImage: `url(${User_profile})`,
+                    backgroundImage: `url('https://berrydashboard.io/static/media/img-profile-bg.2b15e9314e45a1308110.png')`,
+                    backgroundSize: "cover",
+                    borderRadius: "10px",
+                    margin: "10px",
+                  }}
+                ></Box>
+                <Box height={"105px"}>
+                  <Grid container>
+                    <Grid item xs={3}>
+                      <div
+                        style={{
+                          width: "150px",
+                          height: "150px",
+                          marginLeft: "auto",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          position: "relative",
+                          top: "-50%",
                         }}
                       >
-                        <Typography
-                          align="left"
-                          variant="h4"
-                          fontWeight={500}
-                          my={1}
-                          color={"var(--theme-color3)"}
-                        >
-                          About me
-                        </Typography>
-                        <Typography
-                          fontSize={16}
-                          align="left"
-                          variant="body1"
-                          gutterBottom
-                        >
-                          Hello,I’m Anshan Handgun Creative Graphic Designer &
-                          User Experience Designer based in Website, I create
-                          digital Products a more Beautiful and usable place.
-                          Morbid accusant ipsum. Nam nec tellus at.
-                        </Typography>
-                      </Item>
-                      <Item
-                        sx={{
-                          borderRadius: "20px",
-                          border: "2px solid #EBEDEE",
-                        }}
-                      >
-                        <Box
-                          component="form"
-                          sx={{
-                            "& .MuiTextField-root": {
-                              width: "35ch",
-                              height: "6ch",
-                              marginTop: "10px",
-                            },
-                          }}
-                          noValidate
-                          autoComplete="off"
-                        >
-                          <div
+                        <div className="image-data">
+                          <Avatar
+                            variant="rounded"
+                            key={"ProfilePicture"}
+                            alt="User"
+                            src={
+                              Boolean(ProfilePictureURL)
+                                ? ProfilePictureURL
+                                : "https://berrydashboard.io/static/media/img-user.41a8c06685db060b0ec1.png"
+                            }
                             style={{
-                              display: "flex",
-                              flexWrap: "wrap",
+                              width: "100%",
+                              height: "100%",
                             }}
                           >
-                            <div style={{ margin: "10px" }}>
-                              <InputLabel
-                                style={{
-                                  display: "flex",
-                                  color: "var(--theme-color6)",
-                                  fontSize: "16px",
-                                }}
-                              >
-                                First Name
-                              </InputLabel>
-                              <TextField
-                                variant="standard"
-                                style={{
-                                  background: "rgba(235, 237, 238, 0.2)",
-                                  borderRadius: "15px",
-                                  border: "1px solid #EBEDEE",
-                                }}
-                                InputProps={{
-                                  disableUnderline: true,
-                                }}
-                              />
-                            </div>
-                            <div style={{ margin: "10px" }}>
-                              <InputLabel
-                                style={{
-                                  display: "flex",
-                                  color: "var(--theme-color6)",
-                                  fontSize: "16px",
-                                }}
-                              >
-                                Last Name
-                              </InputLabel>
-                              <TextField
-                                variant="standard"
-                                style={{
-                                  background: "rgba(235, 237, 238, 0.2)",
-                                  borderRadius: "15px",
-                                  border: "1px solid #EBEDEE",
-                                }}
-                                InputProps={{
-                                  disableUnderline: true,
-                                }}
-                              />
-                            </div>
-                            <div style={{ margin: "10px" }}>
-                              <InputLabel
-                                style={{
-                                  display: "flex",
-                                  color: "var(--theme-color6)",
-                                  fontSize: "16px",
-                                }}
-                              >
-                                Bio
-                              </InputLabel>
-                              <TextField
-                                variant="standard"
-                                style={{
-                                  background: "rgba(235, 237, 238, 0.2)",
-                                  borderRadius: "15px",
-                                  border: "1px solid #EBEDEE",
-                                }}
-                                InputProps={{
-                                  disableUnderline: true,
-                                }}
-                              />
-                            </div>
-                            <div style={{ margin: "10px" }}>
-                              <InputLabel
-                                style={{
-                                  display: "flex",
-                                  color: "var(--theme-color6)",
-                                  fontSize: "16px",
-                                }}
-                              >
-                                Email address
-                              </InputLabel>
-                              <TextField
-                                variant="standard"
-                                style={{
-                                  background: "rgba(235, 237, 238, 0.2)",
-                                  borderRadius: "15px",
-                                  border: "1px solid #EBEDEE",
-                                }}
-                                InputProps={{
-                                  disableUnderline: true,
-                                }}
-                              />
-                            </div>
-                            <div style={{ margin: "10px" }}>
-                              <InputLabel
-                                style={{
-                                  display: "flex",
-                                  color: "var(--theme-color6)",
-                                  fontSize: "16px",
-                                }}
-                              >
-                                Phone
-                              </InputLabel>
-                              <TextField
-                                variant="standard"
-                                style={{
-                                  background: "rgba(235, 237, 238, 0.2)",
-                                  borderRadius: "15px",
-                                  border: "1px solid #EBEDEE",
-                                }}
-                                InputProps={{
-                                  disableUnderline: true,
-                                }}
-                              />
-                            </div>
-                          </div>
+                            {(queryData.data?.NAME || userID)
+                              .toUpperCase()
+                              .substring(0, 1)}
+                          </Avatar>
+                        </div>
+                        <div
+                          className="image-upload-icon"
+                          onClick={() => fileUploadControl?.current?.click()}
+                        >
+                          <IconButton>
+                            <AddAPhotoIcon htmlColor="white" />
+                          </IconButton>
+                          <Typography
+                            component={"span"}
+                            style={{
+                              margin: "0",
+                              color: "white",
+                              lineHeight: "1.5",
+                              fontSize: "0.75rem",
+                              fontFamily: "Public Sans,sans-serif",
+                              fontWeight: "400",
+                            }}
+                          >
+                            Update Photo
+                          </Typography>
+                          <input
+                            name="fileselect"
+                            type="file"
+                            style={{ display: "none" }}
+                            ref={fileUploadControl}
+                            onChange={handleFileSelect}
+                            accept=".png,.jpg,.jpeg"
+                            onClick={(e) => {
+                              //to clear the file uploaded state to reupload the same file (AKA allow our handler to handle duplicate file)
+                              //@ts-ignore
+                              e.target.value = "";
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </Grid>
+                    <Grid item xs={9} p={1}>
+                      <Grid container p={1}>
+                        <Grid item xs={3}>
+                          <Typography variant="h6" fontWeight={500}>
+                            JWT User
+                          </Typography>
+                          <Typography color={"var(--theme-color6)"}>
+                            Android Developer
+                          </Typography>
+                        </Grid>
+                        {/* <Grid item xs={4}></Grid>
+                        <Grid item xs={0} sm={4} md={5} lg={5}>
+                          <Stack
+                            spacing={2}
+                            direction="row"
+                            alignItems={"center"}
+                            justifyContent={"flex-end"}
+                          >
+                            <Button variant="outlined" color="info">
+                              Message
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="info"
+                              startIcon={<PersonAddIcon />}
+                            >
+                              Send Request
+                            </Button>
+                          </Stack>
+                        </Grid> */}
+                      </Grid>
+                      <Grid container>
+                        <Box sx={{ width: "100%" }}>
+                          <Tabs
+                            sx={{
+                              "& .MuiTabs-fixed": {
+                                display: "flex",
+                                justifyContent: "flex-end",
+                              },
+                              "& .Mui-selected": {
+                                color: "var(--theme-color1)",
+                              },
+                              "& .MuiTabs-indicator": {
+                                backgroundColor: "var(--theme-color1)",
+                              },
+                              "& .MuiButtonBase-root": {
+                                minHeight: "0px",
+                              },
+                            }}
+                            value={value}
+                            onChange={handleChange}
+                            textColor="secondary"
+                            indicatorColor="secondary"
+                            aria-label="secondary tabs example"
+                          >
+                            <Tab
+                              value="one"
+                              label="User Login"
+                              icon={<AccountCircleOutlinedIcon />}
+                              iconPosition="start"
+                              // onClick={moveToUserDetail}
+                              onClick={() => {
+                                setMode("userLogin");
+                              }}
+                            />
+                            <Tab
+                              value="two"
+                              label="User Detail"
+                              icon={<ArticleOutlinedIcon />}
+                              iconPosition="start"
+                              // onClick={() => {
+                              //   setUserDetail(true);
+                              // }}
+                              onClick={() => {
+                                setMode("userDetail");
+                              }}
+                            />
+
+                            <Tab
+                              value="three"
+                              label="Change Password"
+                              icon={<LockResetOutlinedIcon />}
+                              iconPosition="start"
+                              onClick={() => {
+                                setMode("changePassword");
+                                setShowProfile(true);
+                              }}
+                            />
+                          </Tabs>
                         </Box>
-                      </Item>
-                    </Stack>
-                  </Box>
-                </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Box>
               </Grid>
-            </Box>
+            </Container>
           </Grid>
-          <ChangePassword
-            showProfile={showProfile}
-            onClose={() => setShowProfile(false)}
-          />
+          <Container>
+            <Grid sx={{ m: 3 }}>
+              {mode === "userDetail" ? (
+                <Grid
+                  key={"Griditem4"}
+                  item
+                  xs={12}
+                  md={12}
+                  lg={12}
+                  container
+                  spacing={1}
+                  justifyContent="flex-start"
+                  alignItems="center"
+                  style={{ marginBottom: "0px", marginRight: "12px" }}
+                >
+                  <GridWrapper
+                    key={`UserLoginReqGrid`}
+                    finalMetaData={UserLoginDtlGridMetaData as GridMetaDataType}
+                    data={userActivityData.data ?? []}
+                    setData={() => null}
+                    //loading={result.isLoading}
+                    actions={[]}
+                    setAction={() => {}}
+                    refetchData={() => {}}
+                    ref={myGridRef}
+                  />
+                </Grid>
+              ) : mode === "userLogin" ? (
+                <Grid>
+                  <FormWrapper
+                    key="UserProfileForm"
+                    metaData={UserProfileMetaData as MetaDataType}
+                    initialValues={[]}
+                    onSubmitHandler={() => {}}
+                    // displayMode={"view"}
+                    // hideDisplayModeInTitle={true}
+                    formStyle={{
+                      background: "white",
+                      // height: "40vh",
+                      overflowY: "auto",
+                      overflowX: "hidden",
+                    }}
+                    // hideHeader={true}
+                  />
+                </Grid>
+              ) : mode === "changePassword" ? (
+                <ChangePassword
+                  showProfile={showProfile}
+                  onClose={() => setShowProfile(false)}
+                />
+              ) : null}
+            </Grid>
+          </Container>
+
           {profileUpdate && filesdata.length > 0 ? (
             <ProfilePhotoUpdate
               open={profileUpdate}
