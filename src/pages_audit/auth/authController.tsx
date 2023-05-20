@@ -39,14 +39,11 @@ const inititalState = {
   access_token: "",
   token_type: "",
   otpmodelClose: false,
-  verifyThrough: "",
+  authType: "",
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "inititateUserNameVerification":
-    case "inititatePasswordVerification":
-    case "inititateUserFingerVerification":
     case "inititateOTPVerification": {
       return {
         ...state,
@@ -145,7 +142,7 @@ const reducer = (state, action) => {
         token_type: action?.payload?.token_type,
         otpmodelClose: false,
         currentFlow: "OTP",
-        verifyThrough: action?.payload?.verifyThrough,
+        authType: action?.payload?.authType,
       };
     }
     case "inititateOTPVerification": {
@@ -267,7 +264,7 @@ export const AuthLoginController = () => {
             username: username,
             access_token: access_token?.access_token,
             token_type: access_token?.token_type,
-            verifyThrough: data?.VERIFY_THROUGH,
+            authType: data?.AUTH_TYPE,
           },
         });
         setOpen(true);
@@ -310,10 +307,12 @@ export const AuthLoginController = () => {
       dispath({ type: "inititateOTPVerification" });
       const { status, data, message } = await verifyOTP(
         loginState.transactionID,
+        // loginState.app_transactionId,
         loginState.username,
         OTPNumber,
         loginState.access_token,
-        loginState.token_type
+        loginState.token_type,
+        loginState.authType
       );
 
       if (status === "0") {
@@ -463,7 +462,7 @@ export const AuthLoginController = () => {
             />
           ) : (
             <>
-              {loginState.verifyThrough === "O" ? (
+              {loginState.authType === "OTP" ? (
                 <OTPModel
                   key="otp"
                   classes={classes}

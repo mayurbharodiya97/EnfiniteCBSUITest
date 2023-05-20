@@ -18,9 +18,7 @@ import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import { useOptionsFetcher } from "../utils";
-import Autocomplete, {
-  AutocompleteProps,
-} from "@material-ui/lab/Autocomplete/Autocomplete";
+import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import {
   CircularProgress,
   CircularProgressProps,
@@ -296,7 +294,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             if (typeof option === "string") {
               return (
                 <Chip
-                  key={option}
+                  // key={option}
                   variant="outlined"
                   {...ChipProps}
                   label={option}
@@ -306,7 +304,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             }
             return (
               <Chip
-                key={`${option.label}-${index}`}
+                // key={`${option.label}-${index}`}
                 variant="outlined"
                 {...ChipProps}
                 label={option.label}
@@ -353,7 +351,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             />
           );
         }}
-        renderOption={(option, { selected, inputValue }) => {
+        renderOption={(props, option, { selected, inputValue }) => {
           let label = myGetOptionLabel(option);
           const matches = match(label, inputValue);
           const parts = parse(label, matches);

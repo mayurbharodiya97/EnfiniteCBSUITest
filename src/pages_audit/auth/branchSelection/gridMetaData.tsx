@@ -17,8 +17,8 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
     disableGroupBy: true,
     enablePagination: false,
     containerHeight: {
-      min: "60vh",
-      max: "60vh",
+      min: "62vh",
+      max: "62vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

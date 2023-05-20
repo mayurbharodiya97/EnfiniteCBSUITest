@@ -47,7 +47,7 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
       className={clsx(classes.appBar, open && classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
-        <Stack direction="row" spacing={4} margin={2}>
+        <Stack direction="row" spacing={4} mx={2}>
           <Box className={classes.heading_user_img_border}>
             <Avatar
               className={classes.heading_user_img}
@@ -64,7 +64,14 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
           noWrap
           className={classes.title}
         >
-          <div style={{ margin: "3px 0", fontSize: "23px", color: "#1C1C1C" }}>
+          <div
+            style={{
+              // margin: "3px 0",
+              marginBottom: "5px",
+              fontSize: "20px",
+              color: "#1C1C1C",
+            }}
+          >
             {authController?.authState?.companyName}
             <span style={{ marginLeft: "7px" }}>
               <img src={Waving_hand} alt="Waving_hand not found" />
@@ -72,17 +79,27 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
           </div>
           <div style={{ display: "flex", gap: "8px" }}>
             <div style={{ color: "#949597" }}>
-              <Typography variant="caption" display="block" lineHeight={0}>
+              <Typography
+                variant="caption"
+                display="block"
+                lineHeight={0}
+                fontSize={"11px"}
+              >
                 Branch: {authController?.authState?.user?.branchCode ?? ""} -{" "}
                 {authController?.authState?.user?.branch ?? ""}
               </Typography>
-              <Typography variant="caption" display="inline">
+              <Typography variant="caption" display="inline" fontSize={"11px"}>
                 Login Branch:{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.user?.lastLogin ?? ""
                 )}
               </Typography>
-              <Typography variant="caption" display="inline" marginLeft={1}>
+              <Typography
+                variant="caption"
+                display="inline"
+                marginLeft={1}
+                fontSize={"11px"}
+              >
                 Working Date:{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.workingDate ?? ""
@@ -131,11 +148,17 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
             sx={{
               backgroundColor: "rgba(235, 237, 238, 0.45)",
               borderRadius: "10px",
+              height: "30px",
+              width: "30px",
             }}
             aria-label="show 4 new mails"
             color="inherit"
           >
-            <LogoutIcon color="inherit" />
+            <LogoutIcon
+              color="inherit"
+              fontSize="small"
+              sx={{ color: "var(--theme-color3)" }}
+            />
           </IconButton>
         </Box>
       </Toolbar>

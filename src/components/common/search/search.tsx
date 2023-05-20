@@ -162,7 +162,7 @@ const MySearchField: FC<MySearchFieldProps> = ({
   const result = (
     <Fragment>
       <TextField
-        style={{ width: "250px" }}
+        style={{ width: "220px" }}
         placeholder="Search Here..."
         {...others}
         key={fieldKey}

@@ -1,8 +1,8 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-export const QuickAccessTableGridMetaData: GridMetaDataType = {
+export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Quick Access",
+    gridLabel: "Todays Transaction",
     rowIdColumn: "DOC_CD",
 
     defaultColumnConfig: {
@@ -13,12 +13,12 @@ export const QuickAccessTableGridMetaData: GridMetaDataType = {
 
     allowColumnReordering: false,
     disableSorting: false,
-    hideHeader: true,
+    hideHeader: false,
     disableGroupBy: true,
     enablePagination: false,
     containerHeight: {
-      min: "250px",
-      max: "250px",
+      min: "50vh",
+      max: "50vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -56,6 +56,36 @@ export const QuickAccessTableGridMetaData: GridMetaDataType = {
       width: 180,
       minWidth: 180,
       maxWidth: 180,
+    },
+    {
+      accessor: "DOC_DESCRIPTION",
+      columnName: "DOC_DESCRIPTION",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 300,
+      minWidth: 200,
+      maxWidth: 220,
+    },
+    {
+      accessor: "DESCRIPTION",
+      columnName: "DESCRIPTION",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 120,
+    },
+    {
+      accessor: "BRANCH_CD",
+      columnName: "BRANCH_CD",
+      sequence: 6,
+      alignment: "left",
+      componentType: "default",
+      width: 120,
+      minWidth: 120,
+      maxWidth: 120,
     },
   ],
 };

@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import { KeyboardTimePickerProps } from "@material-ui/pickers";
+import { TimePickerProps } from "@mui/lab/TimePicker";
 import { KeyboardTimePicker } from "components/styledComponent/datetime";
 
 import { Omit, Merge } from "../types";
@@ -12,7 +12,7 @@ import { Grid, GridProps } from "@mui/material";
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
 
 type KeyboardTimePickerPropsSubset = Omit<
-  KeyboardTimePickerProps,
+  TimePickerProps<any>,
   "onChange" | "value"
 >;
 

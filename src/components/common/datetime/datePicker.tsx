@@ -6,12 +6,12 @@ import { theme2 } from "app/audit/theme";
 import "./style.css";
 import { unstable_createMuiStrictModeTheme } from "@mui/material/styles";
 import { Button, Grid, GridProps } from "@mui/material";
-import { KeyboardDatePickerProps } from "@material-ui/pickers";
+import { DatePickerProps } from "@mui/lab/DatePicker";
 
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 type KeyboardDatePickerPropsSubset = Omit<
-  KeyboardDatePickerProps,
+  DatePickerProps<any>,
   "onChange" | "value"
 >;
 

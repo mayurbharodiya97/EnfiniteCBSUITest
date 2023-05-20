@@ -32,8 +32,6 @@ export const DashboardBox = ({
     API.getDynamicBoxData(apiName)
   );
 
-  
-
   const showErrorData = () => {
     setShowMore(true);
   };
@@ -44,10 +42,11 @@ export const DashboardBox = ({
           // height: "14vh",
           // width: "34vh",
           borderRadius: "23px",
-          border: "2.36619px solid #EBEDEE",
+          border: "2.50px solid #EBEDEE",
+          boxShadow: "none",
         }}
       >
-        <CardContent style={{ height: "11vh", padding: "8px", margin: "5px" }}>
+        <CardContent style={{ height: "11vh", padding: "5px", margin: "5px" }}>
           <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
             <Grid item xl={4} lg={9} sm={9} xs={12} style={{ height: "16vh" }}>
               <Typography
@@ -67,7 +66,7 @@ export const DashboardBox = ({
                 variant="h3"
                 style={{
                   color: "#949597",
-                  fontSize: "12px",
+                  fontSize: "14px",
                   fontWeight: "500",
                 }}
               >

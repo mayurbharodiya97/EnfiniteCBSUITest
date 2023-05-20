@@ -1,28 +1,48 @@
 import { DashboardLayout } from "./dashboard-layout";
-import { Box, Card, CardContent, Container, Grid } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Container,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import { DashboardBox } from "components/dashboard/dashboardBox";
 import { Alert } from "components/common/alert";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { QuickAccessTableGridWrapper } from "./QuickAccessTableGrid/QuickAccessTableGrid";
 import Imagecarousel from "../transactionSummeryCard/imagecarousel";
 import { Announcement } from "components/dashboard/annoucment";
+import Grid from "@mui/material/Grid";
+import TvIcon from "@mui/icons-material/Tv";
+import { AllScreensGridWrapper, ReleaseUsers } from "../allScreens";
+import { TodaysTransactionTableGridWrapper } from "./Today'sTransactionGrid/TodaysTransactionTableGrid";
 
 const Dashboard = () => {
+  const [isOpenSave, setIsOpenSave] = useState<any>(false);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
   >(["getDashboardData"], () => API.getDashboardDatas());
+  const handleClick = () => {
+    setIsOpenSave(true);
+    // console.log("test");
+  };
+  const handleDialogClose = () => {
+    console.log("test");
+    setIsOpenSave(false);
+  };
 
   return (
     <>
       <Box
         component="main"
         sx={{
-          backgroundColor: "var(--theme-color4)",
-          height: "83vh",
+          background: "rgba(250, 251, 255, 0.9)",
+          // height: "83vh",
           flexGrow: 1,
         }}
       >
@@ -45,53 +65,119 @@ const Dashboard = () => {
             ) : (
               <>
                 <Grid item lg={12} md={12} xl={12} xs={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={7}>
+                  <Grid container spacing={3} style={{ padding: "5px" }}>
+                    <Grid item lg={8} md={8} xl={8} xs={8}>
                       <Grid
                         container
                         spacing={{ xs: 2, md: 2 }}
-                        columns={{ xs: 4, sm: 8, md: 12 }}
-                        sx={{ justifyContent: "space-between" }}
+                        columns={{ xs: 12, sm: 12, md: 12 }}
                       >
-                        {Array.from(Array(6)).map((_, index) => (
-                          <Grid item xl={2} xs={6} sm={4} md={4} key={index}>
-                            <DashboardBox
-                              key={"board"}
-                              title={"69"}
-                              body={"Pending Transactions"}
-                              isfooterVisible={undefined}
-                              icon={""}
-                              apiName={"item?.APINAME"}
-                            />
-                          </Grid>
-                        ))}
-                      </Grid>
-                      <QuickAccessTableGridWrapper />
-                    </Grid>
-                    <Grid item xs={5}>
-                      <Container maxWidth="sm">
-                        <Card
-                          style={{
-                            borderRadius: "20px",
-                            boxShadow: "0px 11px 70px rgba(226, 236, 249, 0.5)",
-                          }}
-                        >
-                          <CardContent
-                            style={{ padding: "20px", height: "80vh" }}
+                        <Grid item lg={4} md={4} xl={4} xs={4}>
+                          <Card
+                            sx={{
+                              color: "white",
+                              // minWidth: 223,
+                              height: "29vh",
+                              width: "90%",
+                              // margin: "20px",
+                              // background:
+                              //   "linear-gradient(61.76deg, #4284F4 8.02%, #885DF5 108.35%)",
+                              background: "var(--theme-color5)",
+                              borderRadius: "20px",
+                              cursor: "pointer",
+                            }}
+                            onClick={handleClick}
                           >
-                            <Grid item lg={12} md={12} xl={12} xs={12}>
-                              {Array.from(Array(4)).map((_, index) => (
-                                <Announcement
-                                  title={"Notes"}
-                                  body={"Lorem ipsum dolor sit."}
-                                  screenFlag={"NOTES"}
-                                  count={"+7"}
+                            <CardContent style={{ padding: "15px" }}>
+                              <IconButton
+                                color="inherit"
+                                style={{
+                                  backgroundColor: "var(--theme-color2)",
+                                  borderRadius: "10px",
+                                  border: "0.4px solid rgba(66, 99, 199, 0.4)",
+                                  boxShadow:
+                                    "0px 5px 14px rgba(66, 99, 199, 0.2)",
+                                  height: "45px",
+                                  width: "45px",
+                                }}
+                              >
+                                {/* {`${icon}`} */}
+
+                                <TvIcon
+                                  style={{
+                                    color: " #4263C7",
+                                    fontSize: "30px",
+                                  }}
                                 />
-                              ))}
-                            </Grid>
-                          </CardContent>
-                        </Card>
-                      </Container>
+                              </IconButton>
+                              <Grid item xl={12} lg={12} sm={12} xs={12}>
+                                <Typography
+                                  // gutterBottom
+                                  // variant="overline"
+                                  style={{
+                                    color: "#black",
+                                    fontSize: "30px",
+                                    fontWeight: "600",
+                                    lineHeight: "42px",
+                                    letterSpacing: "0.01em",
+                                    marginTop: "18px",
+                                    width: "140px",
+                                  }}
+                                >
+                                  All Screens
+                                </Typography>
+                              </Grid>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                        <Grid item lg={8} md={8} xl={8} xs={8}>
+                          <Grid
+                            container
+                            spacing={{ xs: 2, md: 2 }}
+                            columns={{ xs: 4, sm: 4, md: 12 }}
+                          >
+                            {Array.from(Array(4)).map((_, index) => (
+                              <Grid item xs={6} sm={6} md={6} key={index}>
+                                <DashboardBox
+                                  key={"board"}
+                                  title={"69"}
+                                  body={"Pending Transactions"}
+                                  isfooterVisible={undefined}
+                                  icon={""}
+                                  apiName={"item?.APINAME"}
+                                />
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </Grid>
+                        <Grid item xl={12} xs={12} sm={12} md={12}>
+                          <QuickAccessTableGridWrapper />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid item lg={4} md={4} xl={4} xs={4}>
+                      <Card
+                        style={{
+                          borderRadius: "20px",
+                          boxShadow: "0px 11px 70px rgba(226, 236, 249, 0.5)",
+                          overflowY: "auto",
+                        }}
+                      >
+                        <CardContent
+                          style={{ padding: "10px", height: "80vh" }}
+                        >
+                          <Grid item lg={12} md={12} xl={12} xs={12}>
+                            {Array.from(Array(4)).map((_, index) => (
+                              <Announcement
+                                title={"Announcement"}
+                                body={"Lorem ipsum dolor sit."}
+                                screenFlag={"NOTES"}
+                                count={"+7"}
+                              />
+                            ))}
+                          </Grid>
+                        </CardContent>
+                      </Card>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -100,15 +186,24 @@ const Dashboard = () => {
           </Grid>
           <Box
             sx={{
-              background: "#F9FAFE",
+              background: "var(--theme-color2)",
               border: "2px solid #EBEDEE",
               borderRadius: "20px",
+              margin: "20px 12px 0 0",
+              padding: "10px",
             }}
           >
             <Imagecarousel />
           </Box>
+          <TodaysTransactionTableGridWrapper />
         </Container>
       </Box>
+      {isOpenSave ? (
+        <AllScreensGridWrapper
+          open={isOpenSave}
+          handleDialogClose={handleDialogClose}
+        />
+      ) : null}
     </>
   );
 };

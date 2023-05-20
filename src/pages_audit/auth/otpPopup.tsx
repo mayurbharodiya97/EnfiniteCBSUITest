@@ -1,11 +1,4 @@
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormHelperText,
-} from "@mui/material";
+import { FormHelperText } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { Fragment, useState, useRef, useEffect } from "react";
 import OTPInput, { ResendOTP } from "otp-input-react";
@@ -65,6 +58,7 @@ export const OTPModel = ({
       </span>
     );
   };
+
   // useEffect(() => {
   //   if (loginState?.otpmodelClose ?? false) {
   //     handleCloseEvent();
@@ -105,16 +99,13 @@ export const OTPModel = ({
                 color: "#949597",
                 fontSize: "16px",
                 fontWeight: "400",
-                // fontFamily: "Poppins",
                 alignItems: "center",
                 fontStyle: "normal",
                 lineHeight: "33px",
-                // marginBottom: "10px",
               }}
             >
               Please click on Resend button to Generate new OTP
             </div>
-            {/* <DialogContent> */}
             <div className={classes.OTPalignName}>
               <p> Hello Leo,</p>
               <ResendOTP
@@ -161,8 +152,6 @@ export const OTPModel = ({
               </FormHelperText>
             ) : null}
 
-            {/* </DialogContent> */}
-            {/* <DialogActions className={classes.verifybutton}> */}
             <div
               style={{
                 display: "flex",
@@ -178,7 +167,6 @@ export const OTPModel = ({
               <GradientButton
                 fullWidth
                 disabled={loginState.otploading}
-                // onClick={handleCloseEvent}
                 onClick={previousStep}
                 className={classes.otpButtons}
                 style={{
@@ -190,18 +178,24 @@ export const OTPModel = ({
                 Back
               </GradientButton>
               <GradientButton
+                style={{
+                  borderRadius: loginState.loading ? "50%" : "10px",
+                  height: loginState.loading ? "40px" : "100%",
+                  width: loginState.loading ? "0px" : "100%",
+                  minWidth: loginState.loading ? "40px" : "80px",
+                }}
                 fullWidth
-                disabled={loginState.otploading}
-                endIcon={
-                  loginState.otploading ? <CircularProgress size={20} /> : null
-                }
+                disabled={loginState.loading}
                 onClick={ClickEventHandler}
                 ref={inputButtonRef}
                 className={classes.otpButtons}
               >
-                Verify OTP
+                {loginState.loading ? (
+                  <CircularProgress size={25} thickness={4.6} />
+                ) : (
+                  "Verify OTP"
+                )}
               </GradientButton>
-              {/* </DialogActions> */}
             </div>
           </div>
         </Grid>

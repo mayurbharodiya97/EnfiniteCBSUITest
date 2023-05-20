@@ -21,7 +21,7 @@ import {
 import Autocomplete, {
   AutocompleteProps,
   // createFilterOptions,
-} from "@material-ui/lab/Autocomplete";
+} from "@mui/material/Autocomplete";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 import match from "autosuggest-highlight/match";
@@ -172,19 +172,19 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
             ? transformValues(value, freeSolo)
             : transformValues(value, freeSolo)[0]
         }
-        getOptionSelected={(option, value) => {
-          if (freeSolo) {
-            if (option === value) {
-              return true;
-            }
-            return false;
-          } else {
-            if (option.value === value.value) {
-              return true;
-            }
-            return false;
-          }
-        }}
+        // getOptionSelected={(option, value) => {
+        //   if (freeSolo) {
+        //     if (option === value) {
+        //       return true;
+        //     }
+        //     return false;
+        //   } else {
+        //     if (option.value === value.value) {
+        //       return true;
+        //     }
+        //     return false;
+        //   }
+        // }}
         ListboxComponent={
           Boolean(enableVirtualized)
             ? (ListBoxComponentVirtualized as ComponentType<
@@ -223,7 +223,7 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
             if (typeof option === "string") {
               return (
                 <Chip
-                  key={option}
+                  // key={option}
                   variant="outlined"
                   {...ChipProps}
                   label={option}
@@ -233,7 +233,7 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
             }
             return (
               <Chip
-                key={`${option.label}-${index}`}
+                // key={`${option.label}-${index}`}
                 variant="outlined"
                 {...ChipProps}
                 label={option.label}
@@ -269,7 +269,7 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
             />
           );
         }}
-        renderOption={(option, { selected, inputValue }) => {
+        renderOption={(props, option, { selected, inputValue }) => {
           let label = myGetOptionLabel(option);
           const matches = match(label, inputValue);
           const parts = parse(label, matches);

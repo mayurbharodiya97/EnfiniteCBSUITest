@@ -13,8 +13,8 @@ import { TextFieldProps } from "@material-ui/core/TextField";
 import Autocomplete, {
   AutocompleteProps,
   // createFilterOptions,
-} from "@material-ui/lab/Autocomplete";
-import { CreateFilterOptionsConfig } from "@material-ui/lab/useAutocomplete";
+} from "@mui/material/Autocomplete";
+import { CreateFilterOptionsConfig } from "@mui/material/useAutocomplete";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
 import { Merge, OptionsProps, OptionsFn } from "../types";
@@ -49,7 +49,7 @@ interface AutoCompleteExtendedProps {
   CircularProgressProps?: CircularProgressProps;
   TextFieldProps?: TextFieldProps;
   ChipProps?: ChipProps;
-  CreateFilterOptionsConfig?: CreateFilterOptionsConfig<OptionsProps>;
+  CreateFilterOptionsConfig?: CreateFilterOptionsConfig<OptionsProps | any>;
   placeholder?: string;
   required?: boolean;
   enableVirtualized?: boolean;
@@ -57,11 +57,11 @@ interface AutoCompleteExtendedProps {
   optionsProps?: any;
 }
 
-const getOptionLabel = (option: OptionsProps) => option?.label ?? "";
+const getOptionLabel = (option: OptionsProps | any) => option?.label ?? "";
 const getOptionValue = (option: OptionsProps) => option?.value ?? "";
 
 type MyAutocompleteProps = Merge<
-  AutocompleteProps<OptionsProps, true, true, true>,
+  AutocompleteProps<any | OptionsProps, true, true, true>,
   AutoCompleteExtendedProps
 >;
 
@@ -194,7 +194,7 @@ export const AutocompleteRenderOnly: FC<MyAutocompleteProps> = ({
             if (typeof option === "string") {
               return (
                 <Chip
-                  key={option}
+                  //key={""+option}
                   variant="outlined"
                   {...ChipProps}
                   label={option}
@@ -204,7 +204,7 @@ export const AutocompleteRenderOnly: FC<MyAutocompleteProps> = ({
             }
             return (
               <Chip
-                key={`${option.label}-${index}`}
+                //key={`${option.label}-${index}`}
                 variant="outlined"
                 {...ChipProps}
                 label={option.label}
@@ -248,7 +248,8 @@ export const AutocompleteRenderOnly: FC<MyAutocompleteProps> = ({
             }}
           />
         )}
-        renderOption={(option, { selected, inputValue }) => {
+        // renderOption={(option, { selected, inputValue }) => {
+        renderOption={(props, option, { selected, inputValue }) => {
           let label = getOptionLabel(option);
           const matches = match(label, inputValue);
           const parts = parse(label, matches);

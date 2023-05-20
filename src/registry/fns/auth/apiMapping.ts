@@ -27,6 +27,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETLOGINIMGDATA",
     packageName: "",
   },
+  RECENT_FAVORITE: {
+    url: "enfinityCommonServiceAPI/GETMENULIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

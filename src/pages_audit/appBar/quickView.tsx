@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 // import { useStyles } from "./style";
 import quickview from "assets/images/Quick_view.png";
 import IconButton from "@mui/material/IconButton";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
 import { AuthContext } from "../auth";
 import {
   Button,
@@ -32,9 +32,14 @@ export const Quick_View = () => {
         style={{
           backgroundColor: "rgba(235, 237, 238, 0.45)",
           borderRadius: "10px",
+          height: "30px",
+          width: "30px",
         }}
       >
-        <RemoveRedEyeIcon />
+        <SensorsOutlinedIcon
+          fontSize="small"
+          sx={{ color: "var(--theme-color3)" }}
+        />
       </IconButton>
       <Popover
         anchorEl={anchorEl}
@@ -82,75 +87,58 @@ export const Quick_View = () => {
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
                 <Grid item xs={6}>
-                  <List sx={{ listStyleType: "disc" }}>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                  <List
+                    sx={{
+                      listStyleType: "disc",
+                      "& .MuiListItem-root": {
+                        pt: 1,
+                        display: "list-item",
+                      },
+                    }}
+                  >
+                    <ListItem disablePadding>
                       <ListItemButton>Switch Branch</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton>Profile</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton>Chat</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton>Customer</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton>User</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton>Setting</ListItemButton>
                     </ListItem>
                   </List>
                 </Grid>
                 <Grid item xs={6}>
-                  <List sx={{ listStyleType: "disc" }}>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                  <List
+                    sx={{
+                      listStyleType: "disc",
+                      "& .MuiListItem-root": {
+                        pt: 1,
+                        display: "list-item",
+                      },
+                    }}
+                  >
+                    <ListItem disablePadding>
                       <ListItemButton>Table</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton>Chart</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton>Plugins</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton>Contact Us</ListItemButton>
                     </ListItem>
-                    <ListItem
-                      disablePadding
-                      sx={{ pt: 1, display: "list-item" }}
-                    >
+                    <ListItem disablePadding>
                       <ListItemButton
                         onClick={() => {
                           authController?.logout();
