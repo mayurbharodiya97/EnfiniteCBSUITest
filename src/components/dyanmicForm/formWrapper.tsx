@@ -16,8 +16,9 @@ import { SimpleFormWrapper } from "./simpleForm";
 import { TabsFormWrapper } from "./tabsForm";
 import { extendedMetaData } from "./extendedTypes";
 import { useStyles } from "./style";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { LocalizationProvider } from "@mui/lab";
+import AdapterDayjs from "@mui/lab/AdapterDayjs";
+import DateFnsUtils from "@date-io/date-fns";
 
 export const FormWrapper = forwardRef<FormWrapperProps, any>(
   (
@@ -47,6 +48,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
   ) => {
     //this line is very important to preserve our metaData across render - deep clone hack
     let metaData = cloneDeep(freshMetaData) as MetaDataType;
+    console.log(metaData);
     //let metaData = JSON.parse(JSON.stringify(freshMetaData)) as MetaDataType;
     metaData = extendFieldTypes(metaData, extendedMetaData);
     metaData = attachMethodsToMetaData(metaData);
@@ -61,8 +63,10 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     );
     const yupValidationSchema = constructYupSchema(metaData.fields);
     const formName = metaData.form.name ?? "NO_NAME";
+    console.log("formRenderType " + formName);
     return (
-      <LocalizationProvider utils={AdapterDateFns}>
+      <>
+        {/* <LocalizationProvider utils={DateFnsUtils}> */}
         <FormContext.Provider
           value={{
             formName: formName,
@@ -100,7 +104,8 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
             containerstyle={containerstyle}
           />
         </FormContext.Provider>
-      </LocalizationProvider>
+        {/* </LocalizationProvider> */}
+      </>
     );
   }
 );
@@ -127,6 +132,7 @@ const ChildFormWrapper = forwardRef<any, any>(
     },
     ref
   ) => {
+    console.log(formRenderType);
     const {
       handleSubmit,
       handleSubmitPartial,
@@ -147,6 +153,9 @@ const ChildFormWrapper = forwardRef<any, any>(
       formDisplayLabel: formDisplayLabel,
       getFieldData: getFieldData,
     }));
+
+    console.log(formRenderType);
+
     return formRenderType === "stepper" ? (
       <StepperWrapper
         key={`${formName}-grouped-stepper`}

@@ -8,7 +8,8 @@ export const theme = createTheme({
     },
     //@ts-ignore
     secondary: {
-      main: "#4263c7",
+      main: "#07288e",
+      // }
     },
   },
   // breakpoints: {
@@ -25,7 +26,7 @@ export const theme2 = createTheme({
   palette: {
     //@ts-ignore
     primary: {
-      main: "#4263c7",
+      main: "#07288e",
     },
     //@ts-ignore
     secondary: {

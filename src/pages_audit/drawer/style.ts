@@ -1,6 +1,6 @@
 import { makeStyles } from "@mui/styles";
 
-const drawerWidth = 250;
+const drawerWidth = 227;
 
 export const useStyles = makeStyles((theme: any) => ({
   drawerPaper: {
@@ -32,18 +32,18 @@ export const useStyles = makeStyles((theme: any) => ({
     ...theme.mixins.toolbar,
     background: "var(--theme-color2)",
     justifyContent: "center",
-    height: "88px",
-    borderBottom: "1px solid #949597",
+    height: "80px",
+    borderBottom: "1px dashed #949597",
   },
   hrCSS: {
     zIndex: 9999,
   },
   logo: {
-    height: "38px",
+    height: "36px",
   },
   logo2: {
-    height: "37px",
-    paddingLeft: "30px",
+    height: "33px",
+    paddingLeft: "19px",
     display: "block",
     margin: "auto",
   },
@@ -51,10 +51,10 @@ export const useStyles = makeStyles((theme: any) => ({
     margin: "0",
     textAlign: "center",
     color: "var(--theme-color3)",
-    fontSize: "11px",
+    fontSize: "9px",
   },
   version02: {
-    margin: "5px 0 0 36px",
+    margin: "3px 0 0 26px",
     fontSize: "9px",
     textAlign: "end",
     color: "var(--theme-color3)",
@@ -77,6 +77,7 @@ export const useStyles = makeStyles((theme: any) => ({
   chevronIcon: {
     width: "38px",
     height: "38px",
+    color: "var(--theme-color1)",
   },
   DrawerClose_icon: {
     color: "var(--theme-color3)",
@@ -85,25 +86,25 @@ export const useStyles = makeStyles((theme: any) => ({
     "&:hover": {
       background: "var(--theme-color4)",
     },
-    width: "30px",
-    height: "30px",
-    left: "31px",
-    top: "43px",
+    width: "25px",
+    height: "25px",
+    left: "26px",
+    top: "39px",
     boxShadow:
       "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
   },
   menuButton: {
     // marginRight: 0,
     padding: 0,
-    width: "30px",
-    height: "30px",
+    width: "25px",
+    height: "25px",
     background: "#efefef",
     color: "var(--theme-color1)",
     "&:hover": {
       background: "var(--theme-color4)",
     },
-    left: "-11px",
-    top: "43px",
+    left: "-6px",
+    top: "39px",
     boxShadow:
       "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
   },

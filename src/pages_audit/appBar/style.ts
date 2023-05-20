@@ -1,7 +1,7 @@
 import { alpha } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-const drawerWidth = 250;
+const drawerWidth = 227;
 
 export const useStyles = makeStyles((theme: any) => ({
   appBar: {
@@ -12,10 +12,10 @@ export const useStyles = makeStyles((theme: any) => ({
     }),
     // backgroundColor: "var(--theme-color2)",
     color: "#0063A3",
-    height: "88px",
+    height: "80px",
     background: "rgba(250, 251, 255, 0.9)",
-    borderBottom: "1px solid #949597",
-    // boxShadow: "0px 1px 0px -0.5px #DEE0E2",
+    // borderBottom: "1px solid #949597",
+    boxShadow: "0px 1px 0px -0.5px #DEE0E2",
     paddingLeft: "70px",
   },
   appBarShift: {
@@ -34,8 +34,9 @@ export const useStyles = makeStyles((theme: any) => ({
     top: "calc(50% - 73px/2)",
   },
   heading_user_img: {
-    width: "45px",
-    height: "45px",
+    width: "40px",
+    height: "40px",
+    cursor: "pointer",
   },
   heading_user_img_border: {
     border: "2px dashed #4263C7",
@@ -43,9 +44,9 @@ export const useStyles = makeStyles((theme: any) => ({
     padding: "4px",
   },
   toolbar: {
-    minHeight: "88px",
+    minHeight: "80px",
     paddingLeft: "0px",
-    height: "88px",
+    height: "80px",
   },
   title: {
     flexGrow: 1,
@@ -136,7 +137,7 @@ export const useStyles = makeStyles((theme: any) => ({
   },
   lang_svg: {
     marginRight: "10px",
-    width: "19px",
-    height: "19px",
+    width: "22px",
+    height: "22px",
   },
 }));
