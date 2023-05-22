@@ -25,7 +25,7 @@ const TodaysTransactionTableGrid = () => {
   );
 
   const setCurrentAction = useCallback((data) => {
-    console.log(">>data", data);
+    // console.log(">>data", data);
   }, []);
   return (
     <>

@@ -51,7 +51,7 @@ export const Language_App = () => {
             English
           </MenuItem>
 
-          <MenuItem
+          {/* <MenuItem
             value="romanian"
             style={{
               display: "flex",
@@ -83,7 +83,7 @@ export const Language_App = () => {
               <img src={chinese} alt="" className={classes.lang_svg} />
             </div>
             Chinese
-          </MenuItem>
+          </MenuItem> */}
         </Select>
       </FormControl>
     </>

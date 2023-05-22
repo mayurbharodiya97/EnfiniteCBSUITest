@@ -13,14 +13,21 @@ import {
 } from "@mui/material";
 import Left from "assets/images/pre-next.png";
 import "./imagecarousel.css";
+import * as API from "./api";
+import { useQuery } from "react-query";
 const Rescarousel = () => {
-  // const [value, setValue] = React.useState(0);
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["GETTRANSACTIONSUMMARY"],
+    () => API.getTransSumCardData()
+  );
+  // console.log("GETTRANSACTIONSUMMARY", data?.[0]?.TYPE_CD);
 
+  // const [value, setValue] = React.useState(0);
   // const handleChange = (event, newValue) => {
   //   setValue(newValue);
   // };
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+  function createData(name, calories, fat) {
+    return { name, calories, fat };
   }
   const rows = [
     createData("Frozen yoghurt", 159, 6.0),
@@ -28,6 +35,7 @@ const Rescarousel = () => {
     createData("Eclair", 262, 16.0),
   ];
   const items = [1, 2, 3, 4, 5, 6, 7];
+
   const arrowStyles = {
     position: "absolute",
     zIndex: 2,

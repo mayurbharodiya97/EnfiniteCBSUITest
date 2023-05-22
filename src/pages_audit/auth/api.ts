@@ -78,64 +78,64 @@ export const verifyOTP = async (
   authType
 ) => {
   //console.log(transactionId, username, otpnumber);
-  const {
-    data,
-    status,
-    message,
-    messageDetails,
-    access_token: accesstoken,
-  } = await AuthSDK.internalFetcherPreLogin(
-    "VERIFYOTP",
-    {
-      USER_ID: username,
-      REQUEST_CD: transactionId,
-      OTP: otpnumber,
-      AUTH_TYPE: authType,
-      APP_TRAN_CD: 51,
-      BIO_FLAG: "N",
-    },
-    {
-      Authorization: utilFunction.getAuthorizeTokenText(
-        access_token,
-        token_type
-      ),
-    }
-  );
-  // let {
+  // const {
   //   data,
   //   status,
   //   message,
   //   messageDetails,
   //   access_token: accesstoken,
-  // } = {
-  //   data: [
-  //     {
-  //       USER_SUB_TYPE: "DBR",
-  //       COMPANYNAME: "Demo Bank",
-  //       COMPANYID: "001 ",
-  //       USER_ROLE: "ADMIN",
-  //       USER: {
-  //         BRANCH: "Demo Bank Back Office Configuration",
-  //         LASTLOGINDATE: "02/05/2023 11:21:58",
-  //         BRANCHCODE: "001 ",
-  //         ID: "admin",
-  //         NAME: "ADMIN",
-  //       },
-  //       USER_LEVEL: "4",
-  //       ACCESS: {},
-  //     },
-  //   ],
-  //   status: "0",
-  //   message: "",
-  //   messageDetails: "",
-  //   access_token: {
-  //     access_token: "9b0a0c1f-599c-42a5-8171-36ca8323d2e4",
-  //     refresh_token: "93cfaba6-055b-4e75-aed6-9556b02809d0",
-  //     scope: "read write trust",
-  //     token_type: "bearer",
-  //     expires_in: "299",
+  // } = await AuthSDK.internalFetcherPreLogin(
+  //   "VERIFYOTP",
+  //   {
+  //     USER_ID: username,
+  //     REQUEST_CD: transactionId,
+  //     OTP: otpnumber,
+  //     AUTH_TYPE: authType,
+  //     APP_TRAN_CD: 51,
+  //     BIO_FLAG: "N",
   //   },
-  // };
+  //   {
+  //     Authorization: utilFunction.getAuthorizeTokenText(
+  //       access_token,
+  //       token_type
+  //     ),
+  //   }
+  // );
+  let {
+    data,
+    status,
+    message,
+    messageDetails,
+    access_token: accesstoken,
+  } = {
+    data: [
+      {
+        USER_SUB_TYPE: "DBR",
+        COMPANYNAME: "Demo Bank",
+        COMPANYID: "001 ",
+        USER_ROLE: "ADMIN",
+        USER: {
+          BRANCH: "Demo Bank Back Office Configuration",
+          LASTLOGINDATE: "02/05/2023 11:21:58",
+          BRANCHCODE: "001 ",
+          ID: "admin",
+          NAME: "ADMIN",
+        },
+        USER_LEVEL: "4",
+        ACCESS: {},
+      },
+    ],
+    status: "0",
+    message: "",
+    messageDetails: "",
+    access_token: {
+      access_token: "9b0a0c1f-599c-42a5-8171-36ca8323d2e4",
+      refresh_token: "93cfaba6-055b-4e75-aed6-9556b02809d0",
+      scope: "read write trust",
+      token_type: "bearer",
+      expires_in: "299",
+    },
+  };
   if (status === "0") {
     let transformData = transformAuthData(data[0], {
       generateTime: utilFunction.getCurrentDateinLong(),

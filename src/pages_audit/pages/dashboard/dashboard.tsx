@@ -32,7 +32,7 @@ const Dashboard = () => {
     // console.log("test");
   };
   const handleDialogClose = () => {
-    console.log("test");
+    // console.log("test");
     setIsOpenSave(false);
   };
 

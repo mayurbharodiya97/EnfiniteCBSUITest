@@ -70,6 +70,8 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["getUserDetails"], () =>
     API.getUserDetails({ userID })
   );
+
+  // console.log(queryData);
   const userActivityData = useQuery<any, any, any>(
     ["getUserLoginDetails"],
     () => API.getUserLoginDetails({ userID })
@@ -152,7 +154,7 @@ export const Profile = () => {
                   borderRadius: "10px",
                 }}
               >
-                <Toolbar style={{ minHeight: "53px" }}>
+                <Toolbar style={{ minHeight: "48px" }}>
                   <Typography
                     variant="h5"
                     noWrap
@@ -221,6 +223,8 @@ export const Profile = () => {
                 background: "white",
                 borderRadius: "10px",
                 p: "15px",
+                boxShadow:
+                  "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
               }}
             >
               <Grid>
@@ -232,6 +236,7 @@ export const Profile = () => {
                     backgroundSize: "cover",
                     borderRadius: "10px",
                     margin: "10px",
+                    boxShadow: "rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;",
                   }}
                 ></Box>
                 <Box height={"105px"}>
@@ -404,7 +409,16 @@ export const Profile = () => {
             </Container>
           </Grid>
           <Container>
-            <Grid sx={{ m: 3 }}>
+            <Grid
+              sx={{
+                m: 3,
+                p: 1,
+                backgroundColor: "var(--theme-color2)",
+                borderRadius: "10px",
+                boxShadow:
+                  "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
+              }}
+            >
               {mode === "userDetail" ? (
                 <Grid
                   key={"Griditem4"}

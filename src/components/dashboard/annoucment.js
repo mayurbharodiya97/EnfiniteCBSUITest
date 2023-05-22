@@ -15,7 +15,7 @@ export const Announcement = ({ screenFlag = "" }) => {
 
   return (
     <>
-      <Grid containerSize={100}>
+      <Grid>
         <Box
           sx={{
             height: "71px",
