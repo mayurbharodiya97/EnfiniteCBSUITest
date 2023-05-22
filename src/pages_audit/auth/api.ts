@@ -372,25 +372,25 @@ export const capture = async () => {
   const content = await rawResponse.json();
   return content;
 };
-export const verifyUserFinger = async (username, token) => {
-  const { data, status } = await AuthSDK.internalFetcher(
-    `./cbs/employee/verifyFinger`,
-    {
-      body: JSON.stringify({
-        requestData: {
-          userID: username,
-        },
-        channel: "W",
-      }),
-    },
-    token
-  );
-  if (status === "success") {
-    return { status, data: data?.responseData };
-  } else {
-    return { status, data: data?.errorData };
-  }
-};
+// export const verifyUserFinger = async (username, token) => {
+//   const { data, status } = await AuthSDK.internalFetcher(
+//     `./cbs/employee/verifyFinger`,
+//     {
+//       body: JSON.stringify({
+//         requestData: {
+//           userID: username,
+//         },
+//         channel: "W",
+//       }),
+//     },
+//     token
+//   );
+//   if (status === "success") {
+//     return { status, data: data?.responseData };
+//   } else {
+//     return { status, data: data?.errorData };
+//   }
+// };
 
 export const biometricStatusUpdate = async (username, token, verifyStatus) => {
   const { data, status } = await AuthSDK.internalFetcher(

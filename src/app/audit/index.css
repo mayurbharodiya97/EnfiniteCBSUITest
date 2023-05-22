@@ -143,8 +143,8 @@ h2 {
 }
 /* width */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 5px;
+  height: 5px;
 }
 
 /* Track */
@@ -155,7 +155,7 @@ h2 {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: #4263c7;
   border-radius: 5px;
 }
 

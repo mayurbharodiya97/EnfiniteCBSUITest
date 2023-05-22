@@ -44,6 +44,7 @@ const inititalState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case "inititateUserFingerVerification":
     case "inititateOTPVerification": {
       return {
         ...state,
@@ -145,10 +146,10 @@ const reducer = (state, action) => {
         authType: action?.payload?.authType,
       };
     }
-    case "inititateOTPVerification": {
+    case "inititatebiometricVerification": {
       return {
         ...state,
-        loading: false,
+        loading: true,
         otploading: true,
         OtpuserMessage: "",
         otpmodelClose: false,
@@ -181,6 +182,7 @@ const reducer = (state, action) => {
     case "OTPVerificationFailed": {
       return {
         ...state,
+        loading: false,
         otploading: false,
         OtpuserMessage: action?.payload?.error,
         otpmodelClose: Boolean(action?.payload?.otpmodelclose),
@@ -361,17 +363,19 @@ export const AuthLoginController = () => {
     try {
       const fingerResponse = await API.capture();
       if (fingerResponse?.ErrorCode === "0") {
-        const result = await API.verifyUserFinger(
-          loginState.username,
-          loginState.token
-        );
-        if (result.status === "success") {
+        console.log("state", loginState);
+        // const result = await API.verifyUserFinger(
+        //   loginState.username,
+        //   loginState.token
+        // );
+        if (loginState.status === "success") {
           const promise: any = await matchFinger(
-            result.data,
+            loginState.data,
             fingerResponse.IsoTemplate
           );
           if (promise.status) {
             dispath({ type: "biometricVerificationSuccessful" });
+
             login({
               username: loginState.username,
               token: loginState.token,
@@ -384,7 +388,7 @@ export const AuthLoginController = () => {
               lastLogin: loginState.lastLogin,
               access: loginState.accessBranch,
               bankName: loginState.bankName,
-              menurights: result.data,
+              menurights: loginState.data,
             });
             await API.biometricStatusUpdate(
               loginState.username,
@@ -410,7 +414,7 @@ export const AuthLoginController = () => {
           dispath({
             type: "biometricVerificationFailure",
             payload: {
-              error: result?.data?.errorMessage ?? "Unknown error occured",
+              error: loginState?.data?.errorMessage ?? "Unknown error occured",
             },
           });
         }
@@ -484,7 +488,6 @@ export const AuthLoginController = () => {
                   classes={classes}
                   loginState={loginState}
                   verifyFinger={verifyFinger}
-                  previousStep={changeUserName}
                 />
               )}
             </>

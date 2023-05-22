@@ -6,12 +6,7 @@ import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlin
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 
-export const Announcement = ({
-  title = "",
-  body = "",
-  screenFlag = "",
-  count = "",
-}) => {
+export const Announcement = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
 
   const handleClick = () => {
@@ -23,18 +18,18 @@ export const Announcement = ({
       <Grid containerSize={100}>
         <Box
           sx={{
-            height: "70px",
+            height: "71px",
             backgroundColor:
-              title === "Announcement"
+              screenFlag === "Announcement"
                 ? "var(--theme-color4)"
-                : title === "Notes"
+                : screenFlag === "Notes"
                 ? "#E2ECFD"
-                : title === "Tips"
+                : screenFlag === "Tips"
                 ? "#EDE7FD"
-                : title === "Alert"
+                : screenFlag === "Alert"
                 ? "#FFE5EB"
                 : null,
-            borderRadius: "20px",
+            borderRadius: "10px",
             padding: "12px",
             display: "flex",
             justifyContent: "space-between",
@@ -56,18 +51,27 @@ export const Announcement = ({
                 marginBottom: "4px",
               }}
             >
-              {`${title}`}
+              {`${screenFlag}`}
             </Typography>
             <Typography
               variant="h3"
               style={{
                 fontSize: "15px",
-                fontWeight: "400",
+                fontWeight: "500",
                 color: "#949597",
                 lineHeight: "27px",
               }}
             >
-              {`${body}`}
+              {/* {`${body}`} */}
+              {screenFlag === "Announcement"
+                ? "Announcing New Features."
+                : screenFlag === "Tips"
+                ? "Be Preapared For Fruad."
+                : screenFlag === "Notes"
+                ? "Customer Queries Solve."
+                : screenFlag === "Alert"
+                ? "Low Balance Alert."
+                : null}
               {/* {`${result?.data?.[0]?.BOX_BODY ?? body}`} */}
             </Typography>
           </Grid>
@@ -90,7 +94,15 @@ export const Announcement = ({
                 margin: "4px 14px 0 0",
               }}
             >
-              {`${count}`}
+              {screenFlag === "Announcement"
+                ? "+7"
+                : screenFlag === "Tips"
+                ? "+7"
+                : screenFlag === "Notes"
+                ? "+7"
+                : screenFlag === "Alert"
+                ? "+7"
+                : null}
             </Box>
             <IconButton
               color="inherit"
@@ -105,19 +117,19 @@ export const Announcement = ({
             >
               {/* {`${icon}`} */}
 
-              {screenFlag === "ANNOUNCEMENT" ? (
+              {screenFlag === "Announcement" ? (
                 <VolumeUpRoundedIcon
                   style={{ color: " #4263C7", fontSize: "30px" }}
                 />
-              ) : screenFlag === "TIPS" ? (
+              ) : screenFlag === "Tips" ? (
                 <TipsAndUpdatesOutlinedIcon
                   style={{ color: "#885CF5", fontSize: "30px" }}
                 />
-              ) : screenFlag === "NOTES" ? (
+              ) : screenFlag === "Notes" ? (
                 <EventNoteOutlinedIcon
                   style={{ color: " #5290F5", fontSize: "30px" }}
                 />
-              ) : screenFlag === "ALERT" ? (
+              ) : screenFlag === "Alert" ? (
                 <WarningAmberRoundedIcon
                   style={{ color: " #FF4F79", fontSize: "30px" }}
                 />
@@ -139,7 +151,7 @@ export const Announcement = ({
               bgcolor: "background.paper",
               height: "25vh",
               overflowY: "auto",
-              borderRadius: "20px",
+              borderRadius: "10px",
               boxShadow: "0px 11px 20px rgba(226, 236, 249, 0.5)",
             }}
           >
@@ -150,14 +162,57 @@ export const Announcement = ({
                   paddingBottom: "0px",
                 }}
               >
-                {Array.from(Array(8)).map((_, index) => (
+                {/* {Array.from(Array(7)).map((_, index) => (
                   <ListItemData
                     key={"item?.value"}
                     name={"• Electronic payment service"}
                     disabled={false}
                     onClick={(event) => event}
                   />
-                ))}
+                ))} */}
+                <ListItemData
+                  key={"item?.value"}
+                  name={"• Electronic Payment Service"}
+                  disabled={false}
+                  onClick={(event) => event}
+                />
+                <ListItemData
+                  key={"item?.value"}
+                  name={"• Real Time Gross Settlement"}
+                  disabled={false}
+                  onClick={(event) => event}
+                />
+                <ListItemData
+                  key={"item?.value"}
+                  name={"• Electronic Fund Transfer"}
+                  disabled={false}
+                  onClick={(event) => event}
+                />
+                <ListItemData
+                  key={"item?.value"}
+                  name={"• Loan payments"}
+                  disabled={false}
+                  onClick={(event) => event}
+                />
+                <ListItemData
+                  key={"item?.value"}
+                  name={"• Electronic Clearing service"}
+                  disabled={false}
+                  onClick={(event) => event}
+                />
+                <ListItemData
+                  key={"item?.value"}
+                  name={"• Automatic Teller Machine"}
+                  disabled={false}
+                  onClick={(event) => event}
+                />
+
+                <ListItemData
+                  key={"item?.value"}
+                  name={"• Accepting deposits "}
+                  disabled={false}
+                  onClick={(event) => event}
+                />
               </List>
             </nav>
           </Box>
@@ -173,10 +228,12 @@ export const ListItemData = ({ name, disabled, selected, onClick }) => {
   return (
     <div>
       <ListItem
+        button
         style={{
           padding: "8px 0 0 35px",
           color: "black",
           fontSize: "15px",
+          backgroundColor: selected ? "#0000ff87" : "transparent",
         }}
         onClick={onClick}
       >

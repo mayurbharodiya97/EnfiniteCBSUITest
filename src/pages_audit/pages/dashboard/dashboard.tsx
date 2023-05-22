@@ -46,7 +46,7 @@ const Dashboard = () => {
           flexGrow: 1,
         }}
       >
-        <Container>
+        <div style={{ padding: "10px" }}>
           <Grid container spacing={2}>
             {isLoading || isFetching ? (
               <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -136,7 +136,47 @@ const Dashboard = () => {
                             spacing={{ xs: 2, md: 2 }}
                             columns={{ xs: 4, sm: 4, md: 12 }}
                           >
-                            {Array.from(Array(4)).map((_, index) => (
+                            <Grid item xs={6} sm={6} md={6}>
+                              <DashboardBox
+                                key={"board"}
+                                title={"69"}
+                                body={"Follow Up"}
+                                isfooterVisible={undefined}
+                                icon={""}
+                                apiName={"item?.APINAME"}
+                              />
+                            </Grid>
+                            <Grid item xs={6} sm={6} md={6}>
+                              <DashboardBox
+                                key={"board"}
+                                title={"22"}
+                                body={"Pending Request"}
+                                isfooterVisible={undefined}
+                                icon={""}
+                                apiName={"item?.APINAME"}
+                              />
+                            </Grid>
+                            <Grid item xs={6} sm={6} md={6}>
+                              <DashboardBox
+                                key={"board"}
+                                title={"90"}
+                                body={"Pending Transactions"}
+                                isfooterVisible={undefined}
+                                icon={""}
+                                apiName={"item?.APINAME"}
+                              />
+                            </Grid>
+                            <Grid item xs={6} sm={6} md={6}>
+                              <DashboardBox
+                                key={"board"}
+                                title={"44"}
+                                body={"Reject Request"}
+                                isfooterVisible={undefined}
+                                icon={""}
+                                apiName={"item?.APINAME"}
+                              />
+                            </Grid>
+                            {/* {Array.from(Array(4)).map((_, index) => (
                               <Grid item xs={6} sm={6} md={6} key={index}>
                                 <DashboardBox
                                   key={"board"}
@@ -147,7 +187,7 @@ const Dashboard = () => {
                                   apiName={"item?.APINAME"}
                                 />
                               </Grid>
-                            ))}
+                            ))} */}
                           </Grid>
                         </Grid>
                         <Grid item xl={12} xs={12} sm={12} md={12}>
@@ -167,14 +207,10 @@ const Dashboard = () => {
                           style={{ padding: "10px", height: "80vh" }}
                         >
                           <Grid item lg={12} md={12} xl={12} xs={12}>
-                            {Array.from(Array(4)).map((_, index) => (
-                              <Announcement
-                                title={"Announcement"}
-                                body={"Lorem ipsum dolor sit."}
-                                screenFlag={"NOTES"}
-                                count={"+7"}
-                              />
-                            ))}
+                            <Announcement screenFlag={"Announcement"} />
+                            <Announcement screenFlag={"Tips"} />
+                            <Announcement screenFlag={"Notes"} />
+                            <Announcement screenFlag={"Alert"} />
                           </Grid>
                         </CardContent>
                       </Card>
@@ -195,8 +231,14 @@ const Dashboard = () => {
           >
             <Imagecarousel />
           </Box>
-          <TodaysTransactionTableGridWrapper />
-        </Container>
+          <Box
+            sx={{
+              padding: "10px",
+            }}
+          >
+            <TodaysTransactionTableGridWrapper />
+          </Box>
+        </div>
       </Box>
       {isOpenSave ? (
         <AllScreensGridWrapper

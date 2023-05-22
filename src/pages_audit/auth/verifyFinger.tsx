@@ -4,22 +4,15 @@ import { GradientButton } from "components/styledComponent/button";
 import Typography from "@material-ui/core/Typography";
 import FingerprintSharpIcon from "@mui/icons-material/FingerprintSharp";
 import * as API from "./api";
-import { TextField } from "@material-ui/core";
 import { Container } from "@mui/material";
 import { Grid } from "@mui/material";
 import "./verify.css";
-export const VerifyFinger = ({
-  classes,
-  loginState,
-  verifyFinger,
-  previousStep,
-}) => {
+export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
   return (
     <Fragment>
       <Container maxWidth="xs">
         <Grid alignItems="center">
           <div
-            // className={classes.formWrap}
             style={{
               marginRight: "25px",
               width: "102%",
@@ -71,21 +64,15 @@ export const VerifyFinger = ({
               }
             >
               <div className="spinner-wrap">
-                {/* <img src="assets/img/scnner.png" alt="" className="image" /> */}
                 <FingerprintSharpIcon
                   sx={{
                     fontSize: "80px",
-                    //color: "#949597",
                     opacity: "0.4",
-                    // width: "5em",
-                    // border: "1px solid #949597",
-                    // boxShadow: "0 0 0 1px #1AA748 inset, 0 0 0 2px #1AA748 inset",
                     borderRadius: "50%",
                     display: "flex",
                     margin: "0 auto",
                     "&:after": {
                       borderBottom: "2px solid #26A456",
-                      //color: "#1AA748",
                     },
                   }}
                   className={
@@ -142,26 +129,6 @@ export const VerifyFinger = ({
                     : "Loading..."}
                 </h3>
               </div>
-              {/* <TextField
-                key="biometric"
-                name="biometric"
-                // hidden={true}
-                style={{
-                  // marginTop: "-20px",
-                  width: "40%",
-                  display: "flex",
-                  margin: "0 auto",
-                  top: "20px",
-                  // background: "#1AA748",
-                  borderRadius: "5%",
-                  // height: "3px",
-                }}
-                error={loginState.isBiometricError}
-                helperText={
-                  loginState.isBiometricError ? loginState.userMessage : ""
-                }
-                disabled={true}
-              /> */}
             </div>
           </div>
           <div
@@ -173,32 +140,28 @@ export const VerifyFinger = ({
               // padding: "10px",
             }}
           >
-            {/* <GradientButton onClick={previousStep} fullWidth>
-          <div
-            style={{
-              transform: "scale(1.1)",
-              margin: "0px 8px -6px -9px",
-            }}
-          ></div>
-          Change Username
-        </GradientButton> */}
-            <Container maxWidth="sm">
-              <GradientButton
-                disabled={loginState.loading}
-                endIcon={
-                  loginState.loading ? (
-                    <CircularProgress size={20} style={{ color: "#fff" }} />
-                  ) : null
-                }
-                onKeyDown={(e) => e.keyCode === 13 && verifyFinger}
-                fullWidth
-                onClick={verifyFinger}
-                size="large"
-                className={classes.otpButtons}
-              >
-                Verify
-              </GradientButton>
-            </Container>
+            <GradientButton
+              style={{
+                borderRadius: loginState.loading ? "50%" : "10px",
+                height: loginState.loading ? "40px" : "100%",
+                width: loginState.loading ? "0px" : "90%",
+                minWidth: loginState.loading ? "40px" : "80px",
+              }}
+              disabled={loginState.loading}
+              onKeyDown={(e) => e.keyCode === 13 && verifyFinger}
+              onClick={verifyFinger}
+              className={classes.otpButtons}
+            >
+              {loginState.loading ? (
+                <CircularProgress
+                  size={25}
+                  thickness={4.6}
+                  style={{ color: "#fff" }}
+                />
+              ) : (
+                "Verify"
+              )}
+            </GradientButton>
           </div>
         </Grid>
       </Container>

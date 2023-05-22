@@ -70,8 +70,7 @@ export const useStyles = makeStyles((theme: any) => ({
     marginTop: "10px",
   },
   otpButtons: {
-    borderRadius: "15px",
-    padding: "10px",
+    // padding: "10px",
   },
 
   divflex: {

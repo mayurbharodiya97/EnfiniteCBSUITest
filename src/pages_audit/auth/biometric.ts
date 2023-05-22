@@ -1,27 +1,27 @@
-// import CryptoJS from "crypto-js";
+import CryptoJS from "crypto-js";
 
 const decryptString = (encryptString: string) => {
   var secretKey = "SUPERACUTE@MKS";
-  // var keyBytes = CryptoJS.PBKDF2(secretKey, "Ivan Medvedev", {
-  //   keySize: 48 / 4,
-  //   iterations: 1000,
-  // });
-  //console.log(keyBytes.toString());
+  var keyBytes = CryptoJS.PBKDF2(secretKey, "Ivan Medvedev", {
+    keySize: 48 / 4,
+    iterations: 1000,
+  });
+  console.log(keyBytes.toString());
 
   // take first 32 bytes as key (like in C# code)
-  // var key = new CryptoJS.lib.WordArray.init(keyBytes.words, 32);
+  var key = new CryptoJS.lib.WordArray.init(keyBytes.words, 32);
   // skip first 32 bytes and take next 16 bytes as IV
-  // var iv = new CryptoJS.lib.WordArray.init(keyBytes.words.splice(32 / 4), 16);
+  var iv = new CryptoJS.lib.WordArray.init(keyBytes.words.splice(32 / 4), 16);
 
-  //console.log(key.toString());
-  //console.log(iv.toString());
+  console.log(key.toString());
+  console.log(iv.toString());
 
-  // var dec = CryptoJS.AES.decrypt(
-  //   { ciphertext: CryptoJS.enc.Base64.parse(encryptString) },
-  //   key,
-  //   { iv: iv }
-  // );
-  // return dec.toString(CryptoJS.enc.Utf8).split(String.fromCharCode(0)).join("");
+  var dec = CryptoJS.AES.decrypt(
+    { ciphertext: CryptoJS.enc.Base64.parse(encryptString) },
+    key,
+    { iv: iv }
+  );
+  return dec.toString(CryptoJS.enc.Utf8).split(String.fromCharCode(0)).join("");
 };
 
 export const matchFinger = async (rows: any, captureFinger: string) => {
