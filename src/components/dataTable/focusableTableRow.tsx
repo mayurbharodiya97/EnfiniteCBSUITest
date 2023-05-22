@@ -38,7 +38,7 @@ export const MyTableRow = withStyles((theme) => {
     },
     selected: {
       background: theme.palette.action.selected,
-      border: "1.42444px solid var(--theme-color3)",
+      border: "1.42444px solid var(--theme-color3) !important",
       boxShadow: "0px 5.69775px 11.3955px rgba(66, 99, 199, 0.16)",
     },
   };

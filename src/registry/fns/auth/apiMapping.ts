@@ -31,6 +31,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETMENULIST",
     packageName: "",
   },
+  BRANCHLIST: {
+    url: "enfinityCommonServiceAPI/BRANCHLIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

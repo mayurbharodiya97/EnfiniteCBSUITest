@@ -141,34 +141,40 @@ export const verifyOTP = async (
       generateTime: utilFunction.getCurrentDateinLong(),
       ...accesstoken,
     });
-    let {
-      status: statusa,
-      data: dataa,
-      message: messagea,
-      messageDetails: messageDetailsa,
-    } = await GetMenuData({
-      userID: transformData?.user?.id,
-      COMP_CD: transformData?.companyID,
-      BRANCH_CD: transformData?.user?.branchCode,
-      GROUP_NAME: transformData?.roleName,
-      fulldata: transformData,
-    });
-    if (statusa === "0") {
-      transformData.menulistdata = dataa;
-      return {
-        data: transformData,
-        status,
-        message,
-        messageDetails,
-      };
-    } else {
-      return {
-        status: statusa,
-        data: dataa,
-        message: messagea,
-        messageDetails: messageDetailsa,
-      };
-    }
+    return {
+      data: transformData,
+      status,
+      message,
+      messageDetails,
+    };
+    // let {
+    //   status: statusa,
+    //   data: dataa,
+    //   message: messagea,
+    //   messageDetails: messageDetailsa,
+    // } = await GetMenuData({
+    //   userID: transformData?.user?.id,
+    //   COMP_CD: transformData?.companyID,
+    //   BRANCH_CD: transformData?.user?.branchCode,
+    //   GROUP_NAME: transformData?.roleName,
+    //   fulldata: transformData,
+    // });
+    // if (statusa === "0") {
+    //   transformData.menulistdata = dataa;
+    //  return {
+    //     data: transformData,
+    //     status,
+    //     message,
+    //     messageDetails,
+    //   };
+    // } else {
+    //   return {
+    //     status: statusa,
+    //     data: dataa,
+    //     message: messagea,
+    //     messageDetails: messageDetailsa,
+    //   };
+    // }
   } else {
     return { status, data, message, messageDetails };
   }
@@ -308,15 +314,16 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
     companyID: data?.COMPANYID,
     menulistdata: [],
     user: {
-      branch: data?.USER?.BRANCH,
-      branchCode: data?.USER?.BRANCHCODE,
-      lastLogin: data?.USER?.LASTLOGINDATE,
-      name: data?.USER?.NAME,
+      branch: data?.BRANCH,
+      branchCode: data?.BRANCHCODE,
+      lastLogin: data?.LASTLOGINDATE,
+      name: data?.NAME,
       //type: data?.user?.flag,
       // firstName: data?.user?.firstName,
       // lastName: data?.user?.lastName,
       // middleName: data?.user?.middleName,
-      id: data?.USER?.ID,
+      id: data?.ID,
+      employeeID: data?.EMP_ID,
     },
     access: {},
   };

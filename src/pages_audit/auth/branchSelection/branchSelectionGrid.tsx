@@ -1,5 +1,5 @@
 import GridWrapper from "components/dataTableStatic";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { BranchSelectionGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider } from "cache";
@@ -12,6 +12,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import React, { useRef } from "react";
 import { useSnackbar } from "notistack";
+import { AuthContext } from "pages_audit/auth";
 
 const actions: ActionTypes[] = [
   {
@@ -34,13 +35,14 @@ const actions: ActionTypes[] = [
 ];
 
 const BranchSelectionGrid = () => {
+  const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
-
+  console.log(">>authState", authState);
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["BranchSelectionGridData"],
-    () => API.BranchSelectionGridData()
+    () => API.BranchSelectionGridData({ userID: authState?.user?.id ?? "" })
   );
 
   const setCurrentAction = useCallback(
@@ -73,10 +75,10 @@ const BranchSelectionGrid = () => {
           margin: "0",
           padding: "0",
           height: "100vh",
-          overflowY: "hidden",
+          // overflowY: "hidden",
         }}
       >
-        <Grid item lg={1} md={1} xl={1} xs={1}>
+        <Grid item lg={1} md={1} xl={1} xs={1} sm={1}>
           <img
             className="sideImage"
             src={branchSelectionSideImage}
@@ -110,7 +112,7 @@ const BranchSelectionGrid = () => {
               style={{
                 margin: "0",
                 padding: "0",
-                height: "12vh",
+                // height: "12vh",
               }}
               lg={12}
               md={12}
@@ -122,8 +124,8 @@ const BranchSelectionGrid = () => {
                 lg={6}
                 md={6}
                 xl={6}
-                xs={6}
-                sm={8}
+                xs={12}
+                sm={6}
                 style={{
                   justifyContent: "center",
                 }}
@@ -132,7 +134,7 @@ const BranchSelectionGrid = () => {
                   className="name-heading"
                   style={{ fontSize: "24px", margin: "4px 0px" }}
                 >
-                  Welcome <span>Leo Williams,</span>
+                  Welcome <span>{`${authState?.user?.name ?? ""},`}</span>
                 </h1>
                 <h1 className="access-heading" style={{ fontSize: "22px" }}>
                   Access Branch List
@@ -143,8 +145,8 @@ const BranchSelectionGrid = () => {
                 lg={6}
                 md={6}
                 xl={6}
-                xs={6}
-                sm={4}
+                xs={12}
+                sm={6}
                 style={{
                   margin: "4px 0px 0 0",
                   padding: "0",
@@ -154,10 +156,12 @@ const BranchSelectionGrid = () => {
                 }}
               >
                 <p className="bank-name">
-                  Bank Name : Easyban sfffffffffffffffffffffffffffffffffk Ltd.
+                  {`Bank Name :${authState?.companyName ?? ""}`}
                 </p>
 
-                <p className="emp-id">Emp. Id : 001156</p>
+                <p className="emp-id">
+                  {`Emp. Id :${authState?.user?.employeeID ?? ""}`}
+                </p>
               </Grid>
             </Grid>
 
@@ -173,9 +177,10 @@ const BranchSelectionGrid = () => {
                 background: "white",
               }}
               onlySingleSelectionAllow={true}
+              isNewRowStyle={true}
             />
           </Grid>
-          <Box
+          {/* <Box
             style={{
               background: "var(--theme-color4)",
               height: "fit-content",
@@ -190,7 +195,7 @@ const BranchSelectionGrid = () => {
             }}
           >
             <ExpandMoreIcon style={{ color: "var(--theme-color3)" }} />
-          </Box>
+          </Box> */}
         </Grid>
       </Grid>
     </>

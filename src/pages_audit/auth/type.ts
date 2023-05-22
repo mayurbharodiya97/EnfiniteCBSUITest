@@ -14,6 +14,7 @@ export interface AuthStateType {
     name: string;
     //type: string;
     id: string;
+    employeeID: any;
   };
 }
 

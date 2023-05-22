@@ -26,7 +26,7 @@ const Dashboard = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getDashboardData"], () => API.getDashboardDatas());
+  >(["getDashboardData"], () => API.getDashboardData());
   const handleClick = () => {
     setIsOpenSave(true);
     // console.log("test");
@@ -151,7 +151,16 @@ const Dashboard = () => {
                           </Grid>
                         </Grid>
                         <Grid item xl={12} xs={12} sm={12} md={12}>
-                          <QuickAccessTableGridWrapper />
+                          <Box
+                            sx={{
+                              background: "var(--theme-color2)",
+                              border: "2px solid #EBEDEE",
+                              borderRadius: "20px",
+                              padding: "05px",
+                            }}
+                          >
+                            <QuickAccessTableGridWrapper />
+                          </Box>
                         </Grid>
                       </Grid>
                     </Grid>
@@ -195,7 +204,18 @@ const Dashboard = () => {
           >
             <Imagecarousel />
           </Box>
-          <TodaysTransactionTableGridWrapper />
+          <Box
+            sx={{
+              background: "var(--theme-color2)",
+              // border: "2px solid #EBEDEE",
+              boxShadow: "0px 11px 70px rgba(226, 236, 249, 0.5)",
+              borderRadius: "20px",
+              margin: "20px 12px 0 0",
+              padding: "10px",
+            }}
+          >
+            <TodaysTransactionTableGridWrapper />
+          </Box>
         </Container>
       </Box>
       {isOpenSave ? (

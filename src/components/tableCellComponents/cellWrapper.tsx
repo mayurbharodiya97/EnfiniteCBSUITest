@@ -67,7 +67,7 @@ export const CellWrapper = ({
             lineHeight: "34px",
             color: myColor,
             position: positionRelative ? "relative" : "static",
-            borderBottom: "1px solid lightgray",
+            borderBottom: "none",
           },
         },
       ])}

@@ -43,7 +43,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 200,
+      width: 180,
       minWidth: 100,
       maxWidth: 200,
     },
