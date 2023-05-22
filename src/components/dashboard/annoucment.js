@@ -20,7 +20,7 @@ export const Announcement = ({
 
   return (
     <>
-      <Grid containerSize={100}>
+      <Grid>
         <Box
           sx={{
             height: "70px",

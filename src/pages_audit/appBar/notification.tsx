@@ -79,8 +79,12 @@ export const Notification_App = () => {
               </Button>
             </div> */}
         {Array.from(Array(6)).map((_, index) => (
-          <List>
-            <ListItemButton>
+          <List disablePadding key={index}>
+            <ListItemButton
+              sx={{
+                padding: "0px",
+              }}
+            >
               <Grid container p={1} spacing={1}>
                 <Grid
                   item

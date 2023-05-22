@@ -77,7 +77,7 @@ export const useStyles = makeStyles((theme: any) => ({
   chevronIcon: {
     width: "38px",
     height: "38px",
-    color: "var(--theme-color1)",
+    color: "black",
   },
   DrawerClose_icon: {
     color: "var(--theme-color3)",
@@ -87,11 +87,12 @@ export const useStyles = makeStyles((theme: any) => ({
       background: "var(--theme-color4)",
     },
     width: "25px",
+
     height: "25px",
     left: "26px",
     top: "39px",
     boxShadow:
-      "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+      "rgba(0, 0, 0, 0.16) 0px 3px 4px, rgba(0, 0, 0, 0.23) 0px 3px 20px",
   },
   menuButton: {
     // marginRight: 0,
@@ -106,7 +107,7 @@ export const useStyles = makeStyles((theme: any) => ({
     left: "-6px",
     top: "39px",
     boxShadow:
-      "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+      "rgba(0, 0, 0, 0.16) 0px 3px 4px, rgba(0, 0, 0, 0.23) 0px 3px 20px",
   },
   menuButtonHidden: {
     display: "none",

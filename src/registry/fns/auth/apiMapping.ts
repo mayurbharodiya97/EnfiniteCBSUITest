@@ -31,6 +31,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETMENULIST",
     packageName: "",
   },
+  TRANS_SUMMARY_CARD: {
+    url: "adminPanelCommonServiceAPI/DashBoard/GETTRANSACTIONSUMMARY",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

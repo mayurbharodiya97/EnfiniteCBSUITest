@@ -32,7 +32,7 @@ const Dashboard = () => {
     // console.log("test");
   };
   const handleDialogClose = () => {
-    console.log("test");
+    // console.log("test");
     setIsOpenSave(false);
   };
 
@@ -169,6 +169,7 @@ const Dashboard = () => {
                           <Grid item lg={12} md={12} xl={12} xs={12}>
                             {Array.from(Array(4)).map((_, index) => (
                               <Announcement
+                                key={index}
                                 title={"Announcement"}
                                 body={"Lorem ipsum dolor sit."}
                                 screenFlag={"NOTES"}

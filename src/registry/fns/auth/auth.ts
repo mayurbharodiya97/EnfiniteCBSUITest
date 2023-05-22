@@ -44,7 +44,6 @@ const authAPI = () => {
   };
   const setToken = (argaccessToken) => {
     accessToken = argaccessToken;
-    // console.log(accessToken);
   };
   const removeToken = () => {
     accessToken = null;
@@ -98,7 +97,6 @@ const authAPI = () => {
           access_token: data?.ACCESS_TOKEN ?? data,
         };
       } else {
-        //console.log(response);
         return {
           status: "999",
           message: await GetStatusMessage(response),
@@ -171,7 +169,6 @@ const authAPI = () => {
           timeout: timeout,
         }
       );
-      //console.log(response.headers);
 
       if (String(response.status) === "200") {
         let data = await response.json();
@@ -209,7 +206,6 @@ const authAPI = () => {
           ),
         };
       } else {
-        //console.log(response);
         return {
           status: "999",
           message: await GetStatusMessage(response),
