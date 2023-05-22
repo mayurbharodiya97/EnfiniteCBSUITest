@@ -57,6 +57,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
       controlsAtBottom = false,
       headerToolbarStyle = {},
       onlySingleSelectionAllow = false,
+      isNewRowStyle = false,
     },
     ref
   ) => {
@@ -315,6 +316,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         controlsAtBottom={controlsAtBottom}
         headerToolbarStyle={headerToolbarStyle}
         onlySingleSelectionAllow={onlySingleSelectionAllow}
+        isNewRowStyle={isNewRowStyle}
       />
     );
   }

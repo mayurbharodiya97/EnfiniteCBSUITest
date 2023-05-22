@@ -30,6 +30,7 @@ const inititalState: AuthStateType = {
     name: "",
     lastLogin: "",
     id: "",
+    employeeID: "",
   },
 };
 

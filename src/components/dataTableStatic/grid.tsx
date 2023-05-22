@@ -31,6 +31,7 @@ import {
 } from "components/dataTable/utils";
 import { TableFilterStatusBar } from "components/dataTable/tableFilterStatusBar";
 import { AuthContext } from "pages_audit/auth";
+import { useStyles } from "./style";
 import {
   Grid,
   LinearProgress,
@@ -43,6 +44,7 @@ import {
   TableRow,
 } from "@mui/material";
 let data2: any[] = [];
+
 export const DataGrid = ({
   label,
   dense,
@@ -86,12 +88,13 @@ export const DataGrid = ({
   controlsAtBottom,
   headerToolbarStyle,
   onlySingleSelectionAllow,
+  isNewRowStyle,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
 
   data2 = useMemo(() => DataFilterComponents(filters, data), [filters, data]);
-
+  const classes = useStyles();
   const {
     getTableProps,
     getTableBodyProps,
@@ -153,7 +156,6 @@ export const DataGrid = ({
   const { authState } = useContext(AuthContext);
 
   const tbodyRef = useRef(null);
-
   const rowsToDisplay = enablePagination ? page : rows;
 
   const rowCount = useMemo(() => {
@@ -239,244 +241,249 @@ export const DataGrid = ({
   //console.log("rowsToDisplay", rowsToDisplay);
 
   return (
-    <Paper
-      style={{
-        width: "100%",
-        boxShadow: "none",
-      }}
-    >
-      {Boolean(hideHeader) ? null : (
-        <TableHeaderToolbar
-          label={label}
-          dense={dense}
-          preGlobalFilteredRows={preGlobalFilteredRows}
-          globalFilter={state.globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          alwaysAvailableAction={alwaysAvailableAction}
-          setGridAction={setGridAction} //for always Actions
-          selectedFlatRows={selectedFlatRows}
-          disableGlobalFilter={Boolean(disableGlobalFilter)}
-          refetchData={refetchData}
-          autoRefreshInterval={autoRefreshInterval}
-          gotoPage={gotoPage}
-          setSortBy={setSortBy}
-          allowFilter={allowFilter}
-          filters={filters}
-          setAllFilters={setAllFilters}
-          filterMeta={filterMeta}
-          visibleColumns={availableColumns}
-          defaultHiddenColumns={defaultHiddenColumns}
-          allowColumnHiding={allowColumnHiding}
-          headerToolbarStyle={headerToolbarStyle}
-        />
-      )}
-      {Boolean(controlsAtBottom) ? null : (
-        <TableActionToolbar
-          dense={dense}
-          selectedFlatRows={selectedFlatRows}
-          multipleActions={multipleActions}
-          singleActions={singleActions}
-          setGridAction={setGridAction} //for single/multiple actions
-        />
-      )}
-      <ActionContextMenu
-        contextMenuRow={contextMenuRow}
-        selectedFlatRows={selectedFlatRows}
-        singleActions={singleActions}
-        multipleActions={multipleActions}
-        setGridAction={setGridAction} //for right click actions
-        mouseX={contextMenuPosition?.mouseX ?? null}
-        mouseY={contextMenuPosition?.mouseY ?? null}
-        handleClose={handleContextMenuClose}
-        authState={authState}
-      />
-      <TableFilterStatusBar
-        dense={dense}
-        setAllFilters={setAllFilters}
-        filters={filters}
-        gotoPage={gotoPage}
-        setSortBy={setSortBy}
-      />
-      {!disableLoader ? (
-        loading ? (
-          <LinearProgress color="secondary" />
-        ) : (
-          <LinearProgressBarSpacer />
-        )
-      ) : null}
-      <TableContainer
+    <>
+      <Paper
         style={{
-          position: "relative",
-          display: "inline-block",
-          overflow: "auto",
-          maxHeight: containerHeight?.max ?? "calc(100vh - 33*8px)",
-          minHeight: containerHeight?.min ?? "calc(100vh - 33*8px)",
-          borderBottom: hideFooter ? "" : "1px solid rgba(133, 130, 130, 0.8)",
+          width: "100%",
+          boxShadow: "none",
         }}
       >
-        <Table
-          component="div"
-          {...getTableProps()}
-          size={dense ? "small" : "medium"}
-        >
-          {/*@ts-ignore*/}
-          <StickyTableHead component="div">
-            {headerGroups.map((headerGroup) => {
-              return (
-                <TableRow
-                  component="div"
-                  {...headerGroup.getHeaderGroupProps()}
-                >
-                  {headerGroup.headers.map((column) => {
-                    return (
-                      <HeaderCellWrapper
-                        column={column}
-                        key={column.getHeaderProps().key}
-                      >
-                        {column.render("Header")}
-                      </HeaderCellWrapper>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </StickyTableHead>
-          <TableBody
-            component="div"
-            ref={tbodyRef}
-            {...getTableBodyProps([
-              {
-                style: {
-                  display: "block",
-                },
-              },
-            ])}
-            onContextMenu={handleContextMenuOpenforAdd}
-          >
-            {rowsToDisplay.length <= 0 &&
-            //loading === false &&
-            hideNoDataFound === false ? (
-              <Grid container justifyContent="center">
-                <div
-                  style={{
-                    height: Boolean(containerHeight?.min)
-                      ? "calc(" + containerHeight?.min + " - 50px)"
-                      : "calc(100vh - 33*8px)", //"calc(100vh - 36*10px)",
-                    display: "flex",
-                    alignItems: "center",
-                    // marginLeft: "450px",
-                    fontStyle: "italic",
-                    color: "rgba(133, 130, 130, 0.8)",
-                  }}
-                >
-                  No data found..!
-                </div>
-              </Grid>
-            ) : null}
-            {rowsToDisplay.map((row) => {
-              //console.log(row);
-              if (Boolean(row?.original?.[hiddenFlag])) {
-                return null;
-              }
-              prepareRow(row);
-              const rightClickHandler = handleContextMenuOpen(row);
-              const thisRowDblClickHandler = handleRowDoubleClickAction(row);
-              let rowColorStyle: any[] = [];
-              if (Boolean(row?.original?._rowColor)) {
-                rowColorStyle = [
-                  { style: { background: row?.original?._rowColor } },
-                ];
-              }
-              if (isCusrsorFocused) {
-                if (rowColorStyle.length > 0) {
-                  rowColorStyle[0].style["cursor"] = "pointer";
-                } else {
-                  rowColorStyle = [{ style: { cursor: "pointer" } }];
-                }
-              }
-              // if (row.id == "0002") {
-              //   row.toggleRowSelected(true);
-              // }
-              return (
-                <MyTableRow
-                  {...row.getRowProps(rowColorStyle)}
-                  id={row.id}
-                  tabIndex={0}
-                  component="div"
-                  selected={
-                    row.isSelected || contextMenuSelectedRowId === row.id
-                  }
-                  onClick={() => {
-                    if (Boolean(onlySingleSelectionAllow)) {
-                      toggleAllRowsSelected(false);
-                      row.toggleRowSelected(true);
-                    }
-                  }}
-                  onContextMenu={rightClickHandler}
-                  onDoubleClick={
-                    Boolean(doubleClickAction)
-                      ? thisRowDblClickHandler
-                      : undefined
-                  }
-                >
-                  {row.cells.map((cell) => {
-                    const { key } = cell.getCellProps();
-                    return cell.isAggregated
-                      ? cell.render("Aggregated", { key })
-                      : cell.render("Cell", { key });
-                  })}
-                </MyTableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <CustomBackdrop open={Boolean(loading)} />
-      </TableContainer>
-
-      {hideFooter ? null : enablePagination ? (
-        <TablePagination
-          style={{ display: "flex" }}
-          variant="body"
-          component="div"
-          rowsPerPageOptions={pageSizes}
-          colSpan={3}
-          count={rows.length}
-          rowsPerPage={Number(pageSize)}
-          page={Number(pageIndex)}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          ActionsComponent={TablePaginationActions}
+        {Boolean(hideHeader) ? null : (
+          <TableHeaderToolbar
+            label={label}
+            dense={dense}
+            preGlobalFilteredRows={preGlobalFilteredRows}
+            globalFilter={state.globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            alwaysAvailableAction={alwaysAvailableAction}
+            setGridAction={setGridAction} //for always Actions
+            selectedFlatRows={selectedFlatRows}
+            disableGlobalFilter={Boolean(disableGlobalFilter)}
+            refetchData={refetchData}
+            autoRefreshInterval={autoRefreshInterval}
+            gotoPage={gotoPage}
+            setSortBy={setSortBy}
+            allowFilter={allowFilter}
+            filters={filters}
+            setAllFilters={setAllFilters}
+            filterMeta={filterMeta}
+            visibleColumns={availableColumns}
+            defaultHiddenColumns={defaultHiddenColumns}
+            allowColumnHiding={allowColumnHiding}
+            headerToolbarStyle={headerToolbarStyle}
+          />
+        )}
+        {Boolean(controlsAtBottom) ? null : (
+          <TableActionToolbar
+            dense={dense}
+            selectedFlatRows={selectedFlatRows}
+            multipleActions={multipleActions}
+            singleActions={singleActions}
+            setGridAction={setGridAction} //for single/multiple actions
+          />
+        )}
+        <ActionContextMenu
+          contextMenuRow={contextMenuRow}
+          selectedFlatRows={selectedFlatRows}
+          singleActions={singleActions}
+          multipleActions={multipleActions}
+          setGridAction={setGridAction} //for right click actions
+          mouseX={contextMenuPosition?.mouseX ?? null}
+          mouseY={contextMenuPosition?.mouseY ?? null}
+          handleClose={handleContextMenuClose}
+          authState={authState}
         />
-      ) : (
-        <TableCell style={{ display: "flex" }}>
-          Total No of Records: {rowCount}
-        </TableCell>
-      )}
-
-      {Boolean(controlsAtBottom) ? (
-        <div
-          className="test"
+        <TableFilterStatusBar
+          dense={dense}
+          setAllFilters={setAllFilters}
+          filters={filters}
+          gotoPage={gotoPage}
+          setSortBy={setSortBy}
+        />
+        {!disableLoader ? (
+          loading ? (
+            <LinearProgress color="secondary" />
+          ) : (
+            <LinearProgressBarSpacer />
+          )
+        ) : null}
+        <TableContainer
           style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
+            position: "relative",
+            display: "inline-block",
+            overflow: "auto",
+            maxHeight: containerHeight?.max ?? "calc(100vh - 33*8px)",
+            minHeight: containerHeight?.min ?? "calc(100vh - 33*8px)",
+            borderBottom: hideFooter
+              ? ""
+              : "1px solid rgba(133, 130, 130, 0.8)",
           }}
         >
-          <RenderActions
-            key="singleFilters"
-            actions={singleActions}
-            setAction={setGridAction}
-            selectedRows={selectedFlatRows}
-            buttonTextColor={"var(--theme-color2)"}
-            buttonBackground={"var(--theme-color3)"}
-            style={{
-              border: "1px solid var(--theme-color3)",
-              width: "8rem",
-              margin: "5px",
-            }}
+          <Table
+            component="div"
+            {...getTableProps()}
+            size={dense ? "small" : "medium"}
+          >
+            {/*@ts-ignore*/}
+            <StickyTableHead component="div">
+              {headerGroups.map((headerGroup) => {
+                return (
+                  <TableRow
+                    component="div"
+                    {...headerGroup.getHeaderGroupProps()}
+                  >
+                    {headerGroup.headers.map((column) => {
+                      return (
+                        <HeaderCellWrapper
+                          column={column}
+                          key={column.getHeaderProps().key}
+                        >
+                          {column.render("Header")}
+                        </HeaderCellWrapper>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </StickyTableHead>
+            <TableBody
+              component="div"
+              ref={tbodyRef}
+              {...getTableBodyProps([
+                {
+                  style: {
+                    display: "block",
+                  },
+                },
+              ])}
+              onContextMenu={handleContextMenuOpenforAdd}
+            >
+              {rowsToDisplay.length <= 0 &&
+              //loading === false &&
+              hideNoDataFound === false ? (
+                <Grid container justifyContent="center">
+                  <div
+                    style={{
+                      height: Boolean(containerHeight?.min)
+                        ? "calc(" + containerHeight?.min + " - 50px)"
+                        : "calc(100vh - 33*8px)", //"calc(100vh - 36*10px)",
+                      display: "flex",
+                      alignItems: "center",
+                      // marginLeft: "450px",
+                      fontStyle: "italic",
+                      color: "rgba(133, 130, 130, 0.8)",
+                    }}
+                  >
+                    No data found..!
+                  </div>
+                </Grid>
+              ) : null}
+              {rowsToDisplay.map((row) => {
+                //console.log(row);
+                if (Boolean(row?.original?.[hiddenFlag])) {
+                  return null;
+                }
+                prepareRow(row);
+                const rightClickHandler = handleContextMenuOpen(row);
+                const thisRowDblClickHandler = handleRowDoubleClickAction(row);
+                let rowColorStyle: any[] = [];
+                if (Boolean(row?.original?._rowColor)) {
+                  rowColorStyle = [
+                    { style: { background: row?.original?._rowColor } },
+                  ];
+                }
+                if (isCusrsorFocused) {
+                  if (rowColorStyle.length > 0) {
+                    rowColorStyle[0].style["cursor"] = "pointer";
+                  } else {
+                    rowColorStyle = [{ style: { cursor: "pointer" } }];
+                  }
+                }
+                // if (row.id == "0002") {
+                //   row.toggleRowSelected(true);
+                // }
+                return (
+                  <MyTableRow
+                    {...row.getRowProps(rowColorStyle)}
+                    id={row.id}
+                    tabIndex={0}
+                    component="div"
+                    selected={
+                      row.isSelected || contextMenuSelectedRowId === row.id
+                    }
+                    onClick={() => {
+                      if (Boolean(onlySingleSelectionAllow)) {
+                        toggleAllRowsSelected(false);
+                        row.toggleRowSelected(true);
+                      }
+                    }}
+                    onContextMenu={rightClickHandler}
+                    onDoubleClick={
+                      Boolean(doubleClickAction)
+                        ? thisRowDblClickHandler
+                        : undefined
+                    }
+                    className={isNewRowStyle ? classes.customClass : null}
+                  >
+                    {row.cells.map((cell) => {
+                      const { key } = cell.getCellProps();
+                      return cell.isAggregated
+                        ? cell.render("Aggregated", { key })
+                        : cell.render("Cell", { key });
+                    })}
+                  </MyTableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+          <CustomBackdrop open={Boolean(loading)} />
+        </TableContainer>
+
+        {hideFooter ? null : enablePagination ? (
+          <TablePagination
+            style={{ display: "flex" }}
+            variant="body"
+            component="div"
+            rowsPerPageOptions={pageSizes}
+            colSpan={3}
+            count={rows.length}
+            rowsPerPage={Number(pageSize)}
+            page={Number(pageIndex)}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            ActionsComponent={TablePaginationActions}
           />
-        </div>
-      ) : null}
-    </Paper>
+        ) : (
+          <TableCell style={{ display: "flex" }}>
+            Total No of Records: {rowCount}
+          </TableCell>
+        )}
+
+        {Boolean(controlsAtBottom) ? (
+          <div
+            className="test"
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <RenderActions
+              key="singleFilters"
+              actions={singleActions}
+              setAction={setGridAction}
+              selectedRows={selectedFlatRows}
+              buttonTextColor={"var(--theme-color2)"}
+              buttonBackground={"var(--theme-color3)"}
+              style={{
+                border: "1px solid var(--theme-color3)",
+                width: "8rem",
+                margin: "5px",
+              }}
+            />
+          </div>
+        ) : null}
+      </Paper>
+    </>
   );
 };

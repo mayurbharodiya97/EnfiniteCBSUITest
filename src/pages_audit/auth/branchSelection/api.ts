@@ -3,10 +3,10 @@ import { DefaultErrorObject } from "components/utils";
 
 // import { DefaultErrorObject } from "components/utils";
 
-export const BranchSelectionGridData = async () => {
+export const BranchSelectionGridData = async ({ userID }) => {
   // const { data, status, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("GETPUSHNOTIFTEMPLATEGRID", {
-  //     CONFIRMED: "ALL",/////////////
+  //   await AuthSDK.internalFetcher("BRANCHLIST", {
+  //     USER_NM: userID, /////////////
   //   });
   // if (status === "0") {
   //   return data;

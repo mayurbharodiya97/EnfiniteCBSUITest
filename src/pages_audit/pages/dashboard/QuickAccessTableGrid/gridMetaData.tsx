@@ -35,7 +35,7 @@ export const QuickAccessTableGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 300,
       minWidth: 200,
-      maxWidth: 220,
+      maxWidth: 350,
     },
     {
       accessor: "USER_DEFINE_CD",

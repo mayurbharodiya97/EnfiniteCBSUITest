@@ -101,6 +101,7 @@ export interface GridWrapperPropTypes {
   controlsAtBottom?: boolean;
   headerToolbarStyle?: {};
   onlySingleSelectionAllow?: boolean;
+  isNewRowStyle?: boolean;
 }
 
 export interface YupSchemaMetaDataType {
