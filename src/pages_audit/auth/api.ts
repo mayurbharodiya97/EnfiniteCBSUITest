@@ -78,69 +78,38 @@ export const verifyOTP = async (
   authType
 ) => {
   //console.log(transactionId, username, otpnumber);
-  // const {
-  //   data,
-  //   status,
-  //   message,
-  //   messageDetails,
-  //   access_token: accesstoken,
-  // } = await AuthSDK.internalFetcherPreLogin(
-  //   "VERIFYOTP",
-  //   {
-  //     USER_ID: username,
-  //     REQUEST_CD: transactionId,
-  //     OTP: otpnumber,
-  //     AUTH_TYPE: authType,
-  //     APP_TRAN_CD: 51,
-  //     BIO_FLAG: "N",
-  //   },
-  //   {
-  //     Authorization: utilFunction.getAuthorizeTokenText(
-  //       access_token,
-  //       token_type
-  //     ),
-  //   }
-  // );
-  let {
+
+  console.log(">>access_token", access_token);
+  const {
     data,
     status,
     message,
     messageDetails,
     access_token: accesstoken,
-  } = {
-    data: [
-      {
-        USER_SUB_TYPE: "DBR",
-        COMPANYNAME: "Demo Bank",
-        COMPANYID: "001 ",
-        USER_ROLE: "ADMIN",
-        USER: {
-          BRANCH: "Demo Bank Back Office Configuration",
-          LASTLOGINDATE: "02/05/2023 11:21:58",
-          BRANCHCODE: "001 ",
-          ID: "admin",
-          NAME: "ADMIN",
-        },
-        USER_LEVEL: "4",
-        ACCESS: {},
-      },
-    ],
-    status: "0",
-    message: "",
-    messageDetails: "",
-    access_token: {
-      access_token: "9b0a0c1f-599c-42a5-8171-36ca8323d2e4",
-      refresh_token: "93cfaba6-055b-4e75-aed6-9556b02809d0",
-      scope: "read write trust",
-      token_type: "bearer",
-      expires_in: "299",
+  } = await AuthSDK.internalFetcherPreLogin(
+    "VERIFYOTP",
+    {
+      USER_ID: username,
+      REQUEST_CD: transactionId,
+      OTP: otpnumber,
+      AUTH_TYPE: authType,
+      APP_TRAN_CD: 51,
+      BIO_FLAG: "N",
     },
-  };
+    {
+      Authorization: utilFunction.getAuthorizeTokenText(
+        access_token,
+        token_type
+      ),
+    }
+  );
+  console.log(">>accesstoken", accesstoken);
   if (status === "0") {
     let transformData = transformAuthData(data[0], {
       generateTime: utilFunction.getCurrentDateinLong(),
       ...accesstoken,
     });
+
     return {
       data: transformData,
       status,
@@ -214,49 +183,7 @@ export const LogoutAPI = async ({ userID }) => {
   //  throw DefaultErrorObject(message, messageDetails);
   //}
 };
-export const GetMenuData = async ({
-  userID,
-  COMP_CD,
-  BRANCH_CD,
-  GROUP_NAME,
-  fulldata,
-}) => {
-  // await AuthSDK.Getfingerprintdata();
-  // AuthSDK.loginUserDetails(fulldata);
-  // AuthSDK.setToken(fulldata.access_token);
-  // const { status, data, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("MENULIST", {
-  //     USER_NM: userID,
-  //     MACHINE_IP: "",
-  //     COMP_CD: COMP_CD,
-  //     BASE_BRANCH_CD: BRANCH_CD,
-  //     BRANCH_CD: BRANCH_CD,
-  //     ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
-  //     GROUP_NAME: GROUP_NAME,
-  //     IMG_PATH: "",
-  //     FLAG: "ALL_SCREENS",
-  //     APP_TRAN_CD: "1",
-  //   });
-  return {
-    status: "0",
-    data: [
-      {
-        isRouterLink: "true",
-        icon: "grip-horizontal",
-        label: "Dashboard",
-        href: "dashboard",
-      },
-      {
-        isRouterLink: "true",
-        icon: "file-lines",
-        label: "All Screens",
-        href: "all-screens",
-      },
-    ],
-    message: "",
-    messageDetails: "",
-  };
-};
+
 // export const verifyPasswordAndLogin = async (
 //   transactionId,
 //   username,
