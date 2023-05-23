@@ -26,7 +26,8 @@ const Dashboard = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getDashboardData"], () => API.getDashboardData());
+  >(["getDashboardQuickCardData"], () => API.getDashboardQuickCardData());
+  console.log("data", data);
   const handleClick = () => {
     setIsOpenSave(true);
     // console.log("test");
@@ -176,6 +177,7 @@ const Dashboard = () => {
                                 apiName={"item?.APINAME"}
                               />
                             </Grid>
+
                             {/* {Array.from(Array(4)).map((_, index) => (
                               <Grid item xs={6} sm={6} md={6} key={index}>
                                 <DashboardBox

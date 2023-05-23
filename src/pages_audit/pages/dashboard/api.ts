@@ -2,7 +2,7 @@ import { DefaultErrorObject } from "components/utils";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getDashboardData = async () => {
+export const getDashboardQuickCardData = async () => {
   // const { data, status, message, messageDetails } =
   //   await AuthSDK.internalFetcher("GETDASHBOARDDATA", {});
   // if (status === "0") {
@@ -10,6 +10,36 @@ export const getDashboardData = async () => {
   // } else {
   //   throw DefaultErrorObject(message, messageDetails);
   // }
+  return [
+    {
+      DESCRIPTION: "Follow Up done",
+      COUNT: "4",
+    },
+    {
+      DESCRIPTION: "Follow Up",
+      COUNT: "4",
+    },
+    {
+      DESCRIPTION: "Reject Transactions",
+      COUNT: "1",
+    },
+    {
+      DESCRIPTION: "Reject Request",
+      COUNT: "1",
+    },
+    {
+      DESCRIPTION: "Pending Request",
+      COUNT: "1",
+    },
+    {
+      DESCRIPTION: "Confirm Request",
+      COUNT: "286518",
+    },
+    {
+      DESCRIPTION: "Confirmed Transactions",
+      COUNT: "3699",
+    },
+  ];
 };
 // export const getDashboardDatas = () => {};
 
