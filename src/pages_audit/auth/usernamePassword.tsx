@@ -80,7 +80,6 @@ export const UsernamePasswordField = ({
           >
             Please provide your UserID and password
           </div>
-          ></div>
           <div className={classes.formWrap}>
             <TextField
               autoFocus={true}
