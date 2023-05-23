@@ -215,7 +215,7 @@ const Dashboard = () => {
                         }}
                       >
                         <CardContent
-                          style={{ padding: "10px", height: "80vh" }}
+                          style={{ padding: "10px", height: "82vh" }}
                         >
                           <Grid item lg={12} md={12} xl={12} xs={12}>
                             <Announcement screenFlag={"Announcement"} />

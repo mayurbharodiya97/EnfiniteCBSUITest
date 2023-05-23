@@ -117,7 +117,15 @@ const QuickAccessTableGrid = () => {
         >
           Quick Access
         </Typography>
-        <Box>
+        <Box
+          sx={{
+            height: "48px",
+            width: "51px",
+            paddingRight: "91px",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           {" "}
           <Typography
             style={{

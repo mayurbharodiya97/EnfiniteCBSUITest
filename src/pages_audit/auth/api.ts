@@ -106,6 +106,7 @@ export const verifyOTP = async (
       generateTime: utilFunction.getCurrentDateinLong(),
       ...accesstoken,
     });
+
     return {
       data: transformData,
       status,
@@ -179,65 +180,7 @@ export const LogoutAPI = async ({ userID }) => {
   //  throw DefaultErrorObject(message, messageDetails);
   //}
 };
-export const GetMenuData = async ({
-  userID,
-  COMP_CD,
-  BRANCH_CD,
-  GROUP_NAME,
-  fulldata,
-}) => {
-  // await AuthSDK.Getfingerprintdata();
-  // AuthSDK.loginUserDetails(fulldata);
-  // AuthSDK.setToken(fulldata.access_token);
-  // const { status, data, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("MENULIST", {
-  //     USER_NM: userID,
-  //     MACHINE_IP: "",
-  //     COMP_CD: COMP_CD,
-  //     BASE_BRANCH_CD: BRANCH_CD,
-  //     BRANCH_CD: BRANCH_CD,
-  //     ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
-  //     GROUP_NAME: GROUP_NAME,
-  //     IMG_PATH: "",
-  //     FLAG: "ALL_SCREENS",
-  //     APP_TRAN_CD: "1",
-  //   });
-  return {
-    status: "0",
-    data: [
-      {
-        isRouterLink: "true",
-        icon: "grip-horizontal",
-        label: "Dashboard",
-        href: "dashboard",
-      },
-      {
-        isRouterLink: "true",
-        icon: "file-lines",
-        label: "All Screens",
-        href: "all-screens",
-      },
-      {
-        children: [
-          {
-            user_code: "NETM/001",
-            accessUserLevel: "1",
-            isRouterLink: "true",
-            icon: "user-plus",
-            windowsPara: "",
-            system_code: "NETM/001",
-            label: "Cheque Book Entry",
-            href: "operation/chequebook-entry",
-          },
-        ],
-        icon: "users-gear",
-        label: "Operation",
-      },
-    ],
-    message: "",
-    messageDetails: "",
-  };
-};
+
 // export const verifyPasswordAndLogin = async (
 //   transactionId,
 //   username,

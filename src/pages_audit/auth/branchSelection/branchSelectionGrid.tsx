@@ -6,7 +6,7 @@ import { ClearCacheProvider } from "cache";
 import branchSelectionSideImage from "assets/images/sideImage.png";
 import "./css/branchSelectionGrid.css";
 import { Box, Grid } from "@mui/material";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
@@ -35,19 +35,28 @@ const actions: ActionTypes[] = [
 ];
 
 const BranchSelectionGrid = () => {
-  const { authState } = useContext(AuthContext);
+  const { authState, login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
-  console.log(">>authState", authState);
+  // console.log(">>authState", authState);
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["BranchSelectionGridData"],
     () => API.BranchSelectionGridData({ userID: authState?.user?.id ?? "" })
   );
 
+  const mutation = useMutation(API.GetMenuData, {
+    onSuccess: ({ data }) => {
+      console.log("<<<<>>>>", data);
+      console.log(">>login update", { ...authState, menulistdata: data });
+      login({ ...authState, menulistdata: data });
+      navigate("/netbanking/dashboard");
+    },
+  });
+
   const setCurrentAction = useCallback(
     (data) => {
-      console.log(">>data", data);
+      // console.log(">>data", data);
       if (data.name === "proceed") {
         if (data.rows?.length === 0) {
           enqueueSnackbar("Please Select Branch", {
@@ -58,7 +67,14 @@ const BranchSelectionGrid = () => {
             variant: "error",
           });
         } else {
-          navigate("/cbsenfinity/dashboard");
+          console.log("triggerd");
+          mutation.mutate({
+            userID: authState?.user?.id ?? "",
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? "",
+            GROUP_NAME: authState?.roleName ?? "",
+            fulldata: authState,
+          });
         }
       } else {
         navigate("/cbsenfinity/login");
@@ -178,6 +194,7 @@ const BranchSelectionGrid = () => {
               }}
               onlySingleSelectionAllow={true}
               isNewRowStyle={true}
+              loading={isLoading || isFetching || mutation.isLoading}
             />
           </Grid>
           {/* <Box

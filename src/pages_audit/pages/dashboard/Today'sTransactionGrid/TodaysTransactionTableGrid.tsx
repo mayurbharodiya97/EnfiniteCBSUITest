@@ -6,17 +6,17 @@ import { useQuery } from "react-query";
 import * as API from "../api";
 import { useCallback } from "react";
 
-const actions: ActionTypes[] = [
-  {
-    actionName: "See All",
-    actionLabel: "See all",
-    multiple: undefined,
-    rowDoubleClick: false,
-    actionTextColor: "var(--theme-color3)",
-    alwaysAvailable: true,
-    actionBackground: "inherit",
-  },
-];
+// const actions: ActionTypes[] = [
+//   {
+//     actionName: "See All",
+//     actionLabel: "See all",
+//     multiple: undefined,
+//     rowDoubleClick: false,
+//     actionTextColor: "var(--theme-color3)",
+//     alwaysAvailable: true,
+//     actionBackground: "inherit",
+//   },
+// ];
 
 const TodaysTransactionTableGrid = () => {
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
@@ -34,8 +34,8 @@ const TodaysTransactionTableGrid = () => {
         finalMetaData={TodaysTransactionTableGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
-        actions={actions}
-        setAction={setCurrentAction}
+        // actions={actions}
+        // setAction={setCurrentAction}
         headerToolbarStyle={{
           backgroundColor: "var(--theme-color2)",
           color: "black",
