@@ -58,14 +58,17 @@ export const overrideMetaData = (metaData: NavBarMetaDataType) => {
 };
 
 const RenderLabel: FC<{ one: NavItemType }> = ({ one }) => {
+  console.log(one);
   return (
     <Fragment>
       {one.iconPosition === "before" && isValidElementType(one.icon) ? (
-        <one.icon />
+        // <one.icon />
+        <></>
       ) : null}
       {one.label}
       {one.iconPosition === "after" && isValidElementType(one.icon) ? (
-        <one.icon />
+        // <one.icon />
+        <></>
       ) : null}
     </Fragment>
   );

@@ -1,4 +1,5 @@
 import { useReducer, useContext, useEffect, useState } from "react";
+// import Box from "@material-ui/core/Box";
 import { useNavigate } from "react-router-dom";
 import loginImg from "assets/images/login.png";
 import { useStyles } from "./style";
@@ -9,6 +10,12 @@ import { utilFunction } from "components/utils/utilFunctions";
 import { useSnackbar } from "notistack";
 import { Box, Container, Grid } from "@mui/material";
 import { BankDetails } from "./bankDetails";
+import {
+  updatenewPassword,
+  veirfyUsernameandMobileNo,
+  verifyOTPForPWDReset,
+} from "./api";
+import { GeneralAPI } from "registry/fns/functions";
 const inititalState = {
   isUsernameError: false,
   userMessageforusername: "",
@@ -25,6 +32,8 @@ const inititalState = {
   otploading: false,
   OtpuserMessage: "",
   otpmodelClose: false,
+  requestCd: "",
+  username: "",
 };
 const reducer = (state, action) => {
   switch (action.type) {
@@ -36,6 +45,10 @@ const reducer = (state, action) => {
         isMobileError: action?.payload?.isMobileError ?? false,
         userMessageforusername: action?.payload?.userMessageforusername ?? "",
         userMessageforMobileno: action?.payload?.userMessageforMobileno ?? "",
+        isApiError: action?.payload?.isApiError ?? false,
+        apierrorMessage: action?.payload?.apierrorMessage ?? "",
+        requestCd: "",
+        username: "",
       };
     }
     case "initverifyUserNameandMobileNo": {
@@ -44,6 +57,8 @@ const reducer = (state, action) => {
         loading: true,
         isUsernameError: false,
         isMobileError: false,
+        requestCd: "",
+        username: "",
       };
     }
     case "verifyUserNameandMobileNoSuccess": {
@@ -53,6 +68,10 @@ const reducer = (state, action) => {
         isUsernameError: false,
         isMobileError: false,
         workingState: 0,
+        isApiError: false,
+        apierrorMessage: "",
+        requestCd: action?.payload?.requestCd ?? "",
+        username: action?.payload?.username ?? "",
       };
     }
     case "inititateOTPVerification": {
@@ -92,6 +111,8 @@ const reducer = (state, action) => {
         userMessageforPassword: action?.payload?.userMessageforPassword ?? "",
         userMessageforconfirmPassword:
           action?.payload?.userMessageforconfirmPassword ?? "",
+        isApiError: false,
+        apierrorMessage: "",
       };
     }
     case "initverifyPasswordSetReq": {
@@ -121,25 +142,69 @@ export const ForgotPasswordController = () => {
   const [loginState, dispath] = useReducer(reducer, inititalState);
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  const onSubmitHandel = (data, flag) => {
+  const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
         dispath({ type: "initverifyUserNameandMobileNo" });
-        dispath({ type: "verifyUserNameandMobileNoSuccess" });
-        setOpen(true);
+        const {
+          status,
+          data: resdata,
+          message,
+        } = await veirfyUsernameandMobileNo(data?.userName, data?.mobileno);
+        if (status === "0") {
+          dispath({
+            type: "verifyUserNameandMobileNoSuccess",
+            payload: {
+              requestCd: String(resdata?.REQUEST_CD ?? ""),
+              username: data?.userName,
+            },
+          });
+          setOpen(true);
+        } else {
+          dispath({
+            type: "verifyUserNameandMobileNoFailed",
+            payload: {
+              isApiError: true,
+              apierrorMessage: message,
+            },
+          });
+        }
       } else if (flag === 1) {
         dispath({ type: "initverifyPasswordSetReq" });
-        dispath({ type: "passwordRegistaredSuccess" });
-        enqueueSnackbar("Password successfully reset", {
-          variant: "success",
-        });
-        navigate("login");
+        const {
+          status,
+          data: resdata,
+          message,
+        } = await updatenewPassword(
+          loginState?.requestCd,
+          loginState?.username,
+          data?.password
+        );
+        if (status === "0") {
+          dispath({ type: "passwordRegistaredSuccess" });
+          enqueueSnackbar("Password successfully reset", {
+            variant: "success",
+          });
+          navigate("login");
+        } else if (status === "99") {
+          dispath({
+            type: "verifyPasswordFailed",
+            payload: {
+              isApiError: true,
+              apierrorMessage: message,
+            },
+          });
+        } else {
+          enqueueSnackbar(message, {
+            variant: "error",
+          });
+          navigate("login");
+        }
       }
     }
   };
 
   const verifyRequestData = (data, flag) => {
-    //console.log(data, flag);
     if (flag === 0) {
       let validationData = {
         isUsernameError: false,
@@ -203,13 +268,40 @@ export const ForgotPasswordController = () => {
   const handleClose = () => {
     setOpen(false);
   };
+  const changeUserName = () => {
+    dispath({
+      type: "backToUsernameVerification",
+    });
+  };
+
   const VerifyOTP = async (OTPNumber) => {
     if (Boolean(OTPNumber) && OTPNumber.toString().length === 6) {
       dispath({ type: "inititateOTPVerification" });
-      dispath({
-        type: "OTPVerificationComplate",
-        payload: { otpmodelclose: true },
-      });
+      const {
+        status,
+        data: resdata,
+        message,
+      } = await verifyOTPForPWDReset(
+        loginState?.requestCd,
+        loginState?.username,
+        OTPNumber
+      );
+      if (status === "0") {
+        dispath({
+          type: "OTPVerificationComplate",
+          payload: { otpmodelclose: true },
+        });
+      } else if (status === "99") {
+        dispath({
+          type: "OTPVerificationFailed",
+          payload: { error: message },
+        });
+      } else {
+        enqueueSnackbar(message, {
+          variant: "error",
+        });
+        navigate("login");
+      }
     } else {
       dispath({
         type: "OTPVerificationFailed",
@@ -217,6 +309,9 @@ export const ForgotPasswordController = () => {
       });
     }
   };
+  useEffect(() => {
+    GeneralAPI.setDocumentName("Password Reset");
+  }, []);
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
@@ -233,7 +328,12 @@ export const ForgotPasswordController = () => {
           </Grid>
           <Container maxWidth="xs">
             <Grid alignItems="center" style={{ paddingTop: "40px" }}>
-              <h2>Forgot Password</h2>
+              <h2>
+                {loginState.workingState === 1
+                  ? "Set new password"
+                  : "Forgot Password"}
+              </h2>
+
               <ForgotPasswordFields
                 classes={classes}
                 loginState={loginState}
@@ -241,21 +341,22 @@ export const ForgotPasswordController = () => {
               />
             </Grid>
           </Container>
+
           {/* <OTPModel
-          classes={classes}
-          open={open}
-          handleClose={handleClose}
-          loginState={loginState}
-          VerifyOTP={VerifyOTP}
-          OTPError={loginState?.OtpuserMessage ?? ""}
-          setOTPError={(error) => {
-            dispath({
-              type: "OTPVerificationFailed",
-              payload: { error: error },
-            });
-          }}
-          previousStep={undefined}
-        /> */}
+            classes={classes}
+            open={open}
+            handleClose={handleClose}
+            loginState={loginState}
+            VerifyOTP={VerifyOTP}
+            OTPError={loginState?.OtpuserMessage ?? ""}
+            setOTPError={(error) => {
+              dispath({
+                type: "OTPVerificationFailed",
+                payload: { error: error },
+              });
+            }}
+            previousStep={changeUserName}
+          /> */}
         </Grid>
       </Grid>
     </>

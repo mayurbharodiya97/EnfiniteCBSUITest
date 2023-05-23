@@ -19,7 +19,7 @@ export const BankDetails = ({ imageData }: any) => {
 
   useEffect(() => {
     if (isLoggedIn()) {
-      navigate("/audit", { replace: true });
+      navigate("/cbsenfinity", { replace: true });
     }
   }, [navigate, isLoggedIn]);
   useEffect(() => {

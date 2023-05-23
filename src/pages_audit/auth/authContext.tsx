@@ -22,6 +22,7 @@ const inititalState: AuthStateType = {
   roleName: "",
   companyID: "",
   companyName: "",
+  workingDate: "",
   access: {},
   menulistdata: [],
   user: {

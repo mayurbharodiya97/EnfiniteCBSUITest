@@ -7,7 +7,7 @@ export const ExportExcelFileFromData = ({ title = "sheet1", data }) => {
   const wb = utils.book_new();
   wb.Props = {
     Title: title,
-    Author: "Netbanking Admin",
+    Author: "CBS - Enfinity",
     CreatedDate: new Date(),
   };
   wb.SheetNames.push(title);
@@ -21,7 +21,7 @@ export const ExportCSVFileFromData = ({ title = "sheet1", data }) => {
   const wb = utils.book_new();
   wb.Props = {
     Title: title,
-    Author: "Netbanking Admin",
+    Author: "CBS - Enfinity",
     CreatedDate: new Date(),
   };
   wb.SheetNames.push(title);

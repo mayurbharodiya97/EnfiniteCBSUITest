@@ -197,12 +197,12 @@ const reducer = (state, action) => {
     case "backToUsernameVerification": {
       return inititalState;
     }
+
     default: {
       return state;
     }
   }
 };
-
 export const AuthLoginController = () => {
   const { isLoggedIn, login } = useContext(AuthContext);
   const classes = useStyles();
@@ -220,7 +220,7 @@ export const AuthLoginController = () => {
   // console.log(audio);
   useEffect(() => {
     if (isLoggedIn()) {
-      navigate("/audit", { replace: true });
+      navigate("/cbsenfinity", { replace: true });
     }
   }, [navigate, isLoggedIn]);
 
@@ -309,6 +309,7 @@ export const AuthLoginController = () => {
       });
     }
   };
+
   const VerifyOTP = async (OTPNumber) => {
     if (Boolean(OTPNumber) && OTPNumber.toString().length === 6) {
       dispath({ type: "inititateOTPVerification" });

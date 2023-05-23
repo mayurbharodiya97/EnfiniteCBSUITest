@@ -1,7 +1,15 @@
 import { Fragment, useState, useEffect, useRef } from "react";
 import { TextField } from "components/styledComponent/textfield";
 import { GradientButton } from "components/styledComponent/button";
-import { CircularProgress, FormHelperText } from "@mui/material";
+import {
+  CircularProgress,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useNavigate } from "react-router-dom";
 
 export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
   const [input, setInput] = useState({
@@ -13,6 +21,9 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
   const inputRef = useRef<any>(null);
   const inputPassRef = useRef<any>(null);
   const inputButtonRef = useRef<any>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
   const handleChange = (event) => {
     const name = event.target.name;
     let value = event.target.value;
@@ -125,6 +136,24 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                   inputButtonRef?.current?.click?.();
                 }
               }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword((old) => !old)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      disabled={loginState.loading}
+                    >
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               inputProps={{ maxLength: 16 }}
               style={{ paddingBottom: "8px" }}
             />
@@ -149,6 +178,24 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword((old) => !old)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      disabled={loginState.loading}
+                    >
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
               inputProps={{ maxLength: 16 }}
               style={{ paddingBottom: "8px" }}
@@ -175,20 +222,34 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               marginBottom: "17px",
             }}
           >
-            <GradientButton
-              style={{ borderRadius: "10px" }}
-              fullWidth
-              disabled={loginState.loading}
-              endIcon={
-                loginState.loading ? <CircularProgress size={20} /> : null
-              }
-              onClick={() => {
-                onSubmit(input, loginState.workingState);
-              }}
-              ref={inputButtonRef}
-            >
-              Next
-            </GradientButton>
+            <div>
+              <GradientButton
+                style={{ borderRadius: "10px", marginRight: "5px" }}
+                // fullWidth
+
+                disabled={loginState.loading}
+                onClick={() => {
+                  navigate("login");
+                }}
+                // style={{ marginRight: "5px" }}
+              >
+                Back to Login
+              </GradientButton>
+
+              <GradientButton
+                style={{ borderRadius: "10px" }}
+                disabled={loginState.loading}
+                endIcon={
+                  loginState.loading ? <CircularProgress size={20} /> : null
+                }
+                onClick={() => {
+                  onSubmit(input, loginState.workingState);
+                }}
+                ref={inputButtonRef}
+              >
+                Next
+              </GradientButton>
+            </div>
           </div>
         </div>
       </div>

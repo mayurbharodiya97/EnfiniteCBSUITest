@@ -23,6 +23,7 @@ export const UsernamePasswordField = ({
     if (name === "password" && value) {
       loginState.isPasswordError = false;
     }
+    // console.log(">>name " + name);
     setInput((values) => ({ ...values, [name]: value }));
   };
   const inputRef = useRef<any>(null);
@@ -79,6 +80,7 @@ export const UsernamePasswordField = ({
           >
             Please provide your UserID and password
           </div>
+          ></div>
           <div className={classes.formWrap}>
             <TextField
               autoFocus={true}
