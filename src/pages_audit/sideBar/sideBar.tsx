@@ -134,7 +134,7 @@ export const MySideBar: FC<{
         setNewFilterData={setNewFilterData}
         setNewFilterView={setNewFilterView}
       />
-      {open ? (
+      {/* {open ? (
         <FormGroup style={{ marginBottom: "10px" }}>
           <Stack
             style={{ margin: "auto" }}
@@ -164,7 +164,7 @@ export const MySideBar: FC<{
             />
           </Stack>
         </FormGroup>
-      )}
+      )} */}
     </>
   );
 };

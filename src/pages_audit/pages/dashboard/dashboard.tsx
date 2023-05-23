@@ -47,7 +47,7 @@ const Dashboard = () => {
           flexGrow: 1,
         }}
       >
-        <div style={{ padding: "10px" }}>
+        <Container style={{ padding: "10px" }}>
           <Grid container spacing={2}>
             {isLoading || isFetching ? (
               <Grid item lg={12} md={12} xl={12} xs={12}>

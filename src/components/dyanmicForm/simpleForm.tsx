@@ -134,9 +134,9 @@ export const SimpleFormTitle = ({
   handleSubmit,
   controlsAtBottom,
 }) => (
-  <AppBar position="relative" color="secondary">
-    <Toolbar variant="dense">
-      <Typography component="div" variant="h6">
+  <AppBar position="relative">
+    <Toolbar variant="dense" style={{ background: "var(--theme-color5)" }}>
+      <Typography component="div" variant="h6" color="primary">
         {formDisplayLabel}
         {Boolean(displayMode) && !Boolean(hideDisplayModeInTitle) ? (
           <Chip

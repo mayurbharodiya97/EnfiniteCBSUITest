@@ -169,40 +169,7 @@ export const Profile = () => {
 
                   <Box sx={{ flexGrow: 1 }} />
                   <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                    {/* <Button
-                      size="small"
-                      sx={{ backgroundColor: "#ECEFF9", mr: 2 }}
-                      variant="contained"
-                      startIcon={<SaveIcon color="info" />}
-                    >
-                      Save
-                    </Button>
                     <IconButton
-                      // size="large"
-                      sx={{
-                        background: "#ECEFF9",
-                        borderRadius: "10px",
-                        mx: 1,
-                      }}
-                      aria-label="show 4 new mails"
-                      color="inherit"
-                    >
-                      <BorderColorIcon color="info" />
-                    </IconButton>
-                    <IconButton
-                      // size="large"
-                      sx={{
-                        background: "#ECEFF9",
-                        borderRadius: "10px",
-                        mx: 1,
-                      }}
-                      aria-label="show 4 new mails"
-                      color="inherit"
-                    >
-                      <DeleteOutlineIcon color="info" />
-                    </IconButton> */}
-                    <IconButton
-                      // size="large"
                       aria-label="show 4 new mails"
                       color="inherit"
                       sx={{
@@ -270,11 +237,9 @@ export const Profile = () => {
                               height: "100%",
                             }}
                           >
-                            {
-                              queryData.data?.NAME || userID
-                              // .toUpperCase()
-                              // .substring(0, 1)
-                            }
+                            {/* {(queryData.data?.NAME || userID)
+                              .toUpperCase()
+                              .substring(0, 1)} */}
                           </Avatar>
                         </div>
                         <div
@@ -317,32 +282,12 @@ export const Profile = () => {
                       <Grid container p={1}>
                         <Grid item xs={3}>
                           <Typography variant="h6" fontWeight={500}>
-                            JWT User
+                            Ajay Sharma
                           </Typography>
                           <Typography color={"var(--theme-color6)"}>
-                            Android Developer
+                            Cashier
                           </Typography>
                         </Grid>
-                        {/* <Grid item xs={4}></Grid>
-                        <Grid item xs={0} sm={4} md={5} lg={5}>
-                          <Stack
-                            spacing={2}
-                            direction="row"
-                            alignItems={"center"}
-                            justifyContent={"flex-end"}
-                          >
-                            <Button variant="outlined" color="info">
-                              Message
-                            </Button>
-                            <Button
-                              variant="contained"
-                              color="info"
-                              startIcon={<PersonAddIcon />}
-                            >
-                              Send Request
-                            </Button>
-                          </Stack>
-                        </Grid> */}
                       </Grid>
                       <Grid container>
                         <Box sx={{ width: "100%" }}>
@@ -370,7 +315,7 @@ export const Profile = () => {
                           >
                             <Tab
                               value="one"
-                              label="User Login"
+                              label="User Profile"
                               icon={<AccountCircleOutlinedIcon />}
                               iconPosition="start"
                               // onClick={moveToUserDetail}
@@ -461,7 +406,7 @@ export const Profile = () => {
                       overflowY: "auto",
                       overflowX: "hidden",
                     }}
-                    // hideHeader={true}
+                    hideHeader={true}
                   />
                 </Grid>
               ) : mode === "changePassword" ? (

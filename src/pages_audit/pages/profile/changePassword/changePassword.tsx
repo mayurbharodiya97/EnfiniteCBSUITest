@@ -6,7 +6,6 @@ import { AuthContext } from "pages_audit/auth";
 import { PasswordChangeMetaData } from "./metaData";
 import * as API from "../api";
 import { Box, CircularProgress, Dialog } from "@mui/material";
-import { Transition } from "pages_audit/common";
 import { GradientButton } from "components/styledComponent/button";
 import { DialogActions } from "@mui/material";
 
@@ -59,14 +58,7 @@ export const ChangePassword = ({ onClose, showProfile }) => {
 
   return (
     <Fragment>
-      <Box
-        sx={{ width: 500, margin: "auto" }}
-        // open={showProfile}
-        //@ts-ignore
-        // TransitionComponent={Transition}
-        // fullWidth={false}
-      >
-        {/* <DialogContent> */}
+      <Box sx={{ width: 500, margin: "auto" }}>
         <FormWrapper
           key="passwordChange"
           metaData={PasswordChangeMetaData as MetaDataType}
@@ -79,14 +71,10 @@ export const ChangePassword = ({ onClose, showProfile }) => {
             height: "auto",
           }}
           ref={formRef}
-          hideHeader={false}
+          hideHeader={true}
           containerstyle={{ padding: "11px" }}
         />
-        {/* </DialogContent> */}
         <DialogActions>
-          {/* <GradientButton disabled={mutation.isLoading} onClick={onClose}>
-            Close
-          </GradientButton> */}
           <GradientButton
             disabled={mutation.isLoading}
             endIcon={mutation.isLoading ? <CircularProgress size={20} /> : null}

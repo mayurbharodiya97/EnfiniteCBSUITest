@@ -10,21 +10,18 @@ export const useStyles = makeStyles((theme: any) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    // backgroundColor: "var(--theme-color2)",
     color: "#0063A3",
     height: "80px",
-    background: "rgba(250, 251, 255, 0.9)",
-    // borderBottom: "1px solid #949597",
+    background: "var(--theme-color2)",
     boxShadow: "0px 1px 0px -0.5px #DEE0E2",
-    paddingLeft: "70px",
   },
   appBarShift: {
     paddingLeft: "0px",
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    // width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
+      background: "rgba(250, 251, 255, 0.9)",
     }),
   },
   heading_user_dtl: {
@@ -111,11 +108,6 @@ export const useStyles = makeStyles((theme: any) => ({
     paddingLeft: "4px",
     color: "var(--theme-color1)",
   },
-  logo: {
-    height: "50px",
-    marginRight: theme.spacing(2),
-    display: "block",
-  },
   userDesignation: {
     margin: "0px",
     fontWeight: 500,
@@ -139,5 +131,24 @@ export const useStyles = makeStyles((theme: any) => ({
     marginRight: "10px",
     width: "22px",
     height: "22px",
+  },
+  logo: {
+    height: "38px",
+  },
+  version01: {
+    margin: "0",
+    textAlign: "center",
+    color: "var(--theme-color3)",
+    fontSize: "9px",
+  },
+  DrawerClose_icon: {
+    color: "var(--theme-color3)",
+    position: "static",
+    background: "transperant",
+    "&:hover": {
+      background: "var(--theme-color4)",
+    },
+    width: "34px",
+    height: "34px",
   },
 }));
