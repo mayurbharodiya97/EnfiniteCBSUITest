@@ -64,7 +64,7 @@ export const Profile = () => {
   //);
   const navigate = useNavigate();
   const handleNavigate = () => {
-    navigate("/netbanking/dashboard");
+    navigate("/cbsenfinity/dashboard");
   };
 
   const queryData = useQuery<any, any, any>(["getUserDetails"], () =>
@@ -270,9 +270,11 @@ export const Profile = () => {
                               height: "100%",
                             }}
                           >
-                            {(queryData.data?.NAME || userID)
-                              .toUpperCase()
-                              .substring(0, 1)}
+                            {
+                              queryData.data?.NAME || userID
+                              // .toUpperCase()
+                              // .substring(0, 1)
+                            }
                           </Avatar>
                         </div>
                         <div

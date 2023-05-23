@@ -32,7 +32,6 @@ export const BankDetails = ({ imageData }: any) => {
       setLoginImageURL(urlObj.current);
     }
   }, [imageData]);
-  console.log("imafedata", imageData);
   return (
     <>
       {/* <Grid container style={{ height: "100vh", overflow: "hidden" }}> */}

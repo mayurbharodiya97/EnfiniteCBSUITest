@@ -33,7 +33,7 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
   const handleNavigate = () => {
     // if (selectedBranch) {
     // Change 3: Check if a branch is selected
-    navigate("/netbanking/profile"); // Replace '/dashboard' with the actual URL of your dashboard page
+    navigate("/cbsenfinity/profile"); // Replace '/dashboard' with the actual URL of your dashboard page
     // } else {
     //   setError(true); // Change 4: Set error state if no branch is selected
     // }

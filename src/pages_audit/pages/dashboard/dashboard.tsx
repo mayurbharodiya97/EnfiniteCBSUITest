@@ -252,7 +252,7 @@ const Dashboard = () => {
           >
             <TodaysTransactionTableGridWrapper />
           </Box>
-        </Container>
+        </div>
       </Box>
       {isOpenSave ? (
         <AllScreensGridWrapper

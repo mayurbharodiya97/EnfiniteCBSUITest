@@ -58,10 +58,10 @@ const BranchSelectionGrid = () => {
             variant: "error",
           });
         } else {
-          navigate("/netbanking/dashboard");
+          navigate("/cbsenfinity/dashboard");
         }
       } else {
-        navigate("/netbanking/login");
+        navigate("/cbsenfinity/login");
       }
     },
     [navigate]

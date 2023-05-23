@@ -367,7 +367,7 @@ const NestedListItem: FC<{
 };
 const isActiveMenuFromhref = (location, menuhref, navigationProps) => {
   if (
-    (location === "/netbanking" || location === "/netbanking/") &&
+    (location === "/cbsenfinity" || location === "/cbsenfinity/") &&
     menuhref === "dashboard"
   ) {
     return true;
@@ -382,7 +382,7 @@ const isActiveMenuFromhref = (location, menuhref, navigationProps) => {
     }
     return false;
   } else if (
-    location !== "/netbanking" &&
+    location !== "/cbsenfinity" &&
     location !== "/" &&
     Boolean(menuhref) &&
     location.includes(menuhref)

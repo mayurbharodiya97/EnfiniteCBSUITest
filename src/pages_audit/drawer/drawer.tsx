@@ -29,11 +29,11 @@ export const MyDrawer = ({
               <div style={{ marginLeft: "20px" }}>
                 <img
                   src={Logo}
-                  alt="Netbanking"
+                  alt="EnfinityCBS"
                   className={classes.logo}
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate("./");
+                    navigate("./dashboard");
                   }}
                 />
                 <p className={classes.version01}>V: 1.12.03.1</p>
@@ -43,11 +43,11 @@ export const MyDrawer = ({
             <div style={{ marginLeft: "15px" }}>
               <img
                 src={Logo2}
-                alt="Ratnaafin"
+                alt="EnfinityCBS"
                 className={classes.logo2}
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("./");
+                  navigate("./dashboard");
                 }}
               />
               <p className={classes.version02}>V: 1.12.03.1</p>

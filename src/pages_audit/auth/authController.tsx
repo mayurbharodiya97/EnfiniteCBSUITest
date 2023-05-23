@@ -40,6 +40,7 @@ const inititalState = {
   token_type: "",
   otpmodelClose: false,
   authType: "",
+  isScanning: false,
 };
 
 const reducer = (state, action) => {
@@ -56,6 +57,9 @@ const reducer = (state, action) => {
         isBiometricError: false,
         userMessage: "",
       };
+    }
+    case "inititateUserFingerScanner": {
+      return { ...state, isScanning: true, isBiometricError: false };
     }
     case "usernameandpasswordrequired": {
       return {
@@ -162,6 +166,7 @@ const reducer = (state, action) => {
         isError: true,
         isBiometricError: true,
         userMessage: action?.payload?.error,
+        isScanning: false,
       };
     case "biometricVerificationSuccessful":
       return {
@@ -170,6 +175,7 @@ const reducer = (state, action) => {
         isError: false,
         isBiometricError: false,
         state: action.payload,
+        isScanning: false,
       };
     case "OTPVerificationComplate": {
       return {
@@ -359,16 +365,13 @@ export const AuthLoginController = () => {
     });
   };
   const verifyFinger = async () => {
-    dispath({ type: "inititateUserFingerVerification" });
     try {
+      dispath({ type: "inititateUserFingerScanner" });
       const fingerResponse = await API.capture();
       if (fingerResponse?.ErrorCode === "0") {
         console.log("state", loginState);
-        // const result = await API.verifyUserFinger(
-        //   loginState.username,
-        //   loginState.token
-        // );
         if (loginState.status === "success") {
+          dispath({ type: "inititateUserFingerVerification" });
           const promise: any = await matchFinger(
             loginState.data,
             fingerResponse.IsoTemplate

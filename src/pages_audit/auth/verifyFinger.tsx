@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { GradientButton } from "components/styledComponent/button";
 import Typography from "@material-ui/core/Typography";
@@ -80,37 +80,44 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
                   }
                   color={loginState?.isBiometricError ? "error" : "inherit"}
                 />
-                <div
-                  className="spinner-item"
-                  style={{
-                    border: loginState?.isBiometricError
-                      ? "1px solid red"
-                      : "1px solid #949597",
-                  }}
-                ></div>
-                <div
-                  className="spinner-item spinner-item--2"
-                  style={{
-                    border: loginState?.isBiometricError
-                      ? "1px solid red"
-                      : "1px solid #949597",
-                  }}
-                ></div>
-                <div
-                  className="spinner-item spinner-item--3"
-                  style={{
-                    border: loginState?.isBiometricError
-                      ? "1px solid red"
-                      : "1px solid #949597",
-                  }}
-                ></div>
+                {loginState?.isScanning ? (
+                  <>
+                    <div
+                      className="spinner-item"
+                      style={{
+                        border: loginState?.isScanning
+                          ? "1px solid #949597"
+                          : " 1px solid red",
+                      }}
+                    ></div>
+                    <div
+                      className="spinner-item spinner-item--2"
+                      style={{
+                        border: loginState?.isScanning
+                          ? "1px solid #949597"
+                          : "1px solid red",
+                      }}
+                    ></div>
+                    <div
+                      className="spinner-item spinner-item--3"
+                      style={{
+                        border: loginState?.isScanning
+                          ? "1px solid #949597"
+                          : "1px solid red",
+                      }}
+                    ></div>
+                  </>
+                ) : null}
               </div>
             </div>
 
             <div className={classes.biometric}>
               <div style={{ marginTop: "50px" }}>
-                <div className="progress">
-                  <div className="bar"></div>
+                <div className={loginState.isScanning ? "progress" : "hide"}>
+                  <div
+                    className="bar"
+                    style={{ width: loginState.isScanning ? "30%" : "0%" }}
+                  ></div>
                 </div>
                 <h3
                   style={{
@@ -125,8 +132,10 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
                   {loginState?.isBiometricError
                     ? loginState?.userMessage
                     : loginState?.loading
+                    ? "Loading..."
+                    : loginState?.isScanning
                     ? "Scanning..."
-                    : "Loading..."}
+                    : null}
                 </h3>
               </div>
             </div>
