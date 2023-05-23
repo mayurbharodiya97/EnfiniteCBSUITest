@@ -21,7 +21,11 @@ export const PagesAudit = (props) => {
     <Fragment>
       <div className={classes.root}>
         {/* {alert("Test")} */}
-        <AppBar open={drawerOpen} handleDrawerOpen={handleDrawerOpen} />
+        <AppBar
+          open={drawerOpen}
+          handleDrawerOpen={handleDrawerOpen}
+          handleDrawerClose={handleDrawerClose}
+        />
         <Drawer
           open={drawerOpen}
           handleDrawerClose={handleDrawerClose}

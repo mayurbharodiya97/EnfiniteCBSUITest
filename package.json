@@ -20,6 +20,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
+    "@types/crypto-js": "^4.1.1",
     "@types/lodash": "^4.14.191",
     "@types/yup": "^0.32.0",
     "autosuggest-highlight": "^3.3.4",

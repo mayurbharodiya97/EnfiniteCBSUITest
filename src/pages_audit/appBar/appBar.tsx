@@ -1,15 +1,14 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthContext } from "../auth";
 import { useStyles } from "./style";
-import SearchIcon from "@mui/icons-material/Search";
 import Waving_hand from "assets/images/Waving_Hand_header.png";
 import userimage from "assets/images/BecomePartnerImg.svg";
-import Paper from "@mui/material/Paper";
-import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
 import LogoutIcon from "@mui/icons-material/Logout";
+import Logo from "assets/images/easy_bankcore_Logo.png";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import {
   AppBar,
   Avatar,
@@ -23,21 +22,12 @@ import { Notification_App } from "./notification";
 import { Quick_View } from "./quickView";
 import { Language_App } from "./language";
 import MySearchField from "components/common/search/search";
-//import { ShowEntities, ShowProducts } from "./entities";
-// import { NotificationWrapper } from "../notification";
-
-export const MyAppBar = ({ handleDrawerOpen, open }) => {
+export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
   const handleNavigate = () => {
-    // if (selectedBranch) {
-    // Change 3: Check if a branch is selected
-    navigate("/netbanking/profile"); // Replace '/dashboard' with the actual URL of your dashboard page
-    // } else {
-    //   setError(true); // Change 4: Set error state if no branch is selected
-    // }
-    // console.log("APIAPIDATADATA", apiData);
+    navigate("/netbanking/profile");
   };
 
   return (
@@ -47,6 +37,47 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
       className={clsx(classes.appBar, open && classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            height: "80px",
+            width: "227px",
+          }}
+        >
+          {open ? (
+            <IconButton
+              disableRipple
+              onClick={handleDrawerClose}
+              className={classes.DrawerClose_icon}
+            >
+              <MenuOutlinedIcon fontSize="large" />
+            </IconButton>
+          ) : (
+            <IconButton
+              disableRipple
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={classes.DrawerClose_icon}
+            >
+              <MenuOutlinedIcon fontSize="large" />
+            </IconButton>
+          )}
+
+          <div style={{ marginLeft: "20px" }}>
+            <img
+              src={Logo}
+              alt="Netbanking"
+              className={classes.logo}
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("./");
+              }}
+            />
+            <p className={classes.version01}>V: 1.12.03.1</p>
+          </div>
+        </Box>
         <Stack direction="row" spacing={4} mx={2}>
           <Box className={classes.heading_user_img_border}>
             <Avatar
@@ -85,13 +116,14 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
                 lineHeight={0}
                 fontSize={"11px"}
               >
-                Branch: {authController?.authState?.user?.branchCode ?? ""} -{" "}
-                {authController?.authState?.user?.branch ?? ""}
+                Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
+                {authController?.authState?.user?.branch ??
+                  " Demo Bank Back Office Configuration"}
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
                 Login Branch:{" "}
                 {checkDateAndDisplay(
-                  authController?.authState?.user?.lastLogin ?? ""
+                  authController?.authState?.user?.lastLogin ?? "Vastrapur"
                 )}
               </Typography>
               <Typography
@@ -102,7 +134,8 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
               >
                 Working Date:{" "}
                 {checkDateAndDisplay(
-                  authController?.authState?.user?.lastLogin ?? ""
+                  authController?.authState?.user?.lastLogin ??
+                    "20/05/2023  11:21:58"
                 )}
               </Typography>
             </div>
@@ -114,26 +147,6 @@ export const MyAppBar = ({ handleDrawerOpen, open }) => {
           name="dashboardSearch"
           enableGrid={true}
         />
-        {/* <Paper
-          component="form"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            width: 250,
-            height: 38,
-            backgroundColor: "rgba(235, 237, 238, 0.45)",
-          }}
-        >
-          <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-          <InputBase
-            sx={{ flex: 1 }}
-            placeholder="Search here..."
-            inputProps={{ "aria-label": "search google maps" }}
-          />
-        </Paper> */}
-
         <Language_App />
 
         <Box width={130} display={"flex"} justifyContent={"space-evenly"}>
