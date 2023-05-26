@@ -78,7 +78,7 @@ export const UsernamePasswordField = ({
               width: "360px",
             }}
           >
-            Please provide your UserID and password
+            {/* Please provide your UserID and password */}
           </div>
           <div className={classes.formWrap}>
             <TextField

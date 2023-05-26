@@ -151,8 +151,8 @@ export const PasswordRotation = ({
           {/* <DialogContentText>Please Verify OTP</DialogContentText> */}
           <div>
             <TextField
-              label={"Username"}
-              placeholder="Enter Username"
+              label={"User ID"}
+              placeholder="Enter User ID"
               fullWidth
               type={"text"}
               name="userName"

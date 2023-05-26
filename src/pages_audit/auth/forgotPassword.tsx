@@ -1,8 +1,9 @@
-import { useReducer, useContext, useEffect, useState } from "react";
-// import Box from "@material-ui/core/Box";
+import { useReducer, useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import loginImg from "assets/images/login.png";
+// import loginImg from "assets/images/login.png";
 import { useStyles } from "./style";
+import * as API from "./api";
+
 import logo from "assets/images/logo.jpg";
 import { ForgotPasswordFields } from "./forgotPasswordField";
 import { OTPModel } from "./otpPopup";
@@ -16,6 +17,8 @@ import {
   verifyOTPForPWDReset,
 } from "./api";
 import { GeneralAPI } from "registry/fns/functions";
+import { useQuery } from "react-query";
+import { ClearCacheProvider, queryClient } from "cache";
 const inititalState = {
   isUsernameError: false,
   userMessageforusername: "",
@@ -142,6 +145,9 @@ export const ForgotPasswordController = () => {
   const [loginState, dispath] = useReducer(reducer, inititalState);
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const urlObj = useRef<any>(null);
+  const [dashboardLogoURL, setDashboardLogoURL] = useState<any | null>(null);
+
   const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
@@ -312,10 +318,37 @@ export const ForgotPasswordController = () => {
   useEffect(() => {
     GeneralAPI.setDocumentName("Password Reset");
   }, []);
+
+  const {
+    data: imageData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery<any, any>(["getLoginImageData"], () => API.getLoginImageData());
+
+  useEffect(() => {
+    if (Boolean(imageData?.[0]?.DASHBOARD_APP_LOGO)) {
+      let blob = utilFunction.base64toBlob(imageData?.[0]?.DASHBOARD_APP_LOGO);
+      urlObj.current =
+        typeof blob === "object" && Boolean(blob)
+          ? URL.createObjectURL(blob)
+          : "";
+      setDashboardLogoURL(urlObj.current);
+    }
+  }, [imageData]);
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getLoginImageData"]);
+    };
+  }, []);
+
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-        <BankDetails />
+        <BankDetails imageData={imageData} />
         <Grid item xs={6} md={6} lg={6} sm={6}>
           <Grid
             container
@@ -324,7 +357,11 @@ export const ForgotPasswordController = () => {
             alignItems="center"
             padding={"31px"}
           >
-            <img src={logo} alt="Logo" />
+            {/* <img src={logo} alt="Logo" /> */}
+            <img
+              src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
+              alt="Logo"
+            />
           </Grid>
           <Container maxWidth="xs">
             <Grid alignItems="center" style={{ paddingTop: "40px" }}>
@@ -334,11 +371,13 @@ export const ForgotPasswordController = () => {
                   : "Forgot Password"}
               </h2>
 
+              {/* <ClearCacheProvider> */}
               <ForgotPasswordFields
                 classes={classes}
                 loginState={loginState}
                 onSubmit={onSubmitHandel}
               />
+              {/* </ClearCacheProvider> */}
             </Grid>
           </Container>
 
