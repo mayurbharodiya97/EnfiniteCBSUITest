@@ -181,10 +181,10 @@ const MySearchField: FC<MySearchFieldProps> = ({
         //     </FormHelperText>
         //   </div>
         // }
-        FormHelperTextProps={{
-          //@ts-ignore
-          component: "div",
-        }}
+        // FormHelperTextProps={{
+        //   //@ts-ignore
+        //   component: "div",
+        // }}
         //@ts-ignore
         InputProps={{
           disableUnderline: true,
