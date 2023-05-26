@@ -4,7 +4,9 @@ import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider } from "cache";
 import { useQuery } from "react-query";
 import * as API from "../api";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
+import { Typography } from "@mui/material";
+import { AuthContext } from "pages_audit/auth";
 
 // const actions: ActionTypes[] = [
 //   {
@@ -19,6 +21,8 @@ import { useCallback } from "react";
 // ];
 
 const TodaysTransactionTableGrid = () => {
+  const { authState } = useContext(AuthContext);
+
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["TodaysTransactionTableGrid"],
     () => API.TodaysTransactionTableGrid()
@@ -30,7 +34,7 @@ const TodaysTransactionTableGrid = () => {
   return (
     <>
       <GridWrapper
-        key={`quickAccessGrid`}
+        key={`TodaysTransactionTableGrid`}
         finalMetaData={TodaysTransactionTableGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
@@ -40,6 +44,7 @@ const TodaysTransactionTableGrid = () => {
           backgroundColor: "var(--theme-color2)",
           color: "black",
         }}
+        loading={isLoading || isFetching}
       />
     </>
   );

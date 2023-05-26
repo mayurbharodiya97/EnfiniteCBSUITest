@@ -5,15 +5,21 @@ import { format } from "date-fns";
 // import { DefaultErrorObject } from "components/utils";
 
 export const BranchSelectionGridData = async ({ userID }) => {
-  // const { data, status, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("BRANCHLIST", {
-  //     USER_NM: userID, /////////////
-  //   });
-  // if (status === "0") {
-  //   return data;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("BRANCHLIST", {
+      USER_NAME: userID, /////////////
+    });
+  const dataStatus = data;
+  if (status === "0") {
+    dataStatus.map((item) => {
+      if (item?.STATUS === "Closed") {
+        item._rowColor = "rgba(255, 79, 121, 0.1)";
+      }
+    });
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
   return [
     {
       BASE_COMP_CD: "473 ",

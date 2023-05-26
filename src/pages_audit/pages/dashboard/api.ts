@@ -51,24 +51,24 @@ export const QuickAccessTableGridData = async ({
   GROUP_NAME,
   APP_TRAN_CD,
 }) => {
-  // const { data, status, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("RECENT_FAVORITE", {
-  //     USER_NM: userID,
-  //     MACHINE_IP: "",
-  //     COMP_CD: COMP_CD,
-  //     BASE_BRANCH_CD: BASE_BRANCH_CD,
-  //     BRANCH_CD: BRANCH_CD,
-  //     ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
-  //     GROUP_NAME: GROUP_NAME,
-  //     IMG_PATH: "",
-  //     FLAG: "ALL_SCREENS",
-  //     APP_TRAN_CD: APP_TRAN_CD,
-  //   });
-  // if (status === "0") {
-  //   return data;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETQUICKACCESS", {
+      USER_NAME: userID,
+      MACHINE_IP: "",
+      COMP_CD: COMP_CD,
+      BASE_BRANCH_CD: BASE_BRANCH_CD,
+      BRANCH_CD: BRANCH_CD,
+      ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
+      GROUP_NAME: GROUP_NAME,
+      IMG_PATH: "",
+      FLAG: "FAVORITE",
+      APP_TRAN_CD: APP_TRAN_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
   return [
     {
       DOC_NM: "A/c Opening Register Normal",
@@ -431,6 +431,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "INT ON CLOSING DEC-22-FEB-23",
       ACCT_CD: "00018194            ",
       ACCT_TYPE: "1001",
+      STATUS: "Completed",
     },
     {
       TYPE_CD: "6   ",
@@ -440,6 +441,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "INT 02/23 OF A/C 0002100100018194",
       ACCT_CD: "00009136            ",
       ACCT_TYPE: "PL  ",
+      STATUS: "Completed",
     },
     {
       TYPE_CD: "5   ",
@@ -449,6 +451,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
       ACCT_CD: "00000001            ",
       ACCT_TYPE: "8887",
+      STATUS: "Completed",
     },
     {
       TYPE_CD: "2   ",
@@ -458,6 +461,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
       ACCT_CD: "00004049            ",
       ACCT_TYPE: "1101",
+      STATUS: "pending",
     },
     {
       TYPE_CD: "5   ",
@@ -467,6 +471,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
       ACCT_CD: "00004049            ",
       ACCT_TYPE: "1101",
+      STATUS: "Completed",
     },
     {
       TYPE_CD: "4   ",
@@ -476,6 +481,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "TO CASH -SELF",
       ACCT_CD: "00000035            ",
       ACCT_TYPE: "1508",
+      STATUS: "pending",
     },
     {
       TYPE_CD: "5   ",
@@ -485,6 +491,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "CTS_CLG:-Mrs YASMIN AMIR NATHANI",
       ACCT_CD: "00003931            ",
       ACCT_TYPE: "1101",
+      STATUS: "pending",
     },
     {
       TYPE_CD: "5   ",
@@ -494,6 +501,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "CTS_CLG:-J T CO",
       ACCT_CD: "00004226            ",
       ACCT_TYPE: "1101",
+      STATUS: "completed",
     },
     {
       TYPE_CD: "5   ",
@@ -503,6 +511,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "CTS_CLG:-VAIBHAV TOOLS AND HARDWA",
       ACCT_CD: "00000535            ",
       ACCT_TYPE: "1101",
+      STATUS: "Completed",
     },
     {
       TYPE_CD: "4   ",
@@ -512,6 +521,7 @@ export const TodaysTransactionTableGrid = async () => {
       REMARKS: "AC CLOSE SELF",
       ACCT_CD: "00018194            ",
       ACCT_TYPE: "1001",
+      STATUS: "pending",
     },
   ];
 };

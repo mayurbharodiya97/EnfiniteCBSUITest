@@ -234,6 +234,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
     role: data?.USER_LEVEL,
     roleName: data?.USER_ROLE,
     isLoggedIn: false,
+    isBranchSelect: false,
     companyName: data?.COMPANYNAME,
     companyID: data?.COMPANYID,
     workingDate: data?.WORKINGDATE,

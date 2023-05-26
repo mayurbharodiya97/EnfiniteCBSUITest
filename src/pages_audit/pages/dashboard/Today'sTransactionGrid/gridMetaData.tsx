@@ -24,7 +24,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     isCusrsorFocused: true,
-    hideFooter: true,
+    hideFooter: false,
   },
   columns: [
     {
@@ -68,8 +68,8 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
       maxWidth: 220,
     },
     {
-      accessor: "REMARKS",
-      columnName: "Remarks",
+      accessor: "STATUS",
+      columnName: "STATUS",
       sequence: 5,
       alignment: "left",
       componentType: "default",

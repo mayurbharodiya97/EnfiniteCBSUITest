@@ -27,8 +27,8 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETLOGINIMGDATA",
     packageName: "",
   },
-  RECENT_FAVORITE: {
-    url: "enfinityCommonServiceAPI/GETMENULIST",
+  GETQUICKACCESS: {
+    url: "dashboardServiceAPI/GETQUICKACCESS",
     packageName: "",
   },
   BRANCHLIST: {
@@ -37,6 +37,10 @@ export const ActionWiseAPIConfiguration = {
   },
   TRANS_SUMMARY_CARD: {
     url: "adminPanelCommonServiceAPI/DashBoard/GETTRANSACTIONSUMMARY",
+    packageName: "",
+  },
+  GETTRANSACTIONDETAILS: {
+    url: "adminPanelCommonServiceAPI/DashBoard/GETTRANSACTIONDETAILS",
     packageName: "",
   },
 };
