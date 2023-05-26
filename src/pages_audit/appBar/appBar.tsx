@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthContext } from "../auth";
@@ -14,7 +14,9 @@ import {
   Avatar,
   Box,
   Button,
+  Popover,
   Stack,
+  TextareaAutosize,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -22,20 +24,23 @@ import { Notification_App } from "./notification";
 import { Quick_View } from "./quickView";
 import { Language_App } from "./language";
 import MySearchField from "components/common/search/search";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import { UserDetail } from "./userDetail";
 export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
   const handleNavigate = () => {
-    // if (selectedBranch) {
-    // Change 3: Check if a branch is selected
-    navigate("/cbsenfinity/profile"); // Replace '/dashboard' with the actual URL of your dashboard page
-    // } else {
-    //   setError(true); // Change 4: Set error state if no branch is selected
-    // }
-    // console.log("APIAPIDATADATA", apiData);
+    navigate("/cbsenfinity/profile");
+    handleClose();
   };
-
+  const [anchorEl1, setAnchorEl1] = useState(null);
+  const handleClick = (event) => {
+    setAnchorEl1(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl1(null);
+  };
   return (
     <AppBar
       position="fixed"
@@ -71,7 +76,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             </IconButton>
           )}
 
-          <div style={{ marginLeft: "20px" }}>
+          <div>
             <img
               src={Logo}
               alt="Netbanking"
@@ -90,7 +95,6 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               className={classes.heading_user_img}
               alt="Remy Sharp"
               src={userimage}
-              onClick={handleNavigate}
             />
           </Box>
         </Stack>
@@ -101,19 +105,22 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
           noWrap
           className={classes.title}
         >
-          <div
+          <Box
             style={{
-              // margin: "3px 0",
-              marginBottom: "5px",
-              fontSize: "20px",
+              marginBottom: "8px",
+              fontSize: "17px",
               color: "#1C1C1C",
+              // overflowX: "auto",
+              width: "555px",
             }}
+            className={clsx({
+              [classes.marquee]:
+                authController?.authState?.companyName.length > 55,
+            })}
           >
             {authController?.authState?.companyName}
-            <span style={{ marginLeft: "7px" }}>
-              <img src={Waving_hand} alt="Waving_hand not found" />
-            </span>
-          </div>
+            {console.log(authController?.authState?.companyName.length)}
+          </Box>
           <div style={{ display: "flex", gap: "8px" }}>
             <div style={{ color: "#949597" }}>
               <Typography
@@ -127,20 +134,20 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                   " Demo Bank Back Office Configuration"}
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
-                Login Branch:{" "}
-                {checkDateAndDisplay(
-                  authController?.authState?.user?.lastLogin ?? "Vastrapur"
-                )}
-              </Typography>
-              <Typography
-                variant="caption"
-                display="inline"
-                marginLeft={1}
-                fontSize={"11px"}
-              >
                 Working Date:{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.workingDate ?? ""
+                )}
+              </Typography>
+              <Typography
+                marginLeft={1}
+                variant="caption"
+                display="inline"
+                fontSize={"11px"}
+              >
+                Last Login Date :{" "}
+                {checkDateAndDisplay(
+                  authController?.authState?.user?.lastLogin ?? "Vastrapur"
                 )}
               </Typography>
             </div>
@@ -157,27 +164,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
         <Box width={130} display={"flex"} justifyContent={"space-evenly"}>
           <Quick_View />
           <Notification_App />
-          <IconButton
-            // size="large"
-            onClick={() => {
-              authController?.logout();
-              // handleClose();
-            }}
-            sx={{
-              backgroundColor: "rgba(235, 237, 238, 0.45)",
-              borderRadius: "10px",
-              height: "30px",
-              width: "30px",
-            }}
-            aria-label="show 4 new mails"
-            color="inherit"
-          >
-            <LogoutIcon
-              color="inherit"
-              fontSize="small"
-              sx={{ color: "var(--theme-color3)" }}
-            />
-          </IconButton>
+          <UserDetail />
         </Box>
       </Toolbar>
     </AppBar>

@@ -3,7 +3,6 @@ import { useState, useContext } from "react";
 import quickview from "assets/images/Quick_view.png";
 import IconButton from "@mui/material/IconButton";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
-import { AuthContext } from "../auth";
 import {
   Button,
   Box,
@@ -15,8 +14,17 @@ import {
 } from "@mui/material";
 
 export const Quick_View = () => {
-  //   const classes = useStyles();
-  const authController = useContext(AuthContext);
+  const listItems = [
+    "Switch Branch",
+    "Chat",
+    "Customer",
+    "User",
+    "Setting",
+    "Table",
+    "Chart",
+    "Plugins",
+    "Contact Us",
+  ];
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClickd = (event) => {
     setAnchorEl(event.currentTarget);
@@ -56,8 +64,8 @@ export const Quick_View = () => {
         }}
         PaperProps={{
           style: {
-            maxWidth: "680px",
-            width: "680px",
+            maxWidth: "580px",
+            width: "580px",
           },
         }}
       >
@@ -83,10 +91,16 @@ export const Quick_View = () => {
               <Grid
                 container
                 rowSpacing={1}
-                pl={1}
+                // pl={1}
+                p={0}
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                sx={{
+                  "& .MuiGrid-item": {
+                    padding: "0px",
+                  },
+                }}
               >
-                <Grid item xs={6}>
+                {/* <Grid item xs={12}>
                   <List
                     sx={{
                       listStyleType: "disc",
@@ -99,9 +113,7 @@ export const Quick_View = () => {
                     <ListItem disablePadding>
                       <ListItemButton>Switch Branch</ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
-                      <ListItemButton>Profile</ListItemButton>
-                    </ListItem>
+
                     <ListItem disablePadding>
                       <ListItemButton>Chat</ListItemButton>
                     </ListItem>
@@ -114,7 +126,7 @@ export const Quick_View = () => {
                     <ListItem disablePadding>
                       <ListItemButton>Setting</ListItemButton>
                     </ListItem>
-                  </List>
+                    </List>
                 </Grid>
                 <Grid item xs={6}>
                   <List
@@ -138,16 +150,41 @@ export const Quick_View = () => {
                     <ListItem disablePadding>
                       <ListItemButton>Contact Us</ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
-                      <ListItemButton
-                        onClick={() => {
-                          authController?.logout();
-                          // handleClose();
-                        }}
-                      >
-                        Log Out
-                      </ListItemButton>
-                    </ListItem>
+                  </List>
+                </Grid> */}
+
+                <Grid item xs={12} p={0}>
+                  <List
+                    sx={{
+                      padding: "0px",
+                      listStyleType: "disc",
+                      "& .MuiListItem-root": {
+                        pt: 1,
+                        display: "list-item",
+                      },
+                    }}
+                  >
+                    <Grid
+                      container
+                      sx={{
+                        display: "flex",
+                        flexFlow: "column wrap",
+                        gap: "0 30px",
+                        height: 244, // set the height limit to your liking
+                        overflow: "auto",
+                        padding: "0px 30px ",
+                      }}
+                    >
+                      {listItems.map((item) => (
+                        <ListItem
+                          key={item}
+                          disablePadding
+                          sx={{ width: "auto" }}
+                        >
+                          <ListItemButton>{item}</ListItemButton>
+                        </ListItem>
+                      ))}
+                    </Grid>
                   </List>
                 </Grid>
               </Grid>
