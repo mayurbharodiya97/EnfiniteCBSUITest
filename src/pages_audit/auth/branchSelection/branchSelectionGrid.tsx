@@ -50,7 +50,7 @@ const BranchSelectionGrid = () => {
       console.log("<<<<>>>>", data);
       console.log(">>login update", { ...authState, menulistdata: data });
       login({ ...authState, menulistdata: data });
-      navigate("/netbanking/dashboard");
+      navigate("/cbsenfinity/dashboard");
     },
   });
 

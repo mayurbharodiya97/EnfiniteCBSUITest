@@ -4,8 +4,8 @@ import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider } from "cache";
 import { useQuery } from "react-query";
 import * as API from "../api";
-import { useCallback } from "react";
-
+import { useCallback, useContext } from "react";
+import { AuthContext } from "pages_audit/auth";
 // const actions: ActionTypes[] = [
 //   {
 //     actionName: "See All",
@@ -17,13 +17,16 @@ import { useCallback } from "react";
 //     actionBackground: "inherit",
 //   },
 // ];
-
 const TodaysTransactionTableGrid = () => {
+  const { authState } = useContext(AuthContext);
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["TodaysTransactionTableGrid"],
-    () => API.TodaysTransactionTableGrid()
+    () =>
+      API.TodaysTransactionTableGrid({
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+      })
   );
-
   const setCurrentAction = useCallback((data) => {
     // console.log(">>data", data);
   }, []);

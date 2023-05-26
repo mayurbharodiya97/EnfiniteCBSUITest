@@ -39,6 +39,14 @@ export const ActionWiseAPIConfiguration = {
     url: "adminPanelCommonServiceAPI/DashBoard/GETTRANSACTIONSUMMARY",
     packageName: "",
   },
+  GETPENDINGREQUEST: {
+    url: "enfinityCommonServiceAPI/DashBoard/GETPENDINGREQUEST",
+    packageName: "",
+  },
+  GETTRANSACTIONDETAILS: {
+    url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

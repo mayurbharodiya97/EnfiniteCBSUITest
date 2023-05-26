@@ -78,7 +78,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               className={classes.logo}
               onClick={(e) => {
                 e.preventDefault();
-                navigate("./");
+                navigate("./dashboard");
               }}
             />
             <p className={classes.version01}>V: 1.12.03.1</p>
