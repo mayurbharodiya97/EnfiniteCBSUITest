@@ -7,7 +7,8 @@ import { utilFunction } from "components/utils";
 export const ProtectedRoutes = ({ children }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
-  const { isLoggedIn, logout, authState } = useContext(AuthContext);
+  const { isLoggedIn, logout, authState, isBranchSelected } =
+    useContext(AuthContext);
   const isTimeoutData = useMemo(() => {
     let timeout = Number(process?.env?.REACT_APP_IDLE_TIMEOUT ?? 0);
     if (isNaN(timeout) || timeout <= 0) {
@@ -61,8 +62,10 @@ export const ProtectedRoutes = ({ children }) => {
     if (!isLoggedIn()) {
       //console.log("isLoggedIn()=>", isLoggedIn());
       navigate("/cbsenfinity/login");
+    } else if (!isBranchSelected()) {
+      navigate("/cbsenfinity/branch-selection");
     }
-  }, [navigate, isLoggedIn]);
+  }, [navigate, isLoggedIn, isBranchSelected]);
   const allActiveURL = useMemo(() => {
     return utilFunction.GetAllChieldMenuData(authState.menulistdata, false);
   }, [authState.menulistdata]);

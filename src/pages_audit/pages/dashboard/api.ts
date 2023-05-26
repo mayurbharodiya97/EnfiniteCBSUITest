@@ -98,24 +98,24 @@ export const QuickAccessTableGridData = async ({
   GROUP_NAME,
   APP_TRAN_CD,
 }) => {
-  // const { data, status, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("RECENT_FAVORITE", {
-  //     USER_NM: userID,
-  //     MACHINE_IP: "",
-  //     COMP_CD: COMP_CD,
-  //     BASE_BRANCH_CD: BASE_BRANCH_CD,
-  //     BRANCH_CD: BRANCH_CD,
-  //     ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
-  //     GROUP_NAME: GROUP_NAME,
-  //     IMG_PATH: "",
-  //     FLAG: "ALL_SCREENS",
-  //     APP_TRAN_CD: APP_TRAN_CD,
-  //   });
-  // if (status === "0") {
-  //   return data;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETQUICKACCESS", {
+      USER_NAME: userID,
+      MACHINE_IP: "",
+      COMP_CD: COMP_CD,
+      BASE_BRANCH_CD: BASE_BRANCH_CD,
+      BRANCH_CD: BRANCH_CD,
+      ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
+      GROUP_NAME: GROUP_NAME,
+      IMG_PATH: "",
+      FLAG: "FAVORITE",
+      APP_TRAN_CD: APP_TRAN_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
   return [
     {
       DOC_NM: "A/c Opening Register Normal",

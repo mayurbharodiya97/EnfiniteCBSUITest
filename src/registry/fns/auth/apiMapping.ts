@@ -27,8 +27,8 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETLOGINIMGDATA",
     packageName: "",
   },
-  RECENT_FAVORITE: {
-    url: "enfinityCommonServiceAPI/GETMENULIST",
+  GETQUICKACCESS: {
+    url: "dashboardServiceAPI/GETQUICKACCESS",
     packageName: "",
   },
   BRANCHLIST: {

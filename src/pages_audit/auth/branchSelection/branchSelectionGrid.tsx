@@ -27,7 +27,7 @@ const actions: ActionTypes[] = [
     actionName: "proceed",
     actionLabel: "Proceed",
     multiple: false,
-    rowDoubleClick: false,
+    rowDoubleClick: true,
     alwaysAvailable: false,
     actionTextColor: "var(--theme-color2)",
     actionBackground: "var(--theme-color3)",
@@ -35,7 +35,8 @@ const actions: ActionTypes[] = [
 ];
 
 const BranchSelectionGrid = () => {
-  const { authState, login } = useContext(AuthContext);
+  const { authState, isBranchSelected, branchSelect, isLoggedIn } =
+    useContext(AuthContext);
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -44,13 +45,24 @@ const BranchSelectionGrid = () => {
     ["BranchSelectionGridData"],
     () => API.BranchSelectionGridData({ userID: authState?.user?.id ?? "" })
   );
+  // console.log("authState?.user?.id", authState?.user?.id);
+
+  console.log("<<DATADATA>>", data);
+  useEffect(() => {
+    if (!isLoggedIn()) {
+      navigate("/cbsenfinity/login");
+    } else if (isBranchSelected()) {
+      navigate("/cbsenfinity/dashboard");
+    }
+  }, [isBranchSelected, isLoggedIn]);
 
   const mutation = useMutation(API.GetMenuData, {
     onSuccess: ({ data }) => {
       console.log("<<<<>>>>", data);
       console.log(">>login update", { ...authState, menulistdata: data });
-      login({ ...authState, menulistdata: data });
-      navigate("/cbsenfinity/dashboard");
+      //login({ ...authState, menulistdata: data });
+      branchSelect({ menulistdata: data });
+      //navigate("/cbsenfinity/dashboard");
     },
   });
 
@@ -67,7 +79,6 @@ const BranchSelectionGrid = () => {
             variant: "error",
           });
         } else {
-          console.log("triggerd");
           mutation.mutate({
             userID: authState?.user?.id ?? "",
             COMP_CD: authState?.companyID ?? "",
@@ -77,7 +88,7 @@ const BranchSelectionGrid = () => {
           });
         }
       } else {
-        navigate("/cbsenfinity/login");
+        navigate("/netbanking/login");
       }
     },
     [navigate]

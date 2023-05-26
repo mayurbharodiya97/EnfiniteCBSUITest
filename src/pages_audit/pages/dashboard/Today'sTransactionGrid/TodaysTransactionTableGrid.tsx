@@ -33,7 +33,7 @@ const TodaysTransactionTableGrid = () => {
   return (
     <>
       <GridWrapper
-        key={`quickAccessGrid`}
+        key={`TodaysTransactionTableGrid`}
         finalMetaData={TodaysTransactionTableGridMetaData as GridMetaDataType}
         data={data ?? []}
         setData={() => null}
@@ -43,6 +43,7 @@ const TodaysTransactionTableGrid = () => {
           backgroundColor: "var(--theme-color2)",
           color: "black",
         }}
+        loading={isLoading || isFetching}
       />
     </>
   );
