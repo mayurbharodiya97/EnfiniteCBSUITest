@@ -34,12 +34,13 @@ const authAPI = () => {
     return fingerprintdata;
   };
 
-  const loginUserDetails = ({ role, user: { id } }) => {
+  const loginUserDetails = ({ role, user: { id, branchCode } }) => {
     loginuserDetailsData = {
       USERNAME: id,
       USERROLE: role,
       BROWSER_FINGERPRINT: browserFingerPrint,
       MACHINE_NAME: "Auto",
+      BRANCH_CD: branchCode,
     };
   };
   const setToken = (argaccessToken) => {

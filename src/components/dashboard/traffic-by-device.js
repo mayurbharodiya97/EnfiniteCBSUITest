@@ -124,7 +124,7 @@ export const TrafficByDevice = (props) => {
   //console.log(totalLoginUser);
   return (
     <>
-      <Card {...props}>
+      <Card {...props} style={{ borderRadius: "20px" }}>
         <CardHeader
           title="Traffic By Device"
           style={{ color: "var(--theme-color1)" }}

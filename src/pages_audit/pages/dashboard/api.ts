@@ -12,32 +12,79 @@ export const getDashboardQuickCardData = async () => {
   // }
   return [
     {
-      DESCRIPTION: "Follow Up done",
-      COUNT: "4",
-    },
-    {
-      DESCRIPTION: "Follow Up",
-      COUNT: "4",
-    },
-    {
-      DESCRIPTION: "Reject Transactions",
-      COUNT: "1",
-    },
-    {
-      DESCRIPTION: "Reject Request",
-      COUNT: "1",
-    },
-    {
-      DESCRIPTION: "Pending Request",
-      COUNT: "1",
-    },
-    {
-      DESCRIPTION: "Confirm Request",
-      COUNT: "286518",
-    },
-    {
-      DESCRIPTION: "Confirmed Transactions",
-      COUNT: "3699",
+      BOXES: [
+        {
+          TITLE: "Follow Up done",
+          ICON: "users",
+          DEFAULT: "4",
+          APINAME: "GETDYNAMICDATA/GETTOTALCUSTOMERDASH",
+          BACKGROUND: "",
+          DISPLAY_SEQ: "7",
+        },
+        {
+          TITLE: "Follow Up",
+          ICON: "user-clock",
+          DEFAULT: "4",
+          APINAME: "GETDYNAMICDATA/GETLOGINCUSTOMERDASH",
+          BACKGROUND: "",
+          DISPLAY_SEQ: "5",
+        },
+        {
+          TITLE: "Reject Transactions",
+          ICON: "user-lock",
+          DEFAULT: "1",
+          APINAME: "GETDYNAMICDATA/GETBLOCKCUSTOMERDASH",
+          BACKGROUND: "",
+          DISPLAY_SEQ: "4",
+        },
+        {
+          TITLE: "Reject Request",
+          ICON: "users",
+          DEFAULT: "1",
+          APINAME: "GETDYNAMICDATA/GETLOGINADMINUSERDASH",
+          BACKGROUND: "",
+          DISPLAY_SEQ: "6",
+        },
+        {
+          TITLE: "Pending Request",
+          ICON: "users",
+          DEFAULT: "1",
+          APINAME: "GETDYNAMICDATA/GETLOGINADMINUSERDASH",
+          BACKGROUND: "",
+          DISPLAY_SEQ: "2",
+        },
+        {
+          TITLE: "Confirm Requet",
+          ICON: "users",
+          DEFAULT: "286518",
+          APINAME: "GETDYNAMICDATA/GETLOGINADMINUSERDASH",
+          BACKGROUND: "",
+          DISPLAY_SEQ: "3",
+        },
+        {
+          TITLE: "Confirmed Transactions",
+          ICON: "users",
+          DEFAULT: "3699",
+          APINAME: "GETDYNAMICDATA/GETLOGINADMINUSERDASH",
+          BACKGROUND: "",
+          DISPLAY_SEQ: "1",
+        },
+      ],
+      ANNOUNCEMENT: {
+        ISVISIBLE: true,
+      },
+      QUICK_ACCESS: {
+        ISVISIBLE: true,
+      },
+      CHART1: {
+        ISVISIBLE: true,
+      },
+      CHART2: {
+        ISVISIBLE: true,
+      },
+      TODAY_TRN: {
+        ISVISIBLE: true,
+      },
     },
   ];
 };
@@ -51,24 +98,24 @@ export const QuickAccessTableGridData = async ({
   GROUP_NAME,
   APP_TRAN_CD,
 }) => {
-  // const { data, status, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("RECENT_FAVORITE", {
-  //     USER_NM: userID,
-  //     MACHINE_IP: "",
-  //     COMP_CD: COMP_CD,
-  //     BASE_BRANCH_CD: BASE_BRANCH_CD,
-  //     BRANCH_CD: BRANCH_CD,
-  //     ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
-  //     GROUP_NAME: GROUP_NAME,
-  //     IMG_PATH: "",
-  //     FLAG: "ALL_SCREENS",
-  //     APP_TRAN_CD: APP_TRAN_CD,
-  //   });
-  // if (status === "0") {
-  //   return data;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETQUICKACCESS", {
+      USER_NAME: userID,
+      MACHINE_IP: "",
+      COMP_CD: COMP_CD,
+      BASE_BRANCH_CD: BASE_BRANCH_CD,
+      BRANCH_CD: BRANCH_CD,
+      ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
+      GROUP_NAME: GROUP_NAME,
+      IMG_PATH: "",
+      FLAG: "FAVORITE",
+      APP_TRAN_CD: APP_TRAN_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
   return [
     {
       DOC_NM: "A/c Opening Register Normal",
@@ -421,97 +468,111 @@ export const QuickAccessTableGridData = async ({
   ];
 };
 
-export const TodaysTransactionTableGrid = async () => {
-  return [
-    {
-      TYPE_CD: "3   ",
-      TRAN_CD: "1392",
-      AMOUNT: "4",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "INT ON CLOSING DEC-22-FEB-23",
-      ACCT_CD: "00018194            ",
-      ACCT_TYPE: "1001",
-    },
-    {
-      TYPE_CD: "6   ",
-      TRAN_CD: "1393",
-      AMOUNT: "4",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "INT 02/23 OF A/C 0002100100018194",
-      ACCT_CD: "00009136            ",
-      ACCT_TYPE: "PL  ",
-    },
-    {
-      TYPE_CD: "5   ",
-      TRAN_CD: "1489",
-      AMOUNT: "50000",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
-      ACCT_CD: "00000001            ",
-      ACCT_TYPE: "8887",
-    },
-    {
-      TYPE_CD: "2   ",
-      TRAN_CD: "1490",
-      AMOUNT: "50000",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
-      ACCT_CD: "00004049            ",
-      ACCT_TYPE: "1101",
-    },
-    {
-      TYPE_CD: "5   ",
-      TRAN_CD: "1491",
-      AMOUNT: "50000",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
-      ACCT_CD: "00004049            ",
-      ACCT_TYPE: "1101",
-    },
-    {
-      TYPE_CD: "4   ",
-      TRAN_CD: "933",
-      AMOUNT: "2500",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "TO CASH -SELF",
-      ACCT_CD: "00000035            ",
-      ACCT_TYPE: "1508",
-    },
-    {
-      TYPE_CD: "5   ",
-      TRAN_CD: "1209",
-      AMOUNT: "123528",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "CTS_CLG:-Mrs YASMIN AMIR NATHANI",
-      ACCT_CD: "00003931            ",
-      ACCT_TYPE: "1101",
-    },
-    {
-      TYPE_CD: "5   ",
-      TRAN_CD: "1417",
-      AMOUNT: "498797",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "CTS_CLG:-J T CO",
-      ACCT_CD: "00004226            ",
-      ACCT_TYPE: "1101",
-    },
-    {
-      TYPE_CD: "5   ",
-      TRAN_CD: "1328",
-      AMOUNT: "89832",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "CTS_CLG:-VAIBHAV TOOLS AND HARDWA",
-      ACCT_CD: "00000535            ",
-      ACCT_TYPE: "1101",
-    },
-    {
-      TYPE_CD: "4   ",
-      TRAN_CD: "1394",
-      AMOUNT: "3963",
-      "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
-      REMARKS: "AC CLOSE SELF",
-      ACCT_CD: "00018194            ",
-      ACCT_TYPE: "1001",
-    },
-  ];
+// export const TodaysTransactionTableGrid = async () => {
+//   return [
+//     {
+//       TYPE_CD: "3   ",
+//       TRAN_CD: "1392",
+//       AMOUNT: "4",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "INT ON CLOSING DEC-22-FEB-23",
+//       ACCT_CD: "00018194            ",
+//       ACCT_TYPE: "1001",
+//     },
+//     {
+//       TYPE_CD: "6   ",
+//       TRAN_CD: "1393",
+//       AMOUNT: "4",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "INT 02/23 OF A/C 0002100100018194",
+//       ACCT_CD: "00009136            ",
+//       ACCT_TYPE: "PL  ",
+//     },
+//     {
+//       TYPE_CD: "5   ",
+//       TRAN_CD: "1489",
+//       AMOUNT: "50000",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
+//       ACCT_CD: "00000001            ",
+//       ACCT_TYPE: "8887",
+//     },
+//     {
+//       TYPE_CD: "2   ",
+//       TRAN_CD: "1490",
+//       AMOUNT: "50000",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
+//       ACCT_CD: "00004049            ",
+//       ACCT_TYPE: "1101",
+//     },
+//     {
+//       TYPE_CD: "5   ",
+//       TRAN_CD: "1491",
+//       AMOUNT: "50000",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "INW.RET.:-4730002110100004049CHQ NO:- 851511",
+//       ACCT_CD: "00004049            ",
+//       ACCT_TYPE: "1101",
+//     },
+//     {
+//       TYPE_CD: "4   ",
+//       TRAN_CD: "933",
+//       AMOUNT: "2500",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "TO CASH -SELF",
+//       ACCT_CD: "00000035            ",
+//       ACCT_TYPE: "1508",
+//     },
+//     {
+//       TYPE_CD: "5   ",
+//       TRAN_CD: "1209",
+//       AMOUNT: "123528",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "CTS_CLG:-Mrs YASMIN AMIR NATHANI",
+//       ACCT_CD: "00003931            ",
+//       ACCT_TYPE: "1101",
+//     },
+//     {
+//       TYPE_CD: "5   ",
+//       TRAN_CD: "1417",
+//       AMOUNT: "498797",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "CTS_CLG:-J T CO",
+//       ACCT_CD: "00004226            ",
+//       ACCT_TYPE: "1101",
+//     },
+//     {
+//       TYPE_CD: "5   ",
+//       TRAN_CD: "1328",
+//       AMOUNT: "89832",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "CTS_CLG:-VAIBHAV TOOLS AND HARDWA",
+//       ACCT_CD: "00000535            ",
+//       ACCT_TYPE: "1101",
+//     },
+//     {
+//       TYPE_CD: "4   ",
+//       TRAN_CD: "1394",
+//       AMOUNT: "3963",
+//       "TO_CHAR(TRAN_DT,'HH24:MI￼S')": "00:00:00",
+//       REMARKS: "AC CLOSE SELF",
+//       ACCT_CD: "00018194            ",
+//       ACCT_TYPE: "1001",
+//     },
+//   ];
+// };
+export const TodaysTransactionTableGrid = async ({ COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETTRANSACTIONDETAILS", {
+      COMP_CD: COMP_CD,
+      // BASE_BRANCH_CD: BASE_BRANCH_CD,
+      BRANCH_CD: BRANCH_CD,
+      // ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };

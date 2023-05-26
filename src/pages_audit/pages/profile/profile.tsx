@@ -67,11 +67,10 @@ export const Profile = () => {
     navigate("/cbsenfinity/dashboard");
   };
 
-  const queryData = useQuery<any, any, any>(["getUserDetails"], () =>
+  const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
 
-  // console.log(queryData);
   const userActivityData = useQuery<any, any, any>(
     ["getUserLoginDetails"],
     () => API.getUserLoginDetails({ userID })
@@ -80,7 +79,7 @@ export const Profile = () => {
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
-      queryClient.removeQueries(["getUserDetails"]);
+      queryClient.removeQueries(["GETEMPLOYEEDTL"]);
       queryClient.removeQueries(["getUserLoginDetails"]);
     };
   }, []);

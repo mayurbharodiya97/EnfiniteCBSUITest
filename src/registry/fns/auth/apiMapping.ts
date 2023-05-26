@@ -27,8 +27,8 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETLOGINIMGDATA",
     packageName: "",
   },
-  RECENT_FAVORITE: {
-    url: "enfinityCommonServiceAPI/GETMENULIST",
+  GETQUICKACCESS: {
+    url: "dashboardServiceAPI/GETQUICKACCESS",
     packageName: "",
   },
   BRANCHLIST: {
@@ -36,7 +36,23 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   TRANS_SUMMARY_CARD: {
-    url: "adminPanelCommonServiceAPI/DashBoard/GETTRANSACTIONSUMMARY",
+    url: "enfinityCommonServiceAPI/GETTRANSACTIONSUMMARY",
+    packageName: "",
+  },
+  GETEMPPROFILEPHOTO: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPPROFILEPHOTO",
+    packageName: "",
+  },
+  GETEMPLOYEEDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPLOYEEDTL",
+    packageName: "",
+  },
+  GETPENDINGREQUEST: {
+    url: "enfinityCommonServiceAPI/DashBoard/GETPENDINGREQUEST",
+    packageName: "",
+  },
+  GETTRANSACTIONDETAILS: {
+    url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
     packageName: "",
   },
 };

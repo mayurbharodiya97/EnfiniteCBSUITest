@@ -116,7 +116,7 @@ export const Transactions = (props) => {
   };
 
   return (
-    <Card {...props}>
+    <Card {...props} style={{ borderRadius: "20px" }}>
       <CardHeader
         action={
           <div style={{ width: "200px" }}>
@@ -158,7 +158,7 @@ export const Transactions = (props) => {
             />
           </div>
         }
-        title="Latest Transactions"
+        title="Today's Transactions"
         style={{ color: "var(--theme-color1)" }}
       />
       <Divider />
@@ -179,6 +179,7 @@ export const Transactions = (props) => {
           justifyContent: "flex-end",
           height: "32px",
           pt: 1,
+          marginRight: "10px",
         }}
       >
         {/* <Button

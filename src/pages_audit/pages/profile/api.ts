@@ -2,19 +2,21 @@ import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getUserDetails = async ({ userID }) => {
-  // const { status, data, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("GETEMPLOYEEDTL", { USERID: userID });
-  // if (status === "0") {
-  //   let responseData = data[0];
-  //   if (responseData?.ALLOW_RELEASE === "Y") {
-  //     responseData.ALLOW_RELEASE = true;
-  //   } else {
-  //     responseData.ALLOW_RELEASE = false;
-  //   }
-  //   return responseData;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETEMPLOYEEDTL", {
+      USER_ID: userID,
+    });
+  if (status === "0") {
+    let responseData = data[0];
+    if (responseData?.ALLOW_RELEASE === "Y") {
+      responseData.ALLOW_RELEASE = true;
+    } else {
+      responseData.ALLOW_RELEASE = false;
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };
 
 export const getUserLoginDetails = async ({ userID }) => {
