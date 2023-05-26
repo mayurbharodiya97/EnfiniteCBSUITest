@@ -143,6 +143,22 @@ export const GetMenuData = async ({
         label: "All Screens",
         href: "all-screens",
       },
+      {
+        children: [
+          {
+            user_code: "MST/707",
+            accessUserLevel: "1",
+            isRouterLink: "true",
+            icon: "user-plus",
+            windowsPara: "",
+            system_code: "NETM/001",
+            label: "C-KYC Individual",
+            href: "operation/ckyc",
+          },
+        ],
+        icon: "users-gear",
+        label: "Operation",
+      },
     ],
     message: "",
     messageDetails: "",
