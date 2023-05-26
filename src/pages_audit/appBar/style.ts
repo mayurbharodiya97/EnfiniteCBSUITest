@@ -33,7 +33,7 @@ export const useStyles = makeStyles((theme: any) => ({
   heading_user_img: {
     width: "40px",
     height: "40px",
-    cursor: "pointer",
+    // cursor: "pointer",
   },
   heading_user_img_border: {
     border: "2px dashed #4263C7",
@@ -150,5 +150,13 @@ export const useStyles = makeStyles((theme: any) => ({
     },
     width: "34px",
     height: "34px",
+  },
+  marquee: {
+    animation: "$marquee 15s linear infinite",
+    animationDelay: "3s",
+  },
+  "@keyframes marquee": {
+    "0%": { transform: "translateX(0)" },
+    "100%": { transform: "translateX(-100%)" },
   },
 }));

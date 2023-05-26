@@ -7,7 +7,12 @@ import {
 } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { queryClient } from "cache";
-import { AuthContextType, AuthStateType, ActionType } from "./type";
+import {
+  AuthContextType,
+  AuthStateType,
+  ActionType,
+  BranchSelectData,
+} from "./type";
 import * as API from "./api";
 import { AuthSDK } from "registry/fns/auth";
 import { RefreshTokenData } from "./api";
@@ -18,6 +23,7 @@ import { LinearProgress } from "@mui/material";
 const inititalState: AuthStateType = {
   access_token: {},
   isLoggedIn: false,
+  isBranchSelect: false,
   role: "",
   roleName: "",
   companyID: "",
@@ -46,6 +52,13 @@ const authReducer = (
     case "logout": {
       return inititalState;
     }
+    case "branchselect": {
+      return {
+        ...state,
+        isBranchSelect: true,
+        menulistdata: action.payload?.menulistdata,
+      };
+    }
     default: {
       return state;
     }
@@ -58,6 +71,8 @@ export const AuthContext = createContext<AuthContextType>({
   logout: () => true,
   isLoggedIn: () => false,
   authState: inititalState,
+  isBranchSelected: () => false,
+  branchSelect: () => true,
 });
 
 export const AuthProvider = ({ children }) => {
@@ -89,7 +104,33 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       if (comingFromRoute === "/cbsenfinity/login") {
-        navigate("/cbsenfinity", {
+        navigate("/cbsenfinity/branch-selection", {
+          replace: true,
+        });
+      } else {
+        navigate(comingFromRoute, {
+          replace: true,
+        });
+      }
+    },
+    [dispatch, navigate, comingFromRoute]
+  );
+  const branchSelect = useCallback(
+    (payload: BranchSelectData, stopNavigation?: boolean) => {
+      dispatch({
+        type: "branchselect",
+        payload: { menulistdata: payload.menulistdata },
+      });
+      setLoginDatainLocalStorage({
+        ...state,
+        isBranchSelect: true,
+        menulistdata: payload.menulistdata,
+      });
+      if (stopNavigation) {
+        return;
+      }
+      if (comingFromRoute === "/cbsenfinity/branch-selection") {
+        navigate("/cbsenfinity/dashboard", {
           replace: true,
         });
       } else {
@@ -129,6 +170,10 @@ export const AuthProvider = ({ children }) => {
 
   const isLoggedIn = () => {
     return state.isLoggedIn;
+  };
+
+  const isBranchSelected = () => {
+    return state.isBranchSelect;
   };
 
   const setLoginDatainLocalStorage = async (payload) => {
@@ -256,6 +301,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         isLoggedIn,
         authState: state,
+        isBranchSelected,
+        branchSelect,
       }}
     >
       {authenticating ? <LinearProgress color="secondary" /> : children}

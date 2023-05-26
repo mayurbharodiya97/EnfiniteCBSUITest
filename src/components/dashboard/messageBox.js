@@ -1,14 +1,26 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
-
-export const Announcement = ({ screenFlag = "" }) => {
+import { useQuery } from "react-query";
+import * as API from "./api";
+import { queryClient } from "cache";
+export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
 
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
+    ["getDashboardMessageBoxData"],
+    () => API.getDashboardMessageBoxData(screenFlag)
+  );
+  console.log("data", data);
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getDashboardMessageBoxData"]);
+    };
+  }, []);
   const handleClick = () => {
     setToggle(!toggle);
   };
@@ -18,7 +30,7 @@ export const Announcement = ({ screenFlag = "" }) => {
       <Grid>
         <Box
           sx={{
-            height: "71px",
+            height: "70px",
             backgroundColor:
               screenFlag === "Announcement"
                 ? "var(--theme-color4)"
@@ -33,7 +45,7 @@ export const Announcement = ({ screenFlag = "" }) => {
             padding: "12px",
             display: "flex",
             justifyContent: "space-between",
-            marginBottom: "12px",
+            marginBottom: "9px",
             cursor: "pointer",
           }}
           onClick={handleClick}
@@ -162,7 +174,7 @@ export const Announcement = ({ screenFlag = "" }) => {
                   paddingBottom: "0px",
                 }}
               >
-                {/* {Array.from(Array(7)).map((_, index) => (
+                {/* {Array.from(Array(7)).map((_, index)  => (
                   <ListItemData
                     key={"item?.value"}
                     name={"• Electronic payment service"}
@@ -170,12 +182,14 @@ export const Announcement = ({ screenFlag = "" }) => {
                     onClick={(event) => event}
                   />
                 ))} */}
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Electronic Payment Service"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
+                {data.map((item) => (
+                  <ListItemData
+                    key={"item?.value"}
+                    name={"• Electronic Payment Service"}
+                    disabled={false}
+                    onClick={(event) => event}
+                  />
+                ))}
                 <ListItemData
                   key={"item?.value"}
                   name={"• Real Time Gross Settlement"}

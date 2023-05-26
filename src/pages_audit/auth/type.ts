@@ -1,6 +1,7 @@
 export interface AuthStateType {
   access_token: any;
   isLoggedIn: any;
+  isBranchSelect: boolean;
   role: string;
   roleName: string;
   access: any;
@@ -19,6 +20,10 @@ export interface AuthStateType {
   };
 }
 
+export interface BranchSelectData {
+  menulistdata: any;
+}
+
 export interface ActionType {
   type: string;
   payload: any;
@@ -29,4 +34,6 @@ export interface AuthContextType {
   login: any;
   logout: any;
   isLoggedIn: any;
+  isBranchSelected: any;
+  branchSelect: any;
 }

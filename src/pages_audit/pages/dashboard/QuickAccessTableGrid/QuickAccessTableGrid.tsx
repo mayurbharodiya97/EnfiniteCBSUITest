@@ -13,7 +13,16 @@ import React, {
 } from "react";
 import * as API from "../api";
 import { useQuery } from "react-query";
-import { AppBar, Box, Grid, Theme, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Grid,
+  Theme,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { makeStyles, styled } from "@mui/styles";
 import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
@@ -58,7 +67,8 @@ const QuickAccessTableGrid = () => {
   const [activeButton, setActiveButton] = useState("Favorite");
   const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
-
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up(1256));
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["QuickAccessTableGridData"],
     () =>
@@ -117,29 +127,32 @@ const QuickAccessTableGrid = () => {
         >
           Quick Access
         </Typography>
-        <Box
-          sx={{
-            height: "48px",
-            width: "51px",
-            paddingRight: "91px",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          {" "}
-          <Typography
-            style={{
-              color: "var(--theme-color3)",
-              transition: "all 0.5s ease-in-out",
+        {matches && (
+          <Box
+            sx={{
+              height: "48px",
+              width: "51px",
+              paddingRight: "91px",
+              display: "flex",
+              alignItems: "center",
             }}
-            variant="subtitle1"
-            component="h2"
           >
-            {activeButton}
-          </Typography>
-        </Box>
-
-        <SearchBar onChange={handleSearch} placeholder={"Search..."} />
+            {" "}
+            <Typography
+              style={{
+                color: "var(--theme-color3)",
+                transition: "all 0.5s ease-in-out",
+              }}
+              variant="subtitle1"
+              component="h2"
+            >
+              {activeButton}
+            </Typography>
+          </Box>
+        )}
+        {matches && (
+          <SearchBar onChange={handleSearch} placeholder={"Search..."} />
+        )}{" "}
         <Box
           sx={{
             display: "flex",
@@ -198,6 +211,7 @@ const QuickAccessTableGrid = () => {
           backgroundColor: "inherit",
           color: "black",
         }}
+        loading={isLoading || isFetching}
       />
     </>
   );
