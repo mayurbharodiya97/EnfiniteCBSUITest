@@ -36,7 +36,15 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   TRANS_SUMMARY_CARD: {
-    url: "adminPanelCommonServiceAPI/DashBoard/GETTRANSACTIONSUMMARY",
+    url: "enfinityCommonServiceAPI/GETTRANSACTIONSUMMARY",
+    packageName: "",
+  },
+  GETEMPPROFILEPHOTO: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPPROFILEPHOTO",
+    packageName: "",
+  },
+  GETEMPLOYEEDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPLOYEEDTL",
     packageName: "",
   },
   GETPENDINGREQUEST: {
