@@ -1,10 +1,10 @@
 import GridWrapper from "components/dataTableStatic";
 import { TodaysTransactionTableGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import { useQuery } from "react-query";
 import * as API from "../api";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "pages_audit/auth";
 // const actions: ActionTypes[] = [
 //   {
@@ -23,10 +23,16 @@ const TodaysTransactionTableGrid = () => {
     ["TodaysTransactionTableGrid"],
     () =>
       API.TodaysTransactionTableGrid({
+        userID: authState?.user?.id ?? "",
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: authState?.user?.branchCode ?? "",
       })
   );
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["TodaysTransactionTableGrid"]);
+    };
+  }, []);
   const setCurrentAction = useCallback((data) => {
     // console.log(">>data", data);
   }, []);

@@ -90,7 +90,7 @@ const Dashboard = () => {
                     </Box>
                   </Grid>
                 ) : null}
-                {data?.[0]?.ANNOUNCEMENT?.ISVISIBLE ? (
+                {data?.[0]?.MESSAGE_BOX?.ISVISIBLE ? (
                   <Grid item lg={4} md={12} xl={4} xs={12}>
                     <Card
                       style={{

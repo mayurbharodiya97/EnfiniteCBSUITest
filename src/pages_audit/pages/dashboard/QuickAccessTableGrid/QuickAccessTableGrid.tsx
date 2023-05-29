@@ -1,7 +1,7 @@
 import GridWrapper from "components/dataTableStatic";
 import { QuickAccessTableGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import { SearchBar } from "components/derived";
 
 import React, {
@@ -81,7 +81,11 @@ const QuickAccessTableGrid = () => {
         APP_TRAN_CD: "",
       })
   );
-
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["QuickAccessTableGridData"]);
+    };
+  }, []);
   // const setCurrentAction = useCallback((data) => {
   //   console.log(">>data", data);
   // }, []);
