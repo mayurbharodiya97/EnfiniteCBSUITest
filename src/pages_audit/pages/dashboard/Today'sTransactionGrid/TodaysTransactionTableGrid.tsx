@@ -26,6 +26,7 @@ const TodaysTransactionTableGrid = () => {
         userID: authState?.user?.id ?? "",
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: authState?.user?.branchCode ?? "",
+        userID: authState?.user?.id ?? "",
       })
   );
   useEffect(() => {

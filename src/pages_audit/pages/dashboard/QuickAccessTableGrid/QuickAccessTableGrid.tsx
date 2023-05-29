@@ -37,8 +37,8 @@ import { AuthContext } from "pages_audit/auth";
 //     actionBackground: "var(--theme-color2)",
 //   },
 //   {
-//     actionName: "Favorite",
-//     actionLabel: "Favorite",
+//     actionName: "Favourite",
+//     actionLabel: "Favourite",
 //     multiple: undefined,
 //     rowDoubleClick: true,
 //     actionTextColor: "var(--theme-color2)",
@@ -64,13 +64,24 @@ const useHeaderStyles = makeStyles((theme: Theme) => ({
 const QuickAccessTableGrid = () => {
   const [apiData, setApiData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [activeButton, setActiveButton] = useState("Favorite");
+  const [activeButton, setActiveButton] = useState("Favourite");
   const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up(1256));
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
-    ["QuickAccessTableGridData"],
+    [
+      "QuickAccessTableGridData",
+      {
+        userID: authState?.user?.id ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        BASE_BRANCH_CD: authState?.user?.branchCode ?? "",
+        GROUP_NAME: authState?.roleName ?? "",
+        APP_TRAN_CD: "1",
+        FLAG: activeButton ?? "",
+      },
+    ],
     () =>
       API.QuickAccessTableGridData({
         userID: authState?.user?.id ?? "",
@@ -78,7 +89,8 @@ const QuickAccessTableGrid = () => {
         BRANCH_CD: authState?.user?.branchCode ?? "",
         BASE_BRANCH_CD: authState?.user?.branchCode ?? "",
         GROUP_NAME: authState?.roleName ?? "",
-        APP_TRAN_CD: "",
+        APP_TRAN_CD: "1",
+        FLAG: activeButton ?? "",
       })
   );
   useEffect(() => {
@@ -185,20 +197,22 @@ const QuickAccessTableGrid = () => {
             Recent
           </GradientButton>
           <GradientButton
-            onClick={() => handleButtonClick("Favorite")}
+            onClick={() => handleButtonClick("Favourite")}
             style={{
               backgroundColor:
-                activeButton === "Favorite" ? "var(--theme-color3)" : "inherit",
+                activeButton === "Favourite"
+                  ? "var(--theme-color3)"
+                  : "inherit",
               height: "26px",
               width: "71px",
               borderRadius: "08px",
               color:
-                activeButton === "Favorite"
+                activeButton === "Favourite"
                   ? "var(--theme-color2)"
                   : "var(--theme-color6)",
             }}
           >
-            Favorite
+            Favourite
           </GradientButton>
         </Box>
       </Toolbar>
@@ -216,6 +230,7 @@ const QuickAccessTableGrid = () => {
           color: "black",
         }}
         loading={isLoading || isFetching}
+        refetchData={() => refetch()}
       />
     </>
   );
