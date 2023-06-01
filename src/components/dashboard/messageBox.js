@@ -1,5 +1,5 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
@@ -8,17 +8,39 @@ import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { queryClient } from "cache";
+import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+
 export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
-
+  const { authState } = useContext(AuthContext);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
-    ["getDashboardMessageBoxData"],
-    () => API.getDashboardMessageBoxData(screenFlag)
+    [
+      "getDashboardMessageBoxData",
+      {
+        screenFlag,
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        userID: authState?.user?.id ?? "",
+      },
+    ],
+    () =>
+      API.getDashboardMessageBoxData({
+        screenFlag,
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        userID: authState?.user?.id ?? "",
+      })
   );
   console.log("data", data);
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["getDashboardMessageBoxData"]);
+      queryClient.removeQueries([
+        "getDashboardMessageBoxData",
+        {
+          screenFlag,
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          userID: authState?.user?.id ?? "",
+        },
+      ]);
     };
   }, []);
   const handleClick = () => {
@@ -150,31 +172,31 @@ export const MessageBox = ({ screenFlag = "" }) => {
           </Grid>
         </Box>
       </Grid>
-
-      {/* {isLoading || isFetching ? (
-                <LoaderPaperComponent />
-              ) : ( */}
       {toggle ? (
-        <Grid item xs={12} sm={12} md={12} style={{ margin: "5px" }}>
-          <Box
-            sx={{
-              width: "100%",
-              // maxWidth: 400,
-              bgcolor: "background.paper",
-              height: "25vh",
-              overflowY: "auto",
-              borderRadius: "10px",
-              boxShadow: "0px 11px 20px rgba(226, 236, 249, 0.5)",
-            }}
-          >
-            <nav aria-label="main mailbox folders">
-              <List
-                style={{
-                  paddingTop: "0px",
-                  paddingBottom: "0px",
+        <>
+          {isLoading || isFetching ? (
+            <LoaderPaperComponent />
+          ) : (
+            <Grid item xs={12} sm={12} md={12} style={{ margin: "5px" }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  // maxWidth: 400,
+                  bgcolor: "background.paper",
+                  height: "25vh",
+                  overflowY: "auto",
+                  borderRadius: "10px",
+                  boxShadow: "0px 11px 20px rgba(226, 236, 249, 0.5)",
                 }}
               >
-                {/* {Array.from(Array(7)).map((_, index)  => (
+                <nav aria-label="main mailbox folders">
+                  <List
+                    style={{
+                      paddingTop: "0px",
+                      paddingBottom: "0px",
+                    }}
+                  >
+                    {/* {Array.from(Array(7)).map((_, index)  => (
                   <ListItemData
                     key={"item?.value"}
                     name={"• Electronic payment service"}
@@ -182,57 +204,20 @@ export const MessageBox = ({ screenFlag = "" }) => {
                     onClick={(event) => event}
                   />
                 ))} */}
-                {data.map((item) => (
-                  <ListItemData
-                    key={"item?.value"}
-                    name={"• Electronic Payment Service"}
-                    disabled={false}
-                    onClick={(event) => event}
-                  />
-                ))}
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Real Time Gross Settlement"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Electronic Fund Transfer"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Loan payments"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Electronic Clearing service"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Automatic Teller Machine"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Accepting deposits "}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-              </List>
-            </nav>
-          </Box>
-        </Grid>
+                    {data.map((item) => (
+                      <ListItemData
+                        key={item?.value}
+                        name={item?.label}
+                        disabled={false}
+                      />
+                    ))}
+                  </List>
+                </nav>
+              </Box>
+            </Grid>
+          )}
+        </>
       ) : null}
-      {/* )} */}
     </>
   );
 };
