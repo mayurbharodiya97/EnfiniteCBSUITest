@@ -3,7 +3,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Todays Transaction",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "SR_CD",
 
     defaultColumnConfig: {
       width: 200,

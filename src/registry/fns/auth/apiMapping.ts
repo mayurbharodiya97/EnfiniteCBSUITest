@@ -55,6 +55,22 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
     packageName: "",
   },
+  GETANNOUNCEMENT: {
+    url: "dashboardServiceAPI/GETANNOUNCEMENT",
+    packageName: "",
+  },
+  GETTIPSDETAILS: {
+    url: "dashboardServiceAPI/GETTIPSDETAILS",
+    packageName: "",
+  },
+  GETNOTESDETAILSELECT: {
+    url: "dashboardServiceAPI/GETNOTESDETAILSELECT",
+    packageName: "",
+  },
+  GETALERTDTL: {
+    url: "dashboardServiceAPI/GETALERTDTL",
+    packageName: "",
+  },
   GETBANKIMAGEANDPROFILEPIC: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
     packageName: "",
