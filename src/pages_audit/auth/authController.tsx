@@ -1,7 +1,6 @@
 import { useReducer, useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import loginImg from "../../assets/images/login.png";
-
 import { useStyles } from "./style";
 import { UsernamePasswordField } from "./usernamePassword";
 import { AuthContext } from "./authContext";
@@ -18,9 +17,13 @@ import { Grid } from "@mui/material";
 import { BankDetails } from "./bankDetails";
 import { useQuery } from "react-query";
 import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import {
+  FullScreenLoader,
+  LoaderPaperComponent,
+} from "components/common/loaderPaper";
 import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
+
 const inititalState = {
   username: "",
   firstName: "",
@@ -214,6 +217,7 @@ export const AuthLoginController = () => {
   const failureCount = useRef(0);
   const [dashboardLogoURL, setDashboardLogoURL] = useState<any | null>(null);
   const urlObj = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
   // const [image, setImage] = useState<any>(null);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
@@ -231,7 +235,9 @@ export const AuthLoginController = () => {
     isError,
     error,
     refetch,
-  } = useQuery<any, any>(["getLoginImageData"], () => API.getLoginImageData());
+  } = useQuery<any, any>(["getLoginImageData"], () =>
+    API.getLoginImageData({ APP_TRAN_CD: "51" })
+  );
 
   useEffect(() => {
     if (Boolean(imageData?.[0]?.DASHBOARD_APP_LOGO)) {
@@ -373,7 +379,7 @@ export const AuthLoginController = () => {
       dispath({ type: "inititateUserFingerScanner" });
       const fingerResponse = await API.capture();
       if (fingerResponse?.ErrorCode === "0") {
-        console.log("state", loginState);
+        console.log("state", loginState.AUTH_DATA);
         if (loginState.status === "success") {
           dispath({ type: "inititateUserFingerVerification" });
           const promise: any = await matchFinger(
@@ -444,63 +450,66 @@ export const AuthLoginController = () => {
   };
   return (
     <>
-      <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-        <BankDetails imageData={imageData} />
-        <Grid item xs={11} md={6} lg={6} sm={6}>
-          {isLoading || isFetching ? (
-            <LoaderPaperComponent />
-          ) : (
-            <Grid
-              container
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-              padding={"31px"}
-            >
-              <img
-                src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
-                alt="Logo"
-              />
-            </Grid>
-          )}
-          {loginState.currentFlow === "username" ? (
-            <UsernamePasswordField
-              key="username"
-              classes={classes}
-              loginState={loginState}
-              verifyUsernamePassword={verifyUsernamePassword}
-            />
-          ) : (
-            <>
-              {loginState.authType === "OTP" ? (
-                <OTPModel
-                  key="otp"
+      {isLoading || isFetching ? (
+        <FullScreenLoader />
+      ) : (
+        <>
+          <Grid container style={{ height: "100vh", overflow: "hidden" }}>
+            <BankDetails imageData={imageData} />
+            <Grid item xs={11} md={6} lg={6} sm={6}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="center"
+                padding={"31px"}
+              >
+                <img
+                  src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
+                  alt="Logo"
+                />
+              </Grid>
+
+              {loginState.currentFlow === "username" ? (
+                <UsernamePasswordField
+                  key="username"
                   classes={classes}
                   loginState={loginState}
-                  VerifyOTP={VerifyOTP}
-                  previousStep={changeUserName}
-                  OTPError={loginState?.OtpuserMessage ?? ""}
-                  setOTPError={(error) => {
-                    dispath({
-                      type: "OTPVerificationFailed",
-                      payload: { error: error },
-                    });
-                  }}
-                  open={undefined}
-                  handleClose={undefined}
+                  verifyUsernamePassword={verifyUsernamePassword}
                 />
               ) : (
-                <VerifyFinger
-                  key="biometric"
-                  classes={classes}
-                  loginState={loginState}
-                  verifyFinger={verifyFinger}
-                />
+                <>
+                  {loginState.authType === "OTP" ? (
+                    <OTPModel
+                      key="otp"
+                      classes={classes}
+                      loginState={loginState}
+                      VerifyOTP={VerifyOTP}
+                      previousStep={changeUserName}
+                      OTPError={loginState?.OtpuserMessage ?? ""}
+                      setOTPError={(error) => {
+                        dispath({
+                          type: "OTPVerificationFailed",
+                          payload: { error: error },
+                        });
+                      }}
+                      open={undefined}
+                      handleClose={undefined}
+                    />
+                  ) : (
+                    <VerifyFinger
+                      key="biometric"
+                      classes={classes}
+                      loginState={loginState}
+                      verifyFinger={verifyFinger}
+                    />
+                  )}
+                </>
               )}
-            </>
-          )}
-        </Grid>
-      </Grid>
+            </Grid>
+          </Grid>
+        </>
+      )}
       {/* {openpwdreset ? (
           //   <PasswordRotation
           //     classes={classes}

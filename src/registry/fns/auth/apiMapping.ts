@@ -11,12 +11,12 @@ export const ActionWiseAPIConfiguration = {
     url: "userRegistrationServiceAPI/DOUPDATEPASSWORD",
     packageName: "",
   },
-  LOGOUTADMIN: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/LOGOUTADMIN",
+  LOGOUTUSER: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/LOGOUTUSER",
     packageName: "",
   },
   MENULIST: {
-    url: "adminPanelCommonServiceAPI/GETMENULIST",
+    url: "enfinityCommonServiceAPI/GETMENULIST",
     packageName: "",
   },
   GETMISCVALUE: {
@@ -55,6 +55,14 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
     packageName: "",
   },
+  GETBANKIMAGEANDPROFILEPIC: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
+    packageName: "",
+  },
+  GETQUICKACCESSVIEW: {
+    url: "dashboardServiceAPI/GETQUICKACCESSVIEW",
+    packageName: "",
+  },
   GETANNOUNCEMENT: {
     url: "dashboardServiceAPI/GETANNOUNCEMENT",
     packageName: "",
@@ -69,6 +77,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETALERTDTL: {
     url: "dashboardServiceAPI/GETALERTDTL",
+    packageName: "",
+  },
+  GETDASHBOARDDATA: {
+    url: "dashboardServiceAPI/GETDASHBOARDDATA",
     packageName: "",
   },
 };

@@ -18,7 +18,7 @@ import { useMutation } from "react-query";
 import * as API from "./api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SelectWithoutOptions } from "components/common/select/render2";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GradientButton } from "components/styledComponent/button";
 Chart.register(CategoryScale);
 Chart.register(...registerables);
@@ -27,45 +27,165 @@ const getTransactionChartDataFnWrapper =
   async ({ type }) => {
     return getTransactionChartData(type);
   };
-export const Transactions = (props) => {
+export const Transactions = ({ mutation, ...props }) => {
   const theme = useTheme();
   const [showMore, setShowMore] = useState(false);
-  const [optionValue, setOptionValue] = useState("D");
+  const [optionValue, setOptionValue] = useState("T");
 
-  const result = useMutation(
-    getTransactionChartDataFnWrapper(API.getTransactionChartData)
-  );
-  useEffect(() => {
-    result.mutate({ type: "D" });
-  }, []);
   const showErrorData = () => {
     setShowMore(true);
   };
-  const data = {
-    datasets: [
-      {
-        backgroundColor: "green",
-        barPercentage: 1,
-        barThickness: 12,
-        borderRadius: 4,
-        categoryPercentage: 1,
-        data: result?.data?.SUCCESS,
-        label: "Success",
-        maxBarThickness: 10,
-      },
-      {
-        backgroundColor: "#FF3A3A",
-        barPercentage: 1,
-        barThickness: 12,
-        borderRadius: 4,
-        categoryPercentage: 1,
-        data: result?.data?.FAIL,
-        label: "Fail",
-        maxBarThickness: 10,
-      },
-    ],
-    labels: result?.data?.LABELS,
-  };
+  const data = useMemo(() => {
+    if (!optionValue || !mutation?.data) {
+      return { datasets: [], labels: [] };
+    }
+
+    if (optionValue === "T") {
+      let displayConfirmData = [];
+      let displayRejectData = [];
+      let displayPendingData = [];
+      let displayLable = [];
+      let retData = { CONFIRMED: {}, REJECT: {}, PENDING: {} };
+      let uniqueType = new Set();
+      mutation?.data?.forEach((item) => {
+        if (item?.CONFIRMED === "Y") {
+          retData.CONFIRMED[item?.TYPE_CD] =
+            (retData.CONFIRMED[item?.TYPE_CD] ?? 0) + 1;
+        } else if (item?.REJECT === "N") {
+          retData.REJECT[item?.TYPE_CD] =
+            (retData.REJECT[item?.TYPE_CD] ?? 0) + 1;
+        } else {
+          retData.PENDING[item?.TYPE_CD] =
+            (retData.PENDING[item?.TYPE_CD] ?? 0) + 1;
+        }
+        uniqueType.add(item?.TYPE_CD);
+      });
+      //console.log(Array.from(uniqueType), retData);
+      Array.from(uniqueType)
+        .sort()
+        .forEach((item) => {
+          displayLable.push(item);
+          displayConfirmData.push(retData.CONFIRMED[item] ?? 0);
+          displayRejectData.push(retData.REJECT[item] ?? 0);
+          displayPendingData.push(retData.PENDING[item] ?? 0);
+        });
+      // Object.keys(retData)
+      //   .sort()
+      //   .forEach((item) => {
+      //     displayData.push(retData[item]);
+      //     displayLable.push(item);
+      //   });
+      return {
+        datasets: [
+          {
+            backgroundColor: "#4263c7",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayConfirmData,
+            label: "Confirmed",
+            maxBarThickness: 10,
+          },
+          {
+            backgroundColor: "#FB8C00",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayPendingData,
+            label: "Pending",
+            maxBarThickness: 10,
+          },
+          {
+            backgroundColor: "red",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayRejectData,
+            label: "Reject",
+            maxBarThickness: 10,
+          },
+        ],
+        labels: displayLable,
+      };
+    }
+    if (optionValue === "U") {
+      let displayCheckerData = [];
+      let displayMakerData = [];
+      let displayLable = [];
+      let retData = { CHECKER: {}, MAKER: {} };
+      let uniqueType = new Set();
+      mutation?.data?.forEach((item) => {
+        if (item?.CHECKER) {
+          retData.CHECKER[item?.CHECKER] =
+            (retData.CHECKER[item?.CHECKER] ?? 0) + 1;
+        }
+        if (item?.MAKER) {
+          retData.MAKER[item?.MAKER] = (retData.MAKER[item?.MAKER] ?? 0) + 1;
+        }
+        uniqueType.add(item?.MAKER);
+        uniqueType.add(item?.CHECKER);
+      });
+      console.log(Array.from(uniqueType), retData);
+      Array.from(uniqueType)
+        .sort()
+        .forEach((item) => {
+          displayLable.push(item);
+          displayCheckerData.push(retData.CHECKER[item] ?? 0);
+          displayMakerData.push(retData.MAKER[item] ?? 0);
+        });
+      // Object.keys(retData)
+      //   .sort()
+      //   .forEach((item) => {
+      //     displayData.push(retData[item]);
+      //     displayLable.push(item);
+      //   });
+
+      return {
+        datasets: [
+          {
+            backgroundColor: "#4263c7",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayCheckerData,
+            label: "Checker",
+            maxBarThickness: 10,
+          },
+          {
+            backgroundColor: "#FB8C00",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayMakerData,
+            label: "Maker",
+            maxBarThickness: 10,
+          },
+        ],
+        labels: displayLable,
+      };
+    }
+    return {
+      datasets: [
+        {
+          backgroundColor: "#4263c7",
+          barPercentage: 1,
+          barThickness: 12,
+          borderRadius: 4,
+          categoryPercentage: 1,
+          data: [10, 25, 35],
+          label: "Transaction",
+          maxBarThickness: 10,
+        },
+      ],
+      labels: ["Confirmed", "Pending", "Reject"],
+    };
+  }, [mutation?.data, optionValue]);
+  console.log("data", data);
   const options = {
     animation: false,
     cornerRadius: 20,
@@ -136,9 +256,9 @@ export const Transactions = (props) => {
               variant="outlined"
               handleChange={(e) => {
                 setOptionValue(e.target.value);
-                if (Boolean(e.target.value)) {
-                  result.mutate({ type: e.target.value });
-                }
+                // if (Boolean(e.target.value)) {
+                //   mutation(e.target.value);
+                // }
 
                 //setCellValue({ [columnName]: e.target.value, ...clearFields });
               }}
@@ -146,15 +266,15 @@ export const Transactions = (props) => {
                 //setCellTouched({ [columnName]: true })
               }}
               options={[
-                { label: "Today", value: "D" },
-                { label: "Last Week", value: "W" },
-                { label: "Last Month", value: "M" },
+                { label: "Transaction Type", value: "T" },
+                { label: "Transaction Status", value: "S" },
+                { label: "User", value: "U" },
               ]}
               loadingOptions={false}
               multiple={false}
               showCheckbox={false}
               fullWidth
-              disabled={result.isLoading || result.isFetching}
+              disabled={mutation.isLoading || mutation.isFetching}
             />
           </div>
         }
@@ -189,9 +309,9 @@ export const Transactions = (props) => {
         >
           Overview
         </Button> */}
-        {result.isError || result.isLoading || result.isFetching ? (
+        {mutation.isError || mutation.isLoading || mutation.isFetching ? (
           <>
-            {result.isError ? (
+            {mutation.isError ? (
               <>
                 <Tooltip title={"Error"}>
                   <span>
@@ -246,7 +366,7 @@ export const Transactions = (props) => {
           </>
         )}
       </Box>
-      {result.isError ? (
+      {mutation.isError ? (
         <Dialog
           open={showMore}
           fullWidth={false}
@@ -259,7 +379,7 @@ export const Transactions = (props) => {
           <DialogTitle>Error Details</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {result.error?.error_msg ?? "Error"}
+              {mutation.error?.error_msg ?? "Error"}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

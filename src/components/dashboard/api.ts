@@ -2,14 +2,17 @@ import { DefaultErrorObject } from "components/utils";
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getDynamicBoxData = async (apiName) => {
-  // const { data, status, message, messageDetails } =
-  //   await AuthSDK.internalFetcher(`//${apiName}`, {});
-  // if (status === "0") {
-  //   return data;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
+export const getDynamicBoxData = async (apiName, { COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(`/enfinityCommonServiceAPI/${apiName}`, {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };
 
 export const getTrafficChartData = async () => {
@@ -43,12 +46,21 @@ export const getDashboardMessageBoxData = async ({
   let apiReq = {};
   if (screenFlag === "Announcement") {
     apiURL = "GETANNOUNCEMENT";
-    apiReq = { BRANCH_CD: BRANCH_CD, IS_VIEW_NEXT: "Y" };
+    apiReq = {
+      // USER_NAME: userID
+      USER_NAME: "ajayj",
+    };
   } else if (screenFlag === "Tips") {
     apiURL = "GETTIPSDETAILS";
-    apiReq = { USER_NAME: userID };
+    apiReq = {
+      // USER_NAME: userID,
+      USER_NAME: "anilt",
+    };
   } else if (screenFlag === "Notes") {
-    apiReq = { USER_NAME: userID };
+    apiReq = {
+      // USER_NAME: userID,
+      USER_NAME: "sudhanshus",
+    };
     apiURL = "GETNOTESDETAILSELECT";
   } else if (screenFlag === "Alert") {
     apiURL = "GETALERTDTL";
@@ -60,7 +72,6 @@ export const getDashboardMessageBoxData = async ({
     let responseData = data;
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ TRAN_CD, DESCRIPTION }) => {
-        console.log("responseData", responseData);
         return {
           value: TRAN_CD,
           label: DESCRIPTION,

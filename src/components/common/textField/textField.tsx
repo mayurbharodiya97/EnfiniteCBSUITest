@@ -4,6 +4,7 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
+import { TextField } from "components/styledComponent";
 import { Merge } from "../types";
 import { numWords } from "components/common/utils";
 import {
@@ -13,7 +14,6 @@ import {
   Grid,
   GridProps,
   InputAdornment,
-  TextField,
   TextFieldProps,
 } from "@mui/material";
 

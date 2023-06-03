@@ -190,7 +190,7 @@ const authAPI = () => {
               ? true
               : false,
         };
-      } else if (String(response.status) === "401" && url !== "LOGOUTADMIN") {
+      } else if (String(response.status) === "401" && url !== "LOGOUTUSER") {
         //@ts-ignore
         if (typeof window.__logout === "function") {
           //@ts-ignore

@@ -87,6 +87,7 @@ export interface ActionTypes {
   isNodataThenShow?: boolean;
   actionTextColor?: string;
   actionBackground?: string;
+  onEnterSubmit?: boolean;
 }
 
 export interface RenderActionType {
@@ -96,6 +97,7 @@ export interface RenderActionType {
   buttonTextColor?: string;
   buttonBackground?: string;
   style?: {};
+  submitButtonRef?: any;
 }
 
 export interface TableActionType {
@@ -110,6 +112,7 @@ export interface TableActionType {
   dense?: boolean;
   handleClose?: any;
   authState?: any;
+  submitButtonRef?: any;
 }
 
 export interface GridContextType {

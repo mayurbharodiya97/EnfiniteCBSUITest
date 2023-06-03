@@ -58,7 +58,7 @@ export const ChangePassword = ({ onClose, showProfile }) => {
 
   return (
     <Fragment>
-      <Box sx={{ width: 500, margin: "auto" }}>
+      <Box sx={{ width: 370, margin: "auto" }}>
         <FormWrapper
           key="passwordChange"
           metaData={PasswordChangeMetaData as MetaDataType}

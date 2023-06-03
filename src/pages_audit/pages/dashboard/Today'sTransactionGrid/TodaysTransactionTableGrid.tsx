@@ -17,22 +17,8 @@ import { AuthContext } from "pages_audit/auth";
 //     actionBackground: "inherit",
 //   },
 // ];
-const TodaysTransactionTableGrid = () => {
+const TodaysTransactionTableGrid = ({ mutation }) => {
   const { authState } = useContext(AuthContext);
-  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
-    ["TodaysTransactionTableGrid"],
-    () =>
-      API.TodaysTransactionTableGrid({
-        userID: authState?.user?.id ?? "",
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-      })
-  );
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["TodaysTransactionTableGrid"]);
-    };
-  }, []);
   const setCurrentAction = useCallback((data) => {
     // console.log(">>data", data);
   }, []);
@@ -41,7 +27,7 @@ const TodaysTransactionTableGrid = () => {
       <GridWrapper
         key={`TodaysTransactionTableGrid`}
         finalMetaData={TodaysTransactionTableGridMetaData as GridMetaDataType}
-        data={data ?? []}
+        data={mutation?.data ?? []}
         setData={() => null}
         // actions={actions}
         // setAction={setCurrentAction}
@@ -49,16 +35,16 @@ const TodaysTransactionTableGrid = () => {
           backgroundColor: "var(--theme-color2)",
           color: "black",
         }}
-        loading={isLoading || isFetching}
+        loading={mutation.isLoading || mutation.isFetching}
       />
     </>
   );
 };
 
-export const TodaysTransactionTableGridWrapper = () => {
+export const TodaysTransactionTableGridWrapper = ({ mutation }) => {
   return (
     <ClearCacheProvider>
-      <TodaysTransactionTableGrid />
+      <TodaysTransactionTableGrid mutation={mutation} />
     </ClearCacheProvider>
   );
 };
