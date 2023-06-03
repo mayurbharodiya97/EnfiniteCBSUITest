@@ -45,6 +45,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import { useNavigate } from "react-router-dom";
+import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -70,7 +71,6 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
-
   const userActivityData = useQuery<any, any, any>(
     ["getUserLoginDetails"],
     () => API.getUserLoginDetails({ userID })
@@ -145,45 +145,6 @@ export const Profile = () => {
               display: "block",
             }}
           >
-            <Box sx={{ my: 3, display: "block" }}>
-              <AppBar
-                position="static"
-                sx={{
-                  background: "#FFFFFF",
-                  borderRadius: "10px",
-                }}
-              >
-                <Toolbar style={{ minHeight: "48px" }}>
-                  <Typography
-                    variant="h5"
-                    noWrap
-                    component="div"
-                    sx={{
-                      display: { xs: "none", sm: "block" },
-                      fontWeight: 500,
-                    }}
-                  >
-                    My Profile
-                  </Typography>
-
-                  <Box sx={{ flexGrow: 1 }} />
-                  <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                    <IconButton
-                      aria-label="show 4 new mails"
-                      color="inherit"
-                      sx={{
-                        background: "#ECEFF9",
-                        borderRadius: "10px",
-                        ml: 2,
-                      }}
-                      onClick={handleNavigate}
-                    >
-                      <CancelOutlinedIcon color="info" fontSize="medium" />
-                    </IconButton>
-                  </Box>
-                </Toolbar>
-              </AppBar>
-            </Box>
             <Container
               sx={{
                 background: "white",
@@ -194,7 +155,48 @@ export const Profile = () => {
               }}
             >
               <Grid>
-                <Box
+                <AppBar
+                  position="static"
+                  sx={{
+                    background: "#FFFFFF",
+                    borderRadius: "10px",
+                    margin: "10px",
+                    width: "auto",
+                  }}
+                >
+                  <Toolbar style={{ minHeight: "48px" }}>
+                    <Typography
+                      variant="h5"
+                      noWrap
+                      component="div"
+                      sx={{
+                        display: { xs: "none", sm: "block" },
+                        fontWeight: 500,
+                      }}
+                    >
+                      My Profile
+                    </Typography>
+
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                      <IconButton
+                        aria-label="show 4 new mails"
+                        color="inherit"
+                        sx={{
+                          background: "#ECEFF9",
+                          borderRadius: "10px",
+                          ml: 2,
+                        }}
+                        onClick={handleNavigate}
+                      >
+                        <CancelOutlinedIcon color="info" fontSize="medium" />
+                      </IconButton>
+                    </Box>
+                  </Toolbar>
+                </AppBar>
+              </Grid>
+              <Grid>
+                {/* <Box
                   height={"216px"}
                   sx={{
                     // backgroundImage: `url(${User_profile})`,
@@ -204,21 +206,81 @@ export const Profile = () => {
                     margin: "10px",
                     boxShadow: "rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;",
                   }}
-                ></Box>
-                <Box height={"105px"}>
+                ></Box> */}
+                <Box>
                   <Grid container>
-                    <Grid item xs={3}>
+                    <Box sx={{ width: "100%" }}>
+                      <Tabs
+                        sx={{
+                          "& .MuiTabs-fixed": {
+                            display: "flex",
+                            justifyContent: "flex-end",
+                          },
+                          "& .Mui-selected": {
+                            color: "var(--theme-color1)",
+                          },
+                          "& .MuiTabs-indicator": {
+                            backgroundColor: "var(--theme-color1)",
+                          },
+                          "& .MuiButtonBase-root": {
+                            minHeight: "0px",
+                          },
+                        }}
+                        value={value}
+                        onChange={handleChange}
+                        textColor="secondary"
+                        indicatorColor="secondary"
+                        aria-label="secondary tabs example"
+                      >
+                        <Tab
+                          value="one"
+                          label="User Profile"
+                          icon={<AccountCircleOutlinedIcon />}
+                          iconPosition="start"
+                          // onClick={moveToUserDetail}
+                          onClick={() => {
+                            setMode("userLogin");
+                          }}
+                        />
+                        <Tab
+                          value="two"
+                          label="User Detail"
+                          icon={<ArticleOutlinedIcon />}
+                          iconPosition="start"
+                          // onClick={() => {
+                          //   setUserDetail(true);
+                          // }}
+                          onClick={() => {
+                            setMode("userDetail");
+                          }}
+                        />
+
+                        <Tab
+                          value="three"
+                          label="Change Password"
+                          icon={<LockResetOutlinedIcon />}
+                          iconPosition="start"
+                          onClick={() => {
+                            setMode("changePassword");
+                            setShowProfile(true);
+                          }}
+                        />
+                      </Tabs>
+                    </Box>
+                  </Grid>
+                  <Grid container>
+                    <Grid item xs={3} pt={"10px"}>
                       <div
                         style={{
                           width: "150px",
                           height: "150px",
-                          marginLeft: "auto",
+                          margin: "auto",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          position: "relative",
-                          top: "-50%",
+                          // position: "relative",
+                          // top: "-50%",
                         }}
                       >
                         <div className="image-data">
@@ -229,7 +291,7 @@ export const Profile = () => {
                             src={
                               Boolean(ProfilePictureURL)
                                 ? ProfilePictureURL
-                                : "https://berrydashboard.io/static/media/img-user.41a8c06685db060b0ec1.png"
+                                : USER_PROFILE_DEFAULT
                             }
                             style={{
                               width: "100%",
@@ -276,155 +338,97 @@ export const Profile = () => {
                           />
                         </div>
                       </div>
+                      <Grid item xs={3} m={"auto"}>
+                        <Typography variant="h5" fontWeight={500}>
+                          {queryData?.data?.NAME}
+                        </Typography>
+                        <Typography color={"var(--theme-color6)"}>
+                          {queryData?.data?.USER_LEVEL}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                    <Grid item xs={9} p={1}>
-                      <Grid container p={1}>
-                        <Grid item xs={3}>
-                          <Typography variant="h6" fontWeight={500}>
-                            Ajay Sharma
-                          </Typography>
-                          <Typography color={"var(--theme-color6)"}>
-                            Cashier
-                          </Typography>
+                    <Grid item xs={9}>
+                      <Container>
+                        <Grid
+                          sx={{
+                            backgroundColor: "var(--theme-color2)",
+                            padding: "0px",
+                            borderRadius: "10px",
+                            boxShadow:
+                              "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
+                          }}
+                        >
+                          {mode === "userDetail" ? (
+                            <Grid
+                              key={"Griditem4"}
+                              item
+                              xs={12}
+                              md={12}
+                              lg={12}
+                              container
+                              spacing={1}
+                              justifyContent="flex-start"
+                              alignItems="center"
+                              style={{
+                                marginBottom: "0px",
+                                marginRight: "12px",
+                              }}
+                            >
+                              <GridWrapper
+                                key={`UserLoginReqGrid`}
+                                finalMetaData={
+                                  UserLoginDtlGridMetaData as GridMetaDataType
+                                }
+                                data={userActivityData.data ?? []}
+                                setData={() => null}
+                                //loading={result.isLoading}
+                                actions={[]}
+                                setAction={() => {}}
+                                refetchData={() => {}}
+                                ref={myGridRef}
+                              />
+                            </Grid>
+                          ) : mode === "userLogin" ? (
+                            <Grid>
+                              <FormWrapper
+                                key="UserProfileForm"
+                                metaData={UserProfileMetaData as MetaDataType}
+                                initialValues={queryData.data}
+                                onSubmitHandler={() => {}}
+                                // displayMode={"view"}
+                                // hideDisplayModeInTitle={true}
+                                formStyle={{
+                                  background: "white",
+                                  // height: "40vh",
+                                  overflowY: "auto",
+                                  overflowX: "hidden",
+                                }}
+                                hideHeader={true}
+                              />
+                            </Grid>
+                          ) : mode === "changePassword" ? (
+                            <ChangePassword
+                              showProfile={showProfile}
+                              onClose={() => setShowProfile(false)}
+                            />
+                          ) : null}
                         </Grid>
-                      </Grid>
-                      <Grid container>
-                        <Box sx={{ width: "100%" }}>
-                          <Tabs
-                            sx={{
-                              "& .MuiTabs-fixed": {
-                                display: "flex",
-                                justifyContent: "flex-end",
-                              },
-                              "& .Mui-selected": {
-                                color: "var(--theme-color1)",
-                              },
-                              "& .MuiTabs-indicator": {
-                                backgroundColor: "var(--theme-color1)",
-                              },
-                              "& .MuiButtonBase-root": {
-                                minHeight: "0px",
-                              },
-                            }}
-                            value={value}
-                            onChange={handleChange}
-                            textColor="secondary"
-                            indicatorColor="secondary"
-                            aria-label="secondary tabs example"
-                          >
-                            <Tab
-                              value="one"
-                              label="User Profile"
-                              icon={<AccountCircleOutlinedIcon />}
-                              iconPosition="start"
-                              // onClick={moveToUserDetail}
-                              onClick={() => {
-                                setMode("userLogin");
-                              }}
-                            />
-                            <Tab
-                              value="two"
-                              label="User Detail"
-                              icon={<ArticleOutlinedIcon />}
-                              iconPosition="start"
-                              // onClick={() => {
-                              //   setUserDetail(true);
-                              // }}
-                              onClick={() => {
-                                setMode("userDetail");
-                              }}
-                            />
+                      </Container>
 
-                            <Tab
-                              value="three"
-                              label="Change Password"
-                              icon={<LockResetOutlinedIcon />}
-                              iconPosition="start"
-                              onClick={() => {
-                                setMode("changePassword");
-                                setShowProfile(true);
-                              }}
-                            />
-                          </Tabs>
-                        </Box>
-                      </Grid>
+                      {profileUpdate && filesdata.length > 0 ? (
+                        <ProfilePhotoUpdate
+                          open={profileUpdate}
+                          onClose={handleProfileUploadClose}
+                          files={filesdata}
+                          userID={userID}
+                        />
+                      ) : null}
                     </Grid>
                   </Grid>
                 </Box>
               </Grid>
             </Container>
           </Grid>
-          <Container>
-            <Grid
-              sx={{
-                m: 3,
-                p: 1,
-                backgroundColor: "var(--theme-color2)",
-                borderRadius: "10px",
-                boxShadow:
-                  "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
-              }}
-            >
-              {mode === "userDetail" ? (
-                <Grid
-                  key={"Griditem4"}
-                  item
-                  xs={12}
-                  md={12}
-                  lg={12}
-                  container
-                  spacing={1}
-                  justifyContent="flex-start"
-                  alignItems="center"
-                  style={{ marginBottom: "0px", marginRight: "12px" }}
-                >
-                  <GridWrapper
-                    key={`UserLoginReqGrid`}
-                    finalMetaData={UserLoginDtlGridMetaData as GridMetaDataType}
-                    data={userActivityData.data ?? []}
-                    setData={() => null}
-                    //loading={result.isLoading}
-                    actions={[]}
-                    setAction={() => {}}
-                    refetchData={() => {}}
-                    ref={myGridRef}
-                  />
-                </Grid>
-              ) : mode === "userLogin" ? (
-                <Grid>
-                  <FormWrapper
-                    key="UserProfileForm"
-                    metaData={UserProfileMetaData as MetaDataType}
-                    initialValues={[]}
-                    onSubmitHandler={() => {}}
-                    // displayMode={"view"}
-                    // hideDisplayModeInTitle={true}
-                    formStyle={{
-                      background: "white",
-                      // height: "40vh",
-                      overflowY: "auto",
-                      overflowX: "hidden",
-                    }}
-                    hideHeader={true}
-                  />
-                </Grid>
-              ) : mode === "changePassword" ? (
-                <ChangePassword
-                  showProfile={showProfile}
-                  onClose={() => setShowProfile(false)}
-                />
-              ) : null}
-            </Grid>
-          </Container>
-
-          {profileUpdate && filesdata.length > 0 ? (
-            <ProfilePhotoUpdate
-              open={profileUpdate}
-              onClose={handleProfileUploadClose}
-              files={filesdata}
-              userID={userID}
-            />
-          ) : null}
         </>
       )}
     </Fragment>

@@ -152,11 +152,11 @@ export const useStyles = makeStyles((theme: any) => ({
     height: "34px",
   },
   marquee: {
-    animation: "$marquee 15s linear infinite",
+    animation: "$marquee 10s linear infinite",
     animationDelay: "3s",
   },
   "@keyframes marquee": {
-    "0%": { transform: "translateX(0)" },
+    "0%": { transform: "translateX(100%)" },
     "100%": { transform: "translateX(-100%)" },
   },
 }));

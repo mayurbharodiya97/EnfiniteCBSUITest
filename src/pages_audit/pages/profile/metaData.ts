@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 
 export const UserProfileMetaData = {
   form: {
-    name: "profile",
+    name: "PRIORITY",
     label: "User Profile",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -45,7 +45,7 @@ export const UserProfileMetaData = {
       label: "User ID",
       isReadOnly: true,
       placeholder: "First Name",
-      GridProps: { xs: 12, md: 3, sm: 3 },
+      GridProps: { xs: 12, md: 6, sm: 6 },
     },
     {
       render: { componentType: "textField", group: 0 },
@@ -65,24 +65,23 @@ export const UserProfileMetaData = {
       label: "User Level",
       isReadOnly: true,
       placeholder: "User Level",
-      GridProps: { xs: 12, md: 3, sm: 3 },
+      GridProps: { xs: 12, md: 6, sm: 6 },
     },
 
     {
       render: { componentType: "phoneNumber", group: 0 },
-      name: "CONTACT2",
+      name: "MOBILE_NUMBER",
       sequence: 4,
       type: "text",
       label: "Mobile Number",
       isReadOnly: false,
       required: true,
       placeholder: "Mobile Number",
-      GridProps: { xs: 12, md: 3, sm: 3 },
-      StartAdornment: "+88",
+      GridProps: { xs: 12, md: 6, sm: 6 },
     },
     {
       render: { componentType: "textField", group: 0 },
-      name: "EMAIL_ID",
+      name: "MAIL_ID",
       sequence: 5,
       type: "text",
       label: "Email ID",
@@ -98,7 +97,7 @@ export const UserProfileMetaData = {
       label: "User Group",
       isReadOnly: true,
       placeholder: "User Group",
-      GridProps: { xs: 12, md: 3, sm: 3 },
+      GridProps: { xs: 12, md: 6, sm: 6 },
     },
     {
       render: { componentType: "checkbox", group: 0 },
@@ -108,7 +107,7 @@ export const UserProfileMetaData = {
       label: "Allowed Release",
       isReadOnly: true,
       placeholder: "Allowed Release",
-      GridProps: { xs: 12, md: 3, sm: 3 },
+      GridProps: { xs: 12, md: 6, sm: 6 },
     },
     {
       render: { componentType: "textField", group: 0 },
