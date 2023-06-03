@@ -170,9 +170,8 @@ export const RefreshTokenData = async (refreshToken) => {
   }
 };
 export const LogoutAPI = async ({ userID }) => {
-  const { message } = await AuthSDK.internalFetcher("LOGOUTADMIN", {
+  const { message } = await AuthSDK.internalFetcher("LOGOUTUSER", {
     USER_NAME: userID,
-    MACHINE_IP: "",
   });
   //if (status === "0") {
   return message;

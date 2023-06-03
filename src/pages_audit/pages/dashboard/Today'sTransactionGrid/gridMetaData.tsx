@@ -15,7 +15,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: false,
+    enablePagination: true,
     containerHeight: {
       min: "50vh",
       max: "50vh",

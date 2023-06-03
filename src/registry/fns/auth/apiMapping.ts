@@ -11,8 +11,8 @@ export const ActionWiseAPIConfiguration = {
     url: "userRegistrationServiceAPI/DOUPDATEPASSWORD",
     packageName: "",
   },
-  LOGOUTADMIN: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/LOGOUTADMIN",
+  LOGOUTUSER: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/LOGOUTUSER",
     packageName: "",
   },
   MENULIST: {
@@ -53,6 +53,14 @@ export const ActionWiseAPIConfiguration = {
   },
   GETTRANSACTIONDETAILS: {
     url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
+    packageName: "",
+  },
+  GETBANKIMAGEANDPROFILEPIC: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
+    packageName: "",
+  },
+  GETQUICKACCESSVIEW: {
+    url: "dashboardServiceAPI/GETQUICKACCESSVIEW",
     packageName: "",
   },
 };
