@@ -16,7 +16,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   MENULIST: {
-    url: "adminPanelCommonServiceAPI/GETMENULIST",
+    url: "enfinityCommonServiceAPI/GETMENULIST",
     packageName: "",
   },
   GETMISCVALUE: {
@@ -55,6 +55,14 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
     packageName: "",
   },
+  GETBANKIMAGEANDPROFILEPIC: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
+    packageName: "",
+  },
+  GETQUICKACCESSVIEW: {
+    url: "dashboardServiceAPI/GETQUICKACCESSVIEW",
+    packageName: "",
+  },
   GETANNOUNCEMENT: {
     url: "dashboardServiceAPI/GETANNOUNCEMENT",
     packageName: "",
@@ -75,8 +83,8 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
     packageName: "",
   },
-  GETQUICKACCESSVIEW: {
-    url: "dashboardServiceAPI/GETQUICKACCESSVIEW",
+  GETDASHBOARDDATA: {
+    url: "dashboardServiceAPI/GETDASHBOARDDATA",
     packageName: "",
   },
 };

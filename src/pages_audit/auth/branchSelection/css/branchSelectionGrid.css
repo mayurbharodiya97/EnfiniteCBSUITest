@@ -31,7 +31,25 @@
   font-weight: 700;
 }
 
-.bank-name {
+/* .bank-name {
   overflow: hidden;
   text-overflow: ellipsis;
+} */
+
+/* .bank-name-container {
+  overflow: hidden;
 }
+
+.bank-name {
+  animation: marquee 15s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+} */

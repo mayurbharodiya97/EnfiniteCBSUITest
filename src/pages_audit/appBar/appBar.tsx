@@ -189,8 +189,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 authController?.authState?.companyName.length > 55,
             })}
           >
-            {authController?.authState?.companyName ||
-              "The Arunachal Pradesh State co-operative Apex Bank Ltd."}
+            {authController?.authState?.companyName || ""}
             {console.log(authController?.authState?.companyName.length)}
           </Box>
           <div style={{ display: "flex", gap: "8px" }}>
@@ -202,8 +201,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 fontSize={"11px"}
               >
                 Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
-                {authController?.authState?.user?.branch ??
-                  " Demo Bank Back Office Configuration"}
+                {authController?.authState?.user?.branch ?? ""}
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
                 Working Date:{" "}

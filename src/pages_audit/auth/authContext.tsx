@@ -27,6 +27,7 @@ const inititalState: AuthStateType = {
   role: "",
   roleName: "",
   companyID: "",
+  baseCompanyID: "",
   companyName: "",
   workingDate: "",
   access: {},
@@ -34,6 +35,8 @@ const inititalState: AuthStateType = {
   user: {
     branch: "",
     branchCode: "",
+    baseBranchCode: "",
+    isUpdDefBranch: "",
     name: "",
     lastLogin: "",
     id: "",

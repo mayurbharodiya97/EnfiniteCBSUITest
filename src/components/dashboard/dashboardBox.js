@@ -16,12 +16,12 @@ import {
 } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import "pages_audit/sideBar/icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import "./style.css";
 import { useStyles } from "pages_audit/style";
-
+import { AuthContext } from "pages_audit/auth";
 export const DashboardBox = ({
   title = "",
   body = "",
@@ -32,9 +32,13 @@ export const DashboardBox = ({
 }) => {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
+  const { authState } = useContext(AuthContext);
   let reqID = Math.floor(new Date().getTime() / 300000);
   const result = useQuery(["getDynamicBoxData", apiName, reqID], () =>
-    API.getDynamicBoxData(apiName)
+    API.getDynamicBoxData(apiName, {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+    })
   );
 
   const showErrorData = () => {
