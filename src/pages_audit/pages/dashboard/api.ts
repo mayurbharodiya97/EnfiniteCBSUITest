@@ -225,7 +225,7 @@ export const TodaysTransactionTableGrid = async ({
       // BASE_BRANCH_CD: BASE_BRANCH_CD,
       ENTERED_BY: userID,
       BRANCH_CD: BRANCH_CD,
-      ENTERED_BY: "harekrishna",
+      // ENTERED_BY: "harekrishna",
       FROM_DT: "08/FEB/2023",
     });
   if (status === "0") {
