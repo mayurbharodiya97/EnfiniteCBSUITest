@@ -326,7 +326,9 @@ export const ForgotPasswordController = () => {
     isError,
     error,
     refetch,
-  } = useQuery<any, any>(["getLoginImageData"], () => API.getLoginImageData());
+  } = useQuery<any, any>(["getLoginImageData"], () =>
+    API.getLoginImageData({ APP_TRAN_CD: "51" })
+  );
 
   useEffect(() => {
     if (Boolean(imageData?.[0]?.DASHBOARD_APP_LOGO)) {
