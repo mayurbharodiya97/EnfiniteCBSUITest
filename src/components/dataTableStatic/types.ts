@@ -102,6 +102,7 @@ export interface GridWrapperPropTypes {
   headerToolbarStyle?: {};
   onlySingleSelectionAllow?: boolean;
   isNewRowStyle?: boolean;
+  defaultSelectedRowId?: any;
 }
 
 export interface YupSchemaMetaDataType {

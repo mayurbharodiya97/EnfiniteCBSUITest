@@ -39,6 +39,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
   multipleActions,
   singleActions,
   setGridAction,
+  submitButtonRef,
 }) => {
   const classes = useStyles();
   const selectedCount = selectedFlatRows.length;
@@ -74,6 +75,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
           setAction={setGridAction}
           selectedRows={selectedRows}
           buttonTextColor={"var(--theme-color1)"}
+          submitButtonRef={submitButtonRef}
         />
       ) : null}
       {selectedCount > 0 ? (
@@ -83,6 +85,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
           setAction={setGridAction}
           selectedRows={selectedRows}
           buttonTextColor={"var(--theme-color1)"}
+          submitButtonRef={submitButtonRef}
         />
       ) : null}
     </Toolbar>
@@ -97,6 +100,7 @@ export const RenderActions: FC<RenderActionType> = ({
   buttonTextColor = "var( --theme-color2)",
   buttonBackground = "inherit",
   style = {},
+  submitButtonRef,
 }) => {
   if (Array.isArray(actions) && actions.length > 0) {
     return actions.map((one) => (
@@ -120,6 +124,7 @@ export const RenderActions: FC<RenderActionType> = ({
             ...style,
             //marginRight: "10px",
           }}
+          ref={one.onEnterSubmit ? submitButtonRef : null}
         >
           {one.actionLabel}
         </Button>
