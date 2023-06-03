@@ -58,6 +58,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
       headerToolbarStyle = {},
       onlySingleSelectionAllow = false,
       isNewRowStyle = false,
+      defaultSelectedRowId = null,
     },
     ref
   ) => {
@@ -317,6 +318,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         headerToolbarStyle={headerToolbarStyle}
         onlySingleSelectionAllow={onlySingleSelectionAllow}
         isNewRowStyle={isNewRowStyle}
+        defaultSelectedRowId={defaultSelectedRowId}
       />
     );
   }

@@ -73,9 +73,7 @@ const QuickAccessTableGrid = () => {
     [
       "QuickAccessTableGridData",
       {
-        userID: authState?.user?.id ?? "",
         COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
         BASE_BRANCH_CD: authState?.user?.branchCode ?? "",
         GROUP_NAME: authState?.roleName ?? "",
         APP_TRAN_CD: "1",
@@ -84,9 +82,8 @@ const QuickAccessTableGrid = () => {
     ],
     () =>
       API.QuickAccessTableGridData({
-        userID: authState?.user?.id ?? "",
         COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
+
         BASE_BRANCH_CD: authState?.user?.branchCode ?? "",
         GROUP_NAME: authState?.roleName ?? "",
         APP_TRAN_CD: "1",

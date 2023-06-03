@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   useTable,
   useSortBy,
@@ -89,6 +89,7 @@ export const DataGrid = ({
   headerToolbarStyle,
   onlySingleSelectionAllow,
   isNewRowStyle,
+  defaultSelectedRowId,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -156,6 +157,8 @@ export const DataGrid = ({
   const { authState } = useContext(AuthContext);
 
   const tbodyRef = useRef(null);
+  const submitButtonRef = useRef<any>(null);
+  const tableRowRef = useRef<any>(null);
   const rowsToDisplay = enablePagination ? page : rows;
 
   const rowCount = useMemo(() => {
@@ -182,7 +185,7 @@ export const DataGrid = ({
   const [contextMenuRow, setContextMenuRow] = useState<null | any>(null);
   const [contextMenuSelectedRowId, setContextMenuSelectedRowId] = useState<
     string | null
-  >(null);
+  >(defaultSelectedRowId);
   const handleContextMenuClose = () => {
     setContextMenuRow(null);
     setContextMenuPosition(null);
@@ -216,6 +219,27 @@ export const DataGrid = ({
         : null
     );
   };
+  const handleContextUpDownKey = (rowsToDisplay, _rowindex) => (e) => {
+    if (e.key !== "Enter" && e.key !== "Tab") {
+      e.preventDefault();
+    }
+
+    if (e.key === "ArrowUp" && _rowindex > 0) {
+      if (rowsToDisplay[_rowindex - 1]?.id) {
+        toggleAllRowsSelected(false);
+        rowsToDisplay[_rowindex - 1].toggleRowSelected(true);
+        setContextMenuSelectedRowId(rowsToDisplay[_rowindex - 1]?.id);
+        e?.target?.previousElementSibling?.focus?.();
+      }
+    } else if (e.key === "ArrowDown" && _rowindex < rowsToDisplay.length - 1) {
+      if (rowsToDisplay[_rowindex + 1]?.id) {
+        toggleAllRowsSelected(false);
+        rowsToDisplay[_rowindex + 1].toggleRowSelected(true);
+        setContextMenuSelectedRowId(rowsToDisplay[_rowindex + 1].id);
+        e?.target?.nextElementSibling?.focus?.();
+      }
+    }
+  };
   const handleRowDoubleClickAction = (row) => (e) => {
     e.preventDefault();
     let result = filterAction(doubleClickAction, [row], authState, true);
@@ -239,7 +263,30 @@ export const DataGrid = ({
     setPageSize(Number(event.target.value));
   };
   //console.log("rowsToDisplay", rowsToDisplay);
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "Enter") {
+        if (submitButtonRef.current) {
+          submitButtonRef?.current?.click?.();
+        }
+      }
+    };
+    window.document.addEventListener("keypress", handleKeyPress);
+    return () => {
+      window.document.removeEventListener("keypress", handleKeyPress);
+    };
+  }, []);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      tableRowRef.current?.focus?.();
+    }, 200);
 
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [loading]);
   return (
     <>
       <Paper
@@ -280,6 +327,7 @@ export const DataGrid = ({
             multipleActions={multipleActions}
             singleActions={singleActions}
             setGridAction={setGridAction} //for single/multiple actions
+            submitButtonRef={submitButtonRef}
           />
         )}
         <ActionContextMenu
@@ -378,7 +426,7 @@ export const DataGrid = ({
                   </div>
                 </Grid>
               ) : null}
-              {rowsToDisplay.map((row) => {
+              {rowsToDisplay.map((row, _rowindex) => {
                 //console.log(row);
                 if (Boolean(row?.original?.[hiddenFlag])) {
                   return null;
@@ -386,6 +434,10 @@ export const DataGrid = ({
                 prepareRow(row);
                 const rightClickHandler = handleContextMenuOpen(row);
                 const thisRowDblClickHandler = handleRowDoubleClickAction(row);
+                const thisRowUpDownHandler = handleContextUpDownKey(
+                  rowsToDisplay,
+                  _rowindex
+                );
                 let rowColorStyle: any[] = [];
                 if (Boolean(row?.original?._rowColor)) {
                   rowColorStyle = [
@@ -399,24 +451,28 @@ export const DataGrid = ({
                     rowColorStyle = [{ style: { cursor: "pointer" } }];
                   }
                 }
-                // if (row.id == "0002") {
-                //   row.toggleRowSelected(true);
-                // }
                 return (
                   <MyTableRow
                     {...row.getRowProps(rowColorStyle)}
                     id={row.id}
-                    tabIndex={0}
+                    tabIndex={_rowindex}
                     component="div"
                     selected={
-                      row.isSelected || contextMenuSelectedRowId === row.id
+                      // row.isSelected || contextMenuSelectedRowId === row.id
+                      row.isSelected
+                        ? true
+                        : contextMenuSelectedRowId === row.id
+                        ? row.toggleRowSelected(true)
+                        : false
                     }
                     onClick={() => {
                       if (Boolean(onlySingleSelectionAllow)) {
                         toggleAllRowsSelected(false);
                         row.toggleRowSelected(true);
+                        setContextMenuSelectedRowId(row.id);
                       }
                     }}
+                    onKeyDown={thisRowUpDownHandler}
                     onContextMenu={rightClickHandler}
                     onDoubleClick={
                       Boolean(doubleClickAction)
@@ -424,6 +480,11 @@ export const DataGrid = ({
                         : undefined
                     }
                     className={isNewRowStyle ? classes.customClass : null}
+                    ref={
+                      row.isSelected || contextMenuSelectedRowId === row.id
+                        ? tableRowRef
+                        : null
+                    }
                   >
                     {row.cells.map((cell) => {
                       const { key } = cell.getCellProps();
@@ -472,7 +533,12 @@ export const DataGrid = ({
               key="singleFilters"
               actions={singleActions}
               setAction={setGridAction}
-              selectedRows={selectedFlatRows}
+              selectedRows={selectedFlatRows.map((one) => {
+                return {
+                  data: one.original,
+                  id: one.id,
+                };
+              })}
               buttonTextColor={"var(--theme-color2)"}
               buttonBackground={"var(--theme-color3)"}
               style={{
@@ -480,6 +546,7 @@ export const DataGrid = ({
                 width: "8rem",
                 margin: "5px",
               }}
+              submitButtonRef={submitButtonRef}
             />
           </div>
         ) : null}

@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useRef } from "react";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
-
+import { queryClient } from "cache";
 const actions: ActionTypes[] = [
   {
     actionName: "back",
@@ -28,26 +28,27 @@ const actions: ActionTypes[] = [
     actionLabel: "Proceed",
     multiple: false,
     rowDoubleClick: true,
-    alwaysAvailable: false,
     actionTextColor: "var(--theme-color2)",
     actionBackground: "var(--theme-color3)",
+    onEnterSubmit: true,
   },
 ];
 
 const BranchSelectionGrid = () => {
-  const { authState, isBranchSelected, branchSelect, isLoggedIn } =
+  const { authState, isBranchSelected, branchSelect, isLoggedIn, logout } =
     useContext(AuthContext);
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
-  // console.log(">>authState", authState);
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["BranchSelectionGridData"],
-    () => API.BranchSelectionGridData({ userID: authState?.user?.id ?? "" })
+    () => API.BranchSelectionGridData()
   );
-  // console.log("authState?.user?.id", authState?.user?.id);
-
-  console.log("<<DATADATA>>", data);
+  // useEffect(() => {
+  //   return () => {
+  //     queryClient.removeQueries(["BranchSelectionGridData"]);
+  //   };
+  // }, []);
   useEffect(() => {
     if (!isLoggedIn()) {
       navigate("/cbsenfinity/login");
@@ -57,9 +58,9 @@ const BranchSelectionGrid = () => {
   }, [isBranchSelected, isLoggedIn]);
 
   const mutation = useMutation(API.GetMenuData, {
-    onSuccess: ({ data }) => {
-      console.log("<<<<>>>>", data);
-      console.log(">>login update", { ...authState, menulistdata: data });
+    onSuccess: (data) => {
+      console.log(">>data", data);
+      // console.log(">>login update", { ...authState, menulistdata: data });
       //login({ ...authState, menulistdata: data });
       branchSelect({ menulistdata: data });
       //navigate("/cbsenfinity/dashboard");
@@ -68,31 +69,52 @@ const BranchSelectionGrid = () => {
 
   const setCurrentAction = useCallback(
     (data) => {
-      // console.log(">>data", data);
+      console.log(">>data", data);
       if (data.name === "proceed") {
         if (data.rows?.length === 0) {
           enqueueSnackbar("Please Select Branch", {
             variant: "error",
           });
-        } else if (data.rows?.[0]?.values?.STATUS === "Closed") {
+        } else if (data.rows?.[0]?.data?.STATUS === "Closed") {
           enqueueSnackbar("Please Select Open Branch.", {
             variant: "error",
           });
         } else {
           mutation.mutate({
-            userID: authState?.user?.id ?? "",
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
+            BASE_COMP_CD: data.rows?.[0]?.data?.BASE_COMP_CD ?? "",
+            BASE_BRANCH_CD: data.rows?.[0]?.data?.BASE_BRANCH_CD ?? "",
+            COMP_CD: data.rows?.[0]?.data?.COMP_CD ?? "",
+            BRANCH_CD: data.rows?.[0]?.data?.BRANCH_CD ?? "",
             GROUP_NAME: authState?.roleName ?? "",
+            APP_TRAN_CD: "51",
+            COMP_NM: data.rows?.[0]?.data?.COMP_NM ?? "",
+            BRANCH_NM: data.rows?.[0]?.data?.BRANCH_NM ?? "",
+            DAYEND_STATUS: data.rows?.[0]?.data?.DAYEND_STATUS ?? "",
+            EOD_RUNNING_STATUS: data.rows?.[0]?.data?.EOD_RUNNING_STATUS ?? "",
+            IS_UPD_DEF_BRANCH: authState?.user?.isUpdDefBranch ?? "",
             fulldata: authState,
           });
         }
       } else {
-        navigate("/netbanking/login");
+        logout();
       }
     },
     [navigate]
   );
+  // useEffect(() => {
+  //   const handleKeyPress = (e) => {
+  //     console.log(">>window key press", e);
+  //     if (e.key === "Enter") {
+  //       console.log();
+  //     }
+  //   };
+
+  //   window.addEventListener("keypress", handleKeyPress);
+
+  //   return () => {
+  //     window.removeEventListener("keypress", handleKeyPress);
+  //   };
+  // }, []);
 
   return (
     <>
@@ -134,7 +156,7 @@ const BranchSelectionGrid = () => {
             xl={10}
             xs={10}
           >
-            <Grid
+            {/* <Grid
               container
               style={{
                 margin: "0",
@@ -190,6 +212,66 @@ const BranchSelectionGrid = () => {
                   {`Emp. Id :${authState?.user?.employeeID ?? ""}`}
                 </p>
               </Grid>
+            </Grid> */}
+
+            <Grid
+              container
+              style={{
+                margin: "0",
+                padding: "0",
+                // height: "12vh",
+              }}
+              lg={12}
+              md={12}
+              xl={12}
+              xs={12}
+            >
+              <Grid
+                item
+                lg={6}
+                md={6}
+                xl={6}
+                xs={12}
+                sm={6}
+                style={{
+                  justifyContent: "center",
+                }}
+              >
+                <h1
+                  className="name-heading"
+                  style={{ fontSize: "24px", margin: "4px 0px" }}
+                >
+                  Welcome <span>{`${authState?.user?.name ?? ""},`}</span>
+                </h1>
+                <h1 className="access-heading" style={{ fontSize: "22px" }}>
+                  Access Branch List
+                </h1>
+              </Grid>
+              <Grid
+                item
+                lg={6}
+                md={6}
+                xl={6}
+                xs={12}
+                sm={6}
+                style={{
+                  margin: "4px 0px 0 0",
+                  padding: "0",
+                  justifyContent: "right",
+                  display: "grid",
+                  height: "fit-content",
+                }}
+              >
+                <div className="bank-name-container">
+                  <p className="bank-name">
+                    {`Bank Name: ${authState?.companyName ?? ""}`}
+                  </p>
+                </div>
+
+                <p className="emp-id">
+                  {`Emp. Id: ${authState?.user?.employeeID ?? ""}`}
+                </p>
+              </Grid>
             </Grid>
 
             <GridWrapper
@@ -206,6 +288,7 @@ const BranchSelectionGrid = () => {
               onlySingleSelectionAllow={true}
               isNewRowStyle={true}
               loading={isLoading || isFetching || mutation.isLoading}
+              defaultSelectedRowId={authState?.user?.branchCode ?? null}
             />
           </Grid>
           {/* <Box

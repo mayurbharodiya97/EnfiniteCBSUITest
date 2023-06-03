@@ -25,7 +25,6 @@ const TodaysTransactionTableGrid = () => {
       API.TodaysTransactionTableGrid({
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: authState?.user?.branchCode ?? "",
-        userID: authState?.user?.id ?? "",
       })
   );
   const setCurrentAction = useCallback((data) => {

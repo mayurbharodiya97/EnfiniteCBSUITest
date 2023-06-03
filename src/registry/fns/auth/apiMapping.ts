@@ -16,7 +16,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   MENULIST: {
-    url: "adminPanelCommonServiceAPI/GETMENULIST",
+    url: "enfinityCommonServiceAPI/GETMENULIST",
     packageName: "",
   },
   GETMISCVALUE: {
