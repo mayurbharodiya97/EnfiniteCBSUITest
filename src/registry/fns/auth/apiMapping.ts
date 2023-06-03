@@ -71,6 +71,10 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETALERTDTL",
     packageName: "",
   },
+  GETDASHBOARDDATA: {
+    url: "dashboardServiceAPI/GETDASHBOARDDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

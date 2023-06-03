@@ -23,8 +23,8 @@ export const BankDetails = ({ imageData }: any) => {
     }
   }, [navigate, isLoggedIn]);
   useEffect(() => {
-    if (Boolean(imageData?.[0]?.COMP_LOGO)) {
-      let blob = utilFunction.base64toBlob(imageData?.[0]?.COMP_LOGO);
+    if (Boolean(imageData?.[0]?.BANK_LOGO)) {
+      let blob = utilFunction.base64toBlob(imageData?.[0]?.BANK_LOGO);
       urlObj.current =
         typeof blob === "object" && Boolean(blob)
           ? URL.createObjectURL(blob)

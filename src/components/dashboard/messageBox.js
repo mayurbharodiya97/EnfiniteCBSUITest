@@ -1,5 +1,5 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { Box, Dialog, Grid, IconButton, Typography } from "@mui/material";
+import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
@@ -10,10 +10,23 @@ import * as API from "./api";
 import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { utilFunction } from "components/utils";
+import { GradientButton } from "components/styledComponent/button";
+import {
+  ImageViewer,
+  NoPreview,
+  PDFViewer,
+} from "components/fileUpload/preView";
 
 export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
   const { authState } = useContext(AuthContext);
+  const [rowsData, setRowsData] = useState({});
+  const lastFileData = useRef(null);
+  const [isUser, setIsUser] = useState(false);
+  const [isOpenImage, setIsOpenImage] = useState(false);
+  const [isOpenPdf, setIsOpenPdf] = useState(false);
+  const [isOpenSave, setIsOpenSave] = useState(false);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
     [
       "getDashboardMessageBoxData",
@@ -30,7 +43,8 @@ export const MessageBox = ({ screenFlag = "" }) => {
         userID: authState?.user?.id ?? "",
       })
   );
-  console.log("data", data);
+  const dataLength = data ? data.length : 0;
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries([
@@ -45,6 +59,9 @@ export const MessageBox = ({ screenFlag = "" }) => {
   }, []);
   const handleClick = () => {
     setToggle(!toggle);
+  };
+  const handleDialogClose = () => {
+    setIsOpenSave(false);
   };
 
   return (
@@ -129,13 +146,13 @@ export const MessageBox = ({ screenFlag = "" }) => {
               }}
             >
               {screenFlag === "Announcement"
-                ? "+7"
+                ? dataLength
                 : screenFlag === "Tips"
-                ? "+7"
+                ? dataLength
                 : screenFlag === "Notes"
-                ? "+7"
+                ? dataLength
                 : screenFlag === "Alert"
-                ? "+7"
+                ? dataLength
                 : null}
             </Box>
             <IconButton
@@ -196,24 +213,66 @@ export const MessageBox = ({ screenFlag = "" }) => {
                       paddingBottom: "0px",
                     }}
                   >
-                    {/* {Array.from(Array(7)).map((_, index)  => (
-                  <ListItemData
-                    key={"item?.value"}
-                    name={"• Electronic payment service"}
-                    disabled={false}
-                    onClick={(event) => event}
-                  />
-                ))} */}
                     {data.map((item) => (
                       <ListItemData
                         key={item?.value}
                         name={item?.label}
                         disabled={false}
+                        onClick={() => {
+                          console.log("datasetswdfd", item?.label);
+                          if (item?.label) {
+                          }
+                        }}
                       />
                     ))}
                   </List>
                 </nav>
               </Box>
+              {isOpenImage ? (
+                <Dialog
+                  fullWidth
+                  maxWidth="md"
+                  open={true}
+                  PaperProps={{
+                    style: {
+                      width: "80%",
+                      height: "90%",
+                    },
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "right",
+                      alignItems: "right",
+                    }}
+                  >
+                    <GradientButton
+                      style={{ width: "22px", margin: "6px" }}
+                      onClick={handleDialogClose}
+                    >
+                      Close
+                    </GradientButton>
+                  </div>
+                  {lastFileData.current?.FILE_TYPE?.includes("pdf") ? (
+                    <PDFViewer
+                      blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
+                      fileName={lastFileData.current?.FILE_NAME ?? ""}
+                    />
+                  ) : lastFileData.current?.FILE_TYPE?.includes("png") ||
+                    lastFileData.current?.FILE_TYPE?.includes("jpg") ||
+                    lastFileData.current?.FILE_TYPE?.includes("jpeg") ? (
+                    <ImageViewer
+                      blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
+                      fileName={lastFileData.current?.FILE_NAME ?? ""}
+                    />
+                  ) : (
+                    <NoPreview
+                      fileName={lastFileData.current?.FILE_NAME ?? ""}
+                    />
+                  )}
+                </Dialog>
+              ) : null}
             </Grid>
           )}
         </>

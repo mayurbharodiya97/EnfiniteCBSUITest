@@ -47,7 +47,7 @@ const BranchSelectionGrid = () => {
   );
   // console.log("authState?.user?.id", authState?.user?.id);
 
-  console.log("<<DATADATA>>", data);
+  // console.log("<<DATADATA>>", data);
   useEffect(() => {
     if (!isLoggedIn()) {
       navigate("/cbsenfinity/login");
@@ -58,8 +58,8 @@ const BranchSelectionGrid = () => {
 
   const mutation = useMutation(API.GetMenuData, {
     onSuccess: ({ data }) => {
-      console.log("<<<<>>>>", data);
-      console.log(">>login update", { ...authState, menulistdata: data });
+      // console.log("<<<<>>>>", data);
+      // console.log(">>login update", { ...authState, menulistdata: data });
       //login({ ...authState, menulistdata: data });
       branchSelect({ menulistdata: data });
       //navigate("/cbsenfinity/dashboard");

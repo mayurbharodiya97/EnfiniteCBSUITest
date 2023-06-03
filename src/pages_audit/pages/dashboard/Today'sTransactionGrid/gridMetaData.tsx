@@ -3,7 +3,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Todays Transaction",
-    rowIdColumn: "SR_CD",
+    rowIdColumn: "TRAN_CD",
 
     defaultColumnConfig: {
       width: 200,
@@ -15,7 +15,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: false,
+    enablePagination: true,
     containerHeight: {
       min: "50vh",
       max: "50vh",
