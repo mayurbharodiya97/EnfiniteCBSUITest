@@ -1,4 +1,5 @@
 import { DefaultErrorObject } from "components/utils";
+import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getDashboardData = async ({ COMP_CD, BRANCH_CD }) => {
@@ -42,8 +43,6 @@ export const TodaysTransactionTableGrid = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETTRANSACTIONDETAILS", {
       COMP_CD: COMP_CD,
-      // BASE_BRANCH_CD: BASE_BRANCH_CD,
-      ENTERED_BY: userID,
       BRANCH_CD: BRANCH_CD,
     });
   if (status === "0") {

@@ -63,6 +63,26 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETQUICKACCESSVIEW",
     packageName: "",
   },
+  GETANNOUNCEMENT: {
+    url: "dashboardServiceAPI/GETANNOUNCEMENT",
+    packageName: "",
+  },
+  GETTIPSDETAILS: {
+    url: "dashboardServiceAPI/GETTIPSDETAILS",
+    packageName: "",
+  },
+  GETNOTESDETAILSELECT: {
+    url: "dashboardServiceAPI/GETNOTESDETAILSELECT",
+    packageName: "",
+  },
+  GETALERTDTL: {
+    url: "dashboardServiceAPI/GETALERTDTL",
+    packageName: "",
+  },
+  GETDASHBOARDDATA: {
+    url: "dashboardServiceAPI/GETDASHBOARDDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
