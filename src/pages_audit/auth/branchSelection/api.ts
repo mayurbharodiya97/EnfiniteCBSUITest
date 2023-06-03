@@ -149,6 +149,18 @@ export const GetMenuData = async ({
         label: "All Screens",
         href: "all-screens",
       },
+      {
+        label: "Operation",
+        icon: "plus",
+        children: [
+          {
+            label: "Cheque Book Issue",
+            href: "operation/chequebook-entry",
+            isRouterLink: true,
+            icon: "circle",
+          },
+        ],
+      },
     ],
     message: "",
     messageDetails: "",

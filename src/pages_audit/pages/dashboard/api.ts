@@ -222,10 +222,8 @@ export const TodaysTransactionTableGrid = async ({
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETTRANSACTIONDETAILS", {
       COMP_CD: COMP_CD,
-      // BASE_BRANCH_CD: BASE_BRANCH_CD,
       ENTERED_BY: userID,
       BRANCH_CD: BRANCH_CD,
-      // ENTERED_BY: "harekrishna",
       FROM_DT: "08/FEB/2023",
     });
   if (status === "0") {
