@@ -141,8 +141,8 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
       maxWidth: 220,
     },
     {
-      accessor: "CONFIRMED",
-      columnName: "confirm_",
+      accessor: "CONFIRM",
+      columnName: "STATUS",
       sequence: 5,
       alignment: "left",
       componentType: "default",

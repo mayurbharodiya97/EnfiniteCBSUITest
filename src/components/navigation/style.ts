@@ -126,7 +126,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
       fontWeight: 500,
     },
     "& p": {
-      color: "white",
+      color: "var(--theme-color6)",
     },
   },
   linktext: {
@@ -155,9 +155,12 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     },
   },
   openCurrent: {
-    backgroundColor: "rgba(0, 0, 0, 0.04)",
+    backgroundColor: "var(--theme-color1)",
     "&  *": {
       color: "var(--theme-color2)",
+    },
+    "&:hover": {
+      backgroundColor: "var(--theme-color3)",
     },
   },
   slimList: {

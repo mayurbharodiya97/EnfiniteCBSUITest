@@ -10,7 +10,7 @@ import {
   useGlobalFilter,
 } from "react-table";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import CloseIcon from "@mui/icons-material/GetApp";
+import CloseIcon from "@mui/icons-material/Close";
 import { FixedSizeList } from "react-window";
 import { createNewWorkbook } from "./export";
 import { useSequenceColumn } from "./components/useSequence";
@@ -31,6 +31,7 @@ import {
   TableHead,
   TableRow,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
@@ -251,21 +252,31 @@ export const GridTable: FC<GridTableType> = ({
           />
           <FormControlLabel
             control={
-              <IconButton
-                onClick={() => createNewWorkbook({ data: data, title: title })}
-                size="small"
-                color="primary"
-              >
-                <GetAppIcon />
-              </IconButton>
+              <Tooltip title="Download">
+                <IconButton
+                  onClick={() =>
+                    createNewWorkbook({ data: data, title: title })
+                  }
+                  size="small"
+                  color="primary"
+                >
+                  <GetAppIcon />
+                </IconButton>
+              </Tooltip>
             }
             style={{ color: "var(--theme-color2)" }}
-            label="Download"
+            label=""
           />
           {typeof onClose === "function" ? (
-            <IconButton onClick={onClose} size="small">
-              <CloseIcon />
-            </IconButton>
+            <Tooltip title="Close">
+              <IconButton
+                onClick={onClose}
+                size="small"
+                style={{ color: "var(--theme-color2)" }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Tooltip>
           ) : null}
         </Toolbar>
 

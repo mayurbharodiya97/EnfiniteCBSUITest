@@ -12,6 +12,7 @@
   border-radius: 15px;
   display: flex;
   position: absolute;
+  top: "0px";
   align-items: center;
   flex-direction: column;
   justify-content: center;

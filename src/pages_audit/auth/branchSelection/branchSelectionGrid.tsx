@@ -1,11 +1,12 @@
 import GridWrapper from "components/dataTableStatic";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { BranchSelectionGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider } from "cache";
 import branchSelectionSideImage from "assets/images/sideImage.png";
 import "./css/branchSelectionGrid.css";
-import { Box, Grid } from "@mui/material";
+import { Alert } from "components/common/alert";
+import { Box, Button, Grid } from "@mui/material";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -14,6 +15,7 @@ import React, { useRef } from "react";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { queryClient } from "cache";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 const actions: ActionTypes[] = [
   {
     actionName: "back",
@@ -40,15 +42,11 @@ const BranchSelectionGrid = () => {
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
-    ["BranchSelectionGridData"],
-    () => API.BranchSelectionGridData()
-  );
-  // useEffect(() => {
-  //   return () => {
-  //     queryClient.removeQueries(["BranchSelectionGridData"]);
-  //   };
-  // }, []);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["BranchSelectionGridData"], () => API.BranchSelectionGridData());
+
   useEffect(() => {
     if (!isLoggedIn()) {
       navigate("/cbsenfinity/login");
@@ -57,19 +55,20 @@ const BranchSelectionGrid = () => {
     }
   }, [isBranchSelected, isLoggedIn]);
 
+  type MutationErrorType = {
+    severity: string;
+    error_msg: string;
+    error_detail: string;
+  };
+
   const mutation = useMutation(API.GetMenuData, {
     onSuccess: (data) => {
-      console.log(">>data", data);
-      // console.log(">>login update", { ...authState, menulistdata: data });
-      //login({ ...authState, menulistdata: data });
       branchSelect({ menulistdata: data });
-      //navigate("/cbsenfinity/dashboard");
     },
   });
-
+  const getError: any = mutation.error as MutationErrorType;
   const setCurrentAction = useCallback(
     (data) => {
-      console.log(">>data", data);
       if (data.name === "proceed") {
         if (data.rows?.length === 0) {
           enqueueSnackbar("Please Select Branch", {
@@ -92,6 +91,8 @@ const BranchSelectionGrid = () => {
             DAYEND_STATUS: data.rows?.[0]?.data?.DAYEND_STATUS ?? "",
             EOD_RUNNING_STATUS: data.rows?.[0]?.data?.EOD_RUNNING_STATUS ?? "",
             IS_UPD_DEF_BRANCH: authState?.user?.isUpdDefBranch ?? "",
+            COMP_BASE_BRANCH_CD:
+              data.rows?.[0]?.data?.COMP_BASE_BRANCH_CD ?? "",
             fulldata: authState,
           });
         }
@@ -99,22 +100,20 @@ const BranchSelectionGrid = () => {
         logout();
       }
     },
-    [navigate]
+    [navigate, data, mutation]
   );
-  // useEffect(() => {
-  //   const handleKeyPress = (e) => {
-  //     console.log(">>window key press", e);
-  //     if (e.key === "Enter") {
-  //       console.log();
-  //     }
-  //   };
 
-  //   window.addEventListener("keypress", handleKeyPress);
-
-  //   return () => {
-  //     window.removeEventListener("keypress", handleKeyPress);
-  //   };
-  // }, []);
+  useEffect(() => {
+    if (data?.length === 1) {
+      if (data?.[0]?.STATUS === "Closed") {
+        enqueueSnackbar("Please Select Open Branch.", {
+          variant: "error",
+        });
+      } else {
+        setCurrentAction({ name: "proceed", rows: [{ data: { ...data[0] } }] });
+      }
+    }
+  }, [JSON.stringify(data)]);
 
   return (
     <>
@@ -134,6 +133,7 @@ const BranchSelectionGrid = () => {
             alt="side-Image"
           />
         </Grid>
+
         <Grid
           item
           lg={11}
@@ -156,64 +156,6 @@ const BranchSelectionGrid = () => {
             xl={10}
             xs={10}
           >
-            {/* <Grid
-              container
-              style={{
-                margin: "0",
-                padding: "0",
-                // height: "12vh",
-              }}
-              lg={12}
-              md={12}
-              xl={12}
-              xs={12}
-            >
-              <Grid
-                item
-                lg={6}
-                md={6}
-                xl={6}
-                xs={12}
-                sm={6}
-                style={{
-                  justifyContent: "center",
-                }}
-              >
-                <h1
-                  className="name-heading"
-                  style={{ fontSize: "24px", margin: "4px 0px" }}
-                >
-                  Welcome <span>{`${authState?.user?.name ?? ""},`}</span>
-                </h1>
-                <h1 className="access-heading" style={{ fontSize: "22px" }}>
-                  Access Branch List
-                </h1>
-              </Grid>
-              <Grid
-                item
-                lg={6}
-                md={6}
-                xl={6}
-                xs={12}
-                sm={6}
-                style={{
-                  margin: "4px 0px 0 0",
-                  padding: "0",
-                  justifyContent: "right",
-                  display: "grid",
-                  height: "fit-content",
-                }}
-              >
-                <p className="bank-name">
-                  {`Bank Name :${authState?.companyName ?? ""}`}
-                </p>
-
-                <p className="emp-id">
-                  {`Emp. Id :${authState?.user?.employeeID ?? ""}`}
-                </p>
-              </Grid>
-            </Grid> */}
-
             <Grid
               container
               style={{
@@ -274,6 +216,27 @@ const BranchSelectionGrid = () => {
               </Grid>
             </Grid>
 
+            {isError ? (
+              <Fragment>
+                <div style={{ width: "100%", paddingTop: "10px" }}>
+                  <Alert
+                    severity={error?.severity ?? "error"}
+                    errorMsg={error?.error_msg ?? "Error"}
+                    errorDetail={error?.error_detail ?? ""}
+                  />
+                </div>
+              </Fragment>
+            ) : mutation.isError && mutation.error ? (
+              <Fragment>
+                <div style={{ width: "100%", paddingTop: "10px" }}>
+                  <Alert
+                    severity={getError.severity ?? "error"}
+                    errorMsg={getError.error_msg ?? "Error"}
+                    errorDetail={getError.error_detail ?? ""}
+                  />
+                </div>
+              </Fragment>
+            ) : null}
             <GridWrapper
               key={`branchSelection`}
               finalMetaData={BranchSelectionGridMetaData as GridMetaDataType}
@@ -283,13 +246,30 @@ const BranchSelectionGrid = () => {
               setAction={setCurrentAction}
               controlsAtBottom={true}
               headerToolbarStyle={{
-                background: "white",
+                background: "var(--theme-color2)",
               }}
               onlySingleSelectionAllow={true}
               isNewRowStyle={true}
               loading={isLoading || isFetching || mutation.isLoading}
               defaultSelectedRowId={authState?.user?.branchCode ?? null}
             />
+            {isError ? (
+              <Button
+                sx={{
+                  backgroundColor: "var(--theme-color3)",
+                  position: "absolute",
+                  right: "113px",
+                  bottom: "20px",
+                  width: "7rem",
+                  "&:hover": {
+                    backgroundColor: "var(--theme-color3)",
+                  },
+                }}
+                onClick={() => logout()}
+              >
+                Back
+              </Button>
+            ) : null}
           </Grid>
           {/* <Box
             style={{

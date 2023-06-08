@@ -12,8 +12,8 @@ import { makeStyles } from "@mui/styles";
 const useStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    background: "var(--theme-color1)",
+    paddingRight: theme.spacing(1),
+    background: "var(--theme-color5)",
   },
   title: {
     flex: "1 1 100%",
