@@ -66,7 +66,10 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   }));
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["getBankimgAndProfileimg"],
-    () => API.getBankimgAndProfileimg()
+    () =>
+      API.getBankimgAndProfileimg({
+        userID: authController?.authState?.user?.id,
+      })
   );
   useEffect(() => {
     if (Boolean(data?.[0]?.PROFILE_PHOTO)) {

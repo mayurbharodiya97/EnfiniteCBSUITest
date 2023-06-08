@@ -159,4 +159,13 @@ export const useStyles = makeStyles((theme: any) => ({
     "0%": { transform: "translateX(100%)" },
     "100%": { transform: "translateX(-100%)" },
   },
+  popover: {
+    popover: {
+      maxWidth: "100%",
+      width: "fit-content",
+      "& .MuiPopover-paper": {
+        maxWidth: "100%",
+      },
+    },
+  },
 }));

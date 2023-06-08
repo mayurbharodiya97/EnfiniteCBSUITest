@@ -7,12 +7,12 @@ export const ActionWiseAPIConfiguration = {
     url: "authenticationServiceAPI/POSTLOGIN/VERIFYOTP",
     packageName: "",
   },
-  DOUPDATEPASSWORD: {
-    url: "userRegistrationServiceAPI/DOUPDATEPASSWORD",
+  CHANGEPASSWORD: {
+    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
     packageName: "",
   },
   LOGOUTUSER: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/LOGOUTUSER",
+    url: "/enfinityCommonServiceAPI/LOGOUTUSER",
     packageName: "",
   },
   MENULIST: {
@@ -79,12 +79,20 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETALERTDTL",
     packageName: "",
   },
-  GETBANKIMAGEANDPROFILEPIC: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
-    packageName: "",
-  },
   GETDASHBOARDDATA: {
     url: "dashboardServiceAPI/GETDASHBOARDDATA",
+    packageName: "",
+  },
+  GETUSERACTIVITY: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACTIVITY",
+    packageName: "",
+  },
+  GETUSERACESSBRNCH: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACESSBRNCH",
+    packageName: "",
+  },
+  GETUSERACESSTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACESSTYPE",
     packageName: "",
   },
 };
