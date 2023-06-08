@@ -83,6 +83,18 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETDASHBOARDDATA",
     packageName: "",
   },
+  GETACCOUNTSTATUS: {
+    url: "dashboardServiceAPI/GETACCOUNTSTATUS",
+    packageName: "",
+  },
+  RESETPASSWORD: {
+    url: "authenticationServiceAPI/AUTH/RESETPASSWORD",
+    packageName: "",
+  },
+  CHANGEPASSWORD: {
+    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

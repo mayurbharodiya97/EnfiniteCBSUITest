@@ -103,8 +103,9 @@ export const useStyles = makeStyles((theme: any) => ({
     },
   },
   ibtnvisible: {
-    padding: "7px !important",
-    alignItems: "baseline",
+    // padding: "7px !important",
+    // alignItems: "baseline",
+    marginBottom: "15px",
   },
   btnvisibleoff: {
     display: "none",
@@ -114,12 +115,10 @@ export const useStyles = makeStyles((theme: any) => ({
     alignItems: "center",
     // justifyContent: "space-between",
     marginBottom: "12px",
-    "& p": {
-      color: "#1C1C1C",
-      fonWeight: "400",
-      fontSize: "17px",
-      lineHeight: "33px",
-    },
+    color: "#1C1C1C",
+    fonWeight: "400",
+    fontSize: "17px",
+    lineHeight: "33px",
   },
   resendOTPalign: {
     color: "#4263C7",

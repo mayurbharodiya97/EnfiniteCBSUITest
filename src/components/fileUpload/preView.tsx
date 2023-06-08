@@ -19,11 +19,12 @@ export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
       ? URL.createObjectURL(blob as any)
       : null
   );
-  console.log(blob, urlObj.current);
+  //console.log(blob, urlObj.current);
   useEffect(() => {
     let toRemoveURL = urlObj.current ?? "";
     return () => {
       URL.revokeObjectURL(toRemoveURL);
+      console.log("revokeObjectURL", toRemoveURL);
     };
   }, []);
   return (
@@ -64,11 +65,17 @@ export const ImageViewer: FC<{
   onClose?: any;
 }> = ({ blob, fileName, onClose }) => {
   const urlObj = useRef(
-    typeof blob === "object" && Boolean(blob) ? URL.createObjectURL(blob) : ""
+    typeof blob === "object" && Boolean(blob)
+      ? URL.createObjectURL(blob as any)
+      : ""
   );
+  //console.log(blob, urlObj.current);
   useEffect(() => {
-    let toRemoveURL = urlObj.current;
-    return () => URL.revokeObjectURL(toRemoveURL);
+    let toRemoveURL = urlObj.current ?? "";
+    return () => {
+      //URL.revokeObjectURL(toRemoveURL);
+      console.log("revokeObjectURL", toRemoveURL);
+    };
   }, []);
   return (
     <Fragment>
@@ -91,7 +98,7 @@ export const ImageViewer: FC<{
         ) : null}
       </DialogActions>
       <DialogContent>
-        <img width="60%" src={urlObj.current} alt="Preview of document" />
+        <img width="60%" src={`${urlObj.current}`} alt="Preview of document" />
       </DialogContent>
     </Fragment>
   );

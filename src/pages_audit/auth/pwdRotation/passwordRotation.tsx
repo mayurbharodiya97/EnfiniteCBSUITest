@@ -1,15 +1,12 @@
 import {
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
+  Container,
   FormHelperText,
+  Grid,
 } from "@mui/material";
 import { TextField } from "components/styledComponent/textfield";
 import { GradientButton } from "components/styledComponent/button";
 import { Fragment, useRef, useState } from "react";
-import { Transition } from "pages_audit/common/transition";
 import { utilFunction } from "components/utils/utilFunctions";
 import { ResetPassword } from "./api";
 import { useSnackbar } from "notistack";
@@ -41,6 +38,7 @@ export const PasswordRotation = ({
     isconfirmnewpwdError: false,
     confirmnewpassworderror: "",
   });
+
   const handleCloseEvent = () => {
     handleClose("");
   };
@@ -132,24 +130,36 @@ export const PasswordRotation = ({
     }
     setInput((values) => ({ ...values, [name]: value }));
   };
+
   return (
     <Fragment>
-      <Dialog
-        fullWidth={false}
-        //@ts-ignore
-        TransitionComponent={Transition}
-        open={open}
-        PaperProps={{
-          style: {
-            width: "60vh",
-            minWidth: "50vh",
-          },
-        }}
-      >
-        <DialogTitle>Password Rotation</DialogTitle>
-        <DialogContent>
-          {/* <DialogContentText>Please Verify OTP</DialogContentText> */}
-          <div>
+      <Container maxWidth="xs">
+        <Grid alignItems="center">
+          <div
+            style={{
+              color: "#000000 !important",
+              fontSize: "30px",
+              fontWeight: "600",
+              alignItems: "center",
+              fontStyle: "normal",
+            }}
+          >
+            <h3>Password Rotation</h3>
+          </div>
+          <div
+            className=""
+            style={{
+              color: "#949597",
+              fontSize: "18px",
+              fontWeight: "400",
+              alignItems: "center",
+              fontStyle: "normal",
+              width: "360px",
+            }}
+          >
+            Please Verify OTP
+          </div>
+          <div className={classes.formWrap}>
             <TextField
               label={"Username"}
               placeholder="Enter Username"
@@ -242,24 +252,50 @@ export const PasswordRotation = ({
               </FormHelperText>
             ) : null}
           </div>
-        </DialogContent>
-        <DialogActions className={classes.verifybutton}>
-          <GradientButton
-            disabled={pwdReset.isLoading}
-            endIcon={pwdReset.isLoading ? <CircularProgress size={20} /> : null}
-            onClick={ClickEventHandler}
-            ref={inputButtonRef}
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              margin: "20px 0 0 10px",
+              width: "94%",
+            }}
           >
-            Ok
-          </GradientButton>
-          <GradientButton
-            disabled={pwdReset.isLoading}
-            onClick={handleCloseEvent}
-          >
-            Cancel
-          </GradientButton>
-        </DialogActions>
-      </Dialog>
+            <GradientButton
+              fullWidth
+              disabled={pwdReset.isLoading}
+              onClick={handleCloseEvent}
+              className={classes.otpButtons}
+              style={{
+                border: "var(--theme-color3)1px solid",
+                color: "var(--theme-color3)",
+                background: "var(--theme-color2)",
+                borderRadius: "10px",
+              }}
+            >
+              Back
+            </GradientButton>
+            <GradientButton
+              style={{
+                borderRadius: pwdReset.isLoading ? "50%" : "10px",
+                height: pwdReset.isLoading ? "40px" : "100%",
+                width: pwdReset.isLoading ? "0px" : "100%",
+                minWidth: pwdReset.isLoading ? "40px" : "80px",
+              }}
+              fullWidth
+              disabled={pwdReset.isLoading}
+              onClick={ClickEventHandler}
+              ref={inputButtonRef}
+              className={classes.otpButtons}
+            >
+              {pwdReset.isLoading ? (
+                <CircularProgress size={25} thickness={4.6} />
+              ) : (
+                "Update"
+              )}
+            </GradientButton>
+          </div>
+        </Grid>
+      </Container>
     </Fragment>
   );
 };

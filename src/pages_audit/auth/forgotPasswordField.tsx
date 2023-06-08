@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
   const [input, setInput] = useState({
-    userName: "",
+    userName: loginState.workingState === 1 ? loginState?.username : "",
     mobileno: "",
     password: "",
     confirmpassword: "",
@@ -21,7 +21,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
   const inputRef = useRef<any>(null);
   const inputPassRef = useRef<any>(null);
   const inputButtonRef = useRef<any>(null);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
   const navigate = useNavigate();
 
   const handleChange = (event) => {
@@ -202,11 +202,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             />
           </>
         ) : null}
-        {/* {loginState.isApiError ? (
-          <FormHelperText style={{ color: "red" }}>
-            {loginState.apierrorMessage}
-          </FormHelperText>
-        ) : null} */}
+
         <div
           style={{
             marginTop: "20px",
@@ -231,7 +227,6 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                 onClick={() => {
                   navigate("login");
                 }}
-                // style={{ marginRight: "5px" }}
               >
                 Back to Login
               </GradientButton>
@@ -244,6 +239,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                 }
                 onClick={() => {
                   onSubmit(input, loginState.workingState);
+                  console.log("input", input, loginState.workingState);
                 }}
                 ref={inputButtonRef}
               >
