@@ -6,7 +6,7 @@ export const Content = ({ children }) => {
   return (
     <main className={classes.content}>
       <ScrollBar>
-        <div className={classes.appBarSpacer} />
+        {/* <div className={classes.appBarSpacer} /> */}
         <div className={classes.container}>{children}</div>
       </ScrollBar>
     </main>

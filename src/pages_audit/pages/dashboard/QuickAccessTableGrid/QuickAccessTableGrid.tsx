@@ -5,6 +5,7 @@ import { ClearCacheProvider, queryClient } from "cache";
 import { SearchBar } from "components/derived";
 
 import React, {
+  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -26,26 +27,8 @@ import {
 import { makeStyles, styled } from "@mui/styles";
 import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
-// const actions: ActionTypes[] = [
-//   {
-//     actionName: "Recent",******************
-//     actionLabel: "Recent",
-//     multiple: undefined,
-//     rowDoubleClick: false,
-//     actionTextColor: "var(--theme-color3)",
-//     alwaysAvailable: true,
-//     actionBackground: "var(--theme-color2)",
-//   },
-//   {
-//     actionName: "Favourite",
-//     actionLabel: "Favourite",
-//     multiple: undefined,
-//     rowDoubleClick: true,
-//     actionTextColor: "var(--theme-color2)",
-//     actionBackground: "var(--theme-color3)",
-//     alwaysAvailable: true,
-//   },
-// ];
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
 
 const useHeaderStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -69,7 +52,10 @@ const QuickAccessTableGrid = () => {
   const { authState } = useContext(AuthContext);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up(1256));
-  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
+  const { data, isLoading, isFetching, refetch, isError, error } = useQuery<
+    any,
+    any
+  >(
     [
       "QuickAccessTableGridData",
       {
@@ -95,9 +81,6 @@ const QuickAccessTableGrid = () => {
       queryClient.removeQueries(["QuickAccessTableGridData"]);
     };
   }, []);
-  // const setCurrentAction = useCallback((data) => {
-  //   console.log(">>data", data);
-  // }, []);
 
   const handleButtonClick = (buttonId) => {
     setActiveButton(buttonId);
@@ -131,6 +114,17 @@ const QuickAccessTableGrid = () => {
         color="primary"
         style={{ marginBottom: "5px" }}
       > */}
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <Toolbar className={headerClasses.root} variant={"dense"}>
         <Typography
           className={headerClasses.title}

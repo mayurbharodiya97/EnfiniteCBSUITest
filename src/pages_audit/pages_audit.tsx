@@ -78,7 +78,7 @@ const RedirectComponent = ({ isValidURL }) => {
   const location = useLocation();
   useEffect(() => {
     if (location.pathname === "/cbsenfinity") {
-      navigate("/cbsenfinity/branch-selection");
+      navigate("/cbsenfinity/dashboard");
       // } else if (!isValidURL) {
       //   navigate("/error");
     } else {

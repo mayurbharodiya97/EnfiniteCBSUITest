@@ -7,12 +7,12 @@ export const ActionWiseAPIConfiguration = {
     url: "authenticationServiceAPI/POSTLOGIN/VERIFYOTP",
     packageName: "",
   },
-  DOUPDATEPASSWORD: {
-    url: "userRegistrationServiceAPI/DOUPDATEPASSWORD",
+  CHANGEPASSWORD: {
+    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
     packageName: "",
   },
   LOGOUTUSER: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/LOGOUTUSER",
+    url: "/enfinityCommonServiceAPI/LOGOUTUSER",
     packageName: "",
   },
   MENULIST: {
@@ -93,6 +93,22 @@ export const ActionWiseAPIConfiguration = {
   },
   CHANGEPASSWORD: {
     url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
+    packageName: "",
+  },
+  GETUSERACTIVITY: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACTIVITY",
+    packageName: "",
+  },
+  GETUSERACESSBRNCH: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACESSBRNCH",
+    packageName: "",
+  },
+  GETUSERACESSTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACESSTYPE",
+    packageName: "",
+  },
+  GETTRANSCROLLDETAIL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRANSCROLLDETAIL",
     packageName: "",
   },
 };

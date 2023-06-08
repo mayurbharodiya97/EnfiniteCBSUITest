@@ -84,8 +84,8 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       type: "string",
       rules: [
         { name: "required", params: ["Mobile No is required"] },
-        { name: "min", params: [11, "Mobile No should be 11 digit."] },
-        { name: "max", params: [11, "Mobile No should be 11 digit."] },
+        { name: "min", params: [10, "Mobile No should be 10 digit."] },
+        { name: "max", params: [10, "Mobile No should be 10 digit."] },
       ],
     },
     FormatProps: {
@@ -370,7 +370,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     className: "textInputFromRight",
     FormatProps: {
       thousandSeparator: true,
-      prefix: "৳",
+      prefix: "₹ ",
       thousandsGroupStyle: "lakh",
       allowNegative: false,
       allowLeadingZeros: false,

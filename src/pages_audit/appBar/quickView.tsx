@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-// import { useStyles } from "./style";
+import { useStyles } from "./style";
 import quickview from "assets/images/Quick_view.png";
 import IconButton from "@mui/material/IconButton";
 import SensorsOutlinedIcon from "@mui/icons-material/SensorsOutlined";
@@ -15,12 +15,15 @@ import {
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "pages_audit/auth";
 
 export const Quick_View = () => {
+  const authController = useContext(AuthContext);
+  const classes = useStyles();
   const navigate = useNavigate();
   const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
     ["GETQUICKACCESSVIEW"],
-    () => API.getQuickView()
+    () => API.getQuickView({ userName: authController?.authState?.user?.name })
   );
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClickd = (event) => {
@@ -78,6 +81,7 @@ export const Quick_View = () => {
                 width: "580px",
               },
             }}
+            // classes={{ paper: classes.popover }}
           >
             <Box m={2}>
               <Grid
@@ -100,68 +104,44 @@ export const Quick_View = () => {
                 <Grid item xs={7}>
                   <Grid
                     container
-                    rowSpacing={1}
-                    // pl={1}
-                    p={0}
-                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                     sx={{
-                      "& .MuiGrid-item": {
-                        padding: "0px",
-                      },
+                      display: "flex",
+                      flexFlow: "column wrap",
+                      gap: "0 30px",
+                      height: 190, // set the height limit to your liking
+                      overflow: "auto",
+                      paddingLeft: "20px ",
                     }}
                   >
-                    <Grid item xs={12} p={0}>
-                      <List
-                        sx={{
-                          padding: "0px",
-                          listStyleType: "disc",
-                          "& .MuiListItem-root": {
-                            pt: 1,
-                            display: "list-item",
-                          },
+                    <ListItem disablePadding>
+                      <ListItemButton
+                        sx={{ pt: 1, display: "list-item" }}
+                        onClick={() => {
+                          navigate("/cbsenfinity/branch-selection");
                         }}
                       >
-                        <Grid
-                          container
-                          sx={{
-                            display: "flex",
-                            flexFlow: "column wrap",
-                            gap: "0 30px",
-                            height: 244, // set the height limit to your liking
-                            overflow: "auto",
-                            padding: "0px 30px ",
+                        Switch Branch
+                      </ListItemButton>
+                    </ListItem>
+                    {data.map((item) => (
+                      <ListItem
+                        key={item}
+                        disablePadding
+                        sx={{ width: "auto" }}
+                      >
+                        <ListItemButton
+                          sx={{ display: "list-item" }}
+                          onClick={(e) => {
+                            if (Boolean(item.DOCUMENT_URL)) {
+                              navigate(item.DOCUMENT_URL);
+                              handleClose();
+                            }
                           }}
                         >
-                          <ListItem disablePadding>
-                            <ListItemButton
-                              onClick={() => {
-                                navigate("/cbsenfinity/branch-selection");
-                              }}
-                            >
-                              Switch Branch
-                            </ListItemButton>
-                          </ListItem>
-                          {data.map((item) => (
-                            <ListItem
-                              key={item}
-                              disablePadding
-                              sx={{ width: "auto" }}
-                            >
-                              <ListItemButton
-                                onClick={(e) => {
-                                  if (Boolean(item.DOCUMENT_URL)) {
-                                    navigate(item.DOCUMENT_URL);
-                                    handleClose();
-                                  }
-                                }}
-                              >
-                                {item?.DOC_NM}
-                              </ListItemButton>
-                            </ListItem>
-                          ))}
-                        </Grid>
-                      </List>
-                    </Grid>
+                          {item?.DOC_NM}
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
                   </Grid>
                 </Grid>
               </Grid>

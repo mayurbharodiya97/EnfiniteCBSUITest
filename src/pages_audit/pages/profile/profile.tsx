@@ -12,7 +12,12 @@ import * as API from "./api";
 import { queryClient } from "cache";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
-import { UserLoginDtlGridMetaData, UserProfileMetaData } from "./metaData";
+import {
+  UserLoginDtlGridMetaData,
+  UserProfileMetaData,
+  userAccessbranch,
+  userAccesstype,
+} from "./metaData";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   AppBar,
@@ -44,6 +49,7 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
+import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
 import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 export const Profile = () => {
@@ -71,16 +77,22 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
-  const userActivityData = useQuery<any, any, any>(
-    ["getUserLoginDetails"],
-    () => API.getUserLoginDetails({ userID })
+  console.log(queryData, "<<queryData");
+  const userActivityData = useQuery<any, any, any>(["GETUSERACTIVITY"], () =>
+    API.getUserLoginDetails({ userID })
+  );
+  const userAccessBranch = useQuery<any, any, any>(["GETUSERACESSBRNCH"], () =>
+    API.getUserAccessBranch({ userID })
+  );
+  const userAccessType = useQuery<any, any, any>(["GETUSERACESSTYPE"], () =>
+    API.getUserAccessType({ userID })
   );
 
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
       queryClient.removeQueries(["GETEMPLOYEEDTL"]);
-      queryClient.removeQueries(["getUserLoginDetails"]);
+      queryClient.removeQueries(["GETUSERACTIVITY"]);
     };
   }, []);
   useEffect(() => {
@@ -209,67 +221,11 @@ export const Profile = () => {
                 ></Box> */}
                 <Box>
                   <Grid container>
-                    <Box sx={{ width: "100%" }}>
-                      <Tabs
-                        sx={{
-                          "& .MuiTabs-fixed": {
-                            display: "flex",
-                            justifyContent: "flex-end",
-                          },
-                          "& .Mui-selected": {
-                            color: "var(--theme-color1)",
-                          },
-                          "& .MuiTabs-indicator": {
-                            backgroundColor: "var(--theme-color1)",
-                          },
-                          "& .MuiButtonBase-root": {
-                            minHeight: "0px",
-                          },
-                        }}
-                        value={value}
-                        onChange={handleChange}
-                        textColor="secondary"
-                        indicatorColor="secondary"
-                        aria-label="secondary tabs example"
-                      >
-                        <Tab
-                          value="one"
-                          label="User Profile"
-                          icon={<AccountCircleOutlinedIcon />}
-                          iconPosition="start"
-                          // onClick={moveToUserDetail}
-                          onClick={() => {
-                            setMode("userLogin");
-                          }}
-                        />
-                        <Tab
-                          value="two"
-                          label="User Detail"
-                          icon={<ArticleOutlinedIcon />}
-                          iconPosition="start"
-                          // onClick={() => {
-                          //   setUserDetail(true);
-                          // }}
-                          onClick={() => {
-                            setMode("userDetail");
-                          }}
-                        />
-
-                        <Tab
-                          value="three"
-                          label="Change Password"
-                          icon={<LockResetOutlinedIcon />}
-                          iconPosition="start"
-                          onClick={() => {
-                            setMode("changePassword");
-                            setShowProfile(true);
-                          }}
-                        />
-                      </Tabs>
-                    </Box>
-                  </Grid>
-                  <Grid container>
-                    <Grid item xs={3} pt={"10px"}>
+                    <Grid
+                      item
+                      xs={4}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
                       <div
                         style={{
                           width: "150px",
@@ -279,7 +235,7 @@ export const Profile = () => {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          // position: "relative",
+                          position: "relative",
                           // top: "-50%",
                         }}
                       >
@@ -338,7 +294,154 @@ export const Profile = () => {
                           />
                         </div>
                       </div>
-                      <Grid item xs={3} m={"auto"}>
+                      <Grid m={"auto"}>
+                        <Typography variant="h5" fontWeight={500}>
+                          {queryData?.data?.USERNAME}
+                        </Typography>
+                        <Typography color={"var(--theme-color6)"}>
+                          {queryData?.data?.USER_LEVEL}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Grid item xs={8} sx={{ display: "flex" }}>
+                      <Box sx={{ width: "100%", marginTop: "auto" }}>
+                        <Tabs
+                          sx={{
+                            "& .MuiTabs-fixed": {
+                              display: "flex",
+
+                              justifyContent: "flex-end",
+                            },
+                            "& .Mui-selected": {
+                              color: "var(--theme-color1)",
+                            },
+                            "& .MuiTabs-indicator": {
+                              backgroundColor: "var(--theme-color1)",
+                            },
+                            "& .MuiButtonBase-root": {
+                              minHeight: "0px",
+                            },
+                          }}
+                          value={value}
+                          onChange={handleChange}
+                          textColor="secondary"
+                          indicatorColor="secondary"
+                          aria-label="secondary tabs example"
+                        >
+                          <Tab
+                            value="one"
+                            label="User Profile"
+                            icon={<AccountCircleOutlinedIcon />}
+                            iconPosition="start"
+                            // onClick={moveToUserDetail}
+                            onClick={() => {
+                              setMode("userLogin");
+                            }}
+                          />
+                          <Tab
+                            value="two"
+                            label="Allow Access"
+                            icon={<HowToRegOutlinedIcon />}
+                            iconPosition="start"
+                            // onClick={moveToUserDetail}
+                            onClick={() => {
+                              setMode("accessAllow");
+                            }}
+                          />
+                          <Tab
+                            value="three"
+                            label="Activity Detail"
+                            icon={<ArticleOutlinedIcon />}
+                            iconPosition="start"
+                            // onClick={() => {
+                            //   setUserDetail(true);
+                            // }}
+                            onClick={() => {
+                              setMode("userDetail");
+                            }}
+                          />
+
+                          <Tab
+                            value="four"
+                            label="Change Password"
+                            icon={<LockResetOutlinedIcon />}
+                            iconPosition="start"
+                            onClick={() => {
+                              setMode("changePassword");
+                              setShowProfile(true);
+                            }}
+                          />
+                        </Tabs>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  <Grid container>
+                    {/* <Grid item xs={2} pt={"10px"}> */}
+                    {/* <div
+                        style={{
+                          width: "150px",
+                          height: "150px",
+                          margin: "auto",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          position: "relative",
+                          // top: "-50%",
+                        }}
+                      >
+                        <div className="image-data">
+                          <Avatar
+                            variant="rounded"
+                            key={"ProfilePicture"}
+                            alt="User"
+                            src={
+                              Boolean(ProfilePictureURL)
+                                ? ProfilePictureURL
+                                : USER_PROFILE_DEFAULT
+                            }
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          ></Avatar>
+                        </div>
+                        <div
+                          className="image-upload-icon"
+                          onClick={() => fileUploadControl?.current?.click()}
+                        >
+                          <IconButton>
+                            <AddAPhotoIcon htmlColor="white" />
+                          </IconButton>
+                          <Typography
+                            component={"span"}
+                            style={{
+                              margin: "0",
+                              color: "white",
+                              lineHeight: "1.5",
+                              fontSize: "0.75rem",
+                              fontFamily: "Public Sans,sans-serif",
+                              fontWeight: "400",
+                            }}
+                          >
+                            Update Photo
+                          </Typography>
+                          <input
+                            name="fileselect"
+                            type="file"
+                            style={{ display: "none" }}
+                            ref={fileUploadControl}
+                            onChange={handleFileSelect}
+                            accept=".png,.jpg,.jpeg"
+                            onClick={(e) => {
+                              //to clear the file uploaded state to reupload the same file (AKA allow our handler to handle duplicate file)
+                              //@ts-ignore
+                              e.target.value = "";
+                            }}
+                          />
+                        </div>
+                      </div> */}
+                    {/* <Grid item xs={3} m={"auto"}>
                         <Typography variant="h5" fontWeight={500}>
                           {queryData?.data?.NAME}
                         </Typography>
@@ -346,84 +449,117 @@ export const Profile = () => {
                           {queryData?.data?.USER_LEVEL}
                         </Typography>
                       </Grid>
-                    </Grid>
-                    <Grid item xs={9}>
-                      <Container>
-                        <Grid
-                          sx={{
-                            backgroundColor: "var(--theme-color2)",
-                            padding: "0px",
-                            borderRadius: "10px",
-                            boxShadow:
-                              "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
-                          }}
-                        >
-                          {mode === "userDetail" ? (
-                            <Grid
-                              key={"Griditem4"}
-                              item
-                              xs={12}
-                              md={12}
-                              lg={12}
-                              container
-                              spacing={1}
-                              justifyContent="flex-start"
-                              alignItems="center"
-                              style={{
-                                marginBottom: "0px",
-                                marginRight: "12px",
-                              }}
-                            >
-                              <GridWrapper
-                                key={`UserLoginReqGrid`}
-                                finalMetaData={
-                                  UserLoginDtlGridMetaData as GridMetaDataType
-                                }
-                                data={userActivityData.data ?? []}
-                                setData={() => null}
-                                //loading={result.isLoading}
-                                actions={[]}
-                                setAction={() => {}}
-                                refetchData={() => {}}
-                                ref={myGridRef}
-                              />
-                            </Grid>
-                          ) : mode === "userLogin" ? (
-                            <Grid>
-                              <FormWrapper
-                                key="UserProfileForm"
-                                metaData={UserProfileMetaData as MetaDataType}
-                                initialValues={queryData.data}
-                                onSubmitHandler={() => {}}
-                                // displayMode={"view"}
-                                // hideDisplayModeInTitle={true}
-                                formStyle={{
-                                  background: "white",
-                                  // height: "40vh",
-                                  overflowY: "auto",
-                                  overflowX: "hidden",
-                                }}
-                                hideHeader={true}
-                              />
-                            </Grid>
-                          ) : mode === "changePassword" ? (
-                            <ChangePassword
-                              showProfile={showProfile}
-                              onClose={() => setShowProfile(false)}
+                    </Grid> */}
+                    {/* <Grid item xs={10}> */}
+                    <Container>
+                      <Grid
+                        sx={{
+                          backgroundColor: "var(--theme-color2)",
+                          padding: "0px",
+                          borderRadius: "10px",
+                          boxShadow:
+                            "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
+                        }}
+                      >
+                        {mode === "userDetail" ? (
+                          <Grid
+                            key={"Griditem4"}
+                            item
+                            xs={12}
+                            md={12}
+                            lg={12}
+                            container
+                            spacing={1}
+                            justifyContent="flex-start"
+                            alignItems="center"
+                            style={{
+                              marginBottom: "0px",
+                              marginRight: "12px",
+                            }}
+                          >
+                            <GridWrapper
+                              key={`UserLoginReqGrid`}
+                              finalMetaData={
+                                UserLoginDtlGridMetaData as GridMetaDataType
+                              }
+                              data={userActivityData.data ?? []}
+                              setData={() => null}
+                              //loading={result.isLoading}
+                              actions={[]}
+                              setAction={() => {}}
+                              refetchData={() => {}}
+                              ref={myGridRef}
                             />
-                          ) : null}
-                        </Grid>
-                      </Container>
+                          </Grid>
+                        ) : mode === "userLogin" ? (
+                          <Grid>
+                            <FormWrapper
+                              key="UserProfileForm"
+                              metaData={UserProfileMetaData as MetaDataType}
+                              initialValues={queryData.data}
+                              onSubmitHandler={() => {}}
+                              // displayMode={"view"}
+                              // hideDisplayModeInTitle={true}
+                              formStyle={{
+                                background: "white",
+                                // height: "40vh",
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                              }}
+                              hideHeader={true}
+                            />
+                          </Grid>
+                        ) : mode === "changePassword" ? (
+                          <ChangePassword
+                            showProfile={showProfile}
+                            onClose={() => setShowProfile(false)}
+                          />
+                        ) : mode === "accessAllow" ? (
+                          <Grid
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              gap: 1,
+                            }}
+                          >
+                            <GridWrapper
+                              key={`userAccessbranch`}
+                              finalMetaData={
+                                userAccessbranch as GridMetaDataType
+                              }
+                              data={userAccessBranch.data || []}
+                              setData={() => null}
+                              //loading={result.isLoading}
+                              // actions={[]}
+                              // setAction={() => {}}
+                              // refetchData={() => {}}
+                              // ref={myGridRef}
+                            />
+                            <GridWrapper
+                              key={`userAccesstype`}
+                              finalMetaData={userAccesstype as GridMetaDataType}
+                              data={userAccessType.data || []}
+                              setData={() => null}
+                              //loading={result.isLoading}
+                              // actions={[]}
+                              // setAction={() => {}}
+                              // refetchData={() => {}}
+                              // ref={myGridRef}
+                            />
+                          </Grid>
+                        ) : null}
+                      </Grid>
+                    </Container>
 
-                      {profileUpdate && filesdata.length > 0 ? (
-                        <ProfilePhotoUpdate
-                          open={profileUpdate}
-                          onClose={handleProfileUploadClose}
-                          files={filesdata}
-                          userID={userID}
-                        />
-                      ) : null}
-                    </Grid>
+                    {profileUpdate && filesdata.length > 0 ? (
+                      <ProfilePhotoUpdate
+                        open={profileUpdate}
+                        onClose={handleProfileUploadClose}
+                        files={filesdata}
+                        userID={userID}
+                      />
+                    ) : null}
+                    {/* </Grid> */}
                   </Grid>
                 </Box>
               </Grid>

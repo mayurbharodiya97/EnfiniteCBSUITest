@@ -159,7 +159,7 @@ export const RefreshTokenData = async (refreshToken) => {
 };
 export const LogoutAPI = async ({ userID }) => {
   const { message } = await AuthSDK.internalFetcher("LOGOUTUSER", {
-    USER_NAME: userID,
+    USER_ID: userID,
   });
   //if (status === "0") {
   return message;
