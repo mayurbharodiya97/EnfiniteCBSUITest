@@ -75,12 +75,12 @@ export const Quick_View = () => {
               vertical: "top",
               horizontal: "right",
             }}
-            // PaperProps={{
-            //   style: {
-            //     maxWidth: "580px",
-            //     width: "580px",
-            //   },
-            // }}
+            PaperProps={{
+              style: {
+                maxWidth: "580px",
+                width: "580px",
+              },
+            }}
             // classes={{ paper: classes.popover }}
           >
             <Box m={2}>
