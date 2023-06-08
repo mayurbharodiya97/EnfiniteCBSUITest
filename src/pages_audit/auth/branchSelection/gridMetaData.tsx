@@ -41,7 +41,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "BRANCH_CD",
-      columnName: "Branch",
+      columnName: "Branch Cd",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -105,28 +105,28 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BASE_COMP_CD",
-      columnName: "EOD Running Status",
+      columnName: "Base Comp Cd",
       sequence: 6,
       componentType: "default",
       isVisible: false,
     },
     {
       accessor: "BASE_BRANCH_CD",
-      columnName: "EOD Running Status",
+      columnName: "Base Branch Cd",
       sequence: 6,
       componentType: "default",
       isVisible: false,
     },
     {
       accessor: "COMP_CD",
-      columnName: "EOD Running Status",
+      columnName: "Comp Cd",
       sequence: 6,
       componentType: "default",
       isVisible: false,
     },
     {
       accessor: "COMP_NM",
-      columnName: "EOD Running Status",
+      columnName: "Comp Name",
       sequence: 6,
       componentType: "default",
       isVisible: false,
