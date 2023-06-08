@@ -4,10 +4,6 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
-import { SelectProps } from "@material-ui/core/Select";
-import { TextFieldProps } from "@material-ui/core/TextField";
-import { TextField } from "components/styledComponent";
-import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { OptionsProps, Merge, dependentOptionsFn } from "../types";
 import {
@@ -21,7 +17,12 @@ import {
   Grid,
   GridProps,
   InputAdornment,
+  MenuItem,
+  MenuItemProps,
+  SelectProps,
+  TextFieldProps,
 } from "@mui/material";
+import { TextField } from "components/styledComponent";
 
 interface extendedFieldProps extends UseFieldHookProps {
   options?: OptionsProps[] | dependentOptionsFn;
@@ -239,7 +240,7 @@ const MySelect: FC<MySelectAllProps> = ({
       <MenuItem
         {...MenuItemProps}
         //keep button value to true else keyboard navigation for select will stop working
-        button={true}
+        // button={true}
         key={menuItem.value ?? index}
         value={menuItem.value}
         disabled={menuItem.disabled}
@@ -259,7 +260,11 @@ const MySelect: FC<MySelectAllProps> = ({
   });
   //Remove this to disable select all
   const selectAllMenu = (
-    <MenuItem button={true} key="selectAll" value="all">
+    <MenuItem
+      // button={true}
+      key="selectAll"
+      value="all"
+    >
       <Checkbox checked={isAllSelected} indeterminate={isIndeterminate} />
       Select All
     </MenuItem>

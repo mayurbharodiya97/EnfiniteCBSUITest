@@ -1,41 +1,9 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-/* CHEQUE_ISSUE.TRAN_DT ,
-			CHEQUE_ISSUE.SR_CD,
-           CHEQUE_ISSUE.ACCT_TYPE ,
-           CHEQUE_ISSUE.ACCT_CD ,
-           CHEQUE_ISSUE.CHEQUE_FROM ,
-           CASE WHEN EASY_BANK.SUB_NVL_CHAR(CHEQUE_ISSUE.AUTO_CHQBK_FLAG,'N') = 'N' THEN 'No' ELSE 'Yes' END AS AUTO_CHQBK_FLAG,
-           CHEQUE_ISSUE.CHEQUE_TOTAL ,
-           CHEQUE_ISSUE.CHEQUE_TO ,
-           CHEQUE_ISSUE.AMOUNT ,
-           CHEQUE_ISSUE.REMARKS ,
-           CHEQUE_ISSUE.COMP_CD ,
-           CHEQUE_ISSUE.BRANCH_CD ,
-           CHEQUE_ISSUE.TRAN_CD ,
-           CHEQUE_ISSUE.ENTERED_BY ,
-           CHEQUE_ISSUE.CONFIRMED ,
-           CHEQUE_ISSUE.VERIFIED_BY ,
-           CHEQUE_ISSUE.MACHINE_NM ,
-           CHEQUE_ISSUE.SERVICE_TAX ,
-           CHEQUE_ISSUE.ENTERED_COMP_CD ,
-				CHEQUE_ISSUE.REQUISITION_DT,
-		     (CASE WHEN CHEQUE_ISSUE.CHARACTERISTICS = 'O' THEN 'Order' ELSE 'Bearer' END) CHARACTERISTICS,
-              (CASE WHEN CHEQUE_ISSUE.PAYABLE_AT_PAR = 'Y' THEN 'Yes' ELSE 'No' END) PAYABLE_AT_PAR,
-           CHEQUE_ISSUE.ENTERED_BRANCH_CD,
-           (SELECT COUNT(0)
-                FROM CHEQUE_ISSUE_USED 
-               WHERE CHEQUE_ISSUE.COMP_CD = CHEQUE_ISSUE_USED.COMP_CD  AND  
-                       CHEQUE_ISSUE.BRANCH_CD = CHEQUE_ISSUE_USED.BRANCH_CD  AND  
-                       CHEQUE_ISSUE.ACCT_TYPE = CHEQUE_ISSUE_USED.ACCT_TYPE  AND  
-                       CHEQUE_ISSUE.ACCT_CD = CHEQUE_ISSUE_USED.ACCT_CD  AND
-                  CHEQUE_ISSUE_USED.CHEQUE_NO BETWEEN CHEQUE_ISSUE.CHEQUE_FROM AND  CHEQUE_ISSUE.CHEQUE_TO AND  
-                        CHEQUE_ISSUE_USED.SR_CD = CHEQUE_ISSUE.SR_CD) CNT,
-             CHEQUE_ISSUE.AUTO_CHQBK_PRINT_FLAG       */
 export const ChequebookentryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Cheque Book Issued",
-    rowIdColumn: "id",
+    rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -44,13 +12,13 @@ export const ChequebookentryGridMetaData: GridMetaDataType = {
     allowColumnReordering: true,
     disableSorting: false,
     disableGroupBy: true,
-    enablePagination: false,
-    hideFooter: true,
+    enablePagination: true,
+    hideFooter: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "42vh",
-      max: "45vh",
+      min: "25vh",
+      max: "30vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -59,7 +27,7 @@ export const ChequebookentryGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "SR_CD",
+      accessor: "ID",
       columnName: "Sr.No.",
       sequence: 1,
       alignment: "right",
@@ -79,7 +47,6 @@ export const ChequebookentryGridMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 200,
     },
-
     {
       accessor: "CHEQUE_FROM",
       columnName: "From Chq. No.",

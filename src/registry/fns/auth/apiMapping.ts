@@ -47,6 +47,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPLOYEEDTL",
     packageName: "",
   },
+  GETCHEQUEBOOK: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOK",
+    packageName: "",
+  },
   GETPENDINGREQUEST: {
     url: "enfinityCommonServiceAPI/DashBoard/GETPENDINGREQUEST",
     packageName: "",
@@ -81,6 +85,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETDASHBOARDDATA: {
     url: "dashboardServiceAPI/GETDASHBOARDDATA",
+    packageName: "",
+  },
+  GETACCTVIEWMKR: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTVIEWMKR",
     packageName: "",
   },
 };
