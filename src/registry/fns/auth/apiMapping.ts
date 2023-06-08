@@ -7,10 +7,6 @@ export const ActionWiseAPIConfiguration = {
     url: "authenticationServiceAPI/POSTLOGIN/VERIFYOTP",
     packageName: "",
   },
-  CHANGEPASSWORD: {
-    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
-    packageName: "",
-  },
   LOGOUTUSER: {
     url: "/enfinityCommonServiceAPI/LOGOUTUSER",
     packageName: "",
