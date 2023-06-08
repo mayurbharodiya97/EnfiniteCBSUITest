@@ -83,6 +83,10 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETDASHBOARDDATA",
     packageName: "",
   },
+  GETTRANSCROLLDETAIL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRANSCROLLDETAIL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

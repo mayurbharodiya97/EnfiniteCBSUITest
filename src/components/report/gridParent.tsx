@@ -33,6 +33,7 @@ export const ReportGrid: FC<any> = ({
   hideAmountIn = false,
   reportID,
   retrievalType,
+  otherAPIRequestPara = {},
 }) => {
   /* eslint-disable react-hooks/exhaustive-deps */
   const memoizedColumns = useMemo(() => metaData.columns, []);
@@ -72,14 +73,13 @@ export const ReportGrid: FC<any> = ({
     }),
     []
   );
-
   const { data, isFetching, isLoading, isError, error } = useQuery<
     any,
     any,
     any
   >(
-    [dataFetcher, reportID, queryFilters],
-    () => dataFetcher(reportID, queryFilters),
+    [dataFetcher, reportID, queryFilters, otherAPIRequestPara],
+    () => dataFetcher(reportID, queryFilters, otherAPIRequestPara),
     {
       cacheTime: 0,
       enabled: autoFetcher,

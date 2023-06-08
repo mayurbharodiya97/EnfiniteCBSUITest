@@ -32,6 +32,7 @@ export const GetMenuData = async ({
   DAYEND_STATUS,
   EOD_RUNNING_STATUS,
   IS_UPD_DEF_BRANCH,
+  COMP_BASE_BRANCH_CD,
   fulldata,
 }) => {
   await AuthSDK.Getfingerprintdata();
@@ -47,15 +48,15 @@ export const GetMenuData = async ({
       FLAG: "ALL_SCREENS",
       APP_TRAN_CD: APP_TRAN_CD,
       BASE_COMP_CD: BASE_COMP_CD,
-      COMP_BASE_BRANCH_CD: BASE_BRANCH_CD,
+      COMP_BASE_BRANCH_CD: COMP_BASE_BRANCH_CD,
       COMP_NM: COMP_NM,
       BRANCH_NM: BRANCH_NM,
       DAYEND_STATUS: DAYEND_STATUS,
       EOD_RUNNING_STATUS: EOD_RUNNING_STATUS,
       IS_UPD_DEF_BRANCH: IS_UPD_DEF_BRANCH,
+      BRANCH_CD: BRANCH_CD,
     });
   if (status === "0") {
-    console.log(">>APIDATA", data);
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
