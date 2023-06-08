@@ -10,7 +10,6 @@ import {
   Suspense,
   useCallback,
 } from "react";
-import { Chip, TextFieldProps, ChipProps } from "@material-ui/core";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
 import { useField, UseFieldHookProps } from "packages/form";
@@ -20,12 +19,15 @@ import parse from "autosuggest-highlight/parse";
 import { useOptionsFetcher } from "../utils";
 import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import {
+  Chip,
+  ChipProps,
   CircularProgress,
   CircularProgressProps,
   createFilterOptions,
   CreateFilterOptionsConfig,
   Grid,
   GridProps,
+  TextFieldProps,
 } from "@mui/material";
 
 const ListBoxComponentVirtualized = lazy(() =>
@@ -326,8 +328,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               error={!isSubmitting && isError}
               required={required}
               helperText={!isSubmitting && isError ? error : null}
-              InputProps={{
-                ...params.InputProps,
+              inputProps={{
+                ...params.inputProps,
                 endAdornment: (
                   <Fragment>
                     {validationRunning || loadingOptions ? (
@@ -344,10 +346,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               InputLabelProps={{
                 shrink: true,
               }}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-user-street-address",
-              }}
+              // inputProps={{
+              //   ...params.inputProps,
+              //   autoComplete: "new-user-street-address",
+              // }}
             />
           );
         }}

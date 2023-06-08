@@ -193,7 +193,6 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             })}
           >
             {authController?.authState?.companyName || ""}
-            {console.log(authController?.authState?.companyName.length)}
           </Box>
           <div style={{ display: "flex", gap: "8px" }}>
             <div style={{ color: "#949597" }}>

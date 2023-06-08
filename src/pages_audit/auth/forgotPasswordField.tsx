@@ -50,8 +50,8 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
       <div className={classes.formWrap}>
         <TextField
           autoFocus={true}
-          label={"Username"}
-          placeholder="Enter Username"
+          label={"User ID"}
+          placeholder="Enter User ID"
           fullWidth
           type={"text"}
           name="userName"

@@ -1,15 +1,14 @@
 import { FC, useCallback, useState } from "react";
-import MenuItem from "@material-ui/core/MenuItem";
-import CircularProgress, {
-  CircularProgressProps,
-} from "@material-ui/core/CircularProgress";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { OptionsProps, Merge, OptionsFn } from "../types";
 import { getLabelFromValues, useOptionsFetcherSimple } from "../utils";
 import {
+  CircularProgress,
+  CircularProgressProps,
   Input,
   InputAdornment,
   InputProps,
+  MenuItem,
   MenuItemProps,
   Select,
   SelectProps,
@@ -89,7 +88,7 @@ export const SelectForGrid: FC<MySelectProps> = ({
       <MenuItem
         {...MenuItemProps}
         //keep button value to true else keyboard navigation for select will stop working
-        button={true}
+        // button={true}
         key={menuItem.value ?? index}
         value={menuItem.value}
         disabled={menuItem.disabled}

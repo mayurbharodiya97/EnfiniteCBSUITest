@@ -161,8 +161,8 @@ export const PasswordRotation = ({
           </div>
           <div className={classes.formWrap}>
             <TextField
-              label={"Username"}
-              placeholder="Enter Username"
+              label={"User ID"}
+              placeholder="Enter User ID"
               fullWidth
               type={"text"}
               name="userName"

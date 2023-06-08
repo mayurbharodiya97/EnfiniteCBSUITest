@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import { CheckboxProps } from "@material-ui/core/Checkbox";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { Merge } from "../types";
 import {
+  CheckboxProps,
   FormControl,
   FormControlLabel,
   FormControlLabelProps,

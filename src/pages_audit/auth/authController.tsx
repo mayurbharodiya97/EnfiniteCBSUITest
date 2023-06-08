@@ -22,6 +22,7 @@ import {
   LoaderPaperComponent,
 } from "components/common/loaderPaper";
 import { utilFunction } from "components/utils";
+import { GeneralAPI } from "registry/fns/functions";
 
 const inititalState = {
   username: "",
@@ -254,6 +255,9 @@ export const AuthLoginController = () => {
       setDashboardLogoURL(urlObj.current);
     }
   }, [imageData]);
+  useEffect(() => {
+    GeneralAPI.setDocumentName("Enfinity");
+  }, []);
 
   useEffect(() => {
     return () => {

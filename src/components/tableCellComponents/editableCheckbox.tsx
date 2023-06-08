@@ -1,7 +1,6 @@
 import { Checkbox } from "components/common/checkbox";
 import { useState, useEffect } from "react";
 import { CellWrapper } from "./cellWrapper";
-import { CircularProgressProps } from "@material-ui/core";
 import { FormHelperText } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -35,10 +34,6 @@ export const EditableCheckbox = (props) => {
   const [loadingcall, setLoading] = useState(false);
   const classes = useStyles();
   const [value, setValue] = useState(initialValue);
-  let CircularProgressProps = {
-    color: "secondary",
-    size: 20,
-  } as CircularProgressProps;
   const reqGridProps =
     typeof options === "string" &&
     options === "GetMiscValue" &&

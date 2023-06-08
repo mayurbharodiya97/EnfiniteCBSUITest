@@ -43,6 +43,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPLOYEEDTL",
     packageName: "",
   },
+  GETCHEQUEBOOK: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOK",
+    packageName: "",
+  },
   GETPENDINGREQUEST: {
     url: "enfinityCommonServiceAPI/DashBoard/GETPENDINGREQUEST",
     packageName: "",
@@ -89,6 +93,10 @@ export const ActionWiseAPIConfiguration = {
   },
   CHANGEPASSWORD: {
     url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
+    packageName: "",
+  },
+  GETACCTVIEWMKR: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTVIEWMKR",
     packageName: "",
   },
   GETUSERACTIVITY: {

@@ -1,25 +1,32 @@
 import { Fragment, useRef, useCallback, useState, useMemo } from "react";
 import { useMutation } from "react-query";
 import { FormComponentView } from "components/formcomponent";
-import { ChequebookentryFilterForm } from "./metaData";
+import { ChequeBookIssueEntry } from "./metaData";
 import { ChequebookentryGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { useNavigate } from "react-router-dom";
 import { GridMetaDataType } from "components/dataTable/types";
-import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { ClearCacheProvider } from "cache";
 import * as API from "./api";
 import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { useSnackbar } from "notistack";
+import { FormWrapper } from "components/dyanmicForm/formWrapper";
+import { AcctViewMetadata } from "./metaDataAcct";
 
-export const ChequeBookEntryForm = () => {
-  return (
-    <ClearCacheProvider>
-      <ChequeBookEntry />
-    </ClearCacheProvider>
-  );
+export const useGetDataMutation = () => {
+  const getData = useMutation(API.getChequeBookEntryData, {
+    onSuccess: (response: any) => {
+      // Handle success
+    },
+    onError: (error: any) => {
+      // Handle error
+    },
+  });
+
+  return getData;
 };
+
 const ChequeBookEntry = () => {
   const navigate = useNavigate();
   const myGridRef = useRef<any>(null);
@@ -34,15 +41,16 @@ const ChequeBookEntry = () => {
     [navigate]
   );
 
-  const getData = useMutation(API.getChequeBookEntryData, {
-    onSuccess: (response: any) => {
-      setSecondButtonVisible(true);
-    },
-    onError: (error: any) => {
-      // setRetData({ REG_WITH: "A", REG_ACCT_CARD_NO: "" });
-      setSecondButtonVisible(false);
-    },
-  });
+  const getData = useGetDataMutation();
+  // const getData = useMutation(API.getChequeBookEntryData, {
+  //   onSuccess: (response: any) => {
+  //     setSecondButtonVisible(true);
+  //   },
+  //   onError: (error: any) => {
+  //     // setRetData({ REG_WITH: "A", REG_ACCT_CARD_NO: "" });
+  //     setSecondButtonVisible(false);
+  //   },
+  // });
 
   const saveData = useMutation(API.saveCustomerRegisterRequest, {
     onSuccess: (response: any) => {
@@ -62,14 +70,12 @@ const ChequeBookEntry = () => {
       let retdata = UpdateRequestDataVisibleColumn(data, columnvisible);
       console.log(">>retdata", retdata);
       // setRetData(retdata);
-      if (retdata?.REG_WITH === "I") {
-        // setOpenCBDetails(true);
-      } else {
-        // getData.mutate({
-        //   regWith: retdata?.REG_WITH,
-        //   accountCardNo: retdata?.REG_ACCT_CARD_NO,
-        // });
-      }
+
+      getData.mutate({
+        branchCD: retdata?.BRANCH_CD,
+        acctType: retdata?.ACCT_TYPE,
+        accountNo: retdata?.ACCT_CD,
+      });
     },
     [getData]
   );
@@ -113,24 +119,68 @@ const ChequeBookEntry = () => {
       <GridWrapper
         key={`ChequeBookEntryGrid`}
         finalMetaData={ChequebookentryGridMetaData as GridMetaDataType}
-        data={data?.[0]?.ALL_ACCOUNT_DETAIL ?? []}
+        data={getData?.data ?? []}
         setData={() => null}
         loading={getData.isLoading}
         setAction={setCurrentAction}
         refetchData={() => {}}
         ref={myGridRef}
       />
-      <FormComponentView
-        key={"ChequeBookEntry" + (data ?? []).length}
-        finalMetaData={ChequebookentryFilterForm as FilterFormMetaType}
-        onAction={ClickEventManage}
+      <FormWrapper
+        key={"AccountView" + (data ?? []).length}
+        metaData={AcctViewMetadata}
         loading={getData.isLoading}
-        data={data ?? {}}
-        submitSecondAction={ClickSecondButtonEventManage}
-        submitSecondButtonName="Save"
-        submitSecondButtonHide={!secondButtonVisible}
-        submitSecondLoading={false}
-      ></FormComponentView>
+        hideHeader={true}
+        //  initialValues={rows?.[0]?.data as InitialValuesType}
+        //  onSubmitHandler={onSubmitHandler}
+        //@ts-ignore
+        displayMode={"view"}
+        formStyle={{
+          background: "white",
+          height: "20vh",
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
+
+        // finalMetaData={ChequeBookIssueEntry}
+        // onAction={ClickEventManage}
+        // data={data ?? {}}
+        // submitSecondAction={ClickSecondButtonEventManage}
+        // submitSecondButtonName="Save"
+        // submitSecondButtonHide={!secondButtonVisible}
+        // submitSecondLoading={false}
+      ></FormWrapper>
+      <FormWrapper
+        key={"ChequeBookEntry" + (data ?? []).length}
+        metaData={ChequeBookIssueEntry}
+        loading={getData.isLoading}
+        hideHeader={true}
+        //  initialValues={rows?.[0]?.data as InitialValuesType}
+        //  onSubmitHandler={onSubmitHandler}
+        //@ts-ignore
+        displayMode={"add"}
+        formStyle={{
+          background: "white",
+          height: "25vh",
+          overflowY: "auto",
+          overflowX: "hidden",
+        }}
+
+        // finalMetaData={ChequeBookIssueEntry}
+        // onAction={ClickEventManage}
+        // data={data ?? {}}
+        // submitSecondAction={ClickSecondButtonEventManage}
+        // submitSecondButtonName="Save"
+        // submitSecondButtonHide={!secondButtonVisible}
+        // submitSecondLoading={false}
+      ></FormWrapper>
     </Fragment>
+  );
+};
+export const ChequeBookEntryForm = () => {
+  return (
+    <ClearCacheProvider>
+      <ChequeBookEntry />
+    </ClearCacheProvider>
   );
 };
