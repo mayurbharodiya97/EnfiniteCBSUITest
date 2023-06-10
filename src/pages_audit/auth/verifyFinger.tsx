@@ -17,9 +17,6 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
               // marginBottom: "55px",
             }}
           >
-            {/* <Typography variant="h6" color="primary">
-          Hi{`, ${loginState?.fullname ?? ""}`}
-        </Typography> */}
             <br />
             <div
               style={{
@@ -144,7 +141,6 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
               justifyContent: "center",
               margin: "38px 0 0 0",
               gap: "10px",
-              // padding: "10px",
             }}
           >
             <GradientButton

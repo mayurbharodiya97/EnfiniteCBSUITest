@@ -23,7 +23,7 @@ export const UsernamePasswordField = ({
     if (name === "password" && value) {
       loginState.isPasswordError = false;
     }
-    // console.log(">>name " + name);
+
     setInput((values) => ({ ...values, [name]: value }));
   };
   const inputRef = useRef<any>(null);
@@ -40,14 +40,15 @@ export const UsernamePasswordField = ({
       }, 1000);
     }
   }, [loginState.isUsernameError, loginState.isPasswordError]);
-  // useEffect(() => {
-  //   if (loginState?.otpmodelClose ?? false) {
-  //     setInput((values) => ({ ...values, password: "" }));
-  //     setTimeout(() => {
-  //       inputPassRef?.current?.focus?.();
-  //     }, 1500);
-  //   }
-  // }, [loginState.otpmodelClose]);
+  useEffect(() => {
+    if (loginState?.otpmodelClose ?? false) {
+      setInput((values) => ({ ...values, password: "" }));
+      setTimeout(() => {
+        inputPassRef?.current?.focus?.();
+      }, 1500);
+    }
+  }, [loginState.otpmodelClose]);
+
   return (
     <Fragment>
       <Container maxWidth="xs">
@@ -172,10 +173,6 @@ export const UsernamePasswordField = ({
               </div>
             </div>
             <div style={{ marginTop: "20px", display: "flex" }}>
-              {/* <div style={{ flex: "auto", textAlign: "end" }}>
-            <a href="forgotpassword">Forgot Password</a>
-          </div> */}
-
               <div
                 style={{
                   flex: "auto",

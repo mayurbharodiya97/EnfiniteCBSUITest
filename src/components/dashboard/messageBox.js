@@ -10,23 +10,22 @@ import * as API from "./api";
 import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { utilFunction } from "components/utils";
 import { GradientButton } from "components/styledComponent/button";
 import {
   ImageViewer,
   NoPreview,
   PDFViewer,
 } from "components/fileUpload/preView";
+import { utilFunction } from "components/utils/utilFunctions";
 
 export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
   const { authState } = useContext(AuthContext);
-  const [rowsData, setRowsData] = useState({});
   const lastFileData = useRef(null);
-  const [isUser, setIsUser] = useState(false);
-  const [isOpenImage, setIsOpenImage] = useState(false);
   const [isOpenPdf, setIsOpenPdf] = useState(false);
   const [isOpenSave, setIsOpenSave] = useState(false);
+  const urlObj = useRef(null);
+  const [loginImageURL, setLoginImageURL] = useState(null);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
     [
       "getDashboardMessageBoxData",
@@ -213,22 +212,42 @@ export const MessageBox = ({ screenFlag = "" }) => {
                       paddingBottom: "0px",
                     }}
                   >
-                    {data.map((item) => (
+                    {data.map((item, _index) => (
                       <ListItemData
-                        key={item?.value}
+                        key={"listItemforannounce" + _index}
                         name={item?.label}
                         disabled={false}
                         onClick={() => {
-                          console.log("datasetswdfd", item?.label);
-                          if (item?.label) {
+                          console.log("datasetswdfd", item?.UPLOAD_DOCUMENT);
+                          if (Boolean(item?.UPLOAD_DOCUMENT)) {
+                            lastFileData.current = {
+                              UPLOAD_DOCUMENT: utilFunction.blobToFile(
+                                utilFunction.base64toBlob(
+                                  item?.UPLOAD_DOCUMENT,
+                                  item?.FILE_TYPE === "pdf"
+                                    ? "application/pdf"
+                                    : "image/" + item?.FILE_TYPE
+                                ),
+                                item?.FILE_NAME
+                              ),
+                              FILE_TYPE: item?.FILE_TYPE,
+                              FILE_NAME: item?.FILE_NAME,
+                            };
+                            console.log(
+                              "UPLOAD_DOCUMENT",
+                              item?.UPLOAD_DOCUMENT
+                            );
+                          } else {
+                            lastFileData.current = {};
                           }
+                          setIsOpenSave(true);
                         }}
                       />
                     ))}
                   </List>
                 </nav>
               </Box>
-              {isOpenImage ? (
+              {isOpenSave ? (
                 <Dialog
                   fullWidth
                   maxWidth="md"
@@ -239,6 +258,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
                       height: "90%",
                     },
                   }}
+                  key="filepreviewDialog"
                 >
                   <div
                     style={{
@@ -254,6 +274,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
                       Close
                     </GradientButton>
                   </div>
+                  {console.log(">>lastFileData<<", lastFileData)}
                   {lastFileData.current?.FILE_TYPE?.includes("pdf") ? (
                     <PDFViewer
                       blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
@@ -262,10 +283,12 @@ export const MessageBox = ({ screenFlag = "" }) => {
                   ) : lastFileData.current?.FILE_TYPE?.includes("png") ||
                     lastFileData.current?.FILE_TYPE?.includes("jpg") ||
                     lastFileData.current?.FILE_TYPE?.includes("jpeg") ? (
-                    <ImageViewer
-                      blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
-                      fileName={lastFileData.current?.FILE_NAME ?? ""}
-                    />
+                    <>
+                      <ImageViewer
+                        blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
+                        fileName={lastFileData.current?.FILE_NAME ?? ""}
+                      />
+                    </>
                   ) : (
                     <NoPreview
                       fileName={lastFileData.current?.FILE_NAME ?? ""}

@@ -80,6 +80,13 @@ const authAPI = () => {
           ACTION: "",
           DISPLAY_LANGUAGE: "en",
           BROWSER_FINGERPRINT: browserFingerPrint,
+          LOGINUSERDETAILS: {
+            USERNAME: payload.USER_ID ?? loginuserDetailsData?.USERNAME ?? "",
+            USERROLE: loginuserDetailsData?.USERROLE ?? "role",
+            BROWSER_FINGERPRINT: browserFingerPrint,
+            MACHINE_NAME_FRONT: "",
+            BRANCH_CD: loginuserDetailsData?.BRANCH_CD ?? "",
+          },
           ...payload,
         }),
         timeout: timeout,
@@ -94,7 +101,7 @@ const authAPI = () => {
           message: data?.MESSAGE ?? "",
           data: data?.RESPONSE ?? [],
           messageDetails: data?.RESPONSEMESSAGE ?? "",
-          responseType: data?.RESPONSE_TYPE ?? "",
+          responseType: data?.RESPONSE?.[0]?.RESPONSE_TYPE ?? "",
           access_token: data?.ACCESS_TOKEN ?? data,
         };
       } else {

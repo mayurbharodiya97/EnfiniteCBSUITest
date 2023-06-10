@@ -7,10 +7,6 @@ export const ActionWiseAPIConfiguration = {
     url: "authenticationServiceAPI/POSTLOGIN/VERIFYOTP",
     packageName: "",
   },
-  CHANGEPASSWORD: {
-    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
-    packageName: "",
-  },
   LOGOUTUSER: {
     url: "/enfinityCommonServiceAPI/LOGOUTUSER",
     packageName: "",
@@ -85,6 +81,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETDASHBOARDDATA: {
     url: "dashboardServiceAPI/GETDASHBOARDDATA",
+    packageName: "",
+  },
+  GETACCOUNTSTATUS: {
+    url: "dashboardServiceAPI/GETACCOUNTSTATUS",
+    packageName: "",
+  },
+  RESETPASSWORD: {
+    url: "authenticationServiceAPI/AUTH/RESETPASSWORD",
+    packageName: "",
+  },
+  CHANGEPASSWORD: {
+    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
     packageName: "",
   },
   GETACCTVIEWMKR: {
