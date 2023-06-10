@@ -2,6 +2,7 @@
 import { format } from "date-fns";
 
 import { MetaDataType } from "components/dyanmicForm";
+import { useGetDataMutation } from "./chequeBookEntry";
 
 export const ChequeBookIssueEntry: MetaDataType = {
   form: {
