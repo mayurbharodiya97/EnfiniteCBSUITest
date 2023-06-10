@@ -3,7 +3,6 @@ import { useReducer, useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 // import loginImg from "assets/images/login.png";
 import { useStyles } from "./style";
-import * as API from "./api";
 
 import logo from "assets/images/logo.jpg";
 import { ForgotPasswordFields } from "./forgotPasswordField";
@@ -20,6 +19,7 @@ import {
 import { GeneralAPI } from "registry/fns/functions";
 import { useQuery } from "react-query";
 import * as API from "./api";
+import { queryClient } from "cache";
 const inititalState = {
   isUsernameError: false,
   userMessageforusername: "",
@@ -147,16 +147,16 @@ export const ForgotPasswordController = () => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const otpResendRef = useRef(1);
-  const {
-    data: imageData,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch,
-  } = useQuery<any, any>(["getLoginImageData"], () =>
-    API.getLoginImageData({ APP_TRAN_CD: "51" })
-  );
+  // const {
+  //   data: imageData,
+  //   isLoading,
+  //   isFetching,
+  //   isError,
+  //   error,
+  //   refetch,
+  // } = useQuery<any, any>(["getLoginImageData"], () =>
+  //   API.getLoginImageData({ APP_TRAN_CD: "51" })
+  // );
   const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
@@ -343,11 +343,11 @@ export const ForgotPasswordController = () => {
   useEffect(() => {
     if (Boolean(imageData?.[0]?.DASHBOARD_APP_LOGO)) {
       let blob = utilFunction.base64toBlob(imageData?.[0]?.DASHBOARD_APP_LOGO);
-      urlObj.current =
-        typeof blob === "object" && Boolean(blob)
-          ? URL.createObjectURL(blob)
-          : "";
-      setDashboardLogoURL(urlObj.current);
+      // urlObj.current =
+      //   typeof blob === "object" && Boolean(blob)
+      //     ? URL.createObjectURL(blob)
+      //     : "";
+      // setDashboardLogoURL(urlObj.current);
     }
   }, [imageData]);
 
@@ -370,10 +370,10 @@ export const ForgotPasswordController = () => {
             padding={"31px"}
           >
             {/* <img src={logo} alt="Logo" /> */}
-            <img
+            {/* <img
               src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
               alt="Logo"
-            />
+            /> */}
           </Grid>
           <Container maxWidth="xs">
             <Grid alignItems="center" style={{ paddingTop: "40px" }}>
