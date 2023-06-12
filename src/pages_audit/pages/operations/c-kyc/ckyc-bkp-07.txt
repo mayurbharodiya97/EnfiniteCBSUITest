@@ -1,144 +1,83 @@
 import React, { Fragment, useRef, useCallback, useState, useMemo, useEffect } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, TextField, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon} from '@mui/material';
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, TextField, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup } from '@mui/material';
 import ViewListIcon from "@mui/icons-material/ViewList";
 import Search from "@mui/icons-material/Search";
-import { styled, createTheme } from '@mui/material/styles';
+import { styled, ThemeProvider, createTheme, unstable_createMuiStrictModeTheme } from '@mui/material/styles';
+import PersonalDetails, {other_detail_meta_data} from "./PersonalDetails";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import StyledTab from "components/styledComponent/tab/tab";
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'; // save-icon
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'; //edit-pencil-icon
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-icon
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
 import { blue, purple, teal, lightGreen } from "@mui/material/colors";
 // import {Tabs} from '../../../../components/styledComponent/tabs';
 // import {Tab} from '../../../../components/styledComponent/tab';
-import { theme } from "app/audit/theme";
 import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
 import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import InfoIcon from '@mui/icons-material/Info'; // other-details
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'; //edit-pencil-icon
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-icon
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
-import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
-import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
-import PersonalDetails from "./PersonalDetails";
-import NRIDetails from "./NRIDetails";
-import KYCDetails from "./KYCDetails";
-import OtherAddressDetails from "./OtherAddressDetails";
-import OtherDetails from "./OtherDetails";
+import { Icon } from '@mui/material';
+import { theme } from "app/audit/theme";
 
-export const other_detail_meta_data = {
-  form: {
-      name: "other_detail_form",
-      label: "", 
-      resetFieldOnUnmount: false,
-      validationRun: "onBlur", 
-      submitAction: "home",  
-      render: {
-          ordering: "auto",
-          renderType: "simple",
-          gridConfig: {
-          item: {
-              xs: 12,
-              sm: 6,
-          },
-          container: {
-              direction: "row",
-              spacing: 3,
-          },
-          },
+const newTheme = createTheme({
+  components: {
+    MuiToggleButtonGroup: {
+      defaultProps: {
+        orientation: "vertical",
+        color: "primary",
+        exclusive: true,
+        fullWidth: true,
+        size: "small"
       },
-      componentProps: {
-          textField: {
-              fullWidth: true,
-          },
-          select: {
-              fullWidth: true,
-          },
-          datePicker: {
-              fullWidth: true,
-          },
-          numberFormat: {
-              fullWidth: true,
-          },
-          inputMask: {
-              fullWidth: true,
-          },
-          datetimePicker: {
-              fullWidth: true,
-          },
-      },
-  },
-  fields: [
-      {
-          render: {
-              componentType: "select",
-          },
-          name: "CUST_TYPE",
-          label: "Cust Type",
-          placeholder: "",
-          type: "text",
-          GridProps: {xs: 6, sm:3},
-          options: [
-              {label: "type 1", value: "1"},
-              {label: "type 2", value: "2"},
-              {label: "type 3", value: "3"},
-          ],
-          // dependentFields: ["DAILY_AMT"],
-          // runValidationOnDependentFieldsChange: true,
-          // validate: (currentField, dependentFields) => {
-          //     if(Number(dependentFields?.DAILY_AMT?.value) >
-          //     Number(currentField?.value)) {
-          //         return "Weekly Limit should greater than or equal to Daily Limit";
-          //     } else {
-          //         return "";
-          //     }
-          // }
-      },
-      {
-          render: {
-              componentType: "select",
-          },
-          options: [
-              {label: "category 1", value: "1"},
-              {label: "category 2", value: "2"},
-              {label: "category 3", value: "3"},
-          ],
-          name: "category",
-          label: "Category",
-          placeholder: "",
-          type: "text",
-          GridProps: {xs: 6, sm:3},
-      },
-      {
-          render: {
-              componentType: "textField",
-          },
-          name: "constitution",
-          label: "Constitution",
-          placeholder: "",
-          type: "text",
-          disabled: true,
-          GridProps: {xs: 6, sm:3},
-      },
-      {
-          render: {
-              componentType: "textField",
-              disabled: true,
-          },
-          name: "acc_type",
-          label: "A/c Type",
-          placeholder: "",
-          type: "text",
-          disabled: true,
-          GridProps: {xs: 6, sm:3},
-      },
-  ]
-}
+      styleOverrides: {
+        root: {
+          // width: "auto",
+          // minWidth: "150px",
+        },
+        groupedVertical: ({ theme }) => ({
+          border: `1px solid #aaa`,            
+          // outlineStyle: "auto",
+          // height: "70px",
+          // outlineWidth: "1px",
+          borderRadius: "10px",
+          // backgroundColor: "teal"
+        }),
+        // grouped: {
+        //   "& [not(:first-of-type)]": {
+        //     borderTop: "1px solid red",
+        //     borderBottomLeftRadius: "10px",
+        //     borderBottomRightRadius: "10px",
+        //     backgroundColor: "green"
+        //   }
+        // }
+      }
+    },
+    MuiToggleButton: {
+      defaultProps: {},
+      styleOverrides: {
+        root: ({ theme }) => ({
+          // margin: "25px auto"
+          // ouotline: "none",
+          // border: `1px solid ${theme.palette.primary.main}`,
+          // borderCollapse: "separate",
+          // borderTop: "1px solid",
+          // borderTop: `1px solid ${theme.palette.primary.main}`
+        })
+      }
+    },
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          border: "1px solid red"
+        }
+      }
+    }
+  }
+});
 
 const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -165,7 +104,7 @@ const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
     color: "var(--theme-color3)",
   },
   "& .MuiTabs-flexContainerVertical": {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       // padding: "10px"
       paddingLeft:theme.spacing(1),
       paddingRight: theme.spacing(1),
@@ -216,12 +155,9 @@ const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   },
   "& .MuiButtonBase-root.MuiTab-root .toggle_text_container": {
     paddingLeft: theme.spacing(1),
-    textAlign: "left",
+    textAlign: "left"
   }
 }))
-const CustomTab = styled(Tab)({
-  minWidth: "64px",
-})
 
 const StyledSearchField = styled(TextField)(({ theme }) => ({
   // width: "100%",
@@ -256,8 +192,13 @@ const StyledSearchField = styled(TextField)(({ theme }) => ({
   }
 }));
 
-const CustomTabLabel = ({IconName, tabLabel, subtext, isSidebarExpanded}) => {
+const CustomTabLabel = ({IconName, iconType, tabLabel, subtext}) => {
   return (
+    // <Box component={"div"}>
+    //   <Typography variant="h6">{tabLabel}</Typography>
+    //   <Typography variant="subtitle2">{subtext}</Typography>
+    // </Box>
+
     <div
       style={{
         display: "flex",
@@ -269,19 +210,28 @@ const CustomTabLabel = ({IconName, tabLabel, subtext, isSidebarExpanded}) => {
     >
       <div className="toggle_icon_container">
         {/* <ViewListIcon /> */}
-          {/* {iconType === "mui" 
+          {iconType === "mui" 
           ? <Icon><IconName /></Icon> : null
           // : <FontAwesomeIcon
           //     icon={["fas", IconName.toString()]}
           //     // color="var(--theme-color)"
           //   />
-          } */}
-        {<IconName />}
+          }
+        {/* {<IconName />} */}
+
+        {/* <Icon><IconName /></Icon> */}
+        {/* <FontAwesomeIcon icon={<IconName />} /> */}
+
+        {/* <FontAwesomeIcon
+          icon={["fas", "users"]}
+          // color="var(--theme-color)"
+        /> */}
+        {/* <i className="fa-solid fa-user-group"></i> */}
       </div>
-      {<div className="toggle_text_container" style={(!isSidebarExpanded ? {display:  "none"} : {display: "block"})}>
+      <div className="toggle_text_container">
         <h4 style={{ margin: 0 }}>{tabLabel}</h4>
         <p style={{ margin: 0 }}>{subtext}</p>
-      </div>}
+      </div>
     </div>
   )
 }
@@ -311,7 +261,8 @@ const controlPanel = (
         p: (theme) => theme.spacing(1), 
         boxShadow: (theme) => theme.shadows[3],
         borderRadius: "10px"
-      }}>
+      }} 
+      xs={12} sm={12} md={12} lg={12}>
       <Button 
         sx={{mr:(theme) => theme.spacing(1), textTransform: "capitalize"}} 
         color="secondary" 
@@ -358,14 +309,35 @@ const StyledHeaderGrid = styled(Grid)(({theme}) => ({
   paddingBottom: "5px",
   paddingLeft: theme.spacing(1),
   paddingRight: theme.spacing(1),
+  // [theme.breakpoints.down("md")]: {
+  //   paddingLeft: theme.spacing(1),
+  //   paddingRight: theme.spacing(1),
+  // },
   [theme.breakpoints.up("md")]: {
+    // paddingLeft: theme.spacing(2),
+    // paddingRight: theme.spacing(2),
     position: "sticky", 
-    top:"56px", 
+    top:"64px", 
     height: {xs:"100px", md:"50px"}, 
     paddingTop:"2px", 
     zIndex: "999",
   }
 }))
+
+const StyledButtonGroup = styled(ButtonGroup)(({theme}) => ({
+  // "& .MuiGrid-root.MuiGrid-item .MuiButtonGroup-root": {
+  //   [theme.breakpoints.down("md")]: {
+  //     flexDirection: "row",
+  //   }
+  // }
+}))
+
+function a11yProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -384,7 +356,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 1 }}>
+        <Box sx={{ p: 3 }}>
           {/* <Typography> */}
               {children}
           {/* </Typography> */}
@@ -400,10 +372,7 @@ export const Ckyc = () => {
   const [colTabValue, setColTabValue] = React.useState(0);
   const [isCustomerData, setIsCustomerData] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
-  const handleSidebarExpansion = () => {
-    setIsSidebarExpanded((prevState) => !prevState)
-  }
+
   
 
   const CustomTabLabelSkeleton = React.memo(() => {
@@ -461,6 +430,10 @@ export const Ckyc = () => {
     setInputSearchValue(event.target.value)
   }
 
+  const passDataFromPersonalDetails = (customerDataCurrentStatus) => {
+    // setCustomerDataCurrentStatus(customerDataCurrentStatus)
+  }
+
   // useEffect(() => {
   //   console.log(colTabValue, typeof colTabValue,"...")
   //   console.log(tabValue, typeof tabValue, "... tab")
@@ -476,7 +449,13 @@ export const Ckyc = () => {
   }, [isLoading])
 
   return (
-    <React.Fragment>
+    <Box 
+      sx={{
+        // px: (theme) => theme.spacing(1), 
+        // backgroundColor: "#eee",
+      }}
+    >
+    {/* <ThemeProvider theme={{themeObj}}> */}
       <StyledHeaderGrid container 
         columnGap={(theme) => theme.spacing(2)}
         rowGap={(theme) => theme.spacing(2)}>
@@ -494,49 +473,31 @@ export const Ckyc = () => {
           {controlPanel}
         </Grid>
       </StyledHeaderGrid>
-    {/* put everything inside this Box */}
-      <TabPanel value={tabValue} index={0}>
-        <Grid container sx={{transition: "all 0.4s ease-in-out"}}>
-          <Grid container item sm="auto" sx={{
-            display:"flex", flexDirection: "column",alignItems: "center",
-            position: "sticky", top: "140px", height:"calc(100vh - 140px)"
-            }}>
-            <IconButton color="secondary" onClick={handleSidebarExpansion}>
-              <MenuOutlinedIcon />
-            </IconButton>
-            <CustomTabs sx={{height:"calc(100vh - 200px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
-              <CustomTab sx={isSidebarExpanded ? {width: "100%", transition: "all 0.1s", transitionDelay: "0.4s"} : {minWidth: "60px", width:"60px", transition: "all 0.1s", transitionDelay: "0.4s"}} label={<CustomTabLabel IconName={HowToRegRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Personal Details"} subtext={"Lorem ipsum dolor sit amet."} />} />
-              <CustomTab sx={isSidebarExpanded ? {width: "100%", transition: "all 0.1s", transitionDelay: "0.4s"} : {minWidth: "60px", width:"60px", transition: "all 0.1s", transitionDelay: "0.4s"}} label={<CustomTabLabel IconName={NoteAddRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"KYC"} subtext={"Lorem ipsum dolor sit amet."} />} />
-              <CustomTab sx={isSidebarExpanded ? {width: "100%", transition: "all 0.1s", transitionDelay: "0.4s"} : {minWidth: "60px", width:"60px", transition: "all 0.1s", transitionDelay: "0.4s"}} label={<CustomTabLabel IconName={ArticleRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Declaration"} subtext={"Lorem ipsum dolor sit amet."} />} />
-              <CustomTab sx={isSidebarExpanded ? {width: "100%", transition: "all 0.1s", transitionDelay: "0.4s"} : {minWidth: "60px", width:"60px", transition: "all 0.1s", transitionDelay: "0.4s"}} label={<CustomTabLabel IconName={PeopleAltIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Details of Related Person"} subtext={"Lorem ipsum dolor sit amet."} />} />
-              <CustomTab sx={isSidebarExpanded ? {width: "100%", transition: "all 0.1s", transitionDelay: "0.4s"} : {minWidth: "60px", width:"60px", transition: "all 0.1s", transitionDelay: "0.4s"}} label={<CustomTabLabel IconName={InfoIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Details"} subtext={"Lorem ipsum dolor sit amet."} />} />
-              <CustomTab sx={isSidebarExpanded ? {width: "100%", transition: "all 0.1s", transitionDelay: "0.4s"} : {minWidth: "60px", width:"60px", transition: "all 0.1s", transitionDelay: "0.4s"}} label={<CustomTabLabel IconName={AddLocationIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Address"} subtext={"Lorem ipsum dolor sit amet."} />} />
-              <CustomTab sx={isSidebarExpanded ? {width: "100%", transition: "all 0.1s", transitionDelay: "0.4s"} : {minWidth: "60px", width:"60px", transition: "all 0.1s", transitionDelay: "0.4s"}} label={<CustomTabLabel IconName={PersonAddAltRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"NRI Details"} subtext={"Lorem ipsum dolor sit amet."} />} />
-              <CustomTab sx={isSidebarExpanded ? {width: "100%", transition: "all 0.1s", transitionDelay: "0.4s"} : {minWidth: "60px", width:"60px", transition: "all 0.1s", transitionDelay: "0.4s"}} label={<CustomTabLabel IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Attestation"} subtext={"Lorem ipsum dolor sit amet."} />} />
-            </CustomTabs>
-          </Grid>
-          <Grid sx={{
-              "& .MuiBox-root": {
-                padding: "0px",
+
+      {true && <Grid 
+          sx={{
+              backgroundColor:"var(--theme-color2)", 
+              p:(theme) => theme.spacing(1), 
+              // marginLeft: theme.spacing(1),
+              // marginRight: theme.spacing(1),
+              border: "1px solid rgba(0,0,0,0.12)", 
+              // borderRadius: "20px",
+              // display: "flex",
+              display: tabValue !== 0 ? "none" : "flex",
+              alignItems: "center",
+              [theme.breakpoints.up("md")]: {
+                position: "sticky",
+                top: "121px",
+                zIndex: "998",
               }
-            }} item xs>
-              
-            {/* common customer fields */}
-            <Grid 
-              sx={{
-                  backgroundColor:"var(--theme-color2)", 
-                  padding:(theme) => theme.spacing(2), 
-                  border: "1px solid rgba(0,0,0,0.12)", 
-                  borderRadius: "20px",
-                  mb: "8px"
-              }} container item xs={12} direction={'column'}>
-              <Grid item>
-                  <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Customer Details</Typography>
-              </Grid>
-              <Grid container item>
-                <Grid item xs={12}>
+          }} container item>
+          <Grid item xs={12} sm={12} md="auto">
+              <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Customer Details</Typography>
+          </Grid>
+          <Grid container item xs={12} sm={12} md>
+              <Grid item xs={12}>
                   <FormWrapper 
-                      key={"new-form-in-kyc"}
+                      key={"new-form-in-kyc-customer-data"}
                       metaData={other_detail_meta_data as MetaDataType}
                       // initialValues={{}}
                       // onSubmitHandler={() => {}}
@@ -553,7 +514,7 @@ export const Ckyc = () => {
                       {/* <TextField value={"new"} variant='outlined' /> */}
                       {/* <Button variant='contained'>Click</Button> */}
                   </FormWrapper>
-                  <Button color="secondary" onClick={() => {
+                  {/* <Button color="secondary" onClick={() => {
                       setIsCustomerData(false)
                       setIsLoading(true)
                   }}>Submit</Button>
@@ -564,51 +525,115 @@ export const Ckyc = () => {
                   <Button color="secondary" onClick={() => {
                       setIsCustomerData(false)
                       // setIsLoading(true)
-                  }}>Edit</Button>
-                </Grid>                    
+                  }}>Edit</Button> */}
               </Grid>
-            </Grid>
-            {/* common customer fields */}
-
-            <TabPanel value={colTabValue} index={0}>
-              <PersonalDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
-                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-            </TabPanel>
-            <TabPanel value={colTabValue} index={1}>
-              <KYCDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
-                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-            </TabPanel>
-            <TabPanel value={colTabValue} index={2}>
-                <Typography variant="h6">Declaration</Typography>
-            </TabPanel>
-            <TabPanel value={colTabValue} index={3}>
-              <Typography variant="h6">Details of Related Person</Typography>
-            </TabPanel>
-            <TabPanel value={colTabValue} index={4}>
-              <OtherDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
-                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-            </TabPanel>
-            <TabPanel value={colTabValue} index={5}>
-              <OtherAddressDetails
-                isLoading={isLoading} setIsLoading={setIsLoading} 
-                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-            </TabPanel>
-            <TabPanel value={colTabValue} index={6}>
-              <NRIDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
-                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-            </TabPanel>
-            <TabPanel value={colTabValue} index={7}>
-              <Typography variant="h6">Attestation</Typography>
-            </TabPanel>
           </Grid>
-        </Grid>
-      </TabPanel>
-    {/* put everything inside this Box */}
+          <Grid item>
+            <StyledButtonGroup variant="outlined" color="secondary" size="small" orientation="vertical" disableElevation={true} aria-label="outlined primary button group">
+              <Button 
+                onClick={() => {
+                  setIsCustomerData(false)
+                  setIsLoading(true)
+                }}
+              >Submit</Button>
+              <Button 
+                onClick={() => {
+                  setIsCustomerData(false)
+                }}>Reset</Button>
+              <Button 
+                color="error"
+                onClick={() => {
+                  setIsCustomerData(false)
+                }}>Cancel</Button>
+            </StyledButtonGroup>
+          </Grid>
+      </Grid>}
 
+      <TabPanel value={tabValue} index={0}>
+        {/* Item One */}
+          <Grid container columnGap={{md:0, lg:1}}>
+            <Grid item xs={12} sm 
+              sx={{position: "sticky", top: "240px", height: "calc(100vh - 295px)", overflow:"auto"}}
+            >
+              {/* {isCustomerData
+              ? <Typography variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry</Typography>
+              : isLoading 
+                ? (<Box sx={{marginBottom: (theme) => theme.spacing(1)}}>
+                    <Typography variant="h5"><Skeleton animation="wave"></Skeleton></Typography>
+                    <Typography variant="h6" width={"70%"}><Skeleton animation="wave"></Skeleton></Typography>
+                  </Box>) 
+                : null} */}
+
+              {0 ? <StyledSearchField 
+                value={inputSearchValue} 
+                onChange={(e) => handleInputSearchValue(e)} 
+                color="primary" placeholder="Search here..." fullWidth={true}
+                // variant="standard" label="Search"
+                InputProps={{
+                  startAdornment: <InputAdornment position="end">
+                    {/* <IconButton
+                      aria-label="toggle password visibility"
+                      // onClick={() => setOpenSearch(true)}
+                    >
+                      <SearchIcon /> */}
+                      <Search />
+                    {/* </IconButton> */}
+                  </InputAdornment>                      
+                }}
+              /> : null}
+
+              {isCustomerData 
+              ? <Box sx={{ flexGrow: 1,}}>
+                <CustomTabs textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>                  
+                  <Tab label={<CustomTabLabel IconName={HowToRegRoundedIcon} iconType={"mui"} tabLabel={"Personal Details"} subtext={"Lorem ipsum dolor sit amet."} />} />
+                  <Tab label={<CustomTabLabel IconName={PeopleAltIcon} iconType={"mui"} tabLabel={"KYC"} subtext={"Lorem ipsum dolor sit amet."} />} />
+                  <Tab label={<CustomTabLabel IconName={PeopleAltIcon} iconType={"mui"} tabLabel={"Declaration"} subtext={"Lorem ipsum dolor sit amet."} />} />
+                  <Tab label={<CustomTabLabel IconName={PeopleAltIcon} iconType={"mui"} tabLabel={"Details of Related Person"} subtext={"Lorem ipsum dolor sit amet."} />} />
+                  <Tab label={<CustomTabLabel IconName={InfoIcon} iconType={"mui"} tabLabel={"Other Details"} subtext={"Lorem ipsum dolor sit amet."} />} />
+                  <Tab label={<CustomTabLabel IconName={AddLocationIcon} iconType={"mui"} tabLabel={"Other Address"} subtext={"Lorem ipsum dolor sit amet."} />} />
+                  <Tab label={<CustomTabLabel IconName={PeopleAltIcon} iconType={"mui"} tabLabel={"NRI Details"} subtext={"Lorem ipsum dolor sit amet."} />} />
+                  <Tab label={<CustomTabLabel IconName={PeopleAltIcon} iconType={"mui"} tabLabel={"Attestation"} subtext={"Lorem ipsum dolor sit amet."} />} />
+                </CustomTabs>
+              </Box> : isLoading ? getCustomTabLabelSkeleton() : null}
+            </Grid>
+            <Grid item xs={12} md={9} 
+              sx={{
+                // backgroundColor:"#ddd", 
+                "& .MuiBox-root": {
+                  padding: "0px",
+                }
+              }}>
+              <TabPanel value={colTabValue} index={0}>
+                  {/* <Typography variant="h6">Personal Details</Typography> */}
+                  <PersonalDetails passDataFromPersonalDetails={passDataFromPersonalDetails} isLoading={isLoading} setIsLoading={setIsLoading} 
+                  isCustomerData = {isCustomerData}
+                  setIsCustomerData = {setIsCustomerData}
+                  />
+              </TabPanel>
+              <TabPanel value={colTabValue} index={1}>
+                  <Typography variant="h6">KYC</Typography>
+              </TabPanel>
+              <TabPanel value={colTabValue} index={2}>
+                  <Typography variant="h6">Declaration</Typography>
+              </TabPanel>
+              <TabPanel value={colTabValue} index={3}>
+                <Typography variant="subtitle1">Details of Related Person</Typography>
+              </TabPanel>
+              <TabPanel value={colTabValue} index={4}>
+                <Typography variant="subtitle1">Other Details</Typography>
+              </TabPanel>
+              <TabPanel value={colTabValue} index={5}>
+                <Typography variant="subtitle1">Other Address</Typography>
+              </TabPanel>
+              <TabPanel value={colTabValue} index={6}>
+                <Typography variant="subtitle1">NRI Details</Typography>
+              </TabPanel>
+              <TabPanel value={colTabValue} index={7}>
+                <Typography variant="subtitle1">Attestation</Typography>
+              </TabPanel>
+            </Grid>
+          </Grid>          
+      </TabPanel>
       <TabPanel value={tabValue} index={1}>
         {/* <Typography variant="h6">Retrieve</Typography> */}
         <Typography sx={{color: (theme) => theme.palette.grey[700]}} variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry (MST/707)</Typography>
@@ -618,7 +643,7 @@ export const Ckyc = () => {
           backgroundColor: "var(--theme-color2)", 
           padding: (theme) => theme.spacing(2), 
           border:(theme) => `2px dashed ${theme.palette.grey[500]}`, borderRadius: "20px"}} 
-          my={(theme) => theme.spacing(3)} container direction={"column"}
+          my={(theme) => theme.spacing(3)} container xs direction={"column"}
         >
           <Grid item>
             <Typography sx={{color: "var(--theme-color1)", paddingBottom: (theme) => theme.spacing(2)}} variant="h6" >Fetch Data</Typography>
@@ -635,6 +660,7 @@ export const Ckyc = () => {
       <TabPanel value={tabValue} index={2}>
         <Typography variant="subtitle1">Pending Requests</Typography>
       </TabPanel>      
-    </React.Fragment>
+    {/* </ThemeProvider>   */}
+    </Box>
   );
 };
