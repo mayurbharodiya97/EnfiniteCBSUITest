@@ -2,6 +2,7 @@
 import { format } from "date-fns";
 
 import { MetaDataType } from "components/dyanmicForm";
+import { useGetDataMutation } from "./chequeBookEntry";
 
 export const ChequeBookIssueEntry: MetaDataType = {
   form: {
@@ -53,7 +54,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "BRANCH_CD",
-      sequence: 1,
+      // sequence: 1,
       label: "Branch",
       placeholder: "Branch",
       type: "text",
@@ -71,7 +72,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "ACCT_TYPE",
-      sequence: 1,
+      // sequence: 1,
       label: "Account Type",
       placeholder: "Enter Account Type",
       type: "text",
@@ -89,7 +90,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      sequence: 1,
+      // sequence: 1,
       label: "Account No.",
       placeholder: "Enter Account No.",
       type: "text",
@@ -107,7 +108,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "NO_OF_LEAVE",
-      sequence: 2,
+      // sequence: 2,
       label: "No of Leaves",
       placeholder: "Select No of Leaves",
       enableDefaultOption: true,
@@ -117,13 +118,35 @@ export const ChequeBookIssueEntry: MetaDataType = {
         md: 1,
         sm: 1,
       },
+      dependentFields: ["BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
+      runValidationOnDependentFieldsChange: true,
+      // setValueOnDependentFieldsChange: useGetDataMutation,
+
+      // setValueOnDependentFieldsChange: (dependent) => {
+      //   if (
+      //     typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
+      //     !Boolean(dependent["ACTIVE_FLAG"]?.value)
+      //   ) {
+      //     return format(new Date(), "dd/MM/yyyy HH:mm:ss");
+      //   }
+      //   return null;
+      // },
+      // shouldExclude: (val1, dependent) => {
+      //   if (
+      //     typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
+      //     Boolean(dependent["ACTIVE_FLAG"]?.value)
+      //   ) {
+      //     return true;
+      //   }
+      //   return false;
+      // },
     },
     {
       render: {
         componentType: "textField",
       },
       name: "NO_OF_CHEQUEBOOK",
-      sequence: 3,
+      // sequence: 3,
       label: "No of Cheque Book(s)",
       placeholder: "Enter no of Cheque book",
       type: "text",
@@ -144,7 +167,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "CHARACTERISTICS",
-      sequence: 4,
+      // sequence: 4,
       label: "Characteristics",
       placeholder: "",
       type: "text",
@@ -170,7 +193,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "PAYABLE_AT_PAR",
-      sequence: 5,
+      // sequence: 5,
       label: "Payable At PAR",
       placeholder: "",
       type: "text",
@@ -187,7 +210,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "AMOUNT",
-      sequence: 7,
+      // sequence: 7,
       label: "Service Charge",
       placeholder: "",
       type: "text",
@@ -205,7 +228,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "SERVICE_CHARGE",
-      sequence: 8,
+      // sequence: 8,
       label: "GST",
       placeholder: "",
       type: "text",

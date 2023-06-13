@@ -13,6 +13,9 @@ import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { useSnackbar } from "notistack";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AcctViewMetadata } from "./metaDataAcct";
+import { AuthContext } from "pages_audit/auth";
+import { useContext } from "react";
+import { Button } from "@mui/material";
 
 export const useGetDataMutation = () => {
   const getData = useMutation(API.getChequeBookEntryData, {
@@ -32,6 +35,8 @@ const ChequeBookEntry = () => {
   const myGridRef = useRef<any>(null);
   const [secondButtonVisible, setSecondButtonVisible] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const { authState } = useContext(AuthContext);
+
   const setCurrentAction = useCallback(
     (data) => {
       navigate(data?.name, {
@@ -72,6 +77,7 @@ const ChequeBookEntry = () => {
       // setRetData(retdata);
 
       getData.mutate({
+        companyID: authState.companyID,
         branchCD: retdata?.BRANCH_CD,
         acctType: retdata?.ACCT_TYPE,
         accountNo: retdata?.ACCT_CD,
@@ -141,39 +147,38 @@ const ChequeBookEntry = () => {
           overflowY: "auto",
           overflowX: "hidden",
         }}
-
-        // finalMetaData={ChequeBookIssueEntry}
-        // onAction={ClickEventManage}
-        // data={data ?? {}}
-        // submitSecondAction={ClickSecondButtonEventManage}
-        // submitSecondButtonName="Save"
-        // submitSecondButtonHide={!secondButtonVisible}
-        // submitSecondLoading={false}
       ></FormWrapper>
       <FormWrapper
         key={"ChequeBookEntry" + (data ?? []).length}
         metaData={ChequeBookIssueEntry}
         loading={getData.isLoading}
-        hideHeader={true}
+        // hideHeader={true}
         //  initialValues={rows?.[0]?.data as InitialValuesType}
         //  onSubmitHandler={onSubmitHandler}
         //@ts-ignore
-        displayMode={"add"}
+        displayMode={"new"}
         formStyle={{
           background: "white",
-          height: "25vh",
+          height: "20vh",
           overflowY: "auto",
           overflowX: "hidden",
         }}
-
-        // finalMetaData={ChequeBookIssueEntry}
-        // onAction={ClickEventManage}
-        // data={data ?? {}}
-        // submitSecondAction={ClickSecondButtonEventManage}
-        // submitSecondButtonName="Save"
-        // submitSecondButtonHide={!secondButtonVisible}
-        // submitSecondLoading={false}
-      ></FormWrapper>
+      >
+        {/* {({ isSubmitting, handleSubmit }) => (
+          <>
+            <Button
+              onClick={(event) => {
+                handleSubmit(event, "Retrieve");
+              }}
+              disabled={isSubmitting}
+              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+              color={"primary"}
+            >
+              Retrieve
+            </Button>
+          </>
+        )} */}
+      </FormWrapper>
     </Fragment>
   );
 };
