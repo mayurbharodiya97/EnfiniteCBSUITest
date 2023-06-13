@@ -1,4 +1,4 @@
-import { Box, Dialog, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
@@ -6,26 +6,19 @@ import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlin
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import { useQuery } from "react-query";
-import * as API from "./api";
+import * as API from "../api";
 import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { GradientButton } from "components/styledComponent/button";
-import {
-  ImageViewer,
-  NoPreview,
-  PDFViewer,
-} from "components/fileUpload/preView";
-import { utilFunction } from "components/utils/utilFunctions";
+import { ListPopupMessageWrapper } from "./listPopupBox";
+// import { GradientButton } from "components/styledComponent/button";
 
 export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
   const { authState } = useContext(AuthContext);
-  const lastFileData = useRef(null);
-  const [isOpenPdf, setIsOpenPdf] = useState(false);
+
   const [isOpenSave, setIsOpenSave] = useState(false);
-  const urlObj = useRef(null);
-  const [loginImageURL, setLoginImageURL] = useState(null);
+  const [dialogLabel, setDialogLabel] = useState("");
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
     [
       "getDashboardMessageBoxData",
@@ -61,6 +54,9 @@ export const MessageBox = ({ screenFlag = "" }) => {
   };
   const handleDialogClose = () => {
     setIsOpenSave(false);
+  };
+  const handleLabelClick = (label) => {
+    setDialogLabel(label);
   };
 
   return (
@@ -218,29 +214,8 @@ export const MessageBox = ({ screenFlag = "" }) => {
                         name={item?.label}
                         disabled={false}
                         onClick={() => {
-                          console.log("datasetswdfd", item?.UPLOAD_DOCUMENT);
-                          if (Boolean(item?.UPLOAD_DOCUMENT)) {
-                            lastFileData.current = {
-                              UPLOAD_DOCUMENT: utilFunction.blobToFile(
-                                utilFunction.base64toBlob(
-                                  item?.UPLOAD_DOCUMENT,
-                                  item?.FILE_TYPE === "pdf"
-                                    ? "application/pdf"
-                                    : "image/" + item?.FILE_TYPE
-                                ),
-                                item?.FILE_NAME
-                              ),
-                              FILE_TYPE: item?.FILE_TYPE,
-                              FILE_NAME: item?.FILE_NAME,
-                            };
-                            console.log(
-                              "UPLOAD_DOCUMENT",
-                              item?.UPLOAD_DOCUMENT
-                            );
-                          } else {
-                            lastFileData.current = {};
-                          }
                           setIsOpenSave(true);
+                          handleLabelClick(item?.label);
                         }}
                       />
                     ))}
@@ -248,53 +223,10 @@ export const MessageBox = ({ screenFlag = "" }) => {
                 </nav>
               </Box>
               {isOpenSave ? (
-                <Dialog
-                  fullWidth
-                  maxWidth="md"
-                  open={true}
-                  PaperProps={{
-                    style: {
-                      width: "80%",
-                      height: "90%",
-                    },
-                  }}
-                  key="filepreviewDialog"
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "right",
-                      alignItems: "right",
-                    }}
-                  >
-                    <GradientButton
-                      style={{ width: "22px", margin: "6px" }}
-                      onClick={handleDialogClose}
-                    >
-                      Close
-                    </GradientButton>
-                  </div>
-                  {console.log(">>lastFileData<<", lastFileData)}
-                  {lastFileData.current?.FILE_TYPE?.includes("pdf") ? (
-                    <PDFViewer
-                      blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
-                      fileName={lastFileData.current?.FILE_NAME ?? ""}
-                    />
-                  ) : lastFileData.current?.FILE_TYPE?.includes("png") ||
-                    lastFileData.current?.FILE_TYPE?.includes("jpg") ||
-                    lastFileData.current?.FILE_TYPE?.includes("jpeg") ? (
-                    <>
-                      <ImageViewer
-                        blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
-                        fileName={lastFileData.current?.FILE_NAME ?? ""}
-                      />
-                    </>
-                  ) : (
-                    <NoPreview
-                      fileName={lastFileData.current?.FILE_NAME ?? ""}
-                    />
-                  )}
-                </Dialog>
+                <ListPopupMessageWrapper
+                  closeDialog={handleDialogClose}
+                  dialogLabel={dialogLabel}
+                />
               ) : null}
             </Grid>
           )}

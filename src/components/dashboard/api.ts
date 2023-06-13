@@ -35,99 +35,57 @@ export const getAccountStatusData = async (COMP_CD) => {
   ];
 };
 
-// export const getDashboardMessageBoxData = async ({
-//   screenFlag,
-//   BRANCH_CD,
-//   userID,
-// }) => {
-//   let apiURL;
-//   let apiReq = {};
-//   if (screenFlag === "Announcement") {
-//     apiURL = "GETANNOUNCEMENT";
-//     apiReq = {
-//       // USER_NAME: userID
-//       USER_NAME: "ajayj",
-//     };
-//   } else if (screenFlag === "Tips") {
-//     apiURL = "GETTIPSDETAILS";
-//     apiReq = {
-//       // USER_NAME: userID,
-//       USER_NAME: "anilt",
-//     };
-//   } else if (screenFlag === "Notes") {
-//     apiReq = {
-//       // USER_NAME: userID,
-//       USER_NAME: "sudhanshus",
-//     };
-//     apiURL = "GETNOTESDETAILSELECT";
-//   } else if (screenFlag === "Alert") {
-//     apiURL = "GETALERTDTL";
-//   }
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher(apiURL, apiReq);
-//   if (status === "0") {
-//     // return data;
-//     let responseData = data;
-//     if (Array.isArray(responseData)) {
-//       responseData = responseData.map(({ TRAN_CD, DESCRIPTION }) => {
-//         return {
-//           value: TRAN_CD,
-//           label: DESCRIPTION,
-//         };
-//       });
-//     }
-//     return responseData;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
-export const getDashboardMessageBoxData = async (
-  {
-    // screenFlag,
-    // BRANCH_CD,
-    // userID,
+export const getDashboardMessageBoxData = async ({
+  screenFlag,
+  BRANCH_CD,
+  userID,
+}) => {
+  let apiURL;
+  let apiReq = {};
+  if (screenFlag === "Announcement") {
+    apiURL = "GETANNOUNCEMENT";
+    apiReq = {
+      // USER_NAME: userID
+      USER_NAME: "ajayj",
+    };
+  } else if (screenFlag === "Tips") {
+    apiURL = "GETTIPSDETAILS";
+    apiReq = {
+      // USER_NAME: userID,
+      USER_NAME: "anilt",
+    };
+  } else if (screenFlag === "Notes") {
+    apiReq = {
+      // USER_NAME: userID,
+      USER_NAME: "sudhanshus",
+    };
+    apiURL = "GETNOTESDETAILSELECT";
+  } else if (screenFlag === "Alert") {
+    apiURL = "GETALERTDTL";
+    apiReq = {
+      // USER_NAME: userID,
+      APP_TRAN_CD: "1",
+    };
   }
-) => {
-  // let apiURL;
-  // let apiReq = {};
-  // if (screenFlag === "Announcement") {
-  //   apiURL = "GETANNOUNCEMENT";
-  //   apiReq = {
-  //     // USER_NAME: userID
-  //     USER_NAME: "ajayj",
-  //   };
-  // } else if (screenFlag === "Tips") {
-  //   apiURL = "GETTIPSDETAILS";
-  //   apiReq = {
-  //     // USER_NAME: userID,
-  //     USER_NAME: "anilt",
-  //   };
-  // } else if (screenFlag === "Notes") {
-  //   apiReq = {
-  //     // USER_NAME: userID,
-  //     USER_NAME: "sudhanshus",
-  //   };
-  //   apiURL = "GETNOTESDETAILSELECT";
-  // } else if (screenFlag === "Alert") {
-  //   apiURL = "GETALERTDTL";
-  // }
-  // const { data, status, message, messageDetails } =
-  //   await AuthSDK.internalFetcher(apiURL, apiReq);
-  // if (status === "0") {
-  //   // return data;
-  //   let responseData = data;
-  //   if (Array.isArray(responseData)) {
-  //     responseData = responseData.map(({ TRAN_CD, DESCRIPTION }) => {
-  //       return {
-  //         value: TRAN_CD,
-  //         label: DESCRIPTION,
-  //       };
-  //     });
-  //   }
-  //   return responseData;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(apiURL, apiReq);
+  if (status === "0") {
+    // return data;
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ TRAN_CD, DESCRIPTION }) => {
+        return {
+          value: TRAN_CD,
+          label: DESCRIPTION,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getMessageBoxListData = async ({}) => {
   return [
     {
       label: "hncdbaskjf",

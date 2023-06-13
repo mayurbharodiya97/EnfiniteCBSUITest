@@ -3,6 +3,13 @@ import { TextField } from "@mui/material";
 import { withStyles } from "@mui/styles";
 const StyledTextField = withStyles({
   root: {
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiInputBase-root:before": {
+      borderBottom: "none",
+    },
+
     "& .MuiInputLabel-formControl": {
       //color: "#736f6f",
       fontWeight: 600,

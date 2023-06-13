@@ -1,4 +1,4 @@
-import { forwardRef, Suspense, useImperativeHandle } from "react";
+import { forwardRef, Suspense, useImperativeHandle, useState } from "react";
 import { FormContext, useForm } from "packages/form";
 import { cloneDeep } from "lodash-es";
 import { renderFieldsByGroup } from "./utils/groupWiserenderer";
@@ -16,10 +16,10 @@ import { SimpleFormWrapper } from "./simpleForm";
 import { TabsFormWrapper } from "./tabsForm";
 import { extendedMetaData } from "./extendedTypes";
 import { useStyles } from "./style";
-import { LocalizationProvider } from "@mui/lab";
-import AdapterDayjs from "@mui/lab/AdapterDayjs";
-import DateFnsUtils from "@date-io/date-fns";
-
+//import { LocalizationProvider } from "@mui/lab";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+// import DateFnsUtils from "@date-io/date-fns";
 export const FormWrapper = forwardRef<FormWrapperProps, any>(
   (
     {
@@ -66,45 +66,45 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     console.log("formRenderType " + formName);
     return (
       <>
-        {/* <LocalizationProvider utils={DateFnsUtils}> */}
-        <FormContext.Provider
-          value={{
-            formName: formName,
-            resetFieldOnUnmount: Boolean(metaData.form.resetFieldOnUnmount),
-            validationRun: metaData.form.validationRun,
-            initialValues: initValues,
-            defaultArrayFieldValues: defaultArrayFieldInitValues,
-            validationSchema: yupValidationSchema,
-            formState: {
-              formCode: metaData.form.name,
-              refID: metaData.form.refID,
-              ...metaData.form?.formState,
-              ...formState,
-            },
-          }}
-        >
-          <ChildFormWrapper
-            //@ts-ignore
-            ref={ref}
-            formName={formName}
-            formDisplayLabel={metaData?.form?.label ?? "NO_LABEL"}
-            formRenderType={metaData.form.render.renderType ?? "simple"}
-            formRenderConfig={metaData.form.render}
-            submitFn={onSubmitHandler}
-            hidden={hidden}
-            displayMode={displayMode}
-            groupWiseFields={groupWiseFields}
-            hideTitleBar={hideTitleBar}
-            hideDisplayModeInTitle={hideDisplayModeInTitle}
-            wrapperChild={children}
-            formStyle={formStyle}
-            controlsAtBottom={controlsAtBottom}
-            defaultActiveStep={defaultActiveStep}
-            hideHeader={hideHeader}
-            containerstyle={containerstyle}
-          />
-        </FormContext.Provider>
-        {/* </LocalizationProvider> */}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <FormContext.Provider
+            value={{
+              formName: formName,
+              resetFieldOnUnmount: Boolean(metaData.form.resetFieldOnUnmount),
+              validationRun: metaData.form.validationRun,
+              initialValues: initValues,
+              defaultArrayFieldValues: defaultArrayFieldInitValues,
+              validationSchema: yupValidationSchema,
+              formState: {
+                formCode: metaData.form.name,
+                refID: metaData.form.refID,
+                ...metaData.form?.formState,
+                ...formState,
+              },
+            }}
+          >
+            <ChildFormWrapper
+              //@ts-ignore
+              ref={ref}
+              formName={formName}
+              formDisplayLabel={metaData?.form?.label ?? "NO_LABEL"}
+              formRenderType={metaData.form.render.renderType ?? "simple"}
+              formRenderConfig={metaData.form.render}
+              submitFn={onSubmitHandler}
+              hidden={hidden}
+              displayMode={displayMode}
+              groupWiseFields={groupWiseFields}
+              hideTitleBar={hideTitleBar}
+              hideDisplayModeInTitle={hideDisplayModeInTitle}
+              wrapperChild={children}
+              formStyle={formStyle}
+              controlsAtBottom={controlsAtBottom}
+              defaultActiveStep={defaultActiveStep}
+              hideHeader={hideHeader}
+              containerstyle={containerstyle}
+            />
+          </FormContext.Provider>
+        </LocalizationProvider>
       </>
     );
   }

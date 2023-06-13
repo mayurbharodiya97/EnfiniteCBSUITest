@@ -294,7 +294,7 @@ export const OTPModelForm = ({
   const renderTime = (remainingtime) => {
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
-        OTP Resend In {remainingtime} Sec.
+        Valid for {remainingtime}
       </span>
     );
   };

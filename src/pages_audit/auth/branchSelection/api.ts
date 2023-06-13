@@ -55,6 +55,7 @@ export const GetMenuData = async ({
       EOD_RUNNING_STATUS: EOD_RUNNING_STATUS,
       IS_UPD_DEF_BRANCH: IS_UPD_DEF_BRANCH,
       BRANCH_CD: BRANCH_CD,
+      BRANCH_SELECTION_MODE: "S",
     });
   if (status === "0") {
     return data;
