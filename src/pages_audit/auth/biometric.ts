@@ -35,6 +35,10 @@ const decryptString = (encryptString: string) => {
 
 export const matchFinger = async (rows: any, captureFinger: string) => {
   var promise = new Promise((resolve, reject) => {
+    //console.log("matchFinger", rows, typeof rows);
+    if (typeof rows === "string") {
+      rows = JSON.parse(rows);
+    }
     rows.forEach(async (element: any, i: number) => {
       try {
         var galleryTemplate = decryptString(element.IMG_DATA);

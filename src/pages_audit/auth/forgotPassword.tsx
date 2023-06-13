@@ -1,10 +1,8 @@
 import { useReducer, useContext, useEffect, useState, useRef } from "react";
 // import Box from "@material-ui/core/Box";
 import { useNavigate } from "react-router-dom";
-// import loginImg from "assets/images/login.png";
+import loginImg from "assets/images/login.png";
 import { useStyles } from "./style";
-import * as API from "./api";
-
 import logo from "assets/images/logo.jpg";
 import { ForgotPasswordFields } from "./forgotPasswordField";
 import { OTPModel, OTPModelForm } from "./otpPopup";
@@ -328,35 +326,6 @@ export const ForgotPasswordController = () => {
   useEffect(() => {
     GeneralAPI.setDocumentName("Password Reset");
   }, []);
-
-  const {
-    data: imageData,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch,
-  } = useQuery<any, any>(["getLoginImageData"], () =>
-    API.getLoginImageData({ APP_TRAN_CD: "51" })
-  );
-
-  useEffect(() => {
-    if (Boolean(imageData?.[0]?.DASHBOARD_APP_LOGO)) {
-      let blob = utilFunction.base64toBlob(imageData?.[0]?.DASHBOARD_APP_LOGO);
-      urlObj.current =
-        typeof blob === "object" && Boolean(blob)
-          ? URL.createObjectURL(blob)
-          : "";
-      setDashboardLogoURL(urlObj.current);
-    }
-  }, [imageData]);
-
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["getLoginImageData"]);
-    };
-  }, []);
-
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
@@ -369,11 +338,7 @@ export const ForgotPasswordController = () => {
             alignItems="center"
             padding={"31px"}
           >
-            {/* <img src={logo} alt="Logo" /> */}
-            <img
-              src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
-              alt="Logo"
-            />
+            <img src={logo} alt="Logo" />
           </Grid>
           <Container maxWidth="xs">
             <Grid alignItems="center" style={{ paddingTop: "40px" }}>

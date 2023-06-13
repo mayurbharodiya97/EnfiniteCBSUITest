@@ -127,7 +127,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       }}
       autoOk={true}
       readOnly={readOnly}
-      inputRef={focusRef}
+      // inputRef={focusRef}
       InputProps={{
         readOnly: readOnly,
         ...InputProps,

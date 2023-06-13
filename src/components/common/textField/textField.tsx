@@ -260,6 +260,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
       }}
       onBlur={handleBlur}
       disabled={isSubmitting}
+      variant={"filled"}
+      color="secondary"
     />
   );
   if (Boolean(enableGrid)) {

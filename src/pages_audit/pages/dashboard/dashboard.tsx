@@ -13,8 +13,9 @@ import { useEffect } from "react";
 import { queryClient } from "cache";
 import { Transactions } from "components/dashboard/transactions";
 import { AccountStatus } from "components/dashboard/account-status";
-import { MessageBox } from "components/dashboard/messageBox";
+
 import { AuthContext } from "pages_audit/auth";
+import { MessageBox } from "components/dashboard/messageBox/messageBox";
 
 interface updateAUTHDetailDataType {
   userID: any;

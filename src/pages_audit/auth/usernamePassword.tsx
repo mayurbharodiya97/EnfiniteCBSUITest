@@ -83,6 +83,8 @@ export const UsernamePasswordField = ({
           </div>
           <div className={classes.formWrap}>
             <TextField
+              // variant="filled"
+              // color="secondary"
               autoFocus={true}
               label={"User ID"}
               placeholder="User ID"
@@ -114,6 +116,7 @@ export const UsernamePasswordField = ({
                 maxLength: "16",
               }}
             />
+
             <div
               style={{
                 display: "flex",
@@ -124,6 +127,8 @@ export const UsernamePasswordField = ({
               <TextField
                 key="employee"
                 label="Password"
+                // variant="filled"
+                // color="secondary"
                 placeholder="Enter Password"
                 InputLabelProps={{
                   shrink: true,
