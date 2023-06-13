@@ -16,6 +16,7 @@ import { AcctViewMetadata } from "./metaDataAcct";
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { Button } from "@mui/material";
+import { SubmitFnType } from "packages/form";
 
 export const useGetDataMutation = () => {
   const getData = useMutation(API.getChequeBookEntryData, {
@@ -36,6 +37,17 @@ const ChequeBookEntry = () => {
   const [secondButtonVisible, setSecondButtonVisible] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
+  const isErrorFuncRef = useRef<any>(null);
+  const onSubmitHandler: SubmitFnType = (
+    data,
+    displayData,
+    endSubmit,
+    setFieldError
+  ) => {
+    //@ts-ignore
+    endSubmit(true);
+    // isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
+  };
 
   const setCurrentAction = useCallback(
     (data) => {
@@ -71,16 +83,18 @@ const ChequeBookEntry = () => {
   });
 
   const ClickEventManage = useCallback(
-    (data, columnvisible) => {
-      let retdata = UpdateRequestDataVisibleColumn(data, columnvisible);
-      console.log(">>retdata", retdata);
+    async (data, columnvisible) => {
+      // let retdata = UpdateRequestDataVisibleColumn(data, columnvisible);
+      // console.log(">>current data", data[0]?.BRANCH_CD);
       // setRetData(retdata);
+
+      let rowData = await isErrorFuncRef?.current?.getFieldData();
 
       getData.mutate({
         companyID: authState.companyID,
-        branchCD: retdata?.BRANCH_CD,
-        acctType: retdata?.ACCT_TYPE,
-        accountNo: retdata?.ACCT_CD,
+        branchCD: rowData?.BRANCH_CD,
+        acctType: rowData?.ACCT_TYPE,
+        accountNo: rowData?.ACCT_CD,
       });
     },
     [getData]
@@ -104,6 +118,14 @@ const ChequeBookEntry = () => {
       return "";
     }
   }, [getData.data]);
+  // const onFormButtonClickHandel = (id) => {
+  //   setTranPerticulerDialog({
+  //     open: true,
+  //     buttonName: id,
+  //     defaultMode: "view",
+  //   });
+  // };
+
   return (
     <Fragment>
       {getData.isError && (
@@ -154,7 +176,8 @@ const ChequeBookEntry = () => {
         loading={getData.isLoading}
         // hideHeader={true}
         //  initialValues={rows?.[0]?.data as InitialValuesType}
-        //  onSubmitHandler={onSubmitHandler}
+        ref={isErrorFuncRef}
+        onSubmitHandler={onSubmitHandler}
         //@ts-ignore
         displayMode={"new"}
         formStyle={{
@@ -163,6 +186,7 @@ const ChequeBookEntry = () => {
           overflowY: "auto",
           overflowX: "hidden",
         }}
+        onFormButtonClickHandel={ClickEventManage}
       >
         {/* {({ isSubmitting, handleSubmit }) => (
           <>

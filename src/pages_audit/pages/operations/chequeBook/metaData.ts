@@ -58,7 +58,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
       label: "Branch",
       placeholder: "Branch",
       type: "text",
-      required: true,
+      // required: true,
       // maxLength: 16,
 
       GridProps: {
@@ -76,7 +76,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
       label: "Account Type",
       placeholder: "Enter Account Type",
       type: "text",
-      required: true,
+      // required: true,
       // maxLength: 16,
 
       GridProps: {
@@ -94,7 +94,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
       label: "Account No.",
       placeholder: "Enter Account No.",
       type: "text",
-      required: true,
+      // required: true,
       // maxLength: 16,
 
       GridProps: {
@@ -103,6 +103,18 @@ export const ChequeBookIssueEntry: MetaDataType = {
         sm: 2,
       },
     },
+    {
+      render: { componentType: "formbutton" },
+      name: "GET_DETAIL",
+      // sequence: 4,
+      label: "Get Details",
+      maxLength: 10,
+      GridProps: { xs: 12, md: 1, sm: 1 },
+      fullWidth: true,
+      // __VIEW__: { isReadOnly: true },
+      // __EDIT__: { isReadOnly: false },
+    },
+
     {
       render: {
         componentType: "textField",
