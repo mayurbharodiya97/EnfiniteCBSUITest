@@ -60,7 +60,10 @@ const StyledTextField = withStyles({
         padding: "6px 7px",
       },
     },
-
+    "& .MuiFormHelperText-root": {
+      marginLeft: "3px",
+      color: "#f44336",
+    },
     "& .MuiInput-underline:before": {
       borderBottom: "0",
     },

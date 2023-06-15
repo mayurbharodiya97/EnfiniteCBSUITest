@@ -160,6 +160,7 @@ const MySelect: FC<MySelectAllProps> = ({
                   : "Select Option",
               ]
             );
+            // console.log("defaultOptionLabel", defaultOptionLabel);
           } else {
             for (let i = 0; i < _options.length; i++) {
               if (_options[i].value === "00") {

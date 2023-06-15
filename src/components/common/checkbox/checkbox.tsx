@@ -80,7 +80,8 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
   if (excluded) {
     return null;
   }
-  //console.log(FormControlLabelProps);
+  console.log(value, "value");
+  // console.log(!readOnly, "readOnly");
   const isError = touched && (error ?? "") !== "";
   const result = (
     // @ts-ignore
@@ -112,7 +113,8 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
       ) : null}
     </FormControl>
   );
-  if (Boolean(enableGrid)) {
+  console.log("result", result);
+  if (Boolean(!enableGrid)) {
     return (
       <Grid style={{ alignSelf: "center" }} {...GridProps} key={fieldKey}>
         {result}

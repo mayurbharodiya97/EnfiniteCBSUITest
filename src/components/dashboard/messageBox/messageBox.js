@@ -226,6 +226,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
                 <ListPopupMessageWrapper
                   closeDialog={handleDialogClose}
                   dialogLabel={dialogLabel}
+                  formView={"view"}
                 />
               ) : null}
             </Grid>

@@ -66,6 +66,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     console.log("formRenderType " + formName);
     return (
       <>
+        {console.log("LocalizationProvider", AdapterDateFns)}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <FormContext.Provider
             value={{

@@ -6,6 +6,8 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
 import { Container } from "@mui/material";
 import { Grid } from "@mui/material";
+import { useTranslation } from "react-i18next";
+// import { Language_App } from "pages_audit/appBar/language";
 export const UsernamePasswordField = ({
   classes,
   loginState,
@@ -13,6 +15,7 @@ export const UsernamePasswordField = ({
 }) => {
   const [input, setInput] = useState({ userName: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -64,32 +67,33 @@ export const UsernamePasswordField = ({
               lineHeight: "150%",
             }}
           >
-            <h3>Sign In</h3>
+            <h3>{t("SignIn")}</h3>
           </div>
           <div
             className=""
             style={{
               color: "#949597",
-              fontSize: "18px",
+              fontSize: "16px",
               fontWeight: "400",
               // fontFamily: "Poppins",
               alignItems: "center",
               fontStyle: "normal",
-              lineHeight: "33px",
+
               width: "360px",
             }}
           >
-            {/* Please provide your UserID and password */}
+            {t("SignInWithUserIDandPassword")}
           </div>
           <div className={classes.formWrap}>
             <TextField
               // variant="filled"
               // color="secondary"
               autoFocus={true}
-              label={"User ID"}
-              placeholder="User ID"
+              label={t("UserID")}
+              // placeholder="User ID"
+              placeholder={String(t("UserID"))}
               style={{
-                marginTop: "21px",
+                marginTop: "10px",
                 marginBottom: "17px",
               }}
               fullWidth
@@ -126,10 +130,11 @@ export const UsernamePasswordField = ({
             >
               <TextField
                 key="employee"
-                label="Password"
+                label={t("Password")}
                 // variant="filled"
                 // color="secondary"
-                placeholder="Enter Password"
+
+                placeholder={String(t("EnterPassword"))}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -174,7 +179,7 @@ export const UsernamePasswordField = ({
             </div>
             <div style={{ marginTop: "20px", display: "flex" }}>
               <div style={{ flex: "auto", textAlign: "end" }}>
-                <a href="forgotpassword">Forgot Password</a>
+                <a href="forgotpassword">{t("ForgotPassword")}</a>
               </div>
             </div>
             <div style={{ marginTop: "20px", display: "flex" }}>
@@ -206,7 +211,7 @@ export const UsernamePasswordField = ({
                   {loginState.loading ? (
                     <CircularProgress size={25} thickness={4.6} />
                   ) : (
-                    "Next"
+                    t("Next")
                   )}
                 </GradientButton>
               </div>

@@ -23,6 +23,8 @@ import {
 } from "components/common/loaderPaper";
 import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
+import { MultiLanguages } from "./multiLanguages";
+import { useTranslation } from "react-i18next";
 
 const inititalState = {
   username: "",
@@ -224,6 +226,7 @@ export const AuthLoginController = () => {
   const [dashboardLogoURL, setDashboardLogoURL] = useState<any | null>(null);
   const urlObj = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
   // const [image, setImage] = useState<any>(null);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
@@ -302,25 +305,25 @@ export const AuthLoginController = () => {
       dispath({
         type: "usernameandpasswordrequired",
         payload: {
-          error: "Username and Password is a required",
-          errorUsername: "Username is a required",
-          errorPassword: "Password is a required",
+          error: t("UsernamenandPasswordisRequired"),
+          errorUsername: t("UsernameisRequired"),
+          errorPassword: t("PasswordisRequired"),
         },
       });
     } else if (!Boolean(username)) {
       dispath({
         type: "usernameVerificationFailure",
         payload: {
-          error: "Username is a required",
-          errorUsername: "Username is a required",
+          error: t("UsernameisRequired"),
+          errorUsername: t("UsernameisRequired"),
         },
       });
     } else {
       dispath({
         type: "passwordVerificationFailure",
         payload: {
-          error: "Password is a required",
-          errorPassword: "Password is a required",
+          error: t("PasswordisRequired"),
+          errorPassword: t("PasswordisRequired"),
         },
       });
     }
@@ -484,12 +487,21 @@ export const AuthLoginController = () => {
                 direction="row"
                 justifyContent="flex-end"
                 alignItems="center"
-                padding={"31px"}
+                padding={"25px"}
               >
                 <img
                   src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
                   alt="Logo"
                 />
+              </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="center"
+                padding={"0 35px 0 0"}
+              >
+                <MultiLanguages />
               </Grid>
 
               {openpwdreset ? (

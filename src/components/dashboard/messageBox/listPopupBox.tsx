@@ -28,7 +28,12 @@ const useHeaderStyles = makeStyles((theme: Theme) => ({
     fontSize: "1.5rem",
   },
 }));
-export const ListPopupMessageWrapper = ({ open, closeDialog, dialogLabel }) => {
+export const ListPopupMessageWrapper = ({
+  open,
+  closeDialog,
+  dialogLabel,
+  formView,
+}) => {
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
   const classes = useDialogStyles();
