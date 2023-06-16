@@ -1,27 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
-import romanian from "assets/images/romania.png";
+import india from "assets/images/india.png";
 import chinese from "assets/images/china.png";
 import english from "assets/images/united-states.png";
 import french from "assets/images/france.png";
 import { useStyles } from "./style";
 import { FormControl, Select, MenuItem } from "@mui/material";
-export const Language_App = () => {
+import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+import { AuthSDK } from "registry/fns/auth";
+export const MultiLanguages = () => {
   const classes = useStyles();
-  const [language, setLanguage] = useState("");
-
+  const { i18n } = useTranslation();
+  const [language, setLanguage] = useState(i18n.resolvedLanguage);
   const handleChange = (event) => {
-    setLanguage(event.target.value);
+    let languageCode = event.target.value;
+    setLanguage(languageCode);
+    Cookies.set("enfinity.cbs.i18n.language.set.code", languageCode);
+    i18n.changeLanguage(languageCode);
+    AuthSDK.setDisplayLanguage(i18n.resolvedLanguage);
   };
-
+  useEffect(() => {
+    let languageCode = Cookies.get("enfinity.cbs.i18n.language.set.code");
+    if (languageCode) {
+      i18n.changeLanguage(languageCode);
+    }
+    AuthSDK.setDisplayLanguage(i18n.resolvedLanguage);
+    //console.log("i18n.resolvedLanguage", i18n.resolvedLanguage);
+    setLanguage(i18n.resolvedLanguage);
+  }, []);
   return (
     <>
-      <FormControl size="small" style={{ marginLeft: "13px" }}>
+      <FormControl
+        size="small"
+        style={{
+          border: "1px solid #BABABA",
+          borderRadius: "5px",
+        }}
+      >
         <Select
           style={{
             maxWidth: "100px",
             width: "100px",
             // display: "flex",
+            margin: "7px",
           }}
           disableUnderline
           variant="standard"
@@ -43,26 +65,26 @@ export const Language_App = () => {
             style={{
               display: "flex",
             }}
-            value=""
+            value="en"
           >
             <div key="Language" style={{ display: "flex" }}>
-              <img src={english} alt="" className={classes.lang_svg} />
+              <img src={india} alt="" className={classes.lang_svg} />
             </div>
             English
           </MenuItem>
 
-          {/* <MenuItem
-            value="romanian"
+          <MenuItem
+            value="guj"
             style={{
               display: "flex",
             }}
           >
             <div key="Language" style={{ display: "flex" }}>
-              <img src={romanian} alt="" className={classes.lang_svg} />
+              <img src={india} alt="" className={classes.lang_svg} />
             </div>
-            Roman
+            ગુજરાતી
           </MenuItem>
-          <MenuItem
+          {/* <MenuItem
             value="french"
             style={{
               display: "flex",
@@ -72,8 +94,8 @@ export const Language_App = () => {
               <img src={french} alt="" className={classes.lang_svg} />
             </div>
             French
-          </MenuItem>
-          <MenuItem
+          </MenuItem> */}
+          {/* <MenuItem
             value="chinese"
             style={{
               display: "flex",

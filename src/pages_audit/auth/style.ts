@@ -147,4 +147,9 @@ export const useStyles = makeStyles((theme: any) => ({
       fontWeight: "500 !important",
     },
   },
+  lang_svg: {
+    marginRight: "10px",
+    width: "22px",
+    height: "22px",
+  },
 }));

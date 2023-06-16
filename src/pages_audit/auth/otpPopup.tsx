@@ -10,6 +10,7 @@ import { Container } from "@mui/material";
 import { Grid } from "@mui/material";
 import clsx from "clsx";
 import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 export const OTPModel = ({
   classes,
   open,
@@ -24,6 +25,7 @@ export const OTPModel = ({
   const [showPassword, setShowPassword] = useState(true);
   const [btnshow, setbtnshow] = useState(false);
   const inputButtonRef = useRef<any>(null);
+  const { t } = useTranslation();
   const renderButton = (buttonProps) => {
     let { remainingTime, ...other } = buttonProps;
     return (
@@ -35,7 +37,7 @@ export const OTPModel = ({
           !btnshow && classes.btnvisibleoff
         )}
       >
-        Resend OTP
+        {t("otp.ResendOTP")}
       </a>
     );
   };
@@ -55,7 +57,7 @@ export const OTPModel = ({
   const renderTime = (remainingtime) => {
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
-        Valid for {remainingtime}
+        {t("otp.ValidFor")} {remainingtime}
       </span>
     );
   };
@@ -93,7 +95,7 @@ export const OTPModel = ({
                 marginBottom: "10px",
               }}
             >
-              OTP Authentication
+              {t("otp.OTPAuthentication")}
             </div>
             <div
               style={{
@@ -105,11 +107,10 @@ export const OTPModel = ({
                 lineHeight: "33px",
               }}
             >
-              Please click on Resend button to Generate new OTP
+              {t("otp.GenerateNewOTP")}
             </div>
             <div className={classes.OTPalignName}>
-              {/* <p> Hello Leo,</p> */}
-              Hello{" "}
+              {t("otp.Hello")}
               {loginState?.username
                 ? loginState.username.charAt(0).toUpperCase() +
                   loginState.username.slice(1)
@@ -180,7 +181,7 @@ export const OTPModel = ({
                   borderRadius: "10px",
                 }}
               >
-                Back
+                {t("otp.Back")}
               </GradientButton>
               <GradientButton
                 style={{
@@ -198,7 +199,7 @@ export const OTPModel = ({
                 {loginState.loading ? (
                   <CircularProgress size={25} thickness={4.6} />
                 ) : (
-                  "Verify OTP"
+                  t("otp.VerifyOTP")
                 )}
               </GradientButton>
             </div>

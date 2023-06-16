@@ -1,5 +1,7 @@
+import { useTranslation } from "react-i18next";
 import "./style.css";
 export const FullScreenLoader = () => {
+  const { t } = useTranslation();
   const divStyle = {
     "--i": 1,
     backgroundColor: "tomato",
@@ -50,7 +52,7 @@ export const FullScreenLoader = () => {
         <div style={divStyle5} className="rect"></div>
         <div style={divStyle6} className="rect"></div>
         <div style={divStyle7} className="rect"></div>
-        <div className="text-forloader"> Loading...</div>
+        <div className="text-forloader"> {t("Loading")}</div>
       </div>
     </>
   );
