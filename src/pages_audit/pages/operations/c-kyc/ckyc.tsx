@@ -35,6 +35,10 @@ import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declarat
 import RelatedPersonDetails from "./RelatedPersonDetails";
 import AttestationDetails from "./AttestationDetails";
 import DeclarationDetails from "./DeclarationDetails";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import {GridMetaDataType, ActionTypes, GridColumnType, FilterColumnType, GridConfigType, HeaderFilterType} from "components/dataTable/types"
+import { useQuery } from "react-query";
+import * as API from "./api";
 
 export const other_detail_meta_data = {
   form: {
@@ -395,12 +399,27 @@ export const Ckyc = () => {
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState(0);
   const [isCustomerData, setIsCustomerData] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingData, setIsLoadingData] = useState(false)
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
   const handleSidebarExpansion = () => {
     setIsSidebarExpanded((prevState) => !prevState)
   }
   
+  // const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
+  //   ["GetAreaOptions"],
+  //   () =>
+  //     API.GetAreaOptions(
+  //     // {
+  //       // COMP_CD: authState?.companyID ?? "",
+  //       // BRANCH_CD: authState?.user?.branchCode ?? "",
+  //       // CUST_TYPE: "individual"
+  //     // }
+  //     )
+  // );
+  // const setCurrentAction = useCallback((data) => {
+  //   // console.log(">>data", data);
+  //   console.log("datadatadatadata",data)
+  // }, []);
 
   const CustomTabLabelSkeleton = React.memo(() => {
     return <Box sx={{
@@ -517,13 +536,13 @@ export const Ckyc = () => {
   // }, [colTabValue, tabValue])
 
   useEffect(() => {
-    if(isLoading) {
+    if(isLoadingData) {
       setTimeout(() => {
-        setIsLoading(false)
+        setIsLoadingData(false)
         setIsCustomerData(true)
       }, 5000);
     }
-  }, [isLoading])
+  }, [isLoadingData])
 
   return (
     <React.Fragment>
@@ -598,7 +617,7 @@ export const Ckyc = () => {
                 <ButtonGroup size="small" variant="outlined" orientation="vertical" color="secondary">
                   <Button color="secondary" onClick={() => {
                       setIsCustomerData(false)
-                      setIsLoading(true)
+                      setIsLoadingData(true)
                   }}>Submit</Button>
                   <Button color="secondary" onClick={() => {
                       setIsCustomerData(false)
@@ -615,46 +634,46 @@ export const Ckyc = () => {
 
             <TabPanel value={colTabValue} index={0}>
               <PersonalDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
                 isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
             </TabPanel>
             <TabPanel value={colTabValue} index={1}>
               <KYCDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
                 isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
             </TabPanel>
             <TabPanel value={colTabValue} index={2}>
                 {/* <Typography variant="h6">Declaration</Typography> */}
               <DeclarationDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
                 isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
             </TabPanel>
             <TabPanel value={colTabValue} index={3}>
               {/* <Typography variant="h6">Details of Related Person</Typography> */}
               <RelatedPersonDetails
-                isLoading={isLoading} setIsLoading={setIsLoading}
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData}
                 isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} 
               />
             </TabPanel>
             <TabPanel value={colTabValue} index={4}>
               <OtherDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
                 isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
             </TabPanel>
             <TabPanel value={colTabValue} index={5}>
               <OtherAddressDetails
-                isLoading={isLoading} setIsLoading={setIsLoading} 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
                 isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
             </TabPanel>
             <TabPanel value={colTabValue} index={6}>
               <NRIDetails 
-                isLoading={isLoading} setIsLoading={setIsLoading} 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
                 isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
             </TabPanel>
             <TabPanel value={colTabValue} index={7}>
               {/* <Typography variant="h6">Attestation</Typography> */}
               <AttestationDetails
-                isLoading={isLoading} setIsLoading={setIsLoading}
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData}
                 isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
               />
             </TabPanel>
@@ -684,10 +703,35 @@ export const Ckyc = () => {
           <Grid item py={2} sx={{textAlign: "right"}}>
             <Button color="secondary" variant="contained">Retrieve</Button>
           </Grid>
-        </Grid>
+        </Grid>        
+
+        {/* <GridWrapper
+          key={`EmailAcctMstGrid`}
+          finalMetaData={RetrievedDataMetaData as GridMetaDataTypee}
+          data={[]}
+          setData={() => null}
+          // loading={isLoading || isFetching}
+          actions={actions}
+          // setAction={setCurrentAction}
+          // refetchData={() => refetch()}
+          // ref={myGridRef}
+        /> */}
       </TabPanel>
       <TabPanel value={tabValue} index={2}>
-        <Typography variant="subtitle1">Pending Requests</Typography>
+        <Typography variant="subtitle1" gutterBottom={true}>Pending Requests</Typography>
+        <Grid item>
+          {/* <GridWrapper
+            key={`EmailAcctMstGrid`}
+            finalMetaData={PendingReqDetailsMetaData as GridMetaDataTypee}
+            data={[]}
+            setData={() => null}
+            // loading={isLoading || isFetching}
+            actions={actions}
+            // setAction={setCurrentAction}
+            // refetchData={() => refetch()}
+            // ref={myGridRef}
+          /> */}
+        </Grid>
       </TabPanel>      
     </React.Fragment>
   );

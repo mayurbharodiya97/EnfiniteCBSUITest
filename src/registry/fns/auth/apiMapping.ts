@@ -55,6 +55,14 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
     packageName: "",
   },
+  CATEGORYNAME: {
+    url: "/customerServiceAPI/CATEGORYNAME",
+    packageName: "",
+  },
+  GETAREA: {
+    url: "/customerServiceAPI/GETAREA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
