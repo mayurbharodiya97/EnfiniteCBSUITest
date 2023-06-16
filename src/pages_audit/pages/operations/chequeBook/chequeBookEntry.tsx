@@ -1,6 +1,5 @@
 import { Fragment, useRef, useCallback, useState, useMemo } from "react";
 import { useMutation } from "react-query";
-import { FormComponentView } from "components/formcomponent";
 import { ChequeBookIssueEntry } from "./metaData";
 import { ChequebookentryGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
@@ -12,10 +11,8 @@ import * as API from "./api";
 import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { useSnackbar } from "notistack";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { AcctViewMetadata } from "./metaDataAcct";
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { Button } from "@mui/material";
 import { SubmitFnType } from "packages/form";
 
 export const useGetDataMutation = () => {
@@ -155,22 +152,6 @@ const ChequeBookEntry = () => {
         ref={myGridRef}
       />
       <FormWrapper
-        key={"AccountView" + (data ?? []).length}
-        metaData={AcctViewMetadata}
-        loading={getData.isLoading}
-        hideHeader={true}
-        //  initialValues={rows?.[0]?.data as InitialValuesType}
-        //  onSubmitHandler={onSubmitHandler}
-        //@ts-ignore
-        displayMode={"view"}
-        formStyle={{
-          background: "white",
-          height: "20vh",
-          overflowY: "auto",
-          overflowX: "hidden",
-        }}
-      ></FormWrapper>
-      <FormWrapper
         key={"ChequeBookEntry" + (data ?? []).length}
         metaData={ChequeBookIssueEntry}
         loading={getData.isLoading}
@@ -182,7 +163,7 @@ const ChequeBookEntry = () => {
         displayMode={"new"}
         formStyle={{
           background: "white",
-          height: "20vh",
+          height: "50vh",
           overflowY: "auto",
           overflowX: "hidden",
         }}

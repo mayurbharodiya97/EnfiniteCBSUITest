@@ -119,6 +119,164 @@ export const ChequeBookIssueEntry: MetaDataType = {
       render: {
         componentType: "textField",
       },
+      name: "ACCT_NM",
+      // sequence: 1,
+      label: "Name",
+      type: "text",
+      // required: true,
+      // maxLength: 16,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_MODE",
+      // sequence: 7,
+      label: "Mode Of Operation",
+      placeholder: "",
+      type: "text",
+      // required: true,
+      // maxLength: 100,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SCR_ADD",
+      sequence: 2,
+      label: "Address",
+      // placeholder: "Select No of Leaves",
+      // enableDefaultOption: true,
+      // required: true,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CONTACT",
+      // sequence: 3,
+      label: "Contact Details",
+      // placeholder: "Enter no of Cheque book",
+      type: "text",
+      // required: true,
+      // maxLength: 32,
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["User Name is required."] }],
+      // },
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "WITHDRAW_BAL",
+      // sequence: 5,
+      label: "Withdrawalable Balance",
+      placeholder: "",
+      type: "text",
+      // required: true,
+      // options: () => {
+      //   return GeneralAPI.GetSecurityGroupingList();
+      // },
+      // enableDefaultOption: true,
+      // _optionsKey: "GetSecurityGroupingList",
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Group Name is required."] }],
+      // },
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CUSTOMER_ID",
+      // sequence: 4,
+      label: "Customer Id",
+      placeholder: "",
+      type: "text",
+      // required: true,
+      // maxLength: 11,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "PAN_NO",
+      // sequence: 8,
+      label: "PAN No.",
+      placeholder: "",
+      type: "text",
+      // required: true,
+      // maxLength: 100,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "UNIQUE_ID",
+      // sequence: 9,
+      label: "National ID",
+      placeholder: "",
+      // options: () => {
+      //   return GeneralAPI.GetMiscValue("USER_SUB_TYPE");
+      // },
+      // enableDefaultOption: true,
+      // _optionsKey: "GetSubTypeMiscValue",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
       name: "NO_OF_LEAVE",
       // sequence: 2,
       label: "No of Leaves",
