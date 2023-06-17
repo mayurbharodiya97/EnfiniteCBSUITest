@@ -21,7 +21,7 @@ export const Quick_View = () => {
   const authController = useContext(AuthContext);
   const classes = useStyles();
   const navigate = useNavigate();
-  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
+  const { data, isLoading, isFetching, isError, refetch } = useQuery<any, any>(
     ["GETQUICKACCESSVIEW"],
     () => API.getQuickView({ userName: authController?.authState?.user?.name })
   );
@@ -34,7 +34,7 @@ export const Quick_View = () => {
   };
   return (
     <>
-      {isLoading ? (
+      {isLoading || isError ? (
         <IconButton
           color="inherit"
           onClick={handleClickd}
@@ -123,7 +123,7 @@ export const Quick_View = () => {
                         Switch Branch
                       </ListItemButton>
                     </ListItem>
-                    {data.map((item) => (
+                    {data?.map((item) => (
                       <ListItem
                         key={item}
                         disablePadding

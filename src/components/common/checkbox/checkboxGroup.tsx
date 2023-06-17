@@ -1,10 +1,10 @@
 import { FC, useCallback, useState } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import { CheckboxProps } from "@material-ui/core/Checkbox";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 import { getLabelFromValues, useOptionsFetcher } from "../utils";
 import {
+  CheckboxProps,
   CircularProgress,
   CircularProgressProps,
   FormControl,

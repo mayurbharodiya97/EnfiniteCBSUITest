@@ -1,11 +1,11 @@
-import { useReducer, useContext, useEffect, useState } from "react";
+import { useReducer, useContext, useEffect, useState, useRef } from "react";
 // import Box from "@material-ui/core/Box";
 import { useNavigate } from "react-router-dom";
 import loginImg from "assets/images/login.png";
 import { useStyles } from "./style";
 import logo from "assets/images/logo.jpg";
 import { ForgotPasswordFields } from "./forgotPasswordField";
-import { OTPModel } from "./otpPopup";
+import { OTPModel, OTPModelForm } from "./otpPopup";
 import { utilFunction } from "components/utils/utilFunctions";
 import { useSnackbar } from "notistack";
 import { Box, Container, Grid } from "@mui/material";
@@ -16,6 +16,8 @@ import {
   verifyOTPForPWDReset,
 } from "./api";
 import { GeneralAPI } from "registry/fns/functions";
+import { useQuery } from "react-query";
+import * as API from "./api";
 const inititalState = {
   isUsernameError: false,
   userMessageforusername: "",
@@ -142,6 +144,17 @@ export const ForgotPasswordController = () => {
   const [loginState, dispath] = useReducer(reducer, inititalState);
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const otpResendRef = useRef(1);
+  const {
+    data: imageData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery<any, any>(["getLoginImageData"], () =>
+    API.getLoginImageData({ APP_TRAN_CD: "51" })
+  );
   const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
@@ -151,6 +164,7 @@ export const ForgotPasswordController = () => {
           data: resdata,
           message,
         } = await veirfyUsernameandMobileNo(data?.userName, data?.mobileno);
+
         if (status === "0") {
           dispath({
             type: "verifyUserNameandMobileNoSuccess",
@@ -315,7 +329,7 @@ export const ForgotPasswordController = () => {
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-        <BankDetails />
+        <BankDetails imageData={imageData} />
         <Grid item xs={6} md={6} lg={6} sm={6}>
           <Grid
             container
@@ -333,30 +347,38 @@ export const ForgotPasswordController = () => {
                   ? "Set new password"
                   : "Forgot Password"}
               </h2>
-
-              <ForgotPasswordFields
-                classes={classes}
-                loginState={loginState}
-                onSubmit={onSubmitHandel}
-              />
+              {open ? (
+                <OTPModelForm
+                  classes={classes}
+                  handleClose={handleClose}
+                  loginState={loginState}
+                  VerifyOTP={VerifyOTP}
+                  OTPError={loginState?.OtpuserMessage ?? ""}
+                  setOTPError={(error) => {
+                    dispath({
+                      type: "OTPVerificationFailed",
+                      payload: { error: error },
+                    });
+                  }}
+                  resendFlag={"FORGET_PW"}
+                  setNewRequestID={(newRequestID) => {
+                    dispath({
+                      type: "OTPResendSuccess",
+                      payload: { requestCd: newRequestID },
+                    });
+                    otpResendRef.current = otpResendRef.current + 1;
+                  }}
+                  otpresendCount={otpResendRef.current}
+                />
+              ) : (
+                <ForgotPasswordFields
+                  classes={classes}
+                  loginState={loginState}
+                  onSubmit={onSubmitHandel}
+                />
+              )}
             </Grid>
           </Container>
-
-          {/* <OTPModel
-            classes={classes}
-            open={open}
-            handleClose={handleClose}
-            loginState={loginState}
-            VerifyOTP={VerifyOTP}
-            OTPError={loginState?.OtpuserMessage ?? ""}
-            setOTPError={(error) => {
-              dispath({
-                type: "OTPVerificationFailed",
-                payload: { error: error },
-              });
-            }}
-            previousStep={changeUserName}
-          /> */}
         </Grid>
       </Grid>
     </>

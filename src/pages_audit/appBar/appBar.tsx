@@ -12,6 +12,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import * as API from "./api";
 import { styled } from "@mui/material/styles";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
+import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import {
   AppBar,
   Avatar,
@@ -29,7 +30,9 @@ import { Language_App } from "./language";
 import MySearchField from "components/common/search/search";
 import { useQuery } from "react-query";
 import { utilFunction } from "components/utils";
+import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
+import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 
 export const MyAppBar = ({
   handleDrawerOpen,
@@ -41,6 +44,7 @@ export const MyAppBar = ({
   const navigate = useNavigate();
   const classes = useStyles();
   const [openDialog, setOpenDialog] = useState<any>(false);
+  const [acctInquiry, setAcctInquiry] = useState(false);
   const [pictureURL, setPictureURL] = useState<any | null>({
     bank: "",
     profile: "",
@@ -205,7 +209,6 @@ export const MyAppBar = ({
             })}
           >
             {authController?.authState?.companyName || ""}
-            {console.log(authController?.authState?.companyName.length)}
           </Box>
           <div style={{ display: "flex", gap: "8px" }}>
             <div style={{ color: "#949597" }}>
@@ -286,9 +289,30 @@ export const MyAppBar = ({
               name="dashboardSearch"
               enableGrid={true}
             />
-            <Language_App />
+            <MultiLanguages />
 
-            <Box width={130} display={"flex"} justifyContent={"space-evenly"}>
+            <Box width={170} display={"flex"} justifyContent={"space-evenly"}>
+              <IconButton
+                color="inherit"
+                onClick={() => setAcctInquiry(true)}
+                style={{
+                  backgroundColor: "rgba(235, 237, 238, 0.45)",
+                  borderRadius: "10px",
+                  height: "30px",
+                  width: "30px",
+                }}
+              >
+                <PersonSearchOutlinedIcon
+                  fontSize="small"
+                  sx={{ color: "var(--theme-color3)" }}
+                />
+              </IconButton>
+              {acctInquiry && (
+                <Accountinquiry
+                  open={acctInquiry}
+                  onClose={() => setAcctInquiry(false)}
+                />
+              )}
               <Quick_View />
               <Notification_App />
               <IconButton

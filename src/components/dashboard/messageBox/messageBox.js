@@ -1,4 +1,4 @@
-import { Box, Dialog, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
@@ -6,27 +6,19 @@ import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlin
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import { useQuery } from "react-query";
-import * as API from "./api";
+import * as API from "../api";
 import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { utilFunction } from "components/utils";
-import { GradientButton } from "components/styledComponent/button";
-import {
-  ImageViewer,
-  NoPreview,
-  PDFViewer,
-} from "components/fileUpload/preView";
+import { ListPopupMessageWrapper } from "./listPopupBox";
+// import { GradientButton } from "components/styledComponent/button";
 
 export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
   const { authState } = useContext(AuthContext);
-  const [rowsData, setRowsData] = useState({});
-  const lastFileData = useRef(null);
-  const [isUser, setIsUser] = useState(false);
-  const [isOpenImage, setIsOpenImage] = useState(false);
-  const [isOpenPdf, setIsOpenPdf] = useState(false);
+
   const [isOpenSave, setIsOpenSave] = useState(false);
+  const [dialogLabel, setDialogLabel] = useState("");
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
     [
       "getDashboardMessageBoxData",
@@ -62,6 +54,9 @@ export const MessageBox = ({ screenFlag = "" }) => {
   };
   const handleDialogClose = () => {
     setIsOpenSave(false);
+  };
+  const handleLabelClick = (label) => {
+    setDialogLabel(label);
   };
 
   return (
@@ -213,65 +208,26 @@ export const MessageBox = ({ screenFlag = "" }) => {
                       paddingBottom: "0px",
                     }}
                   >
-                    {data.map((item) => (
+                    {data.map((item, _index) => (
                       <ListItemData
-                        key={item?.value}
+                        key={"listItemforannounce" + _index}
                         name={item?.label}
                         disabled={false}
                         onClick={() => {
-                          console.log("datasetswdfd", item?.label);
-                          if (item?.label) {
-                          }
+                          setIsOpenSave(true);
+                          handleLabelClick(item?.label);
                         }}
                       />
                     ))}
                   </List>
                 </nav>
               </Box>
-              {isOpenImage ? (
-                <Dialog
-                  fullWidth
-                  maxWidth="md"
-                  open={true}
-                  PaperProps={{
-                    style: {
-                      width: "80%",
-                      height: "90%",
-                    },
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "right",
-                      alignItems: "right",
-                    }}
-                  >
-                    <GradientButton
-                      style={{ width: "22px", margin: "6px" }}
-                      onClick={handleDialogClose}
-                    >
-                      Close
-                    </GradientButton>
-                  </div>
-                  {lastFileData.current?.FILE_TYPE?.includes("pdf") ? (
-                    <PDFViewer
-                      blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
-                      fileName={lastFileData.current?.FILE_NAME ?? ""}
-                    />
-                  ) : lastFileData.current?.FILE_TYPE?.includes("png") ||
-                    lastFileData.current?.FILE_TYPE?.includes("jpg") ||
-                    lastFileData.current?.FILE_TYPE?.includes("jpeg") ? (
-                    <ImageViewer
-                      blob={lastFileData.current?.UPLOAD_DOCUMENT ?? null}
-                      fileName={lastFileData.current?.FILE_NAME ?? ""}
-                    />
-                  ) : (
-                    <NoPreview
-                      fileName={lastFileData.current?.FILE_NAME ?? ""}
-                    />
-                  )}
-                </Dialog>
+              {isOpenSave ? (
+                <ListPopupMessageWrapper
+                  closeDialog={handleDialogClose}
+                  dialogLabel={dialogLabel}
+                  formView={"view"}
+                />
               ) : null}
             </Grid>
           )}

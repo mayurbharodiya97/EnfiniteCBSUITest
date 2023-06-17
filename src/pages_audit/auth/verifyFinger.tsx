@@ -1,10 +1,8 @@
 import { Fragment, useState } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { GradientButton } from "components/styledComponent/button";
-import Typography from "@material-ui/core/Typography";
 import FingerprintSharpIcon from "@mui/icons-material/FingerprintSharp";
 import * as API from "./api";
-import { Container } from "@mui/material";
+import { CircularProgress, Container, Typography } from "@mui/material";
 import { Grid } from "@mui/material";
 import "./verify.css";
 export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
@@ -19,9 +17,6 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
               // marginBottom: "55px",
             }}
           >
-            {/* <Typography variant="h6" color="primary">
-          Hi{`, ${loginState?.fullname ?? ""}`}
-        </Typography> */}
             <br />
             <div
               style={{
@@ -146,7 +141,6 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
               justifyContent: "center",
               margin: "38px 0 0 0",
               gap: "10px",
-              // padding: "10px",
             }}
           >
             <GradientButton

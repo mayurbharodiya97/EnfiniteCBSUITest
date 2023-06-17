@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useContext } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement } from "chart.js";
 import {
@@ -25,16 +25,19 @@ import * as API from "./api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { GradientButton } from "components/styledComponent/button";
-
+import { AuthContext } from "pages_audit/auth";
+import { wrap } from "lodash";
 Chart.register(ArcElement);
 
-export const TrafficByDevice = (props) => {
+export const AccountStatus = (props) => {
   const theme = useTheme();
   const [showMore, setShowMore] = useState(false);
+  const { authState } = useContext(AuthContext);
   let reqID = Math.floor(new Date().getTime() / 300000);
-  const result = useQuery(["getTrafficChartData", reqID], () =>
-    API.getTrafficChartData()
+  const result = useQuery(["getAccountStatusData", reqID], () =>
+    API.getAccountStatusData({ COMP_CD: authState?.companyID ?? "" })
   );
+  console.log("result", result);
   const showErrorData = () => {
     setShowMore(true);
   };
@@ -53,17 +56,27 @@ export const TrafficByDevice = (props) => {
     datasets: [
       {
         data: [
-          result?.data?.[0]?.WEB,
-          result?.data?.[0]?.IOS,
-          result?.data?.[0]?.ANDROID,
+          result?.data?.[0]?.OPENED,
+          result?.data?.[0]?.CLOSED,
+          result?.data?.[0]?.INOPENED,
+          result?.data?.[0]?.UNCLAIMED,
+          result?.data?.[0]?.DORMANT,
+          result?.data?.[0]?.FREEZE,
         ],
-        backgroundColor: ["#3F51B5", "#e53935", "#FB8C00"],
+        backgroundColor: [
+          "#3F51B5",
+          "#e53935",
+          "#FB8C00",
+          "#42c746",
+          "#f6f937",
+          "#f93791",
+        ],
         borderWidth: 8,
         borderColor: "#FFFFFF",
         hoverBorderColor: "#FFFFFF",
       },
     ],
-    labels: [" Web", " IOS", " Android"],
+    labels: ["Opend", "Closed", "Inopend", "Unclaimed", "Dormat", "Freeze"],
   };
 
   const options = {
@@ -91,28 +104,46 @@ export const TrafficByDevice = (props) => {
   const devices = useMemo(() => {
     return [
       {
-        title: "Web",
-        value: result?.data?.[0]?.WEB ?? "0",
+        title: "Opend ",
+        value: result?.data?.[0]?.OPENED ?? "0",
         icon: LaptopMacIcon,
         color: "#3F51B5",
       },
       {
-        title: "IOS",
-        value: result?.data?.[0]?.IOS ?? "0",
+        title: "Closed",
+        value: result?.data?.[0]?.CLOSED ?? "0",
         icon: PhoneIphoneIcon,
         color: "#E53935",
       },
       {
-        title: "Android",
-        value: result?.data?.[0]?.ANDROID ?? "0",
+        title: "Inopend",
+        value: result?.data?.[0]?.INOPENED ?? "0",
         icon: PhoneAndroidIcon,
         color: "#FB8C00",
+      },
+      {
+        title: "Unclaimed",
+        value: result?.data?.[0]?.UNCLAIMED ?? "0",
+        icon: PhoneAndroidIcon,
+        color: "#42c746",
+      },
+      {
+        title: "Dormat",
+        value: result?.data?.[0]?.DORMANT ?? "0",
+        icon: PhoneAndroidIcon,
+        color: "#f6f937",
+      },
+      {
+        title: "Freeze",
+        value: result?.data?.[0]?.FREEZE ?? "0",
+        icon: PhoneAndroidIcon,
+        color: "#f93791",
       },
     ];
   }, [result.data]);
   const totalLoginUser = useMemo(() => {
     let total = devices.reduce((accu, item) => {
-      //console.log(accu, item);
+      console.log("sd", accu, item);
       if (!isNaN(item.value)) {
         accu += Number.parseInt(item.value);
       }
@@ -126,14 +157,14 @@ export const TrafficByDevice = (props) => {
     <>
       <Card {...props} style={{ borderRadius: "20px" }}>
         <CardHeader
-          title="Traffic By Device"
+          title="Account Status"
           style={{ color: "var(--theme-color1)" }}
         />
         <Divider />
-        <CardContent style={{ padding: "10px", height: "47.6vh" }}>
+        <CardContent style={{ padding: "10px", height: "66.6vh" }}>
           <Box
             sx={{
-              height: "60%",
+              height: "50%",
               position: "relative",
             }}
           >
@@ -142,6 +173,7 @@ export const TrafficByDevice = (props) => {
           <Box
             sx={{
               display: "flex",
+              flexWrap: "wrap",
               justifyContent: "center",
               pt: 1,
             }}

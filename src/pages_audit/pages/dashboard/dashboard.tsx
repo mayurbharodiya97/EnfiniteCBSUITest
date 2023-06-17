@@ -12,9 +12,10 @@ import { TodaysTransactionTableGridWrapper } from "./Today'sTransactionGrid/Toda
 import { useEffect } from "react";
 import { queryClient } from "cache";
 import { Transactions } from "components/dashboard/transactions";
-import { TrafficByDevice } from "components/dashboard/traffic-by-device";
-import { MessageBox } from "components/dashboard/messageBox";
+import { AccountStatus } from "components/dashboard/account-status";
+
 import { AuthContext } from "pages_audit/auth";
+import { MessageBox } from "components/dashboard/messageBox/messageBox";
 
 interface updateAUTHDetailDataType {
   userID: any;
@@ -166,7 +167,7 @@ const Dashboard = () => {
                 ) : null}
                 {data?.[0]?.CHART2?.ISVISIBLE ? (
                   <Grid item lg={4} md={12} xl={4} xs={12}>
-                    <TrafficByDevice sx={{ height: "100%" }} />
+                    <AccountStatus sx={{ height: "100%" }} />
                   </Grid>
                 ) : null}
                 {data?.[0]?.TODAY_TRN?.ISVISIBLE ? (

@@ -41,6 +41,7 @@ const CheckboxCellRenderer = ({ row, cell }) => {
           {
             style: {
               padding: 0,
+              color: "var(--theme-color1)",
             },
           },
         ])}
@@ -53,7 +54,9 @@ const CheckboxHeaderRenderer = ({ getToggleAllRowsSelectedProps }) => {
   return (
     <Checkbox
       size="small"
-      {...getToggleAllRowsSelectedProps([{ style: { padding: 0 } }])}
+      {...getToggleAllRowsSelectedProps([
+        { style: { padding: 0, color: "var(--theme-color1)" } },
+      ])}
     />
   );
 };

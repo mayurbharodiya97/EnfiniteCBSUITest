@@ -227,8 +227,10 @@ const MyTextField: FC<MyTextFieldProps> = ({
         endAdornment: validationRunning ? (
           <InputAdornment position="end">
             <CircularProgress
-              color="primary"
+              color="secondary"
               variant="indeterminate"
+              size={20}
+              style={{ marginRight: "8px" }}
               {...CircularProgressProps}
             />
           </InputAdornment>
@@ -258,6 +260,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
       }}
       onBlur={handleBlur}
       disabled={isSubmitting}
+      variant={"filled"}
+      color="secondary"
     />
   );
   if (Boolean(enableGrid)) {

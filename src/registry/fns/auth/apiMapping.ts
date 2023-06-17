@@ -7,10 +7,6 @@ export const ActionWiseAPIConfiguration = {
     url: "authenticationServiceAPI/POSTLOGIN/VERIFYOTP",
     packageName: "",
   },
-  CHANGEPASSWORD: {
-    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
-    packageName: "",
-  },
   LOGOUTUSER: {
     url: "/enfinityCommonServiceAPI/LOGOUTUSER",
     packageName: "",
@@ -45,6 +41,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETEMPLOYEEDTL: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPLOYEEDTL",
+    packageName: "",
+  },
+  GETCHEQUEBOOK: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOK",
     packageName: "",
   },
   GETPENDINGREQUEST: {
@@ -83,6 +83,22 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETDASHBOARDDATA",
     packageName: "",
   },
+  GETACCOUNTSTATUS: {
+    url: "dashboardServiceAPI/GETACCOUNTSTATUS",
+    packageName: "",
+  },
+  RESETPASSWORD: {
+    url: "authenticationServiceAPI/AUTH/RESETPASSWORD",
+    packageName: "",
+  },
+  CHANGEPASSWORD: {
+    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
+    packageName: "",
+  },
+  GETACCTVIEWMKR: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTVIEWMKR",
+    packageName: "",
+  },
   GETUSERACTIVITY: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACTIVITY",
     packageName: "",
@@ -97,6 +113,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETTRANSCROLLDETAIL: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRANSCROLLDETAIL",
+    packageName: "",
+  },
+  UPDATEPROFILEPIC: {
+    url: "/enfinityCommonServiceAPI/UPDATEPROFILEPIC",
     packageName: "",
   },
 };

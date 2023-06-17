@@ -1,5 +1,4 @@
 import { useState, FC, Fragment, useEffect } from "react";
-import Grid from "@material-ui/core/Grid";
 import { useStyles } from "./style";
 import { OptionsProps } from "../types";
 import {
@@ -9,6 +8,7 @@ import {
   Checkbox,
   Divider,
   FormHelperText,
+  Grid,
   List,
   ListItem,
   ListItemIcon,
@@ -216,7 +216,7 @@ export const TransferList: FC<TransferListProps> = ({
       <Grid
         container
         spacing={2}
-        justify="center"
+        // justify="center"
         alignItems="center"
         tabIndex={0}
         onBlur={(e) => {

@@ -22,6 +22,9 @@ import {
   LoaderPaperComponent,
 } from "components/common/loaderPaper";
 import { utilFunction } from "components/utils";
+import { GeneralAPI } from "registry/fns/functions";
+import { MultiLanguages } from "./multiLanguages";
+import { useTranslation } from "react-i18next";
 
 const inititalState = {
   username: "",
@@ -43,6 +46,7 @@ const inititalState = {
   otpmodelClose: false,
   authType: "",
   isScanning: false,
+  auth_data: [],
 };
 
 const reducer = (state, action) => {
@@ -150,6 +154,7 @@ const reducer = (state, action) => {
         otpmodelClose: false,
         currentFlow: "OTP",
         authType: action?.payload?.authType,
+        auth_data: action?.payload?.auth_data,
       };
     }
     case "inititatebiometricVerification": {
@@ -197,7 +202,11 @@ const reducer = (state, action) => {
       };
     }
     case "backToUsernameVerification": {
-      return inititalState;
+      return {
+        ...inititalState,
+        isPasswordError: action?.payload?.isError,
+        userMessageforpassword: action?.payload?.errorMessage,
+      };
     }
 
     default: {
@@ -217,6 +226,7 @@ export const AuthLoginController = () => {
   const [dashboardLogoURL, setDashboardLogoURL] = useState<any | null>(null);
   const urlObj = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
   // const [image, setImage] = useState<any>(null);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
@@ -248,6 +258,9 @@ export const AuthLoginController = () => {
       setDashboardLogoURL(urlObj.current);
     }
   }, [imageData]);
+  useEffect(() => {
+    GeneralAPI.setDocumentName("Enfinity");
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -278,6 +291,7 @@ export const AuthLoginController = () => {
             access_token: access_token?.access_token,
             token_type: access_token?.token_type,
             authType: data?.AUTH_TYPE,
+            auth_data: data?.AUTH_DATA,
           },
         });
         setOpen(true);
@@ -291,25 +305,25 @@ export const AuthLoginController = () => {
       dispath({
         type: "usernameandpasswordrequired",
         payload: {
-          error: "Username and Password is a required",
-          errorUsername: "Username is a required",
-          errorPassword: "Password is a required",
+          error: t("UsernamenandPasswordisRequired"),
+          errorUsername: t("UsernameisRequired"),
+          errorPassword: t("PasswordisRequired"),
         },
       });
     } else if (!Boolean(username)) {
       dispath({
         type: "usernameVerificationFailure",
         payload: {
-          error: "Username is a required",
-          errorUsername: "Username is a required",
+          error: t("UsernameisRequired"),
+          errorUsername: t("UsernameisRequired"),
         },
       });
     } else {
       dispath({
         type: "passwordVerificationFailure",
         payload: {
-          error: "Password is a required",
-          errorPassword: "Password is a required",
+          error: t("PasswordisRequired"),
+          errorPassword: t("PasswordisRequired"),
         },
       });
     }
@@ -365,9 +379,14 @@ export const AuthLoginController = () => {
     }
     setOpenPwdReset(false);
   };
-  const changeUserName = () => {
+  const changeUserName = (isError = false, errorMessage = "") => {
+    console.log("changeUserName", isError, errorMessage);
     dispath({
       type: "backToUsernameVerification",
+      payload: {
+        isError: isError,
+        errorMessage: errorMessage,
+      },
     });
   };
   const verifyFinger = async () => {
@@ -375,36 +394,32 @@ export const AuthLoginController = () => {
       dispath({ type: "inititateUserFingerScanner" });
       const fingerResponse = await API.capture();
       if (fingerResponse?.ErrorCode === "0") {
-        console.log("state", loginState.AUTH_DATA);
-        if (loginState.status === "success") {
-          dispath({ type: "inititateUserFingerVerification" });
-          const promise: any = await matchFinger(
-            loginState.data,
-            fingerResponse.IsoTemplate
+        dispath({ type: "inititateUserFingerVerification" });
+        const promise: any = await matchFinger(
+          loginState.auth_data,
+          fingerResponse.IsoTemplate
+        );
+        if (promise.isError) {
+          dispath({
+            type: "biometricVerificationFailure",
+            payload: {
+              error: promise?.errorMessage ?? "Something went wrong.",
+            },
+          });
+        } else {
+          const { status, data, message } = await verifyOTP(
+            loginState.transactionID,
+            loginState.username,
+            String(promise?.sr_cd ?? "0"),
+            loginState.access_token,
+            loginState.token_type,
+            loginState.authType,
+            promise.status ? "Y" : "N"
           );
-          if (promise.status) {
+          if (status === "0" && promise.status) {
             dispath({ type: "biometricVerificationSuccessful" });
-
-            login({
-              username: loginState.username,
-              token: loginState.token,
-              role: loginState.role,
-              roleName: loginState.roleName,
-              isLoggedIn: false,
-              fullname: loginState.fullname,
-              branch: loginState.branch,
-              branchCode: loginState.branchCode,
-              lastLogin: loginState.lastLogin,
-              access: loginState.accessBranch,
-              bankName: loginState.bankName,
-              menurights: loginState.data,
-            });
-            await API.biometricStatusUpdate(
-              loginState.username,
-              loginState.token,
-              "S"
-            );
-          } else {
+            login(data);
+          } else if (status === "0" && !promise.status) {
             failureCount.current = failureCount.current + 1;
             dispath({
               type: "biometricVerificationFailure",
@@ -412,20 +427,34 @@ export const AuthLoginController = () => {
                 error: "Finger Not Match.Please Try Again",
               },
             });
-            await API.biometricStatusUpdate(
-              loginState.username,
-              loginState.token,
-              "F"
+            if (failureCount.current >= 3)
+              changeUserName(true, "Finger Not Match.Please Try Again");
+          } else if (status === "99") {
+            dispath({
+              type: "biometricVerificationFailure",
+              payload: {
+                error: message ?? "Finger Not Match.Please Try Again",
+              },
+            });
+          } else if (status === "999") {
+            dispath({
+              type: "biometricVerificationFailure",
+              payload: {
+                error: message ?? "Finger Not Match.Please Try Again",
+              },
+            });
+            changeUserName(
+              true,
+              message ?? "Finger Not Match.Please Try Again"
             );
-            if (failureCount.current >= 3) changeUserName();
+          } else {
+            dispath({
+              type: "biometricVerificationFailure",
+              payload: {
+                error: message ?? "Finger Not Match.Please Try Again",
+              },
+            });
           }
-        } else {
-          dispath({
-            type: "biometricVerificationFailure",
-            payload: {
-              error: loginState?.data?.errorMessage ?? "Unknown error occured",
-            },
-          });
         }
       } else {
         dispath({
@@ -458,47 +487,69 @@ export const AuthLoginController = () => {
                 direction="row"
                 justifyContent="flex-end"
                 alignItems="center"
-                padding={"31px"}
+                padding={"25px"}
               >
                 <img
                   src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
                   alt="Logo"
                 />
               </Grid>
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="center"
+                padding={"0 35px 0 0"}
+              >
+                <MultiLanguages />
+              </Grid>
 
-              {loginState.currentFlow === "username" ? (
-                <UsernamePasswordField
-                  key="username"
+              {openpwdreset ? (
+                <PasswordRotation
                   classes={classes}
-                  loginState={loginState}
-                  verifyUsernamePassword={verifyUsernamePassword}
+                  open={openpwdreset}
+                  username={loginState.username}
+                  accessToken={loginState.access_token}
+                  tokenType={loginState.token_type}
+                  handleClose={handlePasswordRotationClose}
                 />
               ) : (
                 <>
-                  {loginState.authType === "OTP" ? (
-                    <OTPModel
-                      key="otp"
+                  {loginState.currentFlow === "username" ? (
+                    <UsernamePasswordField
+                      key="username"
                       classes={classes}
                       loginState={loginState}
-                      VerifyOTP={VerifyOTP}
-                      previousStep={changeUserName}
-                      OTPError={loginState?.OtpuserMessage ?? ""}
-                      setOTPError={(error) => {
-                        dispath({
-                          type: "OTPVerificationFailed",
-                          payload: { error: error },
-                        });
-                      }}
-                      open={undefined}
-                      handleClose={undefined}
+                      verifyUsernamePassword={verifyUsernamePassword}
                     />
                   ) : (
-                    <VerifyFinger
-                      key="biometric"
-                      classes={classes}
-                      loginState={loginState}
-                      verifyFinger={verifyFinger}
-                    />
+                    <>
+                      {loginState.authType === "OTP" ? (
+                        <OTPModel
+                          key="otp"
+                          classes={classes}
+                          loginState={loginState}
+                          VerifyOTP={VerifyOTP}
+                          previousStep={changeUserName}
+                          OTPError={loginState?.OtpuserMessage ?? ""}
+                          setOTPError={(error) => {
+                            dispath({
+                              type: "OTPVerificationFailed",
+                              payload: { error: error },
+                            });
+                          }}
+                          open={undefined}
+                          handleClose={undefined}
+                        />
+                      ) : (
+                        <VerifyFinger
+                          key="biometric"
+                          classes={classes}
+                          loginState={loginState}
+                          verifyFinger={verifyFinger}
+                        />
+                      )}
+                    </>
                   )}
                 </>
               )}
@@ -506,16 +557,6 @@ export const AuthLoginController = () => {
           </Grid>
         </>
       )}
-      {/* {openpwdreset ? (
-          //   <PasswordRotation
-          //     classes={classes}
-          //     open={openpwdreset}
-          //     username={loginState.username}
-          //     accessToken={loginState.access_token}
-          //     tokenType={loginState.token_type}
-          //     handleClose={handlePasswordRotationClose}
-          //   />
-          // ) : null} */}
     </>
   );
 };

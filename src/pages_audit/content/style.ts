@@ -10,10 +10,10 @@ export const useStyles = makeStyles((theme: any) => ({
     background: "rgba(250, 251, 255, 0.9)",
   },
   container: {
-    // padding: theme.spacing(1),
+    // padding: theme.spacing(2),
+    height: "100px",
     marginTop: "70px",
-    height: "100%",
-    display: "auto",
+    // display: "auto",
     // height: `calc(100vh - 109px)`,
   },
 }));
