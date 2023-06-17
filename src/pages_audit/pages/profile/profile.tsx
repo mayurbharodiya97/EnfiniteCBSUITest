@@ -12,7 +12,14 @@ import * as API from "./api";
 import { queryClient } from "cache";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
-import { UserLoginDtlGridMetaData, UserProfileMetaData } from "./metaData";
+import {
+  PersonlizationDashboardGridData,
+  PersonlizationQuickGridMetaData,
+  UserLoginDtlGridMetaData,
+  UserProfileMetaData,
+  userAccessbranch,
+  userAccesstype,
+} from "./metaData";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   AppBar,
@@ -44,7 +51,10 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
+import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
+import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAccessibilityOutlined";
 import { useNavigate } from "react-router-dom";
+import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -70,17 +80,28 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
-
-  const userActivityData = useQuery<any, any, any>(
-    ["getUserLoginDetails"],
-    () => API.getUserLoginDetails({ userID })
+  console.log(queryData, "<<queryData");
+  const userActivityData = useQuery<any, any, any>(["GETUSERACTIVITY"], () =>
+    API.getUserLoginDetails({ userID })
   );
-
+  const userAccessBranch = useQuery<any, any, any>(["GETUSERACESSBRNCH"], () =>
+    API.getUserAccessBranch({ userID })
+  );
+  const userAccessType = useQuery<any, any, any>(["GETUSERACESSTYPE"], () =>
+    API.getUserAccessType({ userID })
+  );
+  const quickView = useQuery<any, any, any>(["GETUSERACESSYPE"], () =>
+    API.getquickView({ userID })
+  );
+  const dashboardData = useQuery<any, any, any>(["GETUSERACESSTPE"], () =>
+    API.getdashboardData()
+  );
+  console.log(queryData, "<<<<<<<<queryData");
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
       queryClient.removeQueries(["GETEMPLOYEEDTL"]);
-      queryClient.removeQueries(["getUserLoginDetails"]);
+      queryClient.removeQueries(["GETUSERACTIVITY"]);
     };
   }, []);
   useEffect(() => {
@@ -145,45 +166,6 @@ export const Profile = () => {
               display: "block",
             }}
           >
-            <Box sx={{ my: 3, display: "block" }}>
-              <AppBar
-                position="static"
-                sx={{
-                  background: "#FFFFFF",
-                  borderRadius: "10px",
-                }}
-              >
-                <Toolbar style={{ minHeight: "48px" }}>
-                  <Typography
-                    variant="h5"
-                    noWrap
-                    component="div"
-                    sx={{
-                      display: { xs: "none", sm: "block" },
-                      fontWeight: 500,
-                    }}
-                  >
-                    My Profile
-                  </Typography>
-
-                  <Box sx={{ flexGrow: 1 }} />
-                  <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                    <IconButton
-                      aria-label="show 4 new mails"
-                      color="inherit"
-                      sx={{
-                        background: "#ECEFF9",
-                        borderRadius: "10px",
-                        ml: 2,
-                      }}
-                      onClick={handleNavigate}
-                    >
-                      <CancelOutlinedIcon color="info" fontSize="medium" />
-                    </IconButton>
-                  </Box>
-                </Toolbar>
-              </AppBar>
-            </Box>
             <Container
               sx={{
                 background: "white",
@@ -193,8 +175,49 @@ export const Profile = () => {
                   "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
               }}
             >
+              {/* <Grid>
+                <AppBar
+                  position="static"
+                  sx={{
+                    background: "#FFFFFF",
+                    borderRadius: "10px",
+                    margin: "10px",
+                    width: "auto",
+                  }}
+                >
+                  <Toolbar style={{ minHeight: "48px" }}>
+                    <Typography
+                      variant="h5"
+                      noWrap
+                      component="div"
+                      sx={{
+                        display: { xs: "none", sm: "block" },
+                        fontWeight: 500,
+                      }}
+                    >
+                      My Profile
+                    </Typography>
+
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                      <IconButton
+                        aria-label="show 4 new mails"
+                        color="inherit"
+                        sx={{
+                          background: "#ECEFF9",
+                          borderRadius: "10px",
+                          ml: 2,
+                        }}
+                        onClick={handleNavigate}
+                      >
+                        <CancelOutlinedIcon color="info" fontSize="medium" />
+                      </IconButton>
+                    </Box>
+                  </Toolbar>
+                </AppBar>
+              </Grid> */}
               <Grid>
-                <Box
+                {/* <Box
                   height={"216px"}
                   sx={{
                     // backgroundImage: `url(${User_profile})`,
@@ -204,21 +227,25 @@ export const Profile = () => {
                     margin: "10px",
                     boxShadow: "rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;",
                   }}
-                ></Box>
-                <Box height={"105px"}>
+                ></Box> */}
+                <Box>
                   <Grid container>
-                    <Grid item xs={3}>
+                    <Grid
+                      item
+                      xs={2}
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
                       <div
                         style={{
                           width: "150px",
                           height: "150px",
-                          marginLeft: "auto",
+                          margin: "auto",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           position: "relative",
-                          top: "-50%",
+                          // top: "-50%",
                         }}
                       >
                         <div className="image-data">
@@ -229,7 +256,7 @@ export const Profile = () => {
                             src={
                               Boolean(ProfilePictureURL)
                                 ? ProfilePictureURL
-                                : "https://berrydashboard.io/static/media/img-user.41a8c06685db060b0ec1.png"
+                                : USER_PROFILE_DEFAULT
                             }
                             style={{
                               width: "100%",
@@ -276,155 +303,457 @@ export const Profile = () => {
                           />
                         </div>
                       </div>
+                      {/* <Grid m={"auto"}>
+                        <Typography variant="h5" fontWeight={500}>
+                          {queryData?.data?.USERNAME}
+                        </Typography>
+                        <Typography color={"var(--theme-color6)"}>
+                          {queryData?.data?.USER_LEVEL}
+                        </Typography>
+                      </Grid> */}
                     </Grid>
-                    <Grid item xs={9} p={1}>
-                      <Grid container p={1}>
-                        <Grid item xs={3}>
-                          <Typography variant="h6" fontWeight={500}>
-                            Ajay Sharma
+                    <Grid
+                      item
+                      xs={10}
+                      sx={{ display: "flex", flexDirection: "column" }}
+                    >
+                      <Grid>
+                        <AppBar
+                          position="static"
+                          sx={{
+                            background: "#FFFFFF",
+                            borderRadius: "10px",
+                            margin: "10px",
+                            width: "auto",
+                          }}
+                        >
+                          <Toolbar style={{ minHeight: "48px" }}>
+                            <Typography
+                              variant="h5"
+                              noWrap
+                              component="div"
+                              sx={{
+                                display: { xs: "none", sm: "block" },
+                                fontWeight: 500,
+                              }}
+                            >
+                              My Profile
+                            </Typography>
+
+                            <Box sx={{ flexGrow: 1 }} />
+                            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                              <IconButton
+                                aria-label="show 4 new mails"
+                                color="inherit"
+                                sx={{
+                                  background: "#ECEFF9",
+                                  borderRadius: "10px",
+                                  ml: 2,
+                                }}
+                                onClick={handleNavigate}
+                              >
+                                <CancelOutlinedIcon
+                                  color="info"
+                                  fontSize="medium"
+                                />
+                              </IconButton>
+                            </Box>
+                          </Toolbar>
+                        </AppBar>
+                      </Grid>
+                      <Grid container alignItems={"center"}>
+                        <Grid item xs={4} pl={3}>
+                          <Typography
+                            variant="h5"
+                            fontWeight={500}
+                            display={"inline"}
+                          >
+                            {queryData?.data?.USERNAME} -{" "}
+                            {/* {queryData?.data?.USER_LEVEL} */}
                           </Typography>
-                          <Typography color={"var(--theme-color6)"}>
-                            Cashier
+                          <Typography display={"inline"}>
+                            {queryData?.data?.USER_LEVEL}
                           </Typography>
                         </Grid>
+                        <Grid item xs={4}>
+                          {/* <Typography>About</Typography> */}
+                        </Grid>
+                        <Grid item xs={4}>
+                          <Typography>
+                            Mobile No. :- {queryData?.data?.MOBILE_NUMBER}
+                          </Typography>
+                          <Typography>
+                            Email-Id :- {queryData?.data?.EMAIL_ID}
+                          </Typography>
+                          <Typography>About :- </Typography>
+                        </Grid>
                       </Grid>
-                      <Grid container>
-                        <Box sx={{ width: "100%" }}>
-                          <Tabs
-                            sx={{
-                              "& .MuiTabs-fixed": {
-                                display: "flex",
-                                justifyContent: "flex-end",
-                              },
-                              "& .Mui-selected": {
-                                color: "var(--theme-color1)",
-                              },
-                              "& .MuiTabs-indicator": {
-                                backgroundColor: "var(--theme-color1)",
-                              },
-                              "& .MuiButtonBase-root": {
-                                minHeight: "0px",
-                              },
-                            }}
-                            value={value}
-                            onChange={handleChange}
-                            textColor="secondary"
-                            indicatorColor="secondary"
-                            aria-label="secondary tabs example"
-                          >
-                            <Tab
-                              value="one"
-                              label="User Profile"
-                              icon={<AccountCircleOutlinedIcon />}
-                              iconPosition="start"
-                              // onClick={moveToUserDetail}
-                              onClick={() => {
-                                setMode("userLogin");
-                              }}
-                            />
-                            <Tab
-                              value="two"
-                              label="User Detail"
-                              icon={<ArticleOutlinedIcon />}
-                              iconPosition="start"
-                              // onClick={() => {
-                              //   setUserDetail(true);
-                              // }}
-                              onClick={() => {
-                                setMode("userDetail");
-                              }}
-                            />
+                      <Box sx={{ width: "100%", marginTop: "auto" }}>
+                        <Tabs
+                          sx={{
+                            "& .MuiTabs-fixed": {
+                              display: "flex",
 
-                            <Tab
-                              value="three"
-                              label="Change Password"
-                              icon={<LockResetOutlinedIcon />}
-                              iconPosition="start"
-                              onClick={() => {
-                                setMode("changePassword");
-                                setShowProfile(true);
-                              }}
-                            />
-                          </Tabs>
-                        </Box>
-                      </Grid>
+                              justifyContent: "flex-end",
+                            },
+                            "& .Mui-selected": {
+                              color: "var(--theme-color1)",
+                            },
+                            "& .MuiTabs-indicator": {
+                              backgroundColor: "var(--theme-color1)",
+                            },
+                            "& .MuiButtonBase-root": {
+                              minHeight: "0px",
+                            },
+                          }}
+                          value={value}
+                          onChange={handleChange}
+                          textColor="secondary"
+                          indicatorColor="secondary"
+                          aria-label="secondary tabs example"
+                        >
+                          <Tab
+                            value="one"
+                            label="User Profile"
+                            icon={<AccountCircleOutlinedIcon />}
+                            iconPosition="start"
+                            // onClick={moveToUserDetail}
+                            onClick={() => {
+                              setMode("userLogin");
+                            }}
+                          />
+                          <Tab
+                            value="two"
+                            label="Allowed Access"
+                            icon={<HowToRegOutlinedIcon />}
+                            iconPosition="start"
+                            // onClick={moveToUserDetail}
+                            onClick={() => {
+                              setMode("accessAllow");
+                            }}
+                          />
+                          <Tab
+                            value="three"
+                            label="Activity Detail"
+                            icon={<ArticleOutlinedIcon />}
+                            iconPosition="start"
+                            // onClick={() => {
+                            //   setUserDetail(true);
+                            // }}
+                            onClick={() => {
+                              setMode("userDetail");
+                            }}
+                          />
+
+                          <Tab
+                            value="four"
+                            label="Change Password"
+                            icon={<LockResetOutlinedIcon />}
+                            iconPosition="start"
+                            onClick={() => {
+                              setMode("changePassword");
+                              setShowProfile(true);
+                            }}
+                          />
+                          <Tab
+                            value="five"
+                            label="Personalize dashboard"
+                            icon={<SettingsAccessibilityOutlinedIcon />}
+                            iconPosition="start"
+                            onClick={() => {
+                              setMode("personalizedashboard");
+                              setShowProfile(true);
+                            }}
+                          />
+                        </Tabs>
+                      </Box>
                     </Grid>
+                  </Grid>
+                  <Grid container>
+                    {/* <Grid item xs={2} pt={"10px"}> */}
+                    {/* <div
+                        style={{
+                          width: "150px",
+                          height: "150px",
+                          margin: "auto",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          position: "relative",
+                          // top: "-50%",
+                        }}
+                      >
+                        <div className="image-data">
+                          <Avatar
+                            variant="rounded"
+                            key={"ProfilePicture"}
+                            alt="User"
+                            src={
+                              Boolean(ProfilePictureURL)
+                                ? ProfilePictureURL
+                                : USER_PROFILE_DEFAULT
+                            }
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          ></Avatar>
+                        </div>
+                        <div
+                          className="image-upload-icon"
+                          onClick={() => fileUploadControl?.current?.click()}
+                        >
+                          <IconButton>
+                            <AddAPhotoIcon htmlColor="white" />
+                          </IconButton>
+                          <Typography
+                            component={"span"}
+                            style={{
+                              margin: "0",
+                              color: "white",
+                              lineHeight: "1.5",
+                              fontSize: "0.75rem",
+                              fontFamily: "Public Sans,sans-serif",
+                              fontWeight: "400",
+                            }}
+                          >
+                            Update Photo
+                          </Typography>
+                          <input
+                            name="fileselect"
+                            type="file"
+                            style={{ display: "none" }}
+                            ref={fileUploadControl}
+                            onChange={handleFileSelect}
+                            accept=".png,.jpg,.jpeg"
+                            onClick={(e) => {
+                              //to clear the file uploaded state to reupload the same file (AKA allow our handler to handle duplicate file)
+                              //@ts-ignore
+                              e.target.value = "";
+                            }}
+                          />
+                        </div>
+                      </div> */}
+                    {/* <Grid item xs={3} m={"auto"}>
+                        <Typography variant="h5" fontWeight={500}>
+                          {queryData?.data?.NAME}
+                        </Typography>
+                        <Typography color={"var(--theme-color6)"}>
+                          {queryData?.data?.USER_LEVEL}
+                        </Typography>
+                      </Grid>
+                    </Grid> */}
+                    {/* <Grid item xs={10}> */}
+                    <Container>
+                      <Grid
+                        sx={{
+                          backgroundColor: "var(--theme-color2)",
+                          padding: "0px",
+                          borderRadius: "10px",
+                          boxShadow:
+                            "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
+                        }}
+                      >
+                        {mode === "userDetail" ? (
+                          // <Grid
+                          //   key={"Griditem4"}
+                          //   item
+                          //   xs={12}
+                          //   md={12}
+                          //   lg={12}
+                          //   container
+                          //   spacing={1}
+                          //   justifyContent="flex-start"
+                          //   alignItems="center"
+                          //   style={{
+                          //     marginBottom: "0px",
+                          //     marginRight: "12px",
+                          //   }}
+                          // >
+                          <GridWrapper
+                            key={`userDetail`}
+                            finalMetaData={
+                              UserLoginDtlGridMetaData as GridMetaDataType
+                            }
+                            data={userActivityData.data ?? []}
+                            setData={() => null}
+                            //loading={result.isLoading}
+                            actions={[]}
+                            setAction={() => {}}
+                            refetchData={() => {}}
+                            ref={myGridRef}
+                            headerToolbarStyle={{
+                              background: "var(--theme-color2)",
+                              color: "black",
+                            }}
+                          />
+                        ) : // </Grid>
+                        mode === "userLogin" ? (
+                          <Grid>
+                            <FormWrapper
+                              key="userLogin"
+                              metaData={UserProfileMetaData as MetaDataType}
+                              initialValues={queryData.data}
+                              onSubmitHandler={() => {}}
+                              // displayMode={"view"}
+                              // hideDisplayModeInTitle={true}
+                              formStyle={{
+                                background: "white",
+                                // height: "40vh",
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                              }}
+                              hideHeader={true}
+                            />
+                          </Grid>
+                        ) : mode === "changePassword" ? (
+                          <ChangePassword
+                            showProfile={showProfile}
+                            onClose={() => setShowProfile(false)}
+                          />
+                        ) : mode === "accessAllow" ? (
+                          <Grid
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              gap: 3,
+                              p: 2,
+                            }}
+                          >
+                            <Grid
+                              container
+                              sx={{
+                                boxShadow:
+                                  "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                              }}
+                            >
+                              <GridWrapper
+                                key={`userAccessbranch`}
+                                finalMetaData={
+                                  userAccessbranch as GridMetaDataType
+                                }
+                                data={userAccessBranch.data || []}
+                                setData={() => null}
+                                headerToolbarStyle={{
+                                  background: "var(--theme-color2)",
+                                  color: "black",
+                                  fontSize: "20px",
+                                }}
+                                //loading={result.isLoading}
+                                // actions={[]}
+                                // setAction={() => {}}
+                                // refetchData={() => {}}
+                                // ref={myGridRef}
+                              />
+                            </Grid>
+                            <Grid
+                              container
+                              sx={{
+                                boxShadow:
+                                  "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                              }}
+                            >
+                              <GridWrapper
+                                key={`userAccesstype`}
+                                finalMetaData={
+                                  userAccesstype as GridMetaDataType
+                                }
+                                data={userAccessType.data || []}
+                                setData={() => null}
+                                headerToolbarStyle={{
+                                  background: "var(--theme-color2)",
+                                  color: "black",
+                                  fontSize: "20px",
+                                }}
+                                //loading={result.isLoading}
+                                // actions={[]}
+                                // setAction={() => {}}
+                                // refetchData={() => {}}
+                                // ref={myGridRef}
+                              />
+                            </Grid>
+                          </Grid>
+                        ) : mode === "personalizedashboard" ? (
+                          <>
+                            <Grid
+                              sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                gap: 3,
+                                p: 2,
+                              }}
+                            >
+                              <Grid
+                                container
+                                sx={{
+                                  boxShadow:
+                                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                                }}
+                              >
+                                <GridWrapper
+                                  key={`personalizeQuickView`}
+                                  finalMetaData={
+                                    PersonlizationQuickGridMetaData as GridMetaDataType
+                                  }
+                                  data={quickView.data || []}
+                                  setData={() => null}
+                                  //loading={result.isLoading}
+                                  // actions={[]}
+                                  // setAction={() => {}}
+                                  headerToolbarStyle={{
+                                    background: "var(--theme-color2)",
+                                    color: "black",
+                                  }}
+                                  // refetchData={() => {}}
+                                  // ref={myGridRef}
+                                />
+                              </Grid>
+                              <Grid
+                                container
+                                sx={{
+                                  boxShadow:
+                                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                                }}
+                              >
+                                <GridWrapper
+                                  key={`personalizeDashboardData`}
+                                  finalMetaData={
+                                    PersonlizationDashboardGridData as GridMetaDataType
+                                  }
+                                  data={dashboardData.data || []}
+                                  headerToolbarStyle={{
+                                    background: "var(--theme-color2)",
+                                    color: "black",
+                                  }}
+                                  setData={() => null}
+                                  //loading={result.isLoading}
+                                  // actions={[]}
+                                  // setAction={() => {}}
+                                  // refetchData={() => {}}
+                                  // ref={myGridRef}
+                                />
+                              </Grid>
+                            </Grid>
+                          </>
+                        ) : null}
+                      </Grid>
+                    </Container>
+
+                    {profileUpdate && filesdata.length > 0 ? (
+                      <ProfilePhotoUpdate
+                        open={profileUpdate}
+                        onClose={handleProfileUploadClose}
+                        files={filesdata}
+                        userID={userID}
+                      />
+                    ) : null}
+                    {/* </Grid> */}
                   </Grid>
                 </Box>
               </Grid>
             </Container>
           </Grid>
-          <Container>
-            <Grid
-              sx={{
-                m: 3,
-                p: 1,
-                backgroundColor: "var(--theme-color2)",
-                borderRadius: "10px",
-                boxShadow:
-                  "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
-              }}
-            >
-              {mode === "userDetail" ? (
-                <Grid
-                  key={"Griditem4"}
-                  item
-                  xs={12}
-                  md={12}
-                  lg={12}
-                  container
-                  spacing={1}
-                  justifyContent="flex-start"
-                  alignItems="center"
-                  style={{ marginBottom: "0px", marginRight: "12px" }}
-                >
-                  <GridWrapper
-                    key={`UserLoginReqGrid`}
-                    finalMetaData={UserLoginDtlGridMetaData as GridMetaDataType}
-                    data={userActivityData.data ?? []}
-                    setData={() => null}
-                    //loading={result.isLoading}
-                    actions={[]}
-                    setAction={() => {}}
-                    refetchData={() => {}}
-                    ref={myGridRef}
-                  />
-                </Grid>
-              ) : mode === "userLogin" ? (
-                <Grid>
-                  <FormWrapper
-                    key="UserProfileForm"
-                    metaData={UserProfileMetaData as MetaDataType}
-                    initialValues={[]}
-                    onSubmitHandler={() => {}}
-                    // displayMode={"view"}
-                    // hideDisplayModeInTitle={true}
-                    formStyle={{
-                      background: "white",
-                      // height: "40vh",
-                      overflowY: "auto",
-                      overflowX: "hidden",
-                    }}
-                    hideHeader={true}
-                  />
-                </Grid>
-              ) : mode === "changePassword" ? (
-                <ChangePassword
-                  showProfile={showProfile}
-                  onClose={() => setShowProfile(false)}
-                />
-              ) : null}
-            </Grid>
-          </Container>
-
-          {profileUpdate && filesdata.length > 0 ? (
-            <ProfilePhotoUpdate
-              open={profileUpdate}
-              onClose={handleProfileUploadClose}
-              files={filesdata}
-              userID={userID}
-            />
-          ) : null}
         </>
       )}
     </Fragment>

@@ -7,16 +7,12 @@ export const ActionWiseAPIConfiguration = {
     url: "authenticationServiceAPI/POSTLOGIN/VERIFYOTP",
     packageName: "",
   },
-  DOUPDATEPASSWORD: {
-    url: "userRegistrationServiceAPI/DOUPDATEPASSWORD",
-    packageName: "",
-  },
-  LOGOUTADMIN: {
-    url: "adminPanelCommonServiceAPI/GETDYNAMICDATA/LOGOUTADMIN",
+  LOGOUTUSER: {
+    url: "/enfinityCommonServiceAPI/LOGOUTUSER",
     packageName: "",
   },
   MENULIST: {
-    url: "adminPanelCommonServiceAPI/GETMENULIST",
+    url: "enfinityCommonServiceAPI/GETMENULIST",
     packageName: "",
   },
   GETMISCVALUE: {
@@ -47,6 +43,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMPLOYEEDTL",
     packageName: "",
   },
+  GETCHEQUEBOOK: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOK",
+    packageName: "",
+  },
   GETPENDINGREQUEST: {
     url: "enfinityCommonServiceAPI/DashBoard/GETPENDINGREQUEST",
     packageName: "",
@@ -61,6 +61,70 @@ export const ActionWiseAPIConfiguration = {
   },
   GETAREA: {
     url: "/customerServiceAPI/GETAREA",
+    packageName: "",
+  },
+  GETBANKIMAGEANDPROFILEPIC: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
+    packageName: "",
+  },
+  GETQUICKACCESSVIEW: {
+    url: "dashboardServiceAPI/GETQUICKACCESSVIEW",
+    packageName: "",
+  },
+  GETANNOUNCEMENT: {
+    url: "dashboardServiceAPI/GETANNOUNCEMENT",
+    packageName: "",
+  },
+  GETTIPSDETAILS: {
+    url: "dashboardServiceAPI/GETTIPSDETAILS",
+    packageName: "",
+  },
+  GETNOTESDETAILSELECT: {
+    url: "dashboardServiceAPI/GETNOTESDETAILSELECT",
+    packageName: "",
+  },
+  GETALERTDTL: {
+    url: "dashboardServiceAPI/GETALERTDTL",
+    packageName: "",
+  },
+  GETDASHBOARDDATA: {
+    url: "dashboardServiceAPI/GETDASHBOARDDATA",
+    packageName: "",
+  },
+  GETACCOUNTSTATUS: {
+    url: "dashboardServiceAPI/GETACCOUNTSTATUS",
+    packageName: "",
+  },
+  RESETPASSWORD: {
+    url: "authenticationServiceAPI/AUTH/RESETPASSWORD",
+    packageName: "",
+  },
+  CHANGEPASSWORD: {
+    url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
+    packageName: "",
+  },
+  GETACCTVIEWMKR: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTVIEWMKR",
+    packageName: "",
+  },
+  GETUSERACTIVITY: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACTIVITY",
+    packageName: "",
+  },
+  GETUSERACESSBRNCH: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACESSBRNCH",
+    packageName: "",
+  },
+  GETUSERACESSTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACESSTYPE",
+    packageName: "",
+  },
+  GETTRANSCROLLDETAIL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRANSCROLLDETAIL",
+    packageName: "",
+  },
+  UPDATEPROFILEPIC: {
+    url: "/enfinityCommonServiceAPI/UPDATEPROFILEPIC",
     packageName: "",
   },
 };

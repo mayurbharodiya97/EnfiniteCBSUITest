@@ -10,11 +10,11 @@ export const ResetPassword = async (
 ) => {
   const { data, status, message, messageDetails, responseType, access_token } =
     await AuthSDK.internalFetcherPreLogin(
-      "DOUPDATEPASSWORD",
+      "CHANGEPASSWORD",
       {
         USER_ID: username,
         OLD_PASSWORD: password,
-        PASSWORD: newpassword,
+        NEW_PASSWORD: newpassword,
       },
       {
         Authorization: utilFunction.getAuthorizeTokenText(

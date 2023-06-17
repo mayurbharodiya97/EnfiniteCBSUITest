@@ -8,7 +8,7 @@
   margin: 0 12px;
   display: flex;
   overflow-x: hidden;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
 }
 .pre-btn,
 .next-btn {

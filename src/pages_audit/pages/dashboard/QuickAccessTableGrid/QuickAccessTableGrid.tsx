@@ -1,10 +1,11 @@
 import GridWrapper from "components/dataTableStatic";
 import { QuickAccessTableGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import { SearchBar } from "components/derived";
 
 import React, {
+  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -26,26 +27,8 @@ import {
 import { makeStyles, styled } from "@mui/styles";
 import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
-// const actions: ActionTypes[] = [
-//   {
-//     actionName: "Recent",******************
-//     actionLabel: "Recent",
-//     multiple: undefined,
-//     rowDoubleClick: false,
-//     actionTextColor: "var(--theme-color3)",
-//     alwaysAvailable: true,
-//     actionBackground: "var(--theme-color2)",
-//   },
-//   {
-//     actionName: "Favorite",
-//     actionLabel: "Favorite",
-//     multiple: undefined,
-//     rowDoubleClick: true,
-//     actionTextColor: "var(--theme-color2)",
-//     actionBackground: "var(--theme-color3)",
-//     alwaysAvailable: true,
-//   },
-// ];
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
 
 const useHeaderStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -64,27 +47,40 @@ const useHeaderStyles = makeStyles((theme: Theme) => ({
 const QuickAccessTableGrid = () => {
   const [apiData, setApiData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [activeButton, setActiveButton] = useState("Favorite");
+  const [activeButton, setActiveButton] = useState("Favourite");
   const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up(1256));
-  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
-    ["QuickAccessTableGridData"],
-    () =>
-      API.QuickAccessTableGridData({
-        userID: authState?.user?.id ?? "",
+  const { data, isLoading, isFetching, refetch, isError, error } = useQuery<
+    any,
+    any
+  >(
+    [
+      "QuickAccessTableGridData",
+      {
         COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
         BASE_BRANCH_CD: authState?.user?.branchCode ?? "",
         GROUP_NAME: authState?.roleName ?? "",
-        APP_TRAN_CD: "",
+        APP_TRAN_CD: "1",
+        FLAG: activeButton ?? "",
+      },
+    ],
+    () =>
+      API.QuickAccessTableGridData({
+        COMP_CD: authState?.companyID ?? "",
+
+        BASE_BRANCH_CD: authState?.user?.branchCode ?? "",
+        GROUP_NAME: authState?.roleName ?? "",
+        APP_TRAN_CD: "1",
+        FLAG: activeButton ?? "",
       })
   );
-
-  // const setCurrentAction = useCallback((data) => {
-  //   console.log(">>data", data);
-  // }, []);
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["QuickAccessTableGridData"]);
+    };
+  }, []);
 
   const handleButtonClick = (buttonId) => {
     setActiveButton(buttonId);
@@ -118,6 +114,17 @@ const QuickAccessTableGrid = () => {
         color="primary"
         style={{ marginBottom: "5px" }}
       > */}
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <Toolbar className={headerClasses.root} variant={"dense"}>
         <Typography
           className={headerClasses.title}
@@ -181,20 +188,22 @@ const QuickAccessTableGrid = () => {
             Recent
           </GradientButton>
           <GradientButton
-            onClick={() => handleButtonClick("Favorite")}
+            onClick={() => handleButtonClick("Favourite")}
             style={{
               backgroundColor:
-                activeButton === "Favorite" ? "var(--theme-color3)" : "inherit",
+                activeButton === "Favourite"
+                  ? "var(--theme-color3)"
+                  : "inherit",
               height: "26px",
               width: "71px",
               borderRadius: "08px",
               color:
-                activeButton === "Favorite"
+                activeButton === "Favourite"
                   ? "var(--theme-color2)"
                   : "var(--theme-color6)",
             }}
           >
-            Favorite
+            Favourite
           </GradientButton>
         </Box>
       </Toolbar>
@@ -212,6 +221,7 @@ const QuickAccessTableGrid = () => {
           color: "black",
         }}
         loading={isLoading || isFetching}
+        refetchData={() => refetch()}
       />
     </>
   );

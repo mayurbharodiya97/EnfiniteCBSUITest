@@ -2,57 +2,120 @@ import GridWrapper from "components/dataTableStatic";
 import { TodaysTransactionTableGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider } from "cache";
-import { useQuery } from "react-query";
-import * as API from "../api";
-import { useCallback, useContext } from "react";
-import { AuthContext } from "pages_audit/auth";
-// const actions: ActionTypes[] = [
-//   {
-//     actionName: "See All",
-//     actionLabel: "See all",
-//     multiple: undefined,
-//     rowDoubleClick: false,
-//     actionTextColor: "var(--theme-color3)",
-//     alwaysAvailable: true,
-//     actionBackground: "inherit",
-//   },
-// ];
-const TodaysTransactionTableGrid = () => {
-  const { authState } = useContext(AuthContext);
-  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
-    ["TodaysTransactionTableGrid"],
-    () =>
-      API.TodaysTransactionTableGrid({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-      })
-  );
+import { Fragment, useCallback, useEffect, useState } from "react";
+import Scroll from "./openScroll/scroll";
+import { Alert } from "components/common/alert";
+import { Box, Grid, Typography } from "@mui/material";
+
+const actions: ActionTypes[] = [
+  {
+    actionName: "scroll",
+    actionLabel: "Scroll",
+    multiple: false,
+    rowDoubleClick: true,
+    actionTextColor: "var(--theme-color3)",
+    alwaysAvailable: false,
+    actionBackground: "inherit",
+  },
+];
+
+const TodaysTransactionTableGrid = ({ mutation }) => {
+  // const [enableClick, setEnableClick] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [rowsData, setRowsData] = useState({});
   const setCurrentAction = useCallback((data) => {
-    // console.log(">>data", data);
+    setRowsData(data.rows);
+    if (
+      data?.rows?.[0].data?.TYPE_CD === "3" ||
+      data?.rows?.[0].data?.TYPE_CD === "6"
+    ) {
+      setDialogOpen(true);
+    }
+    console.log(data.rows, "data.rows");
   }, []);
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const confirmedCount = mutation?.data?.filter(
+    (item) => item.CONFIRM === "Y"
+  ).length;
+
+  const rejectedCount = mutation?.data?.filter(
+    (item) => item.CONFIRM === "N"
+  ).length;
+  // useEffect(() => {
+  //   setEnableClick(mutation?.data?.map((item) => item?.TYPE_CD === "3"));
+  // }, [enableClick]);
+
+  // console.log("enableClick", mutation?.data);
+
   return (
     <>
+      {mutation.isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={mutation.error?.severity ?? "error"}
+              errorMsg={mutation.error?.error_msg ?? "Error"}
+              errorDetail={mutation.error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`TodaysTransactionTableGrid`}
         finalMetaData={TodaysTransactionTableGridMetaData as GridMetaDataType}
-        data={data ?? []}
+        data={mutation?.data ?? []}
         setData={() => null}
-        // actions={actions}
-        // setAction={setCurrentAction}
+        actions={actions}
+        setAction={setCurrentAction}
         headerToolbarStyle={{
-          backgroundColor: "var(--theme-color2)",
+          background: "var(--theme-color2)",
           color: "black",
         }}
-        loading={isLoading || isFetching}
+        loading={mutation.isLoading || mutation.isFetching}
       />
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        sx={{
+          // backgroundColor: "blueviolet",
+          height: "23px",
+          width: "60%",
+          float: "right",
+          position: "relative",
+          top: "-2.67rem",
+          display: "flex",
+          // justifyContent: "space-evenly",
+          gap: "4rem",
+          alignItems: "center",
+        }}
+      >
+        <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+          Confirmed Count : {confirmedCount}
+        </Typography>
+        <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+          Rejected Count :{rejectedCount}
+        </Typography>
+      </Grid>
+      {dialogOpen && (
+        <Scroll
+          data={rowsData}
+          open={dialogOpen}
+          handleCloseDialog={handleCloseDialog}
+        />
+      )}
     </>
   );
 };
 
-export const TodaysTransactionTableGridWrapper = () => {
+export const TodaysTransactionTableGridWrapper = ({ mutation }) => {
   return (
     <ClearCacheProvider>
-      <TodaysTransactionTableGrid />
+      <TodaysTransactionTableGrid mutation={mutation} />
     </ClearCacheProvider>
   );
 };

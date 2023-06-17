@@ -80,6 +80,7 @@ export interface GridMetaDataType {
   gridConfig: GridConfigType;
   actions?: ActionTypes[];
   setAction?: any;
+  lanTranstlet?: any;
 }
 
 export interface GridWrapperPropTypes {
@@ -102,6 +103,7 @@ export interface GridWrapperPropTypes {
   headerToolbarStyle?: {};
   onlySingleSelectionAllow?: boolean;
   isNewRowStyle?: boolean;
+  defaultSelectedRowId?: any;
 }
 
 export interface YupSchemaMetaDataType {

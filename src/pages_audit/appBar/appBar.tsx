@@ -1,35 +1,50 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthContext } from "../auth";
 import { useStyles } from "./style";
 import Waving_hand from "assets/images/Waving_Hand_header.png";
-import userimage from "assets/images/BecomePartnerImg.svg";
+import bank_logo_default from "assets/images/BecomePartnerImg.svg";
 import IconButton from "@mui/material/IconButton";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Logo from "assets/images/easy_bankcore_Logo.png";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import * as API from "./api";
+import { styled } from "@mui/material/styles";
+import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
+import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import {
   AppBar,
   Avatar,
   Box,
   Button,
-  Popover,
   Stack,
-  TextareaAutosize,
   Toolbar,
+  Tooltip,
   Typography,
+  tooltipClasses,
 } from "@mui/material";
 import { Notification_App } from "./notification";
 import { Quick_View } from "./quickView";
 import { Language_App } from "./language";
 import MySearchField from "components/common/search/search";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { UserDetail } from "./userDetail";
+import { useQuery } from "react-query";
+import { utilFunction } from "components/utils";
+import { MultiLanguages } from "pages_audit/auth/multiLanguages";
+import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
+
+import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
+  const [openDialog, setOpenDialog] = useState<any>(false);
+  const [acctInquiry, setAcctInquiry] = useState(false);
+  const [pictureURL, setPictureURL] = useState<any | null>({
+    bank: "",
+    profile: "",
+  });
+  const urlObj = useRef<any>({ bank: "", profile: "" });
   const handleNavigate = () => {
     navigate("/cbsenfinity/profile");
     handleClose();
@@ -41,6 +56,74 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const handleClose = () => {
     setAnchorEl1(null);
   };
+
+  const LightTooltip = styled(({ className, ...props }: any) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.white,
+      color: "rgba(0, 0, 0, 0.87)",
+      boxShadow: theme.shadows[1],
+      fontSize: 13,
+    },
+  }));
+  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
+    ["getBankimgAndProfileimg"],
+    () =>
+      API.getBankimgAndProfileimg({
+        userID: authController?.authState?.user?.id,
+      })
+  );
+  useEffect(() => {
+    if (Boolean(data?.[0]?.PROFILE_PHOTO)) {
+      let blob = utilFunction.base64toBlob(data?.[0]?.PROFILE_PHOTO);
+      urlObj.current = {
+        ...urlObj.current,
+        profile:
+          typeof blob === "object" && Boolean(blob)
+            ? URL.createObjectURL(blob)
+            : "",
+      };
+      setPictureURL((old) => {
+        return { ...old, profile: urlObj.current?.profile };
+      });
+    }
+  }, [data?.[0]?.PROFILE_PHOTO]);
+
+  useEffect(() => {
+    if (Boolean(data?.[0]?.BANK_LOGO)) {
+      let blob = utilFunction.base64toBlob(data?.[0]?.BANK_LOGO);
+      urlObj.current = {
+        ...urlObj.current,
+        bank:
+          typeof blob === "object" && Boolean(blob)
+            ? URL.createObjectURL(blob)
+            : "",
+      };
+      setPictureURL((old) => {
+        return { ...old, bank: urlObj.current?.bank };
+      });
+    }
+  }, [data?.[0]?.BANK_LOGO]);
+
+  const Greetings = () => {
+    let hours = new Date().getHours();
+    let greet;
+
+    if (hours < 12) greet = "morning";
+    else if (hours >= 12 && hours <= 16) greet = "afternoon";
+    else if (hours >= 16 && hours <= 24) greet = "evening";
+
+    return <span>Good {greet},</span>;
+  };
+
+  const handleStatementClick = () => {
+    const newWindow = window.open("./view-statement", "_blank");
+    if (newWindow) {
+      newWindow.focus();
+    }
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -94,7 +177,9 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             <Avatar
               className={classes.heading_user_img}
               alt="Remy Sharp"
-              src={userimage}
+              src={
+                Boolean(pictureURL?.bank) ? pictureURL?.bank : bank_logo_default
+              }
             />
           </Box>
         </Stack>
@@ -118,8 +203,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 authController?.authState?.companyName.length > 55,
             })}
           >
-            {authController?.authState?.companyName}
-            {console.log(authController?.authState?.companyName.length)}
+            {authController?.authState?.companyName || ""}
           </Box>
           <div style={{ display: "flex", gap: "8px" }}>
             <div style={{ color: "#949597" }}>
@@ -130,8 +214,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 fontSize={"11px"}
               >
                 Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
-                {authController?.authState?.user?.branch ??
-                  " Demo Bank Back Office Configuration"}
+                {authController?.authState?.user?.branch ?? ""}
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
                 Working Date:{" "}
@@ -153,19 +236,136 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             </div>
           </div>
         </Typography>
+        <Box>
+          <Box sx={{ marginBottom: "3px", paddingRight: "15px" }}>
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent={"flex-end"}
+              alignItems={"center"}
+            >
+              {/* <Avatar
+                alt="Remy Sharp"
+                src="/static/images/avatar/1.jpg"
+                sx={{ height: "35px", width: "35px" }}
+              /> */}
+              <Typography fontSize={"17px"} color={"#1C1C1C"}>
+                {/* Greetings....{" "} */}
+                {Greetings()} {authController.authState.user.id}
+              </Typography>
+              <img src={Waving_hand} alt="" style={{ height: "18px" }} />
+            </Stack>
+          </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"space-evenly"}
+            alignItems={"center"}
+          >
+            <Button
+              sx={{
+                backgroundColor: "var(--theme-color3)",
+                width: "3rem",
+                fontSize: "8px",
+                height: "2rem",
+                "&:hover": {
+                  backgroundColor: "var(--theme-color3)",
+                },
+                margin: "6px",
+              }}
+              onClick={handleStatementClick}
+            >
+              Statement
+            </Button>
 
-        <MySearchField
-          fieldKey="dashboardSearch"
-          name="dashboardSearch"
-          enableGrid={true}
-        />
-        <Language_App />
+            {openDialog && (
+              <AccountDetails
+              // openDialog={openDialog}
+              // setOpenDialog={setOpenDialog}
+              />
+            )}
 
-        <Box width={130} display={"flex"} justifyContent={"space-evenly"}>
-          <Quick_View />
-          <Notification_App />
-          <UserDetail />
+            <MySearchField
+              fieldKey="dashboardSearch"
+              name="dashboardSearch"
+              enableGrid={true}
+            />
+            <MultiLanguages />
+
+            <Box width={170} display={"flex"} justifyContent={"space-evenly"}>
+              <IconButton
+                color="inherit"
+                onClick={() => setAcctInquiry(true)}
+                style={{
+                  backgroundColor: "rgba(235, 237, 238, 0.45)",
+                  borderRadius: "10px",
+                  height: "30px",
+                  width: "30px",
+                }}
+              >
+                <PersonSearchOutlinedIcon
+                  fontSize="small"
+                  sx={{ color: "var(--theme-color3)" }}
+                />
+              </IconButton>
+              {acctInquiry && (
+                <Accountinquiry
+                  open={acctInquiry}
+                  onClose={() => setAcctInquiry(false)}
+                />
+              )}
+              <Quick_View />
+              <Notification_App />
+              <IconButton
+                onClick={() => {
+                  authController?.logout();
+                  // handleClose();
+                }}
+                sx={{
+                  backgroundColor: "rgba(235, 237, 238, 0.45)",
+                  borderRadius: "10px",
+                  height: "30px",
+                  width: "30px",
+                }}
+                aria-label="show 4 new mails"
+                color="inherit"
+              >
+                <LogoutIcon
+                  color="inherit"
+                  fontSize="small"
+                  sx={{ color: "var(--theme-color3)" }}
+                />
+              </IconButton>
+            </Box>
+          </Box>
         </Box>
+        <Stack direction="row" spacing={4} ml={1}>
+          <Box
+            className={classes.heading_user_img_border}
+            sx={{ cursor: "pointer" }}
+          >
+            <LightTooltip
+              title={
+                <>
+                  <div>User ID : {authController?.authState?.user?.id}</div>
+                  <div>Role : {authController?.authState?.roleName}</div>
+                  <div>Last Unsuccessful Login : ""</div>
+                </>
+              }
+              placement="bottom-start"
+            >
+              <Avatar
+                className={classes.heading_user_img}
+                onClick={handleNavigate}
+                alt="Remy Sharp"
+                src={
+                  Boolean(pictureURL?.profile)
+                    ? pictureURL?.profile
+                    : USER_PROFILE_DEFAULT
+                }
+              />
+            </LightTooltip>
+          </Box>
+        </Stack>
       </Toolbar>
     </AppBar>
   );

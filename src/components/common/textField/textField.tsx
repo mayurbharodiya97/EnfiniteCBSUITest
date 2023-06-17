@@ -4,6 +4,7 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
+import { TextField } from "components/styledComponent";
 import { Merge } from "../types";
 import { numWords } from "components/common/utils";
 import {
@@ -227,8 +228,10 @@ const MyTextField: FC<MyTextFieldProps> = ({
         endAdornment: validationRunning ? (
           <InputAdornment position="end">
             <CircularProgress
-              color="primary"
+              color="secondary"
               variant="indeterminate"
+              size={20}
+              style={{ marginRight: "8px" }}
               {...CircularProgressProps}
             />
           </InputAdornment>
@@ -258,6 +261,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
       }}
       onBlur={handleBlur}
       disabled={isSubmitting}
+      variant={"filled"}
+      color="secondary"
     />
   );
   if (Boolean(enableGrid)) {

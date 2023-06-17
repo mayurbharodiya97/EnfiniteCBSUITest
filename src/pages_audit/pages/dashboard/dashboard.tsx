@@ -2,38 +2,88 @@ import { DashboardLayout } from "./dashboard-layout";
 import { Box, Card, CardContent } from "@mui/material";
 import { DashboardBox } from "components/dashboard/dashboardBox";
 import { Alert } from "components/common/alert";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { QuickAccessTableGridWrapper } from "./QuickAccessTableGrid/QuickAccessTableGrid";
 import Grid from "@mui/material/Grid";
 import { TodaysTransactionTableGridWrapper } from "./Today'sTransactionGrid/TodaysTransactionTableGrid";
 import { useEffect } from "react";
 import { queryClient } from "cache";
 import { Transactions } from "components/dashboard/transactions";
-import { TrafficByDevice } from "components/dashboard/traffic-by-device";
-import { MessageBox } from "components/dashboard/messageBox";
+import { AccountStatus } from "components/dashboard/account-status";
+
+import { AuthContext } from "pages_audit/auth";
+import { MessageBox } from "components/dashboard/messageBox/messageBox";
+
+interface updateAUTHDetailDataType {
+  userID: any;
+  COMP_CD: any;
+  BRANCH_CD: any;
+}
+
+const updateAUTHDetailDataWrapperFn =
+  (updateMasterData) =>
+  async ({ userID, COMP_CD, BRANCH_CD }: updateAUTHDetailDataType) => {
+    return updateMasterData({ userID, COMP_CD, BRANCH_CD });
+  };
+
 const Dashboard = () => {
   const [isOpenSave, setIsOpenSave] = useState<any>(false);
+  const { authState } = useContext(AuthContext);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getDashboardQuickCardData"], () => API.getDashboardQuickCardData());
+  >(["getDashboardData"], () =>
+    API.getDashboardData({
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+    })
+  );
 
+  // const mutation = useMutation(
+  //   updateAUTHDetailDataWrapperFn(API.TodaysTransactionTableGrid,
+  //     userID: authState?.user?.id ?? "",
+  //         COMP_CD: authState?.companyID ?? "",
+  //         BRANCH_CD: authState?.user?.branchCode ?? "",),
+  //   {
+  //     onError: (error: any) => {},
+  //     onSuccess: (data) => {},
+  //   }
+  // );
+  const mutation = useMutation(
+    updateAUTHDetailDataWrapperFn(API.TodaysTransactionTableGrid),
+    {
+      onError: (error: any) => {},
+      onSuccess: (data) => {},
+    }
+  );
+  useEffect(() => {
+    if (data?.[0]?.CHART1?.ISVISIBLE || data?.[0]?.TODAY_TRN?.ISVISIBLE) {
+      const mutationArguments: any = {
+        userID: authState?.user?.id ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+      };
+      mutation.mutate(mutationArguments);
+    }
+  }, [data?.[0]?.CHART1?.ISVISIBLE, data?.[0]?.TODAY_TRN?.ISVISIBLE]);
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["getDashboardQuickCardData"]);
+      queryClient.removeQueries(["getDashboardData"]);
+      queryClient.removeQueries(["TodaysTransactionTableGrid"]);
     };
   }, []);
-  const handleClick = () => {
-    setIsOpenSave(true);
-    // console.log("test");
-  };
-  const handleDialogClose = () => {
-    // console.log("test");
-    setIsOpenSave(false);
-  };
+
+  // const handleClick = () => {
+  //   setIsOpenSave(true);
+  //   // console.log("test");
+  // };
+  // const handleDialogClose = () => {
+  //   // console.log("test");
+  //   setIsOpenSave(false);
+  // };
 
   return (
     <>
@@ -67,12 +117,12 @@ const Dashboard = () => {
                   <Grid item xl={3} lg={3} sm={6} md={4} xs={12} key={index}>
                     <DashboardBox
                       key={"board" + index}
-                      body={item?.DEFAULT}
+                      body={item?.DEFAULT_VAL}
                       title={item?.TITLE}
                       isSequencs={item?.DISPLAY_SEQ}
                       icon={item?.ICON}
-                      isBackground={item?.BACKGROUND}
-                      apiName={item?.APINAME}
+                      isBackground={item?.BACKGROUND_COLOUR}
+                      apiName={item?.API_NAME}
                     />
                   </Grid>
                 ))}
@@ -90,7 +140,7 @@ const Dashboard = () => {
                     </Box>
                   </Grid>
                 ) : null}
-                {data?.[0]?.ANNOUNCEMENT?.ISVISIBLE ? (
+                {data?.[0]?.MESSAGE_BOX?.ISVISIBLE ? (
                   <Grid item lg={4} md={12} xl={4} xs={12}>
                     <Card
                       style={{
@@ -112,12 +162,12 @@ const Dashboard = () => {
                 ) : null}
                 {data?.[0]?.CHART1?.ISVISIBLE ? (
                   <Grid item lg={8} md={12} xl={8} xs={12}>
-                    <Transactions />
+                    <Transactions mutation={mutation} />
                   </Grid>
                 ) : null}
                 {data?.[0]?.CHART2?.ISVISIBLE ? (
                   <Grid item lg={4} md={12} xl={4} xs={12}>
-                    <TrafficByDevice sx={{ height: "100%" }} />
+                    <AccountStatus sx={{ height: "100%" }} />
                   </Grid>
                 ) : null}
                 {data?.[0]?.TODAY_TRN?.ISVISIBLE ? (
@@ -132,7 +182,7 @@ const Dashboard = () => {
                         padding: "10px",
                       }}
                     >
-                      <TodaysTransactionTableGridWrapper />
+                      <TodaysTransactionTableGridWrapper mutation={mutation} />
                     </Box>
                   </Grid>
                 ) : null}
@@ -141,12 +191,6 @@ const Dashboard = () => {
           </Grid>
         </div>
       </Box>
-      {/* {isOpenSave ? (
-        <AllScreensGridWrapper
-          open={isOpenSave}
-          handleDialogClose={handleDialogClose}
-        />
-      ) : null} */}
     </>
   );
 };

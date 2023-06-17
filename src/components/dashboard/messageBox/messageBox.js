@@ -1,28 +1,62 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import { useQuery } from "react-query";
-import * as API from "./api";
+import * as API from "../api";
 import { queryClient } from "cache";
+import { AuthContext } from "pages_audit/auth";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { ListPopupMessageWrapper } from "./listPopupBox";
+// import { GradientButton } from "components/styledComponent/button";
+
 export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
+  const { authState } = useContext(AuthContext);
 
+  const [isOpenSave, setIsOpenSave] = useState(false);
+  const [dialogLabel, setDialogLabel] = useState("");
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
-    ["getDashboardMessageBoxData"],
-    () => API.getDashboardMessageBoxData(screenFlag)
+    [
+      "getDashboardMessageBoxData",
+      {
+        screenFlag,
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        userID: authState?.user?.id ?? "",
+      },
+    ],
+    () =>
+      API.getDashboardMessageBoxData({
+        screenFlag,
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        userID: authState?.user?.id ?? "",
+      })
   );
-  console.log("data", data);
+  const dataLength = data ? data.length : 0;
+
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["getDashboardMessageBoxData"]);
+      queryClient.removeQueries([
+        "getDashboardMessageBoxData",
+        {
+          screenFlag,
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          userID: authState?.user?.id ?? "",
+        },
+      ]);
     };
   }, []);
   const handleClick = () => {
     setToggle(!toggle);
+  };
+  const handleDialogClose = () => {
+    setIsOpenSave(false);
+  };
+  const handleLabelClick = (label) => {
+    setDialogLabel(label);
   };
 
   return (
@@ -107,13 +141,13 @@ export const MessageBox = ({ screenFlag = "" }) => {
               }}
             >
               {screenFlag === "Announcement"
-                ? "+7"
+                ? dataLength
                 : screenFlag === "Tips"
-                ? "+7"
+                ? dataLength
                 : screenFlag === "Notes"
-                ? "+7"
+                ? dataLength
                 : screenFlag === "Alert"
-                ? "+7"
+                ? dataLength
                 : null}
             </Box>
             <IconButton
@@ -150,89 +184,55 @@ export const MessageBox = ({ screenFlag = "" }) => {
           </Grid>
         </Box>
       </Grid>
-
-      {/* {isLoading || isFetching ? (
-                <LoaderPaperComponent />
-              ) : ( */}
       {toggle ? (
-        <Grid item xs={12} sm={12} md={12} style={{ margin: "5px" }}>
-          <Box
-            sx={{
-              width: "100%",
-              // maxWidth: 400,
-              bgcolor: "background.paper",
-              height: "25vh",
-              overflowY: "auto",
-              borderRadius: "10px",
-              boxShadow: "0px 11px 20px rgba(226, 236, 249, 0.5)",
-            }}
-          >
-            <nav aria-label="main mailbox folders">
-              <List
-                style={{
-                  paddingTop: "0px",
-                  paddingBottom: "0px",
+        <>
+          {isLoading || isFetching ? (
+            <LoaderPaperComponent />
+          ) : (
+            <Grid item xs={12} sm={12} md={12} style={{ margin: "5px" }}>
+              <Box
+                sx={{
+                  width: "100%",
+                  // maxWidth: 400,
+                  bgcolor: "background.paper",
+                  height: "25vh",
+                  overflowY: "auto",
+                  borderRadius: "10px",
+                  boxShadow: "0px 11px 20px rgba(226, 236, 249, 0.5)",
                 }}
               >
-                {/* {Array.from(Array(7)).map((_, index)  => (
-                  <ListItemData
-                    key={"item?.value"}
-                    name={"• Electronic payment service"}
-                    disabled={false}
-                    onClick={(event) => event}
-                  />
-                ))} */}
-                {data.map((item) => (
-                  <ListItemData
-                    key={"item?.value"}
-                    name={"• Electronic Payment Service"}
-                    disabled={false}
-                    onClick={(event) => event}
-                  />
-                ))}
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Real Time Gross Settlement"}
-                  disabled={false}
-                  onClick={(event) => event}
+                <nav aria-label="main mailbox folders">
+                  <List
+                    style={{
+                      paddingTop: "0px",
+                      paddingBottom: "0px",
+                    }}
+                  >
+                    {data.map((item, _index) => (
+                      <ListItemData
+                        key={"listItemforannounce" + _index}
+                        name={item?.label}
+                        disabled={false}
+                        onClick={() => {
+                          setIsOpenSave(true);
+                          handleLabelClick(item?.label);
+                        }}
+                      />
+                    ))}
+                  </List>
+                </nav>
+              </Box>
+              {isOpenSave ? (
+                <ListPopupMessageWrapper
+                  closeDialog={handleDialogClose}
+                  dialogLabel={dialogLabel}
+                  formView={"view"}
                 />
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Electronic Fund Transfer"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Loan payments"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Electronic Clearing service"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Automatic Teller Machine"}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-
-                <ListItemData
-                  key={"item?.value"}
-                  name={"• Accepting deposits "}
-                  disabled={false}
-                  onClick={(event) => event}
-                />
-              </List>
-            </nav>
-          </Box>
-        </Grid>
+              ) : null}
+            </Grid>
+          )}
+        </>
       ) : null}
-      {/* )} */}
     </>
   );
 };

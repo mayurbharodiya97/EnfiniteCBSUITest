@@ -84,8 +84,8 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       type: "string",
       rules: [
         { name: "required", params: ["Mobile No is required"] },
-        { name: "min", params: [11, "Mobile No should be 11 digit."] },
-        { name: "max", params: [11, "Mobile No should be 11 digit."] },
+        { name: "min", params: [10, "Mobile No should be 10 digit."] },
+        { name: "max", params: [10, "Mobile No should be 10 digit."] },
       ],
     },
     FormatProps: {
@@ -94,7 +94,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowLeadingZeros: true,
       isNumericString: true,
     },
-    StartAdornment: "+88",
+    // StartAdornment: "+88",
   },
   panCard: {
     render: {
@@ -370,7 +370,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     className: "textInputFromRight",
     FormatProps: {
       thousandSeparator: true,
-      prefix: "৳",
+      prefix: "₹ ",
       thousandsGroupStyle: "lakh",
       allowNegative: false,
       allowLeadingZeros: false,
@@ -386,5 +386,41 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       },
     },
     enableNumWords: false,
+  },
+  accountNumber: {
+    render: {
+      componentType: "numberFormat",
+    },
+    schemaValidation: {
+      type: "string",
+      rules: [
+        { name: "required", params: ["Account No is required"] },
+        {
+          name: "min",
+          params: [10, "Account No should not be less than 10 digits"],
+        },
+        {
+          name: "max",
+          params: [20, "Account No should not exceed 20 digits"],
+        },
+      ],
+    },
+    FormatProps: {
+      // format: "###########",
+      // allowNegative: false,
+      // allowLeadingZeros: true,
+      // isNumericString: true,
+    },
+  },
+  accountNumberOptional: {
+    render: {
+      componentType: "numberFormat",
+    },
+    FormatProps: {
+      // format: "###########",
+      // allowNegative: false,
+      // allowLeadingZeros: true,
+      // isNumericString: true,
+    },
   },
 };

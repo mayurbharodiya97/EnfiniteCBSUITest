@@ -23,7 +23,7 @@ export const useStyles = makeStyles((theme: any) => ({
     }),
     // width: theme.spacing(6),
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9),
+      width: theme.spacing(8),
     },
   },
   toolbarIcon: {

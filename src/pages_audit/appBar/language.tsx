@@ -21,7 +21,7 @@ export const Language_App = () => {
           style={{
             maxWidth: "100px",
             width: "100px",
-            display: "flex",
+            // display: "flex",
           }}
           disableUnderline
           variant="standard"

@@ -26,6 +26,7 @@ import {
   useAutoRefreshControls,
 } from "../utils/autoRefresh";
 import { attachFilterComponentToMetaData } from "components/dataTable/utils";
+import { useTranslation } from "react-i18next";
 export const GridWrapperWithAutoRefresh = forwardRef<any, GridWrapperPropTypes>(
   (props, ref) => {
     return (
@@ -58,17 +59,20 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
       headerToolbarStyle = {},
       onlySingleSelectionAllow = false,
       isNewRowStyle = false,
+      defaultSelectedRowId = null,
     },
     ref
   ) => {
     //console.log(finalMetaData);
     const { pause, resume } = useAutoRefreshControls();
     const metaDataRef = useRef<any>(null);
+    const { t } = useTranslation();
     if (metaDataRef.current === null) {
       metaDataRef.current = transformMetaData({
         metaData: finalMetaData,
         actions,
         setAction,
+        lanTranstlet: t,
       });
     }
     //console.log(data);
@@ -317,6 +321,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         headerToolbarStyle={headerToolbarStyle}
         onlySingleSelectionAllow={onlySingleSelectionAllow}
         isNewRowStyle={isNewRowStyle}
+        defaultSelectedRowId={defaultSelectedRowId}
       />
     );
   }
@@ -328,6 +333,7 @@ const transformMetaData = ({
   metaData: freshMetaData,
   actions,
   setAction,
+  lanTranstlet,
 }): GridMetaDataType => {
   let metaData = cloneDeep(freshMetaData) as GridMetaDataType;
   //let metaData = JSON.parse(JSON.stringify(freshMetaData)) as GridMetaDataType;
@@ -338,6 +344,11 @@ const transformMetaData = ({
   columns = attachYupSchemaValidator(columns);
   columns = attachCellComponentsToMetaData(columns);
   columns = attachAlignmentProps(columns);
+  // for language transletion code
+  columns = columns.map((item) => {
+    console.log("columnName", lanTranstlet(item.columnName));
+    return { ...item, columnName: lanTranstlet(item.columnName) };
+  });
   //call this function after attaching yup schema and methods to metaData
   columns = attachcombinedValidationFns(columns);
   columns = sortColumnsBySequence(columns);

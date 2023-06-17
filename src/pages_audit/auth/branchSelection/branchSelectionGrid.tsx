@@ -1,11 +1,12 @@
 import GridWrapper from "components/dataTableStatic";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import { BranchSelectionGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider } from "cache";
 import branchSelectionSideImage from "assets/images/sideImage.png";
 import "./css/branchSelectionGrid.css";
-import { Box, Grid } from "@mui/material";
+import { Alert } from "components/common/alert";
+import { Box, Button, Grid } from "@mui/material";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -13,7 +14,8 @@ import { useNavigate } from "react-router-dom";
 import React, { useRef } from "react";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
-
+import { queryClient } from "cache";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 const actions: ActionTypes[] = [
   {
     actionName: "back",
@@ -28,26 +30,23 @@ const actions: ActionTypes[] = [
     actionLabel: "Proceed",
     multiple: false,
     rowDoubleClick: true,
-    alwaysAvailable: false,
     actionTextColor: "var(--theme-color2)",
     actionBackground: "var(--theme-color3)",
+    onEnterSubmit: true,
   },
 ];
 
-const BranchSelectionGrid = () => {
-  const { authState, isBranchSelected, branchSelect, isLoggedIn } =
+const BranchSelectionGrid = ({ selectionMode }) => {
+  const { authState, isBranchSelected, branchSelect, isLoggedIn, logout } =
     useContext(AuthContext);
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
-  // console.log(">>authState", authState);
-  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
-    ["BranchSelectionGridData"],
-    () => API.BranchSelectionGridData({ userID: authState?.user?.id ?? "" })
-  );
-  // console.log("authState?.user?.id", authState?.user?.id);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["BranchSelectionGridData"], () => API.BranchSelectionGridData());
 
-  console.log("<<DATADATA>>", data);
   useEffect(() => {
     if (!isLoggedIn()) {
       navigate("/cbsenfinity/login");
@@ -56,43 +55,66 @@ const BranchSelectionGrid = () => {
     }
   }, [isBranchSelected, isLoggedIn]);
 
+  type MutationErrorType = {
+    severity: string;
+    error_msg: string;
+    error_detail: string;
+  };
+
   const mutation = useMutation(API.GetMenuData, {
-    onSuccess: ({ data }) => {
-      console.log("<<<<>>>>", data);
-      console.log(">>login update", { ...authState, menulistdata: data });
-      //login({ ...authState, menulistdata: data });
+    onSuccess: (data) => {
       branchSelect({ menulistdata: data });
-      //navigate("/cbsenfinity/dashboard");
     },
   });
-
+  const getError: any = mutation.error as MutationErrorType;
   const setCurrentAction = useCallback(
     (data) => {
-      // console.log(">>data", data);
       if (data.name === "proceed") {
         if (data.rows?.length === 0) {
           enqueueSnackbar("Please Select Branch", {
             variant: "error",
           });
-        } else if (data.rows?.[0]?.values?.STATUS === "Closed") {
+        } else if (data.rows?.[0]?.data?.STATUS === "Closed") {
           enqueueSnackbar("Please Select Open Branch.", {
             variant: "error",
           });
         } else {
           mutation.mutate({
-            userID: authState?.user?.id ?? "",
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
+            BASE_COMP_CD: data.rows?.[0]?.data?.BASE_COMP_CD ?? "",
+            BASE_BRANCH_CD: data.rows?.[0]?.data?.BASE_BRANCH_CD ?? "",
+            COMP_CD: data.rows?.[0]?.data?.COMP_CD ?? "",
+            BRANCH_CD: data.rows?.[0]?.data?.BRANCH_CD ?? "",
             GROUP_NAME: authState?.roleName ?? "",
+            APP_TRAN_CD: "51",
+            COMP_NM: data.rows?.[0]?.data?.COMP_NM ?? "",
+            BRANCH_NM: data.rows?.[0]?.data?.BRANCH_NM ?? "",
+            DAYEND_STATUS: data.rows?.[0]?.data?.DAYEND_STATUS ?? "",
+            EOD_RUNNING_STATUS: data.rows?.[0]?.data?.EOD_RUNNING_STATUS ?? "",
+            IS_UPD_DEF_BRANCH: authState?.user?.isUpdDefBranch ?? "",
+            COMP_BASE_BRANCH_CD:
+              data.rows?.[0]?.data?.COMP_BASE_BRANCH_CD ?? "",
+            selectionMode,
             fulldata: authState,
           });
         }
       } else {
-        navigate("/netbanking/login");
+        logout();
       }
     },
-    [navigate]
+    [navigate, data, mutation]
   );
+
+  useEffect(() => {
+    if (data?.length === 1) {
+      if (data?.[0]?.STATUS === "Closed") {
+        enqueueSnackbar("Please Select Open Branch.", {
+          variant: "error",
+        });
+      } else {
+        setCurrentAction({ name: "proceed", rows: [{ data: { ...data[0] } }] });
+      }
+    }
+  }, [JSON.stringify(data)]);
 
   return (
     <>
@@ -112,6 +134,7 @@ const BranchSelectionGrid = () => {
             alt="side-Image"
           />
         </Grid>
+
         <Grid
           item
           lg={11}
@@ -182,16 +205,39 @@ const BranchSelectionGrid = () => {
                   height: "fit-content",
                 }}
               >
-                <p className="bank-name">
-                  {`Bank Name :${authState?.companyName ?? ""}`}
-                </p>
+                <div className="bank-name-container">
+                  <p className="bank-name">
+                    {`Bank Name: ${authState?.companyName ?? ""}`}
+                  </p>
+                </div>
 
                 <p className="emp-id">
-                  {`Emp. Id :${authState?.user?.employeeID ?? ""}`}
+                  {`Emp. Id: ${authState?.user?.employeeID ?? ""}`}
                 </p>
               </Grid>
             </Grid>
 
+            {isError ? (
+              <Fragment>
+                <div style={{ width: "100%", paddingTop: "10px" }}>
+                  <Alert
+                    severity={error?.severity ?? "error"}
+                    errorMsg={error?.error_msg ?? "Error"}
+                    errorDetail={error?.error_detail ?? ""}
+                  />
+                </div>
+              </Fragment>
+            ) : mutation.isError && mutation.error ? (
+              <Fragment>
+                <div style={{ width: "100%", paddingTop: "10px" }}>
+                  <Alert
+                    severity={getError.severity ?? "error"}
+                    errorMsg={getError.error_msg ?? "Error"}
+                    errorDetail={getError.error_detail ?? ""}
+                  />
+                </div>
+              </Fragment>
+            ) : null}
             <GridWrapper
               key={`branchSelection`}
               finalMetaData={BranchSelectionGridMetaData as GridMetaDataType}
@@ -201,12 +247,30 @@ const BranchSelectionGrid = () => {
               setAction={setCurrentAction}
               controlsAtBottom={true}
               headerToolbarStyle={{
-                background: "white",
+                background: "var(--theme-color2)",
               }}
               onlySingleSelectionAllow={true}
               isNewRowStyle={true}
               loading={isLoading || isFetching || mutation.isLoading}
+              defaultSelectedRowId={authState?.user?.branchCode ?? null}
             />
+            {isError ? (
+              <Button
+                sx={{
+                  backgroundColor: "var(--theme-color3)",
+                  position: "absolute",
+                  right: "113px",
+                  bottom: "20px",
+                  width: "7rem",
+                  "&:hover": {
+                    backgroundColor: "var(--theme-color3)",
+                  },
+                }}
+                onClick={() => logout()}
+              >
+                Back
+              </Button>
+            ) : null}
           </Grid>
           {/* <Box
             style={{
@@ -230,10 +294,10 @@ const BranchSelectionGrid = () => {
   );
 };
 
-export const BranchSelectionGridWrapper = () => {
+export const BranchSelectionGridWrapper = ({ selectionMode }) => {
   return (
     <ClearCacheProvider>
-      <BranchSelectionGrid />
+      <BranchSelectionGrid selectionMode={selectionMode} />
     </ClearCacheProvider>
   );
 };

@@ -1,7 +1,6 @@
 import { SelectForGrid } from "components/common/select/renderForGrid";
 import { useState, useEffect } from "react";
 import { CellWrapper } from "./cellWrapper";
-import { CircularProgressProps } from "@material-ui/core";
 import { FormHelperText } from "@mui/material";
 
 export const DisableSelect = (props) => {
@@ -27,10 +26,10 @@ export const DisableSelect = (props) => {
   const externalError = original?._error?.[id] ?? "";
   const [loadingcall, setLoading] = useState(false);
   const [value, setValue] = useState(initialValue);
-  let CircularProgressProps = {
-    color: "secondary",
-    size: 20,
-  } as CircularProgressProps;
+  // let CircularProgressProps = {
+  //   color: "secondary",
+  //   size: 20,
+  // } as CircularProgressProps;
   const reqGridProps =
     typeof options === "string" &&
     options === "GetMiscValue" &&
@@ -82,7 +81,7 @@ export const DisableSelect = (props) => {
         optionsProps={requestProps}
         disableCaching={disableCachingOptions}
         defaultOptionLabel={defaultOptionLabel}
-        CircularProgressProps={CircularProgressProps}
+        // CircularProgressProps={CircularProgressProps}
         readOnly={true}
       />
       {Boolean(externalTouched) && Boolean(externalError) ? (

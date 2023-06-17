@@ -148,15 +148,24 @@ export const useStyles = makeStyles((theme: any) => ({
     "&:hover": {
       background: "var(--theme-color4)",
     },
-    width: "34px",
-    height: "34px",
+    width: "46px",
+    height: "46px",
   },
   marquee: {
-    animation: "$marquee 15s linear infinite",
+    animation: "$marquee 10s linear infinite",
     animationDelay: "3s",
   },
   "@keyframes marquee": {
-    "0%": { transform: "translateX(0)" },
+    "0%": { transform: "translateX(100%)" },
     "100%": { transform: "translateX(-100%)" },
+  },
+  popover: {
+    popover: {
+      maxWidth: "100%",
+      width: "fit-content",
+      "& .MuiPopover-paper": {
+        maxWidth: "100%",
+      },
+    },
   },
 }));
