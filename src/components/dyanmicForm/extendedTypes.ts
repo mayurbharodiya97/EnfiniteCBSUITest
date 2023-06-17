@@ -387,4 +387,40 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     enableNumWords: false,
   },
+  accountNumber: {
+    render: {
+      componentType: "numberFormat",
+    },
+    schemaValidation: {
+      type: "string",
+      rules: [
+        { name: "required", params: ["Account No is required"] },
+        {
+          name: "min",
+          params: [10, "Account No should not be less than 10 digits"],
+        },
+        {
+          name: "max",
+          params: [20, "Account No should not exceed 20 digits"],
+        },
+      ],
+    },
+    FormatProps: {
+      // format: "###########",
+      // allowNegative: false,
+      // allowLeadingZeros: true,
+      // isNumericString: true,
+    },
+  },
+  accountNumberOptional: {
+    render: {
+      componentType: "numberFormat",
+    },
+    FormatProps: {
+      // format: "###########",
+      // allowNegative: false,
+      // allowLeadingZeros: true,
+      // isNumericString: true,
+    },
+  },
 };

@@ -4,3 +4,4 @@ export * from "./headerCell";
 export * from "./dateCell";
 export * from "./numberCell";
 export * from "./numberFooterCell";
+export * from "./timeCell";

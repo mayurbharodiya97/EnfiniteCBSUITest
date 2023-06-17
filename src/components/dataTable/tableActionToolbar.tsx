@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme: any) => ({
           backgroundColor: lighten(theme.palette.secondary.light, 0.85),
         }
       : {
-          color: theme.palette.secondary.dark,
-          background: theme.palette.secondary.dark,
+          color: "var(--theme-color2)",
+          backgroundColor: "var(--theme-color3)",
         },
   title: {
     flex: "1 1 100%",
@@ -74,7 +74,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
           actions={singleActions}
           setAction={setGridAction}
           selectedRows={selectedRows}
-          buttonTextColor={"var(--theme-color1)"}
+          buttonTextColor={"var(--theme-color2)"}
           submitButtonRef={submitButtonRef}
         />
       ) : null}

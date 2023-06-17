@@ -1,20 +1,34 @@
-import { Dialog } from "@mui/material";
+import { Dialog, Grid, Typography } from "@mui/material";
 import { scrollMetaData } from "./metaData";
 import Report from "components/report";
 import * as API from "./api";
-import { useQuery } from "react-query";
 import { format } from "date-fns";
+import { useState, useEffect } from "react";
 
 const Scroll = ({ open, handleCloseDialog, data }) => {
-  const tranDate = format(
-    new Date(data?.[0]?.data?.TRAN_DT),
-    "dd/MMM/yyyy EEEE"
-  );
+  const [scrollData, setScrollData] = useState<any>([]);
+
+  const { TRAN_DT, SCROLL1, COMP_CD, BRANCH_CD } = data?.[0]?.data;
+  const tranDate = format(new Date(TRAN_DT), "dd/MMM/yyyy EEEE");
+  const scroll = SCROLL1;
 
   const updatedMetaData = {
     ...scrollMetaData,
-    title: `Transaction Detail of Scroll : 1925 - Date : ${tranDate}`,
+    title: `Scroll: ${scroll}`,
   };
+
+  const count = scrollData?.reduce(
+    (countObj, obj) => {
+      if (obj.DEBIT !== "") {
+        countObj.debitCount++;
+      }
+      if (obj.CREDIT !== "") {
+        countObj.creditCount++;
+      }
+      return countObj;
+    },
+    { debitCount: 0, creditCount: 0 }
+  );
 
   return (
     <Dialog open={open} maxWidth={"xl"}>
@@ -37,12 +51,33 @@ const Scroll = ({ open, handleCloseDialog, data }) => {
         }}
         onClose={handleCloseDialog}
         otherAPIRequestPara={{
-          COMP_CD: data?.[0]?.data?.COMP_CD,
-          BRANCH_CD: data?.[0]?.data?.BRANCH_CD,
-          TRAN_DATE: "08/Feb/2021",
-          AS_FLAG: Number(data?.[0]?.data?.TYPE_CD),
+          COMP_CD,
+          BRANCH_CD,
+          SCROLL1,
+        }}
+        dataTransformer={(data) => {
+          console.log(">>report data", data);
+          setScrollData(data);
+          return data;
         }}
       />
+      <Grid
+        sx={{
+          height: "32px",
+          // border: "2px solid var(--theme-color3)",
+          display: "flex",
+          alignItems: "center",
+          gap: "3.4rem",
+          marginTop: "2px",
+        }}
+      >
+        <Typography marginLeft={"10px"} fontWeight={"bold"}>
+          Credit Count : {count?.creditCount}{" "}
+        </Typography>
+        <Typography fontWeight={"bold"}>
+          Debit Count :{count?.debitCount}{" "}
+        </Typography>
+      </Grid>
     </Dialog>
   );
 };

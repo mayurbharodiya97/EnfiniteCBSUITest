@@ -148,8 +148,8 @@ export const useStyles = makeStyles((theme: any) => ({
     "&:hover": {
       background: "var(--theme-color4)",
     },
-    width: "34px",
-    height: "34px",
+    width: "46px",
+    height: "46px",
   },
   marquee: {
     animation: "$marquee 10s linear infinite",

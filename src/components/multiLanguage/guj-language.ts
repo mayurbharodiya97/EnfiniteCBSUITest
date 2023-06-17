@@ -31,4 +31,5 @@ export const guj_language_data = {
     UserID: "વપરાશકર્તા નામ",
     Name: "નામ",
   },
+  SrNo: "ક્રમ નં.",
 };

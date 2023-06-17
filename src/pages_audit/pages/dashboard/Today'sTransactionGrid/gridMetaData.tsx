@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Todays Transaction",
+    gridLabel: "Today's Transactions",
     rowIdColumn: "TRAN_CD",
 
     defaultColumnConfig: {
@@ -16,8 +16,8 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     hideHeader: false,
     disableGroupBy: true,
     enablePagination: true,
-    pageSizes: [30, 40, 50],
-    defaultPageSize: 10,
+    pageSizes: [20, 40, 50],
+    defaultPageSize: 20,
     containerHeight: {
       min: "50vh",
       max: "50vh",
@@ -31,7 +31,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "sr_no",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",

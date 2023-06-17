@@ -55,6 +55,14 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
     packageName: "",
   },
+  CATEGORYNAME: {
+    url: "/customerServiceAPI/CATEGORYNAME",
+    packageName: "",
+  },
+  GETAREA: {
+    url: "/customerServiceAPI/GETAREA",
+    packageName: "",
+  },
   GETBANKIMAGEANDPROFILEPIC: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
     packageName: "",
@@ -113,6 +121,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETTRANSCROLLDETAIL: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRANSCROLLDETAIL",
+    packageName: "",
+  },
+  UPDATEPROFILEPIC: {
+    url: "/enfinityCommonServiceAPI/UPDATEPROFILEPIC",
     packageName: "",
   },
 };
