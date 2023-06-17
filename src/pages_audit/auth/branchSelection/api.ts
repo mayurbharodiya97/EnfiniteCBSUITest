@@ -33,6 +33,7 @@ export const GetMenuData = async ({
   EOD_RUNNING_STATUS,
   IS_UPD_DEF_BRANCH,
   COMP_BASE_BRANCH_CD,
+  selectionMode,
   fulldata,
 }) => {
   await AuthSDK.Getfingerprintdata();
@@ -55,7 +56,7 @@ export const GetMenuData = async ({
       EOD_RUNNING_STATUS: EOD_RUNNING_STATUS,
       IS_UPD_DEF_BRANCH: IS_UPD_DEF_BRANCH,
       BRANCH_CD: BRANCH_CD,
-      BRANCH_SELECTION_MODE: "S",
+      BRANCH_SELECTION_MODE: selectionMode,
     });
   if (status === "0") {
     return data;

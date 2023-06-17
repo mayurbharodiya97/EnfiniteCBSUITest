@@ -123,7 +123,7 @@ export const Quick_View = () => {
                         Switch Branch
                       </ListItemButton>
                     </ListItem>
-                    {data.map((item) => (
+                    {data?.map((item) => (
                       <ListItem
                         key={item}
                         disablePadding

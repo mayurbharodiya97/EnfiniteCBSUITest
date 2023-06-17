@@ -4,7 +4,6 @@ import {
   TextField3,
   TextField,
 } from "components/styledComponent";
-import MenuItem from "@material-ui/core/MenuItem";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { OptionsProps, Merge } from "../types";
 import { getLabelFromValues } from "../utils";
@@ -12,6 +11,7 @@ import {
   CircularProgress,
   CircularProgressProps,
   InputAdornment,
+  MenuItem,
   MenuItemProps,
   SelectProps,
   TextFieldProps,
@@ -91,7 +91,7 @@ export const SelectWithoutOptions: FC<MySelectProps> = ({
       <MenuItem
         {...MenuItemProps}
         //keep button value to true else keyboard navigation for select will stop working
-        button={true}
+        // button={true}
         key={menuItem.value ?? index}
         value={menuItem.value}
         disabled={menuItem.disabled}

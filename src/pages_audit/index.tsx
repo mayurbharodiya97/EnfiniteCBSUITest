@@ -17,7 +17,7 @@ const EntryPoint = () => (
         <Route path="forgotpassword" element={<ForgotPasswordController />} />
         <Route
           path="branch-selection/*"
-          element={<BranchSelectionGridWrapper />}
+          element={<BranchSelectionGridWrapper selectionMode={"S"} />}
         />
         <Route
           path="*"

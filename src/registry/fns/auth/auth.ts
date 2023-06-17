@@ -8,11 +8,13 @@ const authAPI = () => {
   let loginuserDetailsData: any = {};
   let browserFingerPrint = "";
   let accessToken: any | null = null;
+  let displayLanguage = "en";
   const inititateAPI = (APIURL: string, PACKAGE_NAME: string) => {
     baseURL = new URL(APIURL);
     PackageName = PACKAGE_NAME;
     GetBrowserFingerPrint();
   };
+
   const Getfingerprintdata = async () => {
     let retvalue = browserFingerPrint;
     if (!Boolean(browserFingerPrint)) {
@@ -33,7 +35,9 @@ const authAPI = () => {
     browserFingerPrint = fingerprintdata;
     return fingerprintdata;
   };
-
+  const setDisplayLanguage = (code) => {
+    displayLanguage = code;
+  };
   const loginUserDetails = ({ role, user: { id, branchCode } }) => {
     loginuserDetailsData = {
       USERNAME: id,
@@ -75,11 +79,22 @@ const authAPI = () => {
       }
       let response = await fetchWithTimeout(new URL(apiurl, baseURL).href, {
         method: "POST",
-        headers: { ...header, "Content-Type": "application/json" },
+        headers: {
+          DISPLAY_LANGUAGE: displayLanguage,
+          ...header,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           ACTION: "",
-          DISPLAY_LANGUAGE: "en",
+          DISPLAY_LANGUAGE: displayLanguage,
           BROWSER_FINGERPRINT: browserFingerPrint,
+          LOGINUSERDETAILS: {
+            USERNAME: payload.USER_ID ?? loginuserDetailsData?.USERNAME ?? "",
+            USERROLE: loginuserDetailsData?.USERROLE ?? "role",
+            BROWSER_FINGERPRINT: browserFingerPrint,
+            MACHINE_NAME_FRONT: "",
+            BRANCH_CD: loginuserDetailsData?.BRANCH_CD ?? "",
+          },
           ...payload,
         }),
         timeout: timeout,
@@ -94,7 +109,7 @@ const authAPI = () => {
           message: data?.MESSAGE ?? "",
           data: data?.RESPONSE ?? [],
           messageDetails: data?.RESPONSEMESSAGE ?? "",
-          responseType: data?.RESPONSE_TYPE ?? "",
+          responseType: data?.RESPONSE?.[0]?.RESPONSE_TYPE ?? "",
           access_token: data?.ACCESS_TOKEN ?? data,
         };
       } else {
@@ -152,6 +167,7 @@ const authAPI = () => {
         {
           method: "POST",
           headers: {
+            DISPLAY_LANGUAGE: displayLanguage,
             ...header,
             "Content-Type": "application/json",
             Authorization: utilFunction.getAuthorizeTokenText(
@@ -163,7 +179,7 @@ const authAPI = () => {
           },
           body: JSON.stringify({
             ACTION: "",
-            DISPLAY_LANGUAGE: "en",
+            DISPLAY_LANGUAGE: displayLanguage,
             LOGINUSERDETAILS: loginuserDetailsData,
             ...payload,
           }),
@@ -289,6 +305,7 @@ const authAPI = () => {
     removeToken,
     getToken,
     Getfingerprintdata,
+    setDisplayLanguage,
   };
 };
 

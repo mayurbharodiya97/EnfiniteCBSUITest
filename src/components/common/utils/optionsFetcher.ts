@@ -82,6 +82,17 @@ export const useOptionsFetcher = (
           },
           ...options,
         ];
+        const uniqueOptions = options.filter(
+          (option, index, self) =>
+            index ===
+            self.findIndex(
+              (obj) =>
+                obj.label === option.label &&
+                obj.value === option.value &&
+                obj.disabled === option.disabled
+            )
+        );
+        options = uniqueOptions;
       }
       setOptions(options);
       loadingOptions = false;

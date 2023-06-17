@@ -45,12 +45,12 @@ export const Transactions = ({ mutation, ...props }) => {
       let displayRejectData = [];
       let displayPendingData = [];
       let displayLable = [];
-      let retData = { CONFIRMED: {}, REJECT: {}, PENDING: {} };
+      let retData = { CONFIRM: {}, REJECT: {}, PENDING: {} };
       let uniqueType = new Set();
       mutation?.data?.forEach((item) => {
-        if (item?.CONFIRMED === "Y") {
-          retData.CONFIRMED[item?.TYPE_CD] =
-            (retData.CONFIRMED[item?.TYPE_CD] ?? 0) + 1;
+        if (item?.CONFIRM === "Y") {
+          retData.CONFIRM[item?.TYPE_CD] =
+            (retData.CONFIRM[item?.TYPE_CD] ?? 0) + 1;
         } else if (item?.REJECT === "N") {
           retData.REJECT[item?.TYPE_CD] =
             (retData.REJECT[item?.TYPE_CD] ?? 0) + 1;
@@ -65,7 +65,7 @@ export const Transactions = ({ mutation, ...props }) => {
         .sort()
         .forEach((item) => {
           displayLable.push(item);
-          displayConfirmData.push(retData.CONFIRMED[item] ?? 0);
+          displayConfirmData.push(retData.CONFIRM[item] ?? 0);
           displayRejectData.push(retData.REJECT[item] ?? 0);
           displayPendingData.push(retData.PENDING[item] ?? 0);
         });
@@ -110,8 +110,7 @@ export const Transactions = ({ mutation, ...props }) => {
         ],
         labels: displayLable,
       };
-    }
-    if (optionValue === "U") {
+    } else if (optionValue === "U") {
       let displayCheckerData = [];
       let displayMakerData = [];
       let displayLable = [];
@@ -136,12 +135,6 @@ export const Transactions = ({ mutation, ...props }) => {
           displayCheckerData.push(retData.CHECKER[item] ?? 0);
           displayMakerData.push(retData.MAKER[item] ?? 0);
         });
-      // Object.keys(retData)
-      //   .sort()
-      //   .forEach((item) => {
-      //     displayData.push(retData[item]);
-      //     displayLable.push(item);
-      //   });
 
       return {
         datasets: [
@@ -168,22 +161,77 @@ export const Transactions = ({ mutation, ...props }) => {
         ],
         labels: displayLable,
       };
+    } else if (optionValue === "S") {
+      let displayConfirmData = [];
+      let displayRejectData = [];
+      let displayPendingData = [];
+      let displayLable = [];
+      let retData = { CONFIRM: {}, REJECT: {}, PENDING: {} };
+      let uniqueType = new Set();
+      mutation?.data?.forEach((item) => {
+        if (item?.CONFIRM === "Y") {
+          if (retData.CONFIRM[item]) {
+            retData.CONFIRM[item] += 1;
+          } else {
+            retData.CONFIRM[item] = 1;
+          }
+        } else if (item?.REJECT === "N") {
+          if (retData.REJECT[item]) {
+            retData.REJECT[item] += 1;
+          } else {
+            retData.REJECT[item] = 1;
+          }
+        } else {
+          if (retData.PENDING[item]) {
+            retData.PENDING[item] += 1;
+          } else {
+            retData.PENDING[item] = 1;
+          }
+        }
+        uniqueType.add(item?.CONFIRM);
+        uniqueType.add(item?.REJECT);
+        uniqueType.add(item?.PENDING);
+      });
+
+      Array.from(uniqueType)
+        .sort()
+        .forEach((item) => {
+          displayLable.push(item);
+          displayConfirmData.push(retData.CONFIRM[item] ?? 0);
+          displayRejectData.push(retData.REJECT[item] ?? 0);
+          displayPendingData.push(retData.PENDING[item] ?? 0);
+        });
+
+      return {
+        datasets: [
+          {
+            backgroundColor: "#4263c7",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: [
+              Object.values(retData.CONFIRM).reduce((a, b) => a + b, 0),
+              Object.values(retData.REJECT).reduce((a, b) => a + b, 0),
+              Object.values(retData.PENDING).reduce((a, b) => a + b, 0),
+            ],
+            label: "Transaction",
+            maxBarThickness: 10,
+          },
+        ],
+        labels: [
+          "CONFIRM (" +
+            Object.values(retData.CONFIRM).reduce((a, b) => a + b, 0) +
+            ")",
+          "REJECT (" +
+            Object.values(retData.REJECT).reduce((a, b) => a + b, 0) +
+            ")",
+          "PENDING (" +
+            Object.values(retData.PENDING).reduce((a, b) => a + b, 0) +
+            ")",
+        ],
+      };
     }
-    return {
-      datasets: [
-        {
-          backgroundColor: "#4263c7",
-          barPercentage: 1,
-          barThickness: 12,
-          borderRadius: 4,
-          categoryPercentage: 1,
-          data: [10, 25, 35],
-          label: "Transaction",
-          maxBarThickness: 10,
-        },
-      ],
-      labels: ["Confirmed", "Pending", "Reject"],
-    };
   }, [mutation?.data, optionValue]);
   const options = {
     animation: false,
@@ -281,7 +329,7 @@ export const Transactions = ({ mutation, ...props }) => {
         style={{ color: "var(--theme-color1)" }}
       />
       <Divider />
-      <CardContent style={{ padding: "10px", height: "43vh" }}>
+      <CardContent style={{ padding: "10px", height: "61vh" }}>
         <Box
           sx={{
             height: "98%",

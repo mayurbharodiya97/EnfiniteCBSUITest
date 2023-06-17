@@ -3,10 +3,14 @@ import { TextField } from "components/styledComponent";
 import { useField, UseFieldHookProps } from "packages/form";
 import { OptionsProps, Merge, dependentOptionsFn } from "../types";
 import { getLabelFromValues, useOptionsFetcher } from "../utils";
-import { Grid, GridProps, MenuItemProps, SelectProps } from "@mui/material";
-import { MenuItem } from "@material-ui/core";
-import { TextFieldProps } from "@material-ui/core";
-
+import {
+  Grid,
+  GridProps,
+  MenuItem,
+  MenuItemProps,
+  SelectProps,
+} from "@mui/material";
+import { TextFieldProps } from "@mui/material";
 interface MyAmountInProps {
   leftName: string;
   rightName: string;
@@ -82,7 +86,7 @@ const AmountIn: FC<MyAllAmountInProps> = ({
   const menuItems = _options.map((menuItem, index) => {
     return (
       <MenuItem
-        button={true}
+        // button={true}
         key={menuItem.value ?? index}
         value={menuItem.value}
       >
@@ -136,10 +140,10 @@ const AmountIn: FC<MyAllAmountInProps> = ({
         InputLabelProps={{
           shrink: true,
         }}
-        InputProps={{
-          endAdornment: loadingOptions,
-          ...InputProps,
-        }}
+        // inputProps={{
+        //   endAdornment: loadingOptions,
+        //   ...InputProps,
+        // }}
       >
         {menuItems}
       </TextField>

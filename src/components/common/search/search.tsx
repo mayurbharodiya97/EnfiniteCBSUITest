@@ -19,9 +19,7 @@ import {
 } from "@mui/material";
 import { Merge } from "../types";
 import { TextField } from "components/styledComponent";
-// import SearchIcon from "@material-ui/icons/Search";
 import Search from "@mui/icons-material/Search";
-import { ModalManager } from "@material-ui/core";
 
 interface MyGridExtendedProps {
   maxLength?: number;
@@ -181,10 +179,10 @@ const MySearchField: FC<MySearchFieldProps> = ({
         //     </FormHelperText>
         //   </div>
         // }
-        FormHelperTextProps={{
-          //@ts-ignore
-          component: "div",
-        }}
+        // FormHelperTextProps={{
+        //   //@ts-ignore
+        //   component: "div",
+        // }}
         //@ts-ignore
         InputProps={{
           disableUnderline: true,

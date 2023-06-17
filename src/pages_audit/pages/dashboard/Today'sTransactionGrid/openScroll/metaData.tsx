@@ -1,57 +1,78 @@
 import { components, filters } from "components/report";
 
 export const scrollMetaData = {
-  title: "Transaction Detail of Scroll : 1925 - Date : 04/06/2023 Sunday",
+  title: "",
   disableGroupBy: true,
-  hideFooter: "",
-  hideAmountIn: "False",
-  retrievalType: "DATEAPUSERSLIST",
+  hideFooter: false,
+  hideAmountIn: true,
+  retrievalType: "",
   groupBy: [""],
   columns: [
     {
-      columnName: "A/C Holder",
-      accessor: "ACCOUNT_HOLDER",
-      width: 140,
+      columnName: "V.No.",
+      accessor: "TRAN_CD",
+      width: 100,
     },
-    // {
-    //   columnName: "Date",
-    //   accessor: "TRAN_DT",
-    //   width: 160,
-    //   Cell: components.DateCell,
-    //   type: "default",
-    // },
+    {
+      columnName: "A/C Number",
+      accessor: "ACCT_NO",
+      width: 180,
+    },
+    {
+      columnName: "A/C Holder",
+      accessor: "ACCT_NM",
+      width: 310,
+    },
+    {
+      columnName: "Remarks",
+      accessor: "REMARKS",
+      width: 310,
+    },
+    //
+
     {
       columnName: "Cheque No.",
       accessor: "CHEQUE_NO",
-      width: 140,
+      width: 120,
       type: "default",
     },
     {
       columnName: "Credit",
       accessor: "CREDIT",
-      width: 170,
+      width: 150,
+      color: "green",
+      isDisplayTotal: true,
     },
 
     {
       columnName: "Debit",
       accessor: "DEBIT",
+      width: 150,
+      color: "red",
+      isDisplayTotal: true,
+    },
+    {
+      columnName: "Tr.Branch",
+      accessor: "BRANCH_CD",
+      width: 100,
+    },
+    {
+      columnName: "Entry Time",
+      accessor: "TIME",
+      Cell: components.TimeCell,
+      width: 120,
+    },
+    {
+      columnName: "Maker",
+      accessor: "MAKER",
       // Filter: filters.SelectColumnFilter,
       width: 150,
     },
     {
-      columnName: "V.No.",
-      accessor: "V_NO",
-      width: 200,
-    },
-    {
-      columnName: "Tr.Branch",
-      accessor: "TR_BRANCH",
-      width: 200,
-    },
-    {
-      columnName: "Entry Date",
-      accessor: "ENTRY_DATE",
-      width: 200,
+      columnName: "Checker",
+      accessor: "CHECKER",
+      // Filter: filters.SelectColumnFilter,
+      width: 150,
     },
   ],
 };

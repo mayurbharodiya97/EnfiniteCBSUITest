@@ -9,11 +9,7 @@ import {
   lazy,
   Suspense,
 } from "react";
-import { TextFieldProps } from "@material-ui/core/TextField";
-import Autocomplete, {
-  AutocompleteProps,
-  // createFilterOptions,
-} from "@mui/material/Autocomplete";
+import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import { CreateFilterOptionsConfig } from "@mui/material/useAutocomplete";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
@@ -26,6 +22,7 @@ import {
   ChipProps,
   CircularProgress,
   CircularProgressProps,
+  TextFieldProps,
   createFilterOptions,
 } from "@mui/material";
 

@@ -36,7 +36,7 @@ const actions: ActionTypes[] = [
   },
 ];
 
-const BranchSelectionGrid = () => {
+const BranchSelectionGrid = ({ selectionMode }) => {
   const { authState, isBranchSelected, branchSelect, isLoggedIn, logout } =
     useContext(AuthContext);
   const navigate = useNavigate();
@@ -93,6 +93,7 @@ const BranchSelectionGrid = () => {
             IS_UPD_DEF_BRANCH: authState?.user?.isUpdDefBranch ?? "",
             COMP_BASE_BRANCH_CD:
               data.rows?.[0]?.data?.COMP_BASE_BRANCH_CD ?? "",
+            selectionMode,
             fulldata: authState,
           });
         }
@@ -293,10 +294,10 @@ const BranchSelectionGrid = () => {
   );
 };
 
-export const BranchSelectionGridWrapper = () => {
+export const BranchSelectionGridWrapper = ({ selectionMode }) => {
   return (
     <ClearCacheProvider>
-      <BranchSelectionGrid />
+      <BranchSelectionGrid selectionMode={selectionMode} />
     </ClearCacheProvider>
   );
 };
