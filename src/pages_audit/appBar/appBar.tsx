@@ -301,12 +301,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               {t("appBar.Statement")}
             </Button>
 
-            {openDialog && (
-              <AccountDetails
-              // openDialog={openDialog}
-              // setOpenDialog={setOpenDialog}
-              />
-            )}
+            {openDialog && <AccountDetails columns={columns} />}
 
             <MySearchField
               fieldKey="dashboardSearch"

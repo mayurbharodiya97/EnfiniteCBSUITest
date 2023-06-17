@@ -12,7 +12,7 @@ import Dashboard from "./pages/dashboard/dashboard";
 import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 import { OperationsMenu } from "./pages/operations";
 import AccountDetails from "./pages/STATEMENT/accountDetails";
-export const PagesAudit = (props) => {
+export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
   const [drawerOpen, setDrawerState] = useState(true);
   const handleDrawerOpen = () => setDrawerState(true);
@@ -27,6 +27,7 @@ export const PagesAudit = (props) => {
           open={drawerOpen}
           handleDrawerOpen={handleDrawerOpen}
           handleDrawerClose={handleDrawerClose}
+          columns={columns}
         />
         <Drawer
           open={drawerOpen}
@@ -46,7 +47,10 @@ export const PagesAudit = (props) => {
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
                 <Route path="operation/*" element={<OperationsMenu />} />
-                <Route path="view-statement/*" element={<AccountDetails />} />
+                <Route
+                  path="view-statement/*"
+                  element={<AccountDetails columns={columns} />}
+                />
                 {/* <Route
                   path="branch-selection/*"
                   element={<BranchSelectionGridWrapper  />}
