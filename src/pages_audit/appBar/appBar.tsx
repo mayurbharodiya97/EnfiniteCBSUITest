@@ -33,6 +33,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import { UserDetail } from "./userDetail";
 import { useQuery } from "react-query";
 import { utilFunction } from "components/utils";
+import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
@@ -255,7 +256,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               name="dashboardSearch"
               enableGrid={true}
             />
-            <Language_App />
+            <MultiLanguages />
 
             <Box width={130} display={"flex"} justifyContent={"space-evenly"}>
               <Quick_View />

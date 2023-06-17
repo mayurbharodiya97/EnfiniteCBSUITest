@@ -31,7 +31,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "sr_no",
-      columnName: "Sr.No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "left",
       componentType: "default",
