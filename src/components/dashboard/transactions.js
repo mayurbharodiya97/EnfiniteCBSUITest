@@ -185,7 +185,6 @@ export const Transactions = ({ mutation, ...props }) => {
       labels: ["Confirmed", "Pending", "Reject"],
     };
   }, [mutation?.data, optionValue]);
-  console.log("data", data);
   const options = {
     animation: false,
     cornerRadius: 20,
