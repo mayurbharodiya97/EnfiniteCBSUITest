@@ -17,9 +17,7 @@ import {
   Avatar,
   Box,
   Button,
-  Popover,
   Stack,
-  TextareaAutosize,
   Toolbar,
   Tooltip,
   Typography,
@@ -29,14 +27,15 @@ import { Notification_App } from "./notification";
 import { Quick_View } from "./quickView";
 import { Language_App } from "./language";
 import MySearchField from "components/common/search/search";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { UserDetail } from "./userDetail";
 import { useQuery } from "react-query";
 import { utilFunction } from "components/utils";
+import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
+
 export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
+  const [openDialog, setOpenDialog] = useState<any>(false);
   const [pictureURL, setPictureURL] = useState<any | null>({
     bank: "",
     profile: "",
@@ -113,6 +112,14 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
 
     return <span>Good {greet},</span>;
   };
+
+  const handleStatementClick = () => {
+    const newWindow = window.open("./view-statement", "_blank");
+    if (newWindow) {
+      newWindow.focus();
+    }
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -251,6 +258,29 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             justifyContent={"space-evenly"}
             alignItems={"center"}
           >
+            <Button
+              sx={{
+                backgroundColor: "var(--theme-color3)",
+                width: "3rem",
+                fontSize: "8px",
+                height: "2rem",
+                "&:hover": {
+                  backgroundColor: "var(--theme-color3)",
+                },
+                margin: "6px",
+              }}
+              onClick={handleStatementClick}
+            >
+              Statement
+            </Button>
+
+            {openDialog && (
+              <AccountDetails
+              // openDialog={openDialog}
+              // setOpenDialog={setOpenDialog}
+              />
+            )}
+
             <MySearchField
               fieldKey="dashboardSearch"
               name="dashboardSearch"

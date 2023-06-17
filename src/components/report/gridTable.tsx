@@ -96,6 +96,7 @@ const RenderFooter = ({ footerGroup }) => {
             component="div"
           >
             {column.render("Footer")}
+            {console.log(column, "column")}
           </TableCell>
         );
       })}
@@ -197,7 +198,7 @@ export const GridTable: FC<GridTableType> = ({
         <Toolbar
           variant="dense"
           style={{
-            backgroundColor: "var(--theme-color1)",
+            background: "var(--theme-color5)",
           }}
         >
           <Typography variant="h5" color="primary">
@@ -255,7 +256,11 @@ export const GridTable: FC<GridTableType> = ({
               <Tooltip title="Download">
                 <IconButton
                   onClick={() =>
-                    createNewWorkbook({ data: data, title: title })
+                    createNewWorkbook({
+                      data: data,
+                      title: title,
+                      columns: columns,
+                    })
                   }
                   size="small"
                   color="primary"
