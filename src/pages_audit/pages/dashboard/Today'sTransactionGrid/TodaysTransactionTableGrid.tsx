@@ -1,17 +1,11 @@
 import GridWrapper from "components/dataTableStatic";
 import { TodaysTransactionTableGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
-import { useMutation, useQuery } from "react-query";
-import * as API from "./openScroll/api";
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { ClearCacheProvider } from "cache";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import Scroll from "./openScroll/scroll";
-import { Route, Routes, useNavigate } from "react-router-dom";
 import { Alert } from "components/common/alert";
-import { Dialog, Grid, Typography } from "@mui/material";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { AuthContext } from "pages_audit/auth";
-import { format } from "date-fns";
+import { Box, Grid, Typography } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {
@@ -26,11 +20,18 @@ const actions: ActionTypes[] = [
 ];
 
 const TodaysTransactionTableGrid = ({ mutation }) => {
+  // const [enableClick, setEnableClick] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [rowsData, setRowsData] = useState({});
   const setCurrentAction = useCallback((data) => {
     setRowsData(data.rows);
-    setDialogOpen(true);
+    if (
+      data?.rows?.[0].data?.TYPE_CD === "3" ||
+      data?.rows?.[0].data?.TYPE_CD === "6"
+    ) {
+      setDialogOpen(true);
+    }
+    console.log(data.rows, "data.rows");
   }, []);
 
   const handleCloseDialog = () => {
@@ -40,18 +41,18 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
   const confirmedCount = mutation?.data?.filter(
     (item) => item.CONFIRM === "Y"
   ).length;
-  const pendingCount = mutation?.data?.filter(
-    (item) => item.PENDING === "0"
-  ).length;
+
   const rejectedCount = mutation?.data?.filter(
     (item) => item.CONFIRM === "N"
   ).length;
+  // useEffect(() => {
+  //   setEnableClick(mutation?.data?.map((item) => item?.TYPE_CD === "3"));
+  // }, [enableClick]);
+
+  // console.log("enableClick", mutation?.data);
 
   return (
     <>
-      <Typography>{`Confirmed Trasaction: ${confirmedCount}`}</Typography>
-      <Typography>{`Rejected Trasaction: ${rejectedCount}`}</Typography>
-      <Typography>{`Pending Trasaction :${pendingCount}`}</Typography>
       {mutation.isError ? (
         <Fragment>
           <div style={{ width: "100%", paddingTop: "10px" }}>
@@ -71,12 +72,35 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
         actions={actions}
         setAction={setCurrentAction}
         headerToolbarStyle={{
-          backgroundColor: "var(--theme-color2)",
+          background: "var(--theme-color2)",
           color: "black",
         }}
         loading={mutation.isLoading || mutation.isFetching}
       />
-
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        sx={{
+          // backgroundColor: "blueviolet",
+          height: "23px",
+          width: "60%",
+          float: "right",
+          position: "relative",
+          top: "-2.67rem",
+          display: "flex",
+          // justifyContent: "space-evenly",
+          gap: "4rem",
+          alignItems: "center",
+        }}
+      >
+        <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+          Confirmed Count : {confirmedCount}
+        </Typography>
+        <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+          Rejected Count :{rejectedCount}
+        </Typography>
+      </Grid>
       {dialogOpen && (
         <Scroll
           data={rowsData}
