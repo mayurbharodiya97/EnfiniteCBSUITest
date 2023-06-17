@@ -24,6 +24,7 @@ import { styled } from "@mui/material/styles";
 // import Logo from "src/assets/images/easy_bankcore_Logo.png";
 import * as API from "./api";
 import { useQuery } from "react-query";
+import { createNewWorkbook } from "components/report/export";
 
 const StyledTableContainer = styled(TableContainer)({
   display: "flex",
@@ -35,7 +36,7 @@ const StyledTableHeaderCell = styled(TableCell)({
   fontWeight: "bold",
 });
 
-const AccountDetails = () => {
+const AccountDetails = ({ columns }) => {
   const styles = {
     root: {
       maxWidth: "100%",
@@ -129,7 +130,17 @@ const AccountDetails = () => {
               xl={2}
               sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
             >
-              <GradientButton>DOWNLOAD</GradientButton>
+              <GradientButton
+                onClick={() =>
+                  createNewWorkbook({
+                    data: data,
+                    title: "SHEET@@@",
+                    columns: AccountDetailsGridMetaData.columns,
+                  })
+                }
+              >
+                DOWNLOAD
+              </GradientButton>
               <GradientButton onClick={() => window.close()}>
                 CLOSE
               </GradientButton>

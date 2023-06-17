@@ -31,7 +31,12 @@ import { useQuery } from "react-query";
 import { utilFunction } from "components/utils";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 
-export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
+export const MyAppBar = ({
+  handleDrawerOpen,
+  handleDrawerClose,
+  open,
+  columns,
+}) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
@@ -274,12 +279,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               Statement
             </Button>
 
-            {openDialog && (
-              <AccountDetails
-              // openDialog={openDialog}
-              // setOpenDialog={setOpenDialog}
-              />
-            )}
+            {openDialog && <AccountDetails columns={columns} />}
 
             <MySearchField
               fieldKey="dashboardSearch"
