@@ -369,6 +369,9 @@ export const Profile = () => {
                             variant="h5"
                             fontWeight={500}
                             display={"inline"}
+                            sx={{
+                              textTransform: "capitalize",
+                            }}
                           >
                             {queryData?.data?.USERNAME} -{" "}
                             {/* {queryData?.data?.USER_LEVEL} */}
