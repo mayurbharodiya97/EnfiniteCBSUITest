@@ -99,6 +99,14 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRANSCROLLDETAIL",
     packageName: "",
   },
+  UPDATEPROFILEPIC: {
+    url: "/enfinityCommonServiceAPI/UPDATEPROFILEPIC",
+    packageName: "",
+  },
+  GETACCTVIEWMKR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTVIEWMKR",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

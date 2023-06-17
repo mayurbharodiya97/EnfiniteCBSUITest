@@ -16,9 +16,6 @@ import { SimpleFormWrapper } from "./simpleForm";
 import { TabsFormWrapper } from "./tabsForm";
 import { extendedMetaData } from "./extendedTypes";
 import { useStyles } from "./style";
-import { LocalizationProvider } from "@mui/lab";
-import AdapterDayjs from "@mui/lab/AdapterDayjs";
-import DateFnsUtils from "@date-io/date-fns";
 
 export const FormWrapper = forwardRef<FormWrapperProps, any>(
   (

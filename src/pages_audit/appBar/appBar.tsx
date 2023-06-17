@@ -12,6 +12,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import * as API from "./api";
 import { styled } from "@mui/material/styles";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
+import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import {
   AppBar,
   Avatar,
@@ -33,10 +34,12 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import { UserDetail } from "./userDetail";
 import { useQuery } from "react-query";
 import { utilFunction } from "components/utils";
+import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
+  const [acctInquiry, setAcctInquiry] = useState(false);
   const [pictureURL, setPictureURL] = useState<any | null>({
     bank: "",
     profile: "",
@@ -258,7 +261,28 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             />
             <Language_App />
 
-            <Box width={130} display={"flex"} justifyContent={"space-evenly"}>
+            <Box width={170} display={"flex"} justifyContent={"space-evenly"}>
+              <IconButton
+                color="inherit"
+                onClick={() => setAcctInquiry(true)}
+                style={{
+                  backgroundColor: "rgba(235, 237, 238, 0.45)",
+                  borderRadius: "10px",
+                  height: "30px",
+                  width: "30px",
+                }}
+              >
+                <PersonSearchOutlinedIcon
+                  fontSize="small"
+                  sx={{ color: "var(--theme-color3)" }}
+                />
+              </IconButton>
+              {acctInquiry && (
+                <Accountinquiry
+                  open={acctInquiry}
+                  onClose={() => setAcctInquiry(false)}
+                />
+              )}
               <Quick_View />
               <Notification_App />
               <IconButton
