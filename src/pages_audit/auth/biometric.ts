@@ -8,29 +8,29 @@ const decryptString = (encryptString: string) => {
   });
   console.log(keyBytes.toString());
 
-  // // take first 32 bytes as key (like in C# code)
-  // var key = new CryptoJS.lib.WordArray.init(keyBytes.words, 32);
+  // take first 32 bytes as key (like in C# code)
+  var key = new CryptoJS.lib.WordArray.init(keyBytes.words, 32);
 
-  // // // skip first 32 bytes and take next 16 bytes as IV
-  // var iv = new CryptoJS.lib.WordArray.init(keyBytes.words.splice(32 / 4), 16);
+  // // skip first 32 bytes and take next 16 bytes as IV
+  var iv = new CryptoJS.lib.WordArray.init(keyBytes.words.splice(32 / 4), 16);
 
-  // // console.log(key.toString());
-  // //console.log(encryptString, CryptoJS.enc.Base64.parse(encryptString));
+  // console.log(key.toString());
+  //console.log(encryptString, CryptoJS.enc.Base64.parse(encryptString));
 
-  // var dec = CryptoJS.AES.decrypt(
-  //   {
-  //     ciphertext: CryptoJS.enc.Base64.parse(
-  //       CryptoJS.enc.Base64.parse(encryptString).toString(CryptoJS.enc.Utf8)
-  //     ),
-  //   },
-  //   key,
-  //   {
-  //     iv: iv,
-  //   }
-  // );
-  //console.log("CryptoJS.AES.decrypt", dec);
-  // return dec.toString(CryptoJS.enc.Utf8).split(String.fromCharCode(0)).join("");
-  // return dec.toString();
+  var dec = CryptoJS.AES.decrypt(
+    {
+      ciphertext: CryptoJS.enc.Base64.parse(
+        CryptoJS.enc.Base64.parse(encryptString).toString(CryptoJS.enc.Utf8)
+      ),
+    },
+    key,
+    {
+      iv: iv,
+    }
+  );
+  console.log("CryptoJS.AES.decrypt", dec);
+  return dec.toString(CryptoJS.enc.Utf8).split(String.fromCharCode(0)).join("");
+  return dec.toString();
 };
 
 export const matchFinger = async (rows: any, captureFinger: string) => {
