@@ -96,7 +96,6 @@ const RenderFooter = ({ footerGroup }) => {
             component="div"
           >
             {column.render("Footer")}
-            {console.log(column, "column")}
           </TableCell>
         );
       })}

@@ -16,9 +16,14 @@ export const QuickAccessTableGridDataAAAAA = async () => {
   // }
   return [
     {
+      DATE: "",
       NARRATION: "OPENING BALANCE",
+      CHEQUE_NO: "",
+      DEBIT: "",
+      CREDIT: "",
       BALANCE: "0.00",
-      ID: "1s",
+      TR_BR: "",
+      ID: "1",
     },
     {
       DATE: "17/06/2022",
