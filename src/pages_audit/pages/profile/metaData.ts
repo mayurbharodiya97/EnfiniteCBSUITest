@@ -39,17 +39,6 @@ export const UserProfileMetaData = {
   fields: [
     {
       render: { componentType: "textField", group: 0 },
-      name: "USER_ID",
-      sequence: 1,
-      type: "text",
-      label: "User Id",
-      isReadOnly: true,
-      placeholder: "User Id",
-      GridProps: { xs: 12, md: 3, sm: 3 },
-    },
-
-    {
-      render: { componentType: "textField", group: 0 },
       name: "GROUP_NAME",
       sequence: 6,
       type: "text",
@@ -90,7 +79,16 @@ export const UserProfileMetaData = {
       placeholder: "Employee Id",
       GridProps: { xs: 12, md: 3, sm: 3 },
     },
-
+    {
+      render: { componentType: "textField", group: 0 },
+      name: "EMAIL_ID",
+      sequence: 1,
+      type: "text",
+      label: "Email Id",
+      isReadOnly: true,
+      placeholder: "User Id",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
     {
       render: { componentType: "checkbox", group: 0 },
       name: "ALLOW_RELEASE",
@@ -158,7 +156,7 @@ export const UserProfileMetaData = {
       render: {
         componentType: "typography",
       },
-      name: "CIBVIEW",
+      name: "sss",
       label: "Credit Transaction Limit",
       GridProps: {
         xs: 12,

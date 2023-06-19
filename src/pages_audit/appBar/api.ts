@@ -8,7 +8,6 @@ export const getBankimgAndProfileimg = async ({ userID }) => {
       COMP_CD: "473 ",
       USER_ID: userID,
     });
-  console.log("<<<bankimage", data, status);
   if (status === "0") {
     return data;
   } else {
@@ -23,7 +22,6 @@ export const getQuickView = async ({ userName }) => {
       BRANCH_CD: "0002",
       USER_NAME: userName,
     });
-  console.log("<<<GETQUICKACCESSVIEW", data, status);
   if (status === "0") {
     return data;
   } else {

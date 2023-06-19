@@ -80,7 +80,6 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
-  console.log(queryData, "<<queryData");
   const userActivityData = useQuery<any, any, any>(["GETUSERACTIVITY"], () =>
     API.getUserLoginDetails({ userID })
   );
@@ -96,7 +95,6 @@ export const Profile = () => {
   const dashboardData = useQuery<any, any, any>(["GETUSERACESSTPE"], () =>
     API.getdashboardData()
   );
-  console.log(queryData, "<<<<<<<<queryData");
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
@@ -367,6 +365,9 @@ export const Profile = () => {
                             variant="h5"
                             fontWeight={500}
                             display={"inline"}
+                            sx={{
+                              textTransform: "capitalize",
+                            }}
                           >
                             {queryData?.data?.USERNAME} -{" "}
                             {/* {queryData?.data?.USER_LEVEL} */}
@@ -383,7 +384,7 @@ export const Profile = () => {
                             Mobile No. :- {queryData?.data?.MOBILE_NUMBER}
                           </Typography>
                           <Typography>
-                            Email-Id :- {queryData?.data?.EMAIL_ID}
+                            User-Id :- {queryData?.data?.USER_ID}
                           </Typography>
                           <Typography>About :- </Typography>
                         </Grid>

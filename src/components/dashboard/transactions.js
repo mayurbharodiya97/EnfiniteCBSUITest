@@ -233,7 +233,6 @@ export const Transactions = ({ mutation, ...props }) => {
       };
     }
   }, [mutation?.data, optionValue]);
-  console.log("data", data);
   const options = {
     animation: false,
     cornerRadius: 20,

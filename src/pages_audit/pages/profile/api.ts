@@ -42,7 +42,6 @@ export const getUserAccessBranch = async ({ userID }) => {
   if (status === "0") {
     // return data;
     return data.map((item) => {
-      console.log(item.LOGIN_ACCESS, ">>>>item");
       return {
         ...item,
         LOGIN_ACCESS: item.LOGIN_ACCESS === "Y" ? true : false,

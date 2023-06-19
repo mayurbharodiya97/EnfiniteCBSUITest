@@ -48,7 +48,6 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
   ) => {
     //this line is very important to preserve our metaData across render - deep clone hack
     let metaData = cloneDeep(freshMetaData) as MetaDataType;
-    console.log(metaData);
     //let metaData = JSON.parse(JSON.stringify(freshMetaData)) as MetaDataType;
     metaData = extendFieldTypes(metaData, extendedMetaData);
     metaData = attachMethodsToMetaData(metaData);
@@ -63,7 +62,6 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     );
     const yupValidationSchema = constructYupSchema(metaData.fields);
     const formName = metaData.form.name ?? "NO_NAME";
-    console.log("formRenderType " + formName);
     return (
       <>
         {console.log("LocalizationProvider", AdapterDateFns)}
@@ -133,7 +131,6 @@ const ChildFormWrapper = forwardRef<any, any>(
     },
     ref
   ) => {
-    console.log(formRenderType);
     const {
       handleSubmit,
       handleSubmitPartial,
@@ -154,8 +151,6 @@ const ChildFormWrapper = forwardRef<any, any>(
       formDisplayLabel: formDisplayLabel,
       getFieldData: getFieldData,
     }));
-
-    console.log(formRenderType);
 
     return formRenderType === "stepper" ? (
       <StepperWrapper
