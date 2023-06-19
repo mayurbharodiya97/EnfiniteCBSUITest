@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-import {GridMetaDataType} from "../../../../components/dataTableStatic/types"
+import {GridMetaDataType} from "../../../../../../components/dataTableStatic/types"
 import { GridWrapper } from 'components/dataTableStatic/gridWrapper'
 
 const ChequebookentryGridMetaData: GridMetaDataType = {

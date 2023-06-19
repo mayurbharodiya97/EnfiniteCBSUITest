@@ -1,16 +1,47 @@
-import React, { useState, useEffect } from "react";
-import { Box, Typography, Grid, TextField, IconButton, Button, Divider, Tab} from '@mui/material';
-import { styled } from '@mui/material/styles';
+import React, { Fragment, useRef, useCallback, useState, useMemo, useEffect } from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, TextField, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal} from '@mui/material';
+import ViewListIcon from "@mui/icons-material/ViewList";
+import Search from "@mui/icons-material/Search";
+import { styled, createTheme } from '@mui/material/styles';
+import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
+import StyledTab from "components/styledComponent/tab/tab";
 import StyledTabs from "components/styledComponent/tabs/tabs";
-import FormModal from "./formModal/formModal";
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'; // save-icon
+import { blue, purple, teal, lightGreen } from "@mui/material/colors";
 // import {Tabs} from '../../../../components/styledComponent/tabs';
 // import {Tab} from '../../../../components/styledComponent/tab';
-import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'; // save-icon
+import { theme } from "app/audit/theme";
+import PersonalDetails from "./formModal/formDetails/PersonalDetails";
+import NRIDetails from "./formModal/formDetails/NRIDetails";
+import KYCDetails from "./formModal/formDetails/KYCDetails";
+import OtherAddressDetails from "./formModal/formDetails/OtherAddressDetails";
+import OtherDetails from "./formModal/formDetails/OtherDetails";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// icons
+import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
+import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import InfoIcon from '@mui/icons-material/Info'; // other-details
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'; //edit-pencil-icon
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-icon
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
+import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
+import RelatedPersonDetails from "./formModal/formDetails/RelatedPersonDetails";
+import AttestationDetails from "./formModal/formDetails/AttestationDetails";
+import DeclarationDetails from "./formModal/formDetails/DeclarationDetails";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import {GridMetaDataType, ActionTypes, GridColumnType, FilterColumnType, GridConfigType, HeaderFilterType} from "components/dataTable/types"
+import { useQuery } from "react-query";
+import * as API from "./api";
+import BasicModal from "./formModal/demo";
 
-export const customer_data_meta_data = {
+export const other_detail_meta_data = {
   form: {
       name: "other_detail_form",
       label: "", 
@@ -223,6 +254,24 @@ export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
     textAlign: "left",
   }
 }))
+type Customtabprops = {
+  isSidebarExpanded: boolean;
+}
+export const CustomTab = styled(Tab, {shouldForwardProp: (prop) => prop !== "isSidebarExpanded"})<Customtabprops>(({isSidebarExpanded, theme}) => ({
+  minWidth: "60px",
+  maxWidth: "250px",
+  // alignItems: isSidebarExpanded ? "flex-start" : "center",
+  ...(isSidebarExpanded ? {
+    alignItems: "flex-start",
+    width: "100%", 
+    transition: "width 0.08s",
+  } : {
+    alignItems: "center",
+    minWidth: "60px", 
+    width:"60px", 
+    transition: "width 0.08s",
+  }),
+}))
 
 const StyledSearchField = styled(TextField)(({ theme }) => ({
   // width: "100%",
@@ -256,6 +305,40 @@ const StyledSearchField = styled(TextField)(({ theme }) => ({
     paddingRight: "5px"
   }
 }));
+
+export const CustomTabLabel = ({IconName, isSidebarExpanded, tabLabel, subtext}) => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        textTransform: "capitalize",
+        // minWidth: "100px"
+      }}
+    >
+      <div className="toggle_icon_container">
+        {/* <ViewListIcon /> */}
+          {/* {iconType === "mui" 
+          ? <Icon><IconName /></Icon> : null
+          // : <FontAwesomeIcon
+          //     icon={["fas", IconName.toString()]}
+          //     // color="var(--theme-color)"
+          //   />
+          } */}
+        {<IconName />}
+          {/* <FontAwesomeIcon
+            icon={["fas", "users"]}
+            // color="var(--theme-color)"
+          /> */}
+      </div>
+      {<div className="toggle_text_container" style={{display: isSidebarExpanded ? "block" : "none", transition: "display 0.4s", transitionDelay: "0.5s"}}>
+        <h4 style={{ margin: 0 }}>{tabLabel}</h4>
+        {(subtext.toString().length > 0) && <p style={{ margin: 0 }}>{subtext}</p>}
+      </div>}
+    </div>
+  )
+}
 
 const CustomIconButton = styled(IconButton)(({theme}) => ({
   border: "none", 
@@ -343,6 +426,43 @@ export const Ckyc = () => {
   //   console.log("datadatadatadata",data)
   // }, []);
 
+  const CustomTabLabelSkeleton = React.memo(() => {
+    return <Box sx={{
+        mt: "20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        textTransform: "capitalize",
+        backgroundColor: "#efefef",
+        p: (theme) => theme.spacing(1),
+        borderRadius: (theme) => theme.spacing(1),
+        // minWidth: "100px"
+      }}>
+        <Box sx={{display:"flex", alignItems: "center", justifyContent: "center",}}>
+          <Skeleton animation="wave" variant="rounded" height={"30px"} width={"30px"}><Avatar></Avatar></Skeleton>
+        </Box>
+        <Box sx={{marginLeft: (theme) => theme.spacing(1),textAlign: "left", width: "100%"}}>
+          <Typography variant="h6"><Skeleton sx={{mb: "10px"}} width={"100%"} animation="wave" variant="rounded"></Skeleton></Typography>
+          <Typography variant="caption"><Skeleton width={"100%"} animation="wave" variant="rounded"></Skeleton></Typography>          
+          {/* <h4 style={{ margin: 0 }}>tabLabel</h4>
+          <p style={{ margin: 0 }}>subtext</p> */}
+        </Box>
+      {/* <Skeleton sx={{mb: "10px"}} animation="wave" variant="rounded" width="100%" height="60px"></Skeleton> */}
+    </Box>
+  })
+  const getCustomTabLabelSkeleton = () => {
+    return (
+      <>
+        <CustomTabLabelSkeleton />
+        <CustomTabLabelSkeleton />
+        <CustomTabLabelSkeleton />
+        <CustomTabLabelSkeleton />
+        <CustomTabLabelSkeleton />
+        <CustomTabLabelSkeleton />
+        <CustomTabLabelSkeleton />
+      </>
+    )
+  }
 
   const controlPanel = (
     <Box>
@@ -451,6 +571,125 @@ export const Ckyc = () => {
           {controlPanel}
         </Grid>}
       </StyledHeaderGrid>
+    {/* put everything inside this Box */}
+      <TabPanel value={tabValue} index={-1}>
+        <Grid container sx={{transition: "all 0.4s ease-in-out"}}>
+          <Grid container item sm="auto" sx={{
+            display:"flex", flexDirection: "column",alignItems: "center",
+            position: "sticky", top: "140px", height:"calc(100vh - 140px)"
+            }}>
+            <IconButton color="secondary" onClick={handleSidebarExpansion}>
+              <MenuOutlinedIcon />
+            </IconButton>
+            <CustomTabs sx={{height:"calc(100vh - 200px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
+              <Tooltip placement="left" title={isSidebarExpanded ? "" : "Personal Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={HowToRegRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Personal Details"} subtext={""} />} /></Tooltip>
+              <Tooltip placement="left" title={isSidebarExpanded ? "" : "KYC Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={NoteAddRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"KYC"} subtext={"PoA & PoI & Documents"} />} /></Tooltip>
+              <Tooltip placement="left" title={isSidebarExpanded ? "" : "Declaration"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={ArticleRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Declaration"} subtext={"FATCA & CRS"} />} /></Tooltip>
+              <Tooltip placement="left" title={isSidebarExpanded ? "" : "Details of Related Person"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={PeopleAltIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Details of Related Person"} subtext={""} />} /></Tooltip>
+              <Tooltip placement="left" title={isSidebarExpanded ? "" : "Other Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={InfoIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Details"} subtext={"Income & Risk profile & Employment Details"} />} /></Tooltip>
+              <Tooltip placement="left" title={isSidebarExpanded ? "" : "Other Address"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={AddLocationIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Address"} subtext={""} />} /></Tooltip>
+              <Tooltip placement="left" title={isSidebarExpanded ? "" : "NRI Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={PersonAddAltRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"NRI Details"} subtext={""} />} /></Tooltip>
+              <Tooltip placement="left" title={isSidebarExpanded ? "" : "Attestation"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Attestation"} subtext={"KYC verifcation"} />} /></Tooltip>
+            </CustomTabs>
+          </Grid>
+          <Grid sx={{
+              "& .MuiBox-root": {
+                padding: "0px",
+              }
+            }} item xs>
+              
+            {/* common customer fields */}
+            <Grid 
+              sx={{
+                  backgroundColor:"var(--theme-color2)", 
+                  // padding:(theme) => theme.spacing(2), 
+                  px:(theme) => theme.spacing(2), 
+                  border: "1px solid rgba(0,0,0,0.12)", 
+                  borderRadius: "20px",
+                  mb: "8px"
+              }} container item xs={12} sm="auto">
+              <Grid item xs={12} sm="auto" sx={{display: "flex", alignItems: "center"}}>
+                  <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Customer Details</Typography>
+              </Grid>
+              <Grid container item xs={12} sm>
+                <Grid item xs={12}>
+                  <FormWrapper 
+                      key={"new-form-in-kyc"}
+                      metaData={other_detail_meta_data as MetaDataType}
+                      formStyle={{}}
+                      hideHeader={true}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={12} sm="auto">
+                <ButtonGroup size="small" variant="outlined" orientation="vertical" color="secondary">
+                  <Button color="secondary" onClick={() => {
+                      setIsCustomerData(false)
+                      setIsLoadingData(true)
+                  }}>Submit</Button>
+                  <Button color="secondary" onClick={() => {
+                      setIsCustomerData(false)
+                      // setIsLoading(true)
+                  }}>Reset</Button>
+                  <Button color="secondary" onClick={() => {
+                      setIsCustomerData(false)
+                      // setIsLoading(true)
+                  }}>Edit</Button>
+                </ButtonGroup>
+              </Grid>
+            </Grid>
+            {/* common customer fields */}
+
+            <TabPanel value={colTabValue} index={0}>
+              <PersonalDetails 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+            </TabPanel>
+            <TabPanel value={colTabValue} index={1}>
+              <KYCDetails 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+            </TabPanel>
+            <TabPanel value={colTabValue} index={2}>
+                {/* <Typography variant="h6">Declaration</Typography> */}
+              <DeclarationDetails 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+            </TabPanel>
+            <TabPanel value={colTabValue} index={3}>
+              {/* <Typography variant="h6">Details of Related Person</Typography> */}
+              <RelatedPersonDetails
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData}
+                isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} 
+              />
+            </TabPanel>
+            <TabPanel value={colTabValue} index={4}>
+              <OtherDetails 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+            </TabPanel>
+            <TabPanel value={colTabValue} index={5}>
+              <OtherAddressDetails
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+            </TabPanel>
+            <TabPanel value={colTabValue} index={6}>
+              <NRIDetails 
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+                isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+            </TabPanel>
+            <TabPanel value={colTabValue} index={7}>
+              {/* <Typography variant="h6">Attestation</Typography> */}
+              <AttestationDetails
+                isLoading={isLoadingData} setIsLoading={setIsLoadingData}
+                isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+              />
+            </TabPanel>
+          </Grid>
+        </Grid>
+      </TabPanel>
+    {/* put everything inside this Box */}
+
       <TabPanel value={tabValue} index={0}>
         {/* <Typography variant="h6">Retrieve</Typography> */}
         <Typography sx={{color: (theme) => theme.palette.grey[700]}} variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry (MST/707)</Typography>
@@ -503,7 +742,7 @@ export const Ckyc = () => {
         </Grid>
       </TabPanel>      
 
-      <FormModal 
+      <BasicModal 
         isFormModalOpen={isFormModalOpen} 
         handleFormModalOpen={handleFormModalOpen} 
         handleFormModalClose={handleFormModalClose} 
@@ -520,6 +759,9 @@ export const Ckyc = () => {
         isCustomerData={isCustomerData}
         setIsCustomerData={setIsCustomerData}
       />
+
+      
+
     </React.Fragment>
   );
 };

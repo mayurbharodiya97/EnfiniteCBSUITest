@@ -272,7 +272,7 @@ const proof_of_address_contact_meta_data = {
   ]
 }
 
-const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
 const myGridRef = useRef<any>(null);
@@ -315,4 +315,4 @@ const myGridRef = useRef<any>(null);
     )
 }
 
-export default KYCDetails
+export default OtherAddressDetails
