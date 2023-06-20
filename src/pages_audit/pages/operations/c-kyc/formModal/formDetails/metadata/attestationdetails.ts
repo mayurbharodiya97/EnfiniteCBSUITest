@@ -54,7 +54,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -69,7 +69,7 @@ export const attestation_detail_meta_data = {
             // required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -84,7 +84,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -95,7 +95,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -105,7 +105,7 @@ export const attestation_detail_meta_data = {
             label: "KYC Verification Emp.Name",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -115,7 +115,7 @@ export const attestation_detail_meta_data = {
             label: "KYC Verification Emp.Designation",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -130,7 +130,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -140,7 +140,7 @@ export const attestation_detail_meta_data = {
             label: "KYC Verification Date",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -151,7 +151,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -162,7 +162,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -172,7 +172,7 @@ export const attestation_detail_meta_data = {
             label: "Place of Declaration",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -182,7 +182,7 @@ export const attestation_detail_meta_data = {
             label: "Date of Declaration",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
     ]
 }

@@ -49,7 +49,7 @@ export const declaration_meta_data = {
           label: "Declaration Received",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
           options: [
               {label: "YES", value: "yes"},
               {label: "NO", value: "no"},
@@ -63,7 +63,7 @@ export const declaration_meta_data = {
         label: "Declaration Received Date",
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs: 6, sm:3},
+        GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -74,7 +74,7 @@ export const declaration_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
         render: {
@@ -84,7 +84,7 @@ export const declaration_meta_data = {
         label: "Date of Incorporation",
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs: 6, sm:3},
+        GridProps: {xs: 4, sm:3},
       },      
       {
           render: {
@@ -94,7 +94,7 @@ export const declaration_meta_data = {
           label: "Place of Incorporation",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -104,7 +104,7 @@ export const declaration_meta_data = {
           label: "TIN",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -114,7 +114,7 @@ export const declaration_meta_data = {
           label: "Country of Incorporation",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -124,7 +124,7 @@ export const declaration_meta_data = {
           label: "TIN Issuing Country",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
   ]
 }

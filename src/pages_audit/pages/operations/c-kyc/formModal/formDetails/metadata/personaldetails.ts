@@ -52,7 +52,7 @@ export const personal_detail_prefix_data = {
             label: "Prefix",
             placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -72,7 +72,7 @@ export const personal_detail_prefix_data = {
             label: "First Name",
             placeholder: "First Name",
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -83,7 +83,7 @@ export const personal_detail_prefix_data = {
             label: "Middle Name",
             placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
         },
         {
             render: {
@@ -93,7 +93,7 @@ export const personal_detail_prefix_data = {
             label: "Last Name",
             placeholder: "Last Name",
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
         },
         {
             render: {
@@ -103,7 +103,7 @@ export const personal_detail_prefix_data = {
             label: "Full Name",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 12, sm: 8, md: 8, lg:8},
+            GridProps: {xs:5, sm:4},
         }
     ]
 }
@@ -161,7 +161,7 @@ export const personal_detail_maiden_data = {
             label: "Prefix",
             placeholder: "Prefix",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -181,7 +181,7 @@ export const personal_detail_maiden_data = {
             label: "First Name",
             placeholder: "First Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -192,7 +192,7 @@ export const personal_detail_maiden_data = {
             label: "Middle Name",
             placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -202,7 +202,7 @@ export const personal_detail_maiden_data = {
             label: "Last Name",
             placeholder: "Last Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -212,7 +212,7 @@ export const personal_detail_maiden_data = {
             label: "Father/Spouse Name",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 12, sm:true},
+            GridProps: {xs:5, sm:4},
         }
     ]
 }
@@ -270,7 +270,7 @@ export const personal_detail_father_data = {
             label: "Prefix",
             placeholder: "Prefix",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -290,7 +290,7 @@ export const personal_detail_father_data = {
             label: "First Name",
             placeholder: "First Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -301,7 +301,7 @@ export const personal_detail_father_data = {
             label: "Middle Name",
             placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -311,7 +311,7 @@ export const personal_detail_father_data = {
             label: "Last Name",
             placeholder: "Last Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         }
     ]
 }
@@ -369,7 +369,7 @@ export const personal_detail_mother_data = {
             label: "Prefix",
             placeholder: "Prefix",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -389,7 +389,7 @@ export const personal_detail_mother_data = {
             label: "First Name",
             placeholder: "First Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -400,7 +400,7 @@ export const personal_detail_mother_data = {
             label: "Middle Name",
             placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -410,7 +410,7 @@ export const personal_detail_mother_data = {
             label: "Last Name",
             placeholder: "Last Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         }
     ]
 }
@@ -466,7 +466,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -481,7 +481,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -497,7 +497,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -507,7 +507,7 @@ export const personal_other_detail_meta_data = {
             label: "Blood Group",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -518,7 +518,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -529,7 +529,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -540,7 +540,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -551,7 +551,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -561,7 +561,7 @@ export const personal_other_detail_meta_data = {
             label: "Group",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -572,7 +572,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -582,7 +582,7 @@ export const personal_other_detail_meta_data = {
             label: "Caste",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -593,7 +593,7 @@ export const personal_other_detail_meta_data = {
             required: true,
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
     ]
 }

@@ -50,7 +50,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -61,7 +61,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -72,7 +72,7 @@ export const nri_detail_meta_data = {
             required: true,
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -83,7 +83,7 @@ export const nri_detail_meta_data = {
             required: true,
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -94,7 +94,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -105,7 +105,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -116,7 +116,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -126,7 +126,7 @@ export const nri_detail_meta_data = {
             label: "Visually Impaired",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             options: [
                 {label: "type 1", value: "1"},
                 {label: "type 2", value: "2"},
@@ -156,7 +156,7 @@ export const nri_detail_meta_data = {
             label: "Customer Evaluation Required",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -167,7 +167,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             disabled: true,
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         }        
     ]
 }

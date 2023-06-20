@@ -50,7 +50,7 @@
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -61,7 +61,7 @@
           label: "Turnover",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
           // maxLength: 3,
           // showMaxLength: false,
           // FormatProps: {
@@ -87,7 +87,7 @@
             label: "Other Income",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -97,7 +97,7 @@
             label: "Source of Income",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
     ]
   }
@@ -153,7 +153,7 @@
           label: "Funded",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
       {
           render: {
@@ -164,7 +164,7 @@
           label: "Non Funded",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
       {
           render: {
@@ -175,7 +175,7 @@
           label: "Threshold Limit",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
     ]
   }
@@ -234,7 +234,7 @@
               label: "No. of Children",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -244,7 +244,7 @@
               label: "House Type",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
               options: [
                   {label: "House Type1", value: "House Type1"},
                   {label: "House Type2", value: "House Type2"},
@@ -259,7 +259,7 @@
               label: "No. of Adults",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -267,7 +267,7 @@
               },
               name: "POLITICALLY_CONNECTED",
               label: "Politically Connected",
-              GridProps: {xs:6, sm:3},
+              GridProps: {xs:4, sm:3},
           },
           {
               render: {
@@ -278,7 +278,7 @@
               label: "Earning Members in Family",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -286,7 +286,7 @@
               },
               name: "IS_BLIND",
               label: "Blind",
-              GridProps: {xs:6, sm:3},
+              GridProps: {xs:4, sm:3},
           },
           {
               render: {
@@ -296,7 +296,7 @@
               label: "ID Mark",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
       ]
   }
@@ -355,7 +355,7 @@
               label: "No. of 2 Wheelers",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -366,7 +366,7 @@
               label: "No. of 4 Wheelers",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -376,7 +376,7 @@
               label: "CIBIL Score",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
       ]
   }
@@ -434,7 +434,7 @@
               label: "Employement Status",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -442,7 +442,7 @@
               },
               name: "REFERRED_BY_STAFF",
               label: "Referred By Staff",            
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -452,7 +452,7 @@
               label: "Education Qualification",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -462,7 +462,7 @@
               label: "Company Name",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -472,7 +472,7 @@
               label: "Departname",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -482,7 +482,7 @@
               label: "Company_Address",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -493,7 +493,7 @@
               label: "Joining Date",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -504,7 +504,7 @@
               label: "Retirement Date",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -515,7 +515,7 @@
               label: "Retirement Date",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -530,7 +530,7 @@
                   {label: "Company Type1", value: "Company Type1"},
                   {label: "Company Type2", value: "Company Type2"}
               ],
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -541,7 +541,7 @@
               label: "Work Experience in Year",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
           {
               render: {
@@ -551,7 +551,7 @@
               label: "Specialization",
               placeholder: "",
               type: "text",
-              GridProps: {xs: 6, sm:3},
+              GridProps: {xs: 4, sm:3},
           },
       ]
   }  

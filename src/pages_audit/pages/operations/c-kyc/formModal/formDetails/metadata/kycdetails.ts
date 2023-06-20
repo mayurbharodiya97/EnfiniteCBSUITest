@@ -49,7 +49,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "Form 60/61",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             options: [
                 {label: "Yes", value: "Yes"},
                 {label: "No", value: "No"},
@@ -73,7 +73,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "PAN",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -83,7 +83,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "UID(Aadhaar)",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -93,7 +93,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "Voter Id",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
           render: {
@@ -103,7 +103,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "Explicit TDS",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
           options: [
               {label: "Yes", value: "Yes"},
               {label: "No", value: "No"},
@@ -117,7 +117,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "NREGA",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
         {
           render: {
@@ -127,7 +127,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "Other[PoI]",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
         {
           render: {
@@ -137,7 +137,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "PoI No.",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
     ]
 }
@@ -192,7 +192,7 @@ export const kyc_proof_of_identity_passport_details_meta_data = {
             label: "No.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -202,7 +202,7 @@ export const kyc_proof_of_identity_passport_details_meta_data = {
             label: "Autho.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
           render: {
@@ -213,7 +213,7 @@ export const kyc_proof_of_identity_passport_details_meta_data = {
           required: true,
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
         {
           render: {
@@ -224,7 +224,7 @@ export const kyc_proof_of_identity_passport_details_meta_data = {
           required: true,
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
     ]
 }
@@ -279,7 +279,7 @@ export const kyc_proof_of_identity_driving_license_details_meta_data = {
             label: "No.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -289,7 +289,7 @@ export const kyc_proof_of_identity_driving_license_details_meta_data = {
             label: "Autho.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
           render: {
@@ -300,7 +300,7 @@ export const kyc_proof_of_identity_driving_license_details_meta_data = {
           required: true,
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
         {
           render: {
@@ -311,7 +311,7 @@ export const kyc_proof_of_identity_driving_license_details_meta_data = {
           required: true,
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
     ]
 }
@@ -367,7 +367,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Address Type",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
           options: [
               {label: "Address Type1", value: "Address Type1"},
               {label: "Address Type2", value: "Address Type2"},
@@ -382,7 +382,7 @@ export const kyc_proof_of_address_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -392,7 +392,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -402,7 +402,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -412,7 +412,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Area",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -423,7 +423,7 @@ export const kyc_proof_of_address_meta_data = {
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -434,7 +434,7 @@ export const kyc_proof_of_address_meta_data = {
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -444,7 +444,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "District",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -454,7 +454,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "State",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -464,7 +464,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Country",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -474,7 +474,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "State/U.T(Union Territories) Code",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -484,7 +484,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "ISO-3166 Country Code of Residence",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -495,7 +495,7 @@ export const kyc_proof_of_address_meta_data = {
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -505,7 +505,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Others[PoA]",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
   ]
 }
@@ -560,7 +560,7 @@ export const kyc_proof_of_local_address_meta_data = {
         label: "Same As Permanent Address",
         // isReadOnly: true,
         // placeholder: "Allowed Release",
-        GridProps: { xs: 12, md: 3, sm: 3 },
+        GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -570,7 +570,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "Local Address Type",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
           options: [
               {label: "Local Address Type1", value: "Local Address Type1"},
               {label: "Local Address Type2", value: "Local Address Type2"},
@@ -585,7 +585,7 @@ export const kyc_proof_of_local_address_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -595,7 +595,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -605,7 +605,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -615,7 +615,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "Area",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -626,7 +626,7 @@ export const kyc_proof_of_local_address_meta_data = {
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -637,7 +637,7 @@ export const kyc_proof_of_local_address_meta_data = {
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -647,7 +647,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "District",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -657,7 +657,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "State",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -667,7 +667,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "Country",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -677,7 +677,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "State/U.T(Union Territories) Code",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -687,7 +687,7 @@ export const kyc_proof_of_local_address_meta_data = {
           label: "ISO-3166 Country Code of Residence",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -698,7 +698,7 @@ export const kyc_proof_of_local_address_meta_data = {
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
   ]
 }
@@ -753,7 +753,7 @@ export const kyc_proof_of_address_contact_meta_data = {
           label: "Phone(O)",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -763,7 +763,7 @@ export const kyc_proof_of_address_contact_meta_data = {
           label: "Phone(R)",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -773,7 +773,7 @@ export const kyc_proof_of_address_contact_meta_data = {
           label: "Mobile No.",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -783,7 +783,7 @@ export const kyc_proof_of_address_contact_meta_data = {
           label: "Fax",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -793,7 +793,7 @@ export const kyc_proof_of_address_contact_meta_data = {
           label: "Email ID",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
   ]
 }
