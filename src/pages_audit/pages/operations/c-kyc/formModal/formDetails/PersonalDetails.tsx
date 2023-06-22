@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton } from '@mui/material';
+import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import {GridMetaDataType} from "../../../../../../components/dataTableStatic/types"
@@ -9,283 +9,23 @@ import {
     personal_detail_maiden_data, 
     personal_detail_mother_data, 
     personal_detail_prefix_data, 
+    personal_document_details_data, 
     personal_other_detail_meta_data
 } from './metadata/personaldetails';
-
-const ChequebookentryGridMetaData: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: "Cheque Book Issued",
-    rowIdColumn: "id",
-    defaultColumnConfig: {
-      width: 100,
-      maxWidth: 200,
-      // minWidth: 100,
-    },
-    allowColumnReordering: true,
-    disableSorting: false,
-    disableGroupBy: true,
-    enablePagination: false,
-    hideFooter: true,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
-    // containerHeight: {
-    //   min: "42vh",
-    //   max: "45vh",
-    // },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-  },
-  filters: [],
-  columns: [
-    {
-      accessor: "sr_no",
-      columnName: "Sr.No.",
-      sequence: 1,
-      alignment: "right",
-      componentType: "default",
-      width: 70,
-      minWidth: 70,
-      maxWidth: 200,
-      isAutoSequence: true,
-    },
-    {
-      accessor: "accountCardType",
-      columnName: "Type",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 100,
-      minWidth: 100,
-      maxWidth: 200,
-      isVisible: true,
-    },
-    {
-      accessor: "maskAcctCardNo",
-      columnName: "Account/Card Number",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 170,
-      minWidth: 150,
-      maxWidth: 200,
-    },
-    {
-      accessor: "customerId",
-      columnName: "Customer ID",
-      sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "accountNameOrNameOnCard",
-      columnName: "Name",
-      sequence: 5,
-      alignment: "left",
-      componentType: "default",
-      width: 220,
-      minWidth: 180,
-      maxWidth: 250,
-    },
-    {
-      accessor: "constitution",
-      columnName: "Constitution",
-      sequence: 6,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-    {
-      accessor: "productCode",
-      columnName: "Product Code",
-      sequence: 7,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-    {
-      accessor: "productName",
-      columnName: "Account Type Name",
-      sequence: 8,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 200,
-      // color: (value) => {
-      //   if ((value || "unlock").toLowerCase() === "unlock") {
-      //     return "green";
-      //   }
-      //   return "red";
-      // },
-    },
-    {
-      accessor: "cardProductBin",
-      columnName: "Card Product Bin",
-      sequence: 9,
-      alignment: "left",
-      componentType: "default",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-    {
-      accessor: "dob",
-      columnName: "Birth Date",
-      sequence: 10,
-      alignment: "left",
-      componentType: "date",
-      dateFormat: "dd/MM/yyyy",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-    {
-      accessor: "_NEW_gender",
-      columnName: "Gender",
-      sequence: 11,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "fathersName",
-      columnName: "Father Name",
-      sequence: 12,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "mothersName",
-      columnName: "Mother Name",
-      sequence: 13,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "linkedAccount",
-      columnName: "Linked Account",
-      sequence: 14,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "fullName",
-      columnName: "Full Name",
-      sequence: 15,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "tinNumber",
-      columnName: "TIN Number",
-      sequence: 16,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "nationalId13Digit",
-      columnName: "National ID 13 Digit",
-      sequence: 0,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-      isVisible: false,
-    },
-    {
-      accessor: "modeOfOperation",
-      columnName: "Mode Of Operation",
-      sequence: 0,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-      isVisible: false,
-    },
-    {
-      accessor: "nationality",
-      columnName: "Nationality",
-      sequence: 17,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "nationalId",
-      columnName: "National ID",
-      sequence: 18,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "identificationNo",
-      columnName: "Identification Number",
-      sequence: 19,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "phone",
-      columnName: "Mobile Number",
-      sequence: 20,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-    {
-      accessor: "email",
-      columnName: "E-Mail ID",
-      sequence: 21,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
-    },
-  ],
-}
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+  const [isPDExpanded, setIsPDExpanded] = useState(false)
+  const [isOtherPDExpanded, setIsOtherPDExpanded] = useState(false)
+  const handlePDExpand = () => {
+    setIsPDExpanded(!isPDExpanded)
+  }
+  const handleOtherPDExpand = () => {
+    setIsOtherPDExpanded(!isOtherPDExpanded)
+  }
 const myGridRef = useRef<any>(null);
 
     // useEffect(() => {
@@ -305,11 +45,15 @@ const myGridRef = useRef<any>(null);
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
-                <Grid item>
+                <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
                     <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Personal Details</Typography>
+                    <IconButton onClick={handlePDExpand}>
+                        {!isPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
+                    </IconButton>
                 </Grid>
-                <Grid container item>
-                    <Grid item xs={12}>
+                <Collapse in={isPDExpanded}>
+                {/* <Grid container item> */}
+                    <Grid item>
                         <FormWrapper 
                             key={"new-form-in-kyc"}
                             metaData={personal_detail_prefix_data as MetaDataType}
@@ -317,7 +61,7 @@ const myGridRef = useRef<any>(null);
                             hideHeader={true}
                         />
                     </Grid>                    
-                </Grid>
+                {/* </Grid> */}
 
                 <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Maiden Name</Divider>
                 <Grid item>
@@ -347,7 +91,8 @@ const myGridRef = useRef<any>(null);
                         formStyle={{}}
                         hideHeader={true}
                     />
-                </Grid>                
+                </Grid>
+                </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 
             {isCustomerData ? <Grid 
@@ -357,11 +102,15 @@ const myGridRef = useRef<any>(null);
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
-                <Grid item>
+                <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
                     <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Other Personal Details</Typography>
+                    <IconButton onClick={handleOtherPDExpand}>
+                        {!isOtherPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
+                    </IconButton>
                 </Grid>
-                <Grid container item>
-                    <Grid item xs={12}>
+                <Collapse in={isOtherPDExpanded}>
+                {/* <Grid container item> */}
+                    <Grid item>
                         <FormWrapper 
                             key={"new-form-in-kyc"}
                             metaData={personal_other_detail_meta_data as MetaDataType}
@@ -369,7 +118,8 @@ const myGridRef = useRef<any>(null);
                             hideHeader={true}
                         />
                     </Grid>                    
-                </Grid>
+                {/* </Grid> */}
+                </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="300px" width="100%"></Skeleton> : null}
 
             {isCustomerData ? 
@@ -381,10 +131,10 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Other Personal Details</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Documents</Typography>
                 </Grid>
                 <Grid container item>
-                    <Grid item xs={12} sx={{backgroundColor:"#eee", padding: "100px", overflow: "hidden", boxSizing: "border-box"}}>
+                    <Grid item xs={12} sx={{backgroundColor:"#eee"}}>
                         {/* <FormWrapper 
                             key={"new-form-in-kyc"}
                             metaData={personal_other_detail_meta_data as MetaDataType}
@@ -392,15 +142,18 @@ const myGridRef = useRef<any>(null);
                             hideHeader={true}
                         /> */}
                       {/* <GridWrapper
-                        key={`ChequeBookEntryGrid`}
-                        finalMetaData={ChequebookentryGridMetaData as GridMetaDataType}
-                        // data={data?.[0]?.ALL_ACCOUNT_DETAIL ?? []}
+                        key={`EmailAcctMstGrid`}
+                        finalMetaData={personal_document_details_data as GridMetaDataType}
                         data={[]}
                         setData={() => null}
-                        // loading={getData.isLoading}
-                        // setAction={setCurrentAction}
+                        actions={[]}
+                        setAction={() => {}}
                         refetchData={() => {}}
                         ref={myGridRef}
+                        // headerToolbarStyle={{
+                        //   background: "var(--theme-color2)",
+                        //   color: "black",
+                        // }}
                       /> */}
                     </Grid>                    
                 </Grid>

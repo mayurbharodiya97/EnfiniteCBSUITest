@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Box, Typography, Grid, TextField, IconButton, Button, Divider, Tab} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
@@ -9,114 +9,18 @@ import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'; // save-icon
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'; //edit-pencil-icon
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-icon
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
-
-export const customer_data_meta_data = {
-  form: {
-      name: "other_detail_form",
-      label: "", 
-      resetFieldOnUnmount: false,
-      validationRun: "onBlur", 
-      submitAction: "home",  
-      render: {
-          ordering: "auto",
-          renderType: "simple",
-          gridConfig: {
-          item: {
-              xs: 12,
-              sm: 6,
-          },
-          container: {
-              direction: "row",
-              spacing: 3,
-          },
-          },
-      },
-      componentProps: {
-          textField: {
-              fullWidth: true,
-          },
-          select: {
-              fullWidth: true,
-          },
-          datePicker: {
-              fullWidth: true,
-          },
-          numberFormat: {
-              fullWidth: true,
-          },
-          inputMask: {
-              fullWidth: true,
-          },
-          datetimePicker: {
-              fullWidth: true,
-          },
-      },
-  },
-  fields: [
-      {
-          render: {
-              componentType: "select",
-          },
-          name: "CUST_TYPE",
-          label: "Cust Type",
-          placeholder: "",
-          type: "text",
-          GridProps: {xs: 6, sm:3},
-          options: [
-              {label: "Individual", value: "individual"},
-              {label: "Legal", value: "legal"},
-          ],
-          // dependentFields: ["DAILY_AMT"],
-          // runValidationOnDependentFieldsChange: true,
-          // validate: (currentField, dependentFields) => {
-          //     if(Number(dependentFields?.DAILY_AMT?.value) >
-          //     Number(currentField?.value)) {
-          //         return "Weekly Limit should greater than or equal to Daily Limit";
-          //     } else {
-          //         return "";
-          //     }
-          // }
-      },
-      {
-          render: {
-              componentType: "select",
-          },
-          options: [
-              {label: "category 1", value: "1"},
-              {label: "category 2", value: "2"},
-              {label: "category 3", value: "3"},
-          ],
-          name: "category",
-          label: "Category",
-          placeholder: "",
-          type: "text",
-          GridProps: {xs: 6, sm:3},
-      },
-      {
-          render: {
-              componentType: "textField",
-          },
-          name: "constitution",
-          label: "Constitution",
-          placeholder: "",
-          type: "text",
-          disabled: true,
-          GridProps: {xs: 6, sm:3},
-      },
-      {
-          render: {
-              componentType: "textField",
-              disabled: true,
-          },
-          name: "acc_type",
-          label: "A/c Type",
-          placeholder: "",
-          type: "text",
-          disabled: true,
-          GridProps: {xs: 6, sm:3},
-      },
-  ]
-}
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; //plus-icon-outlined
+import AddCircleIcon from '@mui/icons-material/AddCircle'; //plus-icon-filled
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { 
+  RetrieveDataFilterForm,
+  ckyc_pending_req_meta_data, 
+  ckyc_retrieved_meta_data
+} from "./metadata";
+import { FormComponentView } from "components/formcomponent";
+import { FilterFormMetaType } from "components/formcomponent/filterform";
+import { useQuery } from "react-query";
+import * as API from "./api";
 
 export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -269,6 +173,7 @@ const CustomIconButton = styled(IconButton)(({theme}) => ({
 
 const StyledHeaderGrid = styled(Grid)(({theme}) => ({
   display: "flex",
+  justifyContent: "space-between",
   alignItems: "center",
   // marginBottom: theme.spacing(1),
   backgroundColor: "var(--theme-color2)",
@@ -327,10 +232,10 @@ export const Ckyc = () => {
   const handleFormModalClose = () => setIsFormModalOpen(false);
 
   
-  // const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
-  //   ["GetAreaOptions"],
+  // const Result = useQuery<any, any>(
+  //   ["CUSTOMERDETAILS"],
   //   () =>
-  //     API.GetAreaOptions(
+  //     API.GetCustomerDetails(
   //     // {
   //       // COMP_CD: authState?.companyID ?? "",
   //       // BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -338,6 +243,10 @@ export const Ckyc = () => {
   //     // }
   //     )
   // );
+
+  // useEffect(() => {
+  //   console.log("ResultResult", Result)
+  // }, [Result])
   // const setCurrentAction = useCallback((data) => {
   //   // console.log(">>data", data);
   //   console.log("datadatadatadata",data)
@@ -431,21 +340,44 @@ export const Ckyc = () => {
 
   return (
     <React.Fragment>
+      <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">C-KYC Individual/Legal Entry (MST/707)</Typography>
       <StyledHeaderGrid container 
         columnGap={(theme) => theme.spacing(2)}
         rowGap={(theme) => theme.spacing(2)}>
-        <Grid item>
-          <Button color="secondary" variant="outlined" onClick={handleFormModalOpen}>Add New</Button>
-        </Grid>
-        <Grid item xs={12} sm={12} md="auto">
+        <Grid item xs="auto">
           <CustomTabs textColor="secondary" value={tabValue} onChange={handleTabChange} aria-label="ant example">
             {/* <Tab label="Add New" /> */}
             <Tab label="Retrieve" />
             <Tab label="Pending" />
           </CustomTabs>
         </Grid>
-        <Grid item xs={12} sm={12} md>
+        {/* <Grid item xs={12} sm={12} md>
           <Typography variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry</Typography>
+        </Grid> */}
+        <Grid item xs="auto">
+          <Button 
+            color="secondary" 
+            variant="contained" 
+            onClick={handleFormModalOpen} 
+            sx={{
+              // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
+              minHeight:{xs: "40px", md: "30px"}, 
+              height:{xs: "40px", md: "30px"}, 
+              minWidth: {xs: "40px", md: "30px"}, 
+              width: {xs: "40px", md: "30px"}, 
+              display: "flex", 
+              alignItems:"center", 
+              justifyContent: "center",
+              borderRadius: "5px",
+              "& .MuiSvgIcon-root": {
+                fontSize: {xs: "1.5rem", md: "1.2rem"},
+              },
+            }}
+          >
+            {/* <IconButton sx={{border: (theme) => `1px solid ${theme.palette.secondary.main}`}} color="secondary"> */}
+              <AddCircleOutlineIcon fontSize="medium" />
+            {/* </IconButton> */}
+          </Button>
         </Grid>
         {false && <Grid sx={{ display: tabValue !== 0 ? "none" : "block", }} item xs={12} sm={12} md="auto">
           {controlPanel}
@@ -453,8 +385,8 @@ export const Ckyc = () => {
       </StyledHeaderGrid>
       <TabPanel value={tabValue} index={0}>
         {/* <Typography variant="h6">Retrieve</Typography> */}
-        <Typography sx={{color: (theme) => theme.palette.grey[700]}} variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry (MST/707)</Typography>
-        <Typography sx={{color: (theme) => theme.palette.grey[500]}} variant="subtitle1" gutterBottom={true}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
+        {/* <Typography sx={{color: (theme) => theme.palette.grey[700]}} variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry (MST/707)</Typography>
+        <Typography sx={{color: (theme) => theme.palette.grey[500]}} variant="subtitle1" gutterBottom={true}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography> */}
 
         <Grid sx={{
           backgroundColor: "var(--theme-color2)", 
@@ -462,44 +394,66 @@ export const Ckyc = () => {
           border:(theme) => `2px dashed ${theme.palette.grey[500]}`, borderRadius: "20px"}} 
           my={(theme) => theme.spacing(3)} container direction={"column"}
         >
-          <Grid item>
+          {/* <Grid item>
             <Typography sx={{color: "var(--theme-color1)", paddingBottom: (theme) => theme.spacing(2)}} variant="h6" >Fetch Data</Typography>
-          </Grid>
-          <Grid item container direction={"column"}>
+          </Grid> */}
+          {/* <Grid item container direction={"column"}>
             <label htmlFor="customer_id" style={{color:"grey"}}>Customer ID</label>
             <StyledSearchField sx={{maxWidth: "300px"}} id={"customer_id"} placeholder="Customer ID" />
-          </Grid>
-          <Grid item py={2} sx={{textAlign: "right"}}>
+          </Grid> */}
+
+          {/* formComponentview */}
+          <FormComponentView
+            key={"retrieveCustomerData"}
+            finalMetaData={RetrieveDataFilterForm as FilterFormMetaType}
+            onAction={() => {}}
+            loading={false}
+            data={{}}
+            submitSecondAction={() => {}}
+            submitSecondButtonName="Save"
+            submitSecondButtonHide={true}
+            submitSecondLoading={false}
+            propStyles={{titleStyle : {color: "var(--theme-color3) !important"},
+              toolbarStyles: {backgroundColor: "var(--theme-color2) !important"},
+              IconButtonStyle: {variant: "secondary"},
+              paperStyle: {elevation: 0}
+            }}
+          ></FormComponentView>
+          {/* formComponentview */}
+
+          
+          {/* <Grid item py={2} sx={{textAlign: "right"}}>
             <Button color="secondary" variant="contained">Retrieve</Button>
-          </Grid>
+          </Grid> */}
         </Grid>        
 
-        {/* <GridWrapper
+        <GridWrapper
           key={`EmailAcctMstGrid`}
-          finalMetaData={RetrievedDataMetaData as GridMetaDataTypee}
+          finalMetaData={ckyc_retrieved_meta_data as GridMetaDataType}
           data={[]}
           setData={() => null}
           // loading={isLoading || isFetching}
-          actions={actions}
+          // actions={actions}
           // setAction={setCurrentAction}
           // refetchData={() => refetch()}
           // ref={myGridRef}
-        /> */}
+        />
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
-        <Typography variant="subtitle1" gutterBottom={true}>Pending Requests</Typography>
+        {/* <Typography variant="subtitle1" gutterBottom={true}>Pending Requests</Typography> */}
+        <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">Pending Requests</Typography>        
         <Grid item>
-          {/* <GridWrapper
+          <GridWrapper
             key={`EmailAcctMstGrid`}
-            finalMetaData={PendingReqDetailsMetaData as GridMetaDataTypee}
+            finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
             data={[]}
             setData={() => null}
             // loading={isLoading || isFetching}
-            actions={actions}
+            // actions={actions}
             // setAction={setCurrentAction}
             // refetchData={() => refetch()}
             // ref={myGridRef}
-          /> */}
+          />
         </Grid>
       </TabPanel>      
 

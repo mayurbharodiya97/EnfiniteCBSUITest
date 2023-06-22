@@ -48,3 +48,19 @@ export const GetAreaOptions = async () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+
+export const GetCustomerDetails = async () => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("CUSTOMERDETAILS", {
+        // COMP_CD: COMP_CD,
+        // BASE_BRANCH_CD: BASE_BRANCH_CD,
+        // BRANCH_CD: BRANCH_CD,
+        // ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
+        // CUST_TYPE: CUST_TYPE
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };

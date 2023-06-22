@@ -1,3 +1,5 @@
+import { GridMetaDataType } from "components/dataTableStatic";
+
 export const personal_detail_prefix_data = {
     form: {
         name: "personal_detail_prefix_details_form",
@@ -597,3 +599,107 @@ export const personal_other_detail_meta_data = {
         },
     ]
 }
+
+
+
+// GRID METADATA
+export const personal_document_details_data: GridMetaDataType = {
+    gridConfig: {
+      dense: true,
+      gridLabel: "Customer Searching",
+      rowIdColumn: "CUST_ID",
+      defaultColumnConfig: {
+        width: 150,
+        maxWidth: 250,
+        minWidth: 100,
+      },
+      allowColumnReordering: true,
+      disableSorting: false,
+      hideHeader: true,
+      disableGroupBy: true,
+      enablePagination: true,
+      pageSizes: [10, 20, 30],
+      defaultPageSize: 10,
+      containerHeight: {
+        min: "42vh",
+        max: "50vh",
+      },
+      allowFilter: false,
+      allowColumnHiding: false,
+    },
+    // filters: [],
+    columns: [
+      {
+        accessor: "SR_NO",
+        columnName: "Sr. No.",
+        sequence: 1,
+        alignment: "center",
+        componentType: "default",
+        width: 70,
+        minWidth: 60,
+        maxWidth: 120,
+        isAutoSequence: true,
+      },
+      {
+        accessor: "DOCUMENT",
+        columnName: "Document",
+        sequence: 1,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "IS_SUBMIT",
+        columnName: "Submit",
+        sequence: 3,
+        alignment: "center",
+        componentType: "editableCheckbox",
+        isReadOnly: true,
+        width: 80,
+        minWidth: 80,
+        maxWidth: 80,
+      },
+      {
+        accessor: "CUST_NAME",
+        columnName: "Cust. Name",
+        sequence: 2,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "DOCUMENT_NO",
+        columnName: "Document No.",
+        sequence: 1,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "VALID_TILL_DATE",
+        columnName: "Valid till Date",
+        sequence: 4,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "ENTERED_DATE",
+        columnName: "Entered Date",
+        sequence: 4,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+    ],
+};

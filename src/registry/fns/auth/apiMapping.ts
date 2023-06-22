@@ -63,6 +63,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETAREA",
     packageName: "",
   },
+  CUSTOMERDETAILS: {
+    url: "/customerServiceAPI/CUSTOMERDETAILS",
+    packageName: "",
+  },
   GETBANKIMAGEANDPROFILEPIC: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
     packageName: "",

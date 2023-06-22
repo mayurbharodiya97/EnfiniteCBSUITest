@@ -10,6 +10,12 @@ export const FormComponentView = ({
   submitSecondLoading = false,
   submitSecondAction = (arg1, arg2) => {},
   submitSecondValidtion = true,
+  propStyles={
+    titleStyle: {},
+    toolbarStyles: {},
+    IconButtonStyle: {},
+    paperStyle: {}
+  }
 }) => {
   const isDisplayOnly = finalMetaData.gridConfig?.isDisplayOnly ?? false;
   let metadata = transformMetaData({
@@ -37,6 +43,7 @@ export const FormComponentView = ({
       submitSecondLoading={submitSecondLoading}
       submitSecondAction={submitSecondAction}
       submitSecondValidtion={submitSecondValidtion}
+      propStyles={propStyles}
     ></FilterFormComponents>
   );
 };

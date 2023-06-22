@@ -6,7 +6,7 @@ import * as React from 'react';
 import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, TextField, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
-import { CustomTabs, customer_data_meta_data } from '../ckyc';
+import { CustomTabs } from '../ckyc';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 
 import PersonalDetails from './formDetails/PersonalDetails';
@@ -31,7 +31,9 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
 import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
+import CancelIcon from '@mui/icons-material/Cancel'; // close-icon
 import { makeStyles } from '@mui/styles';
+import { customer_data_meta_data } from '../metadata';
 
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -46,10 +48,14 @@ const CustomTab = styled(Tab, {shouldForwardProp: (prop) => prop !== "isSidebarE
     transition: "width 0.08s",
   } : {
     alignItems: "center",
-    minWidth: "60px", 
+    // minWidth: "60px", 
     width:"60px", 
     transition: "width 0.08s",
   }),
+  [theme.breakpoints.down("md")]: {
+    // backgroundColor: "#ddd",
+    maxWidth: "200px"
+  }
 }))
 
 export const CustomTabLabel = ({IconName, isSidebarExpanded, tabLabel, subtext}) => {
@@ -183,15 +189,39 @@ export default function FormModal({
           </Toolbar>
         </AppBar>
         {/* <Box sx={style}> */}
-          <Grid container sx={{transition: "all 0.4s ease-in-out"}}>
-            <Grid container item sm="auto" sx={{
+          <Grid container sx={{transition: "all 0.4s ease-in-out"}} columnGap={(theme) => theme.spacing(1)}>
+            <Grid container item xs="auto" sx={{
               display:"flex", flexDirection: "column",alignItems: "center",
-              position: "sticky", top: 0, height:"calc(95vh - 80px)"
+              position: "sticky", top:0, height:"calc(95vh - 80px)",
               }}>
-              <IconButton color="secondary" onClick={handleSidebarExpansion}>
-                <MenuOutlinedIcon />
-              </IconButton>
-              <CustomTabs sx={{height:"calc(100% - 40px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
+                <Button 
+                  color="secondary" 
+                  variant="contained" 
+                  onClick={handleSidebarExpansion} 
+                  sx={{
+                  // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%", 
+                  mb: "5px", ml: {xs: "2px", sm: "8px"}, alignSelf: "start",
+                  // backgroundColor: (theme) => theme.palette.grey[400],
+                  minHeight:{xs: "40px", md: "30px"}, 
+                  height:{xs: "40px", md: "30px"}, 
+                  minWidth: {xs: "40px", md: "30px"}, 
+                  width: {xs: "40px", md: "30px"}, 
+                  display: "flex", 
+                  alignItems:"center", 
+                  justifyContent: "center",
+                  borderRadius: "5px",
+                  "& .MuiSvgIcon-root": {
+                    fontSize: {xs: "1.5rem", md: "1.2rem"},
+                  },
+                  }}
+                >                  
+                  {/* <IconButton color="secondary" onClick={handleSidebarExpansion}
+                    sx={{backgroundColor: "#ddd",ml: "20px", mb: "2px", alignSelf: "start"}} 
+                  > */}
+                    {!isSidebarExpanded ? <MenuOutlinedIcon /> : <CancelIcon />}
+                  {/* </IconButton> */}
+                </Button>
+              <CustomTabs sx={{height:"calc(100% - 45px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Personal Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={HowToRegRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Personal Details"} subtext={""} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "KYC Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={NoteAddRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"KYC"} subtext={"PoA & PoI & Documents"} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Declaration"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={ArticleRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Declaration"} subtext={"FATCA & CRS"} />} /></Tooltip>
@@ -218,9 +248,9 @@ export default function FormModal({
                     borderRadius: "20px",
                     mb: "8px"
                 }} container item xs={12} sm="auto">
-                <Grid item xs={12} sm="auto" sx={{display: "flex", alignItems: "center"}}>
+                {/* <Grid item xs={12} sm="auto" sx={{display: "flex", alignItems: "center"}}>
                     <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Customer Details</Typography>
-                </Grid>
+                </Grid> */}
                 <Grid container item xs={12} sm>
                   <Grid item xs={12}>
                     <FormWrapper 
@@ -228,6 +258,7 @@ export default function FormModal({
                         metaData={customer_data_meta_data as MetaDataType}
                         formStyle={{}}
                         hideHeader={true}
+                        typography="Cust Details"
                     />
                   </Grid>
                 </Grid>
