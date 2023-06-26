@@ -10,6 +10,7 @@ export const getChequeBookEntryData = async ({
   branchCD,
   acctType,
   accountNo,
+  callfrom,
 }) => {
   if (!Boolean(branchCD)) {
     throw DefaultErrorObject(
@@ -30,43 +31,79 @@ export const getChequeBookEntryData = async ({
       "warning"
     );
   } else {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETCHEQUEBOOK", {
-        COMP_CD: companyID,
-        BRANCH_CD: branchCD,
-        ACCT_TYPE: acctType,
-        ACCT_CD: accountNo,
-      });
-    if (status === "0") {
-      let responsedata = data;
-      // if (Array.isArray(responsedata)) {
-      //   let allKeyData = responsedata?.[0]?.ALL_ACCOUNT_DETAIL;
-      //   if (Array.isArray(allKeyData)) {
-      //     allKeyData = AddIDinResponseData(allKeyData);
-      //     let repdat = { gender: { F: "Female", M: "Male" } };
-      //     allKeyData = utilFunction.ChangeJsonValue(allKeyData, repdat);
-      //     responsedata[0]["ALL_ACCOUNT_DETAIL"] = allKeyData;
-      //   }
-      // }
-      return responsedata;
-      //return data;
+    if (callfrom === "C") {
+      const { data, status, message, messageDetails } =
+        await AuthSDK.internalFetcher("GETCHEQUEBOOK", {
+          COMP_CD: companyID,
+          BRANCH_CD: branchCD,
+          ACCT_TYPE: acctType,
+          ACCT_CD: accountNo,
+        });
+      if (status === "0") {
+        let responsedata = data;
+        return responsedata;
+      } else {
+        throw DefaultErrorObject(message, messageDetails);
+      }
     } else {
-      throw DefaultErrorObject(message, messageDetails);
+      const { data, status, message, messageDetails } =
+        await AuthSDK.internalFetcher("GETACCTVIEWMKR", {
+          COMP_CD: companyID,
+          BRANCH_CD: branchCD,
+          ACCT_TYPE: acctType,
+          ACCT_CD: accountNo,
+        });
+      /*if (status === "0") {
+        console.log(">>data", data);
+        return {
+          CUST_NAME: { value: data?.[0]?.CUST_NAME },
+          MAIL_ID: { value: data?.[0]?.MAIL_ID },
+          MOTHERS_NAME: { value: data?.[0]?.MOTHERS_NAME },
+          MOBILE_NO: { value: data?.[0]?.MOBILE_NO },
+          LAST_LOGIN_DT: { value: data?.[0]?.LAST_LOGIN_DT },
+          CUSTOMER_ID: { value: data?.[0]?.CUSTOMER_ID },
+          BIRTH_DATE: { value: data?.[0]?.BIRTH_DATE },
+          PASSWORD_CHANGE_DT: { value: data?.[0]?.PASSWORD_CHANGE_DT },
+          GENDER: { value: data?.[0]?.GENDER },
+          USER_NAME: { value: data?.[0]?.USER_NAME },
+          FATHERS_NAME: { value: data?.[0]?.FATHERS_NAME },
+        };
+      } else {
+        return {
+          MAIL_ID: { value: "" },
+          MOTHERS_NAME: { value: "" },
+          MOBILE_NO: { value: "" },
+          LAST_LOGIN_DT: { value: "" },
+          CUSTOMER_ID: { value: "" },
+          BIRTH_DATE: { value: "" },
+          PASSWORD_CHANGE_DT: { value: "" },
+          GENDER: { value: "" },
+          USER_NAME: { value: "" },
+          FATHERS_NAME: { value: "" },
+          CUST_NAME: { value: "" },
+        };
+      } */
+      if (status === "0") {
+        let responsedata = data;
+        return responsedata;
+      } else {
+        throw DefaultErrorObject(message, messageDetails);
+      }
     }
   }
 };
 
-export const getCustomerCardDetailThroughCB = async ({ clientID }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETUSERDTL360", {
-      CUSTOMER_DTL_LIST: { CBNUMBER: clientID, APP_INDICATOR: "TRANZWARE" },
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
+// export const getCustomerCardDetailThroughCB = async ({ clientID }) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher("GETUSERDTL360", {
+//       CUSTOMER_DTL_LIST: { CBNUMBER: clientID, APP_INDICATOR: "TRANZWARE" },
+//     });
+//   if (status === "0") {
+//     return data;
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// };
 
 export const saveCustomerRegisterRequest = async ({ inputData }) => {
   const { data, status, message, messageDetails } =

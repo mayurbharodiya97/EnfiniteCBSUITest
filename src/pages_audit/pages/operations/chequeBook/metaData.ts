@@ -2,8 +2,9 @@
 import { format } from "date-fns";
 
 import { MetaDataType } from "components/dyanmicForm";
-import { useGetDataMutation } from "./chequeBookEntry";
-
+// import { useGetDataMutation } from "./chequeBookEntry";
+// import { AuthContext } from "pages_audit/auth";
+// import { useContext } from "react";
 export const ChequeBookIssueEntry: MetaDataType = {
   form: {
     name: "chequeBookForm",
@@ -58,7 +59,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
       label: "Branch",
       placeholder: "Branch",
       type: "text",
-      // required: true,
+      required: true,
       // maxLength: 16,
 
       GridProps: {
@@ -76,7 +77,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
       label: "Account Type",
       placeholder: "Enter Account Type",
       type: "text",
-      // required: true,
+      required: true,
       // maxLength: 16,
 
       GridProps: {
@@ -94,8 +95,25 @@ export const ChequeBookIssueEntry: MetaDataType = {
       label: "Account No.",
       placeholder: "Enter Account No.",
       type: "text",
-      // required: true,
-      // maxLength: 16,
+      fullWidth: true,
+      required: true,
+      dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
+      runValidationOnDependentFieldsChange: true,
+      // validate: (currentField, dependentFields) => {
+      //   return "";
+      // },
+      // postValidationSetCrossFieldValues: "getAcctDetails",
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["This field is required"] },
+          {
+            name: "ACCT_CD",
+            params: ["Please Enter Account no."],
+          },
+        ],
+      },
+      maxLength: 20,
 
       GridProps: {
         xs: 12,
@@ -148,23 +166,6 @@ export const ChequeBookIssueEntry: MetaDataType = {
         xs: 12,
         md: 2,
         sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "SCR_ADD",
-      sequence: 2,
-      label: "Address",
-      // placeholder: "Select No of Leaves",
-      // enableDefaultOption: true,
-      // required: true,
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
       },
     },
     {
@@ -272,7 +273,23 @@ export const ChequeBookIssueEntry: MetaDataType = {
         sm: 2,
       },
     },
-
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SCR_ADD",
+      // sequence: 2,
+      label: "Address",
+      // placeholder: "Select No of Leaves",
+      // enableDefaultOption: true,
+      // required: true,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+      },
+    },
     {
       render: {
         componentType: "textField",
@@ -288,8 +305,6 @@ export const ChequeBookIssueEntry: MetaDataType = {
         md: 1,
         sm: 1,
       },
-      dependentFields: ["BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
-      runValidationOnDependentFieldsChange: true,
       // setValueOnDependentFieldsChange: useGetDataMutation,
 
       // setValueOnDependentFieldsChange: (dependent) => {

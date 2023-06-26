@@ -92,6 +92,7 @@ const ChequeBookEntry = () => {
         branchCD: rowData?.BRANCH_CD,
         acctType: rowData?.ACCT_TYPE,
         accountNo: rowData?.ACCT_CD,
+        callfrom: "C",
       });
     },
     [getData]
@@ -155,7 +156,7 @@ const ChequeBookEntry = () => {
         key={"ChequeBookEntry" + (data ?? []).length}
         metaData={ChequeBookIssueEntry}
         loading={getData.isLoading}
-        // hideHeader={true}
+        hideHeader={true}
         //  initialValues={rows?.[0]?.data as InitialValuesType}
         ref={isErrorFuncRef}
         onSubmitHandler={onSubmitHandler}
@@ -163,7 +164,7 @@ const ChequeBookEntry = () => {
         displayMode={"new"}
         formStyle={{
           background: "white",
-          height: "50vh",
+          height: "40vh",
           overflowY: "auto",
           overflowX: "hidden",
         }}
