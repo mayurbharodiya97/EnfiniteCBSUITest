@@ -1,4 +1,5 @@
 import { components, filters } from "components/report";
+import { AmountProvider } from "components/report/amountContext";
 
 export const scrollMetaData = {
   title: "",

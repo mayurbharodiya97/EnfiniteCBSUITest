@@ -7,6 +7,12 @@ import { GradientButton } from "components/styledComponent/button";
 import { InitialValuesType } from "packages/form";
 
 export const ViewStatement = ({ open, onClose, rowsData }) => {
+  const handleStatementClick = () => {
+    const newWindow = window.open("./view-statement", "_blank");
+    if (newWindow) {
+      newWindow.focus();
+    }
+  };
   return (
     <Dialog
       open={open}
@@ -35,6 +41,7 @@ export const ViewStatement = ({ open, onClose, rowsData }) => {
               style={{ marginRight: "5px" }}
               onClick={(event) => {
                 handleSubmit(event, "Save");
+                handleStatementClick();
               }}
               disabled={isSubmitting}
               endIcon={isSubmitting ? <CircularProgress size={20} /> : null}

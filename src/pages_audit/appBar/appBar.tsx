@@ -122,13 +122,6 @@ export const MyAppBar = ({
     return <span>Good {greet},</span>;
   };
 
-  const handleStatementClick = () => {
-    const newWindow = window.open("./view-statement", "_blank");
-    if (newWindow) {
-      newWindow.focus();
-    }
-  };
-
   return (
     <AppBar
       position="fixed"
@@ -266,23 +259,7 @@ export const MyAppBar = ({
             justifyContent={"space-evenly"}
             alignItems={"center"}
           >
-            <Button
-              sx={{
-                backgroundColor: "var(--theme-color3)",
-                width: "3rem",
-                fontSize: "8px",
-                height: "2rem",
-                "&:hover": {
-                  backgroundColor: "var(--theme-color3)",
-                },
-                margin: "6px",
-              }}
-              onClick={handleStatementClick}
-            >
-              Statement
-            </Button>
-
-            {openDialog && <AccountDetails columns={columns} />}
+            {openDialog && <AccountDetails />}
 
             <MySearchField
               fieldKey="dashboardSearch"

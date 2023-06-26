@@ -47,10 +47,7 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
                 <Route path="operation/*" element={<OperationsMenu />} />
-                <Route
-                  path="view-statement/*"
-                  element={<AccountDetails columns={columns} />}
-                />
+                <Route path="view-statement/*" element={<AccountDetails />} />
                 {/* <Route
                   path="branch-selection/*"
                   element={<BranchSelectionGridWrapper />}
