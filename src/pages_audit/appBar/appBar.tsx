@@ -134,11 +134,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
     else if (hours >= 12 && hours <= 16) greet = "afternoon";
     else if (hours >= 16 && hours <= 24) greet = "evening";
 
-    return (
-      <span>
-        {t("Good")} {t(greet)},{" "}
-      </span>
-    );
+    return <span>Good {greet},</span>;
   };
 
   const handleStatementClick = () => {

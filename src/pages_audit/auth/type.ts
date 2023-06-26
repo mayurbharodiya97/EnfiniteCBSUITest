@@ -25,6 +25,9 @@ export interface AuthStateType {
 
 export interface BranchSelectData {
   menulistdata: any;
+  branch: string;
+  branchCode: string;
+  baseBranchCode: string;
 }
 
 export interface ActionType {

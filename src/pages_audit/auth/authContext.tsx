@@ -127,6 +127,12 @@ export const AuthProvider = ({ children }) => {
       setLoginDatainLocalStorage({
         ...state,
         isBranchSelect: true,
+        user: {
+          ...state.user,
+          branchCode: payload.branchCode,
+          branch: payload.branch,
+          baseBranchCode: payload.baseBranchCode,
+        },
         menulistdata: payload.menulistdata,
       });
       if (stopNavigation) {

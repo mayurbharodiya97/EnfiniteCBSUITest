@@ -1,4 +1,4 @@
-export const QuickAccessTableGridDataAAAAA = async () => {
+export const StatementDetailsData = async () => {
   // const { data, status, message, messageDetails } =
   //   await AuthSDK.internalFetcher("GETQUICKACCESS", {
   //     COMP_CD: COMP_CD,
@@ -16,12 +16,12 @@ export const QuickAccessTableGridDataAAAAA = async () => {
   // }
   return [
     {
-      DATE: "",
-      NARRATION: "OPENING BALANCE",
-      CHEQUE_NO: "",
-      DEBIT: "",
+      DATE: "17/06/2022",
+      NARRATION: "SHARE TRN BY CASH",
+      CHEQUE_NO: "466465456",
+      DEBIT: "10000.00",
       CREDIT: "",
-      BALANCE: "0.00",
+      BALANCE: "50000.00",
       TR_BR: "",
       ID: "1",
     },
@@ -34,6 +34,26 @@ export const QuickAccessTableGridDataAAAAA = async () => {
       BALANCE: "5000",
       TR_BR: "099",
       ID: "2",
+    },
+    {
+      DATE: "19/06/2022",
+      NARRATION: "SHARE TRN BY ABC",
+      CHEQUE_NO: "5",
+      DEBIT: "",
+      CREDIT: "100000",
+      BALANCE: "100000",
+      TR_BR: "077",
+      ID: "3",
+    },
+    {
+      DATE: "19/06/2022",
+      NARRATION: "SHARE TRN BY DEF",
+      CHEQUE_NO: "5",
+      DEBIT: "",
+      CREDIT: "1000000",
+      BALANCE: "1000000",
+      TR_BR: "088",
+      ID: "4",
     },
     // {
     //   CREDIT: "50000",
