@@ -1,11 +1,11 @@
 import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getBankimgAndProfileimg = async ({ userID }) => {
+export const getBankimgAndProfileimg = async ({ userID, companyID }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETBANKIMAGEANDPROFILEPIC", {
-      //   USERNAME: "parag",
-      COMP_CD: "473 ",
+    await AuthSDK.internalFetcher("BANKPROFILEPICK", {
+      COMP_CD: companyID,
+      // COMP_CD: "132 ",
       USER_ID: userID,
     });
   if (status === "0") {
@@ -15,10 +15,11 @@ export const getBankimgAndProfileimg = async ({ userID }) => {
   }
 };
 
-export const getQuickView = async ({ userName }) => {
+export const getQuickView = async ({ userName, companyID }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETQUICKACCESSVIEW", {
-      COMP_CD: "473 ",
+      // COMP_CD: "473 ",
+      COMP_CD: companyID,
       BRANCH_CD: "0002",
       USER_NAME: userName,
     });

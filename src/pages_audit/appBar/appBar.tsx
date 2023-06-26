@@ -48,8 +48,9 @@ export const MyAppBar = ({
   const [pictureURL, setPictureURL] = useState<any | null>({
     bank: "",
     profile: "",
+    logo: "",
   });
-  const urlObj = useRef<any>({ bank: "", profile: "" });
+  const urlObj = useRef<any>({ bank: "", profile: "", logo: "" });
   const handleNavigate = () => {
     navigate("/cbsenfinity/profile");
     handleClose();
@@ -77,6 +78,7 @@ export const MyAppBar = ({
     () =>
       API.getBankimgAndProfileimg({
         userID: authController?.authState?.user?.id,
+        companyID: authController?.authState?.access_token?.companyID,
       })
   );
   useEffect(() => {
@@ -94,6 +96,22 @@ export const MyAppBar = ({
       });
     }
   }, [data?.[0]?.PROFILE_PHOTO]);
+
+  useEffect(() => {
+    if (Boolean(data?.[0]?.DHLOGO)) {
+      let blob = utilFunction.base64toBlob(data?.[0]?.DHLOGO);
+      urlObj.current = {
+        ...urlObj.current,
+        logo:
+          typeof blob === "object" && Boolean(blob)
+            ? URL.createObjectURL(blob)
+            : "",
+      };
+      setPictureURL((old) => {
+        return { ...old, logo: urlObj.current?.logo };
+      });
+    }
+  }, [data?.[0]?.DHLOGO]);
 
   useEffect(() => {
     if (Boolean(data?.[0]?.BANK_LOGO)) {
@@ -120,13 +138,6 @@ export const MyAppBar = ({
     else if (hours >= 16 && hours <= 24) greet = "evening";
 
     return <span>Good {greet},</span>;
-  };
-
-  const handleStatementClick = () => {
-    const newWindow = window.open("./view-statement", "_blank");
-    if (newWindow) {
-      newWindow.focus();
-    }
   };
 
   return (
@@ -166,7 +177,7 @@ export const MyAppBar = ({
 
           <div>
             <img
-              src={Logo}
+              src={Boolean(pictureURL?.logo) ? pictureURL?.logo : Logo}
               alt="Netbanking"
               className={classes.logo}
               onClick={(e) => {
@@ -174,7 +185,7 @@ export const MyAppBar = ({
                 navigate("./dashboard");
               }}
             />
-            <p className={classes.version01}>V: 1.12.03.1</p>
+            <p className={classes.version01}>{data?.[0]?.VERSION}</p>
           </div>
         </Box>
         <Stack direction="row" spacing={4} mx={2}>
@@ -249,13 +260,7 @@ export const MyAppBar = ({
               justifyContent={"flex-end"}
               alignItems={"center"}
             >
-              {/* <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
-                sx={{ height: "35px", width: "35px" }}
-              /> */}
               <Typography fontSize={"17px"} color={"#1C1C1C"}>
-                {/* Greetings....{" "} */}
                 {Greetings()} {authController.authState.user.id}
               </Typography>
               <img src={Waving_hand} alt="" style={{ height: "18px" }} />
@@ -266,23 +271,7 @@ export const MyAppBar = ({
             justifyContent={"space-evenly"}
             alignItems={"center"}
           >
-            <Button
-              sx={{
-                backgroundColor: "var(--theme-color3)",
-                width: "3rem",
-                fontSize: "8px",
-                height: "2rem",
-                "&:hover": {
-                  backgroundColor: "var(--theme-color3)",
-                },
-                margin: "6px",
-              }}
-              onClick={handleStatementClick}
-            >
-              Statement
-            </Button>
-
-            {openDialog && <AccountDetails columns={columns} />}
+            {openDialog && <AccountDetails />}
 
             <MySearchField
               fieldKey="dashboardSearch"

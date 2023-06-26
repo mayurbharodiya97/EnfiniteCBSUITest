@@ -39,6 +39,16 @@ export const UserProfileMetaData = {
   fields: [
     {
       render: { componentType: "textField", group: 0 },
+      name: "USER_ID",
+      sequence: 1,
+      type: "text",
+      label: "User Id",
+      isReadOnly: true,
+      placeholder: "User Id",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: { componentType: "textField", group: 0 },
       name: "GROUP_NAME",
       sequence: 6,
       type: "text",
@@ -56,6 +66,16 @@ export const UserProfileMetaData = {
       label: "Default Branch",
       isReadOnly: true,
       placeholder: "Default Branch",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: { componentType: "phoneNumber", group: 0 },
+      name: "MOBILE_NUMBER",
+      sequence: 4,
+      type: "text",
+      label: "Mobile Number",
+      isReadOnly: true,
+      placeholder: "Mobile Number",
       GridProps: { xs: 12, md: 3, sm: 3 },
     },
     {
@@ -86,7 +106,7 @@ export const UserProfileMetaData = {
       type: "text",
       label: "Email Id",
       isReadOnly: true,
-      placeholder: "User Id",
+      placeholder: "Email Id",
       GridProps: { xs: 12, md: 3, sm: 3 },
     },
     {

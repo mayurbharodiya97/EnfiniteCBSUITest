@@ -127,12 +127,21 @@ export const AuthProvider = ({ children }) => {
       setLoginDatainLocalStorage({
         ...state,
         isBranchSelect: true,
+        user: {
+          ...state.user,
+          branchCode: payload.branchCode,
+          branch: payload.branch,
+          baseBranchCode: payload.baseBranchCode,
+        },
         menulistdata: payload.menulistdata,
       });
       if (stopNavigation) {
         return;
       }
-      if (comingFromRoute === "/cbsenfinity/branch-selection") {
+      if (
+        comingFromRoute === "/cbsenfinity/branch-selection" ||
+        comingFromRoute === "/cbsenfinity/change-branch"
+      ) {
         navigate("/cbsenfinity/dashboard", {
           replace: true,
         });

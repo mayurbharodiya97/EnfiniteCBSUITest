@@ -92,6 +92,9 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
       disabled={isSubmitting}
       error={!isSubmitting && isError}
       onBlur={handleBlur}
+      style={{
+        justifyContent: "center",
+      }}
     >
       <FormControlLabel
         {...FormControlLabelProps}
@@ -113,15 +116,23 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
       ) : null}
     </FormControl>
   );
-  console.log("result", result);
-  if (Boolean(!enableGrid)) {
+  // if (Boolean(!enableGrid)) {
+  //   return (
+  //     <Grid style={{ justifyContent: "center" }} {...GridProps} key={fieldKey}>
+  //       {result}
+  //     </Grid>
+  //   );
+  // } else {
+  //   return result;
+  // }
+  if (Boolean(enableGrid)) {
     return (
-      <Grid style={{ alignSelf: "center" }} {...GridProps} key={fieldKey}>
+      <Grid {...GridProps} style={{ display: "flex" }}>
         {result}
       </Grid>
     );
   } else {
-    return result;
+    return <div style={{ display: "flex" }}>result</div>;
   }
 };
 
