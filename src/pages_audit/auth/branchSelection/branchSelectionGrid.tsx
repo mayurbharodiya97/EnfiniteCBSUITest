@@ -40,6 +40,7 @@ const BranchSelectionGrid = ({ selectionMode }) => {
   const { authState, isBranchSelected, branchSelect, isLoggedIn, logout } =
     useContext(AuthContext);
   const navigate = useNavigate();
+  const rowsData = useRef<any>({});
 
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
@@ -63,7 +64,13 @@ const BranchSelectionGrid = ({ selectionMode }) => {
 
   const mutation = useMutation(API.GetMenuData, {
     onSuccess: (data) => {
-      branchSelect({ menulistdata: data });
+      console.log(">>success rowsData", rowsData);
+      branchSelect({
+        menulistdata: data,
+        branchCode: rowsData?.current?.BRANCH_CD,
+        branch: rowsData?.current?.BRANCH_NM,
+        baseBranchCode: rowsData?.current?.BASE_BRANCH_CD,
+      });
     },
   });
   const getError: any = mutation.error as MutationErrorType;
@@ -79,6 +86,7 @@ const BranchSelectionGrid = ({ selectionMode }) => {
             variant: "error",
           });
         } else {
+          rowsData.current = data.rows?.[0]?.data;
           mutation.mutate({
             BASE_COMP_CD: data.rows?.[0]?.data?.BASE_COMP_CD ?? "",
             BASE_BRANCH_CD: data.rows?.[0]?.data?.BASE_BRANCH_CD ?? "",
@@ -254,7 +262,7 @@ const BranchSelectionGrid = ({ selectionMode }) => {
               loading={isLoading || isFetching || mutation.isLoading}
               defaultSelectedRowId={authState?.user?.branchCode ?? null}
             />
-            {isError ? (
+            {isError || data?.length === 0 ? (
               <Button
                 sx={{
                   backgroundColor: "var(--theme-color3)",
