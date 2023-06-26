@@ -363,8 +363,8 @@ export const Profile = () => {
                           </Toolbar>
                         </AppBar>
                       </Grid>
-                      <Grid container alignItems={"center"}>
-                        <Grid item xs={4} pl={3}>
+                      <Grid container alignItems={"center"} height={"50px"}>
+                        <Grid item xs={3} pl={3}>
                           <Typography
                             variant="h5"
                             fontWeight={500}
@@ -380,10 +380,11 @@ export const Profile = () => {
                             {queryData?.data?.USER_LEVEL}
                           </Typography>
                         </Grid>
-                        <Grid item xs={4}>
-                          {/* <Typography>About</Typography> */}
+                        <Grid item xs={9}>
+                          {/* <Typography> */} <About />
+                          {/* </Typography> */}
                         </Grid>
-                        <Grid item xs={4}>
+                        {/* <Grid item xs={4}>
                           <Typography>
                             {t("profile.MobileNo")} :-{" "}
                             {queryData?.data?.MOBILE_NUMBER}

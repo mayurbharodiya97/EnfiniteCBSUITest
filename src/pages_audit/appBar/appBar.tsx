@@ -44,6 +44,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const [pictureURL, setPictureURL] = useState<any | null>({
     bank: "",
     profile: "",
+    logo: "",
   });
   const { t } = useTranslation();
   const urlObj = useRef<any>({ bank: "", profile: "" });
@@ -74,6 +75,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
     () =>
       API.getBankimgAndProfileimg({
         userID: authController?.authState?.user?.id,
+        companyID: authController?.authState?.access_token?.companyID,
       })
   );
   useEffect(() => {
@@ -91,6 +93,22 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
       });
     }
   }, [data?.[0]?.PROFILE_PHOTO]);
+
+  useEffect(() => {
+    if (Boolean(data?.[0]?.DHLOGO)) {
+      let blob = utilFunction.base64toBlob(data?.[0]?.DHLOGO);
+      urlObj.current = {
+        ...urlObj.current,
+        logo:
+          typeof blob === "object" && Boolean(blob)
+            ? URL.createObjectURL(blob)
+            : "",
+      };
+      setPictureURL((old) => {
+        return { ...old, logo: urlObj.current?.logo };
+      });
+    }
+  }, [data?.[0]?.DHLOGO]);
 
   useEffect(() => {
     if (Boolean(data?.[0]?.BANK_LOGO)) {
@@ -167,7 +185,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
 
           <div>
             <img
-              src={Logo}
+              src={Boolean(pictureURL?.logo) ? pictureURL?.logo : Logo}
               alt="Netbanking"
               className={classes.logo}
               onClick={(e) => {
@@ -175,7 +193,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 navigate("./dashboard");
               }}
             />
-            <p className={classes.version01}>V: 1.12.03.1</p>
+            <p className={classes.version01}>{data?.[0]?.VERSION}</p>
           </div>
         </Box>
         <Stack direction="row" spacing={4} mx={2}>
@@ -251,11 +269,6 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               justifyContent={"flex-end"}
               alignItems={"center"}
             >
-              {/* <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
-                sx={{ height: "35px", width: "35px" }}
-              /> */}
               <Typography fontSize={"17px"} color={"#1C1C1C"}>
                 {/* Greetings....{" "} */}
                 {Greetings()}

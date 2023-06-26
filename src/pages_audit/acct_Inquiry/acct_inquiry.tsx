@@ -40,6 +40,7 @@ export const Accountinquiry = ({ open, onClose }) => {
   const [rowsData, setRowsData] = useState([]);
   const [acctOpen, setAcctOpen] = useState(false);
   const [componentToShow, setComponentToShow] = useState("");
+  const [showGridData, setShowGridData] = useState(false);
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const formbtnRef = useRef<any>(null);
@@ -95,10 +96,11 @@ export const Accountinquiry = ({ open, onClose }) => {
     ) {
       //@ts-ignore
       endSubmit(true, "Please enter any value");
+      setShowGridData(true);
     } else {
       //@ts-ignore
       endSubmit(true);
-      mutation.mutate();
+      mutation.mutate(data);
     }
   };
   return (
@@ -127,32 +129,32 @@ export const Accountinquiry = ({ open, onClose }) => {
           }}
           ref={formRef}
         >
-          {/* {({ isSubmitting, handleSubmit }) => ( */}
-          <>
-            <Button
-              onClick={(event) => {
-                //   isSubmitEventRef.current = event;
-                // handleSubmit(event, "Save");
-                onClose();
-              }}
-              // disabled={isSubmitting}
-              // endIcon={
-              //   isSubmitting ? <CircularProgress size={20} /> : null
-              // }
-              color={"primary"}
-              ref={formbtnRef}
-            >
-              close
-            </Button>
-          </>
-          {/* )} */}{" "}
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              <Button
+                onClick={(event) => {
+                  //   isSubmitEventRef.current = event;
+                  // handleSubmit(event, "Save");
+                  onClose();
+                }}
+                // disabled={isSubmitting}
+                // endIcon={
+                //   isSubmitting ? <CircularProgress size={20} /> : null
+                // }
+                color={"primary"}
+                ref={formbtnRef}
+              >
+                close
+              </Button>
+            </>
+          )}
         </FormWrapper>
         <GridWrapper
           key={`customerSearchingGrid`}
           finalMetaData={AccountInquiryGridMetaData as GridMetaDataType}
-          data={mutation.data ?? []}
+          data={showGridData ? [] : mutation.data ?? []}
           setData={() => null}
-          loading={false}
+          loading={mutation.isLoading}
           actions={actions}
           setAction={setCurrentAction}
           // refetchData={() => {}}
@@ -171,9 +173,10 @@ export const Accountinquiry = ({ open, onClose }) => {
             open={acctOpen}
             onClose={() => setAcctOpen(false)}
           />
-        ) : componentToShow === "ViewInterest" ? (
-          <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />
-        ) : null}
+        ) : //   componentToShow === "ViewInterest" ? (
+        // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />
+        // ) :
+        null}
       </Dialog>
     </>
   );

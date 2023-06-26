@@ -55,8 +55,8 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
     packageName: "",
   },
-  GETBANKIMAGEANDPROFILEPIC: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
+  BANKPROFILEPICK: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/BANKPROFILEPICK",
     packageName: "",
   },
   GETQUICKACCESSVIEW: {
@@ -95,8 +95,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/authenticationServiceAPI/AUTH/CHANGEPASSWORD",
     packageName: "",
   },
-  GETACCTVIEWMKR: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTVIEWMKR",
+  GETACCTINQUIRY: {
+    url: "/accountServiceAPI/GETACCTINQUIRY",
     packageName: "",
   },
   GETUSERACTIVITY: {

@@ -42,7 +42,7 @@ export const GetMenuData = async ({
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("MENULIST", {
       COMP_CD: COMP_CD,
-      BASE_BRANCH_CD: BRANCH_CD,
+      BASE_BRANCH_CD: BASE_BRANCH_CD,
       ASON_DT: format(new Date(), "dd/MMM/yyyy"),
       GROUP_NAME: GROUP_NAME,
       IMG_PATH: "",

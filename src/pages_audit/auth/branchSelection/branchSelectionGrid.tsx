@@ -50,7 +50,7 @@ const BranchSelectionGrid = ({ selectionMode }) => {
   useEffect(() => {
     if (!isLoggedIn()) {
       navigate("/cbsenfinity/login");
-    } else if (isBranchSelected()) {
+    } else if (isBranchSelected() && selectionMode !== "C") {
       navigate("/cbsenfinity/dashboard");
     }
   }, [isBranchSelected, isLoggedIn]);

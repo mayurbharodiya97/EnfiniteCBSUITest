@@ -193,6 +193,7 @@ const MySearchField: FC<MySearchFieldProps> = ({
                   margin: "0px",
                   border: "none",
                   background: " rgba(235, 237, 238, 0.45)",
+                  padding: "0px",
                 },
           startAdornment: (
             <InputAdornment

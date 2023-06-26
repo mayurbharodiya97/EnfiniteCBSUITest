@@ -49,7 +49,7 @@ export const AccountInquiryMetadata = {
   fields: [
     {
       render: {
-        componentType: "textField",
+        componentType: "accountNumberOptional",
       },
       name: "ACCOUNT",
       label: "AccountNo",
@@ -61,8 +61,11 @@ export const AccountInquiryMetadata = {
       required: false,
       fullWidth: true,
       autoComplete: false,
-      schemaValidation: {
-        type: "string",
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length >= 20) {
+          return "The length of your Account No. is greater than 20 character";
+        }
+        return "";
       },
       GridProps: {
         xs: 12,
@@ -72,7 +75,7 @@ export const AccountInquiryMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "CUSTOMER",
       label: "CustomerId",
@@ -80,7 +83,13 @@ export const AccountInquiryMetadata = {
       schemaValidation: {
         type: "string",
       },
-      placeholder: "",
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length >= 12) {
+          return "The length of your Customer Id is greater than 12 character";
+        }
+        return "";
+      },
+      placeholder: "Customer Id",
       type: "text",
       GridProps: {
         xs: 12,
@@ -90,20 +99,27 @@ export const AccountInquiryMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "phoneNumberOptional",
       },
       name: "MOBILE",
       label: "MobileNo",
       maxLength: 10,
-      schemaValidation: {
-        type: "string",
-      },
-      placeholder: "",
-      type: "text",
+      placeholder: "Mobile Number",
+      type: "string",
       GridProps: {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+      },
+      validate: (columnValue, allField, flag) => {
+        if (columnValue.value.length <= 0) {
+          return "";
+        } else if (columnValue.value.length >= 11) {
+          return "The length of your Mobile Number is greater than 10 character";
+        } else if (columnValue.value.length <= 9) {
+          return "The length of your Mobile Number is less than 10 character";
+        }
+        return "";
       },
     },
     {
@@ -115,10 +131,25 @@ export const AccountInquiryMetadata = {
       placeholder: "",
       maxLength: 10,
       type: "text",
+      schemaValidation: {
+        type: "string",
+      },
       GridProps: {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+      },
+      validate: (columnValue, allField, flag) => {
+        let regex = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
+
+        if (columnValue.value.length <= 0) {
+          return "";
+        } else if (/[a-z]/.test(columnValue.value)) {
+          return "Please enter uppercase letters only";
+        } else if (!regex.test(columnValue.value)) {
+          return "Please Enter Valid Format";
+        }
+        return "";
       },
     },
     {
@@ -140,8 +171,8 @@ export const AccountInquiryMetadata = {
 export const AccountInquiryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Customer Searching",
-    rowIdColumn: "CUST_ID",
+    gridLabel: "Account Inquiry Data",
+    rowIdColumn: "WITHDRAW_BAL",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -149,7 +180,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     allowColumnReordering: true,
     disableSorting: false,
-    hideHeader: true,
+    hideHeader: false,
     disableGroupBy: true,
     enablePagination: true,
     pageSizes: [10, 20, 30],
@@ -214,13 +245,35 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 180,
     },
+    {
+      accessor: "WITHDRAW_BAL",
+      columnName: "Withdraw Balance",
+      sequence: 7,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    },
+    {
+      accessor: "E_MAIL_ID",
+      columnName: "Email Id",
+      sequence: 7,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    },
 
     {
       accessor: "OPENIND_DT",
       columnName: "OpeningDate",
       sequence: 8,
       alignment: "center",
-      componentType: "default",
+      componentType: "date",
+      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      // dateFormat: "dd/MM/yyyy hh:mm aaa",
       isReadOnly: true,
       width: 140,
       minWidth: 140,
@@ -242,7 +295,9 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       columnName: "CloseDate",
       sequence: 10,
       alignment: "center",
-      componentType: "default",
+      componentType: "date",
+      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      // dateFormat: "dd/MM/yyyy hh:mm aaa",
       isReadOnly: true,
       width: 100,
       minWidth: 100,
@@ -397,6 +452,8 @@ export const PassbookStatement = {
       name: "PID_DEIPTION",
       label: "ToDate",
       placeholder: "",
+      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      // dateFormat: "dd/MM/yyyy hh:mm aaa",
       type: "text",
       GridProps: {
         xs: 12,
@@ -568,7 +625,7 @@ export const ViewDetailMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "ACCT_STATUS",
+      name: "DISPLAY_STATUS",
       isReadOnly: true,
       label: "STATUS",
       placeholder: "Status",

@@ -207,6 +207,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
                 flex: 1,
                 textAlign: "right",
                 margin: "5px 15px 0 0",
+                color: "rgba(0, 0, 0, 0.6)",
               }}
             >
               {value.length}/{maxLength}

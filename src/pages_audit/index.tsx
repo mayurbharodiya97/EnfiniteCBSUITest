@@ -20,6 +20,10 @@ const EntryPoint = () => (
           element={<BranchSelectionGridWrapper selectionMode={"S"} />}
         />
         <Route
+          path="change-branch/*"
+          element={<BranchSelectionGridWrapper selectionMode={"C"} />}
+        />
+        <Route
           path="*"
           element={
             <ProtectedRoutes>

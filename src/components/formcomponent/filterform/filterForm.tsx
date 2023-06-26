@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: any) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
     paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color1)",
+    background: "var(--theme-color5)",
   },
   title: {
     flex: "1 1 100%",
