@@ -93,6 +93,7 @@ export const ProtectedRoutes = ({ children }) => {
       window.location.pathname === "/cbsenfinity/profile" ||
       window.location.pathname === "/cbsenfinity/view-statement" ||
       window.location.pathname === "/cbsenfinity/branch-selection" ||
+      window.location.pathname === "/cbsenfinity/change-branch" ||
       window.location.pathname === "/cbsenfinity/operation/chequebook-entry" ||
       isValidateURL(allActiveURL, window.location.pathname)
     ) {

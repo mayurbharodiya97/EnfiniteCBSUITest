@@ -49,7 +49,7 @@ export const PagesAudit = (props) => {
                 <Route path="view-statement/*" element={<AccountDetails />} />
                 {/* <Route
                   path="branch-selection/*"
-                  element={<BranchSelectionGridWrapper />}
+                  element={<BranchSelectionGridWrapper  />}
                 /> */}
               </>
             ) : null}

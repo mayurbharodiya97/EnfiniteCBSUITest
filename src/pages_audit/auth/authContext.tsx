@@ -132,7 +132,10 @@ export const AuthProvider = ({ children }) => {
       if (stopNavigation) {
         return;
       }
-      if (comingFromRoute === "/cbsenfinity/branch-selection") {
+      if (
+        comingFromRoute === "/cbsenfinity/branch-selection" ||
+        comingFromRoute === "/cbsenfinity/change-branch"
+      ) {
         navigate("/cbsenfinity/dashboard", {
           replace: true,
         });

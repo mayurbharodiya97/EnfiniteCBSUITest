@@ -96,6 +96,15 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     // StartAdornment: "+88",
   },
+  phoneNumberOptional: {
+    render: {
+      componentType: "inputMask",
+    },
+    MaskProps: {
+      mask: "0000000000",
+      lazy: true,
+    },
+  },
   panCard: {
     render: {
       componentType: "inputMask",
@@ -123,6 +132,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     render: {
       componentType: "inputMask",
     },
+
     MaskProps: {
       mask: "aaaaa0000a",
       prepare: function (str) {
@@ -417,10 +427,10 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       componentType: "numberFormat",
     },
     FormatProps: {
-      // format: "###########",
-      // allowNegative: false,
-      // allowLeadingZeros: true,
-      // isNumericString: true,
+      format: "###########",
+      allowNegative: false,
+      allowLeadingZeros: true,
+      isNumericString: true,
     },
   },
 };

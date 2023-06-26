@@ -31,13 +31,7 @@ export const MultiLanguages = () => {
   }, []);
   return (
     <>
-      <FormControl
-        size="small"
-        style={{
-          border: "1px solid #BABABA",
-          borderRadius: "5px",
-        }}
-      >
+      <FormControl size="small">
         <Select
           style={{
             maxWidth: "100px",

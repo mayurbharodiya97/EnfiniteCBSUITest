@@ -55,6 +55,7 @@ import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
 import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAccessibilityOutlined";
 import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
+import About from "./about";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -359,8 +360,8 @@ export const Profile = () => {
                           </Toolbar>
                         </AppBar>
                       </Grid>
-                      <Grid container alignItems={"center"}>
-                        <Grid item xs={4} pl={3}>
+                      <Grid container alignItems={"center"} height={"50px"}>
+                        <Grid item xs={3} pl={3}>
                           <Typography
                             variant="h5"
                             fontWeight={500}
@@ -376,10 +377,11 @@ export const Profile = () => {
                             {queryData?.data?.USER_LEVEL}
                           </Typography>
                         </Grid>
-                        <Grid item xs={4}>
-                          {/* <Typography>About</Typography> */}
+                        <Grid item xs={9}>
+                          {/* <Typography> */} <About />
+                          {/* </Typography> */}
                         </Grid>
-                        <Grid item xs={4}>
+                        {/* <Grid item xs={4}>
                           <Typography>
                             Mobile No. :- {queryData?.data?.MOBILE_NUMBER}
                           </Typography>
@@ -387,7 +389,7 @@ export const Profile = () => {
                             User-Id :- {queryData?.data?.USER_ID}
                           </Typography>
                           <Typography>About :- </Typography>
-                        </Grid>
+                        </Grid> */}
                       </Grid>
                       <Box sx={{ width: "100%", marginTop: "auto" }}>
                         <Tabs
