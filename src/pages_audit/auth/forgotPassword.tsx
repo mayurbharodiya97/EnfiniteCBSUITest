@@ -1,5 +1,4 @@
 import { useReducer, useContext, useEffect, useState, useRef } from "react";
-// import Box from "@material-ui/core/Box";
 import { useNavigate } from "react-router-dom";
 import loginImg from "assets/images/login.png";
 import { useStyles } from "./style";
@@ -146,16 +145,16 @@ export const ForgotPasswordController = () => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const otpResendRef = useRef(1);
-  // const {
-  //   data: imageData,
-  //   isLoading,
-  //   isFetching,
-  //   isError,
-  //   error,
-  //   refetch,
-  // } = useQuery<any, any>(["getLoginImageData"], () =>
-  //   API.getLoginImageData({ APP_TRAN_CD: "51" })
-  // );
+  const {
+    data: imageData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery<any, any>(["getLoginImageData"], () =>
+    API.getLoginImageData({ APP_TRAN_CD: "51" })
+  );
   const onSubmitHandel = async (data, flag) => {
     if (verifyRequestData(data, flag)) {
       if (flag === 0) {
@@ -330,7 +329,7 @@ export const ForgotPasswordController = () => {
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
-        {/* <BankDetails imageData={imageData} /> */}
+        <BankDetails imageData={imageData} />
         <Grid item xs={6} md={6} lg={6} sm={6}>
           <Grid
             container
