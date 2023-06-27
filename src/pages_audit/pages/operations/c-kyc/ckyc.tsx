@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { Box, Typography, Grid, TextField, IconButton, Button, Divider, Tab} from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import FormModal from "./formModal/formModal";
@@ -11,6 +12,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-i
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; //plus-icon-outlined
 import AddCircleIcon from '@mui/icons-material/AddCircle'; //plus-icon-filled
+import PersonIcon from '@mui/icons-material/Person'; // individual-person-icon
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { 
   RetrieveDataFilterForm,
@@ -21,6 +23,8 @@ import { FormComponentView } from "components/formcomponent";
 import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { useQuery } from "react-query";
 import * as API from "./api";
+import { AuthContext } from "pages_audit/auth";
+
 
 export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -228,29 +232,42 @@ export const Ckyc = () => {
     setIsSidebarExpanded((prevState) => !prevState)
   }
   const [isFormModalOpen, setIsFormModalOpen] = React.useState(false);
-  const handleFormModalOpen = () => setIsFormModalOpen(true);
-  const handleFormModalClose = () => setIsFormModalOpen(false);
+  const [customerType, setCustomerType] = React.useState("");
+  const handleFormModalOpen = (type:String) => {
+    setIsFormModalOpen(true)
+    setCustomerType(type.toString())
+  };
+  const handleFormModalClose = () => {
+    setIsFormModalOpen(false)
+    setCustomerType("")
+  }
+  useEffect(() => {
+    console.log("customer_type..",customerType)
+  }, [customerType])
+  const { authState } = useContext(AuthContext);
 
-  
-  // const Result = useQuery<any, any>(
-  //   ["CUSTOMERDETAILS"],
-  //   () =>
-  //     API.GetCustomerDetails(
-  //     // {
-  //       // COMP_CD: authState?.companyID ?? "",
-  //       // BRANCH_CD: authState?.user?.branchCode ?? "",
-  //       // CUST_TYPE: "individual"
-  //     // }
-  //     )
-  // );
+  console.log("asdasdasdwqeqwadw", authState)
+  const Result = useQuery(
+    ["GetCustomerDetails"],
+    () =>
+      API.getCustomerDetails(
+      {
+        COMP_CD: authState?.companyID ?? "",
+        CUST_ID: authState?.user?.id ?? "",
+        CONTACT_NO: " ",
+        PAN_NO: " ",
+        ACCT_NM: " ",
+        UNIQ_ID: " ",
+        E_MAIL_ID: " ",
+        // BRANCH_CD: authState?.user?.branchCode ?? "",
+        // CUST_TYPE: "individual"
+      }  
+      )
+  );
 
-  // useEffect(() => {
-  //   console.log("ResultResult", Result)
-  // }, [Result])
-  // const setCurrentAction = useCallback((data) => {
-  //   // console.log(">>data", data);
-  //   console.log("datadatadatadata",data)
-  // }, []);
+  useEffect(() => {
+    console.log("ResultResult", Result)
+  }, [Result])
 
 
   const controlPanel = (
@@ -354,11 +371,11 @@ export const Ckyc = () => {
         {/* <Grid item xs={12} sm={12} md>
           <Typography variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry</Typography>
         </Grid> */}
-        <Grid item xs="auto">
-          <Button 
+        <Grid container item xs="auto" columnGap={1}>
+          <Tooltip title="Add Legal Entity Customer Type Entry"><Button 
             color="secondary" 
             variant="contained" 
-            onClick={handleFormModalOpen} 
+            onClick={() => handleFormModalOpen("Legal Entity")} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
               minHeight:{xs: "40px", md: "30px"}, 
@@ -377,7 +394,30 @@ export const Ckyc = () => {
             {/* <IconButton sx={{border: (theme) => `1px solid ${theme.palette.secondary.main}`}} color="secondary"> */}
               <AddCircleOutlineIcon fontSize="medium" />
             {/* </IconButton> */}
-          </Button>
+          </Button></Tooltip>
+          <Tooltip title="Add Individual Customer Type Entry"><Button 
+            color="secondary" 
+            variant="contained" 
+            onClick={() => handleFormModalOpen("individual")} 
+            sx={{
+              // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
+              minHeight:{xs: "40px", md: "30px"}, 
+              height:{xs: "40px", md: "30px"}, 
+              minWidth: {xs: "40px", md: "30px"}, 
+              width: {xs: "40px", md: "30px"}, 
+              display: "flex", 
+              alignItems:"center", 
+              justifyContent: "center",
+              borderRadius: "5px",
+              "& .MuiSvgIcon-root": {
+                fontSize: {xs: "1.5rem", md: "1.2rem"},
+              },
+            }}
+          >
+            {/* <IconButton sx={{border: (theme) => `1px solid ${theme.palette.secondary.main}`}} color="secondary"> */}
+              <PersonIcon fontSize="medium" />
+            {/* </IconButton> */}
+          </Button></Tooltip>
         </Grid>
         {false && <Grid sx={{ display: tabValue !== 0 ? "none" : "block", }} item xs={12} sm={12} md="auto">
           {controlPanel}
@@ -416,7 +456,7 @@ export const Ckyc = () => {
             propStyles={{titleStyle : {color: "var(--theme-color3) !important"},
               toolbarStyles: {backgroundColor: "var(--theme-color2) !important"},
               IconButtonStyle: {variant: "secondary"},
-              paperStyle: {elevation: 0}
+              paperStyle: {boxShadow: "none"}
             }}
           ></FormComponentView>
           {/* formComponentview */}
@@ -473,6 +513,9 @@ export const Ckyc = () => {
         setIsLoadingData={setIsLoadingData}
         isCustomerData={isCustomerData}
         setIsCustomerData={setIsCustomerData}
+
+        customerType={customerType}
+        setCustomerType={setCustomerType}
       />
     </React.Fragment>
   );

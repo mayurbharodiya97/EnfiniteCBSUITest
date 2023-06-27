@@ -1,9 +1,10 @@
 import * as React from 'react';
+import { useState, useContext, useEffect } from 'react';
 // import Box from '@mui/material/Box';
 // import Button from '@mui/material/Button';
 // import Typography from '@mui/material/Typography';
 // import Modal from '@mui/material/Modal';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, TextField, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab} from '@mui/material';
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, TextField, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import { CustomTabs } from '../ckyc';
@@ -35,6 +36,12 @@ import CancelIcon from '@mui/icons-material/Cancel'; // close-icon
 import { makeStyles } from '@mui/styles';
 import { customer_data_meta_data } from '../metadata';
 
+import { AuthContext } from 'pages_audit/auth';
+import Logo from "assets/images/easy_bankcore_Logo.png";
+import { useStyles } from 'pages_audit/appBar/style';
+import bank_logo_default from "assets/images/BecomePartnerImg.svg";
+import clsx from "clsx";
+
 type Customtabprops = {
   isSidebarExpanded: boolean;
 }
@@ -45,12 +52,12 @@ const CustomTab = styled(Tab, {shouldForwardProp: (prop) => prop !== "isSidebarE
   ...(isSidebarExpanded ? {
     alignItems: "flex-start",
     width: "100%", 
-    transition: "width 0.08s",
+    transition: "width 0.2s ease-out",
   } : {
     alignItems: "center",
     // minWidth: "60px", 
     width:"60px", 
-    transition: "width 0.08s",
+    transition: "width 0.2s ease-out",
   }),
   [theme.breakpoints.down("md")]: {
     // backgroundColor: "#ddd",
@@ -154,31 +161,112 @@ export default function FormModal({
   isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   colTabValue, handleColTabChange,
-  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData
+  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData,
+  customerType, setCustomerType
 }) {
   // const [open, setOpen] = React.useState(false);
   // const handleOpen = () => handleFormModalOpen(true);
   // const handleClose = () => handleFormModalOpen(false);
   const classes = useDialogStyles();
 
+  const authController = useContext(AuthContext);
+  const appBarClasses = useStyles();
+  console.log("autdhController",authController)
   return (
     // <div>
     //   <Button onClick={handleFormModalOpen}>Open modal</Button>
       <Dialog fullScreen={true} open={isFormModalOpen}>
         <AppBar
-          position="relative"
-          color="secondary"
-          style={{ marginBottom: "10px" }}
+          position="sticky"
+          color="primary"
+          // style={{ marginBottom: "10px" }}
         >
-          <Toolbar variant="dense">
+          <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
+            <div>
+              <img
+                src={Logo}
+                alt="Netbanking"
+                className={appBarClasses.logo}
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+              />
+              <p className={appBarClasses.version01}>V: 1.12.03.1</p>
+            </div>
+            <Stack direction="row" spacing={4} mx={2}>
+              <Box className={appBarClasses.heading_user_img_border}>
+                <Avatar
+                  className={appBarClasses.heading_user_img}
+                  alt="Remy Sharp"
+                  src={bank_logo_default}
+                />
+              </Box>
+            </Stack>
             <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={appBarClasses.title}
+            >
+              <Box
+                style={{
+                  marginBottom: "8px",
+                  fontSize: "17px",
+                  color: "#1C1C1C",
+                  // overflowX: "auto",
+                  width: "555px",
+                }}
+                className={clsx({
+                  [appBarClasses.marquee]:
+                    authController?.authState?.companyName.length > 55,
+                })}
+              >
+                {authController?.authState?.companyName || ""}
+              </Box>
+              <div style={{ display: "flex", gap: "8px" }}>
+                <div style={{ color: "#949597" }}>
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    lineHeight={0}
+                    fontSize={"11px"}
+                  >
+                    Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
+                    {authController?.authState?.user?.branch ?? ""}
+                  </Typography>
+                  <Typography variant="caption" display="inline" fontSize={"11px"}>
+                    Working Date:{" "}
+                    {checkDateAndDisplay(
+                      authController?.authState?.workingDate ?? ""
+                    )}
+                  </Typography>
+                  <Typography
+                    marginLeft={1}
+                    variant="caption"
+                    display="inline"
+                    fontSize={"11px"}
+                  >
+                    Last Login Date :{" "}
+                    {checkDateAndDisplay(
+                      authController?.authState?.user?.lastLogin ?? "Vastrapur"
+                    )}
+                  </Typography>
+                </div>
+              </div>
+            </Typography>
+            <Typography fontSize={"17px"} color={"#1C1C1C"}>
+              {/* Greetings....{" "} */}
+              {Greetings()} {authController.authState.user.id}
+            </Typography>
+            {/* <Typography
               className={classes.title}
               color="inherit"
               variant={"h6"}
               component="div"
             >
               C-KYC Individual/Legal Entry
-            </Typography>
+            </Typography> */}
             <Button
               onClick={handleFormModalClose}
               color="primary"
@@ -188,40 +276,64 @@ export default function FormModal({
             </Button>
           </Toolbar>
         </AppBar>
+        <AppBar
+          position="sticky"
+          color="secondary"
+          style={{ marginBottom: "10px", top: "65px" }}
+        >
+          <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
+            <Button 
+              color="secondary" 
+              variant="contained" 
+              onClick={handleSidebarExpansion} 
+              sx={{
+              // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%", 
+              // mb: "5px", ml: {xs: "2px", sm: "8px"}, alignSelf: "start",
+              mx: "10px",
+              // backgroundColor: (theme) => theme.palette.grey[400],
+              minHeight:{xs: "40px", md: "30px"}, 
+              height:{xs: "40px", md: "30px"}, 
+              minWidth: {xs: "40px", md: "30px"}, 
+              width: {xs: "40px", md: "30px"}, 
+              display: "flex", 
+              alignItems:"center", 
+              justifyContent: "center",
+              borderRadius: "5px",
+              "& .MuiSvgIcon-root": {
+                fontSize: {xs: "1.5rem", md: "1.2rem"},
+              },
+              }}
+            >                  
+              {/* <IconButton color="secondary" onClick={handleSidebarExpansion}
+                sx={{backgroundColor: "#ddd",ml: "20px", mb: "2px", alignSelf: "start"}} 
+              > */}
+                {!isSidebarExpanded ? <MenuOutlinedIcon /> : <CancelIcon />}
+              {/* </IconButton> */}
+            </Button>
+            <Typography
+              className={classes.title}
+              color="inherit"
+              variant={"h6"}
+              component="div"
+            >
+              {`C-KYC ${customerType} Entry`}
+            </Typography>
+            <Button
+              onClick={handleFormModalClose}
+              color="primary"
+              // disabled={mutation.isLoading}
+            >
+              Cancel
+            </Button>
+          </Toolbar>
+        </AppBar>
         {/* <Box sx={style}> */}
           <Grid container sx={{transition: "all 0.4s ease-in-out"}} columnGap={(theme) => theme.spacing(1)}>
             <Grid container item xs="auto" sx={{
               display:"flex", flexDirection: "column",alignItems: "center",
               position: "sticky", top:0, height:"calc(95vh - 80px)",
               }}>
-                <Button 
-                  color="secondary" 
-                  variant="contained" 
-                  onClick={handleSidebarExpansion} 
-                  sx={{
-                  // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%", 
-                  mb: "5px", ml: {xs: "2px", sm: "8px"}, alignSelf: "start",
-                  // backgroundColor: (theme) => theme.palette.grey[400],
-                  minHeight:{xs: "40px", md: "30px"}, 
-                  height:{xs: "40px", md: "30px"}, 
-                  minWidth: {xs: "40px", md: "30px"}, 
-                  width: {xs: "40px", md: "30px"}, 
-                  display: "flex", 
-                  alignItems:"center", 
-                  justifyContent: "center",
-                  borderRadius: "5px",
-                  "& .MuiSvgIcon-root": {
-                    fontSize: {xs: "1.5rem", md: "1.2rem"},
-                  },
-                  }}
-                >                  
-                  {/* <IconButton color="secondary" onClick={handleSidebarExpansion}
-                    sx={{backgroundColor: "#ddd",ml: "20px", mb: "2px", alignSelf: "start"}} 
-                  > */}
-                    {!isSidebarExpanded ? <MenuOutlinedIcon /> : <CancelIcon />}
-                  {/* </IconButton> */}
-                </Button>
-              <CustomTabs sx={{height:"calc(100% - 45px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
+              <CustomTabs sx={{height:"calc(100% - 10px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Personal Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={HowToRegRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Personal Details"} subtext={""} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "KYC Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={NoteAddRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"KYC"} subtext={"PoA & PoI & Documents"} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Declaration"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={ArticleRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Declaration"} subtext={"FATCA & CRS"} />} /></Tooltip>
@@ -333,3 +445,26 @@ export default function FormModal({
     // </div>
   );
 }
+
+const checkDateAndDisplay = (dateStr: string) => {
+  // const dt = new Date(dateStr);
+  // //@ts-ignore
+  // if (dt instanceof Date && !isNaN(dt)) {
+  //   return dt.toDateString();
+  // }
+  if (Boolean(dateStr)) {
+    return dateStr;
+  }
+  return "N/A";
+};
+
+const Greetings = () => {
+  let hours = new Date().getHours();
+  let greet;
+
+  if (hours < 12) greet = "morning";
+  else if (hours >= 12 && hours <= 16) greet = "afternoon";
+  else if (hours >= 16 && hours <= 24) greet = "evening";
+
+  return <span>Good {greet},</span>;
+};

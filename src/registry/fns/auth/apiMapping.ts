@@ -63,6 +63,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETAREA",
     packageName: "",
   },
+  GETCUSTOMERDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTOMERDTL",
+    packageName: "",
+  },
   CUSTOMERDETAILS: {
     url: "/customerServiceAPI/CUSTOMERDETAILS",
     packageName: "",

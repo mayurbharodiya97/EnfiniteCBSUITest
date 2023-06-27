@@ -49,33 +49,34 @@ export const customer_data_meta_data = {
             componentType: "typography"
           },
           name: "Customer_Details",
-          label: "Customer Details"
+          label: "Customer Details",
+          GridProps: {xs: 4, sm: 3, md: 2},
         },
-        {
-            render: {
-                componentType: "select",
-            },
-            name: "CUST_TYPE",
-            label: "Cust Type",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-            options: [
-                {label: "Individual", value: "individual"},
-                {label: "Legal", value: "legal"},
-            ],
-            postValidationSetCrossFieldValues: "getCustType",
-            // dependentFields: ["DAILY_AMT"],
-            // runValidationOnDependentFieldsChange: true,
-            // validate: (currentField, dependentFields) => {
-            //     if(Number(dependentFields?.DAILY_AMT?.value) >
-            //     Number(currentField?.value)) {
-            //         return "Weekly Limit should greater than or equal to Daily Limit";
-            //     } else {
-            //         return "";
-            //     }
-            // }
-        },
+        // {
+        //     render: {
+        //         componentType: "select",
+        //     },
+        //     name: "CUST_TYPE",
+        //     label: "Cust Type",
+        //     placeholder: "",
+        //     type: "text",
+        //     GridProps: {xs: 4, sm: 3, md: 2},
+        //     options: [
+        //         {label: "Individual", value: "individual"},
+        //         {label: "Legal", value: "legal"},
+        //     ],
+        //     postValidationSetCrossFieldValues: "getCustType",
+        //     // dependentFields: ["DAILY_AMT"],
+        //     // runValidationOnDependentFieldsChange: true,
+        //     // validate: (currentField, dependentFields) => {
+        //     //     if(Number(dependentFields?.DAILY_AMT?.value) >
+        //     //     Number(currentField?.value)) {
+        //     //         return "Weekly Limit should greater than or equal to Daily Limit";
+        //     //     } else {
+        //     //         return "";
+        //     //     }
+        //     // }
+        // },
         {
             render: {
                 componentType: "select",
@@ -89,7 +90,7 @@ export const customer_data_meta_data = {
             label: "Category",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm: 3, md: 2},
         },
         {
             render: {
@@ -100,7 +101,7 @@ export const customer_data_meta_data = {
             placeholder: "",
             type: "text",
             disabled: true,
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm: 3, md: 2},
         },
         {
             render: {
@@ -112,7 +113,7 @@ export const customer_data_meta_data = {
             placeholder: "",
             type: "text",
             disabled: true,
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm: 3, md: 2},
         },
     ]
 };
@@ -321,7 +322,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
       dense: true,
       title: "Retrieve Customer Data",
       allowColumnHiding: true,
-      submitButtonName: "Fetch Details",
+      submitButtonName: "Retrieve",
       // submitButtonHide: true,
       // isDisplayOnly: false,
     },

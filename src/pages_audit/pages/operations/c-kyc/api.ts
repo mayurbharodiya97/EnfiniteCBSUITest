@@ -49,10 +49,16 @@ export const GetAreaOptions = async () => {
     }
   };
 
-export const GetCustomerDetails = async () => {
+export const getCustomerDetails = async ({COMP_CD, CUST_ID, CONTACT_NO, PAN_NO, ACCT_NM, UNIQ_ID, E_MAIL_ID }) => {
     const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("CUSTOMERDETAILS", {
-        // COMP_CD: COMP_CD,
+      await AuthSDK.internalFetcher("GETCUSTOMERDTL", {
+        COMP_CD: "132",
+        CUST_ID: "211562",
+        CONTACT_NO: " ",
+        PAN_NO: " ",
+        ACCT_NM: " ",
+        UNIQ_ID: " ",
+        E_MAIL_ID: " "
         // BASE_BRANCH_CD: BASE_BRANCH_CD,
         // BRANCH_CD: BRANCH_CD,
         // ENTERED_DATE: format(new Date(), "dd/MMM/yyyy"),
