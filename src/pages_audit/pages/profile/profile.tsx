@@ -55,7 +55,7 @@ import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
 import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAccessibilityOutlined";
 import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
-import About from "./about";
+import { useTranslation } from "react-i18next";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -68,6 +68,7 @@ export const Profile = () => {
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
   const [value, setValue] = useState("one");
   const [mode, setMode] = useState<string>("userLogin");
+  const { t } = useTranslation();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -81,6 +82,7 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
+
   const userActivityData = useQuery<any, any, any>(["GETUSERACTIVITY"], () =>
     API.getUserLoginDetails({ userID })
   );
@@ -96,6 +98,7 @@ export const Profile = () => {
   const dashboardData = useQuery<any, any, any>(["GETUSERACESSTPE"], () =>
     API.getdashboardData()
   );
+
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
@@ -285,7 +288,7 @@ export const Profile = () => {
                               fontWeight: "400",
                             }}
                           >
-                            Update Photo
+                            {t("profile.UpdatePhoto")}
                           </Typography>
                           <input
                             name="fileselect"
@@ -336,7 +339,7 @@ export const Profile = () => {
                                 fontWeight: 500,
                               }}
                             >
-                              My Profile
+                              {t("profile.MyProfile")}
                             </Typography>
 
                             <Box sx={{ flexGrow: 1 }} />
@@ -383,13 +386,15 @@ export const Profile = () => {
                         </Grid>
                         {/* <Grid item xs={4}>
                           <Typography>
-                            Mobile No. :- {queryData?.data?.MOBILE_NUMBER}
+                            {t("profile.MobileNo")} :-{" "}
+                            {queryData?.data?.MOBILE_NUMBER}
                           </Typography>
                           <Typography>
-                            User-Id :- {queryData?.data?.USER_ID}
+                            {t("profile.EmailId")} :-{" "}
+                            {queryData?.data?.EMAIL_ID}
                           </Typography>
-                          <Typography>About :- </Typography>
-                        </Grid> */}
+                          <Typography>{t("profile.About")} :- </Typography>
+                        </Grid>
                       </Grid>
                       <Box sx={{ width: "100%", marginTop: "auto" }}>
                         <Tabs
@@ -397,7 +402,7 @@ export const Profile = () => {
                             "& .MuiTabs-fixed": {
                               display: "flex",
 
-                              justifyContent: "flex-end",
+                              // justifyContent: "flex-end",
                             },
                             "& .Mui-selected": {
                               color: "var(--theme-color1)",
@@ -417,7 +422,7 @@ export const Profile = () => {
                         >
                           <Tab
                             value="one"
-                            label="User Profile"
+                            label={t("profile.UserProfile")}
                             icon={<AccountCircleOutlinedIcon />}
                             iconPosition="start"
                             // onClick={moveToUserDetail}
@@ -427,7 +432,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="two"
-                            label="Allowed Access"
+                            label={t("profile.AllowedAccess")}
                             icon={<HowToRegOutlinedIcon />}
                             iconPosition="start"
                             // onClick={moveToUserDetail}
@@ -437,7 +442,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="three"
-                            label="Activity Detail"
+                            label={t("profile.ActivityDetail")}
                             icon={<ArticleOutlinedIcon />}
                             iconPosition="start"
                             // onClick={() => {
@@ -450,7 +455,7 @@ export const Profile = () => {
 
                           <Tab
                             value="four"
-                            label="Change Password"
+                            label={t("profile.ChangePassword")}
                             icon={<LockResetOutlinedIcon />}
                             iconPosition="start"
                             onClick={() => {
@@ -460,7 +465,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="five"
-                            label="Personalize dashboard"
+                            label={t("profile.Personalizedashboard")}
                             icon={<SettingsAccessibilityOutlinedIcon />}
                             iconPosition="start"
                             onClick={() => {

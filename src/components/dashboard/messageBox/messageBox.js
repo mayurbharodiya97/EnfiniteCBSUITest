@@ -11,6 +11,7 @@ import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { ListPopupMessageWrapper } from "./listPopupBox";
+import { useTranslation } from "react-i18next";
 // import { GradientButton } from "components/styledComponent/button";
 
 export const MessageBox = ({ screenFlag = "" }) => {
@@ -19,22 +20,23 @@ export const MessageBox = ({ screenFlag = "" }) => {
 
   const [isOpenSave, setIsOpenSave] = useState(false);
   const [dialogLabel, setDialogLabel] = useState("");
+  const { t } = useTranslation();
+  const refData = useRef(null);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
     [
       "getDashboardMessageBoxData",
       {
         screenFlag,
-        BRANCH_CD: authState?.user?.branchCode ?? "",
         userID: authState?.user?.id ?? "",
       },
     ],
     () =>
       API.getDashboardMessageBoxData({
         screenFlag,
-        BRANCH_CD: authState?.user?.branchCode ?? "",
         userID: authState?.user?.id ?? "",
       })
   );
+  console.log("datamessage", data?.[0]?.value);
   const dataLength = data ? data.length : 0;
 
   useEffect(() => {
@@ -43,7 +45,6 @@ export const MessageBox = ({ screenFlag = "" }) => {
         "getDashboardMessageBoxData",
         {
           screenFlag,
-          BRANCH_CD: authState?.user?.branchCode ?? "",
           userID: authState?.user?.id ?? "",
         },
       ]);
@@ -55,8 +56,9 @@ export const MessageBox = ({ screenFlag = "" }) => {
   const handleDialogClose = () => {
     setIsOpenSave(false);
   };
-  const handleLabelClick = (label) => {
-    setDialogLabel(label);
+  const handleLabelClick = (item) => {
+    refData.current = item;
+    setIsOpenSave(true);
   };
 
   return (
@@ -97,7 +99,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
                 marginBottom: "4px",
               }}
             >
-              {`${screenFlag}`}
+              {`${t(screenFlag)}`}
             </Typography>
             <Typography
               variant="h3"
@@ -110,13 +112,13 @@ export const MessageBox = ({ screenFlag = "" }) => {
             >
               {/* {`${body}`} */}
               {screenFlag === "Announcement"
-                ? "Announcing New Features."
+                ? t("AnnouncingNewFeatures")
                 : screenFlag === "Tips"
-                ? "Be Preapared For Fruad."
+                ? t("BePreaparedForFruad")
                 : screenFlag === "Notes"
-                ? "Customer Queries Solve."
+                ? t("CustomerQueriesSolve")
                 : screenFlag === "Alert"
-                ? "Low Balance Alert."
+                ? t("LowBalanceAlert")
                 : null}
               {/* {`${result?.data?.[0]?.BOX_BODY ?? body}`} */}
             </Typography>
@@ -214,8 +216,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
                         name={item?.label}
                         disabled={false}
                         onClick={() => {
-                          setIsOpenSave(true);
-                          handleLabelClick(item?.label);
+                          handleLabelClick(item);
                         }}
                       />
                     ))}
@@ -225,8 +226,9 @@ export const MessageBox = ({ screenFlag = "" }) => {
               {isOpenSave ? (
                 <ListPopupMessageWrapper
                   closeDialog={handleDialogClose}
-                  dialogLabel={dialogLabel}
+                  dialogLabel={refData.current?.label}
                   formView={"view"}
+                  transactionID={refData.current?.value}
                 />
               ) : null}
             </Grid>

@@ -33,13 +33,8 @@ import { utilFunction } from "components/utils";
 import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
-
-export const MyAppBar = ({
-  handleDrawerOpen,
-  handleDrawerClose,
-  open,
-  columns,
-}) => {
+import { useTranslation } from "react-i18next";
+export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
@@ -50,7 +45,8 @@ export const MyAppBar = ({
     profile: "",
     logo: "",
   });
-  const urlObj = useRef<any>({ bank: "", profile: "", logo: "" });
+  const { t } = useTranslation();
+  const urlObj = useRef<any>({ bank: "", profile: "" });
   const handleNavigate = () => {
     navigate("/cbsenfinity/profile");
     handleClose();
@@ -229,11 +225,12 @@ export const MyAppBar = ({
                 lineHeight={0}
                 fontSize={"11px"}
               >
-                Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
+                {t("appBar.Branch")}:
+                {authController?.authState?.user?.branchCode ?? "001 "}-
                 {authController?.authState?.user?.branch ?? ""}
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
-                Working Date:{" "}
+                {t("appBar.WorkingDate")}:{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.workingDate ?? ""
                 )}
@@ -244,7 +241,7 @@ export const MyAppBar = ({
                 display="inline"
                 fontSize={"11px"}
               >
-                Last Login Date :{" "}
+                {t("appBar.LastLoginDate")} :{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.user?.lastLogin ?? "Vastrapur"
                 )}
@@ -261,7 +258,12 @@ export const MyAppBar = ({
               alignItems={"center"}
             >
               <Typography fontSize={"17px"} color={"#1C1C1C"}>
-                {Greetings()} {authController.authState.user.id}
+                {/* Greetings....{" "} */}
+                {Greetings()}
+                {authController.authState.user.id
+                  ? authController.authState.user.id.charAt(0).toUpperCase() +
+                    authController.authState.user.id.slice(1)
+                  : null}
               </Typography>
               <img src={Waving_hand} alt="" style={{ height: "18px" }} />
             </Stack>
@@ -335,9 +337,14 @@ export const MyAppBar = ({
             <LightTooltip
               title={
                 <>
-                  <div>User ID : {authController?.authState?.user?.id}</div>
-                  <div>Role : {authController?.authState?.roleName}</div>
-                  <div>Last Unsuccessful Login : ""</div>
+                  <div>
+                    {" "}
+                    {t("appBar.UserID")}: {authController?.authState?.user?.id}
+                  </div>
+                  <div>
+                    {t("appBar.Role")} : {authController?.authState?.roleName}
+                  </div>
+                  <div>{t("appBar.LastUnsuccessfulLogin")} : ""</div>
                 </>
               }
               placement="bottom-start"

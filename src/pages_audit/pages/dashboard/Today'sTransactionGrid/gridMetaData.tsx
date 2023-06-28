@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Today's Transactions",
+    gridLabel: "TodaysTransaction",
     rowIdColumn: "TRAN_CD",
 
     defaultColumnConfig: {
@@ -42,7 +42,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BRANCH_CD",
-      columnName: "Branch code",
+      columnName: "Branchcode",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -52,7 +52,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_TYPE",
-      columnName: "Account Type",
+      columnName: "AccountType",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -62,7 +62,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "A/C No",
+      columnName: "ACNo",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -72,7 +72,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Transaction Date",
+      columnName: "TransactionDate",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -82,7 +82,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_NO",
-      columnName: "Cheque no",
+      columnName: "Chequeno",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -92,12 +92,12 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TYPE_CD",
-      columnName: "Trx.",
+      columnName: "Trx",
       sequence: 5,
       alignment: "left",
       componentType: "default",
-      width: 70,
-      minWidth: 70,
+      width: 90,
+      minWidth: 100,
       maxWidth: 200,
     },
     {
@@ -112,7 +112,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CREDIT",
-      columnName: "Credit amount",
+      columnName: "CreditAmount",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -122,7 +122,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DEBIT",
-      columnName: "Debit amount",
+      columnName: "DebitAmount",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -132,7 +132,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_CD",
-      columnName: "V.no",
+      columnName: "Vno",
       sequence: 5,
       alignment: "left",
       componentType: "default",

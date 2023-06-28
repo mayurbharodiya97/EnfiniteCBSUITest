@@ -460,7 +460,8 @@ export const AuthLoginController = () => {
         dispath({
           type: "biometricVerificationFailure",
           payload: {
-            error: fingerResponse?.ErrorMessage ?? "MFS100 Not Found",
+            error:
+              fingerResponse?.ErrorMessage ?? t("Biometric.MFS100NotFound"),
           },
         });
       }
@@ -468,7 +469,7 @@ export const AuthLoginController = () => {
       dispath({
         type: "biometricVerificationFailure",
         payload: {
-          error: e?.message ?? "Unknown error occured",
+          error: e?.message ?? t("Biometric.Unknownerroroccured"),
         },
       });
     }

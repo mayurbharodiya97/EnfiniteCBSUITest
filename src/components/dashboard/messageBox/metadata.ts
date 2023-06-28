@@ -44,16 +44,13 @@ export const MessageDescriptionMetadata = {
   fields: [
     {
       render: {
-        componentType: "select",
+        componentType: "textField",
       },
-      name: "PID_KEY",
-      label: "Circular Type",
+      name: "C_TYPE",
+      label: "CircularType",
       placeholder: "",
       defaultValue: "",
-      // type: "text",
-      // allowToggleVisiblity: true,
-      // maxLength: 10,
-      // required: true,
+      isReadOnly: true,
       fullWidth: true,
       autoComplete: false,
       schemaValidation: {
@@ -62,84 +59,73 @@ export const MessageDescriptionMetadata = {
       GridProps: {
         xs: 12,
         md: 6,
-        sm: 4,
+        sm: 6,
       },
     },
     {
       render: {
         componentType: "textField",
       },
-      name: "PID_DESCRIPTIO",
-      label: "No.",
+      name: "IDENTITY_NO",
+      label: "No",
       placeholder: "",
-
+      isReadOnly: true,
       fullWidth: true,
       type: "text",
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["This field is required"] },
-          {
-            name: "PID_DESCRIPTIO",
-            params: ["Please Enter Review by No."],
-          },
-        ],
-      },
+
       GridProps: {
         xs: 12,
         md: 6,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "datePicker",
-      },
-      name: "BR_OPEN_DT",
-      label: "Open Date",
-      GridProps: {
-        xs: 12,
-        md: 4,
         sm: 6,
       },
     },
+    // {
+    //   render: {
+    //     componentType: "datePicker",
+    //   },
+    //   name: "BR_OPEN_DT",
+    //   label: "OpenDate",
+    //   fullWidth: true,
+    //   format: "dd/MM/yyyy",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 6,
+    //     sm: 6,
+    //   },
+    // },
     {
       render: {
         componentType: "datePicker",
       },
-      name: "VALID_UPTO",
-      label: "Expiry Date",
+      name: "EFFECTIVE_DT",
+      label: "ExpiryDate",
       placeholder: "",
-      type: "date",
+      type: "text",
       fullWidth: true,
       format: "dd/MM/yyyy",
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["This field is required"] },
-          { name: "VALID_UPTO", params: ["Please Enter Expiry Date."] },
-        ],
-      },
+      required: false,
+
       GridProps: {
         xs: 12,
-        md: 4,
-        sm: 4,
+        md: 6,
+        sm: 6,
       },
     },
+
     {
       render: {
         componentType: "textField",
       },
       name: "PID_DESCRIPTION",
       label: "Purpose",
+      isReadOnly: true,
       placeholder: "",
       type: "text",
       __EDIT__: { isReadOnly: true },
       GridProps: {
         xs: 12,
         md: 12,
-        sm: 10,
+        sm: 12,
       },
     },
     // {
@@ -150,159 +136,153 @@ export const MessageDescriptionMetadata = {
     //   GridProps: { xs: 12, md: 4, sm: 4 },
     //   // __EDIT__: { render: { componentType: "checkbox" } },
     // },
-    {
-      render: { componentType: "checkbox" },
-      name: "SMTP_PASS_AUTH",
-      label: "Pass Auth",
-      defaultValue: true,
-      GridProps: { xs: 12, md: 3, sm: 3 },
-      // __EDIT__: { render: { componentType: "checkbox" } },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "DAILY_AMT",
-      label: "Daily Limit",
-      placeholder: "",
-      type: "text",
-      required: true,
-      validate: "getValidateValue",
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      className: "textInputFromRight",
-      name: "VAT_PER",
-      label: "VAT Percentage",
-      placeholder: "",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-      maxLength: 3,
-      showMaxLength: false,
-      required: true,
-      validate: "getValidateValue",
-      FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: true,
-        decimalScale: 0,
-        isAllowed: (values) => {
-          if (values?.value?.length > 3) {
-            return false;
-          }
-          if (values?.value > 100) {
-            return false;
-          }
-          return true;
-        },
-      },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      className: "textInputFromRight",
-      name: "COOL_PERIOD",
-      label: "Cool Down Period (In Minute)",
-      placeholder: "0.00",
-      FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: false,
-        decimalScale: 2,
-        isAllowed: (values) => {
-          if (values?.value?.length > 4) {
-            return false;
-          }
-          if (values.floatValue === 0) {
-            return false;
-          }
-          return true;
-        },
-      },
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "VERSION_NO",
-      label: "Version",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      required: true,
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Version is required."] },
-          { name: "VERSION_NO", params: ["Please enter Version."] },
-        ],
-      },
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-      __EDIT__: { isReadOnly: true },
-    },
-    {
-      render: {
-        componentType: "select",
-      },
-      name: "TRAN_TIME",
-      label: "Execution",
-      placeholder: "",
-      // defaultValue: "A",
-      defaultOptionLabel: "Execution",
-      options: [
-        { label: "24/7/365", value: "24" },
-        { label: "Working Days", value: "W" },
-        { label: "All Days", value: "A" },
-      ],
-      _optionsKey: "GetExecution",
-      // required: true,
-      //validate: "getValidateValue",
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Execution is required."] },
-          { name: "CIB_STATUS", params: ["Please select Execution."] },
-        ],
-      },
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "select",
-      },
-      name: "CHANNEL",
-      label: "channel",
-      placeholder: "Select",
-      defaultOptionLabel: "Channel",
-      options: [
-        { label: "Internet Banking", value: "I" },
-        { label: "Mobile Banking", value: "M" },
-      ],
-      GridProps: { xs: 10, md: 10, sm: 4 },
-    },
+    // {
+    //   render: { componentType: "checkbox" },
+    //   name: "SMTP_PASS_AUTH",
+    //   label: "PassAuth",
+    //   defaultValue: true,
+    //   GridProps: { xs: 12, md: 3, sm: 3 },
+    //   // __EDIT__: { render: { componentType: "checkbox" } },
+    // },
+    // {
+    //   render: {
+    //     componentType: "amountField",
+    //   },
+    //   name: "DAILY_AMT",
+    //   label: "DailyLimit",
+    //   placeholder: "",
+    //   type: "text",
+    //   required: true,
+    //   // validate: "getValidateValue",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 4,
+    //     sm: 4,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "numberFormat",
+    //   },
+    //   className: "textInputFromRight",
+    //   name: "VAT_PER",
+    //   label: "VATPercentage",
+    //   placeholder: "",
+    //   type: "text",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 4,
+    //     sm: 4,
+    //   },
+    //   maxLength: 3,
+    //   showMaxLength: false,
+    //   required: true,
+    //   // validate: "getValidateValue",
+    //   FormatProps: {
+    //     allowNegative: false,
+    //     allowLeadingZeros: true,
+    //     decimalScale: 0,
+    //     isAllowed: (values) => {
+    //       if (values?.value?.length > 3) {
+    //         return false;
+    //       }
+    //       if (values?.value > 100) {
+    //         return false;
+    //       }
+    //       return true;
+    //     },
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "numberFormat",
+    //   },
+    //   className: "textInputFromRight",
+    //   name: "COOL_PERIOD",
+    //   label: "CoolDownPeriodInMinute",
+    //   placeholder: "0.00",
+    //   FormatProps: {
+    //     allowNegative: false,
+    //     allowLeadingZeros: false,
+    //     decimalScale: 2,
+    //     isAllowed: (values) => {
+    //       if (values?.value?.length > 4) {
+    //         return false;
+    //       }
+    //       if (values.floatValue === 0) {
+    //         return false;
+    //       }
+    //       return true;
+    //     },
+    //   },
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 4,
+    //     sm: 4,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "VERSION_NO",
+    //   label: "Version",
+    //   placeholder: "",
+    //   type: "text",
+    //   fullWidth: true,
+    //   required: true,
+
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 12,
+    //     sm: 12,
+    //   },
+    //   __EDIT__: { isReadOnly: true },
+    // },
+    // {
+    //   render: {
+    //     componentType: "select",
+    //   },
+    //   name: "TRAN_TIME",
+    //   label: "Execution",
+    //   placeholder: "",
+    //   // defaultValue: "A",
+    //   defaultOptionLabel: "Execution",
+    //   options: [
+    //     { label: "24/7/365", value: "24" },
+    //     { label: "Working Days", value: "W" },
+    //     { label: "All Days", value: "A" },
+    //   ],
+    //   _optionsKey: "GetExecution",
+    //   // required: true,
+    //   //validate: "getValidateValue",
+    //   // schemaValidation: {
+    //   //   type: "string",
+    //   //   rules: [
+    //   //     { name: "required", params: ["Execution is required."] },
+    //   //     { name: "CIB_STATUS", params: ["Please select Execution."] },
+    //   //   ],
+    //   // },
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 4,
+    //     sm: 4,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "select",
+    //   },
+    //   name: "CHANNEL",
+    //   label: "channel",
+    //   placeholder: "Select",
+    //   defaultOptionLabel: "Channel",
+    //   options: [
+    //     { label: "Internet Banking", value: "I" },
+    //     { label: "Mobile Banking", value: "M" },
+    //   ],
+    //   GridProps: { xs: 10, md: 10, sm: 4 },
+    // },
     // {
     //   render: {
     //     componentType: "checkbox",

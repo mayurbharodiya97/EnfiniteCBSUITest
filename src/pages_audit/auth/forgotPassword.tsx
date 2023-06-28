@@ -17,7 +17,8 @@ import {
 import { GeneralAPI } from "registry/fns/functions";
 import { useQuery } from "react-query";
 import * as API from "./api";
-import { queryClient } from "cache";
+import { useTranslation } from "react-i18next";
+import { MultiLanguages } from "./multiLanguages";
 const inititalState = {
   isUsernameError: false,
   userMessageforusername: "",
@@ -36,6 +37,8 @@ const inititalState = {
   otpmodelClose: false,
   requestCd: "",
   username: "",
+  authType: "",
+  transactionID: "",
 };
 const reducer = (state, action) => {
   switch (action.type) {
@@ -74,6 +77,7 @@ const reducer = (state, action) => {
         apierrorMessage: "",
         requestCd: action?.payload?.requestCd ?? "",
         username: action?.payload?.username ?? "",
+        authType: action?.payload?.authType ?? "O",
       };
     }
     case "inititateOTPVerification": {
@@ -145,6 +149,7 @@ export const ForgotPasswordController = () => {
   const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const otpResendRef = useRef(1);
+  const { t } = useTranslation();
   const {
     data: imageData,
     isLoading,
@@ -166,11 +171,13 @@ export const ForgotPasswordController = () => {
         } = await veirfyUsernameandMobileNo(data?.userName, data?.mobileno);
 
         if (status === "0") {
+          console.log(">>PASS resdata", resdata);
           dispath({
             type: "verifyUserNameandMobileNoSuccess",
             payload: {
               requestCd: String(resdata?.REQUEST_CD ?? ""),
               username: data?.userName,
+              authType: resdata?.AUTH_TYPE ?? "O",
             },
           });
           setOpen(true);
@@ -228,14 +235,14 @@ export const ForgotPasswordController = () => {
       };
       if (!Boolean(data.userName)) {
         validationData.isUsernameError = true;
-        validationData.userMessageforusername = "Username is Required.";
+        validationData.userMessageforusername = t("UsernameisRequired");
       }
       if (!Boolean(data.mobileno)) {
         validationData.isMobileError = true;
-        validationData.userMessageforMobileno = "Mobile No. is Required.";
+        validationData.userMessageforMobileno = t("MobileNoisRequired");
       } else if (
         isNaN(data.mobileno) ||
-        (data.mobileno.length !== 11 && data.mobileno.length !== 13)
+        (data.mobileno.length !== 10 && data.mobileno.length !== 13)
       ) {
         validationData.isMobileError = true;
         validationData.userMessageforMobileno = "Please enter valid Mobile No.";
@@ -259,8 +266,9 @@ export const ForgotPasswordController = () => {
       }
       if (!Boolean(data.confirmpassword)) {
         validationData.isConfirmPasswordError = true;
-        validationData.userMessageforconfirmPassword =
-          "Confirm password is required.";
+        validationData.userMessageforconfirmPassword = t(
+          "Confirmpasswordisrequired"
+        );
       } else if (
         Boolean(data.password) &&
         data.password !== data.confirmpassword
@@ -298,8 +306,10 @@ export const ForgotPasswordController = () => {
       } = await verifyOTPForPWDReset(
         loginState?.requestCd,
         loginState?.username,
-        OTPNumber
+        OTPNumber,
+        loginState?.authType
       );
+      console.log("loginState?.authType", loginState);
       if (status === "0") {
         dispath({
           type: "OTPVerificationComplate",
@@ -340,12 +350,21 @@ export const ForgotPasswordController = () => {
           >
             <img src={logo} alt="Logo" />
           </Grid>
+          <Grid
+            container
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            padding={"0 35px 0 0"}
+          >
+            <MultiLanguages />
+          </Grid>
           <Container maxWidth="xs">
-            <Grid alignItems="center" style={{ paddingTop: "40px" }}>
-              <h2>
+            <Grid alignItems="center" style={{ paddingTop: "20px" }}>
+              <h2 style={{ margin: "10px 0" }}>
                 {loginState.workingState === 1
-                  ? "Set new password"
-                  : "Forgot Password"}
+                  ? t("Setnewpassword")
+                  : t("ForgotPassword")}
               </h2>
               {open ? (
                 <OTPModelForm

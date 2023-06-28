@@ -29,6 +29,7 @@ export const DashboardBox = ({
   icon = "home",
   apiName = "",
   isBackground = "",
+  visibility = false,
 }) => {
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();

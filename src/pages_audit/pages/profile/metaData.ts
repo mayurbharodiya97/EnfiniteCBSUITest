@@ -42,7 +42,7 @@ export const UserProfileMetaData = {
       name: "USER_ID",
       sequence: 1,
       type: "text",
-      label: "User Id",
+      label: "UserId",
       isReadOnly: true,
       placeholder: "User Id",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -52,7 +52,7 @@ export const UserProfileMetaData = {
       name: "GROUP_NAME",
       sequence: 6,
       type: "text",
-      label: "User Group",
+      label: "UserGroup",
       isReadOnly: true,
       placeholder: "User Group",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -63,7 +63,7 @@ export const UserProfileMetaData = {
       name: "DEFAULT_BRANCH",
       sequence: 8,
       type: "text",
-      label: "Default Branch",
+      label: "DefaultBranch",
       isReadOnly: true,
       placeholder: "Default Branch",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -83,7 +83,7 @@ export const UserProfileMetaData = {
       name: "CUSTOMER_ID",
       sequence: 8,
       type: "text",
-      label: "Customer Id",
+      label: "CustomerId",
       isReadOnly: true,
       placeholder: "Customer Id",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -94,7 +94,7 @@ export const UserProfileMetaData = {
       name: "EMP_ID",
       sequence: 8,
       type: "text",
-      label: "Employee Id",
+      label: "EmployeeId",
       isReadOnly: true,
       placeholder: "Employee Id",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -114,7 +114,7 @@ export const UserProfileMetaData = {
       name: "ALLOW_RELEASE",
       sequence: 9,
       type: "text",
-      label: "Allowed Release",
+      label: "AllowedRelease",
       isReadOnly: true,
       GridProps: { xs: 12, md: 3, sm: 3 },
     },
@@ -132,7 +132,7 @@ export const UserProfileMetaData = {
         componentType: "typography",
       },
       name: "CIBVIEW",
-      label: "Debit Transaction Limit",
+      label: "DebitTransactionLimit",
       GridProps: {
         xs: 12,
         md: 12,
@@ -145,7 +145,7 @@ export const UserProfileMetaData = {
       name: "DR_CASE_LIMIT",
       sequence: 8,
       type: "text",
-      label: "Cash withdrawal Limit",
+      label: "CashwithdrawalLimit",
       isReadOnly: true,
       placeholder: "Debit Cash Limit",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -156,7 +156,7 @@ export const UserProfileMetaData = {
       name: "DR_CLEARING_LIMIT",
       sequence: 8,
       type: "text",
-      label: "Clearing Limit",
+      label: "ClearingLimit",
       isReadOnly: true,
       placeholder: "Debit Clearing Limit",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -167,7 +167,7 @@ export const UserProfileMetaData = {
       name: "DR_TRANSFER_LIMIT",
       sequence: 8,
       type: "text",
-      label: "Transfer Limit",
+      label: "TransferLimit",
       isReadOnly: true,
       placeholder: "Debit Transfer Limit",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -176,8 +176,8 @@ export const UserProfileMetaData = {
       render: {
         componentType: "typography",
       },
-      name: "sss",
-      label: "Credit Transaction Limit",
+      name: "CIBVIEW",
+      label: "CreditTransactionLimit",
       GridProps: {
         xs: 12,
         md: 12,
@@ -189,7 +189,7 @@ export const UserProfileMetaData = {
       name: "CR_CASE_LIMIT",
       sequence: 8,
       type: "text",
-      label: "Cash Reciept Limit",
+      label: "CashRecieptLimit",
       isReadOnly: true,
       placeholder: "Credit Cash Limit",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -199,7 +199,7 @@ export const UserProfileMetaData = {
       name: "CR_CLEARING_LIMIT",
       sequence: 8,
       type: "text",
-      label: "Clearing Limit",
+      label: "ClearingLimit",
       isReadOnly: true,
       placeholder: "Credit Clearing Limit",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -209,7 +209,7 @@ export const UserProfileMetaData = {
       name: "CR_TRANSFER_LIMIT",
       sequence: 8,
       type: "text",
-      label: "Transfer Limit",
+      label: "TransferLimit",
       isReadOnly: true,
       validate: "getValidateValue",
       placeholder: "Credit Transfer Limit",
@@ -221,7 +221,7 @@ export const UserProfileMetaData = {
 export const UserLoginDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "User Login Details",
+    gridLabel: "UserLoginDetails",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -249,7 +249,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -260,7 +260,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "USERNAME",
-      columnName: "Login ID",
+      columnName: "LoginID",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -270,7 +270,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LOGIN_DT",
-      columnName: "Login Date",
+      columnName: "LoginDate",
       sequence: 3,
       alignment: "center",
       componentType: "default",
@@ -280,7 +280,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "USER_FLAG",
-      columnName: "Login Flag",
+      columnName: "LoginFlag",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -290,7 +290,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LOGOUT_DT",
-      columnName: "Logout Date",
+      columnName: "LogoutDate",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -300,7 +300,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "REMARKS",
-      columnName: "Activity Remarks",
+      columnName: "ActivityRemarks",
       sequence: 6,
       alignment: "left",
       componentType: "default",
@@ -310,7 +310,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "IP_ADDR",
-      columnName: "IP Address",
+      columnName: "IPAddress",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -320,7 +320,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RELEASED_USER_NAME",
-      columnName: "Released User",
+      columnName: "ReleasedUser",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -330,7 +330,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RELEASED_DT",
-      columnName: "Released Date",
+      columnName: "ReleasedDate",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -343,7 +343,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
 export const userAccessbranch: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Branch Access Rights",
+    gridLabel: "BranchAccessRights",
     rowIdColumn: "BRANCH_CD",
     defaultColumnConfig: {
       width: 400,
@@ -364,7 +364,7 @@ export const userAccessbranch: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -420,7 +420,7 @@ export const userAccessbranch: GridMetaDataType = {
 export const userAccesstype: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Product Access Rights",
+    gridLabel: "ProductAccessRights",
     rowIdColumn: "ACCT_TYPE",
     defaultColumnConfig: {
       width: 400,
@@ -449,7 +449,7 @@ export const userAccesstype: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -486,7 +486,7 @@ export const userAccesstype: GridMetaDataType = {
 export const PersonlizationQuickGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Quick View",
+    gridLabel: "QuickView",
     rowIdColumn: "CUST_ID",
     defaultColumnConfig: {
       width: 400,
@@ -509,7 +509,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",
@@ -533,7 +533,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
 export const PersonlizationDashboardGridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Dashboard Data Boxes",
+    gridLabel: "DashboardDataBoxes",
     rowIdColumn: "CUST_ID",
     defaultColumnConfig: {
       width: 400,
@@ -552,7 +552,7 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
       alignment: "center",
       componentType: "default",

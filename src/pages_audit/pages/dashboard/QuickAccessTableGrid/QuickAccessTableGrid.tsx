@@ -29,6 +29,7 @@ import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
+import { useTranslation } from "react-i18next";
 
 const useHeaderStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -50,6 +51,7 @@ const QuickAccessTableGrid = () => {
   const [activeButton, setActiveButton] = useState("Favourite");
   const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up(1256));
   const { data, isLoading, isFetching, refetch, isError, error } = useQuery<
@@ -132,7 +134,7 @@ const QuickAccessTableGrid = () => {
           variant={"h6"}
           component="div"
         >
-          Quick Access
+          {t("QuickAccess")}
         </Typography>
         {matches && (
           <Box
@@ -153,7 +155,7 @@ const QuickAccessTableGrid = () => {
               variant="subtitle1"
               component="h2"
             >
-              {activeButton}
+              {t(activeButton)}
             </Typography>
           </Box>
         )}
@@ -185,7 +187,7 @@ const QuickAccessTableGrid = () => {
                   : "var(--theme-color6)",
             }}
           >
-            Recent
+            {t("Recent")}
           </GradientButton>
           <GradientButton
             onClick={() => handleButtonClick("Favourite")}
@@ -203,7 +205,7 @@ const QuickAccessTableGrid = () => {
                   : "var(--theme-color6)",
             }}
           >
-            Favourite
+            {t("Favourite")}
           </GradientButton>
         </Box>
       </Toolbar>

@@ -20,18 +20,26 @@ export const MultiLanguages = () => {
     i18n.changeLanguage(languageCode);
     AuthSDK.setDisplayLanguage(i18n.resolvedLanguage);
   };
+
   useEffect(() => {
     let languageCode = Cookies.get("enfinity.cbs.i18n.language.set.code");
     if (languageCode) {
       i18n.changeLanguage(languageCode);
     }
     AuthSDK.setDisplayLanguage(i18n.resolvedLanguage);
-    //console.log("i18n.resolvedLanguage", i18n.resolvedLanguage);
+    // console.log("i18n.resolvedLanguage", i18n.resolvedLanguage);
     setLanguage(i18n.resolvedLanguage);
   }, []);
   return (
     <>
-      <FormControl size="small">
+      <FormControl
+        size="small"
+        style={{
+          border: "1px solid #BABABA",
+          borderRadius: "5px",
+          marginLeft: "10px",
+        }}
+      >
         <Select
           style={{
             maxWidth: "100px",

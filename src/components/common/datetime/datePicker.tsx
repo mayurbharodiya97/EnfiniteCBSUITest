@@ -5,10 +5,33 @@ import { Omit, Merge } from "../types";
 import { theme2 } from "app/audit/theme";
 import "./style.css";
 import { unstable_createMuiStrictModeTheme } from "@mui/material/styles";
-import { Button, Grid, GridProps } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { Button, Grid, GridProps, InputLabel } from "@mui/material";
 import { DatePickerProps } from "@mui/lab/DatePicker";
+import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
+
+const useStyles: any = makeStyles({
+  root: {
+    "& .MuiInputBase-root.MuiOutlinedInput-root input": {
+      padding: "8px 7px",
+    },
+    "& .css-1d3z3hw-MuiOutlinedInput-notchedOutline": {
+      borderColor: "1px solid #BABABA",
+    },
+  },
+
+  labelStyle: {
+    color: "rgba(0, 0, 0, 0.6)",
+    fontSize: "0.875rem",
+    lineHeight: "1.4375em",
+    fontWeight: "600",
+    transform: "translate(0, 1.5px) scale(1)",
+    marginBottom: "8px",
+    maxWidth: "calc(133% - 32px)",
+  },
+});
 
 type KeyboardDatePickerPropsSubset = Omit<
   DatePickerProps<any>,
@@ -38,8 +61,10 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   type,
   GridProps,
   enableGrid,
+  fullWidth = false,
   //@ts-ignore
   isFieldFocused,
+  label,
   InputProps,
   inputProps,
   runValidationOnDependentFieldsChange,
@@ -47,6 +72,9 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   //disableTimestamp,
   ...others
 }) => {
+  console.log("dsdsd", fieldName, fullWidth);
+  const classes = useStyles();
+
   const {
     value,
     error,
@@ -77,6 +105,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
 
   useEffect(() => {
     if (typeof value === "string") {
+      console.log("asdasd", value);
       let result = new Date(value);
       //@ts-ignore
       if (!isNaN(result)) {
@@ -99,59 +128,65 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   if (excluded) {
     return null;
   }
+  console.log("asdasd ", others);
   const result = (
     // <ThemeProvider theme={themeObj}>
-    <KeyboardDatePicker
-      {...others}
-      key={fieldKey}
-      id={fieldKey}
-      name={name}
-      value={value === "" ? null : value} //make sure to pass null when input is empty string
-      error={!isSubmitting && isError}
-      helperText={!isSubmitting && isError ? error : null}
-      //@ts-ignore
-      onChange={handleChange}
-      tabIndex={readOnly ? -1 : undefined}
-      onBlur={handleBlur}
-      // allowKeyboardControl={true}
-      //option 2 if validationRun: "onChange" is not set, uncomment this code
-      // onClose={() => {
-      //   setTimeout(() => {
-      //     //@ts-ignore
-      //     focusRef?.current?.focus?.();
-      //   }, 1);
-      // }}
-      disabled={isSubmitting}
-      InputLabelProps={{
-        shrink: true,
-      }}
-      autoOk={true}
-      readOnly={readOnly}
-      // inputRef={focusRef}
-      InputProps={{
-        readOnly: readOnly,
-        ...InputProps,
-      }}
-      inputProps={{
-        tabIndex: readOnly ? -1 : undefined,
-        ...inputProps,
-      }}
-      autoComplete="off"
-      cancelLabel={
-        <Button
-          color="secondary"
-          style={{ border: "1px solid rgba(128, 0, 0, 0.23)" }}
-          disableElevation
-        >
-          Cancel
-        </Button>
-      }
-      okLabel={
-        <Button color="secondary" variant="contained" disableElevation>
-          OK
-        </Button>
-      }
-    />
+    <>
+      <InputLabel className={classes.labelStyle}>{label}</InputLabel>
+      <KeyboardDatePicker
+        {...others}
+        key={fieldKey}
+        className={classes.root}
+        id={fieldKey}
+        name={name}
+        value={value === "" ? null : value} //make sure to pass null when input is empty string
+        error={!isSubmitting && isError}
+        helperText={!isSubmitting && isError ? error : null}
+        //@ts-ignore
+        onChange={handleChange}
+        slotProps={{ textField: { fullWidth } }}
+        tabIndex={readOnly ? -1 : undefined}
+        onBlur={handleBlur}
+        // allowKeyboardControl={true}
+        //option 2 if validationRun: "onChange" is not set, uncomment this code
+        // onClose={() => {
+        //   setTimeout(() => {
+        //     //@ts-ignore
+        //     focusRef?.current?.focus?.();
+        //   }, 1);
+        // }}
+        disabled={isSubmitting}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        autoOk={true}
+        readOnly={readOnly}
+        // inputRef={focusRef}
+        InputProps={{
+          readOnly: readOnly,
+          ...InputProps,
+        }}
+        inputProps={{
+          tabIndex: readOnly ? -1 : undefined,
+          ...inputProps,
+        }}
+        autoComplete="off"
+        cancelLabel={
+          <Button
+            color="secondary"
+            style={{ border: "1px solid rgba(128, 0, 0, 0.23)" }}
+            disableElevation
+          >
+            Cancel
+          </Button>
+        }
+        okLabel={
+          <Button color="secondary" variant="contained" disableElevation>
+            OK
+          </Button>
+        }
+      />
+    </>
     //</ThemeProvider>
   );
   if (Boolean(enableGrid)) {

@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const QuickAccessTableGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Quick Access",
+    gridLabel: "QuickAccess",
     rowIdColumn: "DOC_CD",
 
     defaultColumnConfig: {
@@ -29,7 +29,7 @@ export const QuickAccessTableGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "DOC_NM",
-      columnName: "Screen Name",
+      columnName: "ScreenName",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -39,7 +39,7 @@ export const QuickAccessTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "USER_DEFINE_CD",
-      columnName: "User Code",
+      columnName: "UserCode",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -49,7 +49,7 @@ export const QuickAccessTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "DOC_CD",
-      columnName: "System Code",
+      columnName: "SystemCode",
       sequence: 3,
       alignment: "left",
       componentType: "default",
