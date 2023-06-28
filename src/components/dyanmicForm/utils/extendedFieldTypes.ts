@@ -5,10 +5,23 @@ import {
 } from "../types";
 export const extendFieldTypes = (
   metaData: MetaDataType,
-  extendedTypes: ExtendedFieldMetaDataTypeOptional
+  extendedTypes: ExtendedFieldMetaDataTypeOptional,
+  lanTranslate: any = (edata) => edata
 ) => {
   const newMetaDataFields = metaData.fields.map((one) => {
     const extendedType = extendedTypes[one.render.componentType];
+    one["label"] = lanTranslate(one["label"]);
+    one["placeholder"] = lanTranslate(one["placeholder"]);
+    if (one["options"] && Array.isArray(one["options"])) {
+      one["options"] = one["options"].map((_item) => {
+        if (_item?.label) {
+          console.log("options", _item?.label);
+          return { ..._item, label: lanTranslate(_item?.label) };
+        }
+        return _item;
+      });
+    }
+    console.log("one", one["placeholder"]);
     //exclude the following types from extending
     if (typeof extendedType === "object") {
       const {
