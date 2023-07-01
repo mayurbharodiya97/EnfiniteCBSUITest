@@ -37,7 +37,6 @@ export const AccountStatus = (props) => {
   const result = useQuery(["getAccountStatusData", reqID], () =>
     API.getAccountStatusData({ COMP_CD: authState?.companyID ?? "" })
   );
-  console.log("result", result);
   const showErrorData = () => {
     setShowMore(true);
   };
@@ -143,7 +142,6 @@ export const AccountStatus = (props) => {
   }, [result.data]);
   const totalLoginUser = useMemo(() => {
     let total = devices.reduce((accu, item) => {
-      console.log("sd", accu, item);
       if (!isNaN(item.value)) {
         accu += Number.parseInt(item.value);
       }
@@ -161,7 +159,7 @@ export const AccountStatus = (props) => {
           style={{ color: "var(--theme-color1)" }}
         />
         <Divider />
-        <CardContent style={{ padding: "10px", height: "66.6vh" }}>
+        <CardContent style={{ padding: "10px", height: "62.6vh" }}>
           <Box
             sx={{
               height: "50%",

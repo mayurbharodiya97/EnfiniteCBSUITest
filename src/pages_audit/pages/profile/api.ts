@@ -103,7 +103,6 @@ export const changeEmployeePassword = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-// changeEmployeePassword()
 export const updateUserProfilePic = async ({ userID, imageData, blob }) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("UPDATEPROFILEPIC", {
@@ -116,230 +115,259 @@ export const updateUserProfilePic = async ({ userID, imageData, blob }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
-export const getquickView = async ({ userID }) => {
-  // const { status, data, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("GETUSERACTIVITY", {
-  //     USER_ID: userID,
-  //     // A_USER_NAME: userID,
-  //   });
-  // if (status === "0") {
-  //   return data;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
-  return [
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NAME: "VIJAY S SHARMA",
-      ACCT_NO: "1234123412351234",
-      CUST_ID: "1234",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1678D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45462564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45465164",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45546564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "454867564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45469564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45466564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45246564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45416564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45463564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-  ];
+export const getquickView = async ({ userID, COMP_CD }) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUSRQUICKVIEW", {
+      USER_NAME: userID,
+      COMP_CD: COMP_CD,
+      // USER_NAME: "adi",
+      // COMP_CD: "132 ",
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };
-export const getdashboardData = async () => {
-  // const { status, data, message, messageDetails } =
-  //   await AuthSDK.internalFetcher("GETUSERACTIVITY", {
-  //     USER_ID: userID,
-  //     // A_USER_NAME: userID,
-  //   });
-  // if (status === "0") {
-  //   return data;
-  // } else {
-  //   throw DefaultErrorObject(message, messageDetails);
-  // }
-  return [
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NAME: "VIJAY S SHARMA",
-      ACCT_NO: "1234123412351234",
-      CUST_ID: "123",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1678D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45461564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45462564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45346564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45465464",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45465564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "454677564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-    {
-      ACCT_STATUS: "JOINT",
-      STATUS: "OPEN",
-      ACCT_NO: "9999999999999",
-      ACCT_NAME: "MAULIK R BAJAJ",
-      CUST_ID: "45466564",
-      MOB_NO: "423864384628",
-      PAN_NO: "SHDKL1L78D",
-      OPENIND_DT: "21/06/2023",
-      CLOSE_DT: "04/09/2037",
-    },
-  ];
+export const getquickViewList = async () => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUSRDOCLIST", {
+      USER_NAME: "adi",
+      // COMP_CD: COMP_CD,
+      COMP_CD: "132 ",
+    });
+  if (status === "0") {
+    let responseData = data;
+    console.log("<<<<responseData", responseData);
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ APP_TRAN_CD, DOC_NM, ...other }) => {
+        return {
+          value: APP_TRAN_CD,
+          label: DOC_NM,
+          ...other,
+        };
+      });
+    }
+    return responseData;
+    // return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+  // return [
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NAME: "VIJAY S SHARMA",
+  //     ACCT_NO: "1234123412351234",
+  //     CUST_ID: "1",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1678D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "2",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "3",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "4",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "45546564",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "5",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "6",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "7",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "8",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  // ];
+};
+export const getdashUserboxData = async ({ userID, COMP_CD }) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUSRDASHBOX", {
+      // USER_NAME: "adi",
+      USER_NAME: userID,
+      COMP_CD: COMP_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+  // return [
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NAME: "VIJAY S SHARMA",
+  //     ACCT_NO: "1234123412351234",
+  //     CUST_ID: "1",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1678D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "2",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "3",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "4",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "45546564",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "5",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "6",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "7",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  //   {
+  //     ACCT_STATUS: "JOINT",
+  //     STATUS: "OPEN",
+  //     ACCT_NO: "9999999999999",
+  //     ACCT_NAME: "MAULIK R BAJAJ",
+  //     CUST_ID: "8",
+  //     MOB_NO: "423864384628",
+  //     PAN_NO: "SHDKL1L78D",
+  //     OPENIND_DT: "21/06/2023",
+  //     CLOSE_DT: "04/09/2037",
+  //   },
+  // ];
+};
+
+export const getdashboxData = async () => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDASHBOX", {
+      USER_NAME: "adi",
+      COMP_CD: "132 ",
+    });
+  if (status === "0") {
+    // return data;
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ TITLE, TRAN_CD, ...other }) => {
+        return {
+          value: TRAN_CD,
+          label: TITLE,
+          ...other,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };

@@ -11,7 +11,20 @@ export const getAccountInquiry = async (inputdata) => {
       CUST_ID: inputdata?.CUSTOMER,
     });
   if (status === "0") {
-    return data;
+    const dataStatus = data;
+    dataStatus.map((item) => {
+      if (item?.DISPLAY_STATUS === "CLOSE") {
+        item._rowColor = "rgb(152 59 70 / 61%)";
+      }
+      if (item?.DISPLAY_STATUS === "FREEZE") {
+        item._rowColor = "rgb(40 142 159 / 60%)";
+      }
+      if (item?.DISPLAY_STATUS === "UNCLAIMED") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+      }
+    });
+    return dataStatus;
+    // return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

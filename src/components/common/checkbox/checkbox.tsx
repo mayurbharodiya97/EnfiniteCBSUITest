@@ -80,7 +80,7 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
   if (excluded) {
     return null;
   }
-  console.log(value, "value");
+  // console.log(value, "value");
   // console.log(!readOnly, "readOnly");
   const isError = touched && (error ?? "") !== "";
   const result = (

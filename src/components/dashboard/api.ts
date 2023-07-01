@@ -45,26 +45,26 @@ export const getDashboardMessageBoxData = async ({
   if (screenFlag === "Announcement") {
     apiURL = "GETANNOUNCEMENT";
     apiReq = {
-      // USER_NAME: userID
-      USER_NAME: "ajayj",
+      USER_NAME: userID,
+      // USER_NAME: "ajayj",
     };
   } else if (screenFlag === "Tips") {
     apiURL = "GETTIPSDETAILS";
     apiReq = {
-      // USER_NAME: userID,
-      USER_NAME: "anilt",
+      USER_NAME: userID,
+      // USER_NAME: "brij001",
     };
   } else if (screenFlag === "Notes") {
     apiReq = {
-      // USER_NAME: userID,
-      USER_NAME: "sudhanshus",
+      USER_NAME: userID,
+      // USER_NAME: "brij001",
     };
     apiURL = "GETNOTESDETAILSELECT";
   } else if (screenFlag === "Alert") {
     apiURL = "GETALERTDTL";
     apiReq = {
-      // USER_NAME: userID,
-      APP_TRAN_CD: "1",
+      USER_NAME: userID,
+      // APP_TRAN_CD: "1",
     };
   }
   const { data, status, message, messageDetails } =

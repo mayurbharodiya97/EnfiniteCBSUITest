@@ -346,7 +346,6 @@ const transformMetaData = ({
   columns = attachAlignmentProps(columns);
   // for language transletion code
   columns = columns.map((item) => {
-    console.log("columnName", lanTranstlet(item.columnName));
     return { ...item, columnName: lanTranstlet(item.columnName) };
   });
   //call this function after attaching yup schema and methods to metaData
