@@ -58,8 +58,8 @@ export const MessageDescriptionMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 6,
-        sm: 6,
+        md: 3,
+        sm: 3,
       },
     },
     {
@@ -75,42 +75,61 @@ export const MessageDescriptionMetadata = {
 
       GridProps: {
         xs: 12,
-        md: 6,
-        sm: 6,
+        md: 3,
+        sm: 3,
       },
     },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "EFFECTIVE_DT",
+      label: "OpenDate",
+      placeholder: "",
+      isReadOnly: true,
+      fullWidth: true,
+      type: "text",
+
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ENTERED_DATE",
+      label: "ExpiryDate",
+      placeholder: "",
+      isReadOnly: true,
+      fullWidth: true,
+      type: "text",
+
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+      },
+    },
+
     // {
     //   render: {
     //     componentType: "datePicker",
     //   },
-    //   name: "BR_OPEN_DT",
-    //   label: "OpenDate",
+    //   name: "ENTERED_DATE",
+    //   label: "ExpiryDate",
+    //   placeholder: "",
     //   fullWidth: true,
     //   format: "dd/MM/yyyy",
+
     //   GridProps: {
     //     xs: 12,
     //     md: 6,
     //     sm: 6,
     //   },
     // },
-    {
-      render: {
-        componentType: "datePicker",
-      },
-      name: "EFFECTIVE_DT",
-      label: "ExpiryDate",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      format: "dd/MM/yyyy",
-      required: false,
-
-      GridProps: {
-        xs: 12,
-        md: 6,
-        sm: 6,
-      },
-    },
 
     {
       render: {

@@ -3,7 +3,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const UserProfileMetaData = {
   form: {
     name: "PRIORITY",
-    label: "User Profile",
+    label: "UserProfile",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {

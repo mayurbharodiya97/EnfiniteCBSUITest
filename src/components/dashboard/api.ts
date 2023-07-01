@@ -49,7 +49,7 @@ export const getDashboardMessageBoxData = async ({ screenFlag, userID }) => {
   } else if (screenFlag === "Alert") {
     apiURL = "GETALERTDTL";
     apiReq = {
-      // USER_NAME: userID,
+      USER_NAME: userID,
       APP_TRAN_CD: "1",
     };
   }

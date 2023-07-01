@@ -9,7 +9,7 @@ import { makeStyles } from "@mui/styles";
 import { Button, Grid, GridProps, InputLabel } from "@mui/material";
 import { DatePickerProps } from "@mui/lab/DatePicker";
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
-
+import { utilFunction } from "components/utils";
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 const useStyles: any = makeStyles({
@@ -104,6 +104,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   });
 
   useEffect(() => {
+    console.log("asdasd", value, typeof value);
     if (typeof value === "string") {
       console.log("asdasd", value);
       let result = new Date(value);
@@ -128,7 +129,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   if (excluded) {
     return null;
   }
-  console.log("asdasd ", others);
+  console.log("asdasd ", others, name, value);
   const result = (
     // <ThemeProvider theme={themeObj}>
     <>
@@ -139,7 +140,13 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         className={classes.root}
         id={fieldKey}
         name={name}
-        value={value === "" ? null : value} //make sure to pass null when input is empty string
+        value={
+          value === ""
+            ? null
+            : utilFunction.isValidDate(value)
+            ? new Date(value)
+            : null
+        } //make sure to pass null when input is empty string
         error={!isSubmitting && isError}
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore

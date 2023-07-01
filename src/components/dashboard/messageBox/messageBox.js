@@ -12,7 +12,10 @@ import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { ListPopupMessageWrapper } from "./listPopupBox";
 import { useTranslation } from "react-i18next";
-// import { GradientButton } from "components/styledComponent/button";
+import AddIcon from "@mui/icons-material/Add";
+import ReactStickyNotes from "@react-latest-ui/react-sticky-notes";
+import StickyNotes from "./stickyNotes/stickyNotes";
+import { GradientButton } from "components/styledComponent/button";
 
 export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
@@ -36,7 +39,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
         userID: authState?.user?.id ?? "",
       })
   );
-  console.log("datamessage", data?.[0]?.value);
+
   const dataLength = data ? data.length : 0;
 
   useEffect(() => {
@@ -58,7 +61,11 @@ export const MessageBox = ({ screenFlag = "" }) => {
   };
   const handleLabelClick = (item) => {
     refData.current = item;
-    setIsOpenSave(true);
+    if (screenFlag === "Notes") {
+      setIsOpenSave(false);
+    } else {
+      setIsOpenSave(true);
+    }
   };
 
   return (
@@ -174,15 +181,46 @@ export const MessageBox = ({ screenFlag = "" }) => {
                   style={{ color: "#885CF5", fontSize: "30px" }}
                 />
               ) : screenFlag === "Notes" ? (
-                <EventNoteOutlinedIcon
-                  style={{ color: " #5290F5", fontSize: "30px" }}
-                />
+                <>
+                  {/* <EventNoteOutlinedIcon
+                    style={{ color: " #5290F5", fontSize: "30px" }}
+                  /> */}
+                  <AddIcon
+                    style={{ color: " #5290F5", fontSize: "30px" }}
+                    onClick={(e) => {
+                      setIsOpenSave(true);
+                      // setToggle(!toggle);
+                    }}
+                  />
+
+                  {/* <ReactStickyNotes onChange={handleOnChange} /> */}
+                </>
               ) : screenFlag === "Alert" ? (
                 <WarningAmberRoundedIcon
                   style={{ color: " #FF4F79", fontSize: "30px" }}
                 />
               ) : null}
             </IconButton>
+            {/* {screenFlag === "Notes" ? (
+              <Box
+                sx={{
+                  height: "38px",
+                  width: "38px",
+                  backgroundColor: "var(--theme-color3)",
+                  color: "var(--theme-color2)",
+                  borderRadius: "12px",
+                  padding: "4px",
+                  margin: "4px 0 0 4px",
+                }}
+              >
+                <AddIcon
+                  // style={{ fontSize: "30px" }}
+                  onClick={(e) => {
+                    setIsOpenSave(true);
+                  }}
+                />
+              </Box>
+            ) : null} */}
           </Grid>
         </Box>
       </Grid>
@@ -223,13 +261,26 @@ export const MessageBox = ({ screenFlag = "" }) => {
                   </List>
                 </nav>
               </Box>
-              {isOpenSave ? (
-                <ListPopupMessageWrapper
-                  closeDialog={handleDialogClose}
-                  dialogLabel={refData.current?.label}
-                  formView={"view"}
-                  transactionID={refData.current?.value}
-                />
+              {screenFlag === "Announcement" ? (
+                <>
+                  {isOpenSave ? (
+                    <ListPopupMessageWrapper
+                      closeDialog={handleDialogClose}
+                      dialogLabel={refData.current?.label}
+                      formView={"view"}
+                      transactionID={refData.current?.label}
+                    />
+                  ) : null}
+                </>
+              ) : screenFlag === "Notes" ? (
+                <>
+                  {isOpenSave ? (
+                    <StickyNotes
+                      closeDialog={handleDialogClose}
+                      dialogLabel={data}
+                    />
+                  ) : null}
+                </>
               ) : null}
             </Grid>
           )}
