@@ -62,6 +62,7 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.5",
     "react-i18next": "^13.0.0",
     "react-idle-timer": "5.2.0",
     "react-imask": "^6.4.3",
