@@ -86,11 +86,11 @@ export const ListPopupMessageWrapper = ({
       ) : (
         <Dialog
           fullWidth
-          maxWidth="md"
+          maxWidth="lg"
           open={true}
           PaperProps={{
             style: {
-              width: "40%",
+              width: "100%",
               height: "100%",
             },
           }}
