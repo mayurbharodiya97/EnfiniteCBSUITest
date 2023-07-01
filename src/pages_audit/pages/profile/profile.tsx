@@ -56,6 +56,7 @@ import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAcces
 import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import { useTranslation } from "react-i18next";
+import About from "./about";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -479,7 +480,7 @@ export const Profile = () => {
                   </Grid>
                   <Grid container>
                     {/* <Grid item xs={2} pt={"10px"}> */}
-                    {/* <div
+                        {/* <div
                         style={{
                           width: "150px",
                           height: "150px",
@@ -543,7 +544,7 @@ export const Profile = () => {
                           />
                         </div>
                       </div> */}
-                    {/* <Grid item xs={3} m={"auto"}>
+                        {/* <Grid item xs={3} m={"auto"}>
                         <Typography variant="h5" fontWeight={500}>
                           {queryData?.data?.NAME}
                         </Typography>
@@ -552,211 +553,213 @@ export const Profile = () => {
                         </Typography>
                       </Grid>
                     </Grid> */}
-                    {/* <Grid item xs={10}> */}
-                    <Container>
-                      <Grid
-                        sx={{
-                          backgroundColor: "var(--theme-color2)",
-                          padding: "0px",
-                          borderRadius: "10px",
-                          boxShadow:
-                            "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
-                        }}
-                      >
-                        {mode === "userDetail" ? (
-                          // <Grid
-                          //   key={"Griditem4"}
-                          //   item
-                          //   xs={12}
-                          //   md={12}
-                          //   lg={12}
-                          //   container
-                          //   spacing={1}
-                          //   justifyContent="flex-start"
-                          //   alignItems="center"
-                          //   style={{
-                          //     marginBottom: "0px",
-                          //     marginRight: "12px",
-                          //   }}
-                          // >
-                          <GridWrapper
-                            key={`userDetail`}
-                            finalMetaData={
-                              UserLoginDtlGridMetaData as GridMetaDataType
-                            }
-                            data={userActivityData.data ?? []}
-                            setData={() => null}
-                            //loading={result.isLoading}
-                            actions={[]}
-                            setAction={() => {}}
-                            refetchData={() => {}}
-                            ref={myGridRef}
-                            headerToolbarStyle={{
-                              background: "var(--theme-color2)",
-                              color: "black",
-                            }}
-                          />
-                        ) : // </Grid>
-                        mode === "userLogin" ? (
-                          <Grid>
-                            <FormWrapper
-                              key="userLogin"
-                              metaData={UserProfileMetaData as MetaDataType}
-                              initialValues={queryData.data}
-                              onSubmitHandler={() => {}}
-                              // displayMode={"view"}
-                              // hideDisplayModeInTitle={true}
-                              formStyle={{
-                                background: "white",
-                                // height: "40vh",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                              }}
-                              hideHeader={true}
-                            />
-                          </Grid>
-                        ) : mode === "changePassword" ? (
-                          <ChangePassword
-                            showProfile={showProfile}
-                            onClose={() => setShowProfile(false)}
-                          />
-                        ) : mode === "accessAllow" ? (
+                        {/* <Grid item xs={10}> */}
+                        <Container>
                           <Grid
                             sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              gap: 3,
-                              p: 2,
+                              backgroundColor: "var(--theme-color2)",
+                              padding: "0px",
+                              borderRadius: "10px",
+                              boxShadow:
+                                "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
                             }}
                           >
-                            <Grid
-                              container
-                              sx={{
-                                boxShadow:
-                                  "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                              }}
-                            >
+                            {mode === "userDetail" ? (
+                              // <Grid
+                              //   key={"Griditem4"}
+                              //   item
+                              //   xs={12}
+                              //   md={12}
+                              //   lg={12}
+                              //   container
+                              //   spacing={1}
+                              //   justifyContent="flex-start"
+                              //   alignItems="center"
+                              //   style={{
+                              //     marginBottom: "0px",
+                              //     marginRight: "12px",
+                              //   }}
+                              // >
                               <GridWrapper
-                                key={`userAccessbranch`}
+                                key={`userDetail`}
                                 finalMetaData={
-                                  userAccessbranch as GridMetaDataType
+                                  UserLoginDtlGridMetaData as GridMetaDataType
                                 }
-                                data={userAccessBranch.data || []}
+                                data={userActivityData.data ?? []}
                                 setData={() => null}
+                                //loading={result.isLoading}
+                                actions={[]}
+                                setAction={() => {}}
+                                refetchData={() => {}}
+                                ref={myGridRef}
                                 headerToolbarStyle={{
                                   background: "var(--theme-color2)",
                                   color: "black",
-                                  fontSize: "20px",
                                 }}
-                                //loading={result.isLoading}
-                                // actions={[]}
-                                // setAction={() => {}}
-                                // refetchData={() => {}}
-                                // ref={myGridRef}
                               />
-                            </Grid>
-                            <Grid
-                              container
-                              sx={{
-                                boxShadow:
-                                  "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                              }}
-                            >
-                              <GridWrapper
-                                key={`userAccesstype`}
-                                finalMetaData={
-                                  userAccesstype as GridMetaDataType
-                                }
-                                data={userAccessType.data || []}
-                                setData={() => null}
-                                headerToolbarStyle={{
-                                  background: "var(--theme-color2)",
-                                  color: "black",
-                                  fontSize: "20px",
+                            ) : // </Grid>
+                            mode === "userLogin" ? (
+                              <Grid>
+                                <FormWrapper
+                                  key="userLogin"
+                                  metaData={UserProfileMetaData as MetaDataType}
+                                  initialValues={queryData.data}
+                                  onSubmitHandler={() => {}}
+                                  // displayMode={"view"}
+                                  // hideDisplayModeInTitle={true}
+                                  formStyle={{
+                                    background: "white",
+                                    // height: "40vh",
+                                    overflowY: "auto",
+                                    overflowX: "hidden",
+                                  }}
+                                  hideHeader={true}
+                                />
+                              </Grid>
+                            ) : mode === "changePassword" ? (
+                              <ChangePassword
+                                showProfile={showProfile}
+                                onClose={() => setShowProfile(false)}
+                              />
+                            ) : mode === "accessAllow" ? (
+                              <Grid
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  gap: 3,
+                                  p: 2,
                                 }}
-                                //loading={result.isLoading}
-                                // actions={[]}
-                                // setAction={() => {}}
-                                // refetchData={() => {}}
-                                // ref={myGridRef}
-                              />
-                            </Grid>
+                              >
+                                <Grid
+                                  container
+                                  sx={{
+                                    boxShadow:
+                                      "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                                  }}
+                                >
+                                  <GridWrapper
+                                    key={`userAccessbranch`}
+                                    finalMetaData={
+                                      userAccessbranch as GridMetaDataType
+                                    }
+                                    data={userAccessBranch.data || []}
+                                    setData={() => null}
+                                    headerToolbarStyle={{
+                                      background: "var(--theme-color2)",
+                                      color: "black",
+                                      fontSize: "20px",
+                                    }}
+                                    //loading={result.isLoading}
+                                    // actions={[]}
+                                    // setAction={() => {}}
+                                    // refetchData={() => {}}
+                                    // ref={myGridRef}
+                                  />
+                                </Grid>
+                                <Grid
+                                  container
+                                  sx={{
+                                    boxShadow:
+                                      "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                                  }}
+                                >
+                                  <GridWrapper
+                                    key={`userAccesstype`}
+                                    finalMetaData={
+                                      userAccesstype as GridMetaDataType
+                                    }
+                                    data={userAccessType.data || []}
+                                    setData={() => null}
+                                    headerToolbarStyle={{
+                                      background: "var(--theme-color2)",
+                                      color: "black",
+                                      fontSize: "20px",
+                                    }}
+                                    //loading={result.isLoading}
+                                    // actions={[]}
+                                    // setAction={() => {}}
+                                    // refetchData={() => {}}
+                                    // ref={myGridRef}
+                                  />
+                                </Grid>
+                              </Grid>
+                            ) : mode === "personalizedashboard" ? (
+                              <>
+                                <Grid
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    gap: 3,
+                                    p: 2,
+                                  }}
+                                >
+                                  <Grid
+                                    container
+                                    sx={{
+                                      boxShadow:
+                                        "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                                    }}
+                                  >
+                                    <GridWrapper
+                                      key={`personalizeQuickView`}
+                                      finalMetaData={
+                                        PersonlizationQuickGridMetaData as GridMetaDataType
+                                      }
+                                      data={quickView.data || []}
+                                      setData={() => null}
+                                      //loading={result.isLoading}
+                                      // actions={[]}
+                                      // setAction={() => {}}
+                                      headerToolbarStyle={{
+                                        background: "var(--theme-color2)",
+                                        color: "black",
+                                      }}
+                                      // refetchData={() => {}}
+                                      // ref={myGridRef}
+                                    />
+                                  </Grid>
+                                  <Grid
+                                    container
+                                    sx={{
+                                      boxShadow:
+                                        "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                                    }}
+                                  >
+                                    <GridWrapper
+                                      key={`personalizeDashboardData`}
+                                      finalMetaData={
+                                        PersonlizationDashboardGridData as GridMetaDataType
+                                      }
+                                      data={dashboardData.data || []}
+                                      headerToolbarStyle={{
+                                        background: "var(--theme-color2)",
+                                        color: "black",
+                                      }}
+                                      setData={() => null}
+                                      //loading={result.isLoading}
+                                      // actions={[]}
+                                      // setAction={() => {}}
+                                      // refetchData={() => {}}
+                                      // ref={myGridRef}
+                                    />
+                                  </Grid>
+                                </Grid>
+                              </>
+                            ) : null}
                           </Grid>
-                        ) : mode === "personalizedashboard" ? (
-                          <>
-                            <Grid
-                              sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                gap: 3,
-                                p: 2,
-                              }}
-                            >
-                              <Grid
-                                container
-                                sx={{
-                                  boxShadow:
-                                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                                }}
-                              >
-                                <GridWrapper
-                                  key={`personalizeQuickView`}
-                                  finalMetaData={
-                                    PersonlizationQuickGridMetaData as GridMetaDataType
-                                  }
-                                  data={quickView.data || []}
-                                  setData={() => null}
-                                  //loading={result.isLoading}
-                                  // actions={[]}
-                                  // setAction={() => {}}
-                                  headerToolbarStyle={{
-                                    background: "var(--theme-color2)",
-                                    color: "black",
-                                  }}
-                                  // refetchData={() => {}}
-                                  // ref={myGridRef}
-                                />
-                              </Grid>
-                              <Grid
-                                container
-                                sx={{
-                                  boxShadow:
-                                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                                }}
-                              >
-                                <GridWrapper
-                                  key={`personalizeDashboardData`}
-                                  finalMetaData={
-                                    PersonlizationDashboardGridData as GridMetaDataType
-                                  }
-                                  data={dashboardData.data || []}
-                                  headerToolbarStyle={{
-                                    background: "var(--theme-color2)",
-                                    color: "black",
-                                  }}
-                                  setData={() => null}
-                                  //loading={result.isLoading}
-                                  // actions={[]}
-                                  // setAction={() => {}}
-                                  // refetchData={() => {}}
-                                  // ref={myGridRef}
-                                />
-                              </Grid>
-                            </Grid>
-                          </>
-                        ) : null}
-                      </Grid>
-                    </Container>
+                        </Container>
 
-                    {profileUpdate && filesdata.length > 0 ? (
-                      <ProfilePhotoUpdate
-                        open={profileUpdate}
-                        onClose={handleProfileUploadClose}
-                        files={filesdata}
-                        userID={userID}
-                      />
-                    ) : null}
-                    {/* </Grid> */}
+                        {profileUpdate && filesdata.length > 0 ? (
+                          <ProfilePhotoUpdate
+                            open={profileUpdate}
+                            onClose={handleProfileUploadClose}
+                            files={filesdata}
+                            userID={userID}
+                          />
+                        ) : null}
+                        {/* </Grid> */}
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Box>
               </Grid>
