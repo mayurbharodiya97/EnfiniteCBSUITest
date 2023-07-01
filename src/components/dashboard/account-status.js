@@ -170,7 +170,7 @@ export const AccountStatus = (props) => {
           style={{ color: "var(--theme-color3)" }}
         />
         <Divider />
-        <CardContent style={{ padding: "10px", height: "66.6vh" }}>
+        <CardContent style={{ padding: "10px", height: "62.6vh" }}>
           <Box
             sx={{
               height: "50%",

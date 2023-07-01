@@ -119,6 +119,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/UPDATEPROFILEPIC",
     packageName: "",
   },
+  GETUSRQUICKVIEW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRQUICKVIEW",
+    packageName: "",
+  },
+  GETUSRDOCLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDOCLIST",
+    packageName: "",
+  },
+  GETDASHBOX: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDASHBOX",
+    packageName: "",
+  },
+  GETUSRDASHBOX: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDASHBOX",
+    packageName: "",
+  },
   FORGOTPASSWORD: {
     url: "/enfinityCommonServiceAPI/FORGOTPASSWORD",
     packageName: "",
