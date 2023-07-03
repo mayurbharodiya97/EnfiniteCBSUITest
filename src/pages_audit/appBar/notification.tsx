@@ -4,7 +4,8 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import IconButton from "@mui/material/IconButton";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { Badge, Box, Grid, List, ListItemButton, Popover } from "@mui/material";
-
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PersonIcon from "@mui/icons-material/Person";
 export const Notification_App = () => {
   //   const classes = useStyles();
   const [anchorEl1, setAnchorEl1] = useState(null);
@@ -14,8 +15,60 @@ export const Notification_App = () => {
   const handleClose = () => {
     setAnchorEl1(null);
   };
+  let listitem = [
+    {
+      title: "Customer Id - 563537",
+      time: " 15 min ago",
+      content:
+        " Customer id is successfully Authorised by parag on 12/06/2023 12:05:46",
+      Icon: "cust",
+    },
+    {
+      title: "Customer Id - 100537",
+      time: " 12 min ago",
+      content:
+        " Customer id is successfully Authorised by ncm on 23/05/2023 02:12:46",
+      Icon: "cust",
+    },
+    {
+      title: "Customer Id - 223456",
+      time: " 10 min ago",
+      content:
+        "Fresh Customer successfully Authorised by ncm on 23/05/2023 02:18:46",
+      Icon: "cust",
+    },
+    {
+      title: "Account - 132099001012560 Cash Withdrawal",
+      time: " 10 min ago",
+      content:
+        " ₹ 20,000 Cash withdrawal is authorised by vns on 23/05/2023 02:25:46",
+      Icon: "account",
+    },
+    {
+      title: "Account - 132099001012560 Cash Receipt",
+      time: " 10 min ago",
+      content:
+        " ₹ 80,000 Cash Receipt -PAN: BKIPS5784A is authorised by vns on 23/05/2023 02:25:46",
+      Icon: "account",
+    },
+    {
+      title: "Fresh Time Deposit - 132099201012560 ",
+      time: " 10 min ago",
+      content:
+        "FD no: 23123 for  ₹ 1,00,000 is send to authorisation by vns on 23/05/2023 02:25:46",
+      Icon: "fresh",
+    },
+  ];
   return (
     <>
+      {/* {listitem.map((item) => {
+        item.Icon === "account" ? (
+          <NotificationsNoneIcon
+            fontSize="small"
+            sx={{ color: "var(--theme-color3)" }}
+          />
+        ) : null;
+      })} */}
       <IconButton
         color="inherit"
         onClick={handleClick}
@@ -26,12 +79,10 @@ export const Notification_App = () => {
           width: "30px",
         }}
       >
-        {/* <Badge badgeContent={3} color="info"> */}
         <NotificationsNoneIcon
           fontSize="small"
           sx={{ color: "var(--theme-color3)" }}
         />
-        {/* </Badge> */}
       </IconButton>
       <Popover
         anchorEl={anchorEl1}
@@ -50,35 +101,7 @@ export const Notification_App = () => {
           style: { maxWidth: "370px", width: "370px" },
         }}
       >
-        {/* <div style={{ padding: "16px" }}>
-              <Typography variant="h6" className={classes.userName}>
-                {authController?.authState?.user?.name}
-              </Typography>
-              <Typography variant="h6" className={classes.userDesignation}>
-                {authController?.authState?.companyName}
-              </Typography>
-              <Typography variant="h6" className={classes.userDesignation}>
-                Role: {authController?.authState?.roleName}
-              </Typography>
-              <Typography variant="h6" className={classes.userDesignation}>
-                User ID : {authController?.authState?.user?.id}
-              </Typography>
-            </div>
-
-            <div style={{ padding: "16px" }}>
-              <Button
-                onClick={() => {
-                  authController?.logout();
-                  handleClose();
-                }}
-                fullWidth
-                variant="outlined"
-                style={{ background: "var(--theme-color1)", color: "white" }}
-              >
-                Logout
-              </Button>
-            </div> */}
-        {Array.from(Array(6)).map((_, index) => (
+        {/* {Array.from(Array(6)).map((_, index) => (
           <List disablePadding key={index}>
             <ListItemButton
               sx={{
@@ -125,6 +148,74 @@ export const Notification_App = () => {
                     CAM Generated successfully with Lead Code 00125_17012023 and
                     Version No. 1 ok\n.
                   </Box>
+                </Grid>
+              </Grid>
+            </ListItemButton>
+          </List>
+        ))} */}
+        {listitem.map((data, index) => (
+          <List disablePadding key={index}>
+            <ListItemButton
+              sx={{
+                padding: "0px",
+              }}
+            >
+              <Grid container p={1} spacing={1}>
+                <Grid
+                  item
+                  xs={1}
+                  m={1}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    paddingTop: "5px",
+                  }}
+                >
+                  {data.Icon === "account" ? (
+                    <AccountCircleIcon
+                      style={{
+                        width: "25px",
+                        height: "25px",
+                        // color: "#40A0ED",
+                      }}
+                    />
+                  ) : data.Icon === "cust" ? (
+                    <PersonIcon
+                      style={{
+                        width: "25px",
+                        height: "25px",
+                        // color: "rgb(128 2 2)",
+                      }}
+                    />
+                  ) : data.Icon === "fresh" ? (
+                    <TaskAltIcon style={{ width: "25px", height: "25px" }} />
+                  ) : null}
+                </Grid>
+                <Grid item xs={10}>
+                  <Box
+                    sx={{
+                      my: 0.5,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontWeight: 500,
+                    }}
+                  >
+                    <Box fontSize={15}>{data.title}</Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        color: "#949597",
+                        fontSize: "11px",
+                        justifyContent: "end",
+                        alignSelf: "baseline",
+                        width: "90px",
+                      }}
+                    >
+                      {data.time}
+                    </Box>
+                  </Box>
+                  <Box sx={{ fontSize: "11px" }}>{data.content}</Box>
                 </Grid>
               </Grid>
             </ListItemButton>

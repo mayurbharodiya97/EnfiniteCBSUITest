@@ -8,6 +8,6 @@ import { withStyles } from "@mui/styles";
 
 const StyledKeyboardDatePicker: any = withStyles(styles)(DesktopDatePicker);
 {
-  console.log("DesktopDatePicker", DesktopDatePicker);
+  // console.log("DesktopDatePicker", DesktopDatePicker);
 }
 export default StyledKeyboardDatePicker;

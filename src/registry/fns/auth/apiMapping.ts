@@ -135,6 +135,22 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETECIRCULARDETAIL",
     packageName: "",
   },
+  GETUSRQUICKVIEW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRQUICKVIEW",
+    packageName: "",
+  },
+  GETUSRDOCLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDOCLIST",
+    packageName: "",
+  },
+  GETDASHBOX: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDASHBOX",
+    packageName: "",
+  },
+  GETUSRDASHBOX: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDASHBOX",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

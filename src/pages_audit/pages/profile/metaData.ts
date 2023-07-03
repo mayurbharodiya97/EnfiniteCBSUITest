@@ -1,4 +1,6 @@
 import { GridMetaDataType } from "components/dataTableStatic";
+import { getdashboxData, getquickView, getquickViewList } from "./api";
+import { filter } from "lodash";
 
 export const UserProfileMetaData = {
   form: {
@@ -486,8 +488,8 @@ export const userAccesstype: GridMetaDataType = {
 export const PersonlizationQuickGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "QuickView",
-    rowIdColumn: "CUST_ID",
+    gridLabel: "Quick View",
+    rowIdColumn: "ID",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -501,7 +503,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
     disableGroupBy: true,
     allowRowSelection: false,
     containerHeight: {
-      min: "62vh",
+      min: "48vh",
       max: "65vh",
     },
   },
@@ -519,11 +521,13 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "CLOSE_DT",
+      accessor: "DOC_CD",
       columnName: "",
       sequence: 2,
       alignment: "left",
       componentType: "editableSelect",
+      options: () => getquickViewList(),
+      _optionsKey: "getquickViewList",
       width: 370,
       maxWidth: 370,
       minWidth: 200,
@@ -533,8 +537,8 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
 export const PersonlizationDashboardGridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "DashboardDataBoxes",
-    rowIdColumn: "CUST_ID",
+    gridLabel: "Dashboard Data Boxes",
+    rowIdColumn: "ID",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -547,6 +551,10 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
     hideFooter: true,
     disableGroupBy: true,
     allowRowSelection: false,
+    containerHeight: {
+      min: "48vh",
+      max: "65vh",
+    },
   },
   // filters: [],
   columns: [
@@ -562,14 +570,38 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "ACCT_NAME",
+      accessor: "DASH_TRAN_CD",
       columnName: "",
       sequence: 2,
       alignment: "left",
       componentType: "editableSelect",
+      options: () => getdashboxData(),
+      _optionsKey: "getdashUserboxData",
       width: 370,
       maxWidth: 370,
       minWidth: 200,
+      validation: (value, data, prev) => {
+        console.log("<<<validate", value, data, prev);
+
+        // if (!Boolean(value)) {
+        //   return "This field is required";
+        // }
+        // if (Array.isArray(prev)) {
+        //   let lb_error = false;
+        //   let ls_msg = "";
+        //   prev.forEach((item, index) => {
+        //     if (value === item?.DASH_TRAN_CD) {
+        //       lb_error = true;
+        //       ls_msg = "Option is Already entered at Line " + (index + 1);
+        //       return ls_msg;
+        //     }
+        //   });
+        //   if (lb_error) {
+        //     return ls_msg;
+        //   }
+        // }
+        // return "";
+      },
     },
   ],
 };

@@ -199,7 +199,7 @@ const Dashboard = () => {
                         overflowY: "auto",
                       }}
                     >
-                      <CardContent style={{ padding: "10px", height: "78vh" }}>
+                      <CardContent style={{ padding: "10px", height: "486px" }}>
                         <Grid item lg={12} md={12} xl={12} xs={12}>
                           <MessageBox screenFlag={"Announcement"} />
                           <MessageBox screenFlag={"Tips"} />

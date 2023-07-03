@@ -66,7 +66,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     const formName = metaData.form.name ?? "NO_NAME";
     return (
       <>
-        {console.log("LocalizationProvider", AdapterDateFns)}
+        {/* {console.log("LocalizationProvider", AdapterDateFns)} */}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <FormContext.Provider
             value={{

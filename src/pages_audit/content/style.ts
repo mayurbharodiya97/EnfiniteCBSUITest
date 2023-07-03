@@ -7,6 +7,7 @@ export const useStyles = makeStyles((theme: any) => ({
     height: "100vh",
     overflowY: "auto",
     paddingTop: "24px",
+    // paddingBottom: "24px",
     background: "rgba(250, 251, 255, 0.9)",
   },
   container: {

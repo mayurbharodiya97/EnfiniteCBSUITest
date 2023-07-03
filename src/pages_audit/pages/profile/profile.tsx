@@ -57,6 +57,8 @@ import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import { useTranslation } from "react-i18next";
 import About from "./about";
+import { ActionTypes } from "components/dataTable";
+
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -93,13 +95,19 @@ export const Profile = () => {
   const userAccessType = useQuery<any, any, any>(["GETUSERACESSTYPE"], () =>
     API.getUserAccessType({ userID })
   );
-  const quickView = useQuery<any, any, any>(["GETUSERACESSYPE"], () =>
-    API.getquickView({ userID })
+  const quickView = useQuery<any, any, any>(["GETUSRQUICKVIEW"], () =>
+    API.getquickView({ userID, COMP_CD: authState?.companyID ?? "" })
   );
-  const dashboardData = useQuery<any, any, any>(["GETUSERACESSTPE"], () =>
-    API.getdashboardData()
+  // const dashboxData = useQuery<any, any, any>(["GETDASHBOX"], () =>
+  //   API.getdashUserboxData({ userID, COMP_CD: authState?.companyID ?? "" })
+  // );
+  // const quickViewList = useQuery<any, any, any>(["GETUSRDOCLIST"], () =>
+  //   API.getquickViewList({ userID, COMP_CD: authState?.companyID ?? "" })
+  // );
+  // console.log("<<quickViewList", quickViewList.data);
+  const dashboxUserData = useQuery<any, any, any>(["GETUSRDASHBOX"], () =>
+    API.getdashUserboxData({ userID, COMP_CD: authState?.companyID ?? "" })
   );
-
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
@@ -178,59 +186,7 @@ export const Profile = () => {
                   "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
               }}
             >
-              {/* <Grid>
-                <AppBar
-                  position="static"
-                  sx={{
-                    background: "#FFFFFF",
-                    borderRadius: "10px",
-                    margin: "10px",
-                    width: "auto",
-                  }}
-                >
-                  <Toolbar style={{ minHeight: "48px" }}>
-                    <Typography
-                      variant="h5"
-                      noWrap
-                      component="div"
-                      sx={{
-                        display: { xs: "none", sm: "block" },
-                        fontWeight: 500,
-                      }}
-                    >
-                      My Profile
-                    </Typography>
-
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                      <IconButton
-                        aria-label="show 4 new mails"
-                        color="inherit"
-                        sx={{
-                          background: "#ECEFF9",
-                          borderRadius: "10px",
-                          ml: 2,
-                        }}
-                        onClick={handleNavigate}
-                      >
-                        <CancelOutlinedIcon color="info" fontSize="medium" />
-                      </IconButton>
-                    </Box>
-                  </Toolbar>
-                </AppBar>
-              </Grid> */}
               <Grid>
-                {/* <Box
-                  height={"216px"}
-                  sx={{
-                    // backgroundImage: `url(${User_profile})`,
-                    backgroundImage: `url('https://berrydashboard.io/static/media/img-profile-bg.2b15e9314e45a1308110.png')`,
-                    backgroundSize: "cover",
-                    borderRadius: "10px",
-                    margin: "10px",
-                    boxShadow: "rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;",
-                  }}
-                ></Box> */}
                 <Box>
                   <Grid container>
                     <Grid
@@ -730,7 +686,7 @@ export const Profile = () => {
                                       finalMetaData={
                                         PersonlizationDashboardGridData as GridMetaDataType
                                       }
-                                      data={dashboardData.data || []}
+                                      data={dashboxUserData.data || []}
                                       headerToolbarStyle={{
                                         background: "var(--theme-color2)",
                                         color: "black",
