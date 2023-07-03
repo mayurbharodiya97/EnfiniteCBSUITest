@@ -265,26 +265,6 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 180,
     },
-    {
-      accessor: "WITHDRAW_BAL",
-      columnName: "Withdraw Balance",
-      sequence: 7,
-      alignment: "left",
-      componentType: "default",
-      width: 140,
-      minWidth: 140,
-      maxWidth: 180,
-    },
-    {
-      accessor: "E_MAIL_ID",
-      columnName: "Email Id",
-      sequence: 7,
-      alignment: "left",
-      componentType: "default",
-      width: 140,
-      minWidth: 140,
-      maxWidth: 180,
-    },
 
     {
       accessor: "OPENIND_DT",
