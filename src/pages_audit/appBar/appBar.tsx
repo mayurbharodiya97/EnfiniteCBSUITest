@@ -34,6 +34,7 @@ import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
+import { useTranslation } from "react-i18next";
 export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
     bank: "",
     profile: "",
   });
+  const { t } = useTranslation();
   const urlObj = useRef<any>({ bank: "", profile: "" });
   const handleNavigate = () => {
     navigate("/cbsenfinity/profile");
@@ -114,7 +116,11 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
     else if (hours >= 12 && hours <= 16) greet = "afternoon";
     else if (hours >= 16 && hours <= 24) greet = "evening";
 
-    return <span>Good {greet},</span>;
+    return (
+      <span>
+        {t("Good")} {t(greet)},{" "}
+      </span>
+    );
   };
 
   const handleStatementClick = () => {
@@ -213,11 +219,12 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 lineHeight={0}
                 fontSize={"11px"}
               >
-                Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
+                {t("appBar.Branch")}:
+                {authController?.authState?.user?.branchCode ?? "001 "}-
                 {authController?.authState?.user?.branch ?? ""}
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
-                Working Date:{" "}
+                {t("appBar.WorkingDate")}:{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.workingDate ?? ""
                 )}
@@ -228,7 +235,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
                 display="inline"
                 fontSize={"11px"}
               >
-                Last Login Date :{" "}
+                {t("appBar.LastLoginDate")} :{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.user?.lastLogin ?? "Vastrapur"
                 )}
@@ -251,7 +258,11 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               /> */}
               <Typography fontSize={"17px"} color={"#1C1C1C"}>
                 {/* Greetings....{" "} */}
-                {Greetings()} {authController.authState.user.id}
+                {Greetings()}
+                {authController.authState.user.id
+                  ? authController.authState.user.id.charAt(0).toUpperCase() +
+                    authController.authState.user.id.slice(1)
+                  : null}
               </Typography>
               <img src={Waving_hand} alt="" style={{ height: "18px" }} />
             </Stack>
@@ -274,7 +285,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               }}
               onClick={handleStatementClick}
             >
-              Statement
+              {t("appBar.Statement")}
             </Button>
 
             {openDialog && (
@@ -346,9 +357,14 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
             <LightTooltip
               title={
                 <>
-                  <div>User ID : {authController?.authState?.user?.id}</div>
-                  <div>Role : {authController?.authState?.roleName}</div>
-                  <div>Last Unsuccessful Login : ""</div>
+                  <div>
+                    {" "}
+                    {t("appBar.UserID")}: {authController?.authState?.user?.id}
+                  </div>
+                  <div>
+                    {t("appBar.Role")} : {authController?.authState?.roleName}
+                  </div>
+                  <div>{t("appBar.LastUnsuccessfulLogin")} : ""</div>
                 </>
               }
               placement="bottom-start"

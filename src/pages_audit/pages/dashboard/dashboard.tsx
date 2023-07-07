@@ -113,7 +113,7 @@ const Dashboard = () => {
               </Fragment>
             ) : (
               <>
-                {data?.[0]?.BOXES?.map((item, index) => (
+                {/* {data?.[0]?.BOXES?.map((item, index) => (
                   <Grid item xl={3} lg={3} sm={6} md={4} xs={12} key={index}>
                     <DashboardBox
                       key={"board" + index}
@@ -125,7 +125,57 @@ const Dashboard = () => {
                       apiName={item?.API_NAME}
                     />
                   </Grid>
-                ))}
+                ))} */}
+                {Array.from(Array(8)).map((_, index) => {
+                  const item = data?.[0]?.BOXES?.[index];
+                  const isVisible = !!item;
+
+                  if (isVisible) {
+                    return (
+                      <Grid
+                        item
+                        xl={3}
+                        lg={3}
+                        sm={6}
+                        md={4}
+                        xs={12}
+                        key={index}
+                      >
+                        <DashboardBox
+                          key={"board" + index}
+                          body={item.DEFAULT_VAL}
+                          title={item.TITLE}
+                          isSequencs={item.DISPLAY_SEQ}
+                          icon={item.ICON}
+                          isBackground={item.BACKGROUND_COLOUR}
+                          apiName={item.API_NAME}
+                          visibility={!isVisible}
+                        />
+                      </Grid>
+                    );
+                  } else {
+                    return (
+                      <Grid
+                        item
+                        xl={3}
+                        lg={3}
+                        sm={6}
+                        md={4}
+                        xs={12}
+                        key={index}
+                      >
+                        <div
+                          style={{
+                            height: "100px",
+                            width: "100%",
+                            backgroundColor: "transparent",
+                          }}
+                        ></div>
+                      </Grid>
+                    );
+                  }
+                })}
+
                 {data?.[0]?.QUICK_ACCESS?.ISVISIBLE ? (
                   <Grid item lg={8} md={12} xl={8} xs={12}>
                     <Box

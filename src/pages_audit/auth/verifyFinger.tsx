@@ -5,7 +5,9 @@ import * as API from "./api";
 import { CircularProgress, Container, Typography } from "@mui/material";
 import { Grid } from "@mui/material";
 import "./verify.css";
+import { useTranslation } from "react-i18next";
 export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
+  const { t } = useTranslation();
   return (
     <Fragment>
       <Container maxWidth="xs">
@@ -30,7 +32,7 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
                 marginBottom: "10px",
               }}
             >
-              Biometrix Authentication
+              {t("Biometric.BiometrixAuthentication")}
             </div>
             <div
               style={{
@@ -44,11 +46,17 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
                 // marginBottom: "10px",
               }}
             >
-              Kindly place you finger on biometrix machine
+              {t("Biometric.Kindlyplaceyoufinger")}
             </div>
             <br />
             <Typography variant="h5" style={{ color: "#000000" }}>
-              Hi Leo{`, ${loginState?.fullname ?? ""}`}
+              {t("otp.Hello")} {""}
+              {` ${
+                loginState?.username
+                  ? loginState.username.charAt(0).toUpperCase() +
+                    loginState.username.slice(1)
+                  : null
+              }`}
             </Typography>
             <br />
             <div
@@ -127,9 +135,9 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
                   {loginState?.isBiometricError
                     ? loginState?.userMessage
                     : loginState?.loading
-                    ? "Loading..."
+                    ? t("Biometric.Loading")
                     : loginState?.isScanning
-                    ? "Scanning..."
+                    ? t("Biometric.Scanning")
                     : null}
                 </h3>
               </div>
@@ -162,7 +170,7 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
                   style={{ color: "#fff" }}
                 />
               ) : (
-                "Verify"
+                t("Biometric.Verify")
               )}
             </GradientButton>
           </div>

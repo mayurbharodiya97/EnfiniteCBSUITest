@@ -63,7 +63,6 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     },
     ref
   ) => {
-    //console.log(finalMetaData);
     const { pause, resume } = useAutoRefreshControls();
     const metaDataRef = useRef<any>(null);
     const { t } = useTranslation();
@@ -72,7 +71,6 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         metaData: finalMetaData,
         actions,
         setAction,
-        lanTranstlet: t,
       });
     }
     //console.log(data);
@@ -82,7 +80,15 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     // console.table(metaData);
     /* eslint-disable react-hooks/exhaustive-deps */
     //console.log(metaData);
-    const columns = useMemo(() => metaData.columns ?? [], []);
+    const columns = useMemo(() => {
+      //console.log("columns", metaData.columns);
+      if (Array.isArray(metaData.columns)) {
+        return metaData.columns.map((item) => {
+          return { ...item, columnName: t(item.columnName) };
+        });
+      }
+      return metaData.columns ?? [];
+    }, [t]);
     //console.log(columns);
     const filterMeta = useMemo(() => metaData.filters, []);
     const mydefaultFilter = useMemo(() => defaultFilter, []);
@@ -278,7 +284,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     }
     return (
       <DataGrid
-        label={metaData.gridConfig?.gridLabel ?? "NO_NAME"}
+        label={t(metaData.gridConfig?.gridLabel ?? "NO_NAME")}
         dense={true}
         getRowId={getRowId}
         columns={columns}
@@ -333,7 +339,6 @@ const transformMetaData = ({
   metaData: freshMetaData,
   actions,
   setAction,
-  lanTranstlet,
 }): GridMetaDataType => {
   let metaData = cloneDeep(freshMetaData) as GridMetaDataType;
   //let metaData = JSON.parse(JSON.stringify(freshMetaData)) as GridMetaDataType;
@@ -344,11 +349,7 @@ const transformMetaData = ({
   columns = attachYupSchemaValidator(columns);
   columns = attachCellComponentsToMetaData(columns);
   columns = attachAlignmentProps(columns);
-  // for language transletion code
-  columns = columns.map((item) => {
-    console.log("columnName", lanTranstlet(item.columnName));
-    return { ...item, columnName: lanTranstlet(item.columnName) };
-  });
+
   //call this function after attaching yup schema and methods to metaData
   columns = attachcombinedValidationFns(columns);
   columns = sortColumnsBySequence(columns);

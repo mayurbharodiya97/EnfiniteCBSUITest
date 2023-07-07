@@ -30,6 +30,7 @@ import {
 } from "./types";
 import { FormContext } from "./context";
 import { getIn, yupReachAndValidate } from "./util";
+import { useTranslation } from "react-i18next";
 
 export const useField = ({
   fieldKey,
@@ -48,6 +49,8 @@ export const useField = ({
   const formContext = useContext(FormContext);
   //formState provides will be used to determine if form is submitting
   const formState = useRecoilValue(formAtom(formContext.formName));
+  //For Language Changes
+  const { t } = useTranslation();
   //fieldKeyRef used to inititalize fieldKey, if fieldKey is not passed
   //fieldName will be used to determine fieldKey, fieldKey will be used to
   //access atom from recoil storing field state
@@ -700,6 +703,8 @@ export const useField = ({
     runValidation,
     dependentValues: dependentFieldsState,
     handleOptionValueExtraData,
+    validationAPIResult: t(fieldData?.validationAPIResult ?? ""),
+    error: t(fieldData?.error ?? ""),
   };
 };
 

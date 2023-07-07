@@ -110,7 +110,7 @@ export const OTPModel = ({
               {t("otp.GenerateNewOTP")}
             </div>
             <div className={classes.OTPalignName}>
-              {t("otp.Hello")}
+              {t("otp.Hello")}{" "}
               {loginState?.username
                 ? loginState.username.charAt(0).toUpperCase() +
                   loginState.username.slice(1)
@@ -220,7 +220,6 @@ export const OTPModelForm = ({
   resendFlag,
   setNewRequestID = (id) => {},
   otpresendCount = 0,
-  authType = "O",
 }) => {
   const [OTP, setOTP] = useState("");
   // const [showPasswordTime, setShowPasswordTime] = useState(0);
@@ -235,6 +234,7 @@ export const OTPModelForm = ({
   const [resendotpLoading, setResendotpLoading] = useState(false);
   const inputButtonRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
   const renderButton = (buttonProps) => {
     let { remainingTime, ...other } = buttonProps;
     return resendotpLoading ? (
@@ -245,7 +245,7 @@ export const OTPModelForm = ({
         )}
         style={{ cursor: "wait" }}
       >
-        Resend OTP {<CircularProgress size={20} color="secondary" />}
+        {t("otp.ResendOTP")} {<CircularProgress size={20} color="secondary" />}
       </a>
     ) : (
       <a
@@ -256,7 +256,7 @@ export const OTPModelForm = ({
           !btnshow && classes.btnvisibleoff
         )}
       >
-        Resend OTP
+        {t("otp.ResendOTP")}
       </a>
     );
   };
@@ -295,7 +295,7 @@ export const OTPModelForm = ({
   const renderTime = (remainingtime) => {
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
-        Valid for {remainingtime}
+        {t("otp.ValidFor")} {remainingtime}
       </span>
     );
   };
@@ -320,7 +320,7 @@ export const OTPModelForm = ({
               marginBottom: "10px",
             }}
           >
-            OTP Authentication
+            {t("otp.OTPAuthentication")}
           </div>
           <div
             style={{
@@ -332,10 +332,10 @@ export const OTPModelForm = ({
               lineHeight: "33px",
             }}
           >
-            Please click on Resend button to Generate new OTP
+            {t("otp.GenerateNewOTP")}
           </div>
           <div className={classes.OTPalignName}>
-            Hello{" "}
+            {t("otp.Hello")}{" "}
             {loginState?.username
               ? loginState.username.charAt(0).toUpperCase() +
                 loginState.username.slice(1)
@@ -419,7 +419,7 @@ export const OTPModelForm = ({
                 borderRadius: "10px",
               }}
             >
-              Back
+              {t("otp.Back")}
             </GradientButton>
             <GradientButton
               style={{
@@ -437,7 +437,7 @@ export const OTPModelForm = ({
               {loginState.loading ? (
                 <CircularProgress size={25} thickness={4.6} />
               ) : (
-                "Verify OTP"
+                t("otp.VerifyOTP")
               )}
             </GradientButton>
           </div>

@@ -19,6 +19,7 @@ import { useStyles } from "./style";
 //import { LocalizationProvider } from "@mui/lab";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { useTranslation } from "react-i18next";
 // import DateFnsUtils from "@date-io/date-fns";
 export const FormWrapper = forwardRef<FormWrapperProps, any>(
   (
@@ -46,11 +47,11 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     },
     ref
   ) => {
+    const { t } = useTranslation();
     //this line is very important to preserve our metaData across render - deep clone hack
     let metaData = cloneDeep(freshMetaData) as MetaDataType;
-    console.log(metaData);
     //let metaData = JSON.parse(JSON.stringify(freshMetaData)) as MetaDataType;
-    metaData = extendFieldTypes(metaData, extendedMetaData);
+    metaData = extendFieldTypes(metaData, extendedMetaData, t);
     metaData = attachMethodsToMetaData(metaData);
     metaData = MoveSequenceToRender(metaData);
     const groupWiseFields = renderFieldsByGroup(
@@ -88,7 +89,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
               //@ts-ignore
               ref={ref}
               formName={formName}
-              formDisplayLabel={metaData?.form?.label ?? "NO_LABEL"}
+              formDisplayLabel={t(metaData?.form?.label ?? "NO_LABEL")}
               formRenderType={metaData.form.render.renderType ?? "simple"}
               formRenderConfig={metaData.form.render}
               submitFn={onSubmitHandler}
@@ -133,7 +134,6 @@ const ChildFormWrapper = forwardRef<any, any>(
     },
     ref
   ) => {
-    console.log(formRenderType);
     const {
       handleSubmit,
       handleSubmitPartial,

@@ -159,6 +159,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/UPDATEPROFILEPIC",
     packageName: "",
   },
+  FORGOTPASSWORD: {
+    url: "/enfinityCommonServiceAPI/FORGOTPASSWORD",
+    packageName: "",
+  },
+  FORGOTPWDOTPVERIFY: {
+    url: "/enfinityCommonServiceAPI/FORGOTPWDOTPVERIFY",
+    packageName: "",
+  },
+  UPDATEFORGETNEWPASSWORD: {
+    url: "/enfinityCommonServiceAPI/UPDATEFORGETNEWPASSWORD",
+    packageName: "",
+  },
+  GETECIRCULARDETAIL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETECIRCULARDETAIL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
