@@ -67,6 +67,30 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTOMERDTL",
     packageName: "",
   },
+  GETCIFCATEG: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCIFCATEG",
+    packageName: "",
+  },
+  GETCIFTABDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCIFTABDTL",
+    packageName: "",
+  },
+  GETPMISCDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPMISCDATA",
+    packageName: "",
+  },
+  GETCOUNTRYLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOUNTRYLIST",
+    packageName: "",
+  },
+  GETCUSTGROUPLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTGROUPLIST",
+    packageName: "",
+  },
+  GETCUSTCOMMULIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTCOMMULIST",
+    packageName: "",
+  },
   CUSTOMERDETAILS: {
     url: "/customerServiceAPI/CUSTOMERDETAILS",
     packageName: "",

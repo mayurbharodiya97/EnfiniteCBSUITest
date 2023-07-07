@@ -4,7 +4,7 @@ import { useState, useContext, useEffect } from 'react';
 // import Button from '@mui/material/Button';
 // import Typography from '@mui/material/Typography';
 // import Modal from '@mui/material/Modal';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, TextField, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack} from '@mui/material';
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, TextField, Select, MenuItem} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import { CustomTabs } from '../ckyc';
@@ -19,7 +19,6 @@ import OtherAddressDetails from './formDetails/OtherAddressDetails';
 import NRIDetails from './formDetails/NRIDetails';
 import AttestationDetails from './formDetails/AttestationDetails';
 
-
 import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
 import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -33,8 +32,9 @@ import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
 import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
 import CancelIcon from '@mui/icons-material/Cancel'; // close-icon
+import RefreshIcon from '@mui/icons-material/Refresh'; // refresh-icon
 import { makeStyles } from '@mui/styles';
-import { customer_data_meta_data } from '../metadata';
+// import { customer_data_meta_data } from '../metadata';
 
 import { AuthContext } from 'pages_audit/auth';
 import Logo from "assets/images/easy_bankcore_Logo.png";
@@ -42,6 +42,12 @@ import { useStyles } from 'pages_audit/appBar/style';
 import bank_logo_default from "assets/images/BecomePartnerImg.svg";
 import clsx from "clsx";
 
+import * as API from "../api";
+import { useQuery } from "react-query";
+import { AutoComplete } from 'components/common';
+import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
+// import { TextField } from 'components/styledComponent';
+// import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
 }
@@ -85,7 +91,10 @@ export const CustomTabLabel = ({IconName, isSidebarExpanded, tabLabel, subtext})
           //     // color="var(--theme-color)"
           //   />
           } */}
+          {/* <Icon>star</Icon> */}
         {<IconName />}
+        {/* {IconComponent(IconName)} */}
+        {/* <IconComponent iconName = {IconName as IconNames} /> */}
           {/* <FontAwesomeIcon
             icon={["fas", "users"]}
             // color="var(--theme-color)"
@@ -160,18 +169,78 @@ const style = {
 export default function FormModal({
   isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
-  colTabValue, handleColTabChange,
+  colTabValue, setColTabValue, handleColTabChange,
   isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData,
-  customerType, setCustomerType
+  entityType, setEntityType, 
+  customerCategories, tabsApiRes, setTabsApiRes, 
+  categoryValue, setCategoryValue, 
+  constitutionValue, setConstitutionValue, 
+  accTypeValue, setAccTypeValue, AccTypeOptions
 }) {
-  // const [open, setOpen] = React.useState(false);
-  // const handleOpen = () => handleFormModalOpen(true);
-  // const handleClose = () => handleFormModalOpen(false);
   const classes = useDialogStyles();
-
   const authController = useContext(AuthContext);
   const appBarClasses = useStyles();
-  console.log("autdhController",authController)
+  // const [customerCategories, setCustomerCategories] = useState([])
+
+  const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
+    ["getTabsDetail", {entityType, categoryValue, constitutionValue}],
+    () =>
+      API.getTabsDetail(
+      {
+        COMP_CD: authController?.authState?.companyID ?? "",
+        ENTITY_TYPE: entityType,
+        CATEGORY_CD: categoryValue, //CATEG_CD
+        CONS_TYPE: constitutionValue, //CONSTITUTION_TYPE
+      }  
+      )
+  );
+  const handleChangeAccType = (e) => {
+    setAccTypeValue(e.target.value)
+  }
+
+  useEffect(() => {
+    if(!isLoading) {
+      console.log("ResultResult", TabsData)
+    }
+    // setTabsApiRes(data)
+    let newData:any[] = []
+    if(TabsData && TabsData.length>0) {
+      TabsData.forEach((element:{[k: string]: any}) => {
+        let subtitleinfo = {
+          SUB_TITLE_NAME : element?.SUB_TITLE_NAME,
+          SUB_TITLE_DESC : element?.SUB_TITLE_DESC,
+          SUB_ICON : element?.SUB_ICON,
+        }
+          let index = newData.findIndex((el:any) => el?.TAB_NAME == element?.TAB_NAME)
+          if(index != -1) {
+            // duplicate tab element
+            let subtitles = newData[index].subtitles
+            subtitles.push(subtitleinfo)
+          } else {
+            // new tab element
+            newData.push({...element, subtitles: [subtitleinfo]})
+          }
+        console.log("filled newdata -aft", element.TAB_NAME , newData)
+      });
+      setTabsApiRes(newData)
+    }
+  }, [TabsData, isLoading])
+
+  const handleCategoryChange = (e, value, r, d) => {
+    // console.log("e,v,r,d", value)
+    if(value) {
+      setCategoryValue(value?.value)
+      setConstitutionValue(value?.CONSTITUTION_TYPE)
+    } else {
+      setColTabValue(false)
+      setCategoryValue(null)
+      setConstitutionValue(null)
+      setTabsApiRes([])
+    }
+    // refetch()
+  }
+
+
   return (
     // <div>
     //   <Button onClick={handleFormModalOpen}>Open modal</Button>
@@ -286,7 +355,7 @@ export default function FormModal({
               color="secondary" 
               variant="contained" 
               onClick={handleSidebarExpansion} 
-              sx={{
+              sx={{ border: "1px solid var(--theme-color2)",
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%", 
               // mb: "5px", ml: {xs: "2px", sm: "8px"}, alignSelf: "start",
               mx: "10px",
@@ -316,8 +385,25 @@ export default function FormModal({
               variant={"h6"}
               component="div"
             >
-              {`C-KYC ${customerType} Entry`}
+              {`C-KYC ${entityType == "C" ? "Legal Entity" : "Individual Entity"} Entry`}
             </Typography>
+            <Button
+              onClick={handleFormModalClose}
+              color="primary"
+              size="small"
+              // disabled 
+              // variant={"contained"}
+              // disabled={mutation.isLoading}
+            >
+              Save as Draft
+            </Button>
+            <Button
+              onClick={handleFormModalClose}
+              color="primary"
+              // disabled={mutation.isLoading}
+            >
+              Save
+            </Button>
             <Button
               onClick={handleFormModalClose}
               color="primary"
@@ -329,53 +415,96 @@ export default function FormModal({
         </AppBar>
         {/* <Box sx={style}> */}
           <Grid container sx={{transition: "all 0.4s ease-in-out"}} columnGap={(theme) => theme.spacing(1)}>
-            <Grid container item xs="auto" sx={{
-              display:"flex", flexDirection: "column",alignItems: "center",
-              position: "sticky", top:0, height:"calc(95vh - 80px)",
-              }}>
-              <CustomTabs sx={{height:"calc(100% - 10px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
-                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Personal Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={HowToRegRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Personal Details"} subtext={""} />} /></Tooltip>
-                <Tooltip placement="left" title={isSidebarExpanded ? "" : "KYC Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={NoteAddRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"KYC"} subtext={"PoA & PoI & Documents"} />} /></Tooltip>
-                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Declaration"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={ArticleRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Declaration"} subtext={"FATCA & CRS"} />} /></Tooltip>
-                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Details of Related Person"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={PeopleAltIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Details of Related Person"} subtext={""} />} /></Tooltip>
-                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Other Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={InfoIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Details"} subtext={"Income & Risk profile & Employment Details"} />} /></Tooltip>
-                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Other Address"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={AddLocationIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Address"} subtext={""} />} /></Tooltip>
-                <Tooltip placement="left" title={isSidebarExpanded ? "" : "NRI Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={PersonAddAltRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"NRI Details"} subtext={""} />} /></Tooltip>
-                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Attestation"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Attestation"} subtext={"KYC verifcation"} />} /></Tooltip>
-              </CustomTabs>
-            </Grid>
-            <Grid sx={{
-                "& .MuiBox-root": {
-                  padding: "0px",
-                }
-              }} item xs>
-                
-              {/* common customer fields */}
-              <Grid 
-                sx={{
-                    backgroundColor:"var(--theme-color2)", 
-                    // padding:(theme) => theme.spacing(2), 
-                    px:(theme) => theme.spacing(2), 
-                    border: "1px solid rgba(0,0,0,0.12)", 
-                    borderRadius: "20px",
-                    mb: "8px"
-                }} container item xs={12} sm="auto">
-                {/* <Grid item xs={12} sm="auto" sx={{display: "flex", alignItems: "center"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Customer Details</Typography>
-                </Grid> */}
-                <Grid container item xs={12} sm>
-                  <Grid item xs={12}>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={customer_data_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                        typography="Cust Details"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} sm="auto">
-                  <ButtonGroup size="small" variant="outlined" orientation="vertical" color="secondary">
+
+            <AppBar
+              position="sticky"
+              // color=""
+              style={{ marginBottom: "10px", top: "113px" }}
+            >
+              <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
+                {/* common customer fields */}
+                <Grid container columnGap={(theme) => theme.spacing(1)} rowGap={(theme) => theme.spacing(1)} my={1}>
+                  <TextField disabled
+                    id="customer-id"
+                    label="Cust. ID"
+                    size="small"
+                  />
+                  <Autocomplete
+                    disablePortal
+                    id="cust-categories"
+                    options={customerCategories}
+                    onChange={(e,value,r,d) => handleCategoryChange(e, value, r, d)}
+                    getOptionLabel={(option:any) => `${option?.label} - ${option?.CONSTITUTION_NAME}`}
+                    sx={{ width: 400 }}
+                    renderInput={(params) => (
+                      <TextField {...params} 
+                        size="small" 
+                        label="Category - Constitution"
+                        InputProps={{
+                          ...params.InputProps,
+                          startAdornment: (
+                            <>
+                              <InputAdornment position='start'>
+                                <IconButton><RefreshIcon fontSize='small' /></IconButton>
+                              </InputAdornment>
+                              {/* {params.InputProps.startAdornment} */}
+                            </>
+                          )
+                        }}
+                      />
+                    )}
+                    // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
+                  />
+
+                  {/* {entityType == "I" && <TextField
+                    id="customer-acct-type"
+                    label="Acc. Type"
+                    value={accTypeValue}
+                    size="small"
+                  />} */}
+
+
+                  {false && <Select
+                    labelId="customer-account-type"
+                    id=""
+                    value={accTypeValue}
+                    label="Acc. Type"
+                    onChange={handleChangeAccType} sx={{width: "300px"}}
+                  >
+                    {/* <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem> */}
+                    {(AccTypeOptions && AccTypeOptions.length>0) && AccTypeOptions.map(el => {
+                      console.log('qwewerewqdxrdsa', el)
+                      return <MenuItem value={el?.DATA_VALUE}>{el?.DISPLAY_VALUE}</MenuItem>
+                    })}
+                  </Select>}
+                  <Autocomplete
+                    disablePortal
+                    id="acc-types"
+                    options={AccTypeOptions}
+                    getOptionLabel={(option:any) => `${option?.DISPLAY_VALUE}`}
+                    onChange={(e,v) => {
+                      setAccTypeValue(v?.value)
+                    }}
+                    sx={{ width: 200 }}
+                    renderInput={(params) => (
+                      <TextField {...params} 
+                        size="small" 
+                        label="Acc. Type"
+                      />
+                    )}
+                    // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
+                  />
+
+                  <TextField disabled
+                    id="customer-ckyc-number"
+                    label="CKYC No."
+                    // value={accTypeValue}
+                    size="small"
+                  />
+
+                  {/* <ButtonGroup size="small" variant="outlined" color="secondary">
                     <Button color="secondary" onClick={() => {
                         setIsCustomerData(false)
                         setIsLoadingData(true)
@@ -388,10 +517,62 @@ export default function FormModal({
                         setIsCustomerData(false)
                         // setIsLoading(true)
                     }}>Edit</Button>
-                  </ButtonGroup>
+                  </ButtonGroup> */}
+
                 </Grid>
-              </Grid>
-              {/* common customer fields */}
+                {/* common customer fields */}
+              </Toolbar>
+            </AppBar>
+
+            <Grid container item xs="auto" sx={{
+              display:"flex", flexDirection: "column",alignItems: "center",
+              position: "sticky", top:175, height:"calc(95vh - 150px)", 
+              boxShadow: "inset 10px 2px 30px #eee",
+              opacity: (tabsApiRes && tabsApiRes.length>0) ? 1 : 0, transition: 'opacity 0.4s ease-in-out'
+              // backgroundColor: "#ddd"
+              }}>
+              {/* <CustomTabs sx={{height:"calc(100% - 10px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
+                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Personal Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={HowToRegRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Personal Details"} subtext={""} />} /></Tooltip>
+                <Tooltip placement="left" title={isSidebarExpanded ? "" : "KYC Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={NoteAddRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"KYC"} subtext={"PoA & PoI & Documents"} />} /></Tooltip>
+                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Declaration"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={ArticleRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Declaration"} subtext={"FATCA & CRS"} />} /></Tooltip>
+                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Details of Related Person"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={PeopleAltIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Details of Related Person"} subtext={""} />} /></Tooltip>
+                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Other Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={InfoIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Details"} subtext={"Income & Risk profile & Employment Details"} />} /></Tooltip>
+                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Other Address"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={AddLocationIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Address"} subtext={""} />} /></Tooltip>
+                <Tooltip placement="left" title={isSidebarExpanded ? "" : "NRI Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={PersonAddAltRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"NRI Details"} subtext={""} />} /></Tooltip>
+                <Tooltip placement="left" title={isSidebarExpanded ? "" : "Attestation"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Attestation"} subtext={"KYC verifcation"} />} /></Tooltip>
+              </CustomTabs> */}
+              <CustomTabs 
+                sx={{height:"calc(100% - 10px)", minWidth: "76px"}}  
+                textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" 
+                value={colTabValue} 
+                onChange={handleColTabChange}
+              >
+                {
+                  (tabsApiRes && tabsApiRes.length>0) && tabsApiRes.map((el:any, i) => {
+                    // console.log(typeof WorkspacePremiumIcon, "asdqwewqsxaswweqeqw",WorkspacePremiumIcon)
+                    return (
+                      <Tooltip key={el?.TAB_NAME} placement="left" title={isSidebarExpanded ? "" : el?.TAB_NAME}>
+                        <CustomTab isSidebarExpanded={isSidebarExpanded} 
+                          label={
+                            <CustomTabLabel 
+                              IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} 
+                              tabLabel={el?.TAB_NAME} subtext={el?.TAB_DESC ?? ""} 
+                            />
+                          } 
+                        />
+                      </Tooltip>
+                    )
+                  }) 
+                }
+              </CustomTabs>
+            </Grid>
+            <Grid sx={{
+                "& .MuiBox-root": {
+                  padding: "0px",
+                }
+              }} item xs>
+                
+            
 
               <TabPanel value={colTabValue} index={0}>
                 <PersonalDetails 
@@ -438,6 +619,22 @@ export default function FormModal({
                   isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
                 />
               </TabPanel>
+
+                  {/* {(tabsApiRes && tabsApiRes.length>0) && tabsApiRes.map((element, i) => {
+                    return (
+                      <TabPanel key={i} value={colTabValue} index={i}>
+                        {
+                          // console.log("cvbdfg", element.subtitles)
+                          element.subtitles.map(el => {
+                            return (
+                              <Typography variant="h6">{el?.SUB_TITLE_NAME}</Typography>
+                            )
+                          })
+                        }
+                      </TabPanel>
+                    )
+                  })} */}
+
             </Grid>
           </Grid>
         {/* </Box> */}
@@ -445,18 +642,6 @@ export default function FormModal({
     // </div>
   );
 }
-
-const checkDateAndDisplay = (dateStr: string) => {
-  // const dt = new Date(dateStr);
-  // //@ts-ignore
-  // if (dt instanceof Date && !isNaN(dt)) {
-  //   return dt.toDateString();
-  // }
-  if (Boolean(dateStr)) {
-    return dateStr;
-  }
-  return "N/A";
-};
 
 const Greetings = () => {
   let hours = new Date().getHours();

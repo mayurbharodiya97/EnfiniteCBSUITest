@@ -8,11 +8,11 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            {/* <Typography variant={"h6"}>Personal Details</Typography> */}
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details</Typography>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
+                    padding:(theme) => theme.spacing(1), 
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>

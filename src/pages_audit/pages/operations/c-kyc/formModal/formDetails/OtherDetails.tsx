@@ -22,11 +22,11 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
 
     return (
         <Grid container rowGap={3}>
-            {/* <Typography variant={"h6"}>Personal Details</Typography> */}
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details</Typography>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
+                    padding:(theme) => theme.spacing(1), 
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
@@ -37,7 +37,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     </IconButton>
                 </Grid>
                 <Collapse in={isOtherDetailsExpanded}>                
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Annual Income</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Annual Income</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -47,7 +47,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     />
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Exposure Info./Risk Profile</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Exposure Info./Risk Profile</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -57,7 +57,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     />
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Personal Info.</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Personal Info.</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -67,7 +67,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     />
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Vehicle Info.</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Vehicle Info.</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -77,7 +77,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     />
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Employment Info.</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Employment Info.</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}

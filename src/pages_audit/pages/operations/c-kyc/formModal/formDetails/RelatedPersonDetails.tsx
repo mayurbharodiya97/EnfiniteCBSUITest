@@ -23,11 +23,11 @@ const myGridRef = useRef<any>(null);
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            {/* <Typography variant={"h6"}>Personal Details</Typography> */}
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Details of Related Person</Typography>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
+                    padding:(theme) => theme.spacing(1), 
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
@@ -49,7 +49,7 @@ const myGridRef = useRef<any>(null);
                     </Grid>                    
                 {/* </Grid> */}
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Proof of Identity [PoI] of Related Person</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Proof of Identity [PoI] of Related Person</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -59,7 +59,7 @@ const myGridRef = useRef<any>(null);
                     />
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Attestation Details [IPV-Identity Proof Verified By]</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Attestation Details [IPV-Identity Proof Verified By]</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}

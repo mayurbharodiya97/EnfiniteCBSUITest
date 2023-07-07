@@ -362,7 +362,7 @@
                   componentType: "numberFormat",
               },
               // className: "textInputFromRight",
-              name: "NO_OF_TWO_WHEELERS",
+              name: "NO_OF_FOUR_WHEELERS",
               label: "No. of 4 Wheelers",
               placeholder: "",
               type: "text",
@@ -498,17 +498,6 @@
           {
               render: {
                   componentType: "datePicker",
-              },
-              // className: "textInputFromRight",
-              name: "RETIREMENT_DATE",
-              label: "Retirement Date",
-              placeholder: "",
-              type: "text",
-              GridProps: {xs: 4, sm:3},
-          },
-          {
-              render: {
-                  componentType: "select",
               },
               // className: "textInputFromRight",
               name: "RETIREMENT_DATE",

@@ -371,7 +371,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   );
 };
 
-const checkDateAndDisplay = (dateStr: string) => {
+export const checkDateAndDisplay = (dateStr: string) => {
   // const dt = new Date(dateStr);
   // //@ts-ignore
   // if (dt instanceof Date && !isNaN(dt)) {

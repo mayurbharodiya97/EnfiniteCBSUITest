@@ -12,6 +12,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-i
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; //plus-icon-outlined
 import AddCircleIcon from '@mui/icons-material/AddCircle'; //plus-icon-filled
+import CorporateFareIcon from '@mui/icons-material/CorporateFare'; // legal-entity-icon
 import PersonIcon from '@mui/icons-material/Person'; // individual-person-icon
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { 
@@ -224,51 +225,109 @@ function TabPanel(props: TabPanelProps) {
 export const Ckyc = () => {
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
-  const [colTabValue, setColTabValue] = React.useState(0);
-  const [isCustomerData, setIsCustomerData] = useState(false)
+  const [colTabValue, setColTabValue] = React.useState<number | boolean>(false);
+  const [customerCategories, setCustomerCategories] = useState([])
+  const [isCustomerData, setIsCustomerData] = useState(true)
   const [isLoadingData, setIsLoadingData] = useState(false)
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
   const handleSidebarExpansion = () => {
     setIsSidebarExpanded((prevState) => !prevState)
   }
   const [isFormModalOpen, setIsFormModalOpen] = React.useState(false);
-  const [customerType, setCustomerType] = React.useState("");
-  const handleFormModalOpen = (type:String) => {
-    setIsFormModalOpen(true)
-    setCustomerType(type.toString())
-  };
-  const handleFormModalClose = () => {
-    setIsFormModalOpen(false)
-    setCustomerType("")
-  }
-  useEffect(() => {
-    console.log("customer_type..",customerType)
-  }, [customerType])
+  const [entityType, setEntityType] = React.useState<null | string>(null);
   const { authState } = useContext(AuthContext);
 
-  console.log("asdasdasdwqeqwadw", authState)
-  const Result = useQuery(
-    ["GetCustomerDetails"],
-    () =>
-      API.getCustomerDetails(
-      {
-        COMP_CD: authState?.companyID ?? "",
-        CUST_ID: authState?.user?.id ?? "",
-        CONTACT_NO: " ",
-        PAN_NO: " ",
-        ACCT_NM: " ",
-        UNIQ_ID: " ",
-        E_MAIL_ID: " ",
-        // BRANCH_CD: authState?.user?.branchCode ?? "",
-        // CUST_TYPE: "individual"
-      }  
-      )
+
+  const [tabsApiRes, setTabsApiRes] = React.useState<any[]>([]);
+  const [categoryValue, setCategoryValue] = React.useState<null | string>(null);
+  const [constitutionValue, setConstitutionValue] = React.useState<null | string>(null);
+  const [accTypeValue, setAccTypeValue] = React.useState<null | string>("");
+
+
+  const { data, isError, isLoading, error, refetch } = useQuery<any, any>(
+    ["getCIFCategories", {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      ENTITY_TYPE: entityType
+    }, {enabled: !!entityType}],
+    () => API.getCIFCategories({
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      ENTITY_TYPE: entityType
+    })
+  );
+
+  const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
+    ["getPMISCData", {entityType, categoryValue, constitutionValue}],
+    () => API.getPMISCData("CKYC_ACCT_TYPE")
   );
 
   useEffect(() => {
-    console.log("ResultResult", Result)
-  }, [Result])
+    if(!isLoading) {
+      console.log(data, "asddsa")
+      setCustomerCategories(data)
+    }
+  }, [data, isLoading])
 
+  // useEffect(() => {
+  //   if(!isAccTypeLoading) {
+  //     console.log(AccTypeOptions, "asddsa")
+  //     // setCustomerCategories(AccTypeOptions)
+  //   }
+  // }, [AccTypeOptions, isAccTypeLoading])
+
+useEffect(() => { 
+  console.log('entityType changed', entityType)
+  if(entityType) {
+    refetch()
+  }
+}, [entityType])
+
+  const handleFormModalOpen = (type:String) => {
+    setIsFormModalOpen(true)
+    if(type) {
+      setEntityType(type.toString())
+    }
+  };
+  const handleFormModalClose = () => {
+    setIsFormModalOpen(false)
+    setEntityType(null)
+    setColTabValue(false)
+    setCategoryValue(null)
+    setConstitutionValue(null)
+    setAccTypeValue(null)
+    setTabsApiRes([])
+    // setCustomerCategories([])
+  }  
+
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+  const handleColTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log("qweert", newValue)
+    // console.log({newValue})
+    // if(newValue) {
+      setColTabValue(newValue);
+    // }
+  };
+  const handleInputSearchValue = (event) => {
+    setInputSearchValue(event.target.value)
+  }
+
+  // useEffect(() => {
+  //   console.log(colTabValue, typeof colTabValue,"...")
+  //   console.log(tabValue, typeof tabValue, "... tab")
+  // }, [colTabValue, tabValue])
+
+  useEffect(() => {
+    if(isLoadingData) {
+      setTimeout(() => {
+        setIsLoadingData(false)
+        setIsCustomerData(true)
+      }, 5000);
+    }
+  }, [isLoadingData])
 
   const controlPanel = (
     <Box>
@@ -323,38 +382,6 @@ export const Ckyc = () => {
     {/* </Grid> */}
     </Box>
   )
-
-  useEffect(() => {
-      console.log("... ckyc", isCustomerData)
-  }, [isCustomerData])
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
-  const handleColTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    // console.log({newValue})
-    // if(newValue) {
-      setColTabValue(newValue);
-    // }
-  };
-  const handleInputSearchValue = (event) => {
-    setInputSearchValue(event.target.value)
-  }
-
-  // useEffect(() => {
-  //   console.log(colTabValue, typeof colTabValue,"...")
-  //   console.log(tabValue, typeof tabValue, "... tab")
-  // }, [colTabValue, tabValue])
-
-  useEffect(() => {
-    if(isLoadingData) {
-      setTimeout(() => {
-        setIsLoadingData(false)
-        setIsCustomerData(true)
-      }, 5000);
-    }
-  }, [isLoadingData])
-
   return (
     <React.Fragment>
       <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">C-KYC Individual/Legal Entry (MST/707)</Typography>
@@ -372,10 +399,10 @@ export const Ckyc = () => {
           <Typography variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry</Typography>
         </Grid> */}
         <Grid container item xs="auto" columnGap={1}>
-          <Tooltip title="Add Legal Entity Customer Type Entry"><Button 
+          <Tooltip title="onboard Individual Customer"><Button 
             color="secondary" 
             variant="contained" 
-            onClick={() => handleFormModalOpen("Legal Entity")} 
+            onClick={() => handleFormModalOpen("I")} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
               minHeight:{xs: "40px", md: "30px"}, 
@@ -392,13 +419,13 @@ export const Ckyc = () => {
             }}
           >
             {/* <IconButton sx={{border: (theme) => `1px solid ${theme.palette.secondary.main}`}} color="secondary"> */}
-              <AddCircleOutlineIcon fontSize="medium" />
+            <PersonIcon fontSize="medium" />
             {/* </IconButton> */}
           </Button></Tooltip>
-          <Tooltip title="Add Individual Customer Type Entry"><Button 
+          <Tooltip title="onboard Legal Person Entity"><Button 
             color="secondary" 
             variant="contained" 
-            onClick={() => handleFormModalOpen("individual")} 
+            onClick={() => handleFormModalOpen("C")} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
               minHeight:{xs: "40px", md: "30px"}, 
@@ -415,7 +442,8 @@ export const Ckyc = () => {
             }}
           >
             {/* <IconButton sx={{border: (theme) => `1px solid ${theme.palette.secondary.main}`}} color="secondary"> */}
-              <PersonIcon fontSize="medium" />
+            {/* <AddCircleOutlineIcon fontSize="medium" /> */}
+            <CorporateFareIcon fontSize="medium" />
             {/* </IconButton> */}
           </Button></Tooltip>
         </Grid>
@@ -507,6 +535,7 @@ export const Ckyc = () => {
         handleSidebarExpansion={handleSidebarExpansion}
 
         colTabValue={colTabValue}
+        setColTabValue={setColTabValue}
         handleColTabChange={handleColTabChange}
 
         isLoadingData={isLoadingData}
@@ -514,8 +543,20 @@ export const Ckyc = () => {
         isCustomerData={isCustomerData}
         setIsCustomerData={setIsCustomerData}
 
-        customerType={customerType}
-        setCustomerType={setCustomerType}
+        entityType={entityType}
+        setEntityType={setEntityType}
+        
+        customerCategories={customerCategories}
+        tabsApiRes={tabsApiRes}
+        
+        setTabsApiRes={setTabsApiRes}
+        categoryValue={categoryValue}
+        setCategoryValue={setCategoryValue}
+        constitutionValue={constitutionValue}
+        setConstitutionValue={setConstitutionValue}
+        accTypeValue={accTypeValue}
+        setAccTypeValue={setAccTypeValue}
+        AccTypeOptions={AccTypeOptions}
       />
     </React.Fragment>
   );

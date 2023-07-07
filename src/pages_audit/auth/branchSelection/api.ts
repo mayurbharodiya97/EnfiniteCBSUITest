@@ -59,6 +59,20 @@ export const GetMenuData = async ({
       BRANCH_SELECTION_MODE: selectionMode,
     });
   if (status === "0") {
+    let index = data.findIndex(d => d.label == "Operation")
+    let childIndex = data[index].children.findIndex(d => d.system_code == "EMST/707") 
+    if(index !== -1 && childIndex !== -1) {
+      data[index].children[childIndex] = {
+        ...data[index].children[childIndex],
+        href: "operation/ckyc",
+        icon: "users"      
+      }
+      data[index] = {
+        ...data[index],
+        href: " ",
+        icon: "users"
+      }
+    }
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

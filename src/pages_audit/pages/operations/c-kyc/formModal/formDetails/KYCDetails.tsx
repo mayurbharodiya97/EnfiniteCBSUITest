@@ -29,18 +29,18 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography variant={"h6"}>Personal Details</Typography> */}         
-            <Typography sx={{color:"var(--theme-color3)"}} mt={(theme) => theme.spacing(1)} variant={"h6"}>KYC Details</Typography>
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details</Typography>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
+                    padding:(theme) => theme.spacing(1), 
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid item>
                     {/* <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>KYC Details</Typography> */}
                     <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                        <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Proof of Identity [PoI]</Typography>
+                        <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Proof of Identity [PoI]</Typography>
                         <IconButton onClick={handlePoIExpand}>
                             {!isPoIExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                         </IconButton>
@@ -59,7 +59,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     </Grid>                    
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Passport Details</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Passport Details</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -69,7 +69,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     />
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Driving License Details</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Driving License Details</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -84,18 +84,18 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
+                    padding:(theme) => theme.spacing(1), 
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Proof of Address [PoA]</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Proof of Address [PoA]</Typography>
                     <IconButton onClick={handlePoAExpand}>
                         {!isPoAExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
                 </Grid>
                 <Collapse in={isPoAExpanded}>
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Current/Permanent/Overseas Address</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Current/Permanent/Overseas Address</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -105,7 +105,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     />
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Correspondence/Local Address</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Correspondence/Local Address</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -115,7 +115,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     />
                 </Grid>
 
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Contact</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Contact</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -126,6 +126,43 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 </Grid>
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+
+            {isCustomerData ? 
+            <Grid 
+                sx={{
+                    backgroundColor:"var(--theme-color2)", 
+                    padding:(theme) => theme.spacing(1), 
+                    border: "1px solid rgba(0,0,0,0.12)", 
+                    borderRadius: "20px"
+                }} container item xs={12} direction={'column'}>
+                <Grid item>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Documents</Typography>
+                </Grid>
+                <Grid container item>
+                    <Grid item xs={12} sx={{backgroundColor:"#eee"}}>
+                        {/* <FormWrapper 
+                            key={"new-form-in-kyc"}
+                            metaData={personal_other_detail_meta_data as MetaDataType}
+                            formStyle={{}}
+                            hideHeader={true}
+                        /> */}
+                      {/* <GridWrapper
+                        key={`EmailAcctMstGrid`}
+                        finalMetaData={personal_document_details_data as GridMetaDataType}
+                        data={[]}
+                        setData={() => null}
+                        actions={[]}
+                        setAction={() => {}}
+                        refetchData={() => {}}
+                        ref={myGridRef}
+                        // headerToolbarStyle={{
+                        //   background: "var(--theme-color2)",
+                        //   color: "black",
+                        // }}
+                      /> */}
+                    </Grid>                    
+                </Grid>
+            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="300px" width="100%"></Skeleton> : null}
         </Grid>        
     )
 }

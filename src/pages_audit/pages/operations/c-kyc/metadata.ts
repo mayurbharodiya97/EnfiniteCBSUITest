@@ -1,5 +1,6 @@
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { FilterFormMetaType } from "components/formcomponent/filterform";
+import { getCIFCategories } from "./api";
 
 export const customer_data_meta_data = {
     form: {
@@ -86,7 +87,9 @@ export const customer_data_meta_data = {
                 {label: "category 2", value: "2"},
                 {label: "category 3", value: "3"},
             ],
-            name: "category",
+            // options: () => getCIFCategories("C"),
+            // _optionsKey: "getCIFCategories",
+            name: "CUST_CATEGORY",
             label: "Category",
             placeholder: "",
             type: "text",
@@ -96,12 +99,23 @@ export const customer_data_meta_data = {
             render: {
                 componentType: "textField",
             },
+            isReadOnly: true,
             name: "constitution",
             label: "Constitution",
             placeholder: "",
             type: "text",
-            disabled: true,
             GridProps: {xs: 4, sm: 3, md: 2},
+            dependentFields: ["CUST_CATEGORY"],
+            setValueOnDependentFieldsChange: (dependentFields) => {
+              let value = dependentFields["CUST_CATEGORY"].optionData[0]?.CONSTITUTION_TYPE
+              let label = dependentFields["CUST_CATEGORY"].optionData[0]?.CONSTITUTION_NAME
+              console.log("setValueOnDependentFieldsChange", dependentFields["CUST_CATEGORY"], value)
+              return value ? value : ""
+            },
+            runValidationOnDependentFieldsChange: true,
+            validate: (currentField, dependentFields, __) => {
+              console.log("currentFieldsss", currentField, dependentFields, __)
+            }
         },
         {
             render: {

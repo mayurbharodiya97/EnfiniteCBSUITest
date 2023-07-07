@@ -45,21 +45,23 @@ export const declaration_meta_data = {
           render: {
               componentType: "select",
           },
-          name: "DECLARATION_RECEIVED",
+          name: "FATCA_DEC_RECVD",
           label: "Declaration Received",
           placeholder: "",
           type: "text",
           GridProps: {xs: 4, sm:3},
+          defaultValue: "N",
           options: [
-              {label: "YES", value: "yes"},
-              {label: "NO", value: "no"},
+              {label: "FOR FATCA", value: "Y"},
+              {label: "FOR CRS", value: "C"},
+              {label: "NO", value: "N"},
           ],
       },
       {
         render: {
             componentType: "datePicker",
         },
-        name: "DECLARATION_RECEIVED_DATE",
+        name: "FATCA_DT",
         label: "Declaration Received Date",
         // placeholder: "",
         // type: "datePicker",
@@ -69,7 +71,7 @@ export const declaration_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "GIIN",
+          name: "US_GIIN",
           label: "GIIN",
           required: true,          
           placeholder: "",
@@ -80,7 +82,7 @@ export const declaration_meta_data = {
         render: {
             componentType: "datePicker",
         },
-        name: "DATE_OF_INCORPORATION",
+        name: "DATE_OF_COMMENCEMENT",
         label: "Date of Incorporation",
         // placeholder: "",
         // type: "datePicker",

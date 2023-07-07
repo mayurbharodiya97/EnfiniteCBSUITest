@@ -1,3 +1,5 @@
+import * as API from "../../../api";
+
 export const related_person_detail_data = {
     form: {
         name: "related_person_details_form",
@@ -48,10 +50,8 @@ export const related_person_detail_data = {
             render: {
                 componentType: "select",
             },
-            options: [
-                {label: "Type 1", value: "type1"},
-                {label: "Type 2", value: "type2"}
-            ],
+            options: () => API.getPMISCData("CKYC_RELAT_PERS"),
+            _optionsKey: "kycRelatedtype",
             name: "RELATED_PERSON_TYPE",
             label: "Type",
             required: true,
@@ -61,11 +61,13 @@ export const related_person_detail_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "RELATED_PERSON_REF_TYPE",
+            name: "REF_RELATION",
             label: "Ref. Type",
             required: true,
+            options: () => API.getPMISCData("REF_RELATION"),
+            _optionsKey: "refRelatedType",
             placeholder: "",
             type: "text",
             GridProps: {xs:4, sm:3},
@@ -270,7 +272,7 @@ export const related_person_poi_detail_data = {
             render: {
                 componentType: "textField",
             },
-            name: "NREGA_JOB_CARD",
+            name: "NREGA_JOB_CARD2",
             label: "NREGA Job Card",
             placeholder: "",
             type: "text",
@@ -343,10 +345,12 @@ export const related_person_attestation_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "DOC_RECEIVED",
             label: "Doc Received",
+            options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
+            _optionsKey: "kycDocReceivedType",
             placeholder: "",
             required: true,
             type: "text",
@@ -354,9 +358,11 @@ export const related_person_attestation_detail_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "RICK_CATEGORY",
+            options: () => API.getPMISCData("CKYC_RISK_CATEG"),
+            _optionsKey: "kycRiskCateg",
+            name: "RISK_CATEG",
             label: "Risk Category",
             placeholder: "",
             type: "text",

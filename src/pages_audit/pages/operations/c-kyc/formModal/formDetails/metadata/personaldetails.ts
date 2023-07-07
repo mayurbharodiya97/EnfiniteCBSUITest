@@ -1,5 +1,5 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-
+import * as API from "../../../api";
 export const personal_detail_prefix_data = {
     form: {
         name: "personal_detail_prefix_details_form",
@@ -48,13 +48,15 @@ export const personal_detail_prefix_data = {
     fields: [
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "PREFIX",
+            name: "PREFIX_CD",
             label: "Prefix",
-            placeholder: "Prefix",
+            // placeholder: "Prefix",
+            options: () => API.getPMISCData("Salutation"),
+            _optionsKey: "PDPrefix",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:2, sm:1},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -70,42 +72,42 @@ export const personal_detail_prefix_data = {
             render: {
                 componentType: "textField",
             },
-            name: "FIRST_NAME",
+            name: "FIRST_NM",
             label: "First Name",
-            placeholder: "First Name",
+            // placeholder: "First Name",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:4, sm:2},
             // dependentFields: ["DAILY_AMT"],
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "MIDDLE_NAME",
+            name: "LAST_NM",
             label: "Middle Name",
-            placeholder: "Middle Name",
+            // placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:4, sm:2},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "LAST_NAME",
+            name: "SURNAME",
             label: "Last Name",
-            placeholder: "Last Name",
+            // placeholder: "Last Name",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:4, sm:2},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "hidden",
             },
             name: "FULL_NAME",
             label: "Full Name",
             placeholder: "",
             type: "text",
-            GridProps: {xs:5, sm:4},
+            GridProps: {xs:4, sm:3},
         }
     ]
 }
@@ -157,13 +159,16 @@ export const personal_detail_maiden_data = {
     fields: [
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "PREFIX",
+            name: "MAIDEN_PREFIX_CD",
             label: "Prefix",
-            placeholder: "Prefix",
+            options: () => API.getPMISCData("Salutation"),
+            _optionsKey: "PDMaidenSalutation",
+            defaultValue: "Mrs",
+            // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 2, sm:1},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -179,43 +184,48 @@ export const personal_detail_maiden_data = {
             render: {
                 componentType: "textField",
             },
-            name: "FIRST_NAME",
+            name: "MAIDEN_FIRST_NM",
             label: "First Name",
-            placeholder: "First Name",
+            // placeholder: "First Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
             // dependentFields: ["DAILY_AMT"],
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "MIDDLE_NAME",
+            name: "MAIDEN_MIDDLE_NM",
             label: "Middle Name",
-            placeholder: "Middle Name",
+            // placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "LAST_NAME",
+            name: "MAIDEN_LAST_NM",
             label: "Last Name",
-            placeholder: "Last Name",
+            // placeholder: "Last Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "FATHER_SPOUSe_NAME",
+            name: "FATHER_SPOUSE",
             label: "Father/Spouse Name",
+            defaultValue: "01",
+            options: [
+                {label: "Father", value: "01"},
+                {label: "Spouse", value: "02"},
+            ],
             placeholder: "",
             type: "text",
-            GridProps: {xs:5, sm:4},
-        }
+            GridProps: {xs:4, sm:3},
+        },
     ]
 }
 export const personal_detail_father_data = {
@@ -266,13 +276,16 @@ export const personal_detail_father_data = {
     fields: [
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "PREFIX",
+            name: "FATHER_PREFIX_CD,",
             label: "Prefix",
-            placeholder: "Prefix",
+            options: () => API.getPMISCData("Salutation"),
+            _optionsKey: "PDFatherSalutation",
+            defaultValue: "Mr",
+            // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 2, sm:1},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -288,32 +301,32 @@ export const personal_detail_father_data = {
             render: {
                 componentType: "textField",
             },
-            name: "FIRST_NAME",
+            name: "FATHER_FIRST_NM",
             label: "First Name",
-            placeholder: "First Name",
+            // placeholder: "First Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
             // dependentFields: ["DAILY_AMT"],
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "MIDDLE_NAME",
+            name: "FATHER_MIDDLE_NM",
             label: "Middle Name",
-            placeholder: "Middle Name",
+            // placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "LAST_NAME",
+            name: "FATHER_LAST_NM",
             label: "Last Name",
-            placeholder: "Last Name",
+            // placeholder: "Last Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
         }
     ]
 }
@@ -365,13 +378,16 @@ export const personal_detail_mother_data = {
     fields: [
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "PREFIX",
+            name: "MOTHER_PREFIX_CD",
             label: "Prefix",
-            placeholder: "Prefix",
+            options: () => API.getPMISCData("Salutation"),
+            _optionsKey: "PDMotherSalutation",
+            defaultValue: "Mrs",
+            // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 2, sm:1},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -387,32 +403,32 @@ export const personal_detail_mother_data = {
             render: {
                 componentType: "textField",
             },
-            name: "FIRST_NAME",
+            name: "MOTHER_FIRST_NM",
             label: "First Name",
-            placeholder: "First Name",
+            // placeholder: "First Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
             // dependentFields: ["DAILY_AMT"],
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "MIDDLE_NAME",
+            name: "MOTHER_MIDDLE_NM",
             label: "Middle Name",
-            placeholder: "Middle Name",
+            // placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "LAST_NAME",
+            name: "MOTHER_LAST_NM",
             label: "Last Name",
-            placeholder: "Last Name",
+            // placeholder: "Last Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs: 4, sm:2},
         }
     ]
 }
@@ -463,8 +479,8 @@ export const personal_other_detail_meta_data = {
             render: {
                 componentType: "datePicker",
             },
-            name: "DOB",
-            label: "Date Of Birth",
+            name: "BIRTH_DT",
+            label: "Date of Birth",
             required: true,
             // placeholder: "",
             // type: "datePicker",
@@ -478,7 +494,7 @@ export const personal_other_detail_meta_data = {
                 {label: "Minor", value: "minor"},
                 {label: "Major", value: "major"}
             ],
-            name: "MINOR_MAJOR",
+            name: "LF_NO",
             label: "Minor/Major",
             required: true,
             placeholder: "",
@@ -490,9 +506,10 @@ export const personal_other_detail_meta_data = {
                 componentType: "select",
             },
             options: [
-                {label: "Male", value: "male"},
-                {label: "Female", value: "female"},
-                {label: "Other", value: "other"}
+                {label: "MALE", value: "M"},
+                {label: "FEMALE", value: "F"},
+                {label: "OTHER", value: "O"},
+                {label: "TRANSGENDER", value: "T"},
             ],
             name: "GENDER",
             label: "Gender",
@@ -503,44 +520,52 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "BLOOD_GROUP",
+            name: "BLOOD_GRP_CD",
             label: "Blood Group",
             placeholder: "",
+            options: () => API.getPMISCData("Blood"),
+            _optionsKey: "bloodGroup",
             type: "text",
             GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "MARITAL_STATUS",
             label: "Marital Status",
             required: true,
             placeholder: "",
+            options: () => API.getPMISCData("Marital"),
+            _optionsKey: "maritalStatus",
             type: "text",
             GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "NATIONALITY",
             label: "Nationality",
             required: true,
             placeholder: "",
+            options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "countryOptions",
             type: "text",
             GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "RESI_STATUS",
+            name: "RESIDENCE_STATUS",
             label: "Resi. Status",
             required: true,
             placeholder: "",
+            options: () => API.getPMISCData("RESIDE_STATUS"),
+            _optionsKey: "ResisdenceStatus",
             type: "text",
             GridProps: {xs: 4, sm:3},
         },
@@ -548,7 +573,7 @@ export const personal_other_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "OCCUPATION",
+            name: "TRADE_CD",
             label: "Occupation",
             required: true,
             placeholder: "",
@@ -557,32 +582,38 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "GROUP",
+            name: "GROUP_CD",
             label: "Group",
             placeholder: "",
+            options: (dependentValue, formState, _, authState) => API.getCustomerGroupOptions(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "GroupOptions",
             type: "text",
             GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "RELIGION",
+            name: "COMMU_CD",
             label: "Religion",
             required: true,
+            options: (dependentValue, formState, _, authState) => API.getCommunityList(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "GroupOptions",
             placeholder: "",
             type: "text",
             GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "CASTE",
+            name: "CASTE_CD",
             label: "Caste",
             placeholder: "",
+            options: () => API.getPMISCData("CASTE_CD"),
+            _optionsKey: "casteCD",
             type: "text",
             GridProps: {xs: 4, sm:3},
         },
@@ -600,6 +631,746 @@ export const personal_other_detail_meta_data = {
     ]
 }
 
+export const entity_detail_meta_data = {
+    form: {
+        name: "personal_detail_prefix_details_form",
+        label: "", 
+        resetFieldOnUnmount: false,
+        validationRun: "onBlur", 
+        submitAction: "home",  
+        render: {
+            ordering: "auto",
+            renderType: "simple",
+            gridConfig: {
+            item: {
+                xs: 12,
+                sm: 6,
+            },
+            container: {
+                direction: "row",
+                spacing: 3,
+            },
+            },
+        },
+        componentProps: {
+            textField: {
+                fullWidth: true,
+            },
+            select: {
+                fullWidth: true,
+            },
+            datePicker: {
+                fullWidth: true,
+            },
+            numberFormat: {
+                fullWidth: true,
+            },
+            inputMask: {
+                fullWidth: true,
+            },
+            datetimePicker: {
+                fullWidth: true,
+            },
+            divider: {
+                fullWidth: true,
+            }
+        },
+    },
+    fields: [
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "NAME",
+            label: "Name",
+            required: true,
+            // placeholder: "Prefix",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "RELIGION",
+            label: "Religion",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+            // dependentFields: ["DAILY_AMT"],
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "CASTE",
+            label: "Caste",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+            // dependentFields: ["DAILY_AMT"],
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "OCCUPATION",
+            label: "OCCUPATION",
+            required: true,
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+            // dependentFields: ["DAILY_AMT"],
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "SUB_CUSTOMER_TYPE",
+            label: "Sub Customer Type",
+            // placeholder: "Middle Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "GROUP",
+            label: "Group",
+            // placeholder: "Last Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "RATING",
+            label: "Rating",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "INCEPTION_DATE",
+            label: "Inception Date",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            name: "EXPLICIT_TDS",
+            label: "Explicit TDS",
+            options: [
+                {label: "YES", value: "YES"},
+                {label: "NO", value: "NO"},
+            ],
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "GSTIN",
+            label: "GSTIN",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "KYC_REVISED_DT",
+            label: "KYC Revised Dt.",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            name: "NATIONALITY",
+            label: "Nationality",
+            options: [
+                {label: "Option1", value: "Option1"},
+                {label: "Option2", value: "Option2"},
+            ],
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "RESI_STATUS",
+            label: "Resi. Status",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+    ]
+}
+
+export const entity_registration_detail_meta_data = {
+    form: {
+        name: "personal_detail_prefix_details_form",
+        label: "", 
+        resetFieldOnUnmount: false,
+        validationRun: "onBlur", 
+        submitAction: "home",  
+        render: {
+            ordering: "auto",
+            renderType: "simple",
+            gridConfig: {
+            item: {
+                xs: 12,
+                sm: 6,
+            },
+            container: {
+                direction: "row",
+                spacing: 3,
+            },
+            },
+        },
+        componentProps: {
+            textField: {
+                fullWidth: true,
+            },
+            select: {
+                fullWidth: true,
+            },
+            datePicker: {
+                fullWidth: true,
+            },
+            numberFormat: {
+                fullWidth: true,
+            },
+            inputMask: {
+                fullWidth: true,
+            },
+            datetimePicker: {
+                fullWidth: true,
+            },
+            divider: {
+                fullWidth: true,
+            }
+        },
+    },
+    fields: [
+        {
+            render: {
+                componentType: "select",
+            },
+            name: "DECLARATION_RECEIVED",
+            label: "Declaration Received",
+            options: [
+                {label: "YES", value: "YES"},
+                {label: "NO", value: "NO"},
+            ],
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "DECLARATION_RECEIVED_DT",
+            label: "Declaratin Received Date",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "GIIN",
+            label: "GIIN",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "DATE_OF_INCORPORATION",
+            label: "Date of Incorporation",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "PLACE_OF_INCORPORATION",
+            label: "Place of Incorporation",
+            required: true,
+            // placeholder: "Prefix",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },        
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "TIN",
+            label: "TIN",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "COUNTRY_OF_INCORPORATION",
+            label: "Country of Incorporation",
+            required: true,
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "TIN_ISSUING_COUNTRY",
+            label: "TIN Issuing Country",
+            required: true,
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "CCIL_ID",
+            label: "CCIL ID",
+            // placeholder: "Middle Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "LEI_NO",
+            label: "LEI No.",
+            // placeholder: "Last Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "LEI_EXPIRY_DT",
+            label: "LEI Expiry Date",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        // {
+        //     render: {
+        //         componentType: "select",
+        //     },
+        //     name: "EXPLICIT_TDS",
+        //     label: "Explicit TDS",
+        //     options: [
+        //         {label: "YES", value: "YES"},
+        //         {label: "NO", value: "NO"},
+        //     ],
+        //     placeholder: "",
+        //     type: "text",
+        //     GridProps: {xs:4, sm:3},
+        // },
+    ]
+}
+
+export const entity_income_detail_meta_data = {
+    form: {
+        name: "personal_detail_prefix_details_form",
+        label: "", 
+        resetFieldOnUnmount: false,
+        validationRun: "onBlur", 
+        submitAction: "home",  
+        render: {
+            ordering: "auto",
+            renderType: "simple",
+            gridConfig: {
+            item: {
+                xs: 12,
+                sm: 6,
+            },
+            container: {
+                direction: "row",
+                spacing: 3,
+            },
+            },
+        },
+        componentProps: {
+            textField: {
+                fullWidth: true,
+            },
+            select: {
+                fullWidth: true,
+            },
+            datePicker: {
+                fullWidth: true,
+            },
+            numberFormat: {
+                fullWidth: true,
+            },
+            inputMask: {
+                fullWidth: true,
+            },
+            datetimePicker: {
+                fullWidth: true,
+            },
+            divider: {
+                fullWidth: true,
+            }
+        },
+    },
+    fields: [
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "ANNUAL_INCOME",
+            label: "Annual Income",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "TURNOVER",
+            label: "Turnover",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "OTHER_INCOME",
+            label: "Other Income",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "SOURCE_OF_INCOME",
+            label: "Source of Income",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "IMPORT_EXPORT_CODE",
+            label: "Import Export Code",
+            // placeholder: "Last Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "THRESHOLD_LIMIT",
+            label: "Threshold Limit",
+            // placeholder: "Last Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+    ]
+}
+export const entity_exposure_detail_meta_data = {
+    form: {
+        name: "personal_detail_prefix_details_form",
+        label: "", 
+        resetFieldOnUnmount: false,
+        validationRun: "onBlur", 
+        submitAction: "home",  
+        render: {
+            ordering: "auto",
+            renderType: "simple",
+            gridConfig: {
+            item: {
+                xs: 12,
+                sm: 6,
+            },
+            container: {
+                direction: "row",
+                spacing: 3,
+            },
+            },
+        },
+        componentProps: {
+            textField: {
+                fullWidth: true,
+            },
+            select: {
+                fullWidth: true,
+            },
+            datePicker: {
+                fullWidth: true,
+            },
+            numberFormat: {
+                fullWidth: true,
+            },
+            inputMask: {
+                fullWidth: true,
+            },
+            datetimePicker: {
+                fullWidth: true,
+            },
+            divider: {
+                fullWidth: true,
+            }
+        },
+    },
+    fields: [
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "NON_FUNDED",
+            label: "Non Funded",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "FUNDED",
+            label: "Funded",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+    ]
+}
+export const entity_company_info_meta_data = {
+    form: {
+        name: "personal_detail_prefix_details_form",
+        label: "", 
+        resetFieldOnUnmount: false,
+        validationRun: "onBlur", 
+        submitAction: "home",  
+        render: {
+            ordering: "auto",
+            renderType: "simple",
+            gridConfig: {
+            item: {
+                xs: 12,
+                sm: 6,
+            },
+            container: {
+                direction: "row",
+                spacing: 3,
+            },
+            },
+        },
+        componentProps: {
+            textField: {
+                fullWidth: true,
+            },
+            select: {
+                fullWidth: true,
+            },
+            datePicker: {
+                fullWidth: true,
+            },
+            numberFormat: {
+                fullWidth: true,
+            },
+            inputMask: {
+                fullWidth: true,
+            },
+            datetimePicker: {
+                fullWidth: true,
+            },
+            divider: {
+                fullWidth: true,
+            }
+        },
+    },
+    fields: [
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "COMMENCEMENT_DT",
+            label: "Commencement Date",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            name: "TYPE",
+            label: "Type",
+            options: [
+                {label: "Type1", value: "Type1"},
+                {label: "Type2", value: "Type2"},
+            ],
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "REG_NO",
+            label: "Reg. No.",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "SALES_TAX_NO",
+            label: "Sales Tax No.",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "EXCISE_NO",
+            label: "Excise No.",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "IT_NO",
+            label: "IT No.",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "TAN_NO",
+            label: "TAN No.",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "CIN_NO",
+            label: "CIN No.",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "DATE_OF_LIQUIDATION",
+            label: "Date of Liquidation",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "WEBSITE",
+            label: "Website",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "SIZE",
+            label: "Size",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "CEO_NAME",
+            label: "CEO Name",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "STAFF_STRENGTH",
+            label: "Staff Strength",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "CIBIL_MSME_RANK",
+            label: "CIBIL MSME Rank",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs:4, sm:2},
+        },
+    ]
+}
 
 
 // GRID METADATA
