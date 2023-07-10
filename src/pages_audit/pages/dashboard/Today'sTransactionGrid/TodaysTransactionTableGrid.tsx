@@ -45,6 +45,9 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
   const rejectedCount = mutation?.data?.filter(
     (item) => item.CONFIRM === "N"
   ).length;
+  const pendingCount = mutation?.data?.filter(
+    (item) => item.CONFIRM === "0"
+  ).length;
   // useEffect(() => {
   //   setEnableClick(mutation?.data?.map((item) => item?.TYPE_CD === "3"));
   // }, [enableClick]);
@@ -99,6 +102,9 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
         </Typography>
         <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
           Rejected Count :{rejectedCount}
+        </Typography>
+        <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+          Pending Count : {pendingCount}
         </Typography>
       </Grid>
       {dialogOpen && (

@@ -17,6 +17,12 @@
 .emp-id {
   margin: 8px 0px;
   font-weight: 600;
+  font-size: 18px;
+  line-height: 1em;
+}
+
+.bank-name {
+  word-wrap: break-word;
 }
 
 .name-heading {
@@ -30,13 +36,12 @@
 
   font-weight: 700;
 }
-
-/* .bank-name {
+/* 
+.bank-name {
   overflow: hidden;
   text-overflow: ellipsis;
-} */
-
-/* .bank-name-container {
+}
+.bank-name-container {
   overflow: hidden;
 }
 

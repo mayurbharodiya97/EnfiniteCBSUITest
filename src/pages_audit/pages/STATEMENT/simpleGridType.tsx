@@ -1,6 +1,6 @@
 import { Grid, Typography } from "@mui/material";
 
-const AccountStatementDetails = ({ collapseableBox, statementData }) => {
+const SimpleGridType = ({ data }) => {
   const typographyStyle = [
     {
       padding: " 06px",
@@ -9,9 +9,16 @@ const AccountStatementDetails = ({ collapseableBox, statementData }) => {
     },
   ];
 
+  const collapseableBox = {
+    height: "auto",
+    width: "100%",
+    display: "flex",
+    margin: "10px 0px",
+  };
+
   return (
     <Grid container sx={collapseableBox}>
-      {statementData?.map((item, index) => (
+      {data?.detail?.map((item, index) => (
         <Grid
           key={index}
           item
@@ -53,6 +60,7 @@ const AccountStatementDetails = ({ collapseableBox, statementData }) => {
             </Typography>
             {item.countLabel && (
               <>
+                {" "}
                 <Typography variant="h6" sx={typographyStyle}>
                   {item.countLabel}
                 </Typography>
@@ -68,4 +76,4 @@ const AccountStatementDetails = ({ collapseableBox, statementData }) => {
   );
 };
 
-export default AccountStatementDetails;
+export default SimpleGridType;

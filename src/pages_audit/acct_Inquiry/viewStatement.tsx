@@ -43,8 +43,8 @@ export const ViewStatement = ({ open, onClose, rowsData }) => {
                 handleSubmit(event, "Save");
                 handleStatementClick();
               }}
-              disabled={isSubmitting}
-              endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+              // disabled={isSubmitting}
+              // endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
               color={"primary"}
             >
               Ok
