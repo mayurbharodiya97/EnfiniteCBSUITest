@@ -71,6 +71,7 @@ export interface GridConfigType {
   allowColumnHiding?: boolean;
   isCusrsorFocused?: boolean;
   hiddenFlag?: string;
+  searchPlaceholder?: string;
 }
 
 export interface GridMetaDataType {

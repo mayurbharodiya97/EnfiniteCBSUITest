@@ -53,12 +53,13 @@ export const TableHeaderToolbar = forwardRef<any, any>(
       defaultHiddenColumns,
       allowColumnHiding,
       headerToolbarStyle,
+      searchPlaceholder,
     },
     ref
-  ) => {
-    const { progress, enabled, intervalElapsed, pause, resume } =
+    ) => {
+      const { progress, enabled, intervalElapsed, pause, resume } =
       useAutoRefresh(refetchData, autoRefreshInterval);
-    const classes = useStyles();
+      const classes = useStyles();
     useImperativeHandle(ref, () => ({
       pause: pause,
       resume: resume,
@@ -121,6 +122,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
             preGlobalFilteredRows={preGlobalFilteredRows}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
+            searchPlaceholder={searchPlaceholder}
           />
         )}
         <RenderActions

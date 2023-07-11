@@ -117,6 +117,7 @@ export const FormButton = ({
         color="secondary"
         onClick={ClickEventCall}
         style={{ width: "100%" }}
+        // endIcon={loading ? <CircularProgress size={20} /> : null}
       >
         {label}
       </GradientButton>

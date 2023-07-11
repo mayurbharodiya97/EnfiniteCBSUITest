@@ -25,8 +25,9 @@ export const Quick_View = () => {
     ["GETQUICKACCESSVIEW"],
     () =>
       API.getQuickView({
-        userName: authController?.authState?.user?.name,
-        companyID: authController?.authState?.access_token?.companyID,
+        userID: authController?.authState?.user?.id,
+        branchCode: authController?.authState?.user?.branchCode,
+        companyID: authController?.authState?.companyID,
       })
   );
   const [anchorEl, setAnchorEl] = useState(null);
