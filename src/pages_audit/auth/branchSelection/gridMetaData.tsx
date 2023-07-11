@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const BranchSelectionGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "",
+    gridLabel: "Access Branch List",
     rowIdColumn: "BRANCH_CD",
 
     defaultColumnConfig: {
@@ -17,8 +17,8 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
     disableGroupBy: true,
     enablePagination: false,
     containerHeight: {
-      min: "60vh",
-      max: "60vh",
+      min: "68vh",
+      max: "68vh ",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -45,9 +45,9 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 180,
-      minWidth: 120,
-      maxWidth: 200,
+      width: 200,
+      minWidth: 140,
+      maxWidth: 220,
     },
     {
       accessor: "BRANCH_NM",
@@ -55,9 +55,9 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 260,
-      minWidth: 260,
-      maxWidth: 400,
+      width: 280,
+      minWidth: 280,
+      maxWidth: 420,
     },
     {
       accessor: "STATUS",
@@ -65,9 +65,9 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
       sequence: 3,
       alignment: "left",
       componentType: "default",
-      width: 180,
-      minWidth: 120,
-      maxWidth: 200,
+      width: 200,
+      minWidth: 140,
+      maxWidth: 220,
     },
     {
       accessor: "BEGIN_DATETIME",
@@ -75,9 +75,9 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "left",
       componentType: "default",
-      width: 202,
-      minWidth: 120,
-      maxWidth: 220,
+      width: 222,
+      minWidth: 140,
+      maxWidth: 240,
     },
     {
       accessor: "END_DATETIME",
@@ -85,9 +85,9 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
       sequence: 5,
       alignment: "left",
       componentType: "default",
-      width: 202,
-      minWidth: 120,
-      maxWidth: 220,
+      width: 222,
+      minWidth: 140,
+      maxWidth: 240,
     },
     {
       accessor: "DAYEND_STATUS",

@@ -81,6 +81,7 @@ export const MyAppBar = ({
         companyID: authController?.authState?.access_token?.companyID,
       })
   );
+  ////
   useEffect(() => {
     if (Boolean(data?.[0]?.PROFILE_PHOTO)) {
       let blob = utilFunction.base64toBlob(data?.[0]?.PROFILE_PHOTO);
@@ -127,7 +128,7 @@ export const MyAppBar = ({
         return { ...old, bank: urlObj.current?.bank };
       });
     }
-  }, [data?.[0]?.BANK_LOGO]);
+  }, [data?.[0]?.BANK_LOGO]); ////
 
   const Greetings = () => {
     let hours = new Date().getHours();

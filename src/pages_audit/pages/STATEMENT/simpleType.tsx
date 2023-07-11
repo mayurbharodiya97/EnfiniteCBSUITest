@@ -1,19 +1,9 @@
 import { Divider, Grid, Typography } from "@mui/material";
 
-const AccountDetailsChild = ({
-  collapseableBox,
-  halfMainGrid,
-  childGridFour,
-  typographyGridForLable,
-  typographyLable,
-  colonStyle,
-  childGridEight,
-  typographyForValue,
-  accountDetailsData,
-}) => {
+const SimpleType = ({ data }) => {
   return (
     <Grid container sx={{ marginBottom: "10px" }}>
-      {accountDetailsData?.map((item, index) => (
+      {data?.detail?.map((item, index) => (
         <>
           <Grid
             item
@@ -57,7 +47,7 @@ const AccountDetailsChild = ({
             </Grid>
           </Grid>
 
-          {accountDetailsData?.length === index + 1 && index % 2 == 0 ? (
+          {data?.detail?.length === index + 1 && index % 2 == 0 ? (
             <Grid
               item
               xs={0}
@@ -72,12 +62,12 @@ const AccountDetailsChild = ({
             <></>
           )}
           {/* <Grid item>
-          <Divider />
-        </Grid> */}
+            <Divider />
+          </Grid> */}
         </>
       ))}
     </Grid>
   );
 };
 
-export default AccountDetailsChild;
+export default SimpleType;
