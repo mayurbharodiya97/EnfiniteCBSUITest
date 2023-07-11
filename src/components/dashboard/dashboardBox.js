@@ -54,6 +54,7 @@ export const DashboardBox = ({
           borderRadius: "15px",
           border: "0.5px solid #EBEDEE",
           // boxShadow: "none",
+
           boxShadow:
             "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
           // backgroundColor:
@@ -81,7 +82,7 @@ export const DashboardBox = ({
                 // gutterBottom
                 // variant="overline"
                 style={{
-                  color: "#4263C7",
+                  color: "var(--theme-color3)",
                   fontSize: "23px",
                   fontWeight: "500",
                   letterSpacing: "0.01em",
@@ -93,7 +94,7 @@ export const DashboardBox = ({
                 variant="h3"
                 style={{
                   color: "#949597",
-                  fontSize: "15px",
+                  fontSize: "13px",
                   fontWeight: "500",
                   marginTop: "5px",
                 }}
@@ -127,6 +128,7 @@ export const DashboardBox = ({
           </Grid>
         </CardContent>
       </Card>
+
       {result.isError ? (
         <Dialog
           open={showMore}

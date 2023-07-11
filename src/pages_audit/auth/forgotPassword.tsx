@@ -176,7 +176,7 @@ export const ForgotPasswordController = () => {
           dispath({
             type: "verifyUserNameandMobileNoSuccess",
             payload: {
-              requestCd: String(resdata?.REQUEST_CD ?? ""),
+              requestCd: String(resdata?.TRAN_CD ?? ""),
               username: data?.userName,
               authType: resdata?.AUTH_TYPE ?? "O",
             },

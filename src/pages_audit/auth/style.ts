@@ -94,7 +94,7 @@ export const useStyles = makeStyles((theme: any) => ({
   otpinputpadding: {
     "& input": {
       marginRight: "25px !important",
-      border: "1.42444px solid #4263C7",
+      border: "1.42444px solid var(--theme-color3)",
       borderRadius: "10px",
       width: "45px !important",
       height: "45px !important",
@@ -121,7 +121,7 @@ export const useStyles = makeStyles((theme: any) => ({
     lineHeight: "33px",
   },
   resendOTPalign: {
-    color: "#4263C7",
+    color: "var(--theme-color3)",
     fonWeight: "400",
     fontSize: "17px",
     lineHeight: "33px",
@@ -131,11 +131,11 @@ export const useStyles = makeStyles((theme: any) => ({
   },
   resendbtnLink: {
     textDecoration: "underline",
-    color: "blue",
+    color: "var(--theme-color3)",
     cursor: "pointer",
     "&:hover": {
       textDecoration: "underline",
-      color: "blue",
+      color: "var(--theme-color3)",
     },
   },
   dialogTitleClass: {

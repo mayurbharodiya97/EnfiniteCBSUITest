@@ -131,22 +131,22 @@ export const MessageDescriptionMetadata = {
     //   },
     // },
 
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "PID_DESCRIPTION",
-      label: "Purpose",
-      isReadOnly: true,
-      placeholder: "",
-      type: "text",
-      __EDIT__: { isReadOnly: true },
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
-    },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "PID_DESCRIPTION",
+    //   label: "Purpose",
+    //   isReadOnly: true,
+    //   placeholder: "",
+    //   type: "text",
+    //   __EDIT__: { isReadOnly: true },
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 12,
+    //     sm: 12,
+    //   },
+    // },
     // {
     //   render: { componentType: "checkbox" },
     //   name: "ACTIVE",

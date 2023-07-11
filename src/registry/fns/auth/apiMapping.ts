@@ -135,6 +135,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETECIRCULARDETAIL",
     packageName: "",
   },
+  DOTNOTESDML: {
+    url: "dashboardServiceAPI/DOTNOTESDML",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

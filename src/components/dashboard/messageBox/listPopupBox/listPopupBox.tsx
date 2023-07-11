@@ -2,7 +2,7 @@ import { useRef, useEffect, useContext, useState, useMemo } from "react";
 import { makeStyles, styled } from "@mui/styles";
 import { ClearCacheContext, queryClient } from "cache";
 import { useQuery } from "react-query";
-import * as API from "../api";
+import * as API from "../../api";
 import { AppBar, Dialog, Theme, Toolbar, Typography } from "@mui/material";
 import { useDialogStyles } from "components/detailPopupGridData";
 import { GradientButton } from "components/styledComponent/button";
