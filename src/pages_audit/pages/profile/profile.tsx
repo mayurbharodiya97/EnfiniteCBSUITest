@@ -55,6 +55,42 @@ import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
 import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAccessibilityOutlined";
 import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
+import About from "./about";
+import { ActionTypes } from "components/dataTable";
+import TotpEnbaledDisabled from "./totp/totp-enabled-disable";
+import { CreateDetailsRequestData } from "components/utils";
+import QrCode2Icon from "@mui/icons-material/QrCode2";
+// interface notificationDataType {
+//   activityID: string;
+//   readFlag: string;
+// }
+
+// const notificationDataWrapperFn =
+//   (notificationData) =>
+//   async ({ activityID, readFlag }: notificationDataType) => {
+//     return notificationData({ activityID, readFlag });
+//   };
+
+const Dashactions: ActionTypes[] = [
+  {
+    actionName: "save",
+    actionLabel: "save",
+    multiple: false,
+    rowDoubleClick: false,
+    actionTextColor: "var(--theme-color2)",
+    actionBackground: "var(--theme-color3)",
+  },
+];
+const Quickactions: ActionTypes[] = [
+  {
+    actionName: "save",
+    actionLabel: "save",
+    multiple: false,
+    rowDoubleClick: false,
+    actionTextColor: "var(--theme-color2)",
+    actionBackground: "var(--theme-color3)",
+  },
+];
 import { useTranslation } from "react-i18next";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
@@ -86,7 +122,6 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
-
   const userActivityData = useQuery<any, any, any>(["GETUSERACTIVITY"], () =>
     API.getUserLoginDetails({ userID })
   );

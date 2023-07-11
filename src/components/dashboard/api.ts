@@ -37,6 +37,8 @@ export const getDashboardMessageBoxData = async ({
     apiReq = {
       USER_NAME: userID,
       // USER_NAME: "ajayj",
+      USER_NAME: userID,
+      // USER_NAME: "ajayj",
     };
   } else if (screenFlag === "Tips") {
     apiURL = "GETTIPSDETAILS";
@@ -48,7 +50,7 @@ export const getDashboardMessageBoxData = async ({
   } else if (screenFlag === "Notes") {
     apiReq = {
       USER_NAME: userID,
-      // USER_NAME: "sudhanshus",
+      // USER_NAME: "brij001",
     };
     apiURL = "GETNOTESDETAILSELECT";
   } else if (screenFlag === "Alert") {

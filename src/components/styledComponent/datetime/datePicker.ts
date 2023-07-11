@@ -7,5 +7,4 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { withStyles } from "@mui/styles";
 
 const StyledKeyboardDatePicker: any = withStyles(styles)(DesktopDatePicker);
-
 export default StyledKeyboardDatePicker;

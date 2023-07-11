@@ -68,12 +68,17 @@ const GeneralAPISDK = () => {
     let titleText = document.title;
     document.title = titleText.split(" - ")[0] + " - " + text;
   };
+
+  const getCustType = () => {
+    console.log("changed...")
+  }
   
   return {
     GetMiscValue,
     getValidateValue,
     getTranslateDataFromGoole,
     setDocumentName,
+    getCustType,
   };
 };
 

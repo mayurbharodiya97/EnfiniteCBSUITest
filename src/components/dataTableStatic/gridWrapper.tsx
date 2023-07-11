@@ -329,13 +329,13 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         isNewRowStyle={isNewRowStyle}
         defaultSelectedRowId={defaultSelectedRowId}
         searchPlaceholder={metaData.gridConfig?.searchPlaceholder ?? "records"}
-        />
-        );
-      }
-      );
-      
-      GridWrapper.displayName = "GridWrapper";
-      
+      />
+    );
+  }
+);
+
+GridWrapper.displayName = "GridWrapper";
+
 const transformMetaData = ({
   metaData: freshMetaData,
   actions,
@@ -350,7 +350,10 @@ const transformMetaData = ({
   columns = attachYupSchemaValidator(columns);
   columns = attachCellComponentsToMetaData(columns);
   columns = attachAlignmentProps(columns);
-
+  // for language transletion code
+  columns = columns.map((item) => {
+    return { ...item, columnName: lanTranstlet(item.columnName) };
+  });
   //call this function after attaching yup schema and methods to metaData
   columns = attachcombinedValidationFns(columns);
   columns = sortColumnsBySequence(columns);

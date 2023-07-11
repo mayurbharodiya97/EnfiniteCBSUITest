@@ -52,6 +52,7 @@ export const FilterFormComponents = ({
   isDisplayOnly,
   onAction,
   loading,
+  propStyles
 }) => {
   const classes = useStyles();
   const inputButtonRef = useRef<any>(null);
@@ -68,7 +69,7 @@ export const FilterFormComponents = ({
       if (Boolean(item.dependFields) && Array.isArray(item.dependFields)) {
         item.dependFields.forEach((itemdepend) => {
           if (Boolean(dependData[itemdepend])) {
-            dependData[itemdepend].put(item.name);
+            dependData[itemdepend].push(item.name);
           } else {
             dependData[itemdepend] = [item.name];
           }
@@ -245,17 +246,20 @@ export const FilterFormComponents = ({
         style={{
           width: "100%",
         }}
+        sx={propStyles.paperStyle}
       >
         {hideHeader ? null : (
           <Toolbar
             className={classes.root}
             variant={dense ? "dense" : "regular"}
+            sx={propStyles.toolbarStyles}
           >
             <Typography
               className={classes.title}
               color="inherit"
               variant={"h6"}
               component="div"
+              sx={propStyles.titleStyle}
             >
               {title}
             </Typography>
@@ -264,6 +268,7 @@ export const FilterFormComponents = ({
                 visibleColumns={visibleColumns}
                 defaultHiddenColumns={[]}
                 classes={classes}
+                IconButtonStyle={propStyles.IconButtonStyle}
               />
             ) : null}
           </Toolbar>

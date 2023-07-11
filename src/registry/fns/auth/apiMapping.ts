@@ -59,6 +59,50 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/BANKPROFILEPICK",
     packageName: "",
   },
+  CATEGORYNAME: {
+    url: "/customerServiceAPI/CATEGORYNAME",
+    packageName: "",
+  },
+  GETAREA: {
+    url: "/customerServiceAPI/GETAREA",
+    packageName: "",
+  },
+  GETCUSTOMERDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTOMERDTL",
+    packageName: "",
+  },
+  GETCIFCATEG: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCIFCATEG",
+    packageName: "",
+  },
+  GETCIFTABDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCIFTABDTL",
+    packageName: "",
+  },
+  GETPMISCDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPMISCDATA",
+    packageName: "",
+  },
+  GETCOUNTRYLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOUNTRYLIST",
+    packageName: "",
+  },
+  GETCUSTGROUPLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTGROUPLIST",
+    packageName: "",
+  },
+  GETCUSTCOMMULIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTCOMMULIST",
+    packageName: "",
+  },
+  CUSTOMERDETAILS: {
+    url: "/customerServiceAPI/CUSTOMERDETAILS",
+    packageName: "",
+  },
+  GETBANKIMAGEANDPROFILEPIC: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
+    packageName: "",
+  },
   GETQUICKACCESSVIEW: {
     url: "dashboardServiceAPI/GETQUICKACCESSVIEW",
     packageName: "",
@@ -165,6 +209,18 @@ export const ActionWiseAPIConfiguration = {
   },
   DOTNOTESDML: {
     url: "dashboardServiceAPI/DOTNOTESDML",
+    packageName: "",
+  },
+  GETPARENTAREALIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPARENTAREALIST",
+    packageName: "",
+  },
+  GETAREALIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREALIST",
+    packageName: "",
+  },
+  GETSEARCHUSERDATA: {
+    url: "/customerServiceAPI/GETSEARCHUSERDATA",
     packageName: "",
   },
 };
