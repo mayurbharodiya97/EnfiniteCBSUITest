@@ -489,7 +489,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "QuickView",
-    rowIdColumn: "CUST_ID",
+    rowIdColumn: "ID",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -562,7 +562,7 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "DashboardDataBoxes",
-    rowIdColumn: "CUST_ID",
+    rowIdColumn: "ID",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,

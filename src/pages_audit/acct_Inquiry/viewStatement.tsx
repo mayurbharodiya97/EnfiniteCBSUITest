@@ -31,7 +31,7 @@ export const ViewStatement = ({ open, onClose, rowsData }) => {
       maxWidth={"sm"}
     >
       <FormWrapper
-        key={`ViewStatement` + count}
+        key={`ViewStatement`}
         metaData={PassbookStatement as MetaDataType}
         initialValues={rowsData?.[0]?.data as InitialValuesType}
         //   onSubmitHandler={onSubmitHandler}

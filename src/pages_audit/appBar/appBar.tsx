@@ -33,6 +33,7 @@ import { utilFunction } from "components/utils";
 import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
+import { useTranslation } from "react-i18next";
 
 export const MyAppBar = ({
   handleDrawerOpen,

@@ -351,9 +351,9 @@ const transformMetaData = ({
   columns = attachCellComponentsToMetaData(columns);
   columns = attachAlignmentProps(columns);
   // for language transletion code
-  columns = columns.map((item) => {
-    return { ...item, columnName: lanTranstlet(item.columnName) };
-  });
+  // columns = columns.map((item) => {
+  //   return { ...item, columnName: lanTranstlet(item.columnName) };
+  // });
   //call this function after attaching yup schema and methods to metaData
   columns = attachcombinedValidationFns(columns);
   columns = sortColumnsBySequence(columns);

@@ -91,7 +91,6 @@ const Quickactions: ActionTypes[] = [
     actionBackground: "var(--theme-color3)",
   },
 ];
-import { useTranslation } from "react-i18next";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
@@ -108,7 +107,7 @@ export const Profile = () => {
   const [quickViewData, setQuickViewData] = useState<any>([]);
   const [showTOTP, setshowTOTP] = useState(false);
   const [mode, setMode] = useState<string>("userLogin");
-  const { t } = useTranslation();
+  // const [girdData, setGridData] = useState<any>();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -345,7 +344,7 @@ export const Profile = () => {
                               fontWeight: "400",
                             }}
                           >
-                            {t("profile.UpdatePhoto")}
+                            Update Photo
                           </Typography>
                           <input
                             name="fileselect"
@@ -396,7 +395,7 @@ export const Profile = () => {
                                 fontWeight: 500,
                               }}
                             >
-                              {t("profile.MyProfile")}
+                              My Profile
                             </Typography>
 
                             <Box sx={{ flexGrow: 1 }}></Box>
@@ -457,15 +456,13 @@ export const Profile = () => {
                         </Grid>
                         {/* <Grid item xs={4}>
                           <Typography>
-                            {t("profile.MobileNo")} :-{" "}
-                            {queryData?.data?.MOBILE_NUMBER}
+                            Mobile No. :- {queryData?.data?.MOBILE_NUMBER}
                           </Typography>
                           <Typography>
-                            {t("profile.EmailId")} :-{" "}
-                            {queryData?.data?.EMAIL_ID}
+                            User-Id :- {queryData?.data?.USER_ID}
                           </Typography>
-                          <Typography>{t("profile.About")} :- </Typography>
-                        </Grid>
+                          <Typography>About :- </Typography>
+                        </Grid> */}
                       </Grid>
                       <Box sx={{ width: "100%", marginTop: "auto" }}>
                         <Tabs
@@ -473,7 +470,7 @@ export const Profile = () => {
                             "& .MuiTabs-fixed": {
                               display: "flex",
 
-                              // justifyContent: "flex-end",
+                              justifyContent: "flex-end",
                             },
                             "& .Mui-selected": {
                               color: "var(--theme-color1)",
@@ -493,7 +490,7 @@ export const Profile = () => {
                         >
                           <Tab
                             value="one"
-                            label={t("profile.UserProfile")}
+                            label="User Profile"
                             icon={<AccountCircleOutlinedIcon />}
                             iconPosition="start"
                             // onClick={moveToUserDetail}
@@ -503,7 +500,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="two"
-                            label={t("profile.AllowedAccess")}
+                            label="Allowed Access"
                             icon={<HowToRegOutlinedIcon />}
                             iconPosition="start"
                             // onClick={moveToUserDetail}
@@ -513,7 +510,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="three"
-                            label={t("profile.ActivityDetail")}
+                            label="Activity Detail"
                             icon={<ArticleOutlinedIcon />}
                             iconPosition="start"
                             // onClick={() => {
@@ -526,7 +523,7 @@ export const Profile = () => {
 
                           <Tab
                             value="four"
-                            label={t("profile.ChangePassword")}
+                            label="Change Password"
                             icon={<LockResetOutlinedIcon />}
                             iconPosition="start"
                             onClick={() => {
@@ -536,7 +533,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="five"
-                            label={t("profile.Personalizedashboard")}
+                            label="Personalize dashboard"
                             icon={<SettingsAccessibilityOutlinedIcon />}
                             iconPosition="start"
                             onClick={() => {

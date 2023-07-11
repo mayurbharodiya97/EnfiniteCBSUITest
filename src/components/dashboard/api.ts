@@ -37,8 +37,6 @@ export const getDashboardMessageBoxData = async ({
     apiReq = {
       USER_NAME: userID,
       // USER_NAME: "ajayj",
-      USER_NAME: userID,
-      // USER_NAME: "ajayj",
     };
   } else if (screenFlag === "Tips") {
     apiURL = "GETTIPSDETAILS";
