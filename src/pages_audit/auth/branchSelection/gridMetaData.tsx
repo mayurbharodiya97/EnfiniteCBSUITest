@@ -4,6 +4,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
     dense: true,
     gridLabel: "Access Branch List",
     rowIdColumn: "BRANCH_CD",
+    searchPlaceholder: "branches",
 
     defaultColumnConfig: {
       width: 400,

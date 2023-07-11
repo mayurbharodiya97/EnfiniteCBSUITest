@@ -6,8 +6,8 @@ const GradientButton = withStyles({
     background: "var(--theme-color3)",
     border: 0,
     //Comment By Bhavyata to Change color on OTP verify screen.
-    color: "#fff !important",
-    // color: "#fff",
+    // color: "#fff !important",
+    color: "#fff",
     fontWeight: 700,
     minWidth: "80px",
     letterSpacing: "0.02857em",
