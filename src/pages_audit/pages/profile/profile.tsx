@@ -59,6 +59,7 @@ import { useTranslation } from "react-i18next";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
+  const myGridQuickRef = useRef<any>(null);
   const userID = authState?.user?.id;
   const urlObj = useRef<any>(null);
   const fileUploadControl = useRef<any | null>(null);
@@ -67,6 +68,9 @@ export const Profile = () => {
   const [filesdata, setFilesData] = useState<any>([]);
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
   const [value, setValue] = useState("one");
+  const [dashBoxData, setDashBoxData] = useState<any>([]);
+  const [quickViewData, setQuickViewData] = useState<any>([]);
+  const [showTOTP, setshowTOTP] = useState(false);
   const [mode, setMode] = useState<string>("userLogin");
   const { t } = useTranslation();
   const handleChange = (event, newValue) => {
@@ -92,20 +96,76 @@ export const Profile = () => {
   const userAccessType = useQuery<any, any, any>(["GETUSERACESSTYPE"], () =>
     API.getUserAccessType({ userID })
   );
-  const quickView = useQuery<any, any, any>(["GETUSRQUICKVIEW"], () =>
+  const quickViewUsrData = useQuery<any, any, any>(["GETUSRQUICKVIEW"], () =>
     API.getquickView({ userID, COMP_CD: authState?.companyID ?? "" })
   );
-  // const dashboxData = useQuery<any, any, any>(["GETDASHBOX"], () =>
-  //   API.getdashUserboxData({ userID, COMP_CD: authState?.companyID ?? "" })
-  // );
-  // const quickViewList = useQuery<any, any, any>(["GETUSRDOCLIST"], () =>
-  //   API.getquickViewList({ userID, COMP_CD: authState?.companyID ?? "" })
-  // );
-  // console.log("<<quickViewList", quickViewList.data);
   const dashboxUserData = useQuery<any, any, any>(["GETUSRDASHBOX"], () =>
     API.getdashUserboxData({ userID, COMP_CD: authState?.companyID ?? "" })
   );
-
+  const saveDashData: any = useMutation(API.updateDashboxData, {
+    onSuccess: (data) => {},
+  });
+  const saveQuickData: any = useMutation(API.updateQuickViewData, {
+    onSuccess: (data) => {},
+  });
+  const setCurrentAction = useCallback((data) => {
+    handleSubmit();
+  }, []);
+  const setQuickAction = useCallback((data) => {
+    quickSubmit();
+  }, []);
+  const handleSubmit = async () => {
+    let { hasError, data } = await myGridRef.current?.validate(true);
+    console.log(">>>handleSubmit1", hasError, data);
+    if (hasError === false) {
+      if (data) {
+        // setGridData(data);
+      }
+    } else {
+      let result = myGridRef?.current?.cleanData?.();
+      let finalResult = result.filter((one) => !Boolean(one?._hidden));
+      finalResult = CreateDetailsRequestData(finalResult);
+      if (
+        Array.isArray(finalResult.isUpdatedRow) &&
+        finalResult?.isUpdatedRow?.length === 0
+      ) {
+      } else {
+        let data = {
+          // ...refID,
+          DETAILS_DATA: finalResult,
+        };
+        saveDashData.mutate(data);
+        // onsubmit({ data, mode, setServerError });
+      }
+    }
+  };
+  const quickSubmit = async () => {
+    let { hasError, data } = await myGridQuickRef.current?.validate(true);
+    console.log(">>>quickSubmit1", hasError, data);
+    if (hasError === false) {
+      console.log(">>>quickSubmit2");
+      if (data) {
+        // setGridData(data);
+      }
+    } else {
+      console.log(">>>quickSubmit3");
+      let result = myGridQuickRef?.current?.cleanData?.();
+      let finalResult = result.filter((one) => !Boolean(one?._hidden));
+      finalResult = CreateDetailsRequestData(finalResult);
+      if (
+        Array.isArray(finalResult.isUpdatedRow) &&
+        finalResult?.isUpdatedRow?.length === 0
+      ) {
+      } else {
+        let data = {
+          // ...refID,
+          DETAILS_DATA: finalResult,
+        };
+        saveQuickData.mutate(data);
+        // onsubmit({ data, mode, setServerError });
+      }
+    }
+  };
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
@@ -123,6 +183,12 @@ export const Profile = () => {
       setProfilePictureURL(urlObj.current);
     }
   }, [queryData.data]);
+  useEffect(() => {
+    setQuickViewData(quickViewUsrData.data);
+  }, [quickViewUsrData.data]);
+  useEffect(() => {
+    setDashBoxData(dashboxUserData.data);
+  }, [dashboxUserData.data]);
   const handleProfileUploadClose = (flag, imgdata) => {
     //console.log(Boolean(flag), flag === "Y", typeof imgdata, Boolean(imgdata));
     if (
@@ -155,6 +221,7 @@ export const Profile = () => {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
+
   return (
     <Fragment>
       {queryData.isLoading ||
@@ -297,20 +364,34 @@ export const Profile = () => {
                               {t("profile.MyProfile")}
                             </Typography>
 
-                            <Box sx={{ flexGrow: 1 }} />
+                            <Box sx={{ flexGrow: 1 }}></Box>
                             <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                              <Button
+                                onClick={() => {
+                                  setshowTOTP(true);
+                                }}
+                                color="secondary"
+                                sx={{
+                                  background: "#ECEFF9",
+                                  borderRadius: "7px",
+                                }}
+                              >
+                                {" "}
+                                <QrCode2Icon sx={{ mr: 1 }} />
+                                Enable T-OTP Auth
+                              </Button>
                               <IconButton
                                 aria-label="show 4 new mails"
                                 color="inherit"
                                 sx={{
                                   background: "#ECEFF9",
-                                  borderRadius: "10px",
+                                  borderRadius: "7px",
                                   ml: 2,
                                 }}
                                 onClick={handleNavigate}
                               >
                                 <CancelOutlinedIcon
-                                  color="info"
+                                  color="secondary"
                                   fontSize="medium"
                                 />
                               </IconButton>
@@ -569,32 +650,19 @@ export const Profile = () => {
                                   finalMetaData={
                                     PersonlizationQuickGridMetaData as GridMetaDataType
                                   }
-                                  data={quickView.data || []}
-                                  setData={() => null}
+                                  data={quickViewData ?? []}
+                                  setData={setQuickViewData}
                                   //loading={result.isLoading}
-                                  // actions={Quickactions}
-                                  setAction={() => {}}
+                                  actions={Quickactions}
+                                  controlsAtBottom={true}
+                                  setAction={setQuickAction}
                                   headerToolbarStyle={{
                                     background: "var(--theme-color2)",
                                     color: "black",
                                   }}
                                   // refetchData={() => {}}
-                                  // ref={myGridRef}
+                                  ref={myGridQuickRef}
                                 />
-                                <Button
-                                  sx={{
-                                    backgroundColor: "var(--theme-color3)",
-                                    height: "fit-content",
-                                    width: "6rem",
-                                    // marginLeft: "auto",
-                                    margin: "0px 20px 20px auto",
-                                    "&:hover": {
-                                      backgroundColor: "var(--theme-color3)",
-                                    },
-                                  }}
-                                >
-                                  Save
-                                </Button>
                               </Grid>
                               <Grid
                                 container
@@ -608,39 +676,45 @@ export const Profile = () => {
                                   finalMetaData={
                                     PersonlizationDashboardGridData as GridMetaDataType
                                   }
-                                  data={dashboxUserData.data || []}
+                                  data={dashBoxData ?? []}
                                   headerToolbarStyle={{
                                     background: "var(--theme-color2)",
                                     color: "black",
                                   }}
-                                  setData={() => null}
+                                  setData={setDashBoxData}
                                   //loading={result.isLoading}
-                                  // actions={Dashactions}
-                                  setAction={() => {}}
+                                  actions={Dashactions}
+                                  controlsAtBottom={true}
+                                  setAction={setCurrentAction}
                                   // refetchData={() => {}}
-                                  // ref={myGridRef}
+                                  ref={myGridRef}
                                 />
-                                <Button
-                                  sx={{
-                                    backgroundColor: "var(--theme-color3)",
-                                    height: "fit-content",
-                                    width: "6rem",
-                                    // marginLeft: "auto",
-                                    margin: "0px 20px 20px auto",
-                                    "&:hover": {
-                                      backgroundColor: "var(--theme-color3)",
-                                    },
-                                  }}
-                                >
-                                  Save
-                                </Button>
                               </Grid>
                             </Grid>
                           </>
                         ) : null}
                       </Grid>
                     </Container>
-
+                    {showTOTP ? (
+                      <TotpEnbaledDisabled
+                        open={showTOTP}
+                        onClose={() => setshowTOTP(false)}
+                        // onClose={(isSuccess, isLocked) => {
+                        //   if (isSuccess) {
+                        // setTotpAuthStatus((old) => {
+                        //   if (old === "N") {
+                        //     return "Y";
+                        //   } else {
+                        //     return "N";
+                        //   }
+                        // });
+                        //   }
+                        //   setshowTOTP(false);
+                        // }}
+                        // authFlag={totpAuthStatus === "N" ? "ENABLED" : "DISABLED"}
+                        authFlag="ENABLED"
+                      />
+                    ) : null}
                     {profileUpdate && filesdata.length > 0 ? (
                       <ProfilePhotoUpdate
                         open={profileUpdate}

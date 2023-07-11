@@ -328,13 +328,14 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         onlySingleSelectionAllow={onlySingleSelectionAllow}
         isNewRowStyle={isNewRowStyle}
         defaultSelectedRowId={defaultSelectedRowId}
-      />
-    );
-  }
-);
-
-GridWrapper.displayName = "GridWrapper";
-
+        searchPlaceholder={metaData.gridConfig?.searchPlaceholder ?? "records"}
+        />
+        );
+      }
+      );
+      
+      GridWrapper.displayName = "GridWrapper";
+      
 const transformMetaData = ({
   metaData: freshMetaData,
   actions,

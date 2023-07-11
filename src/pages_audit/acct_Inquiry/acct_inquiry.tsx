@@ -99,6 +99,7 @@ export const Accountinquiry = ({ open, onClose }) => {
       setShowGridData(true);
     } else {
       //@ts-ignore
+      setShowGridData(false);
       endSubmit(true);
       mutation.mutate(data);
     }
@@ -120,6 +121,7 @@ export const Accountinquiry = ({ open, onClose }) => {
           metaData={AccountInquiryMetadata as MetaDataType}
           initialValues={[]}
           onSubmitHandler={onSubmitHandler}
+          // loading={mutation.isLoading}
           formStyle={{
             background: "white",
           }}
@@ -149,6 +151,7 @@ export const Accountinquiry = ({ open, onClose }) => {
             </>
           )}
         </FormWrapper>
+
         <GridWrapper
           key={`customerSearchingGrid`}
           finalMetaData={AccountInquiryGridMetaData as GridMetaDataType}
@@ -157,6 +160,9 @@ export const Accountinquiry = ({ open, onClose }) => {
           loading={mutation.isLoading}
           actions={actions}
           setAction={setCurrentAction}
+          headerToolbarStyle={{
+            fontSize: "1.20rem",
+          }}
           // refetchData={() => {}}
           // ref={myGridRef}
         />

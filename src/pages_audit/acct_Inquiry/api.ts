@@ -29,3 +29,27 @@ export const getAccountInquiry = async (inputdata) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getPassBookTemplate = async () => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPASSBKTEMPL", {
+      COMP_CD: "132 ",
+      BRANCH_CD: "099 ",
+      AS_FLAG: "PASD",
+    });
+  if (status === "0") {
+    // return data;
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...other }) => {
+        return {
+          value: TRAN_CD,
+          label: DESCRIPTION,
+          ...other,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

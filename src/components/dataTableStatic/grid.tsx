@@ -90,10 +90,11 @@ export const DataGrid = ({
   onlySingleSelectionAllow,
   isNewRowStyle,
   defaultSelectedRowId,
+  searchPlaceholder,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
-
+  
   data2 = useMemo(() => DataFilterComponents(filters, data), [filters, data]);
   const classes = useStyles();
   const {
@@ -318,11 +319,12 @@ export const DataGrid = ({
             defaultHiddenColumns={defaultHiddenColumns}
             allowColumnHiding={allowColumnHiding}
             headerToolbarStyle={headerToolbarStyle}
-          />
+            searchPlaceholder={searchPlaceholder}
+            />
         )}
         {Boolean(controlsAtBottom) ? null : (
           <TableActionToolbar
-            dense={dense}
+          dense={dense}
             selectedFlatRows={selectedFlatRows}
             multipleActions={multipleActions}
             singleActions={singleActions}

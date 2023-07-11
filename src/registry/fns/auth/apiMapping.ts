@@ -135,6 +135,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDASHBOX",
     packageName: "",
   },
+  GETBOXDML: {
+    url: "dashboardServiceAPI/GETBOXDML",
+    packageName: "",
+  },
+  GETQUICKVIEWSCREEN: {
+    url: "dashboardServiceAPI/GETQUICKVIEWSCREEN",
+    packageName: "",
+  },
+  GETPASSBKTEMPL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPASSBKTEMPL",
+    packageName: "",
+  },
   FORGOTPASSWORD: {
     url: "/enfinityCommonServiceAPI/FORGOTPASSWORD",
     packageName: "",

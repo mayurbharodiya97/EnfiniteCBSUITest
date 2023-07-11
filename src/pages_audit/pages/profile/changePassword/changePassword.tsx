@@ -10,6 +10,7 @@ import { GradientButton } from "components/styledComponent/button";
 import { DialogActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import SyncLockIcon from "@mui/icons-material/SyncLock";
 
 interface UpdatePasswordFnType {
   data: object;
@@ -87,6 +88,7 @@ export const ChangePassword = ({ onClose, showProfile }) => {
         <DialogActions>
           <GradientButton
             disabled={mutation.isLoading}
+            startIcon={<SyncLockIcon />}
             endIcon={mutation.isLoading ? <CircularProgress size={20} /> : null}
             onClick={(e) => {
               formRef.current?.handleSubmit?.(e);

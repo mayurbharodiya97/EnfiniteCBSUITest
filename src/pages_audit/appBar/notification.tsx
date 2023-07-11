@@ -158,6 +158,7 @@ export const Notification_App = () => {
             <ListItemButton
               sx={{
                 padding: "0px",
+                backgroundColor: index % 2 === 0 ? "#E2ECFD" : "#ffeff3", // Alternating background color
               }}
             >
               <Grid container p={1} spacing={1}>
