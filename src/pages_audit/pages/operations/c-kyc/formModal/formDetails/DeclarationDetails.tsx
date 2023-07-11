@@ -26,7 +26,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Declaration Details</Typography>
                     <IconButton onClick={handleDeclarationExpand}>
                         {!isDeclarationExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>

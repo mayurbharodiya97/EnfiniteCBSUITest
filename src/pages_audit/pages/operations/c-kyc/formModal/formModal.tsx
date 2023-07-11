@@ -232,6 +232,7 @@ export default function FormModal({
     if(value) {
       setCategoryValue(value?.value)
       setConstitutionValue(value?.CONSTITUTION_TYPE)
+      setColTabValue(0)
     } else {
       setColTabValue(false)
       setCategoryValue(null)
@@ -596,9 +597,9 @@ export default function FormModal({
             
 
               <TabPanel value={colTabValue} index={0}>
-                <PersonalDetails 
+                {categoryValue ? <PersonalDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} /> : null}
               </TabPanel>
               <TabPanel value={colTabValue} index={1}>
                 <KYCDetails 

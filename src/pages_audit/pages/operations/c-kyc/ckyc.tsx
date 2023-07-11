@@ -226,7 +226,7 @@ function TabPanel(props: TabPanelProps) {
 export const Ckyc = () => {
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
-  const [colTabValue, setColTabValue] = React.useState<number | boolean>(false);
+  const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
   const [customerCategories, setCustomerCategories] = useState([])
   const [isCustomerData, setIsCustomerData] = useState(true)
   const [isLoadingData, setIsLoadingData] = useState(false)
