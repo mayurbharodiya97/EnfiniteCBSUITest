@@ -15,14 +15,14 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
-    const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(false)
+    const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(true)
     const handleOtherDetailsExpand = () => {
         setIsOtherDetailsExpanded(!isOtherDetailsExpanded)
     }
 
     return (
         <Grid container rowGap={3}>
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details</Typography>
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 

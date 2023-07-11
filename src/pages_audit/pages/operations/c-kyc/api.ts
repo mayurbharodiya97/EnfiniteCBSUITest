@@ -223,3 +223,66 @@ export const getCommunityList = async (COMP_CD, BRANCH_CD) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+export const getParentAreaOptions = async (COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETPARENTAREALIST", {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ P_AREA_NM, P_AREA_CD, ...other }) => {
+          return {
+            ...other,
+            P_AREA_NM: P_AREA_NM, 
+            P_AREA_CD: P_AREA_CD,
+            value: P_AREA_CD,
+            label: P_AREA_NM,
+          };
+        }
+      );
+    }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+export const getSubAreaOptions = async (COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETAREALIST", {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    // let responseData = data;
+    // if (Array.isArray(responseData)) {
+    //   responseData = responseData.map(({ P_AREA_NM, P_AREA_CD, ...other }) => {
+    //       return {
+    //         ...other,
+    //         P_AREA_NM: P_AREA_NM, 
+    //         P_AREA_CD: P_AREA_CD,
+    //         value: P_AREA_CD,
+    //         label: P_AREA_NM,
+    //       };
+    //     }
+    //   );
+    // }
+    // return responseData
+    // console.log('asddsaasddsa', data)
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+export const getRetrieveData = async (SELECT_COLUMN) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETSEARCHUSERDATA", {
+      SELECT_COLUMN: SELECT_COLUMN
+    });
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}

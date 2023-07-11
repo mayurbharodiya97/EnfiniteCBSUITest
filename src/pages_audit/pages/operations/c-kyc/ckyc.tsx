@@ -64,7 +64,8 @@ export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   "& .MuiTabs-flexContainerVertical .MuiButtonBase-root.MuiTab-root": {
     border: `1.4px solid ${theme.palette.grey[600]}`,
     borderRadius: "10px",
-    marginBottom: "10px"
+    marginBottom: "10px",
+    padding: "6px 16px"
   },
   "& .MuiTabs-flexContainerVertical .MuiButtonBase-root.MuiTab-root.Mui-selected": {
     border: `1.4px solid var(--theme-color1)`,

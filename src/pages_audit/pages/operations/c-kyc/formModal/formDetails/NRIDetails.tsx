@@ -8,7 +8,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details</Typography>
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 

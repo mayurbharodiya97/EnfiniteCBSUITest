@@ -413,10 +413,24 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
           render: {
-              componentType: "textField",
+              componentType: "select",
           },
+          options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
+          _optionsKey: "parentAreaList",
+          name: "PAR_AREA_CD",
+          label: "Parent Area",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "select",
+          },
+          options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(authState?.companyID, authState?.user?.branchCode),
+          _optionsKey: "subAreaList",
           name: "AREA_CD",
-          label: "Area",
+          label: "Sub Area",
           placeholder: "",
           type: "text",
           GridProps: {xs: 4, sm:3},

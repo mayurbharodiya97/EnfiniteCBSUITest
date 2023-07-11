@@ -11,13 +11,36 @@ import {
 } from './metadata/kycdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+// import { GridWrapper } from 'components/dataTableStatic/gridWrapper';
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { DocumentGridMetaData } from './metadata/personaldetails';
 
 const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   //  const myGridRef = useRef<any>(null);
-   const [isPoIExpanded, setIsPoIExpanded] = useState(false)
+   const [isPoIExpanded, setIsPoIExpanded] = useState(true)
    const [isPoAExpanded, setIsPoAExpanded] = useState(false)
+
+  const [gridData, setGridData] = useState<any>([
+    {
+        SR_NO: "",
+        document: "",
+        Submit: "",
+        Doc_No :"",
+        valid_till_date: "",
+        entered_date: ""
+    },
+    {
+        SR_NO: "",
+        document: "",
+        Submit: "",
+        Doc_No :"",
+        valid_till_date: "",
+        entered_date: ""
+    },
+  ]);
+
    const handlePoIExpand = () => {
     setIsPoIExpanded(!isPoIExpanded)
    }
@@ -29,7 +52,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography variant={"h6"}>Personal Details</Typography> */}         
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details</Typography>
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -127,7 +150,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 
-            {isCustomerData ? 
+            {(isCustomerData && false) ? 
             <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -140,26 +163,17 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 </Grid>
                 <Grid container item>
                     <Grid item xs={12} sx={{backgroundColor:"#eee"}}>
-                        {/* <FormWrapper 
-                            key={"new-form-in-kyc"}
-                            metaData={personal_other_detail_meta_data as MetaDataType}
-                            formStyle={{}}
-                            hideHeader={true}
-                        /> */}
-                      {/* <GridWrapper
-                        key={`EmailAcctMstGrid`}
-                        finalMetaData={personal_document_details_data as GridMetaDataType}
-                        data={[]}
-                        setData={() => null}
-                        actions={[]}
-                        setAction={() => {}}
-                        refetchData={() => {}}
-                        ref={myGridRef}
-                        // headerToolbarStyle={{
-                        //   background: "var(--theme-color2)",
-                        //   color: "black",
-                        // }}
-                      /> */}
+                        <GridWrapper
+                            key={`idtpChargeConfigGrid`}
+                            finalMetaData={DocumentGridMetaData as GridMetaDataType}
+                            data={gridData}
+                            setData={setGridData}
+                            // loading={isLoading || isFetching}
+                            // actions={actions}
+                            // setAction={setCurrentAction}
+                            // refetchData={() => refetch()}
+                            // ref={myGridRef}
+                        />
                     </Grid>                    
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="300px" width="100%"></Skeleton> : null}

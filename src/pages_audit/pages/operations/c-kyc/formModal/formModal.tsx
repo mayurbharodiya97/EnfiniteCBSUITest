@@ -54,16 +54,17 @@ type Customtabprops = {
 const CustomTab = styled(Tab, {shouldForwardProp: (prop) => prop !== "isSidebarExpanded"})<Customtabprops>(({isSidebarExpanded, theme}) => ({
   minWidth: "60px",
   maxWidth: "250px",
+  alignItems: "flex-start",
   // alignItems: isSidebarExpanded ? "flex-start" : "center",
   ...(isSidebarExpanded ? {
-    alignItems: "flex-start",
+    // alignItems: "flex-start",
     width: "100%", 
-    transition: "width 0.2s ease-out",
+    transition: "width 0.2s ease-in-out",
   } : {
-    alignItems: "center",
-    // minWidth: "60px", 
-    width:"60px", 
-    transition: "width 0.2s ease-out",
+    // alignItems: "center",
+    minWidth: "60px", 
+    width:"auto", 
+    transition: "width 0.2s ease-in-out",
   }),
   [theme.breakpoints.down("md")]: {
     // backgroundColor: "#ddd",
@@ -100,7 +101,7 @@ export const CustomTabLabel = ({IconName, isSidebarExpanded, tabLabel, subtext})
             // color="var(--theme-color)"
           /> */}
       </div>
-      {<div className="toggle_text_container" style={{display: isSidebarExpanded ? "block" : "none", transition: "display 0.4s", transitionDelay: "0.5s"}}>
+      {<div className="toggle_text_container" style={{display: isSidebarExpanded ? "block" : "none", transition: "width 0.4s, display 0.4s", transitionDelay: "0.5s"}}>
         <h4 style={{ margin: 0 }}>{tabLabel}</h4>
         {(subtext.toString().length > 0) && <p style={{ margin: 0 }}>{subtext}</p>}
       </div>}
@@ -371,6 +372,7 @@ export default function FormModal({
               "& .MuiSvgIcon-root": {
                 fontSize: {xs: "1.5rem", md: "1.2rem"},
               },
+              visibility: (tabsApiRes && tabsApiRes.length>0) ? "visible" : "hidden"
               }}
             >                  
               {/* <IconButton color="secondary" onClick={handleSidebarExpansion}
@@ -388,7 +390,7 @@ export default function FormModal({
               {`C-KYC ${entityType == "C" ? "Legal Entity" : "Individual Entity"} Entry`}
             </Typography>
             <Button
-              onClick={handleFormModalClose}
+              // onClick={handleFormModalClose}
               color="primary"
               size="small"
               // disabled 
@@ -398,7 +400,7 @@ export default function FormModal({
               Save as Draft
             </Button>
             <Button
-              onClick={handleFormModalClose}
+              // onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
             >
@@ -424,37 +426,48 @@ export default function FormModal({
               <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
                 {/* common customer fields */}
                 <Grid container columnGap={(theme) => theme.spacing(1)} rowGap={(theme) => theme.spacing(1)} my={1}>
-                  <TextField disabled
-                    id="customer-id"
-                    label="Cust. ID"
-                    size="small"
-                  />
-                  <Autocomplete
-                    disablePortal
-                    id="cust-categories"
-                    options={customerCategories}
-                    onChange={(e,value,r,d) => handleCategoryChange(e, value, r, d)}
-                    getOptionLabel={(option:any) => `${option?.label} - ${option?.CONSTITUTION_NAME}`}
-                    sx={{ width: 400 }}
-                    renderInput={(params) => (
-                      <TextField {...params} 
-                        size="small" 
-                        label="Category - Constitution"
-                        InputProps={{
-                          ...params.InputProps,
-                          startAdornment: (
-                            <>
-                              <InputAdornment position='start'>
-                                <IconButton><RefreshIcon fontSize='small' /></IconButton>
-                              </InputAdornment>
-                              {/* {params.InputProps.startAdornment} */}
-                            </>
-                          )
-                        }}
-                      />
-                    )}
-                    // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
-                  />
+                  <Grid item xs={12} sm={6} md>
+                    <TextField sx={{width: "100%"}} disabled
+                      id="customer-id"
+                      label="Cust. ID"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md>
+                    <TextField sx={{width: "100%"}} disabled
+                      id="req-id"
+                      label="Req. ID"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md>
+                    <Autocomplete sx={{width: "100%", minWidth: 350}} 
+                      disablePortal
+                      id="cust-categories"
+                      options={customerCategories}
+                      onChange={(e,value,r,d) => handleCategoryChange(e, value, r, d)}
+                      getOptionLabel={(option:any) => `${option?.label} - ${option?.CONSTITUTION_NAME}`}
+                      renderInput={(params) => (
+                        <TextField {...params} 
+                          autoFocus={true}
+                          size="small" 
+                          label="Category - Constitution"
+                          InputProps={{
+                            ...params.InputProps,
+                            startAdornment: (
+                              <>
+                                <InputAdornment position='start'>
+                                  <IconButton><RefreshIcon fontSize='small' /></IconButton>
+                                </InputAdornment>
+                                {/* {params.InputProps.startAdornment} */}
+                              </>
+                            )
+                          }}
+                        />
+                      )}
+                      // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
+                    />
+                  </Grid>
 
                   {/* {entityType == "I" && <TextField
                     id="customer-acct-type"
@@ -479,31 +492,34 @@ export default function FormModal({
                       return <MenuItem value={el?.DATA_VALUE}>{el?.DISPLAY_VALUE}</MenuItem>
                     })}
                   </Select>}
-                  <Autocomplete
-                    disablePortal
-                    id="acc-types"
-                    options={AccTypeOptions}
-                    getOptionLabel={(option:any) => `${option?.DISPLAY_VALUE}`}
-                    onChange={(e,v) => {
-                      setAccTypeValue(v?.value)
-                    }}
-                    sx={{ width: 200 }}
-                    renderInput={(params) => (
-                      <TextField {...params} 
-                        size="small" 
-                        label="Acc. Type"
-                      />
-                    )}
-                    // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
-                  />
-
-                  <TextField disabled
-                    id="customer-ckyc-number"
-                    label="CKYC No."
-                    // value={accTypeValue}
-                    size="small"
-                  />
-
+                  <Grid item xs={12} sm={6} md>
+                    <Autocomplete sx={{width: "100%"}}
+                      disablePortal
+                      id="acc-types"
+                      options={AccTypeOptions}
+                      getOptionLabel={(option:any) => `${option?.DISPLAY_VALUE}`}
+                      onChange={(e,v) => {
+                        setAccTypeValue(v?.value)
+                      }}
+                      // sx={{ width: 200 }}
+                      renderInput={(params) => (
+                        <TextField {...params} 
+                          size="small" 
+                          label="Acc. Type"
+                        />
+                      )}
+                      // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6} md>
+                    <TextField disabled sx={{width: "100%"}}
+                      id="customer-ckyc-number"
+                      label="CKYC No."
+                      // sx={{ width: {xs: 12, sm: "", md: "", lg: ""}}}
+                      // value={accTypeValue}
+                      size="small"
+                    />
+                  </Grid>
                   {/* <ButtonGroup size="small" variant="outlined" color="secondary">
                     <Button color="secondary" onClick={() => {
                         setIsCustomerData(false)
@@ -528,10 +544,13 @@ export default function FormModal({
               display:"flex", flexDirection: "column",alignItems: "center",
               position: "sticky", top:175, height:"calc(95vh - 150px)", 
               boxShadow: "inset 10px 2px 30px #eee",
-              opacity: (tabsApiRes && tabsApiRes.length>0) ? 1 : 0, transition: 'opacity 0.4s ease-in-out'
+
+              opacity: (tabsApiRes && tabsApiRes.length>0) ? 1 : 0, 
+              transition: 'opacity 0.4s ease-in-out',
+              pointerEvents: (tabsApiRes && tabsApiRes.length>0) ? "" : "none"
               // backgroundColor: "#ddd"
               }}>
-              {/* <CustomTabs sx={{height:"calc(100% - 10px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
+              <CustomTabs sx={{height:"calc(100% - 10px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} visibleScrollbar={true} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Personal Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={HowToRegRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Personal Details"} subtext={""} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "KYC Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={NoteAddRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"KYC"} subtext={"PoA & PoI & Documents"} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Declaration"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={ArticleRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Declaration"} subtext={"FATCA & CRS"} />} /></Tooltip>
@@ -540,8 +559,10 @@ export default function FormModal({
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Other Address"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={AddLocationIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Address"} subtext={""} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "NRI Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={PersonAddAltRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"NRI Details"} subtext={""} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Attestation"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Attestation"} subtext={"KYC verifcation"} />} /></Tooltip>
-              </CustomTabs> */}
-              <CustomTabs 
+              </CustomTabs>
+
+              {/* temp ui disabled */}
+              {/* {false && <CustomTabs 
                 sx={{height:"calc(100% - 10px)", minWidth: "76px"}}  
                 textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" 
                 value={colTabValue} 
@@ -564,7 +585,7 @@ export default function FormModal({
                     )
                   }) 
                 }
-              </CustomTabs>
+              </CustomTabs>} */}
             </Grid>
             <Grid sx={{
                 "& .MuiBox-root": {

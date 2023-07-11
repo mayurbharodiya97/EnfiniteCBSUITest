@@ -19,7 +19,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
-  const [isPDExpanded, setIsPDExpanded] = useState(false)
+  const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [isOtherPDExpanded, setIsOtherPDExpanded] = useState(false)
   const [isEDExpanded, setIsEDExpanded] = useState(false)
   const handlePDExpand = () => {
@@ -42,7 +42,7 @@ const myGridRef = useRef<any>(null);
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Personal Details</Typography>
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Personal Details {`(1/8)`}</Typography>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 

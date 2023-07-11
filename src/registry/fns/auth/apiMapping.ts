@@ -175,6 +175,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETECIRCULARDETAIL",
     packageName: "",
   },
+  GETPARENTAREALIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPARENTAREALIST",
+    packageName: "",
+  },
+  GETAREALIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREALIST",
+    packageName: "",
+  },
+  GETSEARCHUSERDATA: {
+    url: "/customerServiceAPI/GETSEARCHUSERDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

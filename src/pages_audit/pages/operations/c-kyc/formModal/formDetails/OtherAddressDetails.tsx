@@ -13,7 +13,7 @@ const myGridRef = useRef<any>(null);
 
     return (
         <Grid container rowGap={3}>
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address</Typography>            
+            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>            
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
