@@ -50,7 +50,8 @@ export const MyAppBar = ({
     profile: "",
     logo: "",
   });
-  const urlObj = useRef<any>({ bank: "", profile: "", logo: "" });
+  const { t } = useTranslation();
+  const urlObj = useRef<any>({ bank: "", profile: "" });
   const handleNavigate = () => {
     navigate("/cbsenfinity/profile");
     handleClose();
@@ -138,7 +139,11 @@ export const MyAppBar = ({
     else if (hours >= 12 && hours <= 16) greet = "afternoon";
     else if (hours >= 16 && hours <= 24) greet = "evening";
 
-    return <span>Good {greet},</span>;
+    return (
+      <span>
+        {t("Good")} {t(greet)},{" "}
+      </span>
+    );
   };
 
   return (
@@ -230,11 +235,12 @@ export const MyAppBar = ({
                 lineHeight={0}
                 fontSize={"11px"}
               >
-                Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
+                {t("appBar.Branch")}:
+                {authController?.authState?.user?.branchCode ?? "001 "}-
                 {authController?.authState?.user?.branch ?? ""}
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
-                Working Date:{" "}
+                {t("appBar.WorkingDate")}:{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.workingDate ?? ""
                 )}
@@ -245,7 +251,7 @@ export const MyAppBar = ({
                 display="inline"
                 fontSize={"11px"}
               >
-                Last Login Date :{" "}
+                {t("appBar.LastLoginDate")} :{" "}
                 {checkDateAndDisplay(
                   authController?.authState?.user?.lastLogin ?? "Vastrapur"
                 )}
@@ -336,9 +342,14 @@ export const MyAppBar = ({
             <LightTooltip
               title={
                 <>
-                  <div>User ID : {authController?.authState?.user?.id}</div>
-                  <div>Role : {authController?.authState?.roleName}</div>
-                  <div>Last Unsuccessful Login : ""</div>
+                  <div>
+                    {" "}
+                    {t("appBar.UserID")}: {authController?.authState?.user?.id}
+                  </div>
+                  <div>
+                    {t("appBar.Role")} : {authController?.authState?.roleName}
+                  </div>
+                  <div>{t("appBar.LastUnsuccessfulLogin")} : ""</div>
                 </>
               }
               placement="bottom-start"
@@ -361,7 +372,7 @@ export const MyAppBar = ({
   );
 };
 
-const checkDateAndDisplay = (dateStr: string) => {
+export const checkDateAndDisplay = (dateStr: string) => {
   // const dt = new Date(dateStr);
   // //@ts-ignore
   // if (dt instanceof Date && !isNaN(dt)) {

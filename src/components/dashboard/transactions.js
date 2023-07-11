@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SelectWithoutOptions } from "components/common/select/render2";
 import { useEffect, useMemo, useState } from "react";
 import { GradientButton } from "components/styledComponent/button";
+import { useTranslation } from "react-i18next";
 Chart.register(CategoryScale);
 Chart.register(...registerables);
 const getTransactionChartDataFnWrapper =
@@ -31,7 +32,7 @@ export const Transactions = ({ mutation, ...props }) => {
   const theme = useTheme();
   const [showMore, setShowMore] = useState(false);
   const [optionValue, setOptionValue] = useState("T");
-
+  const { t } = useTranslation();
   const showErrorData = () => {
     setShowMore(true);
   };
@@ -84,7 +85,7 @@ export const Transactions = ({ mutation, ...props }) => {
             borderRadius: 4,
             categoryPercentage: 1,
             data: displayConfirmData,
-            label: "Confirmed",
+            label: t("Confirmed"),
             maxBarThickness: 10,
           },
           {
@@ -94,7 +95,7 @@ export const Transactions = ({ mutation, ...props }) => {
             borderRadius: 4,
             categoryPercentage: 1,
             data: displayPendingData,
-            label: "Pending",
+            label: t("Pending"),
             maxBarThickness: 10,
           },
           {
@@ -104,7 +105,7 @@ export const Transactions = ({ mutation, ...props }) => {
             borderRadius: 4,
             categoryPercentage: 1,
             data: displayRejectData,
-            label: "Reject",
+            label: t("Reject"),
             maxBarThickness: 10,
           },
         ],
@@ -145,7 +146,7 @@ export const Transactions = ({ mutation, ...props }) => {
             borderRadius: 4,
             categoryPercentage: 1,
             data: displayCheckerData,
-            label: "Checker",
+            label: t("Checker"),
             maxBarThickness: 10,
           },
           {
@@ -155,7 +156,7 @@ export const Transactions = ({ mutation, ...props }) => {
             borderRadius: 4,
             categoryPercentage: 1,
             data: displayMakerData,
-            label: "Maker",
+            label: t("Maker"),
             maxBarThickness: 10,
           },
         ],
@@ -175,7 +176,7 @@ export const Transactions = ({ mutation, ...props }) => {
           } else {
             retData.CONFIRM[item] = 1;
           }
-        } else if (item?.REJECT === "N") {
+        } else if (item?.CONFIRM === "N") {
           if (retData.REJECT[item]) {
             retData.REJECT[item] += 1;
           } else {
@@ -215,7 +216,7 @@ export const Transactions = ({ mutation, ...props }) => {
               Object.values(retData.REJECT).reduce((a, b) => a + b, 0),
               Object.values(retData.PENDING).reduce((a, b) => a + b, 0),
             ],
-            label: "Transaction",
+            label: t("Transaction"),
             maxBarThickness: 10,
           },
         ],
@@ -313,9 +314,9 @@ export const Transactions = ({ mutation, ...props }) => {
                 //setCellTouched({ [columnName]: true })
               }}
               options={[
-                { label: "Transaction Type", value: "T" },
-                { label: "Transaction Status", value: "S" },
-                { label: "User", value: "U" },
+                { label: t("TransactionType"), value: "T" },
+                { label: t("TransactionStatus"), value: "S" },
+                { label: t("User"), value: "U" },
               ]}
               loadingOptions={false}
               multiple={false}
@@ -325,7 +326,7 @@ export const Transactions = ({ mutation, ...props }) => {
             />
           </div>
         }
-        title="Today's Transactions"
+        title={t("TodaysTransaction")}
         style={{ color: "var(--theme-color1)" }}
       />
       <Divider />

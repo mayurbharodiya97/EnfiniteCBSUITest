@@ -9,6 +9,7 @@ import { Box, CircularProgress, Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { DialogActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import SyncLockIcon from "@mui/icons-material/SyncLock";
 
 interface UpdatePasswordFnType {
@@ -29,6 +30,7 @@ export const ChangePassword = ({ onClose, showProfile }) => {
   const authCtx = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const handleNavigate = () => {
     navigate("/cbsenfinity/login");
   };
@@ -92,7 +94,7 @@ export const ChangePassword = ({ onClose, showProfile }) => {
               formRef.current?.handleSubmit?.(e);
             }}
           >
-            Change Password
+            {t("profile.ChangePassword")}
           </GradientButton>
         </DialogActions>
       </Box>

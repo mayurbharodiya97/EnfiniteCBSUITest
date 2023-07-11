@@ -81,7 +81,6 @@ export interface GridMetaDataType {
   gridConfig: GridConfigType;
   actions?: ActionTypes[];
   setAction?: any;
-  lanTranstlet?: any;
 }
 
 export interface GridWrapperPropTypes {

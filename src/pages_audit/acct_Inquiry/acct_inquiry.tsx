@@ -13,6 +13,7 @@ import { ViewInterest } from "./viewInterest";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "packages/form";
+
 // import { Dialog } from "@mui/material";
 const actions: ActionTypes[] = [
   {
@@ -43,6 +44,7 @@ export const Accountinquiry = ({ open, onClose }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const formbtnRef = useRef<any>(null);
+  // const { t } = useTranslation();
   interface InsertFormDataFnType {
     data: object;
     displayData?: object;

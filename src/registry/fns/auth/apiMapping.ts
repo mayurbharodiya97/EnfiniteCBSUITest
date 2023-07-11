@@ -55,8 +55,48 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTRANSACTIONDETAILS",
     packageName: "",
   },
-  BANKPROFILEPICK: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/BANKPROFILEPICK",
+  CATEGORYNAME: {
+    url: "/customerServiceAPI/CATEGORYNAME",
+    packageName: "",
+  },
+  GETAREA: {
+    url: "/customerServiceAPI/GETAREA",
+    packageName: "",
+  },
+  GETCUSTOMERDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTOMERDTL",
+    packageName: "",
+  },
+  GETCIFCATEG: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCIFCATEG",
+    packageName: "",
+  },
+  GETCIFTABDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCIFTABDTL",
+    packageName: "",
+  },
+  GETPMISCDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPMISCDATA",
+    packageName: "",
+  },
+  GETCOUNTRYLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOUNTRYLIST",
+    packageName: "",
+  },
+  GETCUSTGROUPLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTGROUPLIST",
+    packageName: "",
+  },
+  GETCUSTCOMMULIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTCOMMULIST",
+    packageName: "",
+  },
+  CUSTOMERDETAILS: {
+    url: "/customerServiceAPI/CUSTOMERDETAILS",
+    packageName: "",
+  },
+  GETBANKIMAGEANDPROFILEPIC: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
     packageName: "",
   },
   GETQUICKACCESSVIEW: {
@@ -145,6 +185,34 @@ export const ActionWiseAPIConfiguration = {
   },
   GETPASSBKTEMPL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPASSBKTEMPL",
+    packageName: "",
+  },
+  FORGOTPASSWORD: {
+    url: "/enfinityCommonServiceAPI/FORGOTPASSWORD",
+    packageName: "",
+  },
+  FORGOTPWDOTPVERIFY: {
+    url: "/enfinityCommonServiceAPI/FORGOTPWDOTPVERIFY",
+    packageName: "",
+  },
+  UPDATEFORGETNEWPASSWORD: {
+    url: "/enfinityCommonServiceAPI/UPDATEFORGETNEWPASSWORD",
+    packageName: "",
+  },
+  GETECIRCULARDETAIL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETECIRCULARDETAIL",
+    packageName: "",
+  },
+  GETPARENTAREALIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPARENTAREALIST",
+    packageName: "",
+  },
+  GETAREALIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREALIST",
+    packageName: "",
+  },
+  GETSEARCHUSERDATA: {
+    url: "/customerServiceAPI/GETSEARCHUSERDATA",
     packageName: "",
   },
 };

@@ -17,9 +17,12 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import LaptopMacIcon from "@mui/icons-material/LaptopMac";
-import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
-import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+import CancelIcon from "@mui/icons-material/Cancel";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import AcUnitIcon from "@mui/icons-material/AcUnit";
+import SavingsIcon from "@mui/icons-material/Savings";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,12 +30,14 @@ import { useState } from "react";
 import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
 import { wrap } from "lodash";
+import { useTranslation } from "react-i18next";
 Chart.register(ArcElement);
 
 export const AccountStatus = (props) => {
   const theme = useTheme();
   const [showMore, setShowMore] = useState(false);
   const { authState } = useContext(AuthContext);
+  const { t } = useTranslation();
   let reqID = Math.floor(new Date().getTime() / 300000);
   const result = useQuery(["getAccountStatusData", reqID], () =>
     API.getAccountStatusData({ COMP_CD: authState?.companyID ?? "" })
@@ -55,9 +60,9 @@ export const AccountStatus = (props) => {
     datasets: [
       {
         data: [
-          result?.data?.[0]?.OPENED,
-          result?.data?.[0]?.CLOSED,
-          result?.data?.[0]?.INOPENED,
+          result?.data?.[0]?.OPEN,
+          result?.data?.[0]?.CLOSE,
+          result?.data?.[0]?.INOPERATIVE,
           result?.data?.[0]?.UNCLAIMED,
           result?.data?.[0]?.DORMANT,
           result?.data?.[0]?.FREEZE,
@@ -75,7 +80,14 @@ export const AccountStatus = (props) => {
         hoverBorderColor: "#FFFFFF",
       },
     ],
-    labels: ["Opend", "Closed", "Inopend", "Unclaimed", "Dormat", "Freeze"],
+    labels: [
+      t("Open"),
+      t("Close"),
+      t("Inoperative"),
+      t("Unclaimed"),
+      t("Dormant"),
+      t("Freeze"),
+    ],
   };
 
   const options = {
@@ -103,39 +115,39 @@ export const AccountStatus = (props) => {
   const devices = useMemo(() => {
     return [
       {
-        title: "Opend ",
-        value: result?.data?.[0]?.OPENED ?? "0",
-        icon: LaptopMacIcon,
+        title: "Open",
+        value: result?.data?.[0]?.OPEN ?? "0",
+        icon: VerifiedUserIcon,
         color: "#3F51B5",
       },
       {
-        title: "Closed",
-        value: result?.data?.[0]?.CLOSED ?? "0",
-        icon: PhoneIphoneIcon,
+        title: "Close",
+        value: result?.data?.[0]?.CLOSE ?? "0",
+        icon: CancelIcon,
         color: "#E53935",
       },
       {
-        title: "Inopend",
-        value: result?.data?.[0]?.INOPENED ?? "0",
-        icon: PhoneAndroidIcon,
+        title: "Inoperative",
+        value: result?.data?.[0]?.INOPERATIVE ?? "0",
+        icon: PersonAddAlt1Icon,
         color: "#FB8C00",
       },
       {
         title: "Unclaimed",
         value: result?.data?.[0]?.UNCLAIMED ?? "0",
-        icon: PhoneAndroidIcon,
+        icon: SavingsIcon,
         color: "#42c746",
       },
       {
-        title: "Dormat",
+        title: "Dormant",
         value: result?.data?.[0]?.DORMANT ?? "0",
-        icon: PhoneAndroidIcon,
+        icon: PersonSearchIcon,
         color: "#f6f937",
       },
       {
         title: "Freeze",
         value: result?.data?.[0]?.FREEZE ?? "0",
-        icon: PhoneAndroidIcon,
+        icon: AcUnitIcon,
         color: "#f93791",
       },
     ];
@@ -147,15 +159,14 @@ export const AccountStatus = (props) => {
       }
       return accu;
     }, 0);
-    //console.log(total);
     return total;
   }, [devices]);
-  //console.log(totalLoginUser);
+
   return (
     <>
       <Card {...props} style={{ borderRadius: "20px" }}>
         <CardHeader
-          title="Account Status"
+          title={t("AccountStatus")}
           style={{ color: "var(--theme-color1)" }}
         />
         <Divider />
@@ -184,9 +195,9 @@ export const AccountStatus = (props) => {
                   textAlign: "center",
                 }}
               >
-                <Icon color="action" />
+                <Icon color="action" style={{ fontSize: "25px" }} />
                 <Typography color="textPrimary" variant="body1">
-                  {title}
+                  {t(title)}
                 </Typography>
                 <Typography style={{ color }} variant="h6">
                   {getPerData(value, totalLoginUser)}
@@ -200,7 +211,7 @@ export const AccountStatus = (props) => {
               justifyContent: "right",
               pt: 2,
             }}
-            style={{ paddingTop: "5px" }}
+            style={{ paddingTop: "0px" }}
           >
             {result.isError || result.isLoading || result.isFetching ? (
               <>

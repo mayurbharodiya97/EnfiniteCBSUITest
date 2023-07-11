@@ -279,123 +279,116 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
 //   return { entities: result, products: products };
 // };
 export const veirfyUsernameandMobileNo = async (
-  USER_ID: any,
-  MOBILE_NO: any
+  username: any,
+  MobileNo: any
 ) => {
-  // const { data, status, message, messageDetails, responseType, access_token } =
-  //   await AuthSDK.internalFetcherPreLogin("PWDRESET", {
-  //     USER_ID: username,
-  //     MOBILE_NO: MobileNo,
-  //   });
-  // console.log(
-  //   data,
-  //   status,
-  //   message,
-  //   messageDetails,
-  //   responseType,
-  //   access_token
-  // );
-  // if (status === "0") {
-  //   return {
-  //     data: data[0],
-  //     status,
-  //     message,
-  //     messageDetails,
-  //     responseType,
-  //     access_token,
-  //   };
-  // } else {
-  //   return { status, data, message, messageDetails };
-  // }
-  return {
-    status: "0",
-    message: "OTP Sent successfully.",
-    RESPONSE_TYPE: "D",
-    data: {
-      REQUEST_CD: 111909,
-      AUTH_TYPE: "O",
-    },
+  const { data, status, message, messageDetails, responseType, access_token } =
+    await AuthSDK.internalFetcherPreLogin("FORGOTPASSWORD", {
+      USER_ID: username,
+      MOBILE_NO: MobileNo,
+    });
+  if (status === "0") {
+    return {
+      data: data[0],
+      status,
+      message,
+      messageDetails,
+      responseType,
+      access_token,
+    };
+  } else {
+    return { status, data, message, messageDetails };
+  }
+  // return {
+  //   status: "0",
+  //   message: "OTP Sent successfully.",
+  //   RESPONSE_TYPE: "D",
+  //   data: {
+  //     REQUEST_CD: 111909,
+  //     AUTH_TYPE: "O",
+  //   },
 
-    COLOR: "0",
-    messageDetails: "OTP Sent successfully.",
-  };
+  //   COLOR: "0",
+  //   messageDetails: "OTP Sent successfully.",
+  // };
 };
 
 export const verifyOTPForPWDReset = async (
   transactionId,
   username,
-  otpnumber
+  otpnumber,
+  authType
 ) => {
-  return {
-    status: "0",
-    message: "OTP Verified successfully.",
-    RESPONSE_TYPE: "D",
-    data: {
-      STATUS: "S",
-      REMARKS: "OTP successfully verified.",
-    },
+  // return {
+  //   status: "0",
+  //   message: "OTP Verified successfully.",
+  //   RESPONSE_TYPE: "D",
+  //   data: {
+  //     STATUS: "S",
+  //     REMARKS: "OTP successfully verified.",
+  //   },
 
-    COLOR: "0",
-    messageDetails: "OTP Verified successfully.",
-  };
-  // const {
-  //   data,
-  //   status,
-  //   message,
-  //   messageDetails,
-  //   access_token: accesstoken,
-  // } = await AuthSDK.internalFetcherPreLogin("PWDRESETVERIFY", {
-  //   USER_ID: username,
-  //   REQUEST_CD: transactionId,
-  //   OTP: otpnumber,
-  //   AUTH_TYPE: authType,
-  // });
-  // if (status === "0") {
-  //   return {
-  //     data: data[0],
-  //     status,
-  //     message,
-  //     messageDetails,
-  //   };
-  // } else {
-  //   return { status, data, message, messageDetails };
-  // }
+  //   COLOR: "0",
+  //   messageDetails: "OTP Verified successfully.",
+  // };
+  const {
+    data,
+    status,
+    message,
+    messageDetails,
+    access_token: accesstoken,
+  } = await AuthSDK.internalFetcherPreLogin("FORGOTPWDOTPVERIFY", {
+    USER_ID: username,
+    REQUEST_CD: transactionId,
+    OTP: otpnumber,
+    AUTH_TYPE: authType,
+  });
+  if (status === "0") {
+    return {
+      data: data[0],
+      status,
+      message,
+      messageDetails,
+    };
+  } else {
+    return { status, data, message, messageDetails };
+  }
 };
 
 export const updatenewPassword = async (transactionId, username, password) => {
-  // const {
-  //   data,
-  //   status,
-  //   message,
-  //   messageDetails,
-  //   access_token: accesstoken,
-  // } = await AuthSDK.internalFetcherPreLogin("PWDRESETUPDATE", {
-  //   USER_ID: username,
-  //   REQUEST_CD: transactionId,
-  //   PASSWORD: password,
-  // });
-  // if (status === "0") {
-  //   return {
-  //     data: data[0],
-  //     status,
-  //     message,
-  //     messageDetails,
-  //   };
-  // } else {
-  //   return { status, data, message, messageDetails };
-  // }
-  return {
-    status: "0",
-    message: "OTP Verified successfully.",
-    RESPONSE_TYPE: "D",
-    data: {
-      STATUS: "S",
-      REMARKS: "OTP successfully verified.",
-    },
+  const {
+    data,
+    status,
+    message,
+    messageDetails,
+    access_token: accesstoken,
+  } = await AuthSDK.internalFetcherPreLogin("UPDATEFORGETNEWPASSWORD", {
+    USER_NAME: username,
+    REQUEST_CD: transactionId,
+    USER_PASSWORD: password,
+  });
+  if (status === "0") {
+    return {
+      data: data[0],
+      status,
+      message,
+      messageDetails,
+    };
+  } else {
+    return { status, data, message, messageDetails };
+  }
+  // return {
+  //   status: "0",
+  //   message: "OTP Verified successfully.",
+  //   RESPONSE_TYPE: "D",
+  //   data: {
+  //     STATUS: "S",
+  //     REMARKS: "OTP successfully verified.",
+  //   },
 
-    COLOR: "0",
-    messageDetails: "OTP Verified successfully.",
-  };
+  //   COLOR: "0",
+  //   messageDetails: "OTP Verified successfully.",
+  // };
 };
 
 export const capture = async () => {

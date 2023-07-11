@@ -21,6 +21,19 @@ export const theme = createTheme({
   //     xl: 1920,
   //   },
   // },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root.Mui-focused": {
+            "& > fieldset": {
+              borderColor: "#07288e",
+            },
+          },
+        },
+      },
+    },
+  },
 });
 export const theme2 = createTheme({
   palette: {

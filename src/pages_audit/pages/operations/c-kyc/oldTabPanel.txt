@@ -1,0 +1,260 @@
+import React, { useState } from "react"
+import { Box, Grid, InputAdornment, TextField, ThemeProvider, ToggleButton, ToggleButtonGroup, Typography, createTheme, styled } from "@mui/material"
+import ViewListIcon from "@mui/icons-material/ViewList";
+import Search from "@mui/icons-material/Search";
+import PersonalDetails from "./PersonalDetails";
+
+const newTheme = createTheme({
+    components: {
+      MuiToggleButtonGroup: {
+        defaultProps: {
+          orientation: "vertical",
+          color: "primary",
+          exclusive: true,
+          fullWidth: true,
+          size: "small"
+        },
+        styleOverrides: {
+          root: {
+            // width: "auto",
+            // minWidth: "150px",
+          },
+          groupedVertical: ({ theme }) => ({
+            border: `1px solid #aaa`,            
+            // outlineStyle: "auto",
+            // height: "70px",
+            // outlineWidth: "1px",
+            borderRadius: "10px",
+            // backgroundColor: "teal"
+          }),
+          // grouped: {
+          //   "& [not(:first-of-type)]": {
+          //     borderTop: "1px solid red",
+          //     borderBottomLeftRadius: "10px",
+          //     borderBottomRightRadius: "10px",
+          //     backgroundColor: "green"
+          //   }
+          // }
+        }
+      },
+      MuiToggleButton: {
+        defaultProps: {},
+        styleOverrides: {
+          root: ({ theme }) => ({
+            // margin: "25px auto"
+            // ouotline: "none",
+            // border: `1px solid ${theme.palette.primary.main}`,
+            // borderCollapse: "separate",
+            // borderTop: "1px solid",
+            // borderTop: `1px solid ${theme.palette.primary.main}`
+          })
+        }
+      },
+      MuiButtonBase: {
+        styleOverrides: {
+          root: {
+            border: "1px solid red"
+          }
+        }
+      }
+    }
+  });
+
+const CustomToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+height: "60vh",
+overflow: "scroll",
+paddingRight: "2px",
+// backgroundColor: "#eee",
+"& .MuiToggleButtonGroup-grouped": {
+    marginTop: "15px",
+},
+"& .MuiToggleButtonGroup-grouped:not(:first-of-type)": {
+    marginTop: "15px",
+    borderTop: "1px solid #aaa",
+    borderTopLeftRadius: "10px",
+    borderTopRightRadius: "10px",
+},
+"& .MuiToggleButtonGroup-grouped:not(:last-of-type)": {
+    // marginTop: "-1px",
+    // borderTop: "1px solid #aaa",
+    borderBottomLeftRadius: "10px",
+    borderBottomRightRadius: "10px",
+},
+"& .Mui-selected": {
+    backgroundColor: "white",
+    borderTop: `1px solid ${theme.palette.primary.main} !important`,
+    border: `1px solid ${theme.palette.primary.main}`,
+    boxShadow: `${theme.shadows[3]}`,
+    // boxShadow: "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px 0.14, 0px 1px 8px 0px rgba(0,0,0,0.12)",
+    "& .toggle_icon_container": {
+    backgroundColor: "#c6e1f6",
+    },    
+},
+"& .toggle_icon_container": {
+    backgroundColor: theme.palette.grey[200]
+},
+"& .toggle_text_container": {
+    color: "black",
+    "p": {
+    fontWeight: "400"
+    }
+}
+}));
+
+const StyledToggleButtonContainer = ({text1, text2}) => {
+    return <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        textTransform: "capitalize"
+      }}
+    >
+      <div className="toggle_icon_container" 
+        style={{
+          // backgroundColor: "#ccc", 
+          height:"40px", 
+          width: "40px", 
+          display: "flex", 
+          alignItems:"center", 
+          justifyContent: "center",
+          borderRadius: "5px"
+        }}
+      >
+        <ViewListIcon />
+      </div>
+      <div className="toggle_text_container"
+        style={{
+          // backgroundColor: "#eee",
+          paddingLeft: "8px",
+          textAlign: "left"
+        }}
+      >
+        <h4 style={{ margin: "0px" }}>{text1}</h4>
+        <p style={{ margin: "0px" }}>{text2}</p>
+      </div>
+    </div>
+}
+
+const StyledSearchField = styled(TextField)(({ theme }) => ({
+    // width: "100%",
+    "& .MuiInputBase-root": {
+      color: "#888",
+      padding: "5px",
+      marginTop: "10px",
+      marginBottom: "10px",
+      backgroundColor: "#eee",
+      border: "0",
+      outline: "none"
+    },
+    "& .MuiInputBase-root.MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      border: 0
+    },
+    "& .MuiInputBase-root.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      border: "1.5px solid",
+      borderColor: "#1976d2"
+    },
+    "& .MuiInputBase-root.MuiOutlinedInput-root": {
+      paddingLeft: 0
+    },
+    "& .MuiInputAdornment-root": {
+      paddingRight: "5px"
+    }
+}));
+  
+const OldTabPanel = () => {
+  const [colTabValue, setColTabValue] = React.useState(0);
+  const [inputSearchValue, setInputSearchValue] = React.useState("");
+  const handleColTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    if(newValue) {
+      console.log({newValue})
+      setColTabValue(newValue);
+    }
+  };    
+  const handleInputSearchValue = (event) => {
+    setInputSearchValue(event.target.value)
+  }
+    return (
+        <Box sx={{ flexGrow: 1 }}>
+            <Grid container style={{boxSizing: "border-box"}}>
+              <Grid item paddingRight={{xs:0, sm:1, md: 3}} xs={12} md={3} 
+                // style={{backgroundColor: "#eee"}}
+              >
+                {/* <Item>xs=6 md=8</Item> */}
+                {/* <div style={{
+                  // backgroundColor: "#ccc", 
+                  width:"100%"
+                }}> */}
+                  <Typography variant="h6" gutterBottom={false}>C-KYC Individual/Legal Entry</Typography>
+                  <StyledSearchField 
+                    value={inputSearchValue} 
+                    onChange={(e) => handleInputSearchValue(e)} 
+                    color="primary" placeholder="Search here..." fullWidth={true}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="end">
+                        {/* <IconButton
+                          aria-label="toggle password visibility"
+                          // onClick={() => setOpenSearch(true)}
+                        >
+                          <SearchIcon /> */}
+                          <Search />
+                        {/* </IconButton> */}
+                      </InputAdornment>                      
+                    }}
+                    // variant="standard" label="Search"
+                  />
+                  <ThemeProvider theme={newTheme}>
+                    <CustomToggleButtonGroup className="customToggleButtonGroup"
+                      // orientation="vertical"
+                      value={colTabValue}
+                      // color="primary"
+                      exclusive={true}
+                      onChange={handleColTabChange}
+                    >
+                      <ToggleButton value="personal_details" aria-label="personal_details">
+                        <StyledToggleButtonContainer text1="Personal Details" text2="Lorem ipsum is simply Dummy text" />
+                      </ToggleButton>
+                      <ToggleButton value="kyc" aria-label="kyc">
+                        <StyledToggleButtonContainer text1="KYC" text2="Lorem ipsum is simply Dummy text" />
+                      </ToggleButton>
+                      <ToggleButton value="declaration" aria-label="declaration">
+                        <StyledToggleButtonContainer text1="Declaration" text2="Lorem ipsum is simply Dummy text" />
+                      </ToggleButton>
+                      <ToggleButton value="details_of_related_person" aria-label="details_of_related_person">
+                        <StyledToggleButtonContainer text1="Details of Related Person" text2="Lorem ipsum is simply Dummy text" />
+                      </ToggleButton>
+                      <ToggleButton value="other_details" aria-label="other_details">
+                        <StyledToggleButtonContainer text1="Other Details" text2="Lorem ipsum is simply Dummy text" />
+                      </ToggleButton>
+                      <ToggleButton value="other_address" aria-label="other_address">
+                        <StyledToggleButtonContainer text1="Other Address" text2="Lorem ipsum is simply Dummy text" />
+                      </ToggleButton>
+                    </CustomToggleButtonGroup>
+                  </ThemeProvider>
+
+                {/* </div> */}
+              </Grid>
+              <Grid item xs={12} md={9}>
+                {/* <Item>xs=6 md=4</Item> */}
+                {
+                  (colTabValue) ? (colTabValue.toString() == "personal_details" 
+                  ? <PersonalDetails passDataFromPersonalDetails={() => {}} />
+                  : colTabValue.toString() == "kyc" 
+                    ? <h1>KYC Details</h1>
+                    : colTabValue.toString() == "declaration" 
+                      ? <h1>Declaration Details</h1> 
+                      : colTabValue.toString() == "details_of_related_person" 
+                        ? <h1>Details of Related Person</h1>
+                        : colTabValue.toString() == "other_details" 
+                          ? <h1>Other Details</h1>
+                          : colTabValue.toString() == "other_address" 
+                            ? <h1>Other Address</h1> 
+                            : <h1>No Tab Selected</h1>) : ("Nothing Selected")
+                }
+              </Grid>
+            </Grid>
+          </Box>
+    )
+}
+
+export default OldTabPanel
