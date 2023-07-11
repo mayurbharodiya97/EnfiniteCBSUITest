@@ -388,7 +388,7 @@ export default function FormModal({
               variant={"h6"}
               component="div"
             >
-              {`C-KYC ${entityType == "C" ? "Legal Entity" : "Individual Entity"} Entry`}
+              {`C-KYC ${entityType == "C" ? "Legal Entity" : "Individual"} Entry`}
             </Typography>
             <Button
               // onClick={handleFormModalClose}

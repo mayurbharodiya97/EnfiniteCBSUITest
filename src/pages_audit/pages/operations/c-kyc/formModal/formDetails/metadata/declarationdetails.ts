@@ -62,6 +62,7 @@ export const declaration_meta_data = {
             componentType: "datePicker",
         },
         name: "FATCA_DT",
+        format: "dd/MM/yyyy",
         label: "Declaration Received Date",
         // placeholder: "",
         // type: "datePicker",
@@ -82,6 +83,7 @@ export const declaration_meta_data = {
         render: {
             componentType: "datePicker",
         },
+        format: "dd/MM/yyyy",
         name: "DATE_OF_COMMENCEMENT",
         label: "Date of Incorporation",
         // placeholder: "",
