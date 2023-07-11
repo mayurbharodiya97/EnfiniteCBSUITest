@@ -5,7 +5,7 @@ import { getPassBookTemplate } from "./api";
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
-    label: "AccountInquiry",
+    label: "Account Inquiry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -53,8 +53,8 @@ export const AccountInquiryMetadata = {
         componentType: "accountNumberOptional",
       },
       name: "ACCOUNT",
-      label: "AccountNo",
-      placeholder: "",
+      label: "Account No.",
+      placeholder: "Account Number",
       defaultValue: "",
       type: "text",
       // allowToggleVisiblity: true,
@@ -79,7 +79,7 @@ export const AccountInquiryMetadata = {
         componentType: "numberFormat",
       },
       name: "CUSTOMER",
-      label: "CustomerId",
+      label: "Customer Id",
       maxLength: 12,
       schemaValidation: {
         type: "string",
@@ -103,7 +103,7 @@ export const AccountInquiryMetadata = {
         componentType: "phoneNumberOptional",
       },
       name: "MOBILE",
-      label: "MobileNo",
+      label: "Mobile No.",
       maxLength: 10,
       placeholder: "Mobile Number",
       type: "string",
@@ -128,8 +128,8 @@ export const AccountInquiryMetadata = {
         componentType: "panCardOptional",
       },
       name: "PAN",
-      label: "PanNo",
-      placeholder: "",
+      label: "Pan No.",
+      placeholder: "PanCard Number",
       maxLength: 10,
       type: "text",
       schemaValidation: {
@@ -198,7 +198,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ACCT_NO",
-      columnName: "AccountNo",
+      columnName: "Account No.",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -207,8 +207,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "ACCT_NAME",
-      columnName: "AccountPersonName",
+      accessor: "ACCT_NM",
+      columnName: "Account/Person Name",
       sequence: 4,
       alignment: "center",
       componentType: "default",
@@ -218,8 +218,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       maxWidth: 280,
     },
     {
-      accessor: "CUST_ID",
-      columnName: "CustomerId",
+      accessor: "CUSTOMER_ID",
+      columnName: "Customer Id",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -228,8 +228,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       maxWidth: 120,
     },
     {
-      accessor: "MOB_NO",
-      columnName: "MobileNo",
+      accessor: "CONTACT2",
+      columnName: "Mobile No.",
       sequence: 6,
       alignment: "left",
       componentType: "default",
@@ -239,7 +239,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAN_NO",
-      columnName: "PanNo",
+      columnName: "Pan No.",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -270,7 +270,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
 
     {
       accessor: "OPENIND_DT",
-      columnName: "OpeningDate",
+      columnName: "Opening Date",
       sequence: 8,
       alignment: "center",
       componentType: "date",
@@ -282,8 +282,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       maxWidth: 140,
     },
     {
-      accessor: "STATUS",
-      columnName: "STATUS",
+      accessor: "DISPLAY_STATUS",
+      columnName: "Status",
       sequence: 9,
       alignment: "center",
       componentType: "default",
@@ -294,7 +294,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CLOSE_DT",
-      columnName: "CloseDate",
+      columnName: "Close Date",
       sequence: 10,
       alignment: "center",
       componentType: "date",
@@ -310,7 +310,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
 export const PassbookStatement = {
   form: {
     name: "passbookstatement",
-    label: "PassbookStatementPrintOption",
+    label: "Passbook/Statement Print Option",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -356,7 +356,7 @@ export const PassbookStatement = {
         componentType: "numberFormat",
       },
       name: "ACCT_NO",
-      label: "AccountNo",
+      label: "Account No.",
       placeholder: "Account Number",
       defaultValue: "",
       type: "text",
@@ -379,8 +379,8 @@ export const PassbookStatement = {
       render: {
         componentType: "textField",
       },
-      name: "ACCT_NAME",
-      label: "AccountPersonName",
+      name: "ACCT_NM",
+      label: "Account/Person Name",
       placeholder: "Account/Person Name",
       type: "text",
       isReadOnly: true,
@@ -402,7 +402,7 @@ export const PassbookStatement = {
       defaultValue: "P",
       options: [
         {
-          label: "passbook",
+          label: "Passbook",
           value: "P",
         },
         { label: "Statement", value: "S" },
@@ -449,8 +449,11 @@ export const PassbookStatement = {
       render: {
         componentType: "select",
       },
-      name: "PID_DESTION",
-      label: "FromDate",
+      name: "TRAN_CD",
+      label: "Template",
+      defaultValue: "1",
+      options: getPassBookTemplate,
+      _optionsKey: "getTemplateList",
       placeholder: "",
       type: "text",
       GridProps: {
@@ -471,9 +474,9 @@ export const PassbookStatement = {
       render: {
         componentType: "numberFormat",
       },
-      name: "PID_DEIPTION",
-      label: "ToDate",
-      placeholder: "",
+      name: "ACT_NO",
+      label: "Line No.",
+      defaultValue: "",
       type: "text",
       isReadOnly: false,
       fullWidth: true,
@@ -499,8 +502,55 @@ export const PassbookStatement = {
       render: {
         componentType: "spacer",
       },
-      name: "PID_CRIPTN",
-      label: "PanNo",
+      GridProps: {
+        xs: 12,
+        md: 0.5,
+        sm: 0.5,
+      },
+      dependentFields: ["PD_DESTION"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "ACTAA_NO",
+      label: "Reprint",
+      // defaultValue: "",
+      type: "text",
+      isReadOnly: true,
+      // allowToggleVisiblity: true,
+      // maxLength: 10,
+      // required: true,
+      fullWidth: true,
+      autoComplete: false,
+      GridProps: {
+        xs: 12,
+        md: 1.3,
+        sm: 1.3,
+      },
+      dependentFields: ["PD_DESTION"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "PID_DESTION",
+      label: "From Date :-",
+      dateFormat: "dd/MM/yyyy HH:mm:ss",
       placeholder: "",
       type: "text",
       // fullWidth: true,
@@ -548,7 +598,7 @@ export const PassbookStatement = {
 export const ViewDetailMetadata = {
   form: {
     name: "passbookstatement",
-    label: "CustomerDetail",
+    label: "Account Detail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -594,7 +644,7 @@ export const ViewDetailMetadata = {
         componentType: "textField",
       },
       name: "ACCT_NO",
-      label: "AccountNo",
+      label: "Account No.",
       placeholder: "Account Number",
       defaultValue: "",
       type: "text",
@@ -618,8 +668,8 @@ export const ViewDetailMetadata = {
         componentType: "textField",
       },
       isReadOnly: true,
-      name: "ACCT_NAME",
-      label: "AccountPersonName",
+      name: "ACCT_NM",
+      label: "Account/Person Name",
       placeholder: "Account/Person Name",
       type: "text",
       GridProps: {
@@ -632,8 +682,8 @@ export const ViewDetailMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "CUST_ID",
-      label: "CustomerId",
+      name: "CUSTOMER_ID",
+      label: "Customer Id",
       placeholder: "Customer Id",
       isReadOnly: true,
       type: "text",
@@ -647,8 +697,8 @@ export const ViewDetailMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "MOB_NO",
-      label: "MobileNo",
+      name: "CONTACT2",
+      label: "Mobile No.",
       placeholder: "Mobile Number",
       isReadOnly: true,
       type: "text",
@@ -664,7 +714,7 @@ export const ViewDetailMetadata = {
         componentType: "textField",
       },
       name: "PAN_NO",
-      label: "PanNo",
+      label: "Pan No.",
       isReadOnly: true,
       placeholder: "Pan Number",
       type: "text",
@@ -680,7 +730,7 @@ export const ViewDetailMetadata = {
       },
       name: "DISPLAY_STATUS",
       isReadOnly: true,
-      label: "STATUS",
+      label: "Status",
       placeholder: "Status",
       type: "text",
       GridProps: {
@@ -693,8 +743,8 @@ export const ViewDetailMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "OPENIND_DT",
-      label: "OpeningDate",
+      name: "OP_DATE",
+      label: "Opening Date",
       isReadOnly: true,
       placeholder: "Opening Date",
       type: "text",
@@ -709,7 +759,7 @@ export const ViewDetailMetadata = {
         componentType: "textField",
       },
       name: "CLOSE_DT",
-      label: "CloseDate",
+      label: "Close Date",
       placeholder: "Close Date",
       isReadOnly: true,
       type: "text",

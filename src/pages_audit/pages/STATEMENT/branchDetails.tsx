@@ -13,7 +13,7 @@ const BranchDetails = ({
 }) => {
   return (
     <Grid container sx={{ marginBottom: "10px" }}>
-      {branchDetailsData?.detail?.map((item, index) => (
+      {branchDetailsData?.map((item, index) => (
         <>
           <Grid
             item
@@ -57,7 +57,7 @@ const BranchDetails = ({
             </Grid>
           </Grid>
 
-          {branchDetailsData?.detail?.length === index + 1 && index % 2 == 0 ? (
+          {branchDetailsData?.length === index + 1 && index % 2 == 0 ? (
             <Grid
               item
               xs={0}
@@ -72,8 +72,8 @@ const BranchDetails = ({
             <></>
           )}
           {/* <Grid item>
-            <Divider />
-          </Grid> */}
+          <Divider />
+        </Grid> */}
         </>
       ))}
     </Grid>
