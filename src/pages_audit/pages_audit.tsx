@@ -27,7 +27,7 @@ export const PagesAudit = (props, { columns }) => {
           open={drawerOpen}
           handleDrawerOpen={handleDrawerOpen}
           handleDrawerClose={handleDrawerClose}
-          // columns={columns}
+          columns={columns}
         />
         <Drawer
           open={drawerOpen}

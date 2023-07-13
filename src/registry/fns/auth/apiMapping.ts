@@ -219,11 +219,6 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREALIST",
     packageName: "",
   },
-  GETUSRDASHBOX: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDASHBOX",
->>>>>>>>> Temporary merge branch 2
-    packageName: "",
-  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
