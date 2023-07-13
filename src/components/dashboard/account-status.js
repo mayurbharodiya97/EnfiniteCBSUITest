@@ -167,7 +167,7 @@ export const AccountStatus = (props) => {
       <Card {...props} style={{ borderRadius: "20px" }}>
         <CardHeader
           title={t("AccountStatus")}
-          style={{ color: "var(--theme-color1)" }}
+          style={{ color: "var(--theme-color3)" }}
         />
         <Divider />
         <CardContent style={{ padding: "10px", height: "62.6vh" }}>

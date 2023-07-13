@@ -43,7 +43,7 @@ export const QuickAccessTableGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "default",
-      width: 200,
+      width: 90,
       minWidth: 100,
       maxWidth: 200,
     },

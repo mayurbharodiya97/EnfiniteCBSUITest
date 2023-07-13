@@ -10,19 +10,19 @@ import * as API from "../api";
 import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { ListPopupMessageWrapper } from "./listPopupBox";
+import { ListPopupMessageWrapper } from "./listPopupBox/listPopupBox";
 import { useTranslation } from "react-i18next";
 import AddIcon from "@mui/icons-material/Add";
-import ReactStickyNotes from "@react-latest-ui/react-sticky-notes";
+
 import StickyNotes from "./stickyNotes/stickyNotes";
 import { GradientButton } from "components/styledComponent/button";
+import { TipsWrapper } from "./tipsBox/tipsBoxWrapper";
 
 export const MessageBox = ({ screenFlag = "" }) => {
   const [toggle, setToggle] = useState(false);
   const { authState } = useContext(AuthContext);
-
   const [isOpenSave, setIsOpenSave] = useState(false);
-  const [dialogLabel, setDialogLabel] = useState("");
+
   const { t } = useTranslation();
   const refData = useRef(null);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
@@ -31,15 +31,17 @@ export const MessageBox = ({ screenFlag = "" }) => {
       {
         screenFlag,
         userID: authState?.user?.id ?? "",
+        // transactionID,
       },
     ],
     () =>
       API.getDashboardMessageBoxData({
         screenFlag,
         userID: authState?.user?.id ?? "",
+        // transactionID: data?.transactionID,
       })
   );
-
+  // console.log("transactionID", authState);
   const dataLength = data ? data.length : 0;
 
   useEffect(() => {
@@ -49,12 +51,19 @@ export const MessageBox = ({ screenFlag = "" }) => {
         {
           screenFlag,
           userID: authState?.user?.id ?? "",
+          // transactionID: data?.transactionID,
         },
       ]);
     };
   }, []);
+
   const handleClick = () => {
-    setToggle(!toggle);
+    if (screenFlag === "Notes") {
+      setIsOpenSave(true);
+      // return;
+    } else {
+      setToggle(!toggle);
+    }
   };
   const handleDialogClose = () => {
     setIsOpenSave(false);
@@ -187,10 +196,10 @@ export const MessageBox = ({ screenFlag = "" }) => {
                   /> */}
                   <AddIcon
                     style={{ color: " #5290F5", fontSize: "30px" }}
-                    onClick={(e) => {
-                      setIsOpenSave(true);
-                      // setToggle(!toggle);
-                    }}
+                    // onClick={(e) => {
+                    //   setIsOpenSave(true);
+                    //   // setToggle(!toggle);
+                    // }}
                   />
 
                   {/* <ReactStickyNotes onChange={handleOnChange} /> */}
@@ -251,7 +260,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
                     {data.map((item, _index) => (
                       <ListItemData
                         key={"listItemforannounce" + _index}
-                        name={item?.label}
+                        name={item?.DESCRIPTION}
                         disabled={false}
                         onClick={() => {
                           handleLabelClick(item);
@@ -261,31 +270,49 @@ export const MessageBox = ({ screenFlag = "" }) => {
                   </List>
                 </nav>
               </Box>
-              {screenFlag === "Announcement" ? (
-                <>
-                  {isOpenSave ? (
-                    <ListPopupMessageWrapper
-                      closeDialog={handleDialogClose}
-                      dialogLabel={refData.current?.label}
-                      formView={"view"}
-                      transactionID={refData.current?.label}
-                    />
-                  ) : null}
-                </>
-              ) : screenFlag === "Notes" ? (
-                <>
-                  {isOpenSave ? (
-                    <StickyNotes
-                      closeDialog={handleDialogClose}
-                      dialogLabel={data}
-                    />
-                  ) : null}
-                </>
-              ) : null}
             </Grid>
           )}
         </>
       ) : null}
+      {screenFlag === "Announcement" ? (
+        <>
+          {isOpenSave ? (
+            <ListPopupMessageWrapper
+              closeDialog={handleDialogClose}
+              dialogLabel={refData.current?.DESCRIPTION}
+              formView={"view"}
+              transactionID={refData.current?.TRAN_CD}
+            />
+          ) : null}
+        </>
+      ) : screenFlag === "Notes" ? (
+        <>
+          {isOpenSave ? (
+            <StickyNotes
+              open={isOpenSave}
+              closeDialog={handleDialogClose}
+              data={data}
+            />
+          ) : null}
+        </>
+      ) : screenFlag === "Tips" ? (
+        <>
+          {isOpenSave ? (
+            <TipsWrapper
+              open={isOpenSave}
+              closeDialog={handleDialogClose}
+              dialogLabel={refData.current?.DESCRIPTION}
+            />
+          ) : null}
+        </>
+      ) : null}
+      {/* {isOpenSave && (
+        <StickyNotes
+          closeDialog={handleDialogClose}
+          dialogLabel={data}
+          open={isOpenSave}
+        />
+      )} */}
     </>
   );
 };

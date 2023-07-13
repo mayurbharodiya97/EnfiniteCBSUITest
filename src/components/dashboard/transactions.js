@@ -128,7 +128,7 @@ export const Transactions = ({ mutation, ...props }) => {
         uniqueType.add(item?.MAKER);
         uniqueType.add(item?.CHECKER);
       });
-      console.log(Array.from(uniqueType), retData);
+
       Array.from(uniqueType)
         .sort()
         .forEach((item) => {
@@ -327,7 +327,7 @@ export const Transactions = ({ mutation, ...props }) => {
           </div>
         }
         title={t("TodaysTransaction")}
-        style={{ color: "var(--theme-color1)" }}
+        style={{ color: "var(--theme-color3)" }}
       />
       <Divider />
       <CardContent style={{ padding: "10px", height: "61vh" }}>

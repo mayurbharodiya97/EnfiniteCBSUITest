@@ -69,45 +69,8 @@ const GeneralAPISDK = () => {
     document.title = titleText.split(" - ")[0] + " - " + text;
   };
 
-  const getAcctDetails = async (currentField, dependentFields, __) => {
-    console.log(
-      ">>Working",
-      dependentFields?.[0]?.value,
-      dependentFields?.[1]?.value,
-      currentField?.value
-    );
-    if (currentField?.value) {
-      const { status, data } = await AuthSDK.internalFetcher("GETACCTVIEWMKR", {
-        COMP_CD: "473 ",
-        BRANCH_CD: dependentFields?.[0]?.value,
-        ACCT_TYPE: dependentFields?.[1]?.value,
-        ACCT_CD: currentField?.value,
-      });
-      if (status === "0") {
-        console.log(">>data", data);
-        return {
-          ACCT_NM: { value: data?.[0]?.ACCT_NM },
-          ACCT_MODE: { value: data?.[0]?.ACCT_MODE },
-          CONTACT: { value: data?.[0]?.CONTACT },
-          WITHDRAW_BAL: { value: data?.[0]?.WITHDRAW_BAL },
-          CUSTOMER_ID: { value: data?.[0]?.CUSTOMER_ID },
-          PAN_NO: { value: data?.[0]?.PAN_NO },
-          UNIQUE_ID: { value: data?.[0]?.UNIQUE_ID },
-          SCR_ADD: { value: data?.[0]?.SCR_ADD },
-        };
-      } else {
-        return {
-          ACCT_NM: { value: "" },
-          ACCT_MODE: { value: "" },
-          CONTACT: { value: "" },
-          WITHDRAW_BAL: { value: "" },
-          CUSTOMER_ID: { value: "" },
-          PAN_NO: { value: "" },
-          UNIQUE_ID: { value: "" },
-          SCR_ADD: { value: "" },
-        };
-      }
-    }
+  const getCustType = () => {
+    console.log("changed...");
   };
 
   return {
@@ -115,7 +78,7 @@ const GeneralAPISDK = () => {
     getValidateValue,
     getTranslateDataFromGoole,
     setDocumentName,
-    getAcctDetails,
+    getCustType,
   };
 };
 

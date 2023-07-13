@@ -1,15 +1,10 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Roboto", sans-serif;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: "Roboto", sans-serif;
 }
 
 .header {
@@ -44,12 +39,17 @@ code {
 
 .note.new {
   background-color: #67d7cc;
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
+  box-shadow: 5px 5px 10px -2px;
 }
 
 textarea {
   border: none;
   resize: none;
   background-color: #67d7cc;
+  font-family: "Roboto", sans-serif;
 }
 
 textarea:focus {
@@ -69,16 +69,23 @@ textarea:focus {
 }
 
 .note {
-  background-color: #fef68a;
+  /* background-color: #fef68a; */
+  /* background: linear-gradient(top, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.25)); */
+  background-color: #fffd75;
+
   border-radius: 10px;
   padding: 1rem;
   min-height: 170px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   white-space: pre-wrap;
+  font-family: "Roboto", sans-serif;
 }
-
+.note:hover {
+  box-shadow: 5px 5px 10px -2px;
+  cursor: pointer;
+}
 .note-footer {
   display: flex;
   align-items: center;
@@ -107,3 +114,13 @@ textarea:focus {
 .search input:focus {
   outline: none;
 }
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  /* gap: 40px; */
+}
+
+/* .sidebar {
+  width: 60px;
+  cursor: pointer;
+} */

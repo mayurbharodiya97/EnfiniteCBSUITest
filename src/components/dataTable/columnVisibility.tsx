@@ -16,6 +16,7 @@ export const ColumnVisibility = ({
   visibleColumns,
   defaultHiddenColumns,
   classes,
+  IconButtonStyle={variant: null}
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -65,7 +66,7 @@ export const ColumnVisibility = ({
         aria-controls="long-menu"
         aria-haspopup="true"
         onClick={handleClick}
-        color="primary"
+        color={IconButtonStyle.variant ? IconButtonStyle.variant :"primary"}
         className={classes.refreshiconhover}
       >
         <ViewColumnOutlinedIcon />

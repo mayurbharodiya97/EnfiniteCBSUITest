@@ -138,12 +138,12 @@ export const getquickViewList = async () => {
     });
   if (status === "0") {
     let responseData = data;
-    console.log("<<<<responseData", responseData);
+    // console.log("<<<<responseData", responseData);
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ APP_TRAN_CD, DOC_NM, ...other }) => {
+      responseData = responseData.map(({ DOC_CD, DOC_NM, ...other }, index) => {
         return {
-          value: APP_TRAN_CD,
-          label: DOC_NM,
+          value: DOC_CD,
+          label: `${index + 1}${"."}  ${DOC_NM}`,
           ...other,
         };
       });
@@ -256,96 +256,6 @@ export const getdashUserboxData = async ({ userID, COMP_CD }) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-  // return [
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NAME: "VIJAY S SHARMA",
-  //     ACCT_NO: "1234123412351234",
-  //     CUST_ID: "1",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1678D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "2",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "3",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "4",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "45546564",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "5",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "6",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "7",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "8",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  // ];
 };
 
 export const getdashboxData = async () => {
@@ -358,15 +268,68 @@ export const getdashboxData = async () => {
     // return data;
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ TITLE, TRAN_CD, ...other }) => {
+      responseData = responseData.map(({ TITLE, TRAN_CD, ...other }, index) => {
         return {
           value: TRAN_CD,
-          label: TITLE,
+          label: `${index + 1}${"."}  ${TITLE}`,
           ...other,
         };
       });
     }
     return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const updateDashboxData = async (reqData) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETBOXDML", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const updateQuickViewData = async (reqData) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETQUICKVIEWSCREEN", reqData);
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const updateTOTPAuth = async ({ userID, currentPassword, flag }) => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOTOTPAUTHUPDATE", {
+      USER_ID: userID,
+      PASSWORD: currentPassword,
+      AUTH_FLAG: flag,
+    });
+  if (status === "0") {
+    if (flag === "DISABLED") {
+      return message;
+    }
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const updateTOTPAuthVerify = async ({
+  userID,
+  secretToken,
+  otpNumber,
+}) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOTOTPAUTHUPDATEVERIFY",
+    {
+      USER_ID: userID,
+      SECRET_TOKEN: secretToken,
+      OTP: otpNumber,
+    }
+  );
+  if (status === "0") {
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

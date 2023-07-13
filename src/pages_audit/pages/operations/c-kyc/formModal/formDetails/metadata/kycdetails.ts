@@ -1,9 +1,9 @@
-import { Grid, Typography, Divider, Skeleton } from '@mui/material';
-import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
+import * as API from "../../../api";
 
-export const proof_of_identity_meta_data = {
+
+export const kyc_proof_of_identity_meta_data = {
     form: {
-        name: "other_detail_form",
+        name: "kyc_poi_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
@@ -48,14 +48,15 @@ export const proof_of_identity_meta_data = {
             render: {
                 componentType: "select",
             },
-            name: "FORM_NO",
+            name: "FORM_60",
             label: "Form 60/61",
             placeholder: "",
+            defaultValue: "N",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             options: [
-                {label: "Yes", value: "Yes"},
-                {label: "No", value: "No"},
+                {label: "Form 61", value: "F"},
+                {label: "No", value: "N"},
             ],
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
@@ -72,11 +73,11 @@ export const proof_of_identity_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "PAN",
+            name: "PAN_NO",
             label: "PAN",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -86,17 +87,17 @@ export const proof_of_identity_meta_data = {
             label: "UID(Aadhaar)",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "VOTER_ID",
+            name: "ELECTION_CARD_NO",
             label: "Voter Id",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
           render: {
@@ -104,49 +105,50 @@ export const proof_of_identity_meta_data = {
           },
           name: "EXPLICIT_TDS",
           label: "Explicit TDS",
+          defaultValue: "N",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
           options: [
-              {label: "Yes", value: "Yes"},
-              {label: "No", value: "No"},
+              {label: "Yes", value: "T"},
+              {label: "No", value: "N"},
           ],
         },
         {
           render: {
               componentType: "textField",
           },
-          name: "NREGA",
+          name: "NREGA_JOB_CARD",
           label: "NREGA",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
         {
           render: {
               componentType: "textField",
           },
-          name: "OTHER_POI",
+          name: "OTHER_DOC",
           label: "Other[PoI]",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
         {
           render: {
               componentType: "textField",
           },
-          name: "POI_NO",
+          name: "OTHER_DOC_NO",
           label: "PoI No.",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
     ]
 }
-export const proof_of_identity_passport_details_meta_data = {
+export const kyc_proof_of_identity_passport_details_meta_data = {
     form: {
-        name: "other_detail_form",
+        name: "kyc_poi_passport_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
@@ -195,45 +197,49 @@ export const proof_of_identity_passport_details_meta_data = {
             label: "No.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "AUTHO",
+            name: "PASSPORT_AUTHORITY_CD",
             label: "Autho.",
             placeholder: "",
+            options: () => API.getPMISCData("Authority"),
+            _optionsKey: "passportAuthority",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
           render: {
               componentType: "datePicker",
           },
-          name: "ISSUE_DATE",
+          name: "PASSPORT_ISSUE_DT",
           label: "Issue Date",
           required: true,
+          format: "dd/MM/yyyy",
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
         {
           render: {
               componentType: "datePicker",
           },
-          name: "EXPIRY_Date",
+          name: "PASSPORT_EXPIRY_DT",
           label: "Expiry Date",
           required: true,
+          format: "dd/MM/yyyy",
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
     ]
 }
-export const proof_of_identity_driving_license_details_meta_data = {
+export const kyc_proof_of_identity_driving_license_details_meta_data = {
     form: {
-        name: "other_detail_form",
+        name: "kyc_poi_driving_license_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
@@ -278,50 +284,54 @@ export const proof_of_identity_driving_license_details_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "PASSPORT_NO",
+            name: "DRIVING_LICENSE_NO",
             label: "No.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "AUTHO",
+            name: "DRIVING_LICENSE_AUTHORITY_CD",
             label: "Autho.",
+            options: () => API.getPMISCData("Authority"),
+            _optionsKey: "drivingLicenseAuthority",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
           render: {
               componentType: "datePicker",
           },
-          name: "ISSUE_DATE",
+          name: "DRIVING_LICENSE_ISSUE_DT",
           label: "Issue Date",
           required: true,
+          format: "dd/MM/yyyy",
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
         },
         {
           render: {
               componentType: "datePicker",
           },
-          name: "EXPIRY_Date",
+          name: "DRIVING_LICENSE_EXPIRY_DT",
           label: "Expiry Date",
           required: true,
+          format: "dd/MM/yyyy",
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
     ]
 }
 
-export const proof_of_address_meta_data = {
+export const kyc_proof_of_address_meta_data = {
   form: {
-      name: "other_detail_form",
+      name: "kyc_poa_details_form",
       label: "", 
       resetFieldOnUnmount: false,
       validationRun: "onBlur", 
@@ -370,74 +380,86 @@ export const proof_of_address_meta_data = {
           label: "Address Type",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
-          options: [
-              {label: "Address Type1", value: "Address Type1"},
-              {label: "Address Type2", value: "Address Type2"},
-          ],
+          GridProps: {xs: 4, sm:3},
+          options: () => API.getPMISCData("ADDRESS_TYPE"),
+          _optionsKey: "currentAddType",
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "LINE1",
+          name: "ADD1",
           label: "Line1",
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "LINE2",
+          name: "ADD2",
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "LINE3",
+          name: "ADD3",
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
-              componentType: "textField",
+              componentType: "select",
           },
-          name: "AREA",
-          label: "Area",
+          options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
+          _optionsKey: "parentAreaList",
+          name: "PAR_AREA_CD",
+          label: "Parent Area",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "select",
+          },
+          options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(authState?.companyID, authState?.user?.branchCode),
+          _optionsKey: "subAreaList",
+          name: "AREA_CD",
+          label: "Sub Area",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "PIN",
+          name: "PIN_CODE",
           label: "PIN",
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "CITY",
-          label: "City*",
+          name: "CITY_CD",
+          label: "City",
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -447,7 +469,7 @@ export const proof_of_address_meta_data = {
           label: "District",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -457,7 +479,7 @@ export const proof_of_address_meta_data = {
           label: "State",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -467,7 +489,7 @@ export const proof_of_address_meta_data = {
           label: "Country",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -477,7 +499,7 @@ export const proof_of_address_meta_data = {
           label: "State/U.T(Union Territories) Code",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -487,34 +509,36 @@ export const proof_of_address_meta_data = {
           label: "ISO-3166 Country Code of Residence",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
-              componentType: "textField",
+              componentType: "select",
           },
-          name: "PROOF_OF_ADDRESS",
+          name: "PROOF_OF_ADD",
           label: "Proof of Add.",
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
+          options: () => API.getPMISCData("CKYC_ADD_PROOF"),
+          _optionsKey: "currentPoA",
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "OTHERS_POA",
+          name: "OTHER_POA",
           label: "Others[PoA]",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
   ]
 }
-export const proof_of_local_address_meta_data = {
+export const kyc_proof_of_local_address_meta_data = {
   form: {
-      name: "other_detail_form",
+      name: "kyc_local_poa_details_form",
       label: "", 
       resetFieldOnUnmount: false,
       validationRun: "onBlur", 
@@ -557,90 +581,102 @@ export const proof_of_local_address_meta_data = {
   fields: [
       {
         render: { componentType: "checkbox", group: 0 },
-        name: "SAME_AS_PERMANENT_ADD",
+        name: "SAME_AS_PER",
         sequence: 9,
         type: "text",
         label: "Same As Permanent Address",
         // isReadOnly: true,
         // placeholder: "Allowed Release",
-        GridProps: { xs: 12, md: 3, sm: 3 },
+        GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "select",
           },
-          name: "Local_ADDRESS_TYPE",
+          name: "LOC_ADD_TYPE",
           label: "Local Address Type",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
-          options: [
-              {label: "Local Address Type1", value: "Local Address Type1"},
-              {label: "Local Address Type2", value: "Local Address Type2"},
-          ],
+          GridProps: {xs: 4, sm:3},
+          options: () => API.getPMISCData("ADDRESS_TYPE"),
+          _optionsKey: "currentAddType",
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "LINE1",
+          name: "LOC_ADD1",
           label: "Line1",
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "LINE2",
+          name: "LOC_ADD2",
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "LINE3",
+          name: "LOC_ADD3",
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
-              componentType: "textField",
+              componentType: "select",
           },
-          name: "AREA",
+          name: "LOC_AREA_CD",
+          options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
+          _optionsKey: "localParentAreaList",
           label: "Area",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "select",
+          },
+          name: "LOC_AREA_CD2",
+          options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
+          _optionsKey: "localSubAreaList",
+          label: "Area",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "PIN",
+          name: "LOC_PIN_CODE",
           label: "PIN",
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "CITY",
-          label: "City*",
+          name: "LOC_CITY_CD",
+          label: "City",
           required: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -650,7 +686,7 @@ export const proof_of_local_address_meta_data = {
           label: "District",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -660,7 +696,7 @@ export const proof_of_local_address_meta_data = {
           label: "State",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -670,7 +706,7 @@ export const proof_of_local_address_meta_data = {
           label: "Country",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -680,7 +716,7 @@ export const proof_of_local_address_meta_data = {
           label: "State/U.T(Union Territories) Code",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -690,24 +726,26 @@ export const proof_of_local_address_meta_data = {
           label: "ISO-3166 Country Code of Residence",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
-              componentType: "textField",
+              componentType: "select",
           },
-          name: "PROOF_OF_ADDRESS",
+          name: "LOC_PROOF_OF_ADD",
           label: "Proof of Add.",
           required: true,
           placeholder: "",
+          options: () => API.getPMISCData("CKYC_LOC_POA"),
+          _optionsKey: "localPoA",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
   ]
 }
-export const proof_of_address_contact_meta_data = {
+export const kyc_proof_of_address_contact_meta_data = {
   form: {
-      name: "other_detail_form",
+      name: "kyc_poa_contact_details_form",
       label: "", 
       resetFieldOnUnmount: false,
       validationRun: "onBlur", 
@@ -756,7 +794,7 @@ export const proof_of_address_contact_meta_data = {
           label: "Phone(O)",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -766,7 +804,7 @@ export const proof_of_address_contact_meta_data = {
           label: "Phone(R)",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -776,7 +814,7 @@ export const proof_of_address_contact_meta_data = {
           label: "Mobile No.",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -786,117 +824,17 @@ export const proof_of_address_contact_meta_data = {
           label: "Fax",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "EMAIL_ID",
+          name: "E_MAIL_ID",
           label: "Email ID",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
   ]
 }
-
-const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
-  //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
-  //  const [isLoading, setIsLoading] = useState(false)
-  //  const myGridRef = useRef<any>(null);
-
-    return (
-        <Grid container rowGap={3}
-          // sx={{backgroundColor: "#eee"}}
-        >
-            {/* <Typography variant={"h6"}>Personal Details</Typography> */}            
-            {isCustomerData ? <Grid 
-                sx={{
-                    backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
-                    border: "1px solid rgba(0,0,0,0.12)", 
-                    borderRadius: "20px"
-                }} container item xs={12} direction={'column'}>
-                <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>KYC Details</Typography>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Proof of Identity [PoI]</Typography>
-                </Grid>
-                <Grid container item>
-                    <Grid item xs={12}>
-                        <FormWrapper 
-                            key={"new-form-in-kyc"}
-                            metaData={proof_of_identity_meta_data as MetaDataType}
-                            formStyle={{}}
-                            hideHeader={true}
-                        />
-                    </Grid>                    
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Passport Details</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={proof_of_identity_passport_details_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Driving License Details</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={proof_of_identity_driving_license_details_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-
-            {isCustomerData ? <Grid 
-                sx={{
-                    backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
-                    border: "1px solid rgba(0,0,0,0.12)", 
-                    borderRadius: "20px"
-                }} container item xs={12} direction={'column'}>
-                <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Proof of Address [PoA]</Typography>
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Current/Permanent/Overseas Address</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={proof_of_address_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Correspondence/Local Address</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={proof_of_local_address_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Contact</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={proof_of_address_contact_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-        </Grid>        
-    )
-}
-
-export default KYCDetails

@@ -2,7 +2,7 @@ import { useEffect, useContext } from "react";
 import { useQuery } from "react-query";
 import { cacheWrapperKeyGen, ClearCacheContext } from "cache";
 import { transformDependentFieldsState } from "packages/form";
-
+import { AuthContext } from "pages_audit/auth";
 const computeDependentKey = (dependentValues = {}) => {
   let keys = Object.keys(dependentValues).sort();
   return keys.reduce((accum, one) => {
@@ -29,6 +29,7 @@ export const useOptionsFetcher = (
 ): { loadingOptions: boolean } => {
   let loadingOptions = false;
   let queryKey: any[] = [];
+  const { authState } = useContext(AuthContext);
   const { addEntry } = useContext(ClearCacheContext);
   const formStateKeys = cacheWrapperKeyGen(
     Object.values(
@@ -56,7 +57,8 @@ export const useOptionsFetcher = (
       options(
         dependentValues,
         formState,
-        transformDependentFieldsState(dependentValues)
+        transformDependentFieldsState(dependentValues),
+        authState,
       ),
     {
       retry: false,

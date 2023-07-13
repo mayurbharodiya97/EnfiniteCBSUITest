@@ -15,13 +15,14 @@ export const getBankimgAndProfileimg = async ({ userID, companyID }) => {
   }
 };
 
-export const getQuickView = async ({ userName, companyID }) => {
+export const getQuickView = async ({ userID, companyID, branchCode }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETQUICKACCESSVIEW", {
       // COMP_CD: "473 ",
+      // BRANCH_CD: "0002",
       COMP_CD: companyID,
-      BRANCH_CD: "0002",
-      USER_NAME: userName,
+      BRANCH_CD: branchCode,
+      USER_NAME: userID,
     });
   if (status === "0") {
     return data;

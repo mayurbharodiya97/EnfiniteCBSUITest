@@ -44,7 +44,7 @@ export const UserProfileMetaData = {
       name: "USER_ID",
       sequence: 1,
       type: "text",
-      label: "UserId",
+      label: "User Id",
       isReadOnly: true,
       placeholder: "User Id",
       GridProps: { xs: 12, md: 3, sm: 3 },
@@ -488,7 +488,7 @@ export const userAccesstype: GridMetaDataType = {
 export const PersonlizationQuickGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Quick View",
+    gridLabel: "QuickView",
     rowIdColumn: "ID",
     defaultColumnConfig: {
       width: 400,
@@ -526,7 +526,31 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "editableSelect",
-      options: () => getquickViewList(),
+      options: getquickViewList,
+      validation: (value, data, prev, next) => {
+        // if (!Boolean(value)) {
+        //   return "This field is required";
+        // }
+        if (Array.isArray(prev)) {
+          let lb_error = false;
+          let ls_msg = "";
+          prev.forEach((item, index) => {
+            if (lb_error) {
+              return ls_msg;
+            }
+            if (value === item?.DOC_CD) {
+              lb_error = true;
+              // ls_msg = "Option is Already entered at Line " + (index + 1);
+              ls_msg = "Option is Already entered at above Line ";
+              return ls_msg;
+            }
+          });
+          if (lb_error) {
+            return ls_msg;
+          }
+        }
+        return "";
+      },
       _optionsKey: "getquickViewList",
       width: 370,
       maxWidth: 370,
@@ -537,7 +561,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
 export const PersonlizationDashboardGridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Dashboard Data Boxes",
+    gridLabel: "DashboardDataBoxes",
     rowIdColumn: "ID",
     defaultColumnConfig: {
       width: 400,
@@ -552,7 +576,7 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
     disableGroupBy: true,
     allowRowSelection: false,
     containerHeight: {
-      min: "48vh",
+      min: "58vh",
       max: "65vh",
     },
   },
@@ -575,32 +599,34 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "editableSelect",
-      options: () => getdashboxData(),
-      _optionsKey: "getdashUserboxData",
+      options: getdashboxData,
+      _optionsKey: "getdashboxData",
       width: 370,
       maxWidth: 370,
       minWidth: 200,
-      validation: (value, data, prev) => {
-        console.log("<<<validate", value, data, prev);
-
+      validation: (value, data, prev, next) => {
         // if (!Boolean(value)) {
         //   return "This field is required";
         // }
-        // if (Array.isArray(prev)) {
-        //   let lb_error = false;
-        //   let ls_msg = "";
-        //   prev.forEach((item, index) => {
-        //     if (value === item?.DASH_TRAN_CD) {
-        //       lb_error = true;
-        //       ls_msg = "Option is Already entered at Line " + (index + 1);
-        //       return ls_msg;
-        //     }
-        //   });
-        //   if (lb_error) {
-        //     return ls_msg;
-        //   }
-        // }
-        // return "";
+        if (Array.isArray(prev)) {
+          let lb_error = false;
+          let ls_msg = "";
+          prev.forEach((item, index) => {
+            if (lb_error) {
+              return ls_msg;
+            }
+            if (value === item?.DASH_TRAN_CD) {
+              lb_error = true;
+              // ls_msg = "Option is Already entered at Line " + (index + 1);
+              ls_msg = "Option is Already entered at above Line ";
+              return ls_msg;
+            }
+          });
+          if (lb_error) {
+            return ls_msg;
+          }
+        }
+        return "";
       },
     },
   ],

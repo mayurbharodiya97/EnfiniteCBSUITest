@@ -25,7 +25,11 @@ export const getAccountStatusData = async ({ COMP_CD }) => {
   }
 };
 
-export const getDashboardMessageBoxData = async ({ screenFlag, userID }) => {
+export const getDashboardMessageBoxData = async ({
+  screenFlag,
+  userID,
+  transactionID,
+}) => {
   let apiURL;
   let apiReq = {};
   if (screenFlag === "Announcement") {
@@ -40,7 +44,8 @@ export const getDashboardMessageBoxData = async ({ screenFlag, userID }) => {
     apiURL = "GETTIPSDETAILS";
     apiReq = {
       USER_NAME: userID,
-      // USER_NAME: "brij001",
+      TRAN_CD: transactionID,
+      // USER_NAME: "anilt",
     };
   } else if (screenFlag === "Notes") {
     apiReq = {
@@ -58,17 +63,17 @@ export const getDashboardMessageBoxData = async ({ screenFlag, userID }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(apiURL, apiReq);
   if (status === "0") {
-    // return data;
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ TRAN_CD, DESCRIPTION }) => {
-        return {
-          value: TRAN_CD,
-          label: DESCRIPTION,
-        };
-      });
-    }
-    return responseData;
+    return data;
+    // let responseData = data;
+    // if (Array.isArray(responseData)) {
+    //   responseData = responseData.map(({ TRAN_CD, DESCRIPTION }) => {
+    //     return {
+    //       transactionID: TRAN_CD,
+    //       label: DESCRIPTION,
+    //     };
+    //   });
+    // }
+    // return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -81,6 +86,17 @@ export const getMessageBoxListData = async ({ transactionID, userID }) => {
     });
   if (status === "0") {
     return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const updateNoteDetailsData = async ({ data }) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOTNOTESDML",
+    data
+  );
+  if (status === "0") {
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

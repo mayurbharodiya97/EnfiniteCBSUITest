@@ -34,7 +34,13 @@ import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 import { useTranslation } from "react-i18next";
-export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
+
+export const MyAppBar = ({
+  handleDrawerOpen,
+  handleDrawerClose,
+  open,
+  columns,
+}) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
@@ -77,6 +83,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
         companyID: authController?.authState?.access_token?.companyID,
       })
   );
+  ////
   useEffect(() => {
     if (Boolean(data?.[0]?.PROFILE_PHOTO)) {
       let blob = utilFunction.base64toBlob(data?.[0]?.PROFILE_PHOTO);
@@ -123,7 +130,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
         return { ...old, bank: urlObj.current?.bank };
       });
     }
-  }, [data?.[0]?.BANK_LOGO]);
+  }, [data?.[0]?.BANK_LOGO]); ////
 
   const Greetings = () => {
     let hours = new Date().getHours();
@@ -258,12 +265,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
               alignItems={"center"}
             >
               <Typography fontSize={"17px"} color={"#1C1C1C"}>
-                {/* Greetings....{" "} */}
-                {Greetings()}
-                {authController.authState.user.id
-                  ? authController.authState.user.id.charAt(0).toUpperCase() +
-                    authController.authState.user.id.slice(1)
-                  : null}
+                {Greetings()} {authController.authState.user.id}
               </Typography>
               <img src={Waving_hand} alt="" style={{ height: "18px" }} />
             </Stack>
@@ -367,7 +369,7 @@ export const MyAppBar = ({ handleDrawerOpen, handleDrawerClose, open }) => {
   );
 };
 
-const checkDateAndDisplay = (dateStr: string) => {
+export const checkDateAndDisplay = (dateStr: string) => {
   // const dt = new Date(dateStr);
   // //@ts-ignore
   // if (dt instanceof Date && !isNaN(dt)) {

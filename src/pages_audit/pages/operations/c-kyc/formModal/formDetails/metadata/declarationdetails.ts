@@ -1,11 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { Grid, Typography, Divider, Skeleton } from '@mui/material';
-import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-
-
-const declaration_meta_data = {
+export const declaration_meta_data = {
   form: {
-      name: "other_detail_form",
+      name: "declaration_details_form",
       label: "", 
       resetFieldOnUnmount: false,
       validationRun: "onBlur", 
@@ -50,46 +45,50 @@ const declaration_meta_data = {
           render: {
               componentType: "select",
           },
-          name: "DECLARATION_RECEIVED",
+          name: "FATCA_DEC_RECVD",
           label: "Declaration Received",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
+          defaultValue: "N",
           options: [
-              {label: "YES", value: "yes"},
-              {label: "NO", value: "no"},
+              {label: "FOR FATCA", value: "Y"},
+              {label: "FOR CRS", value: "C"},
+              {label: "NO", value: "N"},
           ],
       },
       {
         render: {
             componentType: "datePicker",
         },
-        name: "DECLARATION_RECEIVED_DATE",
+        name: "FATCA_DT",
+        format: "dd/MM/yyyy",
         label: "Declaration Received Date",
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs: 6, sm:3},
+        GridProps: {xs: 4, sm:3},
       },
       {
           render: {
               componentType: "textField",
           },
-          name: "GIIN",
+          name: "US_GIIN",
           label: "GIIN",
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
         render: {
             componentType: "datePicker",
         },
-        name: "DATE_OF_INCORPORATION",
+        format: "dd/MM/yyyy",
+        name: "DATE_OF_COMMENCEMENT",
         label: "Date of Incorporation",
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs: 6, sm:3},
+        GridProps: {xs: 4, sm:3},
       },      
       {
           render: {
@@ -99,7 +98,7 @@ const declaration_meta_data = {
           label: "Place of Incorporation",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -109,7 +108,7 @@ const declaration_meta_data = {
           label: "TIN",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -119,7 +118,7 @@ const declaration_meta_data = {
           label: "Country of Incorporation",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
       {
           render: {
@@ -129,42 +128,7 @@ const declaration_meta_data = {
           label: "TIN Issuing Country",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 6, sm:3},
+          GridProps: {xs: 4, sm:3},
       },
   ]
 }
-
-const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
-  //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
-  //  const [isLoading, setIsLoading] = useState(false)
-const myGridRef = useRef<any>(null);
-
-    return (
-        <Grid container rowGap={3}>
-            {/* <Typography variant={"h6"}>Declaration Details</Typography> */}            
-            {isCustomerData ? <Grid 
-                sx={{
-                    backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
-                    border: "1px solid rgba(0,0,0,0.12)", 
-                    borderRadius: "20px"
-                }} container item xs={12} direction={'column'}>
-                <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Declaration Details</Typography>
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>FATCA/CRS Details</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={declaration_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-        </Grid>        
-    )
-}
-
-export default DeclarationDetails

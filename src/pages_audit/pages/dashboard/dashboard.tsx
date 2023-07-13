@@ -140,6 +140,14 @@ const Dashboard = () => {
                         md={4}
                         xs={12}
                         key={index}
+                        style={{
+                          borderBottom: "2px solid #EBEDEE",
+                          borderRight: "2px solid #EBEDEE",
+                          // marginBottom: "10px",
+                          paddingRight: "10px",
+                          paddingBottom: "10px",
+                          paddingTop: "10px",
+                        }}
                       >
                         <DashboardBox
                           key={"board" + index}

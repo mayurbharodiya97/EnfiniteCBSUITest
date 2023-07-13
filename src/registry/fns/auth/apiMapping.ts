@@ -59,6 +59,50 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/BANKPROFILEPICK",
     packageName: "",
   },
+  CATEGORYNAME: {
+    url: "/customerServiceAPI/CATEGORYNAME",
+    packageName: "",
+  },
+  GETAREA: {
+    url: "/customerServiceAPI/GETAREA",
+    packageName: "",
+  },
+  GETCUSTOMERDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTOMERDTL",
+    packageName: "",
+  },
+  GETCIFCATEG: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCIFCATEG",
+    packageName: "",
+  },
+  GETCIFTABDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCIFTABDTL",
+    packageName: "",
+  },
+  GETPMISCDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPMISCDATA",
+    packageName: "",
+  },
+  GETCOUNTRYLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOUNTRYLIST",
+    packageName: "",
+  },
+  GETCUSTGROUPLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTGROUPLIST",
+    packageName: "",
+  },
+  GETCUSTCOMMULIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTCOMMULIST",
+    packageName: "",
+  },
+  CUSTOMERDETAILS: {
+    url: "/customerServiceAPI/CUSTOMERDETAILS",
+    packageName: "",
+  },
+  GETBANKIMAGEANDPROFILEPIC: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBANKIMAGEANDPROFILEPIC",
+    packageName: "",
+  },
   GETQUICKACCESSVIEW: {
     url: "dashboardServiceAPI/GETQUICKACCESSVIEW",
     packageName: "",
@@ -119,6 +163,34 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/UPDATEPROFILEPIC",
     packageName: "",
   },
+  GETUSRQUICKVIEW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRQUICKVIEW",
+    packageName: "",
+  },
+  GETUSRDOCLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDOCLIST",
+    packageName: "",
+  },
+  GETDASHBOX: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDASHBOX",
+    packageName: "",
+  },
+  GETUSRDASHBOX: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDASHBOX",
+    packageName: "",
+  },
+  GETBOXDML: {
+    url: "dashboardServiceAPI/GETBOXDML",
+    packageName: "",
+  },
+  GETQUICKVIEWSCREEN: {
+    url: "dashboardServiceAPI/GETQUICKVIEWSCREEN",
+    packageName: "",
+  },
+  GETPASSBKTEMPL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPASSBKTEMPL",
+    packageName: "",
+  },
   FORGOTPASSWORD: {
     url: "/enfinityCommonServiceAPI/FORGOTPASSWORD",
     packageName: "",
@@ -135,20 +207,21 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETECIRCULARDETAIL",
     packageName: "",
   },
-  GETUSRQUICKVIEW: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRQUICKVIEW",
+  DOTNOTESDML: {
+    url: "dashboardServiceAPI/DOTNOTESDML",
     packageName: "",
   },
-  GETUSRDOCLIST: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDOCLIST",
+  GETPARENTAREALIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPARENTAREALIST",
     packageName: "",
   },
-  GETDASHBOX: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDASHBOX",
+  GETAREALIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREALIST",
     packageName: "",
   },
   GETUSRDASHBOX: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDASHBOX",
+>>>>>>>>> Temporary merge branch 2
     packageName: "",
   },
 };

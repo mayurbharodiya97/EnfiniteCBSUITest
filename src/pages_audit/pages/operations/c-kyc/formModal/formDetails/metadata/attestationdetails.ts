@@ -1,10 +1,6 @@
-import React from "react"
-import { Grid, Skeleton, Typography } from "@mui/material"
-import FormWrapper, {MetaDataType} from "components/dyanmicForm"
-
 export const attestation_detail_meta_data = {
     form: {
-        name: "other_detail_form",
+        name: "attestation_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
@@ -58,7 +54,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -73,7 +69,7 @@ export const attestation_detail_meta_data = {
             // required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -88,7 +84,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -99,7 +95,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -109,7 +105,7 @@ export const attestation_detail_meta_data = {
             label: "KYC Verification Emp.Name",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -119,7 +115,7 @@ export const attestation_detail_meta_data = {
             label: "KYC Verification Emp.Designation",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -134,7 +130,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -142,9 +138,10 @@ export const attestation_detail_meta_data = {
             },
             name: "KYC_VERIFICATION_DATE",
             label: "KYC Verification Date",
+            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -155,7 +152,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -166,7 +163,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -176,7 +173,7 @@ export const attestation_detail_meta_data = {
             label: "Place of Declaration",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -184,42 +181,10 @@ export const attestation_detail_meta_data = {
             },
             name: "DATE_OF_DECLARATION",
             label: "Date of Declaration",
+            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
     ]
 }
-
-const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
-    return (
-        <Grid container rowGap={3}
-          // sx={{backgroundColor: "#eee"}}
-        >
-            {/* <Typography variant={"h6"}>Personal Details</Typography> */}
-            {isCustomerData ? <Grid 
-                sx={{
-                    backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
-                    border: "1px solid rgba(0,0,0,0.12)", 
-                    borderRadius: "20px"
-                }} container item xs={12} direction={'column'}>
-                <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Attestation Details</Typography>
-                </Grid>
-                <Grid container item>
-                    <Grid item xs={12}>
-                        <FormWrapper 
-                            key={"new-form-in-kyc"}
-                            metaData={attestation_detail_meta_data as MetaDataType}
-                            formStyle={{}}
-                            hideHeader={true}
-                        />
-                    </Grid>                    
-                </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-        </Grid>
-    )
-}
-
-export default AttestationDetails

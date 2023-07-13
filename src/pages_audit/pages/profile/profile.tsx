@@ -55,13 +55,46 @@ import HowToRegOutlinedIcon from "@mui/icons-material/HowToRegOutlined";
 import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAccessibilityOutlined";
 import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
-import { useTranslation } from "react-i18next";
 import About from "./about";
 import { ActionTypes } from "components/dataTable";
+import TotpEnbaledDisabled from "./totp/totp-enabled-disable";
+import { CreateDetailsRequestData } from "components/utils";
+import QrCode2Icon from "@mui/icons-material/QrCode2";
+// interface notificationDataType {
+//   activityID: string;
+//   readFlag: string;
+// }
 
+// const notificationDataWrapperFn =
+//   (notificationData) =>
+//   async ({ activityID, readFlag }: notificationDataType) => {
+//     return notificationData({ activityID, readFlag });
+//   };
+
+const Dashactions: ActionTypes[] = [
+  {
+    actionName: "save",
+    actionLabel: "save",
+    multiple: false,
+    rowDoubleClick: false,
+    actionTextColor: "var(--theme-color2)",
+    actionBackground: "var(--theme-color3)",
+  },
+];
+const Quickactions: ActionTypes[] = [
+  {
+    actionName: "save",
+    actionLabel: "save",
+    multiple: false,
+    rowDoubleClick: false,
+    actionTextColor: "var(--theme-color2)",
+    actionBackground: "var(--theme-color3)",
+  },
+];
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
+  const myGridQuickRef = useRef<any>(null);
   const userID = authState?.user?.id;
   const urlObj = useRef<any>(null);
   const fileUploadControl = useRef<any | null>(null);
@@ -70,8 +103,11 @@ export const Profile = () => {
   const [filesdata, setFilesData] = useState<any>([]);
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
   const [value, setValue] = useState("one");
+  const [dashBoxData, setDashBoxData] = useState<any>([]);
+  const [quickViewData, setQuickViewData] = useState<any>([]);
+  const [showTOTP, setshowTOTP] = useState(false);
   const [mode, setMode] = useState<string>("userLogin");
-  const { t } = useTranslation();
+  // const [girdData, setGridData] = useState<any>();
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -85,7 +121,6 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
-
   const userActivityData = useQuery<any, any, any>(["GETUSERACTIVITY"], () =>
     API.getUserLoginDetails({ userID })
   );
@@ -95,19 +130,76 @@ export const Profile = () => {
   const userAccessType = useQuery<any, any, any>(["GETUSERACESSTYPE"], () =>
     API.getUserAccessType({ userID })
   );
-  const quickView = useQuery<any, any, any>(["GETUSRQUICKVIEW"], () =>
+  const quickViewUsrData = useQuery<any, any, any>(["GETUSRQUICKVIEW"], () =>
     API.getquickView({ userID, COMP_CD: authState?.companyID ?? "" })
   );
-  // const dashboxData = useQuery<any, any, any>(["GETDASHBOX"], () =>
-  //   API.getdashUserboxData({ userID, COMP_CD: authState?.companyID ?? "" })
-  // );
-  // const quickViewList = useQuery<any, any, any>(["GETUSRDOCLIST"], () =>
-  //   API.getquickViewList({ userID, COMP_CD: authState?.companyID ?? "" })
-  // );
-  // console.log("<<quickViewList", quickViewList.data);
   const dashboxUserData = useQuery<any, any, any>(["GETUSRDASHBOX"], () =>
     API.getdashUserboxData({ userID, COMP_CD: authState?.companyID ?? "" })
   );
+  const saveDashData: any = useMutation(API.updateDashboxData, {
+    onSuccess: (data) => {},
+  });
+  const saveQuickData: any = useMutation(API.updateQuickViewData, {
+    onSuccess: (data) => {},
+  });
+  const setCurrentAction = useCallback((data) => {
+    handleSubmit();
+  }, []);
+  const setQuickAction = useCallback((data) => {
+    quickSubmit();
+  }, []);
+  const handleSubmit = async () => {
+    let { hasError, data } = await myGridRef.current?.validate(true);
+    console.log(">>>handleSubmit1", hasError, data);
+    if (hasError === false) {
+      if (data) {
+        // setGridData(data);
+      }
+    } else {
+      let result = myGridRef?.current?.cleanData?.();
+      let finalResult = result.filter((one) => !Boolean(one?._hidden));
+      finalResult = CreateDetailsRequestData(finalResult);
+      if (
+        Array.isArray(finalResult.isUpdatedRow) &&
+        finalResult?.isUpdatedRow?.length === 0
+      ) {
+      } else {
+        let data = {
+          // ...refID,
+          DETAILS_DATA: finalResult,
+        };
+        saveDashData.mutate(data);
+        // onsubmit({ data, mode, setServerError });
+      }
+    }
+  };
+  const quickSubmit = async () => {
+    let { hasError, data } = await myGridQuickRef.current?.validate(true);
+    console.log(">>>quickSubmit1", hasError, data);
+    if (hasError === false) {
+      console.log(">>>quickSubmit2");
+      if (data) {
+        // setGridData(data);
+      }
+    } else {
+      console.log(">>>quickSubmit3");
+      let result = myGridQuickRef?.current?.cleanData?.();
+      let finalResult = result.filter((one) => !Boolean(one?._hidden));
+      finalResult = CreateDetailsRequestData(finalResult);
+      if (
+        Array.isArray(finalResult.isUpdatedRow) &&
+        finalResult?.isUpdatedRow?.length === 0
+      ) {
+      } else {
+        let data = {
+          // ...refID,
+          DETAILS_DATA: finalResult,
+        };
+        saveQuickData.mutate(data);
+        // onsubmit({ data, mode, setServerError });
+      }
+    }
+  };
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
@@ -125,6 +217,12 @@ export const Profile = () => {
       setProfilePictureURL(urlObj.current);
     }
   }, [queryData.data]);
+  useEffect(() => {
+    setQuickViewData(quickViewUsrData.data);
+  }, [quickViewUsrData.data]);
+  useEffect(() => {
+    setDashBoxData(dashboxUserData.data);
+  }, [dashboxUserData.data]);
   const handleProfileUploadClose = (flag, imgdata) => {
     //console.log(Boolean(flag), flag === "Y", typeof imgdata, Boolean(imgdata));
     if (
@@ -157,6 +255,7 @@ export const Profile = () => {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
+
   return (
     <Fragment>
       {queryData.isLoading ||
@@ -245,7 +344,7 @@ export const Profile = () => {
                               fontWeight: "400",
                             }}
                           >
-                            {t("profile.UpdatePhoto")}
+                            Update Photo
                           </Typography>
                           <input
                             name="fileselect"
@@ -296,23 +395,37 @@ export const Profile = () => {
                                 fontWeight: 500,
                               }}
                             >
-                              {t("profile.MyProfile")}
+                              My Profile
                             </Typography>
 
-                            <Box sx={{ flexGrow: 1 }} />
+                            <Box sx={{ flexGrow: 1 }}></Box>
                             <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                              <Button
+                                onClick={() => {
+                                  setshowTOTP(true);
+                                }}
+                                color="secondary"
+                                sx={{
+                                  background: "#ECEFF9",
+                                  borderRadius: "7px",
+                                }}
+                              >
+                                {" "}
+                                <QrCode2Icon sx={{ mr: 1 }} />
+                                Enable T-OTP Auth
+                              </Button>
                               <IconButton
                                 aria-label="show 4 new mails"
                                 color="inherit"
                                 sx={{
                                   background: "#ECEFF9",
-                                  borderRadius: "10px",
+                                  borderRadius: "7px",
                                   ml: 2,
                                 }}
                                 onClick={handleNavigate}
                               >
                                 <CancelOutlinedIcon
-                                  color="info"
+                                  color="secondary"
                                   fontSize="medium"
                                 />
                               </IconButton>
@@ -343,15 +456,13 @@ export const Profile = () => {
                         </Grid>
                         {/* <Grid item xs={4}>
                           <Typography>
-                            {t("profile.MobileNo")} :-{" "}
-                            {queryData?.data?.MOBILE_NUMBER}
+                            Mobile No. :- {queryData?.data?.MOBILE_NUMBER}
                           </Typography>
                           <Typography>
-                            {t("profile.EmailId")} :-{" "}
-                            {queryData?.data?.EMAIL_ID}
+                            User-Id :- {queryData?.data?.USER_ID}
                           </Typography>
-                          <Typography>{t("profile.About")} :- </Typography>
-                        </Grid>
+                          <Typography>About :- </Typography>
+                        </Grid> */}
                       </Grid>
                       <Box sx={{ width: "100%", marginTop: "auto" }}>
                         <Tabs
@@ -359,7 +470,7 @@ export const Profile = () => {
                             "& .MuiTabs-fixed": {
                               display: "flex",
 
-                              // justifyContent: "flex-end",
+                              justifyContent: "flex-end",
                             },
                             "& .Mui-selected": {
                               color: "var(--theme-color1)",
@@ -379,7 +490,7 @@ export const Profile = () => {
                         >
                           <Tab
                             value="one"
-                            label={t("profile.UserProfile")}
+                            label="User Profile"
                             icon={<AccountCircleOutlinedIcon />}
                             iconPosition="start"
                             // onClick={moveToUserDetail}
@@ -389,7 +500,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="two"
-                            label={t("profile.AllowedAccess")}
+                            label="Allowed Access"
                             icon={<HowToRegOutlinedIcon />}
                             iconPosition="start"
                             // onClick={moveToUserDetail}
@@ -399,7 +510,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="three"
-                            label={t("profile.ActivityDetail")}
+                            label="Activity Detail"
                             icon={<ArticleOutlinedIcon />}
                             iconPosition="start"
                             // onClick={() => {
@@ -412,7 +523,7 @@ export const Profile = () => {
 
                           <Tab
                             value="four"
-                            label={t("profile.ChangePassword")}
+                            label="Change Password"
                             icon={<LockResetOutlinedIcon />}
                             iconPosition="start"
                             onClick={() => {
@@ -422,7 +533,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="five"
-                            label={t("profile.Personalizedashboard")}
+                            label="Personalize dashboard"
                             icon={<SettingsAccessibilityOutlinedIcon />}
                             iconPosition="start"
                             onClick={() => {
@@ -435,287 +546,216 @@ export const Profile = () => {
                     </Grid>
                   </Grid>
                   <Grid container>
-                    {/* <Grid item xs={2} pt={"10px"}> */}
-                        {/* <div
-                        style={{
-                          width: "150px",
-                          height: "150px",
-                          margin: "auto",
-                          cursor: "pointer",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          position: "relative",
-                          // top: "-50%",
+                    <Container>
+                      <Grid
+                        sx={{
+                          backgroundColor: "var(--theme-color2)",
+                          padding: "0px",
+                          borderRadius: "10px",
+                          boxShadow:
+                            "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
                         }}
                       >
-                        <div className="image-data">
-                          <Avatar
-                            variant="rounded"
-                            key={"ProfilePicture"}
-                            alt="User"
-                            src={
-                              Boolean(ProfilePictureURL)
-                                ? ProfilePictureURL
-                                : USER_PROFILE_DEFAULT
+                        {mode === "userDetail" ? (
+                          <GridWrapper
+                            key={`userDetail`}
+                            finalMetaData={
+                              UserLoginDtlGridMetaData as GridMetaDataType
                             }
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                            }}
-                          ></Avatar>
-                        </div>
-                        <div
-                          className="image-upload-icon"
-                          onClick={() => fileUploadControl?.current?.click()}
-                        >
-                          <IconButton>
-                            <AddAPhotoIcon htmlColor="white" />
-                          </IconButton>
-                          <Typography
-                            component={"span"}
-                            style={{
-                              margin: "0",
-                              color: "white",
-                              lineHeight: "1.5",
-                              fontSize: "0.75rem",
-                              fontFamily: "Public Sans,sans-serif",
-                              fontWeight: "400",
-                            }}
-                          >
-                            Update Photo
-                          </Typography>
-                          <input
-                            name="fileselect"
-                            type="file"
-                            style={{ display: "none" }}
-                            ref={fileUploadControl}
-                            onChange={handleFileSelect}
-                            accept=".png,.jpg,.jpeg"
-                            onClick={(e) => {
-                              //to clear the file uploaded state to reupload the same file (AKA allow our handler to handle duplicate file)
-                              //@ts-ignore
-                              e.target.value = "";
+                            data={userActivityData.data ?? []}
+                            setData={() => null}
+                            //loading={result.isLoading}
+                            actions={[]}
+                            setAction={() => {}}
+                            refetchData={() => {}}
+                            ref={myGridRef}
+                            headerToolbarStyle={{
+                              background: "var(--theme-color2)",
+                              color: "black",
                             }}
                           />
-                        </div>
-                      </div> */}
-                        {/* <Grid item xs={3} m={"auto"}>
-                        <Typography variant="h5" fontWeight={500}>
-                          {queryData?.data?.NAME}
-                        </Typography>
-                        <Typography color={"var(--theme-color6)"}>
-                          {queryData?.data?.USER_LEVEL}
-                        </Typography>
-                      </Grid>
-                    </Grid> */}
-                        {/* <Grid item xs={10}> */}
-                        <Container>
+                        ) : mode === "userLogin" ? (
+                          <Grid>
+                            <FormWrapper
+                              key="userLogin"
+                              metaData={UserProfileMetaData as MetaDataType}
+                              initialValues={queryData.data}
+                              onSubmitHandler={() => {}}
+                              // displayMode={"view"}
+                              // hideDisplayModeInTitle={true}
+                              formStyle={{
+                                background: "white",
+                                // height: "40vh",
+                                overflowY: "auto",
+                                overflowX: "hidden",
+                              }}
+                              hideHeader={true}
+                            />
+                          </Grid>
+                        ) : mode === "changePassword" ? (
+                          <ChangePassword
+                            showProfile={showProfile}
+                            onClose={() => setShowProfile(false)}
+                          />
+                        ) : mode === "accessAllow" ? (
                           <Grid
                             sx={{
-                              backgroundColor: "var(--theme-color2)",
-                              padding: "0px",
-                              borderRadius: "10px",
-                              boxShadow:
-                                "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              gap: 3,
+                              p: 2,
                             }}
                           >
-                            {mode === "userDetail" ? (
-                              // <Grid
-                              //   key={"Griditem4"}
-                              //   item
-                              //   xs={12}
-                              //   md={12}
-                              //   lg={12}
-                              //   container
-                              //   spacing={1}
-                              //   justifyContent="flex-start"
-                              //   alignItems="center"
-                              //   style={{
-                              //     marginBottom: "0px",
-                              //     marginRight: "12px",
-                              //   }}
-                              // >
+                            <Grid
+                              container
+                              sx={{
+                                boxShadow:
+                                  "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                              }}
+                            >
                               <GridWrapper
-                                key={`userDetail`}
+                                key={`userAccessbranch`}
                                 finalMetaData={
-                                  UserLoginDtlGridMetaData as GridMetaDataType
+                                  userAccessbranch as GridMetaDataType
                                 }
-                                data={userActivityData.data ?? []}
+                                data={userAccessBranch.data || []}
                                 setData={() => null}
-                                //loading={result.isLoading}
-                                actions={[]}
-                                setAction={() => {}}
-                                refetchData={() => {}}
-                                ref={myGridRef}
                                 headerToolbarStyle={{
                                   background: "var(--theme-color2)",
                                   color: "black",
+                                  fontSize: "20px",
                                 }}
+                                //loading={result.isLoading}
+                                // actions={[]}
+                                // setAction={() => {}}
+                                // refetchData={() => {}}
+                                // ref={myGridRef}
                               />
-                            ) : // </Grid>
-                            mode === "userLogin" ? (
-                              <Grid>
-                                <FormWrapper
-                                  key="userLogin"
-                                  metaData={UserProfileMetaData as MetaDataType}
-                                  initialValues={queryData.data}
-                                  onSubmitHandler={() => {}}
-                                  // displayMode={"view"}
-                                  // hideDisplayModeInTitle={true}
-                                  formStyle={{
-                                    background: "white",
-                                    // height: "40vh",
-                                    overflowY: "auto",
-                                    overflowX: "hidden",
-                                  }}
-                                  hideHeader={true}
-                                />
-                              </Grid>
-                            ) : mode === "changePassword" ? (
-                              <ChangePassword
-                                showProfile={showProfile}
-                                onClose={() => setShowProfile(false)}
+                            </Grid>
+                            <Grid
+                              container
+                              sx={{
+                                boxShadow:
+                                  "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                              }}
+                            >
+                              <GridWrapper
+                                key={`userAccesstype`}
+                                finalMetaData={
+                                  userAccesstype as GridMetaDataType
+                                }
+                                data={userAccessType.data || []}
+                                setData={() => null}
+                                headerToolbarStyle={{
+                                  background: "var(--theme-color2)",
+                                  color: "black",
+                                  fontSize: "20px",
+                                }}
+                                //loading={result.isLoading}
+                                // actions={[]}
+                                // setAction={() => {}}
+                                // refetchData={() => {}}
+                                // ref={myGridRef}
                               />
-                            ) : mode === "accessAllow" ? (
+                            </Grid>
+                          </Grid>
+                        ) : mode === "personalizedashboard" ? (
+                          <>
+                            <Grid
+                              sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                gap: 3,
+                                p: 2,
+                                height: "fit-content",
+                              }}
+                            >
                               <Grid
+                                container
                                 sx={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  gap: 3,
-                                  p: 2,
+                                  boxShadow:
+                                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                                 }}
                               >
-                                <Grid
-                                  container
-                                  sx={{
-                                    boxShadow:
-                                      "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                                <GridWrapper
+                                  key={`personalizeQuickView`}
+                                  finalMetaData={
+                                    PersonlizationQuickGridMetaData as GridMetaDataType
+                                  }
+                                  data={quickViewData ?? []}
+                                  setData={setQuickViewData}
+                                  //loading={result.isLoading}
+                                  actions={Quickactions}
+                                  controlsAtBottom={true}
+                                  setAction={setQuickAction}
+                                  headerToolbarStyle={{
+                                    background: "var(--theme-color2)",
+                                    color: "black",
                                   }}
-                                >
-                                  <GridWrapper
-                                    key={`userAccessbranch`}
-                                    finalMetaData={
-                                      userAccessbranch as GridMetaDataType
-                                    }
-                                    data={userAccessBranch.data || []}
-                                    setData={() => null}
-                                    headerToolbarStyle={{
-                                      background: "var(--theme-color2)",
-                                      color: "black",
-                                      fontSize: "20px",
-                                    }}
-                                    //loading={result.isLoading}
-                                    // actions={[]}
-                                    // setAction={() => {}}
-                                    // refetchData={() => {}}
-                                    // ref={myGridRef}
-                                  />
-                                </Grid>
-                                <Grid
-                                  container
-                                  sx={{
-                                    boxShadow:
-                                      "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                                  }}
-                                >
-                                  <GridWrapper
-                                    key={`userAccesstype`}
-                                    finalMetaData={
-                                      userAccesstype as GridMetaDataType
-                                    }
-                                    data={userAccessType.data || []}
-                                    setData={() => null}
-                                    headerToolbarStyle={{
-                                      background: "var(--theme-color2)",
-                                      color: "black",
-                                      fontSize: "20px",
-                                    }}
-                                    //loading={result.isLoading}
-                                    // actions={[]}
-                                    // setAction={() => {}}
-                                    // refetchData={() => {}}
-                                    // ref={myGridRef}
-                                  />
-                                </Grid>
+                                  // refetchData={() => {}}
+                                  ref={myGridQuickRef}
+                                />
                               </Grid>
-                            ) : mode === "personalizedashboard" ? (
-                              <>
-                                <Grid
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    gap: 3,
-                                    p: 2,
+                              <Grid
+                                container
+                                sx={{
+                                  boxShadow:
+                                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                                }}
+                              >
+                                <GridWrapper
+                                  key={`personalizeDashboardData`}
+                                  finalMetaData={
+                                    PersonlizationDashboardGridData as GridMetaDataType
+                                  }
+                                  data={dashBoxData ?? []}
+                                  headerToolbarStyle={{
+                                    background: "var(--theme-color2)",
+                                    color: "black",
                                   }}
-                                >
-                                  <Grid
-                                    container
-                                    sx={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                                    }}
-                                  >
-                                    <GridWrapper
-                                      key={`personalizeQuickView`}
-                                      finalMetaData={
-                                        PersonlizationQuickGridMetaData as GridMetaDataType
-                                      }
-                                      data={quickView.data || []}
-                                      setData={() => null}
-                                      //loading={result.isLoading}
-                                      // actions={[]}
-                                      // setAction={() => {}}
-                                      headerToolbarStyle={{
-                                        background: "var(--theme-color2)",
-                                        color: "black",
-                                      }}
-                                      // refetchData={() => {}}
-                                      // ref={myGridRef}
-                                    />
-                                  </Grid>
-                                  <Grid
-                                    container
-                                    sx={{
-                                      boxShadow:
-                                        "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                                    }}
-                                  >
-                                    <GridWrapper
-                                      key={`personalizeDashboardData`}
-                                      finalMetaData={
-                                        PersonlizationDashboardGridData as GridMetaDataType
-                                      }
-                                      data={dashboxUserData.data || []}
-                                      headerToolbarStyle={{
-                                        background: "var(--theme-color2)",
-                                        color: "black",
-                                      }}
-                                      setData={() => null}
-                                      //loading={result.isLoading}
-                                      // actions={[]}
-                                      // setAction={() => {}}
-                                      // refetchData={() => {}}
-                                      // ref={myGridRef}
-                                    />
-                                  </Grid>
-                                </Grid>
-                              </>
-                            ) : null}
-                          </Grid>
-                        </Container>
-
-                        {profileUpdate && filesdata.length > 0 ? (
-                          <ProfilePhotoUpdate
-                            open={profileUpdate}
-                            onClose={handleProfileUploadClose}
-                            files={filesdata}
-                            userID={userID}
-                          />
+                                  setData={setDashBoxData}
+                                  //loading={result.isLoading}
+                                  actions={Dashactions}
+                                  controlsAtBottom={true}
+                                  setAction={setCurrentAction}
+                                  // refetchData={() => {}}
+                                  ref={myGridRef}
+                                />
+                              </Grid>
+                            </Grid>
+                          </>
                         ) : null}
-                        {/* </Grid> */}
                       </Grid>
-                    </Grid>
+                    </Container>
+                    {showTOTP ? (
+                      <TotpEnbaledDisabled
+                        open={showTOTP}
+                        onClose={() => setshowTOTP(false)}
+                        // onClose={(isSuccess, isLocked) => {
+                        //   if (isSuccess) {
+                        // setTotpAuthStatus((old) => {
+                        //   if (old === "N") {
+                        //     return "Y";
+                        //   } else {
+                        //     return "N";
+                        //   }
+                        // });
+                        //   }
+                        //   setshowTOTP(false);
+                        // }}
+                        // authFlag={totpAuthStatus === "N" ? "ENABLED" : "DISABLED"}
+                        authFlag="ENABLED"
+                      />
+                    ) : null}
+                    {profileUpdate && filesdata.length > 0 ? (
+                      <ProfilePhotoUpdate
+                        open={profileUpdate}
+                        onClose={handleProfileUploadClose}
+                        files={filesdata}
+                        userID={userID}
+                      />
+                    ) : null}
+                    {/* </Grid> */}
                   </Grid>
                 </Box>
               </Grid>

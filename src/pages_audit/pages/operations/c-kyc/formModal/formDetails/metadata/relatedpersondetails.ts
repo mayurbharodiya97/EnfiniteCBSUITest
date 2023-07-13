@@ -1,12 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton } from '@mui/material';
-import {styled} from "@mui/material/styles";
-import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-
+import * as API from "../../../api";
 
 export const related_person_detail_data = {
     form: {
-        name: "related_person_detail_form",
+        name: "related_person_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
@@ -54,27 +50,27 @@ export const related_person_detail_data = {
             render: {
                 componentType: "select",
             },
-            options: [
-                {label: "Type 1", value: "type1"},
-                {label: "Type 2", value: "type2"}
-            ],
+            options: () => API.getPMISCData("CKYC_RELAT_PERS"),
+            _optionsKey: "kycRelatedtype",
             name: "RELATED_PERSON_TYPE",
             label: "Type",
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "RELATED_PERSON_REF_TYPE",
+            name: "REF_RELATION",
             label: "Ref. Type",
             required: true,
+            options: () => API.getPMISCData("REF_RELATION"),
+            _optionsKey: "refRelatedType",
             placeholder: "",
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -94,7 +90,7 @@ export const related_person_detail_data = {
             label: "Ref. Cust. ID",
             placeholder: "First Name",
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -106,7 +102,7 @@ export const related_person_detail_data = {
             placeholder: "First Name",
             required: true,
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -118,7 +114,7 @@ export const related_person_detail_data = {
             placeholder: "Middle Name",
             required: true,
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
         },
         {
             render: {
@@ -129,7 +125,7 @@ export const related_person_detail_data = {
             placeholder: "Last Name",
             required: true,
             type: "text",
-            GridProps: {xs:6, sm:3},
+            GridProps: {xs:4, sm:3},
         },
         {
             render: {
@@ -139,7 +135,7 @@ export const related_person_detail_data = {
             label: "CKYC NO.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 12, sm: 8, md: 8, lg:8},
+            GridProps: {xs:4, sm:3},
         },
         {
             render: {
@@ -149,13 +145,13 @@ export const related_person_detail_data = {
             label: "Ref. Name",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 12, sm: 8, md: 8, lg:8},
+            GridProps: {xs:4, sm:3},
         }
     ]
 }
 export const related_person_poi_detail_data = {
     form: {
-        name: "related_person_poi_detail_data",
+        name: "related_person_poi_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
@@ -207,7 +203,7 @@ export const related_person_poi_detail_data = {
             label: "PAN",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -217,7 +213,7 @@ export const related_person_poi_detail_data = {
             label: "Driving Lic. No.",
             placeholder: "First Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -226,10 +222,11 @@ export const related_person_poi_detail_data = {
             },
             name: "DRIVING_LIC_EXP_DT",
             label: "Driving Lic.Exp.Dt.",
+            format: "dd/MM/yyyy",
             // required: true,
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -239,7 +236,7 @@ export const related_person_poi_detail_data = {
             label: "Voter ID",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -249,7 +246,7 @@ export const related_person_poi_detail_data = {
             label: "Passport No.",
             placeholder: "Last Name",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -257,10 +254,11 @@ export const related_person_poi_detail_data = {
             },
             name: "PASSPORT_EXP_DT",
             label: "Passport Exp.Dt.",
+            format: "dd/MM/yyyy",
             // required: true,
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -270,17 +268,17 @@ export const related_person_poi_detail_data = {
             label: "Unique ID",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 12, sm:true},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "NREGA_JOB_CARD",
+            name: "NREGA_JOB_CARD2",
             label: "NREGA Job Card",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 12, sm:true},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -290,7 +288,7 @@ export const related_person_poi_detail_data = {
             label: "Other Doc",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 12, sm:true},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -300,13 +298,13 @@ export const related_person_poi_detail_data = {
             label: "Other Doc No.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 12, sm:true},
+            GridProps: {xs: 4, sm:3},
         }
     ]
 }
 export const related_person_attestation_detail_meta_data = {
     form: {
-        name: "other_detail_form",
+        name: "related_person_attestation_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
@@ -349,24 +347,28 @@ export const related_person_attestation_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "DOC_RECEIVED",
             label: "Doc Received",
+            options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
+            _optionsKey: "kycDocReceivedType",
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "RICK_CATEGORY",
+            options: () => API.getPMISCData("CKYC_RISK_CATEG"),
+            _optionsKey: "kycRiskCateg",
+            name: "RISK_CATEG",
             label: "Risk Category",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -377,7 +379,7 @@ export const related_person_attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -385,9 +387,10 @@ export const related_person_attestation_detail_meta_data = {
             },
             name: "IPV_DATE",
             label: "IPV Date",
+            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -397,7 +400,7 @@ export const related_person_attestation_detail_meta_data = {
             label: "Emp. Code",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -407,7 +410,7 @@ export const related_person_attestation_detail_meta_data = {
             label: "Emp. Name",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -417,7 +420,7 @@ export const related_person_attestation_detail_meta_data = {
             label: "Emp. Desig.",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -427,7 +430,7 @@ export const related_person_attestation_detail_meta_data = {
             label: "IPV Branch",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -437,7 +440,7 @@ export const related_person_attestation_detail_meta_data = {
             label: "Org. Name",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -447,7 +450,7 @@ export const related_person_attestation_detail_meta_data = {
             label: "Org. Code",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -457,7 +460,7 @@ export const related_person_attestation_detail_meta_data = {
             label: "Dec. Place",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
         {
             render: {
@@ -465,66 +468,10 @@ export const related_person_attestation_detail_meta_data = {
             },
             name: "DEC_DATE",
             label: "Dec. Date",
+            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 6, sm:3},
+            GridProps: {xs: 4, sm:3},
         },
     ]
 }
-
-const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
-  //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
-  //  const [isLoading, setIsLoading] = useState(false)
-const myGridRef = useRef<any>(null);
-
-    return (
-        <Grid container rowGap={3}
-          // sx={{backgroundColor: "#eee"}}
-        >
-            {/* <Typography variant={"h6"}>Personal Details</Typography> */}
-            {isCustomerData ? <Grid 
-                sx={{
-                    backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(2), 
-                    border: "1px solid rgba(0,0,0,0.12)", 
-                    borderRadius: "20px"
-                }} container item xs={12} direction={'column'}>
-                <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Details of Related Person</Typography>
-                </Grid>
-                <Grid container item>
-                    <Grid item xs={12}>
-                        <FormWrapper 
-                            key={"new-form-in-kyc"}
-                            metaData={related_person_detail_data as MetaDataType}
-                            formStyle={{}}
-                            hideHeader={true}
-                        />
-                    </Grid>                    
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Proof of Identity [PoI] of Related Person</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={related_person_poi_detail_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Attestation Details [IPV-Identity Proof Verified By]</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={related_person_attestation_detail_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-        </Grid>        
-    )
-}
-
-export default RelatedPersonDetails

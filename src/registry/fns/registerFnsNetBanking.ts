@@ -4,4 +4,4 @@ const { registerFn } = singletonFunctionRegisrationFactory;
 
 registerFn("GetMiscValue", GeneralAPI.GetMiscValue);
 registerFn("getValidateValue", GeneralAPI.getValidateValue);
-registerFn("getAcctDetails", GeneralAPI.getAcctDetails);
+registerFn("getCustType", GeneralAPI.getCustType);

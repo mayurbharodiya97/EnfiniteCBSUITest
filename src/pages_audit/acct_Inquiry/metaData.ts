@@ -1,10 +1,11 @@
 // import { getChargeAllow } from "../../../configurations/serviceWiseConfig/viewEditDetail/api";
 // import { GeneralAPI } from "registry/fns/functions";
 import { GridMetaDataType } from "components/dataTableStatic";
+import { getPassBookTemplate } from "./api";
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
-    label: "AccountInquiry",
+    label: "Account Inquiry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -60,7 +61,7 @@ export const AccountInquiryMetadata = {
       maxLength: 20,
       required: false,
       fullWidth: true,
-      autoComplete: false,
+      // autoComplete: false,
       validate: (columnValue, allField, flag) => {
         if (columnValue.value.length >= 20) {
           return "The length of your Account No. is greater than 20 character";
@@ -78,7 +79,7 @@ export const AccountInquiryMetadata = {
         componentType: "numberFormat",
       },
       name: "CUSTOMER",
-      label: "CustomerId",
+      label: "Customer Id",
       maxLength: 12,
       schemaValidation: {
         type: "string",
@@ -102,7 +103,7 @@ export const AccountInquiryMetadata = {
         componentType: "phoneNumberOptional",
       },
       name: "MOBILE",
-      label: "MobileNo",
+      label: "Mobile No.",
       maxLength: 10,
       placeholder: "Mobile Number",
       type: "string",
@@ -128,7 +129,7 @@ export const AccountInquiryMetadata = {
       },
       name: "PAN",
       label: "Pan No.",
-      placeholder: "Pancard Number",
+      placeholder: "PanCard Number",
       maxLength: 10,
       type: "text",
       schemaValidation: {
@@ -171,8 +172,9 @@ export const AccountInquiryMetadata = {
 export const AccountInquiryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Account Inquiry Data",
+    gridLabel: "Search Criteria Data",
     rowIdColumn: "WITHDRAW_BAL",
+    searchPlaceholder: "Transaction",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -196,7 +198,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "ACCT_NO",
-      columnName: "AccountNo",
+      columnName: "Account No.",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -237,7 +239,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "PAN_NO",
-      columnName: "Pan No",
+      columnName: "Pan No.",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -268,7 +270,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
 
     {
       accessor: "OPENIND_DT",
-      columnName: "OpeningDate",
+      columnName: "Opening Date",
       sequence: 8,
       alignment: "center",
       componentType: "date",
@@ -292,7 +294,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CLOSE_DT",
-      columnName: "CloseDate",
+      columnName: "Close Date",
       sequence: 10,
       alignment: "center",
       componentType: "date",
@@ -308,7 +310,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
 export const PassbookStatement = {
   form: {
     name: "passbookstatement",
-    label: "PassbookStatementPrintOption",
+    label: "Passbook/Statement Print Option",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -354,7 +356,7 @@ export const PassbookStatement = {
         componentType: "numberFormat",
       },
       name: "ACCT_NO",
-      label: "AccountNo",
+      label: "Account No.",
       placeholder: "Account Number",
       defaultValue: "",
       type: "text",
@@ -369,8 +371,8 @@ export const PassbookStatement = {
       },
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
+        md: 4,
+        sm: 4,
       },
     },
     {
@@ -382,10 +384,11 @@ export const PassbookStatement = {
       placeholder: "Account/Person Name",
       type: "text",
       isReadOnly: true,
+      fullWidth: true,
       GridProps: {
         xs: 12,
-        md: 6,
-        sm: 6,
+        md: 8,
+        sm: 8,
       },
     },
 
@@ -399,15 +402,15 @@ export const PassbookStatement = {
       defaultValue: "P",
       options: [
         {
-          label: "passbook",
+          label: "Passbook",
           value: "P",
         },
         { label: "Statement", value: "S" },
       ],
       GridProps: {
         xs: 12,
-        md: 12,
-        sm: 12,
+        md: 11,
+        sm: 11,
       },
     },
     {
@@ -438,8 +441,33 @@ export const PassbookStatement = {
 
       GridProps: {
         xs: 12,
-        md: 8,
-        sm: 8,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      render: {
+        componentType: "select",
+      },
+      name: "TRAN_CD",
+      label: "Template",
+      defaultValue: "1",
+      options: getPassBookTemplate,
+      _optionsKey: "getTemplateList",
+      placeholder: "",
+      type: "text",
+      GridProps: {
+        xs: 12,
+        md: 6,
+        sm: 6,
+      },
+      dependentFields: ["PD_DESTION"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+          return false;
+        } else {
+          return true;
+        }
       },
     },
     {
@@ -448,13 +476,9 @@ export const PassbookStatement = {
       },
       name: "ACT_NO",
       label: "Line No.",
-      // placeholder: "Account Number",
       defaultValue: "",
       type: "text",
-      isReadOnly: true,
-      // allowToggleVisiblity: true,
-      // maxLength: 10,
-      // required: true,
+      isReadOnly: false,
       fullWidth: true,
       autoComplete: false,
       schemaValidation: {
@@ -462,8 +486,26 @@ export const PassbookStatement = {
       },
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
+        md: 2.5,
+        sm: 2.5,
+      },
+      dependentFields: ["PD_DESTION"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+    },
+    {
+      render: {
+        componentType: "spacer",
+      },
+      GridProps: {
+        xs: 12,
+        md: 0.5,
+        sm: 0.5,
       },
       dependentFields: ["PD_DESTION"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -490,8 +532,8 @@ export const PassbookStatement = {
       autoComplete: false,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
+        md: 1.3,
+        sm: 1.3,
       },
       dependentFields: ["PD_DESTION"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -511,10 +553,19 @@ export const PassbookStatement = {
       dateFormat: "dd/MM/yyyy HH:mm:ss",
       placeholder: "",
       type: "text",
+      // fullWidth: true,
+      dependentFields: ["PD_DESTION"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+          return true;
+        } else {
+          return false;
+        }
+      },
       GridProps: {
         xs: 12,
-        md: 4,
-        sm: 4,
+        md: 6,
+        sm: 6,
       },
     },
     {
@@ -522,52 +573,23 @@ export const PassbookStatement = {
         componentType: "datePicker",
       },
       name: "PID_DEIPTION",
-      label: "ToDate",
+      label: "To Date :-",
       placeholder: "",
       dateFormat: "dd/MM/yyyy HH:mm:ss",
-      // dateFormat: "dd/MM/yyyy hh:mm aaa",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "spacer",
-      },
-      name: "PID_CRIPTN",
-      label: "PanNo",
-      placeholder: "",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
-
-    {
-      render: {
-        componentType: "select",
-      },
-      name: "PD_DESCRIPION",
-      label: "Template",
-      placeholder: "",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 7,
-        sm: 7,
-      },
+      // type: "text",
+      // fullWidth: true,
       dependentFields: ["PD_DESTION"],
-      shouldExclude(fieldData, dependentFieldsValues, formState) {
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-          return false;
-        } else {
           return true;
+        } else {
+          return false;
         }
+      },
+      GridProps: {
+        xs: 12,
+        md: 6,
+        sm: 6,
       },
     },
   ],
@@ -622,7 +644,7 @@ export const ViewDetailMetadata = {
         componentType: "textField",
       },
       name: "ACCT_NO",
-      label: "AccountNo",
+      label: "Account No.",
       placeholder: "Account Number",
       defaultValue: "",
       type: "text",
@@ -692,7 +714,7 @@ export const ViewDetailMetadata = {
         componentType: "textField",
       },
       name: "PAN_NO",
-      label: "PanNo",
+      label: "Pan No.",
       isReadOnly: true,
       placeholder: "Pan Number",
       type: "text",
@@ -708,7 +730,7 @@ export const ViewDetailMetadata = {
       },
       name: "DISPLAY_STATUS",
       isReadOnly: true,
-      label: "STATUS",
+      label: "Status",
       placeholder: "Status",
       type: "text",
       GridProps: {
@@ -737,7 +759,7 @@ export const ViewDetailMetadata = {
         componentType: "textField",
       },
       name: "CLOSE_DT",
-      label: "CloseDate",
+      label: "Close Date",
       placeholder: "Close Date",
       isReadOnly: true,
       type: "text",

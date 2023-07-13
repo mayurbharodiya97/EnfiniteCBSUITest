@@ -9,59 +9,73 @@ const BranchDetails = ({
   colonStyle,
   childGridEight,
   typographyForValue,
-  branchDetailsDataLeft,
-  branchDetailsDataRight,
+  branchDetailsData,
 }) => {
   return (
-    <Grid container sx={collapseableBox}>
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        md={12}
-        lg={6}
-        xl={6}
-        sx={{ ...halfMainGrid, height: "10rem" }}
-      >
-        <Grid item xs={4} sm={4} md={4} lg={4} xl={4} sx={childGridFour}>
-          {branchDetailsDataLeft?.map((items) => (
-            <Grid sx={typographyGridForLable}>
-              {" "}
-              <Typography sx={typographyLable}>{items.label}</Typography>
-              <Typography sx={colonStyle}>:</Typography>
+    <Grid container sx={{ marginBottom: "10px" }}>
+      {branchDetailsData?.map((item, index) => (
+        <>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            lg={6}
+            xl={6}
+            key={item.label}
+            style={{
+              borderBottom: "1px solid var(--theme-color4)",
+              padding: "10px",
+            }}
+          >
+            <Grid container>
+              <Grid
+                item
+                xs={6}
+                sm={6}
+                md={6}
+                lg={6}
+                xl={6}
+                sx={{ display: "flex", justifyContent: "space-between" }}
+              >
+                <Typography
+                  sx={{ fontWeight: "bold", fontFamily: "Roboto, sans-serif" }}
+                >
+                  {item?.label}
+                </Typography>
+                <Typography
+                  sx={{ fontWeight: "bold", fontFamily: "Roboto, sans-serif" }}
+                >
+                  :
+                </Typography>
+              </Grid>
+              <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
+                <Typography sx={{ padding: "0px 10px" }}>
+                  {item?.value}
+                </Typography>
+              </Grid>
             </Grid>
-          ))}
-        </Grid>
-        <Grid item xs={8} sm={8} md={8} lg={8} xl={8} sx={childGridEight}>
-          {branchDetailsDataLeft?.map((items) => (
-            <Typography sx={typographyForValue}>{items.value}</Typography>
-          ))}
-        </Grid>
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        md={12}
-        lg={6}
-        xl={6}
-        sx={{ ...halfMainGrid, height: "10rem" }}
-      >
-        <Grid item xs={4} sm={4} md={4} lg={4} xl={4} sx={childGridFour}>
-          {branchDetailsDataRight?.map((items) => (
-            <Grid sx={typographyGridForLable}>
-              {" "}
-              <Typography sx={typographyLable}>{items.label}</Typography>
-              <Typography sx={colonStyle}>:</Typography>
-            </Grid>
-          ))}
-        </Grid>
-        <Grid item xs={8} sm={8} md={8} lg={8} xl={8} sx={childGridEight}>
-          {branchDetailsDataRight?.map((items) => (
-            <Typography sx={typographyForValue}>{items.value}</Typography>
-          ))}
-        </Grid>
-      </Grid>
+          </Grid>
+
+          {branchDetailsData?.length === index + 1 && index % 2 == 0 ? (
+            <Grid
+              item
+              xs={0}
+              sm={0}
+              md={6}
+              lg={6}
+              xl={6}
+              key={item.label}
+              style={{ borderBottom: "1px solid var(--theme-color4)" }}
+            ></Grid>
+          ) : (
+            <></>
+          )}
+          {/* <Grid item>
+          <Divider />
+        </Grid> */}
+        </>
+      ))}
     </Grid>
   );
 };

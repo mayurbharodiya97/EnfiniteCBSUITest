@@ -94,29 +94,28 @@ export const ReportGrid: FC<any> = ({
           errorMsg={error?.error_msg ?? "Unknown Error occured"}
           errorDetail={error?.error_detail}
         />
-      ) : (
-        <AmountProvider>
-          <GridTable
-            columns={memoizedColumns}
-            defaultColumn={defaultColumn}
-            data={dataTransformer(data) ?? []}
-            maxHeight={maxHeight}
-            initialState={initialState}
-            filterTypes={filterTypes}
-            title={title}
-            options={options}
-            loading={isFetching || isLoading}
-            hideFooter={hideFooter}
-            showSerialNoColumn={showSerialNoColumn}
-            onClose={onClose}
-            setQueryFilters={setQueryFilterWrapper}
-            filterMeta={metaData.filters}
-            queryFilters={queryFilters}
-            hideAmountIn={hideAmountIn}
-            retrievalType={retrievalType}
-          />
-        </AmountProvider>
-      )}
+      ) : null}
+      <AmountProvider>
+        <GridTable
+          columns={memoizedColumns}
+          defaultColumn={defaultColumn}
+          data={dataTransformer(data) ?? []}
+          maxHeight={maxHeight}
+          initialState={initialState}
+          filterTypes={filterTypes}
+          title={title}
+          options={options}
+          loading={isFetching || isLoading}
+          hideFooter={hideFooter}
+          showSerialNoColumn={showSerialNoColumn}
+          onClose={onClose}
+          setQueryFilters={setQueryFilterWrapper}
+          filterMeta={metaData.filters}
+          queryFilters={queryFilters}
+          hideAmountIn={hideAmountIn}
+          retrievalType={retrievalType}
+        />
+      </AmountProvider>
     </Fragment>
   );
 };
