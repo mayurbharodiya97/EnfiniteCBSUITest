@@ -18,7 +18,7 @@ export const kyc_proof_of_identity_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -144,6 +144,122 @@ export const kyc_proof_of_identity_meta_data = {
           type: "text",
           GridProps: {xs: 4, sm:3},
         },
+
+
+
+        {
+            render:  {
+                componentType: "Divider",
+                sequence: 1,
+            },
+            dividerText: "Passport Details",
+            name: "passportDivider",
+            label: "passportDivider"
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "PASSPORT_NO",
+            label: "No.",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            name: "PASSPORT_AUTHORITY_CD",
+            label: "Autho.",
+            placeholder: "",
+            options: () => API.getPMISCData("Authority"),
+            _optionsKey: "passportAuthority",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+          render: {
+              componentType: "datePicker",
+          },
+          name: "PASSPORT_ISSUE_DT",
+          label: "Issue Date",
+          required: true,
+          format: "dd/MM/yyyy",
+          // placeholder: "",
+          // type: "datePicker",
+          GridProps: {xs: 4, sm:3},
+        },
+        {
+          render: {
+              componentType: "datePicker",
+          },
+          name: "PASSPORT_EXPIRY_DT",
+          label: "Expiry Date",
+          required: true,
+          format: "dd/MM/yyyy",
+          // placeholder: "",
+          // type: "datePicker",
+          GridProps: {xs: 4, sm:3},
+        },
+
+
+
+        {
+            render:  {
+                componentType: "Divider",
+                sequence: 1,
+            },
+            dividerText: "Driving License Details",
+            name: "drivingLicenseDivider",
+            label: "drivingLicenseDivider"
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "DRIVING_LICENSE_NO",
+            label: "No.",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            name: "DRIVING_LICENSE_AUTHORITY_CD",
+            label: "Autho.",
+            options: () => API.getPMISCData("Authority"),
+            _optionsKey: "drivingLicenseAuthority",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+          render: {
+              componentType: "datePicker",
+          },
+          name: "DRIVING_LICENSE_ISSUE_DT",
+          label: "Issue Date",
+          required: true,
+          format: "dd/MM/yyyy",
+          // placeholder: "",
+          // type: "datePicker",
+          GridProps: {xs: 4, sm:3},
+        },
+        {
+          render: {
+              componentType: "datePicker",
+          },
+          name: "DRIVING_LICENSE_EXPIRY_DT",
+          label: "Expiry Date",
+          required: true,
+          format: "dd/MM/yyyy",
+          // placeholder: "",
+          // type: "datePicker",
+          GridProps: {xs: 4, sm:3},
+        },
     ]
 }
 export const kyc_proof_of_identity_passport_details_meta_data = {
@@ -163,7 +279,7 @@ export const kyc_proof_of_identity_passport_details_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -254,7 +370,7 @@ export const kyc_proof_of_identity_driving_license_details_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -346,7 +462,7 @@ export const kyc_proof_of_address_meta_data = {
           },
           container: {
               direction: "row",
-              spacing: 3,
+              spacing: 1,
           },
           },
       },
@@ -372,6 +488,15 @@ export const kyc_proof_of_address_meta_data = {
       },
   },
   fields: [
+        {
+            render:  {
+                componentType: "Divider",
+                sequence: 1,
+            },
+            dividerText: "Current/Permanent/Overseas Address",
+            name: "currentAddDivider",
+            label: "currentAddDivider"
+        },
       {
           render: {
               componentType: "select",
@@ -495,7 +620,7 @@ export const kyc_proof_of_address_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "STATE_UT_CODE",
+          name: "STATE_CD",
           label: "State/U.T(Union Territories) Code",
           placeholder: "",
           type: "text",
@@ -505,7 +630,7 @@ export const kyc_proof_of_address_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "ISO_COUNTRY_CODE",
+          name: "COUNTRY_CD",
           label: "ISO-3166 Country Code of Residence",
           placeholder: "",
           type: "text",
@@ -534,6 +659,242 @@ export const kyc_proof_of_address_meta_data = {
           type: "text",
           GridProps: {xs: 4, sm:3},
       },
+
+
+
+    {
+        render:  {
+            componentType: "Divider",
+            sequence: 1,
+        },
+        dividerText: "Correspondence/Local Address",
+        name: "localAddDivider",
+        label: "localAddDivider"
+    },
+    {
+        render: { componentType: "checkbox", group: 0 },
+        name: "SAME_AS_PER",
+        sequence: 9,
+        type: "text",
+        label: "Same As Permanent Address",
+        // isReadOnly: true,
+        // placeholder: "Allowed Release",
+        GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "select",
+          },
+          name: "LOC_ADD_TYPE",
+          label: "Local Address Type",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+          options: () => API.getPMISCData("ADDRESS_TYPE"),
+          _optionsKey: "currentAddType",
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_ADD1",
+          label: "Line1",
+          required: true,          
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_ADD2",
+          label: "Line2",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_ADD3",
+          label: "Line3",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "select",
+          },
+          name: "LOC_AREA_CD",
+          options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
+          _optionsKey: "localParentAreaList",
+          label: "Area",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "select",
+          },
+          name: "LOC_AREA_CD2",
+          options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
+          _optionsKey: "localSubAreaList",
+          label: "Area",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_PIN_CODE",
+          label: "PIN",
+          required: true,
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_CITY_CD",
+          label: "City",
+          required: true,
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_DISTRICT_CD",
+          label: "District",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_STATE",
+          label: "State",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_COUNTRY",
+          label: "Country",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "STATE_UT_CODE",
+          label: "State/U.T(Union Territories) Code",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "textField",
+          },
+          name: "LOC_COUNTRY_CD",
+          label: "ISO-3166 Country Code of Residence",
+          placeholder: "",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+      {
+          render: {
+              componentType: "select",
+          },
+          name: "LOC_PROOF_OF_ADD",
+          label: "Proof of Add.",
+          required: true,
+          placeholder: "",
+          options: () => API.getPMISCData("CKYC_LOC_POA"),
+          _optionsKey: "localPoA",
+          type: "text",
+          GridProps: {xs: 4, sm:3},
+      },
+
+
+
+    {
+        render:  {
+            componentType: "Divider",
+            sequence: 1,
+        },
+        dividerText: "Contact",
+        name: "contactDivider",
+        label: "contactDivider"
+    },
+      {
+        render: {
+            componentType: "textField",
+        },
+        name: "PHONE_o",
+        label: "Phone(O)",
+        placeholder: "",
+        type: "text",
+        GridProps: {xs: 4, sm:3},
+    },
+    {
+        render: {
+            componentType: "textField",
+        },
+        name: "PHONE_R",
+        label: "Phone(R)",
+        placeholder: "",
+        type: "text",
+        GridProps: {xs: 4, sm:3},
+    },
+    {
+        render: {
+            componentType: "textField",
+        },
+        name: "MOBILE_NO",
+        label: "Mobile No.",
+        placeholder: "",
+        type: "text",
+        GridProps: {xs: 4, sm:3},
+    },
+    {
+        render: {
+            componentType: "textField",
+        },
+        name: "FAX",
+        label: "Fax",
+        placeholder: "",
+        type: "text",
+        GridProps: {xs: 4, sm:3},
+    },
+    {
+        render: {
+            componentType: "textField",
+        },
+        name: "E_MAIL_ID",
+        label: "Email ID",
+        placeholder: "",
+        type: "text",
+        GridProps: {xs: 4, sm:3},
+    },
   ]
 }
 export const kyc_proof_of_local_address_meta_data = {
@@ -553,7 +914,7 @@ export const kyc_proof_of_local_address_meta_data = {
           },
           container: {
               direction: "row",
-              spacing: 3,
+              spacing: 1,
           },
           },
       },
@@ -760,7 +1121,7 @@ export const kyc_proof_of_address_contact_meta_data = {
           },
           container: {
               direction: "row",
-              spacing: 3,
+              spacing: 1,
           },
           },
       },

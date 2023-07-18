@@ -10,9 +10,10 @@ import {
 } from './metadata/otherdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import TabStepper from '../TabStepper';
 
 
-const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
     const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(true)
@@ -22,7 +23,15 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
 
     return (
         <Grid container rowGap={3}>
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography>
+            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography> */}
+            <Grid container>
+                {/* <Grid item xs='auto'>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography>
+                </Grid> */}
+                <Grid item xs>
+                    <TabStepper currentTab={colTabValue} setColTabValue={setColTabValue} />
+                </Grid>
+            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 

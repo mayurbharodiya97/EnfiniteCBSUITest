@@ -1,6 +1,7 @@
 import { GridDirection, GridSize, GridSpacing } from "@mui/material";
 import {
   AllTextFieldProps,
+  AllDividerProps,
   AllSelectFieldProps,
   AllCheckboxGroupProps,
   AllCheckboxProps,
@@ -30,6 +31,7 @@ import {
 } from "./typesFields";
 import {
   TextFieldPropsOptional,
+  DividerPropsOptional,
   SelectPropsOptional,
   CheckboxGroupPropsOptional,
   CheckboxPropsOptional,
@@ -102,6 +104,7 @@ export interface FormMetaDataType {
 
 export interface ComponentTypeProps {
   textField?: TextFieldPropsOptional;
+  divider?: DividerPropsOptional;
   select?: SelectPropsOptional;
   checkbox?: CheckboxPropsOptional;
   checkboxGroup?: CheckboxGroupPropsOptional;
@@ -133,6 +136,7 @@ export interface MetaDataType {
 
 export type FieldMetaDataTypeX =
   | AllTextFieldProps
+  | AllDividerProps
   | AllSelectFieldProps
   | AllCheckboxGroupProps
   | AllCheckboxProps
@@ -196,6 +200,7 @@ export interface RouterState {
 
 export type FieldMetaDataTypeOptional =
   | TextFieldPropsOptional
+  | DividerPropsOptional
   | SelectPropsOptional
   | CheckboxPropsOptional
   | CheckboxGroupPropsOptional

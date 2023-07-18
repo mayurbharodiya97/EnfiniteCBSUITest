@@ -5,15 +5,24 @@ import {
     other_address_poa_contact_meta_data, 
     other_address_poa_meta_data
 } from './metadata/otheraddressdetails';
+import TabStepper from '../TabStepper';
 
-const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
 const myGridRef = useRef<any>(null);
 
     return (
         <Grid container rowGap={3}>
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>            
+            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>             */}
+            <Grid container>
+                {/* <Grid item xs='auto'>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>
+                </Grid> */}
+                <Grid item xs>
+                    <TabStepper currentTab={colTabValue} setColTabValue={setColTabValue} />
+                </Grid>
+            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 

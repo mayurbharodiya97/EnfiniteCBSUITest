@@ -9,8 +9,9 @@ import {
 } from './metadata/relatedpersondetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import TabStepper from '../TabStepper';
 
-const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const [isRelatedPDExpanded, setIsRelatedPDExpanded] = useState(true)
@@ -23,7 +24,15 @@ const myGridRef = useRef<any>(null);
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Details of Related Person {`(4/8)`}</Typography>
+            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Details of Related Person {`(4/8)`}</Typography> */}
+            <Grid container>
+                {/* <Grid item xs='auto'>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Details of Related Person {`(4/8)`}</Typography>
+                </Grid> */}
+                <Grid item xs>
+                    <TabStepper currentTab={colTabValue} setColTabValue={setColTabValue} />
+                </Grid>
+            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 

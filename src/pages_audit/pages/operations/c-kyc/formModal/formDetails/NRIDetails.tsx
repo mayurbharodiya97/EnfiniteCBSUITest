@@ -2,13 +2,22 @@ import React from "react"
 import { Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { nri_detail_meta_data } from "./metadata/nridetails"
+import TabStepper from "../TabStepper"
 
-const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography>
+            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography> */}
+            <Grid container>
+                {/* <Grid item xs='auto'>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography>
+                </Grid> */}
+                <Grid item xs>
+                    <TabStepper currentTab={colTabValue} setColTabValue={setColTabValue} />
+                </Grid>
+            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
