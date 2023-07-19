@@ -285,3 +285,78 @@ export const getRetrieveData = async (SELECT_COLUMN) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+export const getRangeOptions = async (COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETNNULINCOME", {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ TRAN_CD, DISPLAY_NM, ...other }) => {
+          return {
+            ...other,
+            TRAN_CD: TRAN_CD, 
+            DISPLAY_NM: DISPLAY_NM,
+            value: TRAN_CD,
+            label: DISPLAY_NM,
+          };
+        }
+      );
+    }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+export const getEmpCompanyTypes = async (COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCOMPTYPENM", {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ COMPANY_TYPE_CD, DISPLAY_COMP_TYPE_NM, ...other }) => {
+          return {
+            ...other,
+            COMPANY_TYPE_CD: COMPANY_TYPE_CD, 
+            DISPLAY_COMP_TYPE_NM: DISPLAY_COMP_TYPE_NM,
+            value: COMPANY_TYPE_CD,
+            label: DISPLAY_COMP_TYPE_NM,
+          };
+        }
+      );
+    }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+export const getEduQualiOptions = async (COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETEDUCATIONDTL", {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ ED_TYPE_CD, DISPLAY_NM, ...other }) => {
+          return {
+            ...other,
+            ED_TYPE_CD: ED_TYPE_CD, 
+            DISPLAY_NM: DISPLAY_NM,
+            value: ED_TYPE_CD,
+            label: DISPLAY_NM,
+          };
+        }
+      );
+    }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}

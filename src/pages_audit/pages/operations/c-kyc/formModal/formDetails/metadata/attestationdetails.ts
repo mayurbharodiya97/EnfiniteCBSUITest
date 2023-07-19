@@ -1,3 +1,4 @@
+import * as API from "../../../api";
 export const attestation_detail_meta_data = {
     form: {
         name: "attestation_details_form",
@@ -45,12 +46,10 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "select",
             },
-            options: [
-                {label: "Doc Type 1", value: "doctype1"},
-                {label: "Doc Type 2", value: "doctype2"}
-            ],
             name: "DOC_TYPE",
             label: "Type of Document Submitted",
+            options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
+            _optionsKey: "ckycDocTypes",
             required: true,
             placeholder: "",
             type: "text",
@@ -76,8 +75,8 @@ export const attestation_detail_meta_data = {
                 componentType: "select",
             },
             options: [
-                {label: "KYC Flag 1", value: "kycflag1"},
-                {label: "KYC Flag 2", value: "kycflag2"}
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"}
             ],
             name: "KYC_VERIFICATION_FLAG",
             label: "KYC Verification Flag",
@@ -119,12 +118,8 @@ export const attestation_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "textField",
             },
-            options: [
-                {label: "KYC Branch 1", value: "kycbranch1"},
-                {label: "KYC Branch 2", value: "kycbranch2"}
-            ],
             name: "KYC_VERIFICATION_BRANCH",
             label: "KYC Verification Branch",
             required: true,

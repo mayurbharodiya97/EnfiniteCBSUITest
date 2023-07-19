@@ -1,4 +1,5 @@
 import { GridMetaDataType } from "components/dataTableStatic";
+import {differenceInYears} from "date-fns";
 import * as API from "../../../api";
 export const personal_detail_prefix_data = {
     form: {
@@ -785,6 +786,11 @@ export const personal_other_detail_meta_data = {
                 {label: "Minor", value: "minor"},
                 {label: "Major", value: "major"}
             ],
+            dependentFields: ["BIRTH_DT"],
+            setValueOnDependentFieldsChange: (dependentFields) => {
+                let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
+                return (age && age> 18) ? "major" : "minor";
+            },
             name: "LF_NO",
             label: "Minor/Major",
             required: true,
@@ -980,28 +986,40 @@ export const entity_detail_meta_data = {
             type: "text",
             GridProps: {xs:4, sm:2},
         },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "RELIGION",
-            label: "Religion",
-            // placeholder: "First Name",
-            type: "text",
-            GridProps: {xs:4, sm:2},
-            // dependentFields: ["DAILY_AMT"],
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "CASTE",
-            label: "Caste",
-            // placeholder: "First Name",
-            type: "text",
-            GridProps: {xs:4, sm:2},
-            // dependentFields: ["DAILY_AMT"],
-        },
+        // {
+        //     render: {
+        //         componentType: "formbutton"
+        //     },
+        //     name: "Search",
+        // },
+        // {
+        //     render: {
+        //         componentType: "formbutton"
+        //     },
+        //     name: "Cust.Info",
+        // },
+        // {
+        //     render: {
+        //         componentType: "textField",
+        //     },
+        //     name: "RELIGION",
+        //     label: "Religion",
+        //     // placeholder: "First Name",
+        //     type: "text",
+        //     GridProps: {xs:4, sm:2},
+        //     // dependentFields: ["DAILY_AMT"],
+        // },
+        // {
+        //     render: {
+        //         componentType: "textField",
+        //     },
+        //     name: "CASTE",
+        //     label: "Caste",
+        //     // placeholder: "First Name",
+        //     type: "text",
+        //     GridProps: {xs:4, sm:2},
+        //     // dependentFields: ["DAILY_AMT"],
+        // },
         {
             render: {
                 componentType: "textField",
@@ -1095,7 +1113,7 @@ export const entity_detail_meta_data = {
                 componentType: "select",
             },
             name: "NATIONALITY",
-            label: "Nationality",
+            label: "Registered in Country",
             options: [
                 {label: "Option1", value: "Option1"},
                 {label: "Option2", value: "Option2"},
@@ -1113,6 +1131,57 @@ export const entity_detail_meta_data = {
             placeholder: "",
             type: "text",
             GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "GIIN",
+            label: "GIIN",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "TIN",
+            label: "TIN",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "TIN_ISSUING_COUNTRY",
+            label: "TIN",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },        
+        {
+            render: {
+                componentType: "textField"
+            },
+            name: "CCIL_ID",
+            label: "CCIL ID",
+        },
+        {
+            render: {
+                componentType: "textField"
+            },
+            name: "LEI_NO",
+            label: "LEI NO.",
+        },
+        {
+            render: {
+                componentType: "datePicker"
+            },
+            name: "LEI_EXPIRY_DT",
+            label: "LEI Expiry Date",
         },
     ]
 }

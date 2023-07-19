@@ -150,9 +150,8 @@ export const nri_detail_meta_data = {
                 componentType: "select",
             },
             options: [
-                {label: "category 1", value: "1"},
-                {label: "category 2", value: "2"},
-                {label: "category 3", value: "3"},
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"}
             ],
             name: "Customer_Evaluation_Required",
             label: "Customer Evaluation Required",
