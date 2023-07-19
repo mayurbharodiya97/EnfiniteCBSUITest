@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-import { declaration_meta_data } from './metadata/declarationdetails';
+import { declaration_meta_data } from './metadata/individual/declarationdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';

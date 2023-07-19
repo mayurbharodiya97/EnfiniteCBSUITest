@@ -1,4 +1,4 @@
-import * as API from "../../../api";
+import * as API from "../../../../api";
 
 
 export const kyc_proof_of_identity_meta_data = {

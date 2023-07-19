@@ -1,7 +1,7 @@
 import React from "react"
 import { Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
-import { nri_detail_meta_data } from "./metadata/nridetails"
+import { nri_detail_meta_data } from "./metadata/individual/nridetails"
 import TabStepper from "../TabStepper"
 
 const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {

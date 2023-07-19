@@ -8,12 +8,12 @@ import {
     kyc_proof_of_identity_meta_data, 
     kyc_proof_of_identity_passport_details_meta_data, 
     kyc_proof_of_local_address_meta_data
-} from './metadata/kycdetails';
+} from './metadata/individual/kycdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 // import { GridWrapper } from 'components/dataTableStatic/gridWrapper';
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { DocumentGridMetaData } from './metadata/personaldetails';
+import { DocumentGridMetaData } from './metadata/individual/personaldetails';
 import TabStepper from '../TabStepper';
 
 const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {

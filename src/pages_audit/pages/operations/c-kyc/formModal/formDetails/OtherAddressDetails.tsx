@@ -4,7 +4,7 @@ import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
     other_address_poa_contact_meta_data, 
     other_address_poa_meta_data
-} from './metadata/otheraddressdetails';
+} from './metadata/individual/otheraddressdetails';
 import TabStepper from '../TabStepper';
 
 const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {

@@ -1,4 +1,4 @@
-import * as API from "../../../api";
+import * as API from "../../../../api";
 export const other_details_annual_income_meta_data = {
     form: {
         name: "other_details_annual_income_details_form",

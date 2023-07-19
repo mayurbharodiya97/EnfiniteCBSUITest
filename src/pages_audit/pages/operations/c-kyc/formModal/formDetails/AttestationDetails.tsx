@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
-import { attestation_detail_meta_data } from "./metadata/attestationdetails"
+import { attestation_detail_meta_data } from "./metadata/individual/attestationdetails"
 import TabStepper from "../TabStepper"
 
 const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {

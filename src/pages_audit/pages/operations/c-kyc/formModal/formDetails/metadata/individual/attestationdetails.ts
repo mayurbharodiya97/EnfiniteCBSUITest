@@ -1,4 +1,4 @@
-import * as API from "../../../api";
+import * as API from "../../../../api";
 export const attestation_detail_meta_data = {
     form: {
         name: "attestation_details_form",

@@ -12,7 +12,7 @@ import {
     personal_detail_prefix_data, 
     personal_document_details_data, 
     personal_other_detail_meta_data
-} from './metadata/personaldetails';
+} from './metadata/individual/personaldetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';

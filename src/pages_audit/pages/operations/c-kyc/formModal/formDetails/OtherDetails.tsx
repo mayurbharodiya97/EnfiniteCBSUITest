@@ -7,7 +7,7 @@ import {
     other_details_exposure_info_meta_data, 
     other_details_personal_info_meta_data, 
     other_details_vehicle_info_meta_data
-} from './metadata/otherdetails';
+} from './metadata/individual/otherdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';
