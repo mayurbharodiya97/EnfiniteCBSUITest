@@ -1,5 +1,6 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-import * as API from "../../../api";
+import {differenceInYears} from "date-fns";
+import * as API from "../../../../api";
 export const personal_detail_prefix_data = {
     form: {
         name: "personal_detail_prefix_details_form",
@@ -8,7 +9,7 @@ export const personal_detail_prefix_data = {
         validationRun: "onBlur", 
         submitAction: "home",  
         render: {
-            ordering: "auto",
+            ordering: "sequence",
             renderType: "simple",
             gridConfig: {
             item: {
@@ -17,7 +18,7 @@ export const personal_detail_prefix_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -40,15 +41,25 @@ export const personal_detail_prefix_data = {
             datetimePicker: {
                 fullWidth: true,
             },
-            divider: {
+            Divider: {
                 fullWidth: true,
             }
         },
     },
     fields: [
         {
+            render:  {
+                componentType: "Divider",
+                sequence: 1,
+            },
+            dividerText: "Prefix",
+            name: "prefixDivider",
+            label: "prefixDivider"
+        },
+        {
             render: {
                 componentType: "select",
+                sequence: 2,
             },
             name: "PREFIX_CD",
             label: "Prefix",
@@ -71,6 +82,7 @@ export const personal_detail_prefix_data = {
         {
             render: {
                 componentType: "textField",
+                sequence: 3,
             },
             name: "FIRST_NM",
             label: "First Name",
@@ -82,6 +94,7 @@ export const personal_detail_prefix_data = {
         {
             render: {
                 componentType: "textField",
+                sequence: 4,
             },
             name: "LAST_NM",
             label: "Middle Name",
@@ -92,6 +105,7 @@ export const personal_detail_prefix_data = {
         {
             render: {
                 componentType: "textField",
+                sequence: 6,
             },
             name: "SURNAME",
             label: "Last Name",
@@ -102,13 +116,265 @@ export const personal_detail_prefix_data = {
         {
             render: {
                 componentType: "hidden",
+                sequence: 7,
             },
-            name: "FULL_NAME",
+            name: "ACCT_NM",
             label: "Full Name",
             placeholder: "",
             type: "text",
             GridProps: {xs:4, sm:3},
+        },
+
+
+        {
+            render:  {
+                componentType: "Divider",
+                sequence: 8,
+            },
+            dividerText: "Maiden Name",
+            name: "maidenHeaderdivider",
+            label: "maidenHeaderDivider"
+        },
+        {
+            render: {
+                componentType: "select",
+                sequence: 9,
+            },
+            name: "MAIDEN_PREFIX_CD",
+            label: "Prefix",
+            options: () => API.getPMISCData("Salutation"),
+            _optionsKey: "PDMaidenSalutation",
+            defaultValue: "Mrs",
+            // placeholder: "Prefix",
+            type: "text",
+            GridProps: {xs: 2, sm:1},
+            // dependentFields: ["DAILY_AMT"],
+            // runValidationOnDependentFieldsChange: true,
+            // validate: (currentField, dependentFields) => {
+            //     if(Number(dependentFields?.DAILY_AMT?.value) >
+            //     Number(currentField?.value)) {
+            //         return "Weekly Limit should greater than or equal to Daily Limit";
+            //     } else {
+            //         return "";
+            //     }
+            // }
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 10,
+            },
+            accessor: "MAIDEN_FIRST_NM",
+            name: "MAIDEN_FIRST_NM",
+            label: "First Name",
+            required: true,
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
+            validate: (columnValue, allField, flag) => {
+                if (!Boolean(columnValue)) {
+                  return "This field is required.";
+                }
+                return "";
+            },
+            // schemaValidation: {
+            //     type: "string",
+            //     rules: [
+            //         {name: "required", params: ["field is required"]},
+            //     ]
+            // }
+            // dependentFields: ["DAILY_AMT"],
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 11,
+            },
+            name: "MAIDEN_MIDDLE_NM",
+            label: "Middle Name",
+            // placeholder: "Middle Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 12,
+            },
+            name: "MAIDEN_LAST_NM",
+            label: "Last Name",
+            // placeholder: "Last Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
+        },
+        {
+            render: {
+              componentType: "spacer",
+              sequence: 13,
+            },
+            sequence: 14,
+            GridProps: {
+              xs: 12,
+            //   sm: 12,
+            //   md: 12,
+            },
+        },
+        {
+            render: {
+                componentType: "select",
+                sequence: 14,
+            },
+            name: "FATHER_SPOUSE",
+            label: "Father/Spouse Name",
+            defaultValue: "01",
+            options: [
+                {label: "Father", value: "01"},
+                {label: "Spouse", value: "02"},
+            ],
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+
+
+        {
+            render:  {
+                componentType: "Divider",
+                sequence: 15,
+            },
+            dividerText: "Father Name",
+            name: "fatherHeaderDivider",
+            label: "fatherHeaderDivider"
+        },
+        {
+            render: {
+                componentType: "select",
+                sequence: 16,
+            },
+            name: "FATHER_PREFIX_CD,",
+            label: "Prefix",
+            options: () => API.getPMISCData("Salutation"),
+            _optionsKey: "PDFatherSalutation",
+            defaultValue: "Mr",
+            // placeholder: "Prefix",
+            type: "text",
+            GridProps: {xs: 2, sm:1},
+            // dependentFields: ["DAILY_AMT"],
+            // runValidationOnDependentFieldsChange: true,
+            // validate: (currentField, dependentFields) => {
+            //     if(Number(dependentFields?.DAILY_AMT?.value) >
+            //     Number(currentField?.value)) {
+            //         return "Weekly Limit should greater than or equal to Daily Limit";
+            //     } else {
+            //         return "";
+            //     }
+            // }
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 17,
+            },
+            name: "FATHER_FIRST_NM",
+            label: "First Name",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
+            // dependentFields: ["DAILY_AMT"],
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 18,
+            },
+            name: "FATHER_MIDDLE_NM",
+            label: "Middle Name",
+            // placeholder: "Middle Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 19,
+            },
+            name: "FATHER_LAST_NM",
+            label: "Last Name",
+            // placeholder: "Last Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
+        },
+
+
+
+        {
+            render:  {
+                componentType: "Divider",
+                sequence: 20,
+            },
+            dividerText: "Mother Name",
+            name: "motherHeaderDivider",
+            label: "motherHeaderDivider"
+        },
+        {
+            render: {
+                componentType: "select",
+                sequence: 21,
+            },
+            name: "MOTHER_PREFIX_CD",
+            label: "Prefix",
+            options: () => API.getPMISCData("Salutation"),
+            _optionsKey: "PDMotherSalutation",
+            defaultValue: "Mrs",
+            // placeholder: "Prefix",
+            type: "text",
+            GridProps: {xs: 2, sm:1},
+            // dependentFields: ["DAILY_AMT"],
+            // runValidationOnDependentFieldsChange: true,
+            // validate: (currentField, dependentFields) => {
+            //     if(Number(dependentFields?.DAILY_AMT?.value) >
+            //     Number(currentField?.value)) {
+            //         return "Weekly Limit should greater than or equal to Daily Limit";
+            //     } else {
+            //         return "";
+            //     }
+            // }
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 22,
+            },
+            name: "MOTHER_FIRST_NM",
+            label: "First Name",
+            // placeholder: "First Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
+            // dependentFields: ["DAILY_AMT"],
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 23,
+            },
+            name: "MOTHER_MIDDLE_NM",
+            label: "Middle Name",
+            // placeholder: "Middle Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
+        },
+        {
+            render: {
+                componentType: "textField",
+                sequence: 24,
+            },
+            name: "MOTHER_LAST_NM",
+            label: "Last Name",
+            // placeholder: "Last Name",
+            type: "text",
+            GridProps: {xs: 4, sm:2},
         }
+
     ]
 }
 export const personal_detail_maiden_data = {
@@ -184,11 +450,25 @@ export const personal_detail_maiden_data = {
             render: {
                 componentType: "textField",
             },
+            accessor: "MAIDEN_FIRST_NM",
             name: "MAIDEN_FIRST_NM",
             label: "First Name",
+            required: true,
             // placeholder: "First Name",
             type: "text",
             GridProps: {xs: 4, sm:2},
+            // validate: (columnValue, allField, flag) => {
+            //     if (!Boolean(columnValue)) {
+            //       return "This field is required.";
+            //     }
+            //     return "";
+            // },
+            // schemaValidation: {
+            //     type: "string",
+            //     rules: [
+            //         {name: "required", params: ["field is required"]},
+            //     ]
+            // }
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -210,6 +490,17 @@ export const personal_detail_maiden_data = {
             // placeholder: "Last Name",
             type: "text",
             GridProps: {xs: 4, sm:2},
+        },
+        {
+            render: {
+              componentType: "spacer",
+            },
+            sequence: 14,
+            GridProps: {
+              xs: 12,
+            //   sm: 12,
+            //   md: 12,
+            },
         },
         {
             render: {
@@ -449,7 +740,7 @@ export const personal_other_detail_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -495,6 +786,11 @@ export const personal_other_detail_meta_data = {
                 {label: "Minor", value: "minor"},
                 {label: "Major", value: "major"}
             ],
+            dependentFields: ["BIRTH_DT"],
+            setValueOnDependentFieldsChange: (dependentFields) => {
+                let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
+                return (age && age> 18) ? "major" : "minor";
+            },
             name: "LF_NO",
             label: "Minor/Major",
             required: true,
@@ -690,28 +986,40 @@ export const entity_detail_meta_data = {
             type: "text",
             GridProps: {xs:4, sm:2},
         },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "RELIGION",
-            label: "Religion",
-            // placeholder: "First Name",
-            type: "text",
-            GridProps: {xs:4, sm:2},
-            // dependentFields: ["DAILY_AMT"],
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "CASTE",
-            label: "Caste",
-            // placeholder: "First Name",
-            type: "text",
-            GridProps: {xs:4, sm:2},
-            // dependentFields: ["DAILY_AMT"],
-        },
+        // {
+        //     render: {
+        //         componentType: "formbutton"
+        //     },
+        //     name: "Search",
+        // },
+        // {
+        //     render: {
+        //         componentType: "formbutton"
+        //     },
+        //     name: "Cust.Info",
+        // },
+        // {
+        //     render: {
+        //         componentType: "textField",
+        //     },
+        //     name: "RELIGION",
+        //     label: "Religion",
+        //     // placeholder: "First Name",
+        //     type: "text",
+        //     GridProps: {xs:4, sm:2},
+        //     // dependentFields: ["DAILY_AMT"],
+        // },
+        // {
+        //     render: {
+        //         componentType: "textField",
+        //     },
+        //     name: "CASTE",
+        //     label: "Caste",
+        //     // placeholder: "First Name",
+        //     type: "text",
+        //     GridProps: {xs:4, sm:2},
+        //     // dependentFields: ["DAILY_AMT"],
+        // },
         {
             render: {
                 componentType: "textField",
@@ -805,7 +1113,7 @@ export const entity_detail_meta_data = {
                 componentType: "select",
             },
             name: "NATIONALITY",
-            label: "Nationality",
+            label: "Registered in Country",
             options: [
                 {label: "Option1", value: "Option1"},
                 {label: "Option2", value: "Option2"},
@@ -823,6 +1131,57 @@ export const entity_detail_meta_data = {
             placeholder: "",
             type: "text",
             GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "GIIN",
+            label: "GIIN",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "TIN",
+            label: "TIN",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "TIN_ISSUING_COUNTRY",
+            label: "TIN",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },        
+        {
+            render: {
+                componentType: "textField"
+            },
+            name: "CCIL_ID",
+            label: "CCIL ID",
+        },
+        {
+            render: {
+                componentType: "textField"
+            },
+            name: "LEI_NO",
+            label: "LEI NO.",
+        },
+        {
+            render: {
+                componentType: "datePicker"
+            },
+            name: "LEI_EXPIRY_DT",
+            label: "LEI Expiry Date",
         },
     ]
 }

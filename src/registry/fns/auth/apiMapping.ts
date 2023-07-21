@@ -219,7 +219,7 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREALIST",
     packageName: "",
   },
-  GETSEARCHUSERDATA: {
+  GETCUSTOMERDETAILS: {
     url: "/customerServiceAPI/GETSEARCHUSERDATA",
     packageName: "",
   },
@@ -241,6 +241,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCUSTIDVAL: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTIDVAL",
+    packageName: "",
+  },
+  GETNNULINCOME: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETNNULINCOME",
+    packageName: "",
+  },
+  GETCOMPTYPENM: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMPTYPENM",
+    packageName: "",
+  },
+  GETEDUCATIONDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEDUCATIONDTL",
     packageName: "",
   },
 };

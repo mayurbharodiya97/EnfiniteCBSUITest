@@ -1,6 +1,7 @@
-export const nri_detail_meta_data = {
+import * as API from "../../../../api";
+export const attestation_detail_meta_data = {
     form: {
-        name: "nri_details_form",
+        name: "attestation_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
@@ -43,33 +44,95 @@ export const nri_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
-            name: "Visa_Details",
-            label: "Visa Details",
+            name: "DOC_TYPE",
+            label: "Type of Document Submitted",
+            options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
+            _optionsKey: "ckycDocTypes",
+            required: true,
             placeholder: "",
             type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            options: [
+                {label: "Risk Category 1", value: "riskcat1"},
+                {label: "Risk Category 2", value: "riskcat2"}
+            ],
+            name: "RISK_CATEGORY",
+            label: "Risk Category",
+            // required: true,
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            options: [
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"}
+            ],
+            name: "KYC_VERIFICATION_FLAG",
+            label: "KYC Verification Flag",
             required: true,
+            placeholder: "",
+            type: "text",
             GridProps: {xs: 4, sm:3},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "Visa_Issue_By",
-            label: "Visa Issue By",
+            name: "KYC_VERIFICATION_EMP_CODE",
+            label: "KYC Verification Emp.Code",
+            placeholder: "",
+            required: true,
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "KYC_VERIFICATION_EMP_NAME",
+            label: "KYC Verification Emp.Name",
             placeholder: "",
             type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "KYC_VERIFICATION_EMP_DESIGNATION",
+            label: "KYC Verification Emp.Designation",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "KYC_VERIFICATION_BRANCH",
+            label: "KYC Verification Branch",
             required: true,
+            placeholder: "",
+            type: "text",
             GridProps: {xs: 4, sm:3},
         },
         {
             render: {
                 componentType: "datePicker",
             },
-            name: "Visa_Issue_Date",
-            label: "Visa Issue Date",
-            required: true,
+            name: "KYC_VERIFICATION_DATE",
+            label: "KYC Verification Date",
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
@@ -77,99 +140,46 @@ export const nri_detail_meta_data = {
         },
         {
             render: {
+                componentType: "textField",
+            },
+            name: "ORG_CODE",
+            label: "Organization Code",
+            placeholder: "",
+            required: true,
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "ORG_NAME",
+            label: "Organization Name",
+            placeholder: "",
+            required: true,
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "PLACE_OF_DECLARATION",
+            label: "Place of Declaration",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
                 componentType: "datePicker",
             },
-            name: "Visa_Expiry_Date",
-            label: "Visa Expiry Date",
-            required: true,
+            name: "DATE_OF_DECLARATION",
+            label: "Date of Declaration",
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
             GridProps: {xs: 4, sm:3},
         },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "Domestic_Risk",
-            label: "Domestic Risk",
-            placeholder: "",
-            type: "text",
-            required: true,
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "Country_Of_Risk",
-            label: "Country Of Risk",
-            placeholder: "",
-            type: "text",
-            required: true,
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "Cross_Border_Risk",
-            label: "Cross Border Risk",
-            placeholder: "",
-            type: "text",
-            required: true,
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "select",
-            },
-            name: "Visually_Impaired",
-            label: "Visually Impaired",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-            options: [
-                {label: "type 1", value: "1"},
-                {label: "type 2", value: "2"},
-                {label: "type 3", value: "3"},
-            ],
-            // dependentFields: ["DAILY_AMT"],
-            // runValidationOnDependentFieldsChange: true,
-            // validate: (currentField, dependentFields) => {
-            //     if(Number(dependentFields?.DAILY_AMT?.value) >
-            //     Number(currentField?.value)) {
-            //         return "Weekly Limit should greater than or equal to Daily Limit";
-            //     } else {
-            //         return "";
-            //     }
-            // }
-        },
-        {
-            render: {
-                componentType: "select",
-            },
-            options: [
-                {label: "category 1", value: "1"},
-                {label: "category 2", value: "2"},
-                {label: "category 3", value: "3"},
-            ],
-            name: "Customer_Evaluation_Required",
-            label: "Customer Evaluation Required",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "Relationship_Manager",
-            label: "Relationship Manager",
-            placeholder: "",
-            type: "text",
-            disabled: true,
-            GridProps: {xs: 4, sm:3},
-        }        
     ]
 }

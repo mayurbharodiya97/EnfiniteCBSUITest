@@ -1,4 +1,4 @@
-import * as API from "../../../api";
+import * as API from "../../../../api";
 
 export const related_person_detail_data = {
     form: {

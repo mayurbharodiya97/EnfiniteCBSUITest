@@ -15,7 +15,7 @@ export const declaration_meta_data = {
           },
           container: {
               direction: "row",
-              spacing: 3,
+              spacing: 1,
           },
           },
       },
