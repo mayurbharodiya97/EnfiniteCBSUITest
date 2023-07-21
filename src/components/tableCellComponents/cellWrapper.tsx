@@ -62,12 +62,11 @@ export const CellWrapper = ({
             display: "block",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
             padding: "0px 10px",
             lineHeight: "34px",
             color: myColor,
             position: positionRelative ? "relative" : "static",
-            borderBottom: "none",
+            borderBottom: "1px solid var(--theme-color4)",
           },
         },
       ])}

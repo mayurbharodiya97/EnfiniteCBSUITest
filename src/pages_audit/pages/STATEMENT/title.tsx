@@ -19,24 +19,21 @@ const typographyTitleStyle = {
   cursor: "pointer",
 };
 
-const Title = ({ handleBoxToggle, openBoxes, data, index }) => {
+const Title = ({ data, index, openBoxes, handleBoxToggle }) => {
+  const { displayType, TITLE } = data;
+
+  //
+
   return (
     <>
       <Typography
-        onClick={() =>
-          data?.displayType !== "none" ? handleBoxToggle(index) : null
-        }
         variant="h5"
         sx={typographyTitleStyle}
         key={index}
+        onClick={() => handleBoxToggle(index)}
       >
-        {data?.title}
-        {data?.displayType !== "none" &&
-          (openBoxes[index] ? (
-            <KeyboardArrowUpIcon />
-          ) : (
-            <KeyboardArrowDownIcon />
-          ))}
+        {TITLE}
+        {openBoxes[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
       </Typography>
     </>
   );

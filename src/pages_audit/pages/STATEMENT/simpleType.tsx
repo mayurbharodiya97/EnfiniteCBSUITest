@@ -3,7 +3,7 @@ import { Divider, Grid, Typography } from "@mui/material";
 const SimpleType = ({ data }) => {
   return (
     <Grid container sx={{ marginBottom: "10px" }}>
-      {data?.detail?.map((item, index) => (
+      {data?.DETAILS?.map((item, index) => (
         <>
           <Grid
             item
@@ -12,7 +12,7 @@ const SimpleType = ({ data }) => {
             md={6}
             lg={6}
             xl={6}
-            key={item.label}
+            key={item.LABEL}
             style={{
               borderBottom: "1px solid var(--theme-color4)",
               padding: "10px",
@@ -31,7 +31,7 @@ const SimpleType = ({ data }) => {
                 <Typography
                   sx={{ fontWeight: "bold", fontFamily: "Roboto, sans-serif" }}
                 >
-                  {item?.label}
+                  {item?.LABEL}
                 </Typography>
                 <Typography
                   sx={{ fontWeight: "bold", fontFamily: "Roboto, sans-serif" }}
@@ -41,7 +41,7 @@ const SimpleType = ({ data }) => {
               </Grid>
               <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
                 <Typography sx={{ padding: "0px 10px" }}>
-                  {item?.value}
+                  {item?.VALUE}
                 </Typography>
               </Grid>
             </Grid>
@@ -55,7 +55,7 @@ const SimpleType = ({ data }) => {
               md={6}
               lg={6}
               xl={6}
-              key={item.label}
+              key={item.LABEL}
               style={{ borderBottom: "1px solid var(--theme-color4)" }}
             ></Grid>
           ) : (

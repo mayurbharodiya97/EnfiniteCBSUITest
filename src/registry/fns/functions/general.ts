@@ -37,7 +37,7 @@ const GeneralAPISDK = () => {
       return "";
     }
   };
-  
+
   const getTranslateDataFromGoole = async (data, fromLang, toLang) => {
     try {
       let response = await fetch(
@@ -63,16 +63,16 @@ const GeneralAPISDK = () => {
       return "";
     }
   };
-  
+
   const setDocumentName = (text) => {
     let titleText = document.title;
     document.title = titleText.split(" - ")[0] + " - " + text;
   };
 
   const getCustType = () => {
-    console.log("changed...")
-  }
-  
+    console.log("changed...");
+  };
+
   return {
     GetMiscValue,
     getValidateValue,

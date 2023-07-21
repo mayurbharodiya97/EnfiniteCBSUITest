@@ -223,6 +223,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETSEARCHUSERDATA",
     packageName: "",
   },
+  GETACCTDTL: {
+    url: "/accountServiceAPI/GETACCTDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

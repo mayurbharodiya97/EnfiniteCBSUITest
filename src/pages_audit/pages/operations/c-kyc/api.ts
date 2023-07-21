@@ -255,21 +255,20 @@ export const getSubAreaOptions = async (COMP_CD, BRANCH_CD) => {
       BRANCH_CD: BRANCH_CD,
     });
   if (status === "0") {
-    // let responseData = data;
-    // if (Array.isArray(responseData)) {
-    //   responseData = responseData.map(({ P_AREA_NM, P_AREA_CD, ...other }) => {
-    //       return {
-    //         ...other,
-    //         P_AREA_NM: P_AREA_NM, 
-    //         P_AREA_CD: P_AREA_CD,
-    //         value: P_AREA_CD,
-    //         label: P_AREA_NM,
-    //       };
-    //     }
-    //   );
-    // }
-    // return responseData
-    // console.log('asddsaasddsa', data)
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ AREA_NM, AREA_CD, ...other }) => {
+          return {
+            ...other,
+            AREA_NM: AREA_NM, 
+            AREA_CD: AREA_CD,
+            value: AREA_CD,
+            label: AREA_NM,
+          };
+        }
+      );
+    }
+    return responseData
     return data
   } else {
     throw DefaultErrorObject(message, messageDetails);

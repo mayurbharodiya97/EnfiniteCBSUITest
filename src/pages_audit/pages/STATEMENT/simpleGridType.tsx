@@ -1,13 +1,12 @@
 import { Grid, Typography } from "@mui/material";
+import { FormatCurrency } from "components/custom/currencySymbol";
 
 const SimpleGridType = ({ data }) => {
-  const typographyStyle = [
-    {
-      padding: " 06px",
-      fontFamily: "Roboto, sans-serif",
-      fontWeight: "900",
-    },
-  ];
+  const typographyStyle = {
+    padding: "06px",
+    fontFamily: "Roboto, sans-serif",
+    fontWeight: "900",
+  };
 
   const collapseableBox = {
     height: "auto",
@@ -18,60 +17,55 @@ const SimpleGridType = ({ data }) => {
 
   return (
     <Grid container sx={collapseableBox}>
-      {data?.detail?.map((item, index) => (
-        <Grid
-          key={index}
-          item
-          xs={12}
-          sm={12}
-          md={6}
-          lg={3}
-          xl={3}
-          sx={{ display: "flex" }}
-        >
+      {data?.DETAILS?.map((item, index) => {
+        const convertedInNumber = Number(item?.VALUE);
+
+        return (
           <Grid
+            key={index}
             item
-            xs={8}
-            sm={8}
-            md={8}
-            lg={8}
-            xl={8}
-            sx={{
-              height: "80%",
-              borderRight: "1px solid",
-              borderColor: "var(--theme-color4)",
-              // borderRadius: "5px",
-            }}
+            xs={12}
+            sm={12}
+            md={6}
+            lg={3}
+            xl={3}
+            sx={{ display: "flex" }}
           >
-            <Typography variant="h6" sx={typographyStyle}>
-              {item.label}
-            </Typography>
-            <Typography
-              variant="h5"
+            <Grid
+              item
+              xs={8}
+              sm={8}
+              md={8}
+              lg={8}
+              xl={8}
               sx={{
-                padding: " 06px",
-                fontFamily: "Roboto, sans-serif",
-                fontWeight: "900",
-                color: "var(--theme-color1)",
+                height: "80%",
+                borderRight: "1px solid",
+                borderColor: "var(--theme-color4)",
               }}
             >
-              {" "}
-              {item?.currency && <>&#8377;</>} {item.value}
-            </Typography>
-            {item.countLabel && (
-              <>
-                {" "}
-                <Typography variant="h6" sx={typographyStyle}>
-                  {item.countLabel}
-                </Typography>
-                <Typography variant="h5" sx={typographyStyle}>
-                  {item.count}
-                </Typography>
-              </>
-            )}
+              <Typography variant="h6" sx={typographyStyle}>
+                {item.LABEL}
+              </Typography>
+              <Typography
+                variant="h5"
+                sx={{
+                  padding: "06px",
+                  fontFamily: "Roboto, sans-serif",
+                  fontWeight: "900",
+                  color: "var(--theme-color1)",
+                }}
+              >
+                {item?.CURRENCY ? (
+                  <>{FormatCurrency(convertedInNumber, item.CURRENCY)}</>
+                ) : (
+                  item?.VALUE
+                )}
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
-      ))}
+        );
+      })}
     </Grid>
   );
 };
