@@ -98,7 +98,7 @@ export const en_language_data = {
   CurrentPassword: "Current Password",
   NewPassword: "New Password",
   QuickView: "Quick View",
-  DashboardDataBoxes: "Dashboard Data Boxes",
+  DashboardDataCards: "Dashboard Data Cards",
   // For Today's Transaction Graph and Grid
   TodaysTransaction: "Today's Transaction",
   SrNo: "Sr.No.",

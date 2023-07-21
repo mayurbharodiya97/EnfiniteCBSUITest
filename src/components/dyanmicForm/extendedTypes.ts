@@ -427,10 +427,41 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       componentType: "numberFormat",
     },
     FormatProps: {
-      format: "###########",
       allowNegative: false,
-      allowLeadingZeros: true,
-      isNumericString: true,
+      allowLeadingZeros: false,
+      isAllowed: (values) => {
+        if (values?.value?.length > 20) {
+          return false;
+        }
+        // if (values.floatValue === 0) {
+        //   return false;
+        // }
+        return true;
+      },
     },
+  },
+  amountFieldNew: {
+    render: {
+      componentType: "numberFormat",
+    },
+    // className: "textInputFromRight",
+    FormatProps: {
+      thousandSeparator: true,
+      // prefix: "₹ ",
+      thousandsGroupStyle: "lakh",
+      allowNegative: false,
+      allowLeadingZeros: false,
+      decimalScale: 2,
+      // isAllowed: (values) => {
+      //   if (values?.value?.length > 14) {
+      //     return false;
+      //   }
+      //   if (values.floatValue === 0) {
+      //     return false;
+      //   }
+      //   return true;
+      // },
+    },
+    enableNumWords: false,
   },
 };

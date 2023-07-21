@@ -72,7 +72,6 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   //disableTimestamp,
   ...others
 }) => {
-  console.log("dsdsd", fieldName, fullWidth);
   const classes = useStyles();
 
   const {
@@ -104,9 +103,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   });
 
   useEffect(() => {
-    console.log("asdasd", value, typeof value);
     if (typeof value === "string") {
-      console.log("asdasd", value);
       let result = new Date(value);
       //@ts-ignore
       if (!isNaN(result)) {
@@ -129,7 +126,6 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   if (excluded) {
     return null;
   }
-  console.log("asdasd ", others, name, value);
   const result = (
     // <ThemeProvider theme={themeObj}>
     <>

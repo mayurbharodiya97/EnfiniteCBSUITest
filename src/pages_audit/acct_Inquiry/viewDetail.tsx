@@ -4,10 +4,10 @@ import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { ViewDetailMetadata } from "./metaData";
 // import { useLocation } from "react-router-dom";
 import { InitialValuesType } from "packages/form";
+import { GradientButton } from "components/styledComponent/button";
 
 export const ViewDetail = ({ open, onClose, rowsData }) => {
   // const { state: rows }: any = useLocation();
-  console.log("<<<viewdetail", rowsData);
   return (
     <Dialog
       open={open}

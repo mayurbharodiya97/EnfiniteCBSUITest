@@ -43,6 +43,8 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
     actionTextColor: "var(--theme-color3)",
     actionBackground: "var(--theme-color2)",
+    startsIcon: "West",
+    rotateIcon: "rotateX",
   },
   {
     actionName: "proceed",
@@ -52,6 +54,8 @@ const actions: ActionTypes[] = [
     actionTextColor: "var(--theme-color2)",
     actionBackground: "var(--theme-color3)",
     onEnterSubmit: true,
+    endsIcon: "East",
+    rotateIcon: "rotateX",
   },
 ];
 

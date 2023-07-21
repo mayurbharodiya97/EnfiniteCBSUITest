@@ -1,11 +1,10 @@
-import { useContext, useState } from "react";
-import { useStyles } from "./style";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import IconButton from "@mui/material/IconButton";
+import { useState } from "react";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { Badge, Box, Grid, List, ListItemButton, Popover } from "@mui/material";
+import { Box, Grid, List, ListItemButton, Popover } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
+import { CustomIconButton } from "components/styledComponent/button/button";
+import dash from "assets/images/notification5 (1).svg";
 export const Notification_App = () => {
   //   const classes = useStyles();
   const [anchorEl1, setAnchorEl1] = useState(null);
@@ -69,21 +68,38 @@ export const Notification_App = () => {
           />
         ) : null;
       })} */}
-      <IconButton
-        color="inherit"
+      <CustomIconButton
         onClick={handleClick}
-        style={{
-          backgroundColor: "rgba(235, 237, 238, 0.45)",
+        // imageSrc={dash}
+        renderIcon="NotificationsNone"
+        sx={{
+          backgroundColor: anchorEl1
+            ? "var(--theme-color3)"
+            : "rgba(235, 237, 238, 0.45)",
           borderRadius: "10px",
+          color: anchorEl1 ? "var(--theme-color2)" : "var(--theme-color3)",
           height: "30px",
           width: "30px",
+          "& img": { maxWidth: "120%" },
+          "&:hover": {
+            background: "var(--theme-color2)",
+            borderRadius: "10px",
+            transition: "all 0.2s ease 0s",
+            boxShadow:
+              "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+            "& img": {
+              maxWidth: "20px",
+              transition: "all 0.2s ease 0s",
+            },
+            "& .MuiSvgIcon-root": {
+              height: "32px",
+              width: "32px",
+              transition: "all 0.2s ease 0s",
+              padding: "4px",
+            },
+          },
         }}
-      >
-        <NotificationsNoneIcon
-          fontSize="small"
-          sx={{ color: "var(--theme-color3)" }}
-        />
-      </IconButton>
+      />
       <Popover
         anchorEl={anchorEl1}
         open={Boolean(anchorEl1)}

@@ -101,7 +101,7 @@ export const guj_language_data = {
   CurrentPassword: "અત્યારનો પાસવર્ડ",
   NewPassword: "નવો પાસવર્ડ",
   QuickView: "ઝડપી જુઓ",
-  DashboardDataBoxes: "ડેશબોર્ડ ડેટા બોક્સ",
+  DashboardDataCards: "ડેશબોર્ડ ડેટા કાર્ડસ ",
   // For Today's Transaction Graph and Grid
   TodaysTransaction: "આજનો વ્યવહાર",
   SrNo: "ક્રમ નં.",

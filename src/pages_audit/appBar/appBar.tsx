@@ -13,6 +13,7 @@ import * as API from "./api";
 import { styled } from "@mui/material/styles";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
+import dash from "assets/images/dash3.gif";
 import {
   AppBar,
   Avatar,
@@ -34,7 +35,8 @@ import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 import { useTranslation } from "react-i18next";
-
+import { CustomIconButton } from "components/styledComponent/button/button";
+import AcUnitIcon from "@mui/icons-material/AcUnit";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -64,7 +66,6 @@ export const MyAppBar = ({
   const handleClose = () => {
     setAnchorEl1(null);
   };
-
   const LightTooltip = styled(({ className, ...props }: any) => (
     <Tooltip {...props} classes={{ popper: className }} />
   ))(({ theme }) => ({
@@ -289,21 +290,35 @@ export const MyAppBar = ({
             <MultiLanguages />
 
             <Box width={170} display={"flex"} justifyContent={"space-evenly"}>
-              <IconButton
-                color="inherit"
+              <CustomIconButton
+                renderIcon="PersonSearchOutlined"
                 onClick={() => setAcctInquiry(true)}
-                style={{
-                  backgroundColor: "rgba(235, 237, 238, 0.45)",
+                sx={{
+                  backgroundColor: acctInquiry
+                    ? "var(--theme-color3)"
+                    : "rgba(235, 237, 238, 0.45)",
+                  color: acctInquiry
+                    ? "var(--theme-color2)"
+                    : "var(--theme-color3)",
                   borderRadius: "10px",
                   height: "30px",
                   width: "30px",
+                  "&:hover": {
+                    background: "var(--theme-color2)",
+                    borderRadius: "10px",
+                    transition: "all 0.2s ease 0s",
+                    boxShadow:
+                      "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                    "& .MuiSvgIcon-root": {
+                      height: "32px",
+                      width: "32px",
+                      transition: "all 0.2s ease 0s",
+                      padding: "4px",
+                    },
+                  },
                 }}
-              >
-                <PersonSearchOutlinedIcon
-                  fontSize="small"
-                  sx={{ color: "var(--theme-color3)" }}
-                />
-              </IconButton>
+              />
+
               {acctInquiry && (
                 <Accountinquiry
                   open={acctInquiry}
@@ -312,26 +327,35 @@ export const MyAppBar = ({
               )}
               <Quick_View />
               <Notification_App />
-              <IconButton
+              <CustomIconButton
+                renderIcon="Logout"
                 onClick={() => {
                   authController?.logout();
                   // handleClose();
                 }}
                 sx={{
                   backgroundColor: "rgba(235, 237, 238, 0.45)",
+
+                  color: "var(--theme-color3)",
                   borderRadius: "10px",
                   height: "30px",
                   width: "30px",
+                  "&:hover": {
+                    background: "var(--theme-color2)",
+                    borderRadius: "10px",
+                    transition: "all 0.2s ease 0s",
+                    boxShadow:
+                      "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                    "& .MuiSvgIcon-root": {
+                      height: "32px",
+                      width: "32px",
+                      transition: "all 0.2s ease 0s",
+                      padding: "4px",
+                    },
+                  },
                 }}
                 aria-label="show 4 new mails"
-                color="inherit"
-              >
-                <LogoutIcon
-                  color="inherit"
-                  fontSize="small"
-                  sx={{ color: "var(--theme-color3)" }}
-                />
-              </IconButton>
+              />
             </Box>
           </Box>
         </Box>
@@ -359,9 +383,14 @@ export const MyAppBar = ({
                 className={classes.heading_user_img}
                 onClick={handleNavigate}
                 alt="Remy Sharp"
+                // src={
+                //   Boolean(pictureURL?.profile)
+                //     ? pictureURL?.profile
+                //     : USER_PROFILE_DEFAULT
+                // }
                 src={
-                  Boolean(pictureURL?.profile)
-                    ? pictureURL?.profile
+                  Boolean(authController?.getProfileImage)
+                    ? authController?.getProfileImage
                     : USER_PROFILE_DEFAULT
                 }
               />

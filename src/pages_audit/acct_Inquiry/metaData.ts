@@ -50,7 +50,7 @@ export const AccountInquiryMetadata = {
   fields: [
     {
       render: {
-        componentType: "accountNumberOptional",
+        componentType: "numberFormat",
       },
       name: "ACCOUNT",
       label: "Account No.",
@@ -61,17 +61,34 @@ export const AccountInquiryMetadata = {
       maxLength: 20,
       required: false,
       fullWidth: true,
-      // autoComplete: false,
-      validate: (columnValue, allField, flag) => {
-        if (columnValue.value.length >= 20) {
-          return "The length of your Account No. is greater than 20 character";
-        }
-        return "";
-      },
+      autoComplete: false,
+      // validate: (columnValue, allField, flag) => {
+      //   if (columnValue.displayValue.length >= 20) {
+      //     return "The length of your Account No. is greater than 20 character";
+      //   }
+      //   return "";
+      // },
       GridProps: {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+      },
+      FormatProps: {
+        // thousandSeparator: true,
+        // prefix: "৳",
+        // thousandsGroupStyle: "lakh",
+        // allowNegative: false,
+        // allowLeadingZeros: false,
+        // decimalScale: 2,
+        isAllowed: (values) => {
+          if (values?.value?.length > 20) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
       },
     },
     {
@@ -84,18 +101,29 @@ export const AccountInquiryMetadata = {
       schemaValidation: {
         type: "string",
       },
-      validate: (columnValue, allField, flag) => {
-        if (columnValue.value.length >= 12) {
-          return "The length of your Customer Id is greater than 12 character";
-        }
-        return "";
-      },
+      // validate: (columnValue, allField, flag) => {
+      //   if (columnValue.value.length > 12) {
+      //     return "The length of your Customer Id is greater than 12 character";
+      //   }
+      //   return "";
+      // },
       placeholder: "Customer Id",
       type: "text",
       GridProps: {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+      },
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.value?.length > 12) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
       },
     },
     {
@@ -153,12 +181,15 @@ export const AccountInquiryMetadata = {
         return "";
       },
     },
+
     {
       render: {
         componentType: "formbutton",
       },
       name: "PID_DESCRIPTION",
       label: "Retrieve",
+      endsIcon: "YoutubeSearchedFor",
+      rotateIcon: "zoom",
       placeholder: "",
       type: "text",
       GridProps: {
@@ -174,7 +205,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     dense: true,
     gridLabel: "Search Criteria Data",
     rowIdColumn: "WITHDRAW_BAL",
-    searchPlaceholder: "Transaction",
+    searchPlaceholder: "Accounts",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -210,7 +241,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       accessor: "ACCT_NM",
       columnName: "Account/Person Name",
       sequence: 4,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       width: 220,
       minWidth: 180,
@@ -275,7 +306,6 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy HH:mm:ss",
-      // dateFormat: "dd/MM/yyyy hh:mm aaa",
       isReadOnly: true,
       width: 140,
       minWidth: 140,
@@ -285,7 +315,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       accessor: "DISPLAY_STATUS",
       columnName: "Status",
       sequence: 9,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       isReadOnly: true,
       width: 100,
@@ -296,14 +326,13 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       accessor: "CLOSE_DT",
       columnName: "Close Date",
       sequence: 10,
-      alignment: "center",
+      alignment: "left",
       componentType: "date",
       dateFormat: "dd/MM/yyyy HH:mm:ss",
-      // dateFormat: "dd/MM/yyyy hh:mm aaa",
       isReadOnly: true,
       width: 140,
       minWidth: 140,
-      maxWidth: 140,
+      maxWidth: 170,
     },
   ],
 };
@@ -550,7 +579,7 @@ export const PassbookStatement = {
       },
       name: "PID_DESTION",
       label: "From Date :-",
-      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      format: "dd/MM/yyyy",
       placeholder: "",
       type: "text",
       // fullWidth: true,
@@ -575,7 +604,7 @@ export const PassbookStatement = {
       name: "PID_DEIPTION",
       label: "To Date :-",
       placeholder: "",
-      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      format: "dd/MM/yyyy",
       // type: "text",
       // fullWidth: true,
       dependentFields: ["PD_DESTION"],

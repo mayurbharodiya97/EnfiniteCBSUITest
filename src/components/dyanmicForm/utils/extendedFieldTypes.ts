@@ -15,13 +15,11 @@ export const extendFieldTypes = (
     if (one["options"] && Array.isArray(one["options"])) {
       one["options"] = one["options"].map((_item) => {
         if (_item?.label) {
-          console.log("options", _item?.label);
           return { ..._item, label: lanTranslate(_item?.label) };
         }
         return _item;
       });
     }
-    console.log("one", one["placeholder"]);
     //exclude the following types from extending
     if (typeof extendedType === "object") {
       const {

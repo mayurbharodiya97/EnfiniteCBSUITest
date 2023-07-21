@@ -201,6 +201,9 @@ export const renderField: RenderFunctionType = (
         fieldKey={others.name}
         key={`${formName}/${others.name}`}
         enableGrid={true}
+        startsIcon={allProps.startsIcon}
+        endsIcon={allProps.endsIcon}
+        rotateIcon={allProps.rotateIcon}
         GridProps={{
           item: true,
           xs: gridConfigOverrides?.xs ?? "auto",

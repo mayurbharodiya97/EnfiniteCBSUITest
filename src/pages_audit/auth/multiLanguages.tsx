@@ -32,14 +32,19 @@ export const MultiLanguages = () => {
   }, []);
   return (
     <>
-      <FormControl size="small">
+      <FormControl
+        sx={{
+          ml: 1.4,
+          "&:hover": {
+            letterSpacing: "0.5px",
+            boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
+            transition: "all 0.4s ease 0s",
+            fontWeight: "800",
+          },
+        }}
+        size="small"
+      >
         <Select
-          style={{
-            maxWidth: "100px",
-            width: "100px",
-            // display: "flex",
-            margin: "7px",
-          }}
           disableUnderline
           variant="standard"
           value={language}
@@ -47,9 +52,10 @@ export const MultiLanguages = () => {
           displayEmpty
           inputProps={{ "aria-label": "Without label" }}
           sx={{
+            width: "100px",
+            margin: "7px",
             "& .MuiInput-input": {
               display: "contents",
-              background: "red",
             },
             "& .MuiSelect-icon": {
               paddingBottom: "4px",

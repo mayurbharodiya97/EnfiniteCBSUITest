@@ -178,7 +178,7 @@ export const UserProfileMetaData = {
       render: {
         componentType: "typography",
       },
-      name: "CIBVIEW",
+      name: "CIBVEW",
       label: "CreditTransactionLimit",
       GridProps: {
         xs: 12,
@@ -358,8 +358,8 @@ export const userAccessbranch: GridMetaDataType = {
     hideFooter: false,
     disableGroupBy: true,
     enablePagination: true,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
+    pageSizes: [20, 30, 40],
+    defaultPageSize: 20,
     allowRowSelection: false,
   },
   // filters: [],
@@ -436,7 +436,7 @@ export const userAccesstype: GridMetaDataType = {
     disableGroupBy: true,
     enablePagination: true,
     pageSizes: [20, 40, 60],
-    defaultPageSize: 10,
+    defaultPageSize: 20,
     // disableGlobalFilter: true,
     // containerHeight: {
     //   min: "30vh",
@@ -465,7 +465,7 @@ export const userAccesstype: GridMetaDataType = {
       accessor: "TYPE_NM",
       columnName: "Product",
       sequence: 3,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       width: 280,
       minWidth: 280,
@@ -561,7 +561,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
 export const PersonlizationDashboardGridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "DashboardDataBoxes",
+    gridLabel: "DashboardDataCards",
     rowIdColumn: "ID",
     defaultColumnConfig: {
       width: 400,

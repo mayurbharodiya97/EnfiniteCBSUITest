@@ -16,6 +16,7 @@ import { useQuery } from "react-query";
 import * as API from "./api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
+import { CustomIconButton } from "components/styledComponent/button/button";
 
 export const Quick_View = () => {
   const authController = useContext(AuthContext);
@@ -39,21 +40,40 @@ export const Quick_View = () => {
   };
   return (
     <>
-      <IconButton
-        color="inherit"
+      <CustomIconButton
+        // color="inherit"
+        renderIcon="SensorsOutlined"
         onClick={handleClickd}
-        style={{
-          backgroundColor: "rgba(235, 237, 238, 0.45)",
+        sx={{
+          backgroundColor: anchorEl
+            ? "var(--theme-color3)"
+            : "rgba(235, 237, 238, 0.45)",
           borderRadius: "10px",
           height: "30px",
           width: "30px",
+          color: anchorEl ? "var(--theme-color2)" : "var(--theme-color3)",
+          "&:hover": {
+            background: "var(--theme-color2)",
+            borderRadius: "10px",
+            transition: "all 0.2s ease 0s",
+            boxShadow:
+              "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+            "& .MuiSvgIcon-root": {
+              height: "32px",
+              width: "32px",
+              transition: "all 0.2s ease 0s",
+              padding: "4px",
+            },
+          },
         }}
       >
-        <SensorsOutlinedIcon
+        {/* <SensorsOutlinedIcon
           fontSize="small"
-          sx={{ color: "var(--theme-color3)" }}
-        />
-      </IconButton>
+          sx={{
+            color: anchorEl ? "var(--theme-color2)" : "var(--theme-color3)",
+          }}
+        /> */}
+      </CustomIconButton>
       <Popover
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

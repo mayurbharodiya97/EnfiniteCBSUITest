@@ -230,6 +230,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                 onClick={() => {
                   navigate("login");
                 }}
+                starticon={"West"}
               >
                 {t("backtologin")}
               </GradientButton>
@@ -245,6 +246,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                   console.log("input", input, loginState.workingState);
                 }}
                 ref={inputButtonRef}
+                endicon={"East"}
               >
                 {t("Next")}
               </GradientButton>
