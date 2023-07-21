@@ -75,9 +75,17 @@ export const DashboardBox = ({
           //     : null,
         }}
       >
-        <CardContent style={{ height: "13vh", padding: "10px", margin: "5px" }}>
-          <Grid container spacing={2} sx={{ justifyContent: "space-between" }}>
-            <Grid item xl={4} lg={9} sm={9} xs={12} style={{ height: "16vh" }}>
+        <CardContent style={{ height: "80px", padding: "10px", margin: "5px" }}>
+          <Grid
+            container
+            // spacing={2}
+            sx={{
+              // justifyContent: "space-between",
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <Grid item style={{ flexGrow: 1 }}>
               <Typography
                 // gutterBottom
                 // variant="overline"
@@ -89,7 +97,9 @@ export const DashboardBox = ({
                   marginBottom: "0px",
                 }}
               >{`${result?.data?.[0]?.BOX_BODY ?? body}`}</Typography>
-              <Divider style={{ borderColor: "var(--theme-color3)" }} />
+              <Divider
+                style={{ borderColor: "var(--theme-color3)", width: "21vh" }}
+              />
               <Typography
                 variant="h3"
                 style={{
@@ -102,7 +112,7 @@ export const DashboardBox = ({
                 {`${title}`}
               </Typography>
             </Grid>
-            <Grid item xl={6} lg={3} sm={3} xs={12}>
+            <Grid item>
               <Avatar
                 className={classes.avtar}
                 sx={{
@@ -124,7 +134,6 @@ export const DashboardBox = ({
                 ) : null}
               </Avatar>
             </Grid>
-            {/* <Grid item xl={6} lg={3} sm={3} xs={12}></Grid> */}
           </Grid>
         </CardContent>
       </Card>

@@ -47,7 +47,6 @@ export const ChangePassword = ({ onClose, showProfile }) => {
     updatePasswordFnWrapper(API.changeEmployeePassword),
     {
       onError: (error: any, { endSubmit }) => {
-        console.log(error, "<<<errrorr");
         let errorMsg = "Unknown Error occured";
         if (typeof error === "object") {
           errorMsg = error?.error_msg ?? errorMsg;

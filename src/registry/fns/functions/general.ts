@@ -37,7 +37,7 @@ const GeneralAPISDK = () => {
       return "";
     }
   };
-  
+
   const getTranslateDataFromGoole = async (data, fromLang, toLang) => {
     try {
       let response = await fetch(
@@ -63,22 +63,59 @@ const GeneralAPISDK = () => {
       return "";
     }
   };
-  
+
   const setDocumentName = (text) => {
     let titleText = document.title;
     document.title = titleText.split(" - ")[0] + " - " + text;
   };
 
   const getCustType = () => {
-    console.log("changed...")
-  }
-  
+    console.log("changed...");
+  };
+  const getAccountTypeList = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETUSERACCTTYPE", {
+        USER_NAME: reqData?.[3]?.user.id ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ ACCT_TYPE, TYPE_NM }) => {
+          return {
+            value: ACCT_TYPE,
+            label: TYPE_NM,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
+  const getCustomerIdValidate = async (authState) => {
+    // if (currentField?.value) {
+    const { status, data, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCUSTIDVAL", {
+        COMP_CD: authState?.companyID ?? "",
+        CUSTOMER_ID: "1234",
+      });
+    if (status === "0") {
+      console.log(">>data", data);
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
     getTranslateDataFromGoole,
     setDocumentName,
     getCustType,
+    getAccountTypeList,
+    getCustomerIdValidate,
   };
 };
 

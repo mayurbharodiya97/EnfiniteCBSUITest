@@ -1,33 +1,63 @@
 import { Dialog, LinearProgress, Paper } from "@mui/material";
 import "./stickyNotes.css";
 import Draggable from "react-draggable";
-import React, { useState, useEffect, useContext } from "react";
-import NotesList from "./noteComponents/NotesList";
-import { nanoid } from "nanoid";
+import { useState, useEffect, useContext, useRef, Fragment } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, Grid, Tooltip } from "@mui/material";
+import { Grid, Tooltip } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
-import AddNote from "./noteComponents/AddNote";
+import { nanoid } from "nanoid";
 import { useQuery } from "react-query";
 import * as API from "../../api";
 import { AuthContext } from "pages_audit/auth";
-function PaperComponent(props: any) {
-  return (
-    <Draggable
-      handle="#draggable-dialog-title"
-      cancel={'[class*="MuiDialogContent-root"]'}
-    >
-      <Paper {...props} />
-    </Draggable>
-  );
-}
+import { queryClient } from "cache";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import AddNote from "./addNote";
+import { Alert } from "components/common/alert";
 
-const StickyNotes = ({ closeDialog, reqdata, open }) => {
-  const [searchText, setSearchText] = useState<any>("");
-  const [darkMode, setDarkMode] = useState<any>(false);
-  const colors = [
+const StickyNotes = ({ closeDialog, open }) => {
+  const { authState } = useContext(AuthContext);
+  const [isOpenNote, setIsOpenNote] = useState(false);
+  const [isCreateNote, setIsCreateNote] = useState(false);
+  const refData = useRef(null);
+  const [filter, setFilter] = useState<any>("");
+  const [flag, setflag] = useState<any>("P");
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(
+    [
+      "getNoteDetailsData",
+      {
+        userID: authState?.user?.id ?? "",
+        flag: flag,
+      },
+    ],
+    () =>
+      API.getNoteDetailsData({
+        userID: authState?.user?.id ?? "",
+        flag: flag,
+      })
+  );
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries([
+        "getNoteDetailsData",
+        {
+          userID: authState?.user?.id ?? "",
+          flag: flag,
+        },
+      ]);
+    };
+  }, [flag]);
+
+  const handleDialogClose = () => {
+    setIsOpenNote(false);
+    setIsCreateNote(false);
+  };
+  const colors: any = [
     "#DAE23A",
     "#b693fd",
     "#fe9b72",
@@ -36,80 +66,19 @@ const StickyNotes = ({ closeDialog, reqdata, open }) => {
     "#b693fd",
     "#e4ee91",
   ];
-
-  const { authState } = useContext(AuthContext);
-
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
-    [
-      "getDashboardMessageBoxData",
-      {
-        screenFlag: "Notes",
-        userID: authState?.user?.id ?? "",
-        // transactionID,
-      },
-    ],
-    () =>
-      API.getDashboardMessageBoxData({
-        screenFlag: "Notes",
-        userID: authState?.user?.id ?? "",
-        transactionID: "",
-      })
-  );
-  let dialogLabels = [{ title: "", DESCRIPTION: "", TRAN_CD: "", FLAG: "" }];
-
-  if (!isLoading) {
-    dialogLabels = data.map((item: any, _index: any) => item);
-  }
-  const initialNotes = dialogLabels.map((item, index: any) => ({
-    id: index,
-    title: item?.title || "",
-    text: item?.DESCRIPTION,
-    tranCD: item?.TRAN_CD,
-    flag: item?.FLAG,
-    color: colors[index % colors.length],
-  }));
-  const [notes, setNotes] = useState<any>(initialNotes);
-  const [isCreateNote, setIsCreateNote] = useState(false);
-  useEffect(() => {
-    if (notes !== null) {
-      localStorage.setItem("react-notes-app-data", JSON.stringify(notes));
+  const handleNoteClick = (item, colors) => {
+    if (item.ACTIVE === "N") {
+      setIsOpenNote(false);
+    } else {
+      const itemWithColor = { ...item, colors };
+      refData.current = itemWithColor;
+      setIsOpenNote(true);
     }
-  }, [notes]);
 
-  useEffect(() => {
-    localStorage.setItem("react-notes-app-data", JSON.stringify(notes));
-  }, [notes]);
-  const addNote = (
-    text: any,
-    title: any,
-    color: any,
-    tranCD: any,
-    id,
-    flag
-  ) => {
-    const date = new Date();
-    const newNote = {
-      id: id || nanoid(),
-      title: title,
-      text: text,
-      color: color,
-      tranCD: tranCD,
-      flag: flag,
-      date: date.toLocaleDateString(),
-    };
-    console.log("newNote", newNote);
-    const newNotes = [newNote, ...notes];
-
-    setNotes(newNotes);
+    // refData.current = item;
+    // setIsOpenNote(true);
   };
 
-  const deleteNote = (id) => {
-    const newNotes = notes.filter((note) => note.id !== id);
-    setNotes(newNotes);
-  };
-  const handleDialogClose = () => {
-    setIsCreateNote(false);
-  };
   return (
     <>
       <Dialog
@@ -123,86 +92,143 @@ const StickyNotes = ({ closeDialog, reqdata, open }) => {
             backgroundColor: "none",
           },
         }}
-        // aria-labelledby="draggable-dialog-title"
-        // PaperComponent={PaperComponent}
         key="filepreviewDialog"
       >
-        <div className={`${darkMode && "dark-mode"}`}>
-          <div
-            className="container"
-            // style={{ cursor: "move" }}
-            // id="draggable-dialog-title"
-          >
-            <Grid style={{ display: "flex", marginBottom: "5px" }}>
-              <div className="sidebar">
-                <Tooltip title="New Note">
-                  <AddIcon
-                    style={{ fontSize: "45px", cursor: "pointer" }}
-                    onClick={(e) => {
-                      setIsCreateNote(true);
-                    }}
-                  />
-                </Tooltip>
-              </div>
-              <h1 style={{ marginRight: "auto" }}>Notes</h1>
-              <div className="header" style={{ display: "flex" }}>
-                <GradientButton
-                  className="save"
-                  style={{ color: "var(--theme-color2)" }}
-                >
-                  View all
-                </GradientButton>
-                <Tooltip title="Close">
-                  <GradientButton
-                    onClick={closeDialog}
-                    style={{
-                      color: "var(--theme-color3)",
-                      margin: "5px",
-                      minWidth: "0px",
-                      // maxWidth: "0px",
-                      borderRadius: "10px",
-                      background: "none",
-                    }}
-                  >
-                    <CloseIcon style={{ fontSize: "2.5em" }} />
-                  </GradientButton>
-                </Tooltip>
-              </div>
-            </Grid>
-            <div className="search">
-              <SearchIcon />
-              <input
-                onChange={(event) => setSearchText(event.target.value)}
-                type="text"
-                placeholder="type to search..."
-              />
-            </div>
-            {isLoading ? (
-              <LinearProgress variant={"indeterminate"} />
-            ) : (
-              <>
-                <NotesList
-                  data={data}
-                  handleAddNote={addNote}
-                  notes={notes.filter((note) =>
-                    note.text.toLowerCase().includes(searchText)
-                  )}
-                  refetch={refetch}
-                  // handleAddNote={addNote}
-                  // handleDeleteNote={deleteNote}
+        <div className="container">
+          <Grid style={{ display: "flex", marginBottom: "5px" }}>
+            <div className="sidebar">
+              <Tooltip title="New Note">
+                <AddIcon
+                  style={{ fontSize: "45px", cursor: "pointer" }}
+                  onClick={() => {
+                    setIsCreateNote(true);
+                  }}
                 />
-                {isCreateNote ? (
-                  <AddNote
-                    handleAddNote={addNote}
-                    closeDialog={handleDialogClose}
-                    defualtView={"add"}
-                    data={undefined}
-                  />
-                ) : null}
-              </>
-            )}
+              </Tooltip>
+            </div>
+            <h1 style={{ marginRight: "auto" }}>Notes</h1>
+            <div className="header" style={{ display: "flex" }}>
+              <GradientButton
+                className="save"
+                style={{ color: "var(--theme-color2)", margin: "5px" }}
+                onClick={() => {
+                  setflag(flag === "ALL" ? "P" : "ALL");
+                }}
+              >
+                {flag === "ALL" ? "Back" : "View all"}
+              </GradientButton>
+              <Tooltip title="Close">
+                <GradientButton
+                  onClick={closeDialog}
+                  style={{
+                    color: "var(--theme-color3)",
+                    margin: "5px",
+                    minWidth: "0px",
+                    // maxWidth: "0px",
+                    borderRadius: "10px",
+                    background: "none",
+                  }}
+                >
+                  <CloseIcon style={{ fontSize: "2.5em" }} />
+                </GradientButton>
+              </Tooltip>
+            </div>
+          </Grid>
+          <div className="search">
+            <SearchIcon />
+            <input
+              type="text"
+              placeholder="type to search..."
+              onChange={(event) => setFilter(event.target.value)}
+            />
           </div>
+
+          {isLoading || isFetching ? (
+            <LoaderPaperComponent />
+          ) : isError ? (
+            <Fragment>
+              <div style={{ width: "100%", paddingTop: "10px" }}>
+                <Alert
+                  severity={error?.severity ?? "error"}
+                  errorMsg={error?.error_msg ?? "Error"}
+                  errorDetail={error?.error_detail ?? ""}
+                />
+              </div>
+            </Fragment>
+          ) : (
+            <>
+              <div className="notes-list">
+                {data
+                  .filter(
+                    (item) =>
+                      item.TITLE.toLowerCase().includes(filter.toLowerCase()) ||
+                      item.NOTES_DETAIL.toLowerCase().includes(
+                        filter.toLowerCase()
+                      )
+                  )
+                  .sort((a, b) => a.CREATED_DT - b.CREATED_DT)
+                  .map((item, index) => (
+                    <div
+                      className="note"
+                      onClick={() => {
+                        handleNoteClick(item, colors[index % colors.length]);
+                      }}
+                      key={index}
+                      style={{ backgroundColor: colors[index % colors.length] }}
+                    >
+                      {/* <div>{logo}</div> */}
+                      <div
+                        style={{
+                          marginBottom: "20px",
+                          fontSize: "20px",
+                          fontWeight: "bold",
+                          width: "100%",
+                          // height: "15%",
+                          textDecoration:
+                            item?.ACTIVE === "N" ? "line-through" : "none",
+                        }}
+                      >
+                        {item?.TITLE ?? ""}
+                      </div>
+                      <div
+                        style={{
+                          marginBottom: "12px",
+                          fontSize: "15px",
+                          width: "100%",
+                          height: "50%",
+                          overflow: "auto",
+                          textDecoration:
+                            item?.ACTIVE === "N" ? "line-through" : "none",
+                        }}
+                      >
+                        {item?.NOTES_DETAIL ?? ""}
+                      </div>
+                      <div className="note-footer">
+                        <small>{item?.CREATED_DT ?? new Date()}</small>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
         </div>
+
+        {isOpenNote ? (
+          <AddNote
+            defualtView={"edit"}
+            closeDialog={handleDialogClose}
+            data={refData.current}
+            refetch={refetch}
+          />
+        ) : null}
+        {isCreateNote ? (
+          <AddNote
+            defualtView={"add"}
+            closeDialog={handleDialogClose}
+            data={undefined}
+            refetch={refetch}
+          />
+        ) : null}
       </Dialog>
     </>
   );

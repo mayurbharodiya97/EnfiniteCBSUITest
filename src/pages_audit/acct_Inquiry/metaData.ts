@@ -63,7 +63,7 @@ export const AccountInquiryMetadata = {
       fullWidth: true,
       // autoComplete: false,
       validate: (columnValue, allField, flag) => {
-        if (columnValue.value.length >= 20) {
+        if (columnValue.value.length > 20) {
           return "The length of your Account No. is greater than 20 character";
         }
         return "";
@@ -96,6 +96,17 @@ export const AccountInquiryMetadata = {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+      },
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.value?.length > 12) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
       },
     },
     {

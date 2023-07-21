@@ -63,6 +63,10 @@ const MyTextField: FC<MyTextFieldProps> = ({
   showMaxLength = true,
   ...others
 }) => {
+  // console.log(
+  //   "postValidationSetCrossFieldValues",
+  //   postValidationSetCrossFieldValues
+  // );
   const {
     value,
     error,

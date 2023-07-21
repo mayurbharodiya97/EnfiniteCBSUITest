@@ -31,6 +31,7 @@ import {
 import { FormContext } from "./context";
 import { getIn, yupReachAndValidate } from "./util";
 import { useTranslation } from "react-i18next";
+import { AuthContext } from "pages_audit/auth/authContext";
 
 export const useField = ({
   fieldKey,
@@ -51,6 +52,8 @@ export const useField = ({
   const formState = useRecoilValue(formAtom(formContext.formName));
   //For Language Changes
   const { t } = useTranslation();
+
+  const { authState } = useContext(AuthContext);
   //fieldKeyRef used to inititalize fieldKey, if fieldKey is not passed
   //fieldName will be used to determine fieldKey, fieldKey will be used to
   //access atom from recoil storing field state
@@ -183,7 +186,8 @@ export const useField = ({
       yupReachAndValidate(formContext.validationSchema, extractedFieldName),
       validate,
       postValidationSetCrossFieldValues,
-      runPostValidationHookAlways
+      runPostValidationHookAlways,
+      authState
     );
     if (typeof wrappedValidation === "function") {
       isValidationFnRef.current = true;
@@ -765,7 +769,8 @@ function wrapValidationMethod(
   schemaValidation?: typeof SchemaValidateFnType,
   validationFn?: typeof ValidateFnType,
   postValidationSetCrossFieldValuesFn?: typeof PostValidationSetCrossFieldValuesFnType,
-  runPostValidationHookAlways?: boolean
+  runPostValidationHookAlways?: boolean,
+  authState?: any
 ) {
   if (
     typeof schemaValidation !== "function" &&
@@ -810,7 +815,8 @@ function wrapValidationMethod(
       if (typeof postValidationSetCrossFieldValuesFn === "function") {
         crossFieldMessages = await postValidationSetCrossFieldValuesFn(
           field,
-          formState
+          formState,
+          authState
         );
         if (
           crossFieldMessages === null ||
@@ -836,7 +842,8 @@ function wrapValidationMethod(
       if (typeof postValidationSetCrossFieldValuesFn === "function") {
         crossFieldMessages = await postValidationSetCrossFieldValuesFn(
           field,
-          formState
+          formState,
+          authState
         );
         if (
           crossFieldMessages === null ||

@@ -29,7 +29,7 @@ export const getDashboardMessageBoxData = async ({
   screenFlag,
   userID,
   transactionID,
-}) => {
+}: any) => {
   let apiURL;
   let apiReq = {};
   if (screenFlag === "Announcement") {
@@ -45,12 +45,13 @@ export const getDashboardMessageBoxData = async ({
       TRAN_CD: transactionID,
       // USER_NAME: "anilt",
     };
-  } else if (screenFlag === "Notes") {
-    apiReq = {
-      USER_NAME: userID,
-      // USER_NAME: "brij001",
-    };
-    apiURL = "GETNOTESDETAILSELECT";
+    // } else if (screenFlag === "Notes") {
+    //   apiReq = {
+    //     USER_NAME: userID,
+    //     // USER_NAME: "brij001",
+    //   };
+    //   apiURL = "GETNOTESDETAILSELECT";
+    // }
   } else if (screenFlag === "Alert") {
     apiURL = "GETALERTDTL";
     apiReq = {
@@ -76,6 +77,18 @@ export const getDashboardMessageBoxData = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getNoteCountData = async ({ COMP_CD, userID }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUSERNOTECNT", {
+      USER_NAME: userID,
+      COMP_CD: COMP_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const getMessageBoxListData = async ({ transactionID, userID }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETECIRCULARDETAIL", {
@@ -88,6 +101,20 @@ export const getMessageBoxListData = async ({ transactionID, userID }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const getNoteDetailsData = async ({ userID, flag }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUSERNOTEDTL", {
+      USER_ID: userID,
+      FLAG: flag,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const updateNoteDetailsData = async ({ data }) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOTNOTESDML",

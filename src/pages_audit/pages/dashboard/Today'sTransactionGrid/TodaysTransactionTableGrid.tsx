@@ -31,7 +31,6 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
     ) {
       setDialogOpen(true);
     }
-    console.log(data.rows, "data.rows");
   }, []);
 
   const handleCloseDialog = () => {

@@ -20,7 +20,6 @@ export const ProtectedRoutes = ({ children }) => {
   }, []);
   // console.log("isTimeoutData=>", isTimeoutData);
   const onIdle = () => {
-    console.log("logout");
     alert("logout");
     logout();
   };
@@ -71,10 +70,10 @@ export const ProtectedRoutes = ({ children }) => {
   }, [authState.menulistdata]);
   const isValidateURL = (allActiveURL, thisURL) => {
     //console.log(thisURL, (thisURL || "").length);
-    if ((thisURL || "").length < 12) {
+    if ((thisURL || "").length < 13) {
       return true;
     }
-    let urldata = thisURL.substring(12);
+    let urldata = thisURL.substring(13);
     let isReturn = false;
     allActiveURL.forEach((item, index) => {
       if (urldata.startsWith(item.href)) {
@@ -94,8 +93,6 @@ export const ProtectedRoutes = ({ children }) => {
       window.location.pathname === "/cbsenfinity/view-statement" ||
       window.location.pathname === "/cbsenfinity/branch-selection" ||
       window.location.pathname === "/cbsenfinity/change-branch" ||
-      window.location.pathname === "/cbsenfinity/operation/chequebook-entry" ||
-      window.location.pathname === "/cbsenfinity/operation/ckyc" ||
       isValidateURL(allActiveURL, window.location.pathname)
     ) {
       return true;

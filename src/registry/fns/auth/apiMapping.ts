@@ -115,8 +115,8 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTIPSDETAILS",
     packageName: "",
   },
-  GETNOTESDETAILSELECT: {
-    url: "dashboardServiceAPI/GETNOTESDETAILSELECT",
+  GETUSERNOTEDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERNOTEDTL",
     packageName: "",
   },
   GETALERTDTL: {
@@ -221,6 +221,22 @@ export const ActionWiseAPIConfiguration = {
   },
   GETSEARCHUSERDATA: {
     url: "/customerServiceAPI/GETSEARCHUSERDATA",
+    packageName: "",
+  },
+  GETTRADEMST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRADEMST",
+    packageName: "",
+  },
+  GETUSERNOTECNT: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERNOTECNT",
+    packageName: "",
+  },
+  GETUSERACCTTYPE: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACCTTYPE",
+    packageName: "",
+  },
+  GETCUSTIDVAL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTIDVAL",
     packageName: "",
   },
 };

@@ -5,7 +5,7 @@ import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import * as API from "../api";
 import { queryClient } from "cache";
 import { AuthContext } from "pages_audit/auth";
@@ -18,14 +18,27 @@ import StickyNotes from "./stickyNotes/stickyNotes";
 import { GradientButton } from "components/styledComponent/button";
 import { TipsWrapper } from "./tipsBox/tipsBoxWrapper";
 
-export const MessageBox = ({ screenFlag = "" }) => {
+interface updateAUTHDetailDataType {
+  userID: any;
+  COMP_CD: any;
+}
+
+const updateAUTHDetailDataWrapperFn =
+  (updateMasterData) =>
+  async ({ userID, COMP_CD }: updateAUTHDetailDataType) => {
+    return updateMasterData({ userID, COMP_CD });
+  };
+export const MessageBox = ({ screenFlag = "" }: any) => {
   const [toggle, setToggle] = useState(false);
-  const { authState } = useContext(AuthContext);
+  const { authState } = useContext<any>(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
 
   const { t } = useTranslation();
-  const refData = useRef(null);
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery(
+  const refData = useRef<any>(null);
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(
     [
       "getDashboardMessageBoxData",
       {
@@ -38,11 +51,27 @@ export const MessageBox = ({ screenFlag = "" }) => {
       API.getDashboardMessageBoxData({
         screenFlag,
         userID: authState?.user?.id ?? "",
-        // transactionID: data?.transactionID,
       })
   );
-  // console.log("transactionID", authState);
+
+  const mutation = useMutation(
+    updateAUTHDetailDataWrapperFn(API.getNoteCountData),
+    {
+      onError: (error: any) => {},
+      onSuccess: (data) => {},
+    }
+  );
+
+  useEffect(() => {
+    const mutationArguments: any = {
+      userID: authState?.user?.id ?? "",
+      COMP_CD: authState?.companyID ?? "",
+    };
+    mutation.mutate(mutationArguments);
+  }, []);
+
   const dataLength = data ? data.length : 0;
+  const dataNoteLength = mutation.data?.[0]?.CNT;
 
   useEffect(() => {
     return () => {
@@ -54,6 +83,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
           // transactionID: data?.transactionID,
         },
       ]);
+      queryClient.removeQueries(["getNoteCountData"]);
     };
   }, []);
 
@@ -163,7 +193,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
                 : screenFlag === "Tips"
                 ? dataLength
                 : screenFlag === "Notes"
-                ? dataLength
+                ? dataNoteLength
                 : screenFlag === "Alert"
                 ? dataLength
                 : null}
@@ -265,6 +295,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
                         onClick={() => {
                           handleLabelClick(item);
                         }}
+                        selected={undefined}
                       />
                     ))}
                   </List>
@@ -280,19 +311,15 @@ export const MessageBox = ({ screenFlag = "" }) => {
             <ListPopupMessageWrapper
               closeDialog={handleDialogClose}
               dialogLabel={refData.current?.DESCRIPTION}
-              formView={"view"}
               transactionID={refData.current?.TRAN_CD}
+              open={undefined}
             />
           ) : null}
         </>
       ) : screenFlag === "Notes" ? (
         <>
           {isOpenSave ? (
-            <StickyNotes
-              open={isOpenSave}
-              closeDialog={handleDialogClose}
-              data={data}
-            />
+            <StickyNotes open={isOpenSave} closeDialog={handleDialogClose} />
           ) : null}
         </>
       ) : screenFlag === "Tips" ? (
@@ -302,6 +329,7 @@ export const MessageBox = ({ screenFlag = "" }) => {
               open={isOpenSave}
               closeDialog={handleDialogClose}
               dialogLabel={refData.current?.DESCRIPTION}
+              transactionID={undefined}
             />
           ) : null}
         </>

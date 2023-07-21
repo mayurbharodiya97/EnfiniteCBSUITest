@@ -201,9 +201,12 @@ export const en_language_data = {
   FrontPage: "Front Page",
   FirstPage: "First Page",
   Detail: "Detail",
-  Thisisarequiredfield: "This is a required field",
+  ThisFieldisrequired: "This field is required",
   newPasswordCantbeSameasOldPassword:
     "The new password cannot be the same as the old password",
   NewPasswordandConfirmPassworddidnotmatched:
     "New Password and Confirm Password did not matched",
+  CustomerIDisrequired: "Customer ID is required",
+  CustomerIDShouldNotBeLessThan12Digits:
+    "Customer ID should not be less than 12 digits",
 };
