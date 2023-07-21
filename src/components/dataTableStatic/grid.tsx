@@ -94,7 +94,7 @@ export const DataGrid = ({
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
-  
+
   data2 = useMemo(() => DataFilterComponents(filters, data), [filters, data]);
   const classes = useStyles();
   const {
@@ -153,8 +153,6 @@ export const DataGrid = ({
     useCheckboxColumn(allowRowSelection)
   );
 
-  // console.log(">>others", others);
-  //console.log("defaultHiddenColumns=>", defaultHiddenColumns);
   const { authState } = useContext(AuthContext);
 
   const tbodyRef = useRef(null);
@@ -171,7 +169,6 @@ export const DataGrid = ({
     }, 0);
   }, [rows]);
 
-  // console.log(rowsToDisplay);
   //alert(selectedFlatRows.length);
   singleActions = filterActionWhenNoDataFound(singleActions, rowCount);
   multipleActions = filterActionWhenNoDataFound(multipleActions, rowCount);
@@ -193,7 +190,6 @@ export const DataGrid = ({
     setContextMenuSelectedRowId(null);
   };
   const handleContextMenuOpenforAdd = (event) => {
-    //console.log(rowCount, singleActions, multipleActions);
     if (
       rowCount <= 0 &&
       (singleActions.length > 0 || multipleActions.length > 0)
@@ -263,7 +259,6 @@ export const DataGrid = ({
   const handleChangeRowsPerPage = (event) => {
     setPageSize(Number(event.target.value));
   };
-  //console.log("rowsToDisplay", rowsToDisplay);
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.key === "Enter") {
@@ -320,11 +315,11 @@ export const DataGrid = ({
             allowColumnHiding={allowColumnHiding}
             headerToolbarStyle={headerToolbarStyle}
             searchPlaceholder={searchPlaceholder}
-            />
+          />
         )}
         {Boolean(controlsAtBottom) ? null : (
           <TableActionToolbar
-          dense={dense}
+            dense={dense}
             selectedFlatRows={selectedFlatRows}
             multipleActions={multipleActions}
             singleActions={singleActions}
@@ -429,7 +424,6 @@ export const DataGrid = ({
                 </Grid>
               ) : null}
               {rowsToDisplay.map((row, _rowindex) => {
-                //console.log(row);
                 if (Boolean(row?.original?.[hiddenFlag])) {
                   return null;
                 }
@@ -443,14 +437,20 @@ export const DataGrid = ({
                 let rowColorStyle: any[] = [];
                 if (Boolean(row?.original?._rowColor)) {
                   rowColorStyle = [
-                    { style: { background: row?.original?._rowColor } },
+                    {
+                      style: {
+                        background: row?.original?._rowColor,
+                      },
+                    },
                   ];
                 }
                 if (isCusrsorFocused) {
                   if (rowColorStyle.length > 0) {
                     rowColorStyle[0].style["cursor"] = "pointer";
                   } else {
-                    rowColorStyle = [{ style: { cursor: "pointer" } }];
+                    rowColorStyle = [
+                      { style: { cursor: "pointer", width: "100%" } },
+                    ];
                   }
                 }
                 return (

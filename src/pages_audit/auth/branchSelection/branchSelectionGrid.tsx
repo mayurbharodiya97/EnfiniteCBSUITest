@@ -98,7 +98,6 @@ const BranchSelectionGrid = ({ selectionMode }) => {
 
   const mutation = useMutation(API.GetMenuData, {
     onSuccess: (data) => {
-      console.log(">>success rowsData", rowsData);
       branchSelect({
         menulistdata: data,
         branchCode: rowsData?.current?.BRANCH_CD,
@@ -237,8 +236,6 @@ const BranchSelectionGrid = ({ selectionMode }) => {
       fontSize: 13,
     },
   }));
-
-  console.log(BranchSelectionGridMetaData, "BranchSelectionGridMetaData");
 
   return (
     <>
