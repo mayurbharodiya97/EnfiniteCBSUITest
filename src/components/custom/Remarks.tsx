@@ -9,6 +9,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 const inititalState = {
   loading: false,
   isError: false,
@@ -32,6 +33,7 @@ export const RemarksAPIWrapper = ({
   const classes = useStyles();
   const inputRef = useRef<any>(null);
   const inputButtonRef = useRef<any>(null);
+  const { t } = useTranslation();
   const handleChange = (event) => {
     setInput(event.target.value);
     if (event.target.value) {
@@ -81,7 +83,7 @@ export const RemarksAPIWrapper = ({
                 setLoginState((values) => ({
                   ...values,
                   isError: true,
-                  userMessage: "This field is required.",
+                  userMessage: t("Thisisarequiredfield"),
                 }));
               } else {
                 onActionYes(input, rows);

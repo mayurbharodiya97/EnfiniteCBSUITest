@@ -1,3 +1,4 @@
+import { GeneralAPI } from "registry/fns/functions";
 import { ExtendedFieldMetaDataTypeOptional } from "./types";
 import sub from "date-fns/sub";
 
@@ -120,7 +121,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     schemaValidation: {
       type: "string",
       rules: [
-        { name: "required", params: ["This Field is required"] },
+        { name: "required", params: ["ThisFieldisrequired"] },
         {
           name: "pancard",
           params: ["Please enter valid Pan Card Number"],
@@ -153,7 +154,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     schemaValidation: {
       type: "string",
       rules: [
-        { name: "required", params: ["This Field is required"] },
+        { name: "required", params: ["ThisFieldisrequired"] },
         {
           name: "aadhar",
           params: ["Please enter valid Aadhar Number"],
@@ -182,8 +183,8 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     schemaValidation: {
       type: "string",
       rules: [
-        { name: "typeError", params: ["This field is required"] },
-        { name: "required", params: ["This field is required"] },
+        { name: "typeError", params: ["ThisFieldisrequired"] },
+        { name: "required", params: ["ThisFieldisrequired"] },
       ],
     },
   },
@@ -440,28 +441,42 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       },
     },
   },
-  amountFieldNew: {
+  customerID: {
     render: {
       componentType: "numberFormat",
     },
-    // className: "textInputFromRight",
+    label: "CustomerId",
+    maxLength: 12,
+    postValidationSetCrossFieldValues: GeneralAPI.getCustomerIdValidate,
     FormatProps: {
-      thousandSeparator: true,
-      // prefix: "₹ ",
-      thousandsGroupStyle: "lakh",
-      allowNegative: false,
-      allowLeadingZeros: false,
-      decimalScale: 2,
-      // isAllowed: (values) => {
-      //   if (values?.value?.length > 14) {
-      //     return false;
-      //   }
-      //   if (values.floatValue === 0) {
-      //     return false;
-      //   }
-      //   return true;
-      // },
+      isAllowed: (values) => {
+        if (values?.value?.length > 12) {
+          return false;
+        }
+        if (values.floatValue === 0) {
+          return false;
+        }
+        return true;
+      },
+      isValidation: "no",
     },
-    enableNumWords: false,
+    schemaValidation: {
+      type: "string",
+      rules: [
+        { name: "required", params: ["CustomerIDisrequired"] },
+        {
+          name: "max",
+          params: [12, "CustomerIDShouldNotBeLessThan12Digits"],
+        },
+      ],
+    },
+  },
+  accountType: {
+    render: {
+      componentType: "select",
+    },
+    label: "AccountType",
+    options: GeneralAPI.getAccountTypeList,
+    _optionsKey: "getAccountTypeList",
   },
 };

@@ -200,9 +200,13 @@ export const guj_language_data = {
   FrontPage: "આગળનું પાનું",
   FirstPage: "પહેલું પાનું",
   Detail: "વિગત",
-  Thisisarequiredfield: "આ ફિલ્ડ ભરવી જરૂરી છે.",
+  ThisFieldisrequired: "આ ફિલ્ડ ભરવી જરૂરી છે.",
   newPasswordCantbeSameasOldPassword:
     "નવો પાસવર્ડ જૂના પાસવર્ડ જેવો ન હોવો જોઈએ.",
   NewPasswordandConfirmPassworddidnotmatched:
     " નવો પાસવર્ડ અને કન્ફર્મ પાસવર્ડ સમાન નથી.",
+
+  CustomerIDisrequired: "ગ્રાહક આઈડી જરૂરી છે",
+  CustomerIDShouldNotBeLessThan12Digits:
+    "ગ્રાહક આઈડી 12 અંક કરતા ઓછો ન હોવો જોઈએ",
 };

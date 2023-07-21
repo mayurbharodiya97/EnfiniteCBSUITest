@@ -493,6 +493,7 @@
               label: "Joining Date",
               placeholder: "",
               type: "text",
+              format: "dd/MM/yyyy",
               GridProps: {xs: 4, sm:3},
           },
           {
@@ -504,6 +505,7 @@
               label: "Retirement Date",
               placeholder: "",
               type: "text",
+              format: "dd/MM/yyyy",
               GridProps: {xs: 4, sm:3},
           },
           {
