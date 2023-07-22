@@ -1,4 +1,5 @@
-  export const other_details_annual_income_meta_data = {
+import * as API from "../../../../api";
+export const other_details_annual_income_meta_data = {
     form: {
         name: "other_details_annual_income_details_form",
         label: "", 
@@ -15,7 +16,7 @@
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -43,10 +44,12 @@
     fields: [
       {
           render: {
-              componentType: "textField",
+              componentType: "select",
           },
           name: "RANGE",
           label: "Range",
+          options: (dependentValue, formState, _, authState) => API.getRangeOptions(authState?.companyID, authState?.user?.branchCode),
+          _optionsKey: "rangeOptions",
           required: true,          
           placeholder: "",
           type: "text",
@@ -54,11 +57,13 @@
       },
       {
           render: {
-            componentType: "numberFormat",
+            componentType: "select",
           },
           // className: "textInputFromRight",
           name: "TURNOVER",
           label: "Turnover",
+          options: (dependentValue, formState, _, authState) => API.getRangeOptions(authState?.companyID, authState?.user?.branchCode),
+          _optionsKey: "turnoverOptions",
           placeholder: "",
           type: "text",
           GridProps: {xs: 4, sm:3},
@@ -81,10 +86,12 @@
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "OTHER_INCOME",
             label: "Other Income",
+            options: (dependentValue, formState, _, authState) => API.getRangeOptions(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "otherIncomeOptions",
             placeholder: "",
             type: "text",
             GridProps: {xs: 4, sm:3},
@@ -242,13 +249,11 @@
               },
               name: "HOUSE_TYPE",
               label: "House Type",
+              options: () => API.getPMISCData("House"),
+              _optionsKey: "HouseTypes",
               placeholder: "",
               type: "text",
               GridProps: {xs: 4, sm:3},
-              options: [
-                  {label: "House Type1", value: "House Type1"},
-                  {label: "House Type2", value: "House Type2"},
-              ],
           },
           {
               render: {
@@ -428,10 +433,12 @@
       fields: [   
           {
               render: {
-                  componentType: "textField",
+                  componentType: "select",
               },
               name: "EMPLOYEMENT_STATUS",
               label: "Employement Status",
+              options: () => API.getPMISCData("Emp_Status"),
+              _optionsKey: "EmpStatus",
               placeholder: "",
               type: "text",
               GridProps: {xs: 4, sm:3},
@@ -446,10 +453,12 @@
           },
           {
               render: {
-                  componentType: "textField",
+                  componentType: "select",
               },
               name: "EDUCATION_QUALIFICATION",
               label: "Education Qualification",
+              options: (dependentValue, formState, _, authState) => API.getEduQualiOptions(authState?.companyID, authState?.user?.branchCode),
+              _optionsKey: "eduQualiOptions",
               placeholder: "",
               type: "text",
               GridProps: {xs: 4, sm:3},
@@ -517,10 +526,8 @@
               label: "Emp.Company Type",
               placeholder: "",
               type: "text",
-              options: [
-                  {label: "Company Type1", value: "Company Type1"},
-                  {label: "Company Type2", value: "Company Type2"}
-              ],
+              options: (dependentValue, formState, _, authState) => API.getEmpCompanyTypes(authState?.companyID, authState?.user?.branchCode),
+              _optionsKey: "PDPrefix",
               GridProps: {xs: 4, sm:3},
           },
           {

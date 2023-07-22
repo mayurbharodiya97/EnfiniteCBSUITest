@@ -60,6 +60,7 @@ import { ActionTypes } from "components/dataTable";
 import TotpEnbaledDisabled from "./totp/totp-enabled-disable";
 import { CreateDetailsRequestData } from "components/utils";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
+import { GradientButton } from "components/styledComponent/button";
 // interface notificationDataType {
 //   activityID: string;
 //   readFlag: string;
@@ -79,6 +80,7 @@ const Dashactions: ActionTypes[] = [
     rowDoubleClick: false,
     actionTextColor: "var(--theme-color2)",
     actionBackground: "var(--theme-color3)",
+    alwaysAvailable: true,
   },
 ];
 const Quickactions: ActionTypes[] = [
@@ -89,10 +91,12 @@ const Quickactions: ActionTypes[] = [
     rowDoubleClick: false,
     actionTextColor: "var(--theme-color2)",
     actionBackground: "var(--theme-color3)",
+    alwaysAvailable: true,
   },
 ];
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
+  const authController = useContext(AuthContext);
   const myGridRef = useRef<any>(null);
   const myGridQuickRef = useRef<any>(null);
   const userID = authState?.user?.id;
@@ -150,7 +154,6 @@ export const Profile = () => {
   }, []);
   const handleSubmit = async () => {
     let { hasError, data } = await myGridRef.current?.validate(true);
-    console.log(">>>handleSubmit1", hasError, data);
     if (hasError === false) {
       if (data) {
         // setGridData(data);
@@ -175,14 +178,11 @@ export const Profile = () => {
   };
   const quickSubmit = async () => {
     let { hasError, data } = await myGridQuickRef.current?.validate(true);
-    console.log(">>>quickSubmit1", hasError, data);
     if (hasError === false) {
-      console.log(">>>quickSubmit2");
       if (data) {
         // setGridData(data);
       }
     } else {
-      console.log(">>>quickSubmit3");
       let result = myGridQuickRef?.current?.cleanData?.();
       let finalResult = result.filter((one) => !Boolean(one?._hidden));
       finalResult = CreateDetailsRequestData(finalResult);
@@ -205,6 +205,10 @@ export const Profile = () => {
     return () => {
       queryClient.removeQueries(["GETEMPLOYEEDTL"]);
       queryClient.removeQueries(["GETUSERACTIVITY"]);
+      queryClient.removeQueries(["GETUSERACESSBRNCH"]);
+      queryClient.removeQueries(["GETUSERACESSTYPE"]);
+      queryClient.removeQueries(["GETUSRQUICKVIEW"]);
+      queryClient.removeQueries(["GETUSRDASHBOX"]);
     };
   }, []);
   useEffect(() => {
@@ -215,6 +219,7 @@ export const Profile = () => {
           ? URL.createObjectURL(blob)
           : "";
       setProfilePictureURL(urlObj.current);
+      authController?.setProfileImage(urlObj.current);
     }
   }, [queryData.data]);
   useEffect(() => {
@@ -236,6 +241,7 @@ export const Profile = () => {
           ? URL.createObjectURL(imgdata)
           : "";
       setProfilePictureURL(urlObj.current);
+      authController?.setProfileImage(urlObj.current);
     }
     setProfileUpdate(false);
   };
@@ -255,7 +261,6 @@ export const Profile = () => {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
-
   return (
     <Fragment>
       {queryData.isLoading ||
@@ -467,10 +472,10 @@ export const Profile = () => {
                       <Box sx={{ width: "100%", marginTop: "auto" }}>
                         <Tabs
                           sx={{
+                            // paddingRight: "15px",
                             "& .MuiTabs-fixed": {
                               display: "flex",
-
-                              justifyContent: "flex-end",
+                              justifyContent: "space-between",
                             },
                             "& .Mui-selected": {
                               color: "var(--theme-color1)",
@@ -480,6 +485,13 @@ export const Profile = () => {
                             },
                             "& .MuiButtonBase-root": {
                               minHeight: "0px",
+                              paddingX: "10px",
+                            },
+                            "& .MuiButtonBase-root:hover": {
+                              letterSpacing: "0.5px",
+                              boxShadow: "0px 5px 40px -10px rgba(0,0,0,0.57)",
+                              transition: "all 0.4s ease 0s",
+                              fontWeight: "800",
                             },
                           }}
                           value={value}
@@ -684,9 +696,9 @@ export const Profile = () => {
                                   }
                                   data={quickViewData ?? []}
                                   setData={setQuickViewData}
-                                  //loading={result.isLoading}
+                                  loading={saveQuickData.isLoading}
                                   actions={Quickactions}
-                                  controlsAtBottom={true}
+                                  // controlsAtBottom={true}
                                   setAction={setQuickAction}
                                   headerToolbarStyle={{
                                     background: "var(--theme-color2)",
@@ -714,9 +726,9 @@ export const Profile = () => {
                                     color: "black",
                                   }}
                                   setData={setDashBoxData}
-                                  //loading={result.isLoading}
+                                  loading={saveDashData.isLoading}
                                   actions={Dashactions}
-                                  controlsAtBottom={true}
+                                  // controlsAtBottom={true}
                                   setAction={setCurrentAction}
                                   // refetchData={() => {}}
                                   ref={myGridRef}

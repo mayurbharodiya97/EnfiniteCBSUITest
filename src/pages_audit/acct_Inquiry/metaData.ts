@@ -50,7 +50,7 @@ export const AccountInquiryMetadata = {
   fields: [
     {
       render: {
-        componentType: "accountNumberOptional",
+        componentType: "numberFormat",
       },
       name: "ACCOUNT",
       label: "Account No.",
@@ -61,17 +61,34 @@ export const AccountInquiryMetadata = {
       maxLength: 20,
       required: false,
       fullWidth: true,
-      // autoComplete: false,
-      validate: (columnValue, allField, flag) => {
-        if (columnValue.value.length >= 20) {
-          return "The length of your Account No. is greater than 20 character";
-        }
-        return "";
-      },
+      autoComplete: false,
+      // validate: (columnValue, allField, flag) => {
+      //   if (columnValue.displayValue.length >= 20) {
+      //     return "The length of your Account No. is greater than 20 character";
+      //   }
+      //   return "";
+      // },
       GridProps: {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+      },
+      FormatProps: {
+        // thousandSeparator: true,
+        // prefix: "৳",
+        // thousandsGroupStyle: "lakh",
+        // allowNegative: false,
+        // allowLeadingZeros: false,
+        // decimalScale: 2,
+        isAllowed: (values) => {
+          if (values?.value?.length > 20) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
       },
     },
     {
@@ -84,18 +101,29 @@ export const AccountInquiryMetadata = {
       schemaValidation: {
         type: "string",
       },
-      validate: (columnValue, allField, flag) => {
-        if (columnValue.value.length >= 12) {
-          return "The length of your Customer Id is greater than 12 character";
-        }
-        return "";
-      },
+      // validate: (columnValue, allField, flag) => {
+      //   if (columnValue.value.length > 12) {
+      //     return "The length of your Customer Id is greater than 12 character";
+      //   }
+      //   return "";
+      // },
       placeholder: "Customer Id",
       type: "text",
       GridProps: {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+      },
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.value?.length > 12) {
+            return false;
+          }
+          if (values.floatValue === 0) {
+            return false;
+          }
+          return true;
+        },
       },
     },
     {
@@ -153,12 +181,15 @@ export const AccountInquiryMetadata = {
         return "";
       },
     },
+
     {
       render: {
         componentType: "formbutton",
       },
       name: "PID_DESCRIPTION",
       label: "Retrieve",
+      endsIcon: "YoutubeSearchedFor",
+      rotateIcon: "zoom",
       placeholder: "",
       type: "text",
       GridProps: {
@@ -174,7 +205,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     dense: true,
     gridLabel: "Search Criteria Data",
     rowIdColumn: "WITHDRAW_BAL",
-    searchPlaceholder: "Transaction",
+    searchPlaceholder: "Accounts",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -210,7 +241,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       accessor: "ACCT_NM",
       columnName: "Account/Person Name",
       sequence: 4,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       width: 220,
       minWidth: 180,
@@ -275,7 +306,6 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy HH:mm:ss",
-      // dateFormat: "dd/MM/yyyy hh:mm aaa",
       isReadOnly: true,
       width: 140,
       minWidth: 140,
@@ -285,7 +315,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       accessor: "DISPLAY_STATUS",
       columnName: "Status",
       sequence: 9,
-      alignment: "center",
+      alignment: "left",
       componentType: "default",
       isReadOnly: true,
       width: 100,
@@ -296,18 +326,304 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       accessor: "CLOSE_DT",
       columnName: "Close Date",
       sequence: 10,
-      alignment: "center",
+      alignment: "left",
       componentType: "date",
       dateFormat: "dd/MM/yyyy HH:mm:ss",
-      // dateFormat: "dd/MM/yyyy hh:mm aaa",
       isReadOnly: true,
       width: 140,
       minWidth: 140,
-      maxWidth: 140,
+      maxWidth: 170,
     },
   ],
 };
 export const PassbookStatement = {
+  form: {
+    name: "passbookstatement",
+    label: "Statement Print Option",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 2,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "ACCT_NO",
+      label: "Account No.",
+      placeholder: "Account Number",
+      defaultValue: "",
+      type: "text",
+      isReadOnly: false,
+      // allowToggleVisiblity: true,
+      // maxLength: 10,
+      required: true,
+      fullWidth: true,
+      autoComplete: false,
+      schemaValidation: {
+        type: "string",
+      },
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "Account/Person Name",
+      placeholder: "Account/Person Name",
+      type: "text",
+      isReadOnly: false,
+      fullWidth: true,
+      GridProps: {
+        xs: 12,
+        md: 8,
+        sm: 8,
+      },
+    },
+
+    // {
+    //   render: {
+    //     componentType: "radio",
+    //   },
+    //   name: "PD_DESTION",
+    //   label: "",
+    //   RadioGroupProps: { row: true },
+    //   defaultValue: "P",
+    //   options: [
+    //     {
+    //       label: "Passbook",
+    //       value: "P",
+    //     },
+    //     { label: "Statement", value: "S" },
+    //   ],
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 11,
+    //     sm: 11,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "radio",
+    //   },
+    //   name: "PID_DESCRIPION",
+    //   label: "",
+    //   RadioGroupProps: { row: true },
+    //   defaultValue: "D",
+    //   options: [
+    //     {
+    //       label: "Front Page",
+    //       value: "F",
+    //     },
+    //     { label: "First Page", value: "R" },
+    //     { label: "Detail", value: "D" },
+    //   ],
+
+    //   dependentFields: ["PD_DESTION"],
+    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
+    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   },
+
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 12,
+    //     sm: 12,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "select",
+    //   },
+    //   name: "TRAN_CD",
+    //   label: "Template",
+    //   defaultValue: "1",
+    //   options: getPassBookTemplate,
+    //   _optionsKey: "getTemplateList",
+    //   placeholder: "",
+    //   type: "text",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 6,
+    //     sm: 6,
+    //   },
+    //   dependentFields: ["PD_DESTION"],
+    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
+    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "numberFormat",
+    //   },
+    //   name: "ACT_NO",
+    //   label: "Line No.",
+    //   defaultValue: "",
+    //   type: "text",
+    //   isReadOnly: false,
+    //   fullWidth: true,
+    //   autoComplete: false,
+    //   schemaValidation: {
+    //     type: "string",
+    //   },
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2.5,
+    //     sm: 2.5,
+    //   },
+    //   dependentFields: ["PD_DESTION"],
+    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
+    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "spacer",
+    //   },
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 0.5,
+    //     sm: 0.5,
+    //   },
+    //   dependentFields: ["PD_DESTION"],
+    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
+    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "formbutton",
+    //   },
+    //   name: "ACTAA_NO",
+    //   label: "Reprint",
+    //   // defaultValue: "",
+    //   type: "text",
+    //   isReadOnly: true,
+    //   // allowToggleVisiblity: true,
+    //   // maxLength: 10,
+    //   // required: true,
+    //   fullWidth: true,
+    //   autoComplete: false,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 1.3,
+    //     sm: 1.3,
+    //   },
+    //   dependentFields: ["PD_DESTION"],
+    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
+    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   },
+    // },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "FROM_DT",
+      label: "From Date :-",
+      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      placeholder: "",
+      type: "text",
+      // fullWidth: true,
+      dependentFields: ["PD_DESTION"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 6,
+        sm: 6,
+      },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "TO_DT",
+      label: "To Date :-",
+      placeholder: "",
+      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      // type: "text",
+      // fullWidth: true,
+      dependentFields: ["PD_DESTION"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 6,
+        sm: 6,
+      },
+    },
+  ],
+};
+export const PassbookStatementInq = {
   form: {
     name: "passbookstatement",
     label: "Passbook/Statement Print Option",
@@ -548,9 +864,9 @@ export const PassbookStatement = {
       render: {
         componentType: "datePicker",
       },
-      name: "PID_DESTION",
+      name: "FROM_DT",
       label: "From Date :-",
-      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      format: "dd/MM/yyyy",
       placeholder: "",
       type: "text",
       // fullWidth: true,
@@ -572,10 +888,10 @@ export const PassbookStatement = {
       render: {
         componentType: "datePicker",
       },
-      name: "PID_DEIPTION",
+      name: "TO_DT",
       label: "To Date :-",
       placeholder: "",
-      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      format: "dd/MM/yyyy",
       // type: "text",
       // fullWidth: true,
       dependentFields: ["PD_DESTION"],

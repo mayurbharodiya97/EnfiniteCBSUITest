@@ -76,6 +76,8 @@ export const AuthContext = createContext<AuthContextType>({
   authState: inititalState,
   isBranchSelected: () => false,
   branchSelect: () => true,
+  getProfileImage: "",
+  setProfileImage: () => false,
 });
 
 export const AuthProvider = ({ children }) => {
@@ -84,6 +86,12 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [comingFromRoute] = useState(location.pathname);
+  const [profileImage, setProfileImagestate] = useState("");
+  const setProfileImage = (imgData) => {
+    if (Boolean(imgData)) {
+      setProfileImagestate(imgData);
+    }
+  };
 
   /*eslint-disable react-hooks/exhaustive-deps*/
   const login = useCallback(
@@ -197,21 +205,18 @@ export const AuthProvider = ({ children }) => {
     let result = localStorage.getItem("authDetails");
     if (result === null) {
       //logout();
-      console.log("logout result null");
     } else {
       // localStorage.getItem("tokenchecksum");
       let checksumdata = localStorage.getItem("tokenchecksum");
       let genChecksum = await GenerateCRC32(
         localStorage.getItem("authDetails") || ""
       );
-      //console.log(checksumdata, genChecksum);
       if (checksumdata !== genChecksum) {
         if (Boolean(timeoutLogout)) {
           clearTimeout(timeoutLogout);
         }
         timeoutLogout = setTimeout(() => {
           logout();
-          console.log("logout");
         }, 1500);
       }
     }
@@ -266,7 +271,6 @@ export const AuthProvider = ({ children }) => {
       exTime = exTime - totalTime - 50;
       if (exTime > 0) {
         exTime = exTime * 1000;
-        //console.log(exTime);
         if (Boolean(timeoutID)) {
           clearTimeout(timeoutID);
         }
@@ -281,7 +285,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
   const setnewToken = (access_token) => {
-    //console.log(access_token, Boolean(access_token));
     if (!Boolean(access_token)) return;
     let result = localStorage.getItem("authDetails");
     if (result !== null) {
@@ -315,6 +318,8 @@ export const AuthProvider = ({ children }) => {
         authState: state,
         isBranchSelected,
         branchSelect,
+        getProfileImage: profileImage,
+        setProfileImage,
       }}
     >
       {authenticating ? <LinearProgress color="secondary" /> : children}

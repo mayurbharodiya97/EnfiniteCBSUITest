@@ -228,10 +228,30 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
         maxWidth: 180,
       },
       {
+        accessor: "KYC_NUMBER",
+        columnName: "CKYC No.",
+        sequence: 8,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "Req_No",
+        columnName: "Req. No.",
+        sequence: 9,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
         columnName: "Remarks",
         componentType: "buttonRowCell",
         accessor: "TENURES",
-        sequence: 11,
+        sequence: 10,
         buttonLabel: "Remarks",
         // isVisible: false,
         // __EDIT__: { isVisible: true },
@@ -366,6 +386,24 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
         },
       },
       {
+        accessor: "KYC_NUMBER",
+        name: "KYC_NUMBER",
+        label: "CKYC No.",
+        // placeholder: "Select Option",
+        gridconfig: { xs: 6, sm: 3 },
+        // defaultValue: "A",
+        autoComplete: "off",
+        isVisible: false,
+        isColumnHidingDisabled: false,
+        entertoSubmit: true,
+        validate: (columnValue, allField, flag) => {
+          if (!Boolean(columnValue)) {
+            return "This field is required.";
+          }
+          return "";
+        },
+      },
+      {
         accessor: "ACC_NO",
         name: "ACC_NO",
         defaultValue: "",
@@ -374,7 +412,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
         // placeholder: "Please Enter Account Number",
         defaultfocus: true,
         autoComplete: "off",
-        isVisible: false,
+        isVisible: true,
         isColumnHidingDisabled: false,
         entertoSubmit: true,
         // dependFields: ["REG_WITH"],
@@ -414,7 +452,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
         // placeholder: "Card Number",
         gridconfig: { xs: 6, sm: 3 },
         autoComplete: "off",
-        isVisible: false,
+        isVisible: true,
         isColumnHidingDisabled: false,
         // isDisabled: true,
         // dependFields: ["REG_WITH"],
@@ -437,7 +475,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
         // placeholder: "Login ID",
         autoComplete: "off",
         isVisible: false,
-        isColumnHidingDisabled: false,
+        isColumnHidingDisabled: true,
         validate: (columnValue, allField, flag) => {
           if (!Boolean(columnValue) && flag === "SECOND") {
             return "This field is required.";
@@ -452,7 +490,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
         // placeholder: "Mobile Number",
         type: "number",
         // isDisabled: true,
-        isVisible: false,
+        isVisible: true,
         gridconfig: { xs: 6, sm: 3 },
       },
       {

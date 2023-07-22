@@ -8,7 +8,6 @@ import {
 import { GradientButton } from "components/styledComponent/button";
 import {
   ButtonProps,
-  CircularProgress,
   FormControlLabelProps,
   FormControlProps,
   FormHelperTextProps,
@@ -58,6 +57,9 @@ export const FormButton = ({
   enableGrid,
   GridProps,
   onFormButtonClickHandel,
+  startsIcon,
+  endsIcon,
+  rotateIcon,
   ...others
 }) => {
   const {
@@ -116,8 +118,10 @@ export const FormButton = ({
       <GradientButton
         color="secondary"
         onClick={ClickEventCall}
-        style={{ width: "100%" }}
-        // endIcon={loading ? <CircularProgress size={20} /> : null}
+        style={{ width: "100%", paddingX: "10px" }}
+        starticon={startsIcon}
+        endicon={endsIcon}
+        rotateIcon={rotateIcon}
       >
         {label}
       </GradientButton>

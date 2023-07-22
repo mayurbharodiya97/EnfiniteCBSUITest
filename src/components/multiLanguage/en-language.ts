@@ -98,7 +98,7 @@ export const en_language_data = {
   CurrentPassword: "Current Password",
   NewPassword: "New Password",
   QuickView: "Quick View",
-  DashboardDataBoxes: "Dashboard Data Boxes",
+  DashboardDataCards: "Dashboard Data Cards",
   // For Today's Transaction Graph and Grid
   TodaysTransaction: "Today's Transaction",
   SrNo: "Sr.No.",
@@ -201,9 +201,12 @@ export const en_language_data = {
   FrontPage: "Front Page",
   FirstPage: "First Page",
   Detail: "Detail",
-  Thisisarequiredfield: "This is a required field",
+  ThisFieldisrequired: "This field is required",
   newPasswordCantbeSameasOldPassword:
     "The new password cannot be the same as the old password",
   NewPasswordandConfirmPassworddidnotmatched:
     "New Password and Confirm Password did not matched",
+  CustomerIDisrequired: "Customer ID is required",
+  CustomerIDShouldNotBeLessThan12Digits:
+    "Customer ID should not be less than 12 digits",
 };

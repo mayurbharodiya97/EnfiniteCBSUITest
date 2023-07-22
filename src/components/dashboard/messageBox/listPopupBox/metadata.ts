@@ -69,10 +69,12 @@ export const MessageDescriptionMetadata = {
       name: "IDENTITY_NO",
       label: "No",
       placeholder: "",
-      isReadOnly: true,
+      // isReadOnly: true,
       fullWidth: true,
       type: "text",
-
+      schemaValidation: {
+        type: "string",
+      },
       GridProps: {
         xs: 12,
         md: 3,
@@ -113,7 +115,48 @@ export const MessageDescriptionMetadata = {
         sm: 3,
       },
     },
+    {
+      render: {
+        componentType: "accountType",
+      },
+      name: "ACCT_TYPE",
+      placeholder: "",
+      // isReadOnly: true,
+      fullWidth: true,
+      type: "text",
 
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "customerID",
+      },
+      name: "CUSTOMER_ID",
+      placeholder: "",
+      // isReadOnly: true,
+      fullWidth: true,
+      type: "text",
+
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "checkbox",
+      },
+      name: "STATUS",
+      label: "",
+      defaultValue: true,
+      // __EDIT__: { render: { componentType: "checkbox" } },
+      GridProps: { xs: 2, md: 2, sm: 2 },
+    },
     // {
     //   render: {
     //     componentType: "datePicker",

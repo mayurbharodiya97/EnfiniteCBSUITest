@@ -42,4 +42,6 @@ export interface AuthContextType {
   isLoggedIn: any;
   isBranchSelected: any;
   branchSelect: any;
+  getProfileImage: any;
+  setProfileImage: any;
 }

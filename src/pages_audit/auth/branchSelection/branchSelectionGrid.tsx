@@ -43,6 +43,8 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
     actionTextColor: "var(--theme-color3)",
     actionBackground: "var(--theme-color2)",
+    startsIcon: "West",
+    rotateIcon: "rotateX",
   },
   {
     actionName: "proceed",
@@ -52,6 +54,8 @@ const actions: ActionTypes[] = [
     actionTextColor: "var(--theme-color2)",
     actionBackground: "var(--theme-color3)",
     onEnterSubmit: true,
+    endsIcon: "East",
+    rotateIcon: "rotateX",
   },
 ];
 
@@ -98,7 +102,6 @@ const BranchSelectionGrid = ({ selectionMode }) => {
 
   const mutation = useMutation(API.GetMenuData, {
     onSuccess: (data) => {
-      console.log(">>success rowsData", rowsData);
       branchSelect({
         menulistdata: data,
         branchCode: rowsData?.current?.BRANCH_CD,
@@ -237,8 +240,6 @@ const BranchSelectionGrid = ({ selectionMode }) => {
       fontSize: 13,
     },
   }));
-
-  console.log(BranchSelectionGridMetaData, "BranchSelectionGridMetaData");
 
   return (
     <>

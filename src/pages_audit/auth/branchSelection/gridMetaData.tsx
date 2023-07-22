@@ -4,7 +4,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
     dense: true,
     gridLabel: "Access Branch List",
     rowIdColumn: "BRANCH_CD",
-    searchPlaceholder: "branches",
+    searchPlaceholder: "Branche(s)",
 
     defaultColumnConfig: {
       width: 400,
@@ -42,7 +42,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "BRANCH_CD",
-      columnName: "Branch Cd",
+      columnName: "Branch Code",
       sequence: 1,
       alignment: "left",
       componentType: "default",

@@ -31,7 +31,6 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
     ) {
       setDialogOpen(true);
     }
-    console.log(data.rows, "data.rows");
   }, []);
 
   const handleCloseDialog = () => {
@@ -51,8 +50,6 @@ const TodaysTransactionTableGrid = ({ mutation }) => {
   // useEffect(() => {
   //   setEnableClick(mutation?.data?.map((item) => item?.TYPE_CD === "3"));
   // }, [enableClick]);
-
-  // console.log("enableClick", mutation?.data);
 
   return (
     <>

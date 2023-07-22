@@ -539,8 +539,8 @@ export const AuthLoginController = () => {
                               payload: { error: error },
                             });
                           }}
-                          open={undefined}
-                          handleClose={undefined}
+                          open={true}
+                          handleClose={() => {}}
                         />
                       ) : (
                         <VerifyFinger

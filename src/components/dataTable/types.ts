@@ -88,6 +88,9 @@ export interface ActionTypes {
   actionTextColor?: string;
   actionBackground?: string;
   onEnterSubmit?: boolean;
+  startsIcon?: any;
+  endsIcon?: any;
+  rotateIcon?: any;
 }
 
 export interface RenderActionType {

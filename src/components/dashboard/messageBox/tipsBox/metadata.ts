@@ -44,6 +44,16 @@ export const TipsListMetadata = {
   fields: [
     {
       render: {
+        componentType: "checkbox",
+      },
+      name: "STATUS",
+      label: "",
+      defaultValue: true,
+      // __EDIT__: { render: { componentType: "checkbox" } },
+      GridProps: { xs: 10, md: 10, sm: 2 },
+    },
+    {
+      render: {
         componentType: "textField",
       },
       name: "C_TYPE",
@@ -53,6 +63,9 @@ export const TipsListMetadata = {
       isReadOnly: true,
       fullWidth: true,
       autoComplete: false,
+      multiline: true,
+      minRows: 3,
+      maxRows: 3,
       schemaValidation: {
         type: "string",
       },

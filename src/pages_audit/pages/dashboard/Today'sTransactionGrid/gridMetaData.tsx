@@ -75,7 +75,8 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
       columnName: "TransactionDate",
       sequence: 5,
       alignment: "left",
-      componentType: "default",
+      componentType: "date",
+      dateFormat: "dd/MM/yyyy",
       width: 140,
       minWidth: 160,
       maxWidth: 220,
@@ -132,7 +133,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_CD",
-      columnName: "Vno",
+      columnName: "V.no",
       sequence: 5,
       alignment: "left",
       componentType: "default",

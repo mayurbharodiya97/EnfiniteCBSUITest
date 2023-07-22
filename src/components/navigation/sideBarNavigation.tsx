@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavItemType, SideBarRendererType } from "./types";
 import { useStylesSideBar } from "./style";
@@ -309,6 +309,7 @@ const NestedListItem: FC<{
       <FontAwesomeIcon icon={["fas", item.icon]} />
     </ListItemIcon>
   ) : null;
+
   const levelClassName =
     level === 1
       ? classes.nestedMenuLevel1

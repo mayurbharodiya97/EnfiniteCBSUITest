@@ -59,7 +59,7 @@ export const TipsWrapper = ({
       ) : ( */}
       <Dialog
         fullWidth
-        maxWidth="xs"
+        maxWidth="sm"
         open={true}
         PaperProps={{
           style: {

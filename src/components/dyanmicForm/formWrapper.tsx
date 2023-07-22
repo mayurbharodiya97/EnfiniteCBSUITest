@@ -44,6 +44,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
       hideHeader = false,
       containerstyle = { padding: "10px" },
       onFormButtonClickHandel = (id) => {},
+      onFormButtonCicular,
     },
     ref
   ) => {
@@ -64,6 +65,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     );
     const yupValidationSchema = constructYupSchema(metaData.fields);
     const formName = metaData.form.name ?? "NO_NAME";
+    console.log("<<<", metaData);
     return (
       <>
         {/* {console.log("LocalizationProvider", AdapterDateFns)} */}
@@ -82,6 +84,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
                 ...metaData.form?.formState,
                 ...formState,
               },
+              onFormButtonCicular: { onFormButtonCicular },
             }}
           >
             <ChildFormWrapper

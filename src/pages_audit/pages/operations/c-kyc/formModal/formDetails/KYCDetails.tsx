@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Grid, Typography, Divider, Skeleton, Collapse, IconButton } from '@mui/material';
+import { useRef, useState, useEffect } from 'react';
+import { Grid, Typography, Divider, Skeleton, Collapse, IconButton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
     kyc_proof_of_address_contact_meta_data, 
@@ -8,19 +8,25 @@ import {
     kyc_proof_of_identity_meta_data, 
     kyc_proof_of_identity_passport_details_meta_data, 
     kyc_proof_of_local_address_meta_data
-} from './metadata/kycdetails';
+} from './metadata/individual/kycdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 // import { GridWrapper } from 'components/dataTableStatic/gridWrapper';
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { DocumentGridMetaData } from './metadata/personaldetails';
+import { DocumentGridMetaData } from './metadata/individual/personaldetails';
+import TabStepper from '../TabStepper';
 
-const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   //  const myGridRef = useRef<any>(null);
    const [isPoIExpanded, setIsPoIExpanded] = useState(true)
    const [isPoAExpanded, setIsPoAExpanded] = useState(false)
+   const [isNextLoading, setIsNextLoading] = useState(false)
+   const KyCPoIFormRef = useRef<any>("")
+   const KyCPoAFormRef = useRef<any>("")
+  const [currentTabFormData, setCurrentTabFormData] = useState({proof_of_identity: {}, proof_of_address: {}})
+ 
 
   const [gridData, setGridData] = useState<any>([
     {
@@ -47,12 +53,54 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
    const handlePoAExpand = () => {
     setIsPoAExpanded(!isPoAExpanded)
    }
+
+   const PoISubmitHandler = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag
+   ) => {
+    setIsNextLoading(true)
+    console.log("qweqweqwe", data)     
+    if(data) {
+        setCurrentTabFormData(formData => ({...formData, "proof_of_identity": data }))
+        setIsNextLoading(false)
+    }   
+    endSubmit(true)
+   }
+   const PoASubmitHandler = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag
+   ) => {
+    setIsNextLoading(true)
+    console.log("qweqweqwe", data)     
+    if(data) {
+        setCurrentTabFormData(formData => ({...formData, "proof_of_address": data }))
+        setIsNextLoading(false)
+    }
+    endSubmit(true)
+   }
+//    useEffect(() => {
+//     console.log("asdfweafdw",currentTabFormData)
+//    }, [currentTabFormData])
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography variant={"h6"}>Personal Details</Typography> */}         
-            <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography>
+            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography> */}
+            <Grid container>
+                {/* <Grid item xs='auto'>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography>
+                </Grid> */}
+                <Grid item xs>
+                    <TabStepper currentTab={colTabValue} setColTabValue={setColTabValue} />
+                </Grid>
+            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -74,6 +122,8 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 <Grid container item>
                     <Grid item xs={12}>
                         <FormWrapper 
+                            ref={KyCPoIFormRef}
+                            onSubmitHandler={PoISubmitHandler}
                             key={"new-form-in-kyc"}
                             metaData={kyc_proof_of_identity_meta_data as MetaDataType}
                             formStyle={{}}
@@ -82,7 +132,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     </Grid>                    
                 </Grid>
 
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Passport Details</Divider>
+                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Passport Details</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -100,7 +150,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                         formStyle={{}}
                         hideHeader={true}
                     />
-                </Grid>
+                </Grid> */}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 
@@ -118,9 +168,11 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     </IconButton>
                 </Grid>
                 <Collapse in={isPoAExpanded}>
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Current/Permanent/Overseas Address</Divider>
+                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Current/Permanent/Overseas Address</Divider> */}
                 <Grid item>
                     <FormWrapper 
+                        ref={KyCPoAFormRef}
+                        onSubmitHandler={PoASubmitHandler}
                         key={"new-form-in-kyc"}
                         metaData={kyc_proof_of_address_meta_data as MetaDataType}
                         formStyle={{}}
@@ -128,7 +180,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     />
                 </Grid>
 
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Correspondence/Local Address</Divider>
+                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Correspondence/Local Address</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -146,7 +198,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                         formStyle={{}}
                         hideHeader={true}
                     />
-                </Grid>
+                </Grid> */}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 
@@ -177,6 +229,16 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     </Grid>                    
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="300px" width="100%"></Skeleton> : null}
+
+            <Grid container item sx={{justifyContent: "flex-end"}}>
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={(e) => {
+                        KyCPoIFormRef.current.handleSubmit(e, "save")
+                        KyCPoAFormRef.current.handleSubmit(e, "save")
+                    }}
+                >Next</Button>
+            </Grid>
+
         </Grid>        
     )
 }

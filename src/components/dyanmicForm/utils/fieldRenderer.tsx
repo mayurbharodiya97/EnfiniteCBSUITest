@@ -42,6 +42,8 @@ const TimePicker = lazy(() =>
 );
 const Visaversa = lazy(() => import("components/common/visaversa"));
 const TextField = lazy(() => import("components/common/textField"));
+const Divider = lazy(() => import("components/common/divider"));
+
 const Select = lazy(() => import("components/common/select"));
 const Radio = lazy(() => import("components/common/radio"));
 const Slider = lazy(() => import("components/common/slider"));
@@ -99,6 +101,9 @@ export const renderField: RenderFunctionType = (
       break;
     case "textField":
       Component = TextField;
+      break;
+    case "Divider":
+      Component = Divider;
       break;
     case "select":
       Component = Select;
@@ -201,6 +206,9 @@ export const renderField: RenderFunctionType = (
         fieldKey={others.name}
         key={`${formName}/${others.name}`}
         enableGrid={true}
+        startsIcon={allProps.startsIcon}
+        endsIcon={allProps.endsIcon}
+        rotateIcon={allProps.rotateIcon}
         GridProps={{
           item: true,
           xs: gridConfigOverrides?.xs ?? "auto",

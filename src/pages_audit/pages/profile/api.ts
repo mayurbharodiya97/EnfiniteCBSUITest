@@ -138,7 +138,6 @@ export const getquickViewList = async () => {
     });
   if (status === "0") {
     let responseData = data;
-    // console.log("<<<<responseData", responseData);
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DOC_CD, DOC_NM, ...other }, index) => {
         return {
@@ -281,6 +280,7 @@ export const getdashboxData = async () => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const updateDashboxData = async (reqData) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETBOXDML", reqData);

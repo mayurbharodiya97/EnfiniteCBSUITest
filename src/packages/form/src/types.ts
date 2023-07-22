@@ -22,6 +22,7 @@ export interface FormContextType {
   validationSchema?: any;
   formState: any;
   defaultArrayFieldValues?: InitialValuesType;
+  onFormButtonCicular?: any;
 }
 
 export type FormFieldRegistryAtomType = string[];
@@ -131,7 +132,8 @@ export declare function ValidateFnType(
 
 export declare function PostValidationSetCrossFieldValuesFnType(
   fieldData: FormFieldAtomType,
-  formState: any
+  formState: any,
+  authState?: any
 ):
   | Promise<InitialValuesType | undefined | null>
   | InitialValuesType

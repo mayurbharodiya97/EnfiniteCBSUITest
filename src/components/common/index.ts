@@ -12,3 +12,4 @@ export * from "./spacer";
 export * from "./autocomplete";
 export * from "./visaversa";
 export * from "./dataTable";
+export * from "./divider";

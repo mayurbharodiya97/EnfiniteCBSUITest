@@ -13,6 +13,8 @@ import { ViewInterest } from "./viewInterest";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "packages/form";
+import { Alert } from "components/common/alert";
+import { GradientButton } from "components/styledComponent/button";
 
 // import { Dialog } from "@mui/material";
 const actions: ActionTypes[] = [
@@ -59,8 +61,8 @@ export const Accountinquiry = ({ open, onClose }) => {
     };
   const mutation: any = useMutation(API.getAccountInquiry, {
     onSuccess: (data) => {},
+    onError: (error: any) => {},
   });
-
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "view-detail") {
@@ -116,12 +118,19 @@ export const Accountinquiry = ({ open, onClose }) => {
           },
         }}
       >
+        {mutation.isError && (
+          <Alert
+            severity={mutation.error?.severity ?? "error"}
+            errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+            errorDetail={mutation.error?.error_detail}
+            color="error"
+          />
+        )}
         <FormWrapper
           key={`MerchantOnboardConfig`}
           metaData={AccountInquiryMetadata as MetaDataType}
           initialValues={[]}
           onSubmitHandler={onSubmitHandler}
-          // loading={mutation.isLoading}
           formStyle={{
             background: "white",
           }}
@@ -129,11 +138,12 @@ export const Accountinquiry = ({ open, onClose }) => {
             let event: any = { preventDefault: () => {} };
             formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
           }}
+          // onFormButtonCicular={mutation.isLoading}
           ref={formRef}
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <Button
+              <GradientButton
                 onClick={(event) => {
                   //   isSubmitEventRef.current = event;
                   // handleSubmit(event, "Save");
@@ -145,9 +155,11 @@ export const Accountinquiry = ({ open, onClose }) => {
                 // }
                 color={"primary"}
                 ref={formbtnRef}
+                endicon={"Close"}
+                rotateIcon="rotateR"
               >
                 close
-              </Button>
+              </GradientButton>
             </>
           )}
         </FormWrapper>
@@ -178,6 +190,7 @@ export const Accountinquiry = ({ open, onClose }) => {
             rowsData={rowsData}
             open={acctOpen}
             onClose={() => setAcctOpen(false)}
+            screenFlag={"ACCT_INQ"}
           />
         ) : //   componentToShow === "ViewInterest" ? (
         // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />

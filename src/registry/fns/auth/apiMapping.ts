@@ -115,8 +115,8 @@ export const ActionWiseAPIConfiguration = {
     url: "dashboardServiceAPI/GETTIPSDETAILS",
     packageName: "",
   },
-  GETNOTESDETAILSELECT: {
-    url: "dashboardServiceAPI/GETNOTESDETAILSELECT",
+  GETUSERNOTEDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERNOTEDTL",
     packageName: "",
   },
   GETALERTDTL: {
@@ -217,6 +217,42 @@ export const ActionWiseAPIConfiguration = {
   },
   GETAREALIST: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETAREALIST",
+    packageName: "",
+  },
+  GETCUSTOMERDETAILS: {
+    url: "/customerServiceAPI/GETSEARCHUSERDATA",
+    packageName: "",
+  },
+  GETACCTDTL: {
+    url: "/accountServiceAPI/GETACCTDTL",
+    packageName: "",
+  },
+  GETTRADEMST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRADEMST",
+    packageName: "",
+  },
+  GETUSERNOTECNT: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERNOTECNT",
+    packageName: "",
+  },
+  GETUSERACCTTYPE: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERACCTTYPE",
+    packageName: "",
+  },
+  GETCUSTIDVAL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTIDVAL",
+    packageName: "",
+  },
+  GETNNULINCOME: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETNNULINCOME",
+    packageName: "",
+  },
+  GETCOMPTYPENM: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMPTYPENM",
+    packageName: "",
+  },
+  GETEDUCATIONDTL: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEDUCATIONDTL",
     packageName: "",
   },
 };

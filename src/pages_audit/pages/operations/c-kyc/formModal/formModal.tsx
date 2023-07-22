@@ -599,46 +599,46 @@ export default function FormModal({
               <TabPanel value={colTabValue} index={0}>
                 {categoryValue ? <PersonalDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} /> : null}
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} /> : null}
               </TabPanel>
               <TabPanel value={colTabValue} index={1}>
                 <KYCDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
               </TabPanel>
               <TabPanel value={colTabValue} index={2}>
                   {/* <Typography variant="h6">Declaration</Typography> */}
                 <DeclarationDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
               </TabPanel>
               <TabPanel value={colTabValue} index={3}>
                 {/* <Typography variant="h6">Details of Related Person</Typography> */}
                 <RelatedPersonDetails
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} 
+                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes}
                 />
               </TabPanel>
               <TabPanel value={colTabValue} index={4}>
                 <OtherDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
               </TabPanel>
               <TabPanel value={colTabValue} index={5}>
                 <OtherAddressDetails
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
               </TabPanel>
               <TabPanel value={colTabValue} index={6}>
                 <NRIDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
               </TabPanel>
               <TabPanel value={colTabValue} index={7}>
                 {/* <Typography variant="h6">Attestation</Typography> */}
                 <AttestationDetails
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes}
                 />
               </TabPanel>
 

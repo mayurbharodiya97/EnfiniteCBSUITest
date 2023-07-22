@@ -12,6 +12,7 @@ import clsx from "clsx";
 import { TableActionType, RenderActionType } from "./types";
 import { filterAction } from "./utils";
 import { makeStyles } from "@mui/styles";
+import { GradientButton } from "components/styledComponent/button";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -105,7 +106,10 @@ export const RenderActions: FC<RenderActionType> = ({
   if (Array.isArray(actions) && actions.length > 0) {
     return actions.map((one) => (
       <Tooltip title={one.tooltip ?? one.actionLabel} key={one.actionName}>
-        <Button
+        <GradientButton
+          rotateIcon={one.rotateIcon}
+          starticon={one.startsIcon}
+          endicon={one.endsIcon}
           onClick={() => {
             setAction({
               name: one.actionName,
@@ -127,7 +131,7 @@ export const RenderActions: FC<RenderActionType> = ({
           ref={one.onEnterSubmit ? submitButtonRef : null}
         >
           {one.actionLabel}
-        </Button>
+        </GradientButton>
       </Tooltip>
     ));
   } else {
