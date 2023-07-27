@@ -59,6 +59,7 @@ export const en_language_data = {
   },
   // For Profile in User Profile
   UserId: "User Id",
+  EmailID: "Email-Id",
   UserGroup: "User Group",
   DefaultBranch: "Default Branch",
   CustomerId: "Customer Id",
@@ -209,4 +210,9 @@ export const en_language_data = {
   CustomerIDisrequired: "Customer ID is required",
   CustomerIDShouldNotBeLessThan12Digits:
     "Customer ID should not be less than 12 digits",
+
+  EnterAccountType: "Enter Account Type.",
+  ModeOfOperation: "Mode of Operation",
+  GetDetails: "Get Details",
+  EnterAcNo: "Enter A/c No.",
 };
