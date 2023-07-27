@@ -5,10 +5,12 @@ import { declaration_meta_data } from './metadata/individual/declarationdetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';
+import { useTranslation } from 'react-i18next';
 
 const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+  const { t } = useTranslation();
   const DeclarationFormRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [currentTabFormData, setCurrentTabFormData] = useState({declaration_details: {}})
@@ -53,14 +55,14 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Declaration Details</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("DeclarationDetails")}</Typography>
                     <IconButton onClick={handleDeclarationExpand}>
                         {!isDeclarationExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
                 </Grid>
 
                 <Collapse in={isDeclarationExpanded}>
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>FATCA/CRS Details</Divider>
+                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>{t("FATCACRSDetails")}</Divider>
                 <Grid item>
                     <FormWrapper 
                         ref={DeclarationFormRef}
@@ -79,7 +81,7 @@ const myGridRef = useRef<any>(null);
                     onClick={(e) => {
                         DeclarationFormRef.current.handleSubmit(e, "save")
                     }}
-                >Next</Button>
+                >{t("Next")}</Button>
             </Grid>
         </Grid>        
     )

@@ -25,6 +25,7 @@ import { FilterFormMetaType } from "components/formcomponent/filterform";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
+import { useTranslation } from "react-i18next";
 
 
 export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
@@ -224,6 +225,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export const Ckyc = () => {
+  const { t } = useTranslation();
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
@@ -385,22 +387,22 @@ useEffect(() => {
   )
   return (
     <React.Fragment>
-      <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">C-KYC Individual/Legal Entry (MST/707)</Typography>
+      <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">{t("CkycHeader")}</Typography>
       <StyledHeaderGrid container 
         columnGap={(theme) => theme.spacing(2)}
         rowGap={(theme) => theme.spacing(2)}>
         <Grid item xs="auto">
           <CustomTabs textColor="secondary" value={tabValue} onChange={handleTabChange} aria-label="ant example">
             {/* <Tab label="Add New" /> */}
-            <Tab label="Retrieve" />
-            <Tab label="Pending" />
+            <Tab label={t("Retrieve")} />
+            <Tab label={t("Pending")} />
           </CustomTabs>
         </Grid>
         {/* <Grid item xs={12} sm={12} md>
           <Typography variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry</Typography>
         </Grid> */}
         <Grid container item xs="auto" columnGap={1}>
-          <Tooltip title="onboard Individual Customer"><Button 
+          <Tooltip title={t("IndividualCustTooltip")}><Button 
             color="secondary" 
             variant="contained" 
             onClick={() => handleFormModalOpen("I")} 
@@ -423,7 +425,7 @@ useEffect(() => {
             <PersonIcon fontSize="medium" />
             {/* </IconButton> */}
           </Button></Tooltip>
-          <Tooltip title="onboard Legal Person Entity"><Button 
+          <Tooltip title={t("LegalCustTooltip")}><Button 
             color="secondary" 
             variant="contained" 
             onClick={() => handleFormModalOpen("C")} 
@@ -510,7 +512,7 @@ useEffect(() => {
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
         {/* <Typography variant="subtitle1" gutterBottom={true}>Pending Requests</Typography> */}
-        <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">Pending Requests</Typography>        
+        <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">{t("PendingReq")}</Typography>        
         <Grid item>
           <GridWrapper
             key={`EmailAcctMstGrid`}

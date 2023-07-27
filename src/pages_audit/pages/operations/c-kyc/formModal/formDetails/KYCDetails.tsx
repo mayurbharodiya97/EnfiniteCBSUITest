@@ -15,11 +15,13 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { DocumentGridMetaData } from './metadata/individual/personaldetails';
 import TabStepper from '../TabStepper';
+import { useTranslation } from 'react-i18next';
 
 const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   //  const myGridRef = useRef<any>(null);
+   const { t } = useTranslation();
    const [isPoIExpanded, setIsPoIExpanded] = useState(true)
    const [isPoAExpanded, setIsPoAExpanded] = useState(false)
    const [isNextLoading, setIsNextLoading] = useState(false)
@@ -111,7 +113,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                 <Grid item>
                     {/* <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>KYC Details</Typography> */}
                     <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                        <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Proof of Identity [PoI]</Typography>
+                        <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>{t("ProofOfIdentity")}</Typography>
                         <IconButton onClick={handlePoIExpand}>
                             {!isPoIExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                         </IconButton>
@@ -162,7 +164,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Proof of Address [PoA]</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>{t("ProofOfAddress")}</Typography>
                     <IconButton onClick={handlePoAExpand}>
                         {!isPoAExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
@@ -211,7 +213,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Documents</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("Documents")}</Typography>
                 </Grid>
                 <Grid container item>
                     <Grid item xs={12} sx={{backgroundColor:"#eee"}}>
@@ -236,7 +238,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                         KyCPoIFormRef.current.handleSubmit(e, "save")
                         KyCPoAFormRef.current.handleSubmit(e, "save")
                     }}
-                >Next</Button>
+                >{t("Next")}</Button>
             </Grid>
 
         </Grid>        

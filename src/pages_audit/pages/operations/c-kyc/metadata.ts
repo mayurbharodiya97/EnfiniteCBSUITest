@@ -165,7 +165,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
   columns: [
     {
       accessor: "CUST_TYPE",
-      columnName: "Cust Type",
+      columnName: "CustomerType",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -195,7 +195,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     },
     {
       accessor: "MOB_NO",
-      columnName: "Mobile No.",
+      columnName: "MobileNo",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -205,7 +205,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     },
     {
       accessor: "CUST_NAME",
-      columnName: "Cust Name",
+      columnName: "CustomerName",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -235,7 +235,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     },
     {
       accessor: "KYC_NUMBER",
-      columnName: "CKYC No.",
+      columnName: "CkycNo",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -245,7 +245,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     },
     {
       accessor: "Req_No",
-      columnName: "Req. No.",
+      columnName: "ReqNo",
       sequence: 9,
       alignment: "left",
       componentType: "default",
@@ -292,7 +292,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
   columns: [
     {
       accessor: "CUST_ID",
-      columnName: "Cust. Id",
+      columnName: "CustomerId",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -302,7 +302,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     },
     {
       accessor: "CUST_NAME",
-      columnName: "Cust. Name",
+      columnName: "CustomerName",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -312,7 +312,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     },
     {
       accessor: "CUST_TYPE",
-      columnName: "Cust. Type",
+      columnName: "CustomerType",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -322,7 +322,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     },
     {
       accessor: "LAST_MODIFIED",
-      columnName: "Last Modified",
+      columnName: "LastModified",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -359,7 +359,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
 export const RetrieveDataFilterForm: FilterFormMetaType = {
   gridConfig: {
     dense: true,
-    title: "Retrieve Customer Data",
+    title: "RetrieveTitle",
     allowColumnHiding: true,
     submitButtonName: "Retrieve",
     // submitButtonHide: true,
@@ -393,7 +393,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
     {
       accessor: "KYC_NUMBER",
       name: "KYC_NUMBER",
-      label: "CKYC No.",
+      label: "CkycNo",
       // placeholder: "Select Option",
       gridconfig: { xs: 6, sm: 3 },
       // defaultValue: "A",
@@ -474,7 +474,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
     {
       accessor: "UNIQUE_ID",
       name: "UNIQUE_ID",
-      label: "Unique ID",
+      label: "UniqueId",
       defaultValue: "",
       gridconfig: { xs: 6, sm: 3 },
       // placeholder: "Login ID",
@@ -491,7 +491,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
     {
       accessor: "MOBILE_NO",
       name: "MOBILE_NO",
-      label: "Mobile Number",
+      label: "MobileNo",
       // placeholder: "Mobile Number",
       type: "number",
       // isDisabled: true,
@@ -501,7 +501,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
     {
       accessor: "MAIL_ID",
       name: "MAIL_ID",
-      label: "E-Mail Address",
+      label: "EmailId",
       // placeholder: "E-Mail Address",
       // isDisabled: true,
       isVisible: false,
@@ -510,7 +510,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
     {
       accessor: "CUST_NAME",
       name: "CUST_NAME",
-      label: "Cust Name",
+      label: "CustomerName",
       // placeholder: "Name",
       // isDisabled: true,
       isVisible: false,
