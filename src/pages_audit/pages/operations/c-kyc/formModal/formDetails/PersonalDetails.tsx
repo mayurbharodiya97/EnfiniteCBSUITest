@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
@@ -17,13 +17,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
+import { CkycContext } from '../../CkycContext';
 
-const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
+const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
+  const NextBtnRef = useRef<any>("")
+  const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [currentTabFormData, setCurrentTabFormData] = useState({personal_details: {}, personal_other_details: {}})
   const [isPDExpanded, setIsPDExpanded] = useState(true)
@@ -62,7 +65,12 @@ const myGridRef = useRef<any>(null);
             // })
             setCurrentTabFormData(tabFormData => ({...tabFormData, "personal_details": data}))
             console.log("aedaqedqdeqd 2",currentTabFormData)
-            setIsNextLoading(false)
+
+            let newData = state?.formDatactx
+            newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
+            handleFormDataonSavectx(newData)
+            PODFormRef.current.handleSubmit(NextBtnRef.current, "save")
+            // setIsNextLoading(false)
         }   
         endSubmit(true)
     }
@@ -84,6 +92,11 @@ const myGridRef = useRef<any>(null);
             // })
             setCurrentTabFormData(tabFormData => ({...tabFormData, "personal_other_details": data}))
 
+            let newData = state?.formDatactx
+            newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
+            handleFormDataonSavectx(newData)
+            handleColTabChangectx(1)
+
             console.log("aedaqedqdeqd",currentTabFormData)
             setIsNextLoading(false)
         }   
@@ -98,7 +111,7 @@ const myGridRef = useRef<any>(null);
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Personal Details {`(1/8)`}</Typography>
                 </Grid> */}
                 <Grid item xs>
-                    <TabStepper currentTab={colTabValue} setColTabValue={setColTabValue} />
+                    <TabStepper />
                 </Grid>
             </Grid>
             {isCustomerData ? <Grid 
@@ -120,6 +133,7 @@ const myGridRef = useRef<any>(null);
                         <FormWrapper 
                             ref={PDFormRef}
                             onSubmitHandler={onSubmitPDHandler}
+                            initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                             key={"new-form-in-kyc"}
                             metaData={personal_detail_prefix_data as MetaDataType}
                             formStyle={{}}
@@ -188,6 +202,7 @@ const myGridRef = useRef<any>(null);
                             ref={PODFormRef}
                             key={"new-form-in-kyc"}
                             metaData={personal_other_detail_meta_data as MetaDataType}
+                            initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                             formStyle={{}}
                             hideHeader={true}
                             onSubmitHandler={onSubmitPODHandler}
@@ -202,10 +217,10 @@ const myGridRef = useRef<any>(null);
             <Grid container item sx={{justifyContent: "flex-end"}}>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
+                        NextBtnRef.current = e
                         PDFormRef.current.handleSubmit(e, "save")
-                        PODFormRef.current.handleSubmit(e, "save")
                     }}
-                >{t("Next")}</Button>
+                >{t("Save & Next")}</Button>
             </Grid>
 
             {(isCustomerData && false) ? <Grid 

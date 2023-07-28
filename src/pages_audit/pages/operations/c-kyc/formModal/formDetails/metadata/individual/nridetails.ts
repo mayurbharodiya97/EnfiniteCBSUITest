@@ -1,3 +1,5 @@
+import * as API from "../../../../api";
+
 export const nri_detail_meta_data = {
     form: {
         name: "nri_details_form",
@@ -46,7 +48,7 @@ export const nri_detail_meta_data = {
                 componentType: "textField",
             },
             name: "Visa_Details",
-            label: "Visa Details",
+            label: "VisaDetails",
             placeholder: "",
             type: "text",
             required: true,
@@ -57,7 +59,7 @@ export const nri_detail_meta_data = {
                 componentType: "textField",
             },
             name: "Visa_Issue_By",
-            label: "Visa Issue By",
+            label: "VisaIssueBy",
             placeholder: "",
             type: "text",
             required: true,
@@ -68,7 +70,7 @@ export const nri_detail_meta_data = {
                 componentType: "datePicker",
             },
             name: "Visa_Issue_Date",
-            label: "Visa Issue Date",
+            label: "VisaIssueDate",
             required: true,
             format: "dd/MM/yyyy",
             // placeholder: "",
@@ -80,7 +82,7 @@ export const nri_detail_meta_data = {
                 componentType: "datePicker",
             },
             name: "Visa_Expiry_Date",
-            label: "Visa Expiry Date",
+            label: "VisaExpiryDate",
             required: true,
             format: "dd/MM/yyyy",
             // placeholder: "",
@@ -89,10 +91,12 @@ export const nri_detail_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "Domestic_Risk",
-            label: "Domestic Risk",
+            label: "DomesticRisk",
+            options: () => API.getPMISCData("DOMESTIC_RISK"),
+            _optionsKey: "DomesticRiskTypes",
             placeholder: "",
             type: "text",
             required: true,
@@ -100,10 +104,12 @@ export const nri_detail_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "Country_Of_Risk",
-            label: "Country Of Risk",
+            label: "CountryOfRisk",
+            options: () => API.getPMISCData(""),
+            _optionsKey: "CountryRiskTypes",
             placeholder: "",
             type: "text",
             required: true,
@@ -111,10 +117,12 @@ export const nri_detail_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "Cross_Border_Risk",
-            label: "Cross Border Risk",
+            label: "CrossBorderRisk",
+            options: () => API.getPMISCData("CROSS_BORDER"),
+            _optionsKey: "CrossBorderRiskTypes",
             placeholder: "",
             type: "text",
             required: true,
@@ -125,7 +133,7 @@ export const nri_detail_meta_data = {
                 componentType: "select",
             },
             name: "Visually_Impaired",
-            label: "Visually Impaired",
+            label: "VisuallyImpaired",
             placeholder: "",
             type: "text",
             GridProps: {xs: 4, sm:3},
@@ -154,7 +162,7 @@ export const nri_detail_meta_data = {
                 {label: "NO", value: "N"}
             ],
             name: "Customer_Evaluation_Required",
-            label: "Customer Evaluation Required",
+            label: "CustomerEvaluationRequired",
             placeholder: "",
             type: "text",
             GridProps: {xs: 4, sm:3},
@@ -164,7 +172,7 @@ export const nri_detail_meta_data = {
                 componentType: "textField",
             },
             name: "Relationship_Manager",
-            label: "Relationship Manager",
+            label: "RelationshipManager",
             placeholder: "",
             type: "text",
             disabled: true,

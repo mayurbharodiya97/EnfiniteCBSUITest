@@ -83,7 +83,7 @@ export const kyc_proof_of_identity_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "UID_AADHAAR",
+            name: "UNIQUE_ID",
             label: "UIDAadhaar",
             placeholder: "",
             type: "text",

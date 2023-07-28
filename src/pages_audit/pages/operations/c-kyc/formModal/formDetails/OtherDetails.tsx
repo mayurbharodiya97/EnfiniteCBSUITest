@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Grid, Typography, Divider, Skeleton, Collapse, IconButton } from '@mui/material';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { Grid, Typography, Divider, Skeleton, Collapse, IconButton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
-    other_details_annual_income_meta_data, 
+    other_details_meta_data, 
     other_details_employment_info_meta_data, 
     other_details_exposure_info_meta_data, 
     other_details_personal_info_meta_data, 
@@ -11,14 +11,41 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';
+import { CkycContext } from '../../CkycContext';
+import { useTranslation } from 'react-i18next';
 
 
-const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
+const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+    const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
+    const { t } = useTranslation();
+    const OtherDTLFormRef = useRef<any>("")
     const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(true)
     const handleOtherDetailsExpand = () => {
         setIsOtherDetailsExpanded(!isOtherDetailsExpanded)
+    }
+
+    const OtherDTLSubmitHandler = (
+        data: any,
+        displayData,
+        endSubmit,
+        setFieldError,
+        actionFlag
+    ) => {
+        // setIsNextLoading(true)
+        console.log("qweqweqwe", data)     
+        if(data) {
+            // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
+
+            let newData = state?.formDatactx
+            newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...data}
+            handleFormDataonSavectx(newData)
+            handleColTabChangectx(5)
+
+            // setIsNextLoading(false)
+        }   
+        endSubmit(true)
     }
 
     return (
@@ -29,7 +56,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography>
                 </Grid> */}
                 <Grid item xs>
-                    <TabStepper currentTab={colTabValue} setColTabValue={setColTabValue} />
+                    <TabStepper />
                 </Grid>
             </Grid>
             {isCustomerData ? <Grid 
@@ -40,23 +67,26 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Other Details</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("OtherDetails")}</Typography>
                     <IconButton onClick={handleOtherDetailsExpand}>
                         {!isOtherDetailsExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
                 </Grid>
                 <Collapse in={isOtherDetailsExpanded}>                
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Annual Income</Divider>
+                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Annual Income</Divider> */}
                 <Grid item>
                     <FormWrapper 
+                        ref={OtherDTLFormRef}
+                        onSubmitHandler={OtherDTLSubmitHandler}
                         key={"new-form-in-kyc"}
-                        metaData={other_details_annual_income_meta_data as MetaDataType}
+                        metaData={other_details_meta_data as MetaDataType}
+                        initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
                         formStyle={{}}
                         hideHeader={true}
                     />
                 </Grid>
 
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Exposure Info./Risk Profile</Divider>
+                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Exposure Info./Risk Profile</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -95,9 +125,23 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                         hideHeader={true}
                     >
                     </FormWrapper>
-                </Grid>
+                </Grid> */}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+            <Grid container item sx={{justifyContent: "flex-end"}}>
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                // disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(3)
+                    }}
+                >{t("Previous")}</Button>
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                // disabled={isNextLoading}
+                    onClick={(e) => {
+                        OtherDTLFormRef.current.handleSubmit(e, "save")
+                    }}
+                >{t("Save & Next")}</Button>
+            </Grid>
         </Grid>        
     )
 }
