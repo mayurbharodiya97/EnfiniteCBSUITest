@@ -19,6 +19,8 @@ export const en_language_data = {
   UsernamenandPasswordisRequired: "Username and Password is a required",
   Next: "Next",
   backtologin: "back to login",
+  Save: "Save",
+
   // For OTP Verify
   otp: {
     OTPAuthentication: "OTP Authentication",
@@ -50,8 +52,6 @@ export const en_language_data = {
     Name: "Name",
     UpdatePhoto: "Update Photo",
     MyProfile: "My Profile",
-    MobileNo: "Mobile No.",
-    EmailId: "Email-Id",
     About: "About",
     AllowedAccess: "Allowed Access",
     ActivityDetail: "Activity Detail",
@@ -71,6 +71,7 @@ export const en_language_data = {
   TransferLimit: "Transfer Limit",
   CreditTransactionLimit: "Credit Transaction Limit",
   CashRecieptLimit: "Cash Reciept Limit",
+  EmailId: "Email-Id",
 
   // Branch Access Rights Grid in Profile
 

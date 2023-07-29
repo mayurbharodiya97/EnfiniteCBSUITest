@@ -65,7 +65,6 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     );
     const yupValidationSchema = constructYupSchema(metaData.fields);
     const formName = metaData.form.name ?? "NO_NAME";
-    console.log("<<<", metaData);
     return (
       <>
         {/* {console.log("LocalizationProvider", AdapterDateFns)} */}

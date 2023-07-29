@@ -267,6 +267,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETGRIDCONFIGDATA",
     packageName: "",
   },
+  GETACCTDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTDATA",
+    packageName: "",
+  },
+  LOGINTOTP: {
+    url: "/enfinityCommonServiceAPI/LOGINTOTP",
+    packageName: "",
+  },
+  VERIFYTOTP: {
+    url: "/enfinityCommonServiceAPI/VERIFYTOTP",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

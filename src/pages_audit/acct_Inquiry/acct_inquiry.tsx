@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Button, Grid, Dialog, CircularProgress } from "@mui/material";
 import { AccountInquiryMetadata, AccountInquiryGridMetaData } from "./metaData";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
@@ -15,6 +21,7 @@ import { AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "packages/form";
 import { Alert } from "components/common/alert";
 import { GradientButton } from "components/styledComponent/button";
+import { queryClient } from "cache";
 
 // import { Dialog } from "@mui/material";
 const actions: ActionTypes[] = [
@@ -54,6 +61,7 @@ export const Accountinquiry = ({ open, onClose }) => {
     setFieldError?: any;
   }
 
+  // console.log("<<<r", rowsData);
   const insertFormDataFnWrapper =
     (insertFormData) =>
     async ({ data }: InsertFormDataFnType) => {
@@ -63,6 +71,7 @@ export const Accountinquiry = ({ open, onClose }) => {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
+
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "view-detail") {
@@ -156,7 +165,20 @@ export const Accountinquiry = ({ open, onClose }) => {
                 color={"primary"}
                 ref={formbtnRef}
                 endicon={"Close"}
-                rotateIcon="rotateR"
+                // rotateIcon="scale(1.4) rotate(360deg)"
+                sx={{
+                  background: "var(--theme-color2) !important",
+                  color: "var(--theme-color1) !important",
+                  "&:hover": {
+                    background: "var(--theme-color5) !important",
+                    color: "var(--theme-color2) !important",
+                    transition: "all 0.5s ease 0s",
+                    "& .MuiSvgIcon-root": {
+                      transform: "scale(1.4) rotate(360deg)",
+                      transition: "transform 2s ease-in-out",
+                    },
+                  },
+                }}
               >
                 close
               </GradientButton>

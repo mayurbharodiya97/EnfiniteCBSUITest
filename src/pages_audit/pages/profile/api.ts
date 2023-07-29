@@ -21,7 +21,6 @@ export const getUserDetails = async ({ userID }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
 export const getUserLoginDetails = async ({ userID }) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETUSERACTIVITY", {
@@ -69,19 +68,6 @@ export const getUserAccessType = async ({ userID }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-// export const getUserAccess = async ({ userID }) => {
-//   const { status, data, message, messageDetails } =
-//     await AuthSDK.internalFetcher("GETUSERACTIVITY", {
-//       USER_ID: userID,
-//       // A_USER_NAME: userID,
-//     });
-//   if (status === "0") {
-//     return data;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
-
 export const changeEmployeePassword = async ({
   userID,
   currentPassword,
@@ -256,7 +242,6 @@ export const getdashUserboxData = async ({ userID, COMP_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
 export const getdashboxData = async () => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDASHBOX", {
@@ -280,7 +265,6 @@ export const getdashboxData = async () => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
 export const updateDashboxData = async (reqData) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETBOXDML", reqData);
@@ -301,10 +285,10 @@ export const updateQuickViewData = async (reqData) => {
 };
 export const updateTOTPAuth = async ({ userID, currentPassword, flag }) => {
   const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOTOTPAUTHUPDATE", {
+    await AuthSDK.internalFetcher("LOGINTOTP", {
       USER_ID: userID,
+      FLAG: flag,
       PASSWORD: currentPassword,
-      AUTH_FLAG: flag,
     });
   if (status === "0") {
     if (flag === "DISABLED") {
@@ -321,10 +305,10 @@ export const updateTOTPAuthVerify = async ({
   otpNumber,
 }) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "DOTOTPAUTHUPDATEVERIFY",
+    "VERIFYTOTP",
     {
       USER_ID: userID,
-      SECRET_TOKEN: secretToken,
+      SECRET: secretToken,
       OTP: otpNumber,
     }
   );

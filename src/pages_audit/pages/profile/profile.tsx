@@ -61,6 +61,8 @@ import TotpEnbaledDisabled from "./totp/totp-enabled-disable";
 import { CreateDetailsRequestData } from "components/utils";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import { GradientButton } from "components/styledComponent/button";
+import { useTranslation } from "react-i18next";
+// import { t } from "i18next";
 // interface notificationDataType {
 //   activityID: string;
 //   readFlag: string;
@@ -71,29 +73,8 @@ import { GradientButton } from "components/styledComponent/button";
 //   async ({ activityID, readFlag }: notificationDataType) => {
 //     return notificationData({ activityID, readFlag });
 //   };
+// console.log("<<<", useTranslation);
 
-const Dashactions: ActionTypes[] = [
-  {
-    actionName: "save",
-    actionLabel: "save",
-    multiple: false,
-    rowDoubleClick: false,
-    actionTextColor: "var(--theme-color2)",
-    actionBackground: "var(--theme-color3)",
-    alwaysAvailable: true,
-  },
-];
-const Quickactions: ActionTypes[] = [
-  {
-    actionName: "save",
-    actionLabel: "save",
-    multiple: false,
-    rowDoubleClick: false,
-    actionTextColor: "var(--theme-color2)",
-    actionBackground: "var(--theme-color3)",
-    alwaysAvailable: true,
-  },
-];
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const authController = useContext(AuthContext);
@@ -111,7 +92,35 @@ export const Profile = () => {
   const [quickViewData, setQuickViewData] = useState<any>([]);
   const [showTOTP, setshowTOTP] = useState(false);
   const [mode, setMode] = useState<string>("userLogin");
+  const [totpAuthStatus, setTotpAuthStatus] = useState<any>("");
+  const { t } = useTranslation();
   // const [girdData, setGridData] = useState<any>();
+  const Dashactions: ActionTypes[] = [
+    {
+      actionName: "save",
+      actionLabel: `${t("Save")}`,
+      multiple: false,
+      rowDoubleClick: false,
+      actionTextColor: "var(--theme-color2)",
+      actionBackground: "var(--theme-color3)",
+      alwaysAvailable: true,
+      startsIcon: "Save",
+      rotateIcon: "scale(1.4)",
+    },
+  ];
+  const Quickactions: ActionTypes[] = [
+    {
+      actionName: "save",
+      actionLabel: `${t("Save")}`,
+      multiple: false,
+      rowDoubleClick: false,
+      actionTextColor: "var(--theme-color2)",
+      actionBackground: "var(--theme-color3)",
+      alwaysAvailable: true,
+      startsIcon: "Save",
+      rotateIcon: "scale(1.4)",
+    },
+  ];
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -221,6 +230,7 @@ export const Profile = () => {
       setProfilePictureURL(urlObj.current);
       authController?.setProfileImage(urlObj.current);
     }
+    setTotpAuthStatus(queryData.data?.TOTP_ENABLED);
   }, [queryData.data]);
   useEffect(() => {
     setQuickViewData(quickViewUsrData.data);
@@ -349,7 +359,7 @@ export const Profile = () => {
                               fontWeight: "400",
                             }}
                           >
-                            Update Photo
+                            {t("profile.UpdatePhoto")}
                           </Typography>
                           <input
                             name="fileselect"
@@ -400,40 +410,43 @@ export const Profile = () => {
                                 fontWeight: 500,
                               }}
                             >
-                              My Profile
+                              {/* My Profile */}
+                              {t("profile.MyProfile")}
                             </Typography>
 
                             <Box sx={{ flexGrow: 1 }}></Box>
                             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                              <Button
+                              <GradientButton
                                 onClick={() => {
                                   setshowTOTP(true);
                                 }}
-                                color="secondary"
-                                sx={{
-                                  background: "#ECEFF9",
-                                  borderRadius: "7px",
-                                }}
+                                starticon="QrCode2"
+                                rotateIcon="scale(1.7)"
                               >
-                                {" "}
-                                <QrCode2Icon sx={{ mr: 1 }} />
-                                Enable T-OTP Auth
-                              </Button>
-                              <IconButton
-                                aria-label="show 4 new mails"
-                                color="inherit"
-                                sx={{
-                                  background: "#ECEFF9",
-                                  borderRadius: "7px",
-                                  ml: 2,
-                                }}
+                                {totpAuthStatus === "N"
+                                  ? `${t("profile.EnableTOTPAuth")}`
+                                  : totpAuthStatus === "Y"
+                                  ? `${t("profile.DisableTOTPAuth")}`
+                                  : ""}
+                              </GradientButton>
+
+                              <GradientButton
                                 onClick={handleNavigate}
+                                endicon="CancelOutlined"
+                                // rotateIcon="scale(1.4) rotateY(360deg)"
+                                sx={{
+                                  margin: "0 0  0 15px",
+                                  "&:hover": {
+                                    backgroundColor: "var(--theme-color3)",
+                                    "& .MuiSvgIcon-root": {
+                                      transform: "scale(1.4) rotateY(360deg)",
+                                      transition: "transform 2s ease-in-out",
+                                    },
+                                  },
+                                }}
                               >
-                                <CancelOutlinedIcon
-                                  color="secondary"
-                                  fontSize="medium"
-                                />
-                              </IconButton>
+                                {t("Close")}
+                              </GradientButton>
                             </Box>
                           </Toolbar>
                         </AppBar>
@@ -492,6 +505,10 @@ export const Profile = () => {
                               boxShadow: "0px 5px 40px -10px rgba(0,0,0,0.57)",
                               transition: "all 0.4s ease 0s",
                               fontWeight: "800",
+                              "& .MuiSvgIcon-root": {
+                                transform: "scale(1.4)",
+                                transition: "transform 2s ease-in-out",
+                              },
                             },
                           }}
                           value={value}
@@ -502,7 +519,7 @@ export const Profile = () => {
                         >
                           <Tab
                             value="one"
-                            label="User Profile"
+                            label={t("profile.UserProfile")}
                             icon={<AccountCircleOutlinedIcon />}
                             iconPosition="start"
                             // onClick={moveToUserDetail}
@@ -512,7 +529,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="two"
-                            label="Allowed Access"
+                            label={t("profile.AllowedAccess")}
                             icon={<HowToRegOutlinedIcon />}
                             iconPosition="start"
                             // onClick={moveToUserDetail}
@@ -522,7 +539,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="three"
-                            label="Activity Detail"
+                            label={t("profile.ActivityDetail")}
                             icon={<ArticleOutlinedIcon />}
                             iconPosition="start"
                             // onClick={() => {
@@ -535,7 +552,7 @@ export const Profile = () => {
 
                           <Tab
                             value="four"
-                            label="Change Password"
+                            label={t("profile.ChangePassword")}
                             icon={<LockResetOutlinedIcon />}
                             iconPosition="start"
                             onClick={() => {
@@ -545,7 +562,7 @@ export const Profile = () => {
                           />
                           <Tab
                             value="five"
-                            label="Personalize dashboard"
+                            label={t("profile.Personalizedashboard")}
                             icon={<SettingsAccessibilityOutlinedIcon />}
                             iconPosition="start"
                             onClick={() => {
@@ -742,21 +759,23 @@ export const Profile = () => {
                     {showTOTP ? (
                       <TotpEnbaledDisabled
                         open={showTOTP}
-                        onClose={() => setshowTOTP(false)}
-                        // onClose={(isSuccess, isLocked) => {
-                        //   if (isSuccess) {
-                        // setTotpAuthStatus((old) => {
-                        //   if (old === "N") {
-                        //     return "Y";
-                        //   } else {
-                        //     return "N";
-                        //   }
-                        // });
-                        //   }
-                        //   setshowTOTP(false);
-                        // }}
-                        // authFlag={totpAuthStatus === "N" ? "ENABLED" : "DISABLED"}
-                        authFlag="ENABLED"
+                        // onClose={() => setshowTOTP(false)}
+                        onClose={(isSuccess, isLocked) => {
+                          if (isSuccess) {
+                            setTotpAuthStatus((old) => {
+                              if (old === "N") {
+                                return "Y";
+                              } else {
+                                return "N";
+                              }
+                            });
+                          }
+                          setshowTOTP(false);
+                        }}
+                        authFlag={
+                          totpAuthStatus === "N" ? "ENABLED" : "DISABLED"
+                        }
+                        // authFlag="ENABLED"
                       />
                     ) : null}
                     {profileUpdate && filesdata.length > 0 ? (
