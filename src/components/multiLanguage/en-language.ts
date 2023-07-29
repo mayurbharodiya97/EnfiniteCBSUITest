@@ -264,7 +264,7 @@ export const en_language_data = {
   //  tab - kyc details
   ProofOfIdentity: "Proof of Identity [PoI]",
   ProofOfAddress: "Proof of Address [PoA]",
-  Documents: "Documents", 
+  Documents: "Documents",
   Form6061: "Form 60/61",
   UIDAadhaar: "UID(Aadhaar)",
   VoterId: "Voter Id",
@@ -291,7 +291,7 @@ export const en_language_data = {
   UnionTerritoriesCode: "State/U.T(Union Territories) Code",
   CountryCode: "ISO-3166 Country Code of Residence",
   ProofofAdd: "Proof of Address",
-  OthersPoA: "Others[PoA]",  
+  OthersPoA: "Others[PoA]",
   CorrespondenceAddress: "Correspondence/Local Address",
   SameAsPermanentAddress: "Same As Permanent Address",
   LocalAddressType: "Local Address Type",
