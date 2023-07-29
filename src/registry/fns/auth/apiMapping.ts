@@ -279,10 +279,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/VERIFYTOTP",
     packageName: "",
   },
-  GETACCTDATA: {
-    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTDATA",
-    packageName: "",
-  },
+
   GETBRACCESSLST: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRACCESSLST",
     packageName: "",
