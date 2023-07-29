@@ -1,5 +1,7 @@
 import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "../auth";
+import { format } from "date-fns";
+import { isValidDate } from "components/utils/utilFunctions/function";
 
 const GeneralAPISDK = () => {
   const GetMiscValue = async (ReqData) => {
@@ -83,7 +85,7 @@ const GeneralAPISDK = () => {
         responseData = responseData.map(({ ACCT_TYPE, TYPE_NM }) => {
           return {
             value: ACCT_TYPE,
-            label: TYPE_NM,
+            label: ACCT_TYPE + " - " + TYPE_NM,
           };
         });
       }
@@ -108,6 +110,105 @@ const GeneralAPISDK = () => {
     }
   };
 
+  const retrieveStatementDetails = async (
+    currentField,
+    formState,
+    authState,
+    dependentFieldValue
+  ) => {
+    console.log(dependentFieldValue, ">> dependentFieldValue,");
+    if (currentField?.value) {
+      const { status, data } = await AuthSDK.internalFetcher("GETACCTDATA", {
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: dependentFieldValue?.BRANCH_CD?.value ?? "",
+        ACCT_TYPE: dependentFieldValue?.ACCT_TYPE?.value ?? "",
+        ACCT_CD: currentField?.value ?? "",
+      });
+      if (status === "0") {
+        if (data?.length > 0) {
+          //..//
+          //..//
+          const { LST_STATEMENT_DT } = data[0];
+          const inputDate = new Date(LST_STATEMENT_DT);
+          const nextDate = new Date(inputDate);
+          let NEwdate = nextDate.setDate(nextDate.getDate() + 1);
+          // Make sure to adjust the timezone offset to match your desired output
+          const timezoneOffset = nextDate.getTimezoneOffset() * 60000; // Convert to milliseconds
+          let FROM_DATE = new Date(NEwdate - timezoneOffset)
+            .toISOString()
+            .slice(0, 23);
+
+          return {
+            ACCT_NM: {
+              value: data?.[0]?.ACCT_NM,
+            },
+            FROM_DT: {
+              value: isValidDate(FROM_DATE)
+                ? FROM_DATE ?? new Date()
+                : new Date(),
+            },
+            TO_DT: {
+              value: new Date(),
+            },
+          };
+        } else {
+          return {
+            ACCT_NM: { value: "" },
+            FROM_DT: { value: "" },
+            TO_DT: { value: "" },
+          };
+        }
+      }
+    } else {
+      return {
+        ACCT_NM: { value: "" },
+        FROM_DT: { value: "" },
+        TO_DT: { value: "" },
+      };
+    }
+  };
+
+  const getBranchCodeList = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETBRACCESSLST", {
+        USER_NAME: reqData?.[3]?.user.id ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ BRANCH_CD, BRANCH_NM }) => {
+          return {
+            value: BRANCH_CD,
+            label: BRANCH_CD + " - " + BRANCH_NM,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const getReportAccountType = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETACCTTYPELST", {
+        COMP_CD: reqData?.[3]?.companyID ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ ACCT_TYPE, TYPE_NM }) => {
+          return {
+            value: ACCT_TYPE,
+            label: ACCT_TYPE + " - " + TYPE_NM,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -116,6 +217,9 @@ const GeneralAPISDK = () => {
     getCustType,
     getAccountTypeList,
     getCustomerIdValidate,
+    retrieveStatementDetails,
+    getBranchCodeList,
+    getReportAccountType,
   };
 };
 

@@ -15,8 +15,12 @@ export const ExcelForStatementExport = async ({
 
   const cellB = sheet.column("B").width(40);
   const cellF = sheet.column("F").width(40);
+  const cellA = sheet.column("A").width(40);
+  const cellE = sheet.column("E").width(40);
   cellB.style("wrapText", true);
   cellF.style("wrapText", true);
+  cellA.style("wrapText", true);
+  cellE.style("wrapText", true);
   // Set the company name and merge the cells
   const companyNameCell = sheet.cell(`A${cellIndex}`);
   companyNameCell.value(companyName);
@@ -34,13 +38,14 @@ export const ExcelForStatementExport = async ({
 
   for (const section of data) {
     // Set the header for the section
-    const sectionHeader = sheet.cell(`A${cellIndex}`);
-    sectionHeader.value(section.TITLE);
-    sectionHeader.style("fill", headerBackgroundColorTwo);
-    sectionHeader.style({ horizontalAlignment: "center", bold: true });
-    sheet.range(`A${cellIndex}:H${cellIndex}`).merged(true);
-    cellIndex += 2;
-
+    if (section?.DISPLAY_TYPE !== "OnlyExport") {
+      const sectionHeader = sheet.cell(`A${cellIndex}`);
+      sectionHeader.value(section.TITLE);
+      sectionHeader.style("fill", headerBackgroundColorTwo);
+      sectionHeader.style({ horizontalAlignment: "center", bold: true });
+      sheet.range(`A${cellIndex}:H${cellIndex}`).merged(true);
+      cellIndex += 2;
+    }
     if (section.DISPLAY_TYPE === "simple") {
       const detailData = section.DETAILS;
       const halfLength = Math.ceil(detailData.length / 2);
@@ -79,15 +84,18 @@ export const ExcelForStatementExport = async ({
         .style({ bold: true, fill: headerBackgroundColorThree });
       cellIndex += 1;
 
-      // Set the row data for the grid section
-      const sectionData = section.DATA.map((item) => {
-        const row = section.METADATA.map(
-          (column) => item[column.ACCESSOR] || ""
-        );
-        return row;
-      });
-      sheet.cell(`A${cellIndex}`).value(sectionData);
-      cellIndex += sectionData.length + 1;
+      // Check if section.DATA is defined and contains data
+      if (section.DATA && section.DATA.length > 0) {
+        // Set the row data for the grid section
+        const sectionData = section.DATA.map((item) => {
+          const row = section.METADATA.map(
+            (column) => item[column?.ACCESSOR] || ""
+          );
+          return row;
+        });
+        sheet.cell(`A${cellIndex}`).value(sectionData);
+        cellIndex += sectionData.length + 1;
+      }
     } else if (section.DISPLAY_TYPE === "simpleGrid") {
       // Set the detail for the simpleGrid section
       const sectionColumnsLabel = section.DETAILS.map((column) => column.LABEL);
@@ -119,6 +127,26 @@ export const ExcelForStatementExport = async ({
     border: true,
     borderColor: "000000",
   });
+
+  cellIndex += 3;
+  for (const section of data) {
+    if (section?.DISPLAY_TYPE === "OnlyExport") {
+      const Title = sheet.cell(`A${cellIndex}`);
+      Title.value(`--------: ${section?.TITLE} :---------`).style({
+        bold: true,
+        italic: true,
+      });
+      cellIndex += 1;
+      const mappedData = section?.DETAILS?.map((item) => item.VALUE);
+      // Insert each value in separate cells, one below the other
+      for (let i = 0; i < mappedData.length; i++) {
+        const valueCell = sheet.cell(`A${cellIndex}`);
+        valueCell.value(mappedData[i]).style({ bold: true });
+        sheet.range(`A${cellIndex}:H${cellIndex}`).merged(true);
+        cellIndex += 1;
+      }
+    }
+  }
 
   const wbout = await wb.outputAsync();
   const blob = new Blob([wbout], { type: "application/octet-stream" });

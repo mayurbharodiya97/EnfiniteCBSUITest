@@ -57,8 +57,9 @@ const AccountDetails = () => {
   >(["StatementDetailsData"], () =>
     API.StatementDetailsData({
       COMP_CD: authState?.authState?.companyID ?? "",
-      ACCT_CD: rowsDataRef.current?.[0]?.data?.ACCT_CD ?? "",
-      ACCT_TYPE: rowsDataRef.current?.[0]?.data?.ACCT_TYPE ?? "",
+      ACCT_CD: rowsDataRef.current?.ACCT_CD ?? "",
+      ACCT_TYPE: rowsDataRef.current?.ACCT_TYPE ?? "",
+      BRANCH_CD: rowsDataRef.current?.BRANCH_CD ?? "",
       FROM_DT: isValidDate(rowsDataRef.current?.FROM_DT)
         ? format(new Date(rowsDataRef.current?.FROM_DT), "dd-MMM-yyyy") ?? ""
         : format(new Date(), "dd-MMM-yyyy"),
@@ -66,13 +67,17 @@ const AccountDetails = () => {
         ? format(new Date(rowsDataRef.current?.TO_DT), "dd-MMM-yyyy") ?? ""
         : format(new Date(), "dd-MMM-yyyy"),
       METADATA: "STMT",
-      // ACCT_TYPE: "001",
-      // ACCT_CD: "008993",
-      // FROM_DT: "01-APR-2002",
-      // TO_DT: "30-APR-2023",
+      // COMP_CD: "132",
+      // ACCT_CD: "000209",
+      // ACCT_TYPE: "450",
+      // BRANCH_CD: "014",
+      // FROM_DT: "02-Jul-2023",
+      // TO_DT: "24-Jul-2023",
       // METADATA: "STMT",
     })
   );
+
+  // console.log(data, "--------data");
 
   const openPopover = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -105,6 +110,12 @@ const AccountDetails = () => {
       setOpenBoxes(defaultOpenSections);
     }
   }, [data]);
+
+  // useEffect(() => {
+  //   if (data == null || undefined) {
+  //     window.close();
+  //   }
+  // }, [data]);
 
   const companyName = authState?.authState?.companyName;
   const generatedBy = authState?.authState?.user?.id;

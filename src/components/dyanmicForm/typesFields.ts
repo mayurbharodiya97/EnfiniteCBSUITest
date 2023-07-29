@@ -50,6 +50,7 @@ export interface FieldMetaData<T> {
     | string;
   isReadOnly?: typeof shouldExcludeFnType | CustomRuleType | Boolean | string;
   onFormButtonClickHandel?: any;
+  postValidationSetCrossFieldValues?: any;
 }
 
 export type Omitted<T> = Omit<T, "fieldKey" | "enableGrid">;
@@ -208,4 +209,9 @@ export type AllFormButtonProps = Merge<
   Omitted<FormButtonProps>,
   FieldMetaData<"formbutton">
 >;
+export type CustomAccountProps = Merge<
+  Omitted<TextFieldProps>,
+  FieldMetaData<"_accountNumber">
+>;
+
 export type DataTablePropsOptional = Optional<AllDataTableProps>;

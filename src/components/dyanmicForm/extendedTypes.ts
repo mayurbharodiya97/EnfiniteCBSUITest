@@ -400,19 +400,24 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
   },
   accountNumber: {
     render: {
-      componentType: "numberFormat",
+      componentType: "textField",
     },
+    label: "Account Code",
+    name: "ACCT_CD",
+    required: true,
+    dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+    postValidationSetCrossFieldValues: "retrieveStatementDetails",
     schemaValidation: {
       type: "string",
       rules: [
-        { name: "required", params: ["Account No is required"] },
+        { name: "required", params: ["Account code is required"] },
         {
           name: "min",
-          params: [10, "Account No should not be less than 10 digits"],
+          params: [6, "Account code should not be less than 10 digits"],
         },
         {
           name: "max",
-          params: [20, "Account No should not exceed 20 digits"],
+          params: [20, "Account code should not exceed 20 digits"],
         },
       ],
     },
@@ -471,12 +476,139 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       ],
     },
   },
+
+  reportAccountType: {
+    render: {
+      componentType: "select",
+    },
+    label: "Report Account Type",
+    options: GeneralAPI.getReportAccountType,
+    _optionsKey: "getReportAccountType",
+  },
+
+  fullAccountNumber: {
+    render: {
+      componentType: "numberFormat",
+    },
+    name: "ACCT_NO",
+    label: "fullAccountNumber",
+    schemaValidation: {
+      type: "string",
+      rules: [
+        { name: "required", params: ["Account No is required"] },
+        {
+          name: "min",
+          params: [10, "Account No should not be less than 10 digits"],
+        },
+        {
+          name: "max",
+          params: [20, "Account No should not exceed 20 digits"],
+        },
+      ],
+    },
+  },
+  branchCode: {
+    render: {
+      componentType: "select",
+    },
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Branch Code is required"] }],
+    },
+    required: true,
+    name: "BRANCH_CD",
+    label: "Branch Code",
+    options: GeneralAPI.getBranchCodeList,
+    _optionsKey: "getBranchCodeList",
+  },
+
   accountType: {
     render: {
       componentType: "select",
     },
+    required: true,
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Account Type is required"] }],
+    },
+    name: "ACCT_TYPE",
     label: "AccountType",
     options: GeneralAPI.getAccountTypeList,
     _optionsKey: "getAccountTypeList",
+  },
+
+  userAccessableTypeForLoginBranch: {
+    render: {
+      componentType: "select",
+    },
+    required: true,
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Account Type is required"] }],
+    },
+    name: "ACCT_TYPE",
+    label: "AccountType",
+    // options: GeneralAPI.getAccountTypeList,
+    _optionsKey: "getAccountTypeList",
+  },
+
+  allTypeForBaseBranch: {
+    render: {
+      componentType: "select",
+    },
+    required: true,
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Account Type is required"] }],
+    },
+    name: "ACCT_TYPE",
+    label: "AccountType",
+    // options: GeneralAPI.getAccountTypeList,
+    _optionsKey: "getAccountTypeList",
+  },
+
+  loginAccessableBranch: {
+    render: {
+      componentType: "select",
+    },
+    required: true,
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Account Type is required"] }],
+    },
+    name: "ACCT_TYPE",
+    label: "AccountType",
+    // options: GeneralAPI.getAccountTypeList,
+    _optionsKey: "",
+  },
+
+  reportAccessBranch: {
+    render: {
+      componentType: "select",
+    },
+    required: true,
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Account Type is required"] }],
+    },
+    name: "ACCT_TYPE",
+    label: "AccountType",
+    // options: GeneralAPI.getAccountTypeList,
+    _optionsKey: "",
+  },
+
+  allBranch: {
+    render: {
+      componentType: "select",
+    },
+    required: true,
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Account Type is required"] }],
+    },
+    name: "ACCT_TYPE",
+    label: "AccountType",
+    // options: GeneralAPI.getAccountTypeList,
+    _optionsKey: "",
   },
 };

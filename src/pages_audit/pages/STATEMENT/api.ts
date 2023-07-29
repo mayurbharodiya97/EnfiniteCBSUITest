@@ -5,6 +5,7 @@ export const StatementDetailsData = async ({
   COMP_CD,
   ACCT_TYPE,
   ACCT_CD,
+  BRANCH_CD,
   FROM_DT,
   TO_DT,
   METADATA,
@@ -17,6 +18,7 @@ export const StatementDetailsData = async ({
       FROM_DT: FROM_DT,
       TO_DT: TO_DT,
       METADATA: METADATA,
+      BRANCH_CD: BRANCH_CD,
     });
   if (status === "0") {
     return data;

@@ -20,21 +20,28 @@ const typographyTitleStyle = {
 };
 
 const Title = ({ data, index, openBoxes, handleBoxToggle }) => {
-  const { displayType, TITLE } = data;
+  const { DISPLAY_TYPE, TITLE } = data;
 
   //
 
   return (
     <>
-      <Typography
-        variant="h5"
-        sx={typographyTitleStyle}
-        key={index}
-        onClick={() => handleBoxToggle(index)}
-      >
-        {TITLE}
-        {openBoxes[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-      </Typography>
+      {" "}
+      {DISPLAY_TYPE !== "OnlyExport" && (
+        <Typography
+          variant="h5"
+          sx={typographyTitleStyle}
+          key={index}
+          onClick={() => handleBoxToggle(index)}
+        >
+          {TITLE}
+          {openBoxes[index] ? (
+            <KeyboardArrowUpIcon />
+          ) : (
+            <KeyboardArrowDownIcon />
+          )}
+        </Typography>
+      )}
     </>
   );
 };

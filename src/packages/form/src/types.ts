@@ -133,7 +133,8 @@ export declare function ValidateFnType(
 export declare function PostValidationSetCrossFieldValuesFnType(
   fieldData: FormFieldAtomType,
   formState: any,
-  authState?: any
+  authState?: any,
+  dependentFieldsState?: DependentValuesType
 ):
   | Promise<InitialValuesType | undefined | null>
   | InitialValuesType

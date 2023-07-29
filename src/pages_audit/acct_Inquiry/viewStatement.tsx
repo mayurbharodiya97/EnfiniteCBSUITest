@@ -19,11 +19,8 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
     actionFlag
   ) => {
     endSubmit(true);
-    // Assuming you have rowsData available somewhere in your code
-
-    // Additional data you want to store
     if (screenFlag === "ACCT_INQ") {
-      const combinedData = { ...rowsData, ...data };
+      const combinedData = { ...rowsData?.[0]?.data, ...data };
       const dataString = JSON.stringify(combinedData);
       sessionStorage.setItem("myData", dataString);
       const newWindow = window.open("./view-statement", "_blank");
@@ -31,7 +28,11 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
         newWindow.focus();
       }
     } else {
-      if (Boolean(data?.ACCT_TYPE)) {
+      const dataString = JSON.stringify(data);
+      sessionStorage.setItem("myData", dataString);
+      const newWindow = window.open("./view-statement", "_blank");
+      if (newWindow) {
+        newWindow.focus();
       }
     }
   };
@@ -42,6 +43,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
   } else if (screenFlag === "ACCT_INQ") {
     finalMetadata = PassbookStatementInq as MetaDataType;
   }
+
   // useEffect(() => {
   //   return setCount({ count: 4 });
   // }, [count]);

@@ -23,6 +23,7 @@ const exportToPDF = (data, companyName, generatedBy, RequestingBranchCode) => {
   const margin = 10; // Margin size in pixels
   const spacing = 15; // Spacing between sections in pixels
   let startY = margin;
+  let exportContentStartY = 0;
 
   const pageWidth = doc.internal.pageSize.getWidth() - margin * 2;
 
@@ -252,6 +253,29 @@ const exportToPDF = (data, companyName, generatedBy, RequestingBranchCode) => {
           startY - spacing / 2
         );
       }
+    } else if (section.DISPLAY_TYPE === "OnlyExport") {
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text(`---------: ${section?.TITLE} :--------`, 10, startY);
+      startY += 10;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+
+      const mappedData = section?.DETAILS?.map((item) => item.VALUE); // Extract the VALUE property
+      const formattedData = mappedData.join("\n"); // Join the values with newline separator
+
+      // If this is not the first "onlyExport" section, add spacing between previous and current section
+      if (exportContentStartY !== 0) {
+        startY += spacing;
+      }
+
+      const maxWidth = pageWidth - 10; // Adjust the maximum width as needed
+      const lines = doc.splitTextToSize(formattedData, maxWidth);
+      doc.text(lines, 10, startY); // Display the content
+
+      startY += lines.length * 5; // Adjust the vertical position based on the number of lines
+      exportContentStartY = startY; // Update the starting Y position for the next "onlyExport" content
     }
   }
 
