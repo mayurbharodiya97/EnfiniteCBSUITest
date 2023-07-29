@@ -46,7 +46,7 @@ export const TipsListMetadata = {
       render: {
         componentType: "checkbox",
       },
-      name: "STATUS",
+      name: "IS_VIEW_NEXT",
       label: "",
       defaultValue: true,
       // __EDIT__: { render: { componentType: "checkbox" } },
@@ -57,7 +57,7 @@ export const TipsListMetadata = {
         componentType: "textField",
       },
       name: "C_TYPE",
-      label: "CircularType",
+      label: "Description",
       placeholder: "",
       defaultValue: "",
       isReadOnly: true,

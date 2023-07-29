@@ -255,6 +255,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEDUCATIONDTL",
     packageName: "",
   },
+  DOANNOUNCEMENT: {
+    url: "dashboardServiceAPI/DOANNOUNCEMENT",
+    packageName: "",
+  },
+  DOTIPS: {
+    url: "dashboardServiceAPI/DOTIPS",
+    packageName: "",
+  },
+  GETGRIDCONFIGDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETGRIDCONFIGDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

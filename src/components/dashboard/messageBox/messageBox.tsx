@@ -313,6 +313,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
               dialogLabel={refData.current?.DESCRIPTION}
               transactionID={refData.current?.TRAN_CD}
               open={undefined}
+              formView={"view"}
             />
           ) : null}
         </>

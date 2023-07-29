@@ -93,18 +93,31 @@ const GeneralAPISDK = () => {
     }
   };
 
-  const getCustomerIdValidate = async (authState) => {
+  const getCustomerIdValidate = async (currentField, formState, authState) => {
     // if (currentField?.value) {
     const { status, data, message, messageDetails } =
       await AuthSDK.internalFetcher("GETCUSTIDVAL", {
         COMP_CD: authState?.companyID ?? "",
-        CUSTOMER_ID: "1234",
+        CUSTOMER_ID: currentField?.value ?? "",
       });
     if (status === "0") {
-      console.log(">>data", data);
-      return data;
+      return {
+        ACCT_NM: { value: data?.[0]?.ACCT_NM },
+        CONSTITUTION_TYPE: { value: data?.[0]?.CONSTITUTION_TYPE },
+        CONTACT2: { value: data?.[0]?.CONTACT2 },
+        CUSTOMER_TYPE: { value: data?.[0]?.CUSTOMER_TYPE },
+        PAN_NO: { value: data?.[0]?.PAN_NO },
+        UNIQUE_ID: { value: data?.[0]?.UNIQUE_ID },
+      };
     } else {
-      throw DefaultErrorObject(message, messageDetails);
+      return {
+        ACCT_NM: { value: "" },
+        CONSTITUTION_TYPE: { value: "" },
+        CONTACT2: { value: "" },
+        CUSTOMER_TYPE: { value: "" },
+        PAN_NO: { value: "" },
+        UNIQUE_ID: { value: "" },
+      };
     }
   };
 

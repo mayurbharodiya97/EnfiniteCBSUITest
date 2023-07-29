@@ -115,48 +115,49 @@ export const MessageDescriptionMetadata = {
         sm: 3,
       },
     },
-    {
-      render: {
-        componentType: "accountType",
-      },
-      name: "ACCT_TYPE",
-      placeholder: "",
-      // isReadOnly: true,
-      fullWidth: true,
-      type: "text",
+    // {
+    //   render: {
+    //     componentType: "accountType",
+    //   },
+    //   name: "ACCT_TYPE",
+    //   placeholder: "",
+    //   // isReadOnly: true,
+    //   fullWidth: true,
+    //   type: "text",
 
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-      },
-    },
-    {
-      render: {
-        componentType: "customerID",
-      },
-      name: "CUSTOMER_ID",
-      placeholder: "",
-      // isReadOnly: true,
-      fullWidth: true,
-      type: "text",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 3,
+    //     sm: 3,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "customerID",
+    //   },
+    //   name: "CUSTOMER_ID",
+    //   placeholder: "",
+    //   // isReadOnly: true,
+    //   fullWidth: true,
+    //   type: "text",
 
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-      },
-    },
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 3,
+    //     sm: 3,
+    //   },
+    // },
     {
       render: {
         componentType: "checkbox",
       },
-      name: "STATUS",
+      name: "IS_VIEW_NEXT",
       label: "",
       defaultValue: true,
       // __EDIT__: { render: { componentType: "checkbox" } },
       GridProps: { xs: 2, md: 2, sm: 2 },
     },
+
     // {
     //   render: {
     //     componentType: "datePicker",

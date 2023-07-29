@@ -89,7 +89,7 @@ export const getNoteCountData = async ({ COMP_CD, userID }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getMessageBoxListData = async ({ transactionID, userID }) => {
+export const getAnnouncementListData = async ({ transactionID, userID }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETECIRCULARDETAIL", {
       USER_NAME: userID,
@@ -101,7 +101,18 @@ export const getMessageBoxListData = async ({ transactionID, userID }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
+export const updateAnnouncementDetailsData = async (data) => {
+  console.log(">>data", data);
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOANNOUNCEMENT",
+    data
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const getNoteDetailsData = async ({ userID, flag }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETUSERNOTEDTL", {
@@ -118,6 +129,17 @@ export const getNoteDetailsData = async ({ userID, flag }) => {
 export const updateNoteDetailsData = async ({ data }) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOTNOTESDML",
+    data
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const updateTipsDetailsData = async ({ data }) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOTIPS",
     data
   );
   if (status === "0") {

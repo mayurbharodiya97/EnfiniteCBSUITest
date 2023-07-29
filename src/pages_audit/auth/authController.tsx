@@ -247,6 +247,11 @@ export const AuthLoginController = () => {
   } = useQuery<any, any>(["getLoginImageData"], () =>
     API.getLoginImageData({ APP_TRAN_CD: "51" })
   );
+  const imageDataString = JSON.stringify(imageData);
+  localStorage.setItem("imageData", imageDataString);
+
+  const imageDataFromStorage: any = localStorage.getItem("imageData");
+  // const imageDataObject = JSON.parse(imageDataFromStorage);
 
   useEffect(() => {
     if (Boolean(imageData?.[0]?.DASHBOARD_APP_LOGO)) {
@@ -258,6 +263,7 @@ export const AuthLoginController = () => {
       setDashboardLogoURL(urlObj.current);
     }
   }, [imageData]);
+
   useEffect(() => {
     GeneralAPI.setDocumentName("Enfinity");
   }, []);

@@ -13,6 +13,7 @@ import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 import { OperationsMenu } from "./pages/operations";
 import AccountDetails from "./pages/STATEMENT/accountDetails";
 import { MastersMenu } from "./pages/master";
+import { Configuration } from "./pages/configuration";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
@@ -51,6 +52,7 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
                 <Route path="master/*" element={<MastersMenu />} />
+                <Route path="configuration/*" element={<Configuration />} />
                 {/* <Route
                   path="branch-selection/*"
                   element={<BranchSelectionGridWrapper  />}
