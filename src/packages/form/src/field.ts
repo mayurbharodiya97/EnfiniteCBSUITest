@@ -816,7 +816,8 @@ function wrapValidationMethod(
         crossFieldMessages = await postValidationSetCrossFieldValuesFn(
           field,
           formState,
-          authState
+          authState,
+          dependentFieldsState
         );
         if (
           crossFieldMessages === null ||
@@ -843,7 +844,8 @@ function wrapValidationMethod(
         crossFieldMessages = await postValidationSetCrossFieldValuesFn(
           field,
           formState,
-          authState
+          authState,
+          dependentFieldsState
         );
         if (
           crossFieldMessages === null ||

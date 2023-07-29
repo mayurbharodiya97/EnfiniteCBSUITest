@@ -28,6 +28,7 @@ import {
   AllVisaversaFieldProps,
   AllDataTableProps,
   AllFormButtonProps,
+  CustomAccountProps,
 } from "./typesFields";
 import {
   TextFieldPropsOptional,
@@ -162,7 +163,8 @@ export type FieldMetaDataTypeX =
   | AllVisaversaFieldProps
   | ArrayFieldProps
   | AllDataTableProps
-  | AllFormButtonProps;
+  | AllFormButtonProps
+  | CustomAccountProps;
 
 export type FieldMetaDataType = Merge<
   FieldMetaDataTypeX,

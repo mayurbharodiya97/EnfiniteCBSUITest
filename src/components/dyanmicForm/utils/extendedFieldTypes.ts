@@ -51,8 +51,47 @@ export const extendFieldTypes = (
     one["placeholder"] = lanTranslate(one["placeholder"]);
     return one;
   });
+  let newMetaDataFieldsCustom: any = [];
+  const paravalue: string = "2";
+  newMetaDataFields.forEach((item) => {
+    if (item.render.componentType === "_accountNumber") {
+      if (paravalue === "1") {
+        const fullAccountNumber = extendedTypes["fullAccountNumber"];
+        if (typeof fullAccountNumber === "object") {
+          newMetaDataFieldsCustom = [
+            ...newMetaDataFieldsCustom,
+            fullAccountNumber,
+          ];
+        }
+      } else {
+        const branchCode = extendedTypes["branchCode"];
+        const accountType = extendedTypes["accountType"];
+        const accountNumber = extendedTypes["accountNumber"];
+        if (typeof branchCode === "object") {
+          branchCode["label"] = lanTranslate(branchCode["label"]);
+          branchCode["placeholder"] = lanTranslate(branchCode["placeholder"]);
+          newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, branchCode];
+        }
+        if (typeof accountType === "object") {
+          accountType["label"] = lanTranslate(accountType["label"]);
+          accountType["placeholder"] = lanTranslate(accountType["placeholder"]);
+          newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, accountType];
+        }
+        if (typeof accountNumber === "object") {
+          accountNumber["label"] = lanTranslate(accountNumber["label"]);
+          accountNumber["placeholder"] = lanTranslate(
+            accountNumber["placeholder"]
+          );
+          newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, accountNumber];
+        }
+      }
+    } else {
+      newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
+    }
+  });
+  // console.log("newMetaDataFields", newMetaDataFields, newMetaDataFieldsCustom);
   return {
     form: metaData.form,
-    fields: [...newMetaDataFields],
+    fields: [...newMetaDataFieldsCustom],
   } as MetaDataType;
 };

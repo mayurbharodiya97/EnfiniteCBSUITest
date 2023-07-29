@@ -2,7 +2,7 @@
 // import { GeneralAPI } from "registry/fns/functions";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
-
+import { lessThanDate } from "registry/rulesEngine";
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
@@ -337,10 +337,10 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
   ],
 };
-export const PassbookStatement = {
+export const PassbookStatement: any = {
   form: {
     name: "passbookstatement",
-    label: "Statement Print Option",
+    label: "Retrieve Account Statement",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -381,30 +381,7 @@ export const PassbookStatement = {
     },
   },
   fields: [
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "ACCT_NO",
-      label: "Account No.",
-      placeholder: "Account Number",
-      defaultValue: "",
-      type: "text",
-      isReadOnly: false,
-      // allowToggleVisiblity: true,
-      // maxLength: 10,
-      required: true,
-      fullWidth: true,
-      autoComplete: false,
-      schemaValidation: {
-        type: "string",
-      },
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
+    { render: { componentType: "_accountNumber" } },
     {
       render: {
         componentType: "textField",
@@ -413,8 +390,9 @@ export const PassbookStatement = {
       label: "Account/Person Name",
       placeholder: "Account/Person Name",
       type: "text",
-      isReadOnly: false,
+      isReadOnly: true,
       fullWidth: true,
+
       GridProps: {
         xs: 12,
         md: 8,
@@ -422,180 +400,32 @@ export const PassbookStatement = {
       },
     },
 
-    // {
-    //   render: {
-    //     componentType: "radio",
-    //   },
-    //   name: "PD_DESTION",
-    //   label: "",
-    //   RadioGroupProps: { row: true },
-    //   defaultValue: "P",
-    //   options: [
-    //     {
-    //       label: "Passbook",
-    //       value: "P",
-    //     },
-    //     { label: "Statement", value: "S" },
-    //   ],
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 11,
-    //     sm: 11,
-    //   },
-    // },
-    // {
-    //   render: {
-    //     componentType: "radio",
-    //   },
-    //   name: "PID_DESCRIPION",
-    //   label: "",
-    //   RadioGroupProps: { row: true },
-    //   defaultValue: "D",
-    //   options: [
-    //     {
-    //       label: "Front Page",
-    //       value: "F",
-    //     },
-    //     { label: "First Page", value: "R" },
-    //     { label: "Detail", value: "D" },
-    //   ],
-
-    //   dependentFields: ["PD_DESTION"],
-    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
-    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   },
-
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 12,
-    //     sm: 12,
-    //   },
-    // },
-    // {
-    //   render: {
-    //     componentType: "select",
-    //   },
-    //   name: "TRAN_CD",
-    //   label: "Template",
-    //   defaultValue: "1",
-    //   options: getPassBookTemplate,
-    //   _optionsKey: "getTemplateList",
-    //   placeholder: "",
-    //   type: "text",
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 6,
-    //     sm: 6,
-    //   },
-    //   dependentFields: ["PD_DESTION"],
-    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
-    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   },
-    // },
-    // {
-    //   render: {
-    //     componentType: "numberFormat",
-    //   },
-    //   name: "ACT_NO",
-    //   label: "Line No.",
-    //   defaultValue: "",
-    //   type: "text",
-    //   isReadOnly: false,
-    //   fullWidth: true,
-    //   autoComplete: false,
-    //   schemaValidation: {
-    //     type: "string",
-    //   },
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 2.5,
-    //     sm: 2.5,
-    //   },
-    //   dependentFields: ["PD_DESTION"],
-    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
-    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   },
-    // },
-    // {
-    //   render: {
-    //     componentType: "spacer",
-    //   },
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 0.5,
-    //     sm: 0.5,
-    //   },
-    //   dependentFields: ["PD_DESTION"],
-    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
-    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   },
-    // },
-    // {
-    //   render: {
-    //     componentType: "formbutton",
-    //   },
-    //   name: "ACTAA_NO",
-    //   label: "Reprint",
-    //   // defaultValue: "",
-    //   type: "text",
-    //   isReadOnly: true,
-    //   // allowToggleVisiblity: true,
-    //   // maxLength: 10,
-    //   // required: true,
-    //   fullWidth: true,
-    //   autoComplete: false,
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 1.3,
-    //     sm: 1.3,
-    //   },
-    //   dependentFields: ["PD_DESTION"],
-    //   shouldExclude(fieldData, dependentFieldsValues, formState) {
-    //     if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-    //       return false;
-    //     } else {
-    //       return true;
-    //     }
-    //   },
-    // },
     {
       render: {
         componentType: "datePicker",
       },
       name: "FROM_DT",
       label: "From Date :-",
-      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      format: "dd/MM/yyyy",
       placeholder: "",
-      type: "text",
-      // fullWidth: true,
-      dependentFields: ["PD_DESTION"],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-          return true;
-        } else {
-          return false;
-        }
-      },
+
       GridProps: {
         xs: 12,
         md: 6,
         sm: 6,
+      },
+      // onFocus: (date) => {
+      //   console.log("<<<F", date);
+      //   date.target.select();
+      // },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["From Date is required."] }],
+      },
+      validate: (value, data, other) => {
+        if (value?.value === "") {
+          return "This field is required";
+        }
       },
     },
     {
@@ -605,15 +435,47 @@ export const PassbookStatement = {
       name: "TO_DT",
       label: "To Date :-",
       placeholder: "",
-      dateFormat: "dd/MM/yyyy HH:mm:ss",
-      // type: "text",
-      // fullWidth: true,
-      dependentFields: ["PD_DESTION"],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-          return true;
-        } else {
-          return false;
+      format: "dd/MM/yyyy",
+      dependentFields: ["FROM_DT"],
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Effective To is required."] }],
+      },
+      // onFocus: (date) => {
+      //   console.log(date, "<<<T");
+      //   date.target.select();
+      // },
+      runValidationOnDependentFieldsChange: true,
+
+      // validate: {
+      //   conditions: {
+      //     all: [
+      //       {
+      //         fact: "dependentFields",
+      //         path: "$.FROM_DT.value",
+      //         operator: "lessThanInclusiveDate",
+      //         value: { fact: "currentField", path: "$.value" },
+      //       },
+      //     ],
+      //   },
+      //   success: "",
+      //   failure: "To Date should be greater than or equal to From Date.",
+      // },
+
+      validate: (value, data, others) => {
+        if (!Boolean(value?.value)) {
+          return "This field is required.";
+        }
+
+        let toDate = new Date(value?.value);
+        let fromDate = new Date(data?.FROM_DT?.value);
+
+        if (isNaN(toDate.getTime()) || isNaN(fromDate.getTime())) {
+          return "Invalid date format.";
+        }
+
+        if (lessThanDate(toDate, fromDate)) {
+          return "To Date should be greater than From Date.";
         }
       },
       GridProps: {
