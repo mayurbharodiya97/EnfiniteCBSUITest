@@ -72,7 +72,6 @@ export const en_language_data = {
   TransferLimit: "Transfer Limit",
   CreditTransactionLimit: "Credit Transaction Limit",
   CashRecieptLimit: "Cash Reciept Limit",
-  EmailId: "Email-Id",
 
   // Branch Access Rights Grid in Profile
 
@@ -236,7 +235,6 @@ export const en_language_data = {
   IndividualEntry: "C-KYC Individual Entry",
   LegalEntry: "C-KYC Legal Entity Entry",
   SaveAsDraft: "Save As Draft",
-  Save: "Save",
   Cancel: "Cancel",
   // tab - personal details
   PersonalDetails: "Personal Details",
