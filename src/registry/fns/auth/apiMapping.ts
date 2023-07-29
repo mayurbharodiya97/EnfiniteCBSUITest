@@ -255,6 +255,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETEDUCATIONDTL",
     packageName: "",
   },
+  GETACCTDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTDATA",
+    packageName: "",
+  },
+  LOGINTOTP: {
+    url: "/enfinityCommonServiceAPI/LOGINTOTP",
+    packageName: "",
+  },
+  VERIFYTOTP: {
+    url: "/enfinityCommonServiceAPI/VERIFYTOTP",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

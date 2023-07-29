@@ -120,6 +120,8 @@ export const DashboardBox = ({
                   height: 40,
                   width: 40,
                   top: "10px",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                 }}
                 style={{
                   backgroundColor: "var(--theme-color3)",
@@ -130,6 +132,7 @@ export const DashboardBox = ({
                   <FontAwesomeIcon
                     icon={["fa", icon]}
                     // className={classes.icon}
+                    className={"avtar"}
                   />
                 ) : null}
               </Avatar>

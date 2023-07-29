@@ -207,6 +207,8 @@ export const UsernamePasswordField = ({
                     )
                   }
                   ref={inputButtonRef}
+                  endicon={loginState.loading ? null : "East"}
+                  rotateIcon="scale(1.4) rotateX(360deg)"
                 >
                   {loginState.loading ? (
                     <CircularProgress size={25} thickness={4.6} />

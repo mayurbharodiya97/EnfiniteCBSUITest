@@ -9,11 +9,13 @@ import {
   Typography,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { useTranslation } from "react-i18next";
 
 const EditableDiv = () => {
   const [text, setText] = useState("");
   const [updatedText, setUpdatedText] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
+  const { t } = useTranslation();
 
   const handleChange = (e) => {
     setText(e.target.value);
@@ -40,7 +42,7 @@ const EditableDiv = () => {
           fontWeight={500}
           display={"inline-block"}
         >
-          About :
+          {t("profile.About")}:
         </Typography>
         <IconButton onClick={handleIconClick}>
           <EditIcon />

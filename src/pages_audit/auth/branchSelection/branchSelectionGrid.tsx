@@ -44,7 +44,7 @@ const actions: ActionTypes[] = [
     actionTextColor: "var(--theme-color3)",
     actionBackground: "var(--theme-color2)",
     startsIcon: "West",
-    rotateIcon: "rotateX",
+    rotateIcon: "scale(1.4) rotateX(-360deg)",
   },
   {
     actionName: "proceed",
@@ -55,7 +55,7 @@ const actions: ActionTypes[] = [
     actionBackground: "var(--theme-color3)",
     onEnterSubmit: true,
     endsIcon: "East",
-    rotateIcon: "rotateX",
+    rotateIcon: "scale(1.4) rotateX(-360deg)",
   },
 ];
 

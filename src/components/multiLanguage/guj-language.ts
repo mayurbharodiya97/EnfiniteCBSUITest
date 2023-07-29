@@ -20,6 +20,7 @@ export const guj_language_data = {
   UsernamenandPasswordisRequired: "વપરાશકર્તા નામ અને પાસવર્ડ આવશ્યક છે",
   Next: "આગળ",
   backtologin: "લોગિન પર પાછા",
+  Save: "સાચવો",
 
   // For OTP Verify
   otp: {
@@ -53,7 +54,6 @@ export const guj_language_data = {
     UpdatePhoto: "ફોટો અપડેટ કરો",
     MyProfile: "મારી પ્રોફાઈલ",
     MobileNo: "મોબાઈલ નંબર.",
-    EmailId: "ઈમેલ-આઈડી",
     About: "વિશે",
     AllowedAccess: "મંજૂર ઍક્સેસ",
     ActivityDetail: "પ્રવૃત્તિ વિગતો",
@@ -73,6 +73,7 @@ export const guj_language_data = {
   TransferLimit: "ટ્રાન્સફર મર્યાદા",
   CreditTransactionLimit: "જમા વ્યવહાર મર્યાદા",
   CashRecieptLimit: "રોકડ રસીદ મર્યાદા",
+  EmailId: "ઈમેલ-આઈડી",
 
   // user Access branch in Profile
 

@@ -107,8 +107,21 @@ export const OTPModel = ({
                 lineHeight: "33px",
               }}
             >
+              Enter OTP Sent to your mobile number 98******37
+            </div>
+            <div
+              style={{
+                color: "#949597",
+                fontSize: "16px",
+                fontWeight: "400",
+                alignItems: "center",
+                fontStyle: "normal",
+                lineHeight: "33px",
+              }}
+            >
               {t("otp.GenerateNewOTP")}
             </div>
+
             <div className={classes.OTPalignName}>
               {t("otp.Hello")}{" "}
               {loginState?.username
@@ -180,6 +193,8 @@ export const OTPModel = ({
                   background: "var(--theme-color2)",
                   borderRadius: "10px",
                 }}
+                starticon={"West"}
+                rotateIcon="scale(1.4) rotateX(360deg)"
               >
                 {t("otp.Back")}
               </GradientButton>
@@ -195,6 +210,8 @@ export const OTPModel = ({
                 onClick={ClickEventHandler}
                 ref={inputButtonRef}
                 className={classes.otpButtons}
+                endicon={loginState.loading ? null : "TaskAlt"}
+                rotateIcon="scale(1.4)"
               >
                 {loginState.loading ? (
                   <CircularProgress size={25} thickness={4.6} />
@@ -434,7 +451,7 @@ export const OTPModelForm = ({
               ref={inputButtonRef}
               className={classes.otpButtons}
             >
-              {loginState.loading ? (
+              {!loginState.loading ? (
                 <CircularProgress size={25} thickness={4.6} />
               ) : (
                 t("otp.VerifyOTP")

@@ -28,6 +28,7 @@ import {
 } from "@mui/material";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { MetaDataType } from "components/dyanmicForm";
+import { useTranslation } from "react-i18next";
 
 interface UpdateTOTPAuthFnType {
   data: object;
@@ -65,17 +66,17 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
   const timerRef = useRef<any>(null);
   const classes = useStyles();
   const [isOTPError, setOTPError] = useState("");
+  const { t } = useTranslation();
   useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
   const onSubmitHandler = (data, displayData, endSubmit) => {
-    // mutation.mutate({
-    //   data: { ...data, flag: authFlag },
-    //   displayData,
-    //   endSubmit,
-    //   userID: authCtx?.authState?.user?.id,
-    // });
-    setQRVerifyFlow(true);
+    mutation.mutate({
+      data: { ...data, flag: authFlag },
+      displayData,
+      endSubmit,
+      userID: authCtx?.authState?.user?.id,
+    });
   };
 
   const mutation = useMutation(updateTotpAuthFnWrapper(API.updateTOTPAuth), {
@@ -107,6 +108,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
       }
     },
   });
+  console.log(">>>", responseRef);
   const mutationAuth = useMutation(
     updateTotpAuthVerifyFnWrapper(API.updateTOTPAuthVerify),
     {
@@ -138,7 +140,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
       setOTPError("");
       mutationAuth.mutate({
         otpNumber: OTP,
-        secretToken: responseRef.current?.SECRET_TOKEN,
+        secretToken: responseRef.current?.SECRET,
         userID: authCtx?.authState?.user?.id,
       });
     }
@@ -221,7 +223,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                               maxWidth: "100%",
                               width: "100%",
                             }}
-                            value={responseRef.current?.SECRET_TOKEN_QR ?? ""}
+                            value={responseRef.current?.SECRET_QR ?? ""}
                             viewBox={`0 0 150 150`}
                           />
                         </div>
@@ -295,20 +297,22 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                       onClick={() => {
                         onClose(false, false);
                       }}
+                      starticon="CancelOutlined"
+                      rotateIcon="scale(1.4) rotateY(360deg)"
                     >
-                      Close
+                      {t("Close")}
                     </GradientButton>
                     <GradientButton
                       disabled={mutationAuth.isLoading}
-                      endIcon={
-                        mutationAuth.isLoading ? (
-                          <CircularProgress size={20} />
-                        ) : null
-                      }
+                      endicon={mutationAuth.isLoading ? null : "VerifiedUser"}
+                      rotateIcon="scale(1.4)"
                       onClick={ClickEventHandler}
                       ref={inputButtonRef}
                     >
-                      Verify OTP
+                      {t("otp.VerifyOTP")}{" "}
+                      {mutationAuth.isLoading ? (
+                        <CircularProgress size={20} />
+                      ) : null}
                     </GradientButton>
                   </DialogActions>
                 </Grid>
@@ -340,19 +344,24 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                 onClick={() => {
                   onClose(false, false);
                 }}
+                starticon="CancelOutlined"
+                rotateIcon="scale(1.4) rotateY(360deg)"
               >
-                Close
+                {t("Close")}
               </GradientButton>
               <GradientButton
                 disabled={mutation.isLoading}
-                endIcon={
-                  mutation.isLoading ? <CircularProgress size={20} /> : null
-                }
+                // endIcon={
+                //   mutation.isLoading ? <CircularProgress size={20} /> : null
+                // }
                 onClick={(e) => {
                   formRef.current?.handleSubmit?.(e);
                 }}
+                endicon={mutation.isLoading ? null : "TaskAlt"}
+                rotateIcon="scale(1.4) "
               >
-                Verify
+                {t("Biometric.Verify")}{" "}
+                {mutation.isLoading ? <CircularProgress size={20} /> : null}
               </GradientButton>
             </DialogActions>
           </>

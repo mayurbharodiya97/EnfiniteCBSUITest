@@ -11,12 +11,12 @@ import {
   ListItem,
   ListItemButton,
   Popover,
+  Tooltip,
 } from "@mui/material";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
-import { CustomIconButton } from "components/styledComponent/button/button";
 
 export const Quick_View = () => {
   const authController = useContext(AuthContext);
@@ -40,40 +40,40 @@ export const Quick_View = () => {
   };
   return (
     <>
-      <CustomIconButton
-        // color="inherit"
-        renderIcon="SensorsOutlined"
-        onClick={handleClickd}
-        sx={{
-          backgroundColor: anchorEl
-            ? "var(--theme-color3)"
-            : "rgba(235, 237, 238, 0.45)",
-          borderRadius: "10px",
-          height: "30px",
-          width: "30px",
-          color: anchorEl ? "var(--theme-color2)" : "var(--theme-color3)",
-          "&:hover": {
-            background: "var(--theme-color2)",
-            borderRadius: "10px",
-            transition: "all 0.2s ease 0s",
-            boxShadow:
-              "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-            "& .MuiSvgIcon-root": {
-              height: "32px",
-              width: "32px",
-              transition: "all 0.2s ease 0s",
-              padding: "4px",
-            },
-          },
-        }}
-      >
-        {/* <SensorsOutlinedIcon
-          fontSize="small"
+      <Tooltip title="Quick-View" placement="bottom" arrow>
+        <IconButton
+          // color="inherit"
+          onClick={handleClickd}
           sx={{
-            color: anchorEl ? "var(--theme-color2)" : "var(--theme-color3)",
+            backgroundColor: anchorEl
+              ? "var(--theme-color3)"
+              : "rgba(235, 237, 238, 0.45)",
+            borderRadius: "10px",
+            height: "30px",
+            width: "30px",
+            "&:hover": {
+              background: "var(--theme-color2)",
+              borderRadius: "10px",
+              transition: "all 0.2s ease 0s",
+              boxShadow:
+                "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+              "& .MuiSvgIcon-root": {
+                height: "32px",
+                width: "32px",
+                transition: "all 0.2s ease 0s",
+                padding: "4px",
+              },
+            },
           }}
-        /> */}
-      </CustomIconButton>
+        >
+          <SensorsOutlinedIcon
+            fontSize="small"
+            sx={{
+              color: anchorEl ? "var(--theme-color2)" : "var(--theme-color3)",
+            }}
+          />
+        </IconButton>
+      </Tooltip>
       <Popover
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

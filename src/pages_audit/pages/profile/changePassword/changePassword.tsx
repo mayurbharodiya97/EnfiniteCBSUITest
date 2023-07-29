@@ -89,7 +89,7 @@ export const ChangePassword = ({ onClose, showProfile }) => {
             disabled={mutation.isLoading}
             endIcon={mutation.isLoading ? <CircularProgress size={20} /> : null}
             starticon={"SyncLock"}
-            rotateIcon={"rotateX"}
+            rotateIcon={"scale(1.4) rotate(360deg)"}
             onClick={(e) => {
               formRef.current?.handleSubmit?.(e);
             }}

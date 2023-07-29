@@ -2,6 +2,7 @@
 // import { GeneralAPI } from "registry/fns/functions";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
+
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
@@ -189,7 +190,7 @@ export const AccountInquiryMetadata = {
       name: "PID_DESCRIPTION",
       label: "Retrieve",
       endsIcon: "YoutubeSearchedFor",
-      rotateIcon: "zoom",
+      rotateIcon: "scale(1.5)",
       placeholder: "",
       type: "text",
       GridProps: {
@@ -243,10 +244,10 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       sequence: 4,
       alignment: "left",
       componentType: "default",
-      width: 220,
+      width: 280,
       minWidth: 180,
       isReadOnly: true,
-      maxWidth: 280,
+      maxWidth: 300,
     },
     {
       accessor: "CUSTOMER_ID",
@@ -629,7 +630,7 @@ export const PassbookStatementInq = {
     label: "Passbook/Statement Print Option",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
-    submitAction: "home",
+    // submitAction: "home",
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -671,7 +672,7 @@ export const PassbookStatementInq = {
       render: {
         componentType: "numberFormat",
       },
-      name: "ACCT_NO",
+      name: "ACCT_CD",
       label: "Account No.",
       placeholder: "Account Number",
       defaultValue: "",
@@ -790,7 +791,7 @@ export const PassbookStatementInq = {
       render: {
         componentType: "numberFormat",
       },
-      name: "ACT_NO",
+      name: "PASS_BOOK_LINE",
       label: "Line No.",
       defaultValue: "",
       type: "text",
@@ -864,18 +865,26 @@ export const PassbookStatementInq = {
       render: {
         componentType: "datePicker",
       },
-      name: "FROM_DT",
+      name: "PASS_BOOK_DT",
       label: "From Date :-",
       format: "dd/MM/yyyy",
       placeholder: "",
       type: "text",
       // fullWidth: true,
+      isReadOnly: true,
       dependentFields: ["PD_DESTION"],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
+      // isReadOnly(fieldData, dependentFieldsValues, formState) {
+      //   if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // },
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-          return true;
-        } else {
           return false;
+        } else {
+          return true;
         }
       },
       GridProps: {
@@ -888,18 +897,58 @@ export const PassbookStatementInq = {
       render: {
         componentType: "datePicker",
       },
-      name: "TO_DT",
+      name: "PASS_BOOK_TO_DT",
       label: "To Date :-",
       placeholder: "",
       format: "dd/MM/yyyy",
       // type: "text",
       // fullWidth: true,
       dependentFields: ["PD_DESTION"],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
+      isReadOnly: true,
+      // isReadOnly(fieldData, dependentFieldsValues, formState) {
+      //   if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // },
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.PD_DESTION?.value === "P") {
-          return true;
-        } else {
           return false;
+        } else {
+          return true;
+        }
+      },
+
+      GridProps: {
+        xs: 12,
+        md: 6,
+        sm: 6,
+      },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "STMT_FROM_DATE",
+      label: "From Date :-",
+      format: "dd/MM/yyyy",
+      placeholder: "",
+      type: "text",
+      // fullWidth: true,
+      dependentFields: ["PD_DESTION"],
+      // isReadOnly(fieldData, dependentFieldsValues, formState) {
+      //   if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // },
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "S") {
+          return false;
+        } else {
+          return true;
         }
       },
       GridProps: {
@@ -907,10 +956,141 @@ export const PassbookStatementInq = {
         md: 6,
         sm: 6,
       },
+      defaultValue: new Date(),
+      onFocus: (date) => {
+        console.log("<<<F", date);
+        date.target.select();
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["From Date is required."] }],
+      },
     },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "WK_STMT_TO_DATE",
+      label: "To Date :-",
+      placeholder: "",
+      format: "dd/MM/yyyy",
+      // type: "text",
+      // fullWidth: true,
+      dependentFields: ["PD_DESTION", "STMT_FROM_DATE"],
+      // isReadOnly(fieldData, dependentFieldsValues, formState) {
+      //   if (dependentFieldsValues?.PD_DESTION?.value === "P") {
+      //     return true;
+      //   } else {
+      //     return false;
+      //   }
+      // },
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.PD_DESTION?.value === "S") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 6,
+        sm: 6,
+      },
+      defaultValue: new Date(),
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Effective To is required."] }],
+      },
+      onFocus: (date) => {
+        console.log(date, "<<<T");
+        date.target.select();
+      },
+      // dependentFields: ["STMT_FROM_DATE"],
+      runValidationOnDependentFieldsChange: true,
+      validate: {
+        conditions: {
+          all: [
+            {
+              fact: "dependentFields",
+              path: "$.STMT_FROM_DATE.value",
+              operator: "lessThanInclusiveDate",
+              value: { fact: "currentField", path: "$.value" },
+            },
+          ],
+        },
+        success: "",
+        failure: "To Date should be greater than or equal to From Date.",
+      },
+    },
+    // {
+    //   render: {
+    //     componentType: "datePicker",
+    //   },
+    //   name: "STMT_FROM_DATE",
+    //   label: "From Date",
+    //   placeholder: "",
+    //   defaultValue: new Date(),
+    //   fullWidth: true,
+    //   format: "dd/MM/yyyy",
+    //   // __EDIT__: { isReadOnly: true },
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 6,
+    //     sm: 6,
+    //   },
+    //   onFocus: (date) => {
+    //     console.log("<<<F", date);
+    //     date.target.select();
+    //   },
+    //   schemaValidation: {
+    //     type: "string",
+    //     rules: [{ name: "required", params: ["From Date is required."] }],
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "datePicker",
+    //   },
+    //   name: "WK_STMT_TO_DATE",
+    //   label: "To Date",
+    //   placeholder: "",
+    //   // type: "text",
+    //   defaultValue: new Date(),
+    //   fullWidth: true,
+    //   format: "dd/MM/yyyy",
+    //   schemaValidation: {
+    //     type: "string",
+    //     rules: [{ name: "required", params: ["Effective To is required."] }],
+    //   },
+    //   onFocus: (date) => {
+    //     console.log(date, "<<<T");
+    //     date.target.select();
+    //   },
+    //   dependentFields: ["STMT_FROM_DATE"],
+    //   runValidationOnDependentFieldsChange: true,
+    //   validate: {
+    //     conditions: {
+    //       all: [
+    //         {
+    //           fact: "dependentFields",
+    //           path: "$.STMT_FROM_DATE.value",
+    //           operator: "lessThanInclusiveDate",
+    //           value: { fact: "currentField", path: "$.value" },
+    //         },
+    //       ],
+    //     },
+    //     success: "",
+    //     failure: "To Date should be greater than or equal to From Date.",
+    //   },
+
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 6,
+    //     sm: 6,
+    //   },
+    // },
   ],
 };
-
 export const ViewDetailMetadata = {
   form: {
     name: "passbookstatement",

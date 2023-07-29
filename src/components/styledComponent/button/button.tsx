@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, IconButton } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import * as Icons from "@mui/icons-material";
 import { FormContext } from "packages/form";
-import { useContext } from "react";
+import { forwardRef, useContext } from "react";
 
 const GradientButtonCustom = withStyles({
   root: {
@@ -14,21 +14,28 @@ const GradientButtonCustom = withStyles({
     fontWeight: 700,
     minWidth: "90px",
     letterSpacing: "0.02857em",
-    boxShadow: "none",
+    // minWidth: "fit-content",
     textTransform: "capitalize",
-
-    "&:active": {
-      background: "#4462bbbd",
-      boxShadow: "none",
-    },
+    // marginLeft: "7px",
+    boxShadow:
+      "rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset",
     "&:focus": {
-      background: "#4462bbbd",
-      boxShadow: "none",
+      boxShadow:
+        "#3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset",
+    },
+    "&:hover": {
+      boxShadow:
+        "rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset",
+      transform: "translateY(-2px)",
+    },
+    "&:active": {
+      boxShadow: "#3c4fe0 0 3px 7px inset",
+      transform: "translateY(2px)",
     },
   },
 })(Button);
 
-function GradientButton(props) {
+const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
   const { starticon, endicon, rotateIcon, ...other } = props;
   const FormContextData = useContext(FormContext);
   let FormButtonCicular =
@@ -37,28 +44,15 @@ function GradientButton(props) {
   let StartIcon = Icons[starticon] || null;
   let EndIcon = Icons[endicon] || null;
 
-  const Rotate =
-    rotateIcon === "rotateR"
-      ? "scale(1.4) rotate(360deg)"
-      : rotateIcon === "rotateL"
-      ? "scale(1.4) rotate(-360deg)"
-      : rotateIcon === "rotateX"
-      ? "scale(1.4) rotateX(-360deg)"
-      : rotateIcon === "rotateY"
-      ? "scale(1.4) rotateY(360deg)"
-      : rotateIcon === "zoom"
-      ? "scale(1.5)"
-      : null;
-
-  // console.log("<<<w", trans, rotate, other);
   return (
     <GradientButtonCustom
       sx={{
         "&:hover": {
-          background: "#4462bbbd",
+          // background: "#4462bbbd",
+          backgroundColor: "var(--theme-color3)",
           boxShadow: "none",
           "& .MuiSvgIcon-root": {
-            transform: Rotate,
+            transform: rotateIcon,
             transition: "transform 2s ease-in-out",
           },
         },
@@ -71,23 +65,9 @@ function GradientButton(props) {
           <EndIcon />
         ) : null
       }
+      ref={ref}
       {...other}
     />
   );
-}
+});
 export default GradientButton;
-
-export function CustomIconButton(props) {
-  const { renderIcon, rotateIcon, imageSrc, ...other } = props;
-  let RenderIcon = Icons[renderIcon] || null;
-
-  return (
-    <IconButton {...other}>
-      {RenderIcon ? (
-        <RenderIcon />
-      ) : imageSrc ? (
-        <img src={imageSrc} alt="no image found" />
-      ) : null}
-    </IconButton>
-  );
-}

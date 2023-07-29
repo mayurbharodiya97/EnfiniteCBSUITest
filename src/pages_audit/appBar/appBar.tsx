@@ -12,13 +12,10 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import * as API from "./api";
 import { styled } from "@mui/material/styles";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
-import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
-import dash from "assets/images/dash3.gif";
 import {
   AppBar,
   Avatar,
   Box,
-  Button,
   Stack,
   Toolbar,
   Tooltip,
@@ -27,7 +24,6 @@ import {
 } from "@mui/material";
 import { Notification_App } from "./notification";
 import { Quick_View } from "./quickView";
-import { Language_App } from "./language";
 import MySearchField from "components/common/search/search";
 import { useQuery } from "react-query";
 import { utilFunction } from "components/utils";
@@ -35,8 +31,7 @@ import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 import { useTranslation } from "react-i18next";
-import { CustomIconButton } from "components/styledComponent/button/button";
-import AcUnitIcon from "@mui/icons-material/AcUnit";
+import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -290,35 +285,45 @@ export const MyAppBar = ({
             <MultiLanguages />
 
             <Box width={170} display={"flex"} justifyContent={"space-evenly"}>
-              <CustomIconButton
-                renderIcon="PersonSearchOutlined"
-                onClick={() => setAcctInquiry(true)}
-                sx={{
-                  backgroundColor: acctInquiry
-                    ? "var(--theme-color3)"
-                    : "rgba(235, 237, 238, 0.45)",
-                  color: acctInquiry
-                    ? "var(--theme-color2)"
-                    : "var(--theme-color3)",
-                  borderRadius: "10px",
-                  height: "30px",
-                  width: "30px",
-                  "&:hover": {
-                    background: "var(--theme-color2)",
+              <Tooltip title="Account Inquiry" placement="bottom" arrow>
+                <IconButton
+                  // renderIcon="PersonSearchOutlined"
+                  onClick={() => setAcctInquiry(true)}
+                  sx={{
+                    backgroundColor: acctInquiry
+                      ? "var(--theme-color3)"
+                      : "rgba(235, 237, 238, 0.45)",
+                    color: acctInquiry
+                      ? "var(--theme-color2)"
+                      : "var(--theme-color3)",
                     borderRadius: "10px",
-                    transition: "all 0.2s ease 0s",
-                    boxShadow:
-                      "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                    "& .MuiSvgIcon-root": {
-                      height: "32px",
-                      width: "32px",
+                    height: "30px",
+                    width: "30px",
+                    "&:hover": {
+                      background: "var(--theme-color2)",
+                      borderRadius: "10px",
                       transition: "all 0.2s ease 0s",
-                      padding: "4px",
+                      boxShadow:
+                        "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                      "& .MuiSvgIcon-root": {
+                        height: "32px",
+                        width: "32px",
+                        transition: "all 0.2s ease 0s",
+                        padding: "4px",
+                      },
                     },
-                  },
-                }}
-              />
-
+                  }}
+                >
+                  <PersonSearchOutlinedIcon
+                    fontSize="small"
+                    sx={{
+                      color: acctInquiry
+                        ? "var(--theme-color2)"
+                        : "var(--theme-color3)",
+                    }}
+                  />
+                </IconButton>
+              </Tooltip>
               {acctInquiry && (
                 <Accountinquiry
                   open={acctInquiry}
@@ -327,35 +332,38 @@ export const MyAppBar = ({
               )}
               <Quick_View />
               <Notification_App />
-              <CustomIconButton
-                renderIcon="Logout"
-                onClick={() => {
-                  authController?.logout();
-                  // handleClose();
-                }}
-                sx={{
-                  backgroundColor: "rgba(235, 237, 238, 0.45)",
+              <Tooltip title="Logout" placement="bottom" arrow>
+                <IconButton
+                  onClick={() => {
+                    authController?.logout();
+                    // handleClose();
+                  }}
+                  color="error"
+                  sx={{
+                    backgroundColor: "rgba(235, 237, 238, 0.45)",
 
-                  color: "var(--theme-color3)",
-                  borderRadius: "10px",
-                  height: "30px",
-                  width: "30px",
-                  "&:hover": {
-                    background: "var(--theme-color2)",
                     borderRadius: "10px",
-                    transition: "all 0.2s ease 0s",
-                    boxShadow:
-                      "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                    "& .MuiSvgIcon-root": {
-                      height: "32px",
-                      width: "32px",
+                    height: "30px",
+                    width: "30px",
+                    "&:hover": {
+                      background: "var(--theme-color2)",
+                      borderRadius: "10px",
                       transition: "all 0.2s ease 0s",
-                      padding: "4px",
+                      boxShadow:
+                        "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                      "& .MuiSvgIcon-root": {
+                        height: "32px",
+                        width: "32px",
+                        transition: "all 0.2s ease 0s",
+                        padding: "4px",
+                      },
                     },
-                  },
-                }}
-                aria-label="show 4 new mails"
-              />
+                  }}
+                  aria-label="show 4 new mails"
+                >
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Box>
         </Box>

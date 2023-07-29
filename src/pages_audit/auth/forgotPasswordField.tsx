@@ -231,6 +231,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                   navigate("login");
                 }}
                 starticon={"West"}
+                rotateIcon="scale(1.4) rotateX(360deg)"
               >
                 {t("backtologin")}
               </GradientButton>
@@ -238,15 +239,15 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               <GradientButton
                 style={{ borderRadius: "10px" }}
                 disabled={loginState.loading}
-                endIcon={
-                  loginState.loading ? <CircularProgress size={20} /> : null
-                }
                 onClick={() => {
                   onSubmit(input, loginState.workingState);
                   console.log("input", input, loginState.workingState);
                 }}
                 ref={inputButtonRef}
-                endicon={"East"}
+                endicon={
+                  loginState.loading ? <CircularProgress size={20} /> : "East"
+                }
+                rotateIcon="scale(1.4) rotateX(360deg)"
               >
                 {t("Next")}
               </GradientButton>
