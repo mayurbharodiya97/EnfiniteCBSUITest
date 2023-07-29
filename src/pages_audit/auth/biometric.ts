@@ -28,9 +28,9 @@ const decryptString = (encryptString: string) => {
       iv: iv,
     }
   );
-  //console.log("CryptoJS.AES.decrypt", dec);
+  console.log("CryptoJS.AES.decrypt", dec);
   return dec.toString(CryptoJS.enc.Utf8).split(String.fromCharCode(0)).join("");
-  // return dec.toString();
+  return dec.toString();
 };
 
 export const matchFinger = async (rows: any, captureFinger: string) => {

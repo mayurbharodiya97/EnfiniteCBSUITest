@@ -61,6 +61,7 @@ export const guj_language_data = {
   },
   // For Profile in UserProfile
   UserId: "વપરાશકર્તા નામ",
+  EmailID: "ઈમેલ-આઈડી",
   UserGroup: "વપરાશકર્તા જૂથ",
   DefaultBranch: "મૂળભૂત શાખા",
   CustomerId: "ગ્રાહક ઓળખાણ પત્ર",
@@ -210,4 +211,10 @@ export const guj_language_data = {
   CustomerIDisrequired: "ગ્રાહક આઈડી જરૂરી છે",
   CustomerIDShouldNotBeLessThan12Digits:
     "ગ્રાહક આઈડી 12 અંક કરતા ઓછો ન હોવો જોઈએ",
+
+  EnterAccountType: "એકાઉન્ટ પ્રકાર દાખલ કરો.",
+  ModeOfOperation: "ઓપરેશન મોડ",
+  GetDetails: "વિગતો મેળવો",
+
+  EnterAcNo: "એકાઉન્ટ નંબર દાખલ કરો.",
 };

@@ -1,5 +1,6 @@
 import { FilterFormComponents } from "./filterForm";
 import { cloneDeep } from "lodash-es";
+import { useTranslation } from "react-i18next";
 export const FormComponentView = ({
   finalMetaData,
   onAction,
@@ -17,6 +18,7 @@ export const FormComponentView = ({
     paperStyle: {}
   }
 }) => {
+  const { t } = useTranslation();
   const isDisplayOnly = finalMetaData.gridConfig?.isDisplayOnly ?? false;
   let metadata = transformMetaData({
     metaData: finalMetaData,
@@ -27,7 +29,7 @@ export const FormComponentView = ({
   return (
     <FilterFormComponents
       dense={metadata.gridConfig?.dense ?? true}
-      title={metadata.gridConfig?.title ?? "No Title"}
+      title={t(metadata.gridConfig?.title) ?? "No Title"}
       fields={metadata.fields}
       allowColumnHiding={metadata.gridConfig?.allowColumnHiding ?? false}
       initialDataValue={metadata.initialData}

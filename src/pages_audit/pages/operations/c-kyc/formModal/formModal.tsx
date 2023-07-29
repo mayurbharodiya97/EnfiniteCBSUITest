@@ -46,6 +46,7 @@ import * as API from "../api";
 import { useQuery } from "react-query";
 import { AutoComplete } from 'components/common';
 import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
+import { useTranslation } from 'react-i18next';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -178,6 +179,7 @@ export default function FormModal({
   constitutionValue, setConstitutionValue, 
   accTypeValue, setAccTypeValue, AccTypeOptions
 }) {
+  const { t } = useTranslation();
   const classes = useDialogStyles();
   const authController = useContext(AuthContext);
   const appBarClasses = useStyles();
@@ -388,7 +390,11 @@ export default function FormModal({
               variant={"h6"}
               component="div"
             >
-              {`C-KYC ${entityType == "C" ? "Legal Entity" : "Individual"} Entry`}
+              {/* {`C-KYC ${entityType == "C" ? "Legal Entity" : "Individual"} Entry`} */}
+              {entityType == "C"
+                ? t("LegalEntry")
+                : t("IndividualEntry")
+              }
             </Typography>
             <Button
               // onClick={handleFormModalClose}
@@ -398,21 +404,21 @@ export default function FormModal({
               // variant={"contained"}
               // disabled={mutation.isLoading}
             >
-              Save as Draft
+              {t("SaveAsDraft")}
             </Button>
             <Button
               // onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
             >
-              Save
+              {t("Save")}
             </Button>
             <Button
               onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
             >
-              Cancel
+              {t("Cancel")}
             </Button>
           </Toolbar>
         </AppBar>

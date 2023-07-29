@@ -16,10 +16,12 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';
+import { useTranslation } from 'react-i18next';
 
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+  const { t } = useTranslation();
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
@@ -107,7 +109,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Personal Details</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("PersonalDetails")}</Typography>
                     <IconButton onClick={handlePDExpand}>
                         {!isPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
@@ -174,7 +176,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Other Personal Details</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("OtherPersonalDetails")}</Typography>
                     <IconButton onClick={handleOtherPDExpand}>
                         {!isOtherPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
@@ -203,7 +205,7 @@ const myGridRef = useRef<any>(null);
                         PDFormRef.current.handleSubmit(e, "save")
                         PODFormRef.current.handleSubmit(e, "save")
                     }}
-                >Next</Button>
+                >{t("Next")}</Button>
             </Grid>
 
             {(isCustomerData && false) ? <Grid 

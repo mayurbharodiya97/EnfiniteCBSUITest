@@ -19,6 +19,7 @@ import {
   DividerProps
 } from "@mui/material";
 import { Container } from "reactstrap";
+import { useTranslation } from "react-i18next";
 
 interface MyGridExtendedProps {
   enableNumWords?: boolean;
@@ -98,7 +99,7 @@ const MyDivider: FC<MyDividerProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
-
+  const { t } = useTranslation();
   const [currentColor, setCurrentColor] = useState<string>(
     typeof setColor === "string" ? setColor : ""
   );
@@ -276,7 +277,7 @@ const MyDivider: FC<MyDividerProps> = ({
   // }
   return( 
   <Grid item mt={2} xs={12}>
-    <Divider sx={{px:1, color: "var(--theme-color1)"}} textAlign="left" orientation="horizontal">{dividerText}</Divider>
+    <Divider sx={{px:1, color: "var(--theme-color1)"}} textAlign="left" orientation="horizontal">{t(dividerText)}</Divider>
   </Grid>
 
 // horizontal

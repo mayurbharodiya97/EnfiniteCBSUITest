@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import india from "assets/images/india.png";
 import chinese from "assets/images/china.png";
 import english from "assets/images/united-states.png";
+import spanish from "assets/images/spain.png";
 import french from "assets/images/france.png";
 import { useStyles } from "./style";
 import { FormControl, Select, MenuItem } from "@mui/material";
@@ -69,7 +70,7 @@ export const MultiLanguages = () => {
             value="en"
           >
             <div key="Language" style={{ display: "flex" }}>
-              <img src={india} alt="" className={classes.lang_svg} />
+              <img src={english} alt="" className={classes.lang_svg} />
             </div>
             English
           </MenuItem>
@@ -85,7 +86,19 @@ export const MultiLanguages = () => {
             </div>
             ગુજરાતી
           </MenuItem>
-          {/* <MenuItem
+          <MenuItem
+            value="sp"
+            style={{
+              display: "flex",
+            }}
+          >
+            <div key="Language" style={{ display: "flex" }}>
+              <img src={spanish} alt="" className={classes.lang_svg} />
+            </div>
+            española
+          </MenuItem>
+
+          <MenuItem
             value="french"
             style={{
               display: "flex",
@@ -94,8 +107,8 @@ export const MultiLanguages = () => {
             <div key="Language" style={{ display: "flex" }}>
               <img src={french} alt="" className={classes.lang_svg} />
             </div>
-            French
-          </MenuItem> */}
+            Français
+          </MenuItem>
           {/* <MenuItem
             value="chinese"
             style={{

@@ -2,7 +2,9 @@
 import { format } from "date-fns";
 
 import { MetaDataType } from "components/dyanmicForm";
-
+// import { useGetDataMutation } from "./chequeBookEntry";
+// import { AuthContext } from "pages_audit/auth";
+// import { useContext } from "react";
 export const ChequeBookIssueEntry: MetaDataType = {
   form: {
     name: "chequeBookForm",
@@ -53,7 +55,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "BRANCH_CD",
-      sequence: 1,
+      // sequence: 1,
       label: "Branch",
       placeholder: "Branch",
       type: "text",
@@ -71,9 +73,9 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "ACCT_TYPE",
-      sequence: 1,
-      label: "Account Type",
-      placeholder: "Enter Account Type",
+      // sequence: 1,
+      label: "AccountType",
+      placeholder: "EnterAccountType",
       type: "text",
       required: true,
       // maxLength: 16,
@@ -89,13 +91,77 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      sequence: 1,
-      label: "Account No.",
-      placeholder: "Enter Account No.",
+      // sequence: 1,
+      label: "ACNo",
+      placeholder: "EnterAcNo",
       type: "text",
+      fullWidth: true,
       required: true,
-      // maxLength: 16,
+      dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
+      runValidationOnDependentFieldsChange: true,
+      // validate: (currentField, dependentFields) => {
+      //   return "";
+      // },
+      // postValidationSetCrossFieldValues: "getAcctDetails",
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["This field is required"] },
+          {
+            name: "ACCT_CD",
+            params: ["Please Enter Account no."],
+          },
+        ],
+      },
+      maxLength: 20,
 
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+    {
+      render: { componentType: "formbutton" },
+      name: "GET_DETAIL",
+      // sequence: 4,
+      label: "GetDetails",
+      maxLength: 10,
+      GridProps: { xs: 12, md: 1, sm: 1 },
+      fullWidth: true,
+      // __VIEW__: { isReadOnly: true },
+      // __EDIT__: { isReadOnly: false },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      // sequence: 1,
+      label: "Name",
+      type: "text",
+      // required: true,
+      // maxLength: 16,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_MODE",
+      // sequence: 7,
+      label: "ModeOfOperation",
+      placeholder: "",
+      type: "text",
+      // required: true,
+      // maxLength: 100,
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2,
@@ -106,8 +172,130 @@ export const ChequeBookIssueEntry: MetaDataType = {
       render: {
         componentType: "textField",
       },
+      name: "CONTACT",
+      // sequence: 3,
+      label: "Contact Details",
+      // placeholder: "Enter no of Cheque book",
+      type: "text",
+      // required: true,
+      // maxLength: 32,
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["User Name is required."] }],
+      // },
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "WITHDRAW_BAL",
+      // sequence: 5,
+      label: "Withdrawalable Balance",
+      placeholder: "",
+      type: "text",
+      // required: true,
+      // options: () => {
+      //   return GeneralAPI.GetSecurityGroupingList();
+      // },
+      // enableDefaultOption: true,
+      // _optionsKey: "GetSecurityGroupingList",
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Group Name is required."] }],
+      // },
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CUSTOMER_ID",
+      // sequence: 4,
+      label: "Customer Id",
+      placeholder: "",
+      type: "text",
+      // required: true,
+      // maxLength: 11,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "PAN_NO",
+      // sequence: 8,
+      label: "PAN No.",
+      placeholder: "",
+      type: "text",
+      // required: true,
+      // maxLength: 100,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "UNIQUE_ID",
+      // sequence: 9,
+      label: "National ID",
+      placeholder: "",
+      // options: () => {
+      //   return GeneralAPI.GetMiscValue("USER_SUB_TYPE");
+      // },
+      // enableDefaultOption: true,
+      // _optionsKey: "GetSubTypeMiscValue",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SCR_ADD",
+      // sequence: 2,
+      label: "Address",
+      // placeholder: "Select No of Leaves",
+      // enableDefaultOption: true,
+      // required: true,
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 4,
+        sm: 4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
       name: "NO_OF_LEAVE",
-      sequence: 2,
+      // sequence: 2,
       label: "No of Leaves",
       placeholder: "Select No of Leaves",
       enableDefaultOption: true,
@@ -117,13 +305,33 @@ export const ChequeBookIssueEntry: MetaDataType = {
         md: 1,
         sm: 1,
       },
+      // setValueOnDependentFieldsChange: useGetDataMutation,
+
+      // setValueOnDependentFieldsChange: (dependent) => {
+      //   if (
+      //     typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
+      //     !Boolean(dependent["ACTIVE_FLAG"]?.value)
+      //   ) {
+      //     return format(new Date(), "dd/MM/yyyy HH:mm:ss");
+      //   }
+      //   return null;
+      // },
+      // shouldExclude: (val1, dependent) => {
+      //   if (
+      //     typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
+      //     Boolean(dependent["ACTIVE_FLAG"]?.value)
+      //   ) {
+      //     return true;
+      //   }
+      //   return false;
+      // },
     },
     {
       render: {
         componentType: "textField",
       },
       name: "NO_OF_CHEQUEBOOK",
-      sequence: 3,
+      // sequence: 3,
       label: "No of Cheque Book(s)",
       placeholder: "Enter no of Cheque book",
       type: "text",
@@ -144,7 +352,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "CHARACTERISTICS",
-      sequence: 4,
+      // sequence: 4,
       label: "Characteristics",
       placeholder: "",
       type: "text",
@@ -170,7 +378,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "PAYABLE_AT_PAR",
-      sequence: 5,
+      // sequence: 5,
       label: "Payable At PAR",
       placeholder: "",
       type: "text",
@@ -187,7 +395,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "AMOUNT",
-      sequence: 7,
+      // sequence: 7,
       label: "Service Charge",
       placeholder: "",
       type: "text",
@@ -205,7 +413,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "SERVICE_CHARGE",
-      sequence: 8,
+      // sequence: 8,
       label: "GST",
       placeholder: "",
       type: "text",

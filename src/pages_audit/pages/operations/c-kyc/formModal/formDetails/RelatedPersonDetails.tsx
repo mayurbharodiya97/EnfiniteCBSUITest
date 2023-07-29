@@ -10,10 +10,12 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';
+import { useTranslation } from 'react-i18next';
 
 const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+  const { t } = useTranslation();
   const [isRelatedPDExpanded, setIsRelatedPDExpanded] = useState(true)
   const handleRelatedPDExpand = () => {
     setIsRelatedPDExpanded(!isRelatedPDExpanded)
@@ -41,7 +43,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>Details of Related Person</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("DetailsOfRelatedPerson")}</Typography>
                     <IconButton onClick={handleRelatedPDExpand}>
                         {!isRelatedPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
@@ -58,7 +60,7 @@ const myGridRef = useRef<any>(null);
                     </Grid>                    
                 {/* </Grid> */}
 
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Proof of Identity [PoI] of Related Person</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>{t("PoIOfRelatedPerson")}</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}
@@ -68,7 +70,7 @@ const myGridRef = useRef<any>(null);
                     />
                 </Grid>
 
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Attestation Details [IPV-Identity Proof Verified By]</Divider>
+                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>{t("AttesDetailsIPVBy")}</Divider>
                 <Grid item>
                     <FormWrapper 
                         key={"new-form-in-kyc"}

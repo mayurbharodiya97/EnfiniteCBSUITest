@@ -1,6 +1,5 @@
 import { Fragment, useRef, useCallback, useState, useMemo } from "react";
 import { useMutation } from "react-query";
-import { FormComponentView } from "components/formcomponent";
 import { ChequeBookIssueEntry } from "./metaData";
 import { ChequebookentryGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
@@ -12,7 +11,9 @@ import * as API from "./api";
 import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { useSnackbar } from "notistack";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { AcctViewMetadata } from "./metaDataAcct";
+import { AuthContext } from "pages_audit/auth";
+import { useContext } from "react";
+import { SubmitFnType } from "packages/form";
 
 export const useGetDataMutation = () => {
   const getData = useMutation(API.getChequeBookEntryData, {
@@ -32,6 +33,19 @@ const ChequeBookEntry = () => {
   const myGridRef = useRef<any>(null);
   const [secondButtonVisible, setSecondButtonVisible] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const { authState } = useContext(AuthContext);
+  const isErrorFuncRef = useRef<any>(null);
+  const onSubmitHandler: SubmitFnType = (
+    data,
+    displayData,
+    endSubmit,
+    setFieldError
+  ) => {
+    //@ts-ignore
+    endSubmit(true);
+    // isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
+  };
+
   const setCurrentAction = useCallback(
     (data) => {
       navigate(data?.name, {
@@ -66,15 +80,19 @@ const ChequeBookEntry = () => {
   });
 
   const ClickEventManage = useCallback(
-    (data, columnvisible) => {
-      let retdata = UpdateRequestDataVisibleColumn(data, columnvisible);
-      console.log(">>retdata", retdata);
+    async (data, columnvisible) => {
+      // let retdata = UpdateRequestDataVisibleColumn(data, columnvisible);
+      // console.log(">>current data", data[0]?.BRANCH_CD);
       // setRetData(retdata);
 
+      let rowData = await isErrorFuncRef?.current?.getFieldData();
+
       getData.mutate({
-        branchCD: retdata?.BRANCH_CD,
-        acctType: retdata?.ACCT_TYPE,
-        accountNo: retdata?.ACCT_CD,
+        companyID: authState.companyID,
+        branchCD: rowData?.BRANCH_CD,
+        acctType: rowData?.ACCT_TYPE,
+        accountNo: rowData?.ACCT_CD,
+        callfrom: "C",
       });
     },
     [getData]
@@ -98,6 +116,14 @@ const ChequeBookEntry = () => {
       return "";
     }
   }, [getData.data]);
+  // const onFormButtonClickHandel = (id) => {
+  //   setTranPerticulerDialog({
+  //     open: true,
+  //     buttonName: id,
+  //     defaultMode: "view",
+  //   });
+  // };
+
   return (
     <Fragment>
       {getData.isError && (
@@ -127,53 +153,38 @@ const ChequeBookEntry = () => {
         ref={myGridRef}
       />
       <FormWrapper
-        key={"AccountView" + (data ?? []).length}
-        metaData={AcctViewMetadata}
-        loading={getData.isLoading}
-        hideHeader={true}
-        //  initialValues={rows?.[0]?.data as InitialValuesType}
-        //  onSubmitHandler={onSubmitHandler}
-        //@ts-ignore
-        displayMode={"view"}
-        formStyle={{
-          background: "white",
-          height: "20vh",
-          overflowY: "auto",
-          overflowX: "hidden",
-        }}
-
-        // finalMetaData={ChequeBookIssueEntry}
-        // onAction={ClickEventManage}
-        // data={data ?? {}}
-        // submitSecondAction={ClickSecondButtonEventManage}
-        // submitSecondButtonName="Save"
-        // submitSecondButtonHide={!secondButtonVisible}
-        // submitSecondLoading={false}
-      ></FormWrapper>
-      <FormWrapper
         key={"ChequeBookEntry" + (data ?? []).length}
         metaData={ChequeBookIssueEntry}
         loading={getData.isLoading}
         hideHeader={true}
         //  initialValues={rows?.[0]?.data as InitialValuesType}
-        //  onSubmitHandler={onSubmitHandler}
+        ref={isErrorFuncRef}
+        onSubmitHandler={onSubmitHandler}
         //@ts-ignore
-        displayMode={"add"}
+        displayMode={"new"}
         formStyle={{
           background: "white",
-          height: "25vh",
+          height: "40vh",
           overflowY: "auto",
           overflowX: "hidden",
         }}
-
-        // finalMetaData={ChequeBookIssueEntry}
-        // onAction={ClickEventManage}
-        // data={data ?? {}}
-        // submitSecondAction={ClickSecondButtonEventManage}
-        // submitSecondButtonName="Save"
-        // submitSecondButtonHide={!secondButtonVisible}
-        // submitSecondLoading={false}
-      ></FormWrapper>
+        onFormButtonClickHandel={ClickEventManage}
+      >
+        {/* {({ isSubmitting, handleSubmit }) => (
+          <>
+            <Button
+              onClick={(event) => {
+                handleSubmit(event, "Retrieve");
+              }}
+              disabled={isSubmitting}
+              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+              color={"primary"}
+            >
+              Retrieve
+            </Button>
+          </>
+        )} */}
+      </FormWrapper>
     </Fragment>
   );
 };

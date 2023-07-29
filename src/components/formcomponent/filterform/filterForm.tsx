@@ -11,6 +11,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { makeStyles } from "@mui/styles";
 //import { Label } from "reactstrap";
 
@@ -54,6 +55,7 @@ export const FilterFormComponents = ({
   loading,
   propStyles
 }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const inputButtonRef = useRef<any>(null);
   const [ErrorData, setErrorData] = useState({});
@@ -171,7 +173,7 @@ export const FilterFormComponents = ({
       return {
         id: column.name,
         isTableHidden: column?.isTableHidden ?? false,
-        columnName: column?.label ?? "",
+        columnName: t(column?.label) ?? "",
         isColumnHidingDisabled: column?.isColumnHidingDisabled ?? false,
         getToggleHiddenProps: () => {
           return {
@@ -304,7 +306,7 @@ export const FilterFormComponents = ({
                         options={column?.optiondata ?? []}
                         _optionsKey={column?._optionsKey ?? ""}
                         handleChange={handleChange}
-                        label={column?.label ?? ""}
+                        label={t(column?.label) ?? ""}
                         fullWidth
                         value={colomnValue[column.name]}
                         selectVariant="regular"
@@ -335,7 +337,7 @@ export const FilterFormComponents = ({
                     ) : (
                       <TextField
                         autoFocus={column?.defaultfocus ?? false}
-                        label={column?.label ?? ""}
+                        label={t(column?.label) ?? ""}
                         fullWidth
                         placeholder={column?.placeholder ?? ""}
                         type={column?.type ?? "text"}
