@@ -404,7 +404,7 @@ export const PassbookStatement: any = {
       render: {
         componentType: "datePicker",
       },
-      name: "FROM_DT",
+      name: "STMT_FROM_DATE",
       label: "From Date :-",
       format: "dd/MM/yyyy",
       placeholder: "",
@@ -422,17 +422,17 @@ export const PassbookStatement: any = {
         type: "string",
         rules: [{ name: "required", params: ["From Date is required."] }],
       },
-      validate: (value, data, other) => {
-        if (value?.value === "") {
-          return "This field is required";
-        }
-      },
+      // validate: (value, data, other) => {
+      //   if (value?.value === "") {
+      //     return "This field is required";
+      //   }
+      // },
     },
     {
       render: {
         componentType: "datePicker",
       },
-      name: "TO_DT",
+      name: "WK_STMT_TO_DATE",
       label: "To Date :-",
       placeholder: "",
       format: "dd/MM/yyyy",
@@ -462,22 +462,22 @@ export const PassbookStatement: any = {
       //   failure: "To Date should be greater than or equal to From Date.",
       // },
 
-      validate: (value, data, others) => {
-        if (!Boolean(value?.value)) {
-          return "This field is required.";
-        }
+      // validate: (value, data, others) => {
+      //   if (!Boolean(value?.value)) {
+      //     return "This field is required.";
+      //   }
 
-        let toDate = new Date(value?.value);
-        let fromDate = new Date(data?.FROM_DT?.value);
+      //   let toDate = new Date(value?.value);
+      //   let fromDate = new Date(data?.FROM_DT?.value);
 
-        if (isNaN(toDate.getTime()) || isNaN(fromDate.getTime())) {
-          return "Invalid date format.";
-        }
+      //   if (isNaN(toDate.getTime()) || isNaN(fromDate.getTime())) {
+      //     return "Invalid date format.";
+      //   }
 
-        if (lessThanDate(toDate, fromDate)) {
-          return "To Date should be greater than From Date.";
-        }
-      },
+      //   if (lessThanDate(toDate, fromDate)) {
+      //     return "To Date should be greater than From Date.";
+      //   }
+      // },
       GridProps: {
         xs: 12,
         md: 6,

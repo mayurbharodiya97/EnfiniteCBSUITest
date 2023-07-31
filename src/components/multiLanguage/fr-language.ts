@@ -156,7 +156,7 @@ export const fr_language_data = {
   ScreenName: "Nom d'écran",
   UserCode: "Code d'utilisateur",
   SystemCode: "Code système",
-  Favourite: "Préféré",
+  Favourites: "Favoris",
   Recent: "Récent",
 
   //  For MessageBox

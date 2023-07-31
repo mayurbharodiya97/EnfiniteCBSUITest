@@ -48,7 +48,7 @@ const useHeaderStyles = makeStyles((theme: Theme) => ({
 const QuickAccessTableGrid = () => {
   const [apiData, setApiData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
-  const [activeButton, setActiveButton] = useState("Favourite");
+  const [activeButton, setActiveButton] = useState("Favourites");
   const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
@@ -64,7 +64,7 @@ const QuickAccessTableGrid = () => {
         COMP_CD: authState?.companyID ?? "",
         BASE_BRANCH_CD: authState?.user?.branchCode ?? "",
         GROUP_NAME: authState?.roleName ?? "",
-        APP_TRAN_CD: "1",
+        APP_TRAN_CD: "51",
         FLAG: activeButton ?? "",
       },
     ],
@@ -74,7 +74,7 @@ const QuickAccessTableGrid = () => {
 
         BASE_BRANCH_CD: authState?.user?.branchCode ?? "",
         GROUP_NAME: authState?.roleName ?? "",
-        APP_TRAN_CD: "1",
+        APP_TRAN_CD: "51",
         FLAG: activeButton ?? "",
       })
   );
@@ -190,22 +190,22 @@ const QuickAccessTableGrid = () => {
             {t("Recent")}
           </GradientButton>
           <GradientButton
-            onClick={() => handleButtonClick("Favourite")}
+            onClick={() => handleButtonClick("Favourites")}
             style={{
               backgroundColor:
-                activeButton === "Favourite"
+                activeButton === "Favourites"
                   ? "var(--theme-color3)"
                   : "inherit",
               height: "26px",
               width: "71px",
               borderRadius: "08px",
               color:
-                activeButton === "Favourite"
+                activeButton === "Favourites"
                   ? "var(--theme-color2)"
                   : "var(--theme-color6)",
             }}
           >
-            {t("Favourite")}
+            {t("Favourites")}
           </GradientButton>
         </Box>
       </Toolbar>
