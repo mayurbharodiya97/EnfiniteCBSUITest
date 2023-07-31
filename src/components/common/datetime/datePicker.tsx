@@ -85,6 +85,9 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     name,
     excluded,
     readOnly,
+    incomingMessage,
+    whenToRunValidation,
+    runValidation,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -121,6 +124,17 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       }, 1);
     }
   }, [isFieldFocused]);
+  useEffect(() => {
+    if (incomingMessage !== null && typeof incomingMessage === "object") {
+      const { value } = incomingMessage;
+      if (Boolean(value) || value === "") {
+        handleChange(value);
+        if (whenToRunValidation === "onBlur") {
+          runValidation({ value: value }, true);
+        }
+      }
+    }
+  }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
   const isError = touched && (error ?? "") !== "";
 
   if (excluded) {

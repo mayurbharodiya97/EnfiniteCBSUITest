@@ -74,60 +74,61 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
     finalMetadata = PassbookStatementInq as MetaDataType;
   }
 
-  const renderResult = acctInqData.isLoading ? (
-    <LoaderPaperComponent />
-  ) : (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      // fullWidth={true}
-      // PaperProps={{
-      //   style: {
-      //     maxWidth: "700px",
-      //   },
-      // }}
-      maxWidth={"sm"}
-    >
-      <FormWrapper
-        key={`ViewStatement`}
-        metaData={finalMetadata}
-        initialValues={acctInqData?.data?.[0] as InitialValuesType}
-        onSubmitHandler={onSubmitHandler}
-        // displayMode={formMode}
-        loading={acctInqData.isLoading}
-        formStyle={{
-          background: "white",
-        }}
-        controlsAtBottom={true}
-        onFormButtonClickHandel={(id) => {
-          PassbookStatementInq.fields[6].isReadOnly = false;
-        }}
-        ref={formRef}
+  const renderResult =
+    screenFlag === "ACCT_INQ" && acctInqData.isLoading ? (
+      <LoaderPaperComponent />
+    ) : (
+      <Dialog
+        open={open}
+        onClose={onClose}
+        // fullWidth={true}
+        // PaperProps={{
+        //   style: {
+        //     maxWidth: "700px",
+        //   },
+        // }}
+        maxWidth={"sm"}
       >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            <GradientButton
-              style={{ marginRight: "5px" }}
-              onClick={(event) => {
-                handleSubmit(event, "Save");
-              }}
-              // disabled={isSubmitting}
-              // endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-              color={"primary"}
-            >
-              Ok
-            </GradientButton>
-            <GradientButton
-              onClick={handleClose}
-              color={"primary"}
-              // disabled={isSubmitting}
-            >
-              Close
-            </GradientButton>
-          </>
-        )}
-      </FormWrapper>
-    </Dialog>
-  );
+        <FormWrapper
+          key={`ViewStatement`}
+          metaData={finalMetadata}
+          initialValues={acctInqData?.data?.[0] as InitialValuesType}
+          onSubmitHandler={onSubmitHandler}
+          // displayMode={formMode}
+          loading={acctInqData.isLoading}
+          formStyle={{
+            background: "white",
+          }}
+          controlsAtBottom={true}
+          onFormButtonClickHandel={(id) => {
+            PassbookStatementInq.fields[6].isReadOnly = false;
+          }}
+          ref={formRef}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              <GradientButton
+                style={{ marginRight: "5px" }}
+                onClick={(event) => {
+                  handleSubmit(event, "Save");
+                }}
+                // disabled={isSubmitting}
+                // endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                color={"primary"}
+              >
+                Ok
+              </GradientButton>
+              <GradientButton
+                onClick={handleClose}
+                color={"primary"}
+                // disabled={isSubmitting}
+              >
+                Close
+              </GradientButton>
+            </>
+          )}
+        </FormWrapper>
+      </Dialog>
+    );
   return renderResult;
 };

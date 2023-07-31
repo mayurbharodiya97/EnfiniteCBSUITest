@@ -51,6 +51,8 @@ const AccountDetails = () => {
     }
   }, []);
 
+  console.log(rowsDataRef?.current, "rowsDataRef");
+
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
@@ -60,11 +62,17 @@ const AccountDetails = () => {
       ACCT_CD: rowsDataRef.current?.ACCT_CD ?? "",
       ACCT_TYPE: rowsDataRef.current?.ACCT_TYPE ?? "",
       BRANCH_CD: rowsDataRef.current?.BRANCH_CD ?? "",
-      FROM_DT: isValidDate(rowsDataRef.current?.FROM_DT)
-        ? format(new Date(rowsDataRef.current?.FROM_DT), "dd-MMM-yyyy") ?? ""
+      FROM_DT: isValidDate(rowsDataRef.current?.STMT_FROM_DATE)
+        ? format(
+            new Date(rowsDataRef.current?.STMT_FROM_DATE),
+            "dd-MMM-yyyy"
+          ) ?? ""
         : format(new Date(), "dd-MMM-yyyy"),
-      TO_DT: isValidDate(rowsDataRef.current?.TO_DT)
-        ? format(new Date(rowsDataRef.current?.TO_DT), "dd-MMM-yyyy") ?? ""
+      TO_DT: isValidDate(rowsDataRef.current?.WK_STMT_TO_DATE)
+        ? format(
+            new Date(rowsDataRef.current?.WK_STMT_TO_DATE),
+            "dd-MMM-yyyy"
+          ) ?? ""
         : format(new Date(), "dd-MMM-yyyy"),
       METADATA: "STMT",
       // COMP_CD: "132",

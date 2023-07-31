@@ -141,6 +141,7 @@ const GeneralAPISDK = () => {
         if (data?.length > 0) {
           //..//
           //..//
+          console.log(data, "??????????data");
           const { LST_STATEMENT_DT } = data[0];
           const inputDate = new Date(LST_STATEMENT_DT);
           const nextDate = new Date(inputDate);
@@ -155,28 +156,28 @@ const GeneralAPISDK = () => {
             ACCT_NM: {
               value: data?.[0]?.ACCT_NM,
             },
-            FROM_DT: {
+            STMT_FROM_DATE: {
               value: isValidDate(FROM_DATE)
                 ? FROM_DATE ?? new Date()
                 : new Date(),
             },
-            TO_DT: {
+            WK_STMT_TO_DATE: {
               value: new Date(),
             },
           };
         } else {
           return {
             ACCT_NM: { value: "" },
-            FROM_DT: { value: "" },
-            TO_DT: { value: "" },
+            STMT_FROM_DATE: { value: "" },
+            WK_STMT_TO_DATE: { value: "" },
           };
         }
       }
     } else {
       return {
         ACCT_NM: { value: "" },
-        FROM_DT: { value: "" },
-        TO_DT: { value: "" },
+        STMT_FROM_DATE: { value: "" },
+        WK_STMT_TO_DATE: { value: "" },
       };
     }
   };

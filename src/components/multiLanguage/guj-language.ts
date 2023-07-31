@@ -155,7 +155,7 @@ export const guj_language_data = {
   ScreenName: "સ્ક્રીન નામ",
   UserCode: "વપરાશકર્તા કોડ",
   SystemCode: "સિસ્ટમ કોડ",
-  Favourite: "મનપસંદ",
+  Favourites: "મનપસંદ",
   Recent: "તાજેતરના",
   //  For MessageBox
   Announcement: "જાહેરાત",
