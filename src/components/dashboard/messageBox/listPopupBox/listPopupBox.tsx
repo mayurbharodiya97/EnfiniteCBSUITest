@@ -47,6 +47,7 @@ export const ListPopupMessageWrapper = ({
   dialogLabel,
   transactionID,
   formView,
+  screenFlag,
 }) => {
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
@@ -128,8 +129,7 @@ export const ListPopupMessageWrapper = ({
     let oldData = {
       IS_VIEW_NEXT: mainData?.[0]?.IS_VIEW_NEXT ?? "",
     };
-    console.log("newData", newData);
-    console.log("oldData", oldData);
+
     let upd: any = utilFunction.transformDetailsData(newData, oldData ?? {});
 
     if (upd?._UPDATEDCOLUMNS?.length > 0) {
@@ -166,6 +166,13 @@ export const ListPopupMessageWrapper = ({
     }
     return lastFileData.current;
   }, [mainData?.[0]?.DOC_BLOB]);
+  if ((formView = "view")) {
+    MessageDescriptionMetadata.form[2] = dialogLabel;
+  }
+  console.log(
+    "MessageDescriptionMetadata.form[2]",
+    MessageDescriptionMetadata.form[2]
+  );
 
   return (
     <>

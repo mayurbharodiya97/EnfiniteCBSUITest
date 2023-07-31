@@ -21,7 +21,7 @@ export const MultiLanguages = () => {
     i18n.changeLanguage(languageCode);
     AuthSDK.setDisplayLanguage(i18n.resolvedLanguage);
   };
-  console.log("<<<<", i18n, language);
+
   useEffect(() => {
     let languageCode = Cookies.get("enfinity.cbs.i18n.language.set.code");
     if (languageCode) {

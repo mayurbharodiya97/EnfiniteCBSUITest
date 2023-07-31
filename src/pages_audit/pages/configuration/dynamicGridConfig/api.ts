@@ -1,6 +1,27 @@
 import { AuthSDK } from "registry/fns/auth";
 import { DefaultErrorObject } from "components/utils";
 
+export const getproMiscData = async (category_cd) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(`GETPROPMISCDATA`, {
+      CATEGORY_CD: category_cd,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
+        return {
+          value: DATA_VALUE,
+          label: DISPLAY_VALUE,
+        };
+      });
+    }
+    return responseData;
+    // return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const getDynamicgridConfigGridData = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETGRIDCONFIGDATA", {

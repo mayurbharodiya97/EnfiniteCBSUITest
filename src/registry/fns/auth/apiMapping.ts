@@ -288,6 +288,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTTYPELST",
     packageName: "",
   },
+  GETPROPMISCDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPROPMISCDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -33,6 +33,7 @@ export const Transactions = ({ mutation, ...props }) => {
   const [showMore, setShowMore] = useState(false);
   const [optionValue, setOptionValue] = useState("T");
   const { t } = useTranslation();
+
   const showErrorData = () => {
     setShowMore(true);
   };
@@ -233,7 +234,7 @@ export const Transactions = ({ mutation, ...props }) => {
         ],
       };
     }
-  }, [mutation?.data, optionValue]);
+  }, [mutation?.data, optionValue, t]);
   const options = {
     animation: false,
     cornerRadius: 20,

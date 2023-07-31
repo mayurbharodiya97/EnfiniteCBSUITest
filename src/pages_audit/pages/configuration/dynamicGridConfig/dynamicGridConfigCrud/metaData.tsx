@@ -1,5 +1,5 @@
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-
+import { getproMiscData } from "../api";
 export const DynamicReportConfigMetaData: MasterDetailsMetaData = {
   masterForm: {
     form: {
@@ -27,6 +27,29 @@ export const DynamicReportConfigMetaData: MasterDetailsMetaData = {
       {
         render: { componentType: "hidden" },
         name: "TRAN_CD",
+      },
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "SCREEN_NAME",
+        label: "Screen Name",
+        placeholder: "",
+        type: "text",
+        fullWidth: true,
+        required: true,
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Title is required."] },
+            { name: "TITLE", params: ["Please enter Title."] },
+          ],
+        },
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 6,
+        },
       },
       {
         render: {
@@ -117,8 +140,47 @@ export const DynamicReportConfigMetaData: MasterDetailsMetaData = {
         render: {
           componentType: "checkbox",
         },
+        name: "DENSE",
+        label: "Dense",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
         name: "HIDE_AMOUNT_IN",
-        label: "Hide Amount In",
+        label: "gridLabel",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_AMOUNT_IN",
+        label: "rowIdColumn",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_AMOUNT_IN",
+        label: "allowColumnReordering",
         defaultValue: true,
         GridProps: {
           xs: 12,
@@ -131,12 +193,76 @@ export const DynamicReportConfigMetaData: MasterDetailsMetaData = {
           componentType: "checkbox",
         },
         name: "HIDE_FOOTER",
-        label: "Hide Footer",
+        label: "enablePagination",
         defaultValue: true,
         GridProps: {
           xs: 12,
           md: 3,
-          sm: 2,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "select",
+        },
+        name: "PAGE_SIZE",
+        label: "page Sizes",
+        placeholder: "",
+        options: () => getproMiscData("pageSizes"),
+        _optionsKey: "getproMiscData",
+        defaultValue: "",
+        type: "text",
+
+        // allowToggleVisiblity: true,
+        // maxLength: 10,
+        // required: true,
+        fullWidth: true,
+        schemaValidation: {
+          type: "string",
+        },
+        GridProps: {
+          xs: 12,
+          md: 4,
+          sm: 4,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_FOOTER",
+        label: "defaultPageSize",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_FOOTER",
+        label: "allowRowSelection",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_FOOTER",
+        label: "isCusrsorFocused",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
         },
       },
     ],
@@ -200,6 +326,23 @@ export const DynamicReportConfigMetaData: MasterDetailsMetaData = {
         minWidth: 150,
       },
       {
+        accessor: "COLUMN_SEQUENCE",
+        columnName: "Column Sequence",
+        componentType: "editableTextField",
+        required: true,
+        validation: (value, data) => {
+          if (!Boolean(value)) {
+            return "This field is required.";
+          }
+          return "";
+        },
+        alignment: "right",
+        sequence: 2,
+        width: 120,
+        maxWidth: 180,
+        minWidth: 80,
+      },
+      {
         accessor: "COLUMN_WIDTH",
         columnName: "Column Width",
         componentType: "editableTextField",
@@ -218,8 +361,10 @@ export const DynamicReportConfigMetaData: MasterDetailsMetaData = {
       },
       {
         accessor: "COLUMN_TYPE",
-        columnName: "Column Type",
-        componentType: "editableTextField",
+        columnName: "Component Type",
+        componentType: "editableSelect",
+        options: () => getproMiscData("Component_Type"),
+        _optionsKey: "getproMiscData",
         required: true,
         validation: (value, data) => {
           if (!Boolean(value)) {
@@ -234,22 +379,16 @@ export const DynamicReportConfigMetaData: MasterDetailsMetaData = {
       },
       {
         accessor: "COLUMN_FORMAT",
-        columnName: "Column Format",
-        componentType: "editableTextField",
+        columnName: "Column Alignment",
+        componentType: "editableSelect",
+        options: () => getproMiscData("alignment"),
+        _optionsKey: "getproMiscData",
         sequence: 2,
         width: 160,
         maxWidth: 300,
         minWidth: 120,
       },
-      {
-        accessor: "COLUMN_FILTER_TYPE",
-        columnName: "Column Filter Type",
-        componentType: "editableTextField",
-        sequence: 2,
-        width: 160,
-        maxWidth: 300,
-        minWidth: 120,
-      },
+
       {
         accessor: "IS_VISIBLE",
         columnName: "Is Visible",
@@ -384,8 +523,8 @@ export const EditViewDynamicReportConfigMetaData: MasterDetailsMetaData = {
         render: {
           componentType: "checkbox",
         },
-        name: "DISABLE_GROUP_BY",
-        label: "Disable Group By",
+        name: "DENSE",
+        label: "Dense",
         defaultValue: true,
         GridProps: {
           xs: 12,
@@ -398,7 +537,46 @@ export const EditViewDynamicReportConfigMetaData: MasterDetailsMetaData = {
           componentType: "checkbox",
         },
         name: "HIDE_AMOUNT_IN",
-        label: "Hide Amount In",
+        label: "gridLabel",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_AMOUNT_IN",
+        label: "rowIdColumn",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_AMOUNT_IN",
+        label: "allowColumnReordering",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_AMOUNT_IN",
+        label: "disableGroupBy",
         defaultValue: true,
         GridProps: {
           xs: 12,
@@ -411,7 +589,59 @@ export const EditViewDynamicReportConfigMetaData: MasterDetailsMetaData = {
           componentType: "checkbox",
         },
         name: "HIDE_FOOTER",
-        label: "Hide Footer",
+        label: "enablePagination",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "select",
+        },
+        name: "HIDE_FOOTER",
+        label: "pageSizes",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_FOOTER",
+        label: "defaultPageSize",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_FOOTER",
+        label: "allowRowSelection",
+        defaultValue: true,
+        GridProps: {
+          xs: 12,
+          md: 3,
+          sm: 3,
+        },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "HIDE_FOOTER",
+        label: "isCusrsorFocused",
         defaultValue: true,
         GridProps: {
           xs: 12,
@@ -481,6 +711,23 @@ export const EditViewDynamicReportConfigMetaData: MasterDetailsMetaData = {
         minWidth: 150,
       },
       {
+        accessor: "COLUMN_SEQUENCE",
+        columnName: "Column Sequence",
+        componentType: "editableTextField",
+        required: true,
+        validation: (value, data) => {
+          if (!Boolean(value)) {
+            return "This field is required.";
+          }
+          return "";
+        },
+        alignment: "right",
+        sequence: 2,
+        width: 120,
+        maxWidth: 180,
+        minWidth: 80,
+      },
+      {
         accessor: "COLUMN_WIDTH",
         columnName: "Column Width",
         componentType: "editableTextField",
@@ -499,8 +746,8 @@ export const EditViewDynamicReportConfigMetaData: MasterDetailsMetaData = {
       },
       {
         accessor: "COLUMN_TYPE",
-        columnName: "Column Type",
-        componentType: "editableTextField",
+        columnName: "Component Type",
+        componentType: "editableSelect",
         required: true,
         validation: (value, data) => {
           if (!Boolean(value)) {
@@ -515,22 +762,14 @@ export const EditViewDynamicReportConfigMetaData: MasterDetailsMetaData = {
       },
       {
         accessor: "COLUMN_FORMAT",
-        columnName: "Column Format",
-        componentType: "editableTextField",
+        columnName: "Column Alignment",
+        componentType: "editableSelect",
         sequence: 2,
         width: 160,
         maxWidth: 300,
         minWidth: 120,
       },
-      {
-        accessor: "COLUMN_FILTER_TYPE",
-        columnName: "Column Filter Type",
-        componentType: "editableTextField",
-        sequence: 2,
-        width: 160,
-        maxWidth: 300,
-        minWidth: 120,
-      },
+
       {
         accessor: "IS_VISIBLE",
         columnName: "Is Visible",

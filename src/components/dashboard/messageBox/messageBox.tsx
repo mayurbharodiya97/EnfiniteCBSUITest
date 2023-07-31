@@ -314,6 +314,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
               transactionID={refData.current?.TRAN_CD}
               open={undefined}
               formView={"view"}
+              screenFlag={screenFlag}
             />
           ) : null}
         </>
