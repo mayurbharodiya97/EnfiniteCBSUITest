@@ -70,7 +70,6 @@ const myGridRef = useRef<any>(null);
                     </IconButton>
                 </Grid>
                 <Collapse in={isRelatedPDExpanded}>
-                {/* <Grid container item> */}
                     <Grid item>
                         <FormWrapper 
                             ref={RelPersonFormRef}
@@ -82,27 +81,6 @@ const myGridRef = useRef<any>(null);
                             hideHeader={true}
                         />
                     </Grid>                    
-                {/* </Grid> */}
-
-                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>{t("PoIOfRelatedPerson")}</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={related_person_poi_detail_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>{t("AttesDetailsIPVBy")}</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={related_person_attestation_detail_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid> */}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
             <Grid container item sx={{justifyContent: "flex-end"}}>

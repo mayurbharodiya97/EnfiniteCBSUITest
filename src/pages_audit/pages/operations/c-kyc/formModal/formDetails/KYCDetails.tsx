@@ -135,7 +135,6 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 </Grid>
                 <Collapse
                     in={isPoIExpanded}>
-                <Grid container item>
                     <Grid item xs={12}>
                         <FormWrapper 
                             ref={KyCPoIFormRef}
@@ -147,27 +146,6 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                             hideHeader={true}
                         />
                     </Grid>                    
-                </Grid>
-
-                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Passport Details</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={kyc_proof_of_identity_passport_details_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Driving License Details</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={kyc_proof_of_identity_driving_license_details_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid> */}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 
@@ -185,7 +163,6 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     </IconButton>
                 </Grid>
                 <Collapse in={isPoAExpanded}>
-                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Current/Permanent/Overseas Address</Divider> */}
                 <Grid item>
                     <FormWrapper 
                         ref={KyCPoAFormRef}
@@ -197,26 +174,6 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                         hideHeader={true}
                     />
                 </Grid>
-
-                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Correspondence/Local Address</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={kyc_proof_of_local_address_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Contact</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={kyc_proof_of_address_contact_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid> */}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 

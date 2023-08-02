@@ -20,15 +20,12 @@ import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../CkycContext';
 
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
-  //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
-  //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
   const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
-  const [currentTabFormData, setCurrentTabFormData] = useState({personal_details: {}, personal_other_details: {}})
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [isOtherPDExpanded, setIsOtherPDExpanded] = useState(false)
   const [isEDExpanded, setIsEDExpanded] = useState(false)
@@ -57,14 +54,6 @@ const myGridRef = useRef<any>(null);
         setIsNextLoading(true)
         console.log("qweqweqwe", data)     
         if(data) {
-            // setTabFormData(p => {
-            //     return {
-            //         ...p,
-            //         "personal details": data
-            //     }
-            // })
-            setCurrentTabFormData(tabFormData => ({...tabFormData, "personal_details": data}))
-            console.log("aedaqedqdeqd 2",currentTabFormData)
 
             let newData = state?.formDatactx
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
@@ -84,20 +73,11 @@ const myGridRef = useRef<any>(null);
         setIsNextLoading(true)
         console.log("qweqweqwe", data)     
         if(data) {
-            // setTabFormData(p => {
-            //     return {
-            //         ...p,
-            //         // "personal other details": data
-            //     }
-            // })
-            setCurrentTabFormData(tabFormData => ({...tabFormData, "personal_other_details": data}))
-
             let newData = state?.formDatactx
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
             handleFormDataonSavectx(newData)
             handleColTabChangectx(1)
 
-            console.log("aedaqedqdeqd",currentTabFormData)
             setIsNextLoading(false)
         }   
         endSubmit(true)
@@ -128,7 +108,6 @@ const myGridRef = useRef<any>(null);
                     </IconButton>
                 </Grid>
                 <Collapse in={isPDExpanded}>
-                {/* <Grid container item> */}
                     <Grid item>
                         <FormWrapper 
                             ref={PDFormRef}
@@ -148,37 +127,6 @@ const myGridRef = useRef<any>(null);
                             {/* <p>Controll Components</p> */}
                         </FormWrapper>
                     </Grid>                    
-                {/* </Grid> */}
-
-                {/* <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Maiden Name</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={personal_detail_maiden_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Father Name*</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={personal_detail_father_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>Mother Name*</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={personal_detail_mother_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid> */}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 

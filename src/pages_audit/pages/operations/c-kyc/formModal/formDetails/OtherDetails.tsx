@@ -73,7 +73,6 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     </IconButton>
                 </Grid>
                 <Collapse in={isOtherDetailsExpanded}>                
-                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Annual Income</Divider> */}
                 <Grid item>
                     <FormWrapper 
                         ref={OtherDTLFormRef}
@@ -85,47 +84,6 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                         hideHeader={true}
                     />
                 </Grid>
-
-                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Exposure Info./Risk Profile</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={other_details_exposure_info_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Personal Info.</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={other_details_personal_info_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Vehicle Info.</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={other_details_vehicle_info_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
-                </Grid>
-
-                <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Employment Info.</Divider>
-                <Grid item>
-                    <FormWrapper 
-                        key={"new-form-in-kyc"}
-                        metaData={other_details_employment_info_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    >
-                    </FormWrapper>
-                </Grid> */}
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
             <Grid container item sx={{justifyContent: "flex-end"}}>
