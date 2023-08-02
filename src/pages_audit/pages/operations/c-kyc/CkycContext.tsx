@@ -105,6 +105,40 @@ const CkycProvider = ({children}) => {
         })
     }
 
+    const handleFormModalClosectx = () => {
+        dispatch({
+            type: "handleFormModalClose",
+            payload: {
+                isFormModalOpenctx: false, 
+                entityTypectx: null,
+                colTabValuectx: false,
+                categoryValuectx: null,
+                constitutionValuectx: null,
+                accTypeValuectx: null,
+                tabsApiResctx: [],
+                isFreshEntryctx: false,
+            }
+        })
+    }
+
+    const handleApiRes = (apiRes) => {
+        dispatch({
+            type: "update_ApiResctx",
+            payload: {
+                tabsApiResctx: apiRes
+            }
+        })
+    }
+
+    const handleCustCategoryRes = (apiRes) => {
+        dispatch({
+            type: "update_customerCategoriesctx",
+            payload: {
+                customerCategoriesctx: apiRes
+            }
+        })           
+    }
+
     const handleCategoryChangectx = (e, value) => {
         if(value) {
             dispatch({
@@ -128,18 +162,11 @@ const CkycProvider = ({children}) => {
         }
     }
 
-    const handleFormModalClosectx = () => {
+    const handleAccTypeVal = (value) => {
         dispatch({
-            type: "handleFormModalClose",
+            type: "update_accTypeValuectx",
             payload: {
-                isFormModalOpenctx: false, 
-                entityTypectx: null,
-                colTabValuectx: false,
-                categoryValuectx: null,
-                constitutionValuectx: null,
-                accTypeValuectx: null,
-                tabsApiResctx: [],
-                isFreshEntryctx: false,
+                accTypeValuectx: value
             }
         })
     }
@@ -198,7 +225,8 @@ const CkycProvider = ({children}) => {
         <CkycContext.Provider 
             value={{
                 state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, 
-                handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, 
+                handleApiRes, handleCustCategoryRes,
+                handleCategoryChangectx, handleAccTypeVal, handleSidebarExpansionctx, handleColTabChangectx, 
                 handleFormDataonSavectx, handleFormDataonDraftctx
             }}
         >

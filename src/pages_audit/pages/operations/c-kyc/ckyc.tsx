@@ -226,7 +226,7 @@ function TabPanel(props: TabPanelProps) {
 
 export const Ckyc = () => {
   const { t } = useTranslation();
-  const {state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx} = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx, handleCustCategoryRes} = useContext(CkycContext);
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
@@ -271,12 +271,7 @@ export const Ckyc = () => {
     if(!isLoading) {
       console.log(data, "asddsa")
       // setCustomerCategories(data)
-      dispatch({
-        type: "update_customerCategoriesctx",
-        payload: {
-          customerCategoriesctx: data
-        }
-      })
+      handleCustCategoryRes(data)
     }
   }, [data, isLoading])
 

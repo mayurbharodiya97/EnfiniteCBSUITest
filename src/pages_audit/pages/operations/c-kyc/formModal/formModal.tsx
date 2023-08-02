@@ -183,7 +183,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   AccTypeOptions
 }) {
-  const {state, dispatch, handleFormModalClosectx, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx} = useContext(CkycContext);
+  const {state, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal} = useContext(CkycContext);
   const { t } = useTranslation();
   const classes = useDialogStyles();
   const authController = useContext(AuthContext);
@@ -234,12 +234,7 @@ export default function FormModal({
           console.log("filled newdata -aft", element.TAB_NAME , newData)
         });
         // setTabsApiRes(newData)
-        dispatch({
-          type: "update_ApiResctx",
-          payload: {
-            tabsApiResctx: newData
-          }
-        })
+        handleApiRes(newData)
       }
     }
   }, [TabsData, isLoading])
@@ -522,12 +517,7 @@ export default function FormModal({
                       getOptionLabel={(option:any) => `${option?.DISPLAY_VALUE}`}
                       onChange={(e,v) => {
                         // setAccTypeValue(v?.value)
-                        dispatch({
-                          type: "update_accTypeValuectx",
-                          payload: {
-                            accTypeValuectx: v?.value
-                          }
-                        })
+                        handleAccTypeVal(v?.value)
                       }}
                       // sx={{ width: 200 }}
                       renderInput={(params) => (
