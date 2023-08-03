@@ -22,7 +22,7 @@ import {
 } from "./metadata";
 import { FormComponentView } from "components/formcomponent";
 import { FilterFormMetaType } from "components/formcomponent/filterform";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
@@ -267,6 +267,11 @@ export const Ckyc = () => {
     () => API.getPMISCData("CKYC_ACCT_TYPE")
   );
 
+  const mutation: any = useMutation(API.getRetrieveData, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+
   useEffect(() => {
     if(!isLoading) {
       console.log(data, "asddsa")
@@ -485,7 +490,19 @@ useEffect(() => {
           <FormComponentView
             key={"retrieveCustomerData"}
             finalMetaData={RetrieveDataFilterForm as FilterFormMetaType}
-            onAction={() => {}}
+            onAction={(colomnValue, initialVisibleColumn) => {
+              console.log("wlkefhwief", colomnValue, initialVisibleColumn)
+              let newObj = {}
+              let newArr = Object.keys(colomnValue).filter(key => colomnValue[key] != null && colomnValue[key] != undefined && colomnValue[key] != "")
+              newArr.map(el => {
+                newObj[el] = colomnValue[el]
+              })
+              let data = {
+                COMP_CD: authState?.companyID ?? "",
+                SELECT_COLUMN: newObj
+              }
+              mutation.mutate(data)
+            }}
             loading={false}
             data={{}}
             submitSecondAction={() => {}}
@@ -509,8 +526,8 @@ useEffect(() => {
         <GridWrapper
           key={`EmailAcctMstGrid`}
           finalMetaData={ckyc_retrieved_meta_data as GridMetaDataType}
-          data={[]}
-          setData={() => null}
+          data={mutation.data ?? []}
+          setData={() => null}          
           // loading={isLoading || isFetching}
           // actions={actions}
           // setAction={setCurrentAction}

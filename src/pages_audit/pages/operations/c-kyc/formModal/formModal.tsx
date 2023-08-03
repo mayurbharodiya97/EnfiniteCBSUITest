@@ -378,7 +378,7 @@ export default function FormModal({
               height:{xs: "40px", md: "30px"}, 
               minWidth: {xs: "40px", md: "30px"}, 
               width: {xs: "40px", md: "30px"}, 
-              display: "flex", 
+              display: state?.isFreshEntryctx ? "none" : "flex", 
               alignItems:"center", 
               justifyContent: "center",
               borderRadius: "5px",

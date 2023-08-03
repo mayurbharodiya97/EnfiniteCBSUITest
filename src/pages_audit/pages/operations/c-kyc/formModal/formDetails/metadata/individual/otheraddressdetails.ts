@@ -1,3 +1,5 @@
+import * as API from "../../../../api";
+  
   export const other_address_meta_data = {
     form: {
         name: "other_address_details_form",
@@ -58,10 +60,8 @@
             placeholder: "",
             type: "text",
             GridProps: {xs: 4, sm:3},
-            options: [
-                {label: "Address Type1", value: "Address Type1"},
-                {label: "Address Type2", value: "Address Type2"},
-            ],
+            options: () => API.getPMISCData("ADDRESS_TYPE"),
+            _optionsKey: "AddTypeOptions",
         },
         {
             render: {

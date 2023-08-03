@@ -274,11 +274,25 @@ export const getSubAreaOptions = async (COMP_CD, BRANCH_CD) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
-export const getRetrieveData = async (SELECT_COLUMN) => {
+export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETSEARCHUSERDATA", {
+    await AuthSDK.internalFetcher("GETCUSTOMERLIST", {
+      COMP_CD: COMP_CD,
       SELECT_COLUMN: SELECT_COLUMN
     });
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+export const getPendingData = async ({COMP_CD, BRANCH_CD, ENTERED_DATE}) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("GETPENDINGCUSTLIST", {
+    COMP_CD: COMP_CD, 
+    BRANCH_CD: BRANCH_CD, 
+    ENTERED_DATE: ENTERED_DATE
+  });
   if (status === "0") {
     return data
   } else {
@@ -351,6 +365,31 @@ export const getEduQualiOptions = async (COMP_CD, BRANCH_CD) => {
             DISPLAY_NM: DISPLAY_NM,
             value: ED_TYPE_CD,
             label: DISPLAY_NM,
+          };
+        }
+      );
+    }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getRelationshipManagerOptions = async (COMP_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("RELATIONSHIPMANAGER", {
+      COMP_CD: COMP_CD, 
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ FULLNAME, EMP_ID, ...other }) => {
+          return {
+            ...other,
+            FULLNAME:FULLNAME,
+            EMP_ID: EMP_ID,
+            label: FULLNAME,
+            value: EMP_ID,
           };
         }
       );

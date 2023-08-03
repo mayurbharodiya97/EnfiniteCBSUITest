@@ -222,7 +222,7 @@ export const en_language_data = {
   UniqueId: "Unique ID",
   RetrieveTitle: "Retrieve Customer Data",
   CkycNo: "CKYC No.",
-  CustomerType: "Cust Type",
+  CategoryConstitution: "Category - Constitution",
   Active: "Active",
   ReqNo: "Req. No.",
   LastModified: "Last Modified",

@@ -2,12 +2,8 @@ import { useRef, useState, useEffect, useContext } from 'react';
 import { Grid, Typography, Divider, Skeleton, Collapse, IconButton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
-    kyc_proof_of_address_contact_meta_data, 
     kyc_proof_of_address_meta_data, 
-    kyc_proof_of_identity_driving_license_details_meta_data, 
     kyc_proof_of_identity_meta_data, 
-    kyc_proof_of_identity_passport_details_meta_data, 
-    kyc_proof_of_local_address_meta_data
 } from './metadata/individual/kycdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';

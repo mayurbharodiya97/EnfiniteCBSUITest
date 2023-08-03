@@ -108,7 +108,7 @@ export const nri_detail_meta_data = {
             },
             name: "Country_Of_Risk",
             label: "CountryOfRisk",
-            options: () => API.getPMISCData(""),
+            options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "CountryRiskTypes",
             placeholder: "",
             type: "text",
@@ -138,9 +138,8 @@ export const nri_detail_meta_data = {
             type: "text",
             GridProps: {xs: 4, sm:3},
             options: [
-                {label: "type 1", value: "1"},
-                {label: "type 2", value: "2"},
-                {label: "type 3", value: "3"},
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"},
             ],
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
@@ -169,8 +168,10 @@ export const nri_detail_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
+            options: (dependentValue, formState, _, authState) => API.getRelationshipManagerOptions(authState?.companyID),          
+            _optionsKey: "RelManager",  
             name: "Relationship_Manager",
             label: "RelationshipManager",
             placeholder: "",
