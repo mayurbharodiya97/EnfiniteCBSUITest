@@ -3,16 +3,7 @@ import { makeStyles, styled } from "@mui/styles";
 import { ClearCacheContext, queryClient } from "cache";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../../api";
-import {
-  AppBar,
-  Button,
-  Dialog,
-  Theme,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import { useDialogStyles } from "components/detailPopupGridData";
-import { GradientButton } from "components/styledComponent/button";
+import { Button, Dialog, Theme } from "@mui/material";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { MessageDescriptionMetadata } from "./metadata";
 import {
@@ -20,26 +11,12 @@ import {
   NoPreview,
   PDFViewer,
 } from "components/fileUpload/preView";
-import { lowerCase } from "lodash";
 import { utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { useSnackbar } from "notistack";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-const useHeaderStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color5)",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-}));
 
 export const ListPopupMessageWrapper = ({
   open,
@@ -49,10 +26,6 @@ export const ListPopupMessageWrapper = ({
   formView,
   screenFlag,
 }) => {
-  const myGridRef = useRef<any>(null);
-  const { getEntries } = useContext(ClearCacheContext);
-  const classes = useDialogStyles();
-  const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
   const lastFileData = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -139,6 +112,7 @@ export const ListPopupMessageWrapper = ({
           ...upd,
           CIRCULAR_TRAN_CD: mainData?.[0]?.TRAN_CD ?? "",
           USER_NM: authState?.user?.id ?? "",
+          _isNewRow: formView === "view" ? true : false,
         },
         displayData,
         endSubmit,
@@ -166,13 +140,11 @@ export const ListPopupMessageWrapper = ({
     }
     return lastFileData.current;
   }, [mainData?.[0]?.DOC_BLOB]);
-  if ((formView = "view")) {
-    MessageDescriptionMetadata.form[2] = dialogLabel;
+  if (screenFlag === "Announcement") {
+    if (MessageDescriptionMetadata && MessageDescriptionMetadata.form) {
+      MessageDescriptionMetadata.form.label = dialogLabel;
+    }
   }
-  console.log(
-    "MessageDescriptionMetadata.form[2]",
-    MessageDescriptionMetadata.form[2]
-  );
 
   return (
     <>
@@ -191,57 +163,6 @@ export const ListPopupMessageWrapper = ({
           }}
           key="filepreviewDialog"
         >
-          {/* <AppBar
-            position="relative"
-            color="secondary"
-            style={{
-              // marginBottom: "5px",
-              padding: "8px",
-              background: "none",
-              boxShadow: "none",
-            }}
-          >
-            <Toolbar className={headerClasses.root} variant={"dense"}>
-              <Typography
-                className={headerClasses.title}
-                color="inherit"
-                variant={"h6"}
-                component="div"
-              >
-                {dialogLabel}
-                {dialogLabel.charAt(0).toUpperCase() +
-                  dialogLabel.slice(1).toLowerCase()}
-              </Typography>
-              <GradientButton
-                onClick={(e) => {
-                  setIsOpenSave(true);
-                }}
-                style={{
-                  backgroundColor: "var(--theme-color5)",
-                  height: "32px",
-                  width: "20px",
-                  borderRadius: "05px",
-                  color: "var(--theme-color2)",
-                }}
-              >
-                Save
-              </GradientButton>
-              <GradientButton
-                onClick={closeDialog}
-                style={{
-                  backgroundColor: "var(--theme-color5)",
-                  height: "32px",
-                  // width: "20px",
-                  minWidth: "0px",
-                  borderRadius: "05px",
-                  color: "var(--theme-color2)",
-                }}
-              >
-                Close
-              </GradientButton>
-            </Toolbar>
-          </AppBar> */}
-
           <FormWrapper
             key={`MessageDescriptionMetadata`}
             metaData={MessageDescriptionMetadata}

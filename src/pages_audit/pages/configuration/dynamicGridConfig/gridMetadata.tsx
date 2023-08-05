@@ -49,16 +49,7 @@ export const DynamicGridConfigGridMData: GridMetaDataType = {
       maxWidth: 150,
       //isAutoSequence: true,
     },
-    {
-      accessor: "TITLE",
-      columnName: "Title",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 250,
-      minWidth: 200,
-      maxWidth: 500,
-    },
+
     {
       accessor: "DESCRIPTION",
       columnName: "Description",

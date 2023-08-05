@@ -330,8 +330,8 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
             <TipsWrapper
               open={isOpenSave}
               closeDialog={handleDialogClose}
-              dialogLabel={refData.current?.DESCRIPTION}
-              transactionID={undefined}
+              data={refData.current}
+              formView={"view"}
             />
           ) : null}
         </>

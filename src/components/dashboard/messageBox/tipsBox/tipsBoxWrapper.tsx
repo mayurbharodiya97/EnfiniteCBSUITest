@@ -1,57 +1,99 @@
 import { useRef, useEffect, useContext, useState, useMemo } from "react";
-import { makeStyles, styled } from "@mui/styles";
-import { ClearCacheContext, queryClient } from "cache";
-import { useQuery } from "react-query";
-// import * as API from "../api";
-import { AppBar, Dialog, Theme, Toolbar, Typography } from "@mui/material";
-import { useDialogStyles } from "components/detailPopupGridData";
-import { GradientButton } from "components/styledComponent/button";
+import { Button, Dialog } from "@mui/material";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
-import { InitialValuesType } from "packages/form";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import * as API from "../../api";
 import { TipsListMetadata } from "./metadata";
-const useHeaderStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color5)",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-}));
+import { useSnackbar } from "notistack";
+import { useMutation } from "react-query";
+import { utilFunction } from "components/utils";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+
 export const TipsWrapper = ({
   open,
   closeDialog,
-  dialogLabel,
-  transactionID,
+  data: mainData,
+  formView,
 }) => {
-  const myGridRef = useRef<any>(null);
-  const { getEntries } = useContext(ClearCacheContext);
-  const classes = useDialogStyles();
-  const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
-  const lastFileData = useRef<any>(null);
-  // const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-  //   any,
-  //   any
-  // >(["getMessageBoxListData"], () =>
-  //   API.getMessageBoxListData({
-  //     userID: authState?.user?.id ?? "",
-  //     transactionID,
-  //   })
-  // );
+  const { enqueueSnackbar } = useSnackbar();
+  const [isOpenSave, setIsOpenSave] = useState(false);
+  const isErrorFuncRef = useRef<any>(null);
 
-  // useEffect(() => {
-  //   return () => {
-  //     queryClient.removeQueries(["getMessageBoxListData"]);
-  //   };
-  // }, []);
+  const mutation = useMutation(API.updateTipsDetailsData, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      //endSubmit(false, errorMsg, error?.error_detail ?? "");
+      if (isErrorFuncRef.current == null) {
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      } else {
+        isErrorFuncRef.current?.endSubmit(
+          false,
+          errorMsg,
+          error?.error_detail ?? ""
+        );
+      }
+      onActionCancel();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
+      // isDataChangedRef.current = true;
+      closeDialog();
+    },
+  });
+  const onPopupYes = (rows) => {
+    mutation.mutate(rows);
+  };
+  const onActionCancel = () => {
+    setIsOpenSave(false);
+  };
 
+  const onSubmitHandler: SubmitFnType = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag
+  ) => {
+    // @ts-ignore
+    endSubmit(true);
+
+    let newData = {
+      IS_VIEW_NEXT: Boolean(data?.IS_VIEW_NEXT) ? "Y" : "N" ?? "",
+    };
+
+    let oldData = {
+      IS_VIEW_NEXT: mainData?.IS_VIEW_NEXT ? "Y" : "N" ?? "",
+    };
+
+    let upd: any = utilFunction.transformDetailsData(newData, oldData ?? {});
+
+    if (upd?._UPDATEDCOLUMNS?.length > 0) {
+      isErrorFuncRef.current = {
+        data: {
+          ...newData,
+          ...upd,
+          TRAN_CD: mainData?.TRAN_CD ?? "",
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          SR_CD: "1",
+          _isNewRow: formView === "view" ? true : false,
+        },
+        displayData,
+        endSubmit,
+        setFieldError,
+      };
+      setIsOpenSave(true);
+    }
+  };
   return (
     <>
       {/* {isLoading || isFetching ? (
@@ -69,51 +111,49 @@ export const TipsWrapper = ({
         }}
         key="filepreviewDialog"
       >
-        <AppBar
-          position="relative"
-          color="secondary"
-          style={{
-            // marginBottom: "5px",
-            padding: "8px",
-            background: "none",
-            boxShadow: "none",
-          }}
-        >
-          <Toolbar className={headerClasses.root} variant={"dense"}>
-            <Typography
-              className={headerClasses.title}
-              color="inherit"
-              variant={"h6"}
-              component="div"
-            >
-              {dialogLabel}
-              {/* {dialogLabel.charAt(0).toUpperCase() +
-              dialogLabel.slice(1).toLowerCase()} */}
-            </Typography>
-            <GradientButton
-              onClick={closeDialog}
-              style={{
-                backgroundColor: "var(--theme-color5)",
-                height: "32px",
-                width: "20px",
-                borderRadius: "05px",
-                color: "var(--theme-color2)",
-              }}
-            >
-              Close
-            </GradientButton>
-          </Toolbar>
-        </AppBar>
-
         <FormWrapper
-          key={`MessageDescriptionMetadata`}
+          key={`TipsListMetadata`}
           metaData={TipsListMetadata}
-          // initialValues={data?.[0] as InitialValuesType}
-          hideHeader={true}
+          onSubmitHandler={onSubmitHandler}
+          initialValues={mainData as InitialValuesType}
+          // hideHeader={true}
           formStyle={{
             background: "white",
           }}
-        ></FormWrapper>
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              <Button
+                onClick={(event) => {
+                  handleSubmit(event, "Save");
+                }}
+                disabled={isSubmitting}
+                //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                color={"primary"}
+              >
+                Save
+              </Button>
+              <Button
+                onClick={closeDialog}
+                color={"primary"}
+                disabled={isSubmitting}
+              >
+                Close
+              </Button>
+            </>
+          )}
+        </FormWrapper>
+        {isOpenSave ? (
+          <PopupMessageAPIWrapper
+            MessageTitle="Confirmation"
+            Message="Do you want to save this Request?"
+            onActionYes={(rowVal) => onPopupYes(rowVal)}
+            onActionNo={() => onActionCancel()}
+            rows={isErrorFuncRef.current?.data}
+            open={isOpenSave}
+            loading={mutation.isLoading}
+          />
+        ) : null}
       </Dialog>
       {/* )} */}
     </>

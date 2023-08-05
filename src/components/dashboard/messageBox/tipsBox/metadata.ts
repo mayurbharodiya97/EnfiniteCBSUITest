@@ -56,7 +56,7 @@ export const TipsListMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "C_TYPE",
+      name: "DESCRIPTION",
       label: "Description",
       placeholder: "",
       defaultValue: "",

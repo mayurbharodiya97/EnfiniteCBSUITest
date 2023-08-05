@@ -51,7 +51,7 @@ const AccountDetails = () => {
     }
   }, []);
 
-  console.log(rowsDataRef?.current, "rowsDataRef");
+  // console.log(rowsDataRef?.current, "rowsDataRef");
 
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,

@@ -10,3 +10,5 @@ registerFn("getCustomerIdValidate", GeneralAPI.getCustomerIdValidate);
 registerFn("retrieveStatementDetails", GeneralAPI.retrieveStatementDetails);
 registerFn("getBranchCodeList", GeneralAPI.getBranchCodeList);
 registerFn("getReportAccountType", GeneralAPI.getReportAccountType);
+registerFn("getTbgDocMstData", GeneralAPI.getTbgDocMstData);
+registerFn("getActionDetailsData", GeneralAPI.getActionDetailsData);

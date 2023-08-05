@@ -1,2 +1,1 @@
-export * from "./addDynGridConfig";
-export * from "./editDynGridConfig";
+export * from "./DynGridConfig";

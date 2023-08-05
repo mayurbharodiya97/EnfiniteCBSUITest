@@ -292,6 +292,26 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPROPMISCDATA",
     packageName: "",
   },
+  GETTBGDOCMSTDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGDOCMSTDATA",
+    packageName: "",
+  },
+  GETTBGGRIDACTIONDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGGRIDACTIONDATA",
+    packageName: "",
+  },
+  GETCOLMISCDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOLMISCDATA",
+    packageName: "",
+  },
+  VERIFYDYNGRIDQUERY: {
+    url: "commonMasterServiceAPI/VERIFYDYNGRIDQUERY",
+    packageName: "",
+  },
+  DODYNAMICGRIDCONFIG: {
+    url: "commonMasterServiceAPI/DODYNAMICGRIDCONFIG",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

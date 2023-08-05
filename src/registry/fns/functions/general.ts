@@ -129,7 +129,6 @@ const GeneralAPISDK = () => {
     authState,
     dependentFieldValue
   ) => {
-    console.log(dependentFieldValue, ">> dependentFieldValue,");
     if (currentField?.value) {
       const { status, data } = await AuthSDK.internalFetcher("GETACCTDATA", {
         COMP_CD: authState?.companyID ?? "",
@@ -141,7 +140,7 @@ const GeneralAPISDK = () => {
         if (data?.length > 0) {
           //..//
           //..//
-          console.log(data, "??????????data");
+
           const { LST_STATEMENT_DT } = data[0];
           const inputDate = new Date(LST_STATEMENT_DT);
           const nextDate = new Date(inputDate);
@@ -222,7 +221,68 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-
+  const getTbgDocMstData = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETTBGDOCMSTDATA", {
+        COMP_CD: reqData?.[3]?.companyID ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ DOC_TITLE, USER_DEFINE_CD }) => {
+          return {
+            value: USER_DEFINE_CD,
+            label: DOC_TITLE + " - " + USER_DEFINE_CD,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const getActionDetailsData = async (currentField, formState, authState) => {
+    if (currentField?.value) {
+      const { status, data, message, messageDetails } =
+        await AuthSDK.internalFetcher("GETCOLMISCDATA", {
+          CATEGORY_CD: currentField?.value ?? "",
+        });
+      console.log("currentField", currentField);
+      if (status === "0") {
+        return {
+          ACTION_NAME: { value: data?.[0]?.ACTION_NAME },
+          ACTION_LABEL: { value: data?.[0]?.ACTION_LABEL },
+          ACTION_ICON: { value: data?.[0]?.ACTION_ICON },
+          ROW_DOUBLE_CLICK: { value: data?.[0]?.ROW_DOUBLE_CLICK },
+          ALWAYS_AVALIBALE: { value: data?.[0]?.ALWAYS_AVALIBALE },
+          MULTIPLE: { value: data?.[0]?.MULTIPLE },
+          SHOULD_EXCLUDE: { value: data?.[0]?.SHOULD_EXCLUDE },
+          ON_ENTER_SUBMIT: { value: data?.[0]?.ON_ENTER_SUBMIT },
+          START_ICON: { value: data?.[0]?.START_ICON },
+          END_ICON: { value: data?.[0]?.END_ICON },
+          ROTATE_ICON: { value: data?.[0]?.ROTATE_ICON },
+          IS_NO_DATA_THEN_SHOW: { value: data?.[0]?.IS_NO_DATA_THEN_SHOW },
+          TOOLTIP: { value: data?.[0]?.TOOLTIP },
+        };
+      } else {
+        return {
+          ACTION_NAME: { value: "" },
+          ACTION_LABEL: { value: "" },
+          ACTION_ICON: { value: "" },
+          ROW_DOUBLE_CLICK: { value: "" },
+          ALWAYS_AVALIBALE: { value: "" },
+          MULTIPLE: { value: "" },
+          SHOULD_EXCLUDE: { value: "" },
+          ON_ENTER_SUBMIT: { value: "" },
+          START_ICON: { value: "" },
+          END_ICON: { value: "" },
+          ROTATE_ICON: { value: "" },
+          IS_NO_DATA_THEN_SHOW: { value: "" },
+          TOOLTIP: { value: "" },
+        };
+      }
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -234,6 +294,8 @@ const GeneralAPISDK = () => {
     retrieveStatementDetails,
     getBranchCodeList,
     getReportAccountType,
+    getTbgDocMstData,
+    getActionDetailsData,
   };
 };
 

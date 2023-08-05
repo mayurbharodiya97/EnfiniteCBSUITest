@@ -15,8 +15,7 @@ import { GridMetaDataType } from "components/dataTable/types";
 import { ActionTypes } from "components/dataTable";
 import * as API from "./api";
 import { DynamicGridConfigGridMData } from "./gridMetadata";
-import { AddDynamicGridConfigWrapper } from "./dynamicGridConfigCrud/addDynGridConfig";
-import { ViewEditDynamicGridConfigWrapper } from "./dynamicGridConfigCrud/editDynGridConfig";
+import { DynamicGridConfigWrapper } from "./dynamicGridConfigCrud/DynGridConfig";
 import { AuthContext } from "pages_audit/auth";
 // import {
 //   AddDynamicReportConfigWrapper,
@@ -83,8 +82,8 @@ export const DynamicGridConfig = () => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getDynamicReportConfigGridData"], () =>
-    API.getDynamicgridConfigGridData({
+  >(["getDynamicGridConfigGridData"], () =>
+    API.getDynamicGridConfigGridData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
     })
@@ -95,7 +94,7 @@ export const DynamicGridConfig = () => {
       // entries.forEach((one) => {
       //   queryClient.removeQueries(one);
       // });
-      queryClient.removeQueries(["getDynamicgridConfigGridData"]);
+      queryClient.removeQueries(["getDynamicGridConfigGridData"]);
     };
   }, [getEntries]);
 
@@ -133,9 +132,10 @@ export const DynamicGridConfig = () => {
         <Route
           path="add/*"
           element={
-            <AddDynamicGridConfigWrapper
+            <DynamicGridConfigWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
+              defaultView={"add"}
             />
           }
         />
@@ -151,7 +151,7 @@ export const DynamicGridConfig = () => {
         <Route
           path="view-details/*"
           element={
-            <ViewEditDynamicGridConfigWrapper
+            <DynamicGridConfigWrapper
               isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
               defaultView={"view"}

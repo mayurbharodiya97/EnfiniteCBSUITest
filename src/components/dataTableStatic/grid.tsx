@@ -217,6 +217,9 @@ export const DataGrid = ({
     );
   };
   const handleContextUpDownKey = (rowsToDisplay, _rowindex) => (e) => {
+    if (e?.target?.tagName === "INPUT") {
+      return;
+    }
     if (e.key !== "Enter" && e.key !== "Tab") {
       e.preventDefault();
     }
