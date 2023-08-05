@@ -57,33 +57,40 @@ export const getAcctInqStatement = async ({
   rowsData,
   COMP_CD,
   workingDate,
+  screenFlag,
+  FULL_ACCT_NO,
 }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETACCTDATA", {
-      ACCT_CD: rowsData?.[0]?.data?.ACCT_CD,
-      ACCT_TYPE: rowsData?.[0]?.data?.ACCT_TYPE,
-      BRANCH_CD: rowsData?.[0]?.data?.BRANCH_CD,
-      COMP_CD: COMP_CD,
-    });
-  if (status === "0") {
-    const { LST_STATEMENT_DT } = data[0];
-    const inputDate = new Date(LST_STATEMENT_DT);
-    const nextDate = new Date(inputDate);
-    let NEwdate = nextDate.setDate(nextDate.getDate() + 1);
-    // Make sure to adjust the timezone offset to match your desired output
-    const timezoneOffset = nextDate.getTimezoneOffset() * 60000; // Convert to milliseconds
-    const STMT_FROM_DATE = new Date(NEwdate - timezoneOffset)
-      .toISOString()
-      .slice(0, 23);
-    data[0].STMT_FROM_DATE = STMT_FROM_DATE;
+  if (screenFlag === "ACCT_INQ") {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETACCTDATA", {
+        ACCT_CD: rowsData?.[0]?.data?.ACCT_CD,
+        ACCT_TYPE: rowsData?.[0]?.data?.ACCT_TYPE,
+        BRANCH_CD: rowsData?.[0]?.data?.BRANCH_CD,
+        COMP_CD: COMP_CD,
+        FULL_ACCT_NO: FULL_ACCT_NO,
+      });
+    if (status === "0") {
+      const { LST_STATEMENT_DT } = data[0];
+      const inputDate = new Date(LST_STATEMENT_DT);
+      const nextDate = new Date(inputDate);
+      let NEwdate = nextDate.setDate(nextDate.getDate() + 1);
+      // Make sure to adjust the timezone offset to match your desired output
+      const timezoneOffset = nextDate.getTimezoneOffset() * 60000; // Convert to milliseconds
+      const STMT_FROM_DATE = new Date(NEwdate - timezoneOffset)
+        .toISOString()
+        .slice(0, 23);
+      data[0].STMT_FROM_DATE = STMT_FROM_DATE;
 
-    const [day, month, year] = workingDate.split("/");
-    const dateObject = new Date(`${year}-${month}-${day}`);
-    const WK_DATE = dateObject.toISOString().slice(0, 10);
-    data[0].WK_STMT_TO_DATE = WK_DATE;
+      const [day, month, year] = workingDate.split("/");
+      const dateObject = new Date(`${year}-${month}-${day}`);
+      const WK_DATE = dateObject.toISOString().slice(0, 10);
+      data[0].WK_STMT_TO_DATE = WK_DATE;
 
-    return data;
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
   } else {
-    throw DefaultErrorObject(message, messageDetails);
+    return [];
   }
 };

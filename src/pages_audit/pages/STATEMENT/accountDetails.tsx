@@ -51,17 +51,26 @@ const AccountDetails = () => {
     }
   }, []);
 
-  console.log(rowsDataRef?.current, "rowsDataRef");
+  // console.log(rowsDataRef?.current?.FULL_ACCT_NO, ".");
 
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["StatementDetailsData"], () =>
     API.StatementDetailsData({
-      COMP_CD: authState?.authState?.companyID ?? "",
-      ACCT_CD: rowsDataRef.current?.ACCT_CD ?? "",
-      ACCT_TYPE: rowsDataRef.current?.ACCT_TYPE ?? "",
-      BRANCH_CD: rowsDataRef.current?.BRANCH_CD ?? "",
+      COMP_CD: authState?.authState?.companyID,
+      ACCT_CD: rowsDataRef?.current?.FULL_ACCT_NO
+        ? ""
+        : rowsDataRef.current?.ACCT_CD ?? "",
+      ACCT_TYPE: rowsDataRef?.current?.FULL_ACCT_NO
+        ? ""
+        : rowsDataRef.current?.ACCT_TYPE ?? "",
+      BRANCH_CD: rowsDataRef?.current?.FULL_ACCT_NO
+        ? ""
+        : rowsDataRef.current?.BRANCH_CD ?? "",
+      FULL_ACCT_NO: rowsDataRef?.current?.FULL_ACCT_NO
+        ? rowsDataRef?.current?.FULL_ACCT_NO
+        : "",
       FROM_DT: isValidDate(rowsDataRef.current?.STMT_FROM_DATE)
         ? format(
             new Date(rowsDataRef.current?.STMT_FROM_DATE),
@@ -75,13 +84,6 @@ const AccountDetails = () => {
           ) ?? ""
         : format(new Date(), "dd-MMM-yyyy"),
       METADATA: "STMT",
-      // COMP_CD: "132",
-      // ACCT_CD: "000209",
-      // ACCT_TYPE: "450",
-      // BRANCH_CD: "014",
-      // FROM_DT: "02-Jul-2023",
-      // TO_DT: "24-Jul-2023",
-      // METADATA: "STMT",
     })
   );
 
