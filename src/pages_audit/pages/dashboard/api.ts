@@ -28,7 +28,6 @@ export const QuickAccessTableGridData = async ({
       BASE_BRANCH_CD: BASE_BRANCH_CD,
       ASON_DT: format(new Date(), "dd/MMM/yyyy"),
       GROUP_NAME: GROUP_NAME,
-      IMG_PATH: "",
       FLAG: FLAG.toUpperCase(),
       APP_TRAN_CD: APP_TRAN_CD,
     });

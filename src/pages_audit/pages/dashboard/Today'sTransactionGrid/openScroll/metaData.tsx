@@ -43,6 +43,7 @@ export const scrollMetaData = {
       width: 150,
       color: "green",
       isDisplayTotal: true,
+      // componentType: "currency",
     },
 
     {
@@ -51,6 +52,7 @@ export const scrollMetaData = {
       width: 150,
       color: "red",
       isDisplayTotal: true,
+      // componentType: "currency",
     },
     {
       columnName: "Tr.Branch",

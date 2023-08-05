@@ -7,8 +7,14 @@ registerFn("getValidateValue", GeneralAPI.getValidateValue);
 registerFn("getCustType", GeneralAPI.getCustType);
 registerFn("getAccountTypeList", GeneralAPI.getAccountTypeList);
 registerFn("getCustomerIdValidate", GeneralAPI.getCustomerIdValidate);
-registerFn("retrieveStatementDetails", GeneralAPI.retrieveStatementDetails);
+registerFn(
+  "retrieveStatementDtlFullAcctNo",
+  GeneralAPI.retrieveStatementDtlFullAcctNo
+);
+registerFn("retrieveStatementDtlAcctCd", GeneralAPI.retrieveStatementDtlAcctCd);
+
 registerFn("getBranchCodeList", GeneralAPI.getBranchCodeList);
+registerFn("retrieveStatementDetails", GeneralAPI.retrieveStatementDetails);
 registerFn("getReportAccountType", GeneralAPI.getReportAccountType);
 registerFn("getTbgDocMstData", GeneralAPI.getTbgDocMstData);
 registerFn("getActionDetailsData", GeneralAPI.getActionDetailsData);

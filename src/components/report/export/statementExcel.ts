@@ -148,6 +148,16 @@ export const ExcelForStatementExport = async ({
     }
   }
 
+  cellIndex += 4;
+
+  const andStmtCell = sheet.cell(`A${cellIndex}`);
+  andStmtCell
+    .value(
+      "******************************************** END OF STATEMENT ************************************************"
+    )
+    .style({ bold: true });
+  sheet.range(`A${cellIndex}:H${cellIndex}`).merged(true);
+
   const wbout = await wb.outputAsync();
   const blob = new Blob([wbout], { type: "application/octet-stream" });
 

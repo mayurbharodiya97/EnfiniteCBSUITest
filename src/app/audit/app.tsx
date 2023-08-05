@@ -28,8 +28,8 @@ export const App = () => {
               <IndexPage />
             </SnackbarProvider>
             {/* {process.env.NODE_ENV !== "production" ? (
-              <ReactQueryDevtools />
-            ) : null} */}
+                <ReactQueryDevtools />
+              ) : null} */}
           </QueryClientProvider>
         </StyledEngineProvider>
       </ThemeProvider>

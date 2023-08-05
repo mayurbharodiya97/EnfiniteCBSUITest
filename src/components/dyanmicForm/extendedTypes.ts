@@ -398,7 +398,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     enableNumWords: false,
   },
-  accountNumber: {
+  accountCode: {
     render: {
       componentType: "textField",
     },
@@ -406,20 +406,21 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     name: "ACCT_CD",
     required: true,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
-    postValidationSetCrossFieldValues: "retrieveStatementDetails",
+    postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
     schemaValidation: {
       type: "string",
       rules: [
         { name: "required", params: ["Account code is required"] },
         {
-          name: "min",
-          params: [6, "Account code should not be less than 10 digits"],
-        },
-        {
           name: "max",
           params: [20, "Account code should not exceed 20 digits"],
         },
       ],
+    },
+    GridProps: {
+      xs: 12,
+      md: 4,
+      sm: 4,
     },
     FormatProps: {
       // format: "###########",
@@ -488,23 +489,19 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
 
   fullAccountNumber: {
     render: {
-      componentType: "numberFormat",
+      componentType: "textField",
     },
-    name: "ACCT_NO",
+    name: "FULL_ACCT_NO",
     label: "fullAccountNumber",
+    postValidationSetCrossFieldValues: "retrieveStatementDtlFullAcctNo",
     schemaValidation: {
       type: "string",
-      rules: [
-        { name: "required", params: ["Account No is required"] },
-        {
-          name: "min",
-          params: [10, "Account No should not be less than 10 digits"],
-        },
-        {
-          name: "max",
-          params: [20, "Account No should not exceed 20 digits"],
-        },
-      ],
+      rules: [{ name: "required", params: ["Full account No is required"] }],
+    },
+    GridProps: {
+      xs: 12,
+      md: 6,
+      sm: 6,
     },
   },
   branchCode: {
@@ -520,6 +517,11 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     label: "Branch Code",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
+    GridProps: {
+      xs: 12,
+      md: 4,
+      sm: 4,
+    },
   },
 
   accountType: {
@@ -535,6 +537,11 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     label: "AccountType",
     options: GeneralAPI.getAccountTypeList,
     _optionsKey: "getAccountTypeList",
+    GridProps: {
+      xs: 12,
+      md: 4,
+      sm: 4,
+    },
   },
 
   userAccessableTypeForLoginBranch: {

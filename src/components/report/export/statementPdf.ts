@@ -278,6 +278,16 @@ const exportToPDF = (data, companyName, generatedBy, RequestingBranchCode) => {
       exportContentStartY = startY; // Update the starting Y position for the next "onlyExport" content
     }
   }
+  startY += 10;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  // const bankNameX = logoX + logoWidth + 30;
+  // const bankNameY = logoY + 7;
+  doc.text(
+    "********************************************** END OF STATEMENT *******************************************",
+    10,
+    startY
+  );
 
   doc.save("data.pdf");
 };
