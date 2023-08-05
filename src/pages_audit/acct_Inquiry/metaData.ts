@@ -3,6 +3,8 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
 import { lessThanDate } from "registry/rulesEngine";
+import { useContext } from "react";
+import { AuthContext } from "pages_audit/auth";
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
@@ -381,7 +383,7 @@ export const PassbookStatement: any = {
     },
   },
   fields: [
-    { render: { componentType: "_accountNumber" } },
+    { render: { componentType: "_accountNumber" }, para: " " },
     {
       render: {
         componentType: "textField",
@@ -395,8 +397,8 @@ export const PassbookStatement: any = {
 
       GridProps: {
         xs: 12,
-        md: 8,
-        sm: 8,
+        md: 6,
+        sm: 6,
       },
     },
 
@@ -408,25 +410,18 @@ export const PassbookStatement: any = {
       label: "From Date :-",
       format: "dd/MM/yyyy",
       placeholder: "",
-
       GridProps: {
         xs: 12,
         md: 6,
         sm: 6,
       },
-      // onFocus: (date) => {
-      //   console.log("<<<F", date);
-      //   date.target.select();
-      // },
+      onFocus: (date) => {
+        date.target.select();
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["From Date is required."] }],
       },
-      // validate: (value, data, other) => {
-      //   if (value?.value === "") {
-      //     return "This field is required";
-      //   }
-      // },
     },
     {
       render: {
@@ -436,31 +431,29 @@ export const PassbookStatement: any = {
       label: "To Date :-",
       placeholder: "",
       format: "dd/MM/yyyy",
-      dependentFields: ["FROM_DT"],
+      dependentFields: ["STMT_FROM_DATE"],
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Effective To is required."] }],
+        rules: [{ name: "required", params: [" To date is required."] }],
       },
-      // onFocus: (date) => {
-      //   console.log(date, "<<<T");
-      //   date.target.select();
-      // },
+      onFocus: (date) => {
+        date.target.select();
+      },
       runValidationOnDependentFieldsChange: true,
-
-      // validate: {
-      //   conditions: {
-      //     all: [
-      //       {
-      //         fact: "dependentFields",
-      //         path: "$.FROM_DT.value",
-      //         operator: "lessThanInclusiveDate",
-      //         value: { fact: "currentField", path: "$.value" },
-      //       },
-      //     ],
-      //   },
-      //   success: "",
-      //   failure: "To Date should be greater than or equal to From Date.",
-      // },
+      validate: {
+        conditions: {
+          all: [
+            {
+              fact: "dependentFields",
+              path: "$.STMT_FROM_DATE.value",
+              operator: "lessThanInclusiveDate",
+              value: { fact: "currentField", path: "$.value" },
+            },
+          ],
+        },
+        success: "",
+        failure: "To Date should be greater than or equal to From Date.",
+      },
 
       // validate: (value, data, others) => {
       //   if (!Boolean(value?.value)) {
@@ -820,7 +813,6 @@ export const PassbookStatementInq = {
       },
       defaultValue: new Date(),
       onFocus: (date) => {
-        console.log("<<<F", date);
         date.target.select();
       },
       schemaValidation: {
@@ -864,7 +856,6 @@ export const PassbookStatementInq = {
         rules: [{ name: "required", params: ["Effective To is required."] }],
       },
       onFocus: (date) => {
-        console.log(date, "<<<T");
         date.target.select();
       },
       // dependentFields: ["STMT_FROM_DATE"],

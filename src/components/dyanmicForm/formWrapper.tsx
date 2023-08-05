@@ -1,4 +1,10 @@
-import { forwardRef, Suspense, useImperativeHandle, useState } from "react";
+import {
+  forwardRef,
+  Suspense,
+  useContext,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { FormContext, useForm } from "packages/form";
 import { cloneDeep } from "lodash-es";
 import { renderFieldsByGroup } from "./utils/groupWiserenderer";
@@ -20,6 +26,8 @@ import { useStyles } from "./style";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useTranslation } from "react-i18next";
+import { AuthContext } from "pages_audit/auth";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 // import DateFnsUtils from "@date-io/date-fns";
 export const FormWrapper = forwardRef<FormWrapperProps, any>(
   (
@@ -52,7 +60,15 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     //this line is very important to preserve our metaData across render - deep clone hack
     let metaData = cloneDeep(freshMetaData) as MetaDataType;
     //let metaData = JSON.parse(JSON.stringify(freshMetaData)) as MetaDataType;
-    metaData = extendFieldTypes(metaData, extendedMetaData, t);
+    const { authState } = useContext(AuthContext);
+    const customParameters = useContext(CustomPropertiesConfigurationContext);
+    metaData = extendFieldTypes(
+      metaData,
+      extendedMetaData,
+      t,
+      authState,
+      customParameters
+    );
     metaData = attachMethodsToMetaData(metaData);
     metaData = MoveSequenceToRender(metaData);
     const groupWiseFields = renderFieldsByGroup(

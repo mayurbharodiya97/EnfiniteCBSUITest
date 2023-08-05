@@ -122,26 +122,58 @@ const GeneralAPISDK = () => {
       };
     }
   };
-
-  const retrieveStatementDetails = async (
+  const retrieveStatementDtlFullAcctNo = async (
     currentField,
     formState,
     authState,
     dependentFieldValue
   ) => {
-    console.log(dependentFieldValue, ">> dependentFieldValue,");
+    return retrieveStatementDetails(
+      currentField,
+      formState,
+      authState,
+      dependentFieldValue,
+      "FULL_ACCT_NO"
+    );
+  };
+  const retrieveStatementDtlAcctCd = async (
+    currentField,
+    formState,
+    authState,
+    dependentFieldValue
+  ) => {
+    return retrieveStatementDetails(
+      currentField,
+      formState,
+      authState,
+      dependentFieldValue,
+      "ACCT_CD"
+    );
+  };
+  const retrieveStatementDetails = async (
+    currentField,
+    formState,
+    authState,
+    dependentFieldValue,
+    reqFlag
+  ) => {
     if (currentField?.value) {
       const { status, data } = await AuthSDK.internalFetcher("GETACCTDATA", {
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: dependentFieldValue?.BRANCH_CD?.value ?? "",
-        ACCT_TYPE: dependentFieldValue?.ACCT_TYPE?.value ?? "",
-        ACCT_CD: currentField?.value ?? "",
+        COMP_CD: authState?.companyID,
+        BRANCH_CD:
+          reqFlag === "ACCT_CD" ? dependentFieldValue?.BRANCH_CD?.value : "",
+        ACCT_TYPE:
+          reqFlag === "ACCT_CD" ? dependentFieldValue?.ACCT_TYPE?.value : "",
+        ACCT_CD: reqFlag === "ACCT_CD" ? currentField?.value : "",
+        FULL_ACCT_NO: reqFlag === "ACCT_CD" ? "" : currentField?.value,
+
+        // requestParams,
       });
+
       if (status === "0") {
         if (data?.length > 0) {
           //..//
           //..//
-          console.log(data, "??????????data");
           const { LST_STATEMENT_DT } = data[0];
           const inputDate = new Date(LST_STATEMENT_DT);
           const nextDate = new Date(inputDate);
@@ -162,7 +194,12 @@ const GeneralAPISDK = () => {
                 : new Date(),
             },
             WK_STMT_TO_DATE: {
-              value: new Date(),
+              value: isValidDate(authState?.workingDate)
+                ? format(
+                    new Date(authState?.workingDate),
+                    "dd/MM/yyyy" ?? new Date()
+                  )
+                : new Date(),
             },
           };
         } else {
@@ -231,6 +268,8 @@ const GeneralAPISDK = () => {
     getCustType,
     getAccountTypeList,
     getCustomerIdValidate,
+    retrieveStatementDtlFullAcctNo,
+    retrieveStatementDtlAcctCd,
     retrieveStatementDetails,
     getBranchCodeList,
     getReportAccountType,

@@ -22,6 +22,8 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
         rowsData,
         COMP_CD: authState.companyID,
         workingDate: authState?.workingDate,
+        screenFlag: screenFlag,
+        FULL_ACCT_NO: "",
       })
   );
 
@@ -48,6 +50,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
     setFieldError,
     actionFlag
   ) => {
+    // onClose();
     endSubmit(true);
     if (screenFlag === "ACCT_INQ") {
       const combinedData = { ...rowsData?.[0]?.data, ...data };
@@ -60,11 +63,9 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
     } else {
       const dataString = JSON.stringify(data);
       sessionStorage.setItem("myData", dataString);
-      const newWindow = window.open("./view-statement", "_blank");
-      if (newWindow) {
-        newWindow.focus();
-      }
+      window.location.reload();
     }
+    handleClose();
   };
 
   let finalMetadata: any = null;

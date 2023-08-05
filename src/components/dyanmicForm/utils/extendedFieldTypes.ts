@@ -6,7 +6,9 @@ import {
 export const extendFieldTypes = (
   metaData: MetaDataType,
   extendedTypes: ExtendedFieldMetaDataTypeOptional,
-  lanTranslate: any = (edata) => edata
+  lanTranslate: any = (edata) => edata,
+  authState: any = {},
+  customParameters: any = {}
 ) => {
   const newMetaDataFields = metaData.fields.map((one) => {
     const extendedType = extendedTypes[one.render.componentType];
@@ -51,39 +53,49 @@ export const extendFieldTypes = (
     one["placeholder"] = lanTranslate(one["placeholder"]);
     return one;
   });
+
   let newMetaDataFieldsCustom: any = [];
-  const paravalue: string = "2";
-  newMetaDataFields.forEach((item) => {
+  const paravalue: string = customParameters?.dynamicAccountNumberField;
+  const processExtendedType = (key: string) => {
+    const field = extendedTypes[key];
+    if (typeof field === "object") {
+      field["label"] = lanTranslate(field["label"]);
+      field["placeholder"] = lanTranslate(field["placeholder"]);
+      if (key === "branchCode") {
+        // Set the default value for branchCode
+        field["defaultValue"] = authState?.user?.branchCode; // Use the branchCodeValue parameter
+      } else if (key === "accountType") {
+        // Set autofocus on the accountType field
+        field["autoFocus"] = true;
+      }
+      newMetaDataFieldsCustom.push(field);
+    }
+  };
+
+  newMetaDataFields?.forEach((item) => {
     if (item.render.componentType === "_accountNumber") {
-      if (paravalue === "1") {
+      if (item?.para === "1") {
         const fullAccountNumber = extendedTypes["fullAccountNumber"];
         if (typeof fullAccountNumber === "object") {
-          newMetaDataFieldsCustom = [
-            ...newMetaDataFieldsCustom,
-            fullAccountNumber,
-          ];
+          newMetaDataFieldsCustom.push(fullAccountNumber);
         }
+      } else if (item?.para === "2") {
+        ["branchCode", "accountType", "accountCode"].forEach(
+          processExtendedType
+        );
+      } else if (paravalue === "1") {
+        const fullAccountNumber = extendedTypes["fullAccountNumber"];
+        if (typeof fullAccountNumber === "object") {
+          newMetaDataFieldsCustom.push(fullAccountNumber);
+        }
+      } else if (paravalue === "2") {
+        ["branchCode", "accountType", "accountCode"].forEach(
+          processExtendedType
+        );
       } else {
-        const branchCode = extendedTypes["branchCode"];
-        const accountType = extendedTypes["accountType"];
-        const accountNumber = extendedTypes["accountNumber"];
-        if (typeof branchCode === "object") {
-          branchCode["label"] = lanTranslate(branchCode["label"]);
-          branchCode["placeholder"] = lanTranslate(branchCode["placeholder"]);
-          newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, branchCode];
-        }
-        if (typeof accountType === "object") {
-          accountType["label"] = lanTranslate(accountType["label"]);
-          accountType["placeholder"] = lanTranslate(accountType["placeholder"]);
-          newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, accountType];
-        }
-        if (typeof accountNumber === "object") {
-          accountNumber["label"] = lanTranslate(accountNumber["label"]);
-          accountNumber["placeholder"] = lanTranslate(
-            accountNumber["placeholder"]
-          );
-          newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, accountNumber];
-        }
+        ["branchCode", "accountType", "accountCode"].forEach(
+          processExtendedType
+        );
       }
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];

@@ -61,7 +61,6 @@ export const Accountinquiry = ({ open, onClose }) => {
     setFieldError?: any;
   }
 
-  // console.log("<<<r", rowsData);
   const insertFormDataFnWrapper =
     (insertFormData) =>
     async ({ data }: InsertFormDataFnType) => {

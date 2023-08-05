@@ -9,6 +9,7 @@ export const StatementDetailsData = async ({
   FROM_DT,
   TO_DT,
   METADATA,
+  FULL_ACCT_NO,
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTDTL", {
@@ -19,6 +20,7 @@ export const StatementDetailsData = async ({
       TO_DT: TO_DT,
       METADATA: METADATA,
       BRANCH_CD: BRANCH_CD,
+      FULL_ACCT_NO: FULL_ACCT_NO,
     });
   if (status === "0") {
     return data;
