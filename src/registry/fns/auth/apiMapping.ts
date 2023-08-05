@@ -223,6 +223,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETSEARCHUSERDATA",
     packageName: "",
   },
+  RELATIONSHIPMANAGER: {
+    url: "/customerServiceAPI/RELATIONSHIPMANAGER",
+    packageName: "",
+  },
+  GETCUSTOMERLIST: {
+    url: "/customerServiceAPI/GETCUSTOMERLIST",
+    packageName: "",
+  },
+  GETPENDINGCUSTLIST: {
+    url: "/customerServiceAPI/GETPENDINGCUSTLIST",
+    packageName: "",
+  },
   GETACCTDTL: {
     url: "/accountServiceAPI/GETACCTDTL",
     packageName: "",

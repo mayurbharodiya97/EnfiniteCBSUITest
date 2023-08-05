@@ -10,6 +10,7 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
+import { CkycContext } from '../CkycContext';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -137,14 +138,15 @@ function ColorlibStepIcon(props: StepIconProps) {
 
 const steps = ['Personal Details', 'KYC', 'Declaration', 'Related Person Details', 'Other Details', 'Other Address', 'NRI Details', 'Attestation'];
 
-export default function TabStepper({currentTab, setColTabValue}) {
+export default function TabStepper() {
+  const { state, handleColTabChangectx } = React.useContext(CkycContext);
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
-      <Stepper alternativeLabel activeStep={currentTab} connector={<QontoConnector />}>
+      <Stepper alternativeLabel activeStep={state?.colTabValuectx} connector={<QontoConnector />}>
         {steps.map((label, i) => {
             // console.log("qwdQDW",)
           return <Step sx={{}} key={label}>
-            <StepLabel sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {setColTabValue(i)}}>{label}</StepLabel>
+            <StepLabel sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{label}</StepLabel>
           </Step>
         })}
       </Stepper>

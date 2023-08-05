@@ -164,17 +164,17 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
   // filters: [],
   columns: [
     {
-      accessor: "CUST_TYPE",
-      columnName: "CustomerType",
+      accessor: "CATEGORY_CONSTITUTIONS",
+      columnName: "CategoryConstitution",
       sequence: 1,
       alignment: "left",
       componentType: "default",
-      width: 140,
-      minWidth: 140,
-      maxWidth: 180,
+      width: 340,
+      minWidth: 340,
+      maxWidth: 580,
     },
     {
-      accessor: "CUST_ID",
+      accessor: "CUSTOMER_ID",
       columnName: "CustomerId",
       sequence: 2,
       alignment: "left",
@@ -194,7 +194,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "MOB_NO",
+      accessor: "MOBILE_NUMBER",
       columnName: "MobileNo",
       sequence: 4,
       alignment: "left",
@@ -204,14 +204,14 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "CUST_NAME",
+      accessor: "CUSTOMER_NAME",
       columnName: "CustomerName",
       sequence: 5,
       alignment: "left",
       componentType: "default",
-      width: 140,
-      minWidth: 140,
-      maxWidth: 180,
+      width: 340,
+      minWidth: 240,
+      maxWidth: 340,
     },
     {
       accessor: "BRANCH",
@@ -224,7 +224,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "Active",
+      accessor: "ACTIVE",
       columnName: "Active",
       sequence: 7,
       alignment: "left",
@@ -234,7 +234,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "KYC_NUMBER",
+      accessor: "KYC_NO",
       columnName: "CkycNo",
       sequence: 8,
       alignment: "left",
@@ -244,7 +244,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "Req_No",
+      accessor: "REQUEST_CD",
       columnName: "ReqNo",
       sequence: 9,
       alignment: "left",
@@ -256,7 +256,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     {
       columnName: "Remarks",
       componentType: "buttonRowCell",
-      accessor: "TENURES",
+      accessor: "REMARKS",
       sequence: 10,
       buttonLabel: "Remarks",
       // isVisible: false,
@@ -367,9 +367,10 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
   },
   fields: [
     {
-      accessor: "CUST_ID",
-      name: "CUST_ID",
+      accessor: "CUSTOMER_ID",
+      name: "CUSTOMER_ID",
       label: "CustomerId",
+      defaultfocus: true,
       // placeholder: "Select Option",
       gridconfig: { xs: 6, sm: 3 },
       // defaultValue: "A",
@@ -383,12 +384,12 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
       //   { label: "Card Number", value: "C" },
       //   { label: "Client ID", value: "I" },
       // ],
-      validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue)) {
-          return "This field is required.";
-        }
-        return "";
-      },
+      // validate: (columnValue, allField, flag) => {
+      //   if (!Boolean(columnValue)) {
+      //     return "This field is required.";
+      //   }
+      //   return "";
+      // },
     },
     {
       accessor: "KYC_NUMBER",
@@ -401,21 +402,20 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
       isVisible: false,
       isColumnHidingDisabled: false,
       entertoSubmit: true,
-      validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue)) {
-          return "This field is required.";
-        }
-        return "";
-      },
+      // validate: (columnValue, allField, flag) => {
+      //   if (!Boolean(columnValue)) {
+      //     return "This field is required.";
+      //   }
+      //   return "";
+      // },
     },
     {
-      accessor: "ACC_NO",
-      name: "ACC_NO",
+      accessor: "ACCT_NO",
+      name: "ACCT_NO",
       defaultValue: "",
       label: "AccountNo",
       gridconfig: { xs: 6, sm: 3 },
       // placeholder: "Please Enter Account Number",
-      defaultfocus: true,
       autoComplete: "off",
       isVisible: true,
       isColumnHidingDisabled: false,
@@ -442,12 +442,12 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
           };
         }
       },
-      validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue)) {
-          return "This field is required.";
-        }
-        return "";
-      },
+      // validate: (columnValue, allField, flag) => {
+      //   if (!Boolean(columnValue)) {
+      //     return "This field is required.";
+      //   }
+      //   return "";
+      // },
     },
     {
       accessor: "PAN_NO",
@@ -489,8 +489,8 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
       },
     },
     {
-      accessor: "MOBILE_NO",
-      name: "MOBILE_NO",
+      accessor: "CONTACT2",
+      name: "CONTACT2",
       label: "MobileNo",
       // placeholder: "Mobile Number",
       type: "number",
@@ -499,8 +499,8 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
       gridconfig: { xs: 6, sm: 3 },
     },
     {
-      accessor: "MAIL_ID",
-      name: "MAIL_ID",
+      accessor: "E_MAIL_ID",
+      name: "E_MAIL_ID",
       label: "EmailId",
       // placeholder: "E-Mail Address",
       // isDisabled: true,
@@ -508,8 +508,8 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
       gridconfig: { xs: 6, sm: 4 },
     },
     {
-      accessor: "CUST_NAME",
-      name: "CUST_NAME",
+      accessor: "ACCT_NM",
+      name: "ACCT_NM",
       label: "CustomerName",
       // placeholder: "Name",
       // isDisabled: true,

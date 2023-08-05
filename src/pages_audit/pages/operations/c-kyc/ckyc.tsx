@@ -22,11 +22,11 @@ import {
 } from "./metadata";
 import { FormComponentView } from "components/formcomponent";
 import { FilterFormMetaType } from "components/formcomponent/filterform";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
-
+import { CkycContext } from "./CkycContext";
 
 export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -226,6 +226,7 @@ function TabPanel(props: TabPanelProps) {
 
 export const Ckyc = () => {
   const { t } = useTranslation();
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx, handleCustCategoryRes} = useContext(CkycContext);
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
@@ -235,6 +236,7 @@ export const Ckyc = () => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false)
   const handleSidebarExpansion = () => {
     setIsSidebarExpanded((prevState) => !prevState)
+    handleSidebarExpansionctx()
   }
   const [isFormModalOpen, setIsFormModalOpen] = React.useState(false);
   const [entityType, setEntityType] = React.useState<null | string>(null);
@@ -251,12 +253,12 @@ export const Ckyc = () => {
     ["getCIFCategories", {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTITY_TYPE: entityType
-    }, {enabled: !!entityType}],
+      ENTITY_TYPE: state?.entityTypectx
+    }, {enabled: !!state?.entityTypectx}],
     () => API.getCIFCategories({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTITY_TYPE: entityType
+      ENTITY_TYPE: state?.entityTypectx
     })
   );
 
@@ -265,10 +267,16 @@ export const Ckyc = () => {
     () => API.getPMISCData("CKYC_ACCT_TYPE")
   );
 
+  const mutation: any = useMutation(API.getRetrieveData, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+
   useEffect(() => {
     if(!isLoading) {
       console.log(data, "asddsa")
-      setCustomerCategories(data)
+      // setCustomerCategories(data)
+      handleCustCategoryRes(data)
     }
   }, [data, isLoading])
 
@@ -280,27 +288,32 @@ export const Ckyc = () => {
   // }, [AccTypeOptions, isAccTypeLoading])
 
 useEffect(() => { 
-  console.log('entityType changed', entityType)
-  if(entityType) {
+  console.log('entityType changed', state?.entityTypectx)
+  if(state?.entityTypectx) {
     refetch()
   }
-}, [entityType])
+}, [state?.entityTypectx])
 
-  const handleFormModalOpen = (type:String) => {
-    setIsFormModalOpen(true)
-    if(type) {
-      setEntityType(type.toString())
-    }
-  };
+  useEffect(() => {
+    console.log("wadqwdwq", state?.colTabValuectx, state?.formDatactx)
+  }, [state?.colTabValuectx, state?.formDatactx])
+
+  // const handleFormModalOpen = (type:String) => {
+    // setIsFormModalOpen(true)
+    // if(type) {
+    //   setEntityType(type.toString())
+    // }
+  // };
   const handleFormModalClose = () => {
-    setIsFormModalOpen(false)
-    setEntityType(null)
-    setColTabValue(false)
-    setCategoryValue(null)
-    setConstitutionValue(null)
-    setAccTypeValue(null)
-    setTabsApiRes([])
-    // setCustomerCategories([])
+    handleFormModalClosectx()
+    // setIsFormModalOpen(false)
+    // setEntityType(null)
+    // setColTabValue(false)
+    // setCategoryValue(null)
+    // setConstitutionValue(null)
+    // setAccTypeValue(null)
+    // setTabsApiRes([])
+    // // setCustomerCategories([])
   }  
 
 
@@ -405,7 +418,7 @@ useEffect(() => {
           <Tooltip title={t("IndividualCustTooltip")}><Button 
             color="secondary" 
             variant="contained" 
-            onClick={() => handleFormModalOpen("I")} 
+            onClick={() => handleFormModalOpenctx("I")} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
               minHeight:{xs: "40px", md: "30px"}, 
@@ -428,7 +441,7 @@ useEffect(() => {
           <Tooltip title={t("LegalCustTooltip")}><Button 
             color="secondary" 
             variant="contained" 
-            onClick={() => handleFormModalOpen("C")} 
+            onClick={() => handleFormModalOpenctx("C")} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
               minHeight:{xs: "40px", md: "30px"}, 
@@ -477,7 +490,19 @@ useEffect(() => {
           <FormComponentView
             key={"retrieveCustomerData"}
             finalMetaData={RetrieveDataFilterForm as FilterFormMetaType}
-            onAction={() => {}}
+            onAction={(colomnValue, initialVisibleColumn) => {
+              console.log("wlkefhwief", colomnValue, initialVisibleColumn)
+              let newObj = {}
+              let newArr = Object.keys(colomnValue).filter(key => colomnValue[key] != null && colomnValue[key] != undefined && colomnValue[key] != "")
+              newArr.map(el => {
+                newObj[el] = colomnValue[el]
+              })
+              let data = {
+                COMP_CD: authState?.companyID ?? "",
+                SELECT_COLUMN: newObj
+              }
+              mutation.mutate(data)
+            }}
             loading={false}
             data={{}}
             submitSecondAction={() => {}}
@@ -501,8 +526,8 @@ useEffect(() => {
         <GridWrapper
           key={`EmailAcctMstGrid`}
           finalMetaData={ckyc_retrieved_meta_data as GridMetaDataType}
-          data={[]}
-          setData={() => null}
+          data={mutation.data ?? []}
+          setData={() => null}          
           // loading={isLoading || isFetching}
           // actions={actions}
           // setAction={setCurrentAction}
@@ -529,36 +554,36 @@ useEffect(() => {
       </TabPanel>      
 
       <FormModal 
-        isFormModalOpen={isFormModalOpen} 
-        handleFormModalOpen={handleFormModalOpen} 
-        handleFormModalClose={handleFormModalClose} 
+        // isFormModalOpen={state?.isFormModalOpenctx} 
+        // handleFormModalOpen={handleFormModalOpen} 
+        // handleFormModalClose={handleFormModalClose} 
 
-        isSidebarExpanded={isSidebarExpanded}
-        setIsSidebarExpanded={setIsSidebarExpanded}
-        handleSidebarExpansion={handleSidebarExpansion}
+        // isSidebarExpanded={state?.isSidebarExpandedctx}
+        // setIsSidebarExpanded={setIsSidebarExpanded}
+        // handleSidebarExpansion={handleSidebarExpansion}
 
-        colTabValue={colTabValue}
-        setColTabValue={setColTabValue}
-        handleColTabChange={handleColTabChange}
+        // colTabValue={colTabValue}
+        // setColTabValue={setColTabValue}
+        // handleColTabChange={handleColTabChange}
 
         isLoadingData={isLoadingData}
         setIsLoadingData={setIsLoadingData}
         isCustomerData={isCustomerData}
         setIsCustomerData={setIsCustomerData}
 
-        entityType={entityType}
-        setEntityType={setEntityType}
+        // entityType={state?.entityTypectx}
+        // setEntityType={setEntityType}
         
-        customerCategories={customerCategories}
-        tabsApiRes={tabsApiRes}
+        // customerCategories={customerCategories}
+        // tabsApiRes={tabsApiRes}
         
-        setTabsApiRes={setTabsApiRes}
-        categoryValue={categoryValue}
-        setCategoryValue={setCategoryValue}
-        constitutionValue={constitutionValue}
-        setConstitutionValue={setConstitutionValue}
-        accTypeValue={accTypeValue}
-        setAccTypeValue={setAccTypeValue}
+        // setTabsApiRes={setTabsApiRes}
+        // categoryValue={categoryValue}
+        // setCategoryValue={setCategoryValue}
+        // constitutionValue={constitutionValue}
+        // setConstitutionValue={setConstitutionValue}
+        // accTypeValue={accTypeValue}
+        // setAccTypeValue={setAccTypeValue}
         AccTypeOptions={AccTypeOptions}
       />
     </React.Fragment>

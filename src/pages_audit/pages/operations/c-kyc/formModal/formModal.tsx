@@ -47,6 +47,7 @@ import { useQuery } from "react-query";
 import { AutoComplete } from 'components/common';
 import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
 import { useTranslation } from 'react-i18next';
+import { CkycContext } from '../CkycContext';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -94,7 +95,8 @@ export const CustomTabLabel = ({IconName, isSidebarExpanded, tabLabel, subtext})
           //   />
           } */}
           {/* <Icon>star</Icon> */}
-        {<IconName />}
+        {/* {<IconName />} */}
+        <Icon>{IconName}</Icon>
         {/* {IconComponent(IconName)} */}
         {/* <IconComponent iconName = {IconName as IconNames} /> */}
           {/* <FontAwesomeIcon
@@ -169,16 +171,19 @@ const style = {
 };
 
 export default function FormModal({
-  isFormModalOpen, handleFormModalOpen, handleFormModalClose,
-  isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
-  colTabValue, setColTabValue, handleColTabChange,
+  // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
+  // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
+  // colTabValue, setColTabValue, handleColTabChange,
   isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData,
-  entityType, setEntityType, 
-  customerCategories, tabsApiRes, setTabsApiRes, 
-  categoryValue, setCategoryValue, 
-  constitutionValue, setConstitutionValue, 
-  accTypeValue, setAccTypeValue, AccTypeOptions
+  // entityType, setEntityType, 
+  // customerCategories, 
+  // tabsApiRes, setTabsApiRes, 
+  // categoryValue, setCategoryValue, 
+  // constitutionValue, setConstitutionValue, 
+  // accTypeValue, setAccTypeValue, 
+  AccTypeOptions
 }) {
+  const {state, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal} = useContext(CkycContext);
   const { t } = useTranslation();
   const classes = useDialogStyles();
   const authController = useContext(AuthContext);
@@ -186,69 +191,74 @@ export default function FormModal({
   // const [customerCategories, setCustomerCategories] = useState([])
 
   const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
-    ["getTabsDetail", {entityType, categoryValue, constitutionValue}],
+    ["getTabsDetail", {
+      ENTITY_TYPE: state?.entityTypectx, 
+      CATEGORY_CD: state?.categoryValuectx, 
+      CONS_TYPE: state?.constitutionValuectx
+    }],
     () =>
       API.getTabsDetail(
       {
         COMP_CD: authController?.authState?.companyID ?? "",
-        ENTITY_TYPE: entityType,
-        CATEGORY_CD: categoryValue, //CATEG_CD
-        CONS_TYPE: constitutionValue, //CONSTITUTION_TYPE
+        ENTITY_TYPE: state?.entityTypectx,
+        CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
+        CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
       }  
       )
   );
-  const handleChangeAccType = (e) => {
-    setAccTypeValue(e.target.value)
-  }
+  // const handleChangeAccType = (e) => {
+  //   setAccTypeValue(e.target.value)
+  // }
 
   useEffect(() => {
     if(!isLoading) {
       console.log("ResultResult", TabsData)
-    }
     // setTabsApiRes(data)
-    let newData:any[] = []
-    if(TabsData && TabsData.length>0) {
-      TabsData.forEach((element:{[k: string]: any}) => {
-        let subtitleinfo = {
-          SUB_TITLE_NAME : element?.SUB_TITLE_NAME,
-          SUB_TITLE_DESC : element?.SUB_TITLE_DESC,
-          SUB_ICON : element?.SUB_ICON,
-        }
-          let index = newData.findIndex((el:any) => el?.TAB_NAME == element?.TAB_NAME)
-          if(index != -1) {
-            // duplicate tab element
-            let subtitles = newData[index].subtitles
-            subtitles.push(subtitleinfo)
-          } else {
-            // new tab element
-            newData.push({...element, subtitles: [subtitleinfo]})
+      let newData:any[] = []
+      if(TabsData && TabsData.length>0) {
+        TabsData.forEach((element:{[k: string]: any}) => {
+          let subtitleinfo = {
+            SUB_TITLE_NAME : element?.SUB_TITLE_NAME,
+            SUB_TITLE_DESC : element?.SUB_TITLE_DESC,
+            SUB_ICON : element?.SUB_ICON,
           }
-        console.log("filled newdata -aft", element.TAB_NAME , newData)
-      });
-      setTabsApiRes(newData)
+            let index = newData.findIndex((el:any) => el?.TAB_NAME == element?.TAB_NAME)
+            if(index != -1) {
+              // duplicate tab element
+              let subtitles = newData[index].subtitles
+              subtitles.push(subtitleinfo)
+            } else {
+              // new tab element
+              newData.push({...element, subtitles: [subtitleinfo]})
+            }
+          console.log("filled newdata -aft", element.TAB_NAME , newData)
+        });
+        // setTabsApiRes(newData)
+        handleApiRes(newData)
+      }
     }
   }, [TabsData, isLoading])
 
-  const handleCategoryChange = (e, value, r, d) => {
-    // console.log("e,v,r,d", value)
-    if(value) {
-      setCategoryValue(value?.value)
-      setConstitutionValue(value?.CONSTITUTION_TYPE)
-      setColTabValue(0)
-    } else {
-      setColTabValue(false)
-      setCategoryValue(null)
-      setConstitutionValue(null)
-      setTabsApiRes([])
-    }
-    // refetch()
-  }
+  // const handleCategoryChange = (e, value, r, d) => {
+  //   // console.log("e,v,r,d", value)
+  //   if(value) {
+  //     setCategoryValue(value?.value)
+  //     setConstitutionValue(value?.CONSTITUTION_TYPE)
+  //     setColTabValue(0)
+  //   } else {
+  //     setColTabValue(false)
+  //     setCategoryValue(null)
+  //     setConstitutionValue(null)
+  //     setTabsApiRes([])
+  //   }
+  //   // refetch()
+  // }
 
 
   return (
     // <div>
     //   <Button onClick={handleFormModalOpen}>Open modal</Button>
-      <Dialog fullScreen={true} open={isFormModalOpen}>
+      <Dialog fullScreen={true} open={state?.isFormModalOpenctx}>
         <AppBar
           position="sticky"
           color="primary"
@@ -341,7 +351,7 @@ export default function FormModal({
               C-KYC Individual/Legal Entry
             </Typography> */}
             <Button
-              onClick={handleFormModalClose}
+              // onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
             >
@@ -358,7 +368,7 @@ export default function FormModal({
             <Button 
               color="secondary" 
               variant="contained" 
-              onClick={handleSidebarExpansion} 
+              onClick={handleSidebarExpansionctx} 
               sx={{ border: "1px solid var(--theme-color2)",
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%", 
               // mb: "5px", ml: {xs: "2px", sm: "8px"}, alignSelf: "start",
@@ -368,20 +378,20 @@ export default function FormModal({
               height:{xs: "40px", md: "30px"}, 
               minWidth: {xs: "40px", md: "30px"}, 
               width: {xs: "40px", md: "30px"}, 
-              display: "flex", 
+              display: state?.isFreshEntryctx ? "none" : "flex", 
               alignItems:"center", 
               justifyContent: "center",
               borderRadius: "5px",
               "& .MuiSvgIcon-root": {
                 fontSize: {xs: "1.5rem", md: "1.2rem"},
               },
-              visibility: (tabsApiRes && tabsApiRes.length>0) ? "visible" : "hidden"
+              visibility: (state?.tabsApiResctx && state?.tabsApiResctx.length>0) ? "visible" : "hidden"
               }}
             >                  
               {/* <IconButton color="secondary" onClick={handleSidebarExpansion}
                 sx={{backgroundColor: "#ddd",ml: "20px", mb: "2px", alignSelf: "start"}} 
               > */}
-                {!isSidebarExpanded ? <MenuOutlinedIcon /> : <CancelIcon />}
+                {!state?.isSidebarExpandedctx ? <MenuOutlinedIcon /> : <CancelIcon />}
               {/* </IconButton> */}
             </Button>
             <Typography
@@ -391,7 +401,7 @@ export default function FormModal({
               component="div"
             >
               {/* {`C-KYC ${entityType == "C" ? "Legal Entity" : "Individual"} Entry`} */}
-              {entityType == "C"
+              {state?.entityTypectx == "C"
                 ? t("LegalEntry")
                 : t("IndividualEntry")
               }
@@ -414,7 +424,7 @@ export default function FormModal({
               {t("Save")}
             </Button>
             <Button
-              onClick={handleFormModalClose}
+              onClick={handleFormModalClosectx}
               color="primary"
               // disabled={mutation.isLoading}
             >
@@ -423,7 +433,7 @@ export default function FormModal({
           </Toolbar>
         </AppBar>
         {/* <Box sx={style}> */}
-          <Grid container sx={{transition: "all 0.4s ease-in-out"}} columnGap={(theme) => theme.spacing(1)}>
+          <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
 
             <AppBar
               position="sticky"
@@ -451,8 +461,8 @@ export default function FormModal({
                     <Autocomplete sx={{width: "100%", minWidth: 350}} 
                       disablePortal
                       id="cust-categories"
-                      options={customerCategories}
-                      onChange={(e,value,r,d) => handleCategoryChange(e, value, r, d)}
+                      options={state?.customerCategoriesctx ?? []}
+                      onChange={(e,value,r,d) => handleCategoryChangectx(e, value)}
                       getOptionLabel={(option:any) => `${option?.label} - ${option?.CONSTITUTION_NAME}`}
                       renderInput={(params) => (
                         <TextField {...params} 
@@ -487,9 +497,9 @@ export default function FormModal({
                   {false && <Select
                     labelId="customer-account-type"
                     id=""
-                    value={accTypeValue}
+                    value={state?.accTypeValuectx}
                     label="Acc. Type"
-                    onChange={handleChangeAccType} sx={{width: "300px"}}
+                    // onChange={handleChangeAccType} sx={{width: "300px"}}
                   >
                     {/* <MenuItem value={10}>Ten</MenuItem>
                     <MenuItem value={20}>Twenty</MenuItem>
@@ -506,7 +516,8 @@ export default function FormModal({
                       options={AccTypeOptions}
                       getOptionLabel={(option:any) => `${option?.DISPLAY_VALUE}`}
                       onChange={(e,v) => {
-                        setAccTypeValue(v?.value)
+                        // setAccTypeValue(v?.value)
+                        handleAccTypeVal(v?.value)
                       }}
                       // sx={{ width: 200 }}
                       renderInput={(params) => (
@@ -548,16 +559,16 @@ export default function FormModal({
             </AppBar>
 
             <Grid container item xs="auto" sx={{
-              display:"flex", flexDirection: "column",alignItems: "center",
+              display: state?.isFreshEntryctx ? "none" : "flex", flexDirection: "column",alignItems: "center",
               position: "sticky", top:175, height:"calc(95vh - 150px)", 
               boxShadow: "inset 10px 2px 30px #eee",
 
-              opacity: (tabsApiRes && tabsApiRes.length>0) ? 1 : 0, 
+              opacity: (state?.tabsApiResctx && state?.tabsApiResctx.length>0) ? 1 : 0, 
               transition: 'opacity 0.4s ease-in-out',
-              pointerEvents: (tabsApiRes && tabsApiRes.length>0) ? "" : "none"
+              pointerEvents: (state?.tabsApiResctx && state?.tabsApiResctx.length>0) ? "" : "none"
               // backgroundColor: "#ddd"
               }}>
-              <CustomTabs sx={{height:"calc(100% - 10px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} visibleScrollbar={true} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
+              {/* <CustomTabs sx={{height:"calc(100% - 10px)"}}  textColor="secondary" variant="scrollable" scrollButtons={false} visibleScrollbar={true} orientation="vertical" value={colTabValue} onChange={handleColTabChange}>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Personal Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={HowToRegRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Personal Details"} subtext={""} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "KYC Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={NoteAddRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"KYC"} subtext={"PoA & PoI & Documents"} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Declaration"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={ArticleRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Declaration"} subtext={"FATCA & CRS"} />} /></Tooltip>
@@ -566,24 +577,24 @@ export default function FormModal({
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Other Address"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={AddLocationIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Other Address"} subtext={""} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "NRI Details"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={PersonAddAltRoundedIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"NRI Details"} subtext={""} />} /></Tooltip>
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Attestation"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Attestation"} subtext={"KYC verifcation"} />} /></Tooltip>
-              </CustomTabs>
+              </CustomTabs> */}
 
               {/* temp ui disabled */}
-              {/* {false && <CustomTabs 
+              {true && <CustomTabs 
                 sx={{height:"calc(100% - 10px)", minWidth: "76px"}}  
                 textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" 
-                value={colTabValue} 
-                onChange={handleColTabChange}
+                value={state?.colTabValuectx} 
+                onChange={(e, newValue) => handleColTabChangectx(newValue)}
               >
                 {
-                  (tabsApiRes && tabsApiRes.length>0) && tabsApiRes.map((el:any, i) => {
+                  (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((el:any, i) => {
                     // console.log(typeof WorkspacePremiumIcon, "asdqwewqsxaswweqeqw",WorkspacePremiumIcon)
                     return (
-                      <Tooltip key={el?.TAB_NAME} placement="left" title={isSidebarExpanded ? "" : el?.TAB_NAME}>
-                        <CustomTab isSidebarExpanded={isSidebarExpanded} 
+                      <Tooltip key={el?.TAB_NAME} placement="left" title={state?.isSidebarExpandedctx ? "" : el?.TAB_NAME}>
+                        <CustomTab isSidebarExpanded={state?.isSidebarExpandedctx} 
                           label={
                             <CustomTabLabel 
-                              IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} 
+                              IconName={el?.ICON} isSidebarExpanded={state?.isSidebarExpandedctx} 
                               tabLabel={el?.TAB_NAME} subtext={el?.TAB_DESC ?? ""} 
                             />
                           } 
@@ -592,7 +603,7 @@ export default function FormModal({
                     )
                   }) 
                 }
-              </CustomTabs>} */}
+              </CustomTabs>}
             </Grid>
             <Grid sx={{
                 "& .MuiBox-root": {
@@ -602,49 +613,49 @@ export default function FormModal({
                 
             
 
-              <TabPanel value={colTabValue} index={0}>
-                {categoryValue ? <PersonalDetails 
+              <TabPanel value={state?.colTabValuectx} index={0}>
+                {state?.categoryValuectx ? <PersonalDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} /> : null}
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} /> : null}
               </TabPanel>
-              <TabPanel value={colTabValue} index={1}>
+              <TabPanel value={state?.colTabValuectx} index={1}>
                 <KYCDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
               </TabPanel>
-              <TabPanel value={colTabValue} index={2}>
+              <TabPanel value={state?.colTabValuectx} index={2}>
                   {/* <Typography variant="h6">Declaration</Typography> */}
                 <DeclarationDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
               </TabPanel>
-              <TabPanel value={colTabValue} index={3}>
+              <TabPanel value={state?.colTabValuectx} index={3}>
                 {/* <Typography variant="h6">Details of Related Person</Typography> */}
                 <RelatedPersonDetails
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes}
+                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
                 />
               </TabPanel>
-              <TabPanel value={colTabValue} index={4}>
+              <TabPanel value={state?.colTabValuectx} index={4}>
                 <OtherDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
               </TabPanel>
-              <TabPanel value={colTabValue} index={5}>
+              <TabPanel value={state?.colTabValuectx} index={5}>
                 <OtherAddressDetails
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
               </TabPanel>
-              <TabPanel value={colTabValue} index={6}>
+              <TabPanel value={state?.colTabValuectx} index={6}>
                 <NRIDetails 
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes} />
+                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
               </TabPanel>
-              <TabPanel value={colTabValue} index={7}>
+              <TabPanel value={state?.colTabValuectx} index={7}>
                 {/* <Typography variant="h6">Attestation</Typography> */}
                 <AttestationDetails
                   isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} colTabValue={colTabValue} setColTabValue={setColTabValue} tabsApiRes={tabsApiRes}
+                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
                 />
               </TabPanel>
 

@@ -1,3 +1,5 @@
+import * as API from "../../../../api";
+
 export const declaration_meta_data = {
   form: {
       name: "declaration_details_form",
@@ -112,18 +114,22 @@ export const declaration_meta_data = {
       },
       {
           render: {
-              componentType: "textField",
+              componentType: "select",
           },
           name: "COUNTRY_OF_INCORPORATION",
           label: "CountryOfIncorporation",
+          options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
+          _optionsKey: "CountriesOfIncorporation",
           placeholder: "",
           type: "text",
           GridProps: {xs: 4, sm:3},
       },
       {
           render: {
-              componentType: "textField",
+              componentType: "select",
           },
+          options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
+          _optionsKey: "TINIssuingCountries",
           name: "TIN_ISSUING_COUNTRY",
           label: "TINIssuingCountry",
           placeholder: "",

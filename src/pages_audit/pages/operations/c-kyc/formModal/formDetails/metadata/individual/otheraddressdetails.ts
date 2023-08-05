@@ -1,4 +1,6 @@
-  export const other_address_poa_meta_data = {
+import * as API from "../../../../api";
+  
+  export const other_address_meta_data = {
     form: {
         name: "other_address_details_form",
         label: "", 
@@ -43,17 +45,23 @@
     fields: [
         {
             render: {
+                componentType: "Divider",
+            },
+            dividerText: "CurrentAddress",
+            name: "CurrentAddressDivider",
+            label: "CurrentAddressDivider",
+        },
+        {
+            render: {
                 componentType: "select",
             },
             name: "ADDRESS_TYPE",
-            label: "Address Type",
+            label: "AddressType",
             placeholder: "",
             type: "text",
             GridProps: {xs: 4, sm:3},
-            options: [
-                {label: "Address Type1", value: "Address Type1"},
-                {label: "Address Type2", value: "Address Type2"},
-            ],
+            options: () => API.getPMISCData("ADDRESS_TYPE"),
+            _optionsKey: "AddTypeOptions",
         },
         {
             render: {
@@ -153,7 +161,7 @@
                 componentType: "textField",
             },
             name: "STATE_UT_CODE",
-            label: "State/U.T(Union Territories) Code",
+            label: "UnionTerritoriesCode",
             placeholder: "",
             type: "text",
             GridProps: {xs: 4, sm:3},
@@ -163,7 +171,68 @@
                 componentType: "textField",
             },
             name: "ISO_COUNTRY_CODE",
-            label: "ISO-3166 Country Code of Residence",
+            label: "CountryCode",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+
+
+
+        {
+            render: {
+                componentType: "Divider",
+            },
+            dividerText: "Contact",
+            name: "ContactDivider",
+            label: "ContactDivider",
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "PHONE_o",
+            label: "PhoneO",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "PHONE_R",
+            label: "PhoneR",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "MOBILE_NO",
+            label: "MobileNo",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "FAX",
+            label: "Fax",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "EMAIL_ID",
+            label: "EmailId",
             placeholder: "",
             type: "text",
             GridProps: {xs: 4, sm:3},

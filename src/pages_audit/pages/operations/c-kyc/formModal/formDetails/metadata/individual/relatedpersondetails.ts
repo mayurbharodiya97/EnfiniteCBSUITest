@@ -64,7 +64,7 @@ export const related_person_detail_data = {
                 componentType: "select",
             },
             name: "REF_RELATION",
-            label: "Ref. Type",
+            label: "RefType",
             required: true,
             options: () => API.getPMISCData("REF_RELATION"),
             _optionsKey: "refRelatedType",
@@ -87,7 +87,7 @@ export const related_person_detail_data = {
                 componentType: "textField",
             },
             name: "REF_CUST_ID",
-            label: "Ref. Cust. ID",
+            label: "RefCustID",
             placeholder: "First Name",
             type: "text",
             GridProps: {xs:4, sm:3},
@@ -98,7 +98,7 @@ export const related_person_detail_data = {
                 componentType: "textField",
             },
             name: "FIRST_NAME",
-            label: "First Name",
+            label: "FirstName",
             placeholder: "First Name",
             required: true,
             type: "text",
@@ -110,7 +110,7 @@ export const related_person_detail_data = {
                 componentType: "textField",
             },
             name: "MIDDLE_NAME",
-            label: "Middle Name",
+            label: "MiddleName",
             placeholder: "Middle Name",
             required: true,
             type: "text",
@@ -121,7 +121,7 @@ export const related_person_detail_data = {
                 componentType: "textField",
             },
             name: "LAST_NAME",
-            label: "Last Name",
+            label: "LastName",
             placeholder: "Last Name",
             required: true,
             type: "text",
@@ -132,7 +132,7 @@ export const related_person_detail_data = {
                 componentType: "textField",
             },
             name: "CKYC_NO",
-            label: "CKYC NO.",
+            label: "CkycNo",
             placeholder: "",
             type: "text",
             GridProps: {xs:4, sm:3},
@@ -142,11 +142,268 @@ export const related_person_detail_data = {
                 componentType: "textField",
             },
             name: "REF_NAME",
-            label: "Ref. Name",
+            label: "RefName",
             placeholder: "",
             type: "text",
             GridProps: {xs:4, sm:3},
-        }
+        },
+
+
+
+        {
+            render:  {
+                componentType: "Divider",
+                sequence: 20,
+            },
+            dividerText: "PoIOfRelatedPerson",
+            name: "PoIOfRelatedPersonDivider",
+            label: "PoIOfRelatedPersonDivider"
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "PAN",
+            label: "PAN",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "DRIVING_LIC_NO",
+            label: "DrivingLicNo",
+            placeholder: "First Name",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+            // dependentFields: ["DAILY_AMT"],
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "DRIVING_LIC_EXP_DT",
+            label: "DrivingLicExpDt",
+            format: "dd/MM/yyyy",
+            // required: true,
+            // placeholder: "",
+            // type: "datePicker",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "VOTER_ID",
+            label: "VoterId",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "PASSPORT_NO",
+            label: "PassportNo",
+            placeholder: "Last Name",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "PASSPORT_EXP_DT",
+            label: "PassportExpDt",
+            format: "dd/MM/yyyy",
+            // required: true,
+            // placeholder: "",
+            // type: "datePicker",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "UNIQUE_ID",
+            label: "UniqueId",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "NREGA_JOB_CARD2",
+            label: "NREGAJobCard",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "OTHER_DOC",
+            label: "OtherDoc",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "OTHER_DOC_NO",
+            label: "OtherDocNo",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+
+
+
+        {
+            render:  {
+                componentType: "Divider",
+                sequence: 20,
+            },
+            dividerText: "AttesDetailsIPVBy",
+            name: "AttesDetailsIPVByDivider",
+            label: "AttesDetailsIPVByDivider"
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            name: "DOC_RECEIVED",
+            label: "DocReceived",
+            options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
+            _optionsKey: "kycDocReceivedType",
+            placeholder: "",
+            required: true,
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            options: () => API.getPMISCData("CKYC_RISK_CATEG"),
+            _optionsKey: "kycRiskCateg",
+            name: "RISK_CATEG",
+            label: "RiskCategory",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "IPV_FLAG",
+            label: "IPVFlag",
+            placeholder: "",
+            required: true,
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "IPV_DATE",
+            label: "IPVDate",
+            format: "dd/MM/yyyy",
+            // placeholder: "",
+            // type: "datePicker",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "EMP_CODE",
+            label: "EmpCode",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "EMP_NAME",
+            label: "EmpName",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "EMP_DESIGNATION",
+            label: "EmpDesig",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "IPV_BRANCH",
+            label: "IPVBranch",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "Org_Name",
+            label: "OrgName",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "Org_Code",
+            label: "OrgCode",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "DEC_PLACE",
+            label: "DecPlace",
+            placeholder: "",
+            type: "text",
+            GridProps: {xs: 4, sm:3},
+        },
+        {
+            render: {
+                componentType: "datePicker",
+            },
+            name: "DEC_DATE",
+            label: "DecDate",
+            format: "dd/MM/yyyy",
+            // placeholder: "",
+            // type: "datePicker",
+            GridProps: {xs: 4, sm:3},
+        },
     ]
 }
 export const related_person_poi_detail_data = {

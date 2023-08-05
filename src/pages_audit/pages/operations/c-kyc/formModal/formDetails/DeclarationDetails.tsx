@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { declaration_meta_data } from './metadata/individual/declarationdetails';
@@ -6,11 +6,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
+import { CkycContext } from '../../CkycContext';
 
-const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, colTabValue, setColTabValue, tabsApiRes}) => {
+const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
+  const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext)
   const DeclarationFormRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [currentTabFormData, setCurrentTabFormData] = useState({declaration_details: {}})
@@ -25,6 +27,12 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     console.log("qweqweqwe", data)     
     if(data) {
         setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
+
+        let newData = state?.formDatactx
+        newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
+        handleFormDataonSavectx(newData)
+        handleColTabChangectx(3)
+
         setIsNextLoading(false)
     }   
     endSubmit(true)
@@ -44,7 +52,7 @@ const myGridRef = useRef<any>(null);
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>
                 </Grid> */}
                 <Grid item xs>
-                    <TabStepper currentTab={colTabValue} setColTabValue={setColTabValue} />
+                    <TabStepper />
                 </Grid>
             </Grid>
             {isCustomerData ? <Grid 
@@ -67,6 +75,7 @@ const myGridRef = useRef<any>(null);
                     <FormWrapper 
                         ref={DeclarationFormRef}
                         onSubmitHandler={DeclarationSubmitHandler}
+                        initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                         key={"new-form-in-kyc"}
                         metaData={declaration_meta_data as MetaDataType}
                         formStyle={{}}
@@ -79,9 +88,14 @@ const myGridRef = useRef<any>(null);
             <Grid container item sx={{justifyContent: "flex-end"}}>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
+                        handleColTabChangectx(1)
+                    }}
+                >{t("Previous")}</Button>
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={(e) => {
                         DeclarationFormRef.current.handleSubmit(e, "save")
                     }}
-                >{t("Next")}</Button>
+                >{t("Save & Next")}</Button>
             </Grid>
         </Grid>        
     )
