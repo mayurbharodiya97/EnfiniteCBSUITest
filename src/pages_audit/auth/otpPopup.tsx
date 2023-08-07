@@ -107,7 +107,7 @@ export const OTPModel = ({
                 lineHeight: "33px",
               }}
             >
-              Enter OTP Sent to your mobile number 98******37
+              {t("otp.EnterOTP")}
             </div>
             <div
               style={{

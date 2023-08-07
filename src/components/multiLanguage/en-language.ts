@@ -25,6 +25,7 @@ export const en_language_data = {
   otp: {
     OTPAuthentication: "OTP Authentication",
     GenerateNewOTP: "Please click on Resend button to Generate new OTP",
+    EnterOTP: "Enter OTP Sent to your mobile number 98******37",
     ResendOTP: "Resend OTP",
     ValidFor: "Valid for",
     Hello: " Hello",
@@ -72,6 +73,19 @@ export const en_language_data = {
   TransferLimit: "Transfer Limit",
   CreditTransactionLimit: "Credit Transaction Limit",
   CashRecieptLimit: "Cash Reciept Limit",
+
+  // For T-OTP in Profile
+
+  PasswordVerify: "Password Verify",
+  EnabledAuth: "Enabled Authenticator",
+  TOTP_Note: "Note: Enabled Authenticator",
+  TOTP_Line1: "Scan this QR in any Authenticator App",
+  TOTP_Line2: "Enable two-factor authentication with TOTP",
+  TOTP_Line3: "You can use any authenticator app",
+  TOTP_Line4: "We recommend using Google Authenticator",
+  TOTP_Line5:
+    "Please scan the below QR in your authenticator app and Verify OTP",
+  EnterOTP: "Please Enter OTP",
 
   // Branch Access Rights Grid in Profile
 

@@ -13,12 +13,12 @@ const GradientButtonCustom = withStyles({
     color: "#fff",
     fontWeight: 700,
     minWidth: "90px",
+    width: "fit-content",
     letterSpacing: "0.02857em",
-    // minWidth: "fit-content",
     textTransform: "capitalize",
     // marginLeft: "7px",
-    boxShadow:
-      "rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset",
+    // boxShadow:
+    //   "rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset",
     "&:focus": {
       boxShadow:
         "#3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset",
@@ -26,7 +26,6 @@ const GradientButtonCustom = withStyles({
     "&:hover": {
       boxShadow:
         "rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset",
-      transform: "translateY(-2px)",
     },
     "&:active": {
       boxShadow: "#3c4fe0 0 3px 7px inset",

@@ -27,6 +27,7 @@ export const guj_language_data = {
     OTPAuthentication: "ઓટીપી પ્રમાણીકરણ",
     GenerateNewOTP:
       "કૃપા કરીને નવો ઓટીપી જનરેટ કરવા માટે રીસેેંન્ડ બટન પર ક્લિક કરો",
+    EnterOTP: "તમારા મોબાઈલ નંબર 98*****37 પર મોકલેલ OTP દાખલ કરો",
     ResendOTP: "ઓટીપી ફરીથી મોકલો",
     ValidFor: "માટે માન્ય",
     Hello: "નમસ્તે",
@@ -75,6 +76,19 @@ export const guj_language_data = {
   CreditTransactionLimit: "જમા વ્યવહાર મર્યાદા",
   CashRecieptLimit: "રોકડ રસીદ મર્યાદા",
   EmailId: "ઈમેલ-આઈડી",
+
+  // For T-OTP in Profile
+
+  PasswordVerify: "પાસવર્ડ ચકાસણી",
+  EnabledAuth: "સક્ષમ પ્રમાણકર્તા",
+  TOTP_Note: "નોંધ : સક્ષમ પ્રમાણકર્તા",
+  TOTP_Line1: "કોઈપણ પ્રમાણકર્તા એપ્લિકેશનમાં આ QR સ્કેન કરો",
+  TOTP_Line2: "TOTP સાથે દ્વિ-પરિબળ પ્રમાણીકરણ સક્ષમ કરો",
+  TOTP_Line3: "તમે કોઈપણ પ્રમાણકર્તા એપ્લિકેશનનો ઉપયોગ કરી શકો છો",
+  TOTP_Line4: "અમે Google Authenticator નો ઉપયોગ કરવાની ભલામણ કરીએ છીએ",
+  TOTP_Line5:
+    "કૃપા કરીને તમારી પ્રમાણકર્તા એપ્લિકેશનમાં નીચેનો QR સ્કેન કરો અને OTP ચકાસો",
+  EnterOTP: "કૃપા કરીને OTP દાખલ કરો",
 
   // user Access branch in Profile
 

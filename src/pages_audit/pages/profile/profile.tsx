@@ -26,6 +26,7 @@ import {
   Avatar,
   Button,
   Container,
+  DialogContent,
   Grid,
   IconButton,
   InputLabel,
@@ -169,8 +170,20 @@ export const Profile = () => {
       }
     } else {
       let result = myGridRef?.current?.cleanData?.();
+
+      // result.map((item) => {
+      //   console.log("<<<(item ", item);
+      //   if (item.IS_DATA == "N") {
+      //     return {
+      //       ...item,
+      //       _isNewRow: true,
+      //     };
+      //   }
+      // });
+
       let finalResult = result.filter((one) => !Boolean(one?._hidden));
       finalResult = CreateDetailsRequestData(finalResult);
+      console.log("<<<finalResult", finalResult);
       if (
         Array.isArray(finalResult.isUpdatedRow) &&
         finalResult?.isUpdatedRow?.length === 0
@@ -193,6 +206,8 @@ export const Profile = () => {
       }
     } else {
       let result = myGridQuickRef?.current?.cleanData?.();
+      console.log(">>result", result);
+
       let finalResult = result.filter((one) => !Boolean(one?._hidden));
       finalResult = CreateDetailsRequestData(finalResult);
       if (
@@ -200,11 +215,11 @@ export const Profile = () => {
         finalResult?.isUpdatedRow?.length === 0
       ) {
       } else {
-        let data = {
+        let reqData = {
           // ...refID,
           DETAILS_DATA: finalResult,
         };
-        saveQuickData.mutate(data);
+        saveQuickData.mutate(reqData);
         // onsubmit({ data, mode, setServerError });
       }
     }
@@ -516,6 +531,8 @@ export const Profile = () => {
                           textColor="secondary"
                           indicatorColor="secondary"
                           aria-label="secondary tabs example"
+                          variant="scrollable"
+                          scrollButtons="auto"
                         >
                           <Tab
                             value="one"
@@ -706,6 +723,18 @@ export const Profile = () => {
                                     "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                                 }}
                               >
+                                {saveQuickData?.isError && (
+                                  <Alert
+                                    severity="error"
+                                    errorMsg={
+                                      saveQuickData.error?.error_msg ??
+                                      "Unknown Error occured"
+                                    }
+                                    errorDetail={
+                                      saveQuickData.error?.error_detail ?? ""
+                                    }
+                                  />
+                                )}
                                 <GridWrapper
                                   key={`personalizeQuickView`}
                                   finalMetaData={
@@ -732,6 +761,18 @@ export const Profile = () => {
                                     "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                                 }}
                               >
+                                {saveDashData?.isError && (
+                                  <Alert
+                                    severity="error"
+                                    errorMsg={
+                                      saveDashData.error?.error_msg ??
+                                      "Unknown Error occured"
+                                    }
+                                    errorDetail={
+                                      saveDashData.error?.error_detail ?? ""
+                                    }
+                                  />
+                                )}
                                 <GridWrapper
                                   key={`personalizeDashboardData`}
                                   finalMetaData={

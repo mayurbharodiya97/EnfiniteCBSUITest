@@ -1,4 +1,4 @@
-import { useRef, FC, Fragment, useEffect } from "react";
+import { useRef, FC, Fragment, useEffect, useState } from "react";
 import { useStyles } from "./style";
 import {
   FormHelperText,
@@ -14,6 +14,29 @@ export const SearchBar: FC<InputProps> = (props) => {
   const desktop = useMediaQuery(theme.breakpoints.up("sm"));
   const classes = useStyles();
   const inputRef = useRef<any>(null);
+  const placeholderText = props.placeholder + "             ";
+  const placeholderLength: any = props.placeholder?.length;
+  const [animatedText, setAnimatedText] = useState(placeholderText);
+
+  useEffect(() => {
+    let animationTimeout;
+
+    if (placeholderLength > 21) {
+      animationTimeout = setTimeout(() => {
+        const animateMarquee = () => {
+          //   // Move the first character to the end
+          setAnimatedText((prevText) => prevText.slice(1) + prevText.charAt(0));
+        };
+        // Start the animation loop
+        animationTimeout = setInterval(animateMarquee, 350);
+      }, 4000);
+    } else {
+      setAnimatedText(placeholderText);
+    }
+    // Clean up the interval on unmount
+    return () => clearInterval(animationTimeout);
+  }, [placeholderText, placeholderLength]);
+
   useEffect(() => {
     if (Boolean(props.autoFocus)) {
       setTimeout(() => {
@@ -34,6 +57,7 @@ export const SearchBar: FC<InputProps> = (props) => {
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
+        placeholder={animatedText}
       />
       <div className={classes.search}>
         <SearchIcon color="info" />

@@ -105,6 +105,7 @@ export const Accountinquiry = ({ open, onClose }) => {
       !Boolean(data?.ACCOUNT) &&
       !Boolean(data?.PAN)
     ) {
+      console.log("<<<actv", endSubmit);
       //@ts-ignore
       endSubmit(true, "Please enter any value");
       setShowGridData(true);
@@ -164,17 +165,20 @@ export const Accountinquiry = ({ open, onClose }) => {
                 // }
                 color={"primary"}
                 ref={formbtnRef}
-                endicon={"Close"}
-                // rotateIcon="scale(1.4) rotate(360deg)"
+                endicon="CancelOutlined"
+                rotateIcon="scale(1.4) rotate(360deg)"
                 sx={{
-                  background: "var(--theme-color2) !important",
-                  color: "var(--theme-color1) !important",
+                  background: "transparent !important",
+                  color: "var(--theme-color2) !important",
+                  boxShadow: "none !important",
+                  fontSize: "14px",
                   "&:hover": {
-                    background: "var(--theme-color5) !important",
-                    color: "var(--theme-color2) !important",
-                    transition: "all 0.5s ease 0s",
+                    background: "rgba(235, 237, 238, 0.45) !important",
+                    // color: "var(--theme-color2) !important",
+                    // border: "1.5px solid var(--theme-color2)",
+                    transition: "all 1s ease 0s",
                     "& .MuiSvgIcon-root": {
-                      transform: "scale(1.4) rotate(360deg)",
+                      transform: "scale(1.4) rotateY(360deg)",
                       transition: "transform 2s ease-in-out",
                     },
                   },

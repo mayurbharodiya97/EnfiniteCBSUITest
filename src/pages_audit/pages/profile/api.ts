@@ -116,6 +116,7 @@ export const getquickView = async ({ userID, COMP_CD }) => {
   }
 };
 export const getquickViewList = async () => {
+  // console.log("<<<comp", COMP_CD);
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETUSRDOCLIST", {
       USER_NAME: "adi",
@@ -138,96 +139,6 @@ export const getquickViewList = async () => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-  // return [
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NAME: "VIJAY S SHARMA",
-  //     ACCT_NO: "1234123412351234",
-  //     CUST_ID: "1",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1678D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "2",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "3",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "4",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "45546564",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "5",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "6",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "7",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  //   {
-  //     ACCT_STATUS: "JOINT",
-  //     STATUS: "OPEN",
-  //     ACCT_NO: "9999999999999",
-  //     ACCT_NAME: "MAULIK R BAJAJ",
-  //     CUST_ID: "8",
-  //     MOB_NO: "423864384628",
-  //     PAN_NO: "SHDKL1L78D",
-  //     OPENIND_DT: "21/06/2023",
-  //     CLOSE_DT: "04/09/2037",
-  //   },
-  // ];
 };
 export const getdashUserboxData = async ({ userID, COMP_CD }) => {
   const { status, data, message, messageDetails } =
@@ -245,8 +156,8 @@ export const getdashUserboxData = async ({ userID, COMP_CD }) => {
 export const getdashboxData = async () => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDASHBOX", {
-      USER_NAME: "adi",
-      COMP_CD: "132 ",
+      // USER_NAME: "adi",
+      // COMP_CD: "132 ",
     });
   if (status === "0") {
     // return data;
@@ -275,6 +186,7 @@ export const updateDashboxData = async (reqData) => {
   }
 };
 export const updateQuickViewData = async (reqData) => {
+  console.log("<<<reqdata", reqData);
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETQUICKVIEWSCREEN", reqData);
   if (status === "0") {

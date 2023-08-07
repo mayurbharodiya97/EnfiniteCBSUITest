@@ -98,6 +98,7 @@ export const FormButton = ({
     if (typeof onFormButtonClickHandel === "function") {
       onFormButtonClickHandel(fieldID);
     }
+    handleChange(isNaN(value) || !Boolean(value) ? "1" : parseInt(value) + 1);
   };
 
   useEffect(() => {
@@ -110,6 +111,20 @@ export const FormButton = ({
       }
     }
   }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
+
+  useEffect(() => {
+    if (incomingMessage !== null && typeof incomingMessage === "object") {
+      const { value } = incomingMessage;
+
+      if (Boolean(value) || value === "") {
+        handleChange(value);
+        if (whenToRunValidation === "onBlur") {
+          runValidation({ value: value }, true);
+        }
+      }
+    }
+  }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+
   if (excluded) {
     return null;
   }

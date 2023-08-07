@@ -1,7 +1,7 @@
 export const PasswordVerifyMetaData = {
   form: {
     name: "passwordVerify",
-    label: "Password Verify",
+    label: "PasswordVerify",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -31,8 +31,8 @@ export const PasswordVerifyMetaData = {
       name: "currentPassword",
       sequence: 1,
       type: "text",
-      label: "Current Password",
-      placeholder: "Current Password",
+      label: "CurrentPassword",
+      placeholder: "CurrentPassword",
       GridProps: { xs: 12, md: 12, sm: 12 },
       fullWidth: true,
       required: true,
