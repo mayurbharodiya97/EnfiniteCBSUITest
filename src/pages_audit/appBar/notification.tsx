@@ -104,18 +104,18 @@ export const Notification_App = () => {
             },
           }}
         >
-          {/* <NotificationsNoneIcon
+          <NotificationsNoneIcon
             fontSize="small"
             sx={{
               color: anchorEl1 ? "var(--theme-color2)" : "var(--theme-color3)",
             }}
-          /> */}
-          <HeaderNotificationSvg
+          />
+          {/* <HeaderNotificationSvg
             height={20}
             width={20}
             stroke={anchorEl1 ? "var(--theme-color2)" : "var(--theme-color3)"}
             dotColor={"red"}
-          />
+          /> */}
         </IconButton>
       </Tooltip>
       <Popover

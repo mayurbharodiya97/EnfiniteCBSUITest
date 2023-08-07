@@ -22,6 +22,8 @@ import {
   RadioProps,
 } from "@mui/material";
 
+import { withStyles } from "@mui/styles";
+
 interface extendedFiledProps extends UseFieldHookProps {
   options: OptionsProps[];
   _optionsKey?: string;
@@ -43,6 +45,27 @@ interface MyCheckboxExtendedProps {
 }
 
 export type MyRadioAllProps = Merge<MyRadioMixedProps, MyCheckboxExtendedProps>;
+
+const StyledRadioField = withStyles({
+  root: {
+    "& .MuiFormLabel-root": {
+      //color: "#736f6f",
+      fontWeight: 600,
+      textTransform: "capitalize",
+      fontSize: "1rem",
+      "@media (max-width: 1200px)": {
+        fontSize: "0.75rem",
+      },
+      "@media (max-width: 1440px)": {
+        fontSize: "0.875rem",
+      },
+    },
+    "& label.Mui-focused": {
+      //color: "#26A456",
+      color: "var(--theme-color1)",
+    },
+  },
+})(FormControl);
 
 const MyRadio: FC<MyRadioAllProps> = ({
   name: fieldName,
@@ -154,9 +177,10 @@ const MyRadio: FC<MyRadioAllProps> = ({
   ));
   const result = (
     // @ts-ignore
-    <FormControl
+    <StyledRadioField
       {...FormControlProps}
       key={fieldKey}
+      //@ts-ignore
       component="fieldset"
       disabled={isSubmitting}
       error={!isSubmitting && isError}
@@ -186,7 +210,7 @@ const MyRadio: FC<MyRadioAllProps> = ({
       {!isSubmitting && isError ? (
         <FormHelperText {...FormHelperTextProps}>{error}</FormHelperText>
       ) : null}
-    </FormControl>
+    </StyledRadioField>
   );
 
   if (Boolean(enableGrid)) {

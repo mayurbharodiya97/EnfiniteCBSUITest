@@ -115,7 +115,10 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     }
   }, [value, handleChange]);
   const focusRef = useRef();
+  console.log("<<focusRef", isFieldFocused);
+
   useEffect(() => {
+    console.log("<<isFieldFocused", isFieldFocused);
     if (isFieldFocused) {
       //@ts-ignore
       setTimeout(() => {
@@ -178,7 +181,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         }}
         autoOk={true}
         readOnly={readOnly}
-        // inputRef={focusRef}
+        inputRef={focusRef}
         InputProps={{
           readOnly: readOnly,
           ...InputProps,

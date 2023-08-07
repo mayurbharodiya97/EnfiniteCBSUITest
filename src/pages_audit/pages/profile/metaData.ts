@@ -490,6 +490,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
     dense: true,
     gridLabel: "QuickView",
     rowIdColumn: "ID",
+
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -541,7 +542,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
             if (value === item?.DOC_CD) {
               lb_error = true;
               // ls_msg = "Option is Already entered at Line " + (index + 1);
-              ls_msg = "Option is Already entered at above Line ";
+              ls_msg = "Option is Already entered";
               return ls_msg;
             }
           });
@@ -615,10 +616,13 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
             if (lb_error) {
               return ls_msg;
             }
+            if (item?.DASH_TRAN_CD == "") {
+              return ls_msg;
+            }
             if (value === item?.DASH_TRAN_CD) {
               lb_error = true;
               // ls_msg = "Option is Already entered at Line " + (index + 1);
-              ls_msg = "Option is Already entered at above Line ";
+              ls_msg = "Option is Already entered  ";
               return ls_msg;
             }
           });

@@ -28,7 +28,6 @@ export const MultiLanguages = () => {
       i18n.changeLanguage(languageCode);
     }
     AuthSDK.setDisplayLanguage(i18n.resolvedLanguage);
-    // console.log("i18n.resolvedLanguage", i18n.resolvedLanguage);
     setLanguage(i18n.resolvedLanguage);
   }, []);
   return (

@@ -1,17 +1,15 @@
-import { Button, CircularProgress, Dialog } from "@mui/material";
+import { Dialog } from "@mui/material";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { PassbookStatement, PassbookStatementInq } from "./metaData";
 import { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
 import { InitialValuesType, SubmitFnType } from "packages/form";
-import { id } from "date-fns/locale";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { queryClient } from "cache";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-// import { CreateForm } from "pages_audit/pages/STATEMENT/formComponent";
 export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -74,36 +72,22 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
   } else if (screenFlag === "ACCT_INQ") {
     finalMetadata = PassbookStatementInq as MetaDataType;
   }
-
   const renderResult =
     screenFlag === "ACCT_INQ" && acctInqData.isLoading ? (
       <LoaderPaperComponent />
     ) : (
-      <Dialog
-        open={open}
-        onClose={onClose}
-        // fullWidth={true}
-        // PaperProps={{
-        //   style: {
-        //     maxWidth: "700px",
-        //   },
-        // }}
-        maxWidth={"sm"}
-      >
+      <Dialog open={open} maxWidth={"sm"}>
         <FormWrapper
           key={`ViewStatement`}
           metaData={finalMetadata}
           initialValues={acctInqData?.data?.[0] as InitialValuesType}
           onSubmitHandler={onSubmitHandler}
-          // displayMode={formMode}
           loading={acctInqData.isLoading}
           formStyle={{
             background: "white",
           }}
           controlsAtBottom={true}
-          onFormButtonClickHandel={(id) => {
-            PassbookStatementInq.fields[6].isReadOnly = false;
-          }}
+          onFormButtonClickHandel={(id) => {}}
           ref={formRef}
         >
           {({ isSubmitting, handleSubmit }) => (
@@ -113,16 +97,17 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
                 onClick={(event) => {
                   handleSubmit(event, "Save");
                 }}
-                // disabled={isSubmitting}
-                // endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                 color={"primary"}
+                endicon={"CheckCircleOutline"}
+                rotateIcon="scale(1.4)"
               >
                 Ok
               </GradientButton>
               <GradientButton
                 onClick={handleClose}
                 color={"primary"}
-                // disabled={isSubmitting}
+                endicon="CancelOutlined"
+                rotateIcon="scale(1.4) rotateY(360deg)"
               >
                 Close
               </GradientButton>

@@ -161,7 +161,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                 <AppBar position="relative" color="secondary">
                   <Toolbar variant="dense">
                     <Typography component="div" variant="h6">
-                      {"Enabled Authenticator"}
+                      {t("EnabledAuth")}
                     </Typography>
                   </Toolbar>
                   {mutationAuth.isError ? (
@@ -180,26 +180,14 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
               >
                 <Grid item lg={12} md={12} xl={12} xs={12}>
                   <Typography component="div" variant="h6">
-                    {" Note: Enabled Authenticator"}
+                    {t("TOTP_Note")}
                   </Typography>
                   <Typography component={"ol"} variant={"caption"}>
-                    <Typography component={"li"}>
-                      {"Scan this QR in any Authenticator App"}
-                    </Typography>
-                    <Typography component={"li"}>
-                      {"Enable two-factor authentication with TOTP"}
-                    </Typography>
-                    <Typography component={"li"}>
-                      {"You can use any authenticator app"}
-                    </Typography>
-                    <Typography component={"li"}>
-                      {"We recommend using Google Authenticator"}
-                    </Typography>
-                    <Typography component={"li"}>
-                      {
-                        "Please scan the below QR in your authenticator app and Verify OTP"
-                      }
-                    </Typography>
+                    <Typography component={"li"}>{t("TOTP_Line1")}</Typography>
+                    <Typography component={"li"}>{t("TOTP_Line2")}</Typography>
+                    <Typography component={"li"}>{t("TOTP_Line3")}</Typography>
+                    <Typography component={"li"}>{t("TOTP_Line4")}</Typography>
+                    <Typography component={"li"}>{t("TOTP_Line5")}</Typography>
                   </Typography>
                   <hr style={{ margin: "10px 0 10px 0" }} />
                 </Grid>
@@ -238,7 +226,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                       height: "100%",
                     }}
                   >
-                    <DialogContentText>Please Enter OTP</DialogContentText>
+                    <DialogContentText>{t("EnterOTP")}</DialogContentText>
                     <div
                       className={classes.divflex}
                       onKeyPress={(e) => {
@@ -297,7 +285,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                       onClick={() => {
                         onClose(false, false);
                       }}
-                      starticon="CancelOutlined"
+                      endicon="CancelOutlined"
                       rotateIcon="scale(1.4) rotateY(360deg)"
                     >
                       {t("Close")}
@@ -344,7 +332,7 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
                 onClick={() => {
                   onClose(false, false);
                 }}
-                starticon="CancelOutlined"
+                endicon="CancelOutlined"
                 rotateIcon="scale(1.4) rotateY(360deg)"
               >
                 {t("Close")}
