@@ -274,7 +274,7 @@ export const Ckyc = () => {
 
   useEffect(() => {
     if(!isLoading) {
-      console.log(data, "asddsa")
+      // console.log(data, "asddsa")
       // setCustomerCategories(data)
       handleCustCategoryRes(data)
     }
@@ -288,15 +288,15 @@ export const Ckyc = () => {
   // }, [AccTypeOptions, isAccTypeLoading])
 
 useEffect(() => { 
-  console.log('entityType changed', state?.entityTypectx)
+  // console.log('entityType changed', state?.entityTypectx)
   if(state?.entityTypectx) {
     refetch()
   }
 }, [state?.entityTypectx])
 
-  useEffect(() => {
-    console.log("wadqwdwq", state?.colTabValuectx, state?.formDatactx)
-  }, [state?.colTabValuectx, state?.formDatactx])
+  // useEffect(() => {
+  //   console.log("wadqwdwq", state?.colTabValuectx, state?.formDatactx)
+  // }, [state?.colTabValuectx, state?.formDatactx])
 
   // const handleFormModalOpen = (type:String) => {
     // setIsFormModalOpen(true)
@@ -321,7 +321,7 @@ useEffect(() => {
     setTabValue(newValue);
   };
   const handleColTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log("qweert", newValue)
+    // console.log("qweert", newValue)
     // console.log({newValue})
     // if(newValue) {
       setColTabValue(newValue);
@@ -491,7 +491,7 @@ useEffect(() => {
             key={"retrieveCustomerData"}
             finalMetaData={RetrieveDataFilterForm as FilterFormMetaType}
             onAction={(colomnValue, initialVisibleColumn) => {
-              console.log("wlkefhwief", colomnValue, initialVisibleColumn)
+              // console.log("wlkefhwief", colomnValue, initialVisibleColumn)
               let newObj = {}
               let newArr = Object.keys(colomnValue).filter(key => colomnValue[key] != null && colomnValue[key] != undefined && colomnValue[key] != "")
               newArr.map(el => {

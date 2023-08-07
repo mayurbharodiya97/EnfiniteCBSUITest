@@ -212,7 +212,7 @@ export default function FormModal({
 
   useEffect(() => {
     if(!isLoading) {
-      console.log("ResultResult", TabsData)
+      // console.log("ResultResult", TabsData)
     // setTabsApiRes(data)
       let newData:any[] = []
       if(TabsData && TabsData.length>0) {
@@ -231,7 +231,7 @@ export default function FormModal({
               // new tab element
               newData.push({...element, subtitles: [subtitleinfo]})
             }
-          console.log("filled newdata -aft", element.TAB_NAME , newData)
+          // console.log("filled newdata -aft", element.TAB_NAME , newData)
         });
         // setTabsApiRes(newData)
         handleApiRes(newData)
@@ -505,7 +505,7 @@ export default function FormModal({
                     <MenuItem value={20}>Twenty</MenuItem>
                     <MenuItem value={30}>Thirty</MenuItem> */}
                     {(AccTypeOptions && AccTypeOptions.length>0) && AccTypeOptions.map(el => {
-                      console.log('qwewerewqdxrdsa', el)
+                      // console.log('qwewerewqdxrdsa', el)
                       return <MenuItem value={el?.DATA_VALUE}>{el?.DISPLAY_VALUE}</MenuItem>
                     })}
                   </Select>}
