@@ -79,6 +79,12 @@ const BranchSelectionGrid = ({ selectionMode }) => {
     any
   >(["BranchSelectionGridData"], () => API.BranchSelectionGridData());
 
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["BranchSelectionGridData", {}]);
+    };
+  }, []);
+
   const imagesData = useQuery<any, any>(["getBankimgAndProfileimg"], () =>
     getBankimgAndProfileimg({
       userID: authController?.authState?.user?.id,

@@ -43,7 +43,8 @@ export const scrollMetaData = {
       width: 150,
       color: "green",
       isDisplayTotal: true,
-      // componentType: "currency",
+      Cell: components.NumberCell,
+      alignment: "right",
     },
 
     {
@@ -52,7 +53,8 @@ export const scrollMetaData = {
       width: 150,
       color: "red",
       isDisplayTotal: true,
-      // componentType: "currency",
+      Cell: components.NumberCell,
+      alignment: "right",
     },
     {
       columnName: "Tr.Branch",

@@ -170,32 +170,27 @@ const GeneralAPISDK = () => {
         if (data?.length > 0) {
           //..//
           //..//
-          const { LST_STATEMENT_DT } = data[0];
-          const inputDate = new Date(LST_STATEMENT_DT);
-          const nextDate = new Date(inputDate);
-          let NEwdate = nextDate.setDate(nextDate.getDate() + 1);
-          // Make sure to adjust the timezone offset to match your desired output
-          const timezoneOffset = nextDate.getTimezoneOffset() * 60000; // Convert to milliseconds
-          let FROM_DATE = new Date(NEwdate - timezoneOffset)
-            .toISOString()
-            .slice(0, 23);
+          // const { LST_STATEMENT_DT } = data[0];
+          const LST_STATEMENT_DT = "";
+          // const LST_STATEMENT_DT = "10/10/2010";
+          const originalDate: any = new Date(LST_STATEMENT_DT);
 
           return {
             ACCT_NM: {
               value: data?.[0]?.ACCT_NM,
             },
             STMT_FROM_DATE: {
-              value: isValidDate(FROM_DATE)
-                ? FROM_DATE ?? new Date()
-                : new Date(),
+              value: format(
+                isValidDate(LST_STATEMENT_DT)
+                  ? originalDate.setDate(originalDate.getDate() + 1)
+                  : new Date(),
+                "dd/MMM/yyyy"
+              ),
             },
             WK_STMT_TO_DATE: {
               value: isValidDate(authState?.workingDate)
-                ? format(
-                    new Date(authState?.workingDate),
-                    "dd/MM/yyyy" ?? new Date()
-                  )
-                : new Date(),
+                ? format(new Date(authState?.workingDate), "dd/MM/yyyy")
+                : format(new Date(), "dd/MM/yyyy"),
             },
           };
         } else {
