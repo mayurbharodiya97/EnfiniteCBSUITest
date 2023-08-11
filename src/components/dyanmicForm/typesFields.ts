@@ -52,6 +52,7 @@ export interface FieldMetaData<T> {
   onFormButtonClickHandel?: any;
   postValidationSetCrossFieldValues?: any;
   para?: string;
+  FormatProps?: any;
 }
 
 export type Omitted<T> = Omit<T, "fieldKey" | "enableGrid">;

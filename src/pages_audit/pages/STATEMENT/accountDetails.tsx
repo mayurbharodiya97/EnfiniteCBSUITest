@@ -44,6 +44,13 @@ const AccountDetails = () => {
   const rowsDataRef: any = useRef([]);
 
   useEffect(() => {
+    document.title = "CBS - Statement";
+    return () => {
+      document.title = "CBS - Statement";
+    };
+  }, []);
+
+  useEffect(() => {
     const dataString = sessionStorage.getItem("myData");
     if (dataString) {
       const rowsData = JSON.parse(dataString);

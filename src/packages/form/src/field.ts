@@ -85,16 +85,16 @@ export const useField = ({
   //updates. ie. arrayFieldName[current-index].fieldName - here currentIndex represents
   //fields current postion in the arrayField
   useEffect(() => {
-    if (name.indexOf(`${formContext.formName}/`) === 0) {
+    if (name?.indexOf(`${formContext?.formName}/`) === 0) {
       setFieldData((currVal) => ({
         ...currVal,
-        name: name,
+        name: name ?? "",
       }));
     } else {
       //remove else if any issue comes up in form - we are putting it here to fix array field issue
       setFieldData((currVal) => ({
         ...currVal,
-        name: `${formContext.formName}/${name}`,
+        name: `${formContext.formName}/${name}` ?? "",
       }));
     }
   }, [name, setFieldData, formContext.formName]);

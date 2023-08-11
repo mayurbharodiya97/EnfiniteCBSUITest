@@ -7,15 +7,18 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     render: {
       componentType: "numberFormat",
     },
+    className: "textInputFromRight",
     FormatProps: {
       thousandSeparator: true,
       prefix: "৳",
       thousandsGroupStyle: "lakh",
-      allowNegative: true,
+      allowNegative: false,
       allowLeadingZeros: false,
       decimalScale: 2,
+      fixedDecimalScale: true,
+      placeholder: "00.00",
       isAllowed: (values) => {
-        if (values?.value?.length > 10) {
+        if (values?.value?.length > 15) {
           return false;
         }
         if (values.floatValue === 0) {
@@ -25,7 +28,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       },
     },
     enableNumWords: true,
-    maxLength: 10,
+    // maxLength: 10,
   },
   currencyWithoutWords: {
     render: {

@@ -289,7 +289,7 @@ const exportToPDF = (data, companyName, generatedBy, RequestingBranchCode) => {
     startY
   );
 
-  doc.save("data.pdf");
+  doc.save("Statement Of Account.pdf");
 };
 
 export default exportToPDF;
