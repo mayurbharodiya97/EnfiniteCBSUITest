@@ -104,7 +104,6 @@ export const getAnnouncementListData = async ({ transactionID, userID }) => {
   }
 };
 export const updateAnnouncementDetailsData = async (data) => {
-  console.log(">>data", data);
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOANNOUNCEMENT",
     data

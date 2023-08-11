@@ -1,5 +1,7 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
+import { components } from "components/report";
+
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
@@ -311,6 +313,63 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       width: 140,
       minWidth: 140,
       maxWidth: 170,
+    },
+  ],
+};
+export const DependenciesData = {
+  title: "Dependencies Other Accounts",
+  disableGroupBy: "",
+  hideFooter: "",
+  hideAmountIn: "False",
+  retrievalType: "DATE",
+  // filters: [
+  //   {
+  //     accessor: "FROM_DT",
+  //     columnName: "From Date",
+  //     filterComponentType: "valueDateFilter",
+  //     gridProps: {
+  //       xs: 12,
+  //       md: 12,
+  //       sm: 12,
+  //     },
+  //   },
+  //   {
+  //     accessor: "TO_DT",
+  //     columnName: "To Date",
+  //     filterComponentType: "valueDateFilter",
+  //     gridProps: {
+  //       xs: 12,
+  //       md: 12,
+  //       sm: 12,
+  //     },
+  //   },
+  // ],
+  columns: [
+    {
+      columnName: "Account Number",
+      accessor: "AC_CD",
+      width: 170,
+    },
+    {
+      columnName: "Account Person Name",
+      accessor: "ACCT_NM",
+      width: 370,
+    },
+
+    {
+      columnName: " Account Status",
+      accessor: "ACCT_STATUS",
+      width: 150,
+    },
+    {
+      columnName: "Opening Date",
+      accessor: "OP_DATE",
+      width: 180,
+    },
+    {
+      columnName: "Status",
+      accessor: "STATUS",
+      width: 150,
     },
   ],
 };
@@ -686,7 +745,6 @@ export const PassbookStatementInq = {
         }
       },
       onFocus: (date) => {
-        console.log("<<dat", date);
         date.target.select();
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -713,7 +771,6 @@ export const PassbookStatementInq = {
       dependentFields: ["PD_DESTION"],
       isReadOnly: true,
       onFocus: (date) => {
-        console.log("<<dat", date);
         date.target.select();
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -754,7 +811,6 @@ export const PassbookStatementInq = {
       },
       defaultValue: new Date(),
       // onFocus: (date) => {
-      //   console.log("<<date", date);
       //   date.target.select();
       // },
       schemaValidation: {
@@ -771,7 +827,6 @@ export const PassbookStatementInq = {
       placeholder: "",
       format: "dd/MM/yyyy",
       onFocus: (date) => {
-        console.log("<<dat", date);
         date.target.select();
       },
       dependentFields: ["PD_DESTION", "STMT_FROM_DATE"],

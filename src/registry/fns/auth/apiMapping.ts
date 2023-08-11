@@ -288,6 +288,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTTYPELST",
     packageName: "",
   },
+  CUSTOMERDEPENDENCYDTL: {
+    url: "/customerServiceAPI/CUSTOMERDEPENDENCYDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

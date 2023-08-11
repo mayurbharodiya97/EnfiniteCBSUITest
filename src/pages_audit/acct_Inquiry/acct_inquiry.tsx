@@ -22,6 +22,7 @@ import { SubmitFnType } from "packages/form";
 import { Alert } from "components/common/alert";
 import { GradientButton } from "components/styledComponent/button";
 import { queryClient } from "cache";
+import Dependencies from "./dependencies";
 
 // import { Dialog } from "@mui/material";
 const actions: ActionTypes[] = [
@@ -30,6 +31,12 @@ const actions: ActionTypes[] = [
     actionLabel: "View Detail",
     multiple: false,
     rowDoubleClick: true,
+  },
+  {
+    actionName: "dependencies",
+    actionLabel: "Dependencies",
+    multiple: false,
+    rowDoubleClick: false,
   },
   {
     actionName: "view-statement",
@@ -60,8 +67,6 @@ export const Accountinquiry = ({ open, onClose }) => {
     endSubmit?: any;
     setFieldError?: any;
   }
-
-  // console.log("<<<r", rowsData);
   const insertFormDataFnWrapper =
     (insertFormData) =>
     async ({ data }: InsertFormDataFnType) => {
@@ -76,6 +81,10 @@ export const Accountinquiry = ({ open, onClose }) => {
     (data) => {
       if (data.name === "view-detail") {
         setComponentToShow("ViewDetail");
+        setAcctOpen(true);
+        setRowsData(data?.rows);
+      } else if (data.name === "dependencies") {
+        setComponentToShow("Dependencies");
         setAcctOpen(true);
         setRowsData(data?.rows);
       } else if (data.name === "view-statement") {
@@ -105,7 +114,6 @@ export const Accountinquiry = ({ open, onClose }) => {
       !Boolean(data?.ACCOUNT) &&
       !Boolean(data?.PAN)
     ) {
-      console.log("<<<actv", endSubmit);
       //@ts-ignore
       endSubmit(true, "Please enter any value");
       setShowGridData(true);
@@ -207,6 +215,12 @@ export const Accountinquiry = ({ open, onClose }) => {
 
         {componentToShow === "ViewDetail" ? (
           <ViewDetail
+            rowsData={rowsData}
+            open={acctOpen}
+            onClose={() => setAcctOpen(false)}
+          />
+        ) : componentToShow === "Dependencies" ? (
+          <Dependencies
             rowsData={rowsData}
             open={acctOpen}
             onClose={() => setAcctOpen(false)}

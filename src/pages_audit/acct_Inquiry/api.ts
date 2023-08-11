@@ -87,3 +87,27 @@ export const getAcctInqStatement = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getDependenciesData = async (_, __, otherAPIRequestPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CUSTOMERDEPENDENCYDTL", {
+      ...otherAPIRequestPara,
+    });
+  if (status === "0") {
+    const dataStatus = data;
+    dataStatus.map((item) => {
+      if (item?.STATUS === "Closed") {
+        item._rowColor = "rgb(152 59 70 / 61%)";
+      }
+      if (item?.STATUS === "Freezed") {
+        item._rowColor = "rgb(40 142 159 / 60%)";
+      }
+      if (item?.STATUS === "Un-Claimed") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+      }
+    });
+    return dataStatus;
+    // return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

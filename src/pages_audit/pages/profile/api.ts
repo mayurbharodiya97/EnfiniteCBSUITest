@@ -115,31 +115,7 @@ export const getquickView = async ({ userID, COMP_CD }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getquickViewList = async () => {
-  // console.log("<<<comp", COMP_CD);
-  const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETUSRDOCLIST", {
-      USER_NAME: "adi",
-      // COMP_CD: COMP_CD,
-      COMP_CD: "132 ",
-    });
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DOC_CD, DOC_NM, ...other }, index) => {
-        return {
-          value: DOC_CD,
-          label: `${index + 1}${"."}  ${DOC_NM}`,
-          ...other,
-        };
-      });
-    }
-    return responseData;
-    // return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
+
 export const getdashUserboxData = async ({ userID, COMP_CD }) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETUSRDASHBOX", {
@@ -186,7 +162,6 @@ export const updateDashboxData = async (reqData) => {
   }
 };
 export const updateQuickViewData = async (reqData) => {
-  console.log("<<<reqdata", reqData);
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETQUICKVIEWSCREEN", reqData);
   if (status === "0") {

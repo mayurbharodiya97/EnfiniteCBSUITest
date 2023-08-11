@@ -171,7 +171,6 @@ export const ForgotPasswordController = () => {
         } = await veirfyUsernameandMobileNo(data?.userName, data?.mobileno);
 
         if (status === "0") {
-          console.log(">>PASS resdata", resdata);
           dispath({
             type: "verifyUserNameandMobileNoSuccess",
             payload: {
