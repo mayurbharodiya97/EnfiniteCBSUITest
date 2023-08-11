@@ -24,7 +24,7 @@ export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
     let toRemoveURL = urlObj.current ?? "";
     return () => {
       URL.revokeObjectURL(toRemoveURL);
-      console.log("revokeObjectURL", toRemoveURL);
+      // console.log("revokeObjectURL", toRemoveURL);
     };
   }, []);
   return (
@@ -74,7 +74,7 @@ export const ImageViewer: FC<{
     let toRemoveURL = urlObj.current ?? "";
     return () => {
       //URL.revokeObjectURL(toRemoveURL);
-      console.log("revokeObjectURL", toRemoveURL);
+      // console.log("revokeObjectURL", toRemoveURL);
     };
   }, []);
   return (

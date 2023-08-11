@@ -149,7 +149,8 @@ export const useField = ({
             null
           )
         : null;
-    if (Boolean(value)) {
+    //console.log("field", value, defaultValueForArrayField, currentfield);
+    if (typeof value === "boolean" || Boolean(value)) {
       defaultValue = { value: value };
     } else if (Boolean(defaultValueForArrayField)) {
       defaultValue = { value: defaultValueForArrayField };

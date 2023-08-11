@@ -267,16 +267,27 @@ const GeneralAPISDK = () => {
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ DOC_TITLE, USER_DEFINE_CD }) => {
-          return {
-            value: USER_DEFINE_CD,
-            label: DOC_TITLE + " - " + USER_DEFINE_CD,
-          };
-        });
+        responseData = responseData.map(
+          ({ DOC_TITLE, DOC_CD, USER_DEFINE_CD }) => {
+            return {
+              value: DOC_CD,
+              label: DOC_TITLE + " - " + USER_DEFINE_CD,
+            };
+          }
+        );
       }
       return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const convertArraytoObject = (array, keyname, valuename) => {
+    if (array && Array.isArray(array)) {
+      return array.reduce((acuu, item) => {
+        return { ...acuu, [item[keyname]]: item[valuename] };
+      }, {});
+    } else {
+      return {};
     }
   };
   const getActionDetailsData = async (currentField, formState, authState) => {
@@ -285,37 +296,45 @@ const GeneralAPISDK = () => {
         await AuthSDK.internalFetcher("GETCOLMISCDATA", {
           CATEGORY_CD: currentField?.value ?? "",
         });
-      console.log("currentField", currentField);
+
       if (status === "0") {
+        let resData = convertArraytoObject(data, "DISPLAY_VALUE", "DATA_VALUE");
+
         return {
-          ACTION_NAME: { value: data?.[0]?.ACTION_NAME },
-          ACTION_LABEL: { value: data?.[0]?.ACTION_LABEL },
-          ACTION_ICON: { value: data?.[0]?.ACTION_ICON },
-          ROW_DOUBLE_CLICK: { value: data?.[0]?.ROW_DOUBLE_CLICK },
-          ALWAYS_AVALIBALE: { value: data?.[0]?.ALWAYS_AVALIBALE },
-          MULTIPLE: { value: data?.[0]?.MULTIPLE },
-          SHOULD_EXCLUDE: { value: data?.[0]?.SHOULD_EXCLUDE },
-          ON_ENTER_SUBMIT: { value: data?.[0]?.ON_ENTER_SUBMIT },
-          START_ICON: { value: data?.[0]?.START_ICON },
-          END_ICON: { value: data?.[0]?.END_ICON },
-          ROTATE_ICON: { value: data?.[0]?.ROTATE_ICON },
-          IS_NO_DATA_THEN_SHOW: { value: data?.[0]?.IS_NO_DATA_THEN_SHOW },
-          TOOLTIP: { value: data?.[0]?.TOOLTIP },
+          ACTIONNAME: { value: resData?.ACTIONNAME },
+          ACTIONLABEL: { value: resData?.ACTIONLABEL },
+          ACTIONICON: { value: resData?.ACTIONICON },
+          ROWDOUBLECLICK: {
+            value: resData?.ROWDOUBLECLICK === "Y" ? true : false,
+          },
+          ALWAYSAVAILABLE: {
+            value: resData?.ALWAYSAVAILABLE === "Y" ? true : false,
+          },
+          MULTIPLE: { value: resData?.MULTIPLE === "Y" ? true : false },
+          SHOULDEXCLUDE: { value: resData?.SHOULDEXCLUDE },
+          ON_ENTER_SUBMIT: { value: resData?.ONENTERSUBMIT },
+          STARTSICON: { value: resData?.STARTSICON },
+          ENDSICON: { value: resData?.ENDSICON },
+          ROTATEICON: { value: resData?.ROTATEICON },
+          ISNODATATHENSHOW: {
+            value: resData?.ISNODATATHENSHOW === "Y" ? true : false,
+          },
+          TOOLTIP: { value: resData?.TOOLTIP },
         };
       } else {
         return {
-          ACTION_NAME: { value: "" },
-          ACTION_LABEL: { value: "" },
-          ACTION_ICON: { value: "" },
-          ROW_DOUBLE_CLICK: { value: "" },
-          ALWAYS_AVALIBALE: { value: "" },
+          ACTIONNAME: { value: "" },
+          ACTIONLABEL: { value: "" },
+          ACTIONICON: { value: "" },
+          ROWDOUBLECLICK: { value: "" },
+          ALWAYSAVAILABLE: { value: "" },
           MULTIPLE: { value: "" },
-          SHOULD_EXCLUDE: { value: "" },
-          ON_ENTER_SUBMIT: { value: "" },
-          START_ICON: { value: "" },
-          END_ICON: { value: "" },
-          ROTATE_ICON: { value: "" },
-          IS_NO_DATA_THEN_SHOW: { value: "" },
+          SHOULDEXCLUDE: { value: "" },
+          ON_ENTERSUBMIT: { value: "" },
+          STARTSICON: { value: "" },
+          ENDSICON: { value: "" },
+          ROTATEICON: { value: "" },
+          ISNODATATHENSHOW: { value: "" },
           TOOLTIP: { value: "" },
         };
       }

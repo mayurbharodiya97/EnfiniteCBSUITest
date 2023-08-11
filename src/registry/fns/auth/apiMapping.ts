@@ -316,12 +316,20 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOLMISCDATA",
     packageName: "",
   },
+  GETTBGGRIDCOLDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGGRIDCOLDATA",
+    packageName: "",
+  },
   VERIFYDYNGRIDQUERY: {
     url: "commonMasterServiceAPI/VERIFYDYNGRIDQUERY",
     packageName: "",
   },
   DODYNAMICGRIDCONFIG: {
     url: "commonMasterServiceAPI/DODYNAMICGRIDCONFIG",
+    packageName: "",
+  },
+  DODYNAMICGRIDACTION: {
+    url: "commonMasterServiceAPI/DODYNAMICGRIDACTION",
     packageName: "",
   },
 };

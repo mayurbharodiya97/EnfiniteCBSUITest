@@ -44,11 +44,10 @@ export const ActionsMetaData: any = {
     {
       render: {
         componentType: "arrayField",
-        group: 2,
       },
       name: "actionsDetails",
       removeRowFn: "deleteFormArrayFieldData",
-      arrayFieldIDName: "lineNo",
+      arrayFieldIDName: "DOC_CD",
       GridProps: {
         xs: 12,
         md: 12,
@@ -59,16 +58,21 @@ export const ActionsMetaData: any = {
           render: {
             componentType: "hidden",
           },
-          name: "lineNo",
+          name: "SR_CD",
+          label: "sr.cd",
+          placeholder: "",
+          GridProps: {
+            xs: 12,
+            md: 3,
+            sm: 3,
+          },
         },
-
         {
           render: {
             componentType: "select",
           },
-          name: "ACTIONS",
+          name: "ACTION_CD",
           label: "Actions",
-          defaultValue: "A",
           options: [
             { label: "Add", value: "Add" },
             { label: "View Detail", value: "View-Detail" },
@@ -85,7 +89,7 @@ export const ActionsMetaData: any = {
           render: {
             componentType: "textField",
           },
-          name: "ACTION_NAME",
+          name: "ACTIONNAME",
           label: "Action Name",
           placeholder: "Action Name",
           GridProps: {
@@ -97,9 +101,8 @@ export const ActionsMetaData: any = {
         {
           render: {
             componentType: "textField",
-            group: 2,
           },
-          name: "ACTION_LABEL",
+          name: "ACTIONLABEL",
           label: "Action Label",
           placeholder: "Action Label",
           GridProps: {
@@ -112,9 +115,8 @@ export const ActionsMetaData: any = {
         {
           render: {
             componentType: "textField",
-            group: 2,
           },
-          name: "ACTION_ICON",
+          name: "ACTIONICON",
           label: "Action Icon",
           placeholder: "Action Icon",
           GridProps: {
@@ -127,7 +129,7 @@ export const ActionsMetaData: any = {
           render: {
             componentType: "checkbox",
           },
-          name: "ROW_DOUBLE_CLICK",
+          name: "ROWDOUBLECLICK",
           label: "Row Double Click",
           defaultValue: true,
           GridProps: {
@@ -140,8 +142,21 @@ export const ActionsMetaData: any = {
           render: {
             componentType: "checkbox",
           },
-          name: "ALWAYS_AVALIBALE",
+          name: "ALWAYSAVAILABLE",
           label: "Always Available",
+          defaultValue: true,
+          GridProps: {
+            xs: 12,
+            md: 3,
+            sm: 3,
+          },
+        },
+        {
+          render: {
+            componentType: "checkbox",
+          },
+          name: "ISNODATATHENSHOW",
+          label: "Is Nodata Then Show",
           defaultValue: true,
           GridProps: {
             xs: 12,
@@ -165,9 +180,8 @@ export const ActionsMetaData: any = {
         {
           render: {
             componentType: "textField",
-            group: 2,
           },
-          name: "SHOULD_EXCLUDE",
+          name: "SHOULDEXCLUDE",
           label: "Should Exclude",
           placeholder: "Should Exclude",
           GridProps: {
@@ -179,9 +193,8 @@ export const ActionsMetaData: any = {
         {
           render: {
             componentType: "textField",
-            group: 2,
           },
-          name: "ON_ENTER_SUBMIT",
+          name: "ONENTERSUBMIT",
           label: "OnEnter Submit",
           placeholder: "OnEnter Submit",
           GridProps: {
@@ -190,12 +203,12 @@ export const ActionsMetaData: any = {
             sm: 3,
           },
         },
+
         {
           render: {
             componentType: "textField",
-            group: 2,
           },
-          name: "START_ICON",
+          name: "STARTSICON",
           label: "Starts Icon",
           placeholder: "Starts Icon",
           GridProps: {
@@ -207,9 +220,8 @@ export const ActionsMetaData: any = {
         {
           render: {
             componentType: "textField",
-            group: 2,
           },
-          name: "END_ICON",
+          name: "ENDSICON",
           label: "Ends Icon",
           placeholder: "Ends Icon",
           GridProps: {
@@ -218,20 +230,19 @@ export const ActionsMetaData: any = {
             sm: 3,
           },
         },
-        {
-          render: {
-            componentType: "textField",
-            group: 2,
-          },
-          name: "ROTATE_ICON",
-          label: "Rotate Icon",
-          placeholder: "Rotate Icon",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
-        },
+        // {
+        //   render: {
+        //     componentType: "textField",
+        //   },
+        //   name: "ROTATEICON",
+        //   label: "Rotate Icon",
+        //   placeholder: "Rotate Icon",
+        //   GridProps: {
+        //     xs: 12,
+        //     md: 3,
+        //     sm: 3,
+        //   },
+        // },
       ],
     },
   ],

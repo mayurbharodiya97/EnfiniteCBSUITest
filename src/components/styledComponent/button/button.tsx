@@ -16,6 +16,7 @@ const GradientButtonCustom = withStyles({
     width: "fit-content",
     letterSpacing: "0.02857em",
     textTransform: "capitalize",
+    margin: "3px",
     // marginLeft: "7px",
     // boxShadow:
     //   "rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, rgba(58, 65, 111, .5) 0 -3px 0 inset",

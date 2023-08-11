@@ -25,14 +25,10 @@ export const DynamicGridConfigMetaData = {
     },
     fields: [
       {
-        render: { componentType: "hidden" },
-        name: "TRAN_CD",
-      },
-      {
         render: {
           componentType: "select",
         },
-        name: "SCREEN_NAME",
+        name: "DOC_CD",
         label: "Screen Name",
         placeholder: "",
         type: "text",
@@ -143,19 +139,19 @@ export const DynamicGridConfigMetaData = {
           sm: 3,
         },
       },
-      {
-        render: {
-          componentType: "checkbox",
-        },
-        name: "GRID_LABEL",
-        label: "Grid Label",
-        defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
-      },
+      // {
+      //   render: {
+      //     componentType: "checkbox",
+      //   },
+      //   name: "GRID_LABEL",
+      //   label: "Grid Label",
+      //   defaultValue: true,
+      //   GridProps: {
+      //     xs: 12,
+      //     md: 3,
+      //     sm: 3,
+      //   },
+      // },
       {
         render: {
           componentType: "checkbox",
@@ -224,11 +220,11 @@ export const DynamicGridConfigMetaData = {
       },
       {
         render: {
-          componentType: "checkbox",
+          componentType: "textField",
         },
         name: "DEFAULT_PAGE_SIZE",
         label: "Default PageSize",
-        defaultValue: true,
+        // defaultValue: true,
         GridProps: {
           xs: 12,
           md: 3,
@@ -239,7 +235,7 @@ export const DynamicGridConfigMetaData = {
         render: {
           componentType: "select",
         },
-        name: "PAGE_SIZE",
+        name: "PAGE_SIZES",
         label: "Page Sizes",
         placeholder: "",
         options: () => getProMiscData("pageSizes"),
@@ -340,14 +336,17 @@ export const DynamicGridConfigMetaData = {
         columnName: "Component Type",
         componentType: "editableSelect",
         options: () => getProMiscData("Component_Type"),
-        // _optionsKey: "getproMiscData",
-        required: true,
-        validation: (value, data) => {
-          if (!Boolean(value)) {
-            return "This field is required.";
-          }
-          return "";
-        },
+        _optionsKey: "getproMiscDataComponentType",
+        enableDefaultOption: true,
+        defaultValue: "DATA_VALUE",
+        // required: true,
+        // validation: (value, data) => {
+        //   console.log("value", value);
+        //   if (!Boolean(value)) {
+        //     return "This field is required.";
+        //   }
+        //   return "";
+        // },
         sequence: 4,
         width: 200,
         maxWidth: 350,
@@ -357,13 +356,13 @@ export const DynamicGridConfigMetaData = {
         accessor: "SEQ_NO",
         columnName: "Column Sequence",
         componentType: "editableNumberFormat",
-        required: true,
-        validation: (value, data) => {
-          if (!Boolean(value)) {
-            return "This field is required.";
-          }
-          return "";
-        },
+        // required: true,
+        // validation: (value, data) => {
+        //   if (!Boolean(value)) {
+        //     return "This field is required.";
+        //   }
+        //   return "";
+        // },
         alignment: "left",
         sequence: 5,
         width: 140,
