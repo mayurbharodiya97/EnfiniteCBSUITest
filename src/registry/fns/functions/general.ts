@@ -170,8 +170,8 @@ const GeneralAPISDK = () => {
         if (data?.length > 0) {
           //..//
           //..//
-          // const { LST_STATEMENT_DT } = data[0];
-          const LST_STATEMENT_DT = "";
+          const { LST_STATEMENT_DT } = data[0];
+          // const LST_STATEMENT_DT = "";
           // const LST_STATEMENT_DT = "10/10/2010";
           const originalDate: any = new Date(LST_STATEMENT_DT);
 

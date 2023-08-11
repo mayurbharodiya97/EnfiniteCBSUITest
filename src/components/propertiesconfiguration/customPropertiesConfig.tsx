@@ -11,11 +11,11 @@ interface CustomProperties {
 
 const customParameters: CustomProperties = {
   dynamicAccountNumberField: "2",
-  dynamicAmountSymbol: "₽",
+  dynamicAmountSymbol: "₹",
   dynamicAmountGroup: "lakh",
   // dynamicDecimalScale: 4,
-  currencyFormat: "7",
-  decimalCount: 4,
+  currencyFormat: "1",
+  decimalCount: 2,
 };
 
 export const CustomPropertiesConfigurationContext =
