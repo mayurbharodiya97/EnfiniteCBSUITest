@@ -58,7 +58,7 @@ export const useOptionsFetcher = (
         dependentValues,
         formState,
         transformDependentFieldsState(dependentValues),
-        authState,
+        authState
       ),
     {
       retry: false,
@@ -188,6 +188,7 @@ export const useOptionsFetcherSimple = (
   defaultOptionLabel
 ) => {
   let loadingOptions = false;
+  const { authState } = useContext(AuthContext);
 
   let queryKey: any[] = [];
   if (Boolean(disableCaching)) {
@@ -195,11 +196,15 @@ export const useOptionsFetcherSimple = (
   } else {
     queryKey = [_optionsKey];
   }
-  const queryOptions = useQuery(queryKey, () => options(optionsProps), {
-    retry: false,
-    enabled: typeof options === "function",
-    cacheTime: disableCaching ? 0 : 100000000,
-  });
+  const queryOptions = useQuery(
+    queryKey,
+    () => options(optionsProps, authState),
+    {
+      retry: false,
+      enabled: typeof options === "function",
+      cacheTime: disableCaching ? 0 : 100000000,
+    }
+  );
   loadingOptions = queryOptions.isLoading;
   useEffect(() => {
     if (options === undefined) {

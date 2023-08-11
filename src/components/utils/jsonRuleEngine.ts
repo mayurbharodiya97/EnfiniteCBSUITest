@@ -50,7 +50,6 @@ export const ruleEngine =
     });
 
     engine.stop();
-    console.log(">>result", result);
     if (result.events.length > 0) {
       return success;
     } else {

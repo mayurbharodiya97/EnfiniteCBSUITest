@@ -115,10 +115,8 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     }
   }, [value, handleChange]);
   const focusRef = useRef();
-  console.log("<<focusRef", isFieldFocused);
 
   useEffect(() => {
-    console.log("<<isFieldFocused", isFieldFocused);
     if (isFieldFocused) {
       //@ts-ignore
       setTimeout(() => {

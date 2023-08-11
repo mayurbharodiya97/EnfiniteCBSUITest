@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useStyles } from "./style";
 import quickview from "assets/images/Quick_view.png";
 import IconButton from "@mui/material/IconButton";
@@ -17,6 +17,7 @@ import { useQuery } from "react-query";
 import * as API from "./api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
+import { queryClient } from "cache";
 
 export const Quick_View = () => {
   const authController = useContext(AuthContext);
@@ -31,9 +32,15 @@ export const Quick_View = () => {
         companyID: authController?.authState?.companyID,
       })
   );
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["GETQUICKACCESSVIEW"]);
+    };
+  }, []);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClickd = (event) => {
     setAnchorEl(event.currentTarget);
+    refetch();
   };
   const handleClose = () => {
     setAnchorEl(null);

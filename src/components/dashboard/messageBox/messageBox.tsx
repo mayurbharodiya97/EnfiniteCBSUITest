@@ -17,6 +17,12 @@ import AddIcon from "@mui/icons-material/Add";
 import StickyNotes from "./stickyNotes/stickyNotes";
 import { GradientButton } from "components/styledComponent/button";
 import { TipsWrapper } from "./tipsBox/tipsBoxWrapper";
+import {
+  AlertMessageBox,
+  AnnouncementMessageBox,
+  NotesMessageBox,
+  TipsMessageBox,
+} from "assets/icons/svgIcons";
 
 interface updateAUTHDetailDataType {
   userID: any;
@@ -185,7 +191,16 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
                 color: "var(--theme-color2)",
                 borderRadius: "12px",
                 padding: "10px",
-                margin: "4px 14px 0 0",
+                // margin: "4px 14px 0 0",
+                margin: "auto",
+                fontWeight: 600,
+                textAlign: "center",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px",
+                "&:hover": {
+                  fontSize: "20px",
+                  padding: "7px",
+                },
               }}
             >
               {screenFlag === "Announcement"
@@ -208,36 +223,44 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
                 height: "45px",
                 width: "45px",
               }}
+              sx={{
+                "& svg": {
+                  display: "block",
+                },
+              }}
             >
               {/* {`${icon}`} */}
 
               {screenFlag === "Announcement" ? (
-                <VolumeUpRoundedIcon
-                  style={{ color: " #4263C7", fontSize: "30px" }}
-                />
+                // <VolumeUpRoundedIcon
+                //   style={{ color: " #4263C7", fontSize: "30px" }}
+                // />
+                <AnnouncementMessageBox width={30} height={30} />
               ) : screenFlag === "Tips" ? (
-                <TipsAndUpdatesOutlinedIcon
-                  style={{ color: "#885CF5", fontSize: "30px" }}
-                />
+                // <TipsAndUpdatesOutlinedIcon
+                //   style={{ color: "#885CF5", fontSize: "30px" }}
+                // />
+                <TipsMessageBox width={30} height={30} />
               ) : screenFlag === "Notes" ? (
                 <>
                   {/* <EventNoteOutlinedIcon
                     style={{ color: " #5290F5", fontSize: "30px" }}
                   /> */}
-                  <AddIcon
+                  {/* <AddIcon
                     style={{ color: " #5290F5", fontSize: "30px" }}
                     // onClick={(e) => {
                     //   setIsOpenSave(true);
                     //   // setToggle(!toggle);
                     // }}
-                  />
-
+                  /> */}
+                  <NotesMessageBox width={26} height={30} />
                   {/* <ReactStickyNotes onChange={handleOnChange} /> */}
                 </>
               ) : screenFlag === "Alert" ? (
-                <WarningAmberRoundedIcon
-                  style={{ color: " #FF4F79", fontSize: "30px" }}
-                />
+                // <WarningAmberRoundedIcon
+                //   style={{ color: " #FF4F79", fontSize: "30px" }}
+                // />
+                <AlertMessageBox width={30} height={30} />
               ) : null}
             </IconButton>
             {/* {screenFlag === "Notes" ? (

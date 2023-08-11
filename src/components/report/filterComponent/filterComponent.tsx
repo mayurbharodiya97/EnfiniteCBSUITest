@@ -93,7 +93,6 @@ export const FilterComponent = ({
   };
 
   const setRetrievalData = (data) => {
-    console.log(">>data", data);
     setQueryFilters([data]);
     setOpen(false);
   };

@@ -332,6 +332,10 @@ export const ActionWiseAPIConfiguration = {
     url: "commonMasterServiceAPI/DODYNAMICGRIDACTION",
     packageName: "",
   },
+  CUSTOMERDEPENDENCYDTL: {
+    url: "/customerServiceAPI/CUSTOMERDEPENDENCYDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

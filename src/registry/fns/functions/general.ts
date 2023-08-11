@@ -39,7 +39,6 @@ const GeneralAPISDK = () => {
       return "";
     }
   };
-
   const getTranslateDataFromGoole = async (data, fromLang, toLang) => {
     try {
       let response = await fetch(
@@ -65,12 +64,10 @@ const GeneralAPISDK = () => {
       return "";
     }
   };
-
   const setDocumentName = (text) => {
     let titleText = document.title;
     document.title = titleText.split(" - ")[0] + " - " + text;
   };
-
   const getCustType = () => {
     console.log("changed...");
   };
@@ -94,7 +91,6 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-
   const getCustomerIdValidate = async (currentField, formState, authState) => {
     // if (currentField?.value) {
     const { status, data, message, messageDetails } =
@@ -218,7 +214,6 @@ const GeneralAPISDK = () => {
       };
     }
   };
-
   const getBranchCodeList = async (...reqData) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETBRACCESSLST", {
@@ -300,6 +295,32 @@ const GeneralAPISDK = () => {
       if (status === "0") {
         let resData = convertArraytoObject(data, "DISPLAY_VALUE", "DATA_VALUE");
 
+        const getquickViewList = async (...reqData) => {
+          console.log("dawshdiquwhd", ...reqData);
+          const { status, data, message, messageDetails } =
+            await AuthSDK.internalFetcher("GETUSRDOCLIST", {
+              USER_NAME: reqData?.[1]?.user?.id,
+              COMP_CD: reqData?.[1]?.companyID,
+            });
+          if (status === "0") {
+            let responseData = data;
+            if (Array.isArray(responseData)) {
+              responseData = responseData.map(
+                ({ DOC_CD, DOC_NM, ...other }, index) => {
+                  return {
+                    value: DOC_CD,
+                    label: `${index + 1}${"."}  ${DOC_NM}`,
+                    ...other,
+                  };
+                }
+              );
+            }
+            return responseData;
+          } else {
+            throw DefaultErrorObject(message, messageDetails);
+          }
+        };
+
         return {
           ACTIONNAME: { value: resData?.ACTIONNAME },
           ACTIONLABEL: { value: resData?.ACTIONLABEL },
@@ -355,6 +376,7 @@ const GeneralAPISDK = () => {
     getReportAccountType,
     getTbgDocMstData,
     getActionDetailsData,
+    getquickViewList,
   };
 };
 
