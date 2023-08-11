@@ -290,32 +290,6 @@ const GeneralAPISDK = () => {
       if (status === "0") {
         let resData = convertArraytoObject(data, "DISPLAY_VALUE", "DATA_VALUE");
 
-        const getquickViewList = async (...reqData) => {
-          console.log("dawshdiquwhd", ...reqData);
-          const { status, data, message, messageDetails } =
-            await AuthSDK.internalFetcher("GETUSRDOCLIST", {
-              USER_NAME: reqData?.[1]?.user?.id,
-              COMP_CD: reqData?.[1]?.companyID,
-            });
-          if (status === "0") {
-            let responseData = data;
-            if (Array.isArray(responseData)) {
-              responseData = responseData.map(
-                ({ DOC_CD, DOC_NM, ...other }, index) => {
-                  return {
-                    value: DOC_CD,
-                    label: `${index + 1}${"."}  ${DOC_NM}`,
-                    ...other,
-                  };
-                }
-              );
-            }
-            return responseData;
-          } else {
-            throw DefaultErrorObject(message, messageDetails);
-          }
-        };
-
         return {
           ACTIONNAME: { value: resData?.ACTIONNAME },
           ACTIONLABEL: { value: resData?.ACTIONLABEL },
@@ -356,6 +330,32 @@ const GeneralAPISDK = () => {
       }
     }
   };
+  const getquickViewList = async (...reqData) => {
+    console.log("dawshdiquwhd", ...reqData);
+    const { status, data, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETUSRDOCLIST", {
+        USER_NAME: reqData?.[1]?.user?.id,
+        COMP_CD: reqData?.[1]?.companyID,
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ DOC_CD, DOC_NM, ...other }, index) => {
+            return {
+              value: DOC_CD,
+              label: `${index + 1}${"."}  ${DOC_NM}`,
+              ...other,
+            };
+          }
+        );
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
