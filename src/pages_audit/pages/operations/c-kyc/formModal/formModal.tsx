@@ -234,7 +234,12 @@ export default function FormModal({
           // console.log("filled newdata -aft", element.TAB_NAME , newData)
         });
         // setTabsApiRes(newData)
-        handleApiRes(newData)
+
+        let steps:string[] = []
+        newData.forEach(element => {
+          steps.push(element?.TAB_NAME)
+        })
+        handleApiRes({newData, steps})
       }
     }
   }, [TabsData, isLoading])

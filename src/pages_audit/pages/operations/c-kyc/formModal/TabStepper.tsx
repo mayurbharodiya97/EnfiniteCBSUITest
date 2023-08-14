@@ -143,7 +143,7 @@ export default function TabStepper() {
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
       <Stepper alternativeLabel activeStep={state?.colTabValuectx} connector={<QontoConnector />}>
-        {steps.map((label, i) => {
+        {state?.tabNameList.map((label, i) => {
             // console.log("qwdQDW",)
           return <Step sx={{}} key={label}>
             <StepLabel sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{label}</StepLabel>
