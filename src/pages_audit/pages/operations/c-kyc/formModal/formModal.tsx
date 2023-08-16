@@ -48,6 +48,7 @@ import { AutoComplete } from 'components/common';
 import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../CkycContext';
+import TabStepper from './TabStepper';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -616,6 +617,7 @@ export default function FormModal({
                 }
               }} item xs>
                 
+              <TabStepper />
             
 
               <TabPanel value={state?.colTabValuectx} index={0}>

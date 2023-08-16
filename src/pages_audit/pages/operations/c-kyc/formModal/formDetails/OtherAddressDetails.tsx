@@ -5,7 +5,6 @@ import {
     other_address_poa_contact_meta_data, 
     other_address_meta_data
 } from './metadata/individual/otheraddressdetails';
-import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../CkycContext';
 
@@ -44,9 +43,6 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{

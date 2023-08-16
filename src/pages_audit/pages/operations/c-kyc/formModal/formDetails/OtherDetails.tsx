@@ -10,7 +10,6 @@ import {
 } from './metadata/individual/otherdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import TabStepper from '../TabStepper';
 import { CkycContext } from '../../CkycContext';
 import { useTranslation } from 'react-i18next';
 
@@ -55,9 +54,6 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{

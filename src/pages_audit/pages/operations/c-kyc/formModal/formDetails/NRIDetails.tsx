@@ -2,7 +2,6 @@ import React, { useContext, useRef } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { nri_detail_meta_data } from "./metadata/individual/nridetails"
-import TabStepper from "../TabStepper"
 import { CkycContext } from "../../CkycContext"
 import { useTranslation } from "react-i18next"
 
@@ -40,9 +39,6 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{

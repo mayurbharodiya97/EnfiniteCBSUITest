@@ -4,9 +4,9 @@ import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { declaration_meta_data } from './metadata/individual/declarationdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../CkycContext';
+import * as API from "../../api";
 
 const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -51,9 +51,6 @@ const myGridRef = useRef<any>(null);
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{

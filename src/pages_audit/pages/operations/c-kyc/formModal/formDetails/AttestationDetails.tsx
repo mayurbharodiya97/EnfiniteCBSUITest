@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useRef } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { attestation_detail_meta_data } from "./metadata/individual/attestationdetails"
-import TabStepper from "../TabStepper"
 import { CkycContext } from "../../CkycContext"
 import { useTranslation } from "react-i18next"
+import * as API from "../../api";
 
 const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
     const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
@@ -40,9 +40,6 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{

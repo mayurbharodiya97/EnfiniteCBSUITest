@@ -15,7 +15,6 @@ import {
 } from './metadata/individual/personaldetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../CkycContext';
 
@@ -90,9 +89,6 @@ const myGridRef = useRef<any>(null);
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Personal Details {`(1/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{
