@@ -1,8 +1,7 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
-import { lessThanDate } from "registry/rulesEngine";
-import { useContext } from "react";
-import { AuthContext } from "pages_audit/auth";
+import { components } from "components/report";
+
 export const AccountInquiryMetadata = {
   form: {
     name: "merchantOnboarding",
@@ -317,6 +316,63 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
   ],
 };
+export const DependenciesData = {
+  title: "Dependencies Other Accounts",
+  disableGroupBy: "",
+  hideFooter: "",
+  hideAmountIn: "False",
+  retrievalType: "DATE",
+  // filters: [
+  //   {
+  //     accessor: "FROM_DT",
+  //     columnName: "From Date",
+  //     filterComponentType: "valueDateFilter",
+  //     gridProps: {
+  //       xs: 12,
+  //       md: 12,
+  //       sm: 12,
+  //     },
+  //   },
+  //   {
+  //     accessor: "TO_DT",
+  //     columnName: "To Date",
+  //     filterComponentType: "valueDateFilter",
+  //     gridProps: {
+  //       xs: 12,
+  //       md: 12,
+  //       sm: 12,
+  //     },
+  //   },
+  // ],
+  columns: [
+    {
+      columnName: "Account Number",
+      accessor: "AC_CD",
+      width: 170,
+    },
+    {
+      columnName: "Account Person Name",
+      accessor: "ACCT_NM",
+      width: 370,
+    },
+
+    {
+      columnName: " Account Status",
+      accessor: "ACCT_STATUS",
+      width: 150,
+    },
+    {
+      columnName: "Opening Date",
+      accessor: "OP_DATE",
+      width: 180,
+    },
+    {
+      columnName: "Status",
+      accessor: "STATUS",
+      width: 150,
+    },
+  ],
+};
 export const PassbookStatement: any = {
   form: {
     name: "passbookstatement",
@@ -393,12 +449,17 @@ export const PassbookStatement: any = {
         md: 6,
         sm: 6,
       },
-      onFocus: (date) => {
-        date.target.select();
-      },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["From Date is required."] }],
+        rules: [
+          { name: "required", params: ["From Date is required."] },
+          { name: "typeError", params: ["Must be a valid date"] },
+        ],
+      },
+      validate: (value, data, others) => {
+        if (!Boolean(value)) {
+          return "Must be a valid date.";
+        }
       },
     },
     {
@@ -409,15 +470,28 @@ export const PassbookStatement: any = {
       label: "To Date :-",
       placeholder: "",
       format: "dd/MM/yyyy",
-      dependentFields: ["STMT_FROM_DATE"],
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: [" To date is required."] }],
+        rules: [
+          { name: "required", params: [" To date is required."] },
+          { name: "typeError", params: ["Must be a valid date"] },
+        ],
       },
-      onFocus: (date) => {
-        date.target.select();
-      },
+      dependentFields: ["STMT_FROM_DATE"],
       runValidationOnDependentFieldsChange: true,
+      // },
+
+      // validate: (value, data, others) => {
+      //   if (!Boolean(value)) {
+      //     return "This field is required.";
+      //   }
+      //   let toDate = new Date(value?.value);
+      //   let fromDate = new Date(data?.STMT_FROM_DATE?.value);
+      //   if (!greaterThanInclusiveDate(toDate, fromDate)) {
+      //     return `To Date should be greater than or equal to From Date.`;
+      //   }
+      //   return "";
+      // },
       validate: {
         conditions: {
           all: [
@@ -432,29 +506,26 @@ export const PassbookStatement: any = {
         success: "",
         failure: "To Date should be greater than or equal to From Date.",
       },
-
-      // validate: (value, data, others) => {
-      //   if (!Boolean(value?.value)) {
-      //     return "This field is required.";
-      //   }
-
-      //   let toDate = new Date(value?.value);
-      //   let fromDate = new Date(data?.FROM_DT?.value);
-
-      //   if (isNaN(toDate.getTime()) || isNaN(fromDate.getTime())) {
-      //     return "Invalid date format.";
-      //   }
-
-      //   if (lessThanDate(toDate, fromDate)) {
-      //     return "To Date should be greater than From Date.";
-      //   }
-      // },
       GridProps: {
         xs: 12,
         md: 6,
         sm: 6,
       },
     },
+    // {
+    //   render: {
+    //     componentType: "currency",
+    //   },
+    //   label: "Amount",
+    //   placeholder: "Enter Minimum Amount",
+    //   required: true,
+    //   GridProps: { xs: 12, sm: 6, md: 6 },
+    //   FormatProps: {
+    //     prefix: "$",
+    //     thousandsGroupStyle: "thousand",
+    //     // decimalScale: 3,
+    //   },
+    // },
   ],
 };
 export const PassbookStatementInq = {
@@ -462,7 +533,7 @@ export const PassbookStatementInq = {
     name: "passbookstatement",
     label: "Passbook/Statement Print Option",
     resetFieldOnUnmount: false,
-    validationRun: "all",
+    validationRun: "onBlur",
     // submitAction: "home",
     render: {
       ordering: "auto",
@@ -722,7 +793,6 @@ export const PassbookStatementInq = {
         }
       },
       onFocus: (date) => {
-        console.log("<<dat", date);
         date.target.select();
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -749,7 +819,6 @@ export const PassbookStatementInq = {
       dependentFields: ["PD_DESTION"],
       isReadOnly: true,
       onFocus: (date) => {
-        console.log("<<dat", date);
         date.target.select();
       },
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -790,7 +859,6 @@ export const PassbookStatementInq = {
       },
       defaultValue: new Date(),
       // onFocus: (date) => {
-      //   console.log("<<date", date);
       //   date.target.select();
       // },
       schemaValidation: {
@@ -807,7 +875,6 @@ export const PassbookStatementInq = {
       placeholder: "",
       format: "dd/MM/yyyy",
       onFocus: (date) => {
-        console.log("<<dat", date);
         date.target.select();
       },
       dependentFields: ["PD_DESTION", "STMT_FROM_DATE"],

@@ -9,10 +9,10 @@ export const getpMiscData = async (category_cd) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DATA_VALUE, DISPLAY_NM }) => {
+      responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
         return {
           value: DATA_VALUE,
-          label: DISPLAY_NM,
+          label: DISPLAY_VALUE,
         };
       });
     }

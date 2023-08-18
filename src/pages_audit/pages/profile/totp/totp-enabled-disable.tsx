@@ -108,7 +108,6 @@ const TotpEnbaledDisabled = ({ open, onClose, authFlag }) => {
       }
     },
   });
-  console.log(">>>", responseRef);
   const mutationAuth = useMutation(
     updateTotpAuthVerifyFnWrapper(API.updateTOTPAuthVerify),
     {

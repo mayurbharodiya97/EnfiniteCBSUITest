@@ -10,6 +10,15 @@ export const extendFieldTypes = (
   authState: any = {},
   customParameters: any = {}
 ) => {
+  // console.log(customParameters, "PARAMETER S");
+
+  const {
+    dynamicAccountNumberField,
+    dynamicAmountSymbol,
+    dynamicAmountGroup,
+    dynamicDecimalScale,
+  } = customParameters;
+
   const newMetaDataFields = metaData.fields.map((one) => {
     const extendedType = extendedTypes[one.render.componentType];
 
@@ -36,11 +45,40 @@ export const extendFieldTypes = (
       //   runPostValidationHookAlways,
       //   ...others
       // } = extendedType;
-      const { render, ...others } = extendedType;
-      //console.log("extendedType", one, others);
+      const { render, FormatProps, ...others } = extendedType;
+      console.log("FormatProps", FormatProps);
       //const result = Object.assign({}, one, others) as FieldMetaDataType;
       const result = Object.assign({}, others, one) as FieldMetaDataType;
-      //console.log("extendedType", one, others, result);
+
+      // const prefixAvail = Object.keys(FormatProps).includes("prefix");
+
+      // console.log(prefixAvail, "prefixAvail");
+      console.log(dynamicAmountSymbol, "dynamicAmountSymbol");
+      if (FormatProps) {
+        const prefixAvail = Object.keys(FormatProps)?.includes("prefix");
+        if (prefixAvail) {
+          FormatProps["prefix"] = dynamicAmountSymbol ?? FormatProps?.prefix;
+        }
+        const thousandsGroupStyleAvail = Object.keys(FormatProps)?.includes(
+          "thousandsGroupStyle"
+        );
+        if (thousandsGroupStyleAvail) {
+          FormatProps["thousandsGroupStyle"] =
+            dynamicAmountGroup ?? FormatProps?.thousandsGroupStyle;
+        }
+        const decimalScaleAvail =
+          Object.keys(FormatProps)?.includes("decimalScale");
+        if (decimalScaleAvail) {
+          FormatProps["decimalScale"] =
+            dynamicDecimalScale ?? FormatProps?.decimalScale;
+        }
+      }
+      if (FormatProps) {
+      }
+      // if (FormatProps) {
+      //
+      // }
+      result["FormatProps"] = { ...FormatProps, ...(one?.FormatProps ?? {}) };
       result["label"] = lanTranslate(result["label"]);
       result["placeholder"] = lanTranslate(result["placeholder"]);
       if (result && result.render && result.render.componentType) {
@@ -55,9 +93,21 @@ export const extendFieldTypes = (
   });
 
   let newMetaDataFieldsCustom: any = [];
-  const paravalue: string = customParameters?.dynamicAccountNumberField;
+  const paravalue: string = dynamicAccountNumberField;
+
   const processExtendedType = (key: string) => {
     const field = extendedTypes[key];
+    // console.log(extendedTypes["currency"], "field");
+    console.log(extendedTypes["currency"], "field");
+
+    // if (currencyField) {
+    //   currencyField.FormatProps = {
+    //     ...currencyField.FormatProps,
+    //     prefix: dynamicAmountSymbol,
+    //     thousandsGroupStyle: dynamicAmmountGroupStyle,
+    //   };
+    // }
+
     if (typeof field === "object") {
       field["label"] = lanTranslate(field["label"]);
       field["placeholder"] = lanTranslate(field["placeholder"]);
@@ -66,6 +116,7 @@ export const extendFieldTypes = (
         field["defaultValue"] = authState?.user?.branchCode; // Use the branchCodeValue parameter
       } else if (key === "accountType") {
         // Set autofocus on the accountType field
+        // console.log("acctTYPE");
         field["autoFocus"] = true;
       }
       newMetaDataFieldsCustom.push(field);
@@ -73,6 +124,7 @@ export const extendFieldTypes = (
   };
 
   newMetaDataFields?.forEach((item) => {
+    console.log(item, "item?>?>RNDR");
     if (item.render.componentType === "_accountNumber") {
       if (item?.para === "1") {
         const fullAccountNumber = extendedTypes["fullAccountNumber"];
@@ -97,6 +149,17 @@ export const extendFieldTypes = (
           processExtendedType
         );
       }
+      // } else if (item.render.componentType === "currency") {
+      //   const currency: any = extendedTypes["currency"];
+      //   if (typeof currency === "object") {
+      //     newMetaDataFieldsCustom.push(currency);
+      //   }
+      //   if (currency?.FormatProps) {
+      //     currency.FormatProps = {
+      //       ...currency?.FormatProps,
+      //       prefix: item?.customPrefix ? item?.customPrefix : dynamicAmountSymbol,
+      //     };
+      // }
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
     }

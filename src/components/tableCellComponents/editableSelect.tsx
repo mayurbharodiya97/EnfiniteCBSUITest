@@ -48,7 +48,6 @@ export const EditableSelect = (props) => {
     typeof requestProps !== "undefined"
       ? requestProps
       : gridProps;
-  //console.log(requestProps, typeof requestProps);
   const prevRows = rows
     .slice(0, index)
     .map((one) => one?.original)

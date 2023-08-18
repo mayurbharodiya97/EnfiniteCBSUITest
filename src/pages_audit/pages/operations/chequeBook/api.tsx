@@ -54,7 +54,6 @@ export const getChequeBookEntryData = async ({
           ACCT_CD: accountNo,
         });
       /*if (status === "0") {
-        console.log(">>data", data);
         return {
           CUST_NAME: { value: data?.[0]?.CUST_NAME },
           MAIL_ID: { value: data?.[0]?.MAIL_ID },

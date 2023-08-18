@@ -81,7 +81,7 @@ export const RetrievalParametersGridMetaData: GridMetaDataType = {
       },
     },
     {
-      accessor: "COLUMN_TYPE",
+      accessor: "COMPONENT_TYPE",
       columnName: "Column Type",
       sequence: 6,
       componentType: "editableTextField",
@@ -95,16 +95,7 @@ export const RetrievalParametersGridMetaData: GridMetaDataType = {
         rules: [{ name: "required", params: ["This field is required"] }],
       },
     },
-    {
-      accessor: "COLUMN_FORMAT",
-      columnName: "Column Format",
-      sequence: 6,
-      componentType: "editableTextField",
-      placeholder: "0.00",
-      width: 120,
-      minWidth: 180,
-      maxWidth: 250,
-    },
+
     {
       accessor: "WHERE_SEQ_ID",
       columnName: "Where Sequence",

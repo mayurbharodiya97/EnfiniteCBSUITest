@@ -1,11 +1,21 @@
 import { createContext, useContext } from "react";
 
 interface CustomProperties {
-  dynamicAccountNumberField: string;
+  dynamicAccountNumberField?: string;
+  dynamicAmountSymbol?: string;
+  dynamicAmountGroup?: string;
+  // dynamicDecimalScale?: number;
+  currencyFormat?: string;
+  decimalCount?: number;
 }
 
 const customParameters: CustomProperties = {
   dynamicAccountNumberField: "2",
+  dynamicAmountSymbol: "₹",
+  dynamicAmountGroup: "lakh",
+  // dynamicDecimalScale: 4,
+  currencyFormat: "1",
+  decimalCount: 2,
 };
 
 export const CustomPropertiesConfigurationContext =

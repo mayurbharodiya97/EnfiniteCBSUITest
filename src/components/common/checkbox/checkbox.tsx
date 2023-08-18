@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { Merge } from "../types";
@@ -64,6 +64,9 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
     name,
     excluded,
     readOnly,
+    incomingMessage,
+    whenToRunValidation,
+    runValidation,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -77,12 +80,27 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
+
+  useEffect(() => {
+    if (incomingMessage !== null && typeof incomingMessage === "object") {
+      const { value } = incomingMessage;
+      if (typeof value === "boolean") {
+        //console.log("incomingMessage", fieldKey, value);
+        handleChange(value);
+        if (whenToRunValidation === "onBlur") {
+          runValidation({ value: value }, true);
+        }
+      }
+    }
+  }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+
   if (excluded) {
     return null;
   }
   // console.log(value, "value");
   // console.log(!readOnly, "readOnly");
   const isError = touched && (error ?? "") !== "";
+
   const result = (
     // @ts-ignore
     <FormControl

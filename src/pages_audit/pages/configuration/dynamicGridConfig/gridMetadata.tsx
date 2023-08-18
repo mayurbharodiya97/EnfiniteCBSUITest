@@ -3,7 +3,7 @@ export const DynamicGridConfigGridMData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Dynamic Grid Configure",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "DOC_CD",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -38,17 +38,17 @@ export const DynamicGridConfigGridMData: GridMetaDataType = {
     // },
   ],
   columns: [
-    {
-      accessor: "TRAN_CD",
-      columnName: "Serial No",
-      sequence: 1,
-      alignment: "right",
-      componentType: "default",
-      width: 90,
-      minWidth: 50,
-      maxWidth: 150,
-      //isAutoSequence: true,
-    },
+    // {
+    //   accessor: "TRAN_CD",
+    //   columnName: "Serial No",
+    //   sequence: 1,
+    //   alignment: "right",
+    //   componentType: "default",
+    //   width: 90,
+    //   minWidth: 50,
+    //   maxWidth: 150,
+    //   //isAutoSequence: true,
+    // },
 
     {
       accessor: "DESCRIPTION",

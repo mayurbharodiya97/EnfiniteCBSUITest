@@ -1,4 +1,4 @@
-import { Button, Dialog } from "@mui/material";
+import { Button, CircularProgress, Dialog } from "@mui/material";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
@@ -7,10 +7,11 @@ import { useSnackbar } from "notistack";
 import { ActionsMetaData } from "./actionMetadata";
 import { makeStyles } from "@mui/styles";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { SubmitFnType } from "packages/form";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { ProcessDetailsData, utilFunction } from "components/utils";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",
@@ -25,36 +26,46 @@ export const useDialogStyles = makeStyles({
     fontSize: "1.5rem",
   },
 });
-export const ActionFormWrapper = ({ isOpen, formMode, onClose }) => {
+export const ActionFormWrapper = ({
+  isOpen,
+  formView,
+  onClose,
+  data: reqData,
+  docCD,
+}) => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
-
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-    any,
-    any
-  >(["actionsFormData"], () =>
+  const {
+    data: actionData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery<any, any>(["actionsFormData"], () =>
     API.actionsFormData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
+      DOC_CD: reqData[0]?.data?.DOC_CD ?? "",
     })
   );
-  console.log("data", data);
-  // const mutation = useMutation(API.actionsGridData(), {
-  //   onError: (error: any) => {},
-  //   onSuccess: (data) => {
-  //     enqueueSnackbar(data, {
-  //       variant: "success",
-  //     });
-  //     onClose();
-  //   },
-  // });
-  // useEffect(() => {
-  //   return () => {
-  //     queryClient.removeQueries(["actionsGridData"]);
-  //   };
-  // }, []);
+  console.log("actionData", actionData);
+  const mutation = useMutation(API.actionsFormDataDML(), {
+    onError: (error: any) => {},
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
+      onClose();
+    },
+  });
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["actionsFormData"]);
+    };
+  }, []);
 
   const onSubmitHandler: SubmitFnType = (
     data: any,
@@ -66,70 +77,57 @@ export const ActionFormWrapper = ({ isOpen, formMode, onClose }) => {
     // @ts-ignore
     endSubmit(true);
 
-    // let newData = {
-    //   IS_VIEW_NEXT: Boolean(data?.IS_VIEW_NEXT) ? "Y" : "N" ?? "",
-    // };
+    let transformedActionsDetails = data.actionsDetails.map((item) => ({
+      ...item,
+      MULTIPLE: item.MULTIPLE ? "Y" : "N",
+      ROWDOUBLECLICK: item.ROWDOUBLECLICK ? "Y" : "N",
+      ALWAYSAVAILABLE: item.ALWAYSAVAILABLE ? "Y" : "N",
+      ISNODATATHENSHOW: item.ISNODATATHENSHOW ? "Y" : "N",
+    }));
 
-    // let oldData = {
-    //   IS_VIEW_NEXT: mainData?.IS_VIEW_NEXT ? "Y" : "N" ?? "",
-    // };
+    let upd: any = ProcessDetailsData(
+      transformedActionsDetails ?? [],
+      actionData ?? []
+    );
 
-    // let upd: any = utilFunction.transformDetailsData(newData, oldData ?? {});
+    if (upd["_OLDROWVALUE"]) {
+      const oldRowValue = upd["_OLDROWVALUE"];
 
-    // if (upd?._UPDATEDCOLUMNS?.length > 0) {
-    //   isErrorFuncRef.current = {
-    //     data: {
-    //       ...newData,
-    //       ...upd,
-    //       TRAN_CD: mainData?.TRAN_CD ?? "",
-    //       COMP_CD: authState?.companyID ?? "",
-    //       BRANCH_CD: authState?.user?.branchCode ?? "",
-    //       SR_CD: "1",
-    //       _isNewRow: formView === "view" ? true : false,
-    //     },
-    //     displayData,
-    //     endSubmit,
-    //     setFieldError,
-    //   };
-    //   setIsOpenSave(true);
-    // }
+      for (const key in oldRowValue) {
+        if (oldRowValue.hasOwnProperty(key)) {
+          // Convert boolean values to "Y" or "N"
+          if (typeof oldRowValue[key] === "boolean") {
+            oldRowValue[key] = oldRowValue[key] ? "Y" : "N";
+          }
+        }
+      }
+    }
+    let srCount = utilFunction.GetMaxCdForDetails(
+      actionData?.[0]?.SR_CD,
+      "SR_CD"
+    );
+    console.log("srCount", srCount);
+    const updatedData: any = {
+      _isNewRow: formView === "edit" ? true : false,
+      COMP_CD: authState.companyID,
+      BRANCH_CD: authState.user.branchCode,
+      DOC_CD: reqData[0]?.data?.DOC_CD ?? "",
+      DETAILS_DATA: upd,
+      SR_CD: actionData?.[0]?.SR_CD ?? "",
+    };
+
+    isErrorFuncRef.current = {
+      data: updatedData,
+      displayData,
+      endSubmit,
+      setFieldError,
+    };
+    setIsOpenSave(true);
   };
-  // const onSaveRecord = async () => {
-  //   let { hasError, data: dataold } = await myGridRef.current?.validate();
-  //   if (hasError === true) {
-  //     if (dataold) {
-  //       setGridData(dataold);
-  //     }
-  //   } else {
-  //     let result = myGridRef?.current?.cleanData?.();
-  //     if (!Array.isArray(result)) {
-  //       result = [result];
-  //     }
-  //     let finalResult = result.filter(
-  //       (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
-  //     );
-  //     if (finalResult.length === 0) {
-  //       onClose();
-  //     } else {
-  //       finalResult = CreateDetailsRequestData(finalResult);
-  //       if (
-  //         finalResult?.isDeleteRow?.length === 0 &&
-  //         finalResult?.isNewRow?.length === 0 &&
-  //         finalResult?.isUpdatedRow?.length === 0
-  //       ) {
-  //         onClose();
-  //       } else {
-  //         // let reqData = {
-  //         //   ...reqDataRef.current,
-  //         //   DETAILS_DATA: finalResult,
-  //         // };
-  //         // mutation.mutate({ data: reqData });
-  //       }
-  //     }
-  //   }
-  // };
+
   const onPopupYes = (rows) => {
-    // mutation.mutate(rows);
+    console.log("rows", rows);
+    mutation.mutate(rows);
   };
   const onActionCancel = () => {
     setIsOpenSave(false);
@@ -146,7 +144,7 @@ export const ActionFormWrapper = ({ isOpen, formMode, onClose }) => {
           PaperProps={{
             style: {
               width: "100%",
-              height: "50%",
+              height: "100%",
             },
           }}
           key="filepreviewDialog"
@@ -154,8 +152,9 @@ export const ActionFormWrapper = ({ isOpen, formMode, onClose }) => {
           <FormWrapper
             key={"actionsForm"}
             metaData={ActionsMetaData as MetaDataType}
+            // displayMode={formMode}
             onSubmitHandler={onSubmitHandler}
-            initialValues={undefined}
+            initialValues={{ actionsDetails: actionData } as InitialValuesType}
             // hideHeader={true}
             formStyle={{
               background: "white",
@@ -173,10 +172,11 @@ export const ActionFormWrapper = ({ isOpen, formMode, onClose }) => {
                 >
                   Save
                 </Button>
+
                 <Button
                   onClick={onClose}
+                  //disabled={isSubmitting}
                   color={"primary"}
-                  disabled={isSubmitting}
                 >
                   Close
                 </Button>

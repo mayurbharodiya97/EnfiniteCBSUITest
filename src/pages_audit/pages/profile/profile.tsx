@@ -63,6 +63,7 @@ import { CreateDetailsRequestData } from "components/utils";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import { GradientButton } from "components/styledComponent/button";
 import { useTranslation } from "react-i18next";
+import { enqueueSnackbar } from "notistack";
 // import { t } from "i18next";
 // interface notificationDataType {
 //   activityID: string;
@@ -74,7 +75,6 @@ import { useTranslation } from "react-i18next";
 //   async ({ activityID, readFlag }: notificationDataType) => {
 //     return notificationData({ activityID, readFlag });
 //   };
-// console.log("<<<", useTranslation);
 
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
@@ -151,10 +151,21 @@ export const Profile = () => {
     API.getdashUserboxData({ userID, COMP_CD: authState?.companyID ?? "" })
   );
   const saveDashData: any = useMutation(API.updateDashboxData, {
-    onSuccess: (data) => {},
+    onSuccess: (data, { endSubmit }) => {
+      enqueueSnackbar("Record save successfully", {
+        variant: "success",
+      });
+      dashboxUserData.refetch();
+    },
   });
   const saveQuickData: any = useMutation(API.updateQuickViewData, {
-    onSuccess: (data) => {},
+    // onSuccess: (data) => {},
+    onSuccess: (data, { endSubmit }) => {
+      enqueueSnackbar("Record save successfully", {
+        variant: "success",
+      });
+      quickViewUsrData.refetch();
+    },
   });
   const setCurrentAction = useCallback((data) => {
     handleSubmit();
@@ -164,64 +175,73 @@ export const Profile = () => {
   }, []);
   const handleSubmit = async () => {
     let { hasError, data } = await myGridRef.current?.validate(true);
-    if (hasError === false) {
-      if (data) {
-        // setGridData(data);
+    let isError = data.filter((item) => {
+      if (item._error.DASH_TRAN_CD.length > 5) {
+        return (item._error.DASH_TRAN_CD = true);
       }
+    });
+    if (isError[0]?._error?.DASH_TRAN_CD) {
     } else {
       let result = myGridRef?.current?.cleanData?.();
-
-      // result.map((item) => {
-      //   console.log("<<<(item ", item);
-      //   if (item.IS_DATA == "N") {
-      //     return {
-      //       ...item,
-      //       _isNewRow: true,
-      //     };
-      //   }
-      // });
-
       let finalResult = result.filter((one) => !Boolean(one?._hidden));
-      finalResult = CreateDetailsRequestData(finalResult);
-      console.log("<<<finalResult", finalResult);
-      if (
-        Array.isArray(finalResult.isUpdatedRow) &&
-        finalResult?.isUpdatedRow?.length === 0
-      ) {
-      } else {
-        let data = {
-          // ...refID,
-          DETAILS_DATA: finalResult,
+      let newData = finalResult.map((item) => {
+        const newItem = {
+          ...item,
+          _isNewRow: item.IS_DATA === "N" && parseInt(item.DASH_TRAN_CD) > 0,
+          USER_TYPE: "USER",
         };
-        saveDashData.mutate(data);
-        // onsubmit({ data, mode, setServerError });
+        return newItem;
+      });
+      newData = CreateDetailsRequestData(newData);
+      if (newData.isNewRow) {
+        newData.isNewRow.forEach((item) => {
+          delete item.TRAN_CD;
+        });
       }
+      let data = {
+        // ...refID,
+        DETAILS_DATA: newData,
+      };
+      saveDashData.mutate(data);
     }
   };
   const quickSubmit = async () => {
     let { hasError, data } = await myGridQuickRef.current?.validate(true);
-    if (hasError === false) {
-      if (data) {
-        // setGridData(data);
+    let isError = data.filter((item) => {
+      if (item._error.DOC_CD) {
+        return item._error.DOC_CD;
       }
+    });
+
+    if (isError[0]?._error?.DOC_CD) {
     } else {
       let result = myGridQuickRef?.current?.cleanData?.();
-      console.log(">>result", result);
-
       let finalResult = result.filter((one) => !Boolean(one?._hidden));
-      finalResult = CreateDetailsRequestData(finalResult);
-      if (
-        Array.isArray(finalResult.isUpdatedRow) &&
-        finalResult?.isUpdatedRow?.length === 0
-      ) {
-      } else {
-        let reqData = {
-          // ...refID,
-          DETAILS_DATA: finalResult,
+      let newData = finalResult.map((item) => {
+        const trimmedDOC_CD = item.DOC_CD.trim();
+        const newItem = {
+          ...item,
+          _isNewRow: item.IS_DATA === "N" && trimmedDOC_CD?.length > 0,
+          BRANCH_CD: authState?.user?.branchCode,
         };
-        saveQuickData.mutate(reqData);
-        // onsubmit({ data, mode, setServerError });
+        return newItem;
+      });
+      newData = CreateDetailsRequestData(newData);
+      if (newData.isNewRow) {
+        newData.isNewRow.forEach((item) => {
+          if ("TRAN_CD" in item) {
+            delete item.TRAN_CD;
+          }
+          if ("LAST_ENTERED_DATE" in item) {
+            delete item.LAST_ENTERED_DATE;
+          }
+        });
       }
+      let reqData = {
+        // ...refID,
+        DETAILS_DATA: newData,
+      };
+      saveQuickData.mutate(reqData);
     }
   };
   useEffect(() => {
@@ -317,7 +337,7 @@ export const Profile = () => {
             >
               <Grid>
                 <Box>
-                  <Grid container>
+                  <Grid container sx={{ minHeight: "200px" }}>
                     <Grid
                       item
                       xs={2}
@@ -327,7 +347,7 @@ export const Profile = () => {
                         style={{
                           width: "150px",
                           height: "150px",
-                          margin: "auto",
+                          margin: "10px auto",
                           cursor: "pointer",
                           display: "flex",
                           alignItems: "center",
@@ -391,14 +411,6 @@ export const Profile = () => {
                           />
                         </div>
                       </div>
-                      {/* <Grid m={"auto"}>
-                        <Typography variant="h5" fontWeight={500}>
-                          {queryData?.data?.USERNAME}
-                        </Typography>
-                        <Typography color={"var(--theme-color6)"}>
-                          {queryData?.data?.USER_LEVEL}
-                        </Typography>
-                      </Grid> */}
                     </Grid>
                     <Grid
                       item
@@ -477,25 +489,14 @@ export const Profile = () => {
                             }}
                           >
                             {queryData?.data?.USERNAME} -{" "}
-                            {/* {queryData?.data?.USER_LEVEL} */}
                           </Typography>
                           <Typography display={"inline"}>
                             {queryData?.data?.USER_LEVEL}
                           </Typography>
                         </Grid>
                         <Grid item xs={9}>
-                          {/* <Typography> */} <About />
-                          {/* </Typography> */}
+                          <About />
                         </Grid>
-                        {/* <Grid item xs={4}>
-                          <Typography>
-                            Mobile No. :- {queryData?.data?.MOBILE_NUMBER}
-                          </Typography>
-                          <Typography>
-                            User-Id :- {queryData?.data?.USER_ID}
-                          </Typography>
-                          <Typography>About :- </Typography>
-                        </Grid> */}
                       </Grid>
                       <Box sx={{ width: "100%", marginTop: "auto" }}>
                         <Tabs
@@ -503,7 +504,18 @@ export const Profile = () => {
                             // paddingRight: "15px",
                             "& .MuiTabs-fixed": {
                               display: "flex",
-                              justifyContent: "space-between",
+                              // justifyContent: "space-between",
+                            },
+                            "& .MuiTabs-scroller": {
+                              display: "flex",
+                              justifyContent: "flex-end",
+                            },
+                            "& .MuiTabScrollButton-root": {
+                              // background: "var(--theme-color3)",
+                              "& svg": {
+                                fontSize: "2.25rem",
+                                color: "var(--theme-color1)",
+                              },
                             },
                             "& .Mui-selected": {
                               color: "var(--theme-color1)",
@@ -513,7 +525,8 @@ export const Profile = () => {
                             },
                             "& .MuiButtonBase-root": {
                               minHeight: "0px",
-                              paddingX: "10px",
+                              paddingX: "7px",
+                              fontSize: "12px",
                             },
                             "& .MuiButtonBase-root:hover": {
                               letterSpacing: "0.5px",

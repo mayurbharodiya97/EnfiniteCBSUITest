@@ -93,9 +93,9 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     fieldKey: fieldID,
     dependentFields,
     validate,
-    //uncomment this line if there is any issue while validating
-    validationRun: "onChange",
-    //validationRun,
+    // uncomment this line if there is any issue while validating
+    // validationRun: "onChange",
+    validationRun,
     runPostValidationHookAlways,
     postValidationSetCrossFieldValues,
     isReadOnly,
@@ -115,10 +115,10 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
     }
   }, [value, handleChange]);
   const focusRef = useRef();
-  console.log("<<focusRef", isFieldFocused);
+  // console.log("<<focusRef", isFieldFocused);
 
   useEffect(() => {
-    console.log("<<isFieldFocused", isFieldFocused);
+    // console.log("<<isFieldFocused", isFieldFocused);
     if (isFieldFocused) {
       //@ts-ignore
       setTimeout(() => {
@@ -143,6 +143,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   if (excluded) {
     return null;
   }
+  // console.log(fieldKey, value, touched, isError, error);
   const result = (
     // <ThemeProvider theme={themeObj}>
     <>
@@ -164,17 +165,24 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore
         onChange={handleChange}
-        slotProps={{ textField: { fullWidth } }}
+        slotProps={{
+          textField: {
+            fullWidth: true,
+            error: !isSubmitting && isError,
+            helperText: !isSubmitting && isError ? error : null,
+            onBlur: handleBlur,
+          },
+        }}
         tabIndex={readOnly ? -1 : undefined}
         onBlur={handleBlur}
         // allowKeyboardControl={true}
         //option 2 if validationRun: "onChange" is not set, uncomment this code
-        // onClose={() => {
-        //   setTimeout(() => {
-        //     //@ts-ignore
-        //     focusRef?.current?.focus?.();
-        //   }, 1);
-        // }}
+        onClose={() => {
+          setTimeout(() => {
+            //@ts-ignore
+            focusRef?.current?.focus?.();
+          }, 1);
+        }}
         disabled={isSubmitting}
         InputLabelProps={{
           shrink: true,

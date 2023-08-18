@@ -1,5 +1,6 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-import { getdashboxData, getquickView, getquickViewList } from "./api";
+import { getdashboxData } from "./api";
+import { GeneralAPI } from "registry/fns/functions";
 import { filter } from "lodash";
 
 export const UserProfileMetaData = {
@@ -527,7 +528,8 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "editableSelect",
-      options: getquickViewList,
+      options: GeneralAPI.getquickViewList,
+      _optionsKey: "getquickViewList",
       validation: (value, data, prev, next) => {
         // if (!Boolean(value)) {
         //   return "This field is required";
@@ -537,6 +539,9 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
           let ls_msg = "";
           prev.forEach((item, index) => {
             if (lb_error) {
+              return ls_msg;
+            }
+            if (item?.DOC_CD == "") {
               return ls_msg;
             }
             if (value === item?.DOC_CD) {
@@ -552,7 +557,6 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
         }
         return "";
       },
-      _optionsKey: "getquickViewList",
       width: 370,
       maxWidth: 370,
       minWidth: 200,
