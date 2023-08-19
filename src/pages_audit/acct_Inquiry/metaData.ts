@@ -417,7 +417,7 @@ export const PassbookStatement: any = {
     },
   },
   fields: [
-    { render: { componentType: "_accountNumber" }, para: " " },
+    { render: { componentType: "_accountNumber" } },
     {
       render: {
         componentType: "textField",
@@ -520,11 +520,11 @@ export const PassbookStatement: any = {
     //   placeholder: "Enter Minimum Amount",
     //   required: true,
     //   GridProps: { xs: 12, sm: 6, md: 6 },
-    //   FormatProps: {
-    //     prefix: "$",
-    //     thousandsGroupStyle: "thousand",
-    //     // decimalScale: 3,
-    //   },
+    //   // FormatProps: {
+    //   //   // prefix: "₹",
+    //   //   // thousandsGroupStyle: "thousand",
+    //   //   // decimalScale: 3,
+    //   // },
     // },
   ],
 };
@@ -593,6 +593,20 @@ export const PassbookStatementInq = {
         sm: 4,
       },
     },
+    // {
+    //   render: {
+    //     componentType: "currency",
+    //   },
+    //   label: "Amount",
+    //   placeholder: "Enter Minimum Amount",
+    //   required: true,
+    //   GridProps: { xs: 12, sm: 6, md: 6 },
+    //   // FormatProps: {
+    //   //   // prefix: "₹",
+    //   //   // thousandsGroupStyle: "thousand",
+    //   //   // decimalScale: 3,
+    //   // },
+    // },
     {
       render: {
         componentType: "textField",

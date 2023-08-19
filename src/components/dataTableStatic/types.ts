@@ -41,6 +41,7 @@ export interface GridColumnType {
   isReadOnly?: boolean;
   __EDIT__?: any;
   buttonLabel?: string;
+  currencyRefColumn?: string;
 }
 
 export interface GridConfigType {

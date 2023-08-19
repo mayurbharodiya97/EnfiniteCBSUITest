@@ -39,6 +39,8 @@ export const ScrollDetailData = async (
   //     ENTERED_DATE: "2023-02-08 12:09:35.0",
   //     MAKER: "bhaveshp",
   //     CHECKER: "",
+  //     // DEBIT_CURR_CD: "BDT",
+  //     // CREDIT_CURR_CD: "BDT",
   //   },
   //   {
   //     CREDIT: "",
@@ -64,6 +66,8 @@ export const ScrollDetailData = async (
   //     ENTERED_DATE: "2023-02-08 14:28:28.0",
   //     MAKER: "bhaveshp",
   //     CHECKER: "",
+  //     // DEBIT_CURR_CD: "INR",
+  //     // CREDIT_CURR_CD: "BDT",
   //   },
   //   {
   //     CREDIT: "5500",
@@ -89,6 +93,8 @@ export const ScrollDetailData = async (
   //     ENTERED_DATE: "2023-02-08 14:38:33.0",
   //     MAKER: "bhaveshp",
   //     CHECKER: "",
+  //     // DEBIT_CURR_CD: "USD",
+  //     // CREDIT_CURR_CD: "USD",
   //   },
   // ];
 };

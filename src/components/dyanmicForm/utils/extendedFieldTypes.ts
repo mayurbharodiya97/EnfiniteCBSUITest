@@ -10,8 +10,6 @@ export const extendFieldTypes = (
   authState: any = {},
   customParameters: any = {}
 ) => {
-  // console.log(customParameters, "PARAMETER S");
-
   const {
     dynamicAccountNumberField,
     dynamicAmountSymbol,
@@ -46,14 +44,11 @@ export const extendFieldTypes = (
       //   ...others
       // } = extendedType;
       const { render, FormatProps, ...others } = extendedType;
-      console.log("FormatProps", FormatProps);
       //const result = Object.assign({}, one, others) as FieldMetaDataType;
       const result = Object.assign({}, others, one) as FieldMetaDataType;
 
       // const prefixAvail = Object.keys(FormatProps).includes("prefix");
 
-      // console.log(prefixAvail, "prefixAvail");
-      console.log(dynamicAmountSymbol, "dynamicAmountSymbol");
       if (FormatProps) {
         const prefixAvail = Object.keys(FormatProps)?.includes("prefix");
         if (prefixAvail) {
@@ -97,8 +92,6 @@ export const extendFieldTypes = (
 
   const processExtendedType = (key: string) => {
     const field = extendedTypes[key];
-    // console.log(extendedTypes["currency"], "field");
-    console.log(extendedTypes["currency"], "field");
 
     // if (currencyField) {
     //   currencyField.FormatProps = {
@@ -116,7 +109,6 @@ export const extendFieldTypes = (
         field["defaultValue"] = authState?.user?.branchCode; // Use the branchCodeValue parameter
       } else if (key === "accountType") {
         // Set autofocus on the accountType field
-        // console.log("acctTYPE");
         field["autoFocus"] = true;
       }
       newMetaDataFieldsCustom.push(field);
@@ -124,7 +116,6 @@ export const extendFieldTypes = (
   };
 
   newMetaDataFields?.forEach((item) => {
-    console.log(item, "item?>?>RNDR");
     if (item.render.componentType === "_accountNumber") {
       if (item?.para === "1") {
         const fullAccountNumber = extendedTypes["fullAccountNumber"];
@@ -164,7 +155,6 @@ export const extendFieldTypes = (
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
     }
   });
-  // console.log("newMetaDataFields", newMetaDataFields, newMetaDataFieldsCustom);
   return {
     form: metaData.form,
     fields: [...newMetaDataFieldsCustom],
