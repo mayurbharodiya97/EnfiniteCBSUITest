@@ -33,6 +33,7 @@ interface MySelectExtendedProps {
   optionsProps?: any;
   skipDefaultOption?: boolean;
   defaultOptionLabel?: string;
+  enableDefaultOption?: boolean;
 }
 type MySelectProps = Merge<InputProps, MySelectExtendedProps>;
 
@@ -55,6 +56,7 @@ export const SelectForGrid: FC<MySelectProps> = ({
   optionsProps,
   skipDefaultOption,
   defaultOptionLabel,
+  enableDefaultOption = false,
   ...others
 }) => {
   const [_options, setOptions] = useState<OptionsProps[]>([]);
@@ -66,8 +68,9 @@ export const SelectForGrid: FC<MySelectProps> = ({
     _optionsKey,
     disableCaching,
     optionsProps,
-    skipDefaultOption,
-    defaultOptionLabel
+    (skipDefaultOption = false),
+    defaultOptionLabel,
+    enableDefaultOption
   );
   const getLabelFromValuesForOptions = useCallback(
     (values) => getLabelFromValues(_options)(values),
@@ -79,6 +82,9 @@ export const SelectForGrid: FC<MySelectProps> = ({
       const value = typeof e === "object" ? e?.target?.value ?? "" : e;
       let result = getLabelFromValuesForOptions(value);
       result = multiple ? result : result[0];
+      if (value === "00") {
+        e.target["value"] = "";
+      }
       handleChange(e, result as any);
     },
     [handleChange, getLabelFromValuesForOptions, multiple]
@@ -110,6 +116,15 @@ export const SelectForGrid: FC<MySelectProps> = ({
     <Select
       {...others}
       value={multiple && !Array.isArray(value) ? [value] : value}
+      // value={
+      //   multiple && !Array.isArray(value)
+      //     ? [value]
+      //     : Boolean(value)
+      //     ? value
+      //     : typeof value === "string"
+      //     ? "00"
+      //     : value
+      // }
       error={isError}
       onChange={handleChangeInterceptor}
       onBlur={handleBlur}

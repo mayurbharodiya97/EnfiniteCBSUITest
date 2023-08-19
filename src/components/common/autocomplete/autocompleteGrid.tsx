@@ -148,7 +148,8 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
     disableCaching,
     optionsProps,
     true,
-    ""
+    "",
+    false
   );
 
   const isError = touched && (error ?? "") !== "";

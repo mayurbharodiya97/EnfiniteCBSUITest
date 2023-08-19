@@ -218,10 +218,10 @@ export const Profile = () => {
       let result = myGridQuickRef?.current?.cleanData?.();
       let finalResult = result.filter((one) => !Boolean(one?._hidden));
       let newData = finalResult.map((item) => {
-        const trimmedDOC_CD = item.DOC_CD.trim();
+        // const trimmedDOC_CD = item.DOC_CD.trim();
         const newItem = {
           ...item,
-          _isNewRow: item.IS_DATA === "N" && trimmedDOC_CD?.length > 0,
+          _isNewRow: item.IS_DATA === "N" && item.DOC_CD?.length > 0,
           BRANCH_CD: authState?.user?.branchCode,
         };
         return newItem;

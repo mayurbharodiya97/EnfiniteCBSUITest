@@ -33,6 +33,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
           rowsData,
           COMP_CD: authState.companyID,
           workingDate: authState?.workingDate,
+          screenFlag: screenFlag,
         },
       ]);
     };
@@ -72,11 +73,16 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
   } else if (screenFlag === "ACCT_INQ") {
     finalMetadata = PassbookStatementInq as MetaDataType;
   }
-  const renderResult =
-    screenFlag === "ACCT_INQ" && acctInqData.isLoading ? (
-      <LoaderPaperComponent />
-    ) : (
-      <Dialog open={open} maxWidth={"sm"}>
+  console.log("<<acctInqData", acctInqData);
+  const renderResult = (
+    <Dialog open={open} maxWidth={"sm"}>
+      {screenFlag === "ACCT_INQ" && acctInqData.isLoading ? (
+        <>
+          <div style={{ width: "600px", height: "100px" }}>
+            <LoaderPaperComponent />
+          </div>
+        </>
+      ) : (
         <FormWrapper
           key={`ViewStatement`}
           metaData={finalMetadata}
@@ -114,7 +120,8 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
             </>
           )}
         </FormWrapper>
-      </Dialog>
-    );
+      )}
+    </Dialog>
+  );
   return renderResult;
 };

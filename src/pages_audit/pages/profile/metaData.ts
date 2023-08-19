@@ -528,6 +528,7 @@ export const PersonlizationQuickGridMetaData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "editableSelect",
+      enableDefaultOption: true,
       options: GeneralAPI.getquickViewList,
       _optionsKey: "getquickViewList",
       validation: (value, data, prev, next) => {
@@ -604,6 +605,7 @@ export const PersonlizationDashboardGridData: GridMetaDataType = {
       sequence: 2,
       alignment: "left",
       componentType: "editableSelect",
+      enableDefaultOption: true,
       options: getdashboxData,
       _optionsKey: "getdashboxData",
       width: 370,

@@ -41,6 +41,9 @@ export interface GridColumnType {
   isReadOnly?: boolean;
   __EDIT__?: any;
   buttonLabel?: string;
+  dependentOptionField?: string;
+  enableDefaultOption?: boolean;
+  skipDefaultOption?: boolean;
 }
 
 export interface GridConfigType {
