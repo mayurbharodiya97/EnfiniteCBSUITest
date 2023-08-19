@@ -16,6 +16,12 @@ import {
   AppBar,
   Avatar,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Stack,
   Toolbar,
   Tooltip,
@@ -32,6 +38,7 @@ import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 import { useTranslation } from "react-i18next";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
+import { GradientButton } from "components/styledComponent/button";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -41,6 +48,7 @@ export const MyAppBar = ({
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
   const classes = useStyles();
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState<any>(false);
   const [acctInquiry, setAcctInquiry] = useState(false);
   const [pictureURL, setPictureURL] = useState<any | null>({
@@ -328,10 +336,12 @@ export const MyAppBar = ({
               )}
               <Quick_View />
               <Notification_App />
+
               <Tooltip title="Logout" placement="bottom" arrow>
                 <IconButton
                   onClick={() => {
-                    authController?.logout();
+                    setLogoutOpen(true);
+                    // authController?.logout();
                     // handleClose();
                   }}
                   color="error"
@@ -360,6 +370,51 @@ export const MyAppBar = ({
                   <LogoutIcon />
                 </IconButton>
               </Tooltip>
+
+              {logoutOpen && (
+                <Dialog
+                  // fullScreen={fullScreen}
+                  open={open}
+                  // onClose={handleClose}
+                  aria-labelledby="responsive-dialog-title"
+                >
+                  <DialogTitle
+                    sx={{
+                      background: "var(--theme-color3)",
+                      color: "var(--theme-color2)",
+                      letterSpacing: "1.3px",
+                    }}
+                    id="responsive-dialog-title"
+                  >
+                    {"Are you sure want to logout..?"}
+                  </DialogTitle>
+                  <DialogContent>
+                    {/* <DialogContentText>
+                      Are you sure want to logout..?
+                    </DialogContentText> */}
+                  </DialogContent>
+                  <DialogActions>
+                    <GradientButton
+                      // sx={{
+                      //   color: "var(--theme-color2) !important",
+                      // }}
+                      autoFocus
+                      onClick={() => setLogoutOpen(false)}
+                    >
+                      No
+                    </GradientButton>
+                    <GradientButton
+                      // sx={{
+                      //   color: "var(--theme-color2) !important",
+                      // }}
+                      onClick={() => authController?.logout()}
+                      autoFocus
+                    >
+                      Yes
+                    </GradientButton>
+                  </DialogActions>
+                </Dialog>
+              )}
             </Box>
           </Box>
         </Box>

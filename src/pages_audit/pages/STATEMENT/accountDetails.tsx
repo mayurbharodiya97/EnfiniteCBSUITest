@@ -94,7 +94,7 @@ const AccountDetails = () => {
     })
   );
 
-  // console.log(data, "--------data");
+  console.log(rowsDataRef.current, "--------data");
 
   const openPopover = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;

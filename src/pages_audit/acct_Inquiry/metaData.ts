@@ -60,6 +60,13 @@ export const AccountInquiryMetadata = {
       required: false,
       fullWidth: true,
       autoComplete: false,
+      // startsIcon: Account_Number_Svg,
+      startsIcon: "AccountCircleSharp",
+      iconStyle: {
+        color: "var(--theme-color3)",
+        height: 20,
+        width: 20,
+      },
       GridProps: {
         xs: 12,
         md: 2.5,
@@ -89,6 +96,12 @@ export const AccountInquiryMetadata = {
       },
       placeholder: "Customer Id",
       type: "text",
+      startsIcon: "PortraitSharp",
+      iconStyle: {
+        height: 20,
+        color: "var(--theme-color3)",
+        width: 20,
+      },
       GridProps: {
         xs: 12,
         md: 2.5,
@@ -115,6 +128,13 @@ export const AccountInquiryMetadata = {
       maxLength: 10,
       placeholder: "Mobile Number",
       type: "string",
+      // startsIcon: Mobile_Number_Svg,
+      startsIcon: "PhoneAndroidSharp",
+      iconStyle: {
+        color: "var(--theme-color3)",
+        height: 20,
+        width: 20,
+      },
       GridProps: {
         xs: 12,
         md: 2.5,
@@ -142,6 +162,12 @@ export const AccountInquiryMetadata = {
       type: "text",
       schemaValidation: {
         type: "string",
+      },
+      startsIcon: "PaymentRounded",
+      iconStyle: {
+        height: 25,
+        color: "var(--theme-color3)",
+        width: 25,
       },
       GridProps: {
         xs: 12,
@@ -318,9 +344,9 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
 };
 export const DependenciesData = {
   title: "Dependencies Other Accounts",
-  disableGroupBy: "",
-  hideFooter: "",
-  hideAmountIn: "False",
+  disableGroupBy: true,
+  hideFooter: false,
+  hideAmountIn: true,
   retrievalType: "DATE",
   // filters: [
   //   {
@@ -346,20 +372,29 @@ export const DependenciesData = {
   // ],
   columns: [
     {
+      columnName: "Assets & Liabilities",
+      accessor: "ASS_LIB",
+      width: 170,
+    },
+    {
+      columnName: " Account Status",
+      accessor: "ACCT_STATUS",
+      width: 150,
+    },
+    {
+      columnName: "Customer Id",
+      accessor: "CUSTOMER_ID",
+      width: 130,
+    },
+    {
       columnName: "Account Number",
       accessor: "AC_CD",
       width: 170,
     },
     {
-      columnName: "Account Person Name",
+      columnName: "Account Name",
       accessor: "ACCT_NM",
-      width: 370,
-    },
-
-    {
-      columnName: " Account Status",
-      accessor: "ACCT_STATUS",
-      width: 150,
+      width: 380,
     },
     {
       columnName: "Opening Date",
@@ -369,7 +404,7 @@ export const DependenciesData = {
     {
       columnName: "Status",
       accessor: "STATUS",
-      width: 150,
+      width: 105,
     },
   ],
 };
@@ -576,7 +611,7 @@ export const PassbookStatementInq = {
       render: {
         componentType: "numberFormat",
       },
-      name: "ACCT_CD",
+      name: "ACCT_NO",
       label: "Account No.",
       placeholder: "Account Number",
       defaultValue: "",

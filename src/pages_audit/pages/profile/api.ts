@@ -131,12 +131,8 @@ export const getdashUserboxData = async ({ userID, COMP_CD }) => {
 };
 export const getdashboxData = async () => {
   const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDASHBOX", {
-      // USER_NAME: "adi",
-      // COMP_CD: "132 ",
-    });
+    await AuthSDK.internalFetcher("GETDASHBOX", {});
   if (status === "0") {
-    // return data;
     let responseData = data;
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ TITLE, TRAN_CD, ...other }, index) => {

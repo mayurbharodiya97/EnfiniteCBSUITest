@@ -6,11 +6,11 @@ import { AuthContext } from "pages_audit/auth";
 import Report from "components/report";
 const Dependencies = ({ open, onClose, rowsData }) => {
   const { authState } = useContext(AuthContext);
-
+  console.log("<<<API.getDependenciesData", API.getDependenciesData);
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      // onClose={onClose}
       fullWidth={true}
       PaperProps={{
         style: {
@@ -21,17 +21,15 @@ const Dependencies = ({ open, onClose, rowsData }) => {
     >
       <Report
         reportID={"CUSTOMERDEPENDENCYDTL"}
-        reportName={"reportID-" + "any"}
+        reportName={"reportID-" + "getDependenciesData"}
         dataFetcher={API.getDependenciesData}
         metaData={DependenciesData}
         disableFilters
-        maxHeight={window.innerHeight - 146}
-        title={DependenciesData.title}
-        // options={{
-        //   disableGroupBy: data.disableGroupBy,
-        // }}
-        // hideFooter={data.hideFooter}
-        // hideAmountIn={data.hideAmountIn}
+        maxHeight={window.innerHeight - 151}
+        title={`Dependencies of Customer-id = ${rowsData?.[0]?.data?.CUSTOMER_ID}`}
+        onClose={onClose}
+        hideFooter={DependenciesData.hideFooter}
+        hideAmountIn={DependenciesData.hideAmountIn}
         // retrievalType={data.retrievalType}
         // autoFetch={data?.filters?.fields?.length > 0 ? false : true}
         otherAPIRequestPara={{

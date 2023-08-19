@@ -70,7 +70,14 @@ export const useOptionsFetcher = (
   /*eslint-disable */
   useEffect(() => {
     if (options === undefined) {
-      setOptions([{ label: "No Data", value: null, disabled: true }]);
+      setOptions([
+        {
+          label: "No Data",
+          value: null,
+          disabled: true,
+          isDefaultOption: true,
+        },
+      ]);
       loadingOptions = false;
     } else if (Array.isArray(options)) {
       if (!Boolean(skipDefaultOption)) {
@@ -79,22 +86,22 @@ export const useOptionsFetcher = (
             label: Boolean(defaultOptionLabel)
               ? defaultOptionLabel
               : "Select Option",
-            value: "",
+            value: " ",
             disabled: Boolean(enableDefaultOption) ? false : true,
           },
           ...options,
         ];
-        const uniqueOptions = options.filter(
-          (option, index, self) =>
-            index ===
-            self.findIndex(
-              (obj) =>
-                obj.label === option.label &&
-                obj.value === option.value &&
-                obj.disabled === option.disabled
-            )
-        );
-        options = uniqueOptions;
+        // const uniqueOptions = options.filter(
+        //   (option, index, self) =>
+        //     index ===
+        //     self.findIndex(
+        //       (obj) =>
+        //         obj.label === option.label &&
+        //         obj.value === option.value &&
+        //         obj.disabled === option.disabled
+        //     )
+        // );
+        // options = uniqueOptions;
       }
       setOptions(options);
       loadingOptions = false;
@@ -106,14 +113,35 @@ export const useOptionsFetcher = (
           setIncomingMessage(others);
         }
       } else {
-        setOptions([{ label: "Invalid Data", value: null, disabled: true }]);
+        setOptions([
+          {
+            label: "Invalid Data",
+            value: null,
+            disabled: true,
+            isDefaultOption: true,
+          },
+        ]);
       }
       loadingOptions = false;
     } else if (queryOptions.isLoading) {
-      setOptions([{ label: "loading...", value: null, disabled: true }]);
+      setOptions([
+        {
+          label: "loading...",
+          value: null,
+          disabled: true,
+          isDefaultOption: true,
+        },
+      ]);
       loadingOptions = true;
     } else if (queryOptions.isError) {
-      setOptions([{ label: "Couldn't fetch", value: null, disabled: true }]);
+      setOptions([
+        {
+          label: "Couldn't fetch",
+          value: null,
+          disabled: true,
+          isDefaultOption: true,
+        },
+      ]);
       console.log(
         `error occured while fetching data for ${_optionsKey}`,
         queryOptions.error
@@ -127,8 +155,9 @@ export const useOptionsFetcher = (
             label: Boolean(defaultOptionLabel)
               ? defaultOptionLabel
               : "Select Option",
-            value: "",
+            value: " ",
             disabled: Boolean(enableDefaultOption) ? false : true,
+            isDefaultOption: true,
           },
           ...newOptions,
         ];
@@ -147,7 +176,14 @@ export const useOptionsFetcher = (
       }
       loadingOptions = false;
     } else {
-      setOptions([{ label: "Couldn't fetch", value: null, disabled: true }]);
+      setOptions([
+        {
+          label: "Couldn't fetch",
+          value: null,
+          disabled: true,
+          isDefaultOption: true,
+        },
+      ]);
       console.log(
         `expected optionsFunction:${_optionsKey} in select component to return array of OptionsType but got: ${queryOptions.data}`
       );
@@ -185,7 +221,8 @@ export const useOptionsFetcherSimple = (
   disableCaching,
   optionsProps,
   skipDefaultOption,
-  defaultOptionLabel
+  defaultOptionLabel,
+  enableDefaultOption
 ) => {
   let loadingOptions = false;
   const { authState } = useContext(AuthContext);
@@ -218,7 +255,8 @@ export const useOptionsFetcherSimple = (
               ? defaultOptionLabel
               : "Select Option",
             value: "00",
-            disabled: true,
+            disabled: Boolean(enableDefaultOption) ? false : true,
+            isDefaultOption: true,
           },
           ...options,
         ];
@@ -245,7 +283,8 @@ export const useOptionsFetcherSimple = (
                 ? defaultOptionLabel
                 : "Select Option",
               value: "00",
-              disabled: true,
+              disabled: Boolean(enableDefaultOption) ? false : true,
+              isDefaultOption: true,
             },
             ...newOptions,
           ];

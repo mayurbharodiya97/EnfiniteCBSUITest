@@ -16,7 +16,8 @@ import {
   InputAdornment,
   TextFieldProps,
 } from "@mui/material";
-
+import { AccountCircle } from "@mui/icons-material";
+import * as Icons from "@mui/icons-material";
 interface MyGridExtendedProps {
   enableNumWords?: boolean;
   maxLength?: number;
@@ -29,6 +30,9 @@ interface MyGridExtendedProps {
   setColor?: any;
   showMaxLength?: boolean;
   allowToggleVisiblity?: boolean;
+  startsIcon?: any;
+  endsIcon?: any;
+  iconStyle?: any;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -61,12 +65,15 @@ const MyTextField: FC<MyTextFieldProps> = ({
   skipValueUpdateFromCrossFieldWhenReadOnly,
   setColor,
   showMaxLength = true,
+  label,
+  startsIcon,
+  endsIcon,
+  iconStyle,
   ...others
 }) => {
-  // console.log(
-  //   "postValidationSetCrossFieldValues",
-  //   postValidationSetCrossFieldValues
-  // );
+  let StartIcon = Icons[startsIcon] || startsIcon || null;
+  let EndIcon = Icons[endsIcon] || endsIcon || null;
+
   const {
     value,
     error,
@@ -187,87 +194,104 @@ const MyTextField: FC<MyTextFieldProps> = ({
   }
   const isError = myTouch && Boolean(myError);
   const result = (
-    <TextField
-      {...others}
-      key={fieldKey}
-      id={fieldKey}
-      name={name}
-      value={value}
-      error={!isSubmitting && isError}
-      helperText={
-        <div style={{ display: "flex" }}>
-          <FormHelperText>
-            {!isSubmitting && isError
-              ? myError
-              : Boolean(validationAPIResult)
-              ? validationAPIResult
-              : numWordsVar}
-          </FormHelperText>
-          {maxLength > 0 && Boolean(showMaxLength) ? (
-            <FormHelperText
-              error={false}
-              disabled={isSubmitting}
-              style={{
-                flex: 1,
-                textAlign: "right",
-                margin: "5px 15px 0 0",
-                color: "rgba(0, 0, 0, 0.6)",
-              }}
-            >
-              {value.length}/{maxLength}
+    <>
+      <InputAdornment
+        position="start"
+        sx={{
+          alignItems: "baseline",
+          "& svg": {
+            ...iconStyle,
+            // color: "red",
+            // stroke: "green",
+          },
+        }}
+      >
+        {StartIcon ? <StartIcon /> : null}
+        <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p>
+        {EndIcon ? <EndIcon /> : null}
+      </InputAdornment>
+      <TextField
+        {...others}
+        key={fieldKey}
+        id={fieldKey}
+        name={name}
+        value={value}
+        error={!isSubmitting && isError}
+        helperText={
+          <div style={{ display: "flex" }}>
+            <FormHelperText>
+              {!isSubmitting && isError
+                ? myError
+                : Boolean(validationAPIResult)
+                ? validationAPIResult
+                : numWordsVar}
             </FormHelperText>
-          ) : null}
-        </div>
-      }
-      FormHelperTextProps={{
-        //@ts-ignore
-        component: "div",
-      }}
-      //@ts-ignore
-      InputProps={{
-        style:
-          !isSubmitting && Boolean(currentColor)
-            ? { color: currentColor, fontWeight: "bold" }
-            : {},
-        endAdornment: validationRunning ? (
-          <InputAdornment position="end">
-            <CircularProgress
-              color="secondary"
-              variant="indeterminate"
-              size={20}
-              style={{ marginRight: "8px" }}
-              {...CircularProgressProps}
-            />
-          </InputAdornment>
-        ) : Boolean(EndAdornment) ? (
-          EndAdornment
-        ) : null,
-        startAdornment: Boolean(StartAdornment) ? (
-          <InputAdornment position="start">{StartAdornment}</InputAdornment>
-        ) : null,
-        ...InputProps,
-      }}
-      InputLabelProps={{
-        shrink: true,
-      }}
-      inputRef={focusRef}
-      onChange={(e) => {
-        if (maxLength === -1) {
-          customHandleChange(e);
-        } else if (e.target.value.length <= maxLength) {
-          customHandleChange(e);
+            {maxLength > 0 && Boolean(showMaxLength) ? (
+              <FormHelperText
+                error={false}
+                disabled={isSubmitting}
+                style={{
+                  flex: 1,
+                  textAlign: "right",
+                  margin: "5px 15px 0 0",
+                  color: "rgba(0, 0, 0, 0.6)",
+                }}
+              >
+                {value.length}/{maxLength}
+              </FormHelperText>
+            ) : null}
+          </div>
         }
-      }}
-      inputProps={{
-        readOnly: readOnly,
-        tabIndex: readOnly ? -1 : undefined,
-        ...inputProps,
-      }}
-      onBlur={handleBlur}
-      disabled={isSubmitting}
-      variant={"filled"}
-      color="secondary"
-    />
+        FormHelperTextProps={{
+          //@ts-ignore
+          component: "div",
+        }}
+        //@ts-ignore
+        InputProps={{
+          style:
+            !isSubmitting && Boolean(currentColor)
+              ? { color: currentColor, fontWeight: "bold" }
+              : {},
+          endAdornment: validationRunning ? (
+            <InputAdornment position="end">
+              <CircularProgress
+                color="secondary"
+                variant="indeterminate"
+                size={20}
+                style={{ marginRight: "8px" }}
+                {...CircularProgressProps}
+              />
+            </InputAdornment>
+          ) : Boolean(EndAdornment) ? (
+            EndAdornment
+          ) : null,
+          startAdornment: Boolean(StartAdornment) ? (
+            <InputAdornment position="start">{StartAdornment}</InputAdornment>
+          ) : null,
+          ...InputProps,
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        inputRef={focusRef}
+        onChange={(e) => {
+          if (maxLength === -1) {
+            customHandleChange(e);
+          } else if (e.target.value.length <= maxLength) {
+            customHandleChange(e);
+          }
+        }}
+        inputProps={{
+          readOnly: readOnly,
+          tabIndex: readOnly ? -1 : undefined,
+          ...inputProps,
+        }}
+        onBlur={handleBlur}
+        disabled={isSubmitting}
+        variant={"filled"}
+        color="secondary"
+      />
+    </>
   );
   if (Boolean(enableGrid)) {
     return <Grid {...GridProps}>{result}</Grid>;
