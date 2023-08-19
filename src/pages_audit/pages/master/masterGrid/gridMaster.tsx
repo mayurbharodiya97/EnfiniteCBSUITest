@@ -10,7 +10,7 @@ import {
 } from "react";
 import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { ActionTypes } from "components/dataTable";
 // import { Alert } from "reactstrap";
 import { TradeMasterGridMetaData } from "../masterGridMetadata/tradeMaster";
@@ -41,6 +41,8 @@ export const TradeMasterGrid = ({
   const isDataChangedRef = useRef(false);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const [rowsData, setRowsData] = useState([]);
+  const { id } = useParams();
+  // console.log("id", id);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any

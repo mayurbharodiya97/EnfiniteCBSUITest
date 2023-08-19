@@ -109,7 +109,7 @@ export const OTPModel = ({
             >
               {t("otp.EnterOTP")}
             </div>
-            <div
+            {/* <div
               style={{
                 color: "#949597",
                 fontSize: "16px",
@@ -120,7 +120,7 @@ export const OTPModel = ({
               }}
             >
               {t("otp.GenerateNewOTP")}
-            </div>
+            </div> */}
 
             <div className={classes.OTPalignName}>
               {t("otp.Hello")}{" "}
@@ -339,18 +339,17 @@ export const OTPModelForm = ({
           >
             {t("otp.OTPAuthentication")}
           </div>
-          <div
+          {/* <div
             style={{
               color: "#949597",
               fontSize: "16px",
               fontWeight: "400",
               alignItems: "center",
-              fontStyle: "normal",
               lineHeight: "33px",
             }}
           >
             {t("otp.GenerateNewOTP")}
-          </div>
+          </div> */}
           <div className={classes.OTPalignName}>
             {t("otp.Hello")}{" "}
             {loginState?.username

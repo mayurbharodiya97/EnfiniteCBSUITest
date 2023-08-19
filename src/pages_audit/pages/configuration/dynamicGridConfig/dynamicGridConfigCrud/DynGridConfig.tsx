@@ -39,7 +39,10 @@ import { useLocation } from "react-router-dom";
 import { ActionFormWrapper } from "./actionsform";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
+import { DynamicFormMetadataWrapper } from "../../dynamicMetadataConfig/DynFormMetadataConfig";
+
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -101,7 +104,10 @@ const DynamicGridConfig: FC<{
   const authController = useContext(AuthContext);
   const appBarClasses = useStyles();
   const [isActionsForm, setActionsForm] = useState(false);
+  const [isFormMetadata, setFormMetadata] = useState(false);
   const { authState } = useContext(AuthContext);
+  const [isOpenSave, setIsOpenSave] = useState(false);
+  const isErrorFuncRef = useRef<any>(null);
   const [errorObjData, seterrorObjData] = useState({
     isError: false,
     error: { error_msg: "", error_detail: "" },
@@ -128,13 +134,15 @@ const DynamicGridConfig: FC<{
     {
       onError: (error: any, { endSubmit, SetLoadingOWN }) => {
         SetLoadingOWN(false, error?.error_msg, error?.error_detail ?? "");
+        onActionCancel();
       },
-      onSuccess: (data, { endSubmit, SetLoadingOWN }) => {
-        SetLoadingOWN(true, "");
-        isDataChangedRef.current = true;
+      onSuccess: (data) => {
+        // SetLoadingOWN(true, "");
         enqueueSnackbar(data, {
           variant: "success",
         });
+
+        isDataChangedRef.current = true;
         closeDialog();
       },
     }
@@ -161,7 +169,15 @@ const DynamicGridConfig: FC<{
       });
     },
   });
-
+  const onPopupYes = (rows) => {
+    mutation.mutate({
+      data: rows,
+      formMode: "",
+    });
+  };
+  const onActionCancel = () => {
+    setIsOpenSave(false);
+  };
   const onSubmitHandler = ({
     data,
     resultValueObj,
@@ -170,6 +186,8 @@ const DynamicGridConfig: FC<{
     setFieldErrors,
     actionFlag,
   }) => {
+    //@ts-ignore
+    endSubmit(true);
     if (!mySqlSyntaxRef.current) {
       setLocalError(true, "Please Verify Query..", "");
       endSubmit(true, "Please Verify Query..");
@@ -219,6 +237,19 @@ const DynamicGridConfig: FC<{
         }
       }
     }
+    data.DETAILS_DATA["isUpdatedRow"] = data?.DETAILS_DATA?.isUpdatedRow?.map(
+      (item) => {
+        return {
+          ...item,
+          IS_VISIBLE: Boolean(item?.IS_VISIBLE) ? "Y" : "N",
+          _OLDROWVALUE: {
+            ...item?._OLDROWVALUE,
+            IS_VISIBLE: Boolean(item?._OLDROWVALUE?.IS_VISIBLE) ? "Y" : "N",
+          },
+        };
+      }
+    );
+    console.log("testing", data.DETAILS_DATA["isUpdatedRow"]);
     if (mynewSqlSyntaxRef.current !== myoldSqlSyntaxRef.current) {
       data["SQL_ANSI_SYNTAX"] = mynewSqlSyntaxRef.current;
       data["_OLDROWVALUE"] = {
@@ -229,13 +260,18 @@ const DynamicGridConfig: FC<{
     } else {
       data["SQL_ANSI_SYNTAX"] = myoldSqlSyntaxRef.current;
     }
-
-    mutation.mutate({
-      data,
-      SetLoadingOWN,
-      endSubmit,
-      formMode,
-    });
+    if (
+      data["_UPDATEDCOLUMNS"].length > 0 ||
+      data.DETAILS_DATA["isUpdatedRow"].length > 0
+    ) {
+      isErrorFuncRef.current = {
+        data,
+        SetLoadingOWN,
+        endSubmit,
+        formMode,
+      };
+      setIsOpenSave(true);
+    }
   };
 
   const setLocalError = (isError, error_msg = "", error_detail = "") => {
@@ -413,7 +449,7 @@ const DynamicGridConfig: FC<{
                   variant={"h6"}
                   component="div"
                 >
-                  Dynamic Report Configure
+                  Dynamic Grid Configure
                 </Typography>
                 {formMode === "view" ? (
                   <GradientButton
@@ -432,6 +468,24 @@ const DynamicGridConfig: FC<{
                     Actions
                   </GradientButton>
                 ) : null}
+                {formMode === "view" ? (
+                  <GradientButton
+                    onClick={() => {
+                      setFormMetadata(true);
+                    }}
+                  >
+                    Metadata
+                  </GradientButton>
+                ) : formMode === "edit" ? (
+                  <GradientButton
+                    onClick={() => {
+                      setFormMetadata(true);
+                    }}
+                  >
+                    Metadata
+                  </GradientButton>
+                ) : null}
+
                 {formMode === "edit" ? (
                   <>
                     <GradientButton
@@ -439,9 +493,9 @@ const DynamicGridConfig: FC<{
                         myRef.current?.onSubmitHandler(event);
                       }}
                       // disabled={isLocalLoading}
-                      endIcon={
-                        isLocalLoading ? <CircularProgress size={20} /> : null
-                      }
+                      // endIcon={
+                      //   isLocalLoading ? <CircularProgress size={20} /> : null
+                      // }
                     >
                       Save
                     </GradientButton>
@@ -466,9 +520,9 @@ const DynamicGridConfig: FC<{
                       onClick={(event) => {
                         myRef.current?.onSubmitHandler(event);
                       }}
-                      endIcon={
-                        isLocalLoading ? <CircularProgress size={20} /> : null
-                      }
+                      // endIcon={
+                      //   isLocalLoading ? <CircularProgress size={20} /> : null
+                      // }
                     >
                       Save
                     </GradientButton>
@@ -626,6 +680,17 @@ const DynamicGridConfig: FC<{
           // reqDataRef={mysubdtlRef}
         />
       ) : null}
+      {isFormMetadata ? (
+        <DynamicFormMetadataWrapper
+          isOpen={isFormMetadata}
+          formView={formMode}
+          onClose={() => {
+            setFormMetadata(false);
+          }}
+
+          // reqDataRef={mysubdtlRef}
+        />
+      ) : null}
       {isOpenRerieval ? (
         <RetrievalParametersGrid
           isOpen={isOpenRerieval}
@@ -633,6 +698,17 @@ const DynamicGridConfig: FC<{
           onClose={onCloseDialog}
           rowsData={myparameterDataRef.current}
           onSaveData={onSaveParameters}
+        />
+      ) : null}
+      {isOpenSave ? (
+        <PopupMessageAPIWrapper
+          MessageTitle="Confirmation"
+          Message="Do you want to save this Request?"
+          onActionYes={(rowVal) => onPopupYes(rowVal)}
+          onActionNo={() => onActionCancel()}
+          rows={isErrorFuncRef.current?.data}
+          open={isOpenSave}
+          loading={mutation.isLoading}
         />
       ) : null}
     </>

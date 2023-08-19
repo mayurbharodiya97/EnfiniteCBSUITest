@@ -29,6 +29,28 @@ export const getProMiscData = async (category_cd) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getMenulistData = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(`GETTBGMENUGRPLIST`, {});
+  if (status === "0") {
+    // let responseData = data;
+    // if (Array.isArray(responseData)) {
+    //   responseData = responseData.map(
+    //     ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
+    //       return {
+    //         value: DATA_VALUE,
+    //         label: DISPLAY_VALUE,
+    //         ...other,
+    //       };
+    //     }
+    //   );
+    // }
+    // return responseData;
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 export const getDynamicGridConfigGridData = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
@@ -94,7 +116,13 @@ export const getDynamicGridConfigData = async ({
       DOC_CD: docCD + "",
     });
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        IS_VISIBLE: item.IS_VISIBLE === "Y" ? true : false,
+      };
+    });
+    // return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

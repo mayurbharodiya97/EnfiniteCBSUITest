@@ -1,10 +1,10 @@
 // import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { getProMiscData, getMenulistData } from "../api";
-export const DynamicGridConfigMetaData = {
+// import { getProMiscData } from "./api";
+export const DynamicFormConfigMetaData = {
   masterForm: {
     form: {
       name: "DynamicGridConfig",
-      label: "Dynamic Grid Configure",
+      label: "Dynamic Metadata Configure",
       resetFieldOnUnmount: false,
       validationRun: "onBlur",
       render: {
@@ -57,7 +57,6 @@ export const DynamicGridConfigMetaData = {
         maxLength: 12,
         showMaxLength: false,
         required: true,
-        __EDIT__: { isReadOnly: true },
         schemaValidation: {
           type: "string",
           rules: [
@@ -81,8 +80,6 @@ export const DynamicGridConfigMetaData = {
         type: "text",
         fullWidth: true,
         required: true,
-        options: () => getProMiscData("menu_icon"),
-        _optionsKey: "getproMiscDataMenuIcon",
         schemaValidation: {
           type: "string",
           rules: [
@@ -100,8 +97,6 @@ export const DynamicGridConfigMetaData = {
         placeholder: "",
         type: "text",
         fullWidth: true,
-        options: () => getMenulistData,
-        _optionsKey: "getMenulistData",
         // required: true,
         // schemaValidation: {
         //   type: "string",
@@ -305,8 +300,8 @@ export const DynamicGridConfigMetaData = {
         name: "PAGE_SIZES",
         label: "Page Sizes",
         placeholder: "",
-        options: () => getProMiscData("pageSizes"),
-        _optionsKey: "getproMiscData",
+        // options: () => getProMiscData("pageSizes"),
+        // _optionsKey: "getproMiscData",
         defaultValue: "",
         type: "text",
 
@@ -388,8 +383,8 @@ export const DynamicGridConfigMetaData = {
         accessor: "COMPONENT_TYPE",
         columnName: "Component Type",
         componentType: "editableSelect",
-        options: () => getProMiscData("Component_Type"),
-        _optionsKey: "getproMiscDataComponentType",
+        // options: () => getProMiscData("Component_Type"),
+        // _optionsKey: "getproMiscDataComponentType",
         enableDefaultOption: true,
         defaultValue: "DATA_VALUE",
         required: true,
@@ -445,8 +440,8 @@ export const DynamicGridConfigMetaData = {
         accessor: "ALIGNMENT",
         columnName: "Column Alignment",
         componentType: "editableSelect",
-        options: () => getProMiscData("alignment"),
-        _optionsKey: "getproMiscDataalignment",
+        // options: () => getProMiscData("alignment"),
+        // _optionsKey: "getproMiscDataalignment",
         sequence: 7,
         width: 160,
         maxWidth: 300,

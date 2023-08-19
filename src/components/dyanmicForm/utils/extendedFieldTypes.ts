@@ -124,7 +124,6 @@ export const extendFieldTypes = (
   };
 
   newMetaDataFields?.forEach((item) => {
-    console.log(item, "item?>?>RNDR");
     if (item.render.componentType === "_accountNumber") {
       if (item?.para === "1") {
         const fullAccountNumber = extendedTypes["fullAccountNumber"];

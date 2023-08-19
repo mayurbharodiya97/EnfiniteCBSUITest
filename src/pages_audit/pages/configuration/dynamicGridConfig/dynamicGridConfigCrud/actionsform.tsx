@@ -28,7 +28,7 @@ export const useDialogStyles = makeStyles({
 });
 export const ActionFormWrapper = ({
   isOpen,
-  formView,
+  formView = "edit",
   onClose,
   data: reqData,
   docCD,
@@ -51,7 +51,7 @@ export const ActionFormWrapper = ({
       DOC_CD: reqData[0]?.data?.DOC_CD ?? "",
     })
   );
-  console.log("actionData", actionData);
+
   const mutation = useMutation(API.actionsFormDataDML(), {
     onError: (error: any) => {},
     onSuccess: (data) => {
@@ -76,15 +76,18 @@ export const ActionFormWrapper = ({
   ) => {
     // @ts-ignore
     endSubmit(true);
-
-    let transformedActionsDetails = data.actionsDetails.map((item) => ({
+    console.log("data", data.actionsDetails?.[0]);
+    let transformedActionsDetails = data.actionsDetails?.map((item) => ({
       ...item,
       MULTIPLE: item.MULTIPLE ? "Y" : "N",
       ROWDOUBLECLICK: item.ROWDOUBLECLICK ? "Y" : "N",
       ALWAYSAVAILABLE: item.ALWAYSAVAILABLE ? "Y" : "N",
       ISNODATATHENSHOW: item.ISNODATATHENSHOW ? "Y" : "N",
+      // SR_CD: actionData?.[0]?.SR_CD ?? "",
     }));
 
+    console.log("transformedActionsDetails", transformedActionsDetails);
+    console.log("actionData", actionData);
     let upd: any = ProcessDetailsData(
       transformedActionsDetails ?? [],
       actionData ?? []
@@ -102,18 +105,23 @@ export const ActionFormWrapper = ({
         }
       }
     }
-    let srCount = utilFunction.GetMaxCdForDetails(
-      actionData?.[0]?.SR_CD,
-      "SR_CD"
-    );
-    console.log("srCount", srCount);
+
+    if (upd?.isDeleteRow) {
+      upd.isDeleteRow = upd.isDeleteRow.map((item) => {
+        const srCdFromIsDeleteRow = actionData?.[0]?.SR_CD ?? "";
+        return {
+          ...item,
+          SR_CD: srCdFromIsDeleteRow,
+        };
+      });
+    }
+
     const updatedData: any = {
       _isNewRow: formView === "edit" ? true : false,
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
       DOC_CD: reqData[0]?.data?.DOC_CD ?? "",
       DETAILS_DATA: upd,
-      SR_CD: actionData?.[0]?.SR_CD ?? "",
     };
 
     isErrorFuncRef.current = {
@@ -126,7 +134,6 @@ export const ActionFormWrapper = ({
   };
 
   const onPopupYes = (rows) => {
-    console.log("rows", rows);
     mutation.mutate(rows);
   };
   const onActionCancel = () => {
@@ -147,7 +154,7 @@ export const ActionFormWrapper = ({
               height: "100%",
             },
           }}
-          key="filepreviewDialog"
+          key="actionsFormDialog"
         >
           <FormWrapper
             key={"actionsForm"}

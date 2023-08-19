@@ -14,6 +14,7 @@ import { OperationsMenu } from "./pages/operations";
 import AccountDetails from "./pages/STATEMENT/accountDetails";
 import { MastersMenu } from "./pages/master";
 import { Configuration } from "./pages/configuration";
+import DynamicGrids from "./pages/configuration/dynamicGrids";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
@@ -41,7 +42,7 @@ export const PagesAudit = (props, { columns }) => {
         </Drawer>
         <Content>
           <Routes>
-            {isValidURL ? (
+            {isValidURL || true ? (
               <>
                 {/* <Route
                   path="all-screens/*"
@@ -51,8 +52,9 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="dashboard/*" element={<Dashboard />} />
                 <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
-                <Route path="master/*" element={<MastersMenu />} />
+                <Route path="grid/*" element={<MastersMenu />} />
                 <Route path="configuration/*" element={<Configuration />} />
+                <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
                 {/* <Route
                   path="branch-selection/*"
                   element={<BranchSelectionGridWrapper  />}

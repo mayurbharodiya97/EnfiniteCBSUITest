@@ -6,7 +6,7 @@ import { TradeMasterGridForm } from "./masterGrid";
 export const MastersMenu = () => (
   <Routes>
     <Route
-      path="trade-master/*"
+      path="trade-master/:id/*"
       element={
         <TradeMasterGridForm
           screenFlag={"TradeMaster"}

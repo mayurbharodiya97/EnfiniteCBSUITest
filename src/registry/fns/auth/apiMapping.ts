@@ -336,6 +336,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CUSTOMERDEPENDENCYDTL",
     packageName: "",
   },
+  GETDYNAMICGRIDMETADATA: {
+    url: "commonMasterServiceAPI/GETDYNAMICGRIDMETADATA",
+    packageName: "",
+  },
+  GETTBGMENUGRPLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGMENUGRPLIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
