@@ -100,7 +100,8 @@ export const AutocompleteRenderOnly: FC<MyAutocompleteProps> = ({
     disableCaching,
     optionsProps,
     true,
-    ""
+    "",
+    false
   );
 
   //to set the default value

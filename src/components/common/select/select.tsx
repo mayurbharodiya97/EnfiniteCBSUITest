@@ -98,6 +98,7 @@ const MySelect: FC<MySelectAllProps> = ({
     formState,
     setIncomingMessage,
     handleOptionValueExtraData,
+    ...otherAllData
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -176,9 +177,14 @@ const MySelect: FC<MySelectAllProps> = ({
         //End of select All Code
       }
       let result = getLabelFromValuesForOptions(value);
+      let extraOptionData = getExtraOptionData(value);
+      const isDefaultOption = Boolean(extraOptionData?.[0]?.isDefaultOption);
       //console.log(result, value);
       result = multiple ? result : result[0];
-      handleOptionValueExtraData(getExtraOptionData(value));
+      handleOptionValueExtraData(extraOptionData);
+      if (isDefaultOption) {
+        e.target["value"] = e.target?.value?.trim?.();
+      }
       handleChange(multiple ? value : e, result as any);
     },
     [handleChange, getLabelFromValuesForOptions, multiple, skipDefaultOption]
@@ -236,6 +242,10 @@ const MySelect: FC<MySelectAllProps> = ({
     return null;
   }
   const isError = touched && (error ?? "") !== "";
+  const isDefaultOption = Boolean(
+    otherAllData?.optionData?.[0]?.isDefaultOption
+  );
+
   const menuItems = _options.map((menuItem, index) => {
     return (
       <MenuItem
@@ -280,6 +290,15 @@ const MySelect: FC<MySelectAllProps> = ({
       id={fieldKey}
       name={name}
       value={multiple && !Array.isArray(value) ? [value] : value}
+      // value={
+      //   multiple && !Array.isArray(value)
+      //     ? [value]
+      //     : Boolean(value)
+      //     ? value
+      //     : typeof value === "string"
+      //     ? " "
+      //     : value
+      // }
       error={!isSubmitting && isError}
       helperText={!isSubmitting && isError ? error : null}
       onChange={handleChangeInterceptor}

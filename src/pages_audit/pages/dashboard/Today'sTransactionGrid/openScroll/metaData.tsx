@@ -45,6 +45,7 @@ export const scrollMetaData = {
       isDisplayTotal: true,
       Cell: components.NumberCell,
       alignment: "right",
+      currencyRefColumn: "CREDIT_CURR_CD",
     },
 
     {
@@ -55,6 +56,8 @@ export const scrollMetaData = {
       isDisplayTotal: true,
       Cell: components.NumberCell,
       alignment: "right",
+
+      currencyRefColumn: "DEBIT_CURR_CD",
     },
     {
       columnName: "Tr.Branch",

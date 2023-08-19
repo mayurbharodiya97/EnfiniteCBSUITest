@@ -344,6 +344,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGMENUGRPLIST",
     packageName: "",
   },
+  GETLANGMSGHDR: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLANGMSGHDR",
+    packageName: "",
+  },
+  GETLANGMSGDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLANGMSGDTL",
+    packageName: "",
+  },
+  DOLANGUAGECONFIG: {
+    url: "commonMasterServiceAPI/DOLANGUAGECONFIG",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

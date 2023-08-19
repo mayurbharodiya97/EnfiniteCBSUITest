@@ -15,10 +15,13 @@ export const EditableSelect = (props) => {
       validation,
       _optionsKey,
       disableCachingOptions,
+      skipDefaultOption,
       defaultOptionLabel,
       requestProps,
       isReadOnly,
       __EDIT__,
+      dependentOptionField,
+      enableDefaultOption,
     },
     updateGridData,
     gridProps,
@@ -30,6 +33,9 @@ export const EditableSelect = (props) => {
   const [loadingcall, setLoading] = useState(false);
   const [value, setValue] = useState(initialValue);
   const isReadOnlyLocal = useMemo(() => {
+    if (original?._isNewRow === true) {
+      return false;
+    }
     if (isReadOnly) {
       return true;
     }
@@ -48,6 +54,11 @@ export const EditableSelect = (props) => {
     typeof requestProps !== "undefined"
       ? requestProps
       : gridProps;
+
+  let modifiedRequestProps = Boolean(dependentOptionField)
+    ? original[dependentOptionField]
+    : requestProps;
+
   const prevRows = rows
     .slice(0, index)
     .map((one) => one?.original)
@@ -89,9 +100,12 @@ export const EditableSelect = (props) => {
         loading={loadingcall}
         disabled={loadingcall || loading || isReadOnlyLocal}
         _optionsKey={_optionsKey}
-        optionsProps={requestProps}
+        optionsProps={modifiedRequestProps}
+        // optionsProps={requestProps}
         disableCaching={disableCachingOptions}
+        skipDefaultOption={skipDefaultOption}
         defaultOptionLabel={defaultOptionLabel}
+        enableDefaultOption={enableDefaultOption}
         CircularProgressProps={CircularProgressProps}
       />
       {Boolean(externalTouched) && Boolean(externalError) ? (
