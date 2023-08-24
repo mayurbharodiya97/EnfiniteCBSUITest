@@ -1,21 +1,31 @@
-import { useContext, useEffect, useRef } from 'react';
-import { Grid, Typography, Divider, Skeleton, Button } from '@mui/material';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { Grid, Typography, Divider, Skeleton, Collapse, IconButton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
-    other_address_poa_contact_meta_data, 
-    other_address_meta_data
-} from './metadata/individual/otheraddressdetails';
+    other_details_meta_data, 
+    other_details_employment_info_meta_data, 
+    other_details_exposure_info_meta_data, 
+    other_details_personal_info_meta_data, 
+    other_details_vehicle_info_meta_data
+} from '../../metadata/individual/otherdetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { CkycContext } from '../../../../CkycContext';
 import { useTranslation } from 'react-i18next';
-import { CkycContext } from '../../CkycContext';
 
-const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+
+const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
-    const { t } = useTranslation();
     const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
-    const OtherAddDTLFormRef = useRef<any>("");
-    const myGridRef = useRef<any>(null);
-    const OtherAddDTLSubmitHandler = (
+    const { t } = useTranslation();
+    const OtherDTLFormRef = useRef<any>("")
+    const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(true)
+    const handleOtherDetailsExpand = () => {
+        setIsOtherDetailsExpanded(!isOtherDetailsExpanded)
+    }
+
+    const OtherDTLSubmitHandler = (
         data: any,
         displayData,
         endSubmit,
@@ -23,7 +33,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
         actionFlag
     ) => {
         // setIsNextLoading(true)
-        // console.log("qweqweqwe", data)     
+        console.log("qweqweqwe", data)     
         if(data) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
@@ -36,21 +46,22 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                 REQ_CD: "",
                 SR_CD: ""
             }
-            newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...data, ...commonData}
+            newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            // handleColTabChangectx(6)
+            // handleColTabChangectx(5)
             handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         }   
         endSubmit(true)
     }
+
     return (
         <Grid container rowGap={3}>
-            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>             */}
+            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography> */}
             <Grid container>
                 {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography>
                 </Grid> */}
             </Grid>
             {isCustomerData ? <Grid 
@@ -60,35 +71,38 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
-                <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("OtherAddress")}</Typography>
+                <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("OtherDetails")}</Typography>
+                    <IconButton onClick={handleOtherDetailsExpand}>
+                        {!isOtherDetailsExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
+                    </IconButton>
                 </Grid>
-
-                {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Current/Permanent/Overseas Address</Divider> */}
+                <Collapse in={isOtherDetailsExpanded}>                
                 <Grid item>
                     <FormWrapper 
-                        ref={OtherAddDTLFormRef}
-                        onSubmitHandler={OtherAddDTLSubmitHandler}
-                        initialValues={state?.formDatactx["OTHER_ADDRESS"] ?? {}}
+                        ref={OtherDTLFormRef}
+                        onSubmitHandler={OtherDTLSubmitHandler}
                         key={"new-form-in-kyc"}
-                        metaData={other_address_meta_data as MetaDataType}
+                        metaData={other_details_meta_data as MetaDataType}
+                        initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
                         formStyle={{}}
                         hideHeader={true}
                     />
                 </Grid>
+                </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
             <Grid container item sx={{justifyContent: "flex-end"}}>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        // handleColTabChangectx(4)
+                        // handleColTabChangectx(3)
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        OtherAddDTLFormRef.current.handleSubmit(e, "save")
+                        OtherDTLFormRef.current.handleSubmit(e, "save")
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>
@@ -96,4 +110,4 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     )
 }
 
-export default OtherAddressDetails
+export default OtherDetails

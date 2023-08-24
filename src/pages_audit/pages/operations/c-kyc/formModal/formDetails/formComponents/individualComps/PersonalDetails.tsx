@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-import {GridMetaDataType} from "../../../../../../components/dataTableStatic/types"
+import {GridMetaDataType} from "../../../../../../../../components/dataTableStatic/types"
 import { GridWrapper } from 'components/dataTableStatic/gridWrapper'
 import { 
     entity_detail_meta_data,
@@ -12,11 +12,11 @@ import {
     personal_detail_prefix_data, 
     personal_document_details_data, 
     personal_other_detail_meta_data
-} from './metadata/individual/personaldetails';
+} from '../../metadata/individual/personaldetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
-import { CkycContext } from '../../CkycContext';
+import { CkycContext } from '../../../../CkycContext';
 // import { format } from 'date-fns';
 
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {

@@ -1,12 +1,12 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-import { declaration_meta_data } from './metadata/individual/declarationdetails';
+import { declaration_meta_data } from '../../metadata/individual/declarationdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
-import { CkycContext } from '../../CkycContext';
-import * as API from "../../api";
+import { CkycContext } from '../../../../CkycContext';
+import * as API from "../../../../api";
 // import { format } from 'date-fns';
 
 const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {

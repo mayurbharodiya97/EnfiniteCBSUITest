@@ -1,16 +1,15 @@
-import React, { useContext, useEffect, useRef } from "react"
+import React, { useContext, useRef } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
-import { attestation_detail_meta_data } from "./metadata/individual/attestationdetails"
-import { CkycContext } from "../../CkycContext"
+import { nri_detail_meta_data } from "../../metadata/individual/nridetails"
+import { CkycContext } from "../../../../CkycContext"
 import { useTranslation } from "react-i18next"
-import * as API from "../../api";
 
-const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
     const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
     const { t } = useTranslation();
-    const AttestationDTLFormRef = useRef<any>("");
-    const AttestationDTLSubmitHandler = (
+    const NRIDTLFormRef = useRef<any>("");
+    const NRIDTLSubmitHandler = (
         data: any,
         displayData,
         endSubmit,
@@ -30,20 +29,12 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 SR_CD: ""
             }
             let newData = state?.formDatactx
-            newData["ATTESTATION_DTL"] = {...newData["ATTESTATION_DTL"], ...data, ...commonData}
+            newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             // handleColTabChangectx(7)
+            handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
-            API.SaveEntry({
-                CUSTOMER_TYPE: state?.entityTypectx,
-                CATEGORY_CD: state?.categoryValuectx,
-                ACCT_TYPE: state?.accTypeValuectx,
-                CONSTITUTION_TYPE: state?.constitutionValuectx,
-                IsNewRow: state?.isFreshEntryctx,
-                REQ_CD: state?.REQ_CD,
-                formData: state?.formDatactx
-            })
         }   
         endSubmit(true)
     }
@@ -51,10 +42,10 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography> */}
+            {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography> */}
             <Grid container>
                 {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography>
                 </Grid> */}
             </Grid>
             {isCustomerData ? <Grid 
@@ -65,16 +56,16 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("AttestationDetails")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("NRIDetails")}</Typography>
                 </Grid>
                 <Grid container item>
                     <Grid item xs={12}>
                         <FormWrapper 
-                            ref={AttestationDTLFormRef}
-                            onSubmitHandler={AttestationDTLSubmitHandler}
-                            initialValues={state?.formDatactx["ATTESTATION_DTL"] ?? {}}
+                            ref={NRIDTLFormRef}
+                            onSubmitHandler={NRIDTLSubmitHandler}
                             key={"new-form-in-kyc"}
-                            metaData={attestation_detail_meta_data as MetaDataType}
+                            metaData={nri_detail_meta_data as MetaDataType}
+                            initialValues={state?.formDatactx["NRI_DTL"] ?? {}}
                             formStyle={{}}
                             hideHeader={true}
                         />
@@ -85,19 +76,19 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        // handleColTabChangectx(6)
+                        // handleColTabChangectx(5)
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        AttestationDTLFormRef.current.handleSubmit(e, "save")
+                        NRIDTLFormRef.current.handleSubmit(e, "save")
                     }}
-                >{t("Save")}</Button>
+                >{t("Save & Next")}</Button>
             </Grid>
         </Grid>
     )
 }
 
-export default AttestationDetails
+export default NRIDetails

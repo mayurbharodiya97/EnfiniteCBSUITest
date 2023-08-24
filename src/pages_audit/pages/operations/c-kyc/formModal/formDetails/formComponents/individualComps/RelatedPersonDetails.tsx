@@ -6,11 +6,11 @@ import {
     related_person_attestation_detail_meta_data, 
     related_person_detail_data, 
     related_person_poi_detail_data
-} from './metadata/individual/relatedpersondetails';
+} from '../../metadata/individual/relatedpersondetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
-import { CkycContext } from '../../CkycContext';
+import { CkycContext } from '../../../../CkycContext';
 
 const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
