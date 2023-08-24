@@ -96,8 +96,10 @@ import * as API from "../../../../api";
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
+            options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
+            _optionsKey: "parentAreaListOp",  
             name: "AREA",
             label: "Area",
             placeholder: "",

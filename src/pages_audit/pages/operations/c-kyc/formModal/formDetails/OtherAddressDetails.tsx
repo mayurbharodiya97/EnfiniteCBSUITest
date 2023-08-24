@@ -28,9 +28,18 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
             let newData = state?.formDatactx
-            newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...data}
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
+            newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(6)
+            // handleColTabChangectx(6)
+            handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         }   
@@ -72,7 +81,8 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(4)
+                        // handleColTabChangectx(4)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

@@ -20,11 +20,19 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
         // console.log("qweqweqwe", data)     
         if(data) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
             let newData = state?.formDatactx
-            newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data}
+            newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(7)
+            // handleColTabChangectx(7)
+            handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         }   
@@ -68,7 +76,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(5)
+                        // handleColTabChangectx(5)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

@@ -65,6 +65,7 @@ export const attestation_detail_meta_data = {
             ],
             name: "RISK_CATEGORY",
             label: "RiskCategory",
+            isReadOnly: true,
             // required: true,
             placeholder: "",
             type: "text",

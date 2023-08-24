@@ -21,13 +21,29 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         // console.log("qweqweqwe", data)     
         if(data) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
             let newData = state?.formDatactx
-            newData["ATTESTATION_DTL"] = {...newData["ATTESTATION_DTL"], ...data}
+            newData["ATTESTATION_DTL"] = {...newData["ATTESTATION_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             // handleColTabChangectx(7)
 
             // setIsNextLoading(false)
+            API.SaveEntry({
+                CUSTOMER_TYPE: state?.entityTypectx,
+                CATEGORY_CD: state?.categoryValuectx,
+                ACCT_TYPE: state?.accTypeValuectx,
+                CONSTITUTION_TYPE: state?.constitutionValuectx,
+                IsNewRow: state?.isFreshEntryctx,
+                REQ_CD: state?.REQ_CD,
+                formData: state?.formDatactx
+            })
         }   
         endSubmit(true)
     }
@@ -69,7 +85,8 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(6)
+                        // handleColTabChangectx(6)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

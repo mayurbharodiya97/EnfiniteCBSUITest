@@ -35,9 +35,18 @@ const myGridRef = useRef<any>(null);
         console.log("qweqweqwe", data)     
         if(data) {
             let newData = state?.formDatactx
-            newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data}
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
+            newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(4)
+            // handleColTabChangectx(4)
+            handleColTabChangectx(state?.colTabValuectx+1)
             // setIsNextLoading(false)
         }   
         endSubmit(true)
@@ -83,7 +92,8 @@ const myGridRef = useRef<any>(null);
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(2)
+                        // handleColTabChangectx(2)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../CkycContext';
+// import { format } from 'date-fns';
 
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   const { t } = useTranslation();
@@ -51,11 +52,19 @@ const myGridRef = useRef<any>(null);
         actionFlag
     ) => {
         setIsNextLoading(true)
-        console.log("qweqweqwe", data)     
+        // console.log("qweqweqwesdcas", data, displayData, actionFlag)     
         if(data) {
 
             let newData = state?.formDatactx
-            newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
+            newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             PODFormRef.current.handleSubmit(NextBtnRef.current, "save")
             // setIsNextLoading(false)
@@ -70,12 +79,16 @@ const myGridRef = useRef<any>(null);
         actionFlag
     ) => {
         setIsNextLoading(true)
-        console.log("qweqweqwe", data)     
+        // console.log("qweqweqwe", data)
+        // if(Boolean(data["BIRTH_DT"])) {
+        //     data["BIRTH_DT"] = format(new Date(data["BIRTH_DT"]), "dd-MMM-yyyy")
+        // }     
         if(data) {
             let newData = state?.formDatactx
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(1)
+            // handleColTabChangectx(1)
+            handleColTabChangectx(state?.colTabValuectx+1)
 
             setIsNextLoading(false)
         }   

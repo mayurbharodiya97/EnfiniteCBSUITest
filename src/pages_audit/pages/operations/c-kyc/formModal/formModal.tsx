@@ -235,12 +235,7 @@ export default function FormModal({
           // console.log("filled newdata -aft", element.TAB_NAME , newData)
         });
         // setTabsApiRes(newData)
-
-        let steps:string[] = []
-        newData.forEach(element => {
-          steps.push(element?.TAB_NAME)
-        })
-        handleApiRes({newData, steps})
+        handleApiRes(newData)
       }
     }
   }, [TabsData, isLoading])
@@ -261,6 +256,57 @@ export default function FormModal({
   // }
 
 
+  const getTabComp = (tabName:string) => {
+    switch (tabName) {
+      case "Personal Details":
+        return <PersonalDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "KYC Details":
+        return <KYCDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+      
+      case "Declaration Details":
+        return <DeclarationDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "Photo & Signature Upload":
+        return <p>Photo & Signature</p>
+
+      case "Details of Related Person":
+        return <RelatedPersonDetails
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+        />
+
+      case "More Details":
+        return <OtherDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "Other Address":
+        return <OtherAddressDetails
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "NRI Details":
+        return <NRIDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "Attestation Details":
+        return <AttestationDetails
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+        />
+
+      default:
+        return <p>Not Found - {tabName}</p>;
+    }
+  }
   return (
     // <div>
     //   <Button onClick={handleFormModalOpen}>Open modal</Button>
@@ -617,70 +663,14 @@ export default function FormModal({
                 }
               }} item xs>
                 
-              <TabStepper />
-            
-
-              <TabPanel value={state?.colTabValuectx} index={0}>
-                {state?.categoryValuectx ? <PersonalDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} /> : null}
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={1}>
-                <KYCDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={2}>
-                  {/* <Typography variant="h6">Declaration</Typography> */}
-                <DeclarationDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={3}>
-                {/* <Typography variant="h6">Details of Related Person</Typography> */}
-                <RelatedPersonDetails
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
-                />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={4}>
-                <OtherDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={5}>
-                <OtherAddressDetails
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={6}>
-                <NRIDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={7}>
-                {/* <Typography variant="h6">Attestation</Typography> */}
-                <AttestationDetails
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
-                />
-              </TabPanel>
-
-                  {/* {(tabsApiRes && tabsApiRes.length>0) && tabsApiRes.map((element, i) => {
-                    return (
-                      <TabPanel key={i} value={colTabValue} index={i}>
-                        {
-                          // console.log("cvbdfg", element.subtitles)
-                          element.subtitles.map(el => {
-                            return (
-                              <Typography variant="h6">{el?.SUB_TITLE_NAME}</Typography>
-                            )
-                          })
-                        }
-                      </TabPanel>
-                    )
-                  })} */}
-
+                <TabStepper />
+              {
+                (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((element, i) => {
+                  return <TabPanel key={i} value={state?.colTabValuectx} index={i}>
+                    {getTabComp(element?.TAB_NAME)}
+                  </TabPanel>
+                }) 
+              }
             </Grid>
           </Grid>
         {/* </Box> */}

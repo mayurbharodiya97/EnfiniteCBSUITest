@@ -255,6 +255,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRADEMST",
     packageName: "",
   },
+  GETCUSTOCCUPATIONLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTOCCUPATIONLIST",
+    packageName: "",
+  },
   GETUSERNOTECNT: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSERNOTECNT",
     packageName: "",

@@ -38,9 +38,18 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
             let newData = state?.formDatactx
-            newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...data}
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
+            newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(5)
+            // handleColTabChangectx(5)
+            handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         }   
@@ -86,7 +95,8 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(3)
+                        // handleColTabChangectx(3)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

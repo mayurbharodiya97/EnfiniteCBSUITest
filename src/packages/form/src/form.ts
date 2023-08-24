@@ -406,7 +406,8 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
                   if (fieldValue instanceof Date) {
                     fieldValue = formatDate(
                       fieldValue,
-                      "iii LLL dd yyyy HH:mm:ss xxxx"
+                      "dd-MMM-yyyy HH:mm:ss"
+                      // "iii LLL dd yyyy HH:mm:ss xxxx"
                     );
                   }
                   resultValueObj = setIn(

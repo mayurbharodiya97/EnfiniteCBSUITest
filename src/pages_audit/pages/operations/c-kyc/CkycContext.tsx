@@ -37,6 +37,7 @@ const initialState:any  = {
     formDatactx: {},
     formDataDraftctx: {},
     isFreshEntryctx: false,
+    REQ_CD: "375"
 }
 
 const Reducer = (state, action) => {
@@ -123,7 +124,12 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleApiRes = ({apiRes, steps}) => {
+    const handleApiRes = (apiRes) => {
+        // console.log("asdasdas>>", apiRes)
+        let steps:any[] = [] 
+        apiRes.forEach((element:any) => {
+          steps.push(element?.TAB_DISPL_NAME)
+        })
         dispatch({
             type: "update_ApiResctx",
             payload: {
