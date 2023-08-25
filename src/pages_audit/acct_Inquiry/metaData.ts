@@ -561,7 +561,7 @@ export const PassbookStatement: any = {
     //     // decimalScale: 1,
     //   },
     //   enableNumWords: false,
-    //   // StartAdornment: "INR",
+    //   // StartAdornment: "BDT",
     // },
   ],
 };

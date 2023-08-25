@@ -20,7 +20,7 @@ export const extendFieldTypes = (
     commonDateTimeFormat,
   } = customParameters;
 
-  const newMetaDataFields = metaData.fields.map((one) => {
+  const newMetaDataFields = metaData?.fields?.map((one) => {
     const extendedType = extendedTypes[one.render.componentType];
     if (
       one?.render?.componentType === "datePicker" ||
@@ -94,7 +94,13 @@ export const extendFieldTypes = (
         if (Boolean(one?.FormatProps?.thousandsGroupStyle)) {
           groupStyle = one?.FormatProps?.thousandsGroupStyle;
         }
-        result["FormatProps"]["thousandsGroupStyle"] = groupStyle;
+
+        console.log(groupStyle, "groupStyle");
+        console.log(result, "result");
+        if (result["FormatProps"]) {
+          result["FormatProps"]["thousandsGroupStyle"] =
+            groupStyle ?? "thousand";
+        }
 
         let DecimalScale;
         if (Boolean(FormatProps?.decimalScale)) {
@@ -106,8 +112,9 @@ export const extendFieldTypes = (
         if (Boolean(one?.FormatProps?.decimalScale)) {
           DecimalScale = one?.FormatProps?.decimalScale;
         }
-
-        result["FormatProps"]["decimalScale"] = DecimalScale;
+        if (result["FormatProps"]) {
+          result["FormatProps"]["decimalScale"] = DecimalScale ?? 2;
+        }
       }
 
       result["FormatProps"] = {

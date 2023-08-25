@@ -17,7 +17,7 @@ const customParameters: CustomProperties = {
   currencyFormat: "en-IN",
   decimalCount: 2,
   commonDateFormat: "dd/MM/yyyy",
-  commonDateTimeFormat: "dd/MM/yyyy hh:mm:ss aa",
+  commonDateTimeFormat: "MM/dd/yyyy hh:mm:ss aa",
 };
 
 export const CustomPropertiesConfigurationContext =
