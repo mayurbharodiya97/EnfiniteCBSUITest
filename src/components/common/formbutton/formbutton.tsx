@@ -96,7 +96,10 @@ export const FormButton = ({
 
   const ClickEventCall = (e) => {
     if (typeof onFormButtonClickHandel === "function") {
-      onFormButtonClickHandel(fieldID);
+      onFormButtonClickHandel(
+        fieldID,
+        transformDependentFieldsState(dependentValues)
+      );
     }
     handleChange(isNaN(value) || !Boolean(value) ? "1" : parseInt(value) + 1);
   };

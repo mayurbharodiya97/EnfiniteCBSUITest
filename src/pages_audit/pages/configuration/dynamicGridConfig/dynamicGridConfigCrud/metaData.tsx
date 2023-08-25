@@ -97,10 +97,8 @@ export const DynamicGridConfigMetaData = {
         },
         name: "DOC_TYPE",
         label: "Menulist Group",
-        placeholder: "",
-        type: "text",
         fullWidth: true,
-        options: () => getMenulistData,
+        options: () => getMenulistData(),
         _optionsKey: "getMenulistData",
         // required: true,
         // schemaValidation: {
@@ -394,7 +392,6 @@ export const DynamicGridConfigMetaData = {
         defaultValue: "DATA_VALUE",
         required: true,
         validation: (value, data) => {
-          console.log("value", value);
           if (!Boolean(value)) {
             return "This field is required.";
           }

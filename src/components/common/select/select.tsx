@@ -34,6 +34,7 @@ interface extendedFieldProps extends UseFieldHookProps {
   defaultOptionLabel?: string;
   enableDefaultOption?: boolean;
   setValueOnDependentFieldsChange?: any;
+  requestProps?: any;
 }
 type MySelectProps = Merge<TextFieldProps, extendedFieldProps>;
 
@@ -77,6 +78,7 @@ const MySelect: FC<MySelectAllProps> = ({
   skipDefaultOption,
   defaultOptionLabel,
   enableDefaultOption,
+  requestProps,
   ...others
 }) => {
   const {
@@ -98,6 +100,7 @@ const MySelect: FC<MySelectAllProps> = ({
     formState,
     setIncomingMessage,
     handleOptionValueExtraData,
+
     ...otherAllData
   } = useField({
     name: fieldName,
@@ -112,6 +115,7 @@ const MySelect: FC<MySelectAllProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
+
   const focusRef = useRef();
   const [_options, setOptions] = useState<OptionsProps[]>([]);
   useEffect(() => {
@@ -233,7 +237,8 @@ const MySelect: FC<MySelectAllProps> = ({
     setIncomingMessage,
     skipDefaultOption,
     defaultOptionLabel,
-    enableDefaultOption
+    enableDefaultOption,
+    requestProps
   );
   //console.log(_options);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another

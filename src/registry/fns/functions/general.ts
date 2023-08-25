@@ -260,7 +260,7 @@ const GeneralAPISDK = () => {
         responseData = responseData.map(
           ({ DOC_TITLE, DOC_CD, USER_DEFINE_CD }) => {
             return {
-              value: DOC_CD,
+              value: USER_DEFINE_CD,
               label: DOC_TITLE + " - " + USER_DEFINE_CD,
             };
           }
@@ -331,7 +331,6 @@ const GeneralAPISDK = () => {
     }
   };
   const getquickViewList = async (...reqData) => {
-    console.log("dawshdiquwhd", ...reqData);
     const { status, data, message, messageDetails } =
       await AuthSDK.internalFetcher("GETUSRDOCLIST", {
         USER_NAME: reqData?.[1]?.user?.id,
@@ -355,6 +354,31 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+  const getMetadataList = async (...reqData) => {
+    const { status, data, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETTBGFROMCONFIGLIST", {
+        BRANCH_CD: reqData?.[3]?.user?.branchCode,
+        COMP_CD: reqData?.[3]?.companyID,
+        DOC_CD: reqData?.[4] ?? "",
+      });
+    if (status === "0") {
+      // let responseData = data;
+      // if (Array.isArray(responseData)) {
+      //   responseData = responseData.map(
+      //     ({ DOC_CD, DOC_NM, ...other }, index) => {
+      //       return {
+      //         value: DOC_CD,
+      //         label: `${index + 1}${"."}  ${DOC_NM}`,
+      //         ...other,
+      //       };
+      //     }
+      //   );
+      // }
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
 
   return {
     GetMiscValue,
@@ -372,6 +396,7 @@ const GeneralAPISDK = () => {
     getTbgDocMstData,
     getActionDetailsData,
     getquickViewList,
+    getMetadataList,
   };
 };
 

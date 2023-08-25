@@ -25,7 +25,8 @@ export const useOptionsFetcher = (
   setIncomingMessage,
   skipDefaultOption,
   defaultOptionLabel,
-  enableDefaultOption
+  enableDefaultOption,
+  requestProps = {}
 ): { loadingOptions: boolean } => {
   let loadingOptions = false;
   let queryKey: any[] = [];
@@ -38,6 +39,7 @@ export const useOptionsFetcher = (
         : { none: true }
     )
   );
+
   if (Boolean(disableCaching)) {
     const dependentKeys = computeDependentKey(dependentValues);
     queryKey = [_optionsKey, formStateKeys, dependentKeys];
@@ -58,7 +60,8 @@ export const useOptionsFetcher = (
         dependentValues,
         formState,
         transformDependentFieldsState(dependentValues),
-        authState
+        authState,
+        requestProps
       ),
     {
       retry: false,
@@ -66,6 +69,7 @@ export const useOptionsFetcher = (
       cacheTime: disableCaching ? 0 : 100000000,
     }
   );
+
   loadingOptions = queryOptions.isLoading;
   /*eslint-disable */
   useEffect(() => {

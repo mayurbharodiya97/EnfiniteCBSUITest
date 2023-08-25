@@ -26,6 +26,7 @@ export const getDynamicGridMetaData = async ({ docID, COMP_CD, BRANCH_CD }) => {
     });
 
     let result = {
+      docID: data[0].DOC_CD,
       gridConfig: {
         dense: data[0].DENSE,
         gridLabel: data[0].DESCRIPTION,
@@ -51,8 +52,27 @@ export const getDynamicGridMetaData = async ({ docID, COMP_CD, BRANCH_CD }) => {
       columns: columns,
       // fields: filter,
     };
-    console.log("result", result);
     return result;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getDynGridData = async ({
+  doccd,
+  companyID,
+  branchID,
+  customerID,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDYNAMICGRIDDATA", {
+      DOC_CD: doccd,
+      COMP_CD: companyID,
+      BRANCH_CD: branchID,
+      CUSTOMER_ID: customerID,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

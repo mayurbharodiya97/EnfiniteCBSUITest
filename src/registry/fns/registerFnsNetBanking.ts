@@ -19,3 +19,4 @@ registerFn("getReportAccountType", GeneralAPI.getReportAccountType);
 registerFn("getTbgDocMstData", GeneralAPI.getTbgDocMstData);
 registerFn("getActionDetailsData", GeneralAPI.getActionDetailsData);
 registerFn("getquickViewList", GeneralAPI.getquickViewList);
+registerFn("getMetadataList", GeneralAPI.getMetadataList);

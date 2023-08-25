@@ -55,6 +55,7 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="grid/*" element={<MastersMenu />} />
                 <Route path="configuration/*" element={<Configuration />} />
                 <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+
                 {/* <Route
                   path="branch-selection/*"
                   element={<BranchSelectionGridWrapper  />}

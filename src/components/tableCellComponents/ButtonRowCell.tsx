@@ -25,7 +25,12 @@ export const ButtonRowCell = (props) => {
   return (
     <CellWrapper showBorder {...props}>
       {is_Visible ? (
-        <Button onClick={handleClick} fullWidth>
+        <Button
+          variant={"contained"}
+          color="secondary"
+          onClick={handleClick}
+          fullWidth
+        >
           {Boolean(buttonLabel) ? buttonLabel : columnName}
         </Button>
       ) : null}

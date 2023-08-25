@@ -1,3 +1,4 @@
+import { GeneralAPI } from "registry/fns/functions";
 export const ActionsMetaData: any = {
   form: {
     refID: 1667,
@@ -230,6 +231,22 @@ export const ActionsMetaData: any = {
             sm: 3,
           },
         },
+        {
+          render: {
+            componentType: "select",
+          },
+          name: "FORM_METADATA_SR_CD",
+          label: "Metadata List",
+          options: "getMetadataList",
+          _optionsKey: "getMetadataList",
+          requestProps: "DOC_CD",
+          GridProps: {
+            xs: 12,
+            md: 3,
+            sm: 3,
+          },
+        },
+
         // {
         //   render: {
         //     componentType: "textField",

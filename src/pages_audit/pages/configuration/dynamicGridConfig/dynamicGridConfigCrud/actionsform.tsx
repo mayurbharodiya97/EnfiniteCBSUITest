@@ -76,18 +76,14 @@ export const ActionFormWrapper = ({
   ) => {
     // @ts-ignore
     endSubmit(true);
-    console.log("data", data.actionsDetails?.[0]);
     let transformedActionsDetails = data.actionsDetails?.map((item) => ({
       ...item,
       MULTIPLE: item.MULTIPLE ? "Y" : "N",
       ROWDOUBLECLICK: item.ROWDOUBLECLICK ? "Y" : "N",
       ALWAYSAVAILABLE: item.ALWAYSAVAILABLE ? "Y" : "N",
       ISNODATATHENSHOW: item.ISNODATATHENSHOW ? "Y" : "N",
-      // SR_CD: actionData?.[0]?.SR_CD ?? "",
     }));
 
-    console.log("transformedActionsDetails", transformedActionsDetails);
-    console.log("actionData", actionData);
     let upd: any = ProcessDetailsData(
       transformedActionsDetails ?? [],
       actionData ?? []
@@ -139,6 +135,11 @@ export const ActionFormWrapper = ({
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
+  if (ActionsMetaData?.fields?.[0]?._fields?.[13]) {
+    ActionsMetaData.fields[0]._fields[13].requestProps =
+      reqData[0]?.data?.DOC_CD ?? "";
+  }
+
   return (
     <>
       {isLoading || isFetching ? (
@@ -198,7 +199,7 @@ export const ActionFormWrapper = ({
               onActionNo={() => onActionCancel()}
               rows={isErrorFuncRef.current?.data}
               open={isOpenSave}
-              // loading={mutation.isLoading}
+              loading={mutation.isLoading}
             />
           ) : null}
         </Dialog>

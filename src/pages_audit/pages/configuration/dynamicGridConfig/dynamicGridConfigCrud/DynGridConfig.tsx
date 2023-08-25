@@ -41,7 +41,6 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
-import { DynamicFormMetadataWrapper } from "../../dynamicMetadataConfig/DynFormMetadataConfig";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -104,7 +103,6 @@ const DynamicGridConfig: FC<{
   const authController = useContext(AuthContext);
   const appBarClasses = useStyles();
   const [isActionsForm, setActionsForm] = useState(false);
-  const [isFormMetadata, setFormMetadata] = useState(false);
   const { authState } = useContext(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
@@ -249,7 +247,7 @@ const DynamicGridConfig: FC<{
         };
       }
     );
-    console.log("testing", data.DETAILS_DATA["isUpdatedRow"]);
+
     if (mynewSqlSyntaxRef.current !== myoldSqlSyntaxRef.current) {
       data["SQL_ANSI_SYNTAX"] = mynewSqlSyntaxRef.current;
       data["_OLDROWVALUE"] = {
@@ -468,7 +466,7 @@ const DynamicGridConfig: FC<{
                     Actions
                   </GradientButton>
                 ) : null}
-                {formMode === "view" ? (
+                {/* {formMode === "view" ? (
                   <GradientButton
                     onClick={() => {
                       setFormMetadata(true);
@@ -484,7 +482,7 @@ const DynamicGridConfig: FC<{
                   >
                     Metadata
                   </GradientButton>
-                ) : null}
+                ) : null} */}
 
                 {formMode === "edit" ? (
                   <>
@@ -680,7 +678,7 @@ const DynamicGridConfig: FC<{
           // reqDataRef={mysubdtlRef}
         />
       ) : null}
-      {isFormMetadata ? (
+      {/* {isFormMetadata ? (
         <DynamicFormMetadataWrapper
           isOpen={isFormMetadata}
           formView={formMode}
@@ -690,7 +688,7 @@ const DynamicGridConfig: FC<{
 
           // reqDataRef={mysubdtlRef}
         />
-      ) : null}
+      ) : null} */}
       {isOpenRerieval ? (
         <RetrievalParametersGrid
           isOpen={isOpenRerieval}

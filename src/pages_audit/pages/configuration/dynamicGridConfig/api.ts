@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { GeneralAPI } from "registry/fns/functions";
 
 export const getTbgDocMstData = () => GeneralAPI.getTbgDocMstData();
+
 export const getProMiscData = async (category_cd) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETPROPMISCDATA`, {
@@ -31,22 +32,20 @@ export const getProMiscData = async (category_cd) => {
 };
 export const getMenulistData = async () => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(`GETTBGMENUGRPLIST`, {});
+    await AuthSDK.internalFetcher("GETTBGMENUGRPLIST", {});
   if (status === "0") {
-    // let responseData = data;
-    // if (Array.isArray(responseData)) {
-    //   responseData = responseData.map(
-    //     ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
-    //       return {
-    //         value: DATA_VALUE,
-    //         label: DISPLAY_VALUE,
-    //         ...other,
-    //       };
-    //     }
-    //   );
-    // }
-    // return responseData;
-    return data;
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DOC_TYPE, DESCRIPTION, ...other }) => {
+        //let { VALUE, LABEL, ...other } = one;
+        return {
+          value: DOC_TYPE,
+          label: DESCRIPTION,
+          ...other,
+        };
+      });
+    }
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

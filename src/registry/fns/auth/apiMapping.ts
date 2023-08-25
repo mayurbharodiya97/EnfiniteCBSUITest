@@ -356,6 +356,34 @@ export const ActionWiseAPIConfiguration = {
     url: "commonMasterServiceAPI/DOLANGUAGECONFIG",
     packageName: "",
   },
+  GETTBGFROMCONFIGDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGFROMCONFIGDATA",
+    packageName: "",
+  },
+  GETTBGFROMCONFIGLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGFROMCONFIGLIST",
+    packageName: "",
+  },
+  GETTBGFROMFIELDDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGFROMFIELDDATA",
+    packageName: "",
+  },
+  GETDYNAMICGRIDDATA: {
+    url: "commonMasterServiceAPI/GETDYNAMICGRIDDATA",
+    packageName: "",
+  },
+  GETTBGFROMFIELDPOPULATE: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGFROMFIELDPOPULATE",
+    packageName: "",
+  },
+  GETFORMFIELDPROPS: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORMFIELDPROPS",
+    packageName: "",
+  },
+  DOFORMCONFIGDATA: {
+    url: "commonMasterServiceAPI/DOFORMCONFIGDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
