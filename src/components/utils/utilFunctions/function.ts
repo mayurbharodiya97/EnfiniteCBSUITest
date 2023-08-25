@@ -210,3 +210,20 @@ export const blobToFile = (theBlob: Blob, fileName: string): File => {
   //Cast to a File() type
   return <File>theBlob;
 };
+
+export const getMetadataLabelFromColumnName = (metadata, colomnList) => {
+  if (
+    !Boolean(metadata) ||
+    !Boolean(colomnList) ||
+    !Array.isArray(colomnList)
+  ) {
+    return {};
+  }
+  let outData = {};
+  for (const item of metadata?.fields ?? []) {
+    if (colomnList.includes(item.name)) {
+      outData[item.name] = item.label;
+    }
+  }
+  return outData;
+};

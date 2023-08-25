@@ -329,6 +329,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         isNewRowStyle={isNewRowStyle}
         defaultSelectedRowId={defaultSelectedRowId}
         searchPlaceholder={metaData.gridConfig?.searchPlaceholder ?? "records"}
+        paginationText={metaData.gridConfig?.paginationText ?? "records"}
       />
     );
   }
