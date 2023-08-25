@@ -7,11 +7,10 @@ import {
     other_details_exposure_info_meta_data, 
     other_details_personal_info_meta_data, 
     other_details_vehicle_info_meta_data
-} from './metadata/individual/otherdetails';
+} from '../../metadata/individual/otherdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import TabStepper from '../TabStepper';
-import { CkycContext } from '../../CkycContext';
+import { CkycContext } from '../../../../CkycContext';
 import { useTranslation } from 'react-i18next';
 
 
@@ -39,9 +38,18 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
             let newData = state?.formDatactx
-            newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...data}
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
+            newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(5)
+            // handleColTabChangectx(5)
+            handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         }   
@@ -55,9 +63,6 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{
@@ -90,7 +95,8 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(3)
+                        // handleColTabChangectx(3)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

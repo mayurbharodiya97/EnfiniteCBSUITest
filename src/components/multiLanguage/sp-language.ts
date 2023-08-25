@@ -104,10 +104,10 @@ export const sp_language_data = {
   // For Today's Transaction Graph and Grid
   TodaysTransaction: "Transacción de hoy",
   SrNo: "No Señor.",
-  Branchcode: "Código de sucursal",
-  AccountType: "Tipo de cuenta",
+  BrCode: "Código de sucursal",
+  AcctType: "Tipo de cuenta",
   ACNo: "No. de aire acondicionado",
-  TransactionDate: "Fecha de Transacción",
+  TrnDate: "Fecha de Transacción",
   Chequeno: "Cheque no",
   Trx: "Trx.",
   Remarks: "Observaciones",

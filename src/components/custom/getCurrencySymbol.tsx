@@ -17,6 +17,7 @@ const currencySymbol = {
   BRL: "R$",
   BND: "$",
   KHR: "៛",
+  BDT: "৳",
   CAD: "$",
   KYD: "$",
   CLP: "$",
@@ -33,8 +34,6 @@ const currencySymbol = {
   SVC: "$",
   EUR: "€",
   FKP: "£",
-  FJD: "$",
-  GHS: "¢",
   GIP: "£",
   GTQ: "Q",
   GGP: "£",
@@ -42,8 +41,7 @@ const currencySymbol = {
   HNL: "L",
   HKD: "$",
   HUF: "Ft",
-  ISK: "kr",
-  INR: "₹",
+  INR: "₹", ///////////////////////////////////////////////////////////////////
   IDR: "Rp",
   IRR: "﷼",
   IMP: "£",
@@ -65,7 +63,6 @@ const currencySymbol = {
   MNT: "₮",
   MZN: "MT",
   NAD: "$",
-  NPR: "₨",
   ANG: "ƒ",
   NZD: "$",
   NIO: "C$",
@@ -78,8 +75,54 @@ const currencySymbol = {
   PEN: "S/.",
   PHP: "₱",
   PLN: "zł",
+  ZAR: "R",
+  AED: "د.إ", //  United Arab Emirates Dirham
+  CHF: "Fr.", //  Swiss Franc
+  GBP: "£", //British Pound Sterling
+  RUB: "₽", //Russian Ruble
+  SEK: "kr", // Swedish Krona
+  TRY: "₺", //Turkish Lira
+  USD: "$", //United States Dollar
+  VND: "₫", //Vietnamese Dong
+  ZWL: "Z$", // Zimbabwean Dollar - obsolete
+  BTN: "Nu.",
+  BYR: "Br",
+  CVE: "€",
+  DJF: "Fdj",
+  DZD: "دج",
+  ERN: "Nfk",
+  FJD: "$",
+  GEL: "₾",
+  GHS: "¢",
+  ISK: "kr",
+  KWD: "د.ك",
+  LKR: "₨",
+  LYD: "ل.د",
+  MDL: "L",
+  MVR: "ރ",
+  MWK: "MK",
+  NPR: "₨",
+  RSD: "din.",
+  SAR: "ر.س",
+  SCR: "₨",
+  SYP: "£",
+  TND: "د.ت",
+  TTD: "TT$",
+  TWD: "NT$",
+  UGX: "Ush",
+  YER: "﷼",
+  ZMW: "K",
+  XOF: "CFA",
+  XAF: "FCFA",
+  TZS: "TSh",
+  SZL: "L",
+  STN: "Db",
+  SSP: "£",
+  SOS: "Sh.So.",
+  SLL: "Le",
+  ETB: "ብር",
 };
 
 export default function getCurrencySymbol(currencyCode) {
-  return currencySymbol[currencyCode] || "₹";
+  return currencySymbol[currencyCode] ?? "₹";
 }

@@ -114,6 +114,7 @@ export const ReportGrid: FC<any> = ({
           queryFilters={queryFilters}
           hideAmountIn={hideAmountIn}
           retrievalType={retrievalType}
+          isOpenRetrievalDefault={!autoFetch}
         />
       </AmountProvider>
     </Fragment>

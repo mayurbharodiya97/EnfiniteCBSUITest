@@ -3,24 +3,21 @@ import { createContext, useContext } from "react";
 interface CustomProperties {
   dynamicAccountNumberField?: string;
   dynamicAmountSymbol?: string;
-  // dynamicReportAmountSymbol?: string;
-  dynamicAmountGroup?: string;
-  // dynamicDecimalScale?: number;
+  dynamicAmountGroupStyle?: string;
   currencyFormat?: string; //for report set currency format
   decimalCount?: number; //for report set decimal count
-  dynamicSymbolPosition?: string;
+  commonDateFormat?: string;
+  commonDateTimeFormat?: string;
 }
 
 const customParameters: CustomProperties = {
   dynamicAccountNumberField: "2",
   dynamicAmountSymbol: "INR",
-  // currencyShortName:""
-  // dynamicReportAmountSymbol: "฿",
-  // dynamicAmountGroup: "lakh",
-  // dynamicDecimalScale: 4,
+  dynamicAmountGroupStyle: "wan",
   currencyFormat: "en-IN",
-  decimalCount: 3,
-  dynamicSymbolPosition: "end",
+  decimalCount: 2,
+  commonDateFormat: "dd/MM/yyyy",
+  commonDateTimeFormat: "dd/MM/yyyy hh:mm:ss aa",
 };
 
 export const CustomPropertiesConfigurationContext =

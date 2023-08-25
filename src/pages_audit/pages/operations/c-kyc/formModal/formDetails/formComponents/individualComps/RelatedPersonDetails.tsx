@@ -6,12 +6,11 @@ import {
     related_person_attestation_detail_meta_data, 
     related_person_detail_data, 
     related_person_poi_detail_data
-} from './metadata/individual/relatedpersondetails';
+} from '../../metadata/individual/relatedpersondetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
-import { CkycContext } from '../../CkycContext';
+import { CkycContext } from '../../../../CkycContext';
 
 const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -36,9 +35,18 @@ const myGridRef = useRef<any>(null);
         console.log("qweqweqwe", data)     
         if(data) {
             let newData = state?.formDatactx
-            newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data}
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
+            newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(4)
+            // handleColTabChangectx(4)
+            handleColTabChangectx(state?.colTabValuectx+1)
             // setIsNextLoading(false)
         }   
         endSubmit(true)
@@ -52,9 +60,6 @@ const myGridRef = useRef<any>(null);
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Details of Related Person {`(4/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{
@@ -87,7 +92,8 @@ const myGridRef = useRef<any>(null);
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(2)
+                        // handleColTabChangectx(2)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

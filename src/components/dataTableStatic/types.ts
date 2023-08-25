@@ -45,6 +45,8 @@ export interface GridColumnType {
   dependentOptionField?: string;
   enableDefaultOption?: boolean;
   skipDefaultOption?: boolean;
+  isCurrencyCode?: boolean;
+  symbolPosi?: any;
 }
 
 export interface GridConfigType {
@@ -76,6 +78,7 @@ export interface GridConfigType {
   isCusrsorFocused?: boolean;
   hiddenFlag?: string;
   searchPlaceholder?: string;
+  paginationText?: any;
 }
 
 export interface GridMetaDataType {

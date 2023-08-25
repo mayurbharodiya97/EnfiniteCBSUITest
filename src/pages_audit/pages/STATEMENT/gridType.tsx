@@ -39,7 +39,7 @@ const GridType = ({ data }) => {
         columnName: item?.LABEL,
         sequence: item?.SEQ,
         alignment: item?.ALINGMENT ?? "left",
-        componentType: "default",
+        componentType: item?.COMPONENT_TYPE,
         width: item?.WIDTH ?? 200,
         minWidth: item?.MIN_WIDTH ?? 200,
         maxWidth: item?.MAX_WIDTH ?? 400,

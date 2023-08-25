@@ -1,12 +1,13 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-import { declaration_meta_data } from './metadata/individual/declarationdetails';
+import { declaration_meta_data } from '../../metadata/individual/declarationdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
-import { CkycContext } from '../../CkycContext';
+import { CkycContext } from '../../../../CkycContext';
+import * as API from "../../../../api";
+// import { format } from 'date-fns';
 
 const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -26,15 +27,31 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     setIsNextLoading(true)
     console.log("qweqweqwe", data)     
     if(data) {
+        // if(Boolean(data["FATCA_DT"])) {
+        //     data["FATCA_DT"] = format(new Date(data["FATCA_DT"]), "dd-MMM-yyyy")
+        // }
+        // if(Boolean(data["DATE_OF_COMMENCEMENT"])) {
+        //     data["DATE_OF_COMMENCEMENT"] = format(new Date(data["DATE_OF_COMMENCEMENT"]), "dd-MMM-yyyy")
+        // }
+
         setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
         let newData = state?.formDatactx
         newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
         handleFormDataonSavectx(newData)
-        handleColTabChangectx(3)
+        // handleColTabChangectx(3)
+        handleColTabChangectx(state?.colTabValuectx+1)
 
         setIsNextLoading(false)
-    }   
+        API.SaveAsDraft({
+            CUSTOMER_TYPE: state?.entityTypectx,
+            CATEGORY_CD: state?.categoryValuectx,
+            ACCT_TYPE: state?.accTypeValuectx,
+            CONSTITUTION_TYPE: state?.constitutionValuectx,
+            IsNewRow: state?.isFreshEntryctx,
+            PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL
+        })
+    }
     endSubmit(true)
    }
   const [isDeclarationExpanded, setIsDeclarationExpanded] = useState(true)
@@ -51,9 +68,6 @@ const myGridRef = useRef<any>(null);
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{
@@ -88,7 +102,8 @@ const myGridRef = useRef<any>(null);
             <Grid container item sx={{justifyContent: "flex-end"}}>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(1)
+                        // handleColTabChangectx(1)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}

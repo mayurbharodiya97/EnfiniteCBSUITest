@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState, createElement } from "react";
+import { useRef, useCallback, useState, createElement, useEffect } from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateRetrievalDialog } from "components/custom/dateRetrievalPara";
 import { useStyles } from "pages_audit/style";
@@ -6,6 +6,7 @@ import { format } from "date-fns";
 // import { CustomRetrievalWrapper } from "pages_audit/pages/reports/reportsRetrieval/customRetrieval";
 import { Button } from "@mui/material";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { CommunMSTConfig } from "pages_audit/pages/configuration/CommunMSTConfig/communMSTConfig";
 
 export const filterReducer = (state: any = [], action: any = {}) => {
   switch (action.type) {
@@ -52,9 +53,10 @@ export const FilterComponent = ({
   filterMeta,
   filterData,
   retrievalType,
+  isOpenRetrievalDefault,
 }) => {
-  const [open, setOpen] = useState(false);
-  const { filterState, dispatch } = useFilterState(filterReducer);
+  const [open, setOpen] = useState(isOpenRetrievalDefault);
+  // const { filterState, dispatch } = useFilterState(filterReducer);
   const classes = useStyles();
 
   const handleClose = () => {
@@ -65,38 +67,51 @@ export const FilterComponent = ({
     setOpen(true);
   };
 
-  const handleFilterChange = () => {
-    setQueryFilters(filterState.current);
-    setOpen(false);
-  };
+  // const handleFilterChange = () => {
+  //   setQueryFilters(filterState.current);
+  //   setOpen(false);
+  // };
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && (event.key === "R" || event.key === "r")) {
+        event.preventDefault();
+        setOpen(true);
+      }
+    };
 
-  const selectedDates = (fromDate, toDate) => {
-    setQueryFilters([
-      {
-        id: "FROM_DT",
-        value: {
-          condition: "equal",
-          value: fromDate.toISOString(),
-          columnName: "From Date",
-        },
-      },
-      {
-        id: "TO_DT",
-        value: {
-          condition: "equal",
-          value: toDate.toISOString(),
-          columnName: "To Date",
-        },
-      },
-    ]);
-    setOpen(false);
-  };
+    document.addEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // const selectedDates = (fromDate, toDate) => {
+  //   setQueryFilters([
+  //     {
+  //       id: "FROM_DT",
+  //       value: {
+  //         condition: "equal",
+  //         value: fromDate.toISOString(),
+  //         columnName: "From Date",
+  //       },
+  //     },
+  //     {
+  //       id: "TO_DT",
+  //       value: {
+  //         condition: "equal",
+  //         value: toDate.toISOString(),
+  //         columnName: "To Date",
+  //       },
+  //     },
+  //   ]);
+  //   setOpen(false);
+  // };
 
   const setRetrievalData = (data) => {
     setQueryFilters([data]);
     setOpen(false);
   };
-
+  const retrievalParaValues = (retrievalValues) => {
+    setQueryFilters(retrievalValues);
+    setOpen(false);
+  };
   const handleClearFilter = () => {
     setQueryFilters([]);
     setOpen(false);
@@ -123,10 +138,21 @@ export const FilterComponent = ({
   //   });
   // }
   return (
-    <LocalizationProvider utils={DateFnsUtils}>
-      <Button onClick={handleOpen} color="primary">
-        Retrive Data
-      </Button>
+    // <LocalizationProvider utils={DateFnsUtils}>
+    <>
+      {" "}
+      {Boolean(retrievalType) ? (
+        <>
+          {(retrievalType === "CUSTOM" && filterMeta?.fields?.length > 0) ||
+          retrievalType !== "CUSTOM" ? (
+            <Button onClick={handleOpen} color="primary">
+              Retrieve Data
+            </Button>
+          ) : null}
+        </>
+      ) : (
+        <></>
+      )}
       {/* <Drawer
         anchor="right"
         id={"columnVisibility"}
@@ -157,19 +183,21 @@ export const FilterComponent = ({
           open={open}
           handleClose={handleClose}
           loginState={{}}
-          selectedDates={selectedDates}
+          selectedDates={retrievalParaValues}
         />
-      ) : (
-        // ) : open && retrievalType === "CUSTOM" ? (
-        //   <CustomRetrievalWrapper
-        //     open={open}
-        //     handleDialogClose={handleClose}
-        //     metaData={filterMeta}
-        //     defaultData={filterData}
-        //     retrievalData={setRetrievalData}
-        //   />
-        <></>
-      )}
-    </LocalizationProvider>
+      ) : // open && retrievalType === "GETPROPMISCDATA" ? (
+      // <CommunMSTConfig
+      //   open={open}
+      //   handleDialogClose={handleClose}
+      //   metaData={filterMeta}
+      //   defaultData={filterData}
+      //   retrievalParaValues={retrievalParaValues}
+      //   retrievalType={retrievalType}
+      // />
+      // ) :
+      null}
+    </>
+
+    // </LocalizationProvider>
   );
 };

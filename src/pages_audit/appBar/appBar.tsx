@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Logo from "assets/images/easy_bankcore_Logo.png";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import HelpIcon from "@mui/icons-material/Help";
 import * as API from "./api";
 import { styled } from "@mui/material/styles";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
@@ -383,20 +384,30 @@ export const MyAppBar = ({
                       background: "var(--theme-color3)",
                       color: "var(--theme-color2)",
                       letterSpacing: "1.3px",
+                      margin: "10px",
+                      boxShadow:
+                        "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+                      fontWeight: 500,
+                      borderRadius: "inherit",
+                      minWidth: "450px",
+                      py: 1,
                     }}
                     id="responsive-dialog-title"
                   >
-                    {"Are you sure want to logout..?"}
+                    {"Log Out"}
                   </DialogTitle>
                   <DialogContent>
-                    {/* <DialogContentText>
-                      Are you sure want to logout..?
-                    </DialogContentText> */}
+                    <DialogContentText
+                      sx={{ fontSize: "19px", display: "flex" }}
+                    >
+                      Are you sure want to logout...{" "}
+                      <HelpIcon color="secondary" fontSize="large" />
+                    </DialogContentText>
                   </DialogContent>
                   <DialogActions>
                     <GradientButton
                       // sx={{
-                      //   color: "var(--theme-color2) !important",
+                      //   color: "var(--theme-color2)",
                       // }}
                       autoFocus
                       onClick={() => setLogoutOpen(false)}
@@ -405,7 +416,7 @@ export const MyAppBar = ({
                     </GradientButton>
                     <GradientButton
                       // sx={{
-                      //   color: "var(--theme-color2) !important",
+                      //   color: "var(--theme-color2)",
                       // }}
                       onClick={() => authController?.logout()}
                       autoFocus
@@ -450,7 +461,7 @@ export const MyAppBar = ({
                 src={
                   Boolean(authController?.getProfileImage)
                     ? authController?.getProfileImage
-                    : USER_PROFILE_DEFAULT
+                    : pictureURL?.profile
                 }
               />
             </LightTooltip>

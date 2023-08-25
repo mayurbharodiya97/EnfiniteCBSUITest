@@ -235,12 +235,28 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETPENDINGCUSTLIST",
     packageName: "",
   },
+  DOCTEMPLATEDTL: {
+    url: "/customerServiceAPI/DOCTEMPLATEDTL",
+    packageName: "",
+  },
+  DOCCUMENTSCANHISTORY: {
+    url: "/customerServiceAPI/DOCCUMENTSCANHISTORY",
+    packageName: "",
+  },
+  SAVECUSTOMERDATA: {
+    url: "/customerServiceAPI/SAVECUSTOMERDATA",
+    packageName: "",
+  },
   GETACCTDTL: {
     url: "/accountServiceAPI/GETACCTDTL",
     packageName: "",
   },
   GETTRADEMST: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRADEMST",
+    packageName: "",
+  },
+  GETCUSTOCCUPATIONLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTOCCUPATIONLIST",
     packageName: "",
   },
   GETUSERNOTECNT: {
@@ -382,6 +398,10 @@ export const ActionWiseAPIConfiguration = {
   },
   DOFORMCONFIGDATA: {
     url: "commonMasterServiceAPI/DOFORMCONFIGDATA",
+    packageName: "",
+  },
+  GETEMISCLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMISCLIST",
     packageName: "",
   },
 };

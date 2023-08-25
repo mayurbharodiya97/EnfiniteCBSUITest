@@ -141,9 +141,8 @@ export const useStyles = makeStyles((theme: any) => ({
   dialogTitleClass: {
     background: "var(--theme-color1)",
     padding: "8px 15px !important",
-
+    color: "var(--theme-color2)",
     "& h2": {
-      color: "white",
       fontWeight: "500 !important",
     },
   },

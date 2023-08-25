@@ -53,6 +53,11 @@ export interface FieldMetaData<T> {
   postValidationSetCrossFieldValues?: any;
   para?: string;
   FormatProps?: any;
+  isCurrencyCode?: boolean;
+  StartAdornment?: string;
+  thousandsGroupStyle?: string;
+  isCurrencyField?: boolean;
+  format?: string;
 }
 
 export type Omitted<T> = Omit<T, "fieldKey" | "enableGrid">;

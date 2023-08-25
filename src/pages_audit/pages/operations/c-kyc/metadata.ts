@@ -166,17 +166,17 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     {
       accessor: "CATEGORY_CONSTITUTIONS",
       columnName: "CategoryConstitution",
-      sequence: 1,
+      sequence: 3,
       alignment: "left",
       componentType: "default",
-      width: 340,
-      minWidth: 340,
+      width: 300,
+      minWidth: 300,
       maxWidth: 580,
     },
     {
       accessor: "CUSTOMER_ID",
       columnName: "CustomerId",
-      sequence: 2,
+      sequence: 1,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -186,7 +186,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     {
       accessor: "PAN_NO",
       columnName: "PanNo",
-      sequence: 3,
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -196,7 +196,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     {
       accessor: "MOBILE_NUMBER",
       columnName: "MobileNo",
-      sequence: 4,
+      sequence: 6,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -206,7 +206,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     {
       accessor: "CUSTOMER_NAME",
       columnName: "CustomerName",
-      sequence: 5,
+      sequence: 2,
       alignment: "left",
       componentType: "default",
       width: 340,
@@ -216,7 +216,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     {
       accessor: "BRANCH",
       columnName: "Branch",
-      sequence: 6,
+      sequence: 7,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -226,7 +226,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     {
       accessor: "ACTIVE",
       columnName: "Active",
-      sequence: 7,
+      sequence: 9,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -246,7 +246,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     {
       accessor: "REQUEST_CD",
       columnName: "ReqNo",
-      sequence: 9,
+      sequence: 5,
       alignment: "left",
       componentType: "default",
       width: 140,

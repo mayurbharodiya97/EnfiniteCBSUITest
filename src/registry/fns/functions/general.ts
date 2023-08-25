@@ -189,7 +189,7 @@ const GeneralAPISDK = () => {
             },
             WK_STMT_TO_DATE: {
               value: isValidDate(authState?.workingDate)
-                ? new Date()
+                ? authState?.workingDate
                 : new Date(),
             },
           };
@@ -380,6 +380,34 @@ const GeneralAPISDK = () => {
     }
   };
 
+  const getKYCDocTypes = async (dependantFields, ...other) => {
+    console.log(">>other", dependantFields);
+    if (dependantFields.SR_CD.value && dependantFields.TRAN_CD.value) {
+      const { status, data, message, messageDetails } =
+        await AuthSDK.internalFetcher("DOCCUMENTSCANHISTORY", {
+          SR_CD: dependantFields.SR_CD?.value || "189084",
+          TRAN_CD: dependantFields.TRAN_CD?.value,
+          DOC_TYPE: "KYC",
+        });
+      if (status === "0") {
+        let responseData = data;
+        // if (Array.isArray(responseData)) {
+        //   responseData = responseData.map(({ DOC_TITLE, USER_DEFINE_CD }) => {
+        //     return {
+        //       value: USER_DEFINE_CD,
+        //       label: DOC_TITLE + " - " + USER_DEFINE_CD,
+        //     };
+        //   });
+        // }
+        console.log("qwdqewqeqweqweq", responseData);
+        return responseData;
+      } else {
+        throw DefaultErrorObject(message, messageDetails);
+      }
+    }
+    // return []
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -397,6 +425,7 @@ const GeneralAPISDK = () => {
     getActionDetailsData,
     getquickViewList,
     getMetadataList,
+    getKYCDocTypes,
   };
 };
 

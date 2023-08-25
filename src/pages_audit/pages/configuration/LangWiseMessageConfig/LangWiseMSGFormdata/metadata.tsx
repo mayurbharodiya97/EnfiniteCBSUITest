@@ -35,7 +35,7 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
         placeholder: " ",
         type: "text",
         required: true,
-        isReadOnly: true,
+        // isReadOnly: true,
         maxLength: 300,
         showMaxLength: false,
         GridProps: { xs: 12, md: 2, sm: 2 },
@@ -48,17 +48,22 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
         //     { name: "TEMPLATE_DESC", params: ["Please select Description."] },
         //   ],
         // },
+        // __NEW__: { isReadOnly: false },
+        __EDIT__: { isReadOnly: true },
       },
       {
         render: { componentType: "textField" },
         name: "DEFAULT_LANG_MSG",
         label: "Default Message",
-        placeholder: " ",
-        type: "text",
-        required: true,
-        maxLength: 300,
+        // placeholder: " ",
+        // type: "text",
+        // required: true,
+        // maxLength: 300,
         showMaxLength: false,
-        GridProps: { xs: 12, md: 6, sm: 6 },
+        multiline: true,
+        // minRows: 2,
+        // maxRows: 2,
+        GridProps: { xs: 10, md: 10, sm: 10 },
         fullWidth: true,
         autoComplete: "off",
         // schemaValidation: {
@@ -68,6 +73,12 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
         //     { name: "TEMPLATE_DESC", params: ["Please select Description."] },
         //   ],
         // },
+        // __EDIT__: { isReadOnly: false },
+      },
+      {
+        render: { componentType: "hidden" },
+        name: "TRAN_CD",
+        label: "Default Message",
       },
     ],
   },
@@ -85,6 +96,7 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
       allowRowSelection: false,
       hiddenFlag: "_hidden",
       disableLoader: true,
+      paginationText: "Configured Messages",
     },
     columns: [
       {
@@ -135,8 +147,7 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
             prev.forEach((item, index) => {
               if (value === item?.LANG_CODE) {
                 lb_error = true;
-                ls_msg =
-                  "Discription is Already entered at Line " + (index + 1);
+                ls_msg = "Language is Already entered at Line " + (index + 1);
                 return ls_msg;
               }
             });
@@ -154,9 +165,9 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
         placeholder: " ",
         sequence: 2,
         alignment: "left",
-        width: 220,
-        maxWidth: 270,
-        minWidth: 150,
+        width: 650,
+        maxWidth: 700,
+        minWidth: 400,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["This field is required"] }],
@@ -167,6 +178,9 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
         componentType: "deleteRowCell",
         accessor: "_hidden",
         sequence: 3,
+        width: 90,
+        maxWidth: 120,
+        minWidth: 90,
       },
     ],
   },

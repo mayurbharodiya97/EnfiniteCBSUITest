@@ -23,6 +23,7 @@ const initialState:any  = {
     setEntityTypectx: () => {},
 
     tabsApiResctx: [],
+    tabNameList: [],
     setTabsApiRes: () => {},
     customerCategoriesctx: [],
     categoryValuectx: null,
@@ -36,6 +37,7 @@ const initialState:any  = {
     formDatactx: {},
     formDataDraftctx: {},
     isFreshEntryctx: false,
+    REQ_CD: "375"
 }
 
 const Reducer = (state, action) => {
@@ -117,15 +119,22 @@ const CkycProvider = ({children}) => {
                 accTypeValuectx: null,
                 tabsApiResctx: [],
                 isFreshEntryctx: false,
+                tabNameList: []
             }
         })
     }
 
     const handleApiRes = (apiRes) => {
+        // console.log("asdasdas>>", apiRes)
+        let steps:any[] = [] 
+        apiRes.forEach((element:any) => {
+          steps.push(element?.TAB_DISPL_NAME)
+        })
         dispatch({
             type: "update_ApiResctx",
             payload: {
-                tabsApiResctx: apiRes
+                tabsApiResctx: apiRes,
+                tabNameList: steps
             }
         })
     }
@@ -219,6 +228,27 @@ const CkycProvider = ({children}) => {
             // }
             payload: data
         })
+    }
+
+    const handleSaveAsDraft = () => {
+        const remainingData = {
+            "IsNewRow": true,
+            "REQ_CD":"",
+            "REQ_FLAG":"F",
+            "SAVE_FLAG":"D",
+            "ENTRY_TYPE" :"F",
+            "CUSTOMER_ID":"",
+        }
+        const remainingPD = {
+            IsNewRow: true,
+            CUSTOMER_TYPE: state?.entityTypectx,
+            CATEGORY_CD: state?.categoryValuectx,
+            COMP_CD: "132 ",
+            BRANCH_CD: "099 ",
+            ACCT_TYPE: state?.accTypeValuectx,
+            REQ_FLAG: "",
+            CONSTITUTION_TYPE:"I",
+        }        
     }
 
     return (

@@ -30,6 +30,7 @@ import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const useHeaderStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -46,6 +47,14 @@ const useHeaderStyles = makeStyles((theme: Theme) => ({
 }));
 
 const QuickAccessTableGrid = () => {
+  const actions: ActionTypes[] = [
+    {
+      actionName: "click to open",
+      actionLabel: "click to open",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+  ];
   const [apiData, setApiData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [activeButton, setActiveButton] = useState("Favourites");
@@ -54,6 +63,7 @@ const QuickAccessTableGrid = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up(1256));
+  const navigate = useNavigate();
   const { data, isLoading, isFetching, refetch, isError, error } = useQuery<
     any,
     any
@@ -83,6 +93,16 @@ const QuickAccessTableGrid = () => {
       queryClient.removeQueries(["QuickAccessTableGridData"]);
     };
   }, []);
+
+  const setCurrentAction = useCallback(
+    (data) => {
+      let path = data?.rows?.[0]?.data?.HREF;
+      if (Boolean(path)) {
+        navigate("../" + path);
+      }
+    },
+    [navigate]
+  );
 
   const handleButtonClick = (buttonId) => {
     setActiveButton(buttonId);
@@ -215,8 +235,8 @@ const QuickAccessTableGrid = () => {
         finalMetaData={QuickAccessTableGridMetaData as GridMetaDataType}
         data={apiData ?? []}
         setData={() => null}
-        // actions={actions}
-        // setAction={setCurrentAction}
+        actions={actions}
+        setAction={setCurrentAction}
         controlsAtBottom={false}
         headerToolbarStyle={{
           backgroundColor: "inherit",

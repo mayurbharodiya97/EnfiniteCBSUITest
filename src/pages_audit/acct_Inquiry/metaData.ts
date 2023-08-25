@@ -477,7 +477,7 @@ export const PassbookStatement: any = {
       },
       name: "STMT_FROM_DATE",
       label: "From Date :-",
-      format: "dd/MM/yyyy",
+      // format: "dd/MM/yyyy hh",
       placeholder: "",
       GridProps: {
         xs: 12,
@@ -504,7 +504,7 @@ export const PassbookStatement: any = {
       name: "WK_STMT_TO_DATE",
       label: "To Date :-",
       placeholder: "",
-      format: "dd/MM/yyyy",
+      // format: "dd/MM/yyyy",
       schemaValidation: {
         type: "string",
         rules: [
@@ -555,11 +555,13 @@ export const PassbookStatement: any = {
     //   placeholder: "Enter Minimum Amount",
     //   required: true,
     //   GridProps: { xs: 12, sm: 6, md: 6 },
-    //   // FormatProps: {
-    //   //   // prefix: "₹",
-    //   //   // thousandsGroupStyle: "thousand",
-    //   //   // decimalScale: 3,
-    //   // },
+    //   // isCurrencyCode: true,
+    //   FormatProps: {
+    //     // thousandsGroupStyle: "thousand",
+    //     // decimalScale: 1,
+    //   },
+    //   enableNumWords: false,
+    //   // StartAdornment: "INR",
     // },
   ],
 };
@@ -825,8 +827,8 @@ export const PassbookStatementInq = {
         componentType: "datePicker",
       },
       name: "PASS_BOOK_DT",
-      label: "From Date ddd:-",
-      format: "dd/MM/yyyy",
+      label: "From Date :-",
+      // format: "dd/MM/yyyy",
       placeholder: "",
       type: "text",
       dependentFields: ["PD_DESTION", "ACTAA_NO"],
@@ -864,7 +866,7 @@ export const PassbookStatementInq = {
       name: "PASS_BOOK_TO_DT",
       label: "To Date:-",
       placeholder: "",
-      format: "dd/MM/yyyy",
+      // format: "dd/MM/yyyy",
       dependentFields: ["PD_DESTION"],
       isReadOnly: true,
       onFocus: (date) => {
@@ -890,7 +892,7 @@ export const PassbookStatementInq = {
       },
       name: "STMT_FROM_DATE",
       label: "From Date :-",
-      format: "dd/MM/yyyy",
+      // format: "dd/MM/yyyy",
       placeholder: "",
       type: "text",
       dependentFields: ["PD_DESTION"],
@@ -922,7 +924,7 @@ export const PassbookStatementInq = {
       name: "WK_STMT_TO_DATE",
       label: "To Date :-",
       placeholder: "",
-      format: "dd/MM/yyyy",
+      // format: "dd/MM/yyyy",
       onFocus: (date) => {
         date.target.select();
       },

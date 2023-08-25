@@ -212,8 +212,10 @@ export const renderField: RenderFunctionType = (
         GridProps={{
           item: true,
           xs: gridConfigOverrides?.xs ?? "auto",
-          md: gridConfigOverrides?.sm ?? "auto",
-          xl: gridConfigOverrides?.xs ?? "auto",
+          md: gridConfigOverrides?.md ?? "auto",
+          xl: gridConfigOverrides?.xl ?? "auto",
+          sm: gridConfigOverrides?.sm ?? "auto",
+          lg: gridConfigOverrides?.lg ?? "auto",
         }}
         onFormButtonClickHandel={onFormButtonClickHandel}
       />
@@ -237,8 +239,10 @@ export const renderField: RenderFunctionType = (
         GridProps={{
           item: true,
           xs: gridConfigOverrides?.xs ?? "auto",
-          md: gridConfigOverrides?.sm ?? "auto",
-          xl: gridConfigOverrides?.xs ?? "auto",
+          md: gridConfigOverrides?.md ?? "auto",
+          xl: gridConfigOverrides?.xl ?? "auto",
+          sm: gridConfigOverrides?.sm ?? "auto",
+          lg: gridConfigOverrides?.lg ?? "auto",
         }}
       />
     );

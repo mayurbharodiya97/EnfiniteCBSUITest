@@ -10,7 +10,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     className: "textInputFromRight",
     FormatProps: {
       thousandSeparator: true,
-      prefix: "৳",
+      // prefix: "৳",
       thousandsGroupStyle: "lakh",
       allowNegative: false,
       allowLeadingZeros: false,
@@ -28,7 +28,9 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       },
     },
     enableNumWords: true,
+    isCurrencyField: true,
     // maxLength: 10,
+    StartAdornment: "INR",
   },
   currencyWithoutWords: {
     render: {
@@ -36,11 +38,12 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     FormatProps: {
       thousandSeparator: true,
-      prefix: "৳",
+      // prefix: "৳",
       thousandsGroupStyle: "lakh",
       allowNegative: false,
       allowLeadingZeros: false,
       decimalScale: 2,
+      fixedDecimalScale: true,
       isAllowed: (values) => {
         if (values?.value?.length > 10) {
           return false;
@@ -53,6 +56,8 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     enableNumWords: false,
     maxLength: 10,
+    isCurrencyField: true,
+    StartAdornment: "INR",
   },
   dob: {
     render: {
@@ -197,11 +202,12 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     FormatProps: {
       thousandSeparator: true,
-      prefix: "৳",
+      // prefix: "৳",
       thousandsGroupStyle: "lakh",
       allowNegative: false,
       allowLeadingZeros: false,
-      decimalScale: 0,
+      decimalScale: 2,
+      fixedDecimalScale: true,
       maxLength: 13,
       isAllowed: (values) => {
         if (values.floatValue === null) {
@@ -211,6 +217,8 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       },
     },
     enableNumWords: true,
+    isCurrencyField: true,
+    StartAdornment: "INR",
   },
   pincode: {
     render: {
@@ -348,11 +356,12 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     FormatProps: {
       thousandSeparator: true,
-      prefix: "৳",
+      // prefix: "৳",
       thousandsGroupStyle: "lakh",
       allowNegative: true,
       allowLeadingZeros: false,
       decimalScale: 2,
+      fixedDecimalScale: true,
       isAllowed: (values) => {
         if (values?.value?.length > 10) {
           return false;
@@ -360,8 +369,10 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
         return true;
       },
     },
+    isCurrencyField: true,
     enableNumWords: true,
     maxLength: 10,
+    StartAdornment: "INR",
   },
   pincodeNoValidation: {
     render: {
@@ -384,11 +395,12 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     className: "textInputFromRight",
     FormatProps: {
       thousandSeparator: true,
-      prefix: "₹ ",
+      // prefix: "₹",
       thousandsGroupStyle: "lakh",
       allowNegative: false,
       allowLeadingZeros: false,
       decimalScale: 2,
+      fixedDecimalScale: true,
       isAllowed: (values) => {
         if (values?.value?.length > 14) {
           return false;
@@ -399,13 +411,14 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
         return true;
       },
     },
-    enableNumWords: false,
+    StartAdornment: "INR",
+    isCurrencyField: true,
   },
   accountCode: {
     render: {
       componentType: "textField",
     },
-    label: "Account Code",
+    label: "Account Number",
     name: "ACCT_CD",
     required: true,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
@@ -509,7 +522,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
   },
   branchCode: {
     render: {
-      componentType: "select",
+      componentType: "autocomplete",
     },
     schemaValidation: {
       type: "string",
@@ -529,7 +542,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
 
   accountType: {
     render: {
-      componentType: "select",
+      componentType: "autocomplete",
     },
     required: true,
     schemaValidation: {
@@ -537,7 +550,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       rules: [{ name: "required", params: ["Account Type is required"] }],
     },
     name: "ACCT_TYPE",
-    label: "AccountType",
+    label: "Account Type",
     options: GeneralAPI.getAccountTypeList,
     _optionsKey: "getAccountTypeList",
     GridProps: {

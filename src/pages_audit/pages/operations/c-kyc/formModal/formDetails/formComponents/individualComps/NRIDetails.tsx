@@ -1,9 +1,8 @@
 import React, { useContext, useRef } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
-import { nri_detail_meta_data } from "./metadata/individual/nridetails"
-import TabStepper from "../TabStepper"
-import { CkycContext } from "../../CkycContext"
+import { nri_detail_meta_data } from "../../metadata/individual/nridetails"
+import { CkycContext } from "../../../../CkycContext"
 import { useTranslation } from "react-i18next"
 
 const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
@@ -21,11 +20,19 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
         // console.log("qweqweqwe", data)     
         if(data) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
             let newData = state?.formDatactx
-            newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data}
+            newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(7)
+            // handleColTabChangectx(7)
+            handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         }   
@@ -40,9 +47,6 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{
@@ -72,7 +76,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 // disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(5)
+                        // handleColTabChangectx(5)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

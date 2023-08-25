@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import * as API from "./api";
 import { useQuery } from "react-query";
 import GridWrapper from "components/dataTableStatic";
@@ -19,13 +19,13 @@ const actions: ActionTypes[] = [
     actionName: "add",
     actionLabel: "Add",
     multiple: undefined,
-    rowDoubleClick: true,
+    rowDoubleClick: false,
     alwaysAvailable: true,
   },
 ];
 export const LangWiseMessageConfig = () => {
   const navigate = useNavigate();
-  // );
+  const isDataChangedRef = useRef(false);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -45,11 +45,11 @@ export const LangWiseMessageConfig = () => {
     [navigate]
   );
   const handleDialogClose = () => {
-    // if (isDataChangedRef.current === true) {
-    //   isDataChangedRef.current = true;
-    //   refetch();
-    //   // isDataChangedRef.current = false;
-    // }
+    if (isDataChangedRef.current === true) {
+      isDataChangedRef.current = true;
+      refetch();
+      // isDataChangedRef.current = false;
+    }
     navigate(".");
   };
   return (
@@ -73,6 +73,7 @@ export const LangWiseMessageConfig = () => {
             <LangWiseMSGFormdata
               defaultView={"new"}
               closeDialog={handleDialogClose}
+              isDataChangedRef={isDataChangedRef}
             />
           }
         />
@@ -81,7 +82,7 @@ export const LangWiseMessageConfig = () => {
           path="view-details/*"
           element={
             <LangWiseMSGFormdata
-              // isDataChangedRef={isDataChangedRef}
+              isDataChangedRef={isDataChangedRef}
               closeDialog={handleDialogClose}
               defaultView={"view"}
             />

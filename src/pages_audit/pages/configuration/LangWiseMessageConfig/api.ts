@@ -5,26 +5,48 @@ export const getLangMessageHDR = async () => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLANGMSGHDR", {});
   if (status === "0") {
-    return data;
+    console.log("<<<stst", data);
+    const dataStatus = data;
+    dataStatus.map((item) => {
+      if (item?.DEFAULT_LANG_CODE === "en") {
+        item.DEFAULT_LANG_CODE = "English";
+      }
+      if (item?.DEFAULT_LANG_CODE === "guj") {
+        item.DEFAULT_LANG_CODE = "ગુજરાતી";
+      }
+      if (item?.DEFAULT_LANG_CODE === "spanish") {
+        item.DEFAULT_LANG_CODE = "española";
+      }
+      if (item?.DEFAULT_LANG_CODE === "french") {
+        item.DEFAULT_LANG_CODE = "Français";
+      }
+    });
+    return dataStatus;
+    // return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getLangMessageDTL = async (transactionID) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETLANGMSGDTL", {
-      TRAN_CD: transactionID + "",
-    });
-  if (status === "0") {
-    return data;
+export const getLangMessageDTL = async (transactionID, formMode) => {
+  if (formMode === "new") {
+    return [];
   } else {
-    throw DefaultErrorObject(message, messageDetails);
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETLANGMSGDTL", {
+        TRAN_CD: transactionID + "",
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
   }
 };
 export const editLanguage = () => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOLANGUAGECONFIG",
-    { formData, TRAN_CD: "48" }
+    // { formData, TRAN_CD: "48" }
+    formData
   );
   if (status === "0") {
     return message;

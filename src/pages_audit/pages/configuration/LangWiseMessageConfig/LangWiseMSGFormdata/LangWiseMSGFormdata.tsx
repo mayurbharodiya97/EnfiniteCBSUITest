@@ -2,6 +2,7 @@ import { MetaDataType } from "components/dyanmicForm";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { MasterDetailsForm } from "components/formcomponent";
 import React, {
+  FC,
   useCallback,
   useContext,
   useEffect,
@@ -37,20 +38,27 @@ const editMasterFormDataFnWrapper =
   async ({ data }: editMasterDataType) => {
     return editMasterData(data);
   };
-const LangWiseMSGFormdataCustom = ({
+const LangWiseMSGFormdataCustom: FC<{
+  closeDialog?: any;
+  defaultView?: any;
+  readOnly?: boolean;
+  transactionID: number;
+  data: any;
+  isDataChangedRef: any;
+}> = ({
   defaultView,
   transactionID,
   closeDialog,
   data: reqData,
+  isDataChangedRef,
 }) => {
   const [openAccept, setopenAccept] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const myRef = useRef<any>(null);
-  console.log("<<<myRef", myRef);
+  console.log("<<<authState", authState);
 
   let newref: any = myRef.current;
-  console.log("<<<newref", newref);
 
   const [formMode, setFormMode] = useState(defaultView);
   const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
@@ -81,7 +89,7 @@ const LangWiseMSGFormdataCustom = ({
           variant: "success",
         });
 
-        // isDataChangedRef.current = true;
+        isDataChangedRef.current = true;
         closeDialog();
       },
     }
@@ -89,7 +97,7 @@ const LangWiseMSGFormdataCustom = ({
   const result = useQueries([
     {
       queryKey: ["getDetailsLeavesGridData", transactionID],
-      queryFn: () => API.getLangMessageDTL(transactionID),
+      queryFn: () => API.getLangMessageDTL(transactionID, formMode),
     },
   ]);
   useEffect(() => {
@@ -117,23 +125,11 @@ const LangWiseMSGFormdataCustom = ({
     setopenAccept(false);
   };
   const onSubmitHandler = ({ data, displayData, endSubmit, setFieldError }) => {
-    console.log("<<<subb", data, displayData, endSubmit, setFieldError);
+    console.log("<<<subb", data);
     //@ts-ignore
     endSubmit(true);
     isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
     setopenAccept(true);
-    if (formMode === "new") {
-      data["ACTIVE"] = "Y";
-    } else {
-      data["ACTIVE"] = Boolean(data["ACTIVE"]) ? "Y" : "N";
-    }
-
-    data["_OLDROWVALUE"] = {
-      ...data["_OLDROWVALUE"],
-      ACTIVE: Boolean(data["_OLDROWVALUE"]?.ACTIVE) ? "Y" : "N",
-    };
-
-    data["COMP_CD"] = authState.companyID;
   };
 
   const renderResult = loading ? (
@@ -141,28 +137,26 @@ const LangWiseMSGFormdataCustom = ({
       <LoaderPaperComponent />
     </div>
   ) : isError === true ? (
-    <>
-      <div style={{ margin: "1.2rem" }}>
-        <Alert
-          severity="error"
-          // errorMsg={errorMsg}
-          // errorDetail={error_detail ?? ""}
-        />
-      </div>
-    </>
+    <div style={{ margin: "1.2rem" }}>
+      <Alert
+        severity="error"
+        // errorMsg={errorMsg}
+        // errorDetail={error_detail ?? ""}
+      />
+    </div>
   ) : formMode === "new" ? (
     <>
       <MasterDetailsForm
         key={"leavesMaster"}
         metaData={langWiseMsgMetaData}
         ref={myRef}
-        initialData={{ _isNewRow: true, DETAILS_DATA: [] }}
+        initialData={{ _isNewRow: true }}
         displayMode={"new"}
         onSubmitData={onSubmitHandler}
         isNewRow={true}
         formStyle={{
           background: "white",
-          height: "15vh",
+          height: "20vh",
           overflowY: "auto",
           overflowX: "hidden",
         }}
@@ -224,7 +218,7 @@ const LangWiseMSGFormdataCustom = ({
       isNewRow={false}
       formStyle={{
         background: "white",
-        height: "15vh",
+        height: "20vh",
         overflowY: "auto",
         overflowX: "hidden",
       }}
@@ -258,9 +252,10 @@ const LangWiseMSGFormdataCustom = ({
         isLoading={false}
         onSubmitData={onSubmitHandler}
         isNewRow={false}
+        // isNewRow={formMode === "new"}
         formStyle={{
           background: "white",
-          height: "15vh",
+          height: "20vh",
           overflowY: "auto",
           overflowX: "hidden",
         }}
@@ -312,16 +307,22 @@ const LangWiseMSGFormdataCustom = ({
   return renderResult;
 };
 
-export const LangWiseMSGFormdata = ({ defaultView, closeDialog }) => {
+export const LangWiseMSGFormdata = ({
+  defaultView,
+  closeDialog,
+  isDataChangedRef,
+}) => {
   const { state: data }: any = useLocation();
+
   return (
     <>
       <Dialog
         open={true}
+        fullWidth={true}
         onClose={closeDialog}
         PaperProps={{
           style: {
-            width: "65%",
+            maxWidth: "1100px",
             // minHeight: "60vh",
             //height: "100vh",
           },
@@ -333,6 +334,7 @@ export const LangWiseMSGFormdata = ({ defaultView, closeDialog }) => {
           defaultView={defaultView}
           closeDialog={closeDialog}
           data={data}
+          isDataChangedRef={isDataChangedRef}
         />
       </Dialog>
     </>
