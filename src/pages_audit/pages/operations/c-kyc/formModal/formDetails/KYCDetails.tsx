@@ -10,7 +10,6 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 // import { GridWrapper } from 'components/dataTableStatic/gridWrapper';
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { DocumentGridMetaData } from './metadata/individual/personaldetails';
-import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../CkycContext';
 
@@ -109,9 +108,6 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{

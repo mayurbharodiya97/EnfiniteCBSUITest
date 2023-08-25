@@ -48,8 +48,8 @@ export const entity_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "NAME",
-            label: "Name",
+            name: "LAST_NM",
+            label: "Entity Name",
             required: true,
             // placeholder: "Prefix",
             type: "text",
@@ -67,34 +67,12 @@ export const entity_detail_meta_data = {
         //     },
         //     name: "Cust.Info",
         // },
-        // {
-        //     render: {
-        //         componentType: "textField",
-        //     },
-        //     name: "RELIGION",
-        //     label: "Religion",
-        //     // placeholder: "First Name",
-        //     type: "text",
-        //     GridProps: {xs:4, sm:2},
-        //     // dependentFields: ["DAILY_AMT"],
-        // },
-        // {
-        //     render: {
-        //         componentType: "textField",
-        //     },
-        //     name: "CASTE",
-        //     label: "Caste",
-        //     // placeholder: "First Name",
-        //     type: "text",
-        //     GridProps: {xs:4, sm:2},
-        //     // dependentFields: ["DAILY_AMT"],
-        // },
         {
             render: {
                 componentType: "textField",
             },
-            name: "OCCUPATION",
-            label: "OCCUPATION",
+            name: "TRADE_CD",
+            label: "Occupation",
             required: true,
             // placeholder: "First Name",
             type: "text",
@@ -105,7 +83,7 @@ export const entity_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "SUB_CUSTOMER_TYPE",
+            name: "SUB_CUST_TYPE",
             label: "Sub Customer Type",
             // placeholder: "Middle Name",
             type: "text",
@@ -115,7 +93,7 @@ export const entity_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "GROUP",
+            name: "GROUP_CD",
             label: "Group",
             // placeholder: "Last Name",
             type: "text",
@@ -125,7 +103,7 @@ export const entity_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "RATING",
+            name: "RATE_CD",
             label: "Rating",
             placeholder: "",
             type: "text",
@@ -135,7 +113,7 @@ export const entity_detail_meta_data = {
             render: {
                 componentType: "datePicker",
             },
-            name: "INCEPTION_DATE",
+            name: "BIRTH_DT",
             label: "Inception Date",
             placeholder: "",
             format: "dd/MM/yyyy",
@@ -170,10 +148,24 @@ export const entity_detail_meta_data = {
             render: {
                 componentType: "datePicker",
             },
-            name: "KYC_REVISED_DT",
+            name: "KYC_REVIEW_DT",
             label: "KYC Revised Dt.",
             placeholder: "",
             format: "dd/MM/yyyy",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            name: "RISK_CATEG",
+            label: "Risk Category",
+            options: [
+                {label: "Option1", value: "Option1"},
+                {label: "Option2", value: "Option2"},
+            ],
+            placeholder: "",
             type: "text",
             GridProps: {xs:4, sm:3},
         },
@@ -195,7 +187,7 @@ export const entity_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "RESI_STATUS",
+            name: "RESIDENCE_STATUS",
             label: "Resi. Status",
             placeholder: "",
             type: "text",
@@ -205,7 +197,7 @@ export const entity_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "GIIN",
+            name: "US_GIIN",
             label: "GIIN",
             placeholder: "",
             type: "text",
@@ -252,5 +244,29 @@ export const entity_detail_meta_data = {
             name: "LEI_EXPIRY_DT",
             label: "LEI Expiry Date",
         },
+		{
+            render: {
+                componentType: "select",
+            },
+            name: "PARENT_COMPANY",
+            label: "Parent Company",
+            options: [
+                {label: "Option1", value: "Option1"},
+                {label: "Option2", value: "Option2"},
+            ],
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },        		
+		{
+            render: {
+                componentType: "textField",
+            },
+            name: "PARENT_COMP_NM",
+            label: "Parent Company Name",            
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:4, sm:3},
+        },        		
     ]
 }

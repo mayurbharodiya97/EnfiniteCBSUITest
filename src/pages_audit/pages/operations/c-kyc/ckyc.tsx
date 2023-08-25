@@ -27,6 +27,7 @@ import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "./CkycContext";
+import { ActionTypes } from "components/dataTable";
 
 export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -262,6 +263,15 @@ export const Ckyc = () => {
     })
   );
 
+  const {data:PendingData, isError: isPendingError, isLoading: isPendingLoading, refetch: PendingRefetch} = useQuery<any, any>(
+    ["getPendingData", {}],
+    () => API.getPendingData({
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      ENTERED_DATE: "16-03-17"
+    })
+  )
+
   const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
     ["getPMISCData", {entityType, categoryValue, constitutionValue}],
     () => API.getPMISCData("CKYC_ACCT_TYPE")
@@ -398,6 +408,51 @@ useEffect(() => {
     {/* </Grid> */}
     </Box>
   )
+
+  const actions: ActionTypes[] = [
+    {
+      actionName: "view-detail",
+      actionLabel: "View Detail",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+    {
+      actionName: "view-statement",
+      actionLabel: "Dependencies",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "view-interest",
+      actionLabel: "TDS Exemption",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+  ];
+
+  const setCurrentAction = useCallback(
+    (data) => {
+      // if (data.name === "view-detail") {
+      //   // setComponentToShow("ViewDetail");
+      //   // setAcctOpen(true);
+      //   // setRowsData(data?.rows);
+      // } else if (data.name === "view-statement") {
+      //   // setComponentToShow("ViewStatement");
+      //   // setAcctOpen(true);
+      //   // setRowsData(data?.rows);
+      // } else if (data.name === "view-interest") {
+      //   // setComponentToShow("ViewInterest");
+      //   // setAcctOpen(true);
+      // } else {
+      //   // navigate(data?.name, {
+      //   //   state: data?.rows,
+      //   // });
+      // }
+    },
+    [
+      // navigate
+    ]
+  );
   return (
     <React.Fragment>
       <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">{t("CkycHeader")}</Typography>
@@ -510,7 +565,7 @@ useEffect(() => {
             submitSecondButtonHide={true}
             submitSecondLoading={false}
             propStyles={{titleStyle : {color: "var(--theme-color3) !important"},
-              toolbarStyles: {backgroundColor: "var(--theme-color2) !important"},
+              toolbarStyles: {background: "var(--theme-color2) !important"},
               IconButtonStyle: {variant: "secondary"},
               paperStyle: {boxShadow: "none"}
             }}
@@ -529,8 +584,8 @@ useEffect(() => {
           data={mutation.data ?? []}
           setData={() => null}          
           // loading={isLoading || isFetching}
-          // actions={actions}
-          // setAction={setCurrentAction}
+          actions={actions}
+          setAction={setCurrentAction}
           // refetchData={() => refetch()}
           // ref={myGridRef}
         />
@@ -542,7 +597,7 @@ useEffect(() => {
           <GridWrapper
             key={`EmailAcctMstGrid`}
             finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
-            data={[]}
+            data={PendingData ?? []}
             setData={() => null}
             // loading={isLoading || isFetching}
             // actions={actions}

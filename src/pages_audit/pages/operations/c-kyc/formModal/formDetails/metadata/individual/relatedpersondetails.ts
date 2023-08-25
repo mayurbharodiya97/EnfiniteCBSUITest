@@ -303,10 +303,16 @@ export const related_person_detail_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "IPV_FLAG",
             label: "IPVFlag",
+            options: [
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"},
+            ],
+            _optionsKey: "ipvFlag",
+            defaultValue: "N",
             placeholder: "",
             required: true,
             type: "text",

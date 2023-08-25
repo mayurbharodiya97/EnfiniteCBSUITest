@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-import {GridMetaDataType} from "../../../../../../components/dataTableStatic/types"
+import {GridMetaDataType} from "../../../../../../../../components/dataTableStatic/types"
 import { GridWrapper } from 'components/dataTableStatic/gridWrapper'
 import { 
     entity_detail_meta_data,
@@ -12,12 +12,12 @@ import {
     personal_detail_prefix_data, 
     personal_document_details_data, 
     personal_other_detail_meta_data
-} from './metadata/individual/personaldetails';
+} from '../../metadata/individual/personaldetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import TabStepper from '../TabStepper';
 import { useTranslation } from 'react-i18next';
-import { CkycContext } from '../../CkycContext';
+import { CkycContext } from '../../../../CkycContext';
+// import { format } from 'date-fns';
 
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   const { t } = useTranslation();
@@ -52,11 +52,19 @@ const myGridRef = useRef<any>(null);
         actionFlag
     ) => {
         setIsNextLoading(true)
-        console.log("qweqweqwe", data)     
+        // console.log("qweqweqwesdcas", data, displayData, actionFlag)     
         if(data) {
 
             let newData = state?.formDatactx
-            newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: "",
+                BRANCH_CD: "",
+                REQ_FLAG: "",
+                REQ_CD: "",
+                SR_CD: ""
+            }
+            newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             PODFormRef.current.handleSubmit(NextBtnRef.current, "save")
             // setIsNextLoading(false)
@@ -71,12 +79,16 @@ const myGridRef = useRef<any>(null);
         actionFlag
     ) => {
         setIsNextLoading(true)
-        console.log("qweqweqwe", data)     
+        // console.log("qweqweqwe", data)
+        // if(Boolean(data["BIRTH_DT"])) {
+        //     data["BIRTH_DT"] = format(new Date(data["BIRTH_DT"]), "dd-MMM-yyyy")
+        // }     
         if(data) {
             let newData = state?.formDatactx
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(1)
+            // handleColTabChangectx(1)
+            handleColTabChangectx(state?.colTabValuectx+1)
 
             setIsNextLoading(false)
         }   
@@ -90,9 +102,6 @@ const myGridRef = useRef<any>(null);
                 {/* <Grid item xs='auto'>
                     <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Personal Details {`(1/8)`}</Typography>
                 </Grid> */}
-                <Grid item xs>
-                    <TabStepper />
-                </Grid>
             </Grid>
             {isCustomerData ? <Grid 
                 sx={{

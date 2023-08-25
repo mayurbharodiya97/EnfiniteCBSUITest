@@ -1,5 +1,5 @@
 import * as API from "../../../../api";
-export const attestation_detail_meta_data = {
+export const legal_attestation_detail_meta_data = {
     form: {
         name: "attestation_details_form",
         label: "", 

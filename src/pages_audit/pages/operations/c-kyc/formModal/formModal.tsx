@@ -9,15 +9,14 @@ import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import { CustomTabs } from '../ckyc';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-
-import PersonalDetails from './formDetails/PersonalDetails';
+import PersonalDetails from './formDetails/formComponents/individualComps/PersonalDetails';
 import KYCDetails from './formDetails/KYCDetails';
-import DeclarationDetails from './formDetails/DeclarationDetails';
-import RelatedPersonDetails from './formDetails/RelatedPersonDetails';
-import OtherDetails from './formDetails/OtherDetails';
-import OtherAddressDetails from './formDetails/OtherAddressDetails';
-import NRIDetails from './formDetails/NRIDetails';
-import AttestationDetails from './formDetails/AttestationDetails';
+import DeclarationDetails from './formDetails/formComponents/individualComps/DeclarationDetails';
+import RelatedPersonDetails from './formDetails/formComponents/individualComps/RelatedPersonDetails';
+import OtherDetails from './formDetails/formComponents/individualComps/OtherDetails';
+import OtherAddressDetails from './formDetails/formComponents/individualComps/OtherAddressDetails';
+import NRIDetails from './formDetails/formComponents/individualComps/NRIDetails';
+import AttestationDetails from './formDetails/formComponents/individualComps/AttestationDetails';
 
 import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
 import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
@@ -48,6 +47,9 @@ import { AutoComplete } from 'components/common';
 import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../CkycContext';
+import TabStepper from './TabStepper';
+import KYCDocUpload from './formDetails/formComponents/individualComps/KYCDocUpload';
+import PhotoSignature from './formDetails/formComponents/individualComps/PhotoSignature';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -254,6 +256,106 @@ export default function FormModal({
   //   // refetch()
   // }
 
+
+  const getIndividualTabComp = (tabName:string) => {
+    switch (tabName) {
+      case "Personal Details":
+        return <PersonalDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "KYC Details":
+        return <KYCDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+      
+      case "Declaration Details":
+        return <DeclarationDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "KYC Document Upload":
+        return <KYCDocUpload />
+
+      case "Photo & Signature Upload":
+        return <PhotoSignature />
+
+      case "Details of Related Person":
+        return <RelatedPersonDetails
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+        />
+
+      case "More Details":
+        return <OtherDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "Other Address":
+        return <OtherAddressDetails
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "NRI Details":
+        return <NRIDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "Attestation Details":
+        return <AttestationDetails
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+        />
+
+      default:
+        return <p>Not Found - {tabName}</p>;
+    }
+  }
+  const getLegalTabComp = (tabName:string) => {
+    switch (tabName) {
+      case "Entity Details":
+        // return <PersonalDetails 
+        // isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        // isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "KYC Details":
+        return <KYCDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+      
+      case "Declaration Details":
+        return <DeclarationDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "Photo & Signature Upload":
+        return <p>Photo & Signature</p>
+
+      case "Details of Controlling Persons":
+        return <RelatedPersonDetails
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+        />
+
+      case "Other Details":
+        return <OtherDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "Other Address":
+        return <OtherAddressDetails
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      case "Attestation Details":
+        return <NRIDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+
+      default:
+        return <p>Not Found - {tabName}</p>;
+    }
+  }
 
   return (
     // <div>
@@ -611,69 +713,14 @@ export default function FormModal({
                 }
               }} item xs>
                 
-            
-
-              <TabPanel value={state?.colTabValuectx} index={0}>
-                {state?.categoryValuectx ? <PersonalDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} /> : null}
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={1}>
-                <KYCDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={2}>
-                  {/* <Typography variant="h6">Declaration</Typography> */}
-                <DeclarationDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={3}>
-                {/* <Typography variant="h6">Details of Related Person</Typography> */}
-                <RelatedPersonDetails
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
-                />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={4}>
-                <OtherDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={5}>
-                <OtherAddressDetails
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={6}>
-                <NRIDetails 
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-                  isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
-              </TabPanel>
-              <TabPanel value={state?.colTabValuectx} index={7}>
-                {/* <Typography variant="h6">Attestation</Typography> */}
-                <AttestationDetails
-                  isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-                  isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
-                />
-              </TabPanel>
-
-                  {/* {(tabsApiRes && tabsApiRes.length>0) && tabsApiRes.map((element, i) => {
-                    return (
-                      <TabPanel key={i} value={colTabValue} index={i}>
-                        {
-                          // console.log("cvbdfg", element.subtitles)
-                          element.subtitles.map(el => {
-                            return (
-                              <Typography variant="h6">{el?.SUB_TITLE_NAME}</Typography>
-                            )
-                          })
-                        }
-                      </TabPanel>
-                    )
-                  })} */}
-
+                <TabStepper />
+              {
+                (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((element, i) => {
+                  return <TabPanel key={i} value={state?.colTabValuectx} index={i}>
+                    {state?.entityTypectx==="I" ? getIndividualTabComp(element?.TAB_NAME) : getLegalTabComp(element?.TAB_NAME)}
+                  </TabPanel>
+                }) 
+              }
             </Grid>
           </Grid>
         {/* </Box> */}
