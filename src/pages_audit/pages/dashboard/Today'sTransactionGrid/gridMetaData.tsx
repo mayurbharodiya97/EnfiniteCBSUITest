@@ -42,7 +42,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "BRANCH_CD",
-      columnName: "Br.Code",
+      columnName: "BrCode",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -52,7 +52,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_TYPE",
-      columnName: "Acct Type",
+      columnName: "AcctType",
       sequence: 3,
       alignment: "left",
       componentType: "default",
@@ -62,7 +62,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ACCT_CD",
-      columnName: "Acct.No",
+      columnName: "ACNo",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -72,7 +72,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_DT",
-      columnName: "Trn Date",
+      columnName: "TrnDate",
       sequence: 5,
       alignment: "left",
       componentType: "date",
@@ -121,7 +121,9 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
       minWidth: 60,
       maxWidth: 240,
       color: "green",
-      currencyRefColumn: "CREDIT_CURR_CD",
+      // currencyRefColumn: "CURR_CD",
+      // isCurrencyCode: true,
+      // symbolPosi: "end",
     },
     {
       accessor: "DEBIT",
@@ -133,7 +135,8 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
       minWidth: 60,
       maxWidth: 220,
       color: "red",
-      currencyRefColumn: "DEBIT_CURR_CD",
+      // currencyRefColumn: "CURR_CD",
+      // symbolPosi: "end",
     },
     {
       accessor: "TRAN_CD",

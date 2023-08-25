@@ -11,6 +11,7 @@ const currencySymbol = {
   BZD: "BZ$",
   BMD: "$",
   BOB: "$b",
+  BDT: "৳",
   BAM: "KM",
   BWP: "P",
   BGN: "лв",
@@ -115,6 +116,6 @@ export const FormatCurrency = (value, currency) => {
   if (isNaN(value)) {
     return "Invalid Value";
   }
-  const currencySym = currencySymbol[currency] || currency;
+  const currencySym = currencySymbol[currency] || "₹";
   return `${currencySym} ${value}`;
 };

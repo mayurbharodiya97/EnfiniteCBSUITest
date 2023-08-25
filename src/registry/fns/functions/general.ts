@@ -189,7 +189,7 @@ const GeneralAPISDK = () => {
             },
             WK_STMT_TO_DATE: {
               value: isValidDate(authState?.workingDate)
-                ? new Date()
+                ? authState?.workingDate
                 : new Date(),
             },
           };

@@ -353,7 +353,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             />
           );
         }}
-        renderOption={(props, option, { selected, inputValue }) => {
+        renderOption={(props, option, other) => {
+          let { selected, inputValue } = other;
           let label = myGetOptionLabel(option);
           const matches = match(label, inputValue);
           const parts = parse(label, matches);
@@ -366,10 +367,20 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             </span>
           ));
           return (
-            <div style={{ whiteSpace: "pre" }}>
+            // <div
+            //   style={{ whiteSpace: "pre" }}
+            //   className={props?.className}
+            //   onClick={props.onClick}
+            //   onMouseMove={props.onMouseMove}
+            //   onTouchStart={props.onTouchStart}
+            // >
+            //   {showCheckbox ? <Checkbox checked={selected} /> : null}
+            //   {labelJSX}
+            // </div>
+            <li style={{ whiteSpace: "pre" }} {...props}>
               {showCheckbox ? <Checkbox checked={selected} /> : null}
               {labelJSX}
-            </div>
+            </li>
           );
         }}
       />

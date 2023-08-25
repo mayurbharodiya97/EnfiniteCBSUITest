@@ -122,10 +122,10 @@ export const fr_language_data = {
   // For Today's Transaction Graph and Grid
   TodaysTransaction: " L'opération du jour ",
   SrNo: "Sr. Non.",
-  Branchcode: "Code de l'agence",
-  AccountType: "Type de compte",
+  BrCode: "Code de l'agence",
+  AcctType: "Type de compte",
   ACNo: "A/C Non",
-  TransactionDate: "Date de la transaction",
+  TrnDate: "Date de la transaction",
   Chequeno: "Chèque non",
   Trx: "Trx.",
   Remarks: "Remarques",

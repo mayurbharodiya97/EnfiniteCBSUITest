@@ -4,9 +4,9 @@ import { useContext } from "react";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import getCurrencySymbol from "components/custom/getCurrencySymbol";
 
-// const renderStyle = new Intl.NumberFormat("en-IN", {
+// const renderStyle = new Intl.NumberFormat("ar-AE", {
 //   style: "currency",
-//   currency: "INR",
+//   currency: "AED",
 // });
 
 // export const CurrencyRowCellRenderer = (props) => {
@@ -19,13 +19,24 @@ import getCurrencySymbol from "components/custom/getCurrencySymbol";
 //   return <CellWrapper {...props}>{result}</CellWrapper>;
 // };
 
-function formatCurrency(amount, symbol, currencyFormat, decimalCount) {
+function formatCurrency(
+  amount,
+  symbol,
+  currencyFormat = "en-IN",
+  decimalCount = 0,
+  symbolPosi = "start"
+) {
   const formattedAmount = new Intl.NumberFormat(currencyFormat, {
     minimumFractionDigits: decimalCount,
-    // currency: "ZAR",
   }).format(amount);
 
-  return `${symbol} ${formattedAmount}`;
+  if (symbolPosi === "start") {
+    return `${symbol} ${formattedAmount}`;
+  } else if (symbolPosi === "end") {
+    return `${formattedAmount} ${symbol}`;
+  } else {
+    return `${symbol} ${formattedAmount}`;
+  }
 }
 
 export const CurrencyRowCellRenderer = (props) => {
@@ -35,28 +46,48 @@ export const CurrencyRowCellRenderer = (props) => {
 
   const { value, row } = props;
 
-  // console.log(props, "<<props");
-
   let finaleSymbol;
 
-  finaleSymbol = getCurrencySymbol(dynamicAmountSymbol);
+  let symbolPosi;
+
+  if (Boolean(props?.column?.symbolPosi)) {
+    symbolPosi = props?.column?.symbolPosi;
+  }
+
+  if (Boolean(props?.column?.isCurrencyCode)) {
+    finaleSymbol = dynamicAmountSymbol ?? "INR";
+  } else {
+    finaleSymbol = getCurrencySymbol(dynamicAmountSymbol);
+  }
+
   if (Boolean(props?.column?.currencyRefColumn)) {
     const currencyCode =
       props?.row?.original?.[props?.column?.currencyRefColumn];
-
-    if (Boolean(currencyCode)) {
-      finaleSymbol = getCurrencySymbol(currencyCode);
+    if (Boolean(props?.column?.isCurrencyCode)) {
+      if (Boolean(currencyCode)) {
+        finaleSymbol = currencyCode;
+      }
+    } else {
+      if (Boolean(currencyCode)) {
+        finaleSymbol = getCurrencySymbol(currencyCode);
+      }
     }
   }
 
   // const divider = useAmountDivider();
   let result = "-";
-  if (value !== null && value !== "" && !isNaN(Number(value))) {
+  if (
+    value !== null &&
+    value !== "" &&
+    value !== "0" &&
+    !isNaN(Number(value))
+  ) {
     result = `${formatCurrency(
       value,
       finaleSymbol,
       currencyFormat,
-      decimalCount
+      decimalCount,
+      symbolPosi
     )}`;
   }
 

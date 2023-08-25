@@ -45,6 +45,8 @@ export interface GridColumnType {
   dependentOptionField?: string;
   enableDefaultOption?: boolean;
   skipDefaultOption?: boolean;
+  isCurrencyCode?: boolean;
+  symbolPosi?: any;
 }
 
 export interface GridConfigType {

@@ -121,10 +121,10 @@ export const guj_language_data = {
   // For Today's Transaction Graph and Grid
   TodaysTransaction: "આજનો વ્યવહાર",
   SrNo: "ક્રમ નં.",
-  Branchcode: "શાખા સંકેત",
-  AccountType: "ખાતાનો પ્રકાર",
+  BrCode: "શાખા સંકેત",
+  AcctType: "ખાતાનો પ્રકાર",
   ACNo: "ખાતા નંબર",
-  TransactionDate: "વ્યવહારની તારીખ",
+  TrnDate: "વ્યવહારની તારીખ",
   Chequeno: "ચેક નંબર",
   Trx: "ટીઆરએક્સ.",
   Remarks: "ટિપ્પણી",
