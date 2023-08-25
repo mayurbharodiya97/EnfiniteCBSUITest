@@ -103,6 +103,14 @@ const MyDivider: FC<MyDividerProps> = ({
   const [currentColor, setCurrentColor] = useState<string>(
     typeof setColor === "string" ? setColor : ""
   );
+  const [labelText, setLabelText] = useState("")
+  useEffect(() => {
+    if(value && value.length>0) {
+      setLabelText(value)
+    } else {
+      setLabelText(dividerText)
+    }
+  },[value])
   useEffect(() => {
     if (typeof setColor === "function") {
       let result = setColor(value);
@@ -277,7 +285,7 @@ const MyDivider: FC<MyDividerProps> = ({
   // }
   return( 
   <Grid item mt={2} xs={12}>
-    <Divider sx={{px:1, color: "var(--theme-color1)"}} textAlign="left" orientation="horizontal">{t(dividerText)}</Divider>
+    <Divider sx={{px:1, color: "var(--theme-color1)"}} textAlign="left" orientation="horizontal">{(value && value.length>0) ? value : t(dividerText)}</Divider>
   </Grid>
 
 // horizontal

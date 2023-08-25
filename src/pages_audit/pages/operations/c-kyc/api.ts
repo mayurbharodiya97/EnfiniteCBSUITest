@@ -276,45 +276,93 @@ export const getParentAreaOptions = async (COMP_CD, BRANCH_CD) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
-export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
-  console.log("Wedqweqwe", dependentValue)
-  let Parent_Area = ""
-  let apiData:any[] = []
-  if(dependentValue?.PAR_AREA_CD?.value) {
-    let resData:any[] = []
-    Parent_Area = dependentValue.PAR_AREA_CD.value
-    resData = apiData.filter(d => d?.PARENT_AREA == Parent_Area)
-    return resData;
-  }
+// export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
+//   console.log("getSubAreaOptions called", dependentValue)
+//   // let Parent_Area = ""
+//   // let apiData:any[] = []
+//   // if(dependentValue?.PAR_AREA_CD?.value) {
+//   //   let resData:any[] = []
+//   //   Parent_Area = dependentValue.PAR_AREA_CD.value
+//   //   resData = apiData.filter(d => d?.PARENT_AREA == Parent_Area)
+//   //   return resData;
+//   // }
 
-  // if(!Parent_Area) {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETAREALIST", {
-        COMP_CD: COMP_CD, 
-        BRANCH_CD: BRANCH_CD,
-      });
-    if (status === "0") {
-      apiData = data;
-      let responseData = data.filter(d => d?.PARENT_AREA == Parent_Area);
-      console.log(responseData, "subarea", responseData.length, data.length )
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ AREA_NM, AREA_CD, ...other }) => {
-            return {
-              ...other,
-              AREA_NM: AREA_NM, 
-              AREA_CD: AREA_CD,
-              value: AREA_CD,
-              label: AREA_NM,
-            };
-          }
-        );
+//   if(!Boolean(dependentValue.PAR_AREA_CD.value)) {
+//     const { data, status, message, messageDetails } =
+//       await AuthSDK.internalFetcher("GETAREALIST", {
+//         COMP_CD: COMP_CD, 
+//         BRANCH_CD: BRANCH_CD,
+//       });
+//     if (status === "0") {
+//       let responseData = data;
+//       // responseData = data.filter(d => d?.PARENT_AREA == Parent_Area);
+//       // console.log(responseData, "subarea", responseData.length, data.length )
+//       if (Array.isArray(responseData)) {
+
+//         // if(dependentValue?.PAR_AREA_CD?.value) {
+//         //   // let resData:any[] = []
+//         //   // Parent_Area = dependentValue.PAR_AREA_CD.value
+//         //   // resData = apiData.filter(d => d?.PARENT_AREA == Parent_Area)
+//         //   // return resData;
+//         //   let Parent_Area = dependentValue.PAR_AREA_CD.value
+//         //   responseData = responseData.filter(d => d?.PARENT_AREA == Parent_Area)
+//         // }
+      
+
+//         responseData = responseData.map(({ AREA_NM, AREA_CD, ...other }) => {
+//             return {
+//               ...other,
+//               AREA_NM: AREA_NM, 
+//               AREA_CD: AREA_CD,
+//               value: AREA_CD,
+//               label: AREA_NM,
+//             };
+//           }
+//         );
+//       }
+//       return responseData
+//     } else {
+//       throw DefaultErrorObject(message, messageDetails);
+//     }
+//   }
+// }
+
+export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("GETAREALIST", {
+    COMP_CD: COMP_CD, 
+    BRANCH_CD: BRANCH_CD,
+  });
+
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      let Parent_Area = null;
+      if(dependentValue?.PAR_AREA_CD?.value) {
+        Parent_Area = dependentValue.PAR_AREA_CD.value
+        responseData = responseData.filter(d => d?.PARENT_AREA == Parent_Area)
+      } else if (dependentValue?.LOC_AREA_CD?.value) {
+        Parent_Area = dependentValue.LOC_AREA_CD.value
+        responseData = responseData.filter(d => d?.PARENT_AREA == Parent_Area)
       }
-      return responseData
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
+
+      responseData = responseData.map(({ AREA_NM, AREA_CD, ...other }) => {
+          return {
+            ...other,
+            AREA_NM: AREA_NM, 
+            AREA_CD: AREA_CD,
+            value: AREA_CD,
+            label: AREA_NM,
+          };
+        }
+      );
     }
-  // }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 }
+
 export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTOMERLIST", {
