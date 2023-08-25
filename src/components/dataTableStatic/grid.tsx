@@ -91,6 +91,7 @@ export const DataGrid = ({
   isNewRowStyle,
   defaultSelectedRowId,
   searchPlaceholder,
+  paginationText,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -521,7 +522,7 @@ export const DataGrid = ({
           />
         ) : (
           <TableCell style={{ display: "flex" }}>
-            Total No of Records: {rowCount}
+            Total No. of {paginationText}: {rowCount}
           </TableCell>
         )}
 

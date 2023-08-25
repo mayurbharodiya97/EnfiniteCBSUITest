@@ -356,6 +356,10 @@ export const ActionWiseAPIConfiguration = {
     url: "commonMasterServiceAPI/DOLANGUAGECONFIG",
     packageName: "",
   },
+  GETEMISCLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMISCLIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

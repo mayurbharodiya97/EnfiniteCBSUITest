@@ -53,6 +53,7 @@ interface GridTableType {
   queryFilters?: any;
   hideAmountIn?: boolean;
   retrievalType?: string;
+  isOpenRetrievalDefault?: boolean;
 }
 
 const defaultMaxHeight = 300;
@@ -121,6 +122,7 @@ export const GridTable: FC<GridTableType> = ({
   queryFilters,
   hideAmountIn,
   retrievalType,
+  isOpenRetrievalDefault,
 }) => {
   const [showFilters, setShowFilters] = useState(false);
   const handleFilterChange = useCallback(() => {
@@ -209,6 +211,7 @@ export const GridTable: FC<GridTableType> = ({
             filterMeta={filterMeta}
             filterData={queryFilters}
             retrievalType={retrievalType}
+            isOpenRetrievalDefault={isOpenRetrievalDefault}
           />
           {showFilters && filters.length > 0 && (
             <Button

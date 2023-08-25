@@ -16,21 +16,25 @@ import {
 } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import "pages_audit/sideBar/icons";
-import { useContext, useState } from "react";
+import { lazy, useContext, useState } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import "./style.css";
 import { useStyles } from "pages_audit/style";
 import { AuthContext } from "pages_audit/auth";
+import * as SvgIcon from "assets/icons/svgIcons";
 export const DashboardBox = ({
   title = "",
   body = "",
   isSequencs = "",
-  icon = "home",
+  // icon = "home",
+  icon,
   apiName = "",
   isBackground = "",
   visibility = false,
 }) => {
+  // const NNNN = icon.charAt(0).toUpperCase() + icon.slice(1);
+  const SvgIcons = SvgIcon?.[icon] || null;
   const [showMore, setShowMore] = useState(false);
   const classes = useStyles();
   const { authState } = useContext(AuthContext);
@@ -120,21 +124,22 @@ export const DashboardBox = ({
                   height: 40,
                   width: 40,
                   top: "10px",
-                  boxShadow:
-                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
+                  // boxShadow:
+                  //   "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
                 }}
                 style={{
-                  backgroundColor: "var(--theme-color3)",
+                  backgroundColor: "var(--theme-color2)",
                   color: "var(--theme-color2)",
                 }}
               >
-                {Boolean(icon) ? (
+                {/* {Boolean(icon) ? (
                   <FontAwesomeIcon
                     icon={["fa", icon]}
                     // className={classes.icon}
                     className={"avtar"}
                   />
-                ) : null}
+                ) : null} */}
+                <SvgIcons height={37} width={37} />
               </Avatar>
             </Grid>
           </Grid>

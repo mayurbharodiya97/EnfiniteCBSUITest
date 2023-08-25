@@ -78,6 +78,7 @@ export interface GridConfigType {
   isCusrsorFocused?: boolean;
   hiddenFlag?: string;
   searchPlaceholder?: string;
+  paginationText?: any;
 }
 
 export interface GridMetaDataType {
