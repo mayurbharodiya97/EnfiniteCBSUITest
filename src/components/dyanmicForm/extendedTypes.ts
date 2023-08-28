@@ -537,6 +537,8 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       xs: 12,
       md: 4,
       sm: 4,
+      lg: 4,
+      xl: 4,
     },
   },
 
@@ -557,6 +559,8 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       xs: 12,
       md: 4,
       sm: 4,
+      lg: 4,
+      xl: 4,
     },
   },
 

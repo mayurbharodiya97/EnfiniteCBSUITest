@@ -13,7 +13,7 @@ interface CustomProperties {
 const customParameters: CustomProperties = {
   dynamicAccountNumberField: "2",
   dynamicAmountSymbol: "INR",
-  dynamicAmountGroupStyle: "wan",
+  dynamicAmountGroupStyle: "lakh",
   currencyFormat: "en-IN",
   decimalCount: 2,
   commonDateFormat: "dd/MM/yyyy",

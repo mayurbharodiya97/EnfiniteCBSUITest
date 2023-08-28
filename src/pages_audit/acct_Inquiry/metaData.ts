@@ -466,8 +466,10 @@ export const PassbookStatement: any = {
 
       GridProps: {
         xs: 12,
-        md: 6,
-        sm: 6,
+        md: 12,
+        sm: 12,
+        lg: 12,
+        xl: 12,
       },
     },
 
@@ -483,6 +485,8 @@ export const PassbookStatement: any = {
         xs: 12,
         md: 6,
         sm: 6,
+        lg: 6,
+        xl: 6,
       },
       schemaValidation: {
         type: "string",
@@ -545,6 +549,8 @@ export const PassbookStatement: any = {
         xs: 12,
         md: 6,
         sm: 6,
+        lg: 6,
+        xl: 6,
       },
     },
     // {
@@ -557,8 +563,8 @@ export const PassbookStatement: any = {
     //   GridProps: { xs: 12, sm: 6, md: 6 },
     //   // isCurrencyCode: true,
     //   FormatProps: {
-    //     // thousandsGroupStyle: "thousand",
-    //     // decimalScale: 1,
+    //     thousandsGroupStyle: "lakh",
+    //     decimalScale: 1,
     //   },
     //   enableNumWords: false,
     //   // StartAdornment: "BDT",
