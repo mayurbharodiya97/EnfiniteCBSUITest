@@ -57,7 +57,7 @@ export const related_person_detail_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -70,7 +70,7 @@ export const related_person_detail_data = {
             _optionsKey: "refRelatedType",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -90,7 +90,7 @@ export const related_person_detail_data = {
             label: "RefCustID",
             placeholder: "First Name",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -102,7 +102,7 @@ export const related_person_detail_data = {
             placeholder: "First Name",
             required: true,
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -114,7 +114,7 @@ export const related_person_detail_data = {
             placeholder: "Middle Name",
             required: true,
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -125,7 +125,7 @@ export const related_person_detail_data = {
             placeholder: "Last Name",
             required: true,
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -135,7 +135,7 @@ export const related_person_detail_data = {
             label: "CkycNo",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -145,7 +145,7 @@ export const related_person_detail_data = {
             label: "RefName",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
 
 
@@ -167,7 +167,7 @@ export const related_person_detail_data = {
             label: "PAN",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -177,7 +177,7 @@ export const related_person_detail_data = {
             label: "DrivingLicNo",
             placeholder: "First Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -190,7 +190,7 @@ export const related_person_detail_data = {
             // required: true,
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -200,7 +200,7 @@ export const related_person_detail_data = {
             label: "VoterId",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -210,7 +210,7 @@ export const related_person_detail_data = {
             label: "PassportNo",
             placeholder: "Last Name",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -222,7 +222,7 @@ export const related_person_detail_data = {
             // required: true,
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -232,7 +232,7 @@ export const related_person_detail_data = {
             label: "UniqueId",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -242,7 +242,7 @@ export const related_person_detail_data = {
             label: "NREGAJobCard",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -252,7 +252,7 @@ export const related_person_detail_data = {
             label: "OtherDoc",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -262,7 +262,7 @@ export const related_person_detail_data = {
             label: "OtherDocNo",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
 
 
@@ -287,7 +287,7 @@ export const related_person_detail_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -299,7 +299,7 @@ export const related_person_detail_data = {
             label: "RiskCategory",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -316,7 +316,7 @@ export const related_person_detail_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -327,7 +327,7 @@ export const related_person_detail_data = {
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -337,7 +337,7 @@ export const related_person_detail_data = {
             label: "EmpCode",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -347,7 +347,7 @@ export const related_person_detail_data = {
             label: "EmpName",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -357,7 +357,7 @@ export const related_person_detail_data = {
             label: "EmpDesig",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -367,7 +367,7 @@ export const related_person_detail_data = {
             label: "IPVBranch",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -377,7 +377,7 @@ export const related_person_detail_data = {
             label: "OrgName",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -387,7 +387,7 @@ export const related_person_detail_data = {
             label: "OrgCode",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -397,7 +397,7 @@ export const related_person_detail_data = {
             label: "DecPlace",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -408,7 +408,7 @@ export const related_person_detail_data = {
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
     ]
 }

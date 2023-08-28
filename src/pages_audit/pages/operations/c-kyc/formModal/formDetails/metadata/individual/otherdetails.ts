@@ -61,7 +61,7 @@ export const other_details_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 4, sm:3},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
       {
           render: {
@@ -74,7 +74,7 @@ export const other_details_meta_data = {
           _optionsKey: "turnoverOptions",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 4, sm:3},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
           // maxLength: 3,
           // showMaxLength: false,
           // FormatProps: {
@@ -102,7 +102,7 @@ export const other_details_meta_data = {
             _optionsKey: "otherIncomeOptions",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -112,7 +112,7 @@ export const other_details_meta_data = {
             label: "SourceOfIncome",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
 
 
@@ -134,7 +134,7 @@ export const other_details_meta_data = {
             label: "Funded",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
           },
         {
             render: {
@@ -145,7 +145,7 @@ export const other_details_meta_data = {
             label: "NonFunded",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
           },
         {
             render: {
@@ -156,7 +156,7 @@ export const other_details_meta_data = {
             label: "ThresholdLimit",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
           },
 
 
@@ -178,7 +178,7 @@ export const other_details_meta_data = {
             label: "ChildrenCount",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -190,7 +190,7 @@ export const other_details_meta_data = {
             _optionsKey: "HouseTypes",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -201,7 +201,7 @@ export const other_details_meta_data = {
             label: "AdultsCount",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -209,7 +209,7 @@ export const other_details_meta_data = {
             },
             name: "POLITICALLY_CONNECTED",
             label: "PoliticallyConnected",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -220,7 +220,7 @@ export const other_details_meta_data = {
             label: "EarningMembers",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -228,7 +228,7 @@ export const other_details_meta_data = {
             },
             name: "IS_BLIND",
             label: "Blind",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -238,7 +238,7 @@ export const other_details_meta_data = {
             label: "IDMark",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
 
 
@@ -260,7 +260,7 @@ export const other_details_meta_data = {
             label: "TwoWheelers",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -271,7 +271,7 @@ export const other_details_meta_data = {
             label: "FourWheelers",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -281,7 +281,7 @@ export const other_details_meta_data = {
             label: "CIBILScore",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
 
 
@@ -303,7 +303,7 @@ export const other_details_meta_data = {
             _optionsKey: "EmpStatus",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -311,7 +311,7 @@ export const other_details_meta_data = {
             },
             name: "REFERRED_BY_STAFF",
             label: "ReferredByStaff",            
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -323,7 +323,7 @@ export const other_details_meta_data = {
             _optionsKey: "eduQualiOptions",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -333,7 +333,7 @@ export const other_details_meta_data = {
             label: "CompanyName",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -343,7 +343,7 @@ export const other_details_meta_data = {
             label: "Departname",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -353,7 +353,7 @@ export const other_details_meta_data = {
             label: "CompanyAdd",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -365,7 +365,7 @@ export const other_details_meta_data = {
             placeholder: "",
             type: "text",
             format: "dd/MM/yyyy",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -377,7 +377,7 @@ export const other_details_meta_data = {
             placeholder: "",
             type: "text",
             format: "dd/MM/yyyy",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -390,7 +390,7 @@ export const other_details_meta_data = {
             type: "text",
             options: (dependentValue, formState, _, authState) => API.getEmpCompanyTypes(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "PDPrefix",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -401,7 +401,7 @@ export const other_details_meta_data = {
             label: "WorkExperienceYear",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -411,7 +411,7 @@ export const other_details_meta_data = {
             label: "Specialization",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
     ]
   }
