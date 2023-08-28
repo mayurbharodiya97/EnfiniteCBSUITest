@@ -38,6 +38,7 @@ import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import { FieldComponentGrid } from "./fieldComponentGrid";
+import { CreateDetailsRequestData } from "components/utils";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -52,15 +53,15 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
   },
   refreshiconhover: {},
 }));
-interface InsertFormDataFnType {
+interface updateAUTHDetailDataType {
   data: object;
   displayData?: object;
   endSubmit?: any;
   setFieldError?: any;
 }
-const insertFormDataFnWrapper =
+const updateAUTHDetailDataWrapperFn =
   (insertFormData) =>
-  async ({ data }: InsertFormDataFnType) => {
+  async ({ data }: updateAUTHDetailDataType) => {
     return insertFormData(data);
   };
 const DynamicFormMetadataConfig: FC<{
@@ -85,6 +86,7 @@ const DynamicFormMetadataConfig: FC<{
   const formRef = useRef<any>(null);
   const mysubdtlRef = useRef<any>({});
   const myGridRef = useRef<any>(null);
+  const [girdData, setGridData] = useState<any>([]);
   const [isFieldComponentGrid, setFieldComponentGrid] = useState(false);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
@@ -98,45 +100,106 @@ const DynamicFormMetadataConfig: FC<{
       srcd: fieldRowData?.[0]?.data?.SR_CD ?? "",
     })
   );
-
-  // const mutation = useMutation(
-  //   updateAUTHDetailDataWrapperFn(API.getDynFormPopulateData),
-  //   {
-  //     onError: (error: any) => {},
-  //     onSuccess: (data) => {},
-  //   }
-  // );
-  const mutation: any = useMutation(API.getDynFormPopulateData, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
+  const mutation: any = useMutation(API.getDynFormPopulateData);
+  const result = useMutation(API.dynamiFormMetadataConfigDML, {
+    onError: (error: any, { endSubmit }) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      endSubmit(false, errorMsg, error?.error_detail ?? "");
+      enqueueSnackbar(errorMsg, { variant: "error" });
+      onActionCancel();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
+      isDataChangedRef.current = true;
+      closeDialog();
+    },
   });
-
+  useEffect(() => {
+    if (Array.isArray(mutation.data ?? [])) {
+      setGridData(mutation.data ?? []);
+    } else {
+      setGridData([]);
+    }
+  }, [mutation.data ?? []]);
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getDynFieldListData"]);
+      queryClient.removeQueries(["getDynFormPopulateData"]);
+      queryClient.removeQueries(["dynamiFormMetadataConfigDML"]);
     };
   }, []);
 
   const onPopupYes = (rows) => {
-    // mutation.mutate({
-    //   data: rows,
-    //   formMode: "",
-    // });
+    console.log("rows", rows);
+    result.mutate(rows);
   };
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
-  const onSubmitHandler: SubmitFnType = (
+  const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
     endSubmit,
-    setFieldError
+    setFieldError,
+    actionFlag
   ) => {
     data["COMP_CD"] = authState.companyID.trim();
     data["BRANCH_CD"] = authState.user.branchCode.trim();
-
+    data["RESETFIELDONUNMOUNT"] = Boolean(data["RESETFIELDONUNMOUNT"])
+      ? "Y"
+      : "N";
     endSubmit(true);
-    mutation.mutate(data);
+    if (actionFlag === "POPULATE") {
+      mutation.mutate(data);
+    } else {
+      let { hasError, data: dataold } = await myGridRef.current?.validate();
+
+      if (hasError === true) {
+        if (dataold) {
+          setGridData(dataold);
+        }
+      } else {
+        let result = myGridRef?.current?.cleanData?.();
+        if (!Array.isArray(result)) {
+          result = [result];
+        }
+        result = result.map((item) => ({
+          ...item,
+          _isNewRow: true,
+        }));
+        let finalResult = result.filter(
+          (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
+        );
+        if (finalResult.length === 0) {
+          closeDialog();
+        } else {
+          finalResult = CreateDetailsRequestData(finalResult);
+          if (
+            finalResult?.isDeleteRow?.length === 0 &&
+            finalResult?.isNewRow?.length === 0 &&
+            finalResult?.isUpdatedRow?.length === 0
+          ) {
+            closeDialog();
+          } else {
+            isErrorFuncRef.current = {
+              data: {
+                ...data,
+                _isNewRow: formMode === "add" ? true : false,
+                DETAILS_DATA: finalResult,
+              },
+              endSubmit,
+              setFieldError,
+            };
+            setIsOpenSave(true);
+          }
+        }
+      }
+    }
   };
 
   return (
@@ -153,16 +216,17 @@ const DynamicFormMetadataConfig: FC<{
       ) : (
         <>
           <FormWrapper
-            key={`dynFormMetadataConfig`}
+            key={`dynFormMetadataConfig` + formMode}
             metaData={DynamicFormConfigMetaData as unknown as MetaDataType}
             initialValues={data as InitialValuesType}
             onSubmitHandler={onSubmitHandler}
+            displayMode={formMode === "add" ? "New" : formMode}
             formStyle={{
               background: "white",
             }}
             onFormButtonClickHandel={() => {
               let event: any = { preventDefault: () => {} };
-              formRef?.current?.handleSubmit(event, "PID_DESCRIPTION");
+              formRef?.current?.handleSubmit(event, "POPULATE");
             }}
             // onFormButtonCicular={mutation.isLoading}
             ref={formRef}
@@ -172,9 +236,9 @@ const DynamicFormMetadataConfig: FC<{
                 {formMode === "edit" ? (
                   <>
                     <GradientButton
-                      // onClick={(event) => {
-                      //   handleSubmit(event, "Save");
-                      // }}
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
                       disabled={isSubmitting}
                       //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                       color={"primary"}
@@ -194,9 +258,9 @@ const DynamicFormMetadataConfig: FC<{
                 ) : formMode === "add" ? (
                   <>
                     <GradientButton
-                      // onClick={(event) => {
-                      //   handleSubmit(event, "Save");
-                      // }}
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
                       disabled={isSubmitting}
                       //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                       color={"primary"}
@@ -242,8 +306,10 @@ const DynamicFormMetadataConfig: FC<{
               mutation?.data?.length
             }
             finalMetaData={DynamicFormConfigGridMetaData as GridMetaDataType}
-            data={mutation.data ?? []}
-            setData={() => null}
+            // data={mutation.data ?? []}
+            // setData={() => null}
+            data={girdData}
+            setData={setGridData}
             loading={mutation.isLoading}
             actions={[]}
             setAction={[]}
@@ -273,7 +339,7 @@ const DynamicFormMetadataConfig: FC<{
               onActionNo={() => onActionCancel()}
               rows={isErrorFuncRef.current?.data}
               open={isOpenSave}
-              // loading={mutation.isLoading}
+              loading={result.isLoading}
             />
           ) : null}
           {isFieldComponentGrid ? (

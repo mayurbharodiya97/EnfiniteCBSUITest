@@ -63,7 +63,7 @@ export const getGridFieldComponentData = async (reqdata) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const dynamiFormMetadataConfigDML = () => async (formData: any) => {
+export const dynamiFormMetadataConfigDML = async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOFORMCONFIGDATA",
     formData

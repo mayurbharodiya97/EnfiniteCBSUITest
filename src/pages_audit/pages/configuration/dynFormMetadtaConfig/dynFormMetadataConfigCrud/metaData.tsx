@@ -150,9 +150,7 @@ export const DynamicFormConfigMetaData = {
 
       name: "VALIDATIONRUN",
       label: "Validation Run",
-      defaultValue: "M",
-      required: true,
-      maxLength: 10,
+      // required: true,
       GridProps: {
         xs: 12,
         md: 2.5,
@@ -160,15 +158,15 @@ export const DynamicFormConfigMetaData = {
       },
       fullWidth: true,
       options: [
-        { label: "onBlur", value: "M" },
-        { label: "onChange", value: "I" },
-        { label: "all", value: "I" },
+        { label: "onBlur", value: "onBlur" },
+        { label: "onChange", value: "onChange" },
+        { label: "all", value: "all" },
       ],
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["This Field is required"] }],
-      },
-      autoComplete: "off",
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["This Field is required"] }],
+      // },
+      // autoComplete: "off",
     },
     {
       render: {
@@ -187,7 +185,7 @@ export const DynamicFormConfigMetaData = {
       render: {
         componentType: "formbutton",
       },
-      name: "PID_DESCRIPTION",
+      name: "POPULATE",
       label: "Populate",
       endsIcon: "YoutubeSearchedFor",
       rotateIcon: "scale(1.5)",
@@ -266,7 +264,6 @@ export const DynamicFormConfigGridMetaData: GridMetaDataType = {
       defaultValue: "DATA_VALUE",
       required: true,
       validation: (value, data) => {
-        console.log("value", value);
         if (!Boolean(value)) {
           return "This field is required.";
         }

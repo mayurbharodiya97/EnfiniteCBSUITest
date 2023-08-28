@@ -135,7 +135,7 @@ export const CommunMSTConfig = () => {
               >
                 <nav aria-label="main mailbox folders">
                   <List style={{ paddingTop: "0px", paddingBottom: "0px" }}>
-                    {data.map((item) => (
+                    {data?.map((item) => (
                       <ListItemData
                         key={item?.value}
                         name={item?.label}
