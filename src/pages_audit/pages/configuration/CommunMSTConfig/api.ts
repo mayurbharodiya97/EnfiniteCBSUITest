@@ -141,13 +141,33 @@ export const getMiscListData = async () => {
   }
 };
 export const getProMiscData = async ({ categoryCD }) => {
-  console.log("<<<cattt", categoryCD);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(`GETPROPMISCDATA`, {
       CATEGORY_CD: categoryCD,
     });
   if (status === "0") {
-    return data;
+    let responseData = data;
+    // if (Array.isArray(responseData)) {
+    //   responseData = responseData.map(({ DISPLAY_NM, ...other }) => {
+    //     return {
+    //       ...other,
+    //       CATEGORY_CD: DISPLAY_NM,
+    //     };
+    //   });
+    // }
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const editMiscMSTconfig = () => async (formData: any) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOMISCONFIG",
+    formData
+  );
+  if (status === "0") {
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

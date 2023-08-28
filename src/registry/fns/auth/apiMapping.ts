@@ -404,6 +404,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMISCLIST",
     packageName: "",
   },
+  DOMISCONFIG: {
+    url: "/commonMasterServiceAPI/DOMISCONFIG",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

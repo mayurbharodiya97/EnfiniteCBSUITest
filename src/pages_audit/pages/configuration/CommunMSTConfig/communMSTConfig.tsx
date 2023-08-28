@@ -5,6 +5,8 @@ import * as API from "./api";
 import { queryClient } from "cache";
 import {
   AppBar,
+  Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   Grid,
@@ -16,36 +18,36 @@ import { Box } from "@mui/system";
 import { List } from "reactstrap";
 import { ListItemData } from "components/dashboard/messageBox/messageBox";
 import { GradientButton } from "components/styledComponent/button";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import GridWrapper from "components/dataTableStatic";
-import { MiscMasteConfigGridMetaData } from "./metaData";
+import { langWiseMsgMetaData } from "./metaData";
 import { useNavigate } from "react-router-dom";
+import {
+  PopupMessageAPIWrapper,
+  PopupRequestWrapper,
+} from "components/custom/popupMessage";
+import { MasterDetailsForm } from "components/formcomponent";
+import { enqueueSnackbar } from "notistack";
 
-const actions: ActionTypes[] = [
-  {
-    actionName: "retreive",
-    actionLabel: `Retreive`,
-    multiple: false,
-    rowDoubleClick: false,
-    actionTextColor: "var(--theme-color2)",
-    actionBackground: "var(--theme-color5)",
-    alwaysAvailable: true,
-  },
-  // {
-  //   actionName: "Add",
-  //   actionLabel: `Add`,
-  //   multiple: false,
-  //   rowDoubleClick: false,
-  //   actionTextColor: "var(--theme-color2)",
-  //   actionBackground: "var(--theme-color5)",
-  //   alwaysAvailable: true,
-  // },
-];
+interface editMasterDataType {
+  data: object;
+  displayData?: object;
+  endSubmit?: any;
+  setFieldError?: any;
+  SetLoadingOWN?: any;
+}
+const editMasterFormDataFnWrapper =
+  (editMasterData) =>
+  async ({ data }: editMasterDataType) => {
+    return editMasterData(data);
+  };
 export const CommunMSTConfig = () => {
   //  const actionClasses = useStyles();
   const [open, setOpen] = useState(true);
   const [selectedRows, setSelectedRows] = useState<any>([]);
+  const [isOpenSave, setIsOpenSave] = useState<any>(false);
+  const [openAccept, setopenAccept] = useState(false);
   const navigate = useNavigate();
+  const myRef = useRef<any>(null);
+  const isErrorFuncRef = useRef<any>(null);
 
   const { data, isLoading, isFetching } = useQuery(["getMiscListData"], () =>
     API.getMiscListData()
@@ -54,12 +56,48 @@ export const CommunMSTConfig = () => {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
-  const handleRowClick = (event: any, name: string) => {
-    if (event.ctrlKey) {
-      setSelectedRows([...selectedRows, name]);
-    } else {
-      setSelectedRows([name]);
+
+  const mutation = useMutation(
+    editMasterFormDataFnWrapper(API.editMiscMSTconfig()),
+    {
+      onError: (error: any) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.error_msg ?? errorMsg;
+        }
+        if (isErrorFuncRef.current == null) {
+          enqueueSnackbar(errorMsg, {
+            variant: "error",
+          });
+        } else {
+          isErrorFuncRef.current?.endSubmit(
+            false,
+            errorMsg,
+            error?.error_detail ?? ""
+          );
+        }
+        onActionCancel();
+      },
+      onSuccess: (data) => {
+        enqueueSnackbar(data, {
+          variant: "success",
+        });
+        onActionCancel();
+        miscGridData.mutate({ categoryCD: selectedRows?.[0] });
+      },
     }
+  );
+  const onPopupYesAccept = (rows) => {
+    mutation.mutate({
+      data: { ...rows, CATEGORY_CD: selectedRows?.[0] },
+    });
+  };
+
+  const onSubmitHandler = ({ data, displayData, endSubmit, setFieldError }) => {
+    //@ts-ignore
+    endSubmit(true);
+    isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
+    setopenAccept(true);
   };
 
   useEffect(() => {
@@ -68,24 +106,28 @@ export const CommunMSTConfig = () => {
       queryClient.removeQueries(["getProMiscData"]);
     };
   }, []);
-  const setCurrentAction = useCallback(
-    (data) => {
-      if (data.name === "retreive") {
-        setOpen(true);
-      } else {
-        navigate(data?.name, {
-          state: data?.rows,
-        });
-      }
-    },
-    [navigate]
-  );
+
+  const handleRowClick = (event: any, name: string) => {
+    if (event.ctrlKey) {
+      setSelectedRows([...selectedRows, name]);
+    } else {
+      setSelectedRows([name]);
+    }
+  };
+  const AddNewRow = () => {
+    myRef.current?.addNewRow(true);
+  };
+  const onClickButton = (rows, buttonName) => {
+    setIsOpenSave(false);
+  };
+  const onActionCancel = () => {
+    setopenAccept(false);
+  };
   return (
     <>
       <Dialog
         open={open}
         //@ts-ignore
-        // TransitionComponent={Transition}
         PaperProps={{
           style: {
             width: "100%",
@@ -149,6 +191,18 @@ export const CommunMSTConfig = () => {
               </Box>
             </Grid>
           )}
+          {isOpenSave ? (
+            <PopupRequestWrapper
+              MessageTitle="Data Validation"
+              Message="Please Select One Row"
+              onClickButton={(rows, buttonName) =>
+                onClickButton(rows, buttonName)
+              }
+              buttonNames={["Ok"]}
+              rows={[]}
+              open={isOpenSave}
+            />
+          ) : null}
         </>
         <DialogActions
           // className={actionClasses.verifybutton}
@@ -157,10 +211,14 @@ export const CommunMSTConfig = () => {
           <>
             <GradientButton
               onClick={(e) => {
-                miscGridData.mutate({
-                  categoryCD: selectedRows?.[0],
-                });
-                setOpen(false);
+                if (selectedRows.length === 0) {
+                  setIsOpenSave(true);
+                } else {
+                  miscGridData.mutate({
+                    categoryCD: selectedRows?.[0],
+                  });
+                  setOpen(false);
+                }
               }}
             >
               Ok
@@ -182,20 +240,72 @@ export const CommunMSTConfig = () => {
       {miscGridData.isLoading || miscGridData.isFetching ? (
         <LoaderPaperComponent />
       ) : (
-        <GridWrapper
-          key={`miscMasterConfig`}
-          finalMetaData={MiscMasteConfigGridMetaData as GridMetaDataType}
-          data={miscGridData?.data}
-          setData={() => null}
-          // loading={mutation.isLoading}
-          actions={actions}
-          setAction={setCurrentAction}
-          headerToolbarStyle={{
-            fontSize: "1.20rem",
-          }}
-          // refetchData={() => {}}
-          // ref={myGridRef}
-        />
+        <>
+          <MasterDetailsForm
+            key={"leavesMaster"}
+            metaData={langWiseMsgMetaData}
+            ref={myRef}
+            initialData={{
+              _isNewRow: false,
+              // ...reqData[0].data,
+              DETAILS_DATA: miscGridData?.data,
+            }}
+            // displayMode={formMode}
+            isLoading={false}
+            onSubmitData={onSubmitHandler}
+            // isNewRow={true}
+            // isNewRow={formMode === "new"}
+            formStyle={{
+              background: "white",
+              // height: "20vh",
+              overflowY: "auto",
+              overflowX: "hidden",
+            }}
+            containerstyle={{ padding: "10px" }}
+          >
+            {({ isSubmitting, handleSubmit }) => {
+              return (
+                <>
+                  <Button
+                    onClick={() => setOpen(true)}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Retrieve
+                  </Button>
+                  <Button
+                    onClick={AddNewRow}
+                    disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Add Row
+                  </Button>
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
+                    color={"primary"}
+                  >
+                    Save
+                  </Button>
+                </>
+              );
+            }}
+          </MasterDetailsForm>
+          {openAccept ? (
+            <PopupMessageAPIWrapper
+              MessageTitle="Confirmation"
+              Message="Do you want to save this Request?"
+              onActionYes={(rowVal) => onPopupYesAccept(rowVal)}
+              onActionNo={() => onActionCancel()}
+              rows={isErrorFuncRef.current?.data}
+              open={openAccept}
+              loading={mutation.isLoading}
+            />
+          ) : null}
+        </>
       )}
     </>
   );
