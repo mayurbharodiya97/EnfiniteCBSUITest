@@ -68,6 +68,11 @@ export const extendFieldTypes = (
       //const result = Object.assign({}, one, others) as FieldMetaDataType;
       const result = Object.assign({}, others, one) as FieldMetaDataType;
 
+      result["FormatProps"] = {
+        ...FormatProps,
+        ...(one?.FormatProps ?? {}),
+      };
+
       if (Boolean(isCurrencyField) || Boolean(one?.isCurrencyField)) {
         let currencySymbol;
         let isCurrencyCode = one?.isCurrencyCode;
@@ -95,11 +100,13 @@ export const extendFieldTypes = (
           groupStyle = one?.FormatProps?.thousandsGroupStyle;
         }
 
-        console.log(groupStyle, "groupStyle");
-        console.log(result, "result");
         if (result["FormatProps"]) {
           result["FormatProps"]["thousandsGroupStyle"] =
             groupStyle ?? "thousand";
+        } else {
+          result["FormatProps"] = {
+            thousandsGroupStyle: groupStyle ?? "lakh",
+          };
         }
 
         let DecimalScale;
@@ -112,15 +119,10 @@ export const extendFieldTypes = (
         if (Boolean(one?.FormatProps?.decimalScale)) {
           DecimalScale = one?.FormatProps?.decimalScale;
         }
-        if (result["FormatProps"]) {
-          result["FormatProps"]["decimalScale"] = DecimalScale ?? 2;
-        }
+        // if (result["FormatProps"]) {
+        result["FormatProps"]["decimalScale"] = DecimalScale ?? 2;
+        // }
       }
-
-      result["FormatProps"] = {
-        ...FormatProps,
-        ...(one?.FormatProps ?? {}),
-      };
 
       // result["FormatProps"] = { ...FormatProps, ...(one?.FormatProps ?? {}) };
       result["label"] = lanTranslate(result["label"]);

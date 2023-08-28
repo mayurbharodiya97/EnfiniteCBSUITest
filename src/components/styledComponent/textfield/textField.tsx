@@ -35,6 +35,8 @@ const StyledTextField = withStyles({
       marginTop: "26px",
       borderRadius: 5,
       backgroundColor: "#fff",
+      paddingTop: "0",
+      paddingBottom: "0",
       "@media (max-width: 1200px)": {
         fontSize: "0.875rem",
       },

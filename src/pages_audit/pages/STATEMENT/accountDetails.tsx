@@ -134,7 +134,7 @@ const AccountDetails = () => {
   //   }
   // }, [data]);
 
-  const companyName = authState?.authState?.companyName;
+  const companyName = authState?.authState?.user?.branch;
   const generatedBy = authState?.authState?.user?.id;
   const RequestingBranchCode = authState?.authState?.user?.branchCode;
 
