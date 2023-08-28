@@ -53,7 +53,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -69,7 +69,7 @@ export const attestation_detail_meta_data = {
             // required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -84,7 +84,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -95,7 +95,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -105,7 +105,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationEmpName",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -115,7 +115,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationEmpDesignation",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -126,7 +126,7 @@ export const attestation_detail_meta_data = {
             required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -137,7 +137,7 @@ export const attestation_detail_meta_data = {
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -148,7 +148,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -159,7 +159,7 @@ export const attestation_detail_meta_data = {
             placeholder: "",
             required: true,
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -169,7 +169,7 @@ export const attestation_detail_meta_data = {
             label: "PlaceOfDeclaration",
             placeholder: "",
             type: "text",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -180,7 +180,7 @@ export const attestation_detail_meta_data = {
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs: 4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
     ]
 }

@@ -51,7 +51,7 @@ export const declaration_meta_data = {
           label: "DeclarationReceived",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 4, sm:3},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
           defaultValue: "N",
           options: [
               {label: "FOR FATCA", value: "Y"},
@@ -68,7 +68,7 @@ export const declaration_meta_data = {
         label: "DeclarationReceivedDate",
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs: 4, sm:3},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
       {
           render: {
@@ -79,7 +79,7 @@ export const declaration_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs: 4, sm:3},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
       {
         render: {
@@ -90,7 +90,7 @@ export const declaration_meta_data = {
         label: "DateOfIncorporation",
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs: 4, sm:3},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },      
       {
           render: {
@@ -100,7 +100,7 @@ export const declaration_meta_data = {
           label: "PlaceOfIncorporation",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 4, sm:3},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
       {
           render: {
@@ -110,7 +110,7 @@ export const declaration_meta_data = {
           label: "TIN",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 4, sm:3},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
       {
           render: {
@@ -122,7 +122,7 @@ export const declaration_meta_data = {
           _optionsKey: "CountriesOfIncorporation",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 4, sm:3},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
       {
           render: {
@@ -134,7 +134,7 @@ export const declaration_meta_data = {
           label: "TINIssuingCountry",
           placeholder: "",
           type: "text",
-          GridProps: {xs: 4, sm:3},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
   ]
 }

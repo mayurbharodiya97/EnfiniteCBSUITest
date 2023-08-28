@@ -27,7 +27,7 @@ const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoa
   const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
-  const [isOtherPDExpanded, setIsOtherPDExpanded] = useState(false)
+  const [isOtherPDExpanded, setIsOtherPDExpanded] = useState(true)
   const [isEDExpanded, setIsEDExpanded] = useState(false)
   const handlePDExpand = () => {
     setIsPDExpanded(!isPDExpanded)
