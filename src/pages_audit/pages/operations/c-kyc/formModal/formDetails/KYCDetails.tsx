@@ -61,11 +61,10 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
     setFieldError,
     actionFlag
    ) => {
-    setIsNextLoading(true)
+    // setIsNextLoading(true)
     console.log("qweqweqwe", data)     
     if(data) {
         setCurrentTabFormData(formData => ({...formData, "proof_of_identity": data }))
-        // setIsNextLoading(false)
         let newData = state?.formDatactx
         newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
         handleFormDataonSavectx(newData)
@@ -81,7 +80,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
     setFieldError,
     actionFlag
    ) => {
-    setIsNextLoading(true)
+    // setIsNextLoading(true)
     console.log("qweqweqwe", data)     
     if(data) {
         setCurrentTabFormData(formData => ({...formData, "proof_of_address": data }))
@@ -91,7 +90,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
         handleFormDataonSavectx(newData)
         handleColTabChangectx(2)
 
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
     }
     endSubmit(true)
    }

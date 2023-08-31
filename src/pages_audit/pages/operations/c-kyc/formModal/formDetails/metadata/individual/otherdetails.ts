@@ -52,7 +52,7 @@ export const other_details_meta_data = {
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "RANGE",
           label: "Range",
@@ -65,7 +65,7 @@ export const other_details_meta_data = {
       },
       {
           render: {
-            componentType: "select",
+            componentType: "autocomplete",
           },
           // className: "textInputFromRight",
           name: "TURNOVER",
@@ -94,7 +94,7 @@ export const other_details_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "OTHER_INCOME",
             label: "OtherIncome",
@@ -182,7 +182,7 @@ export const other_details_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "HOUSE_TYPE",
             label: "HouseType",
@@ -295,7 +295,7 @@ export const other_details_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "EMPLOYEMENT_STATUS",
             label: "EmpStatus",
@@ -315,7 +315,7 @@ export const other_details_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "EDUCATION_QUALIFICATION",
             label: "EduQualification",
@@ -364,7 +364,6 @@ export const other_details_meta_data = {
             label: "JoiningDate",
             placeholder: "",
             type: "text",
-            format: "dd/MM/yyyy",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
@@ -376,12 +375,11 @@ export const other_details_meta_data = {
             label: "RetirementDate",
             placeholder: "",
             type: "text",
-            format: "dd/MM/yyyy",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             // className: "textInputFromRight",
             name: "EMP.COMPANY_TYPE",

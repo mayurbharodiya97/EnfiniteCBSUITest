@@ -713,7 +713,7 @@ export default function FormModal({
                 }
               }} item xs>
                 
-                <TabStepper />
+              {(state?.tabsApiResctx && state?.tabsApiResctx.length>0) && <TabStepper />}
               {
                 (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((element, i) => {
                   return <TabPanel key={i} value={state?.colTabValuectx} index={i}>

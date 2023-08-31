@@ -48,24 +48,36 @@ export const related_person_detail_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: () => API.getPMISCData("CKYC_RELAT_PERS"),
             _optionsKey: "kycRelatedtype",
             name: "RELATED_PERSON_TYPE",
             label: "Type",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "REF_RELATION",
             label: "RefType",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             options: () => API.getPMISCData("REF_RELATION"),
             _optionsKey: "refRelatedType",
             placeholder: "",
@@ -101,6 +113,12 @@ export const related_person_detail_data = {
             label: "FirstName",
             placeholder: "First Name",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
@@ -112,7 +130,6 @@ export const related_person_detail_data = {
             name: "MIDDLE_NAME",
             label: "MiddleName",
             placeholder: "Middle Name",
-            required: true,
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
@@ -123,7 +140,6 @@ export const related_person_detail_data = {
             name: "LAST_NAME",
             label: "LastName",
             placeholder: "Last Name",
-            required: true,
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
@@ -186,7 +202,6 @@ export const related_person_detail_data = {
             },
             name: "DRIVING_LIC_EXP_DT",
             label: "DrivingLicExpDt",
-            format: "dd/MM/yyyy",
             // required: true,
             // placeholder: "",
             // type: "datePicker",
@@ -218,7 +233,6 @@ export const related_person_detail_data = {
             },
             name: "PASSPORT_EXP_DT",
             label: "PassportExpDt",
-            format: "dd/MM/yyyy",
             // required: true,
             // placeholder: "",
             // type: "datePicker",
@@ -278,7 +292,7 @@ export const related_person_detail_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "DOC_RECEIVED",
             label: "DocReceived",
@@ -286,12 +300,18 @@ export const related_person_detail_data = {
             _optionsKey: "kycDocReceivedType",
             placeholder: "",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: () => API.getPMISCData("CKYC_RISK_CATEG"),
             _optionsKey: "kycRiskCateg",
@@ -303,7 +323,7 @@ export const related_person_detail_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "IPV_FLAG",
             label: "IPVFlag",
@@ -315,6 +335,12 @@ export const related_person_detail_data = {
             defaultValue: "N",
             placeholder: "",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
@@ -324,7 +350,6 @@ export const related_person_detail_data = {
             },
             name: "IPV_DATE",
             label: "IPVDate",
-            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -405,7 +430,6 @@ export const related_person_detail_data = {
             },
             name: "DEC_DATE",
             label: "DecDate",
-            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},

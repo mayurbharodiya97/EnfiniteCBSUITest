@@ -51,7 +51,7 @@ const myGridRef = useRef<any>(null);
         setFieldError,
         actionFlag
     ) => {
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         // console.log("qweqweqwesdcas", data, displayData, actionFlag)     
         if(data) {
 
@@ -69,7 +69,7 @@ const myGridRef = useRef<any>(null);
             PODFormRef.current.handleSubmit(NextBtnRef.current, "save")
             // setIsNextLoading(false)
         }   
-        endSubmit(true)
+        // endSubmit(true)
     }
     const onSubmitPODHandler = (
         data: any,
@@ -90,8 +90,9 @@ const myGridRef = useRef<any>(null);
             // handleColTabChangectx(1)
             handleColTabChangectx(state?.colTabValuectx+1)
 
-            setIsNextLoading(false)
+            // setIsNextLoading(false)
         }   
+        // setIsNextLoading(false)
         endSubmit(true)
     }
     return (
@@ -172,7 +173,8 @@ const myGridRef = useRef<any>(null);
 
 
             <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                // disabled={isNextLoading}
                     onClick={(e) => {
                         NextBtnRef.current = e
                         PDFormRef.current.handleSubmit(e, "save")

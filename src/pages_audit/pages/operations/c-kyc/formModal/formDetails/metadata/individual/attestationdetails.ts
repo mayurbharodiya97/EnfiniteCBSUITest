@@ -44,20 +44,26 @@ export const attestation_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "DOC_TYPE",
             label: "TypeOfDocSubmitted",
             options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
             _optionsKey: "ckycDocTypes",
             required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: [
                 {label: "Risk Category 1", value: "riskcat1"},
@@ -73,7 +79,7 @@ export const attestation_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: [
                 {label: "YES", value: "Y"},
@@ -82,6 +88,12 @@ export const attestation_detail_meta_data = {
             name: "KYC_VERIFICATION_FLAG",
             label: "KYCVerificationFlag",
             required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -93,7 +105,6 @@ export const attestation_detail_meta_data = {
             name: "KYC_VERIFICATION_EMP_CODE",
             label: "KYCVerificationEmpCode",
             placeholder: "",
-            required: true,
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
@@ -123,7 +134,6 @@ export const attestation_detail_meta_data = {
             },
             name: "KYC_VERIFICATION_BRANCH",
             label: "KYCVerificationBranch",
-            required: true,
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -134,7 +144,6 @@ export const attestation_detail_meta_data = {
             },
             name: "KYC_VERIFICATION_DATE",
             label: "KYCVerificationDate",
-            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -146,7 +155,6 @@ export const attestation_detail_meta_data = {
             name: "ORG_CODE",
             label: "OrganizationCode",
             placeholder: "",
-            required: true,
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
@@ -157,7 +165,6 @@ export const attestation_detail_meta_data = {
             name: "ORG_NAME",
             label: "OrganizationName",
             placeholder: "",
-            required: true,
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
@@ -177,7 +184,6 @@ export const attestation_detail_meta_data = {
             },
             name: "DATE_OF_DECLARATION",
             label: "DateOfDeclaration",
-            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},

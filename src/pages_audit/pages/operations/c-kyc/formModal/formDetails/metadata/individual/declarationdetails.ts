@@ -45,7 +45,7 @@ export const declaration_meta_data = {
   fields: [
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "FATCA_DEC_RECVD",
           label: "DeclarationReceived",
@@ -64,7 +64,6 @@ export const declaration_meta_data = {
             componentType: "datePicker",
         },
         name: "FATCA_DT",
-        format: "dd/MM/yyyy",
         label: "DeclarationReceivedDate",
         // placeholder: "",
         // type: "datePicker",
@@ -85,7 +84,6 @@ export const declaration_meta_data = {
         render: {
             componentType: "datePicker",
         },
-        format: "dd/MM/yyyy",
         name: "DATE_OF_COMMENCEMENT",
         label: "DateOfIncorporation",
         // placeholder: "",
@@ -114,7 +112,7 @@ export const declaration_meta_data = {
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "COUNTRY_OF_INCORPORATION",
           label: "CountryOfIncorporation",
@@ -126,7 +124,7 @@ export const declaration_meta_data = {
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
           _optionsKey: "TINIssuingCountries",

@@ -52,6 +52,12 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
@@ -63,6 +69,12 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
@@ -72,6 +84,12 @@ export const nri_detail_meta_data = {
             name: "Visa_Issue_Date",
             label: "VisaIssueDate",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
@@ -84,6 +102,12 @@ export const nri_detail_meta_data = {
             name: "Visa_Expiry_Date",
             label: "VisaExpiryDate",
             required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
@@ -91,7 +115,7 @@ export const nri_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "Domestic_Risk",
             label: "DomesticRisk",
@@ -100,11 +124,17 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "Country_Of_Risk",
             label: "CountryOfRisk",
@@ -113,11 +143,17 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "Cross_Border_Risk",
             label: "CrossBorderRisk",
@@ -126,11 +162,17 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "Visually_Impaired",
             label: "VisuallyImpaired",
@@ -141,6 +183,13 @@ export const nri_detail_meta_data = {
                 {label: "YES", value: "Y"},
                 {label: "NO", value: "N"},
             ],
+            required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -154,7 +203,7 @@ export const nri_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: [
                 {label: "YES", value: "Y"},
@@ -162,13 +211,20 @@ export const nri_detail_meta_data = {
             ],
             name: "Customer_Evaluation_Required",
             label: "CustomerEvaluationRequired",
+            required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: (dependentValue, formState, _, authState) => API.getRelationshipManagerOptions(authState?.companyID),          
             _optionsKey: "RelManager",  
