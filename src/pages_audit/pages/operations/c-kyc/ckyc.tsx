@@ -230,7 +230,7 @@ function TabPanel(props: TabPanelProps) {
 export const Ckyc = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx, handleCustCategoryRes} = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx, handleCustCategoryRes, handleFormModalOpenOnEditctx} = useContext(CkycContext);
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
@@ -281,10 +281,6 @@ export const Ckyc = () => {
     })
   )
 
-  const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
-    ["getPMISCData", {entityType, categoryValue, constitutionValue}],
-    () => API.getPMISCData("CKYC_ACCT_TYPE")
-  );
 
   const mutation: any = useMutation(API.getRetrieveData, {
     onSuccess: (data) => {},
@@ -442,9 +438,8 @@ useEffect(() => {
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "view-detail") {
-        setComponentToShow("ViewDetail");
-        setAcctOpen(true);
-        setRowsData(data?.rows);
+        refetch()
+        handleFormModalOpenOnEditctx(data?.rows)
       } else if (data.name === "dependencies") {
         setComponentToShow("Dependencies");
         setAcctOpen(true);
@@ -676,7 +671,7 @@ useEffect(() => {
         // setConstitutionValue={setConstitutionValue}
         // accTypeValue={accTypeValue}
         // setAccTypeValue={setAccTypeValue}
-        AccTypeOptions={AccTypeOptions}
+        // AccTypeOptions={AccTypeOptions}
       />
     </React.Fragment>
   );

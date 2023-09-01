@@ -183,7 +183,7 @@ export default function FormModal({
   // categoryValue, setCategoryValue, 
   // constitutionValue, setConstitutionValue, 
   // accTypeValue, setAccTypeValue, 
-  AccTypeOptions
+  // AccTypeOptions
 }) {
   const {state, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal} = useContext(CkycContext);
   const { t } = useTranslation();
@@ -191,6 +191,14 @@ export default function FormModal({
   const authController = useContext(AuthContext);
   const appBarClasses = useStyles();
   // const [customerCategories, setCustomerCategories] = useState([])
+  const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
+
+
+  const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
+    ["getPMISCData", {}],
+    () => API.getPMISCData("CKYC_ACCT_TYPE")
+  );
+
 
   const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
     ["getTabsDetail", {
@@ -561,18 +569,28 @@ export default function FormModal({
                   </Grid>
                   <Grid item xs={12} sm={6} md>
                     <Autocomplete sx={{width: "100%", minWidth: 350}} 
-                      disablePortal
+                      // disablePortal
                       id="cust-categories"
+                      value={state?.categConstitutionValuectx || null}
+                      inputValue={categConstitutionIPValue}
                       options={state?.customerCategoriesctx ?? []}
-                      onChange={(e,value,r,d) => handleCategoryChangectx(e, value)}
+                      onChange={(e,value:any,r,d) => {
+                        handleCategoryChangectx(e, value)
+                      }}
+                      onInputChange={(e, newInputValue) => {
+                        setCategConstitutionIPValue(newInputValue)
+                      }}
                       getOptionLabel={(option:any) => `${option?.label} - ${option?.CONSTITUTION_NAME}`}
+                      isOptionEqualToValue={(option, value) => {
+                        return option.value === value.value;
+                      }}
                       renderInput={(params) => (
                         <TextField {...params} 
-                          autoFocus={true}
                           size="small" 
                           label="Category - Constitution"
                           InputProps={{
                             ...params.InputProps,
+                            autoFocus: true,
                             startAdornment: (
                               <>
                                 <InputAdornment position='start'>
