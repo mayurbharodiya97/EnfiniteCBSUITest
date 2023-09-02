@@ -1,1 +1,1 @@
-export { CommunMSTConfig as default } from "./communMSTConfig";
+export { CommonMSTConfig as default } from "./communMSTConfig";
