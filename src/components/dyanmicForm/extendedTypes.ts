@@ -416,13 +416,18 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
   },
   accountCode: {
     render: {
-      componentType: "textField",
+      componentType: "numberFormat",
     },
     label: "Account Number",
     name: "ACCT_CD",
+    placeholder: "Enter account number",
     required: true,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
+    setValueOnDependentFieldsChange: (dependentFields) => {
+      return "";
+    },
+
     schemaValidation: {
       type: "string",
       rules: [
@@ -437,11 +442,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       xs: 12,
       md: 4,
       sm: 4,
+      lg: 4,
+      xl: 4,
     },
     FormatProps: {
       // format: "###########",
       // allowNegative: false,
-      // allowLeadingZeros: true,
+      allowLeadingZeros: true,
       // isNumericString: true,
     },
   },
@@ -508,7 +515,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       componentType: "textField",
     },
     name: "FULL_ACCT_NO",
-    label: "fullAccountNumber",
+    label: "Full Account Number",
     postValidationSetCrossFieldValues: "retrieveStatementDtlFullAcctNo",
     schemaValidation: {
       type: "string",
@@ -516,8 +523,10 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     GridProps: {
       xs: 12,
-      md: 6,
-      sm: 6,
+      md: 12,
+      sm: 12,
+      lg: 12,
+      xl: 12,
     },
   },
   branchCode: {

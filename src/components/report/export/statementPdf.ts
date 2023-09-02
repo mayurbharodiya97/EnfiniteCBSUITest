@@ -3,7 +3,13 @@ import "jspdf-autotable";
 import ProjectLogo from "assets/images/easy_bankcore_Logo.png";
 import { format } from "date-fns/esm";
 
-const exportToPDF = (data, companyName, generatedBy, RequestingBranchCode) => {
+const exportToPDF = (
+  data,
+  companyName,
+  generatedBy,
+  RequestingBranchCode,
+  barnchDtl
+) => {
   const doc: any = new jsPDF({
     orientation: "portrait",
     unit: "mm",
@@ -39,22 +45,38 @@ const exportToPDF = (data, companyName, generatedBy, RequestingBranchCode) => {
   doc.setFontSize(12);
   const bankNameX = logoX + logoWidth + 30;
   const bankNameY = logoY + 7;
-  const bankName = doc.splitTextToSize(companyName, pageWidth);
+  const bankName = doc.splitTextToSize(barnchDtl?.branchName, pageWidth);
   doc.text(bankName, bankNameX, bankNameY);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  doc.setFontSize(6);
   const bankAddressX = bankNameX;
   const bankAddressY = bankNameY + 6;
-  doc.text("123 Bank Street, City", bankAddressX, bankAddressY);
+  doc.text(barnchDtl?.branchAddress, bankAddressX, bankAddressY, {
+    maxWidth: 100,
+  });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6);
+  const bankPhoneNumberX = bankAddressX;
+  const bankPhoneNumberY = bankAddressY + 6;
+  doc.text(barnchDtl?.branchPhoneNumber, bankPhoneNumberX, bankPhoneNumberY, {
+    maxWidth: 100,
+  });
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(6);
+  const ifscCodeX = bankPhoneNumberX;
+  const ifscCodeY = bankPhoneNumberY + 4;
+  doc.text(`IFSC CODE : ${barnchDtl?.ifscCode}`, ifscCodeX, ifscCodeY, {
+    maxWidth: 100,
+  });
 
   // Draw a horizontal line
-  const lineY = bankAddressY + 8;
+  const lineY = ifscCodeY + 8;
   const lineWidth = pageWidth;
   const lineX = margin;
   doc.setLineWidth(0.5);
   doc.line(lineX, lineY, lineX + lineWidth, lineY);
 
-  startY += 25;
+  startY += 35;
 
   for (const section of data) {
     if (section.DISPLAY_TYPE === "simple") {

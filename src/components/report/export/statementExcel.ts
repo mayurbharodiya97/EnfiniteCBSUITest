@@ -7,6 +7,7 @@ export const ExcelForStatementExport = async ({
   companyName,
   generatedBy,
   RequestingBranchCode,
+  barnchDtl,
 }) => {
   const wb = await XlsxPopulate.fromBlankAsync();
   const sheet = wb.sheet("Sheet1");
@@ -21,20 +22,50 @@ export const ExcelForStatementExport = async ({
   cellF.style("wrapText", true);
   cellA.style("wrapText", true);
   cellE.style("wrapText", true);
-  // Set the company name and merge the cells
+
+  // Set the branch name and merge the cells
   const companyNameCell = sheet.cell(`A${cellIndex}`);
-  companyNameCell.value(companyName);
+  companyNameCell.value(barnchDtl?.branchName);
+
   const headerBackgroundColor = "98FB98";
   const headerBackgroundColorTwo = "B4C6E7";
   const headerBackgroundColorThree = "DDDDDD";
   companyNameCell.style("fill", headerBackgroundColor);
   companyNameCell.style({ horizontalAlignment: "center", bold: true });
-  companyNameCell.style({ verticalAlignment: "middle" }); // Set vertical alignment to center
+  companyNameCell.style({ verticalAlignment: "middle" });
+  sheet.range(`A${cellIndex}:H${cellIndex}`).merged(true);
+  sheet.range(`A${cellIndex}:H${cellIndex + 1}`).merged(true);
+  // Set vertical alignment to center
+  cellIndex += 1;
+  // Set the branch address address and merge the cells
+  const branchAddress = sheet.cell(`A${cellIndex}`);
+  branchAddress.value(barnchDtl?.branchAddress);
 
+  branchAddress.style("fill", headerBackgroundColor);
+  branchAddress.style({ horizontalAlignment: "center", bold: true });
+  branchAddress.style({ verticalAlignment: "middle" });
+  sheet.range(`A${cellIndex}:H${cellIndex}`).merged(true);
+  sheet.range(`A${cellIndex}:H${cellIndex + 1}`).merged(true);
+  cellIndex += 1;
+  // Set the branch phone number name and merge the cells
+  const branchPhoneNumber = sheet.cell(`A${cellIndex}`);
+  branchPhoneNumber.value(barnchDtl?.branchPhoneNumber);
+  branchPhoneNumber.style("fill", headerBackgroundColor);
+  branchPhoneNumber.style({ horizontalAlignment: "center", bold: true });
+  branchPhoneNumber.style({ verticalAlignment: "middle" });
+  sheet.range(`A${cellIndex}:H${cellIndex}`).merged(true);
+  sheet.range(`A${cellIndex}:H${cellIndex + 1}`).merged(true);
+  cellIndex += 1;
+  // Set the branch ifsc code name and merge the cells
+  const branchIfscCode = sheet.cell(`A${cellIndex}`);
+  branchIfscCode.value(`IFSC CODE : ${barnchDtl?.ifscCode}`);
+  branchIfscCode.style("fill", headerBackgroundColor);
+  branchIfscCode.style({ horizontalAlignment: "center", bold: true });
+  branchIfscCode.style({ verticalAlignment: "middle" });
   sheet.range(`A${cellIndex}:H${cellIndex}`).merged(true);
   sheet.range(`A${cellIndex}:H${cellIndex + 1}`).merged(true); // Merge the next row as well
 
-  cellIndex += 2;
+  cellIndex += 1;
 
   for (const section of data) {
     // Set the header for the section

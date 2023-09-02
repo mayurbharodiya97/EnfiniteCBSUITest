@@ -53,7 +53,7 @@ export const FilterFormComponents = ({
   isDisplayOnly,
   onAction,
   loading,
-  propStyles
+  propStyles,
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();

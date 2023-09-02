@@ -51,7 +51,7 @@ export interface FieldMetaData<T> {
   isReadOnly?: typeof shouldExcludeFnType | CustomRuleType | Boolean | string;
   onFormButtonClickHandel?: any;
   postValidationSetCrossFieldValues?: any;
-  para?: string;
+  acctFieldPara?: string;
   FormatProps?: any;
   isCurrencyCode?: boolean;
   StartAdornment?: string;

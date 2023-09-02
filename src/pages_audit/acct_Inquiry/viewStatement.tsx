@@ -73,7 +73,6 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
   } else if (screenFlag === "ACCT_INQ") {
     finalMetadata = PassbookStatementInq as MetaDataType;
   }
-  console.log("<<acctInqData", acctInqData);
   const renderResult = (
     <Dialog open={open} maxWidth={"sm"}>
       {screenFlag === "ACCT_INQ" && acctInqData.isLoading ? (
