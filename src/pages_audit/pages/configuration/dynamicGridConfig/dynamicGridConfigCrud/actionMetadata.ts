@@ -1,4 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
+import { getProMiscData } from "../api";
 export const ActionsMetaData: any = {
   form: {
     refID: 1667,
@@ -14,8 +15,8 @@ export const ActionsMetaData: any = {
       gridConfig: {
         item: {
           xs: 12,
-          sm: 4,
-          md: 4,
+          sm: 6,
+          md: 6,
         },
         container: {
           direction: "row",
@@ -49,11 +50,7 @@ export const ActionsMetaData: any = {
       name: "actionsDetails",
       removeRowFn: "deleteFormArrayFieldData",
       arrayFieldIDName: "DOC_CD",
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
           render: {
@@ -62,43 +59,24 @@ export const ActionsMetaData: any = {
           name: "SR_CD",
           label: "sr.cd",
           placeholder: "",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
             componentType: "select",
           },
-          name: "ACTION_CD",
-          label: "Actions",
-          options: [
-            { label: "Add", value: "Add" },
-            { label: "View Detail", value: "View-Detail" },
-            { label: "Delete", value: "Delete" },
-          ],
-          postValidationSetCrossFieldValues: "getActionDetailsData",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
-        },
-        {
-          render: {
-            componentType: "textField",
-          },
           name: "ACTIONNAME",
           label: "Action Name",
-          placeholder: "Action Name",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          options: [
+            { label: "add", value: "Add" },
+            { label: "view-detail", value: "View-Detail" },
+            { label: "delete", value: "Delete" },
+          ],
+          _optionsKey: "GetActionName",
+          postValidationSetCrossFieldValues: "getActionDetailsData",
+          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
         },
+
         {
           render: {
             componentType: "textField",
@@ -106,25 +84,40 @@ export const ActionsMetaData: any = {
           name: "ACTIONLABEL",
           label: "Action Label",
           placeholder: "Action Label",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
         },
 
         {
           render: {
-            componentType: "textField",
+            componentType: "autocomplete",
+          },
+          name: "ICON_TYPE",
+          label: "Icon Type",
+          defaultValue: "S",
+          options: [
+            { label: "Action Icon", value: "A" },
+            { label: "Starts Icon", value: "S" },
+            { label: "Ends Icon", value: "E" },
+          ],
+
+          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "autocomplete",
           },
           name: "ACTIONICON",
           label: "Action Icon",
-          placeholder: "Action Icon",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
+          options: () => getProMiscData("menu_icon"),
+          _optionsKey: "getproMiscDataMenuIcon",
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Action Icon is required."] },
+              { name: "ACTIONICON", params: ["Please enter Action Icon."] },
+            ],
           },
+          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -133,11 +126,7 @@ export const ActionsMetaData: any = {
           name: "ROWDOUBLECLICK",
           label: "Row Double Click",
           defaultValue: true,
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -146,11 +135,7 @@ export const ActionsMetaData: any = {
           name: "ALWAYSAVAILABLE",
           label: "Always Available",
           defaultValue: true,
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -159,11 +144,7 @@ export const ActionsMetaData: any = {
           name: "ISNODATATHENSHOW",
           label: "Is Nodata Then Show",
           defaultValue: true,
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -172,11 +153,7 @@ export const ActionsMetaData: any = {
           name: "MULTIPLE",
           label: "Multiple",
           defaultValue: true,
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -185,11 +162,7 @@ export const ActionsMetaData: any = {
           name: "SHOULDEXCLUDE",
           label: "Should Exclude",
           placeholder: "Should Exclude",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -198,68 +171,27 @@ export const ActionsMetaData: any = {
           name: "ONENTERSUBMIT",
           label: "OnEnter Submit",
           placeholder: "OnEnter Submit",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
-        },
-
-        {
-          render: {
-            componentType: "textField",
-          },
-          name: "STARTSICON",
-          label: "Starts Icon",
-          placeholder: "Starts Icon",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
-            componentType: "textField",
-          },
-          name: "ENDSICON",
-          label: "Ends Icon",
-          placeholder: "Ends Icon",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
-          },
-        },
-        {
-          render: {
-            componentType: "select",
+            componentType: "autocomplete",
           },
           name: "FORM_METADATA_SR_CD",
           label: "Metadata List",
           options: "getMetadataList",
           _optionsKey: "getMetadataList",
           requestProps: "DOC_CD",
-          GridProps: {
-            xs: 12,
-            md: 3,
-            sm: 3,
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+          runValidationOnDependentFieldsChange: true,
+          dependentFields: ["ACTIONNAME"],
+          shouldExclude: (val1, dependent) => {
+            if (dependent["actionsDetails.ACTIONNAME"]?.value === "Delete") {
+              return true;
+            }
+            return false;
           },
         },
-
-        // {
-        //   render: {
-        //     componentType: "textField",
-        //   },
-        //   name: "ROTATEICON",
-        //   label: "Rotate Icon",
-        //   placeholder: "Rotate Icon",
-        //   GridProps: {
-        //     xs: 12,
-        //     md: 3,
-        //     sm: 3,
-        //   },
-        // },
       ],
     },
   ],

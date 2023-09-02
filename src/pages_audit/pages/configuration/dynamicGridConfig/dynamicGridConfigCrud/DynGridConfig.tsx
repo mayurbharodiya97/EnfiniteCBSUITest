@@ -111,19 +111,30 @@ const DynamicGridConfig: FC<{
     error: { error_msg: "", error_detail: "" },
   });
 
-  const { data, isLoading, isError, error } = useQuery<any, any>(
-    ["getDynamicGridConfigData"],
-    () =>
-      API.getDynamicGridConfigData({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        docCD,
-      })
+  const {
+    data: gridData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<any, any>(["getDynamicGridConfigData"], () =>
+    API.getDynamicGridConfigData({
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      docCD,
+    })
   );
+
+  const pageSizesArray = reqData?.[0]?.data?.PAGE_SIZES.split(",");
+  const updatedReqData = {
+    ...reqData?.[0]?.data,
+    PAGE_SIZES: pageSizesArray,
+  };
 
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getDynamicGridConfigData"]);
+      queryClient.removeQueries(["dynamicGridConfigDML"]);
+      queryClient.removeQueries(["verifyDynGridSqlSyntax"]);
     };
   }, []);
 
@@ -167,15 +178,22 @@ const DynamicGridConfig: FC<{
       });
     },
   });
+
   const onPopupYes = (rows) => {
+    const pageSizesString = rows?.PAGE_SIZES?.join(",");
+    const modifiedRows = {
+      ...rows,
+      PAGE_SIZES: pageSizesString,
+    };
     mutation.mutate({
-      data: rows,
+      data: modifiedRows,
       formMode: "",
     });
   };
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
+
   const onSubmitHandler = ({
     data,
     resultValueObj,
@@ -185,18 +203,34 @@ const DynamicGridConfig: FC<{
     actionFlag,
   }) => {
     //@ts-ignore
+
     endSubmit(true);
+
     if (!mySqlSyntaxRef.current) {
       setLocalError(true, "Please Verify Query..", "");
       endSubmit(true, "Please Verify Query..");
       return;
     }
+    const gridItem = gridData[0];
+
+    const test = Object.entries(gridData[0]).map((key, val) => {
+      return key;
+    });
+    console.log("t", gridData?.[0]);
+
+    // if (
+    //   !(data?.ROWID_COLUMN === data.DETAILS_DATA?.isNewRow?.[0]) ||
+    //   !gridData?.[0]
+    // ) {
+    //   setLocalError(true, "Please enter Correct rowid column..", "");
+    //   endSubmit(true, "Please enter rowid column");
+    //   return;
+    // }
     setLocalLoading(true);
     const SetLoadingOWN = (isLoading, error_msg = "", error_detail = "") => {
       setLocalLoading(isLoading);
       endSubmit(isLoading, error_msg, error_detail);
     };
-
     data.PARAMETER = {
       DETAILS_DATA: {
         isNewRow: myparameterDataRef.current,
@@ -221,7 +255,6 @@ const DynamicGridConfig: FC<{
       : "N";
     data["ISDOWNLOAD"] = Boolean(data["ISDOWNLOAD"]) ? "Y" : "N";
     data["GRID_LABEL"] = Boolean(data["GRID_LABEL"]) ? "Y" : "N";
-    data["ROWID_COLUMN"] = Boolean(data["ROWID_COLUMN"]) ? "Y" : "N";
 
     if (data["_OLDROWVALUE"]) {
       const oldRowValue = data["_OLDROWVALUE"];
@@ -258,6 +291,7 @@ const DynamicGridConfig: FC<{
     } else {
       data["SQL_ANSI_SYNTAX"] = myoldSqlSyntaxRef.current;
     }
+
     if (
       data["_UPDATEDCOLUMNS"].length > 0 ||
       data.DETAILS_DATA["isUpdatedRow"].length > 0
@@ -268,6 +302,7 @@ const DynamicGridConfig: FC<{
         endSubmit,
         formMode,
       };
+
       setIsOpenSave(true);
     }
   };
@@ -293,10 +328,10 @@ const DynamicGridConfig: FC<{
 
   useEffect(() => {
     setSqlSyntax(reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "");
-    myparameterDataRef.current = data?.[0]?.PARA_DETAILS ?? [];
+    myparameterDataRef.current = gridData?.[0]?.PARA_DETAILS ?? [];
     myoldSqlSyntaxRef.current = reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "";
     mynewSqlSyntaxRef.current = reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "";
-  }, [data]);
+  }, [gridData]);
 
   return (
     <>
@@ -548,9 +583,10 @@ const DynamicGridConfig: FC<{
               ref={myRef}
               initialData={{
                 _isNewRow: formMode === "add" ? true : false,
-                // ...(data?.[0] ?? {}),
-                ...reqData?.[0]?.data,
-                DETAILS_DATA: data,
+                ...updatedReqData,
+                DETAILS_DATA: gridData,
+                // ...reqData?.[0]?.data,
+                // DETAILS_DATA: data,
               }}
               // initialData={{ _isNewRow: true, DETAILS_DATA: [] }}
               displayMode={formMode === "add" ? "New" : formMode}
@@ -600,7 +636,7 @@ const DynamicGridConfig: FC<{
                 id="outlined-multiline-static"
                 label="SQL ANSI Query Syntax"
                 multiline
-                rows={verifySql.isError ? 21 : 24}
+                rows={verifySql.isError ? 18 : 20}
                 // minRows={verifySql.isError ? 21 : 24}
                 value={sqlSyntax}
                 variant="outlined"
@@ -622,7 +658,10 @@ const DynamicGridConfig: FC<{
                 // }}
               />
             </Grid>
-            <Grid container style={{ padding: "20px", placeContent: "center" }}>
+            <Grid
+              container
+              style={{ paddingTop: "07px", placeContent: "center" }}
+            >
               <Grid item xs={12} sm={12} md={3}>
                 <GradientButton
                   disabled={verifySql.isLoading}
@@ -644,6 +683,7 @@ const DynamicGridConfig: FC<{
               </Grid>
               <Grid item xs={12} sm={12} md={3}>
                 <GradientButton
+                  // style={{ marginLeft: "20px" }}
                   onClick={() => {
                     if (!Boolean(sqlSyntax)) {
                       enqueueSnackbar("Please Enter SQL Syntax.", {
@@ -678,17 +718,6 @@ const DynamicGridConfig: FC<{
           // reqDataRef={mysubdtlRef}
         />
       ) : null}
-      {/* {isFormMetadata ? (
-        <DynamicFormMetadataWrapper
-          isOpen={isFormMetadata}
-          formView={formMode}
-          onClose={() => {
-            setFormMetadata(false);
-          }}
-
-          // reqDataRef={mysubdtlRef}
-        />
-      ) : null} */}
       {isOpenRerieval ? (
         <RetrievalParametersGrid
           isOpen={isOpenRerieval}
@@ -726,6 +755,7 @@ export const DynamicGridConfigWrapper = ({
       PaperProps={{
         style: {
           width: "100%",
+          overflow: "hidden",
         },
       }}
       maxWidth="lg"

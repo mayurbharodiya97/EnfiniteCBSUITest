@@ -77,3 +77,20 @@ export const getDynGridData = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getDynActionButtonData = async ({
+  DOC_CD,
+  COMP_CD,
+  BRANCH_CD,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETGRIDACTIONLST", {
+      DOC_CD: DOC_CD,
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

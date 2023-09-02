@@ -1,12 +1,5 @@
 import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
-import { cloneDeep } from "lodash-es";
-// import * as API from "./api";
-import {
-  DynamicFormConfigGridMetaData,
-  DynamicFormConfigMetaData,
-} from "./metaData";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import {
   FC,
   useCallback,
@@ -15,18 +8,9 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  AppBar,
-  Grid,
-  Toolbar,
-  Typography,
-  Theme,
-  Dialog,
-} from "@mui/material";
+import { Theme, Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
-import { MasterDetailsForm } from "components/formcomponent";
 import { makeStyles } from "@mui/styles";
-import { useStyles } from "pages_audit/appBar/style";
 import { useLocation } from "react-router-dom";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
@@ -34,11 +18,17 @@ import * as API from "../api";
 import { queryClient } from "cache";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import GridWrapper from "components/dataTableStatic";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import { FieldComponentGrid } from "./fieldComponentGrid";
-import { CreateDetailsRequestData } from "components/utils";
+import { CreateDetailsRequestData, utilFunction } from "components/utils";
+import {
+  DynamicFormConfigGridMetaDataEdit,
+  DynamicFormConfigGridMetaDataView,
+  DynamicFormConfigGridMetaDataAdd,
+  DynamicFormConfigMetaData,
+} from "./metaData";
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
     paddingLeft: theme.spacing(1.5),
@@ -75,11 +65,12 @@ const DynamicFormMetadataConfig: FC<{
   defaultView = "view",
   fieldRowData,
 }) => {
+  const myRef = useRef<any>(null);
   const headerClasses = useTypeStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const myRef = useRef<any>(null);
-  const [formName, setformName] = useState("");
   const [formMode, setFormMode] = useState(defaultView);
+  const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
+  const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
   const { authState } = useContext(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
@@ -87,6 +78,7 @@ const DynamicFormMetadataConfig: FC<{
   const mysubdtlRef = useRef<any>({});
   const myGridRef = useRef<any>(null);
   const [girdData, setGridData] = useState<any>([]);
+  const [populateClicked, setPopulateClicked] = useState(false);
   const [isFieldComponentGrid, setFieldComponentGrid] = useState(false);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
@@ -100,6 +92,7 @@ const DynamicFormMetadataConfig: FC<{
       srcd: fieldRowData?.[0]?.data?.SR_CD ?? "",
     })
   );
+
   const mutation: any = useMutation(API.getDynFormPopulateData);
   const result = useMutation(API.dynamiFormMetadataConfigDML, {
     onError: (error: any, { endSubmit }) => {
@@ -120,12 +113,25 @@ const DynamicFormMetadataConfig: FC<{
     },
   });
   useEffect(() => {
-    if (Array.isArray(mutation.data ?? [])) {
-      setGridData(mutation.data ?? []);
-    } else {
-      setGridData([]);
-    }
-  }, [mutation.data ?? []]);
+    const gridDataToUpdate = populateClicked ? mutation.data : data;
+    setGridData(Array.isArray(gridDataToUpdate) ? gridDataToUpdate : []);
+  }, [data, mutation.data, populateClicked]);
+  // useEffect(() => {
+  //   if (populateClicked) {
+  //     if (Array.isArray(mutation.data ?? [])) {
+  //       setGridData(mutation.data ?? []);
+  //     } else {
+  //       setGridData([]);
+  //     }
+  //   } else {
+  //     if (Array.isArray(data ?? [])) {
+  //       setGridData(data ?? []);
+  //     } else {
+  //       setGridData([]);
+  //     }
+  //   }
+  // }, [data, mutation.data, populateClicked]);
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getDynFieldListData"]);
@@ -135,7 +141,6 @@ const DynamicFormMetadataConfig: FC<{
   }, []);
 
   const onPopupYes = (rows) => {
-    console.log("rows", rows);
     result.mutate(rows);
   };
   const onActionCancel = () => {
@@ -148,13 +153,20 @@ const DynamicFormMetadataConfig: FC<{
     setFieldError,
     actionFlag
   ) => {
-    data["COMP_CD"] = authState.companyID.trim();
-    data["BRANCH_CD"] = authState.user.branchCode.trim();
+    delete data["POPULATE"];
     data["RESETFIELDONUNMOUNT"] = Boolean(data["RESETFIELDONUNMOUNT"])
       ? "Y"
       : "N";
     endSubmit(true);
+    let upd = utilFunction.transformDetailsData(
+      data,
+      fieldRowData?.[0]?.data ?? {}
+    );
+
     if (actionFlag === "POPULATE") {
+      data["COMP_CD"] = authState.companyID.trim();
+      data["BRANCH_CD"] = authState.user.branchCode.trim();
+      setPopulateClicked(true);
       mutation.mutate(data);
     } else {
       let { hasError, data: dataold } = await myGridRef.current?.validate();
@@ -170,10 +182,15 @@ const DynamicFormMetadataConfig: FC<{
         }
         result = result.map((item) => ({
           ...item,
-          _isNewRow: true,
+          _isNewRow: formMode === "add" ? true : false,
         }));
         let finalResult = result.filter(
-          (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
+          (one) =>
+            !(
+              Boolean(one?._hidden) &&
+              Boolean(one?._isNewRow) &&
+              Boolean(one?._isTouchedCol)
+            )
         );
         if (finalResult.length === 0) {
           closeDialog();
@@ -189,12 +206,17 @@ const DynamicFormMetadataConfig: FC<{
             isErrorFuncRef.current = {
               data: {
                 ...data,
+                ...upd,
+                SR_CD: fieldRowData?.[0]?.data?.SR_CD ?? "",
                 _isNewRow: formMode === "add" ? true : false,
                 DETAILS_DATA: finalResult,
+                COMP_CD: authState.companyID,
+                BRANCH_CD: authState.user.branchCode,
               },
               endSubmit,
               setFieldError,
             };
+
             setIsOpenSave(true);
           }
         }
@@ -218,9 +240,9 @@ const DynamicFormMetadataConfig: FC<{
           <FormWrapper
             key={`dynFormMetadataConfig` + formMode}
             metaData={DynamicFormConfigMetaData as unknown as MetaDataType}
-            initialValues={data as InitialValuesType}
+            initialValues={fieldRowData?.[0]?.data as InitialValuesType}
             onSubmitHandler={onSubmitHandler}
-            displayMode={formMode === "add" ? "New" : formMode}
+            displayMode={formMode}
             formStyle={{
               background: "white",
             }}
@@ -305,9 +327,19 @@ const DynamicFormMetadataConfig: FC<{
               formMode +
               mutation?.data?.length
             }
-            finalMetaData={DynamicFormConfigGridMetaData as GridMetaDataType}
-            // data={mutation.data ?? []}
-            // setData={() => null}
+            finalMetaData={
+              formMode === "edit"
+                ? DynamicFormConfigGridMetaDataEdit
+                : formMode === "add"
+                ? DynamicFormConfigGridMetaDataAdd
+                : DynamicFormConfigGridMetaDataView
+            }
+            // finalMetaData={
+            //   formMode === "view"
+            //     ? DynamicFormConfigGridMetaDataView
+            //     : (DynamicFormConfigGridMetaDataEdit as GridMetaDataType)
+            // }
+
             data={girdData}
             setData={setGridData}
             loading={mutation.isLoading}
@@ -315,13 +347,13 @@ const DynamicFormMetadataConfig: FC<{
             setAction={[]}
             refetchData={() => refetch()}
             onClickActionEvent={(index, id, data) => {
-              console.log("mysubdtlRef.current", data, index, id);
               mysubdtlRef.current = {
                 COMP_CD: data?.COMP_CD,
                 BRANCH_CD: data?.BRANCH_CD,
                 DOC_CD: data?.DOC_CD.trim(),
                 LINE_ID: data?.LINE_ID,
                 COMPONENT_TYPE: data?.COMPONENT_TYPE,
+                FIELD_NAME: data?.FIELD_NAME,
                 SR_CD: data?.SR_CD,
               };
 
