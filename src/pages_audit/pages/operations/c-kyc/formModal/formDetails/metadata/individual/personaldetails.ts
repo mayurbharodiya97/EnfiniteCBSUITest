@@ -64,10 +64,31 @@ export const personal_detail_prefix_data = {
             name: "PREFIX_CD",
             label: "Prefix",
             // placeholder: "Prefix",
-            options: () => API.getPMISCData("Salutation"),
+            options: () => API.GetDynamicSalutationData("Salutation"),
             _optionsKey: "PDPrefix",
             type: "text",
-            GridProps: {xs:6, sm:2, md: 1.5, lg: 1, xl: 0.5 },
+            GridProps: {xs:12, sm:2.5, md: 2.5, lg: 1.5, xl: 1 },
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            postValidationSetCrossFieldValues: (
+                field,
+                __,
+                ___,
+                dependentFieldsValues
+              ) => {
+                if(field.value) {
+                    return {
+                        GENDER: {value: field?.optionData[0]?.GENDER ?? "" },
+                        MARITAL_STATUS: {value: field?.optionData[0]?.MARITIAL_STATUS ?? ""},
+                    }
+                }
+                return {}
+              },
+              runPostValidationHookAlways: true,
             // GridProps: {xs:12, sm:2, md: 1, lg: 1, xl:0.5},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
@@ -91,6 +112,13 @@ export const personal_detail_prefix_data = {
             type: "text",
             // GridProps: {xs:4, sm:2},
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            }
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -132,6 +160,50 @@ export const personal_detail_prefix_data = {
             type: "text",
             GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
         },
+        {
+            render: {
+                componentType: "autocomplete",
+                sequence: 7,
+            },
+            options: [
+                {label: "MALE", value: "M"},
+                {label: "FEMALE", value: "F"},
+                {label: "OTHER", value: "O"},
+                {label: "TRANSGENDER", value: "T"},
+            ],
+            name: "GENDER",
+            label: "Gender",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
+        },
+        {
+            render: {
+                componentType: "autocomplete",
+                sequence: 7,
+            },
+            name: "MARITAL_STATUS",
+            label: "MaritalStatus",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
+            placeholder: "",
+            options: () => API.getPMISCData("Marital"),
+            _optionsKey: "maritalStatus",
+            type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
+        },
 
 
         {
@@ -145,7 +217,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 9,
             },
             name: "MAIDEN_PREFIX_CD",
@@ -155,7 +227,7 @@ export const personal_detail_prefix_data = {
             defaultValue: "Mrs",
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:6, sm:2, md: 1.5, lg: 1, xl: 0.5 },            
+            GridProps: {xs:12, sm:2.5, md: 2.5, lg: 1.5, xl: 1},            
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -175,7 +247,6 @@ export const personal_detail_prefix_data = {
             accessor: "MAIDEN_FIRST_NM",
             name: "MAIDEN_FIRST_NM",
             label: "FirstName",
-            required: true,
             // placeholder: "First Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -229,7 +300,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 14,
             },
             name: "FATHER_SPOUSE",
@@ -242,6 +313,22 @@ export const personal_detail_prefix_data = {
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:2.5, md:2, lg:1.5, xl:1},
+            postValidationSetCrossFieldValues: (
+                field,
+                __,
+                ___,
+                dependentFieldsValues
+            ) => {
+                console.log("q  wqeqweqweqwe f/s", field)
+                if(field?.value == "01") {
+                    return {fatherHeaderDivider: {value: "Father Name"}}
+                }
+                if(field?.value == "02") {
+                    return {fatherHeaderDivider: {value: "Spouse Name"}}
+                }
+                return {}
+            },
+            runPostValidationHookAlways: true,
         },
 
 
@@ -253,16 +340,16 @@ export const personal_detail_prefix_data = {
             dividerText: "FatherName",
             name: "fatherHeaderDivider",
             label: "fatherHeaderDivider",
-            dependentFields: ["FATHER_SPOUSE"],
-            setValueOnDependentFieldsChange: (dependentFields) => {
-                console.log("setvalue divider", dependentFields?.FATHER_SPOUSE?.optionData[0]?.label)
-                let dividerText = dependentFields?.FATHER_SPOUSE?.optionData[0]?.label ? `${dependentFields?.FATHER_SPOUSE?.optionData[0]?.label} Name` : null
-                return dividerText;
-            },
+            // dependentFields: ["FATHER_SPOUSE"],
+            // setValueOnDependentFieldsChange: (dependentFields) => {
+            //     console.log("setvalue divider", dependentFields?.FATHER_SPOUSE?.optionData[0]?.label)
+            //     let dividerText = dependentFields?.FATHER_SPOUSE?.optionData[0]?.label ? `${dependentFields?.FATHER_SPOUSE?.optionData[0]?.label} Name` : null
+            //     return dividerText;
+            // },
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 16,
             },
             name: "FATHER_PREFIX_CD",
@@ -272,7 +359,7 @@ export const personal_detail_prefix_data = {
             defaultValue: "Mr",
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:6, sm:2, md: 1.5, lg: 1, xl: 0.5 },
+            GridProps: {xs:12, sm:2.5, md: 2.5, lg: 1.5, xl: 1},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -293,6 +380,13 @@ export const personal_detail_prefix_data = {
             label: "FirstName",
             // placeholder: "First Name",
             type: "text",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
         },
@@ -332,7 +426,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 21,
             },
             name: "MOTHER_PREFIX_CD",
@@ -342,7 +436,7 @@ export const personal_detail_prefix_data = {
             defaultValue: "Mrs",
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:6, sm:2, md: 1.5, lg: 1, xl: 0.5 },
+            GridProps: {xs:12, sm:2.5, md: 2.5, lg: 1.5, xl: 1},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
             // validate: (currentField, dependentFields) => {
@@ -361,6 +455,13 @@ export const personal_detail_prefix_data = {
             },
             name: "MOTHER_FIRST_NM",
             label: "FirstName",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // placeholder: "First Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -439,7 +540,7 @@ export const personal_detail_maiden_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "MAIDEN_PREFIX_CD",
             label: "Prefix",
@@ -518,7 +619,7 @@ export const personal_detail_maiden_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "FATHER_SPOUSE",
             label: "Father/Spouse Name",
@@ -581,7 +682,7 @@ export const personal_detail_father_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "FATHER_PREFIX_CD",
             label: "Prefix",
@@ -683,7 +784,7 @@ export const personal_detail_mother_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "MOTHER_PREFIX_CD",
             label: "Prefix",
@@ -787,14 +888,19 @@ export const personal_other_detail_meta_data = {
             name: "BIRTH_DT",
             label: "DateOfBirth",
             required: true,
-            format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: [
                 {label: "Minor", value: "M"},
@@ -802,12 +908,13 @@ export const personal_other_detail_meta_data = {
             ],
             dependentFields: ["BIRTH_DT"],
             setValueOnDependentFieldsChange: (dependentFields) => {
-                let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
-                return (age && age> 18) ? "major" : "minor";
+                if(dependentFields?.BIRTH_DT?.value) {
+                    let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
+                    return (age && age> 18) ? "M" : "J";
+                } else return ""
             },
             name: "LF_NO",
             label: "Minor/Major",
-            required: true,
             placeholder: "",
             type: "text",
             // GridProps: {xs: 4, sm:3},
@@ -815,24 +922,7 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
-            },
-            options: [
-                {label: "MALE", value: "M"},
-                {label: "FEMALE", value: "F"},
-                {label: "OTHER", value: "O"},
-                {label: "TRANSGENDER", value: "T"},
-            ],
-            name: "GENDER",
-            label: "Gender",
-            required: true,
-            placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
-        },
-        {
-            render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "BLOOD_GRP_CD",
             label: "BloodGroup",
@@ -844,24 +934,17 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
-            },
-            name: "MARITAL_STATUS",
-            label: "MaritalStatus",
-            required: true,
-            placeholder: "",
-            options: () => API.getPMISCData("Marital"),
-            _optionsKey: "maritalStatus",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
-        },
-        {
-            render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "NATIONALITY",
             label: "Nationality",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "countryOptions",
@@ -870,7 +953,7 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "RESIDENCE_STATUS",
             label: "ResidenceStatus",
@@ -879,24 +962,36 @@ export const personal_other_detail_meta_data = {
             options: () => API.getPMISCData("RESIDE_STATUS"),
             _optionsKey: "ResisdenceStatus",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            }
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "TRADE_CD",
             label: "Occupation",
             options: (dependentValue, formState, _, authState) => API.getOccupationDTL(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "occupationOp",  
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "GROUP_CD",
             label: "Group",
@@ -908,11 +1003,17 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "COMMU_CD",
             label: "Religion",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             options: (dependentValue, formState, _, authState) => API.getCommunityList(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "CommunityOptions",
             placeholder: "",
@@ -921,7 +1022,7 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "CASTE_CD",
             label: "Caste",
@@ -938,7 +1039,12 @@ export const personal_other_detail_meta_data = {
             name: "KYC_REVIEW_DT",
             label: "KycRevisedDate",
             required: true,
-            format: "dd/MM/yyyy",
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // placeholder: "",
             // type: "datePicker",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
@@ -1092,7 +1198,7 @@ export const entity_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "EXPLICIT_TDS",
             label: "Explicit TDS",
@@ -1127,7 +1233,7 @@ export const entity_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "NATIONALITY",
             label: "Registered in Country",
@@ -1251,7 +1357,7 @@ export const entity_registration_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "DECLARATION_RECEIVED",
             label: "Declaration Received",
@@ -1371,7 +1477,7 @@ export const entity_registration_detail_meta_data = {
         },
         // {
         //     render: {
-        //         componentType: "select",
+        //         componentType: "autocomplete",
         //     },
         //     name: "EXPLICIT_TDS",
         //     label: "Explicit TDS",
@@ -1621,7 +1727,7 @@ export const entity_company_info_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "TYPE",
             label: "Type",

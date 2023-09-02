@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
@@ -51,7 +51,7 @@ const myGridRef = useRef<any>(null);
         setFieldError,
         actionFlag
     ) => {
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         // console.log("qweqweqwesdcas", data, displayData, actionFlag)     
         if(data) {
 
@@ -69,7 +69,7 @@ const myGridRef = useRef<any>(null);
             PODFormRef.current.handleSubmit(NextBtnRef.current, "save")
             // setIsNextLoading(false)
         }   
-        endSubmit(true)
+        // endSubmit(true)
     }
     const onSubmitPODHandler = (
         data: any,
@@ -90,10 +90,25 @@ const myGridRef = useRef<any>(null);
             // handleColTabChangectx(1)
             handleColTabChangectx(state?.colTabValuectx+1)
 
-            setIsNextLoading(false)
+            // setIsNextLoading(false)
         }   
+        // setIsNextLoading(false)
         endSubmit(true)
     }
+
+    const initialVal = useMemo(() => {
+        return state?.isFreshEntryctx
+                ? state?.formDatactx["PERSONAL_DETAIL"]
+                    ? state?.formDatactx["PERSONAL_DETAIL"]
+                    : {}
+                : state?.retrieveFormDataApiRes
+                    ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
+                    : {}
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
+    // useEffect(() => {
+    //     console.log("state?.isFreshEntryctx",state?.isFreshEntryctx)
+    // }, [state?.isFreshEntryctx])
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
@@ -121,7 +136,8 @@ const myGridRef = useRef<any>(null);
                         <FormWrapper 
                             ref={PDFormRef}
                             onSubmitHandler={onSubmitPDHandler}
-                            initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                            // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                            initialValues={initialVal}
                             key={"new-form-in-kyc"}
                             metaData={personal_detail_prefix_data as MetaDataType}
                             formStyle={{}}
@@ -159,7 +175,8 @@ const myGridRef = useRef<any>(null);
                             ref={PODFormRef}
                             key={"new-form-in-kyc"}
                             metaData={personal_other_detail_meta_data as MetaDataType}
-                            initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                            // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                            initialValues={initialVal}
                             formStyle={{}}
                             hideHeader={true}
                             onSubmitHandler={onSubmitPODHandler}
@@ -172,7 +189,8 @@ const myGridRef = useRef<any>(null);
 
 
             <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                // disabled={isNextLoading}
                     onClick={(e) => {
                         NextBtnRef.current = e
                         PDFormRef.current.handleSubmit(e, "save")

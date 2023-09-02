@@ -141,7 +141,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Customer Searching",
-    rowIdColumn: "CUST_ID",
+    rowIdColumn: "CUSTOMER_ID",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,

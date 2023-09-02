@@ -83,6 +83,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPMISCDATA",
     packageName: "",
   },
+  GETSALUTATIONDATA: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETSALUTATIONDATA",
+    packageName: "",
+  },
   GETCOUNTRYLIST: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOUNTRYLIST",
     packageName: "",
@@ -220,7 +224,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETCUSTOMERDETAILS: {
-    url: "/customerServiceAPI/GETSEARCHUSERDATA",
+    url: "/customerServiceAPI/GETCUSTOMERDETAILS",
     packageName: "",
   },
   RELATIONSHIPMANAGER: {

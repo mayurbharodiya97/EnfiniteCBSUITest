@@ -53,7 +53,7 @@ import * as API from "../../../../api";
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "ADDRESS_TYPE",
             label: "AddressType",
@@ -70,6 +70,12 @@ import * as API from "../../../../api";
             name: "LINE1",
             label: "Line1",
             required: true,          
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:6, md: 5, lg: 3.5, xl:2},
@@ -122,6 +128,13 @@ import * as API from "../../../../api";
                 return {}
             },
             runPostValidationHookAlways: true,    
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},

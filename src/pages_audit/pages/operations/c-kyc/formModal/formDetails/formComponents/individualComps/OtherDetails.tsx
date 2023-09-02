@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { Grid, Typography, Divider, Skeleton, Collapse, IconButton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
@@ -55,6 +55,15 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
         }   
         endSubmit(true)
     }
+    const initialVal = useMemo(() => {
+        return state?.isFreshEntryctx
+                ? state?.formDatactx["OTHER_DTL"]
+                    ? state?.formDatactx["OTHER_DTL"]
+                    : {}
+                : state?.retrieveFormDataApiRes
+                    ? state?.retrieveFormDataApiRes["OTHER_DTL"]
+                    : {}
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     return (
         <Grid container rowGap={3}>
@@ -84,7 +93,8 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                         onSubmitHandler={OtherDTLSubmitHandler}
                         key={"new-form-in-kyc"}
                         metaData={other_details_meta_data as MetaDataType}
-                        initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
+                        // initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
+                        initialValues={initialVal}
                         formStyle={{}}
                         hideHeader={true}
                     />
