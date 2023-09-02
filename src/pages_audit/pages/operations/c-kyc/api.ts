@@ -89,6 +89,37 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
   }
 };
 
+export const getCustomerDetailsonEdit = async ({COMP_CD, CUSTOMER_ID, ACCT_TYPE, ACCT_CD, AS_FROM}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID, 
+      ACCT_TYPE: ACCT_TYPE, 
+      ACCT_CD: ACCT_CD, 
+      AS_FROM: AS_FROM
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ CATEG_CD, CATEG_NM, ...other }) => {
+          return {
+            ...other,
+            CATEG_CD: CATEG_CD, 
+            CATEG_NM: CATEG_NM,
+            value: CATEG_CD,
+            label: CATEG_NM,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+
 export const getCIFCategories = async ({ COMP_CD, BRANCH_CD, ENTITY_TYPE }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCIFCATEG", {
