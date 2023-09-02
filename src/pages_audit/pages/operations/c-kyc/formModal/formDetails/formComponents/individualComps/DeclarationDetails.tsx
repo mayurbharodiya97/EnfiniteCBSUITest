@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { declaration_meta_data } from '../../metadata/individual/declarationdetails';
@@ -60,6 +60,15 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
   }
 
 const myGridRef = useRef<any>(null);
+    const initialVal = useMemo(() => {
+        return state?.isFreshEntryctx
+                ? state?.formDatactx["PERSONAL_DETAIL"]
+                    ? state?.formDatactx["PERSONAL_DETAIL"]
+                    : {}
+                : state?.retrieveFormDataApiRes
+                    ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
+                    : {}
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     return (
         <Grid container rowGap={3}>
@@ -89,7 +98,8 @@ const myGridRef = useRef<any>(null);
                     <FormWrapper 
                         ref={DeclarationFormRef}
                         onSubmitHandler={DeclarationSubmitHandler}
-                        initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                        // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                        initialValues={initialVal}
                         key={"new-form-in-kyc"}
                         metaData={declaration_meta_data as MetaDataType}
                         formStyle={{}}

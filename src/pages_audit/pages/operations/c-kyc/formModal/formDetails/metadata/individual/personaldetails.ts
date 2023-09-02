@@ -58,7 +58,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "autocomplete",
+                componentType: "select",
                 sequence: 2,
             },
             name: "PREFIX_CD",
@@ -73,7 +73,22 @@ export const personal_detail_prefix_data = {
                 rules: [
                   { name: "required", params: ["ThisFieldisrequired"] },
                 ],
-            }
+            },
+            postValidationSetCrossFieldValues: (
+                field,
+                __,
+                ___,
+                dependentFieldsValues
+              ) => {
+                if(field.value) {
+                    return {
+                        GENDER: {value: field?.optionData[0]?.GENDER ?? "" },
+                        MARITAL_STATUS: {value: field?.optionData[0]?.MARITIAL_STATUS ?? ""},
+                    }
+                }
+                return {}
+              },
+              runPostValidationHookAlways: true,
             // GridProps: {xs:12, sm:2, md: 1, lg: 1, xl:0.5},
             // dependentFields: ["DAILY_AMT"],
             // runValidationOnDependentFieldsChange: true,
@@ -147,7 +162,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 7,
             },
             options: [
@@ -171,7 +186,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 7,
             },
             name: "MARITAL_STATUS",
@@ -202,7 +217,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 9,
             },
             name: "MAIDEN_PREFIX_CD",
@@ -525,7 +540,7 @@ export const personal_detail_maiden_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "MAIDEN_PREFIX_CD",
             label: "Prefix",
@@ -604,7 +619,7 @@ export const personal_detail_maiden_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "FATHER_SPOUSE",
             label: "Father/Spouse Name",
@@ -667,7 +682,7 @@ export const personal_detail_father_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "FATHER_PREFIX_CD",
             label: "Prefix",
@@ -769,7 +784,7 @@ export const personal_detail_mother_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "MOTHER_PREFIX_CD",
             label: "Prefix",
@@ -895,7 +910,7 @@ export const personal_other_detail_meta_data = {
             setValueOnDependentFieldsChange: (dependentFields) => {
                 if(dependentFields?.BIRTH_DT?.value) {
                     let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
-                    return (age && age> 18) ? "major" : "minor";
+                    return (age && age> 18) ? "M" : "J";
                 } else return ""
             },
             name: "LF_NO",
@@ -1183,7 +1198,7 @@ export const entity_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "EXPLICIT_TDS",
             label: "Explicit TDS",
@@ -1218,7 +1233,7 @@ export const entity_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "NATIONALITY",
             label: "Registered in Country",
@@ -1342,7 +1357,7 @@ export const entity_registration_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "DECLARATION_RECEIVED",
             label: "Declaration Received",
@@ -1462,7 +1477,7 @@ export const entity_registration_detail_meta_data = {
         },
         // {
         //     render: {
-        //         componentType: "select",
+        //         componentType: "autocomplete",
         //     },
         //     name: "EXPLICIT_TDS",
         //     label: "Explicit TDS",
@@ -1712,7 +1727,7 @@ export const entity_company_info_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "TYPE",
             label: "Type",

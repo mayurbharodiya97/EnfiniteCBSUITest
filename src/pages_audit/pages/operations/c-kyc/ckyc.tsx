@@ -230,7 +230,7 @@ function TabPanel(props: TabPanelProps) {
 export const Ckyc = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx, handleCustCategoryRes, handleFormModalOpenOnEditctx} = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx, handleCustCategoryRes, handleFormModalOpenOnEditctx, handleColTabChangectx, handleFormDataonRetrievectx, handlecustomerIDctx} = useContext(CkycContext);
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
@@ -286,6 +286,33 @@ export const Ckyc = () => {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
+
+  const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
+    ["getCustomerDetailsonEdit", {
+    }],
+    () => API.getCustomerDetailsonEdit({
+      COMP_CD: authState?.companyID ?? "",
+      CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
+      ACCT_TYPE: "143 ",
+      ACCT_CD: "000039",
+      AS_FROM: "C"  
+    })
+  )
+
+  useEffect(() => {
+    if(mutation?.data?.[0]?.CUSTOMER_ID) {
+      handlecustomerIDctx(mutation?.data[0]?.CUSTOMER_ID)
+    }
+  }, [mutation?.data])
+
+  useEffect(() => {
+    if(!isRetrieveFormLoading && retrieveFormData) {
+      // console.log("result data....", typeof retrieveFormData[0], retrieveFormData[0])
+      // let data = retrieveFormData[0]
+      handleFormDataonRetrievectx(retrieveFormData[0])
+    }
+  }, [isRetrieveFormLoading, retrieveFormData])
+
 
   useEffect(() => {
     if(!isLoading) {
@@ -438,8 +465,12 @@ useEffect(() => {
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "view-detail") {
-        refetch()
-        handleFormModalOpenOnEditctx(data?.rows)
+        // refetch()
+        retrieveFormRefetch()
+        handleColTabChangectx(0)
+        // if(retrieveFormData && data) {
+          handleFormModalOpenOnEditctx(data?.rows)
+        // }
       } else if (data.name === "dependencies") {
         setComponentToShow("Dependencies");
         setAcctOpen(true);
@@ -455,11 +486,11 @@ useEffect(() => {
       }
     },
     // []
-    [navigate]
+    [navigate, retrieveFormData]
   );
   return (
     <React.Fragment>
-      <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">{t("CkycHeader")}</Typography>
+      <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(0.5)}} variant="h6">{t("CkycHeader")}</Typography>
       <StyledHeaderGrid container 
         columnGap={(theme) => theme.spacing(2)}
         rowGap={(theme) => theme.spacing(2)}>
@@ -533,7 +564,7 @@ useEffect(() => {
 
         <Grid sx={{
           backgroundColor: "var(--theme-color2)", 
-          padding: (theme) => theme.spacing(2), 
+          padding: (theme) => theme.spacing(1), boxSizing: "border-box", 
           border:(theme) => `2px dashed ${theme.palette.grey[500]}`, borderRadius: "20px"}} 
           my={(theme) => theme.spacing(3)} container direction={"column"}
         >
@@ -671,7 +702,8 @@ useEffect(() => {
         // setConstitutionValue={setConstitutionValue}
         // accTypeValue={accTypeValue}
         // setAccTypeValue={setAccTypeValue}
-        // AccTypeOptions={AccTypeOptions}
+        // refetch={refetch}
+        // retrieveFormRefetch={retrieveFormRefetch}
       />
     </React.Fragment>
   );

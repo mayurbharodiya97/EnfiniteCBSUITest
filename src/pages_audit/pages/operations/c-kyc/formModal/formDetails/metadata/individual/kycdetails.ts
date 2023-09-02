@@ -392,7 +392,7 @@ export const kyc_proof_of_address_meta_data = {
         },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
           _optionsKey: "parentAreaList",
@@ -404,7 +404,7 @@ export const kyc_proof_of_address_meta_data = {
         },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           dependentFields: ["PAR_AREA_CD"],
           options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
@@ -629,7 +629,7 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "LOC_AREA_CD",
           options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
@@ -641,7 +641,7 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "LOC_AREA_CD2",
           dependentFields: ["LOC_AREA_CD"],

@@ -36,6 +36,8 @@ const initialState:any  = {
     AccTypeOptionsctx: [],
 
     formDatactx: {},
+    retrieveFormDataApiRes: {},
+    customerIDctx: "",
     formDataDraftctx: {},
     isFreshEntryctx: false,
     REQ_CD: "375"
@@ -89,6 +91,16 @@ const Reducer = (state, action) => {
                 ...action.payload
             };
         case "update_formDataDraft":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "update_retrieveFormData":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "update_customerIDctx":
             return {
                 ...state,
                 ...action.payload
@@ -249,6 +261,26 @@ const CkycProvider = ({children}) => {
         })
     }
 
+    const handleFormDataonRetrievectx = (data) => {
+        // let apiRes = {...data[0]}
+        // console.log("wqkdhqiwuheqieqwdata", apiRes)
+        dispatch({
+            type: "update_retrieveFormData",
+            payload: {
+                retrieveFormDataApiRes: {...data}
+            }
+        })
+    }
+
+    const handlecustomerIDctx = (data) => {
+        dispatch({
+            type: "",
+            payload: {
+                customerIDctx: data
+            }
+        })
+    }
+
     const handleFormDataonDraftctx = (data) => {
         // console.log("werhfwejfuiwef", state.formDatactx, typeof data, {...state.formDatactx, ...data})
         dispatch({
@@ -290,7 +322,7 @@ const CkycProvider = ({children}) => {
                 state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
                 handleApiRes, handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleSidebarExpansionctx, handleColTabChangectx, 
-                handleFormDataonSavectx, handleFormDataonDraftctx
+                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handlecustomerIDctx
             }}
         >
             {children}

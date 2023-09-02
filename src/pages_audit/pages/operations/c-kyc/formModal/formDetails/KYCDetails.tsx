@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useContext } from 'react';
+import { useRef, useState, useEffect, useContext, useMemo } from 'react';
 import { Grid, Typography, Divider, Skeleton, Collapse, IconButton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
@@ -94,6 +94,17 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
     }
     endSubmit(true)
    }
+
+   const initialVal = useMemo(() => {
+        return state?.isFreshEntryctx
+                ? state?.formDatactx["PERSONAL_DETAIL"]
+                    ? state?.formDatactx["PERSONAL_DETAIL"]
+                    : {}
+                : state?.retrieveFormDataApiRes
+                    ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
+                    : {}
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
 //    useEffect(() => {
 //     console.log("asdfweafdw",currentTabFormData)
 //    }, [currentTabFormData])
@@ -130,7 +141,8 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                         <FormWrapper 
                             ref={KyCPoIFormRef}
                             onSubmitHandler={PoISubmitHandler}
-                            initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                            // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                            initialValues={initialVal}
                             key={"new-form-in-kyc"}
                             metaData={kyc_proof_of_identity_meta_data as MetaDataType}
                             formStyle={{}}
@@ -158,7 +170,8 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     <FormWrapper 
                         ref={KyCPoAFormRef}
                         onSubmitHandler={PoASubmitHandler}
-                        initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                        // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                        initialValues={initialVal}
                         key={"new-form-in-kyc"}
                         metaData={kyc_proof_of_address_meta_data as MetaDataType}
                         formStyle={{}}

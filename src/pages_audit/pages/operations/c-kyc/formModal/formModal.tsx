@@ -558,6 +558,7 @@ export default function FormModal({
                       id="customer-id"
                       label="Cust. ID"
                       size="small"
+                      value={state?.customerIDctx}
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md>
@@ -731,7 +732,7 @@ export default function FormModal({
                 }
               }} item xs>
                 
-              {(state?.tabsApiResctx && state?.tabsApiResctx.length>0) && <TabStepper />}
+              {((state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.isFreshEntryctx) && <TabStepper />}
               {
                 (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((element, i) => {
                   return <TabPanel key={i} value={state?.colTabValuectx} index={i}>

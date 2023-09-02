@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react"
+import React, { useContext, useEffect, useMemo, useRef } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { attestation_detail_meta_data } from "../../metadata/individual/attestationdetails"
@@ -47,6 +47,17 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         }   
         endSubmit(true)
     }
+
+    const initialVal = useMemo(() => {
+        return state?.isFreshEntryctx
+                ? state?.formDatactx["ATTESTATION_DTL"]
+                    ? state?.formDatactx["ATTESTATION_DTL"]
+                    : {}
+                : state?.retrieveFormDataApiRes
+                    ? state?.retrieveFormDataApiRes["ATTESTATION_DTL"]
+                    : {}
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
@@ -72,7 +83,8 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                         <FormWrapper 
                             ref={AttestationDTLFormRef}
                             onSubmitHandler={AttestationDTLSubmitHandler}
-                            initialValues={state?.formDatactx["ATTESTATION_DTL"] ?? {}}
+                            // initialValues={state?.formDatactx["ATTESTATION_DTL"] ?? {}}
+                            initialValues={initialVal}
                             key={"new-form-in-kyc"}
                             metaData={attestation_detail_meta_data as MetaDataType}
                             formStyle={{}}
