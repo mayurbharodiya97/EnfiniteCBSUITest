@@ -58,8 +58,6 @@ const AccountDetails = () => {
     }
   }, []);
 
-  // console.log(rowsDataRef?.current?.FULL_ACCT_NO, ".");
-
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
@@ -94,7 +92,26 @@ const AccountDetails = () => {
     })
   );
 
-  console.log(rowsDataRef.current, "--------data");
+  var branchData = data?.find((item) => item?.TITLE === "Branch Details");
+  var barnchDtl = {
+    branchName: "",
+    branchAddress: "",
+    ifscCode: "",
+    branchPhoneNumber: "",
+  };
+  if (branchData) {
+    branchData?.DETAILS?.forEach((detail) => {
+      if (detail?.LABEL === "Branch Name") {
+        barnchDtl.branchName = detail?.VALUE;
+      } else if (detail?.LABEL === "Branch Address") {
+        barnchDtl.branchAddress = detail?.VALUE;
+      } else if (detail?.LABEL === "IFSC code") {
+        barnchDtl.ifscCode = detail?.VALUE;
+      } else if (detail?.LABEL === "Branch Phone Number") {
+        barnchDtl.branchPhoneNumber = detail?.VALUE;
+      }
+    });
+  }
 
   const openPopover = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -293,7 +310,8 @@ const AccountDetails = () => {
                         data,
                         companyName,
                         generatedBy,
-                        RequestingBranchCode
+                        RequestingBranchCode,
+                        barnchDtl
                       )
                     }
                     endIcon={<PictureAsPdfIcon />}
@@ -307,6 +325,7 @@ const AccountDetails = () => {
                         companyName,
                         generatedBy,
                         RequestingBranchCode,
+                        barnchDtl,
                       })
                     }
                     endIcon={<BackupTableIcon />}

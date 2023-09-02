@@ -2,7 +2,8 @@
 import { format } from "date-fns";
 
 import { MetaDataType } from "components/dyanmicForm";
-// import { useGetDataMutation } from "./chequeBookEntry";
+import { GeneralAPI } from "registry/fns/functions";
+// import { UseGetDataMutation } from "./chequeBookEntry";
 // import { AuthContext } from "pages_audit/auth";
 // import { useContext } from "react";
 export const ChequeBookIssueEntry: MetaDataType = {
@@ -50,9 +51,15 @@ export const ChequeBookIssueEntry: MetaDataType = {
     },
   },
   fields: [
+    // {
+    //   render: {
+    //     componentType: "_accountNumber",
+    //   },
+    //   name: "dfk",
+    // },
     {
       render: {
-        componentType: "textField",
+        componentType: "select",
       },
       name: "BRANCH_CD",
       // sequence: 1,
@@ -61,16 +68,22 @@ export const ChequeBookIssueEntry: MetaDataType = {
       type: "text",
       required: true,
       // maxLength: 16,
-
+      options: GeneralAPI.getBranchCodeList,
+      _optionsKey: "getBranchCodeList",
       GridProps: {
         xs: 12,
-        md: 1,
-        sm: 1,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Branch Code is required."] }],
       },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "select",
       },
       name: "ACCT_TYPE",
       // sequence: 1,
@@ -79,11 +92,17 @@ export const ChequeBookIssueEntry: MetaDataType = {
       type: "text",
       required: true,
       // maxLength: 16,
-
+      options: GeneralAPI.getAccountTypeList,
+      _optionsKey: "getAccountTypeList",
       GridProps: {
         xs: 12,
-        md: 1,
-        sm: 1,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Account Type is required."] }],
       },
     },
     {
@@ -97,22 +116,11 @@ export const ChequeBookIssueEntry: MetaDataType = {
       type: "text",
       fullWidth: true,
       required: true,
-      dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
-      runValidationOnDependentFieldsChange: true,
-      // validate: (currentField, dependentFields) => {
-      //   return "";
-      // },
-      // postValidationSetCrossFieldValues: "getAcctDetails",
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["This field is required"] },
-          {
-            name: "ACCT_CD",
-            params: ["Please Enter Account no."],
-          },
-        ],
-      },
+
+      // runPostValidationHookAlways: true,
+      // dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
+      // runValidationOnDependentFieldsChange: true,
+
       maxLength: 20,
 
       GridProps: {

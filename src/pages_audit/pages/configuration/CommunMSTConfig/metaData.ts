@@ -1,141 +1,10 @@
-import { GridMetaDataType } from "components/dataTableStatic";
-import { getMiscListData } from "./api";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-// import { GetMiscValue } from "../../staticReports/api";
-// import { GetMiscValue } from "../../api";
-export const FundTrfRetrievalMetadata = {
-  form: {
-    name: "enterRetrievalParamaters",
-    label: "Enter Retrieval Parameters",
-    resetFieldOnUnmount: false,
-    validationRun: "onBlur",
-    render: {
-      ordering: "auto",
-      renderType: "simple",
-      gridConfig: {
-        item: {
-          xs: 12,
-          sm: 12,
-          md: 12,
-        },
-        container: {
-          direction: "row",
-          spacing: 2,
-        },
-      },
-    },
-  },
-  fields: [
-    {
-      render: {
-        componentType: "select",
-      },
-      name: "CATEGORY_CD",
-      // name: "Category-cd",
-      label: "Category-cd",
-      placeholder: "",
-      defaultOptionLabel: "Select Trn Type",
-      options: getMiscListData,
-      _optionsKey: "getMiscListData",
-      defaultValue: "",
-      fullWidth: true,
-      GridProps: {
-        xs: 12,
-        md: 6,
-        sm: 6,
-      },
-    },
-  ],
-};
 
-// export const MiscMasteConfigGridMetaData: GridMetaDataType = {
-//   gridConfig: {
-//     dense: true,
-//     gridLabel: "Misc Master Configuration",
-//     rowIdColumn: "DATA_VALUE",
-//     searchPlaceholder: "Accounts",
-//     defaultColumnConfig: {
-//       width: 150,
-//       maxWidth: 250,
-//       minWidth: 100,
-//     },
-//     allowColumnReordering: true,
-//     disableSorting: false,
-//     hideHeader: false,
-//     disableGroupBy: true,
-//     enablePagination: true,
-//     pageSizes: [10, 20, 30],
-//     defaultPageSize: 10,
-//     containerHeight: {
-//       min: "68vh",
-//       max: "68vh",
-//     },
-//     allowFilter: false,
-//     allowColumnHiding: false,
-//     allowRowSelection: false,
-//   },
-//   // filters: [],
-//   columns: [
-//     {
-//       accessor: "ACC_NO",
-//       columnName: "Sr. No.",
-//       sequence: 3,
-//       alignment: "center",
-//       componentType: "default",
-//       width: 80,
-//       minWidth: 60,
-//       maxWidth: 100,
-//       isAutoSequence: true,
-//     },
-//     {
-//       columnName: "Display Name",
-//       accessor: "DISPLAY_NM",
-//       sequence: 4,
-//       alignment: "left",
-//       componentType: "editableTextField",
-//       width: 300,
-//       minWidth: 250,
-//       isReadOnly: true,
-//       maxWidth: 350,
-//     },
-//     {
-//       columnName: "Data Value",
-//       accessor: "DATA_VALUE",
-//       sequence: 5,
-//       alignment: "left",
-//       componentType: "editableTextField",
-//       width: 140,
-//       minWidth: 100,
-//       maxWidth: 200,
-//     },
-//     {
-//       columnName: "Display Value",
-//       accessor: "DISPLAY_VALUE",
-//       sequence: 6,
-//       alignment: "left",
-//       componentType: "editableTextField",
-//       width: 180,
-//       minWidth: 140,
-//       maxWidth: 240,
-//     },
-//     {
-//       columnName: "Remarks",
-//       accessor: "REMARKS",
-//       sequence: 7,
-//       alignment: "left",
-//       componentType: "editableTextField",
-//       width: 220,
-//       minWidth: 150,
-//       maxWidth: 260,
-//     },
-//   ],
-// };
-
-export const langWiseMsgMetaData: MasterDetailsMetaData = {
+export const commonMSTGridMetaData: MasterDetailsMetaData = {
   masterForm: {
     form: {
       name: "LangMsgConfig",
-      label: "Misc Master Configuration",
+      label: "common Master Configuration",
       resetFieldOnUnmount: false,
       validationRun: "onBlur",
       render: {
@@ -154,64 +23,7 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
         },
       },
     },
-    fields: [
-      //   // {
-      //   //   render: { componentType: "hidden" },
-      //   //   name: "TRAN_CD",
-      //   // },
-      //   {
-      //     render: { componentType: "textField" },
-      //     name: "DEFAULT_LANG_CODE",
-      //     label: "Default Language",
-      //     placeholder: " ",
-      //     type: "text",
-      //     required: true,
-      //     // isReadOnly: true,
-      //     maxLength: 300,
-      //     showMaxLength: false,
-      //     GridProps: { xs: 12, md: 2, sm: 2 },
-      //     fullWidth: true,
-      //     autoComplete: "off",
-      //     // schemaValidation: {
-      //     //   type: "string",
-      //     //   rules: [
-      //     //     { name: "required", params: ["This field is required"] },
-      //     //     { name: "TEMPLATE_DESC", params: ["Please select Description."] },
-      //     //   ],
-      //     // },
-      //     // __NEW__: { isReadOnly: false },
-      //     __EDIT__: { isReadOnly: true },
-      //   },
-      //   {
-      //     render: { componentType: "textField" },
-      //     name: "DEFAULT_LANG_MSG",
-      //     label: "Default Message",
-      //     // placeholder: " ",
-      //     // type: "text",
-      //     // required: true,
-      //     // maxLength: 300,
-      //     showMaxLength: false,
-      //     multiline: true,
-      //     // minRows: 2,
-      //     // maxRows: 2,
-      //     GridProps: { xs: 10, md: 10, sm: 10 },
-      //     fullWidth: true,
-      //     autoComplete: "off",
-      //     // schemaValidation: {
-      //     //   type: "string",
-      //     //   rules: [
-      //     //     { name: "required", params: ["This field is required"] },
-      //     //     { name: "TEMPLATE_DESC", params: ["Please select Description."] },
-      //     //   ],
-      //     // },
-      //     // __EDIT__: { isReadOnly: false },
-      //   },
-      //   {
-      //     render: { componentType: "hidden" },
-      //     name: "TRAN_CD",
-      //     label: "Default Message",
-      //   },
-    ],
+    fields: [],
   },
   detailsGrid: {
     gridConfig: {
@@ -229,7 +41,7 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
       hideHeader: true,
       disableGroupBy: true,
       hiddenFlag: "_hidden",
-      enablePagination: true,
+      enablePagination: false,
       pageSizes: [10, 20, 30],
       defaultPageSize: 10,
       containerHeight: {
@@ -242,42 +54,20 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
     },
     // filters: [],
     columns: [
-      // {
-      //   accessor: "_",
-      //   columnName: "Sr. No.",
-      //   sequence: 3,
-      //   alignment: "center",
-      //   componentType: "default",
-      //   width: 80,
-      //   minWidth: 60,
-      //   maxWidth: 100,
-      //   isAutoSequence: true,
-      // },
-      {
-        columnName: "Display Name",
-        // accessor: "CATEGORY_CD",
-        accessor: "DISPLAY_NM",
-        sequence: 4,
-        alignment: "left",
-        componentType: "editableTextField",
-        width: 300,
-        minWidth: 250,
-        isReadOnly: true,
-        maxWidth: 350,
-        schemaValidation: {
-          type: "string",
-          rules: [{ name: "required", params: ["This field is required"] }],
-        },
-      },
       {
         columnName: "Data Value",
         accessor: "DATA_VALUE",
         sequence: 5,
         alignment: "left",
-        componentType: "editableTextField",
-        width: 140,
-        minWidth: 100,
-        maxWidth: 200,
+        componentType: "default",
+        isReadOnly: true,
+        width: 400,
+        minWidth: 320,
+        maxWidth: 540,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["This field is required"] }],
+        },
       },
       {
         columnName: "Display Value",
@@ -285,9 +75,13 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
         sequence: 6,
         alignment: "left",
         componentType: "editableTextField",
-        width: 180,
-        minWidth: 140,
-        maxWidth: 240,
+        width: 400,
+        minWidth: 320,
+        maxWidth: 540,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["This field is required"] }],
+        },
       },
       {
         columnName: "Remarks",
@@ -295,9 +89,9 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
         sequence: 7,
         alignment: "left",
         componentType: "editableTextField",
-        width: 220,
+        width: 190,
         minWidth: 150,
-        maxWidth: 260,
+        maxWidth: 360,
       },
       {
         columnName: "Action",
@@ -310,4 +104,74 @@ export const langWiseMsgMetaData: MasterDetailsMetaData = {
       },
     ],
   },
+};
+
+export const addCategoryFormMetadata = {
+  form: {
+    name: "enterRetrievalParamaters",
+    label: "Add New Category",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 12,
+          md: 12,
+        },
+        container: {
+          direction: "row",
+          spacing: 2,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+    },
+  },
+
+  fields: [
+    {
+      render: { componentType: "textField" },
+      name: "CATEGORY_CD",
+      label: "Category Name",
+      placeholder: " ",
+      type: "text",
+      required: true,
+      // isReadOnly: true,
+      maxLength: 300,
+      showMaxLength: false,
+      GridProps: { xs: 12, md: 12, sm: 12, lg: 12 },
+      fullWidth: true,
+      autoComplete: "off",
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [
+      //     { name: "required", params: ["This field is required"] },
+      //     { name: "TEMPLATE_DESC", params: ["Please select Description."] },
+      //   ],
+      // },
+      // __NEW__: { isReadOnly: false },
+      // __EDIT__: { isReadOnly: true },
+    },
+  ],
 };

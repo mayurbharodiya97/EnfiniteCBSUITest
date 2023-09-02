@@ -160,12 +160,20 @@ export const extendFieldTypes = (
 
   newMetaDataFields?.forEach((item) => {
     if (item.render.componentType === "_accountNumber") {
-      if (item?.para === "1") {
+      if (item["postValidationSetCrossFieldValues"]) {
+        extendedTypes["accountCode"]["postValidationSetCrossFieldValues"] =
+          item["postValidationSetCrossFieldValues"];
+        extendedTypes["fullAccountNumber"][
+          "postValidationSetCrossFieldValues"
+        ] = item["postValidationSetCrossFieldValues"];
+      }
+
+      if (item?.acctFieldPara === "1") {
         const fullAccountNumber = extendedTypes["fullAccountNumber"];
         if (typeof fullAccountNumber === "object") {
           newMetaDataFieldsCustom.push(fullAccountNumber);
         }
-      } else if (item?.para === "2") {
+      } else if (item?.acctFieldPara === "2") {
         ["branchCode", "accountType", "accountCode"].forEach(
           processExtendedType
         );

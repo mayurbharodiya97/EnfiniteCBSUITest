@@ -28,6 +28,8 @@ import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "./CkycContext";
 import { ActionTypes } from "components/dataTable";
+import { useNavigate } from "react-router-dom";
+import Dependencies from "pages_audit/acct_Inquiry/dependencies";
 
 export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -227,7 +229,8 @@ function TabPanel(props: TabPanelProps) {
 
 export const Ckyc = () => {
   const { t } = useTranslation();
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx, handleCustCategoryRes} = useContext(CkycContext);
+  const navigate = useNavigate();
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleSidebarExpansionctx, handleCustCategoryRes, handleFormModalOpenOnEditctx, handleColTabChangectx, handleFormDataonRetrievectx, handlecustomerIDctx} = useContext(CkycContext);
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
@@ -248,6 +251,12 @@ export const Ckyc = () => {
   const [categoryValue, setCategoryValue] = React.useState<null | string>(null);
   const [constitutionValue, setConstitutionValue] = React.useState<null | string>(null);
   const [accTypeValue, setAccTypeValue] = React.useState<null | string>("");
+
+
+  const [rowsData, setRowsData] = useState([]);
+  const [acctOpen, setAcctOpen] = useState(false);
+  const [componentToShow, setComponentToShow] = useState("");
+
 
 
   const { data, isError, isLoading, error, refetch } = useQuery<any, any>(
@@ -272,15 +281,38 @@ export const Ckyc = () => {
     })
   )
 
-  const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
-    ["getPMISCData", {entityType, categoryValue, constitutionValue}],
-    () => API.getPMISCData("CKYC_ACCT_TYPE")
-  );
 
   const mutation: any = useMutation(API.getRetrieveData, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
+
+  const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
+    ["getCustomerDetailsonEdit", {
+    }],
+    () => API.getCustomerDetailsonEdit({
+      COMP_CD: authState?.companyID ?? "",
+      CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
+      ACCT_TYPE: "143 ",
+      ACCT_CD: "000039",
+      AS_FROM: "C"  
+    })
+  )
+
+  useEffect(() => {
+    if(mutation?.data?.[0]?.CUSTOMER_ID) {
+      handlecustomerIDctx(mutation?.data[0]?.CUSTOMER_ID)
+    }
+  }, [mutation?.data])
+
+  useEffect(() => {
+    if(!isRetrieveFormLoading && retrieveFormData) {
+      // console.log("result data....", typeof retrieveFormData[0], retrieveFormData[0])
+      // let data = retrieveFormData[0]
+      handleFormDataonRetrievectx(retrieveFormData[0])
+    }
+  }, [isRetrieveFormLoading, retrieveFormData])
+
 
   useEffect(() => {
     if(!isLoading) {
@@ -417,13 +449,13 @@ useEffect(() => {
       rowDoubleClick: true,
     },
     {
-      actionName: "view-statement",
+      actionName: "dependencies",
       actionLabel: "Dependencies",
       multiple: false,
       rowDoubleClick: false,
     },
     {
-      actionName: "view-interest",
+      actionName: "tds-exemption",
       actionLabel: "TDS Exemption",
       multiple: false,
       rowDoubleClick: false,
@@ -432,30 +464,33 @@ useEffect(() => {
 
   const setCurrentAction = useCallback(
     (data) => {
-      // if (data.name === "view-detail") {
-      //   // setComponentToShow("ViewDetail");
-      //   // setAcctOpen(true);
-      //   // setRowsData(data?.rows);
-      // } else if (data.name === "view-statement") {
-      //   // setComponentToShow("ViewStatement");
-      //   // setAcctOpen(true);
-      //   // setRowsData(data?.rows);
-      // } else if (data.name === "view-interest") {
-      //   // setComponentToShow("ViewInterest");
-      //   // setAcctOpen(true);
-      // } else {
-      //   // navigate(data?.name, {
-      //   //   state: data?.rows,
-      //   // });
-      // }
+      if (data.name === "view-detail") {
+        // refetch()
+        retrieveFormRefetch()
+        handleColTabChangectx(0)
+        // if(retrieveFormData && data) {
+          handleFormModalOpenOnEditctx(data?.rows)
+        // }
+      } else if (data.name === "dependencies") {
+        setComponentToShow("Dependencies");
+        setAcctOpen(true);
+        setRowsData(data?.rows);
+      } else if (data.name === "tds-exemption") {
+        setComponentToShow("ViewStatement");
+        setAcctOpen(true);
+        setRowsData(data?.rows);
+      } else {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
     },
-    [
-      // navigate
-    ]
+    // []
+    [navigate, retrieveFormData]
   );
   return (
     <React.Fragment>
-      <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">{t("CkycHeader")}</Typography>
+      <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(0.5)}} variant="h6">{t("CkycHeader")}</Typography>
       <StyledHeaderGrid container 
         columnGap={(theme) => theme.spacing(2)}
         rowGap={(theme) => theme.spacing(2)}>
@@ -529,7 +564,7 @@ useEffect(() => {
 
         <Grid sx={{
           backgroundColor: "var(--theme-color2)", 
-          padding: (theme) => theme.spacing(2), 
+          padding: (theme) => theme.spacing(1), boxSizing: "border-box", 
           border:(theme) => `2px dashed ${theme.palette.grey[500]}`, borderRadius: "20px"}} 
           my={(theme) => theme.spacing(3)} container direction={"column"}
         >
@@ -606,7 +641,35 @@ useEffect(() => {
             // ref={myGridRef}
           />
         </Grid>
-      </TabPanel>      
+      </TabPanel> 
+
+
+
+      {componentToShow === "ViewDetail" ? (""
+          // <ViewDetail
+          //   rowsData={rowsData}
+          //   open={acctOpen}
+          //   onClose={() => setAcctOpen(false)}
+          // />
+        ) : componentToShow === "Dependencies" ? (
+          <Dependencies
+            rowsData={rowsData}
+            open={acctOpen}
+            onClose={() => setAcctOpen(false)}
+          />
+        ) : componentToShow === "ViewStatement" ? (""
+          // <ViewStatement
+          //   rowsData={rowsData}
+          //   open={acctOpen}
+          //   onClose={() => setAcctOpen(false)}
+          //   screenFlag={"ACCT_INQ"}
+          // />
+        ) : //   componentToShow === "ViewInterest" ? (
+        // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />
+        // ) :
+      null}
+
+
 
       <FormModal 
         // isFormModalOpen={state?.isFormModalOpenctx} 
@@ -639,7 +702,8 @@ useEffect(() => {
         // setConstitutionValue={setConstitutionValue}
         // accTypeValue={accTypeValue}
         // setAccTypeValue={setAccTypeValue}
-        AccTypeOptions={AccTypeOptions}
+        // refetch={refetch}
+        // retrieveFormRefetch={retrieveFormRefetch}
       />
     </React.Fragment>
   );

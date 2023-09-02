@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react"
+import React, { useContext, useMemo, useRef } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { nri_detail_meta_data } from "../../metadata/individual/nridetails"
@@ -38,6 +38,16 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
         }   
         endSubmit(true)
     }
+    const initialVal = useMemo(() => {
+        return state?.isFreshEntryctx
+                ? state?.formDatactx["NRI_DTL"]
+                    ? state?.formDatactx["NRI_DTL"]
+                    : {}
+                : state?.retrieveFormDataApiRes
+                    ? state?.retrieveFormDataApiRes["NRI_DTL"]
+                    : {}
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
@@ -65,7 +75,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                             onSubmitHandler={NRIDTLSubmitHandler}
                             key={"new-form-in-kyc"}
                             metaData={nri_detail_meta_data as MetaDataType}
-                            initialValues={state?.formDatactx["NRI_DTL"] ?? {}}
+                            // initialValues={state?.formDatactx["NRI_DTL"] ?? {}}
+                            initialValues={initialVal}
                             formStyle={{}}
                             hideHeader={true}
                         />

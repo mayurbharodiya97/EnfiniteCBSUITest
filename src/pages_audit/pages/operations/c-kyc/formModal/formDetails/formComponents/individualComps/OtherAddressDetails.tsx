@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import { Grid, Typography, Divider, Skeleton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
@@ -45,6 +45,16 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
         }   
         endSubmit(true)
     }
+    const initialVal = useMemo(() => {
+        return state?.isFreshEntryctx
+                ? state?.formDatactx["OTHER_ADDRESS"]
+                    ? state?.formDatactx["OTHER_ADDRESS"]
+                    : {}
+                : state?.retrieveFormDataApiRes
+                    ? state?.retrieveFormDataApiRes["OTHER_ADDRESS"]
+                    : {}
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>             */}
@@ -69,7 +79,8 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     <FormWrapper 
                         ref={OtherAddDTLFormRef}
                         onSubmitHandler={OtherAddDTLSubmitHandler}
-                        initialValues={state?.formDatactx["OTHER_ADDRESS"] ?? {}}
+                        // initialValues={state?.formDatactx["OTHER_ADDRESS"] ?? {}}
+                        initialValues={initialVal}
                         key={"new-form-in-kyc"}
                         metaData={other_address_meta_data as MetaDataType}
                         formStyle={{}}

@@ -172,6 +172,33 @@ export const getPMISCData = async (CATEGORY_CD) => {
   }
 }
 
+export const GetDynamicSalutationData = async (CATEGORY_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETSALUTATIONDATA", {
+      CATEGORY: CATEGORY_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      console.log("qweqwerr", responseData)
+      responseData = responseData.map(
+        ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
+          return {
+            ...other,
+            DATA_VALUE: DATA_VALUE, 
+            DISPLAY_VALUE: DISPLAY_VALUE,
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        }
+      );
+    }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
 export const getCountryOptions = async (COMP_CD, BRANCH_CD) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCOUNTRYLIST", {

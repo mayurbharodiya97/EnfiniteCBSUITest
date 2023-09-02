@@ -26,6 +26,7 @@ const initialState:any  = {
     tabNameList: [],
     setTabsApiRes: () => {},
     customerCategoriesctx: [],
+    categConstitutionValuectx: null,
     categoryValuectx: null,
     constitutionValuectx: null,
     accTypeValuectx: null,
@@ -35,6 +36,8 @@ const initialState:any  = {
     AccTypeOptionsctx: [],
 
     formDatactx: {},
+    retrieveFormDataApiRes: {},
+    customerIDctx: "",
     formDataDraftctx: {},
     isFreshEntryctx: false,
     REQ_CD: "375"
@@ -92,6 +95,16 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
+        case "update_retrieveFormData":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "update_customerIDctx":
+            return {
+                ...state,
+                ...action.payload
+            };
         default: return state;
     }
 }
@@ -107,6 +120,35 @@ const CkycProvider = ({children}) => {
         })
     }
 
+    const handleFormModalOpenOnEditctx = (recordData) => {
+        // console.log("qweqeqeqwsxqswq", recordData[0].data)
+        const categConstitutionValue = {
+            value: recordData[0]?.data?.CATEGORY_CODE,
+            label: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[0],
+            CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
+            CONSTITUTION_NAME: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[1],
+        }
+
+        dispatch({
+            type: "handleCategoryChangectx",
+            payload: {
+                categConstitutionValuectx: categConstitutionValue,
+                categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
+                constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
+                isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false 
+                
+                // categConstitutionValuectx: "kuashd",
+                // categoryValuectx: "kub",
+                // constitutionValuectx: "yuu",
+                // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false 
+
+                // categoryValuectx: value?.value,
+                // constitutionValuectx: value?.CONSTITUTION_TYPE,
+                // colTabValuectx: 0,
+            }
+        })
+    }
+
     const handleFormModalClosectx = () => {
         dispatch({
             type: "handleFormModalClose",
@@ -114,6 +156,7 @@ const CkycProvider = ({children}) => {
                 isFormModalOpenctx: false, 
                 entityTypectx: null,
                 colTabValuectx: false,
+                categConstitutionValuectx: null,
                 categoryValuectx: null,
                 constitutionValuectx: null,
                 accTypeValuectx: null,
@@ -153,6 +196,7 @@ const CkycProvider = ({children}) => {
             dispatch({
                 type: "handleCategoryChangectx",
                 payload: {
+                    categConstitutionValuectx: value,
                     categoryValuectx: value?.value,
                     constitutionValuectx: value?.CONSTITUTION_TYPE,
                     colTabValuectx: 0,
@@ -162,6 +206,7 @@ const CkycProvider = ({children}) => {
             dispatch({
                 type: "handleCategoryChangectx",
                 payload: {
+                    categConstitutionValuectx: null,
                     categoryValuectx: null,
                     constitutionValuectx: null,
                     colTabValuectx: false,
@@ -216,8 +261,28 @@ const CkycProvider = ({children}) => {
         })
     }
 
+    const handleFormDataonRetrievectx = (data) => {
+        // let apiRes = {...data[0]}
+        // console.log("wqkdhqiwuheqieqwdata", apiRes)
+        dispatch({
+            type: "update_retrieveFormData",
+            payload: {
+                retrieveFormDataApiRes: {...data}
+            }
+        })
+    }
+
+    const handlecustomerIDctx = (data) => {
+        dispatch({
+            type: "",
+            payload: {
+                customerIDctx: data
+            }
+        })
+    }
+
     const handleFormDataonDraftctx = (data) => {
-        console.log("werhfwejfuiwef", state.formDatactx, typeof data, {...state.formDatactx, ...data})
+        // console.log("werhfwejfuiwef", state.formDatactx, typeof data, {...state.formDatactx, ...data})
         dispatch({
             type: "update_formDataDraft",
             // payload: {
@@ -254,10 +319,10 @@ const CkycProvider = ({children}) => {
     return (
         <CkycContext.Provider 
             value={{
-                state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, 
+                state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
                 handleApiRes, handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleSidebarExpansionctx, handleColTabChangectx, 
-                handleFormDataonSavectx, handleFormDataonDraftctx
+                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handlecustomerIDctx
             }}
         >
             {children}

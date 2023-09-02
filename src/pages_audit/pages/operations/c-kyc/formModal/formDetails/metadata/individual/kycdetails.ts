@@ -45,7 +45,7 @@ export const kyc_proof_of_identity_meta_data = {
     fields: [
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "FORM_60",
             label: "Form6061",
@@ -121,7 +121,7 @@ export const kyc_proof_of_identity_meta_data = {
         },
         {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "EXPLICIT_TDS",
           label: "ExplicitTDS",
@@ -198,7 +198,7 @@ export const kyc_proof_of_identity_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "PASSPORT_AUTHORITY_CD",
             label: "Autho",
@@ -214,8 +214,7 @@ export const kyc_proof_of_identity_meta_data = {
           },
           name: "PASSPORT_ISSUE_DT",
           label: "IssueDate",
-          required: true,
-          format: "dd/MM/yyyy",
+        //   required: true,
           // placeholder: "",
           // type: "datePicker",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -226,8 +225,7 @@ export const kyc_proof_of_identity_meta_data = {
           },
           name: "PASSPORT_EXPIRY_DT",
           label: "ExpiryDate",
-          required: true,
-          format: "dd/MM/yyyy",
+        //   required: true,
           // placeholder: "",
           // type: "datePicker",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -256,7 +254,7 @@ export const kyc_proof_of_identity_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             name: "DRIVING_LICENSE_AUTHORITY_CD",
             label: "Autho",
@@ -272,8 +270,7 @@ export const kyc_proof_of_identity_meta_data = {
           },
           name: "DRIVING_LICENSE_ISSUE_DT",
           label: "IssueDate",
-          required: true,
-          format: "dd/MM/yyyy",
+        //   required: true,
           // placeholder: "",
           // type: "datePicker",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -284,8 +281,7 @@ export const kyc_proof_of_identity_meta_data = {
           },
           name: "DRIVING_LICENSE_EXPIRY_DT",
           label: "ExpiryDate",
-          required: true,
-          format: "dd/MM/yyyy",
+        //   required: true,
           // placeholder: "",
           // type: "datePicker",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -347,7 +343,7 @@ export const kyc_proof_of_address_meta_data = {
         },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "ADDRESS_TYPE",
           label: "AddressType",
@@ -364,9 +360,15 @@ export const kyc_proof_of_address_meta_data = {
           name: "ADD1",
           label: "Line1",
           required: true,          
+          schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+          },
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
         },
       {
           render: {
@@ -376,7 +378,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
         },
       {
           render: {
@@ -386,11 +388,11 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
         },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
           _optionsKey: "parentAreaList",
@@ -402,7 +404,7 @@ export const kyc_proof_of_address_meta_data = {
         },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           dependentFields: ["PAR_AREA_CD"],
           options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
@@ -441,6 +443,12 @@ export const kyc_proof_of_address_meta_data = {
           name: "PIN_CODE",
           label: "PIN",
           required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           isReadOnly: true,
           placeholder: "",
           type: "text",
@@ -453,6 +461,12 @@ export const kyc_proof_of_address_meta_data = {
           name: "CITY_CD",
           label: "City",
           required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           isReadOnly: true,
           placeholder: "",
           type: "text",
@@ -515,11 +529,17 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "PROOF_OF_ADD",
           label: "ProofofAdd",
           required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -560,7 +580,7 @@ export const kyc_proof_of_address_meta_data = {
     },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "LOC_ADD_TYPE",
           label: "LocalAddressType",
@@ -577,9 +597,15 @@ export const kyc_proof_of_address_meta_data = {
           name: "LOC_ADD1",
           label: "Line1",
           required: true,          
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },         
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
       },
       {
           render: {
@@ -589,7 +615,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
       },
       {
           render: {
@@ -599,11 +625,11 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "LOC_AREA_CD",
           options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
@@ -615,7 +641,7 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "LOC_AREA_CD2",
           dependentFields: ["LOC_AREA_CD"],
@@ -655,6 +681,12 @@ export const kyc_proof_of_address_meta_data = {
           name: "LOC_PIN_CODE",
           label: "PIN",
           required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           isReadOnly: true,
           placeholder: "",
           type: "text",
@@ -666,7 +698,7 @@ export const kyc_proof_of_address_meta_data = {
           },
           name: "LOC_CITY_CD",
           label: "City",
-          required: true,
+        //   required: true,
           isReadOnly: true,
           placeholder: "",
           type: "text",
@@ -729,11 +761,11 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           name: "LOC_PROOF_OF_ADD",
           label: "ProofofAdd",
-          required: true,
+        //   required: true,
           placeholder: "",
           options: () => API.getPMISCData("CKYC_LOC_POA"),
           _optionsKey: "localPoA",

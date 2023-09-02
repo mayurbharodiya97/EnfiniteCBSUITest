@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, Collapse, IconButton } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
@@ -51,6 +51,16 @@ const myGridRef = useRef<any>(null);
         }   
         endSubmit(true)
     }
+    const initialVal = useMemo(() => {
+        return state?.isFreshEntryctx
+                ? state?.formDatactx["RELATED_PERSON_DTL"]
+                    ? state?.formDatactx["RELATED_PERSON_DTL"]
+                    : {}
+                : state?.retrieveFormDataApiRes
+                    ? state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]
+                    : {}
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
@@ -79,7 +89,8 @@ const myGridRef = useRef<any>(null);
                         <FormWrapper 
                             ref={RelPersonFormRef}
                             onSubmitHandler={RelPersonSubmitHandler}
-                            initialValues={state?.formDatactx["RELATED_PERSON_DTL"] ?? {}}
+                            // initialValues={state?.formDatactx["RELATED_PERSON_DTL"] ?? {}}
+                            initialValues={initialVal}
                             key={"new-form-in-kyc"}
                             metaData={related_person_detail_data as MetaDataType}
                             formStyle={{}}
