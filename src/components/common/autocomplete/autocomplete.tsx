@@ -12,11 +12,7 @@ import {
 } from "react";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
-import {
-  useField,
-  UseFieldHookProps,
-  transformDependentFieldsState,
-} from "packages/form";
+import { useField, UseFieldHookProps } from "packages/form";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
@@ -32,7 +28,6 @@ import {
   Grid,
   GridProps,
   TextFieldProps,
-  InputAdornment,
 } from "@mui/material";
 
 const ListBoxComponentVirtualized = lazy(() =>
@@ -50,7 +45,6 @@ interface AutoCompleteExtendedProps {
   CircularProgressProps?: CircularProgressProps;
   TextFieldProps?: TextFieldProps;
   ChipProps?: ChipProps;
-  setValueOnDependentFieldsChange?: any;
   CreateFilterOptionsConfig?: CreateFilterOptionsConfig<OptionsProps>;
   options?: OptionsProps[] | dependentOptionsFn;
   label?: string;
@@ -99,7 +93,6 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   showCheckbox,
   CreateFilterOptionsConfig,
   runValidationOnDependentFieldsChange,
-  setValueOnDependentFieldsChange,
   label,
   placeholder,
   limitTags,
@@ -171,17 +164,6 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
       }, 1);
     }
   }, [isFieldFocused]);
-
-  useEffect(() => {
-    if (typeof setValueOnDependentFieldsChange === "function") {
-      let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues)
-      );
-      if (result !== undefined && result !== null) {
-        handleChange(result);
-      }
-    }
-  }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
 
   const [_options, setOptions] = useState<OptionsProps[]>([]);
 
@@ -360,18 +342,33 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               helperText={!isSubmitting && isError ? error : null}
               InputProps={{
                 ...params.InputProps,
-                endAdornment:
-                  validationRunning || loadingOptions ? (
-                    <InputAdornment position="end">
+                endAdornment: (
+                  <Fragment>
+                    {validationRunning || loadingOptions ? (
                       <CircularProgress
-                        color="secondary"
+                        color="primary"
                         variant="indeterminate"
-                        size={24}
                         {...CircularProgressProps}
                       />
-                    </InputAdornment>
-                  ) : null,
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                  </Fragment>
+                ),
               }}
+              // InputProps={{
+              //   ...params.InputProps,
+              //   endAdornment:
+              //     validationRunning || loadingOptions ? (
+              //       <InputAdornment position="end">
+              //         <CircularProgress
+              //           color="secondary"
+              //           variant="indeterminate"
+              //           size={24}
+              //           {...CircularProgressProps}
+              //         />
+              //       </InputAdornment>
+              //     ) : null,
+              // }}
               InputLabelProps={{
                 shrink: true,
               }}
