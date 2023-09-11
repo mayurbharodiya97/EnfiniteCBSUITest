@@ -186,6 +186,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
     <Fragment>
       <Card className={classes.arrayRowCard}>
         <CardHeader
+          style={{ padding: "10px" }}
           title={label}
           action={
             !Boolean(fixedRows) ? (
@@ -196,7 +197,15 @@ export const ArrayField2: FC<ArrayField2Props> = ({
           }
         />
         <CardContent className={classes.arrayRowCardContent}>
-          <Grid container item spacing={1} xs={12} md={12} sm={12}>
+          <Grid
+            container
+            item
+            spacing={1}
+            xs={12}
+            md={12}
+            sm={12}
+            style={{ padding: "05px" }}
+          >
             {rows}
             {rows.length <= 0 ? (
               <Typography>

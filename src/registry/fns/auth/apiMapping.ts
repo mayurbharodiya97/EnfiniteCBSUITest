@@ -412,6 +412,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DOMISCONFIG",
     packageName: "",
   },
+  DOFORMPROPDATA: {
+    url: "commonMasterServiceAPI/DOFORMPROPDATA",
+    packageName: "",
+  },
+  GETGRIDACTIONLST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGRIDACTIONLST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

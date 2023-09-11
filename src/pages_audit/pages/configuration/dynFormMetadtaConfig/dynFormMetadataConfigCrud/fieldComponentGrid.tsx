@@ -19,6 +19,7 @@ import {
   Dialog,
   Button,
 } from "@mui/material";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 export const useDialogStyles = makeStyles((theme: Theme) => ({
   topScrollPaper: {
     alignItems: "center",
@@ -33,6 +34,17 @@ export const useDialogStyles = makeStyles((theme: Theme) => ({
     fontSize: "1.5rem",
   },
 }));
+interface updateAUTHDetailDataType {
+  data: object;
+  displayData?: object;
+  endSubmit?: any;
+  setFieldError?: any;
+}
+const updateAUTHDetailDataWrapperFn =
+  (insertFormData) =>
+  async ({ data }: updateAUTHDetailDataType) => {
+    return insertFormData(data);
+  };
 export const FieldComponentGrid = ({
   isOpen,
   formMode,
@@ -40,65 +52,139 @@ export const FieldComponentGrid = ({
   reqDataRef,
 }) => {
   const classes = useDialogStyles();
-  const [girdData, setGridData] = useState<any>([]);
+  const [gridData, setGridData] = useState<any>([]);
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
+  const isErrorFuncRef = useRef<any>(null);
+  const [isOpenSave, setIsOpenSave] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
   >(["getGridFieldComponentData", { ...reqDataRef.current }], () =>
     API.getGridFieldComponentData({ ...reqDataRef.current })
   );
+  console.log("reqDataRef", reqDataRef);
+  const mutation = useMutation(API.dynamiPropsConfigDML, {
+    onError: (error: any, { endSubmit }) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      endSubmit(false, errorMsg, error?.error_detail ?? "");
+      enqueueSnackbar(errorMsg, { variant: "error" });
+      onActionCancel();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
 
-  // const mutation = useMutation(API.updTenuresTypeData(), {
-  //   onError: (error: any) => {},
-  //   onSuccess: (data) => {
-  //     enqueueSnackbar(data, {
-  //       variant: "success",
-  //     });
-  //     onClose();
-  //   },
-  // });
+      onClose();
+    },
+  });
+
+  useEffect(() => {
+    if (Array.isArray(data)) {
+      setGridData(data);
+    } else {
+      setGridData([]);
+    }
+  }, [data]);
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getGridFieldComponentData"]);
     };
   }, []);
 
+  const onActionCancel = () => {
+    setIsOpenSave(false);
+  };
+  const onPopupYes = (rows) => {
+    mutation.mutate(rows);
+  };
+  const onSaveRecord = async () => {
+    console.log(">>datadata", data);
+    let { hasError, data: dataold } = await myGridRef.current?.validate();
+    if (hasError === true) {
+      if (dataold) {
+        setGridData(dataold);
+      }
+    } else {
+      let result = myGridRef?.current?.cleanData?.();
+      if (!Array.isArray(result)) {
+        result = [result];
+      }
+      result = result.map((item) => ({
+        BRANCH_CD: item?.BRANCH_CD,
+        COMP_CD: item?.COMP_CD,
+        DOC_CD: item?.DOC_CD,
+        LINE_ID: item?.LINE_ID,
+        PROPS_ID: item?.PROPS_ID,
+        PROPS_VALUE: item?.PROPS_VALUE,
+        SR_CD: item?.SR_CD,
+        _isNewRow: true,
+      }));
+      console.log("result", result);
+      let finalResult = result.filter(
+        (one) => !(Boolean(one?._isNewRow) && Boolean(one?._isTouchedCol))
+      );
+      if (finalResult.length === 0) {
+        onClose();
+      } else {
+        finalResult = CreateDetailsRequestData(finalResult);
+        console.log("finalResult", finalResult);
+        if (
+          finalResult?.isDeleteRow?.length === 0 &&
+          finalResult?.isNewRow?.length === 0 &&
+          finalResult?.isUpdatedRow?.length === 0
+        ) {
+          onClose();
+        } else {
+          isErrorFuncRef.current = {
+            data: {
+              _isNewRow: true,
+              DETAILS_DATA: finalResult,
+            },
+          };
+          setIsOpenSave(true);
+          // mutation.mutate({ data: reqData });
+        }
+      }
+    }
+  };
   // const onSaveRecord = async () => {
-  //   let { hasError, data: dataold } = await myGridRef.current?.validate();
+  //   let { hasError, data: dataold } = await myGridRef.current?.validate(true);
   //   if (hasError === true) {
   //     if (dataold) {
   //       setGridData(dataold);
   //     }
   //   } else {
   //     let result = myGridRef?.current?.cleanData?.();
+  //     console.log("result", result);
   //     if (!Array.isArray(result)) {
   //       result = [result];
   //     }
-  //     let finalResult = result.filter(
-  //       (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
-  //     );
-  //     if (finalResult.length === 0) {
-  //       onClose();
-  //     } else {
-  //       finalResult = CreateDetailsRequestData(finalResult);
-  //       if (
-  //         finalResult?.isDeleteRow?.length === 0 &&
-  //         finalResult?.isNewRow?.length === 0 &&
-  //         finalResult?.isUpdatedRow?.length === 0
-  //       ) {
-  //         onClose();
-  //       } else {
-  //         let reqData = {
-  //           ...reqDataRef.current,
-  //           DETAILS_DATA: finalResult,
-  //         };
-  //         // mutation.mutate({ data: reqData });
-  //       }
-  //     }
+
+  //     isErrorFuncRef.current = {
+  //       data: {
+  //         ...result,
+  //       },
+  //     };
   //   }
+
+  //   setIsOpenSave(true);
+  //   // mutation.mutate({
+  //   //   TEMPLATE_LIST: gridData.map((data) => {
+  //   //     return {
+  //   //       ...data,
+  //   //       TEMPLATE_TRAN_CD: trancd ?? "",
+  //   //       DB_COLUMN: dbcolumn ?? "",
+  //   //     };
+  //   //   }),
+
+  //   // });
   // };
 
   return (
@@ -148,12 +234,14 @@ export const FieldComponentGrid = ({
               variant={"h6"}
               component="div"
             >
-              Props Configuration
+              {"Props Configuration" +
+                " For " +
+                reqDataRef.current?.FIELD_NAME ?? ""}
             </Typography>
             {/* {isLoading || isFetching || isError ? null : ( */}
             <>
               <Button
-                // onClick={}
+                onClick={onSaveRecord}
                 color="primary"
                 // disabled={mutation.isLoading}
                 // endIcon={
@@ -176,14 +264,25 @@ export const FieldComponentGrid = ({
         <GridWrapper
           key={"tenureTypeTenures"}
           finalMetaData={FieldComponentGridMetaData as GridMetaDataType}
-          data={data ?? []}
-          setData={() => null}
+          data={gridData}
+          setData={setGridData}
           // loading={isLoading || isFetching || isError}
           actions={[]}
           setAction={() => {}}
           // refetchData={refetch}
           ref={myGridRef}
         />
+        {isOpenSave ? (
+          <PopupMessageAPIWrapper
+            MessageTitle="Confirmation"
+            Message="Do you want to save this Request?"
+            onActionYes={(rowVal) => onPopupYes(rowVal)}
+            onActionNo={() => onActionCancel()}
+            rows={isErrorFuncRef.current?.data}
+            open={isOpenSave}
+            // loading={mutation.isLoading}
+          />
+        ) : null}
       </div>
     </Dialog>
   );

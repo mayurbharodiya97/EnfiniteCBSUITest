@@ -44,7 +44,7 @@ export const getDynFieldListData = async ({
 export const getDynFormPopulateData = async (inputdata) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETTBGFROMFIELDPOPULATE", {
-      DOC_CD: inputdata?.DOC_CD,
+      DOC_CD: inputdata?.DOC_CD.trim(),
       COMP_CD: inputdata?.COMP_CD,
       BRANCH_CD: inputdata?.BRANCH_CD,
     });
@@ -66,6 +66,17 @@ export const getGridFieldComponentData = async (reqdata) => {
 export const dynamiFormMetadataConfigDML = async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOFORMCONFIGDATA",
+    formData
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const dynamiPropsConfigDML = async (formData: any) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOFORMPROPDATA",
     formData
   );
   if (status === "0") {

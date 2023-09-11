@@ -64,6 +64,7 @@ export const ActionFormWrapper = ({
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["actionsFormData"]);
+      queryClient.removeQueries(["actionsFormDataDML"]);
     };
   }, []);
 
@@ -138,6 +139,10 @@ export const ActionFormWrapper = ({
   if (ActionsMetaData?.fields?.[0]?._fields?.[13]) {
     ActionsMetaData.fields[0]._fields[13].requestProps =
       reqData[0]?.data?.DOC_CD ?? "";
+  }
+  if (ActionsMetaData.form.label) {
+    ActionsMetaData.form.label =
+      "Actions" + " for " + reqData[0]?.data?.DESCRIPTION ?? "";
   }
 
   return (

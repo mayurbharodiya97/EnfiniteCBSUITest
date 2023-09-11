@@ -265,9 +265,12 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     const validateData = useCallback(async (ignoreTouch) => {
       return validator(dataRef.current, ignoreTouch);
     }, []);
-    const onButtonActionHandel = useCallback((index, id) => {
-      onClickActionEvent(index, id, data[index]);
-    }, []);
+    const onButtonActionHandel = useCallback(
+      (index, id) => {
+        onClickActionEvent(index, id, data[index]);
+      },
+      [data]
+    );
     useImperativeHandle(ref, () => ({
       validate: (ignoreTouch = false) => validateData(ignoreTouch),
       validator: () => validator,

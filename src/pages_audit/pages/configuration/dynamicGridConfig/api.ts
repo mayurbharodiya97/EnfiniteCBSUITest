@@ -14,18 +14,14 @@ export const getProMiscData = async (category_cd) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
-          return {
-            value: DATA_VALUE,
-            label: DISPLAY_VALUE,
-            ...other,
-          };
-        }
-      );
+      responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
+        return {
+          value: DATA_VALUE,
+          label: DISPLAY_VALUE,
+        };
+      });
     }
     return responseData;
-    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -69,7 +65,6 @@ export const getDynamicGridConfigGridData = async ({ COMP_CD, BRANCH_CD }) => {
         IS_CUSRSORFOCUSED: item.IS_CUSRSORFOCUSED === "Y" ? true : false,
         ALLOW_ROW_SELECTION: item.ALLOW_ROW_SELECTION === "Y" ? true : false,
         ISDOWNLOAD: item.ISDOWNLOAD === "Y" ? true : false,
-        ROWID_COLUMN: item.ROWID_COLUMN === "Y" ? true : false,
       };
     });
     // return data;

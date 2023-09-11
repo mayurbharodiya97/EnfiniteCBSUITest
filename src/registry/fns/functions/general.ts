@@ -260,7 +260,7 @@ const GeneralAPISDK = () => {
         responseData = responseData.map(
           ({ DOC_TITLE, DOC_CD, USER_DEFINE_CD }) => {
             return {
-              value: USER_DEFINE_CD,
+              value: DOC_CD,
               label: DOC_TITLE + " - " + USER_DEFINE_CD,
             };
           }
@@ -291,7 +291,6 @@ const GeneralAPISDK = () => {
         let resData = convertArraytoObject(data, "DISPLAY_VALUE", "DATA_VALUE");
 
         return {
-          ACTIONNAME: { value: resData?.ACTIONNAME },
           ACTIONLABEL: { value: resData?.ACTIONLABEL },
           ACTIONICON: { value: resData?.ACTIONICON },
           ROWDOUBLECLICK: {
@@ -313,7 +312,6 @@ const GeneralAPISDK = () => {
         };
       } else {
         return {
-          ACTIONNAME: { value: "" },
           ACTIONLABEL: { value: "" },
           ACTIONICON: { value: "" },
           ROWDOUBLECLICK: { value: "" },
@@ -362,26 +360,22 @@ const GeneralAPISDK = () => {
         DOC_CD: reqData?.[4] ?? "",
       });
     if (status === "0") {
-      // let responseData = data;
-      // if (Array.isArray(responseData)) {
-      //   responseData = responseData.map(
-      //     ({ DOC_CD, DOC_NM, ...other }, index) => {
-      //       return {
-      //         value: DOC_CD,
-      //         label: `${index + 1}${"."}  ${DOC_NM}`,
-      //         ...other,
-      //       };
-      //     }
-      //   );
-      // }
-      return data;
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ DESCRIPTION, SR_CD }) => {
+          return {
+            value: SR_CD,
+            label: DESCRIPTION,
+          };
+        });
+      }
+      return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
 
   const getKYCDocTypes = async (dependantFields, ...other) => {
-    console.log(">>other", dependantFields);
     if (dependantFields.SR_CD.value && dependantFields.TRAN_CD.value) {
       const { status, data, message, messageDetails } =
         await AuthSDK.internalFetcher("DOCCUMENTSCANHISTORY", {
@@ -399,7 +393,7 @@ const GeneralAPISDK = () => {
         //     };
         //   });
         // }
-        console.log("qwdqewqeqweqweq", responseData);
+
         return responseData;
       } else {
         throw DefaultErrorObject(message, messageDetails);

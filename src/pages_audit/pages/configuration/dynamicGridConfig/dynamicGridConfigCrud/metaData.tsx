@@ -24,27 +24,25 @@ export const DynamicGridConfigMetaData = {
       },
     },
     fields: [
-      // {
-      //   render: {
-      //     componentType: "select",
-      //   },
-      //   name: "DOC_CD",
-      //   label: "Screen Name",
-      //   placeholder: "",
-      //   type: "text",
-      //   //@ts-ignore
-      //   options: "getTbgDocMstData",
-      //   _optionsKey: "getTbgDocMstData",
-      //   fullWidth: true,
-      //   required: true,
-      //   schemaValidation: {
-      //     type: "string",
-      //     rules: [
-      //       { name: "required", params: ["Screen Name is required."] },
-      //       { name: "SCREEN_NAME", params: ["Please enter Screen Name."] },
-      //     ],
-      //   },
-      // },
+      {
+        render: {
+          componentType: "autocomplete",
+        },
+        name: "DOC_TYPE",
+        label: "Menulist Group",
+        fullWidth: true,
+        options: () => getMenulistData(),
+        _optionsKey: "getMenulistData",
+        GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+        required: true,
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Menulist Group is required."] },
+            { name: "DOC_TYPE", params: ["Please enter Menulist Group."] },
+          ],
+        },
+      },
       {
         render: {
           componentType: "textField",
@@ -57,7 +55,7 @@ export const DynamicGridConfigMetaData = {
         maxLength: 12,
         showMaxLength: false,
         required: true,
-        __EDIT__: { isReadOnly: true },
+        // __EDIT__: { isReadOnly: true },
         schemaValidation: {
           type: "string",
           rules: [
@@ -65,15 +63,11 @@ export const DynamicGridConfigMetaData = {
             { name: "DOC_CD", params: [12, "Please enter Document Code."] },
           ],
         },
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 4,
-        },
+        GridProps: { xs: 12, sm: 4, md: 4, lg: 2.5, xl: 2.5 },
       },
       {
         render: {
-          componentType: "select",
+          componentType: "autocomplete",
         },
         name: "DOC_ICON",
         label: "Doc Icon",
@@ -83,6 +77,7 @@ export const DynamicGridConfigMetaData = {
         required: true,
         options: () => getProMiscData("menu_icon"),
         _optionsKey: "getproMiscDataMenuIcon",
+        GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
         schemaValidation: {
           type: "string",
           rules: [
@@ -90,24 +85,6 @@ export const DynamicGridConfigMetaData = {
             { name: "DOC_ICON", params: ["Please enter Doc Icon."] },
           ],
         },
-      },
-      {
-        render: {
-          componentType: "select",
-        },
-        name: "DOC_TYPE",
-        label: "Menulist Group",
-        fullWidth: true,
-        options: () => getMenulistData(),
-        _optionsKey: "getMenulistData",
-        // required: true,
-        // schemaValidation: {
-        //   type: "string",
-        //   rules: [
-        //     { name: "required", params: ["Menulist Group is required."] },
-        //     { name: "DOC_TYPE", params: ["Please enter Menulist Group."] },
-        //   ],
-        // },
       },
 
       {
@@ -127,15 +104,12 @@ export const DynamicGridConfigMetaData = {
             { name: "DESCRIPTION", params: ["Please enter Description."] },
           ],
         },
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 4,
-        },
+
+        GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
       },
       {
         render: {
-          componentType: "select",
+          componentType: "autocomplete",
         },
         name: "RETRIEVAL_TYPE",
         label: "Retrieval Type",
@@ -172,11 +146,46 @@ export const DynamicGridConfigMetaData = {
             },
           ],
         },
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 4,
+        GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "textField",
         },
+        name: "DEFAULT_PAGE_SIZE",
+        label: "Default PageSize",
+        // defaultValue: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          // componentType: "autocomplete",
+          componentType: "select",
+        },
+        name: "PAGE_SIZES",
+        label: "Page Sizes",
+        placeholder: "",
+        options: () => getProMiscData("pageSizes"),
+        _optionsKey: "getproMiscData",
+        defaultValue: "",
+        type: "text",
+        multiple: true,
+        showCheckbox: true,
+        skipDefaultOption: true,
+        fullWidth: true,
+        schemaValidation: {
+          type: "string",
+        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "ROWID_COLUMN",
+        label: "RowId Column",
+        required: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
       },
       {
         render: {
@@ -185,11 +194,7 @@ export const DynamicGridConfigMetaData = {
         name: "DISABLE_GROUP_BY",
         label: "Disable Group By",
         defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
+        GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
       },
       {
         render: {
@@ -198,11 +203,7 @@ export const DynamicGridConfigMetaData = {
         name: "DENSE",
         label: "Dense",
         defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
       },
       // {
       //   render: {
@@ -217,19 +218,7 @@ export const DynamicGridConfigMetaData = {
       //     sm: 3,
       //   },
       // },
-      {
-        render: {
-          componentType: "checkbox",
-        },
-        name: "ROWID_COLUMN",
-        label: "RowId Column",
-        defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
-      },
+
       {
         render: {
           componentType: "checkbox",
@@ -237,11 +226,7 @@ export const DynamicGridConfigMetaData = {
         name: "ALLOW_COLUMN_REORDERING",
         label: "Allow Column Reordering",
         defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
+        GridProps: { xs: 12, sm: 4, md: 4, lg: 2.5, xl: 1.5 },
       },
       {
         render: {
@@ -250,11 +235,7 @@ export const DynamicGridConfigMetaData = {
         name: "ENABLE_PAGINATION",
         label: "Enable Pagination",
         defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
       },
 
       {
@@ -264,11 +245,7 @@ export const DynamicGridConfigMetaData = {
         name: "ALLOW_ROW_SELECTION",
         label: "Allow RowSelection",
         defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
       },
       {
         render: {
@@ -277,49 +254,7 @@ export const DynamicGridConfigMetaData = {
         name: "IS_CUSRSORFOCUSED",
         label: "Is Cusrsor Focused",
         defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
-      },
-      {
-        render: {
-          componentType: "textField",
-        },
-        name: "DEFAULT_PAGE_SIZE",
-        label: "Default PageSize",
-        // defaultValue: true,
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
-      },
-      {
-        render: {
-          componentType: "select",
-        },
-        name: "PAGE_SIZES",
-        label: "Page Sizes",
-        placeholder: "",
-        options: () => getProMiscData("pageSizes"),
-        _optionsKey: "getproMiscData",
-        defaultValue: "",
-        type: "text",
-
-        // allowToggleVisiblity: true,
-        // maxLength: 10,
-        // required: true,
-        fullWidth: true,
-        schemaValidation: {
-          type: "string",
-        },
-        GridProps: {
-          xs: 12,
-          md: 3,
-          sm: 3,
-        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
       },
     ],
   },
@@ -386,10 +321,10 @@ export const DynamicGridConfigMetaData = {
         accessor: "COMPONENT_TYPE",
         columnName: "Component Type",
         componentType: "editableSelect",
+        // componentType: "editableAutocomplete",
         options: () => getProMiscData("Component_Type"),
-        _optionsKey: "getproMiscDataComponentType",
+        _optionsKey: "getproMiscData",
         enableDefaultOption: true,
-        defaultValue: "DATA_VALUE",
         required: true,
         validation: (value, data) => {
           if (!Boolean(value)) {

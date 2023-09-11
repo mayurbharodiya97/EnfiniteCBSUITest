@@ -1,6 +1,6 @@
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { Fragment, useContext, useEffect, useMemo } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQueries, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { useLocation, useParams } from "react-router-dom";
@@ -30,27 +30,31 @@ export const DynamicGrids = () => {
 
   const docID = id;
 
-  // const docID = useMemo(() => {
-  //   try {
-  //     return atob(String(id));
-  //   } catch (err) {
-  //     console.log(err);
-  //     return id;
-  //   }
-  // }, [id]);
-
-  const {
-    data: metaData,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch,
-  } = useQuery<any, any>(["getDynamicGridMetaData", docID], () =>
-    API.getDynamicGridMetaData({
-      docID,
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
+  const result = useQueries([
+    {
+      queryKey: ["getDynamicGridMetaData", docID],
+      queryFn: () =>
+        API.getDynamicGridMetaData({
+          docID,
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+        }),
+    },
+    {
+      queryKey: ["getDynActionButtonData"],
+      queryFn: () =>
+        API.getDynActionButtonData({
+          DOC_CD: result[0].data.docID || "",
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+        }),
+    },
+  ]);
+  console.log("result[0].data", result[0].data?.docID);
+  console.log(
+    "result[1].data",
+    result[1].data?.map((key) => {
+      console.log("key", key);
     })
   );
   const mutation = useMutation(
@@ -62,30 +66,32 @@ export const DynamicGrids = () => {
   );
 
   useEffect(() => {
-    if (metaData?.docID || "" === null) {
+    if (result[0].data?.docID || "" === null) {
       const mutationArguments: any = {
-        doccd: metaData?.docID || "",
+        doccd: result[0].data?.docID || "",
         companyID: authState?.companyID ?? "",
         branchID: authState?.user?.branchCode ?? "",
         customerID: "2",
       };
       mutation.mutate(mutationArguments);
     }
-  }, [metaData?.docID]);
+  }, [result[0].data?.docID]);
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getDynamicGridMetaData"]);
-      queryClient.removeQueries(["getDynGridData", metaData?.docID]);
+      queryClient.removeQueries(["getDynGridData", result[0].data?.docID]);
     };
   }, []);
+  let errorMsg = `${result[0].error?.error_msg}`;
+  errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
   return (
     <>
-      {isLoading || isFetching ? (
+      {result[0].isLoading || result[0].isFetching ? (
         <LoaderPaperComponent />
-      ) : isError ? (
+      ) : result[0].isError ? (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Error"}
+          errorMsg={errorMsg}
           errorDetail={""}
           color="error"
         />
@@ -93,11 +99,11 @@ export const DynamicGrids = () => {
         <>
           <GridWrapper
             key={`DynamicGrid` + docID}
-            finalMetaData={metaData as GridMetaDataType}
+            finalMetaData={result[0].data as GridMetaDataType}
             data={mutation.data ?? []}
             setData={() => null}
             loading={mutation.isLoading}
-            refetchData={() => refetch()}
+            refetchData={() => result[0].refetch()}
           />
         </>
       )}
