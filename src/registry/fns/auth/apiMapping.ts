@@ -420,6 +420,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGRIDACTIONLST",
     packageName: "",
   },
+  CUSTOMERDEPENDENCYCOUNT: {
+    url: "/customerServiceAPI/CUSTOMERDEPENDENCYCOUNT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
