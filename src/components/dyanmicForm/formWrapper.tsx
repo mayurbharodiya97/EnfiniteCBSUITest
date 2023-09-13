@@ -153,6 +153,7 @@ const ChildFormWrapper = forwardRef<any, any>(
   ) => {
     const {
       handleSubmit,
+      handleSubmitError,
       handleSubmitPartial,
       serverSentError,
       serverSentErrorDetail,
@@ -168,6 +169,7 @@ const ChildFormWrapper = forwardRef<any, any>(
     //and only get form values
     useImperativeHandle(ref, () => ({
       handleSubmit: handleSubmit,
+      handleSubmitError: handleSubmitError,
       formDisplayLabel: formDisplayLabel,
       getFieldData: getFieldData,
     }));

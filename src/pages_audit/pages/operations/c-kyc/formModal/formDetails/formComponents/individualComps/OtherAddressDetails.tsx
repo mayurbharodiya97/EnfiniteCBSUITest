@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef } from 'react';
+import { useContext, useState, useEffect, useMemo, useRef } from 'react';
 import { Grid, Typography, Divider, Skeleton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
@@ -11,6 +11,7 @@ import { CkycContext } from '../../../../CkycContext';
 const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+    const [isNextLoading, setIsNextLoading] = useState(false)
     const { t } = useTranslation();
     const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
     const OtherAddDTLFormRef = useRef<any>("");
@@ -22,7 +23,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
         setFieldError,
         actionFlag
     ) => {
-        // setIsNextLoading(true)
+        setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
         if(data) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
@@ -39,11 +40,13 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
             newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             // handleColTabChangectx(6)
-            handleColTabChangectx(state?.colTabValuectx+1)
+            // handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         }   
         endSubmit(true)
+        handleColTabChangectx(state?.colTabValuectx+1)
+        setIsNextLoading(false)
     }
     const initialVal = useMemo(() => {
         return state?.isFreshEntryctx
@@ -81,7 +84,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                         onSubmitHandler={OtherAddDTLSubmitHandler}
                         // initialValues={state?.formDatactx["OTHER_ADDRESS"] ?? {}}
                         initialValues={initialVal}
-                        key={"new-form-in-kyc"}
+                        key={"other-address-form-kyc"+initialVal}
                         metaData={other_address_meta_data as MetaDataType}
                         formStyle={{}}
                         hideHeader={true}
@@ -97,7 +100,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
+                disabled={isNextLoading}
                     onClick={(e) => {
                         OtherAddDTLFormRef.current.handleSubmit(e, "save")
                     }}

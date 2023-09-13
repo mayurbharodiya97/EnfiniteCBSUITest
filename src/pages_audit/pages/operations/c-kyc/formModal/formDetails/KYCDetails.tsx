@@ -18,7 +18,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
   //  const [isLoading, setIsLoading] = useState(false)
   //  const myGridRef = useRef<any>(null);
    const { t } = useTranslation();
-   const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
+   const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
    const [isPoIExpanded, setIsPoIExpanded] = useState(true)
    const [isPoAExpanded, setIsPoAExpanded] = useState(true)
    const [isNextLoading, setIsNextLoading] = useState(false)
@@ -59,18 +59,20 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
     displayData,
     endSubmit,
     setFieldError,
-    actionFlag
+    actionFlag,
+    hasError
    ) => {
-    // setIsNextLoading(true)
+    setIsNextLoading(true)
     console.log("qweqweqwe", data)     
-    if(data) {
+    if(data && !hasError) {
         setCurrentTabFormData(formData => ({...formData, "proof_of_identity": data }))
         let newData = state?.formDatactx
         newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
         handleFormDataonSavectx(newData)
-
-        KyCPoAFormRef.current.handleSubmit(NextBtnRef.current, "save")
-    }   
+        handleStepStatusctx({status: "", coltabvalue: state?.colTabValuectx})
+        KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save")
+    } else handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+    setIsNextLoading(false)
     // endSubmit(true)
    }
    const PoASubmitHandler = (
@@ -78,21 +80,23 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
     displayData,
     endSubmit,
     setFieldError,
-    actionFlag
+    actionFlag,
+    hasError
    ) => {
-    // setIsNextLoading(true)
+    setIsNextLoading(true)
     console.log("qweqweqwe", data)     
-    if(data) {
+    if(data && !hasError) {
         setCurrentTabFormData(formData => ({...formData, "proof_of_address": data }))
 
         let newData = state?.formDatactx
         newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
         handleFormDataonSavectx(newData)
         handleColTabChangectx(2)
-
+        handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
         // setIsNextLoading(false)
-    }
+    } else handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
     endSubmit(true)
+    setIsNextLoading(false)
    }
 
    const initialVal = useMemo(() => {
@@ -143,7 +147,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                             onSubmitHandler={PoISubmitHandler}
                             // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                             initialValues={initialVal}
-                            key={"new-form-in-kyc"}
+                            key={"poi-form-kyc"+ initialVal}
                             metaData={kyc_proof_of_identity_meta_data as MetaDataType}
                             formStyle={{}}
                             hideHeader={true}
@@ -172,7 +176,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                         onSubmitHandler={PoASubmitHandler}
                         // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                         initialValues={initialVal}
-                        key={"new-form-in-kyc"}
+                        key={"poa-form-kyc"+ initialVal}
                         metaData={kyc_proof_of_address_meta_data as MetaDataType}
                         formStyle={{}}
                         hideHeader={true}
@@ -218,7 +222,7 @@ const KYCDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
                         NextBtnRef.current = e
-                        KyCPoIFormRef.current.handleSubmit(e, "save")                        
+                        KyCPoIFormRef.current.handleSubmitError(e, "save")                        
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>

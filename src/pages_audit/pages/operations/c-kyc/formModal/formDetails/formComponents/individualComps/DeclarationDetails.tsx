@@ -40,9 +40,9 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
         handleFormDataonSavectx(newData)
         // handleColTabChangectx(3)
-        handleColTabChangectx(state?.colTabValuectx+1)
+        // handleColTabChangectx(state?.colTabValuectx+1)
 
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
         API.SaveAsDraft({
             CUSTOMER_TYPE: state?.entityTypectx,
             CATEGORY_CD: state?.categoryValuectx,
@@ -53,6 +53,8 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         })
     }
     endSubmit(true)
+    handleColTabChangectx(state?.colTabValuectx+1)
+    setIsNextLoading(false)
    }
   const [isDeclarationExpanded, setIsDeclarationExpanded] = useState(true)
   const handleDeclarationExpand = () => {
@@ -100,7 +102,7 @@ const myGridRef = useRef<any>(null);
                         onSubmitHandler={DeclarationSubmitHandler}
                         // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                         initialValues={initialVal}
-                        key={"new-form-in-kyc"}
+                        key={"declaration-form-kyc"+ initialVal}
                         metaData={declaration_meta_data as MetaDataType}
                         formStyle={{}}
                         hideHeader={true}

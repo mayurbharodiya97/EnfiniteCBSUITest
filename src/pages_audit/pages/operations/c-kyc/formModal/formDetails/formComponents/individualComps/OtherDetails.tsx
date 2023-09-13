@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+    const [isNextLoading, setIsNextLoading] = useState(false)
     const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
     const { t } = useTranslation();
     const OtherDTLFormRef = useRef<any>("")
@@ -32,7 +33,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
         setFieldError,
         actionFlag
     ) => {
-        // setIsNextLoading(true)
+        setIsNextLoading(true)
         console.log("qweqweqwe", data)     
         if(data) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
@@ -49,10 +50,12 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
             newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             // handleColTabChangectx(5)
-            handleColTabChangectx(state?.colTabValuectx+1)
+            // handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         }   
+        setIsNextLoading(false)
+        handleColTabChangectx(state?.colTabValuectx+1)
         endSubmit(true)
     }
     const initialVal = useMemo(() => {
@@ -91,7 +94,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     <FormWrapper 
                         ref={OtherDTLFormRef}
                         onSubmitHandler={OtherDTLSubmitHandler}
-                        key={"new-form-in-kyc"}
+                        key={"other-details-form-kyc"+initialVal}
                         metaData={other_details_meta_data as MetaDataType}
                         // initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
                         initialValues={initialVal}
@@ -110,7 +113,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
+                disabled={isNextLoading}
                     onClick={(e) => {
                         OtherDTLFormRef.current.handleSubmit(e, "save")
                     }}

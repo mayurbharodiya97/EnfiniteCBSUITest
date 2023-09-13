@@ -82,8 +82,8 @@ export const personal_detail_prefix_data = {
               ) => {
                 if(field.value) {
                     return {
-                        GENDER: {value: field?.optionData[0]?.GENDER ?? "" },
-                        MARITAL_STATUS: {value: field?.optionData[0]?.MARITIAL_STATUS ?? ""},
+                        GENDER: {value: field?.optionData[0]?.SET_GENDER ?? "" },
+                        MARITAL_STATUS: {value: field?.optionData[0]?.SET_MARITIAL_STATUS ?? ""},
                     }
                 }
                 return {}
@@ -110,6 +110,7 @@ export const personal_detail_prefix_data = {
             label: "FirstName",
             // placeholder: "First Name",
             type: "text",
+            maxLength: 50,
             // GridProps: {xs:4, sm:2},
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             required: true,
@@ -128,6 +129,7 @@ export const personal_detail_prefix_data = {
             },
             name: "LAST_NM",
             label: "MiddleName",
+            maxLength: 50,
             // placeholder: "Middle Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -139,6 +141,7 @@ export const personal_detail_prefix_data = {
             },
             name: "SURNAME",
             label: "LastName",
+            maxLength: 50,
             // placeholder: "Last Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -165,12 +168,6 @@ export const personal_detail_prefix_data = {
                 componentType: "autocomplete",
                 sequence: 7,
             },
-            options: [
-                {label: "MALE", value: "M"},
-                {label: "FEMALE", value: "F"},
-                {label: "OTHER", value: "O"},
-                {label: "TRANSGENDER", value: "T"},
-            ],
             name: "GENDER",
             label: "Gender",
             required: true,
@@ -180,6 +177,10 @@ export const personal_detail_prefix_data = {
                   { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
+            dependentFields: ["PREFIX_CD"],
+            disableCaching: true,
+            options: (dependentValue) => API.getGenderOp(dependentValue), 
+            _optionsKey: "genderOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
@@ -192,6 +193,8 @@ export const personal_detail_prefix_data = {
             name: "MARITAL_STATUS",
             label: "MaritalStatus",
             required: true,
+            dependentFields: ["PREFIX_CD"],
+            disableCaching: true,
             schemaValidation: {
                 type: "string",
                 rules: [
@@ -199,7 +202,7 @@ export const personal_detail_prefix_data = {
                 ],
             },
             placeholder: "",
-            options: () => API.getPMISCData("Marital"),
+            options: (dependentValue) => API.getPMISCData("Marital", dependentValue),
             _optionsKey: "maritalStatus",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5}
@@ -224,7 +227,7 @@ export const personal_detail_prefix_data = {
             label: "Prefix",
             options: () => API.getPMISCData("Salutation"),
             _optionsKey: "PDMaidenSalutation",
-            defaultValue: "Mrs",
+            defaultValue: "Miss",
             // placeholder: "Prefix",
             type: "text",
             GridProps: {xs:12, sm:2.5, md: 2.5, lg: 1.5, xl: 1},            

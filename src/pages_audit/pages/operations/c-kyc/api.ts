@@ -176,7 +176,7 @@ export const getOccupationDTL = async (COMP_CD, BRANCH_CD) => {
     }
 };
 
-export const getPMISCData = async (CATEGORY_CD) => {
+export const getPMISCData = async (CATEGORY_CD, dependentValue?) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPMISCDATA", {
       CATEGORY_CD: CATEGORY_CD,
@@ -184,7 +184,25 @@ export const getPMISCData = async (CATEGORY_CD) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      console.log("qweqwerr", responseData)
+      // console.log("qweqwerr", responseData)
+
+      if(CATEGORY_CD == "Marital") {
+        // console.log("dkjawhdiqwuiugeqweqe", dependentValue)
+        let resOp:any = []
+        const options = dependentValue?.PREFIX_CD?.optionData?.[0]?.MARITIAL_STATUS ?? ""
+        responseData.map((element, i) => {
+          // console.log("element item", element?.DATA_VALUE, typeof element?.DATA_VALUE)
+          if(options.indexOf(element?.DATA_VALUE) != -1) {
+            resOp.push(element)
+          }
+        })
+        if(resOp && resOp.length>0) {
+          // return resOp;
+          responseData = resOp;
+        }
+      }
+  
+
       responseData = responseData.map(
         ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
           return {

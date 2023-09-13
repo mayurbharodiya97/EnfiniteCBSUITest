@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef } from "react"
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { attestation_detail_meta_data } from "../../metadata/individual/attestationdetails"
@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next"
 import * as API from "../../../../api";
 
 const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+    const [isNextLoading, setIsNextLoading] = useState(false)
     const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
     const { t } = useTranslation();
     const AttestationDTLFormRef = useRef<any>("");
@@ -17,7 +18,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         setFieldError,
         actionFlag
     ) => {
-        // setIsNextLoading(true)
+        setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
         if(data) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
@@ -46,6 +47,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
             })
         }   
         endSubmit(true)
+        setIsNextLoading(false)
     }
 
     const initialVal = useMemo(() => {
@@ -85,7 +87,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                             onSubmitHandler={AttestationDTLSubmitHandler}
                             // initialValues={state?.formDatactx["ATTESTATION_DTL"] ?? {}}
                             initialValues={initialVal}
-                            key={"new-form-in-kyc"}
+                            key={"att-details-form-kyc"+ initialVal}
                             metaData={attestation_detail_meta_data as MetaDataType}
                             formStyle={{}}
                             hideHeader={true}
@@ -102,7 +104,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
+                disabled={isNextLoading}
                     onClick={(e) => {
                         AttestationDTLFormRef.current.handleSubmit(e, "save")
                     }}
