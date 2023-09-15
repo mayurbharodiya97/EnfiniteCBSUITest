@@ -151,7 +151,8 @@ export interface SubmitFnType {
     displayValues: Object,
     endSubmit: (submitSuccessful: boolean, message?: string) => void,
     setFieldErrors: (fieldsErrorObj: FieldsErrorObjType) => void,
-    actionFlag?: String
+    actionFlag?: String,
+    hasError?: boolean
   ): void;
 }
 

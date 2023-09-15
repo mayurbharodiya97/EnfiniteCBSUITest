@@ -322,7 +322,6 @@ export const personal_detail_prefix_data = {
                 ___,
                 dependentFieldsValues
             ) => {
-                console.log("q  wqeqweqweqwe f/s", field)
                 if(field?.value == "01") {
                     return {fatherHeaderDivider: {value: "Father Name"}}
                 }
@@ -886,7 +885,7 @@ export const personal_other_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "datePicker",
+                componentType: "dob",
             },
             name: "BIRTH_DT",
             label: "DateOfBirth",
@@ -894,16 +893,28 @@ export const personal_other_detail_meta_data = {
             // placeholder: "",
             // type: "datePicker",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
-            schemaValidation: {
-                type: "string",
-                rules: [
-                  { name: "required", params: ["ThisFieldisrequired"] },
-                ],
+            maxDate: new Date(), 
+            format: "dd/MM/yyyy",
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "AGE",
+            label: "Age",
+            isReadOnly: true,
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            dependentFields: ["BIRTH_DT"],
+            setValueOnDependentFieldsChange: (dependentFields) => {
+                if(dependentFields?.BIRTH_DT?.value) {
+                    let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
+                    return age;
+                } else return ""
             },
         },
         {
             render: {
-                componentType: "autocomplete",
+                componentType: "select",
             },
             options: [
                 {label: "Minor", value: "M"},
@@ -913,7 +924,7 @@ export const personal_other_detail_meta_data = {
             setValueOnDependentFieldsChange: (dependentFields) => {
                 if(dependentFields?.BIRTH_DT?.value) {
                     let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
-                    return (age && age> 18) ? "M" : "J";
+                    return (age && age> 18) ? "J" : "M";
                 } else return ""
             },
             name: "LF_NO",

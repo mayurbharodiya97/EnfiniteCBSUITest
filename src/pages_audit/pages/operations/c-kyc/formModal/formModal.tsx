@@ -50,6 +50,7 @@ import { CkycContext } from '../CkycContext';
 import TabStepper from './TabStepper';
 import KYCDocUpload from './formDetails/formComponents/individualComps/KYCDocUpload';
 import PhotoSignature from './formDetails/formComponents/individualComps/PhotoSignature';
+import { format } from "date-fns/esm";
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -213,6 +214,7 @@ export default function FormModal({
         ENTITY_TYPE: state?.entityTypectx,
         CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
         CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
+        isFreshEntry: state?.isFreshEntryctx
       }  
       )
   );
@@ -516,7 +518,55 @@ export default function FormModal({
                 : t("IndividualEntry")
               }
             </Typography>
-            <Button
+
+
+            {(!state?.isFreshEntryctx && state?.retrieveFormDataApiRes)
+            ? (
+              <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
+                // className={classes.title}
+                color="inherit"
+                variant="subtitle1"
+                component="div"
+              >
+                {/* {`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD}`} */}
+                {/* Photo/Signature Confirmation Pending */}
+                {state?.entityTypectx === "I" && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "P" 
+                  ? "Photo/Signature yet not scanned" 
+                  : state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "N"
+                    ? "Photo/Signature Confirmation Pending" : null
+                }
+              </Typography>
+              )
+            :""}
+            {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) 
+            && (state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "R" || state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "N") )
+            ? (
+              <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
+                // className={classes.title}
+                color="inherit"
+                variant="subtitle1"
+                component="div"
+              >{`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD}`}</Typography>
+              )
+            :""}
+
+
+            {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) 
+            && (state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "R" || state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "N") )
+            ? (
+              <Typography sx={{whiteSpace: "nowrap", mr: "30px"}}
+                // className={classes.title}
+                color="inherit"
+                variant="subtitle2"
+                component="div"
+              >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE}`}</Typography>
+              // format(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE, "dd/MM/yyyy")
+              )
+            :""}
+
+
+
+            {/* <Button
               // onClick={handleFormModalClose}
               color="primary"
               size="small"
@@ -525,7 +575,7 @@ export default function FormModal({
               // disabled={mutation.isLoading}
             >
               {t("SaveAsDraft")}
-            </Button>
+            </Button> */}
             <Button
               // onClick={handleFormModalClose}
               color="primary"
@@ -644,7 +694,7 @@ export default function FormModal({
                       renderInput={(params) => (
                         <TextField {...params} 
                           size="small" 
-                          label="Acc. Type"
+                          label="A/C Type"
                         />
                       )}
                       // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}

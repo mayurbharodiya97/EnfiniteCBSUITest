@@ -71,7 +71,7 @@ export const getCustomerDetails = async ({COMP_CD, CUST_ID, CONTACT_NO, PAN_NO, 
     }
   };
 
-export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_TYPE }) => {
+export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_TYPE, isFreshEntry }) => {
   if(!CATEGORY_CD || !CONS_TYPE) {
     return []
   }
@@ -81,6 +81,7 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
       ENTITY_TYPE: ENTITY_TYPE,
       CATEGORY_CD: CATEGORY_CD,
       CONS_TYPE: CONS_TYPE,
+      ENTRY_MODE: isFreshEntry ? "NEW" : "EDIT"
     });
   if (status === "0") {
     return data;
@@ -89,14 +90,11 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
   }
 };
 
-export const getCustomerDetailsonEdit = async ({COMP_CD, CUSTOMER_ID, ACCT_TYPE, ACCT_CD, AS_FROM}) => {
+export const getCustomerDetailsonEdit = async ({COMP_CD, CUSTOMER_ID}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", {
       COMP_CD: COMP_CD, 
       CUSTOMER_ID: CUSTOMER_ID, 
-      ACCT_TYPE: ACCT_TYPE, 
-      ACCT_CD: ACCT_CD, 
-      AS_FROM: AS_FROM
     });
   if (status === "0") {
     let responseData = data;
@@ -229,7 +227,6 @@ export const GetDynamicSalutationData = async (CATEGORY_CD) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      console.log("qweqwerr", responseData)
       responseData = responseData.map(
         ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
           return {
@@ -248,6 +245,31 @@ export const GetDynamicSalutationData = async (CATEGORY_CD) => {
   }
 }
 
+export const getGenderOp = (dependentValue) => {
+  const opString = dependentValue?.PREFIX_CD?.optionData?.[0]?.GENDER ?? ""
+  const opArr = (opString.indexOf("-") == -1) ? Array.from(opString) : opString.split(",").trim()  // [M,F,O]
+  let op = [
+    {label: "MALE", value: "M"},
+    {label: "FEMALE", value: "F"},
+    {label: "OTHER", value: "O"},
+    {label: "TRANSGENDER", value: "T"},
+  ]
+  if(opString) {
+    let options:any = []
+    op.map((el,i) => {
+      if(opArr?.includes(el.value)) {
+        options.push(el)
+        // op.splice(i, 1)
+      }
+    })
+    if(options && options.length>0) {
+      op = options
+    }
+  }
+  // console.log(op, "oppopo,", opArr)
+  return op;
+}
+
 export const getCountryOptions = async (COMP_CD, BRANCH_CD) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCOUNTRYLIST", {
@@ -257,7 +279,7 @@ export const getCountryOptions = async (COMP_CD, BRANCH_CD) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      console.log("qweqwerr", responseData)
+      // console.log("qweqwerr", responseData)
       responseData = responseData.map(({ COUNTRY_CD, COUNTRY_NM, ...other }) => {
           return {
             ...other,
@@ -408,6 +430,7 @@ export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
   await AuthSDK.internalFetcher("GETAREALIST", {
     COMP_CD: COMP_CD, 
     BRANCH_CD: BRANCH_CD,
+    PIN_CODE: "123456"
   });
 
   if (status === "0") {
@@ -597,8 +620,9 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
     await AuthSDK.internalFetcher("DOCTEMPLATEDTL", {
       COMP_CD: COMP_CD, 
       BRANCH_CD: BRANCH_CD, 
-      CUST_TYPE: CUST_TYPE, 
-      CONSTITUTION_TYPE: CONSTITUTION_TYPE
+      // CUST_TYPE: CUST_TYPE, 
+      // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
+      TRAN_CD: "42"
     });
   if (status === "0") {
     let responseData = data;
@@ -628,10 +652,10 @@ export const SaveAsDraft = async ({
   IsNewRow,
   PERSONAL_DETAIL,
 }) => {
-  console.log("reqdataa..",
-    // `
-    // // ${Object.keys(PERSONAL_DETAIL)}`,
-  )
+  // console.log("reqdataa..",
+  //   // `
+  //   // // ${Object.keys(PERSONAL_DETAIL)}`,
+  // )
   const remainingData = { 
     // IsNewRow: IsNewRow,
     // REQ_CD:"",
@@ -838,7 +862,7 @@ export const SaveEntry = async ({
   REQ_CD,
   formData,
 }) => {
-  console.log("aaaaaaaaa", formData)
+  // console.log("aaaaaaaaa", formData)
   const PHOTO_MST = {
     IsNewRow: true,
     COMP_CD:"132 ",
@@ -1057,4 +1081,79 @@ export const SaveEntry = async ({
       ENT_BRANCH_CD:"099 "
      },
   });
+}
+
+export const DeactivateCustomer = async ({CUSTOMER_ID, COMP_CD}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CUSTOMERDEPENDENCYCOUNT", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID,
+    });
+  if (status === "0") {
+    let responseData = data;
+    // if (Array.isArray(responseData)) {
+    //   responseData = responseData.map(({ ED_TYPE_CD, DISPLAY_NM, ...other }) => {
+    //       return {
+    //         ...other,
+    //         ED_TYPE_CD: ED_TYPE_CD, 
+    //         DISPLAY_NM: DISPLAY_NM,
+    //         value: ED_TYPE_CD,
+    //         label: DISPLAY_NM,
+    //       };
+    //     }
+    //   );
+    // }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getOptionsOnPinParentArea = async (dependentValue, formState, _, authState) => {
+  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.PAR_AREA_CD)
+  let PIN_CODE = "", PARENT_AREA = ""
+  if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length>5) {
+    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value, dependentValue?.PAR_AREA_CD?.value)
+    PIN_CODE = dependentValue?.PIN_CODE?.value
+  } else if(dependentValue?.PAR_AREA_CD?.value) {
+    // console.log("getOptionsOnPinParentArea dp parea", dependentValue?.PIN_CODE?.value, dependentValue?.PAR_AREA_CD?.value)
+    PARENT_AREA = dependentValue?.PAR_AREA_CD?.value
+  }
+  if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length<5) {
+
+  } else if(PIN_CODE || PARENT_AREA) {
+    // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETAREALIST", {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      PIN_CODE: PIN_CODE,
+      FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+      PARENT_AREA: PARENT_AREA,
+      // PIN_CODE: currentField?.value ?? "",
+      // FLAG: "", // P - pincode, A - parent area
+      // PARENT_AREA: "",
+    });
+
+    if(status == 0) {
+      // console.log("getOptionsOnPinParentArea data", data)
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
+            return {
+              ...other,
+              AREA_CD: AREA_CD,
+              AREA_NM: AREA_NM,
+              label: AREA_NM,
+              value: AREA_CD,
+            };
+          }
+        );
+      }
+      return responseData  
+    }
+  }
+
+
+  return [{label: "label", value: "value"}]
 }

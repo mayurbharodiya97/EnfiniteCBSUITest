@@ -47,7 +47,8 @@ const QontoStepIconRoot = styled('div')<{ ownerState: { active?: boolean } }>(
     '& .QontoStepIcon-completedIcon': {
       color: '#784af4',
       zIndex: 1,
-      fontSize: 18,
+      fontSize: 28,
+      fontWeight: "bold"
     },
     '& .QontoStepIcon-circle': {
       width: 8,
@@ -55,15 +56,23 @@ const QontoStepIconRoot = styled('div')<{ ownerState: { active?: boolean } }>(
       borderRadius: '50%',
       backgroundColor: 'currentColor',
     },
+    '& .QontoStepIcon-redcircle': {
+      width: 8,
+      height: 8,
+      borderRadius: '50%',
+      backgroundColor: '#d02e2e',
+    },
   }),
 );
 
 function QontoStepIcon(props: StepIconProps) {
-  const { active, completed, className } = props;
+  const { active, completed, error, className } = props;
 
   return (
     <QontoStepIconRoot ownerState={{ active }} className={className}>
-      {completed ? (
+      {error ? (
+        <div className="QontoStepIcon-redcircle" />
+      ) : completed ? (
         <Check className="QontoStepIcon-completedIcon" />
       ) : (
         <div className="QontoStepIcon-circle" />
@@ -145,8 +154,10 @@ export default function TabStepper() {
       <Stepper alternativeLabel activeStep={state?.colTabValuectx} connector={<QontoConnector />}>
         {state?.tabNameList.map((label, i) => {
             // console.log("qwdQDW",)
-          return <Step sx={{}} key={label}>
-            <StepLabel sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{label}</StepLabel>
+          return <Step sx={{}} key={label} 
+          completed={state?.steps?.[i]?.status == "completed"}
+          >
+            <StepLabel error={state?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{label}</StepLabel>
           </Step>
         })}
       </Stepper>
