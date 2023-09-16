@@ -1,26 +1,16 @@
-import {
-  Fragment,
-  useRef,
-  useCallback,
-  useState,
-  useMemo,
-  useEffect,
-} from "react";
-import { useMutation } from "react-query";
+import { Fragment, useEffect, useRef } from "react";
+import { useMutation, useQuery } from "react-query";
 import { ChequeBookIssueEntry } from "./metaData";
 import { ChequebookentryGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
-import { useNavigate } from "react-router-dom";
 import { GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { UpdateRequestDataVisibleColumn } from "components/utils";
-import { useSnackbar } from "notistack";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { SubmitFnType } from "packages/form";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 
 const ChequeBookEntry = () => {
   const myGridRef = useRef<any>(null);
@@ -36,6 +26,19 @@ const ChequeBookEntry = () => {
     },
   });
 
+  const getData8888 = useMutation(API.getChequeLeavesList88888, {
+    onSuccess: (response: any) => {
+      // Handle success
+    },
+    onError: (error: any) => {
+      // Handle error
+    },
+  });
+  const ClickEventManage = () => {
+    let event: any = { preventDefault: () => {} };
+    isErrorFuncRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+  };
+
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -44,20 +47,19 @@ const ChequeBookEntry = () => {
   ) => {
     //@ts-ignore
     endSubmit(true, "Please enter any value");
-
+    if (Boolean(data?.NO_OF_CHEQUE)) {
+      getData8888.mutate({ NO_OF_CHEQUE: data?.NO_OF_CHEQUE });
+    }
     getData.mutate({
       companyID: authState.companyID,
       branchCD: data?.BRANCH_CD,
       acctType: data?.ACCT_TYPE,
-      accountNo: data?.ACCT_CD,
+      accountNo: data?.ACCT_CD.padEnd(20, " "),
     });
   };
-
-  const ClickEventManage = () => {
-    let event: any = { preventDefault: () => {} };
-    isErrorFuncRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-  };
-
+  let dat1 = getData8888?.data?.[0];
+  let dat2 = getData?.data?.[0];
+  let Newdata = getData8888.isSuccess ? { ...dat2, ...dat1 } : dat2;
   return (
     <Fragment>
       <div
@@ -75,14 +77,6 @@ const ChequeBookEntry = () => {
             color="error"
           />
         )}
-        {/* {saveData.isError && (
-          <Alert
-            severity={saveData.error?.severity ?? "error"}
-            errorMsg={saveData.error?.error_msg ?? "Something went to wrong.."}
-            errorDetail={saveData.error?.error_detail}
-            color="error"
-          />
-        )} */}
         <GridWrapper
           key={`ChequeBookEntryGrid`}
           finalMetaData={ChequebookentryGridMetaData as GridMetaDataType}
@@ -94,11 +88,11 @@ const ChequeBookEntry = () => {
           ref={myGridRef}
         />
         <FormWrapper
-          key={"ChequeBookEntry"}
+          key={"ChequeBookEntry" + getData?.data}
           metaData={ChequeBookIssueEntry}
           loading={getData.isLoading}
           hideHeader={true}
-          //  initialValues={rows?.[0]?.data as InitialValuesType}
+          initialValues={Newdata}
           ref={isErrorFuncRef}
           onSubmitHandler={onSubmitHandler}
           //@ts-ignore

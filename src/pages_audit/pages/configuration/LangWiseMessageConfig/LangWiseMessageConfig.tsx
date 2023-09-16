@@ -15,13 +15,13 @@ const actions: ActionTypes[] = [
     multiple: false,
     rowDoubleClick: true,
   },
-  {
-    actionName: "add",
-    actionLabel: "Add",
-    multiple: undefined,
-    rowDoubleClick: false,
-    alwaysAvailable: true,
-  },
+  // {
+  //   actionName: "add",
+  //   actionLabel: "Add",
+  //   multiple: undefined,
+  //   rowDoubleClick: false,
+  //   alwaysAvailable: true,
+  // },
 ];
 export const LangWiseMessageConfig = () => {
   const navigate = useNavigate();

@@ -436,6 +436,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDBTABLELIST",
     packageName: "",
   },
+  GETCHQLEAVESLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQLEAVESLIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

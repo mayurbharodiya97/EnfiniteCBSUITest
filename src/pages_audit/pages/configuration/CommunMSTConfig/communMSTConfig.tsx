@@ -60,7 +60,6 @@ export const CommonMSTConfig = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [addCategory, setAddCategory] = useState(false);
 
-  console.log("<<<myRef", myRef.current?.GetGirdData());
   const { data, isLoading, isFetching, refetch } = useQuery(
     ["getMiscListData"],
     () => API.getMiscListData()
@@ -179,10 +178,6 @@ export const CommonMSTConfig = () => {
   commonMSTGridMetaData.masterForm.form.label =
     "Common Master Configuration :   " + selectedRows?.[0];
 
-  // console.log(
-  //   "<<<commonMSTGridMetaData",
-  //   commonMSTGridMetaData.detailsGrid.columns[3]
-  // );
   return (
     <>
       <Dialog

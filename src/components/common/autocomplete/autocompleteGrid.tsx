@@ -152,7 +152,11 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
     false
   );
 
-  const isError = touched && (error ?? "") !== "";
+  // const isError = touched && (error ?? "") !== "";
+  const isError = touched && Boolean(error);
+
+  console.log(">>isError", isError);
+  console.log(">>error", error);
   return (
     <Suspense fallback={"loading..."}>
       <Autocomplete
@@ -162,6 +166,7 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
         limitTags={limitTags ?? 2}
         multiple={multiple}
         disableClearable={disableClearable}
+        error={isError}
         options={_options}
         freeSolo={freeSolo}
         //@ts-ignore
@@ -283,10 +288,13 @@ export const AutoCompleteGrid: FC<MyAutocompleteProps> = ({
             </span>
           ));
           return (
-            <div style={{ whiteSpace: "pre" }}>
+            // <div style={{ whiteSpace: "pre" }}>
+
+            <li style={{ whiteSpace: "pre" }} {...props}>
               {showCheckbox ? <Checkbox checked={selected} /> : null}
               {labelJSX}
-            </div>
+            </li>
+            // </div>
           );
         }}
       />

@@ -47,6 +47,28 @@ export const getChequeBookEntryData = async ({
   }
 };
 
+export const getChequeLeavesList88888 = async ({ NO_OF_CHEQUE }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCHQLEAVESLIST", { COMP_CD: "132 " });
+  if (status === "0") {
+    return [
+      {
+        // CHEQUE_FROM: "8080808",
+        // CHEQUE_TO: "9090909",
+        SERVICE_CHARGE: "757754",
+        GST: "4564564 ",
+        FROM_CHEQUE_NO: "8080808",
+        TO_CHEQUE_NO: "9090909",
+        NO_OF_CHEQUE: NO_OF_CHEQUE,
+        // SERVICE_CHARGE: "757754",
+        // GST: "4564564 ",
+      },
+    ];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const getCustomerCardDetailThroughCB = async ({ clientID }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETUSERDTL360", {
