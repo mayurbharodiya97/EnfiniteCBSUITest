@@ -26,7 +26,7 @@ export const getDynamicGridMetaData = async ({ docID, COMP_CD, BRANCH_CD }) => {
     });
 
     let result = {
-      docID: data[0].DOC_CD,
+      DOC_CD: data[0].DOC_CD,
       gridConfig: {
         dense: data[0].DENSE,
         gridLabel: data[0].DESCRIPTION,
@@ -63,6 +63,7 @@ export const getDynGridData = async ({
   companyID,
   branchID,
   customerID,
+  TRAN_CD,
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDYNAMICGRIDDATA", {
@@ -70,6 +71,7 @@ export const getDynGridData = async ({
       COMP_CD: companyID,
       BRANCH_CD: branchID,
       CUSTOMER_ID: customerID,
+      TRAN_CD: TRAN_CD,
     });
   if (status === "0") {
     return data;
@@ -89,7 +91,29 @@ export const getDynActionButtonData = async ({
       BRANCH_CD: BRANCH_CD,
     });
   if (status === "0") {
-    return data;
+    const result = data.map((item) => {
+      return {
+        actionLabel: item?.ACTIONLABEL,
+        actionName: item?.ACTIONNAME,
+        multiple: item?.MULTIPLE === "Y" ? true : false,
+        actionIcon: item?.ACTIONICON,
+        tooltip: item?.TOOLTIP,
+        rowDoubleClick: item?.ROWDOUBLECLICK === "Y" ? true : false,
+        alwaysAvailable: item?.ALWAYSAVAILABLE === "Y" ? true : false,
+        shouldExclude: item?.SHOULDEXCLUDE,
+        isNodataThenShow: item?.ISNODATATHENSHOW === "Y" ? true : false,
+        onEnterSubmit: item?.ONENTERSUBMIT,
+        startsIcon: item?.ICON_TYPE,
+        endsIcon: item?.ACTIONNAME,
+        rotateIcon: item?.ACTIONNAME,
+        COMP_CD: item?.COMP_CD,
+        DOC_CD: item?.DOC_CD,
+        FORM_METADATA_SR_CD: item?.FORM_METADATA_SR_CD,
+        BRANCH_CD: item?.BRANCH_CD,
+        SR_CD: item?.SR_CD,
+      };
+    });
+    return result;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

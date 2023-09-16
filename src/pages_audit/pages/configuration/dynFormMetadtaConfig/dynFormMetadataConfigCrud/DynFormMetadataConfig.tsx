@@ -116,21 +116,6 @@ const DynamicFormMetadataConfig: FC<{
     const gridDataToUpdate = populateClicked ? mutation.data : data;
     setGridData(Array.isArray(gridDataToUpdate) ? gridDataToUpdate : []);
   }, [data, mutation.data, populateClicked]);
-  // useEffect(() => {
-  //   if (populateClicked) {
-  //     if (Array.isArray(mutation.data ?? [])) {
-  //       setGridData(mutation.data ?? []);
-  //     } else {
-  //       setGridData([]);
-  //     }
-  //   } else {
-  //     if (Array.isArray(data ?? [])) {
-  //       setGridData(data ?? []);
-  //     } else {
-  //       setGridData([]);
-  //     }
-  //   }
-  // }, [data, mutation.data, populateClicked]);
 
   useEffect(() => {
     return () => {
@@ -199,7 +184,8 @@ const DynamicFormMetadataConfig: FC<{
           if (
             finalResult?.isDeleteRow?.length === 0 &&
             finalResult?.isNewRow?.length === 0 &&
-            finalResult?.isUpdatedRow?.length === 0
+            finalResult?.isUpdatedRow?.length === 0 &&
+            upd?._UPDATEDCOLUMNS?.length === 0
           ) {
             closeDialog();
           } else {
@@ -216,7 +202,6 @@ const DynamicFormMetadataConfig: FC<{
               endSubmit,
               setFieldError,
             };
-
             setIsOpenSave(true);
           }
         }

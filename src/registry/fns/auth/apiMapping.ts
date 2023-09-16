@@ -420,6 +420,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGRIDACTIONLST",
     packageName: "",
   },
+  GETDYNFORMGRIDMETADATA: {
+    url: "commonMasterServiceAPI/GETDYNFORMGRIDMETADATA",
+    packageName: "",
+  },
+  FORMDML: {
+    url: "commonMasterServiceAPI/FORMDML",
+    packageName: "",
+  },
+  GETDBOWNERLIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDBOWNERLIST",
+    packageName: "",
+  },
+  GETDBTABLELIST: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDBTABLELIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

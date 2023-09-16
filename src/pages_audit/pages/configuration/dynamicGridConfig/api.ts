@@ -95,7 +95,7 @@ export const dynamicGridConfigDML = () => async (formData: any) => {
 //     throw DefaultErrorObject(message, messageDetails);
 //   }
 // };
-export const getDynamicGridConfigData = async ({
+export const getDynamicGridColConfigData = async ({
   COMP_CD,
   BRANCH_CD,
   docCD,
@@ -161,6 +161,25 @@ export const actionsFormDataDML = () => async (formData: any) => {
   );
   if (status === "0") {
     return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getDynamicOwnerList = async () => {
+  const { status, data, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDBOWNERLIST", {});
+  if (status === "0") {
+    // return data;
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ OWNER }) => {
+        return {
+          value: OWNER,
+          label: OWNER,
+        };
+      });
+    }
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

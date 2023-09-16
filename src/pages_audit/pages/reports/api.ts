@@ -118,7 +118,6 @@ export const getDynamicReportMetaData = async (reportID) => {
 };
 
 export const getReportData = async (reportID, filter, otherAPIRequestPara) => {
-  console.log(">>>report", reportID);
   const newData: any = {};
   filter.forEach((item) => {
     newData[item.id] = item.value.value;

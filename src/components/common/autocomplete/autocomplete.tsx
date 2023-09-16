@@ -53,6 +53,7 @@ interface AutoCompleteExtendedProps {
   enableVirtualized?: boolean;
   _optionsKey?: string;
   disableCaching?: boolean;
+  requestProps?: any;
 }
 
 type MyAutocompleteProps = Merge<
@@ -102,6 +103,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   isFieldFocused,
   _optionsKey,
   disableCaching,
+  requestProps,
   ...others
 }) => {
   const {
@@ -220,6 +222,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     whenToRunValidation,
     _optionsKey,
     disableCaching,
+    requestProps,
     setIncomingMessage,
     true,
     "",

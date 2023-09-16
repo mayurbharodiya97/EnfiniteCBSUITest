@@ -408,7 +408,27 @@ const GeneralAPISDK = () => {
     }
     // return []
   };
+  const getTabelListData = async (ReqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETDBTABLELIST", {
+        OWNER: ReqData,
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ TABLE_NAME }) => {
+          return {
+            value: TABLE_NAME,
+            label: TABLE_NAME,
+          };
+        });
+      }
 
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -427,6 +447,7 @@ const GeneralAPISDK = () => {
     getquickViewList,
     getMetadataList,
     getKYCDocTypes,
+    getTabelListData,
   };
 };
 

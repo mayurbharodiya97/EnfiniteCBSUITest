@@ -136,10 +136,11 @@ export const ActionFormWrapper = ({
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
-  if (ActionsMetaData?.fields?.[0]?._fields?.[13]) {
-    ActionsMetaData.fields[0]._fields[13].requestProps =
+  if (ActionsMetaData?.fields?.[0]?._fields?.[11]) {
+    ActionsMetaData.fields[0]._fields[11].requestProps =
       reqData[0]?.data?.DOC_CD ?? "";
   }
+  // console.log("test", ActionsMetaData.fields[0]._fields[11].requestProps);
   if (ActionsMetaData.form.label) {
     ActionsMetaData.form.label =
       "Actions" + " for " + reqData[0]?.data?.DESCRIPTION ?? "";
