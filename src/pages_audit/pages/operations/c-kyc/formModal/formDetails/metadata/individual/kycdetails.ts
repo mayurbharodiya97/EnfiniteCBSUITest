@@ -75,7 +75,7 @@ export const kyc_proof_of_identity_meta_data = {
             },
             name: "PAN_NO",
             label: "PanNo",
-            placeholder: "",
+            placeholder: "AAAAA1111A",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             schemaValidation: {
@@ -95,7 +95,7 @@ export const kyc_proof_of_identity_meta_data = {
             },
             name: "UNIQUE_ID",
             label: "UIDAadhaar",
-            placeholder: "",
+            placeholder: "1111 1111 1111",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             schemaValidation: {
@@ -390,26 +390,86 @@ export const kyc_proof_of_address_meta_data = {
           type: "text",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
         },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "PIN_CODE",
+            label: "PIN",
+            required: true,
+            schemaValidation: {
+              type: "string",
+              rules: [
+                { name: "required", params: ["ThisFieldisrequired"] },
+              ],
+            },
+            dependentFields: ["PAR_AREA_CD"],
+            setValueOnDependentFieldsChange: (dependentFields) => {
+                if(dependentFields?.PAR_AREA_CD?.value) {
+                    return ""
+                }
+            },
+            // postValidationSetCrossFieldValues: (
+            //     field,
+            //     __,
+            //     ___,
+            //     dependentFieldsValues
+            //   ) => {
+            //     console.log("fielddddd", field)
+            //     if(field?.value && field?.value?.length>5) {
+            //         return {
+            //             PAR_AREA_CD: {value: ""}
+            //         }
+            //     }
+            //   },
+            // dependentFields: ["PAR_AREA_CD"],
+            // postValidationSetCrossFieldValues: "getDetailsOnPinCode",
+            // runValidationOnDependentFieldsChange: true,
+          //   isReadOnly: true,
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        },  
       {
           render: {
-              componentType: "autocomplete",
+              componentType: "select",
           },
           options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
           _optionsKey: "parentAreaList",
           name: "PAR_AREA_CD",
           label: "ParentArea",
+          dependentFields: ["PIN_CODE"],
+        //   setValueOnDependentFieldsChange: (dependentFields) => {
+        //     console.log("dependentFieldspin ",dependentFields?.PIN_CODE?.value)
+        //       if(dependentFields?.PIN_CODE?.value && dependentFields?.PIN_CODE?.value?.length>5) {
+        //           return ""
+        //       }
+        //   },
+        //   postValidationSetCrossFieldValues: (
+        //     field,
+        //     __,
+        //     ___,
+        //     dependentFieldsValues
+        //   ) => {
+
+        //   },
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
       {
           render: {
-              componentType: "autocomplete",
+              componentType: "select",
           },
-          dependentFields: ["PAR_AREA_CD"],
-          options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
-          _optionsKey: "subAreaList",
+          dependentFields: ["PAR_AREA_CD", "PIN_CODE"],
+        //   options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
+        //   _optionsKey: "subAreaList",
           disableCaching: true,
+        //   postValidationSetCrossFieldValues: "getDetailsOnPinCode",
+        //   options: "getDetailsOnPinCode",
+          options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentArea(dependentValue, formState, _, authState),
+        //   runValidationOnDependentFieldsChange: true,
+          _optionsKey: "subAreaList",
           postValidationSetCrossFieldValues: (
             field,
             __,
@@ -417,8 +477,60 @@ export const kyc_proof_of_address_meta_data = {
             dependentFieldsValues
           ) => {
             if(field.value) {
+                // console.log("subarea field", field, dependentFieldsValues?.PIN_CODE?.value, dependentFieldsValues?.PAR_AREA_CD?.value);
+                // if(dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) {
+                    // if(dependentFieldsValues?.PIN_CODE?.value?.trim() === field?.optionData[0]?.PIN_CODE?.trim()) {
+                    //     return {
+                    //         // PAR_AREA_CD: {value: (dependentFieldsValues?.PIN_CODE?.value?.trim() === field?.optionData[0]?.PARENT_AREA?.trim()) ? "" : ""},
+                    //         // PIN_CODE: {value: field?.optionData[0]?.PIN_CODE},
+    
+                    //         // PIN_CODE: {value: field?.optionData[0]?.PIN_CODE},
+                            
+                            
+                    //         PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
+                    //         CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                    //         DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                    //         STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                    //         COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                    //         STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                    //         COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                    //     }                    
+
+                    // }
+                    // if(dependentFieldsValues?.PAR_AREA_CD?.value?.trim() === field?.optionData[0]?.PARENT_AREA?.trim()) {
+                    //     return {
+                    //         // PAR_AREA_CD: {value: (dependentFieldsValues?.PIN_CODE?.value?.trim() === field?.optionData[0]?.PARENT_AREA?.trim()) ? "" : ""},
+                    //         // PIN_CODE: {value: field?.optionData[0]?.PIN_CODE},
+    
+                    //         // PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA},
+                            
+                            
+                    //         PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
+                    //         CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                    //         DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                    //         STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                    //         COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                    //         STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                    //         COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                    //     }                    
+
+                    // }
+                // }
+                // else if(dependentFieldsValues?.PAR_AREA_CD?.value) {
+                //     return {
+                //         PIN_CODE: {value: field?.optionData[0]?.PIN_CODE},
+                //         CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                //         DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                //         STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                //         COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                //         STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                //         COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                //     }                    
+                // }
                 return {
-                    PIN_CODE: {value: field?.optionData[0]?.PIN_CODE ?? ""},
+                    // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
+                    PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
+                    PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
                     CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
                     DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
                     STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
@@ -429,27 +541,9 @@ export const kyc_proof_of_address_meta_data = {
             }
             return {}
           },
-          runPostValidationHookAlways: true,    
+          runPostValidationHookAlways: false, 
           name: "AREA_CD",
           label: "SubArea",
-          placeholder: "",
-          type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
-      },
-      {
-          render: {
-              componentType: "textField",
-          },
-          name: "PIN_CODE",
-          label: "PIN",
-          required: true,
-          schemaValidation: {
-            type: "string",
-            rules: [
-              { name: "required", params: ["ThisFieldisrequired"] },
-            ],
-          },
-          isReadOnly: true,
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -569,13 +663,9 @@ export const kyc_proof_of_address_meta_data = {
         label: "localAddDivider"
     },
     {
-        render: { componentType: "checkbox", group: 0 },
+        render: { componentType: "checkbox"},
         name: "SAME_AS_PER",
-        sequence: 9,
-        type: "text",
         label: "SameAsPermanentAddress",
-        // isReadOnly: true,
-        // placeholder: "Allowed Release",
         GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
     },
       {
@@ -641,12 +731,13 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
           render: {
-              componentType: "autocomplete",
+              componentType: "select",
           },
           name: "LOC_AREA_CD2",
           dependentFields: ["LOC_AREA_CD"],
           disableCaching: true,
-          options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
+        //   options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
+          options: [],
           _optionsKey: "localSubAreaList",
           label: "Sub Area",
           postValidationSetCrossFieldValues: (
