@@ -197,10 +197,12 @@ export const useOptionsFetcher = (
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value } = incomingMessage;
+      const { value,ignoreUpdate } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChangeInterceptor(value);
-        if (whenToRunValidation === "onBlur") {
+        if(ignoreUpdate){
+          //ignore Validation
+        }else if (whenToRunValidation === "onBlur" ) {
           runValidation({ value: value }, true);
         }
       }

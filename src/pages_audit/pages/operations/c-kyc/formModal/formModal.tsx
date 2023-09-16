@@ -51,6 +51,7 @@ import TabStepper from './TabStepper';
 import KYCDocUpload from './formDetails/formComponents/individualComps/KYCDocUpload';
 import PhotoSignature from './formDetails/formComponents/individualComps/PhotoSignature';
 import { format } from "date-fns/esm";
+import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -324,6 +325,8 @@ export default function FormModal({
   const getLegalTabComp = (tabName:string) => {
     switch (tabName) {
       case "Entity Details":
+        return <EntityDetails isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} />
         // return <PersonalDetails 
         // isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         // isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />

@@ -383,11 +383,14 @@ const GeneralAPISDK = () => {
   };
 
   const getKYCDocTypes = async (dependantFields, ...other) => {
-    if (dependantFields.SR_CD.value && dependantFields.TRAN_CD.value) {
+    // console.log(">>dependantFields",dependantFields)
+    // if (dependantFields.SR_CD.value && dependantFields.TRAN_CD.value) {
       const { status, data, message, messageDetails } =
         await AuthSDK.internalFetcher("DOCCUMENTSCANHISTORY", {
-          SR_CD: dependantFields.SR_CD?.value || "189084",
-          TRAN_CD: dependantFields.TRAN_CD?.value,
+          // SR_CD: dependantFields.SR_CD?.value ?? "",
+          // TRAN_CD: dependantFields.TRAN_CD?.value??"",
+          SR_CD: "1",
+          TRAN_CD: "189084",
           DOC_TYPE: "KYC",
         });
       if (status === "0") {
@@ -405,7 +408,7 @@ const GeneralAPISDK = () => {
       } else {
         throw DefaultErrorObject(message, messageDetails);
       }
-    }
+    // }
     // return []
   };
 

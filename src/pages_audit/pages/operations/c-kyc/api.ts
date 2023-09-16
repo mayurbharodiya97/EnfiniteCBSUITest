@@ -1153,7 +1153,4 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
       return responseData  
     }
   }
-
-
-  return [{label: "label", value: "value"}]
 }

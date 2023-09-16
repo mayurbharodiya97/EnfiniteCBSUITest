@@ -150,10 +150,12 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value } = incomingMessage;
+      const { value, ignoreUpdate } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
-        if (whenToRunValidation === "onBlur") {
+        if(ignoreUpdate){
+          //ignore Validation
+        }else if (whenToRunValidation === "onBlur" ) {
           runValidation({ value: value }, true);
         }
       }

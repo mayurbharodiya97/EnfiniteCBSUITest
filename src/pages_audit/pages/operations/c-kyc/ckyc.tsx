@@ -494,6 +494,24 @@ useEffect(() => {
       multiple: false,
       rowDoubleClick: false,
     },
+    {
+      actionName: "document",
+      actionLabel: "Document",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "photo-signature",
+      actionLabel: "Photo/Signature",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "other-address",
+      actionLabel: "Other Address",
+      multiple: false,
+      rowDoubleClick: false,
+    },
   ];
 
   const setCurrentAction = useCallback(
