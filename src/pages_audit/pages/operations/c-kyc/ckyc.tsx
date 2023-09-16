@@ -30,6 +30,7 @@ import { CkycContext } from "./CkycContext";
 import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import Dependencies from "pages_audit/acct_Inquiry/dependencies";
+import { DeactivateCustomer } from "./DeactivateCustomer";
 
 export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -260,16 +261,18 @@ export const Ckyc = () => {
 
 
   const { data, isError, isLoading, error, refetch } = useQuery<any, any>(
-    ["getCIFCategories", {
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTITY_TYPE: state?.entityTypectx
-    }, {enabled: !!state?.entityTypectx}],
+    ["getCIFCategories", state.entityTypectx
+    // {
+    //   COMP_CD: authState?.companyID ?? "",
+    //   BRANCH_CD: authState?.user?.branchCode ?? "",
+    //   ENTITY_TYPE: state.entityTypectx
+    // }
+  ],
     () => API.getCIFCategories({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
       ENTITY_TYPE: state?.entityTypectx
-    })
+    }), {enabled: false}
   );
 
   const {data:PendingData, isError: isPendingError, isLoading: isPendingLoading, refetch: PendingRefetch} = useQuery<any, any>(
@@ -288,16 +291,24 @@ export const Ckyc = () => {
   });
 
   const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
-    ["getCustomerDetailsonEdit", {
-    }],
+    ["getCustomerDetailsonEdit", { }],
     () => API.getCustomerDetailsonEdit({
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
-      ACCT_TYPE: "143 ",
-      ACCT_CD: "000039",
-      AS_FROM: "C"  
-    })
+    }), {enabled: false}
   )
+
+  // const {data:inactivateCustData, isError: isinactivateCustError, isLoading: isinactivateCustLoading, refetch: inactivateCustRefetch} = useQuery<any, any>(
+  //   ["InactivateCustomer", { }],
+  //   () => API.InactivateCustomer({
+  //     COMP_CD: authState?.companyID ?? "",
+  //     CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
+  //     // ACCT_TYPE: "143 ",
+  //     // ACCT_CD: "000039",
+  //     // AS_FROM: "C"  
+  //   }), {enabled: false}
+  // )
+
 
   useEffect(() => {
     if(mutation?.data?.[0]?.CUSTOMER_ID) {
@@ -305,13 +316,24 @@ export const Ckyc = () => {
     }
   }, [mutation?.data])
 
+  const handleViewDetails = async () => {
+    retrieveFormRefetch()
+    handleColTabChangectx(0)
+    // if(retrieveFormData) {
+    //   await handleFormModalOpenOnEditctx(data?.rows, retrieveFormData[0])
+    // }
+  }
+
   useEffect(() => {
     if(!isRetrieveFormLoading && retrieveFormData) {
       // console.log("result data....", typeof retrieveFormData[0], retrieveFormData[0])
       // let data = retrieveFormData[0]
       handleFormDataonRetrievectx(retrieveFormData[0])
+
+
+      // handleFormModalOpenOnEditctx(data?.rows, retrieveFormData)
     }
-  }, [isRetrieveFormLoading, retrieveFormData])
+  }, [isRetrieveFormLoading, retrieveFormData, retrieveFormRefetch])
 
 
   useEffect(() => {
@@ -460,15 +482,30 @@ useEffect(() => {
       multiple: false,
       rowDoubleClick: false,
     },
+    {
+      actionName: "inactive-customer",
+      actionLabel: "Inactivate Customer",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "change-category",
+      actionLabel: "Change Category",
+      multiple: false,
+      rowDoubleClick: false,
+    },
   ];
 
   const setCurrentAction = useCallback(
     (data) => {
+      // console.log("dataddaada", data)
       if (data.name === "view-detail") {
         // refetch()
-        retrieveFormRefetch()
+        handleViewDetails()
+        // retrieveFormRefetch()
         handleColTabChangectx(0)
-        // if(retrieveFormData && data) {
+        // if(retrieveFormData && Object.keys(state?.retrieveFormDataApiRes)?.length>0) {
+        // if(retrieveFormData) {
           handleFormModalOpenOnEditctx(data?.rows)
         // }
       } else if (data.name === "dependencies") {
@@ -479,6 +516,9 @@ useEffect(() => {
         setComponentToShow("ViewStatement");
         setAcctOpen(true);
         setRowsData(data?.rows);
+      } else if(data.name === "inactive-customer") {
+        setComponentToShow("DeactivateCustomer");
+        setRowsData(data?.rows);        
       } else {
         navigate(data?.name, {
           state: data?.rows,
@@ -486,7 +526,7 @@ useEffect(() => {
       }
     },
     // []
-    [navigate, retrieveFormData]
+    [navigate, retrieveFormData, retrieveFormRefetch]
   );
   return (
     <React.Fragment>
@@ -664,6 +704,8 @@ useEffect(() => {
           //   onClose={() => setAcctOpen(false)}
           //   screenFlag={"ACCT_INQ"}
           // />
+        ) : componentToShow === "DeactivateCustomer" ? (
+          <DeactivateCustomer rowdata={rowsData} />
         ) : //   componentToShow === "ViewInterest" ? (
         // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />
         // ) :

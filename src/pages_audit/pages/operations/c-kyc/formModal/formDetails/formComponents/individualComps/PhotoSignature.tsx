@@ -48,6 +48,12 @@ const PhotoSignature = () => {
     const fileName = useRef<any | null>(null);
     const fileSignName = useRef<any | null>(null);
 
+  // useEffect(() => {
+  //   setInterval(() => {      
+  //     console.log("asdasdewqdw", filesdata, fileSignName)
+  //   },5000)
+  // }, [])
+
     const setImageData = async (blob) => {
         let base64 = await utilFunction.convertBlobToBase64(blob);
         filesdata.current = base64?.[1];
@@ -157,6 +163,30 @@ const PhotoSignature = () => {
 //    useEffect(() => {
 //     console.log("asdfweafdw",currentTabFormData)
 //    }, [currentTabFormData])
+
+    const handleSavePhotoSign = () => {
+      let data = {
+        IsNewRow: true,
+        COMP_CD:"132 ",
+        ENTERED_BRANCH_CD:"099",
+        REQ_CD:"",
+        SR_CD:"3",
+        SIGN_GROUP:"2",
+        FROM_LIMIT:"2",
+        TO_LIMIT:"2",
+        REQ_FLAG:"F",
+        ACT_FLAG:"F",
+        CUST_PHOTO: filesdata.current,
+        CUST_SIGN: fileSignName.current,
+      }
+
+      let newData = state?.formDatactx
+      newData["PHOTO_MST"] = {...newData["PHOTO_MST"], ...data}
+      handleFormDataonSavectx(newData)
+      handleColTabChangectx(state?.colTabValuectx+1)
+      // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+    }
+
     return (
         <Grid container rowGap={3}>
             <Grid container>
@@ -355,14 +385,12 @@ const PhotoSignature = () => {
             <Grid container item sx={{justifyContent: "flex-end"}}>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
-                        handleColTabChangectx(0)
+                        // handleColTabChangectx(0)
+                        handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        NextBtnRef.current = e
-                        KyCPoIFormRef.current.handleSubmit(e, "save")                        
-                    }}
+                    onClick={handleSavePhotoSign}
                 >{t("Save & Next")}</Button>
             </Grid>
 

@@ -24,7 +24,7 @@ const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoa
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
-  const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [isOtherPDExpanded, setIsOtherPDExpanded] = useState(true)
@@ -49,11 +49,13 @@ const myGridRef = useRef<any>(null);
         displayData,
         endSubmit,
         setFieldError,
-        actionFlag
+        actionFlag,
+        hasError
     ) => {
-        // setIsNextLoading(true)
+        // console.log("hasErrorhasError", hasError, data)
+        setIsNextLoading(true)
         // console.log("qweqweqwesdcas", data, displayData, actionFlag)     
-        if(data) {
+        if(data && !hasError) {
 
             let newData = state?.formDatactx
             const commonData = {
@@ -66,33 +68,38 @@ const myGridRef = useRef<any>(null);
             }
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            PODFormRef.current.handleSubmit(NextBtnRef.current, "save")
+            handleStepStatusctx({status: "", coltabvalue: state?.colTabValuectx})
+            PODFormRef.current.handleSubmitError(NextBtnRef.current, "save")
             // setIsNextLoading(false)
-        }   
-        // endSubmit(true)
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
+        setIsNextLoading(false)
+        endSubmit(true)
     }
     const onSubmitPODHandler = (
         data: any,
         displayData,
         endSubmit,
         setFieldError,
-        actionFlag
+        actionFlag,
+        hasError
     ) => {
         setIsNextLoading(true)
         // console.log("qweqweqwe", data)
         // if(Boolean(data["BIRTH_DT"])) {
         //     data["BIRTH_DT"] = format(new Date(data["BIRTH_DT"]), "dd-MMM-yyyy")
         // }     
-        if(data) {
+        if(data && !hasError) {
             let newData = state?.formDatactx
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
             handleFormDataonSavectx(newData)
             // handleColTabChangectx(1)
             handleColTabChangectx(state?.colTabValuectx+1)
-
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             // setIsNextLoading(false)
-        }   
-        // setIsNextLoading(false)
+        } else handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        setIsNextLoading(false)
         endSubmit(true)
     }
 
@@ -138,7 +145,7 @@ const myGridRef = useRef<any>(null);
                             onSubmitHandler={onSubmitPDHandler}
                             // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                             initialValues={initialVal}
-                            key={"new-form-in-kyc"}
+                            key={"pd-form-kyc"+ initialVal}
                             metaData={personal_detail_prefix_data as MetaDataType}
                             formStyle={{}}
                             hideHeader={true}
@@ -173,7 +180,7 @@ const myGridRef = useRef<any>(null);
                     <Grid item>
                         <FormWrapper 
                             ref={PODFormRef}
-                            key={"new-form-in-kyc"}
+                            key={"pod-form-kyc"+ initialVal}
                             metaData={personal_other_detail_meta_data as MetaDataType}
                             // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                             initialValues={initialVal}
@@ -190,10 +197,10 @@ const myGridRef = useRef<any>(null);
 
             <Grid container item sx={{justifyContent: "flex-end"}}>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
+                disabled={isNextLoading}
                     onClick={(e) => {
                         NextBtnRef.current = e
-                        PDFormRef.current.handleSubmit(e, "save")
+                        PDFormRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>

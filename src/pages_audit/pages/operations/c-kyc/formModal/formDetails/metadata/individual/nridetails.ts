@@ -233,7 +233,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             disabled: true,
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
-        }        
+            GridProps: {xs:12, sm:4.5, md: 4, lg: 3.5, xl:2.5},
+        }
     ]
 }

@@ -440,6 +440,91 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
       },
     []
   );
+  const handleSubmitError = useRecoilCallback(
+    ({ snapshot, set }) =>
+      (
+        e: React.FormEvent<any>,
+        actionFlag: String = "action",
+        isValidate: boolean = true
+      ) => {
+        const _handleSubmit = async (e: React.FormEvent<any>) => {
+          const loadableFields = snapshot.getLoadable(
+            formFieldRegistryAtom(formContext.formName)
+          );
+          if (loadableFields.state === "hasValue") {
+            const fields = loadableFields.contents;
+            const fieldsAggrigator: FormFieldAtomType[] = [];
+            let hasError = false;
+            for (const field of fields) {
+              let result = await runValidation(field, snapshot, set);
+              if (result === null) {
+                continue;
+              }
+              if (hasError === false) {
+                hasError = Boolean(result.error);
+              }
+              fieldsAggrigator.push(result);
+            }
+            //In debug mode allow to move to next step without validating
+            if (process.env.REACT_APP_DEBUG_MODE === "true") {
+              hasError = false;
+            }
+            // if(hasError) return hasError;
+            if(hasError) {
+              onSubmit(
+                {},
+                {},
+                endSubmit,
+                setFieldErrors,
+                actionFlag,
+                hasError
+              );
+            }
+            if (!hasError || !isValidate) {
+              if (typeof onSubmit === "function") {
+                let resultValueObj = {};
+                let resultDisplayValueObj = {};
+                for (const field of fieldsAggrigator) {
+                  let fieldValue = field.value;
+                  if (fieldValue instanceof Date) {
+                    fieldValue = formatDate(
+                      fieldValue,
+                      "dd-MMM-yyyy HH:mm:ss"
+                      // "iii LLL dd yyyy HH:mm:ss xxxx"
+                    );
+                  }
+                  resultValueObj = setIn(
+                    resultValueObj,
+                    field.name.replace(`${formContext.formName}/`, ""),
+                    fieldValue
+                  );
+                  resultDisplayValueObj = setIn(
+                    resultDisplayValueObj,
+                    field.name.replace(`${formContext.formName}/`, ""),
+                    field.displayValue
+                  );
+                }
+                onSubmit(
+                  resultValueObj,
+                  resultDisplayValueObj,
+                  endSubmit,
+                  setFieldErrors,
+                  actionFlag,
+                  hasError
+                );
+              }
+            } else {
+              endSubmit(false);
+            }
+            // return hasError;
+          }
+        };
+        e.preventDefault();
+        startSubmit();
+        _handleSubmit(e);
+      },
+    []
+  );
   const getFieldData = useRecoilCallback(
     ({ snapshot, set }) =>
       async () => {
@@ -478,6 +563,7 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
   );
   return {
     handleSubmit,
+    handleSubmitError,
     handleSubmitPartial,
     handleReset,
     handleResetPartial,

@@ -333,7 +333,7 @@ export const other_details_meta_data = {
             label: "CompanyName",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:8, md: 6, lg: 5, xl:3},
         },
         {
             render: {
@@ -353,7 +353,7 @@ export const other_details_meta_data = {
             label: "CompanyAdd",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:12, md:12, lg:6, xl:5},
         },
         {
             render: {
@@ -409,7 +409,7 @@ export const other_details_meta_data = {
             label: "Specialization",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:8, md: 6, lg: 5, xl:3},
         },
     ]
   }

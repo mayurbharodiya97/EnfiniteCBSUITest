@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef } from "react"
+import React, { useContext, useMemo, useRef, useState } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { nri_detail_meta_data } from "../../metadata/individual/nridetails"
@@ -6,6 +6,7 @@ import { CkycContext } from "../../../../CkycContext"
 import { useTranslation } from "react-i18next"
 
 const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+    const [isNextLoading, setIsNextLoading] = useState(false)
     const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
     const { t } = useTranslation();
     const NRIDTLFormRef = useRef<any>("");
@@ -16,7 +17,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
         setFieldError,
         actionFlag
     ) => {
-        // setIsNextLoading(true)
+        setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
         if(data) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
@@ -37,6 +38,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
             // setIsNextLoading(false)
         }   
         endSubmit(true)
+        handleColTabChangectx(state?.colTabValuectx+1)
+        setIsNextLoading(false)
     }
     const initialVal = useMemo(() => {
         return state?.isFreshEntryctx
@@ -73,7 +76,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                         <FormWrapper 
                             ref={NRIDTLFormRef}
                             onSubmitHandler={NRIDTLSubmitHandler}
-                            key={"new-form-in-kyc"}
+                            key={"nri-details-form-kyc"+ initialVal}
                             metaData={nri_detail_meta_data as MetaDataType}
                             // initialValues={state?.formDatactx["NRI_DTL"] ?? {}}
                             initialValues={initialVal}
@@ -92,7 +95,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                     }}
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
+                disabled={isNextLoading}
                     onClick={(e) => {
                         NRIDTLFormRef.current.handleSubmit(e, "save")
                     }}

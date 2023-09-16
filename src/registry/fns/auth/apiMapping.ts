@@ -440,6 +440,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQLEAVESLIST",
     packageName: "",
   },
+  CUSTOMERDEPENDENCYCOUNT: {
+    url: "/customerServiceAPI/CUSTOMERDEPENDENCYCOUNT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

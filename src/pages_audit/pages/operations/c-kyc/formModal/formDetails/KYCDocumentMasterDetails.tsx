@@ -99,13 +99,13 @@ const KYCDocumentMasterDetails = ({
       ]
     );
 
-    useEffect(() => {
-      console.log(rows[0]?.data, "efwqqqedqwsw", {
-        _isNewRow: false,
-        ...(rows?.[0]?.data ?? {}),
-        // DETAILS_DATA: mutationRet.data || [],
-      })
-    }, [rows])
+    // useEffect(() => {
+    //   // console.log(rows[0]?.data, "efwqqqedqwsw", {
+    //   //   _isNewRow: false,
+    //   //   ...(rows?.[0]?.data ?? {}),
+    //   //   // DETAILS_DATA: mutationRet.data || [],
+    //   })
+    // }, [rows])
 
 
     useEffect(() => {

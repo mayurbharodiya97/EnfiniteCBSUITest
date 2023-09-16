@@ -62,8 +62,9 @@ export const KYCDocumentMasterMetaData = {
         required: true,   
         GridProps: {
           xs: 12,
-          md: 3,
-          sm: 3,
+          sm: 6,
+          md: 6,
+          lg:3, xl:2
         },     
       },
       {

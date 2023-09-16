@@ -19,7 +19,7 @@ const initialState:any  = {
     isCustomerDatactx: false,
     setIsCustomerDatactx: () => {},
 
-    entityTypectx: "",
+    entityTypectx: null,
     setEntityTypectx: () => {},
 
     tabsApiResctx: [],
@@ -40,7 +40,18 @@ const initialState:any  = {
     customerIDctx: "",
     formDataDraftctx: {},
     isFreshEntryctx: false,
-    REQ_CD: "375"
+    REQ_CD: "375",
+
+
+    steps: {
+        0: {status: ""}
+    }
+
+    // steps: {
+    //     error: [],
+    //     completed: [],
+    //     notValidated: []
+    // }
 }
 
 const Reducer = (state, action) => {
@@ -85,6 +96,11 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
+        case "update_stepStatus":
+            return {
+                ...state,
+                ...action.payload
+            };
         case "update_formData":
             return {
                 ...state,
@@ -105,6 +121,11 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
+        case "reset_ckyc":
+            return {
+                ...state,
+                ...action.payload
+            };
         default: return state;
     }
 }
@@ -120,8 +141,8 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleFormModalOpenOnEditctx = (recordData) => {
-        // console.log("qweqeqeqwsxqswq", recordData[0].data)
+    const handleFormModalOpenOnEditctx = (recordData, retrieveFormdata) => {
+        // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData[0].data)
         const categConstitutionValue = {
             value: recordData[0]?.data?.CATEGORY_CODE,
             label: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[0],
@@ -135,7 +156,8 @@ const CkycProvider = ({children}) => {
                 categConstitutionValuectx: categConstitutionValue,
                 categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
                 constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
-                isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false 
+                isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+                // retrieveFormDataApiRes: retrieveFormdata,
                 
                 // categConstitutionValuectx: "kuashd",
                 // categoryValuectx: "kub",
@@ -162,7 +184,11 @@ const CkycProvider = ({children}) => {
                 accTypeValuectx: null,
                 tabsApiResctx: [],
                 isFreshEntryctx: false,
-                tabNameList: []
+                tabNameList: [],
+                formDatactx: {},
+                steps: {},
+
+                retrieveFormDataApiRes: {}
             }
         })
     }
@@ -252,6 +278,29 @@ const CkycProvider = ({children}) => {
         })
     }
 
+    const handleStepStatusctx = ({status= "error", coltabvalue= 0}) => {
+        dispatch({
+            type: "update_stepStatus",
+            payload: {
+                steps: {
+                    ...state?.steps,
+                    [coltabvalue]: {status: status}
+                }
+            }
+        })
+
+        // dispatch({
+        //     type: "update_stepStatus",
+        //     payload: {
+        //         steps: {
+        //             error: [...state?.steps?.error],
+        //             completed: [...state?.steps?.completed],
+        //             notValidated: [...state?.steps?.notValidated]
+        //         }
+        //     }
+        // })
+    }
+
     const handleFormDataonSavectx = (data) => {
         dispatch({
             type: "update_formData",
@@ -263,7 +312,7 @@ const CkycProvider = ({children}) => {
 
     const handleFormDataonRetrievectx = (data) => {
         // let apiRes = {...data[0]}
-        // console.log("wqkdhqiwuheqieqwdata", apiRes)
+        // console.log("wqkdhqiwuheqieqwdata", data)
         dispatch({
             type: "update_retrieveFormData",
             payload: {
@@ -316,13 +365,22 @@ const CkycProvider = ({children}) => {
         }        
     }
 
+    const resetCkycctx = () => {
+        // dispatch({
+        //     type: "reset_ckyc",
+        //     payload: {
+                
+        //     }
+        // })
+    }
+
     return (
         <CkycContext.Provider 
             value={{
                 state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
                 handleApiRes, handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleSidebarExpansionctx, handleColTabChangectx, 
-                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handlecustomerIDctx
+                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handlecustomerIDctx, handleStepStatusctx, resetCkycctx
             }}
         >
             {children}
