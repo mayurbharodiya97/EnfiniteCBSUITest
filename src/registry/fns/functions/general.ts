@@ -409,6 +409,27 @@ const GeneralAPISDK = () => {
     // return []
   };
 
+  const getChequeLeavesList = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCHQLEAVESLIST", {
+        COMP_CD: reqData?.[3]?.companyID ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ NO_OF_LEAF, TRAN_CD }) => {
+          return {
+            value: NO_OF_LEAF,
+            label: NO_OF_LEAF,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -427,6 +448,7 @@ const GeneralAPISDK = () => {
     getquickViewList,
     getMetadataList,
     getKYCDocTypes,
+    getChequeLeavesList,
   };
 };
 

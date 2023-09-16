@@ -6,7 +6,6 @@ import { AuthContext } from "pages_audit/auth";
 import Report from "components/report";
 const Dependencies = ({ open, onClose, rowsData }) => {
   const { authState } = useContext(AuthContext);
-  console.log("<<<API.getDependenciesData", API.getDependenciesData);
   return (
     <Dialog
       open={open}

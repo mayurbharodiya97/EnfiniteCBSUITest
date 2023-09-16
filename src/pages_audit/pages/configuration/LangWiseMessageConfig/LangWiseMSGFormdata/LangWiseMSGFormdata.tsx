@@ -56,7 +56,6 @@ const LangWiseMSGFormdataCustom: FC<{
   const isErrorFuncRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const myRef = useRef<any>(null);
-  console.log("<<<authState", authState);
 
   let newref: any = myRef.current;
 
@@ -125,7 +124,6 @@ const LangWiseMSGFormdataCustom: FC<{
     setopenAccept(false);
   };
   const onSubmitHandler = ({ data, displayData, endSubmit, setFieldError }) => {
-    console.log("<<<subb", data);
     //@ts-ignore
     endSubmit(true);
     isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
@@ -164,13 +162,13 @@ const LangWiseMSGFormdataCustom: FC<{
         {({ isSubmitting, handleSubmit }) => {
           return (
             <>
-              <Button
+              {/* <Button
                 onClick={AddNewRow}
                 disabled={isSubmitting}
                 color={"primary"}
               >
                 Add Row
-              </Button>
+              </Button> */}
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
@@ -264,13 +262,13 @@ const LangWiseMSGFormdataCustom: FC<{
         {({ isSubmitting, handleSubmit }) => {
           return (
             <>
-              <Button
+              {/* <Button
                 onClick={AddNewRow}
                 disabled={isSubmitting}
                 color={"primary"}
               >
                 Add Row
-              </Button>
+              </Button> */}
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}

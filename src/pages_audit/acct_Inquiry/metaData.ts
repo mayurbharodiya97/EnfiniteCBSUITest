@@ -47,24 +47,6 @@ export const AccountInquiryMetadata = {
     },
   },
   fields: [
-    // {
-    //   render: {
-    //     componentType: "currency",
-    //   },
-    //   name: "abc",
-    //   label: "Amount",
-    //   placeholder: "Enter Minimum Amount",
-    //   required: true,
-    //   GridProps: { xs: 12, sm: 6, md: 6 },
-    //   isCurrencyCode: true,
-    //   FormatProps: {
-    //     thousandsGroupStyle: "lakh",
-    //     decimalScale: 1,
-    //   },
-    //   enableNumWords: false,
-    //   StartAdornment: "BDT",
-    // },
-
     {
       render: {
         componentType: "numberFormat",

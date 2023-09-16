@@ -5,7 +5,6 @@ export const getLangMessageHDR = async () => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLANGMSGHDR", {});
   if (status === "0") {
-    console.log("<<<stst", data);
     const dataStatus = data;
     dataStatus.map((item) => {
       if (item?.DEFAULT_LANG_CODE === "en") {

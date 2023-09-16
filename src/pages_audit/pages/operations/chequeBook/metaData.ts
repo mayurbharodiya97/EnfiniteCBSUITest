@@ -1,12 +1,5 @@
-// import { AuthContext } from "pages_audit/auth";
-import { format } from "date-fns";
-
-import { MetaDataType } from "components/dyanmicForm";
 import { GeneralAPI } from "registry/fns/functions";
-// import { UseGetDataMutation } from "./chequeBookEntry";
-// import { AuthContext } from "pages_audit/auth";
-// import { useContext } from "react";
-export const ChequeBookIssueEntry: MetaDataType = {
+export const ChequeBookIssueEntry = {
   form: {
     name: "chequeBookForm",
     label: "Cheque Book Issue",
@@ -59,12 +52,11 @@ export const ChequeBookIssueEntry: MetaDataType = {
     // },
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "BRANCH_CD",
-      // sequence: 1,
       label: "Branch",
-      placeholder: "Branch",
+      placeholder: "Branch Code",
       type: "text",
       required: true,
       // maxLength: 16,
@@ -72,9 +64,10 @@ export const ChequeBookIssueEntry: MetaDataType = {
       _optionsKey: "getBranchCodeList",
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
       schemaValidation: {
         type: "string",
@@ -83,22 +76,21 @@ export const ChequeBookIssueEntry: MetaDataType = {
     },
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "ACCT_TYPE",
-      // sequence: 1,
       label: "AccountType",
       placeholder: "EnterAccountType",
       type: "text",
       required: true,
-      // maxLength: 16,
       options: GeneralAPI.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
       schemaValidation: {
         type: "string",
@@ -110,37 +102,135 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "ACCT_CD",
-      // sequence: 1,
       label: "ACNo",
       placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
       required: true,
-
-      // runPostValidationHookAlways: true,
-      // dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
-      // runValidationOnDependentFieldsChange: true,
-
       maxLength: 20,
-
       GridProps: {
         xs: 12,
         md: 2,
         sm: 2,
+        lg: 3,
+        xl: 3,
       },
     },
     {
-      render: { componentType: "formbutton" },
-      name: "GET_DETAIL",
-      // sequence: 4,
-      label: "GetDetails",
-      maxLength: 10,
-      GridProps: { xs: 12, md: 1, sm: 1 },
-      fullWidth: true,
-      // __VIEW__: { isReadOnly: true },
-      // __EDIT__: { isReadOnly: false },
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "NO_OF_CHEQUE",
+      label: "No of Cheq(s)",
+      placeholder: "Enter no of Cheque book",
+      type: "text",
+      // options: () => {
+      //   return [
+      //     { value: "15", label: "15" },
+      //     { value: "45", label: "45" },
+      //     { value: "90", label: "90" },
+      //   ];
+      // },
+      options: GeneralAPI.getChequeLeavesList,
+      _optionsKey: "getChequeLeavesList",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "FROM_CHEQUE_NO",
+      label: "From Cheque No.",
+      placeholder: "",
+      type: "text",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "TO_CHEQUE_NO",
+      label: "To Cheque No.",
+      placeholder: "",
+      type: "text",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
+      },
     },
 
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SERVICE_CHARGE",
+      label: "Service Charge",
+      placeholder: "",
+      type: "text",
+      required: true,
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "GST",
+      label: "GST",
+      placeholder: "",
+      type: "text",
+      required: true,
+      GridProps: {
+        xs: 12,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
+      },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "REQUISITION_DT",
+      // sequence: 9,
+      label: "Requisition Date",
+      placeholder: "",
+      // options: () => {
+      //   return GeneralAPI.GetMiscValue("USER_SUB_TYPE");
+      // },
+      // enableDefaultOption: true,
+      // _optionsKey: "GetSubTypeMiscValue",
+      GridProps: {
+        xs: 12,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
+      },
+    },
     {
       render: {
         componentType: "textField",
@@ -154,303 +244,10 @@ export const ChequeBookIssueEntry: MetaDataType = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_MODE",
-      // sequence: 7,
-      label: "ModeOfOperation",
-      placeholder: "",
-      type: "text",
-      // required: true,
-      // maxLength: 100,
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CONTACT",
-      // sequence: 3,
-      label: "Contact Details",
-      // placeholder: "Enter no of Cheque book",
-      type: "text",
-      // required: true,
-      // maxLength: 32,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["User Name is required."] }],
-      // },
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "WITHDRAW_BAL",
-      // sequence: 5,
-      label: "Withdrawalable Balance",
-      placeholder: "",
-      type: "text",
-      // required: true,
-      // options: () => {
-      //   return GeneralAPI.GetSecurityGroupingList();
-      // },
-      // enableDefaultOption: true,
-      // _optionsKey: "GetSecurityGroupingList",
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Group Name is required."] }],
-      // },
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CUSTOMER_ID",
-      // sequence: 4,
-      label: "Customer Id",
-      placeholder: "",
-      type: "text",
-      // required: true,
-      // maxLength: 11,
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "PAN_NO",
-      // sequence: 8,
-      label: "PAN No.",
-      placeholder: "",
-      type: "text",
-      // required: true,
-      // maxLength: 100,
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "UNIQUE_ID",
-      // sequence: 9,
-      label: "National ID",
-      placeholder: "",
-      // options: () => {
-      //   return GeneralAPI.GetMiscValue("USER_SUB_TYPE");
-      // },
-      // enableDefaultOption: true,
-      // _optionsKey: "GetSubTypeMiscValue",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "SCR_ADD",
-      // sequence: 2,
-      label: "Address",
-      // placeholder: "Select No of Leaves",
-      // enableDefaultOption: true,
-      // required: true,
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 4,
-        sm: 4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "NO_OF_LEAVE",
-      // sequence: 2,
-      label: "No of Leaves",
-      placeholder: "Select No of Leaves",
-      enableDefaultOption: true,
-      required: true,
-      GridProps: {
-        xs: 12,
-        md: 1,
-        sm: 1,
-      },
-      // setValueOnDependentFieldsChange: useGetDataMutation,
-
-      // setValueOnDependentFieldsChange: (dependent) => {
-      //   if (
-      //     typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
-      //     !Boolean(dependent["ACTIVE_FLAG"]?.value)
-      //   ) {
-      //     return format(new Date(), "dd/MM/yyyy HH:mm:ss");
-      //   }
-      //   return null;
-      // },
-      // shouldExclude: (val1, dependent) => {
-      //   if (
-      //     typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
-      //     Boolean(dependent["ACTIVE_FLAG"]?.value)
-      //   ) {
-      //     return true;
-      //   }
-      //   return false;
-      // },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "NO_OF_CHEQUEBOOK",
-      // sequence: 3,
-      label: "No of Cheque Book(s)",
-      placeholder: "Enter no of Cheque book",
-      type: "text",
-      required: true,
-      // maxLength: 32,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["User Name is required."] }],
-      // },
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CHARACTERISTICS",
-      // sequence: 4,
-      label: "Characteristics",
-      placeholder: "",
-      type: "text",
-      required: true,
-      // options: () => {
-      //   return GeneralAPI.GetSecurityGroupingList();
-      // },
-      // enableDefaultOption: true,
-      // _optionsKey: "GetSecurityGroupingList",
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Group Name is required."] }],
-      // },
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "PAYABLE_AT_PAR",
-      // sequence: 5,
-      label: "Payable At PAR",
-      placeholder: "",
-      type: "text",
-      required: true,
-      // maxLength: 11,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "AMOUNT",
-      // sequence: 7,
-      label: "Service Charge",
-      placeholder: "",
-      type: "text",
-      required: true,
-      // maxLength: 100,
-
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "SERVICE_CHARGE",
-      // sequence: 8,
-      label: "GST",
-      placeholder: "",
-      type: "text",
-      required: true,
-      // maxLength: 100,
-
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REQUISITION_DATE",
-      sequence: 9,
-      label: "Requisition Date",
-      placeholder: "",
-      // options: () => {
-      //   return GeneralAPI.GetMiscValue("USER_SUB_TYPE");
-      // },
-      // enableDefaultOption: true,
-      // _optionsKey: "GetSubTypeMiscValue",
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
 
@@ -459,7 +256,7 @@ export const ChequeBookIssueEntry: MetaDataType = {
         componentType: "textField",
       },
       name: "REMARKS",
-      sequence: 10,
+      // sequence: 10,
       label: "Remark",
       placeholder: "Enter remark.",
       // options: () => {
@@ -469,46 +266,291 @@ export const ChequeBookIssueEntry: MetaDataType = {
       // _optionsKey: "GetUsersNotificationTemplateList",
       GridProps: {
         xs: 12,
-        md: 4,
-        sm: 4,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
 
     {
       render: {
-        componentType: "hidden",
+        componentType: "autocomplete",
       },
-      name: "INACTIVE_DATE",
-      sequence: 12,
-      label: "Inactive Date",
-      isReadOnly: true,
+      name: "CHARACTERISTICS",
+      // sequence: 4,
+      label: "Characteristics",
       placeholder: "",
+      type: "text",
+      required: true,
+      options: () => {
+        return [
+          { value: "Bearer", label: "Bearer" },
+          { value: "Order", label: "Order" },
+        ];
+      },
+      _optionsKey: "CHARACTERISTICS",
       GridProps: {
         xs: 12,
-        md: 4,
-        sm: 4,
+        md: 1.5,
+        sm: 1.5,
+        lg: 2,
+        xl: 2,
       },
-      dependentFields: ["ACTIVE_FLAG"],
-      runValidationOnDependentFieldsChange: true,
-      setValueOnDependentFieldsChange: (dependent) => {
-        if (
-          typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
-          !Boolean(dependent["ACTIVE_FLAG"]?.value)
-        ) {
-          return format(new Date(), "dd/MM/yyyy HH:mm:ss");
-        }
-        return null;
-      },
-      shouldExclude: (val1, dependent) => {
-        if (
-          typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
-          Boolean(dependent["ACTIVE_FLAG"]?.value)
-        ) {
-          return true;
-        }
-        return false;
-      },
-      __EDIT__: { render: { componentType: "textField", group: 0 } },
     },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "PAYABLE_AT_PAR",
+      label: "Payable At PAR",
+      options: () => {
+        return [
+          { value: "Yes", label: "Yes" },
+          { value: "No", label: "No" },
+        ];
+      },
+      _optionsKey: "PAYABLE_AT_PAR",
+      type: "text",
+      required: true,
+      GridProps: {
+        xs: 12,
+        md: 1.5,
+        sm: 1.5,
+        lg: 2,
+        xl: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CHEQUE_TOTAL",
+      label: "No of Cheque Book(s)",
+      placeholder: "Enter no of Cheque book",
+      type: "text",
+      required: true,
+      // defaultValue: "2",
+      // enableDefaultOption: true,
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "ACCT_MODE",
+    //   // sequence: 7,
+    //   label: "ModeOfOperation",
+    //   placeholder: "",
+    //   type: "text",
+    //   // required: true,
+    //   // maxLength: 100,
+    //   isReadOnly: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2,
+    //     sm: 2,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "CONTACT",
+    //   // sequence: 3,
+    //   label: "Contact Details",
+    //   // placeholder: "Enter no of Cheque book",
+    //   type: "text",
+    //   // required: true,
+    //   // maxLength: 32,
+    //   // schemaValidation: {
+    //   //   type: "string",
+    //   //   rules: [{ name: "required", params: ["User Name is required."] }],
+    //   // },
+    //   isReadOnly: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 4,
+    //     sm: 4,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "WITHDRAW_BAL",
+    //   // sequence: 5,
+    //   label: "Withdrawalable Balance",
+    //   placeholder: "",
+    //   type: "text",
+    //   // required: true,
+    //   // options: () => {
+    //   //   return GeneralAPI.GetSecurityGroupingList();
+    //   // },
+    //   // enableDefaultOption: true,
+    //   // _optionsKey: "GetSecurityGroupingList",
+    //   // schemaValidation: {
+    //   //   type: "string",
+    //   //   rules: [{ name: "required", params: ["Group Name is required."] }],
+    //   // },
+    //   isReadOnly: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2,
+    //     sm: 2,
+    //   },
+    // },
+
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "CUSTOMER_ID",
+    //   // sequence: 4,
+    //   label: "Customer Id",
+    //   placeholder: "",
+    //   type: "text",
+    //   // required: true,
+    //   // maxLength: 11,
+    //   isReadOnly: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2,
+    //     sm: 2,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "PAN_NO",
+    //   // sequence: 8,
+    //   label: "PAN No.",
+    //   placeholder: "",
+    //   type: "text",
+    //   // required: true,
+    //   // maxLength: 100,
+    //   isReadOnly: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2,
+    //     sm: 2,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "UNIQUE_ID",
+    //   // sequence: 9,
+    //   label: "National ID",
+    //   placeholder: "",
+    //   // options: () => {
+    //   //   return GeneralAPI.GetMiscValue("USER_SUB_TYPE");
+    //   // },
+    //   // enableDefaultOption: true,
+    //   // _optionsKey: "GetSubTypeMiscValue",
+    //   isReadOnly: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2,
+    //     sm: 2,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "SCR_ADD",
+    //   // sequence: 2,
+    //   label: "Address",
+    //   // placeholder: "Select No of Leaves",
+    //   // enableDefaultOption: true,
+    //   // required: true,
+    //   isReadOnly: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 4,
+    //     sm: 4,
+    //   },
+    // },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "NO_OF_LEAVE",
+    //   // sequence: 2,
+    //   label: "No of Leaves",
+    //   placeholder: "Select No of Leaves",
+    //   enableDefaultOption: true,
+    //   required: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 1,
+    //     sm: 1,
+    //   },
+    // setValueOnDependentFieldsChange: useGetDataMutation,
+
+    // setValueOnDependentFieldsChange: (dependent) => {
+    //   if (
+    //     typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
+    //     !Boolean(dependent["ACTIVE_FLAG"]?.value)
+    //   ) {
+    //     return format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    //   }
+    //   return null;
+    // },
+    // shouldExclude: (val1, dependent) => {
+    //   if (
+    //     typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
+    //     Boolean(dependent["ACTIVE_FLAG"]?.value)
+    //   ) {
+    //     return true;
+    //   }
+    //   return false;
+    // },
+    // },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "INACTIVE_DATE",
+    //   sequence: 12,
+    //   label: "Inactive Date",
+    //   isReadOnly: true,
+    //   placeholder: "",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 4,
+    //     sm: 4,
+    //   },
+    //   dependentFields: ["ACTIVE_FLAG"],
+    //   runValidationOnDependentFieldsChange: true,
+    //   setValueOnDependentFieldsChange: (dependent) => {
+    //     if (
+    //       typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
+    //       !Boolean(dependent["ACTIVE_FLAG"]?.value)
+    //     ) {
+    //       return format(new Date(), "dd/MM/yyyy HH:mm:ss");
+    //     }
+    //     return null;
+    //   },
+    //   shouldExclude: (val1, dependent) => {
+    //     if (
+    //       typeof dependent["ACTIVE_FLAG"]?.value === "boolean" &&
+    //       Boolean(dependent["ACTIVE_FLAG"]?.value)
+    //     ) {
+    //       return true;
+    //     }
+    //     return false;
+    //   },
+    //   __EDIT__: { render: { componentType: "textField", group: 0 } },
+    // },
   ],
 };
