@@ -55,7 +55,7 @@ export const ViewStatement = ({ open, onClose, rowsData, screenFlag }) => {
       const combinedData = { ...rowsData?.[0]?.data, ...data };
       const dataString = JSON.stringify(combinedData);
       sessionStorage.setItem("myData", dataString);
-      const newWindow = window.open("./view-statement", "_blank");
+      const newWindow = window.open("/cbsenfinity/view-statement", "_blank");
       if (newWindow) {
         newWindow.focus();
       }
