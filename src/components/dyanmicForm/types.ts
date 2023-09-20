@@ -101,6 +101,7 @@ export interface FormMetaDataType {
     name: string;
     label: string;
   };
+  apiKey?: any;
 }
 
 export interface ComponentTypeProps {

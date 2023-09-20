@@ -1,21 +1,22 @@
-import { Fragment, useRef, useCallback, useState, useMemo } from "react";
-import { useMutation } from "react-query";
+import { Fragment, useEffect, useRef } from "react";
+import { useMutation, useQuery } from "react-query";
 import { ChequeBookIssueEntry } from "./metaData";
 import { ChequebookentryGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
-import { useNavigate } from "react-router-dom";
 import { GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { UpdateRequestDataVisibleColumn } from "components/utils";
-import { useSnackbar } from "notistack";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { SubmitFnType } from "packages/form";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 
-export const useGetDataMutation = () => {
+const ChequeBookEntry = () => {
+  const myGridRef = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
+  const isErrorFuncRef = useRef<any>(null);
+
   const getData = useMutation(API.getChequeBookEntryData, {
     onSuccess: (response: any) => {
       // Handle success
@@ -25,166 +26,85 @@ export const useGetDataMutation = () => {
     },
   });
 
-  return getData;
-};
+  const getData8888 = useMutation(API.getChequeLeavesList88888, {
+    onSuccess: (response: any) => {
+      // Handle success
+    },
+    onError: (error: any) => {
+      // Handle error
+    },
+  });
+  const ClickEventManage = () => {
+    let event: any = { preventDefault: () => {} };
+    isErrorFuncRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+  };
 
-const ChequeBookEntry = () => {
-  const navigate = useNavigate();
-  const myGridRef = useRef<any>(null);
-  const [secondButtonVisible, setSecondButtonVisible] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
-  const { authState } = useContext(AuthContext);
-  const isErrorFuncRef = useRef<any>(null);
   const onSubmitHandler: SubmitFnType = (
-    data,
+    data: any,
     displayData,
     endSubmit,
     setFieldError
   ) => {
     //@ts-ignore
-    endSubmit(true);
-    // isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
-  };
-
-  const setCurrentAction = useCallback(
-    (data) => {
-      navigate(data?.name, {
-        state: data?.rows,
-      });
-    },
-    [navigate]
-  );
-
-  const getData = useGetDataMutation();
-  // const getData = useMutation(API.getChequeBookEntryData, {
-  //   onSuccess: (response: any) => {
-  //     setSecondButtonVisible(true);
-  //   },
-  //   onError: (error: any) => {
-  //     // setRetData({ REG_WITH: "A", REG_ACCT_CARD_NO: "" });
-  //     setSecondButtonVisible(false);
-  //   },
-  // });
-
-  const saveData = useMutation(API.saveCustomerRegisterRequest, {
-    onSuccess: (response: any) => {
-      setSecondButtonVisible(false);
-      enqueueSnackbar(response, {
-        variant: "success",
-      });
-      getData.data[0] = {};
-    },
-    onError: (error: any) => {
-      setSecondButtonVisible(true);
-    },
-  });
-
-  const ClickEventManage = useCallback(
-    async (data, columnvisible) => {
-      // let retdata = UpdateRequestDataVisibleColumn(data, columnvisible);
-      // console.log(">>current data", data[0]?.BRANCH_CD);
-      // setRetData(retdata);
-
-      let rowData = await isErrorFuncRef?.current?.getFieldData();
-
-      getData.mutate({
-        companyID: authState.companyID,
-        branchCD: rowData?.BRANCH_CD,
-        acctType: rowData?.ACCT_TYPE,
-        accountNo: rowData?.ACCT_CD,
-        callfrom: "C",
-      });
-    },
-    [getData]
-  );
-  const ClickSecondButtonEventManage = useCallback(
-    (retdata, columnvisible) => {
-      let retrdata = UpdateRequestDataVisibleColumn(retdata, columnvisible);
-      // setRetData(retrdata);
-      data[0].CUSTOM_USER_NM = retrdata?.CUSTOM_USER_NM;
-      //   saveData.mutate({
-      //     inputData: data?.[0],
-      //   });
-    },
-    [getData]
-  );
-
-  const data = useMemo(() => {
-    if (Array.isArray(getData.data)) {
-      return { ...getData.data[0] };
-    } else {
-      return "";
+    endSubmit(true, "Please enter any value");
+    if (Boolean(data?.NO_OF_CHEQUE)) {
+      getData8888.mutate({ NO_OF_CHEQUE: data?.NO_OF_CHEQUE });
     }
-  }, [getData.data]);
-  // const onFormButtonClickHandel = (id) => {
-  //   setTranPerticulerDialog({
-  //     open: true,
-  //     buttonName: id,
-  //     defaultMode: "view",
-  //   });
-  // };
-
+    getData.mutate({
+      companyID: authState.companyID,
+      branchCD: data?.BRANCH_CD,
+      acctType: data?.ACCT_TYPE,
+      accountNo: data?.ACCT_CD.padEnd(20, " "),
+    });
+  };
+  let dat1 = getData8888?.data?.[0];
+  let dat2 = getData?.data?.[0];
+  let Newdata = getData8888.isSuccess ? { ...dat2, ...dat1 } : dat2;
   return (
     <Fragment>
-      {getData.isError && (
-        <Alert
-          severity={getData.error?.severity ?? "error"}
-          errorMsg={getData.error?.error_msg ?? "Something went to wrong.."}
-          errorDetail={getData.error?.error_detail}
-          color="error"
-        />
-      )}
-      {saveData.isError && (
-        <Alert
-          severity={saveData.error?.severity ?? "error"}
-          errorMsg={saveData.error?.error_msg ?? "Something went to wrong.."}
-          errorDetail={saveData.error?.error_detail}
-          color="error"
-        />
-      )}
-      <GridWrapper
-        key={`ChequeBookEntryGrid`}
-        finalMetaData={ChequebookentryGridMetaData as GridMetaDataType}
-        data={getData?.data ?? []}
-        setData={() => null}
-        loading={getData.isLoading}
-        setAction={setCurrentAction}
-        refetchData={() => {}}
-        ref={myGridRef}
-      />
-      <FormWrapper
-        key={"ChequeBookEntry" + (data ?? []).length}
-        metaData={ChequeBookIssueEntry}
-        loading={getData.isLoading}
-        hideHeader={true}
-        //  initialValues={rows?.[0]?.data as InitialValuesType}
-        ref={isErrorFuncRef}
-        onSubmitHandler={onSubmitHandler}
-        //@ts-ignore
-        displayMode={"new"}
-        formStyle={{
-          background: "white",
-          height: "40vh",
-          overflowY: "auto",
-          overflowX: "hidden",
+      <div
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            ClickEventManage();
+          }
         }}
-        onFormButtonClickHandel={ClickEventManage}
       >
-        {/* {({ isSubmitting, handleSubmit }) => (
-          <>
-            <Button
-              onClick={(event) => {
-                handleSubmit(event, "Retrieve");
-              }}
-              disabled={isSubmitting}
-              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-              color={"primary"}
-            >
-              Retrieve
-            </Button>
-          </>
-        )} */}
-      </FormWrapper>
+        {getData.isError && (
+          <Alert
+            severity={getData.error?.severity ?? "error"}
+            errorMsg={getData.error?.error_msg ?? "Something went to wrong.."}
+            errorDetail={getData.error?.error_detail}
+            color="error"
+          />
+        )}
+        <GridWrapper
+          key={`ChequeBookEntryGrid`}
+          finalMetaData={ChequebookentryGridMetaData as GridMetaDataType}
+          data={getData?.data ?? []}
+          setData={() => null}
+          loading={getData.isLoading}
+          // setAction={setCurrentAction}
+          refetchData={() => {}}
+          ref={myGridRef}
+        />
+        <FormWrapper
+          key={"ChequeBookEntry" + getData?.data}
+          metaData={ChequeBookIssueEntry}
+          loading={getData.isLoading}
+          hideHeader={true}
+          initialValues={Newdata}
+          ref={isErrorFuncRef}
+          onSubmitHandler={onSubmitHandler}
+          //@ts-ignore
+          displayMode={"new"}
+          formStyle={{
+            background: "white",
+            height: "40vh",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
+        ></FormWrapper>
+      </div>
     </Fragment>
   );
 };

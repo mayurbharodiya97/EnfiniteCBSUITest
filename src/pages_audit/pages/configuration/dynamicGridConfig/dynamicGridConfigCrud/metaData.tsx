@@ -1,5 +1,6 @@
 // import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { getProMiscData, getMenulistData } from "../api";
+import { GeneralAPI } from "registry/fns/functions";
+import { getProMiscData, getMenulistData, getDynamicOwnerList } from "../api";
 export const DynamicGridConfigMetaData = {
   masterForm: {
     form: {
@@ -150,6 +151,155 @@ export const DynamicGridConfigMetaData = {
       },
       {
         render: {
+          componentType: "autocomplete",
+        },
+        name: "DML_ACTION",
+        label: "DML Action",
+        // defaultValue: "M",
+        options: [
+          { label: "Master", value: "M" },
+          { label: "Detail", value: "D" },
+          { label: "Master Detail", value: "MD" },
+        ],
+        _optionKey: "DMLAction",
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "autocomplete",
+        },
+        name: "OWNER_NM",
+        label: "Table owner Name",
+        // defaultValue: true,
+        options: () => getDynamicOwnerList(),
+        _optionsKey: "getDynamicOwnerList",
+        // postValidationSetCrossFieldValues: "getTabelListData",
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "autocomplete",
+        },
+        name: "MST_TABLE_NM",
+        label: "Master Table Name",
+        options: (value) => {
+          if (value?.OWNER_NM?.value) {
+            return GeneralAPI.getTabelListData(value?.OWNER_NM?.value);
+          }
+          return [];
+        },
+        disableCaching: true,
+        _optionsKey: "getTabelListData",
+        runValidationOnDependentFieldsChange: true,
+        dependentFields: ["DML_ACTION", "OWNER_NM"],
+        shouldExclude: (val1, dependent) => {
+          if (dependent["DML_ACTION"]?.value === "M") {
+            return false;
+          } else if (dependent["DML_ACTION"]?.value === "MD") {
+            return false;
+          }
+          return true;
+        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "autocomplete",
+        },
+        name: "DET_TABLE_NM",
+        label: "Detail Table Name",
+        options: (value) => {
+          if (value?.OWNER_NM?.value) {
+            return GeneralAPI.getTabelListData(value?.OWNER_NM?.value);
+          }
+          return [];
+        },
+        disableCaching: true,
+        _optionsKey: "getTabelListData",
+        runValidationOnDependentFieldsChange: true,
+        dependentFields: ["DML_ACTION", "OWNER_NM", "MST_TABLE_NM"],
+        validate: (currentField, dependentFields) => {
+          if (dependentFields?.MST_TABLE_NM?.value === currentField?.value) {
+            return "Table Name are not the same";
+          } else {
+            return "";
+          }
+        },
+        shouldExclude: (val1, dependent) => {
+          if (dependent["DML_ACTION"]?.value === "D") {
+            return false;
+          } else if (dependent["DML_ACTION"]?.value === "MD") {
+            return false;
+          }
+          return true;
+        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+
+      {
+        render: {
+          componentType: "autocomplete",
+        },
+        name: "SEQ_PARA",
+        label: "Seq. Parameter",
+        // defaultValue: true,
+        // defaultValue: "M",
+        options: [
+          { label: "0", value: "0" },
+          { label: "1", value: "1" },
+          { label: "2", value: "2" },
+        ],
+        _optionKey: "SeqParameter",
+
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "SEQ_NM",
+        label: "Seq. Name",
+        runValidationOnDependentFieldsChange: true,
+        dependentFields: ["SEQ_PARA"],
+        shouldExclude: (val1, dependent) => {
+          if (dependent["SEQ_PARA"]?.value === "0") {
+            return false;
+          }
+          return true;
+        },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "USER_ACC_INS",
+        label: "User Access Insert",
+        // defaultValue: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "USER_ACC_UPD",
+        label: "User Access Update",
+        // defaultValue: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "USER_ACC_DEL",
+        label: "User Access Delete",
+        // defaultValue: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      },
+
+      {
+        render: {
           componentType: "textField",
         },
         name: "DEFAULT_PAGE_SIZE",
@@ -166,7 +316,7 @@ export const DynamicGridConfigMetaData = {
         label: "Page Sizes",
         placeholder: "",
         options: () => getProMiscData("pageSizes"),
-        _optionsKey: "getproMiscData",
+        _optionsKey: "getproMiscDataPageSize",
         defaultValue: "",
         type: "text",
         multiple: true,
@@ -186,6 +336,11 @@ export const DynamicGridConfigMetaData = {
         label: "RowId Column",
         required: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        validate: (currentField, value) => {
+          if (currentField?.value) {
+            return;
+          }
+        },
       },
       {
         render: {
@@ -323,7 +478,7 @@ export const DynamicGridConfigMetaData = {
         componentType: "editableSelect",
         // componentType: "editableAutocomplete",
         options: () => getProMiscData("Component_Type"),
-        _optionsKey: "getproMiscData",
+        _optionsKey: "getproMiscDataComponent",
         enableDefaultOption: true,
         required: true,
         validation: (value, data) => {

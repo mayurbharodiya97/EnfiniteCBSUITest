@@ -452,7 +452,14 @@ export const PassbookStatement: any = {
     },
   },
   fields: [
-    { render: { componentType: "_accountNumber" } },
+    {
+      render: {
+        componentType: "_accountNumber",
+      },
+      // acctFieldPara: "1",
+      // postValidationSetCrossFieldValues: "testingFn",
+      name: "ACCT_CD",
+    },
     {
       render: {
         componentType: "textField",
@@ -562,10 +569,10 @@ export const PassbookStatement: any = {
     //   required: true,
     //   GridProps: { xs: 12, sm: 6, md: 6 },
     //   // isCurrencyCode: true,
-    //   FormatProps: {
-    //     thousandsGroupStyle: "lakh",
-    //     decimalScale: 1,
-    //   },
+    //   // FormatProps: {
+    //   //   thousandsGroupStyle: "lakh",
+    //   //   decimalScale: 1,
+    //   // },
     //   enableNumWords: false,
     //   // StartAdornment: "BDT",
     // },
@@ -638,7 +645,7 @@ export const PassbookStatementInq = {
     },
     // {
     //   render: {
-    //     componentType: "currency",
+    //     componentType: "currencyWithoutWords",
     //   },
     //   label: "Amount",
     //   placeholder: "Enter Minimum Amount",

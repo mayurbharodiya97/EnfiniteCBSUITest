@@ -65,7 +65,7 @@ export const FieldComponentGrid = ({
   >(["getGridFieldComponentData", { ...reqDataRef.current }], () =>
     API.getGridFieldComponentData({ ...reqDataRef.current })
   );
-  console.log("reqDataRef", reqDataRef);
+
   const mutation = useMutation(API.dynamiPropsConfigDML, {
     onError: (error: any, { endSubmit }) => {
       let errorMsg = "Unknown Error occured";
@@ -92,6 +92,7 @@ export const FieldComponentGrid = ({
       setGridData([]);
     }
   }, [data]);
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getGridFieldComponentData"]);
@@ -105,7 +106,6 @@ export const FieldComponentGrid = ({
     mutation.mutate(rows);
   };
   const onSaveRecord = async () => {
-    console.log(">>datadata", data);
     let { hasError, data: dataold } = await myGridRef.current?.validate();
     if (hasError === true) {
       if (dataold) {
@@ -154,38 +154,6 @@ export const FieldComponentGrid = ({
       }
     }
   };
-  // const onSaveRecord = async () => {
-  //   let { hasError, data: dataold } = await myGridRef.current?.validate(true);
-  //   if (hasError === true) {
-  //     if (dataold) {
-  //       setGridData(dataold);
-  //     }
-  //   } else {
-  //     let result = myGridRef?.current?.cleanData?.();
-  //     console.log("result", result);
-  //     if (!Array.isArray(result)) {
-  //       result = [result];
-  //     }
-
-  //     isErrorFuncRef.current = {
-  //       data: {
-  //         ...result,
-  //       },
-  //     };
-  //   }
-
-  //   setIsOpenSave(true);
-  //   // mutation.mutate({
-  //   //   TEMPLATE_LIST: gridData.map((data) => {
-  //   //     return {
-  //   //       ...data,
-  //   //       TEMPLATE_TRAN_CD: trancd ?? "",
-  //   //       DB_COLUMN: dbcolumn ?? "",
-  //   //     };
-  //   //   }),
-
-  //   // });
-  // };
 
   return (
     <Dialog

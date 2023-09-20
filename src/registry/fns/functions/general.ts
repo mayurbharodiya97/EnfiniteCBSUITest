@@ -2,6 +2,7 @@ import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "../auth";
 import { format } from "date-fns";
 import { isValidDate } from "components/utils/utilFunctions/function";
+import { useEffect } from "react";
 
 const GeneralAPISDK = () => {
   const GetMiscValue = async (ReqData) => {
@@ -79,8 +80,9 @@ const GeneralAPISDK = () => {
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ ACCT_TYPE, TYPE_NM }) => {
+        responseData = responseData.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
           return {
+            ...others,
             value: ACCT_TYPE,
             label: ACCT_TYPE + " - " + TYPE_NM,
           };
@@ -153,6 +155,10 @@ const GeneralAPISDK = () => {
     dependentFieldValue,
     reqFlag
   ) => {
+    let paddedAcctcode = (currentField?.value).padStart(
+      dependentFieldValue?.ACCT_TYPE?.optionData?.[0]?.PADDING_NUMBER,
+      0
+    );
     if (currentField?.value) {
       const { status, data } = await AuthSDK.internalFetcher("GETACCTDATA", {
         COMP_CD: authState?.companyID,
@@ -162,17 +168,11 @@ const GeneralAPISDK = () => {
           reqFlag === "ACCT_CD" ? dependentFieldValue?.ACCT_TYPE?.value : "",
         ACCT_CD: reqFlag === "ACCT_CD" ? currentField?.value : "",
         FULL_ACCT_NO: reqFlag === "ACCT_CD" ? "" : currentField?.value,
-
-        // requestParams,
       });
 
       if (status === "0") {
         if (data?.length > 0) {
-          //..//
-          //..//
           const { LST_STATEMENT_DT } = data[0];
-          // const LST_STATEMENT_DT = "";
-          // const LST_STATEMENT_DT = "10/10/2010";
           const originalDate: any = new Date(LST_STATEMENT_DT);
 
           return {
@@ -188,16 +188,20 @@ const GeneralAPISDK = () => {
               ),
             },
             WK_STMT_TO_DATE: {
-              value: isValidDate(authState?.workingDate)
-                ? authState?.workingDate
-                : new Date(),
+              value: isValidDate(new Date()) ? new Date() : new Date(),
             },
+            // ACCT_CD: {
+            //   value: paddedAcctcode,
+            // },
           };
         } else {
           return {
             ACCT_NM: { value: "" },
             STMT_FROM_DATE: { value: "" },
             WK_STMT_TO_DATE: { value: "" },
+            // ACCT_CD: {
+            //   value: "",
+            // },
           };
         }
       }
@@ -206,6 +210,9 @@ const GeneralAPISDK = () => {
         ACCT_NM: { value: "" },
         STMT_FROM_DATE: { value: "" },
         WK_STMT_TO_DATE: { value: "" },
+        // ACCT_CD: {
+        //   value: "",
+        // },
       };
     }
   };
@@ -405,6 +412,47 @@ const GeneralAPISDK = () => {
     // return []
   };
 
+  const getChequeLeavesList = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETCHQLEAVESLIST", {
+        COMP_CD: reqData?.[3]?.companyID ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ NO_OF_LEAF, TRAN_CD }) => {
+          return {
+            value: NO_OF_LEAF,
+            label: NO_OF_LEAF,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const getTabelListData = async (ReqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETDBTABLELIST", {
+        OWNER: ReqData,
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ TABLE_NAME }) => {
+          return {
+            value: TABLE_NAME,
+            label: TABLE_NAME,
+          };
+        });
+      }
+
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -423,6 +471,8 @@ const GeneralAPISDK = () => {
     getquickViewList,
     getMetadataList,
     getKYCDocTypes,
+    getTabelListData,
+    getChequeLeavesList,
   };
 };
 

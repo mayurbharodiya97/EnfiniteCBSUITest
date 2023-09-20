@@ -109,7 +109,7 @@ export const ActionsMetaData: any = {
           name: "ACTIONICON",
           label: "Action Icon",
           options: () => getProMiscData("menu_icon"),
-          _optionsKey: "getproMiscDataMenuIcon",
+          _optionsKey: "getproMiscData",
           schemaValidation: {
             type: "string",
             rules: [
@@ -175,7 +175,7 @@ export const ActionsMetaData: any = {
         },
         {
           render: {
-            componentType: "autocomplete",
+            componentType: "select",
           },
           name: "FORM_METADATA_SR_CD",
           label: "Metadata List",

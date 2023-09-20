@@ -175,7 +175,6 @@ export const Profile = () => {
   }, []);
   const handleSubmit = async () => {
     let { hasError, data } = await myGridRef.current?.validate(true);
-    console.log("<<<" , data)
     let isError = data.filter((item) => {
       if (item._error.DASH_TRAN_CD.length > 5) {
         return (item._error.DASH_TRAN_CD = true);

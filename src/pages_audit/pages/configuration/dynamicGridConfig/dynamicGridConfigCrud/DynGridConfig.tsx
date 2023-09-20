@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
-import { cloneDeep } from "lodash-es";
+import { clone, cloneDeep } from "lodash-es";
 import * as API from "../api";
 import { DynamicGridConfigMetaData } from "./metaData";
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
@@ -28,12 +28,9 @@ import { MasterDetailsForm } from "components/formcomponent";
 import { Alert } from "components/common/alert";
 import { RetrievalParametersGrid } from "./retrievalParameters";
 import { makeStyles } from "@mui/styles";
-import Logo from "assets/images/easy_bankcore_Logo.png";
+
 import { useStyles } from "pages_audit/appBar/style";
-import bank_logo_default from "assets/images/BecomePartnerImg.svg";
-import { Box, Button, Avatar, Stack } from "@mui/material";
-import { checkDateAndDisplay } from "pages_audit/appBar/appBar";
-import clsx from "clsx";
+
 import { queryClient } from "cache";
 import { useLocation } from "react-router-dom";
 import { ActionFormWrapper } from "./actionsform";
@@ -41,6 +38,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
+import { MyFullScreenAppBar } from "pages_audit/appBar/fullScreenAppbar";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -100,8 +98,7 @@ const DynamicGridConfig: FC<{
   const [formMode, setFormMode] = useState(defaultView);
   const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
   const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
-  const authController = useContext(AuthContext);
-  const appBarClasses = useStyles();
+
   const [isActionsForm, setActionsForm] = useState(false);
   const { authState } = useContext(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
@@ -116,8 +113,8 @@ const DynamicGridConfig: FC<{
     isLoading,
     isError,
     error,
-  } = useQuery<any, any>(["getDynamicGridConfigData"], () =>
-    API.getDynamicGridConfigData({
+  } = useQuery<any, any>(["getDynamicGridColConfigData"], () =>
+    API.getDynamicGridColConfigData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
       docCD,
@@ -132,7 +129,7 @@ const DynamicGridConfig: FC<{
 
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["getDynamicGridConfigData"]);
+      queryClient.removeQueries(["getDynamicGridColConfigData"]);
       queryClient.removeQueries(["dynamicGridConfigDML"]);
       queryClient.removeQueries(["verifyDynGridSqlSyntax"]);
     };
@@ -194,118 +191,129 @@ const DynamicGridConfig: FC<{
     setIsOpenSave(false);
   };
 
-  const onSubmitHandler = ({
-    data,
-    resultValueObj,
-    resultDisplayValueObj,
-    endSubmit,
-    setFieldErrors,
-    actionFlag,
-  }) => {
-    //@ts-ignore
+  const onSubmitHandler = useCallback(
+    ({
+      data: datares,
+      resultValueObj,
+      resultDisplayValueObj,
+      endSubmit,
+      setFieldErrors,
+      actionFlag,
+    }) => {
+      // console.log(data);
+      let data = clone(datares);
+      //@ts-ignore
+      endSubmit(true);
 
-    endSubmit(true);
+      if (!mySqlSyntaxRef.current) {
+        setLocalError(true, "Please Verify Query..", "");
+        endSubmit(true, "Please Verify Query..");
+        return;
+      }
+      if (
+        (formMode === "add" &&
+          !data?.DETAILS_DATA?.isNewRow.some(
+            (item) => item?.COLUMN_ACCESSOR === data?.ROWID_COLUMN
+          )) ||
+        (formMode === "edit" &&
+          !gridData.find((item) => item.COLUMN_ACCESSOR === data?.ROWID_COLUMN))
+      ) {
+        setFieldErrors({
+          ROWID_COLUMN: "Please enter a correct ROWID_COLUMN",
+        });
+        return;
+      }
+      setLocalLoading(true);
+      const SetLoadingOWN = (isLoading, error_msg = "", error_detail = "") => {
+        setLocalLoading(isLoading);
+        endSubmit(isLoading, error_msg, error_detail);
+      };
+      data.PARAMETER = {
+        DETAILS_DATA: {
+          isNewRow: myparameterDataRef.current,
+          isDeleteRow: [],
+          isUpdatedRow: [],
+        },
+      };
 
-    if (!mySqlSyntaxRef.current) {
-      setLocalError(true, "Please Verify Query..", "");
-      endSubmit(true, "Please Verify Query..");
-      return;
-    }
-    const gridItem = gridData[0];
+      // data.SQL_ANSI_SYNTAX = mynewSqlSyntaxRef.current;
+      data["COMP_CD"] = authState.companyID;
+      data["BRANCH_CD"] = authState.user.branchCode;
+      data["DENSE"] = Boolean(data["DENSE"]) ? "Y" : "N";
 
-    const test = Object.entries(gridData[0]).map((key, val) => {
-      return key;
-    });
-    console.log("t", gridData?.[0]);
+      data["ALLOW_COLUMN_REORDERING"] = Boolean(data["ALLOW_COLUMN_REORDERING"])
+        ? "Y"
+        : "N";
+      data["DISABLE_GROUP_BY"] = Boolean(data["DISABLE_GROUP_BY"]) ? "Y" : "N";
+      data["ENABLE_PAGINATION"] = Boolean(data["ENABLE_PAGINATION"])
+        ? "Y"
+        : "N";
+      data["IS_CUSRSORFOCUSED"] = Boolean(data["IS_CUSRSORFOCUSED"])
+        ? "Y"
+        : "N";
+      data["ALLOW_ROW_SELECTION"] = Boolean(data["ALLOW_ROW_SELECTION"])
+        ? "Y"
+        : "N";
+      data["ISDOWNLOAD"] = Boolean(data["ISDOWNLOAD"]) ? "Y" : "N";
 
-    // if (
-    //   !(data?.ROWID_COLUMN === data.DETAILS_DATA?.isNewRow?.[0]) ||
-    //   !gridData?.[0]
-    // ) {
-    //   setLocalError(true, "Please enter Correct rowid column..", "");
-    //   endSubmit(true, "Please enter rowid column");
-    //   return;
-    // }
-    setLocalLoading(true);
-    const SetLoadingOWN = (isLoading, error_msg = "", error_detail = "") => {
-      setLocalLoading(isLoading);
-      endSubmit(isLoading, error_msg, error_detail);
-    };
-    data.PARAMETER = {
-      DETAILS_DATA: {
-        isNewRow: myparameterDataRef.current,
-        isDeleteRow: [],
-        isUpdatedRow: [],
-      },
-    };
+      if (data["_OLDROWVALUE"]) {
+        const oldRowValue = data["_OLDROWVALUE"];
 
-    // data.SQL_ANSI_SYNTAX = mynewSqlSyntaxRef.current;
-    data["COMP_CD"] = authState.companyID;
-    data["BRANCH_CD"] = authState.user.branchCode;
-    data["DENSE"] = Boolean(data["DENSE"]) ? "Y" : "N";
-
-    data["ALLOW_COLUMN_REORDERING"] = Boolean(data["ALLOW_COLUMN_REORDERING"])
-      ? "Y"
-      : "N";
-    data["DISABLE_GROUP_BY"] = Boolean(data["DISABLE_GROUP_BY"]) ? "Y" : "N";
-    data["ENABLE_PAGINATION"] = Boolean(data["ENABLE_PAGINATION"]) ? "Y" : "N";
-    data["IS_CUSRSORFOCUSED"] = Boolean(data["IS_CUSRSORFOCUSED"]) ? "Y" : "N";
-    data["ALLOW_ROW_SELECTION"] = Boolean(data["ALLOW_ROW_SELECTION"])
-      ? "Y"
-      : "N";
-    data["ISDOWNLOAD"] = Boolean(data["ISDOWNLOAD"]) ? "Y" : "N";
-    data["GRID_LABEL"] = Boolean(data["GRID_LABEL"]) ? "Y" : "N";
-
-    if (data["_OLDROWVALUE"]) {
-      const oldRowValue = data["_OLDROWVALUE"];
-
-      for (const key in oldRowValue) {
-        if (oldRowValue.hasOwnProperty(key)) {
-          // Convert boolean values to "Y" or "N"
-          if (typeof oldRowValue[key] === "boolean") {
-            oldRowValue[key] = oldRowValue[key] ? "Y" : "N";
+        for (const key in oldRowValue) {
+          if (oldRowValue.hasOwnProperty(key)) {
+            // Convert boolean values to "Y" or "N"
+            if (typeof oldRowValue[key] === "boolean") {
+              oldRowValue[key] = oldRowValue[key] ? "Y" : "N";
+            }
           }
         }
       }
-    }
-    data.DETAILS_DATA["isUpdatedRow"] = data?.DETAILS_DATA?.isUpdatedRow?.map(
-      (item) => {
-        return {
-          ...item,
-          IS_VISIBLE: Boolean(item?.IS_VISIBLE) ? "Y" : "N",
-          _OLDROWVALUE: {
-            ...item?._OLDROWVALUE,
-            IS_VISIBLE: Boolean(item?._OLDROWVALUE?.IS_VISIBLE) ? "Y" : "N",
-          },
+      data.DETAILS_DATA["isUpdatedRow"] = data?.DETAILS_DATA?.isUpdatedRow?.map(
+        (item) => {
+          return {
+            ...item,
+            IS_VISIBLE: Boolean(item?.IS_VISIBLE) ? "Y" : "N",
+            _OLDROWVALUE: {
+              ...item?._OLDROWVALUE,
+              IS_VISIBLE: Boolean(item?._OLDROWVALUE?.IS_VISIBLE) ? "Y" : "N",
+            },
+          };
+        }
+      );
+
+      if (mynewSqlSyntaxRef.current !== myoldSqlSyntaxRef.current) {
+        data["SQL_ANSI_SYNTAX"] = mynewSqlSyntaxRef.current;
+        data["_OLDROWVALUE"] = {
+          ...data["_OLDROWVALUE"],
+          SQL_ANSI_SYNTAX: myoldSqlSyntaxRef.current,
         };
+        data["_UPDATEDCOLUMNS"] = [
+          ...data["_UPDATEDCOLUMNS"],
+          "SQL_ANSI_SYNTAX",
+        ];
+      } else {
+        data["SQL_ANSI_SYNTAX"] = myoldSqlSyntaxRef.current;
       }
-    );
 
-    if (mynewSqlSyntaxRef.current !== myoldSqlSyntaxRef.current) {
-      data["SQL_ANSI_SYNTAX"] = mynewSqlSyntaxRef.current;
-      data["_OLDROWVALUE"] = {
-        ...data["_OLDROWVALUE"],
-        SQL_ANSI_SYNTAX: myoldSqlSyntaxRef.current,
-      };
-      data["_UPDATEDCOLUMNS"] = [...data["_UPDATEDCOLUMNS"], "SQL_ANSI_SYNTAX"];
-    } else {
-      data["SQL_ANSI_SYNTAX"] = myoldSqlSyntaxRef.current;
-    }
-
-    if (
-      data["_UPDATEDCOLUMNS"].length > 0 ||
-      data.DETAILS_DATA["isUpdatedRow"].length > 0
-    ) {
-      isErrorFuncRef.current = {
-        data,
-        SetLoadingOWN,
-        endSubmit,
-        formMode,
-      };
-
-      setIsOpenSave(true);
-    }
-  };
+      if (
+        data["_UPDATEDCOLUMNS"].length === 0 &&
+        data.DETAILS_DATA["isUpdatedRow"].length === 0
+      ) {
+        closeDialog();
+      } else {
+        isErrorFuncRef.current = {
+          data,
+          SetLoadingOWN,
+          endSubmit,
+          formMode,
+          setFieldErrors,
+        };
+        setIsOpenSave(true);
+      }
+      // console.log("??>>>???", isErrorFuncRef.current);
+    },
+    [formMode]
+  );
 
   const setLocalError = (isError, error_msg = "", error_detail = "") => {
     seterrorObjData({
@@ -358,107 +366,7 @@ const DynamicGridConfig: FC<{
         </>
       ) : (
         <Grid container>
-          <AppBar
-            position="sticky"
-            color="primary"
-            // style={{ marginBottom: "10px" }}
-          >
-            <Toolbar
-              variant="dense"
-              sx={{ display: "flex", alignItems: "center" }}
-            >
-              <div>
-                <img
-                  src={Logo}
-                  alt="Netbanking"
-                  className={appBarClasses.logo}
-                  onClick={(e) => {
-                    e.preventDefault();
-                  }}
-                />
-                <p className={appBarClasses.version01}>V: 1.12.03.1</p>
-              </div>
-              <Stack direction="row" spacing={4} mx={2}>
-                <Box className={appBarClasses.heading_user_img_border}>
-                  <Avatar
-                    className={appBarClasses.heading_user_img}
-                    alt="Remy Sharp"
-                    src={bank_logo_default}
-                  />
-                </Box>
-              </Stack>
-              <Typography
-                component="h1"
-                variant="h6"
-                color="inherit"
-                noWrap
-                className={appBarClasses.title}
-              >
-                <Box
-                  style={{
-                    marginBottom: "8px",
-                    fontSize: "17px",
-                    color: "#1C1C1C",
-                    // overflowX: "auto",
-                    width: "555px",
-                  }}
-                  className={clsx({
-                    [appBarClasses.marquee]:
-                      authController?.authState?.companyName.length > 55,
-                  })}
-                >
-                  {authController?.authState?.companyName || ""}
-                </Box>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <div style={{ color: "#949597" }}>
-                    <Typography
-                      variant="caption"
-                      display="block"
-                      lineHeight={0}
-                      fontSize={"11px"}
-                    >
-                      Branch:{" "}
-                      {authController?.authState?.user?.branchCode ?? "001 "}-
-                      {authController?.authState?.user?.branch ?? ""}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      display="inline"
-                      fontSize={"11px"}
-                    >
-                      Working Date:{" "}
-                      {checkDateAndDisplay(
-                        authController?.authState?.workingDate ?? ""
-                      )}
-                    </Typography>
-                    <Typography
-                      marginLeft={1}
-                      variant="caption"
-                      display="inline"
-                      fontSize={"11px"}
-                    >
-                      Last Login Date :{" "}
-                      {checkDateAndDisplay(
-                        authController?.authState?.user?.lastLogin ??
-                          "Vastrapur"
-                      )}
-                    </Typography>
-                  </div>
-                </div>
-              </Typography>
-              <Typography fontSize={"17px"} color={"#1C1C1C"}>
-                {/* Greetings....{" "} */}
-                {Greetings()} {authController.authState.user.id}
-              </Typography>
-
-              <Button
-                color="primary"
-                // disabled={mutation.isLoading}
-              >
-                Close
-              </Button>
-            </Toolbar>
-          </AppBar>
+          <MyFullScreenAppBar />
           <Grid
             item
             xs={12}
@@ -501,28 +409,12 @@ const DynamicGridConfig: FC<{
                     Actions
                   </GradientButton>
                 ) : null}
-                {/* {formMode === "view" ? (
-                  <GradientButton
-                    onClick={() => {
-                      setFormMetadata(true);
-                    }}
-                  >
-                    Metadata
-                  </GradientButton>
-                ) : formMode === "edit" ? (
-                  <GradientButton
-                    onClick={() => {
-                      setFormMetadata(true);
-                    }}
-                  >
-                    Metadata
-                  </GradientButton>
-                ) : null} */}
 
                 {formMode === "edit" ? (
                   <>
                     <GradientButton
                       onClick={(event) => {
+                        // console.log(event, myRef.current);
                         myRef.current?.onSubmitHandler(event);
                       }}
                       // disabled={isLocalLoading}

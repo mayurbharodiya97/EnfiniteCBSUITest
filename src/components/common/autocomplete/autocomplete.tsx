@@ -16,7 +16,7 @@ import { useField, UseFieldHookProps } from "packages/form";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { useOptionsFetcher } from "../utils";
+import { getSelectedOptionData, useOptionsFetcher } from "../utils";
 import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import {
   Chip,
@@ -53,6 +53,7 @@ interface AutoCompleteExtendedProps {
   enableVirtualized?: boolean;
   _optionsKey?: string;
   disableCaching?: boolean;
+  requestProps?: any;
 }
 
 type MyAutocompleteProps = Merge<
@@ -102,6 +103,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   isFieldFocused,
   _optionsKey,
   disableCaching,
+  requestProps,
   ...others
 }) => {
   const {
@@ -121,6 +123,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     whenToRunValidation,
     value,
     setIncomingMessage,
+    handleOptionValueExtraData,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -165,6 +168,14 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   }, [isFieldFocused]);
 
   const [_options, setOptions] = useState<OptionsProps[]>([]);
+
+  const getExtraOptionData = useCallback(
+    (values) => {
+      return getSelectedOptionData(_options)(values);
+    },
+    [_options]
+  );
+
   /* eslint-disable array-callback-return */
   const setOptionsWrapper = useCallback(
     (value) => {
@@ -211,6 +222,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     whenToRunValidation,
     _optionsKey,
     disableCaching,
+    requestProps,
     setIncomingMessage,
     true,
     "",
@@ -244,7 +256,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             ? transformValues(value, freeSolo)
             : transformValues(value, freeSolo)[0]
         }
-        getOptionSelected={(option, value) => {
+        isOptionEqualToValue={(option, value) => {
           if (freeSolo) {
             if (option === value) {
               return true;
@@ -282,6 +294,9 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
           } else {
             handleChange(value);
           }
+          //set option data
+          const extraOptionData = getExtraOptionData(value);
+          handleOptionValueExtraData(extraOptionData);
         }}
         onBlur={handleBlur}
         disabled={isSubmitting}
@@ -328,8 +343,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               error={!isSubmitting && isError}
               required={required}
               helperText={!isSubmitting && isError ? error : null}
-              inputProps={{
-                ...params.inputProps,
+              InputProps={{
+                ...params.InputProps,
                 endAdornment: (
                   <Fragment>
                     {validationRunning || loadingOptions ? (
@@ -343,6 +358,20 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   </Fragment>
                 ),
               }}
+              // InputProps={{
+              //   ...params.InputProps,
+              //   endAdornment:
+              //     validationRunning || loadingOptions ? (
+              //       <InputAdornment position="end">
+              //         <CircularProgress
+              //           color="secondary"
+              //           variant="indeterminate"
+              //           size={24}
+              //           {...CircularProgressProps}
+              //         />
+              //       </InputAdornment>
+              //     ) : null,
+              // }}
               InputLabelProps={{
                 shrink: true,
               }}
