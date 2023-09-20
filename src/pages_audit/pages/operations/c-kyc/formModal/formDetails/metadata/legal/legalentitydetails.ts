@@ -1,4 +1,4 @@
-export const entity_detail_meta_data = {
+export const entity_detail_legal_meta_data = {
     form: {
         name: "personal_detail_prefix_details_form",
         label: "", 
@@ -53,7 +53,7 @@ export const entity_detail_meta_data = {
             required: true,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:4, sm:2},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         // {
         //     render: {
@@ -76,7 +76,7 @@ export const entity_detail_meta_data = {
             required: true,
             // placeholder: "First Name",
             type: "text",
-            GridProps: {xs:4, sm:2},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -87,7 +87,7 @@ export const entity_detail_meta_data = {
             label: "Sub Customer Type",
             // placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs:4, sm:2},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -97,7 +97,7 @@ export const entity_detail_meta_data = {
             label: "Group",
             // placeholder: "Last Name",
             type: "text",
-            GridProps: {xs:4, sm:2},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -107,7 +107,7 @@ export const entity_detail_meta_data = {
             label: "Rating",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -118,7 +118,7 @@ export const entity_detail_meta_data = {
             placeholder: "",
             format: "dd/MM/yyyy",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -132,7 +132,7 @@ export const entity_detail_meta_data = {
             ],
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -142,7 +142,7 @@ export const entity_detail_meta_data = {
             label: "GSTIN",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -153,7 +153,7 @@ export const entity_detail_meta_data = {
             placeholder: "",
             format: "dd/MM/yyyy",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -167,7 +167,7 @@ export const entity_detail_meta_data = {
             ],
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -181,7 +181,7 @@ export const entity_detail_meta_data = {
             ],
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -191,7 +191,7 @@ export const entity_detail_meta_data = {
             label: "Resi. Status",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -201,7 +201,7 @@ export const entity_detail_meta_data = {
             label: "GIIN",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -211,7 +211,7 @@ export const entity_detail_meta_data = {
             label: "TIN",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -221,7 +221,7 @@ export const entity_detail_meta_data = {
             label: "TIN",
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },        
         {
             render: {
@@ -256,7 +256,7 @@ export const entity_detail_meta_data = {
             ],
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },        		
 		{
             render: {
@@ -266,7 +266,7 @@ export const entity_detail_meta_data = {
             label: "Parent Company Name",            
             placeholder: "",
             type: "text",
-            GridProps: {xs:4, sm:3},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },        		
     ]
 }
