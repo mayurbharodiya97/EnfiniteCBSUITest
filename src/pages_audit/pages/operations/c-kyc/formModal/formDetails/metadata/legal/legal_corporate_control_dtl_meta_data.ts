@@ -55,8 +55,8 @@ export const corporate_control_dtl_meta_data = {
             options: () => API.getPMISCData("CKYC_RELAT_PERS"),
             _optionsKey: "RelatedPersOptions",
             placeholder: "",
-            type: "text",
-            GridProps: {xs:4, sm:3},
+            // type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
@@ -66,28 +66,46 @@ export const corporate_control_dtl_meta_data = {
             label: "Ref.Cust.ID.",
             required: true,
             // placeholder: "First Name",
-            type: "text",
-            GridProps: {xs:4, sm:2},
+            // type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
         },
-         {
-             render: {
-                 componentType: "formbutton"
-             },
-             name: "Signature",
-         },
-         {
-             render: {
-                 componentType: "formbutton"
-             },
-             name: "Remove",
-         },,
-         {
-             render: {
-                 componentType: "formbutton"
-             },
-             name: "View Customer Details",
-         },
-      
+        {
+            render: {
+                componentType: "formbutton"
+            },
+            name: "Signature",
+            label: "Signature",
+        },
+        {
+            render: {
+                componentType: "formbutton"
+            },
+            name: "Remove",
+            label: "Remove",
+        },
+        {
+            render: {
+                componentType: "formbutton"
+            },
+            name: "View Customer Details",
+            label: "View Customer Details",
+        },
+        // {
+        //     render: {
+        //         componentType: "formbutton",
+        //     },
+        //     name: "PID_DESCRIPTION",
+        //     label: "Retrieve",
+        //     endsIcon: "YoutubeSearchedFor",
+        //     rotateIcon: "scale(1.5)",
+        //     placeholder: "",
+        //     type: "text",
+        //     GridProps: {
+        //         xs: 12,
+        //         md: 1,
+        //         sm: 1,
+        //     },
+        // },
     ]
 }

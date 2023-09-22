@@ -52,6 +52,8 @@ import KYCDocUpload from './formDetails/formComponents/individualComps/KYCDocUpl
 import PhotoSignature from './formDetails/formComponents/individualComps/PhotoSignature';
 import { format } from "date-fns/esm";
 import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails';
+import DeclarationDetailsLegal from './formDetails/formComponents/legalComps/DeclarationDetailsLegal';
+import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -100,7 +102,7 @@ export const CustomTabLabel = ({IconName, isSidebarExpanded, tabLabel, subtext})
           } */}
           {/* <Icon>star</Icon> */}
         {/* {<IconName />} */}
-        <Icon>{IconName}</Icon>
+        <Icon>{`${IconName}`}</Icon>
         {/* {IconComponent(IconName)} */}
         {/* <IconComponent iconName = {IconName as IconNames} /> */}
           {/* <FontAwesomeIcon
@@ -337,7 +339,7 @@ export default function FormModal({
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
       
       case "Declaration Details":
-        return <DeclarationDetails 
+        return <DeclarationDetailsLegal 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
@@ -345,7 +347,7 @@ export default function FormModal({
         return <p>Photo & Signature</p>
 
       case "Details of Controlling Persons":
-        return <RelatedPersonDetails
+        return <ControllingPersonDTL
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
         isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
         />
@@ -361,7 +363,7 @@ export default function FormModal({
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
       case "Attestation Details":
-        return <NRIDetails 
+        return <AttestationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 

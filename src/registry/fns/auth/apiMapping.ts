@@ -444,6 +444,34 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CUSTOMERDEPENDENCYCOUNT",
     packageName: "",
   },
+  GETINSURANCE: {
+    url: "/customerServiceAPI/GETINSURANCE",
+    packageName: "",
+  },
+  OTHERBANKDETAIL: {
+    url: "/customerServiceAPI/OTHERBANKDETAIL",
+    packageName: "",
+  },
+  CUSTOMERCREDITCARDDTL: {
+    url: "/customerServiceAPI/CUSTOMERCREDITCARDDTL",
+    packageName: "",
+  },
+  OFFENCESDTL: {
+    url: "/customerServiceAPI/OFFENCESDTL",
+    packageName: "",
+  },
+  CONTROLLINGPERSONDTL: {
+    url: "/customerServiceAPI/CONTROLLINGPERSONDTL",
+    packageName: "",
+  },
+  GETASSETDTL: {
+    url: "/customerServiceAPI/GETASSETDTL",
+    packageName: "",
+  },
+  GETFINANCIALDETAIL: {
+    url: "/customerServiceAPI/GETFINANCIALDETAIL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -31,6 +31,13 @@ import { ActionTypes } from "components/dataTable";
 import { useNavigate } from "react-router-dom";
 import Dependencies from "pages_audit/acct_Inquiry/dependencies";
 import { DeactivateCustomer } from "./DeactivateCustomer";
+import InsuranceComp from "./InsuranceComp";
+import BankDTLComp from "./BankDTLComp";
+import OffencesDTLComp from "./OffencesDTLComp";
+import ControllingPersonComp from "./ControllingPersonComp";
+import CreditCardDTLComp from "./CreditCardDTLComp";
+import AssetDTLComp from "./AssetDTLComp";
+import FinancialDTLComp from "./FinancialDTLComp";
 
 export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -254,10 +261,16 @@ export const Ckyc = () => {
   const [accTypeValue, setAccTypeValue] = React.useState<null | string>("");
 
 
-  const [rowsData, setRowsData] = useState([]);
-  const [acctOpen, setAcctOpen] = useState(false);
+  const [rowsData, setRowsData] = useState<any[]>([]);
   const [componentToShow, setComponentToShow] = useState("");
-
+  const [acctOpen, setAcctOpen] = useState(false);
+  const [insuranceOpen, setInsuranceOpen] = useState(false);  
+  const [bankCompOpen, setBankCompOpen] = useState(false);  
+  const [creditCardCompOpen, setCreditCardCompOpen] = useState(false);  
+  const [offencesCompOpen, setOffencesCompOpen] = useState(false);  
+  const [assetDTLCompOpen, setAssetDTLCompOpen] = useState(false);  
+  const [financialDTLCompOpen, setFinancialDTLCompOpen] = useState(false);  
+  const [contPersonCompOpen, setContPersonCompOpen] = useState(false);  
 
 
   const { data, isError, isLoading, error, refetch } = useQuery<any, any>(
@@ -471,18 +484,6 @@ useEffect(() => {
       rowDoubleClick: true,
     },
     {
-      actionName: "dependencies",
-      actionLabel: "Dependencies",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "tds-exemption",
-      actionLabel: "TDS Exemption",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
       actionName: "inactive-customer",
       actionLabel: "Inactivate Customer",
       multiple: false,
@@ -512,6 +513,60 @@ useEffect(() => {
       multiple: false,
       rowDoubleClick: false,
     },
+    {
+      actionName: "insurance",
+      actionLabel: "Insurance",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "bank-details",
+      actionLabel: "Bank Details",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "credit-card",
+      actionLabel: "Credit Card",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "offences-details",
+      actionLabel: "Offences",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "asset-details",
+      actionLabel: "Asset Details",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "financial-details",
+      actionLabel: "Financial Details",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "tds-exemption",
+      actionLabel: "TDS Exemption",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "dependencies",
+      actionLabel: "Dependencies",
+      multiple: false,
+      rowDoubleClick: false,
+    },
+    {
+      actionName: "controlling-person-details",
+      actionLabel: "Controlling Person",
+      multiple: false,
+      rowDoubleClick: false,
+    },
   ];
 
   const setCurrentAction = useCallback(
@@ -532,11 +587,39 @@ useEffect(() => {
         setRowsData(data?.rows);
       } else if (data.name === "tds-exemption") {
         setComponentToShow("ViewStatement");
-        setAcctOpen(true);
+        // setAcctOpen(true);
         setRowsData(data?.rows);
       } else if(data.name === "inactive-customer") {
         setComponentToShow("DeactivateCustomer");
+        setRowsData(data?.rows);
+      } else if(data.name === "insurance") {
+        setComponentToShow("insurance");
+        setInsuranceOpen(true);
+        setRowsData(data?.rows);
+      } else if(data.name === "bank-details") {
+        setComponentToShow("bankDetails");
+        setBankCompOpen(true);
+        setRowsData(data?.rows);
+      } else if(data.name === "credit-card") {
+        setComponentToShow("creditCard");
+        setCreditCardCompOpen(true);
         setRowsData(data?.rows);        
+      } else if(data.name === "offences-details") {
+        setComponentToShow("offencesDetails");
+        setOffencesCompOpen(true);
+        setRowsData(data?.rows);
+      } else if(data.name === "asset-details") {
+        setComponentToShow("assetDetails");
+        setAssetDTLCompOpen(true);
+        setRowsData(data?.rows);        
+      } else if(data.name === "financial-details") {
+        setComponentToShow("financialDetails");
+        setFinancialDTLCompOpen(true);
+        setRowsData(data?.rows);        
+      } else if(data.name === "controlling-person-details") {
+        setComponentToShow("controllingPersonDTL");
+        setContPersonCompOpen(true);
+        setRowsData(data?.rows);
       } else {
         navigate(data?.name, {
           state: data?.rows,
@@ -546,6 +629,16 @@ useEffect(() => {
     // []
     [navigate, retrieveFormData, retrieveFormRefetch]
   );
+
+  // insurance-data display api
+    // const {data:insuranceData, isError: isInsuranceError, isLoading: isInsuranceLoading, refetch: insuranceRefetch} = useQuery<any, any>(
+    //     ["getInsuranceGridData", { rowsData}],
+    //     () => API.getInsuranceGridData({
+    //         COMP_CD: authState?.companyID ?? "",
+    //         CUSTOMER_ID: rowsData?.[0]?.id ?? "",
+    //     }), {enabled: true}
+    // )
+
   return (
     <React.Fragment>
       <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(0.5)}} variant="h6">{t("CkycHeader")}</Typography>
@@ -693,8 +786,8 @@ useEffect(() => {
             data={PendingData ?? []}
             setData={() => null}
             // loading={isLoading || isFetching}
-            // actions={actions}
-            // setAction={setCurrentAction}
+            actions={actions}
+            setAction={setCurrentAction}
             // refetchData={() => refetch()}
             // ref={myGridRef}
           />
@@ -723,11 +816,50 @@ useEffect(() => {
           //   screenFlag={"ACCT_INQ"}
           // />
         ) : componentToShow === "DeactivateCustomer" ? (
-          <DeactivateCustomer rowdata={rowsData} />
-        ) : //   componentToShow === "ViewInterest" ? (
-        // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />
-        // ) :
-      null}
+            <DeactivateCustomer rowdata={rowsData} />
+        ) : componentToShow === "insurance" ? (
+            <InsuranceComp 
+              rowsData={rowsData}
+              open={insuranceOpen}
+              onClose={() => setInsuranceOpen(false)} 
+            />
+        ) : componentToShow === "bankDetails" ? (
+            <BankDTLComp 
+              rowsData={rowsData}
+              open={bankCompOpen}
+              onClose={() => setBankCompOpen(false)} 
+            />
+        ) : componentToShow === "creditCard" ? (
+            <CreditCardDTLComp
+              rowsData={rowsData}
+              open={creditCardCompOpen}
+              onClose={() => setCreditCardCompOpen(false)} 
+            />
+        ) : componentToShow === "offencesDetails" ? (
+            <OffencesDTLComp 
+              rowsData={rowsData}
+              open={offencesCompOpen}
+              onClose={() => setOffencesCompOpen(false)} 
+            />
+        ) : componentToShow === "assetDetails" ? (
+          <AssetDTLComp 
+            rowsData={rowsData}
+            open={assetDTLCompOpen}
+            onClose={() => setAssetDTLCompOpen(false)} 
+          />
+        ) : componentToShow === "financialDetails" ? (
+            <FinancialDTLComp
+              rowsData={rowsData}
+              open={financialDTLCompOpen}
+              onClose={() => setFinancialDTLCompOpen(false)} 
+            />
+        ) : componentToShow === "controllingPersonDTL" ? (
+            <ControllingPersonComp 
+              rowsData={rowsData}
+              open={contPersonCompOpen}
+              onClose={() => setContPersonCompOpen(false)} 
+            />
+        ) : null}
 
 
 
