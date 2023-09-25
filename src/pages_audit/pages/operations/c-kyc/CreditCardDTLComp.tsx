@@ -6,15 +6,17 @@ import * as API from "./api";
 import { ActionTypes } from "components/dataTable";
 import { Dialog } from "@mui/material";
 import { credit_card_dtl_grid_meta_data } from "./metadata";
+import { useLocation } from "react-router-dom";
 
-const CreditCardDTLComp = ({rowsData, open, onClose}) => {
+const CreditCardDTLComp = ({open, onClose}) => {
     const { authState } = useContext(AuthContext);
-    console.log("{rowdataaa", rowsData)
+    const {state: data} = useLocation();
+    // console.log("{rowdataaa", data)
     const {data:creditCardData, isError: isCreditCardDataError, isFetching: isCreditCardDataFetching, isLoading: isCreditCardDataLoading, refetch: reditCardDataRefetch} = useQuery<any, any>(
-        ["getCreditCardDTLGridData", {rowsData}],
+        ["getCreditCardDTLGridData", {data}],
         () => API.getCreditCardDTLGridData({
             COMP_CD: authState?.companyID ?? "",
-            CUSTOMER_ID: rowsData?.[0]?.id ?? "",
+            CUSTOMER_ID: data?.[0]?.id ?? "",
         })
     )
 

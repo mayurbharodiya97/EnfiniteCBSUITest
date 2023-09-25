@@ -6,15 +6,17 @@ import * as API from "./api";
 import { offences_dtl_grid_meta_data } from "./metadata";
 import { Dialog } from "@mui/material";
 import { ActionTypes } from "components/dataTable";
+import { useLocation } from "react-router-dom";
 
-const OffencesDTLComp = ({rowsData, open, onClose}) => {
+const OffencesDTLComp = ({open, onClose}) => {
     const { authState } = useContext(AuthContext);
-    console.log("{rowdataaa", rowsData)
+    const {state:data} = useLocation();
+    // console.log("{rowdataaa", data)
     const {data:offencesGridData, isError: isOffencesGridError, isFetching: isOffencesGridFetching, isLoading: isOffencesGridLoading, refetch: offencesGridRefetch} = useQuery<any, any>(
-        ["getOffencesDTLGridData", {rowsData}],
+        ["getOffencesDTLGridData", {data}],
         () => API.getOffencesDTLGridData({
             COMP_CD: authState?.companyID ?? "",
-            CUSTOMER_ID: rowsData?.[0]?.id ?? "",
+            CUSTOMER_ID: data?.[0]?.id ?? "",
         })
     )
 

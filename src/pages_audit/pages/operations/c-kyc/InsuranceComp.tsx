@@ -6,16 +6,18 @@ import * as API from "./api";
 import { Dialog } from "@mui/material";
 import { insurance_grid_meta_data } from "./metadata";
 import { ActionTypes } from "components/dataTable";
+import { useLocation } from "react-router-dom";
 
-const InsuranceComp = ({rowsData, open, onClose}) => {
+const InsuranceComp = ({open, onClose}) => {
     const { authState } = useContext(AuthContext);
+    const { state: data }: any = useLocation();
     const [isCompOpen, setIsCompOpen] = useState(true);
-    console.log("{rowdataaa", rowsData)
+    // console.log("{rowdataaa", data)
     const {data:insuranceData, isError: isInsuranceError, isFetching: isInsuranceFetching, isLoading: isInsuranceLoading, refetch: insuranceRefetch} = useQuery<any, any>(
-        ["getInsuranceGridData", {rowsData}],
+        ["getInsuranceGridData", {data}],
         () => API.getInsuranceGridData({
             COMP_CD: authState?.companyID ?? "",
-            CUSTOMER_ID: rowsData?.[0]?.id ?? "",
+            CUSTOMER_ID: data?.[0]?.id ?? "",
         })
     )
     // useEffect(() => {

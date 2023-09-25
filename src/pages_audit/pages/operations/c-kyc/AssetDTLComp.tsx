@@ -6,15 +6,17 @@ import * as API from "./api";
 import { ActionTypes } from "components/dataTable";
 import { asset_dtl_grid_meta_data, bank_dtl_grid_meta_data } from "./metadata";
 import { Dialog } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
-const AssetDTLComp = ({rowsData, open, onClose}) => {
+const AssetDTLComp = ({open, onClose}) => {
     const { authState } = useContext(AuthContext);
-    console.log("{rowdataaa", rowsData)
+    const { state: data }: any = useLocation();
+    // console.log("{rowdataaa", data)
     const {data:assetdtlData, isError: isAssetDTLError, isFetching: isAssetDTLFetching, isLoading: isAssetDTLLoading, refetch: assetDTLRefetch} = useQuery<any, any>(
-        ["getAssetDTLGridData", {rowsData}],
+        ["getAssetDTLGridData", {data}],
         () => API.getAssetDTLGridData({
             COMP_CD: authState?.companyID ?? "",
-            CUSTOMER_ID: rowsData?.[0]?.id ?? "",
+            CUSTOMER_ID: data?.[0]?.id ?? "",
         })
     )
 

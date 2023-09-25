@@ -6,15 +6,17 @@ import * as API from "./api";
 import { Dialog } from "@mui/material";
 import { ActionTypes } from "components/dataTable";
 import { controlling_person_dtl_grid_meta_data } from "./metadata";
+import { useLocation } from "react-router-dom";
 
-const ControllingPersonComp = ({rowsData, open, onClose}) => {
+const ControllingPersonComp = ({open, onClose}) => {
     const { authState } = useContext(AuthContext);
-    console.log("{rowdataaa", {rowsData})
+    const { state: data }: any = useLocation();
+    // console.log("{rowdataaa", {data})
     const {data: contrPersonData, isError: isContrPersonDataError, isFetching: isContrPersonDataFetching, isLoading: isContrPersonDataLoading, refetch: contrPersonDataRefetch} = useQuery<any, any>(
-        ["getControllingPersonDTLGridData", {rowsData}],
+        ["getControllingPersonDTLGridData", {data}],
         () => API.getControllingPersonDTLGridData({
             COMP_CD: authState?.companyID ?? "",
-            CUSTOMER_ID: rowsData?.[0]?.id ?? "",
+            CUSTOMER_ID: data?.[0]?.id ?? "",
         })
     )
 
