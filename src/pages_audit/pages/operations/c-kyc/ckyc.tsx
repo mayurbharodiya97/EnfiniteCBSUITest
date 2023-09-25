@@ -581,6 +581,10 @@ useEffect(() => {
         // if(retrieveFormData) {
           handleFormModalOpenOnEditctx(data?.rows)
         // }
+
+        navigate(data?.name, {
+          state: data?.rows,
+        })
       } 
       // else if (data.name === "dependencies") {
       //   setComponentToShow("Dependencies");
@@ -662,7 +666,10 @@ useEffect(() => {
           <Tooltip title={t("IndividualCustTooltip")}><Button 
             color="secondary" 
             variant="contained" 
-            onClick={() => handleFormModalOpenctx("I")} 
+            onClick={() => {
+              handleFormModalOpenctx("I")
+              navigate("new-entry")
+            }} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
               minHeight:{xs: "40px", md: "30px"}, 
@@ -685,7 +692,10 @@ useEffect(() => {
           <Tooltip title={t("LegalCustTooltip")}><Button 
             color="secondary" 
             variant="contained" 
-            onClick={() => handleFormModalOpenctx("C")} 
+            onClick={() => {
+              handleFormModalOpenctx("C")
+              navigate("new-entry")
+            }} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
               minHeight:{xs: "40px", md: "30px"}, 
@@ -799,6 +809,32 @@ useEffect(() => {
 
 
       <Routes>
+        <Route
+          path="new-entry/*"
+          element={
+            <FormModal
+              isLoadingData={isLoadingData}
+              setIsLoadingData={setIsLoadingData}
+              isCustomerData={isCustomerData}
+              setIsCustomerData={setIsCustomerData}
+              onClose={() => navigate(".")}
+            />
+          }
+        />
+
+        <Route
+          path="view-detail/*"
+          element={
+            <FormModal
+              isLoadingData={isLoadingData}
+              setIsLoadingData={setIsLoadingData}
+              isCustomerData={isCustomerData}
+              setIsCustomerData={setIsCustomerData}
+              onClose={() => navigate(".")}
+            />
+          }
+        />
+
         <Route
           path="insurance/*"
           element={
@@ -982,7 +1018,7 @@ useEffect(() => {
 
 
 
-      <FormModal 
+      {/* <FormModal 
         // isFormModalOpen={state?.isFormModalOpenctx} 
         // handleFormModalOpen={handleFormModalOpen} 
         // handleFormModalClose={handleFormModalClose} 
@@ -1015,7 +1051,7 @@ useEffect(() => {
         // setAccTypeValue={setAccTypeValue}
         // refetch={refetch}
         // retrieveFormRefetch={retrieveFormRefetch}
-      />
+      /> */}
     </React.Fragment>
   );
 };

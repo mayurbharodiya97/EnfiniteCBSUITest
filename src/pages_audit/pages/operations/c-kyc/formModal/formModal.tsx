@@ -54,6 +54,7 @@ import { format } from "date-fns/esm";
 import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails';
 import DeclarationDetailsLegal from './formDetails/formComponents/legalComps/DeclarationDetailsLegal';
 import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
+import { useLocation, useNavigate } from 'react-router-dom';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -180,7 +181,7 @@ export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
-  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData,
+  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose
   // entityType, setEntityType, 
   // customerCategories, 
   // tabsApiRes, setTabsApiRes, 
@@ -190,6 +191,7 @@ export default function FormModal({
   // AccTypeOptions
 }) {
   const {state, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal} = useContext(CkycContext);
+  const { state: data }: any = useLocation();
   const { t } = useTranslation();
   const classes = useDialogStyles();
   const authController = useContext(AuthContext);
@@ -589,7 +591,10 @@ export default function FormModal({
               {t("Save")}
             </Button>
             <Button
-              onClick={handleFormModalClosectx}
+              onClick={() => {
+                handleFormModalClosectx()
+                onClose()
+              }}
               color="primary"
               // disabled={mutation.isLoading}
             >
@@ -626,6 +631,7 @@ export default function FormModal({
                   <Grid item xs={12} sm={6} md>
                     <Autocomplete sx={{width: "100%", minWidth: 350}} 
                       // disablePortal
+                      disabled={!state?.isFreshEntryctx}
                       id="cust-categories"
                       value={state?.categConstitutionValuectx || null}
                       inputValue={categConstitutionIPValue}
