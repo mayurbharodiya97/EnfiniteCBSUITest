@@ -345,8 +345,11 @@ export default function FormModal({
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
+      case "KYC Document Upload":
+        return <KYCDocUpload />
+  
       case "Photo & Signature Upload":
-        return <p>Photo & Signature</p>
+        return <PhotoSignature />
 
       case "Details of Controlling Persons":
         return <ControllingPersonDTL
@@ -364,6 +367,11 @@ export default function FormModal({
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
+      case "NRI Details":
+        return <NRIDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        
       case "Attestation Details":
         return <AttestationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
