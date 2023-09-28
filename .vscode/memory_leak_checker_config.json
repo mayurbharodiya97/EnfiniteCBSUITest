@@ -1,0 +1,9 @@
+{
+  "codeDir": "**/src",
+  "excludedDirNameSet": ["node_modules", ".git"],
+  "includedFileSuffixSet": [".vue", ".js"],
+  "excludedFileNameSet": [".DS_Store"],
+  "hideWarning": false,
+  "eventRegisterKeyMap": {},
+  "notUseDefaultEventRegisterKeyMap": false
+}

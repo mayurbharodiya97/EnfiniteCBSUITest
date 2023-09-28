@@ -138,6 +138,7 @@
     ]
   },
   "devDependencies": {
+    "@types/http-errors": "^2.0.2",
     "@types/lodash-es": "^4.17.4",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "react-app-rewired": "^2.2.1"
