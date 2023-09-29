@@ -247,6 +247,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         disableClearable={disableClearable}
         options={_options}
         freeSolo={freeSolo}
+        autoHighlight
+        autoSelect
         //@ts-ignore
         getOptionLabel={myGetOptionLabel}
         value={

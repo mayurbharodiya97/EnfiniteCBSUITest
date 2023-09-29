@@ -7,7 +7,7 @@ import { useState } from "react";
 import { StaticAdminUserDetailsReports } from "./reportDetailsData/staticReportsDetails";
 import { format } from "date-fns";
 import { TrnParticularsDetailsReports } from "./trnParticulars/trnParticulars";
-import { communMasterConfig } from "./metaData/communMSTDetail";
+import { communMasterConfig } from "./metaData/comonMSTDetail";
 
 export const StaticAdminUserReports = ({ screenFlag, subScreenFlag = "" }) => {
   const [isOpenSave, setIsOpenSave] = useState<any>(false);

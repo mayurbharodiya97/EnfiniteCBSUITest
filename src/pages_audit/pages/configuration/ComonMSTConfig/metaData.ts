@@ -60,7 +60,7 @@ export const commonMSTGridMetaData: MasterDetailsMetaData = {
         sequence: 5,
         alignment: "left",
         componentType: "editableTextField",
-        // isReadOnly: true,
+        // isReadOnly: false,
         width: 400,
         minWidth: 320,
         maxWidth: 540,

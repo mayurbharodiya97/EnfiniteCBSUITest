@@ -118,7 +118,7 @@ export const GetAllChieldMenuData = (
         newNavItems.push(...newChildren);
       } else {
         if (
-          (!isCheckUserCode || Boolean(newItem.user_code)) &&
+          (!isCheckUserCode || Boolean(newItem.system_code)) &&
           Boolean(newItem.href)
         ) {
           newNavItems.push({ ...newItem });

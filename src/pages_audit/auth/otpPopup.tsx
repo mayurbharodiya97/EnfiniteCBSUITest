@@ -321,6 +321,7 @@ export const OTPModelForm = ({
       handleCloseEvent();
     }
   }, [loginState.otpmodelClose]);
+  console.log("<<<oginstate", loginState);
   return (
     <Fragment>
       <Grid alignItems="center">
@@ -414,7 +415,25 @@ export const OTPModelForm = ({
           {Boolean(OTPError) ? (
             <FormHelperText style={{ color: "red" }}>{OTPError}</FormHelperText>
           ) : null}
-
+          {loginState?.auth_type === "T" ? (
+            <div style={{ flex: "auto" }}>
+              <a href="forgot-totp">Forgot TOTP</a>
+            </div>
+          ) : (
+            <></>
+          )}
+          {loginState.otploading ||
+          otpresendCount >= 3 ||
+          loginState?.auth_type === "T" ? null : (
+            <ResendOTP
+              onResendClick={handleResendClick}
+              onTimerComplete={() => setbtnshow(true)}
+              renderButton={renderButton}
+              renderTime={renderTime}
+              maxTime={60}
+              className={classes.resendOTPalign}
+            />
+          )}
           <div
             style={{
               display: "flex",

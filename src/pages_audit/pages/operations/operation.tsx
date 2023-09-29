@@ -17,8 +17,20 @@ export const OperationsMenu = () => (
       element={<DetailMastersData screenFlag="GETCHEQUEBOOK" />}
     />
     <Route
-      path="detailMaster/*"
-      element={<DetailMastersData screenFlag="GETACCTINQUIRY" />}
+      path="limit-entry/*"
+      element={<DetailMastersData screenFlag="GETLIMITENTRY" />}
+    />
+    <Route
+      path="lien-entry/*"
+      element={<DetailMastersData screenFlag="GETLIENENTRY" />}
+    />
+    <Route
+      path="stock-entry/*"
+      element={<DetailMastersData screenFlag="GETSTOCKENTRY" />}
+    />
+    <Route
+      path="stop-payment-entry/*"
+      element={<DetailMastersData screenFlag="GETSTOPPAYMENTENTRY" />}
     />
     <Route
       path="ckyc/*"

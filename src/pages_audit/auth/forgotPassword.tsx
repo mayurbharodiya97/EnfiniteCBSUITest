@@ -37,7 +37,7 @@ const inititalState = {
   otpmodelClose: false,
   requestCd: "",
   username: "",
-  authType: "",
+  auth_type: "O",
   transactionID: "",
 };
 const reducer = (state, action) => {
@@ -77,7 +77,7 @@ const reducer = (state, action) => {
         apierrorMessage: "",
         requestCd: action?.payload?.requestCd ?? "",
         username: action?.payload?.username ?? "",
-        authType: action?.payload?.authType ?? "O",
+        auth_type: action?.payload?.auth_type,
       };
     }
     case "inititateOTPVerification": {
@@ -137,12 +137,18 @@ const reducer = (state, action) => {
         isConfirmPasswordError: false,
       };
     }
+    case "OTPResendSuccess": {
+      return {
+        ...state,
+        requestCd: action?.payload?.requestCd,
+      };
+    }
     default: {
       return state;
     }
   }
 };
-export const ForgotPasswordController = () => {
+export const ForgotPasswordController = ({ screenFlag }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [loginState, dispath] = useReducer(reducer, inititalState);
@@ -168,7 +174,11 @@ export const ForgotPasswordController = () => {
           status,
           data: resdata,
           message,
-        } = await veirfyUsernameandMobileNo(data?.userName, data?.mobileno);
+        } = await veirfyUsernameandMobileNo(
+          data?.userName,
+          data?.mobileno,
+          screenFlag
+        );
 
         if (status === "0") {
           dispath({
@@ -176,7 +186,7 @@ export const ForgotPasswordController = () => {
             payload: {
               requestCd: String(resdata?.TRAN_CD ?? ""),
               username: data?.userName,
-              authType: resdata?.AUTH_TYPE ?? "O",
+              auth_type: resdata?.AUTH_TYPE,
             },
           });
           setOpen(true);
@@ -306,14 +316,23 @@ export const ForgotPasswordController = () => {
         loginState?.requestCd,
         loginState?.username,
         OTPNumber,
-        loginState?.authType
+        loginState?.authType,
+        screenFlag
       );
       console.log("loginState?.authType", loginState);
       if (status === "0") {
-        dispath({
-          type: "OTPVerificationComplate",
-          payload: { otpmodelclose: true },
-        });
+        console.log(">>screenFlag", screenFlag);
+        if (screenFlag === "totp") {
+          enqueueSnackbar(message, {
+            variant: "success",
+          });
+          navigate("login");
+        } else {
+          dispath({
+            type: "OTPVerificationComplate",
+            payload: { otpmodelclose: true },
+          });
+        }
       } else if (status === "99") {
         dispath({
           type: "OTPVerificationFailed",
@@ -335,6 +354,7 @@ export const ForgotPasswordController = () => {
   useEffect(() => {
     GeneralAPI.setDocumentName("Password Reset");
   }, []);
+  console.log("<<<login", loginState);
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>
@@ -363,6 +383,8 @@ export const ForgotPasswordController = () => {
               <h2 style={{ margin: "10px 0" }}>
                 {loginState.workingState === 1
                   ? t("Setnewpassword")
+                  : screenFlag === "totp"
+                  ? "Forgot TOTP"
                   : t("ForgotPassword")}
               </h2>
               {open ? (

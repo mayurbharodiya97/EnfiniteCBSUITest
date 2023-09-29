@@ -1,4 +1,5 @@
 import {
+  createContext,
   forwardRef,
   Fragment,
   useCallback,
@@ -20,9 +21,11 @@ import {
 } from "components/utils";
 import { CSSProperties } from "@mui/styles";
 import { useMutation, useQuery } from "react-query";
-import { SubmitFnType } from "packages/form";
+import { SubmitFnType, useField } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { AuthSDK } from "registry/fns/auth";
+import { AppBar } from "@mui/material";
+import { Alert } from "components/common/alert";
 
 export interface MasterDetailsArgumentType {
   metaData;
@@ -53,20 +56,8 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
     {
       metaData,
       children = () => {},
-      actions = [],
       initialData = {},
-      isError = false,
-      errorObj = {},
       handelActionEvent = () => {},
-      formStyle = {
-        background: "white",
-        height: "calc(100vh - 390px)",
-        overflowY: "auto",
-        overflowX: "hidden",
-      },
-      isNewRow = null,
-      isLoading = false,
-      onSubmitData = () => {},
       displayMode = null,
       containerstyle = { padding: "10px" },
       formName = "",
@@ -75,14 +66,18 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
       onClickActionEvent = () => {},
       hideHeader = false,
       reportID,
-      dataFetcher = () => {
-        return [];
-      },
       otherAPIRequestPara,
-      autoFetch = true,
     },
     ref
   ) => {
+    // const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
+    //   GetdetailData()
+    // );
+
+    // useEffect(() => {
+    //   console.log("<<<queryData", queryData);
+    // }, [queryData]);
+
     const intialValueDetails = useMemo(() => {
       const { DETAILS_DATA = [], ...other } = initialData;
       return DETAILS_DATA;
@@ -91,13 +86,10 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
     const myGridRef = useRef<any>(null);
     const myMasterRef = useRef<any>(null);
     const { authState } = useContext(AuthContext);
-
-    const mutation: any = useMutation(getdetailData, {
+    const mutation: any = useMutation(GetdetailData, {
       onSuccess: (data) => {},
       onError: (error: any) => {},
     });
-    console.log("<<<mutation", mutation);
-
     const masterMetadata: MetaDataType = useMemo(
       () => extractMetaData(metaData.masterForm, displayMode),
       [metaData, displayMode, formNameMaster]
@@ -106,14 +98,6 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
     const detailsMetadata: GridMetaDataType = useMemo(() => {
       return extractGridMetaData(metaData.detailsGrid, displayMode);
     }, [metaData, displayMode, formName]) as GridMetaDataType;
-    const GetKeyName = useMemo(
-      () => metaData?.detailsGrid?.gridConfig?.rowIdColumn || "id",
-      [metaData]
-    );
-    const intialValueMaster = useMemo(() => {
-      const { DETAILS_DATA, ...other } = initialData;
-      return other;
-    }, [initialData]);
 
     const detailsMetadatarep = useMemo(() => {
       let myColumns = detailsMetadata.columns;
@@ -124,7 +108,7 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
       }
       return { ...detailsMetadata, columns: myColumns };
     }, [displayMode, detailsMetadata]);
-
+    console.log("<<<detailsMetadatarep", mutation);
     const onSubmitHandler: SubmitFnType = (
       data: any,
       displayData,
@@ -133,7 +117,6 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
     ) => {
       //@ts-ignore
       endSubmit(true);
-
       console.log("<<<dtf", data);
 
       let ApiKey = masterMetadata?.form?.apiKey;
@@ -144,9 +127,11 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
           response[key] = data[mappedKey];
         }
       }
+
       let otherAPIRequestPara = {
         COMP_CD: authState?.companyID,
         ...response,
+        // ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
       };
       mutation.mutate({ reportID, otherAPIRequestPara });
     };
@@ -161,6 +146,28 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
             paddingBottom: "10px",
           }}
         >
+          {mutation?.isError ? (
+            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity="error"
+                  errorMsg={mutation?.error?.error_msg ?? "Unknow Error"}
+                  errorDetail={mutation?.error?.error_detail ?? ""}
+                  color="error"
+                />
+              </AppBar>
+            </div>
+          ) : mutation?.data?.length < 1 && Boolean(mutation?.isSuccess) ? (
+            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+              <AppBar position="relative" color="primary">
+                <Alert
+                  errorMsg="No data found"
+                  errorDetail="No any data found"
+                  severity="error"
+                />
+              </AppBar>
+            </div>
+          ) : null}
           <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
             <GridWrapper
               key={"masterDetails-Detail" + Boolean(formName) ? formName : ""}
@@ -168,7 +175,7 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
               data={mutation.data ? mutation.data : girdData}
               setData={setGridData}
               loading={mutation.isLoading}
-              actions={actions}
+              actions={detailsMetadatarep?.actions}
               setAction={handelActionEvent}
               refetchData={null}
               ref={myGridRef}
@@ -181,23 +188,34 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
                 ClickEventManage();
               }
             }}
+            // onKeyDown={(e) => {
+            //   if (e.key === "Tab") {
+            //     console.log("<<<tab", e);
+            //     // console.log(
+            //     //   "<<<myMasterRef",
+            //     //   // myMasterRef.current?.getFieldData()
+            //     // );
+            //     // ClickEventManage();
+            //     // e.preventDefault();
+            //     // console.log("Tab");
+            //   }
+            // }}
           >
             <FormWrapper
               key={
-                "masterDetails-Master" + Boolean(mutation?.data)
+                "masterDetails-Master" + mutation?.data?.length &&
+                Boolean(mutation?.isSuccess)
                   ? mutation?.data
-                  : Boolean(formName)
-                  ? formName
                   : ""
               }
               metaData={masterMetadata}
               initialValues={mutation?.data?.[0]}
-              formStyle={formStyle}
+              formStyle={masterMetadata?.form?.formStyle}
               onSubmitHandler={onSubmitHandler}
               displayMode={displayMode}
               containerstyle={containerstyle}
               onFormButtonClickHandel={onFormButtonClickHandel}
-              hideHeader={hideHeader}
+              hideHeader={masterMetadata?.form?.hideHeader}
               ref={myMasterRef}
             >
               {children}
@@ -208,13 +226,13 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
     );
   }
 );
-export const getdetailData = async ({ reportID, otherAPIRequestPara }) => {
+
+export const GetdetailData = async ({ reportID, otherAPIRequestPara }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher(reportID, {
       ...otherAPIRequestPara,
     });
   if (status === "0") {
-    // return setNewData(data);
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

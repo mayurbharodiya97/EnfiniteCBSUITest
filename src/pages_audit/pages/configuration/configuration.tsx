@@ -5,7 +5,7 @@ import { StaticAdminUserReports } from "../reports/staticReports/staticReports";
 
 const DynamicGridConfig = lazy(() => import("./dynamicGridConfig"));
 const DynFormMetadataConfig = lazy(() => import("./dynFormMetadtaConfig"));
-const CommonMSTConfig = lazy(() => import("./CommunMSTConfig"));
+const CommonMSTConfig = lazy(() => import("./ComonMSTConfig"));
 const LangWiseMessageConfig = lazy(
   () => import("./LangWiseMessageConfig/index")
 );
