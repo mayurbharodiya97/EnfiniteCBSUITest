@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
+import { entity_detail_legal_meta_data } from '../../metadata/legal/legalentitydetails';
 // import { format } from 'date-fns';
 
 const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
@@ -130,7 +131,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("PersonalDetails")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("EntityDetails")}</Typography>
                     <IconButton onClick={handlePDExpand}>
                         {!isPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
@@ -143,7 +144,7 @@ const myGridRef = useRef<any>(null);
                             // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                             initialValues={initialVal}
                             key={"pd-form-kyc"+ initialVal}
-                            metaData={personal_detail_prefix_data as MetaDataType}
+                            metaData={entity_detail_legal_meta_data as MetaDataType}
                             formStyle={{}}
                             hideHeader={true}
                             displayMode={"new"}
@@ -158,38 +159,6 @@ const myGridRef = useRef<any>(null);
                     </Grid>                    
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-
-            {isCustomerData ? <Grid 
-                sx={{
-                    backgroundColor:"var(--theme-color2)", 
-                    padding:(theme) => theme.spacing(1), 
-                    border: "1px solid rgba(0,0,0,0.12)", 
-                    borderRadius: "20px"
-                }} container item xs={12} direction={'column'}>
-                <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("OtherPersonalDetails")}</Typography>
-                    <IconButton onClick={handleOtherPDExpand}>
-                        {!isOtherPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
-                    </IconButton>
-                </Grid>
-                <Collapse in={isOtherPDExpanded}>
-                {/* <Grid container item> */}
-                    <Grid item>
-                        <FormWrapper 
-                            ref={PODFormRef}
-                            key={"pod-form-kyc"+ initialVal}
-                            metaData={personal_other_detail_meta_data as MetaDataType}
-                            // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
-                            initialValues={initialVal}
-                            formStyle={{}}
-                            hideHeader={true}
-                            onSubmitHandler={onSubmitPODHandler}
-                        />
-                    </Grid>                    
-                {/* </Grid> */}
-                </Collapse>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="300px" width="100%"></Skeleton> : null}
-
 
 
             <Grid container item sx={{justifyContent: "flex-end"}}>

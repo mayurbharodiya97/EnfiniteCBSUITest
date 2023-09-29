@@ -410,4 +410,8 @@ export const en_language_data = {
   OrganizationName: "Organization Name",
   PlaceOfDeclaration: "Place of Declaration",
   DateOfDeclaration: "Date of Declaration",
+  // tab - entity details
+  EntityDetails: "Entity Details",
+  // tab - controlling person dtl
+  ControllingPersonDTL: "Details of Controlling Person"
 };

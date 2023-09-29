@@ -620,9 +620,9 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
     await AuthSDK.internalFetcher("DOCTEMPLATEDTL", {
       COMP_CD: COMP_CD, 
       BRANCH_CD: BRANCH_CD, 
-      // CUST_TYPE: CUST_TYPE, 
-      // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
-      TRAN_CD: "42"
+      CUST_TYPE: CUST_TYPE, 
+      CONSTITUTION_TYPE: CONSTITUTION_TYPE,
+      // TRAN_CD: "42"
     });
   if (status === "0") {
     let responseData = data;
@@ -1152,5 +1152,120 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
       }
       return responseData  
     }
+  }
+}
+
+export const getInsuranceGridData = async ({COMP_CD, CUSTOMER_ID}) => {
+  // const { data, status, message, messageDetails } =
+  // await AuthSDK.internalFetcher("CUSTOMERDEPENDENCYCOUNT", {
+  //   COMP_CD: COMP_CD, 
+  //   CUSTOMER_ID: CUSTOMER_ID,
+  // });
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("GETINSURANCE", {
+    CUSTOMER_ID: CUSTOMER_ID,
+    COMP_CD: COMP_CD,
+  })
+
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getBankDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("OTHERBANKDETAIL", {
+    CUSTOMER_ID: CUSTOMER_ID,
+    COMP_CD: COMP_CD,
+  })
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getCreditCardDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("CUSTOMERCREDITCARDDTL", {
+    CUSTOMER_ID: CUSTOMER_ID,
+    COMP_CD: COMP_CD,
+  })
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getOffencesDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("OFFENCESDTL", {
+    CUSTOMER_ID: CUSTOMER_ID,
+    COMP_CD: COMP_CD,
+  })
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getControllingPersonDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("CONTROLLINGPERSONDTL", {
+    CUSTOMER_ID: CUSTOMER_ID,
+    COMP_CD: COMP_CD,
+  })
+  if(status == 0) {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ ACTIVE, ...other }) => {
+          return {
+            ...other,
+            ACTIVE: ACTIVE === "Y" ? true : false
+          };
+        }
+      );
+    }
+    return responseData  
+  }  
+}
+
+export const getAssetDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("GETASSETDTL", {
+    CUSTOMER_ID: CUSTOMER_ID,
+    COMP_CD: COMP_CD,
+  })
+  if(status == 0) {
+    let responseData = data;
+    // if (Array.isArray(responseData)) {
+    //   responseData = responseData.map(({ ACTIVE, ...other }) => {
+    //       return {
+    //         ...other,
+    //         ACTIVE: ACTIVE === "Y" ? true : false
+    //       };
+    //     }
+    //   );
+    // }
+    return responseData  
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const getFinancialDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
+  const {data, status, message, messageDetails} = 
+  await AuthSDK.internalFetcher("GETFINANCIALDETAIL", {
+    CUSTOMER_ID: CUSTOMER_ID,
+    COMP_CD: COMP_CD,
+  })
+  if(status == 0) {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
   }
 }
