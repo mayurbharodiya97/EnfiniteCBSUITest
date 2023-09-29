@@ -2,11 +2,7 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, Collapse, IconButton } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-import { 
-    related_person_attestation_detail_meta_data, 
-    related_person_detail_data, 
-    related_person_poi_detail_data
-} from '../../metadata/individual/relatedpersondetails';
+import { related_person_detail_data } from '../../metadata/individual/relatedpersondetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';

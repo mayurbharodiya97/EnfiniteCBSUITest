@@ -472,6 +472,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETFINANCIALDETAIL",
     packageName: "",
   },
+  GETCUSTRATELIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTRATELIST",
+    packageName: "",
+  },
+  GETCUSTDOCUMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTDOCUMENT",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -174,6 +174,33 @@ export const getOccupationDTL = async (COMP_CD, BRANCH_CD) => {
     }
 };
 
+export const getRatingOpDTL = async (COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTRATELIST", {
+      COMP_CD: COMP_CD ?? "",
+      BRANCH_CD: BRANCH_CD ?? "",
+    });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ RATE_CD, RATE_NM, ...other }) => {
+            return {
+              ...other,
+              RATE_CD: RATE_CD, 
+              RATE_NM: RATE_NM,
+              value: RATE_CD,
+              label: RATE_NM,
+            };
+          }
+        );
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+};
+
 export const getPMISCData = async (CATEGORY_CD, dependentValue?) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPMISCDATA", {
@@ -182,7 +209,7 @@ export const getPMISCData = async (CATEGORY_CD, dependentValue?) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      // console.log("qweqwerr", responseData)
+      console.log("qweqwerr", responseData) // checked for pass, dr - expiry date
 
       if(CATEGORY_CD == "Marital") {
         // console.log("dkjawhdiqwuiugeqweqe", dependentValue)
@@ -644,6 +671,32 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
   }
 }
 
+export const getCustDocumentOpDtl = async (COMP_CD, BRANCH_CD) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTDOCUMENT", {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
+    });
+  if (status === "0") {
+    let responseData = data;
+    // if (Array.isArray(responseData)) {
+    //   responseData = responseData.map(({ FULLNAME, EMP_ID, ...other }) => {
+    //       return {
+    //         ...other,
+    //         FULLNAME:FULLNAME,
+    //         EMP_ID: EMP_ID,
+    //         label: FULLNAME,
+    //         value: EMP_ID,
+    //       };
+    //     }
+    //   );
+    // }
+    return responseData
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
 export const SaveAsDraft = async ({
   CUSTOMER_TYPE,
   CATEGORY_CD,
@@ -682,7 +735,7 @@ export const SaveAsDraft = async ({
       ACCT_TYPE: ACCT_TYPE,
       REQ_FLAG: "F",
       CATEG_CD: CONSTITUTION_TYPE,
-      entityType: CUSTOMER_TYPE,
+      // entityType: CUSTOMER_TYPE,
       COUNTRY_CD: "123 "
       // GST_NO: "",
   }
@@ -723,7 +776,234 @@ export const SaveAsDraft = async ({
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
       ...remainingData,
-      PERSONAL_DETAIL: {...PERSONAL_DETAIL, ...remainingPD, ...ExtraData}
+      PERSONAL_DETAIL: {...PERSONAL_DETAIL, ...remainingPD, ...ExtraData},
+
+    //   PERSONAL_DETAIL: {
+    //     IsNewRow: true,
+    //     FIRST_NM: "apurva",
+    //     ACCT_NM :"vijay",
+    //     SURNAME: "tetu",
+    //     CUSTOMER_TYPE: "I",
+    //     CONSTITUTION_TYPE: "01",
+    //     COMP_CD: "132 ",
+    //     BRANCH_CD: "099 ",
+    //     GENDER :"F",
+    //     KYC_NUMBER: "123456",
+    //     COMMU_CD: "01",
+    //     REQ_FLAG: "F",
+    //     FATHER_SPOUSE: "01",
+    //     CASTE_CD: "OBC",
+    //     TRADE_CD: "243 ",
+    //     SUB_CUST_TYPE: "",
+    //     RATE_CD: "",
+    //     GROUP_CD: "",
+    //     KYC_REVIEW_DT: "",
+    //     EXPLICIT_TDS: "N",
+    //     BIRTH_DT: "08-11-2000",
+    //     NATIONALITY: "",
+    //     RESIDENCE_STATUS: "01",
+    //     CATEG_CD: "09",
+    //     GSTIN: "08ABKFM4841Q1Z1",
+    //     FORM_60: "Y",
+    //     PAN_NO: "ABKFM4841Q",
+    //     UDYAM_REG_NO: "38494404",
+    //     OTHER_DOC: "",
+    //     PROOF_OF_ADD: "01",
+    //     OTHER_DOC_NO: "",
+    //     REFERENCE_TYPE: "",
+    //     REFERENCE_RELATION: "",
+    //     PASSPORT_NO: "924746587",
+    //     PASSPORT_ISSUE_DT: "03-09-2018",
+	 	// PASSPORT_EXPIRY_DT: "03-09-2023",
+	 	// PASSPORT_AUTHORITY_CD: "01",
+	 	// DRIVING_LICENSE_NO: "58324892",
+	 	// DRIVING_LICENSE_ISSUE_DT: "03-09-2018",
+	 	// DRIVING_LICENSE_EXPIRY_DT: "03-12-2027",
+	 	// DRIVING_LICENSE_AUTHORITY_CD: "01",
+    //     OTHER_REFERENCE: "",
+    //     MEM_ACCT_TYPE: "",
+    //     UNIQUE_ID: "673598516700",
+    //     MEM_ACCT_CD: "",
+    //     MEM_COMP_CD: "",
+    //     MEM_BRANCH_CD: "",
+    //     FATCA_DEC_RECVD: "N",
+    //     FATCA_DT: "",
+    //     TIN_ISSUING_COUNTRY: "01",
+    //     COUNTRY_OF_INCORPORATION: "",
+    //     PLACE_OF_INCORPORATION: "",
+    //     DATE_OF_COMMENCEMENT: "",
+    //     US_GIIN: "",
+    //     TIN: "12",
+    //     CCIL_ID: "",
+    //     LEI_NO: "",
+    //     LEI_EXPIRY_DATE: "",
+    //     ADDRESS_TYPE: "02",
+    //     AREA_CD: "001",
+    //     PIN_CODE: "385659",
+    //     CITY_CD: "",
+    //     STATE_CD: "",
+    //     DISTRICT_CD: "",
+    //     COUNTRY_CD: "01",
+    //     ADD1: "Acute Informatics",
+    //     ADD2: "Pune",
+    //     ADD3: " ",
+    //     OTHER_POA: "",
+    //     LOC_ADD_TYPE: "",
+    //     SAME_AS_PER: "Y",
+    //     LOC_ADD1: "",
+    //     LOC_ADD2: "",
+    //     LOC_ADD3: "",
+    //     LOC_AREA_CD: "",
+    //     LOC_CITY_CD: "",
+    //     LOC_DISTRICT_CD: "",
+    //     LOC_STATE_CD: "",
+    //     LOC_COUNTRY_CD: "",
+    //     LOC_PIN_CODE: "",
+    //     LOC_PROOF_OF_ADD: "",
+    //     STD_1: "",
+    //     STD_4: "54890",
+    //     STD_2: "",
+    //     STD_3: "",
+    //     CONTACT1: "",
+    //     CONTACT4: "",
+    //     CONTACT2: "7858089344",
+    //     CONTACT3: "",
+    //     E_MAIL_ID: "apurvapatil@gmail.com",
+    //     ENTRY_TYPE: "1",
+    //     APPLICATION_TYPE: "Y",
+    //     E_MAIL_ID2: "",
+    //     ENTERED_BY: "hff",
+    //     ENTERED_DATE: "20-06-2023",
+    //     ENT_BRANCH_CD: "099 ",
+    //     ENT_COMP_CD: "132 "
+    // },
+
+
+
+
+      // PERSONAL_DETAIL: {
+      //     prefixDivider: "",
+      //     PREFIX_CD: "",
+      //     FIRST_NM: "",
+      //     LAST_NM: "",
+      //     SURNAME: "",
+      //     ACCT_NM: "",
+      //     maidenHeaderdivider: "",
+      //     MAIDEN_PREFIX_CD: "Mrs",
+      //     MAIDEN_FIRST_NM: "",
+      //     MAIDEN_MIDDLE_NM: "",
+      //     MAIDEN_LAST_NM: "",
+      //     FATHER_SPOUSE: "01",
+      //     fatherHeaderDivider: "",
+      //     FATHER_PREFIX_CD: "Mr",
+      //     FATHER_FIRST_NM: "",
+      //     FATHER_MIDDLE_NM: "",
+      //     FATHER_LAST_NM: "",
+      //     motherHeaderDivider: "",
+      //     MOTHER_PREFIX_CD: "Mrs",
+      //     MOTHER_FIRST_NM: "",
+      //     MOTHER_MIDDLE_NM: "",
+      //     MOTHER_LAST_NM: "",
+      //     BIRTH_DT: "01-Aug-2023",
+      //     LF_NO: "minor",
+      //     GENDER: "",
+      //     BLOOD_GRP_CD: "",
+      //     MARITAL_STATUS: "",
+      //     NATIONALITY: "",
+      //     RESIDENCE_STATUS: "01",
+      //     TRADE_CD: "",
+      //     GROUP_CD: "",
+      //     COMMU_CD: "",
+      //     CASTE_CD: "",
+      //     KYC_REVIEW_DT: "",
+      //     FORM_60: "N",
+      //     PAN_NO: "DWIPP9643D",
+      //     UNIQUE_ID: "673598516700",
+      //     ELECTION_CARD_NO: "",
+      //     EXPLICIT_TDS: "N",
+      //     NREGA_JOB_CARD: "",
+      //     OTHER_DOC: "",
+      //     OTHER_DOC_NO: "",
+      //     GSTIN: "",
+      //     passportDivider: "",
+      //     PASSPORT_NO: "924746587",
+      //     PASSPORT_AUTHORITY_CD: "Delhi",
+      //     PASSPORT_ISSUE_DT: "03-Sep-2023",
+      //     PASSPORT_EXPIRY_DT: "03-Sep-2023",
+      //     drivingLicenseDivider: "",
+      //     DRIVING_LICENSE_NO: "58324892",
+      //     DRIVING_LICENSE_AUTHORITY_CD: "Delhi",
+      //     DRIVING_LICENSE_ISSUE_DT: "03-Sep-2023",
+      //     DRIVING_LICENSE_EXPIRY_DT: "03-Sep-2023",
+      //     currentAddDivider: "",
+      //     ADDRESS_TYPE: "",
+      //     ADD1: "",
+      //     ADD2: "",
+      //     ADD3: "",
+      //     PAR_AREA_CD: "",
+      //     AREA_CD: "",
+      //     PIN_CODE: "",
+      //     CITY_CD: "",
+      //     DISTRICT: "",
+      //     STATE: "",
+      //     COUNTRY: "",
+      //     STATE_CD: "",
+      //     COUNTRY_CD: "",
+      //     PROOF_OF_ADD: "",
+      //     OTHER_POA: "",
+      //     localAddDivider: "",
+      //     SAME_AS_PER: "",
+      //     LOC_ADD_TYPE: "",
+      //     LOC_ADD1: "",
+      //     LOC_ADD2: "",
+      //     LOC_ADD3: "",
+      //     LOC_AREA_CD: "",
+      //     LOC_AREA_CD2: "",
+      //     LOC_PIN_CODE: "",
+      //     LOC_CITY_CD: "",
+      //     LOC_DISTRICT_CD: "",
+      //     LOC_STATE_CD: "",
+      //     LOC_COUNTRY: "",
+      //     STATE_UT_CODE: "",
+      //     LOC_COUNTRY_CD: "",
+      //     LOC_PROOF_OF_ADD: "",
+      //     contactDivider: "",
+      //     // PHONE_o: "",
+      //     // PHONE_R: "",
+      //     MOBILE_NO: "",
+      //     FAX: "",
+      //     E_MAIL_ID: "",
+      //     FATCA_DEC_RECVD: "N",
+      //     FATCA_DT: "03-Sep-2023",
+      //     US_GIIN: "",
+      //     DATE_OF_COMMENCEMENT: "03-Sep-2023",
+      //     PLACE_OF_INCORPORATION: "",
+      //     TIN: "12",
+      //     COUNTRY_OF_INCORPORATION: "",
+      //     TIN_ISSUING_COUNTRY: "18  ",
+      //     IsNewRow: true,
+      //     CUSTOMER_TYPE: "I",
+      //     CATEGORY_CD: "03  ",
+      //     CONSTITUTION_TYPE: "01",
+      //     COMP_CD: "132 ",
+      //     BRANCH_CD: "099 ",
+      //     ACCT_TYPE: "01",
+      //     REQ_FLAG: "F",
+      //     CATEG_CD: "01",
+      //     entityType: "I",
+      //     GST_NO: "",
+      //     APPLICATION_TYPE: "Y",
+      //     ENTERED_DATE: "20-July-2023",
+      //     STD_1: "",
+      //     STD_4: "54890",
+      //     STD_2: "",
+      //     STD_3: "",
+      //     CONTACT1: "",
+      //     CONTACT4: "",
+      //     CONTACT2: "7858089344",
+      //     CONTACT3: "",
+      // }
+
   //     IsNewRow: true,
 	// REQ_CD:"",
 	// REQ_FLAG:"F",
@@ -731,117 +1011,117 @@ export const SaveAsDraft = async ({
   //   ENTRY_TYPE :"1",
   //   CUSTOMER_ID:"",
 	// PERSONAL_DETAIL: {
-    //     IsNewRow: true,
-		// CUSTOMER_TYPE: "I",
-    //     CONSTITUTION_TYPE:"I",
-		// COMP_CD: "132 ",
-		// BRANCH_CD: "099 ",
-		// ACCT_TYPE: "01",
-		// REQ_FLAG: "F",
-		// PREFIX_CD: "MISS",
-		// FIRST_NM: "rupa",
-		// LAST_NM: "ajay",
-		// SURNAME: "patil",
-		// ACCT_NM: "rupa ajay patil",
-		// MAIDEN_PREFIX_CD: "Miss",
-		// MAIDEN_FIRST_NM: " ",
-		// MAIDEN_MIDDLE_NM: " ",
-		// MAIDEN_LAST_NM: " ",
-		// FATHER_SPOUSE: "01",
-		// FATHER_PREFIX_CD: "Mr",
-		// FATHER_FIRST_NM: "Vijay",
-		// FATHER_MIDDLE_NM: "SANJAY",
-		// FATHER_LAST_NM: "patil",
-		// MOTHER_PREFIX_CD: "Mrs.",
-		// MOTHER_FIRST_NM: "jaya",
-		// MOTHER_MIDDLE_NM: "Vijay",
-		// MOTHER_LAST_NM: "patil",
-		// FORM_60: "Y",
-		// PAN_NO: "DWIPP9643D",
-		// UNIQUE_ID: "673598516700",
-		// ELECTION_CARD_NO: "38494404",
-		// EXPLICIT_TDS: "N",
-		// NREGA_JOB_CARD: "",
-		// OTHER_DOC: "",
-		// PROOF_OF_ADD: "01",
-		// OTHER_DOC_NO: "02",
-		// PASSPORT_NO: "924746587",
-		// PASSPORT_ISSUE_DT: "03-SEP-2018",
-		// PASSPORT_EXPIRY_DT: "03-SEP-2023",
-		// PASSPORT_AUTHORITY_CD: "01",
-		// DRIVING_LICENSE_NO: "58324892",
-		// DRIVING_LICENSE_ISSUE_DT: "03-SEP-2018",
-		// DRIVING_LICENSE_EXPIRY_DT: "03-SEP-2018",
-		// DRIVING_LICENSE_AUTHORITY_CD: "01",
-		// FATCA_DEC_RECVD: "N",
-		// FATCA_DT: "",
-		// US_GIIN: "",
-		// TIN: "12",
-		// TIN_ISSUING_COUNTRY: "01",
-		// COUNTRY_OF_INCORPORATION: "",
-		// PLACE_OF_INCORPORATION: "",
-		// DATE_OF_COMMENCEMENT: "",
-		// BIRTH_DT: "08-NOV-2023",
-		// GENDER: "F",
-		// BLOOD_GRP_CD: "B+",
-		// MARITAL_STATUS: "02",
-		// NATIONALITY: "",
-		// TRADE_CD: "S-02",
-		// GROUP_CD: "9",
-		// CASTE_CD: "",
-		// COMMU_CD: "01",
-		// LF_NO: "J",
-		// KYC_REVIEW_DT: "",
-		// ADDRESS_TYPE: "02",
-		// ADD1: "Acute Informatics",
-		// ADD2: "Pune",
-		// ADD3: " ",
-		// STATE_CD: "",
-		// OTHER_POA: "",
-		// LOC_ADD_TYPE: "",
-		// LOC_ADD1: "",
-		// LOC_ADD2: "",
-		// LOC_ADD3: "",
-		// LOC_AREA_CD: "",
-		// LOC_CITY_CD: "",
-		// LOC_DISTRICT_CD: "",
-		// LOC_STATE_CD: "",
-		// LOC_COUNTRY_CD: "",
-		// LOC_PIN_CODE: "",
-		// AREA_CD: "001",
-		// PIN_CODE: "385659",
-		// SAME_AS_PER: "Y",
-		// CONTACT: "N",
-		// LOC_PROOF_OF_ADD: "",
-		// STD_1: "",
-		// STD_4: "54890",
-		// STD_2: "",
-		// STD_3: "",
-		// CONTACT1: "",
-		// CONTACT4: "",
-		// CONTACT2: "9727999751",
-		// CONTACT3: "",
-		// E_MAIL_ID: "rupapatil@gmail.com",
-		// ENTRY_TYPE: "",
-		// APPLICATION_TYPE: "Y",
-		// SUB_CUST_TYPE: "",
-		// RATE_CD: "",
-		// GSTIN: "",
-		// UDYAM_REG_NO: "",
-		// REFERENCE_TYPE: "",
-		// REFERENCE_RELATION: "",
-		// OTHER_REFERENCE: "",
-		// CCIL_ID: "",
-		// LEI_NO: "",
-		// LEI_EXPIRY_DATE: "",
-		// E_MAIL_ID2: "",
-		// MEM_ACCT_TYPE: "",
-		// MEM_ACCT_CD: "",
-		// MEM_COMP_CD: "",
-		// MEM_BRANCH_CD: "",
-    //     RESIDENCE_STATUS:"01",
-    //     CATEG_CD:"09",
-    //     COUNTRY_CD:"45  "  
+  //       IsNewRow: true,
+	// 	CUSTOMER_TYPE: "I",
+  //       CONSTITUTION_TYPE:"I",
+	// 	COMP_CD: "132 ",
+	// 	BRANCH_CD: "099 ",
+	// 	ACCT_TYPE: "01",
+	// 	REQ_FLAG: "F",
+	// 	PREFIX_CD: "MISS",
+	// 	FIRST_NM: "rupa",
+	// 	LAST_NM: "ajay",
+	// 	SURNAME: "patil",
+	// 	ACCT_NM: "rupa ajay patil",
+	// 	MAIDEN_PREFIX_CD: "Miss",
+	// 	MAIDEN_FIRST_NM: " ",
+	// 	MAIDEN_MIDDLE_NM: " ",
+	// 	MAIDEN_LAST_NM: " ",
+	// 	FATHER_SPOUSE: "01",
+	// 	FATHER_PREFIX_CD: "Mr",
+	// 	FATHER_FIRST_NM: "Vijay",
+	// 	FATHER_MIDDLE_NM: "SANJAY",
+	// 	FATHER_LAST_NM: "patil",
+	// 	MOTHER_PREFIX_CD: "Mrs.",
+	// 	MOTHER_FIRST_NM: "jaya",
+	// 	MOTHER_MIDDLE_NM: "Vijay",
+	// 	MOTHER_LAST_NM: "patil",
+	// 	FORM_60: "Y",
+	// 	PAN_NO: "DWIPP9643D",
+	// 	UNIQUE_ID: "673598516700",
+	// 	ELECTION_CARD_NO: "38494404",
+	// 	EXPLICIT_TDS: "N",
+	// 	NREGA_JOB_CARD: "",
+	// 	OTHER_DOC: "",
+	// 	PROOF_OF_ADD: "01",
+	// 	OTHER_DOC_NO: "02",
+	// 	PASSPORT_NO: "924746587",
+	// 	PASSPORT_ISSUE_DT: "03-SEP-2018",
+	// 	PASSPORT_EXPIRY_DT: "03-SEP-2023",
+	// 	PASSPORT_AUTHORITY_CD: "01",
+	// 	DRIVING_LICENSE_NO: "58324892",
+	// 	DRIVING_LICENSE_ISSUE_DT: "03-SEP-2018",
+	// 	DRIVING_LICENSE_EXPIRY_DT: "03-SEP-2024",
+	// 	DRIVING_LICENSE_AUTHORITY_CD: "01",
+	// 	FATCA_DEC_RECVD: "N",
+	// 	FATCA_DT: "",
+	// 	US_GIIN: "",
+	// 	TIN: "12",
+	// 	TIN_ISSUING_COUNTRY: "01",
+	// 	COUNTRY_OF_INCORPORATION: "",
+	// 	PLACE_OF_INCORPORATION: "",
+	// 	DATE_OF_COMMENCEMENT: "",
+	// 	BIRTH_DT: "08-NOV-2023",
+	// 	GENDER: "F",
+	// 	BLOOD_GRP_CD: "B+",
+	// 	MARITAL_STATUS: "02",
+	// 	NATIONALITY: "",
+	// 	TRADE_CD: "S-02",
+	// 	GROUP_CD: "9",
+	// 	CASTE_CD: "",
+	// 	COMMU_CD: "01",
+	// 	LF_NO: "J",
+	// 	KYC_REVIEW_DT: "",
+	// 	ADDRESS_TYPE: "02",
+	// 	ADD1: "Acute Informatics",
+	// 	ADD2: "Pune",
+	// 	ADD3: " ",
+	// 	STATE_CD: "",
+	// 	OTHER_POA: "",
+	// 	LOC_ADD_TYPE: "",
+	// 	LOC_ADD1: "",
+	// 	LOC_ADD2: "",
+	// 	LOC_ADD3: "",
+	// 	LOC_AREA_CD: "",
+	// 	LOC_CITY_CD: "",
+	// 	LOC_DISTRICT_CD: "",
+	// 	LOC_STATE_CD: "",
+	// 	LOC_COUNTRY_CD: "",
+	// 	LOC_PIN_CODE: "",
+	// 	AREA_CD: "001",
+	// 	PIN_CODE: "385659",
+	// 	SAME_AS_PER: "Y",
+	// 	CONTACT: "N",
+	// 	LOC_PROOF_OF_ADD: "",
+	// 	STD_1: "",
+	// 	STD_4: "54890",
+	// 	STD_2: "",
+	// 	STD_3: "",
+	// 	CONTACT1: "",
+	// 	CONTACT4: "",
+	// 	CONTACT2: "9727999751",
+	// 	CONTACT3: "",
+	// 	E_MAIL_ID: "rupapatil@gmail.com",
+	// 	ENTRY_TYPE: "",
+	// 	APPLICATION_TYPE: "Y",
+	// 	SUB_CUST_TYPE: "",
+	// 	RATE_CD: "",
+	// 	GSTIN: "",
+	// 	UDYAM_REG_NO: "",
+	// 	REFERENCE_TYPE: "",
+	// 	REFERENCE_RELATION: "",
+	// 	OTHER_REFERENCE: "",
+	// 	CCIL_ID: "",
+	// 	LEI_NO: "",
+	// 	LEI_EXPIRY_DATE: "",
+	// 	E_MAIL_ID2: "",
+	// 	MEM_ACCT_TYPE: "",
+	// 	MEM_ACCT_CD: "",
+	// 	MEM_COMP_CD: "",
+	// 	MEM_BRANCH_CD: "",
+  //       RESIDENCE_STATUS:"01",
+  //       CATEG_CD:"09",
+  //       COUNTRY_CD:"45  "  
   //   }
     });
   if (status === "0") {
@@ -1120,6 +1400,52 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
     PARENT_AREA = dependentValue?.PAR_AREA_CD?.value
   }
   if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length<5) {
+
+  } else if(PIN_CODE || PARENT_AREA) {
+    // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETAREALIST", {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      PIN_CODE: PIN_CODE,
+      FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+      PARENT_AREA: PARENT_AREA,
+      // PIN_CODE: currentField?.value ?? "",
+      // FLAG: "", // P - pincode, A - parent area
+      // PARENT_AREA: "",
+    });
+
+    if(status == 0) {
+      // console.log("getOptionsOnPinParentArea data", data)
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
+            return {
+              ...other,
+              AREA_CD: AREA_CD,
+              AREA_NM: AREA_NM,
+              label: AREA_NM,
+              value: AREA_CD,
+            };
+          }
+        );
+      }
+      return responseData  
+    }
+  }
+}
+
+export const getOptionsOnLocalPinParentArea = async (dependentValue, formState, _, authState) => {
+  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.LOC_AREA_CD)
+  let PIN_CODE = "", PARENT_AREA = ""
+  if(dependentValue?.LOC_PIN_CODE?.value && dependentValue?.LOC_PIN_CODE?.value?.length>5) {
+    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.LOC_PIN_CODE?.value, dependentValue?.LOC_AREA_CD?.value)
+    PIN_CODE = dependentValue?.LOC_PIN_CODE?.value
+  } else if(dependentValue?.LOC_AREA_CD?.value) {
+    // console.log("getOptionsOnPinParentArea dp parea", dependentValue?.LOC_PIN_CODE?.value, dependentValue?.LOC_AREA_CD?.value)
+    PARENT_AREA = dependentValue?.LOC_AREA_CD?.value
+  }
+  if(dependentValue?.LOC_PIN_CODE?.value && dependentValue?.LOC_PIN_CODE?.value?.length<5) {
 
   } else if(PIN_CODE || PARENT_AREA) {
     // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)
