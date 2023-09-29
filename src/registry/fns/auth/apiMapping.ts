@@ -16,7 +16,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETMISCVALUE: {
-    url: "adminPanelCommonServiceAPI/GETMISCVALUE",
+    url: "/enfinitylCommonServiceAPI/GETMISCVALUE",
     packageName: "",
   },
   GETLOGINIMGDATA: {
@@ -356,10 +356,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CUSTOMERDEPENDENCYDTL",
     packageName: "",
   },
-  GETDYNAMICGRIDMETADATA: {
-    url: "commonMasterServiceAPI/GETDYNAMICGRIDMETADATA",
-    packageName: "",
-  },
   GETTBGMENUGRPLIST: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGMENUGRPLIST",
     packageName: "",
@@ -424,10 +420,10 @@ export const ActionWiseAPIConfiguration = {
     url: "commonMasterServiceAPI/GETDYNFORMGRIDMETADATA",
     packageName: "",
   },
-  FORMDML: {
-    url: "commonMasterServiceAPI/FORMDML",
-    packageName: "",
-  },
+  // FORMDML: {
+  //   url: "commonMasterServiceAPI/FORMDML",
+  //   packageName: "",
+  // },
   GETDBOWNERLIST: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDBOWNERLIST",
     packageName: "",

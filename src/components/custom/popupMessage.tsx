@@ -38,10 +38,12 @@ export const PopupMessageAPIWrapper = ({
           <GradientButton
             endIcon={loading ? <CircularProgress size={20} /> : null}
             onClick={() => onActionYes(rows)}
+            disabled={loading}
           >
             Yes
           </GradientButton>
-          <GradientButton //disabled={loading}
+          <GradientButton
+            // disabled={loading}
             onClick={() => onActionNo()}
           >
             No

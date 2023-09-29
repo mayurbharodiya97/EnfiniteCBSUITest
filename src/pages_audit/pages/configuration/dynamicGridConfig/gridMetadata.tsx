@@ -25,31 +25,8 @@ export const DynamicGridConfigGridMData: GridMetaDataType = {
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
-  filters: [
-    // {
-    //   accessor: "TITLE",
-    //   columnName: "Title",
-    //   filterComponentType: "valueFilter",
-    //   gridProps: {
-    //     xs: 12,
-    //     md: 12,
-    //     sm: 12,
-    //   },
-    // },
-  ],
+  filters: [],
   columns: [
-    // {
-    //   accessor: "TRAN_CD",
-    //   columnName: "Serial No",
-    //   sequence: 1,
-    //   alignment: "right",
-    //   componentType: "default",
-    //   width: 90,
-    //   minWidth: 50,
-    //   maxWidth: 150,
-    //   //isAutoSequence: true,
-    // },
-
     {
       accessor: "DOC_CD",
       columnName: "Document CD",

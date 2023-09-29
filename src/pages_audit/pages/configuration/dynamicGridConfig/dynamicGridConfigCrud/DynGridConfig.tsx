@@ -28,17 +28,15 @@ import { MasterDetailsForm } from "components/formcomponent";
 import { Alert } from "components/common/alert";
 import { RetrievalParametersGrid } from "./retrievalParameters";
 import { makeStyles } from "@mui/styles";
-
-import { useStyles } from "pages_audit/appBar/style";
-
 import { queryClient } from "cache";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ActionFormWrapper } from "./actionsform";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { MyFullScreenAppBar } from "pages_audit/appBar/fullScreenAppbar";
+import { utilFunction } from "components/utils";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -98,11 +96,12 @@ const DynamicGridConfig: FC<{
   const [formMode, setFormMode] = useState(defaultView);
   const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
   const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
-
   const [isActionsForm, setActionsForm] = useState(false);
   const { authState } = useContext(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
   const [errorObjData, seterrorObjData] = useState({
     isError: false,
     error: { error_msg: "", error_detail: "" },
@@ -120,11 +119,25 @@ const DynamicGridConfig: FC<{
       docCD,
     })
   );
+  useEffect(() => {
+    if (
+      location.pathname ===
+      "/cbsenfinity/configuration/dynamic-grid-config/view-details"
+    ) {
+      if (!docCD) {
+        // If docCD is not available in the API response, navigate to the desired route
+        navigate("/cbsenfinity/configuration/dynamic-grid-config");
+      }
+    } else {
+      navigate(location.pathname);
+    }
+  }, [navigate, location.pathname, docCD]);
 
   const pageSizesArray = reqData?.[0]?.data?.PAGE_SIZES.split(",");
   const updatedReqData = {
     ...reqData?.[0]?.data,
     PAGE_SIZES: pageSizesArray,
+    DML_ACTION: reqData?.[0]?.data?.DML_ACTION.trim(),
   };
 
   useEffect(() => {
@@ -164,9 +177,35 @@ const DynamicGridConfig: FC<{
         };
       });
 
-      myRef.current?.setGridData(detailData);
-      myparameterDataRef.current = data?.[0]?.PARAMETERS;
-
+      myRef.current?.setGridData((oldData) => {
+        let existingData = oldData.map((item) => {
+          let isExists = detailData.some((itemfilter) => {
+            return itemfilter.COLUMN_ACCESSOR === item.COLUMN_ACCESSOR;
+          });
+          if (isExists) {
+            return { ...item, _hidden: false };
+          } else {
+            return { ...item, _hidden: true };
+          }
+        });
+        let newData = detailData.filter((itemFilter) => {
+          let isExists = oldData.some((olditem) => {
+            return olditem.COLUMN_ACCESSOR === itemFilter.COLUMN_ACCESSOR;
+          });
+          return !isExists;
+        });
+        let srCount = utilFunction.GetMaxCdForDetails(oldData, "SR_CD");
+        newData = newData.map((newData) => {
+          return { ...newData, _isNewRow: true, SR_CD: srCount++ };
+        });
+        // console.log(oldData, [...existingData, ...newData]);
+        return [...existingData, ...newData];
+      });
+      myparameterDataRef.current = data?.[0]?.PARAMETERS.map((item) => {
+        return {
+          ...item,
+        };
+      });
       setformName("dynDetail" + myVerifyCntRef.current);
       myVerifyCntRef.current = myVerifyCntRef.current + 1;
       setLocalError(false, "", "");
@@ -200,8 +239,8 @@ const DynamicGridConfig: FC<{
       setFieldErrors,
       actionFlag,
     }) => {
-      // console.log(data);
       let data = clone(datares);
+
       //@ts-ignore
       endSubmit(true);
 
@@ -209,6 +248,35 @@ const DynamicGridConfig: FC<{
         setLocalError(true, "Please Verify Query..", "");
         endSubmit(true, "Please Verify Query..");
         return;
+      }
+      const query = mynewSqlSyntaxRef.current;
+      if (data?.DML_ACTION === "MD") {
+        const tableNames = ["MST_TABLE_NM", "DET_TABLE_NM"];
+        const errors = {};
+
+        for (const tableNameKey of tableNames) {
+          const tableName = data?.[tableNameKey];
+          if (!tableName || !query.includes(tableName)) {
+            errors[
+              tableNameKey
+            ] = `The ${tableNameKey} table name "${tableName}" is not included in the query.`;
+          }
+        }
+        if (Object.keys(errors).length > 0) {
+          setFieldErrors(errors);
+          return;
+        }
+      } else {
+        const tableNameKey =
+          data?.DML_ACTION === "M" ? "MST_TABLE_NM" : "DET_TABLE_NM";
+        const tableName = data?.[tableNameKey];
+
+        if (!tableName || !query.includes(tableName)) {
+          setFieldErrors({
+            [tableNameKey]: `The ${tableNameKey} table name "${tableName}" is not included in the query.`,
+          });
+          return;
+        }
       }
       if (
         (formMode === "add" &&
@@ -223,17 +291,11 @@ const DynamicGridConfig: FC<{
         });
         return;
       }
+
       setLocalLoading(true);
       const SetLoadingOWN = (isLoading, error_msg = "", error_detail = "") => {
         setLocalLoading(isLoading);
         endSubmit(isLoading, error_msg, error_detail);
-      };
-      data.PARAMETER = {
-        DETAILS_DATA: {
-          isNewRow: myparameterDataRef.current,
-          isDeleteRow: [],
-          isUpdatedRow: [],
-        },
       };
 
       // data.SQL_ANSI_SYNTAX = mynewSqlSyntaxRef.current;
@@ -268,6 +330,13 @@ const DynamicGridConfig: FC<{
           }
         }
       }
+      data.PARAMETER = {
+        DETAILS_DATA: {
+          isNewRow: myparameterDataRef.current,
+          isDeleteRow: [],
+          isUpdatedRow: [],
+        },
+      };
       data.DETAILS_DATA["isUpdatedRow"] = data?.DETAILS_DATA?.isUpdatedRow?.map(
         (item) => {
           return {
@@ -310,7 +379,6 @@ const DynamicGridConfig: FC<{
         };
         setIsOpenSave(true);
       }
-      // console.log("??>>>???", isErrorFuncRef.current);
     },
     [formMode]
   );
@@ -340,6 +408,12 @@ const DynamicGridConfig: FC<{
     myoldSqlSyntaxRef.current = reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "";
     mynewSqlSyntaxRef.current = reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "";
   }, [gridData]);
+  const dynamicLabel =
+    formMode !== "add"
+      ? "Dynamic Grid Configure" +
+        " For " +
+        (reqData?.[0]?.data?.DESCRIPTION ?? "")
+      : "";
 
   return (
     <>
@@ -372,11 +446,11 @@ const DynamicGridConfig: FC<{
             xs={12}
             sm={12}
             md={12}
-            style={{
-              paddingTop: "10px",
-              paddingLeft: "10px",
-              paddingRight: "10px",
-            }}
+            // style={{
+            //   paddingTop: "10px",
+            //   paddingLeft: "10px",
+            //   paddingRight: "10px",
+            // }}
           >
             <AppBar
               position="relative"
@@ -390,7 +464,7 @@ const DynamicGridConfig: FC<{
                   variant={"h6"}
                   component="div"
                 >
-                  Dynamic Grid Configure
+                  {dynamicLabel}
                 </Typography>
                 {formMode === "view" ? (
                   <GradientButton
@@ -414,21 +488,16 @@ const DynamicGridConfig: FC<{
                   <>
                     <GradientButton
                       onClick={(event) => {
-                        // console.log(event, myRef.current);
                         myRef.current?.onSubmitHandler(event);
                       }}
-                      // disabled={isLocalLoading}
-                      // endIcon={
-                      //   isLocalLoading ? <CircularProgress size={20} /> : null
-                      // }
+                      disabled={isLocalLoading}
+                      endIcon={
+                        isLocalLoading ? <CircularProgress size={20} /> : null
+                      }
                     >
                       Save
                     </GradientButton>
-                    <GradientButton
-                      onClick={moveToViewMode}
-                      // disabled={isLocalLoading}
-                      color={"primary"}
-                    >
+                    <GradientButton onClick={moveToViewMode} color={"primary"}>
                       Cancel
                     </GradientButton>
                   </>
@@ -445,9 +514,10 @@ const DynamicGridConfig: FC<{
                       onClick={(event) => {
                         myRef.current?.onSubmitHandler(event);
                       }}
-                      // endIcon={
-                      //   isLocalLoading ? <CircularProgress size={20} /> : null
-                      // }
+                      disabled={isLocalLoading}
+                      endIcon={
+                        isLocalLoading ? <CircularProgress size={20} /> : null
+                      }
                     >
                       Save
                     </GradientButton>
@@ -477,10 +547,7 @@ const DynamicGridConfig: FC<{
                 _isNewRow: formMode === "add" ? true : false,
                 ...updatedReqData,
                 DETAILS_DATA: gridData,
-                // ...reqData?.[0]?.data,
-                // DETAILS_DATA: data,
               }}
-              // initialData={{ _isNewRow: true, DETAILS_DATA: [] }}
               displayMode={formMode === "add" ? "New" : formMode}
               isLoading={formMode === "view" ? true : isLocalLoading}
               onSubmitData={onSubmitHandler}
@@ -492,7 +559,7 @@ const DynamicGridConfig: FC<{
               }}
               formStyle={{
                 background: "white",
-                height: "25vh",
+                height: "47vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
@@ -647,10 +714,11 @@ export const DynamicGridConfigWrapper = ({
       PaperProps={{
         style: {
           width: "100%",
-          overflow: "hidden",
+          height: "105%",
+          overflow: "auto",
         },
       }}
-      maxWidth="lg"
+      // maxWidth="lg"
     >
       <DynamicGridConfig
         isDataChangedRef={isDataChangedRef}
@@ -661,14 +729,4 @@ export const DynamicGridConfigWrapper = ({
       />
     </Dialog>
   );
-};
-const Greetings = () => {
-  let hours = new Date().getHours();
-  let greet;
-
-  if (hours < 12) greet = "morning";
-  else if (hours >= 12 && hours <= 16) greet = "afternoon";
-  else if (hours >= 16 && hours <= 24) greet = "evening";
-
-  return <span>Good {greet},</span>;
 };

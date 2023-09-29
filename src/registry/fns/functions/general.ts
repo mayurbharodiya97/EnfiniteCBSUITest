@@ -385,29 +385,29 @@ const GeneralAPISDK = () => {
   const getKYCDocTypes = async (dependantFields, ...other) => {
     // console.log(">>dependantFields",dependantFields)
     // if (dependantFields.SR_CD.value && dependantFields.TRAN_CD.value) {
-      const { status, data, message, messageDetails } =
-        await AuthSDK.internalFetcher("DOCCUMENTSCANHISTORY", {
-          // SR_CD: dependantFields.SR_CD?.value ?? "",
-          // TRAN_CD: dependantFields.TRAN_CD?.value??"",
-          SR_CD: "1",
-          TRAN_CD: "189084",
-          DOC_TYPE: "KYC",
-        });
-      if (status === "0") {
-        let responseData = data;
-        // if (Array.isArray(responseData)) {
-        //   responseData = responseData.map(({ DOC_TITLE, USER_DEFINE_CD }) => {
-        //     return {
-        //       value: USER_DEFINE_CD,
-        //       label: DOC_TITLE + " - " + USER_DEFINE_CD,
-        //     };
-        //   });
-        // }
+    const { status, data, message, messageDetails } =
+      await AuthSDK.internalFetcher("DOCCUMENTSCANHISTORY", {
+        // SR_CD: dependantFields.SR_CD?.value ?? "",
+        // TRAN_CD: dependantFields.TRAN_CD?.value??"",
+        SR_CD: "1",
+        TRAN_CD: "189084",
+        DOC_TYPE: "KYC",
+      });
+    if (status === "0") {
+      let responseData = data;
+      // if (Array.isArray(responseData)) {
+      //   responseData = responseData.map(({ DOC_TITLE, USER_DEFINE_CD }) => {
+      //     return {
+      //       value: USER_DEFINE_CD,
+      //       label: DOC_TITLE + " - " + USER_DEFINE_CD,
+      //     };
+      //   });
+      // }
 
-        return responseData;
-      } else {
-        throw DefaultErrorObject(message, messageDetails);
-      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
     // }
     // return []
   };

@@ -1,13 +1,6 @@
 import { ClearCacheContext, queryClient } from "cache";
 import { useQuery } from "react-query";
-import {
-  Fragment,
-  useEffect,
-  useContext,
-  useRef,
-  useCallback,
-  useState,
-} from "react";
+import { Fragment, useEffect, useContext, useRef, useCallback } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Alert } from "components/common/alert";
 import GridWrapper from "components/dataTableStatic";
@@ -17,11 +10,7 @@ import * as API from "./api";
 import { DynamicGridConfigGridMData } from "./gridMetadata";
 import { DynamicGridConfigWrapper } from "./dynamicGridConfigCrud/DynGridConfig";
 import { AuthContext } from "pages_audit/auth";
-// import {
-//   AddDynamicReportConfigWrapper,
-//   ViewEditDynamicReportConfigWrapper,
-// } from "./dynamicReportConfigCrud";
-//import { ReleaseUsersAPIWrapper } from "../releaseUsers";
+
 const actions: ActionTypes[] = [
   {
     actionName: "add",
@@ -41,41 +30,13 @@ export const DynamicGridConfig = () => {
   const isDataChangedRef = useRef(false);
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
-  const [actionMenu, setActionMenu] = useState(actions);
   const navigate = useNavigate();
   const { authState } = useContext(AuthContext);
   const setCurrentAction = useCallback(
     (data) => {
-      if (data.name === "global") {
-        setActionMenu((values: any) => {
-          return values.map((item) => {
-            if (item.actionName === "global") {
-              return { ...item, actionName: "hopara", actionLabel: "HO Level" };
-            } else {
-              return item;
-            }
-          });
-          //return { ...value };
-        });
-      } else if (data.name === "hopara") {
-        setActionMenu((values: any) => {
-          return values.map((item) => {
-            if (item.actionName === "hopara") {
-              return {
-                ...item,
-                actionName: "global",
-                actionLabel: "Global Level",
-              };
-            } else {
-              return item;
-            }
-          });
-        });
-      } else {
-        navigate(data?.name, {
-          state: data?.rows,
-        });
-      }
+      navigate(data?.name, {
+        state: data?.rows,
+      });
     },
     [navigate]
   );
@@ -91,17 +52,18 @@ export const DynamicGridConfig = () => {
   useEffect(() => {
     return () => {
       let entries = getEntries() as any[];
-      // entries.forEach((one) => {
-      //   queryClient.removeQueries(one);
-      // });
+      if (Array.isArray(entries) && entries.length > 0) {
+        entries.forEach((one) => {
+          queryClient.removeQueries(one);
+        });
+      }
       queryClient.removeQueries(["getDynamicGridConfigGridData"]);
     };
   }, [getEntries]);
-
   const ClosedEventCall = useCallback(() => {
     navigate(".");
     if (isDataChangedRef.current === true) {
-      myGridRef.current?.refetch?.();
+      refetch();
       isDataChangedRef.current = false;
     }
   }, [navigate]);
@@ -122,7 +84,7 @@ export const DynamicGridConfig = () => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        actions={actionMenu}
+        actions={actions}
         setAction={setCurrentAction}
         refetchData={() => refetch()}
         ref={myGridRef}
@@ -139,15 +101,6 @@ export const DynamicGridConfig = () => {
             />
           }
         />
-        {/* <Route
-          path="delete"
-          element={
-            <DeleteSchemeMasterWrapper
-              isDataChangedRef={isDataChangedRef}
-              closeDialog={handleDialogClose}
-            />
-          }
-        /> */}
         <Route
           path="view-details/*"
           element={
@@ -162,11 +115,3 @@ export const DynamicGridConfig = () => {
     </Fragment>
   );
 };
-
-// export const ParametersGridWrapper = () => {
-//   return (
-//     <ClearCacheProvider>
-//       <DynamicReportConfig />
-//     </ClearCacheProvider>
-//   );
-// };

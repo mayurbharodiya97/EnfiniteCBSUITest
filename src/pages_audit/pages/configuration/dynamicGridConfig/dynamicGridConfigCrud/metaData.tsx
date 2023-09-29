@@ -36,6 +36,7 @@ export const DynamicGridConfigMetaData = {
         _optionsKey: "getMenulistData",
         GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
         required: true,
+        __EDIT__: { isReadOnly: true },
         schemaValidation: {
           type: "string",
           rules: [
@@ -56,7 +57,7 @@ export const DynamicGridConfigMetaData = {
         maxLength: 12,
         showMaxLength: false,
         required: true,
-        // __EDIT__: { isReadOnly: true },
+        __EDIT__: { isReadOnly: true },
         schemaValidation: {
           type: "string",
           rules: [
@@ -64,7 +65,7 @@ export const DynamicGridConfigMetaData = {
             { name: "DOC_CD", params: [12, "Please enter Document Code."] },
           ],
         },
-        GridProps: { xs: 12, sm: 4, md: 4, lg: 2.5, xl: 2.5 },
+        GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
       },
       {
         render: {
@@ -78,7 +79,8 @@ export const DynamicGridConfigMetaData = {
         required: true,
         options: () => getProMiscData("menu_icon"),
         _optionsKey: "getproMiscDataMenuIcon",
-        GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+        // GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 6, sm: 2, md: 2, lg: 1.8, xl: 1.5 },
         schemaValidation: {
           type: "string",
           rules: [
@@ -106,49 +108,49 @@ export const DynamicGridConfigMetaData = {
           ],
         },
 
-        GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 6, md: 6, lg: 6, xl: 2.5 },
       },
-      {
-        render: {
-          componentType: "autocomplete",
-        },
-        name: "RETRIEVAL_TYPE",
-        label: "Retrieval Type",
-        placeholder: "",
-        type: "text",
-        fullWidth: true,
-        defaultValue: "CUSTOM",
-        required: true,
-        options: [
-          {
-            label: "From And TO Date",
-            value: "DATE",
-          },
-          {
-            label: "Date And Customer List",
-            value: "CUSTOMERLIMIT",
-          },
-          {
-            label: "Date And User Name",
-            value: "DATEUSERNM",
-          },
-          {
-            label: "Custom As Per Query",
-            value: "CUSTOM",
-          },
-        ],
-        schemaValidation: {
-          type: "string",
-          rules: [
-            { name: "required", params: ["Retrieval Type is required."] },
-            {
-              name: "RETRIEVAL_TYPE",
-              params: ["Please enter Retrieval Type."],
-            },
-          ],
-        },
-        GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
-      },
+      // {
+      //   render: {
+      //     componentType: "autocomplete",
+      //   },
+      //   name: "RETRIEVAL_TYPE",
+      //   label: "Retrieval Type",
+      //   placeholder: "",
+      //   type: "text",
+      //   fullWidth: true,
+      //   defaultValue: "CUSTOM",
+      //   required: true,
+      //   options: [
+      //     {
+      //       label: "From And TO Date",
+      //       value: "DATE",
+      //     },
+      //     {
+      //       label: "Date And Customer List",
+      //       value: "CUSTOMERLIMIT",
+      //     },
+      //     {
+      //       label: "Date And User Name",
+      //       value: "DATEUSERNM",
+      //     },
+      //     {
+      //       label: "Custom As Per Query",
+      //       value: "CUSTOM",
+      //     },
+      //   ],
+      //   schemaValidation: {
+      //     type: "string",
+      //     rules: [
+      //       { name: "required", params: ["Retrieval Type is required."] },
+      //       {
+      //         name: "RETRIEVAL_TYPE",
+      //         params: ["Please enter Retrieval Type."],
+      //       },
+      //     ],
+      //   },
+      //   GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      // },
       {
         render: {
           componentType: "autocomplete",
@@ -173,6 +175,7 @@ export const DynamicGridConfigMetaData = {
         // defaultValue: true,
         options: () => getDynamicOwnerList(),
         _optionsKey: "getDynamicOwnerList",
+        __EDIT__: { isReadOnly: true },
         // postValidationSetCrossFieldValues: "getTabelListData",
         GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
       },
@@ -182,6 +185,12 @@ export const DynamicGridConfigMetaData = {
         },
         name: "MST_TABLE_NM",
         label: "Master Table Name",
+        __EDIT__: { isReadOnly: true },
+        validate: (currentField, value) => {
+          if (currentField?.value) {
+            return;
+          }
+        },
         options: (value) => {
           if (value?.OWNER_NM?.value) {
             return GeneralAPI.getTabelListData(value?.OWNER_NM?.value);
@@ -200,7 +209,7 @@ export const DynamicGridConfigMetaData = {
           }
           return true;
         },
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
       },
       {
         render: {
@@ -208,6 +217,7 @@ export const DynamicGridConfigMetaData = {
         },
         name: "DET_TABLE_NM",
         label: "Detail Table Name",
+        __EDIT__: { isReadOnly: true },
         options: (value) => {
           if (value?.OWNER_NM?.value) {
             return GeneralAPI.getTabelListData(value?.OWNER_NM?.value);
@@ -233,7 +243,7 @@ export const DynamicGridConfigMetaData = {
           }
           return true;
         },
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
       },
 
       {
@@ -244,6 +254,7 @@ export const DynamicGridConfigMetaData = {
         label: "Seq. Parameter",
         // defaultValue: true,
         // defaultValue: "M",
+        __EDIT__: { isReadOnly: true },
         options: [
           { label: "0", value: "0" },
           { label: "1", value: "1" },
@@ -251,7 +262,7 @@ export const DynamicGridConfigMetaData = {
         ],
         _optionKey: "SeqParameter",
 
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
       },
 
       {
@@ -260,6 +271,7 @@ export const DynamicGridConfigMetaData = {
         },
         name: "SEQ_NM",
         label: "Seq. Name",
+        __EDIT__: { isReadOnly: true },
         runValidationOnDependentFieldsChange: true,
         dependentFields: ["SEQ_PARA"],
         shouldExclude: (val1, dependent) => {
@@ -268,34 +280,34 @@ export const DynamicGridConfigMetaData = {
           }
           return true;
         },
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.2 },
       },
       {
         render: {
           componentType: "textField",
         },
         name: "USER_ACC_INS",
-        label: "User Access Insert",
+        label: "Add For User",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
       },
       {
         render: {
           componentType: "textField",
         },
         name: "USER_ACC_UPD",
-        label: "User Access Update",
+        label: "View-Detail for User",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
       },
       {
         render: {
           componentType: "textField",
         },
         name: "USER_ACC_DEL",
-        label: "User Access Delete",
+        label: "Delete for User",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
       },
 
       {
@@ -305,7 +317,7 @@ export const DynamicGridConfigMetaData = {
         name: "DEFAULT_PAGE_SIZE",
         label: "Default PageSize",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.8, xl: 1.5 },
       },
       {
         render: {
@@ -326,7 +338,7 @@ export const DynamicGridConfigMetaData = {
         schemaValidation: {
           type: "string",
         },
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.2, xl: 1.5 },
       },
       {
         render: {
@@ -335,6 +347,7 @@ export const DynamicGridConfigMetaData = {
         name: "ROWID_COLUMN",
         label: "RowId Column",
         required: true,
+        __EDIT__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
         validate: (currentField, value) => {
           if (currentField?.value) {
@@ -358,7 +371,7 @@ export const DynamicGridConfigMetaData = {
         name: "DENSE",
         label: "Dense",
         defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
       },
       // {
       //   render: {
@@ -381,7 +394,7 @@ export const DynamicGridConfigMetaData = {
         name: "ALLOW_COLUMN_REORDERING",
         label: "Allow Column Reordering",
         defaultValue: true,
-        GridProps: { xs: 12, sm: 4, md: 4, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 4, md: 4, lg: 3, xl: 1.5 },
       },
       {
         render: {
@@ -423,10 +436,11 @@ export const DynamicGridConfigMetaData = {
       hideHeader: true,
       disableGroupBy: true,
       enablePagination: false,
-      containerHeight: { min: "42vh", max: "42vh" },
+      containerHeight: { min: "25vh", max: "25vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
       disableLoader: true,
+      onlySingleSelectionAllow: true,
     },
     columns: [
       {

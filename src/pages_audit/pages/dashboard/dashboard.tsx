@@ -43,16 +43,6 @@ const Dashboard = () => {
     })
   );
 
-  // const mutation = useMutation(
-  //   updateAUTHDetailDataWrapperFn(API.TodaysTransactionTableGrid,
-  //     userID: authState?.user?.id ?? "",
-  //         COMP_CD: authState?.companyID ?? "",
-  //         BRANCH_CD: authState?.user?.branchCode ?? "",),
-  //   {
-  //     onError: (error: any) => {},
-  //     onSuccess: (data) => {},
-  //   }
-  // );
   const mutation = useMutation(
     updateAUTHDetailDataWrapperFn(API.TodaysTransactionTableGrid),
     {
@@ -96,7 +86,7 @@ const Dashboard = () => {
           flexGrow: 1,
         }}
       >
-        <div style={{ padding: "0 10px 0 10px" }}>
+        <div style={{ padding: "15px 10px 0 10px" }}>
           <Grid container spacing={2}>
             {isLoading || isFetching ? (
               <Grid item lg={12} md={12} xl={12} xs={12}>
