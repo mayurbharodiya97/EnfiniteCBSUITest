@@ -47,6 +47,7 @@ const inititalState = {
   authType: "",
   isScanning: false,
   auth_data: [],
+  auth_type: "O",
 };
 
 const reducer = (state, action) => {
@@ -148,6 +149,7 @@ const reducer = (state, action) => {
         otploading: false,
         transactionID: action?.payload?.transactionID,
         username: action?.payload?.username,
+        auth_type: action?.payload?.auth_type,
         OtpuserMessage: "",
         access_token: action?.payload?.access_token,
         token_type: action?.payload?.token_type,

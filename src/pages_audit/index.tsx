@@ -16,7 +16,14 @@ const EntryPoint = () => (
       <AuthProvider>
         <Routes>
           <Route path="login" element={<AuthLoginController />} />
-          <Route path="forgotpassword" element={<ForgotPasswordController />} />
+          <Route
+            path="forgotpassword"
+            element={<ForgotPasswordController screenFlag="password" />}
+          />
+          <Route
+            path="forgot-totp"
+            element={<ForgotPasswordController screenFlag="totp" />}
+          />
           <Route
             path="branch-selection/*"
             element={<BranchSelectionGridWrapper selectionMode={"S"} />}

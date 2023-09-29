@@ -280,12 +280,14 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
 // };
 export const veirfyUsernameandMobileNo = async (
   username: any,
-  MobileNo: any
+  MobileNo: any,
+  screenFlag: any
 ) => {
   const { data, status, message, messageDetails, responseType, access_token } =
     await AuthSDK.internalFetcherPreLogin("FORGOTPASSWORD", {
       USER_ID: username,
       MOBILE_NO: MobileNo,
+      SCREEN_FLAG: screenFlag,
     });
   if (status === "0") {
     return {
@@ -317,7 +319,8 @@ export const verifyOTPForPWDReset = async (
   transactionId,
   username,
   otpnumber,
-  authType
+  authType,
+  screenFlag
 ) => {
   // return {
   //   status: "0",
@@ -342,6 +345,7 @@ export const verifyOTPForPWDReset = async (
     REQUEST_CD: transactionId,
     OTP: otpnumber,
     AUTH_TYPE: authType,
+    SCREEN_FLAG: screenFlag,
   });
   if (status === "0") {
     return {

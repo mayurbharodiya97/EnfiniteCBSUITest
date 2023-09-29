@@ -135,9 +135,11 @@ export const Profile = () => {
   const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
     API.getUserDetails({ userID })
   );
+
   const userActivityData = useQuery<any, any, any>(["GETUSERACTIVITY"], () =>
     API.getUserLoginDetails({ userID })
   );
+
   const userAccessBranch = useQuery<any, any, any>(["GETUSERACESSBRNCH"], () =>
     API.getUserAccessBranch({ userID })
   );

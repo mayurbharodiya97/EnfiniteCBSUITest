@@ -23,6 +23,7 @@ export interface NavItemType {
   invisibleToRoles?: number[];
   visibleToProducts?: string[];
   user_code?: string;
+  system_code?: string;
 }
 
 export interface NavBarMetaDataType {

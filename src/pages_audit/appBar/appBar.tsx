@@ -375,7 +375,7 @@ export const MyAppBar = ({
               {logoutOpen && (
                 <Dialog
                   // fullScreen={fullScreen}
-                  open={open}
+                  open={true}
                   // onClose={handleClose}
                   aria-labelledby="responsive-dialog-title"
                 >
