@@ -1,13 +1,7 @@
 import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { Grid, Typography, Divider, Skeleton, Collapse, IconButton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-import { 
-    other_details_meta_data, 
-    other_details_employment_info_meta_data, 
-    other_details_exposure_info_meta_data, 
-    other_details_personal_info_meta_data, 
-    other_details_vehicle_info_meta_data
-} from '../../metadata/individual/otherdetails';
+import { other_details_meta_data } from '../../metadata/individual/otherdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { CkycContext } from '../../../../CkycContext';

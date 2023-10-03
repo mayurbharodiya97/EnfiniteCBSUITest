@@ -232,6 +232,7 @@ export const en_language_data = {
 
   //  ckyc
   EmailId: "Email-Id",
+  EmailId2: "Email-Id2",
   CustomerName: "Customer Name",
   UniqueId: "Unique ID",
   RetrieveTitle: "Retrieve Customer Data",
@@ -412,6 +413,7 @@ export const en_language_data = {
   DateOfDeclaration: "Date of Declaration",
   // tab - entity details
   EntityDetails: "Entity Details",
+  CompanyInfo: "Company Info",
   // tab - controlling person dtl
   ControllingPersonDTL: "Details of Controlling Person"
 };

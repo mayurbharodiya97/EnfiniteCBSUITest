@@ -1,9 +1,5 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-// import Box from '@mui/material/Box';
-// import Button from '@mui/material/Button';
-// import Typography from '@mui/material/Typography';
-// import Modal from '@mui/material/Modal';
 import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, TextField, Select, MenuItem} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
@@ -125,7 +121,7 @@ interface TabPanelProps {
   value: number;
 }
 function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, ...other }:any = props;
 
   return (
     <div
@@ -341,12 +337,15 @@ export default function FormModal({
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
       
       case "Declaration Details":
-        return <DeclarationDetailsLegal 
+        return <DeclarationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
+      case "KYC Document Upload":
+        return <KYCDocUpload />
+  
       case "Photo & Signature Upload":
-        return <p>Photo & Signature</p>
+        return <PhotoSignature />
 
       case "Details of Controlling Persons":
         return <ControllingPersonDTL
@@ -364,6 +363,11 @@ export default function FormModal({
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
+      case "NRI Details":
+        return <NRIDetails 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        
       case "Attestation Details":
         return <AttestationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
@@ -646,7 +650,7 @@ export default function FormModal({
                       isOptionEqualToValue={(option, value) => {
                         return option.value === value.value;
                       }}
-                      renderInput={(params) => (
+                      renderInput={(params:any) => (
                         <TextField {...params} 
                           size="small" 
                           label="Category - Constitution"
@@ -702,12 +706,7 @@ export default function FormModal({
                         handleAccTypeVal(v?.value)
                       }}
                       // sx={{ width: 200 }}
-                      renderInput={(params) => (
-                        <TextField {...params} 
-                          size="small" 
-                          label="A/C Type"
-                        />
-                      )}
+                      renderInput={(params:any) => <TextField {...params} size="small" label="A/C Type" />}
                       // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
                     />
                   </Grid>
