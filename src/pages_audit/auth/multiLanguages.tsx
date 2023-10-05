@@ -98,7 +98,7 @@ export const MultiLanguages = () => {
           </MenuItem>
 
           <MenuItem
-            value="french"
+            value="fr"
             style={{
               display: "flex",
             }}

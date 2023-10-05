@@ -18,17 +18,24 @@ export const getDynamicFormMetaData = async ({
 
   if (status === "0") {
     const field = data[0]?.FIELD?.map((one) => {
-      const matchingProp = data[0]?.PROP.find(
+      const matchingProps = data[0]?.PROP.filter(
         (prop) => prop.LINE_ID === one.LINE_ID
       );
-      if (matchingProp) {
+      // Initialize an object to store all the matching props
+      const matchingPropsObject = {};
+      // Iterate over matchingProps and add them to the object
+      matchingProps.forEach((matchingProp) => {
+        matchingPropsObject[matchingProp.PROPS_ID] = matchingProp.PROPS_VALUE;
+      });
+
+      if (matchingProps.length > 0) {
         return {
           render: {
             componentType: one?.COMPONENT_TYPE,
           },
           name: one?.FIELD_NAME,
           label: one?.FIELD_LABEL,
-          type: "text",
+          // type: "text",
           //@ts-ignore
           required: one?.FIELD_REQUIRED,
           GridProps: {
@@ -38,14 +45,7 @@ export const getDynamicFormMetaData = async ({
             lg: one?.LG,
             xl: one?.XL,
           },
-          ...{ [matchingProp.PROPS_ID]: matchingProp.PROPS_VALUE },
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [
-          //     { name: "required", params: ["Screen Name is required."] },
-          //     { name: "SCREEN_NAME", params: ["Please enter Screen Name."] },
-          //   ],
-          // },
+          ...matchingPropsObject, // Spread all matching props into the object
         };
       } else {
         return {
@@ -65,14 +65,6 @@ export const getDynamicFormMetaData = async ({
             lg: one?.LG,
             xl: one?.XL,
           },
-
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [
-          //     { name: "required", params: ["Screen Name is required."] },
-          //     { name: "SCREEN_NAME", params: ["Please enter Screen Name."] },
-          //   ],
-          // },
         };
       }
     });
@@ -82,7 +74,9 @@ export const getDynamicFormMetaData = async ({
       form: {
         name: data[0]?.FORM_NAME,
         label: data[0]?.FORM_LABEL,
-        resetFieldOnUnmount: data[0]?.RESETFIELDONUNMOUNT,
+        // always set false value otherwsie re render form
+        resetFieldOnUnmount:
+          data[0]?.RESETFIELDONUNMOUNT === "Y" ? true : false,
         validationRun: data[0]?.VALIDATIONRUN,
         submitAction: data[0]?.SUBMITACTION,
         // allowColumnHiding: true,
@@ -122,19 +116,25 @@ export const getDynamicFormMetaData = async ({
           },
         },
       },
+
       fields: field,
       // fields: filter,
     };
+    // console.log("dk,f", result);
     return result;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getDynamicFormData = () => async (formData: any) => {
+export const getDynamicFormData = (DocID) => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "FORMDML",
+    `/commonMasterServiceAPI/DOFORMDML/${DocID}`,
     formData
   );
+  //   await AuthSDK.internalFetcher(
+  //   "DOFORMDML",
+  //   formData
+  // );
   if (status === "0") {
     return message;
   } else {

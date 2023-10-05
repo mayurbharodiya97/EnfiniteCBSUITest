@@ -74,9 +74,27 @@ export const ActionsMetaData: any = {
           ],
           _optionsKey: "GetActionName",
           postValidationSetCrossFieldValues: "getActionDetailsData",
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
-
+        {
+          render: {
+            componentType: "select",
+          },
+          name: "FORM_METADATA_SR_CD",
+          label: "Metadata List",
+          options: "getMetadataList",
+          _optionsKey: "getMetadataList",
+          requestProps: "DOC_CD",
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          runValidationOnDependentFieldsChange: true,
+          dependentFields: ["ACTIONNAME"],
+          shouldExclude: (val1, dependent) => {
+            if (dependent["actionsDetails.ACTIONNAME"]?.value === "Delete") {
+              return true;
+            }
+            return false;
+          },
+        },
         {
           render: {
             componentType: "textField",
@@ -84,7 +102,7 @@ export const ActionsMetaData: any = {
           name: "ACTIONLABEL",
           label: "Action Label",
           placeholder: "Action Label",
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
 
         {
@@ -100,7 +118,7 @@ export const ActionsMetaData: any = {
             { label: "Ends Icon", value: "E" },
           ],
 
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -117,7 +135,43 @@ export const ActionsMetaData: any = {
               { name: "ACTIONICON", params: ["Please enter Action Icon."] },
             ],
           },
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ALRT_MSG",
+          label: "Alert Message",
+          placeholder: "Alert Message",
+          GridProps: { xs: 12, sm: 3, md: 4, lg: 6, xl: 2.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "SHOULDEXCLUDE",
+          label: "Should Exclude",
+          placeholder: "Should Exclude",
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ONENTERSUBMIT",
+          label: "OnEnter Submit",
+          placeholder: "OnEnter Submit",
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "checkbox",
+          },
+          name: "MULTIPLE",
+          label: "Multiple",
+          defaultValue: true,
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 1, xl: 1 },
         },
         {
           render: {
@@ -126,7 +180,7 @@ export const ActionsMetaData: any = {
           name: "ROWDOUBLECLICK",
           label: "Row Double Click",
           defaultValue: true,
-          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -135,7 +189,7 @@ export const ActionsMetaData: any = {
           name: "ALWAYSAVAILABLE",
           label: "Always Available",
           defaultValue: true,
-          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -145,52 +199,6 @@ export const ActionsMetaData: any = {
           label: "Is Nodata Then Show",
           defaultValue: true,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "checkbox",
-          },
-          name: "MULTIPLE",
-          label: "Multiple",
-          defaultValue: true,
-          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "textField",
-          },
-          name: "SHOULDEXCLUDE",
-          label: "Should Exclude",
-          placeholder: "Should Exclude",
-          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "textField",
-          },
-          name: "ONENTERSUBMIT",
-          label: "OnEnter Submit",
-          placeholder: "OnEnter Submit",
-          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "select",
-          },
-          name: "FORM_METADATA_SR_CD",
-          label: "Metadata List",
-          options: "getMetadataList",
-          _optionsKey: "getMetadataList",
-          requestProps: "DOC_CD",
-          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-          runValidationOnDependentFieldsChange: true,
-          dependentFields: ["ACTIONNAME"],
-          shouldExclude: (val1, dependent) => {
-            if (dependent["actionsDetails.ACTIONNAME"]?.value === "Delete") {
-              return true;
-            }
-            return false;
-          },
         },
       ],
     },

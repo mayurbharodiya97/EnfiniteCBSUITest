@@ -25,18 +25,7 @@ export const DynFormGridMetaData: GridMetaDataType = {
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
-  filters: [
-    // {
-    //   accessor: "TITLE",
-    //   columnName: "Title",
-    //   filterComponentType: "valueFilter",
-    //   gridProps: {
-    //     xs: 12,
-    //     md: 12,
-    //     sm: 12,
-    //   },
-    // },
-  ],
+  filters: [],
   columns: [
     // {
     //   accessor: "TRAN_CD",

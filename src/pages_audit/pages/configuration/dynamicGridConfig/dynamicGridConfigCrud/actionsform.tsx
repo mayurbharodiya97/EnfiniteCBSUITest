@@ -84,12 +84,10 @@ export const ActionFormWrapper = ({
       ALWAYSAVAILABLE: item.ALWAYSAVAILABLE ? "Y" : "N",
       ISNODATATHENSHOW: item.ISNODATATHENSHOW ? "Y" : "N",
     }));
-
     let upd: any = ProcessDetailsData(
       transformedActionsDetails ?? [],
       actionData ?? []
     );
-
     if (upd["_OLDROWVALUE"]) {
       const oldRowValue = upd["_OLDROWVALUE"];
 
@@ -102,7 +100,6 @@ export const ActionFormWrapper = ({
         }
       }
     }
-
     if (upd?.isDeleteRow) {
       upd.isDeleteRow = upd.isDeleteRow.map((item) => {
         const srCdFromIsDeleteRow = actionData?.[0]?.SR_CD ?? "";
@@ -112,7 +109,6 @@ export const ActionFormWrapper = ({
         };
       });
     }
-
     const updatedData: any = {
       _isNewRow: formView === "edit" ? true : false,
       COMP_CD: authState.companyID,
@@ -120,14 +116,13 @@ export const ActionFormWrapper = ({
       DOC_CD: reqData[0]?.data?.DOC_CD ?? "",
       DETAILS_DATA: upd,
     };
-
+    setIsOpenSave(true);
     isErrorFuncRef.current = {
       data: updatedData,
       displayData,
       endSubmit,
       setFieldError,
     };
-    setIsOpenSave(true);
   };
 
   const onPopupYes = (rows) => {
@@ -136,11 +131,11 @@ export const ActionFormWrapper = ({
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
-  if (ActionsMetaData?.fields?.[0]?._fields?.[11]) {
-    ActionsMetaData.fields[0]._fields[11].requestProps =
+  if (ActionsMetaData?.fields?.[0]?._fields?.[2]) {
+    ActionsMetaData.fields[0]._fields[2].requestProps =
       reqData[0]?.data?.DOC_CD ?? "";
   }
-  // console.log("test", ActionsMetaData.fields[0]._fields[11].requestProps);
+
   if (ActionsMetaData.form.label) {
     ActionsMetaData.form.label =
       "Actions" + " for " + reqData[0]?.data?.DESCRIPTION ?? "";

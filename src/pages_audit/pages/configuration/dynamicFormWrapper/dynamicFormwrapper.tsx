@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, useContext, useRef } from "react";
+import { FC, useEffect, useState, useContext, useRef, Fragment } from "react";
 import { useMutation, useQuery } from "react-query";
 import { ClearCacheContext, queryClient } from "cache";
 import { InitialValuesType, SubmitFnType } from "packages/form";
@@ -9,6 +9,7 @@ import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import { Transition } from "pages_audit/common/transition";
 import * as API from "./api";
 import { format } from "date-fns";
+import { Alert } from "components/common/alert";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
@@ -29,10 +30,21 @@ const updateAUTHDetailDataWrapperFn =
 const DynamicForm: FC<{
   isDataChangedRef: any;
   closeDialog?: any;
-  data: any;
+  item: any;
   docID: any;
-  // data: any;
-}> = ({ isDataChangedRef, closeDialog, data, docID }) => {
+  gridData: any;
+  alertMessage: any;
+  // defaultView?: "view" | "edit" | "add";
+  defaultView;
+}> = ({
+  isDataChangedRef,
+  closeDialog,
+  item,
+  docID,
+  gridData,
+  defaultView,
+  alertMessage,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const isErrorFuncRef = useRef<any>(null);
   const [isOpenSave, setIsOpenSave] = useState(false);
@@ -47,22 +59,35 @@ const DynamicForm: FC<{
     refetch,
   } = useQuery<any, any>(["getDynamicFormMetaData"], () =>
     API.getDynamicFormMetaData({
-      DOC_CD: data?.DOC_CD ?? "",
+      DOC_CD: item?.DOC_CD ?? "",
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      SR_CD: data?.FORM_METADATA_SR_CD,
+      SR_CD: item?.FORM_METADATA_SR_CD,
     })
   );
 
-  const mutation = useMutation(API.getDynamicFormData(), {
-    onError: (error: any) => {},
-    onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-      closeDialog();
-    },
-  });
+  const mutation = useMutation(
+    updateAUTHDetailDataWrapperFn(API.getDynamicFormData(docID)),
+    {
+      onError: (error: any, { endSubmit }) => {
+        let errorMsg = "Unknown Error occured";
+        if (typeof error === "object") {
+          errorMsg = error?.errorMessage ?? errorMsg;
+        }
+        endSubmit(false, errorMsg, error?.errorDetail ?? "");
+      },
+      onSuccess: (data) => {
+        console.log("data", data);
+        // SetLoadingOWN(true, "");
+        enqueueSnackbar(data, {
+          variant: "success",
+        });
+        isDataChangedRef.current = true;
+        closeDialog();
+      },
+    }
+  );
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getDynamicFormMetaData"]);
@@ -73,9 +98,9 @@ const DynamicForm: FC<{
     setIsOpenSave(false);
   };
   const onPopupYes = (rows) => {
-    console.log("rows", rows);
-    mutation.mutate(rows);
+    mutation.mutate({ data: rows });
   };
+  // console.log("metaData", metaData);
   const onSubmitHandler: SubmitFnType = (
     data,
     displayData,
@@ -85,76 +110,136 @@ const DynamicForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
-    data["COMP_CD"] = authState.companyID;
-    data["BRANCH_CD"] = authState.user.branchCode;
-    data["DOC_CD"] = docID;
-    delete data["TRAN_CD"];
-    data["ALT_EXPIRY_DATE"] = format(
-      new Date(data["ALT_EXPIRY_DATE"]),
-      "dd/MMM/yyyy"
+    // data["ALT_EXPIRY_DATE"] = format(
+    //   new Date(data["ALT_EXPIRY_DATE"]),
+    //   "dd/MMM/yyyy"
+    // );
+    if (data) {
+      const booleanValue = data;
+
+      for (const key in booleanValue) {
+        if (booleanValue.hasOwnProperty(key)) {
+          // Check if the value is a string "true" or "false" and convert it to a boolean
+          if (typeof booleanValue[key] === "string") {
+            if (booleanValue[key].toLowerCase() === "true") {
+              booleanValue[key] = true;
+            } else if (booleanValue[key].toLowerCase() === "false") {
+              booleanValue[key] = false;
+            }
+          }
+
+          // Convert boolean values to "Y" or "N"
+          if (typeof booleanValue[key] === "boolean") {
+            booleanValue[key] = booleanValue[key] ? "Y" : "N";
+          }
+        }
+      }
+    }
+
+    // if (data) {
+    //   const booleanValue = data;
+
+    //   for (const key in booleanValue) {
+    //     if (booleanValue.hasOwnProperty(key)) {
+    //       // Convert boolean values to "Y" or "N"
+    //       if (typeof booleanValue[key] === "boolean") {
+    //         booleanValue[key] = booleanValue[key] ? "Y" : "N";
+    //       }
+    //     }
+    //   }
+    //   console.log("oldRowValue", booleanValue);
+    // }
+
+    let upd = utilFunction.transformDetailsData(
+      data,
+      gridData?.data?.[0] ?? {}
     );
+
     isErrorFuncRef.current = {
       data: {
         ...data,
-        _isNewRow: true,
+        ...upd,
+        _isNewRow: defaultView === "Add" ? true : false,
+        TRAN_CD: gridData?.data?.[0]?.TRAN_CD ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        // COMP_CD: gridData?.data?.[0]?.COMP_CD ?? "",
+        // BRANCH_CD: gridData?.data?.[0]?.BRANCH_CD ?? "",
       },
       displayData,
       endSubmit,
       setFieldError,
     };
-
+    // console.log("isErrorFuncRef.current ", isErrorFuncRef.current);
     setIsOpenSave(true);
   };
+
   return (
     <>
       {isLoading || isFetching ? (
         <LoaderPaperComponent />
+      ) : isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
       ) : (
-        <FormWrapper
-          key={`DynamicForm`}
-          metaData={metaData}
-          onSubmitHandler={onSubmitHandler}
-          initialValues={[] as InitialValuesType}
-          // hideHeader={true}
-          formStyle={{
-            background: "white",
-          }}
-        >
-          {({ isSubmitting, handleSubmit }) => (
-            <>
-              <Button
-                onClick={(event) => {
-                  handleSubmit(event, "Save");
-                }}
-                disabled={isSubmitting}
-                //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                color={"primary"}
-              >
-                Save
-              </Button>
-              <Button
-                onClick={closeDialog}
-                color={"primary"}
-                disabled={isSubmitting}
-              >
-                Close
-              </Button>
-            </>
-          )}
-        </FormWrapper>
+        <>
+          <FormWrapper
+            key={`DynamicForm` + defaultView}
+            metaData={metaData}
+            onSubmitHandler={onSubmitHandler}
+            initialValues={
+              defaultView === "Add"
+                ? {}
+                : (gridData?.data?.[0] as InitialValuesType)
+            }
+            // hideHeader={true}
+            displayMode={defaultView}
+            formStyle={{
+              background: "white",
+            }}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                <Button
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  disabled={isSubmitting}
+                  //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                  color={"primary"}
+                >
+                  Save
+                </Button>
+                <Button
+                  onClick={closeDialog}
+                  color={"primary"}
+                  disabled={isSubmitting}
+                >
+                  Close
+                </Button>
+              </>
+            )}
+          </FormWrapper>
+          {isOpenSave ? (
+            <PopupMessageAPIWrapper
+              MessageTitle="Confirmation"
+              Message={alertMessage}
+              onActionYes={(rowVal) => onPopupYes(rowVal)}
+              onActionNo={() => onActionCancel()}
+              rows={isErrorFuncRef.current?.data}
+              open={isOpenSave}
+              loading={mutation.isLoading}
+            />
+          ) : null}
+        </>
       )}
-
-      {isOpenSave ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Confirmation"
-          Message="Do you want to save this Request?"
-          onActionYes={(rowVal) => onPopupYes(rowVal)}
-          onActionNo={() => onActionCancel()}
-          rows={isErrorFuncRef.current?.data}
-          open={isOpenSave}
-          // loading={mutation.isLoading}
-        />
-      ) : null}
     </>
   );
 };
@@ -162,12 +247,13 @@ const DynamicForm: FC<{
 export const DynamicFormWrapper = ({
   handleDialogClose,
   isDataChangedRef,
-  data,
+  item,
   docID,
+  gridData,
+  defaultView,
+  alertMessage,
 }) => {
   const classes = useDialogStyles();
-  const { state: rows }: any = useLocation();
-  const { getEntries } = useContext(ClearCacheContext);
 
   return (
     <>
@@ -190,8 +276,11 @@ export const DynamicFormWrapper = ({
           // data={rows?.[0]?.data ?? ""}
           isDataChangedRef={isDataChangedRef}
           closeDialog={handleDialogClose}
-          data={data}
+          item={item}
           docID={docID}
+          gridData={gridData}
+          defaultView={defaultView}
+          alertMessage={alertMessage}
         />
       </Dialog>
     </>

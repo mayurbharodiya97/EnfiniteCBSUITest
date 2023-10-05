@@ -104,7 +104,25 @@ const MyTextField: FC<MyTextFieldProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
-
+  console.log(
+    "<<<postvalid",
+    value,
+    error,
+    touched,
+    // handleChange,
+    // handleBlur,
+    isSubmitting,
+    validationRunning,
+    fieldKey,
+    name,
+    excluded,
+    readOnly,
+    incomingMessage,
+    whenToRunValidation,
+    // runValidation,
+    validationAPIResult,
+    dependentValues
+  );
   const [currentColor, setCurrentColor] = useState<string>(
     typeof setColor === "string" ? setColor : ""
   );
@@ -153,9 +171,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
       const { value, ignoreUpdate } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
-        if(ignoreUpdate){
+        if (ignoreUpdate) {
           //ignore Validation
-        }else if (whenToRunValidation === "onBlur" ) {
+        } else if (whenToRunValidation === "onBlur") {
           runValidation({ value: value }, true);
         }
       }
@@ -295,6 +313,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
       />
     </>
   );
+  // console.log("<<<")
   if (Boolean(enableGrid)) {
     return <Grid {...GridProps}>{result}</Grid>;
   } else {

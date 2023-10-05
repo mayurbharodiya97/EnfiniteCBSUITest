@@ -8,7 +8,13 @@ export const getDynMetadataGridConfigData = async ({ COMP_CD, BRANCH_CD }) => {
       BRANCH_CD: BRANCH_CD,
     });
   if (status === "0") {
-    return data;
+    // return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        RESETFIELDONUNMOUNT: item.RESETFIELDONUNMOUNT === "Y" ? true : false,
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -28,15 +34,6 @@ export const getDynFieldListData = async ({
     });
   if (status === "0") {
     return data;
-    // return data.map((item) => {
-    //   return {
-    //     ...item,
-    //     MULTIPLE: item.MULTIPLE === "Y" ? true : false,
-    //     ROWDOUBLECLICK: item.ROWDOUBLECLICK === "Y" ? true : false,
-    //     ALWAYSAVAILABLE: item.ALWAYSAVAILABLE === "Y" ? true : false,
-    //     ISNODATATHENSHOW: item.ISNODATATHENSHOW === "Y" ? true : false,
-    //   };
-    // });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -58,7 +55,12 @@ export const getGridFieldComponentData = async (reqdata) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFORMFIELDPROPS", reqdata);
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        _isNewRow: item["NEWROW_STATUS"] === "N" ? false : true,
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

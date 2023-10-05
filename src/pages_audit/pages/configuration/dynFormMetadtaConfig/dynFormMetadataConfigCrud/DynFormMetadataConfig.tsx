@@ -1,16 +1,8 @@
 import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Theme, Dialog } from "@mui/material";
+import { FC, useContext, useEffect, useRef, useState } from "react";
+import { Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
-import { makeStyles } from "@mui/styles";
 import { useLocation } from "react-router-dom";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
@@ -29,31 +21,7 @@ import {
   DynamicFormConfigGridMetaDataAdd,
   DynamicFormConfigMetaData,
 } from "./metaData";
-const useTypeStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color1)",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-  refreshiconhover: {},
-}));
-interface updateAUTHDetailDataType {
-  data: object;
-  displayData?: object;
-  endSubmit?: any;
-  setFieldError?: any;
-}
-const updateAUTHDetailDataWrapperFn =
-  (insertFormData) =>
-  async ({ data }: updateAUTHDetailDataType) => {
-    return insertFormData(data);
-  };
+
 const DynamicFormMetadataConfig: FC<{
   isDataChangedRef: any;
   closeDialog?: any;
@@ -65,12 +33,8 @@ const DynamicFormMetadataConfig: FC<{
   defaultView = "view",
   fieldRowData,
 }) => {
-  const myRef = useRef<any>(null);
-  const headerClasses = useTypeStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [formMode, setFormMode] = useState(defaultView);
-  const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
-  const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
   const { authState } = useContext(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
@@ -95,13 +59,23 @@ const DynamicFormMetadataConfig: FC<{
 
   const mutation: any = useMutation(API.getDynFormPopulateData);
   const result = useMutation(API.dynamiFormMetadataConfigDML, {
-    onError: (error: any, { endSubmit }) => {
+    onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      endSubmit(false, errorMsg, error?.error_detail ?? "");
-      enqueueSnackbar(errorMsg, { variant: "error" });
+      //endSubmit(false, errorMsg, error?.error_detail ?? "");
+      if (isErrorFuncRef.current == null) {
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      } else {
+        isErrorFuncRef.current?.endSubmit(
+          false,
+          errorMsg,
+          error?.error_detail ?? ""
+        );
+      }
       onActionCancel();
     },
     onSuccess: (data) => {
@@ -112,6 +86,24 @@ const DynamicFormMetadataConfig: FC<{
       closeDialog();
     },
   });
+  // const result = useMutation(API.dynamiFormMetadataConfigDML, {
+  //   onError: (error: any, { endSubmit }) => {
+  //     let errorMsg = "Unknown Error occured";
+  //     if (typeof error === "object") {
+  //       errorMsg = error?.error_msg ?? errorMsg;
+  //     }
+  //     endSubmit(false, errorMsg, error?.error_detail ?? "");
+  //     enqueueSnackbar(errorMsg, { variant: "error" });
+  //     onActionCancel();
+  //   },
+  //   onSuccess: (data) => {
+  //     enqueueSnackbar(data, {
+  //       variant: "success",
+  //     });
+  //     isDataChangedRef.current = true;
+  //     closeDialog();
+  //   },
+  // });
   useEffect(() => {
     const gridDataToUpdate = populateClicked ? mutation.data : data;
     setGridData(Array.isArray(gridDataToUpdate) ? gridDataToUpdate : []);
@@ -142,11 +134,16 @@ const DynamicFormMetadataConfig: FC<{
     data["RESETFIELDONUNMOUNT"] = Boolean(data["RESETFIELDONUNMOUNT"])
       ? "Y"
       : "N";
+
     endSubmit(true);
-    let upd = utilFunction.transformDetailsData(
-      data,
-      fieldRowData?.[0]?.data ?? {}
-    );
+    let oldData = {
+      ...fieldRowData?.[0]?.data,
+      RESETFIELDONUNMOUNT: Boolean(fieldRowData?.[0]?.data?.RESETFIELDONUNMOUNT)
+        ? "Y"
+        : "N",
+    };
+
+    let upd = utilFunction.transformDetailsData(data, oldData ?? {});
 
     if (actionFlag === "POPULATE") {
       data["COMP_CD"] = authState.companyID.trim();
@@ -208,6 +205,16 @@ const DynamicFormMetadataConfig: FC<{
       }
     }
   };
+  if (formMode !== "add") {
+    if (DynamicFormConfigMetaData.form.label) {
+      DynamicFormConfigMetaData.form.label =
+        "Dynamic Metadata Configure" +
+        " " +
+        fieldRowData?.[0]?.data?.FORM_LABEL +
+        " " +
+        fieldRowData?.[0]?.data?.DESCRIPTION;
+    }
+  }
 
   return (
     <>
@@ -362,7 +369,6 @@ const DynamicFormMetadataConfig: FC<{
           {isFieldComponentGrid ? (
             <FieldComponentGrid
               isOpen={isFieldComponentGrid}
-              formMode={formMode}
               onClose={() => {
                 setFieldComponentGrid(false);
               }}
