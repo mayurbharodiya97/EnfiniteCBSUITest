@@ -1,7 +1,7 @@
 import { Tabs } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
-const StyledTabs = withStyles((theme) => ({
+const StyledTabs:any = withStyles((theme) => ({
   root: {
     border: "2px solid #e8e8e8",
     background: "#fff",

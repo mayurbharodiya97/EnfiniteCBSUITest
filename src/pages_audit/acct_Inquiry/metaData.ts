@@ -71,6 +71,8 @@ export const AccountInquiryMetadata = {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
       },
       FormatProps: {
         isAllowed: (values) => {
@@ -106,6 +108,8 @@ export const AccountInquiryMetadata = {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
       },
       FormatProps: {
         isAllowed: (values) => {
@@ -139,6 +143,8 @@ export const AccountInquiryMetadata = {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
       },
       validate: (columnValue, allField, flag) => {
         if (columnValue.value.length <= 0) {
@@ -173,6 +179,8 @@ export const AccountInquiryMetadata = {
         xs: 12,
         md: 2.5,
         sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
       },
       validate: (columnValue, allField, flag) => {
         let regex = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
@@ -225,8 +233,8 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "42vh",
-      max: "45vh",
+      min: "38vh",
+      max: "38vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

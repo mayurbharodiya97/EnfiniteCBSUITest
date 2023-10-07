@@ -104,25 +104,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
-  // console.log(
-  //   "<<<postvalid",
-  //   value,
-  //   error,
-  //   touched,
-  //   // handleChange,
-  //   // handleBlur,
-  //   isSubmitting,
-  //   validationRunning,
-  //   fieldKey,
-  //   name,
-  //   excluded,
-  //   readOnly,
-  //   incomingMessage,
-  //   whenToRunValidation,
-  //   // runValidation,
-  //   validationAPIResult,
-  //   dependentValues
-  // );
+
   const [currentColor, setCurrentColor] = useState<string>(
     typeof setColor === "string" ? setColor : ""
   );

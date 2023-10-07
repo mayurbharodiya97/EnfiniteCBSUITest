@@ -187,12 +187,14 @@ export const OTPModel = ({
                   previousStep(false, "");
                 }}
                 className={classes.otpButtons}
+                color={"var(--theme-color3) !important"}
                 style={{
                   border: "var(--theme-color3)1px solid",
-                  color: "var(--theme-color3)",
+                  width: "100%",
                   background: "var(--theme-color2)",
                   borderRadius: "10px",
                 }}
+                // customstyle = {{color : "var(--theme-color3) !important"}}
                 starticon={"West"}
                 rotateIcon="scale(1.4) rotateX(360deg)"
               >

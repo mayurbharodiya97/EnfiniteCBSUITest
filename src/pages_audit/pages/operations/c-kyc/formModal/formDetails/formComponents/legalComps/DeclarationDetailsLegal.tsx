@@ -96,7 +96,6 @@ const myGridRef = useRef<any>(null);
                 </Grid>
 
                 <Collapse in={isDeclarationExpanded}>
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>{t("FATCACRSDetails")}</Divider>
                 <Grid item>
                     <FormWrapper 
                         ref={DeclarationFormRef}
