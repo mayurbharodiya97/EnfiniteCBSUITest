@@ -44,7 +44,7 @@ const StyledTextField = withStyles({
       "& input": {
         padding: "6px 7px ",
         height: "22px",
-        //color: "#000",
+        inputMode: "auto", // Use "auto" or remove this line to enable browser default behavior
         "&::placeholder": {
           //color: "#000",
           //fontSize: "0.875rem",

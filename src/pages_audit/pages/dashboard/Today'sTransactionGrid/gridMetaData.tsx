@@ -140,7 +140,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "TRAN_CD",
-      columnName: "V.no",
+      columnName: "Vno",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -150,7 +150,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CONFIRMED",
-      columnName: "Status",
+      columnName: "STATUS",
       sequence: 5,
       alignment: "left",
       componentType: "default",
