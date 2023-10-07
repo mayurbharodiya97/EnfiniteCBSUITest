@@ -48,7 +48,6 @@ import KYCDocUpload from './formDetails/formComponents/individualComps/KYCDocUpl
 import PhotoSignature from './formDetails/formComponents/individualComps/PhotoSignature';
 import { format } from "date-fns/esm";
 import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails';
-import DeclarationDetailsLegal from './formDetails/formComponents/legalComps/DeclarationDetailsLegal';
 import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
 import { useLocation, useNavigate } from 'react-router-dom';
 // import { TextField } from 'components/styledComponent';
