@@ -31,41 +31,8 @@ export const DetailMastersData = ({ screenFlag, subScreenFlag = "" }) => {
       <DetailMaster
         key={"reportID" + screenFlag + subScreenFlag}
         reportID={screenFlag}
-        // reportName={screenFlag}
-        dataFetcher={API.getReportData}
         metaData={metaData}
-        autoFetch={metaData?.autoFetch ?? true}
-        otherAPIRequestPara={otherAPIRequestPara}
       />
     </>
   );
 };
-// export const DetailDataContext: any = createContext({
-//   GetApidetailData: () => true,
-// });
-
-// export const DetailDataProvider: any = ({ children }) => {
-//   const [detailData, setDetailData] = useState<any>(null);
-
-//   const GetApidetailData: any = async ({ reportID, otherAPIRequestPara }) => {
-//     console.log("<<<detailData1", detailData);
-//     const { data, status, message, messageDetails } =
-//       await AuthSDK.internalFetcher(reportID, {
-//         ...otherAPIRequestPara,
-//       });
-//     if (status === "0") {
-//       // return setNewData(data);
-//       return setDetailData(data);
-//     } else {
-//       throw DefaultErrorObject(message, messageDetails);
-//     }
-//   };
-
-//   return (
-//     <DetailDataContext.Provider
-//       value={{ detailData, setDetailData, GetApidetailData }}
-//     >
-//       {children}
-//     </DetailDataContext.Provider>
-//   );
-// };

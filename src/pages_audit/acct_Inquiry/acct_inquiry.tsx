@@ -124,6 +124,10 @@ export const Accountinquiry = ({ open, onClose }) => {
       mutation.mutate(data);
     }
   };
+  const ClickEventManage = () => {
+    let event: any = { preventDefault: () => {} };
+    formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+  };
   return (
     <>
       <Dialog
@@ -144,60 +148,71 @@ export const Accountinquiry = ({ open, onClose }) => {
             color="error"
           />
         )}
-        <FormWrapper
-          key={`MerchantOnboardConfig`}
-          metaData={AccountInquiryMetadata as MetaDataType}
-          initialValues={[]}
-          onSubmitHandler={onSubmitHandler}
-          formStyle={{
-            background: "white",
+        <div
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              let target: any = e?.target;
+              console.log("<<<enter", e);
+              if (target?.value) {
+                ClickEventManage();
+              }
+            }
           }}
-          onFormButtonClickHandel={() => {
-            let event: any = { preventDefault: () => {} };
-            formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-          }}
-          // onFormButtonCicular={mutation.isLoading}
-          ref={formRef}
         >
-          {({ isSubmitting, handleSubmit }) => (
-            <>
-              <GradientButton
-                onClick={(event) => {
-                  //   isSubmitEventRef.current = event;
-                  // handleSubmit(event, "Save");
-                  onClose();
-                }}
-                // disabled={isSubmitting}
-                // endIcon={
-                //   isSubmitting ? <CircularProgress size={20} /> : null
-                // }
-                color={"primary"}
-                ref={formbtnRef}
-                endicon="CancelOutlined"
-                rotateIcon="scale(1.4) rotate(360deg)"
-                sx={{
-                  background: "transparent !important",
-                  color: "var(--theme-color2) !important",
-                  boxShadow: "none !important",
-                  fontSize: "14px",
-                  "&:hover": {
-                    background: "rgba(235, 237, 238, 0.45) !important",
-                    // color: "var(--theme-color2) !important",
-                    // border: "1.5px solid var(--theme-color2)",
-                    transition: "all 1s ease 0s",
-                    "& .MuiSvgIcon-root": {
-                      transform: "scale(1.4) rotateY(360deg)",
-                      transition: "transform 2s ease-in-out",
+          <FormWrapper
+            key={`MerchantOnboardConfig`}
+            metaData={AccountInquiryMetadata as MetaDataType}
+            initialValues={[]}
+            onSubmitHandler={onSubmitHandler}
+            formStyle={{
+              background: "white",
+            }}
+            onFormButtonClickHandel={() => {
+              let event: any = { preventDefault: () => {} };
+              formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+            }}
+            // onFormButtonCicular={mutation.isLoading}
+            ref={formRef}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                <GradientButton
+                  onClick={(event) => {
+                    //   isSubmitEventRef.current = event;
+                    // handleSubmit(event, "Save");
+                    onClose();
+                  }}
+                  // disabled={isSubmitting}
+                  // endIcon={
+                  //   isSubmitting ? <CircularProgress size={20} /> : null
+                  // }
+                  color={"primary"}
+                  ref={formbtnRef}
+                  endicon="CancelOutlined"
+                  rotateIcon="scale(1.4) rotate(360deg)"
+                  sx={{
+                    background: "transparent !important",
+                    color: "var(--theme-color2) !important",
+                    boxShadow: "none !important",
+                    fontSize: "14px",
+                    "&:hover": {
+                      background: "rgba(235, 237, 238, 0.45) !important",
+                      // color: "var(--theme-color2) !important",
+                      // border: "1.5px solid var(--theme-color2)",
+                      transition: "all 1s ease 0s",
+                      "& .MuiSvgIcon-root": {
+                        transform: "scale(1.4) rotateY(360deg)",
+                        transition: "transform 2s ease-in-out",
+                      },
                     },
-                  },
-                }}
-              >
-                close
-              </GradientButton>
-            </>
-          )}
-        </FormWrapper>
-
+                  }}
+                >
+                  close
+                </GradientButton>
+              </>
+            )}
+          </FormWrapper>
+        </div>
         <GridWrapper
           key={`customerSearchingGrid`}
           finalMetaData={AccountInquiryGridMetaData as GridMetaDataType}
