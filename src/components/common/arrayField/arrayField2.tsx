@@ -48,6 +48,8 @@ export interface ArrayField2Props {
   dependentFields?: string | string[];
   shouldExclude?: any;
   fixedRows?: boolean;
+  isDisplayCount?: boolean;
+  isCustomStyle?: any;
   getFixedRowsCount?: any;
 }
 
@@ -71,6 +73,8 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   dependentFields,
   shouldExclude,
   fixedRows,
+  isDisplayCount,
+  isCustomStyle,
   getFixedRowsCount,
 }) => {
   // let currentFieldsMeta = JSON.parse(
@@ -149,13 +153,22 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       if (!Boolean(currentFieldMetaData)) {
         return null;
       }
+
+      let newMTdata;
+      if (rowIndex === 0) {
+        newMTdata = { ...currentFieldMetaData };
+      } else {
+        newMTdata = { ...currentFieldMetaData, label: null };
+      }
+
       const component = renderField(
-        currentFieldMetaData,
+        isCustomStyle ? newMTdata : currentFieldMetaData,
         //@ts-ignore
         {},
         name,
         componentProps
       );
+
       const clonedComponent = cloneElement(component, {
         fieldKey: row.cells[field].key,
         name: row.cells[field].name,
@@ -179,6 +192,8 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         arrayFieldIDName={arrayFieldIDName}
         arrayFieldName={name}
         fixedRows={fixedRows}
+        isDisplayCount={isDisplayCount}
+        isCustomStyle={isCustomStyle}
       />
     );
   });
@@ -186,7 +201,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
     <Fragment>
       <Card className={classes.arrayRowCard}>
         <CardHeader
-          style={{ padding: "10px" }}
+          style={{ padding: "0px" }}
           title={label}
           action={
             !Boolean(fixedRows) ? (
@@ -196,7 +211,10 @@ export const ArrayField2: FC<ArrayField2Props> = ({
             ) : null
           }
         />
-        <CardContent className={classes.arrayRowCardContent}>
+        <CardContent
+          style={{ paddingBottom: "0px" }}
+          className={classes.arrayRowCardContent}
+        >
           <Grid
             container
             item
@@ -261,6 +279,8 @@ export const ArrayFieldRow = ({
   arrayFieldIDName,
   arrayFieldName,
   fixedRows,
+  isDisplayCount = true,
+  isCustomStyle = false,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -323,11 +343,24 @@ export const ArrayFieldRow = ({
     setIsDialogOpen(true);
   }, [setIsDialogOpen]);
 
+  let finalClass;
+  if (Boolean(isCustomStyle)) {
+    if (rowIndex != 0) {
+      finalClass = classes.newArrayRowContainer;
+    } else {
+      finalClass = classes.newSecondArrayRowContainer;
+    }
+  } else {
+    finalClass = classes.arrayRowContainer;
+  }
+
   return (
     <Fragment key={row.fieldIndexKey}>
-      <Typography gutterBottom className={classes.arrayRowCount}>
-        {rowIndex + 1} of {totalRows}
-      </Typography>
+      {Boolean(isDisplayCount) ? (
+        <Typography gutterBottom className={classes.arrayRowCount}>
+          {rowIndex + 1} of {totalRows}
+        </Typography>
+      ) : null}
       <Grid
         container
         item
@@ -335,7 +368,7 @@ export const ArrayFieldRow = ({
         md={12}
         sm={12}
         spacing={2}
-        className={classes.arrayRowContainer}
+        className={finalClass}
       >
         {oneRow}
         {typeof removeFn === "function" && !Boolean(fixedRows) ? (

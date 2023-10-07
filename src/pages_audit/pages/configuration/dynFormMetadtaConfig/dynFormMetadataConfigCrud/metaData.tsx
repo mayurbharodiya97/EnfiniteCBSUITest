@@ -775,83 +775,205 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
   ],
 };
 
-export const FieldComponentGridMetaData: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: " Numbers",
-    rowIdColumn: "PROPS_ID",
-    defaultColumnConfig: {
-      width: 400,
-      maxWidth: 450,
-      minWidth: 300,
+export const FieldComponentGridMetaData: any = {
+  form: {
+    refID: 1667,
+    name: "FieldComponentGridMetaData",
+    label: "FieldComponentGridMetaData",
+    resetFieldOnUmnount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 6,
+          md: 6,
+        },
+        container: {
+          direction: "row",
+          spacing: 2,
+        },
+      },
     },
-    allowColumnReordering: true,
-    disableSorting: false,
-    hideHeader: true,
-    disableGroupBy: true,
-    enablePagination: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
-    containerHeight: {
-      min: "40vh",
-      max: "50vh",
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
     },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-    isCusrsorFocused: true,
-    hiddenFlag: "_hidden",
-    disableLoader: true,
   },
-  filters: [],
-  columns: [
+  fields: [
     {
-      accessor: "_displaySequence",
-      columnName: "Sr. No.",
-      sequence: 1,
-      alignment: "right",
-      componentType: "default",
-      width: 100,
-      minWidth: 80,
-      maxWidth: 120,
-      isAutoSequence: true,
-    },
-    {
-      accessor: "PROPS_ID",
-      columnName: "Props ID",
-      sequence: 2,
-      alignment: "left",
-      componentType: "editableTextField",
-      isReadOnly: true,
-      placeholder: "",
-      width: 200,
-      minWidth: 180,
-      maxWidth: 250,
-      // validation: (value, data, prev) => {
-      //   if (!Boolean(value)) {
-      //     return "This is a required field";
-      //   } else {
-      //     let response = "";
-      //     prev?.forEach((item) => {
-      //       if (item.TENURE && item.TENURE === value) {
-      //         response = "This Value already exists.";
-      //         return;
-      //       }
-      //     });
-      //     return response;
-      //   }
-      // },
-    },
-    {
-      accessor: "PROPS_VALUE",
-      columnName: "Props Value",
-      sequence: 3,
-      alignment: "left",
-      componentType: "editableTextField",
-      placeholder: "",
-      width: 200,
-      minWidth: 180,
-      maxWidth: 250,
+      render: {
+        componentType: "arrayField",
+      },
+      fixedRows: true,
+      isDisplayCount: false,
+      isCustomStyle: false,
+      name: "actionsDetails",
+      removeRowFn: "deleteFormArrayFieldData",
+      arrayFieldIDName: "DOC_CD",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      _fields: [
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "SR_CD",
+          label: "sr.cd",
+          placeholder: "",
+          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+        },
+        // {
+        //   render: {
+        //     componentType: "select",
+        //   },
+        //   name: "ACTIONNAME",
+        //   label: "Action Name",
+        //   options: [
+        //     { label: "add", value: "Add" },
+        //     { label: "view-detail", value: "View-Detail" },
+        //     { label: "delete", value: "Delete" },
+        //   ],
+        //   _optionsKey: "GetActionName",
+        //   postValidationSetCrossFieldValues: "getActionDetailsData",
+        //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        // },
+        // {
+        //   render: {
+        //     componentType: "select",
+        //   },
+        //   name: "FORM_METADATA_SR_CD",
+        //   label: "Metadata List",
+        //   options: "getMetadataList",
+        //   _optionsKey: "getMetadataList",
+        //   requestProps: "DOC_CD",
+        //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        //   runValidationOnDependentFieldsChange: true,
+        //   dependentFields: ["ACTIONNAME"],
+        //   shouldExclude: (val1, dependent) => {
+        //     if (dependent["actionsDetails.ACTIONNAME"]?.value === "Delete") {
+        //       return true;
+        //     }
+        //     return false;
+        //   },
+        // },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "PROPS_ID",
+          label: "Props ID",
+          placeholder: "Props ID",
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "PROPS_VALUE",
+          label: "Props Value",
+          placeholder: "Props Value",
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+      ],
     },
   ],
 };
+
+// export const FieldComponentGridMetaData: GridMetaDataType = {
+//   gridConfig: {
+//     dense: true,
+//     gridLabel: " Numbers",
+//     rowIdColumn: "PROPS_ID",
+//     defaultColumnConfig: {
+//       width: 400,
+//       maxWidth: 450,
+//       minWidth: 300,
+//     },
+//     allowColumnReordering: true,
+//     disableSorting: false,
+//     hideHeader: true,
+//     disableGroupBy: true,
+//     enablePagination: false,
+//     pageSizes: [10, 20, 30],
+//     defaultPageSize: 10,
+//     containerHeight: {
+//       min: "40vh",
+//       max: "50vh",
+//     },
+//     allowFilter: false,
+//     allowColumnHiding: false,
+//     allowRowSelection: false,
+//     isCusrsorFocused: true,
+//     hiddenFlag: "_hidden",
+//     disableLoader: true,
+//   },
+//   filters: [],
+//   columns: [
+//     {
+//       accessor: "_displaySequence",
+//       columnName: "Sr. No.",
+//       sequence: 1,
+//       alignment: "right",
+//       componentType: "default",
+//       width: 100,
+//       minWidth: 80,
+//       maxWidth: 120,
+//       isAutoSequence: true,
+//     },
+//     {
+//       accessor: "PROPS_ID",
+//       columnName: "Props ID",
+//       sequence: 2,
+//       alignment: "left",
+//       componentType: "editableTextField",
+//       isReadOnly: true,
+//       placeholder: "",
+//       width: 200,
+//       minWidth: 180,
+//       maxWidth: 250,
+//       // validation: (value, data, prev) => {
+//       //   if (!Boolean(value)) {
+//       //     return "This is a required field";
+//       //   } else {
+//       //     let response = "";
+//       //     prev?.forEach((item) => {
+//       //       if (item.TENURE && item.TENURE === value) {
+//       //         response = "This Value already exists.";
+//       //         return;
+//       //       }
+//       //     });
+//       //     return response;
+//       //   }
+//       // },
+//     },
+//     {
+//       accessor: "PROPS_VALUE",
+//       columnName: "Props Value",
+//       sequence: 3,
+//       alignment: "left",
+//       componentType: "editableTextField",
+//       placeholder: "",
+//       width: 200,
+//       minWidth: 180,
+//       maxWidth: 250,
+//     },
+//   ],
+// };

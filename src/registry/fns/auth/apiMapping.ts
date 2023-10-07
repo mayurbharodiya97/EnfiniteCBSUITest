@@ -472,6 +472,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/GETLIMITENTRY",
     packageName: "",
   },
+  GETFORMMETALIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORMMETALIST",
+    packageName: "",
+  },
+  GETTBGGRIDPARADATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGGRIDPARADATA",
+    packageName: "",
+  },
+  GETDYNAPILIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDYNAPILIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

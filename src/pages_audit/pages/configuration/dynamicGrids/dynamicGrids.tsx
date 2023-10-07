@@ -56,7 +56,7 @@ export const DynamicGrids = () => {
           doccd: docCd || "",
           companyID: authState?.companyID ?? "",
           branchID: authState?.user?.branchCode ?? "",
-          customerID: "2",
+          // customerID: "2",
           // TRAN_CD: "91",
         }),
     },

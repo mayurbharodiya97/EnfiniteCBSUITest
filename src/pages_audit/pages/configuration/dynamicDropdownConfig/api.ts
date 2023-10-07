@@ -4,20 +4,16 @@ import { AuthContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { GeneralAPI } from "registry/fns/functions";
 
-export const getTbgDocMstData = () => GeneralAPI.getTbgDocMstData();
-
-export const getProMiscData = async (category_cd) => {
+export const getDynApiListData = async () => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(`GETPROPMISCDATA`, {
-      CATEGORY_CD: category_cd,
-    });
+    await AuthSDK.internalFetcher(`GETDYNAPILIST`, {});
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
+      responseData = responseData.map(({ ACTION, ID }) => {
         return {
-          value: DATA_VALUE,
-          label: DISPLAY_VALUE,
+          value: ID,
+          label: ACTION,
         };
       });
     }
@@ -26,52 +22,18 @@ export const getProMiscData = async (category_cd) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getMenulistData = async () => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETTBGMENUGRPLIST", {});
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DOC_TYPE, DESCRIPTION, ...other }) => {
-        //let { VALUE, LABEL, ...other } = one;
-        return {
-          value: DOC_TYPE,
-          label: DESCRIPTION,
-          ...other,
-        };
-      });
-    }
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getDynamicGridConfigGridData = async ({ COMP_CD, BRANCH_CD }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETGRIDCONFIGDATA", {
-      COMP_CD: COMP_CD,
-      BRANCH_CD: BRANCH_CD,
-    });
-  if (status === "0") {
-    return data.map((item) => {
-      return {
-        ...item,
-        DENSE: item.DENSE === "Y" ? true : false,
-        ALLOW_COLUMN_REORDERING:
-          item.ALLOW_COLUMN_REORDERING === "Y" ? true : false,
-        DISABLE_GROUP_BY: item.DISABLE_GROUP_BY === "Y" ? true : false,
-        ENABLE_PAGINATION: item.ENABLE_PAGINATION === "Y" ? true : false,
-        IS_CUSRSORFOCUSED: item.IS_CUSRSORFOCUSED === "Y" ? true : false,
-        ALLOW_ROW_SELECTION: item.ALLOW_ROW_SELECTION === "Y" ? true : false,
-        ISDOWNLOAD: item.ISDOWNLOAD === "Y" ? true : false,
-      };
-    });
-    // return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
+// export const getDynamicGridConfigGridData = async ({ COMP_CD, BRANCH_CD }) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher("GETGRIDCONFIGDATA", {
+//       COMP_CD: COMP_CD,
+//       BRANCH_CD: BRANCH_CD,
+//     });
+//   if (status === "0") {
+//     return data;
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// };
 
 export const dynamicGridConfigDML = () => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
