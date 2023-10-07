@@ -21,10 +21,10 @@ import {
 } from "components/utils";
 import { CSSProperties } from "@mui/styles";
 import { useMutation, useQuery } from "react-query";
-import { SubmitFnType, useField } from "packages/form";
+import { FormContext, SubmitFnType, useField } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { AuthSDK } from "registry/fns/auth";
-import { AppBar } from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import { Alert } from "components/common/alert";
 
 export interface MasterDetailsArgumentType {
@@ -64,20 +64,10 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
       formNameMaster = "",
       onFormButtonClickHandel = (id) => {},
       onClickActionEvent = () => {},
-      hideHeader = false,
       reportID,
-      otherAPIRequestPara,
     },
     ref
   ) => {
-    // const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
-    //   GetdetailData()
-    // );
-
-    // useEffect(() => {
-    //   console.log("<<<queryData", queryData);
-    // }, [queryData]);
-
     const intialValueDetails = useMemo(() => {
       const { DETAILS_DATA = [], ...other } = initialData;
       return DETAILS_DATA;
@@ -90,6 +80,7 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
       onSuccess: (data) => {},
       onError: (error: any) => {},
     });
+    const [, setGridLabel] = useState<any>();
     const masterMetadata: MetaDataType = useMemo(
       () => extractMetaData(metaData.masterForm, displayMode),
       [metaData, displayMode, formNameMaster]
@@ -108,7 +99,7 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
       }
       return { ...detailsMetadata, columns: myColumns };
     }, [displayMode, detailsMetadata]);
-    console.log("<<<detailsMetadatarep", mutation);
+
     const onSubmitHandler: SubmitFnType = (
       data: any,
       displayData,
@@ -117,8 +108,6 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
     ) => {
       //@ts-ignore
       endSubmit(true);
-      console.log("<<<dtf", data);
-
       let ApiKey = masterMetadata?.form?.apiKey;
       let response = {};
       for (const key in ApiKey) {
@@ -131,7 +120,7 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
       let otherAPIRequestPara = {
         COMP_CD: authState?.companyID,
         ...response,
-        // ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
+        ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
       };
       mutation.mutate({ reportID, otherAPIRequestPara });
     };
@@ -139,6 +128,38 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
       let event: any = { preventDefault: () => {} };
       myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
     };
+    console.log("<<<mutation11", mutation.data);
+
+    useEffect(() => {
+      console.log("<<<mutation12", mutation.data?.[0]?.ACCT_CD);
+      detailsMetadatarep.gridConfig.gridLabel = mutation.data?.[0]?.ACCT_CD
+        ? detailsMetadatarep?.gridConfig?.gridLabel +
+          "Account NO. =" +
+          mutation.data?.[0]?.ACCT_CD
+        : detailsMetadatarep?.gridConfig?.gridLabel +
+          " " +
+          "Account N1O. = " +
+          mutation.data?.[0]?.ACCT_CD;
+    }, [mutation.data]);
+
+    // let gridLabel = detailsMetadatarep.gridConfig.gridLabel;
+    // if (mutation.data) {
+    //   console.log("<<<length", mutation.data);
+    //   gridLabel =
+    //     mutation.data &&
+    //     detailsMetadatarep?.gridConfig?.gridLabel +
+    //       "Account NO. =" +
+    //       mutation.data?.[0]?.ACCT_CD;
+    //   detailsMetadatarep.gridConfig.gridLabel = gridLabel;
+    //   // detailsMetadatarep.gridConfig.gridLabel = mutation.data
+    //   //   ? detailsMetadatarep?.gridConfig?.gridLabel +
+    //   //     "Account NO. =" +
+    //   //     mutation.data?.[0]?.ACCT_CD
+    //   //   : detailsMetadatarep?.gridConfig?.gridLabel;
+    // }
+
+    // console.log("<<<mutation.data?.ACCT_CD", mutation.data?.[0]?.ACCT_CD);
+    // detailsMetadatarep.gridConfig.gridLabel = "sdadgj";
     return (
       <Fragment>
         <div
@@ -170,7 +191,13 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
           ) : null}
           <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
             <GridWrapper
-              key={"masterDetails-Detail" + Boolean(formName) ? formName : ""}
+              key={
+                "masterDetails-Detail" +
+                mutation.data?.[0]?.ACCT_CD +
+                mutation.data
+                // ? formName + gridLabel
+                // : gridLabel
+              }
               finalMetaData={detailsMetadatarep as GridMetaDataType}
               data={mutation.data ? mutation.data : girdData}
               setData={setGridData}
@@ -183,23 +210,19 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
             />
           </div>
           <div
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                ClickEventManage();
+            onKeyDown={(e) => {
+              console.log("<<<ee", e);
+              if (e.key === "Tab") {
+                let target: any = e?.target;
+                if (
+                  (target?.name ?? "") ===
+                  masterMetadata.form.name + "/ACCT_CD"
+                ) {
+                  ClickEventManage();
+                  // target.__reactProps$40b49qo315m.autofocus();
+                }
               }
             }}
-            // onKeyDown={(e) => {
-            //   if (e.key === "Tab") {
-            //     console.log("<<<tab", e);
-            //     // console.log(
-            //     //   "<<<myMasterRef",
-            //     //   // myMasterRef.current?.getFieldData()
-            //     // );
-            //     // ClickEventManage();
-            //     // e.preventDefault();
-            //     // console.log("Tab");
-            //   }
-            // }}
           >
             <FormWrapper
               key={

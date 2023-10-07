@@ -4,7 +4,7 @@ import { GeneralAPI } from "registry/fns/functions";
 export const limitEntryMetadata = {
   masterForm: {
     form: {
-      name: "chequeBookForm",
+      name: "limitEntry",
       label: "Limit Entry",
       resetFieldOnUnmount: false,
       validationRun: "onChange",

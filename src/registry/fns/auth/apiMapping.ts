@@ -183,8 +183,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDASHBOX",
     packageName: "",
   },
-  GETBOXDML: {
-    url: "dashboardServiceAPI/GETBOXDML",
+  DOBOXDML: {
+    url: "dashboardServiceAPI/DOBOXDML",
     packageName: "",
   },
   GETQUICKVIEWSCREEN: {

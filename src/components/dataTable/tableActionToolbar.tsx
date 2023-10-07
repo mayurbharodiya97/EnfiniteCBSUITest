@@ -122,6 +122,7 @@ export const RenderActions: FC<RenderActionType> = ({
           //   color: "var(--theme-color3)", //"var(--theme-color2)",
           //   marginRight: "10px",
           // }}
+          color={one.actionTextColor ?? buttonTextColor}
           style={{
             background: one.actionBackground ?? buttonBackground,
             color: one.actionTextColor ?? buttonTextColor,

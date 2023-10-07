@@ -152,7 +152,7 @@ export const getdashboxData = async () => {
 };
 export const updateDashboxData = async (reqData) => {
   const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETBOXDML", reqData);
+    await AuthSDK.internalFetcher("DOBOXDML", reqData);
   if (status === "0") {
     return data;
   } else {

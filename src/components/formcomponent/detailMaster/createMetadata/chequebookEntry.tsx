@@ -3,6 +3,7 @@ import { GeneralAPI } from "registry/fns/functions";
 // import { getReportData } from "../detailStatic";
 import { GetdetailData } from "../detailmaster";
 import { useContext } from "react";
+import { FormContext } from "packages/form";
 
 export const chequebookEntryMetadata = {
   masterForm: {
@@ -14,7 +15,7 @@ export const chequebookEntryMetadata = {
       submitAction: "home",
       formStyle: {
         background: "white",
-        height: "calc(100vh - 390px)",
+        height: "calc(100vh - 420px)",
         overflowY: "auto",
         overflowX: "hidden",
       },
@@ -62,12 +63,6 @@ export const chequebookEntryMetadata = {
       },
     },
     fields: [
-      // {
-      //   render: {
-      //     componentType: "_accountNumber",
-      //   },
-      //   name: "dfk",
-      // },
       {
         render: {
           componentType: "autocomplete",
@@ -125,7 +120,7 @@ export const chequebookEntryMetadata = {
         type: "text",
         fullWidth: true,
         required: true,
-        maxLength: 20,
+        // maxLength: 20,
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["Account no. is required."] }],
@@ -138,31 +133,7 @@ export const chequebookEntryMetadata = {
           lg: 3,
           xl: 3,
         },
-        dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
-        postValidationSetCrossFieldValues: async (
-          field,
-          __,
-          ___,
-          dependentFieldsValues
-        ) => {
-          console.log("<<<postvalue", field, __, ___, dependentFieldsValues);
-          if (field.value) {
-            let postdata = await GetdetailData({
-              reportID: "GETCHEQUEBOOK",
-              otherAPIRequestPara: {
-                BRANCH_CD: dependentFieldsValues?.BRANCH_CD?.value,
-                ACCT_TYPE: dependentFieldsValues?.ACCT_TYPE?.value,
-                ACCT_CD: field?.value,
-                COMP_CD: ___?.companyID,
-              },
-            });
-
-            console.log("<<<postdata", postdata);
-            return {};
-          }
-          return {};
-        },
-        runPostValidationHookAlways: true,
+        dependentFields: ["BRANCH_CD", "ACCT_TYPE", "FROM_CHEQU"],
       },
       {
         render: {
@@ -222,15 +193,15 @@ export const chequebookEntryMetadata = {
         },
         name: "FROM_CHEQUE_NO",
         label: "From Cheque No.",
-        placeholder: "",
+        placeholder: "From Cheque No.",
         type: "text",
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 2.5,
-          sm: 2.5,
-          lg: 2.5,
-          xl: 2.5,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
       {
@@ -239,15 +210,15 @@ export const chequebookEntryMetadata = {
         },
         name: "TO_CHEQUE_NO",
         label: "To Cheque No.",
-        placeholder: "",
+        placeholder: "To Cheque No.",
         type: "text",
         isReadOnly: true,
         GridProps: {
           xs: 12,
-          md: 2.5,
-          sm: 2.5,
-          lg: 2.5,
-          xl: 2.5,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
       {
@@ -256,15 +227,15 @@ export const chequebookEntryMetadata = {
         },
         name: "SERVICE_CHARGE",
         label: "Service Charge",
-        placeholder: "",
+        placeholder: "Service Charge",
         type: "text",
         required: true,
         GridProps: {
           xs: 12,
-          md: 2,
-          sm: 2,
-          lg: 2,
-          xl: 2,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
       {
@@ -273,15 +244,15 @@ export const chequebookEntryMetadata = {
         },
         name: "GST",
         label: "GST",
-        placeholder: "",
+        placeholder: "GST",
         type: "text",
         required: true,
         GridProps: {
           xs: 12,
-          md: 2.5,
-          sm: 2.5,
-          lg: 2.5,
-          xl: 2.5,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
       {
@@ -292,17 +263,12 @@ export const chequebookEntryMetadata = {
         // sequence: 9,
         label: "Requisition Date",
         placeholder: "",
-        // options: () => {
-        //   return GeneralAPI.GetMiscValue("USER_SUB_TYPE");
-        // },
-        // enableDefaultOption: true,
-        // _optionsKey: "GetSubTypeMiscValue",
         GridProps: {
           xs: 12,
-          md: 2.5,
-          sm: 2.5,
-          lg: 2.5,
-          xl: 2.5,
+          md: 3,
+          sm: 3,
+          lg: 3,
+          xl: 3,
         },
       },
       {
@@ -312,6 +278,7 @@ export const chequebookEntryMetadata = {
         name: "ACCT_NM",
         // sequence: 1,
         label: "Name",
+        placeholder: "Account Name",
         type: "text",
         // required: true,
         // maxLength: 16,
@@ -332,12 +299,7 @@ export const chequebookEntryMetadata = {
         name: "REMARKS",
         // sequence: 10,
         label: "Remark",
-        placeholder: "Enter remark.",
-        // options: () => {
-        //   return GeneralAPI.GetUsersNotificationTemplateList();
-        // },
-        // enableDefaultOption: true,
-        // _optionsKey: "GetUsersNotificationTemplateList",
+        placeholder: "Enter remark",
         GridProps: {
           xs: 12,
           md: 3,
@@ -354,7 +316,7 @@ export const chequebookEntryMetadata = {
         name: "CHARACTERISTICS",
         // sequence: 4,
         label: "Characteristics",
-        placeholder: "",
+        placeholder: "Characteristics",
         type: "text",
         required: true,
         options: () => {
@@ -368,8 +330,8 @@ export const chequebookEntryMetadata = {
           xs: 12,
           md: 1.5,
           sm: 1.5,
-          lg: 2,
-          xl: 2,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
       {
@@ -378,6 +340,7 @@ export const chequebookEntryMetadata = {
         },
         name: "PAYABLE_AT_PAR",
         label: "Payable At PAR",
+        placeholder: '"Payable At PAR',
         options: () => {
           return [
             { value: "Yes", label: "Yes" },
@@ -391,8 +354,8 @@ export const chequebookEntryMetadata = {
           xs: 12,
           md: 1.5,
           sm: 1.5,
-          lg: 2,
-          xl: 2,
+          lg: 1.5,
+          xl: 1.5,
         },
       },
       {
@@ -400,12 +363,36 @@ export const chequebookEntryMetadata = {
           componentType: "textField",
         },
         name: "CHEQUE_TOTAL",
-        label: "No of Cheque Book(s)",
+        label: "No of ChequeBooks",
         placeholder: "Enter no of Cheque book",
         type: "text",
         required: true,
         // defaultValue: "2",
         // enableDefaultOption: true,
+        GridProps: {
+          xs: 12,
+          md: 1.5,
+          sm: 1.5,
+          lg: 1.5,
+          xl: 1.5,
+        },
+      },
+
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "MACHINE_NM",
+        label: "Joint Account Name",
+        type: "text",
+        required: true,
+        shouldExclude(fieldData) {
+          if (fieldData?.value) {
+            return false;
+          } else {
+            return true;
+          }
+        },
         GridProps: {
           xs: 12,
           md: 3,
@@ -434,8 +421,8 @@ export const chequebookEntryMetadata = {
       pageSizes: [10, 20, 30],
       defaultPageSize: 10,
       containerHeight: {
-        min: "31vh",
-        max: "31vh",
+        min: "38vh",
+        max: "38vh",
       },
       allowFilter: false,
       allowColumnHiding: false,
