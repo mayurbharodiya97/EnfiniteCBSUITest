@@ -5,10 +5,12 @@ import { attestation_detail_meta_data } from "../../metadata/individual/attestat
 import { CkycContext } from "../../../../CkycContext"
 import { useTranslation } from "react-i18next"
 import * as API from "../../../../api";
+import { AuthContext } from "pages_audit/auth";
 
 const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
+    const { authState } = useContext(AuthContext);
     const { t } = useTranslation();
     const AttestationDTLFormRef = useRef<any>("");
     const AttestationDTLSubmitHandler = (
@@ -16,36 +18,47 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         displayData,
         endSubmit,
         setFieldError,
-        actionFlag
+        actionFlag,
+        hasError
     ) => {
         setIsNextLoading(true)
-        // console.log("qweqweqwe", data)     
-        if(data) {
+        if(data && !hasError) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
             const commonData = {
                 IsNewRow: true,
-                COMP_CD: "",
-                BRANCH_CD: "",
-                REQ_FLAG: "",
-                REQ_CD: "",
-                SR_CD: ""
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                SR_CD: "3",
+                CONFIRMED: "N",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
             }
             let newData = state?.formDatactx
             newData["ATTESTATION_DTL"] = {...newData["ATTESTATION_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
+
+            // handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            
             // handleColTabChangectx(7)
 
             // setIsNextLoading(false)
             API.SaveEntry({
+                CUSTOMER_ID: state?.customerIDctx,
                 CUSTOMER_TYPE: state?.entityTypectx,
                 CATEGORY_CD: state?.categoryValuectx,
                 ACCT_TYPE: state?.accTypeValuectx,
+                KYC_NUMBER: state?.kycNoValuectx,
                 CONSTITUTION_TYPE: state?.constitutionValuectx,
                 IsNewRow: state?.isFreshEntryctx,
-                REQ_CD: state?.REQ_CD,
+                REQ_CD: state?.req_cd_ctx,
                 formData: state?.formDatactx
             })
-        }   
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
         endSubmit(true)
         setIsNextLoading(false)
     }
@@ -106,7 +119,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
-                        AttestationDTLFormRef.current.handleSubmit(e, "save")
+                        AttestationDTLFormRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save")}</Button>
             </Grid>

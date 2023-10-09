@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
+  kyc_legal_proof_of_add_meta_data,
   kyc_proof_of_address_meta_data,
   kyc_proof_of_identity_meta_data,
 } from "./metadata/individual/kycdetails";
@@ -20,6 +21,7 @@ import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { DocumentGridMetaData } from "./metadata/individual/personaldetails";
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "../../CkycContext";
+import { company_info_meta_data } from "./metadata/legal/legalcompanyinfo";
 
 const KYCDetails = ({
   isCustomerData,
@@ -73,6 +75,13 @@ const KYCDetails = ({
   const handlePoAExpand = () => {
     setIsPoAExpanded(!isPoAExpanded);
   };
+
+  const POIMetadata = state?.entityTypectx === "I" 
+    ? kyc_proof_of_identity_meta_data 
+    : company_info_meta_data
+  const POAMetadata = state?.entityTypectx === "I" 
+    ? kyc_proof_of_address_meta_data 
+    : kyc_legal_proof_of_add_meta_data
 
   const PoISubmitHandler = (
     data: any,
@@ -197,7 +206,7 @@ const KYCDetails = ({
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
                 key={"poi-form-kyc" + initialVal}
-                metaData={kyc_proof_of_identity_meta_data as MetaDataType}
+                metaData={POIMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
               />
@@ -246,7 +255,7 @@ const KYCDetails = ({
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
                 key={"poa-form-kyc" + initialVal}
-                metaData={kyc_proof_of_address_meta_data as MetaDataType}
+                metaData={POAMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
               />

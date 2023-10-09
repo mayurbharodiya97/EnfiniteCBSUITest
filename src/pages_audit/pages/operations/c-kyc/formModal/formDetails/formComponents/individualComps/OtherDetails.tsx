@@ -6,13 +6,15 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { CkycContext } from '../../../../CkycContext';
 import { useTranslation } from 'react-i18next';
+import { AuthContext } from "pages_audit/auth";
 
 
 const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+    const { authState } = useContext(AuthContext);
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
     const { t } = useTranslation();
     const OtherDTLFormRef = useRef<any>("")
     const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(true)
@@ -25,31 +27,52 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
         displayData,
         endSubmit,
         setFieldError,
-        actionFlag
+        actionFlag,
+        hasError
     ) => {
         setIsNextLoading(true)
-        console.log("qweqweqwe", data)     
-        if(data) {
+        if(data && !hasError) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
+            let resData = data;
+            if(Boolean(resData["POLITICALLY_CONNECTED"])) {
+                resData["POLITICALLY_CONNECTED"] = "Y"
+            } else {
+                resData["POLITICALLY_CONNECTED"] = "N"
+            }
+
+            if(Boolean(resData["BLINDNESS"])) {
+                resData["BLINDNESS"] = "Y"
+            } else {
+                resData["BLINDNESS"] = "N"
+            }
+
+            if(Boolean(resData["REFERRED_BY_STAFF"])) {
+                resData["REFERRED_BY_STAFF"] = "Y"
+            } else {
+                resData["REFERRED_BY_STAFF"] = "N"
+            }
 
             let newData = state?.formDatactx
             const commonData = {
                 IsNewRow: true,
-                COMP_CD: "",
-                BRANCH_CD: "",
-                REQ_FLAG: "",
-                REQ_CD: "",
-                SR_CD: ""
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                SR_CD: "3",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
             }
-            newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...data, ...commonData}
+            newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...resData, ...commonData}
             handleFormDataonSavectx(newData)
             // handleColTabChangectx(5)
-            // handleColTabChangectx(state?.colTabValuectx+1)
-
+            handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             // setIsNextLoading(false)
-        }   
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
         setIsNextLoading(false)
-        handleColTabChangectx(state?.colTabValuectx+1)
         endSubmit(true)
     }
     const initialVal = useMemo(() => {
@@ -106,10 +129,9 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
-                        OtherDTLFormRef.current.handleSubmit(e, "save")
+                        OtherDTLFormRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>

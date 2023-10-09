@@ -3,42 +3,49 @@ import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { nri_detail_meta_data } from "../../metadata/individual/nridetails"
 import { CkycContext } from "../../../../CkycContext"
+import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next"
 
 const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
     const { t } = useTranslation();
     const NRIDTLFormRef = useRef<any>("");
+    const { authState } = useContext(AuthContext);
+
     const NRIDTLSubmitHandler = (
         data: any,
         displayData,
         endSubmit,
         setFieldError,
-        actionFlag
+        actionFlag,
+        hasError
     ) => {
         setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
-        if(data) {
+        if(data && !hasError) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
             const commonData = {
                 IsNewRow: true,
-                COMP_CD: "",
-                BRANCH_CD: "",
-                REQ_FLAG: "",
-                REQ_CD: "",
-                SR_CD: ""
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                SR_CD: "3",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
             }
             let newData = state?.formDatactx
             newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             // handleColTabChangectx(7)
             handleColTabChangectx(state?.colTabValuectx+1)
-
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             // setIsNextLoading(false)
-        }   
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
         endSubmit(true)
-        handleColTabChangectx(state?.colTabValuectx+1)
         setIsNextLoading(false)
     }
     const initialVal = useMemo(() => {
@@ -97,7 +104,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
-                        NRIDTLFormRef.current.handleSubmit(e, "save")
+                        NRIDTLFormRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>
