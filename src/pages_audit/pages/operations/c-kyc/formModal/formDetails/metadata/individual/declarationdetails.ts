@@ -86,6 +86,13 @@ export const declaration_meta_data = {
         },
         name: "DATE_OF_COMMENCEMENT",
         label: "DateOfIncorporation",
+        required: true,
+        schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
         // placeholder: "",
         // type: "datePicker",
         GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -98,6 +105,13 @@ export const declaration_meta_data = {
           label: "PlaceOfIncorporation",
           placeholder: "",
           type: "text",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
       {
@@ -107,6 +121,13 @@ export const declaration_meta_data = {
           name: "TIN",
           label: "TIN",
           placeholder: "",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
@@ -118,6 +139,13 @@ export const declaration_meta_data = {
           label: "CountryOfIncorporation",
           options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
           _optionsKey: "CountriesOfIncorporation",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -131,6 +159,13 @@ export const declaration_meta_data = {
           name: "TIN_ISSUING_COUNTRY",
           label: "TINIssuingCountry",
           placeholder: "",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },

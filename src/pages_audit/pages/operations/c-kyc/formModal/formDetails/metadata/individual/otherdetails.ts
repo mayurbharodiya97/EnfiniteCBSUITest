@@ -130,7 +130,7 @@ export const other_details_meta_data = {
               componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "FUNDED",
+            name: "FUNDED_AMT",
             label: "Funded",
             placeholder: "",
             type: "text",
@@ -141,7 +141,7 @@ export const other_details_meta_data = {
               componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "NON_FUNDED",
+            name: "NON_FUNDED_AMT",
             label: "NonFunded",
             placeholder: "",
             type: "text",
@@ -152,7 +152,7 @@ export const other_details_meta_data = {
               componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "THRESHOLD_LIMIT",
+            name: "THRESHOLD_AMT",
             label: "ThresholdLimit",
             placeholder: "",
             type: "text",
@@ -207,6 +207,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "checkbox",
             },
+            defaultValue: true,
             name: "POLITICALLY_CONNECTED",
             label: "PoliticallyConnected",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -216,7 +217,7 @@ export const other_details_meta_data = {
                 componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "EARNING_MEMBER_COUNT",
+            name: "EARNING_MEMEBER",
             label: "EarningMembers",
             placeholder: "",
             type: "text",
@@ -226,7 +227,8 @@ export const other_details_meta_data = {
             render: {
                 componentType: "checkbox",
             },
-            name: "IS_BLIND",
+            defaultValue: true,
+            name: "BLINDNESS",
             label: "Blind",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
@@ -256,22 +258,46 @@ export const other_details_meta_data = {
                 componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "NO_OF_TWO_WHEELERS",
+            name: "NO_OF_2_WHEELERS",
             label: "TwoWheelers",
+            maxLength: 2,
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 2) {
+                    return false;
+                  }
+                //   if (values.floatValue === 0) {
+                //     return false;
+                //   }
+                  return true;
+                },
+              },
         },
         {
             render: {
                 componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "NO_OF_FOUR_WHEELERS",
+            name: "NO_OF_4_WHEELERS",
             label: "FourWheelers",
+            maxLength: 2,
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 2) {
+                    return false;
+                  }
+                //   if (values.floatValue === 0) {
+                //     return false;
+                //   }
+                  return true;
+                },
+              },
         },
         {
             render: {
@@ -297,7 +323,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "EMPLOYEMENT_STATUS",
+            name: "EMPLOYMENT_STATUS",
             label: "EmpStatus",
             options: () => API.getPMISCData("Emp_Status"),
             _optionsKey: "EmpStatus",
@@ -309,6 +335,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "checkbox",
             },
+            defaultValue: true,
             name: "REFERRED_BY_STAFF",
             label: "ReferredByStaff",            
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -317,7 +344,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "EDUCATION_QUALIFICATION",
+            name: "EDUCATION_CD",
             label: "EduQualification",
             options: (dependentValue, formState, _, authState) => API.getEduQualiOptions(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "eduQualiOptions",
@@ -329,7 +356,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "COMPANY_NAME",
+            name: "COMPANY_NM",
             label: "CompanyName",
             placeholder: "",
             type: "text",
@@ -360,7 +387,7 @@ export const other_details_meta_data = {
                 componentType: "datePicker",
             },
             // className: "textInputFromRight",
-            name: "JOINING_DATE",
+            name: "JOINING_DT",
             label: "JoiningDate",
             placeholder: "",
             type: "text",
@@ -371,7 +398,7 @@ export const other_details_meta_data = {
                 componentType: "datePicker",
             },
             // className: "textInputFromRight",
-            name: "RETIREMENT_DATE",
+            name: "RETIREMENT_DT",
             label: "RetirementDate",
             placeholder: "",
             type: "text",
@@ -382,7 +409,7 @@ export const other_details_meta_data = {
                 componentType: "autocomplete",
             },
             // className: "textInputFromRight",
-            name: "EMP.COMPANY_TYPE",
+            name: "EMP_COMPANY_TYPE",
             label: "EmpCompanyType",
             placeholder: "",
             type: "text",
@@ -395,7 +422,7 @@ export const other_details_meta_data = {
                 componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "WORK_EXPERIENCE_IN_YEAR",
+            name: "WORK_EXP",
             label: "WorkExperienceYear",
             placeholder: "",
             type: "text",
@@ -405,7 +432,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "SPECIALIZATION",
+            name: "SPECIALIZATION_REMARKS",
             label: "Specialization",
             placeholder: "",
             type: "text",

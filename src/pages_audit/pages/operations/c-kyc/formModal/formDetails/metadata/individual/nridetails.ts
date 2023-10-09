@@ -47,9 +47,10 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "Visa_Details",
+            name: "VISA_DETAIL",
             label: "VisaDetails",
             placeholder: "",
+            maxLength: 50,
             type: "text",
             required: true,
             schemaValidation: {
@@ -64,9 +65,10 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "Visa_Issue_By",
+            name: "VISA_ISSUE_BY",
             label: "VisaIssueBy",
             placeholder: "",
+            maxLength: 50,
             type: "text",
             required: true,
             schemaValidation: {
@@ -81,8 +83,9 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "datePicker",
             },
-            name: "Visa_Issue_Date",
+            name: "VISA_ISSUE_DT",
             label: "VisaIssueDate",
+            maxDate: new Date(),
             required: true,
             schemaValidation: {
                 type: "string",
@@ -99,9 +102,10 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "datePicker",
             },
-            name: "Visa_Expiry_Date",
+            name: "VISA_EXPIRY_DT",
             label: "VisaExpiryDate",
             required: true,
+            minDate: new Date(),
             schemaValidation: {
               type: "string",
               rules: [
@@ -117,7 +121,7 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "Domestic_Risk",
+            name: "DOMESTIC_RISK",
             label: "DomesticRisk",
             options: () => API.getPMISCData("DOMESTIC_RISK"),
             _optionsKey: "DomesticRiskTypes",
@@ -136,7 +140,7 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "Country_Of_Risk",
+            name: "COUNTRY_OF_RISK",
             label: "CountryOfRisk",
             options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "CountryRiskTypes",
@@ -155,7 +159,7 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "Cross_Border_Risk",
+            name: "CROSS_BORDER_RISK",
             label: "CrossBorderRisk",
             options: () => API.getPMISCData("CROSS_BORDER"),
             _optionsKey: "CrossBorderRiskTypes",
@@ -174,7 +178,7 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "Visually_Impaired",
+            name: "VISUALLY_IMPAIRED",
             label: "VisuallyImpaired",
             placeholder: "",
             type: "text",
@@ -209,7 +213,7 @@ export const nri_detail_meta_data = {
                 {label: "YES", value: "Y"},
                 {label: "NO", value: "N"}
             ],
-            name: "Customer_Evaluation_Required",
+            name: "CUSTOMER_EVALUATION_FLAG",
             label: "CustomerEvaluationRequired",
             required: true,
             schemaValidation: {
@@ -228,7 +232,7 @@ export const nri_detail_meta_data = {
             },
             options: (dependentValue, formState, _, authState) => API.getRelationshipManagerOptions(authState?.companyID),          
             _optionsKey: "RelManager",  
-            name: "Relationship_Manager",
+            name: "RELATIONSHIP_MANAGER",
             label: "RelationshipManager",
             placeholder: "",
             type: "text",

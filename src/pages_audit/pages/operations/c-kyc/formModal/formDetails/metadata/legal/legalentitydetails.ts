@@ -53,6 +53,12 @@ export const entity_detail_legal_meta_data = {
             name: "SURNAME",
             label: "Entity Name",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // placeholder: "Prefix",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -75,9 +81,15 @@ export const entity_detail_legal_meta_data = {
             },
             name: "TRADE_CD",
             label: "Occupation",
-            required: true,
             options: (dependentValue, formState, _, authState) => API.getOccupationDTL(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "occupationOpdtl",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // placeholder: "First Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -138,9 +150,16 @@ export const entity_detail_legal_meta_data = {
             name: "EXPLICIT_TDS",
             label: "Explicit TDS",
             options: [
-                {label: "YES", value: "YES"},
-                {label: "NO", value: "NO"},
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"},
             ],
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},

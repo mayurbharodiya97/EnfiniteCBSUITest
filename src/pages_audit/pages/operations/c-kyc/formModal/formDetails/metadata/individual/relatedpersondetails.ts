@@ -96,12 +96,19 @@ export const related_person_detail_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "numberFormat",
             },
             name: "REF_CUST_ID",
             label: "RefCustID",
             placeholder: "First Name",
             type: "text",
+            reqired: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             // dependentFields: ["DAILY_AMT"],
         },
@@ -145,7 +152,7 @@ export const related_person_detail_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "numberFormat",
             },
             name: "CKYC_NO",
             label: "CkycNo",
@@ -202,6 +209,7 @@ export const related_person_detail_data = {
             },
             name: "DRIVING_LIC_EXP_DT",
             label: "DrivingLicExpDt",
+            minDate: new Date(),
             // required: true,
             // placeholder: "",
             // type: "datePicker",
@@ -233,6 +241,7 @@ export const related_person_detail_data = {
             },
             name: "PASSPORT_EXP_DT",
             label: "PassportExpDt",
+            minDate: new Date(),
             // required: true,
             // placeholder: "",
             // type: "datePicker",
