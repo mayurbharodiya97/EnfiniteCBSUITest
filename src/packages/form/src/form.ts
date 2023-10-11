@@ -489,7 +489,7 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
                   if (fieldValue instanceof Date) {
                     fieldValue = formatDate(
                       fieldValue,
-                      "dd-MMM-yyyy HH:mm:ss"
+                      "dd-MMM-yyyy"
                       // "iii LLL dd yyyy HH:mm:ss xxxx"
                     );
                   }
