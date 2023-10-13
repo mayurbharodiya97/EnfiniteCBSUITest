@@ -8,6 +8,7 @@ import { DetailMastersData } from "../../../components/formcomponent/detailMaste
 
 const ChequeBookEntryForm = lazy(() => import("./chequeBook"));
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
+const LimitEntry = lazy(() => import("./limit-entry"));
 const Ckyc = lazy(() => import("./c-kyc"));
 // const DetailMastersData = lazy(() => import("../components/formcomponent/detailMaster/detailStatic"));
 
@@ -15,6 +16,7 @@ export const OperationsMenu = () => (
   <Routes>
     {/* <Route path="chequebook-entry/*" element={<ChequeBookEntryForm />} /> */}
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
+    <Route path="limit-entry/*" element={<LimitEntry />} />
     {/* <Route
       path="chequebook-entry/*"
       element={<DetailMastersData screenFlag="GETCHEQUEBOOK" />}

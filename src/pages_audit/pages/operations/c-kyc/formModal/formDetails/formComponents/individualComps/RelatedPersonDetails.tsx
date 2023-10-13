@@ -41,7 +41,7 @@ const myGridRef = useRef<any>(null);
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
                 REQ_CD: state?.req_cd_ctx,
-                SR_CD: "3",
+                // SR_CD: "3",
                 CONFIRMED: "N",
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -59,13 +59,65 @@ const myGridRef = useRef<any>(null);
         setIsNextLoading(false)
         endSubmit(true)
     }
+    const RelPersonSubmitHandler2 = (
+        data: any,
+        displayData,
+        endSubmit,
+        setFieldError,
+        actionFlag,
+        hasError
+    ) => {
+        setIsNextLoading(true)
+        console.log("qweqweqwe", data)     
+        if(data && !hasError) {
+            let newData = state?.formDatactx
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                // SR_CD: "3",
+                CONFIRMED: "N",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                ACTIVE: "Y"
+            }
+
+            let newFormatRelPerDtl = data?.RELETED_PERSON_DTL.map((el, i) => {
+                return {...el, ...commonData, SR_CD: i+1}
+            })
+
+            // newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
+            newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
+            handleFormDataonSavectx(newData)
+            // handleColTabChangectx(4)
+            handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            // setIsNextLoading(false)
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
+        setIsNextLoading(false)
+        endSubmit(true)
+    }
+
+    // const initialVal = useMemo(() => {
+    //     return state?.isFreshEntryctx
+    //             ? state?.formDatactx["RELATED_PERSON_DTL"]
+    //                 ? state?.formDatactx["RELATED_PERSON_DTL"]
+    //                 : {}
+    //             : state?.retrieveFormDataApiRes
+    //                 ? state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]
+    //                 : {}
+    // }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
     const initialVal = useMemo(() => {
         return state?.isFreshEntryctx
                 ? state?.formDatactx["RELATED_PERSON_DTL"]
-                    ? state?.formDatactx["RELATED_PERSON_DTL"]
+                    ? {RELATED_PERSON_DTL: state?.formDatactx["RELATED_PERSON_DTL"]}
                     : {}
                 : state?.retrieveFormDataApiRes
-                    ? state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]
+                    ? {RELATED_PERSON_DTL: state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]}
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
@@ -96,7 +148,7 @@ const myGridRef = useRef<any>(null);
                     <Grid item>
                         <FormWrapper 
                             ref={RelPersonFormRef}
-                            onSubmitHandler={RelPersonSubmitHandler}
+                            onSubmitHandler={RelPersonSubmitHandler2}
                             // initialValues={state?.formDatactx["RELATED_PERSON_DTL"] ?? {}}
                             initialValues={initialVal}
                             key={"new-form-in-kyc"}

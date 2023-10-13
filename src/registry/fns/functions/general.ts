@@ -263,12 +263,20 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
+      console.log("<<<dare", responseData);
+      const newObject = {
+        DOC_CD: "DEFAULT",
+        USER_DEFINE_CD: "DEFAULT",
+      };
+      responseData = [...responseData, newObject];
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
           ({ DOC_TITLE, DOC_CD, USER_DEFINE_CD }) => {
             return {
               value: DOC_CD,
-              label: DOC_TITLE + " - " + USER_DEFINE_CD,
+              label: DOC_TITLE
+                ? USER_DEFINE_CD + " - " + DOC_TITLE
+                : USER_DEFINE_CD,
             };
           }
         );

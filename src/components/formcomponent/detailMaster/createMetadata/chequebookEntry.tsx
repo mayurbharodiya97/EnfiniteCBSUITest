@@ -166,7 +166,6 @@ export const chequebookEntryMetadata = {
           ___,
           dependentFieldsValues
         ) => {
-          console.log("<<<postvalue", field, __, ___, dependentFieldsValues);
           if (field.value) {
             let postdata = await GetdetailData({
               reportID: "GETLANGMSGDTL",
