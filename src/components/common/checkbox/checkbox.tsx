@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { Merge } from "../types";
@@ -93,6 +93,15 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
       }
     }
   }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+  // changes for bhavyata value is gone in array
+  const handelChange = useCallback(
+    (event) => {
+      const { value } = event.target;
+      event.target["value"] = typeof value === "boolean" ? value : "";
+      handleChange(event);
+    },
+    [handleChange]
+  );
 
   if (excluded) {
     return null;
@@ -124,7 +133,7 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
             tabIndex={readOnly ? -1 : undefined}
           />
         }
-        onChange={handleChange}
+        onChange={handelChange}
         label={label}
         checked={Boolean(value)}
       />

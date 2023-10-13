@@ -4,15 +4,6 @@ import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import {GridMetaDataType} from "../../../../../../../../components/dataTableStatic/types"
 import { GridWrapper } from 'components/dataTableStatic/gridWrapper'
-import { 
-    entity_detail_meta_data,
-    personal_detail_father_data, 
-    personal_detail_maiden_data, 
-    personal_detail_mother_data, 
-    personal_detail_prefix_data, 
-    personal_document_details_data, 
-    personal_other_detail_meta_data
-} from '../../metadata/individual/personaldetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
@@ -28,15 +19,9 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
   const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
-  const [isOtherPDExpanded, setIsOtherPDExpanded] = useState(true)
-  const [isEDExpanded, setIsEDExpanded] = useState(false)
   const handlePDExpand = () => {
     setIsPDExpanded(!isPDExpanded)
   }
-  const handleOtherPDExpand = () => {
-    setIsOtherPDExpanded(!isOtherPDExpanded)
-  }
-const myGridRef = useRef<any>(null);
 
     // useEffect(() => {
     //     console.log("... personal details", isCustomerData)
@@ -66,37 +51,13 @@ const myGridRef = useRef<any>(null);
             }
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleStepStatusctx({status: "", coltabvalue: state?.colTabValuectx})
+            handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             PODFormRef.current.handleSubmitError(NextBtnRef.current, "save")
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
         }
-        setIsNextLoading(false)
-        endSubmit(true)
-    }
-    const onSubmitPODHandler = (
-        data: any,
-        displayData,
-        endSubmit,
-        setFieldError,
-        actionFlag,
-        hasError
-    ) => {
-        setIsNextLoading(true)
-        // console.log("qweqweqwe", data)
-        // if(Boolean(data["BIRTH_DT"])) {
-        //     data["BIRTH_DT"] = format(new Date(data["BIRTH_DT"]), "dd-MMM-yyyy")
-        // }     
-        if(data && !hasError) {
-            let newData = state?.formDatactx
-            newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
-            handleFormDataonSavectx(newData)
-            // handleColTabChangectx(1)
-            handleColTabChangectx(state?.colTabValuectx+1)
-            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-            // setIsNextLoading(false)
-        } else handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
         setIsNextLoading(false)
         endSubmit(true)
     }

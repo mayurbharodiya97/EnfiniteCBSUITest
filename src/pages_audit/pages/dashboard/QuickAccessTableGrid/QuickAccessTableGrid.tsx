@@ -140,11 +140,12 @@ const QuickAccessTableGrid = () => {
   };
 
   const creAmForCashReceipt = 10000;
+  const trx: any = "4";
 
   const propData = [
     {
-      label: "Receipt",
-      value: "1",
+      label: "Payment",
+      value: "4",
       textField: "N",
     },
     {
@@ -327,6 +328,7 @@ const QuickAccessTableGrid = () => {
           open={testA}
           handleCloseDialog={handleCloseDialog}
           props={propData}
+          trx={trx}
         />
       )}
     </>

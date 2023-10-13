@@ -468,12 +468,32 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETFINANCIALDETAIL",
     packageName: "",
   },
+  GETCUSTRATELIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTRATELIST",
+    packageName: "",
+  },
+  GETCUSTDOCUMENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTDOCUMENT",
+    packageName: "",
+  },
   GETLIMITENTRY: {
     url: "/accountServiceAPI/GETLIMITENTRY",
     packageName: "",
   },
   DOCHEQUEBKISSUE: {
     url: "/accountServiceAPI/DOCHEQUEBKISSUE",
+    packageName: "",
+  },
+  GETDYNAPILIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDYNAPILIST",
+    packageName: "",
+  },
+  GETFORMMETALIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORMMETALIST",
+    packageName: "",
+  },
+  GETTBGGRIDPARADATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGGRIDPARADATA",
     packageName: "",
   },
   GETDYNAPILIST: {

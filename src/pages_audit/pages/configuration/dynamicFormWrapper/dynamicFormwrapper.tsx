@@ -110,32 +110,27 @@ const DynamicForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
-    // data["ALT_EXPIRY_DATE"] = format(
-    //   new Date(data["ALT_EXPIRY_DATE"]),
-    //   "dd/MMM/yyyy"
-    // );
-    if (data) {
-      const booleanValue = data;
+    // if (data) {
+    //   const booleanValue = data;
 
-      for (const key in booleanValue) {
-        if (booleanValue.hasOwnProperty(key)) {
-          // Check if the value is a string "true" or "false" and convert it to a boolean
-          if (typeof booleanValue[key] === "string") {
-            if (booleanValue[key].toLowerCase() === "true") {
-              booleanValue[key] = true;
-            } else if (booleanValue[key].toLowerCase() === "false") {
-              booleanValue[key] = false;
-            }
-          }
+    //   for (const key in booleanValue) {
+    //     if (booleanValue.hasOwnProperty(key)) {
+    //       // Check if the value is a string "true" or "false" and convert it to a boolean
+    //       if (typeof booleanValue[key] === "string") {
+    //         if (booleanValue[key].toLowerCase() === "true") {
+    //           booleanValue[key] = true;
+    //         } else if (booleanValue[key].toLowerCase() === "false") {
+    //           booleanValue[key] = false;
+    //         }
+    //       }
 
-          // Convert boolean values to "Y" or "N"
-          if (typeof booleanValue[key] === "boolean") {
-            booleanValue[key] = booleanValue[key] ? "Y" : "N";
-          }
-        }
-      }
-    }
-
+    //       // Convert boolean values to "Y" or "N"
+    //       // if (typeof booleanValue[key] === "boolean") {
+    //       //   booleanValue[key] = booleanValue[key] ? "Y" : "N";
+    //       // }
+    //     }
+    //   }
+    // }
     // if (data) {
     //   const booleanValue = data;
 
@@ -149,7 +144,7 @@ const DynamicForm: FC<{
     //   }
     //   console.log("oldRowValue", booleanValue);
     // }
-
+    console.log("????data", data, displayData);
     let upd = utilFunction.transformDetailsData(
       data,
       gridData?.data?.[0] ?? {}
@@ -170,7 +165,7 @@ const DynamicForm: FC<{
       endSubmit,
       setFieldError,
     };
-    // console.log("isErrorFuncRef.current ", isErrorFuncRef.current);
+    console.log("isErrorFuncRef.current ", isErrorFuncRef.current);
     setIsOpenSave(true);
   };
 
@@ -230,7 +225,7 @@ const DynamicForm: FC<{
           {isOpenSave ? (
             <PopupMessageAPIWrapper
               MessageTitle="Confirmation"
-              Message={alertMessage}
+              Message={alertMessage || "Do you want to save this Request?"}
               onActionYes={(rowVal) => onPopupYes(rowVal)}
               onActionNo={() => onActionCancel()}
               rows={isErrorFuncRef.current?.data}

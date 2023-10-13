@@ -39,7 +39,7 @@ import CreditCardDTLComp from "./CreditCardDTLComp";
 import AssetDTLComp from "./AssetDTLComp";
 import FinancialDTLComp from "./FinancialDTLComp";
 
-export const CustomTabs = styled(StyledTabs)(({orientation, theme}) => ({
+export const CustomTabs:any = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
   boxShadow: "unset !important",
   background: "unset !important",

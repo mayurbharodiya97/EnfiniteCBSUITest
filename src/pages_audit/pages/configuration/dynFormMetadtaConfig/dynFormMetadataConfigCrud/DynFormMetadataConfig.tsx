@@ -3,7 +3,7 @@ import { useSnackbar } from "notistack";
 import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
@@ -44,7 +44,8 @@ const DynamicFormMetadataConfig: FC<{
   const [girdData, setGridData] = useState<any>([]);
   const [populateClicked, setPopulateClicked] = useState(false);
   const [isFieldComponentGrid, setFieldComponentGrid] = useState(false);
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -56,6 +57,19 @@ const DynamicFormMetadataConfig: FC<{
       srcd: fieldRowData?.[0]?.data?.SR_CD ?? "",
     })
   );
+  useEffect(() => {
+    if (
+      location.pathname ===
+      "/cbsenfinity/configuration/dynamic-form-metadata/view-details"
+    ) {
+      if (!fieldRowData?.[0]?.data?.DOC_CD ?? "") {
+        // If docCD is not available in the API response, navigate to the desired route
+        navigate("/cbsenfinity/configuration/dynamic-form-metadata");
+      }
+    } else {
+      navigate(location.pathname);
+    }
+  }, [navigate, location.pathname, fieldRowData?.[0]?.data?.DOC_CD ?? ""]);
 
   const mutation: any = useMutation(API.getDynFormPopulateData);
   const result = useMutation(API.dynamiFormMetadataConfigDML, {
@@ -373,6 +387,7 @@ const DynamicFormMetadataConfig: FC<{
                 setFieldComponentGrid(false);
               }}
               reqDataRef={mysubdtlRef}
+              formView={formMode}
             />
           ) : null}
         </>

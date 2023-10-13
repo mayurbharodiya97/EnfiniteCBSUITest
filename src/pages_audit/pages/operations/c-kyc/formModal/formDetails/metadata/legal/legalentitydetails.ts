@@ -1,3 +1,5 @@
+import * as API from "../../../../api";
+
 export const entity_detail_legal_meta_data = {
     form: {
         name: "personal_detail_prefix_details_form",
@@ -48,7 +50,7 @@ export const entity_detail_legal_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "LAST_NM",
+            name: "SURNAME",
             label: "Entity Name",
             required: true,
             // placeholder: "Prefix",
@@ -69,11 +71,13 @@ export const entity_detail_legal_meta_data = {
         // },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "TRADE_CD",
             label: "Occupation",
             required: true,
+            options: (dependentValue, formState, _, authState) => API.getOccupationDTL(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "occupationOpdtl",
             // placeholder: "First Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -81,30 +85,36 @@ export const entity_detail_legal_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "SUB_CUST_TYPE",
             label: "Sub Customer Type",
+            options: () => API.getPMISCData("SUB_CUST_TYPE"),
+            _optionsKey: "getSubCustTypeOpdtl",
             // placeholder: "Middle Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "GROUP_CD",
             label: "Group",
+            options: (dependentValue, formState, _, authState) => API.getCustomerGroupOptions(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "GroupOptionsdtl",
             // placeholder: "Last Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "RATE_CD",
             label: "Rating",
+            options: (dependentValue, formState, _, authState) => API.getRatingOpDTL(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "ratingOpdtl",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -116,6 +126,7 @@ export const entity_detail_legal_meta_data = {
             name: "BIRTH_DT",
             label: "Inception Date",
             placeholder: "",
+            maxDate: new Date(),
             format: "dd/MM/yyyy",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -152,6 +163,7 @@ export const entity_detail_legal_meta_data = {
             label: "KYC Revised Dt.",
             placeholder: "",
             format: "dd/MM/yyyy",
+            maxDate: new Date(),
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
@@ -161,10 +173,8 @@ export const entity_detail_legal_meta_data = {
             },
             name: "RISK_CATEG",
             label: "Risk Category",
-            options: [
-                {label: "Option1", value: "Option1"},
-                {label: "Option2", value: "Option2"},
-            ],
+            options: () => API.getPMISCData("CKYC_RISK_CATEG"),
+            _optionsKey: "kycRiskCategOpdtl",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -175,20 +185,20 @@ export const entity_detail_legal_meta_data = {
             },
             name: "NATIONALITY",
             label: "Registered in Country",
-            options: [
-                {label: "Option1", value: "Option1"},
-                {label: "Option2", value: "Option2"},
-            ],
+            options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "countryOptionsdtl",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "RESIDENCE_STATUS",
             label: "Resi. Status",
+            options: () => API.getPMISCData("RESIDE_STATUS"),
+            _optionsKey: "ResisdenceStatusdtl",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -215,10 +225,12 @@ export const entity_detail_legal_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "select",
             },
             name: "TIN_ISSUING_COUNTRY",
-            label: "TIN",
+            label: "TIN issuing Country",
+            options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
+            _optionsKey: "TINIssuingCountriesdtl",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -251,8 +263,8 @@ export const entity_detail_legal_meta_data = {
             name: "PARENT_COMPANY",
             label: "Parent Company",
             options: [
-                {label: "Option1", value: "Option1"},
-                {label: "Option2", value: "Option2"},
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"},
             ],
             placeholder: "",
             type: "text",

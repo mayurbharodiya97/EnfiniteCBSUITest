@@ -1,11 +1,57 @@
 import { AuthSDK } from "registry/fns/auth";
 import { DefaultErrorObject } from "components/utils";
 
-export const getDynMetadataGridConfigData = async ({ COMP_CD, BRANCH_CD }) => {
+// export const getDynMetadataGridConfigData = async ({ COMP_CD, BRANCH_CD }) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher("GETTBGFROMCONFIGDATA", {
+//       COMP_CD: COMP_CD,
+//       BRANCH_CD: BRANCH_CD,
+//     });
+//   if (status === "0") {
+//     // return data;
+//     return data.map((item) => {
+//       return {
+//         ...item,
+//         RESETFIELDONUNMOUNT: item.RESETFIELDONUNMOUNT === "Y" ? true : false,
+//       };
+//     });
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// };
+export const getDynmetaListData = async ({ COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFORMMETALIST", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DOC_CD, ...other }) => {
+        return {
+          value: DOC_CD,
+          label: DOC_CD,
+          ...other,
+        };
+      });
+    }
+    return responseData;
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getDynMetadataGridConfigData = async ({
+  COMP_CD,
+  BRANCH_CD,
+  DOC_CD,
+}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETTBGFROMCONFIGDATA", {
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
+      DOC_CD: DOC_CD,
     });
   if (status === "0") {
     // return data;
