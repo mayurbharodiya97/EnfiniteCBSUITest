@@ -240,7 +240,6 @@ const DynamicGridConfig: FC<{
       actionFlag,
     }) => {
       let data = clone(datares);
-
       //@ts-ignore
       endSubmit(true);
 

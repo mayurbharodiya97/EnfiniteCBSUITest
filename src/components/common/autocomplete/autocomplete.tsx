@@ -278,6 +278,20 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               >)
             : undefined
         }
+        PaperComponent={({ children }) => {
+          return (
+            <div
+              style={{
+                width: "fit-content",
+                background: "white",
+                boxShadow:
+                  "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+              }}
+            >
+              {children}
+            </div>
+          );
+        }}
         onChange={(_, value) => {
           //condition for freeSolo functionality with multiple values
           if (!Array.isArray(value)) {
@@ -360,6 +374,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   </Fragment>
                 ),
               }}
+              inputRef={focusRef}
               // InputProps={{
               //   ...params.InputProps,
               //   endAdornment:

@@ -9,6 +9,7 @@ const CommonMSTConfig = lazy(() => import("./ComonMSTConfig"));
 const LangWiseMessageConfig = lazy(
   () => import("./LangWiseMessageConfig/index")
 );
+const GetApiConfig = lazy(() => import("./getApiConfig"));
 
 export const Configuration = () => (
   <Routes>
@@ -16,6 +17,7 @@ export const Configuration = () => (
     <Route path="dynamic-form-metadata/*" element={<DynFormMetadataConfig />} />
     <Route path="langWise-msg-config/*" element={<LangWiseMessageConfig />} />
     <Route path="misc-mst-config/*" element={<CommonMSTConfig />} />
+    <Route path="get-api-config/*" element={<GetApiConfig />} />
     {/* <Route
       path="misc-mst-config/*"
       element={<StaticAdminUserReports screenFlag="GETPROPMISCDATA" />}

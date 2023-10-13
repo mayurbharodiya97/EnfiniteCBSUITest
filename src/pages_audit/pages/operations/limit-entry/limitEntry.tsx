@@ -1,32 +1,20 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  LinearProgress,
-  Tab,
-  Tabs,
-} from "@mui/material";
+import { Box, Container, Grid, LinearProgress, Tab, Tabs } from "@mui/material";
 import React, { useContext, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
-import { ChequeBookEntryMetaData } from "./chequebookEntryMetadata";
-import { ChequebookDtlGridMetaData } from "./chequebookDetailMetadata";
-import { SubmitFnType } from "packages/form";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
-import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "components/utils";
+import { GetdetailData } from "../chequeBookTab/chequebookTab";
+import { limitEntryMetaData } from "./limitEntryMetadata";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { Alert } from "components/common/alert";
-import { saveChequebookData } from "./api";
-
-export const ChequebookTab = () => {
+import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
+import { SubmitFnType } from "packages/form";
+export const LimitEntry = () => {
   const [value, setValue] = useState("chequebookEntry");
   const myMasterRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  console.log("<<<cdcd", authState);
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -35,13 +23,9 @@ export const ChequebookTab = () => {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
-
-  const saveChequeData: any = useMutation(saveChequebookData, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
-  });
-
+  console.log("<<<mutation", mutation);
   const ClickEventManage = () => {
+    console.log("<<<click");
     let event: any = { preventDefault: () => {} };
     myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
   };
@@ -49,14 +33,14 @@ export const ChequebookTab = () => {
     data: any,
     displayData,
     endSubmit,
-    setFieldError,
-    value
+    setFieldError
   ) => {
+    console.log("<<<onSubmit", data);
     //@ts-ignore
     endSubmit(true);
-    ChequeBookEntryMetaData.form.label = " ";
-    let ApiKey: any = ChequeBookEntryMetaData?.form?.apiKey;
-    let apiID: any = ChequeBookEntryMetaData?.form?.apiID;
+    limitEntryMetaData.form.label = " ";
+    let ApiKey: any = limitEntryMetaData?.form?.apiKey;
+    let apiID: any = limitEntryMetaData?.form?.apiID;
     let response = {};
     for (const key in ApiKey) {
       if (ApiKey.hasOwnProperty(key)) {
@@ -64,31 +48,23 @@ export const ChequebookTab = () => {
         response[key] = data[mappedKey];
       }
     }
+
     let otherAPIRequestPara = {
       COMP_CD: authState?.companyID,
       ...response,
       ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
     };
-    if (value === "BUTTON_CLICK") {
-      mutation.mutate({ apiID, otherAPIRequestPara });
-      ChequeBookEntryMetaData.fields[3].isFieldFocused = true;
-      ChequeBookEntryMetaData.form.label =
-        "Cheque Book Issue " +
-        " " +
-        authState?.companyID +
-        data?.BRANCH_CD +
-        data?.ACCT_TYPE +
-        data?.ACCT_CD;
-      // .replace(data?.BRANCH_CD, data?.BRANCH_CD);
-    } else {
-      //@ts-ignore
-      endSubmit(true);
-      saveChequeData.mutate({ otherAPIRequestPara });
-      console.log("<<<nowww");
-    }
+    mutation.mutate({ apiID, otherAPIRequestPara });
+    limitEntryMetaData.fields[3].isFieldFocused = true;
+    limitEntryMetaData.form.label =
+      "Cheque Book Issue " +
+      " " +
+      authState?.companyID +
+      data?.BRANCH_CD +
+      data?.ACCT_TYPE +
+      data?.ACCT_CD;
+    // .replace(data?.BRANCH_CD, data?.BRANCH_CD);
   };
-  ChequeBookEntryMetaData.form.label = ChequeBookEntryMetaData.form.label;
-
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -99,8 +75,8 @@ export const ChequebookTab = () => {
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
-          <Tab value="chequebookEntry" label="Chequebook Entry" />
-          <Tab value="chequebookDetail" label="Chequebook Detail" />
+          <Tab value="chequebookEntry" label="Limit Entry" />
+          <Tab value="chequebookDetail" label="Limit Detail" />
           <Tab value="three" label="Item Three" />
         </Tabs>
       </Box>
@@ -115,28 +91,28 @@ export const ChequebookTab = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {mutation?.isError ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={mutation?.error?.error_msg ?? "Unknow Error"}
-                  errorDetail={mutation?.error?.error_detail ?? ""}
-                  color="error"
-                />
-              </AppBar>
-            </div>
-          ) : mutation?.data?.length < 1 && Boolean(mutation?.isSuccess) ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  errorMsg="No data found"
-                  errorDetail="No any data found"
-                  severity="error"
-                />
-              </AppBar>
-            </div>
-          ) : null}
+          {/* {mutation?.isError ? (
+        <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+          <AppBar position="relative" color="primary">
+            <Alert
+              severity="error"
+              errorMsg={mutation?.error?.error_msg ?? "Unknow Error"}
+              errorDetail={mutation?.error?.error_detail ?? ""}
+              color="error"
+            />
+          </AppBar>
+        </div>
+      ) : mutation?.data?.length < 1 && Boolean(mutation?.isSuccess) ? (
+        <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+          <AppBar position="relative" color="primary">
+            <Alert
+              errorMsg="No data found"
+              errorDetail="No any data found"
+              severity="error"
+            />
+          </AppBar>
+        </div>
+      ) : null} */}
           {value === "chequebookEntry" ? (
             <div
               onKeyDown={(e) => {
@@ -144,7 +120,7 @@ export const ChequebookTab = () => {
                   let target: any = e?.target;
                   if (
                     (target?.name ?? "") ===
-                    ChequeBookEntryMetaData.form.name + "/ACCT_CD"
+                    limitEntryMetaData.form.name + "/ACCT_CD"
                   ) {
                     ClickEventManage();
                   }
@@ -163,7 +139,7 @@ export const ChequebookTab = () => {
                     ? mutation?.data
                     : ""
                 }
-                metaData={ChequeBookEntryMetaData as MetaDataType}
+                metaData={limitEntryMetaData as MetaDataType}
                 initialValues={mutation?.data?.[0] ?? []}
                 onSubmitHandler={onSubmitHandler}
                 // displayMode={"view"}
@@ -177,28 +153,13 @@ export const ChequebookTab = () => {
                 // }}
                 hideHeader={false}
                 ref={myMasterRef}
-              >
-                {({ isSubmitting, handleSubmit }) => (
-                  <>
-                    <Button
-                      onClick={(event) => {
-                        handleSubmit(event, "Save");
-                      }}
-                      disabled={isSubmitting}
-                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                      color={"primary"}
-                    >
-                      Save
-                    </Button>
-                  </>
-                )}
-              </FormWrapper>
+              />
             </div>
           ) : value === "chequebookDetail" ? (
             <>
               <GridWrapper
                 key={`personalizeQuickView`}
-                finalMetaData={ChequebookDtlGridMetaData as GridMetaDataType}
+                finalMetaData={limitEntryGridMetaData as GridMetaDataType}
                 data={mutation.data ?? []}
                 setData={() => {}}
                 // loading={saveQuickData.isLoading}
@@ -218,15 +179,4 @@ export const ChequebookTab = () => {
       </Container>
     </>
   );
-};
-export const GetdetailData = async ({ apiID, otherAPIRequestPara }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(apiID, {
-      ...otherAPIRequestPara,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
 };
