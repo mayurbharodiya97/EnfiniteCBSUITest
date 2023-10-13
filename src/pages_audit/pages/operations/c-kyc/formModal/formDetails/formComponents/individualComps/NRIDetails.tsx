@@ -31,7 +31,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
                 REQ_CD: state?.req_cd_ctx,
-                SR_CD: "3",
+                // SR_CD: "3",
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
             }

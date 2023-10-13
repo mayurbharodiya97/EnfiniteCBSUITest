@@ -39,7 +39,7 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
         setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
         let newData = state?.formDatactx
-        newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
+        newData["CONTROLLING_PERSON_DETAIL"] = {...newData["CONTROLLING_PERSON_DETAIL"], ...data}
         handleFormDataonSavectx(newData)
         // handleColTabChangectx(3)
         // handleColTabChangectx(state?.colTabValuectx+1)
@@ -49,6 +49,7 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
             CUSTOMER_TYPE: state?.entityTypectx,
             CATEGORY_CD: state?.categoryValuectx,
             ACCT_TYPE: state?.accTypeValuectx,
+            KYC_NUMBER: state?.kycNoValuectx,
             CONSTITUTION_TYPE: state?.constitutionValuectx,
             IsNewRow: state?.isFreshEntryctx,
             PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL
@@ -66,11 +67,11 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
 const myGridRef = useRef<any>(null);
     const initialVal = useMemo(() => {
         return state?.isFreshEntryctx
-                ? state?.formDatactx["PERSONAL_DETAIL"]
-                    ? state?.formDatactx["PERSONAL_DETAIL"]
+                ? state?.formDatactx["CONTROLLING_PERSON_DETAIL"]
+                    ? state?.formDatactx["CONTROLLING_PERSON_DETAIL"]
                     : {}
                 : state?.retrieveFormDataApiRes
-                    ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
+                    ? state?.retrieveFormDataApiRes["CONTROLLING_PERSON_DETAIL"]
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
@@ -97,7 +98,6 @@ const myGridRef = useRef<any>(null);
                 </Grid>
 
                 <Collapse in={isDeclarationExpanded}>
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>{t("FATCACRSDetails")}</Divider>
                 <Grid item>
                     <FormWrapper 
                         ref={DeclarationFormRef}
