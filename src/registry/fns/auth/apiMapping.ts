@@ -492,6 +492,19 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDYNAPILIST",
     packageName: "",
   },
+
+  GETDROPDOWNCONFIG: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDROPDOWNCONFIG",
+    packageName: "",
+  },
+  GETDDLBSOURCELIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDLBSOURCELIST",
+    packageName: "",
+  },
+  DODROPDOWNDML: {
+    url: "/commonMasterServiceAPI/DODROPDOWNDML",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

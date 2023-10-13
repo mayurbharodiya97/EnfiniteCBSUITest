@@ -122,6 +122,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     textOverflow: "ellipsis",
     color: "var(--theme-color6)",
     marginLeft: "15px",
+    whiteSpace: "break-spaces",
     "& span": {
       fontWeight: 500,
     },

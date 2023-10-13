@@ -360,10 +360,7 @@ const DynamicGridConfig: FC<{
       } else {
         data["SQL_ANSI_SYNTAX"] = myoldSqlSyntaxRef.current;
       }
-      console.log(
-        "???data",
-        data.PARAMETER.DETAILS_DATA["isUpdatedRow"].length
-      );
+
       if (
         data["_UPDATEDCOLUMNS"].length === 0 &&
         data.DETAILS_DATA["isUpdatedRow"].length === 0 &&

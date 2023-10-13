@@ -41,60 +41,50 @@ export const DynamicDropdownConfig = () => {
     },
     [navigate]
   );
-  // const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-  //   any,
-  //   any
-  // >(["getDynamicGridConfigGridData"], () =>
-  //   API.getDynamicGridConfigGridData({
-  //     COMP_CD: authState?.companyID ?? "",
-  //     BRANCH_CD: authState?.user?.branchCode ?? "",
-  //   })
-  // );
-  // useEffect(() => {
-  //   return () => {
-  //     let entries = getEntries() as any[];
-  //     if (Array.isArray(entries) && entries.length > 0) {
-  //       entries.forEach((one) => {
-  //         queryClient.removeQueries(one);
-  //       });
-  //     }
-  //     queryClient.removeQueries(["getDynamicGridConfigGridData"]);
-  //   };
-  // }, [getEntries]);
+  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
+    any,
+    any
+  >(["getDynamicDropdownGridData"], () => API.getDynamicDropdownGridData());
+
+  useEffect(() => {
+    return () => {
+      let entries = getEntries() as any[];
+      if (Array.isArray(entries) && entries.length > 0) {
+        entries.forEach((one) => {
+          queryClient.removeQueries(one);
+        });
+      }
+      queryClient.removeQueries(["getDynamicDropdownGridData"]);
+    };
+  }, [getEntries]);
   const ClosedEventCall = useCallback(() => {
     navigate(".");
     if (isDataChangedRef.current === true) {
-      // refetch();
+      refetch();
       isDataChangedRef.current = false;
     }
   }, [navigate]);
 
   return (
     <Fragment>
-      {/* {isError && (
+      {isError && (
         <Alert
           severity="error"
           errorMsg={error?.error_msg ?? "Something went to wrong.."}
           errorDetail={error?.error_detail}
           color="error"
         />
-      )} */}
+      )}
 
       <GridWrapper
         key={"dynGridConfigGrid"}
         finalMetaData={DynamicDropdownConfigGridMData as GridMetaDataType}
-        data={
-          // data ??
-          []
-        }
+        data={data ?? []}
         setData={() => null}
-        // loading={
-        //   []
-        //   // isLoading || isFetching
-        // }
+        loading={isLoading || isFetching}
         actions={actions}
         setAction={setCurrentAction}
-        refetchData={() => null}
+        refetchData={() => refetch()}
         ref={myGridRef}
         // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
       />

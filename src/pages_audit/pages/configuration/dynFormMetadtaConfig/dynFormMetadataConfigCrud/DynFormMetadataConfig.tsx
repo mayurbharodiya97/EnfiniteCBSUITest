@@ -13,7 +13,7 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import GridWrapper from "components/dataTableStatic";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
-import { FieldComponentGrid } from "./fieldComponentGrid";
+
 import { CreateDetailsRequestData, utilFunction } from "components/utils";
 import {
   DynamicFormConfigGridMetaDataEdit,
@@ -21,6 +21,7 @@ import {
   DynamicFormConfigGridMetaDataAdd,
   DynamicFormConfigMetaData,
 } from "./metaData";
+import { PropsConfigForm } from "./propsConfigForm";
 
 const DynamicFormMetadataConfig: FC<{
   isDataChangedRef: any;
@@ -356,14 +357,17 @@ const DynamicFormMetadataConfig: FC<{
               mysubdtlRef.current = {
                 COMP_CD: data?.COMP_CD,
                 BRANCH_CD: data?.BRANCH_CD,
-                DOC_CD: data?.DOC_CD.trim(),
+                DOC_CD: data?.DOC_CD,
                 LINE_ID: data?.LINE_ID,
                 COMPONENT_TYPE: data?.COMPONENT_TYPE,
                 FIELD_NAME: data?.FIELD_NAME,
                 SR_CD: data?.SR_CD,
               };
-
-              setFieldComponentGrid(true);
+              if (data?.COMPONENT_TYPE === "hidden") {
+                setFieldComponentGrid(false);
+              } else {
+                setFieldComponentGrid(true);
+              }
             }}
             ref={myGridRef}
           />
@@ -381,7 +385,7 @@ const DynamicFormMetadataConfig: FC<{
             />
           ) : null}
           {isFieldComponentGrid ? (
-            <FieldComponentGrid
+            <PropsConfigForm
               isOpen={isFieldComponentGrid}
               onClose={() => {
                 setFieldComponentGrid(false);

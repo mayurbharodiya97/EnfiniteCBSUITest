@@ -1,24 +1,52 @@
 import { AuthSDK } from "registry/fns/auth";
 import { DefaultErrorObject } from "components/utils";
 
-// export const getDynMetadataGridConfigData = async ({ COMP_CD, BRANCH_CD }) => {
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("GETTBGFROMCONFIGDATA", {
-//       COMP_CD: COMP_CD,
-//       BRANCH_CD: BRANCH_CD,
-//     });
-//   if (status === "0") {
-//     // return data;
-//     return data.map((item) => {
-//       return {
-//         ...item,
-//         RESETFIELDONUNMOUNT: item.RESETFIELDONUNMOUNT === "Y" ? true : false,
-//       };
-//     });
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
+export const getSouceListData = async (_, __, dependent) => {
+  if (dependent["actionsDetails.PROPS_ID"]?.value === "options") {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETDDLBSOURCELIST", {});
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ DDLB_NAME, SOURCE_NAME, ...others }) => {
+            return {
+              value: DDLB_NAME,
+              label: DDLB_NAME,
+              ...others,
+            };
+          }
+        );
+      }
+
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  } else if (
+    dependent["actionsDetails.PROPS_ID"]?.value === "schemaValidation"
+  ) {
+    return [
+      {
+        value: "string",
+        label: "string",
+      },
+      {
+        value: "number",
+        label: "number",
+      },
+      {
+        value: "boolean",
+        label: "boolean",
+      },
+      {
+        value: "date",
+        label: "date",
+      },
+    ];
+  }
+  return [];
+};
 export const getDynmetaListData = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFORMMETALIST", {
@@ -101,6 +129,7 @@ export const getGridFieldComponentData = async (reqdata) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFORMFIELDPROPS", reqdata);
   if (status === "0") {
+    // return data;
     return data.map((item) => {
       return {
         ...item,

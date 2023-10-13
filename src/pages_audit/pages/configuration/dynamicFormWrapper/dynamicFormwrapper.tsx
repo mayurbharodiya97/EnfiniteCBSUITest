@@ -77,7 +77,6 @@ const DynamicForm: FC<{
         endSubmit(false, errorMsg, error?.errorDetail ?? "");
       },
       onSuccess: (data) => {
-        console.log("data", data);
         // SetLoadingOWN(true, "");
         enqueueSnackbar(data, {
           variant: "success",
@@ -100,7 +99,7 @@ const DynamicForm: FC<{
   const onPopupYes = (rows) => {
     mutation.mutate({ data: rows });
   };
-  // console.log("metaData", metaData);
+
   const onSubmitHandler: SubmitFnType = (
     data,
     displayData,
@@ -142,9 +141,9 @@ const DynamicForm: FC<{
     //       }
     //     }
     //   }
-    //   console.log("oldRowValue", booleanValue);
+
     // }
-    console.log("????data", data, displayData);
+
     let upd = utilFunction.transformDetailsData(
       data,
       gridData?.data?.[0] ?? {}
@@ -165,7 +164,7 @@ const DynamicForm: FC<{
       endSubmit,
       setFieldError,
     };
-    console.log("isErrorFuncRef.current ", isErrorFuncRef.current);
+
     setIsOpenSave(true);
   };
 

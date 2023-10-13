@@ -121,12 +121,12 @@ const StickyNotes = ({ closeDialog, open }) => {
                 <GradientButton
                   onClick={closeDialog}
                   style={{
-                    color: "var(--theme-color3)",
+                    // color: "var(--theme-color3)",
                     margin: "5px",
                     minWidth: "0px",
                     // maxWidth: "0px",
                     borderRadius: "10px",
-                    background: "none",
+                    // background: "none",
                   }}
                 >
                   <CloseIcon style={{ fontSize: "2.5em" }} />

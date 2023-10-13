@@ -155,8 +155,7 @@ export const ProcessDetailsData = (newData, oldData) => {
   let _isNewRowdata: any[] = [];
   let _isDeleteRowdata: any[] = [];
   let _isUpdatedRowdata: any[] = [];
-  console.log(">>newData", newData);
-  console.log(">>oldData", oldData);
+
   if (!Array.isArray(newData)) {
     newData = [newData];
   }
@@ -166,6 +165,7 @@ export const ProcessDetailsData = (newData, oldData) => {
   newData.forEach((newItem) => {
     const { SR_CD, ...otherNew } = newItem;
     const oldItem = oldData.find((old) => old.SR_CD === SR_CD);
+
     if (oldItem) {
       if (oldItem) {
         const oldRowValue = oldItem;

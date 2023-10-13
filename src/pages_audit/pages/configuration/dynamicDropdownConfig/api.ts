@@ -10,9 +10,9 @@ export const getDynApiListData = async () => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ ACTION, ID }) => {
+      responseData = responseData.map(({ ACTION }) => {
         return {
-          value: ID,
+          value: ACTION,
           label: ACTION,
         };
       });
@@ -22,92 +22,9 @@ export const getDynApiListData = async () => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-// export const getDynamicGridConfigGridData = async ({ COMP_CD, BRANCH_CD }) => {
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("GETGRIDCONFIGDATA", {
-//       COMP_CD: COMP_CD,
-//       BRANCH_CD: BRANCH_CD,
-//     });
-//   if (status === "0") {
-//     return data;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
-
-export const dynamicGridConfigDML = () => async (formData: any) => {
-  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "DODYNAMICGRIDCONFIG",
-    formData
-  );
-  if (status === "0") {
-    return message;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-// export const getDynamicReportConfigData = async (transactionID: number) => {
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("GETDYNRPTCONFIGDATA", {
-//       TRAN_CD: transactionID + "",
-//     });
-//   if (status === "0") {
-//     return data;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
-export const getDynamicGridColConfigData = async ({
-  COMP_CD,
-  BRANCH_CD,
-  docCD,
-}) => {
-  // if (formMode === "add") {
-  //   return [];
-  // }
+export const getDynamicDropdownGridData = async () => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETTBGGRIDCOLDATA", {
-      COMP_CD: COMP_CD,
-      BRANCH_CD: BRANCH_CD,
-      DOC_CD: docCD + "",
-    });
-  if (status === "0") {
-    return data.map((item) => {
-      return {
-        ...item,
-        IS_VISIBLE: item.IS_VISIBLE === "Y" ? true : false,
-      };
-    });
-    // return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const getDynamicParamterConfigData = async ({
-  COMP_CD,
-  BRANCH_CD,
-  docCD,
-}) => {
-  // if (formMode === "add") {
-  //   return [];
-  // }
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETTBGGRIDPARADATA", {
-      COMP_CD: COMP_CD,
-      BRANCH_CD: BRANCH_CD,
-      DOC_CD: docCD + "",
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const verifyDynGridSqlSyntax = async ({ sqlSyntax, detailsData }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("VERIFYDYNGRIDQUERY", {
-      SQL_SYNTAX: sqlSyntax,
-    });
+    await AuthSDK.internalFetcher("GETDROPDOWNCONFIG", {});
   if (status === "0") {
     return data;
   } else {
@@ -115,53 +32,13 @@ export const verifyDynGridSqlSyntax = async ({ sqlSyntax, detailsData }) => {
   }
 };
 
-export const actionsFormData = async ({ COMP_CD, BRANCH_CD, DOC_CD }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETTBGGRIDACTIONDATA", {
-      COMP_CD: COMP_CD,
-      BRANCH_CD: BRANCH_CD,
-      DOC_CD: DOC_CD,
-    });
-  if (status === "0") {
-    return data.map((item) => {
-      return {
-        ...item,
-        MULTIPLE: item.MULTIPLE === "Y" ? true : false,
-        ROWDOUBLECLICK: item.ROWDOUBLECLICK === "Y" ? true : false,
-        ALWAYSAVAILABLE: item.ALWAYSAVAILABLE === "Y" ? true : false,
-        ISNODATATHENSHOW: item.ISNODATATHENSHOW === "Y" ? true : false,
-      };
-    });
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const actionsFormDataDML = () => async (formData: any) => {
+export const dynamiDropdownConfigDML = async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "DODYNAMICGRIDACTION",
+    "DODROPDOWNDML",
     formData
   );
   if (status === "0") {
     return message;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const getDynamicOwnerList = async () => {
-  const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDBOWNERLIST", {});
-  if (status === "0") {
-    // return data;
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ OWNER }) => {
-        return {
-          value: OWNER,
-          label: OWNER,
-        };
-      });
-    }
-    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

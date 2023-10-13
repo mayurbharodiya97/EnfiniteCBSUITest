@@ -37,7 +37,6 @@ export const RetrievalParametersGrid = ({
   const { getEntries } = useContext(ClearCacheContext);
   const isErrorFuncRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  console.log("docCD={docCD}", docCD);
 
   const { data, isLoading, isError, error } = useQuery<any, any>(
     ["getDynamicParamterConfigData"],
@@ -64,7 +63,7 @@ export const RetrievalParametersGrid = ({
       setGridData([]);
     }
   }, [data]);
-  console.log("girdData", girdData);
+
   const onSaveRecord = async () => {
     let { hasError, data: dataold } = await myGridRef.current?.validate();
 
@@ -72,15 +71,14 @@ export const RetrievalParametersGrid = ({
       if (dataold) {
         setGridData(dataold);
       }
-      console.log("dataold", dataold);
     } else {
       let result = myGridRef?.current?.cleanData?.();
       if (!Array.isArray(result)) {
         result = [result];
       }
-      console.log("result", result);
+
       let finalResult = CreateDetailsRequestData(result);
-      console.log("finalResult", finalResult);
+
       if (
         finalResult?.isDeleteRow?.length === 0 &&
         finalResult?.isNewRow?.length === 0 &&
@@ -99,21 +97,7 @@ export const RetrievalParametersGrid = ({
       }
     }
   };
-  // const onSaveRecord = async () => {
-  //   let { hasError, data: dataold } = await myGridRef.current?.validate();
-  //   console.log("test", dataold);
-  //   if (hasError === true) {
-  //     if (dataold) {
-  //       setGridData(dataold);
-  //     }
-  //   } else {
-  //     let result = myGridRef?.current?.cleanData?.();
-  //     if (!Array.isArray(result)) {
-  //       result = [result];
-  //     }
-  //     onSaveData(result);
-  //   }
-  // };
+
   return (
     <Dialog
       open={isOpen}

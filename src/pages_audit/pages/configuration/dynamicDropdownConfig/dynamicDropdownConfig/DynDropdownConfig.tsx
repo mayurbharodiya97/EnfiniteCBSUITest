@@ -14,61 +14,53 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { ProcessDetailsData, utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { DynamicDropdownConfigMetaData } from "./metaData";
-export const useDialogStyles = makeStyles({
-  topScrollPaper: {
-    alignItems: "center",
-  },
-  topPaperScrollBody: {
-    verticalAlign: "top",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-});
+
 export const DynamicDropdownConfig = ({
   isDataChangedRef,
   closeDialog,
-  defaultView = "view",
-  docCD,
+  defaultView,
   data: reqData,
 }) => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
-  // const {
-  //   data: actionData,
-  //   isLoading,
-  //   isFetching,
-  //   isError,
-  //   error,
-  //   refetch,
-  // } = useQuery<any, any>(["actionsFormData"], () =>
-  //   API.actionsFormData({
-  //     COMP_CD: authState?.companyID ?? "",
-  //     BRANCH_CD: authState?.user?.branchCode ?? "",
-  //     DOC_CD: reqData[0]?.data?.DOC_CD ?? "",
-  //   })
-  // );
+  const [formMode, setFormMode] = useState(defaultView);
+  const mutation = useMutation(API.dynamiDropdownConfigDML, {
+    onError: (error: any, { endSubmit }) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      endSubmit(false, errorMsg, error?.error_detail ?? "");
+      enqueueSnackbar(errorMsg, { variant: "error" });
+      onActionCancel();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
 
-  // const mutation = useMutation(API.actionsFormDataDML(), {
-  //   onError: (error: any) => {},
-  //   onSuccess: (data) => {
-  //     enqueueSnackbar(data, {
-  //       variant: "success",
-  //     });
-  //     onClose();
-  //   },
-  // });
+      closeDialog();
+    },
+  });
+
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["actionsFormData"]);
-      queryClient.removeQueries(["actionsFormDataDML"]);
+      queryClient.removeQueries(["dynamiDropdownConfigDML"]);
     };
   }, []);
+
+  const convertJsonToParse = reqData?.[0]?.data.DDW_OPTION;
+  const parsedDDWOption =
+    convertJsonToParse && convertJsonToParse.trim() !== ""
+      ? JSON.parse(convertJsonToParse)
+      : [];
+
+  const updatedReqData = {
+    ...(reqData?.[0]?.data ?? {}),
+    DDW_OPTION: parsedDDWOption,
+  };
 
   const onSubmitHandler: SubmitFnType = (
     data: any,
@@ -79,45 +71,38 @@ export const DynamicDropdownConfig = ({
   ) => {
     // @ts-ignore
     endSubmit(true);
-    let transformedActionsDetails = data.actionsDetails?.map((item) => ({
-      ...item,
-      MULTIPLE: item.MULTIPLE ? "Y" : "N",
-      ROWDOUBLECLICK: item.ROWDOUBLECLICK ? "Y" : "N",
-      ALWAYSAVAILABLE: item.ALWAYSAVAILABLE ? "Y" : "N",
-      ISNODATATHENSHOW: item.ISNODATATHENSHOW ? "Y" : "N",
-    }));
-    let upd: any = ProcessDetailsData(transformedActionsDetails ?? [], []);
-    if (upd["_OLDROWVALUE"]) {
-      const oldRowValue = upd["_OLDROWVALUE"];
 
-      for (const key in oldRowValue) {
-        if (oldRowValue.hasOwnProperty(key)) {
-          // Convert boolean values to "Y" or "N"
-          if (typeof oldRowValue[key] === "boolean") {
-            oldRowValue[key] = oldRowValue[key] ? "Y" : "N";
-          }
-        }
-      }
+    let oldData = reqData?.[0]?.data;
+    let newData = data;
+
+    if (newData?.DDW_OPTION) {
+      let newDataString = JSON.stringify(newData?.DDW_OPTION);
+      newData.DDW_OPTION = newDataString;
     }
+    let updatedValue: any = utilFunction.transformDetailsData(
+      newData,
+      oldData ?? {}
+    );
 
-    const updatedData: any = {
-      // _isNewRow: formView === "edit" ? true : false,
-      COMP_CD: authState.companyID,
-      BRANCH_CD: authState.user.branchCode,
-      DOC_CD: reqData[0]?.data?.DOC_CD ?? "",
-      DETAILS_DATA: upd,
-    };
     setIsOpenSave(true);
     isErrorFuncRef.current = {
-      data: updatedData,
+      data: {
+        ...newData,
+        ...updatedValue,
+        COMP_CD: authState.companyID,
+        BRANCH_CD: authState.user.branchCode,
+        TRAN_CD: reqData?.[0]?.data?.TRAN_CD ?? "",
+        _isNewRow: formMode === "add" ? true : false,
+      },
       displayData,
       endSubmit,
       setFieldError,
     };
+    setFormMode("view");
   };
 
   const onPopupYes = (rows) => {
-    // mutation.mutate(rows);
+    mutation.mutate(rows);
   };
   const onActionCancel = () => {
     setIsOpenSave(false);
@@ -125,9 +110,9 @@ export const DynamicDropdownConfig = ({
 
   return (
     <>
-      {/* {isLoading || isFetching ? ( */}
-      {/* <LoaderPaperComponent /> */}
-      {/* ) : ( */}
+      {/* {mutation.isLoading ? (
+        <LoaderPaperComponent />
+      ) : ( */}
       <Dialog
         fullWidth
         maxWidth="lg"
@@ -141,11 +126,14 @@ export const DynamicDropdownConfig = ({
         key="actionsFormDialog"
       >
         <FormWrapper
-          key={"DynamicDropdownConfigMetaData"}
+          key={"DynamicDropdownConfigMetaData" + formMode}
           metaData={DynamicDropdownConfigMetaData as unknown as MetaDataType}
-          // displayMode={formMode}
+          displayMode={formMode}
           onSubmitHandler={onSubmitHandler}
-          initialValues={[] as InitialValuesType}
+          initialValues={{
+            ...(reqData?.[0]?.data ?? {}),
+            ...updatedReqData,
+          }}
           // hideHeader={true}
           formStyle={{
             background: "white",
@@ -153,24 +141,69 @@ export const DynamicDropdownConfig = ({
         >
           {({ isSubmitting, handleSubmit }) => (
             <>
-              <Button
-                onClick={(event) => {
-                  handleSubmit(event, "Save");
-                }}
-                disabled={isSubmitting}
-                //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                color={"primary"}
-              >
-                Save
-              </Button>
+              {formMode === "edit" ? (
+                <>
+                  <Button
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    color={"primary"}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setFormMode("view");
+                    }}
+                    color={"primary"}
+                    disabled={isSubmitting}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : formMode === "add" ? (
+                <>
+                  <Button
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    color={"primary"}
+                  >
+                    Save
+                  </Button>
 
-              <Button
-                onClick={closeDialog}
-                //disabled={isSubmitting}
-                color={"primary"}
-              >
-                Close
-              </Button>
+                  <Button
+                    onClick={closeDialog}
+                    //disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Close
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => {
+                      setFormMode("edit");
+                    }}
+                    //disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={closeDialog}
+                    //disabled={isSubmitting}
+                    color={"primary"}
+                  >
+                    Close
+                  </Button>
+                </>
+              )}
             </>
           )}
         </FormWrapper>
@@ -182,7 +215,7 @@ export const DynamicDropdownConfig = ({
             onActionNo={() => onActionCancel()}
             rows={isErrorFuncRef.current?.data}
             open={isOpenSave}
-            // loading={mutation.isLoading}
+            // loading={mutation.isLoading}`
           />
         ) : null}
       </Dialog>
@@ -214,7 +247,6 @@ export const DynamicDropdownConfigWrapper = ({
         isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
         defaultView={defaultView}
-        docCD={data?.[0]?.data?.DOC_CD ?? ""}
         data={data}
       />
     </Dialog>

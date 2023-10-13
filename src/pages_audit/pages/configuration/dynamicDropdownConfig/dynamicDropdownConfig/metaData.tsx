@@ -45,177 +45,103 @@ export const DynamicDropdownConfigMetaData = {
     },
   },
   fields: [
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "DDW_NAME",
-      label: "Dropdown Name",
-      placeholder: "",
-      type: "text",
-      fullWidth: true,
-      maxLength: 12,
-      showMaxLength: false,
-      // required: true,
-      // // __EDIT__: { isReadOnly: true },
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [
-      //     { name: "required", params: ["Document Code is required."] },
-      //     { name: "DOC_CD", params: [12, "Please enter Document Code."] },
-      //   ],
-      // },
-      GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "DDW_LIST",
-      label: "Dropdown Source",
-      defaultValue: "Dynamic SQL",
-      options: [
-        { label: "Dynamic SQL", value: "Dynamic SQL" },
-        { label: "Register Function", value: "Register Function" },
-        { label: "Defualt Option", value: "Defualt Option" },
-      ],
-      _optionsKey: "GetDropdownList",
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-    },
-
-    {
-      render: {
-        componentType: "select",
-      },
-      name: "API_LIST",
-      label: "API List",
-      options: () => getDynApiListData(),
-      _optionsKey: "getDynApiListData",
-      // options: "getMetadataList",
-      // _optionsKey: "getMetadataList",
-      // requestProps: "DOC_CD",
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-      runValidationOnDependentFieldsChange: true,
-      dependentFields: ["DDW_LIST"],
-      shouldExclude: (val1, dependent) => {
-        if (dependent["DDW_LIST"]?.value === "Dynamic SQL") {
-          return false;
-        }
-        return true;
-      },
-    },
-
-    {
-      render: {
-        componentType: "select",
-      },
-      name: "REGISTER_API_LIST",
-      label: "API List",
-      options: () => getProMiscData("REGISTER_JS_FUNC"),
-      _optionsKey: "getproMiscDataMenuIcon",
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-      runValidationOnDependentFieldsChange: true,
-      dependentFields: ["DDW_LIST"],
-      shouldExclude: (val1, dependent) => {
-        if (dependent["DDW_LIST"]?.value === "Register Function") {
-          return false;
-        }
-        return true;
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REGISTER_FN",
-      label: "Register Function",
-      placeholder: "Register Function",
-      GridProps: { xs: 12, sm: 3, md: 4, lg: 6, xl: 2.5 },
-      runValidationOnDependentFieldsChange: true,
-      dependentFields: ["DDW_LIST"],
-      shouldExclude: (val1, dependent) => {
-        if (dependent["DDW_LIST"]?.value === "Register Function") {
-          return false;
-        }
-        return true;
-      },
-    },
     // {
     //   render: {
     //     componentType: "textField",
     //   },
-    //   name: "DISPLAY_VALUE",
-    //   label: "Dynamic Source Config.",
-    //   placeholder: "Dynamic Source Config.",
-    //   GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
-    //   runValidationOnDependentFieldsChange: true,
-    //   dependentFields: ["DDW_LIST"],
-    //   shouldExclude: (val1, dependent) => {
-    //     if (dependent["DDW_LIST"]?.value === "Dynamic SQL") {
-    //       return false;
-    //     }
-    //     return true;
-    //   },
+    //   name: "DDLB_NAME",
+    //   label: "Dropdown Name",
+    //   placeholder: "",
+    //   type: "text",
+    //   fullWidth: true,
+    //   maxLength: 12,
+    //   showMaxLength: false,
+    //   // required: true,
+    //   // // __EDIT__: { isReadOnly: true },
+    //   // schemaValidation: {
+    //   //   type: "string",
+    //   //   rules: [
+    //   //     { name: "required", params: ["Document Code is required."] },
+    //   //     { name: "DOC_CD", params: [12, "Please enter Document Code."] },
+    //   //   ],
+    //   // },
+    //   GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
     // },
-    // {
-    //   render: {
-    //     componentType: "select",
-    //   },
-    //   name: "DISPLAY_VALUE",
-    //   label: "Display Label",
-    //   placeholder: "Label",
-    //   GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
-    //   runValidationOnDependentFieldsChange: true,
-    //   dependentFields: ["DDW_LIST"],
-    //   shouldExclude: (val1, dependent) => {
-    //     if (dependent["DDW_LIST"]?.value === "Dynamic SQL") {
-    //       return false;
-    //     }
-    //     return true;
-    //   },
-    // },
-    // {
-    //   render: {
-    //     componentType: "select",
-    //   },
-    //   name: "DATA_VALUE",
-    //   label: "Data Value",
-    //   placeholder: "Value",
-    //   GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
-    //   runValidationOnDependentFieldsChange: true,
-    //   dependentFields: ["DDW_LIST"],
-    //   shouldExclude: (val1, dependent) => {
-    //     if (dependent["DDW_LIST"]?.value === "Dynamic SQL") {
-    //       return false;
-    //     }
-    //     return true;
-    //   },
-    // },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DDLB_NAME",
+      label: "Dropdown Name",
+      placeholder: "Dropdown Name",
+      type: "text",
+      required: true,
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: { componentType: "select" },
+      name: "SOURCE_TYPE",
+      label: "Dropdown Source",
+
+      options: [
+        { label: "Dynamic SQL", value: "DS" },
+        { label: "Register Function", value: "RF" },
+        { label: "Defualt Option", value: "DO" },
+      ],
+      // _optionsKey: "defualt",
+      defaultValue: "Dynamic SQL",
+      required: true,
+      GridProps: { xs: 12, sm: 2, md: 3, lg: 2.5, xl: 1.5 },
+      fullWidth: true,
+      // validate: "getValidateValue",
+      autoComplete: "off",
+      //@ts-ignore
+      isFieldFocused: true,
+    },
+    {
+      render: { componentType: "autocomplete" },
+      name: "SOURCE_NAME",
+      label: "API List",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      options: (value) => {
+        if (value?.SOURCE_TYPE?.value === "DS") {
+          return getDynApiListData();
+        } else if (value?.SOURCE_TYPE?.value === "RF") {
+          return getProMiscData("REGISTER_JS_FUNC");
+        }
+      },
+      _optionsKey: "getProMiscData",
+      dependentFields: ["SOURCE_TYPE"],
+      disableCaching: true,
+      GridProps: { xs: 12, sm: 2, md: 3, lg: 2.5, xl: 1.5 },
+      runValidationOnDependentFieldsChange: true,
+      shouldExclude: (val1, dependent) => {
+        if (dependent["SOURCE_TYPE"]?.value === "DO") {
+          return true;
+        }
+        return false;
+      },
+      autoComplete: "off",
+    },
     {
       render: {
         componentType: "arrayField",
       },
-      name: "actionsDetails",
+      name: "DDW_OPTION",
       removeRowFn: "deleteFormArrayFieldData",
-      arrayFieldIDName: "DOC_CD",
+      arrayFieldIDName: "DDW_OPTION",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
-      dependentFields: ["DDW_LIST"],
+      dependentFields: ["SOURCE_TYPE"],
       shouldExclude: (fieldData, dependentFieldsValues, formState) => {
-        if (dependentFieldsValues?.DDW_LIST?.value === "Defualt Option") {
+        // console.log("dependentFieldsValues", dependentFieldsValues);
+        if (dependentFieldsValues?.SOURCE_TYPE?.value === "DO") {
           return false;
         }
         return true;
       },
       _fields: [
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "SR_CD",
-          label: "sr.cd",
-          placeholder: "",
-          GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
-        },
         {
           render: {
             componentType: "textField",
