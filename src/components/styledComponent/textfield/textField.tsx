@@ -85,7 +85,7 @@ const StyledTextField = withStyles({
       borderRight: "2px dashed #BABABA",
       height: "23px",
       maxHeight: "36px",
-      padding: "0 0.6rem 0 0",
+      padding: "0 0.6rem 0 0.6rem",
       margin: "6px 0px !important",
     },
 
