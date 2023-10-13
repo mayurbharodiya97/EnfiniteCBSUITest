@@ -17,6 +17,8 @@ export const getDynamicFormMetaData = async ({
     });
 
   if (status === "0") {
+    console.log("data", data);
+
     const field = data[0]?.FIELD?.map((one) => {
       const matchingProps = data[0]?.PROP.filter(
         (prop) => prop.LINE_ID === one.LINE_ID
@@ -26,8 +28,13 @@ export const getDynamicFormMetaData = async ({
       // Iterate over matchingProps and add them to the object
       matchingProps.forEach((matchingProp) => {
         matchingPropsObject[matchingProp.PROPS_ID] = matchingProp.PROPS_VALUE;
+        if (matchingProp.PROPS_VALUE === "true") {
+          matchingPropsObject[matchingProp.PROPS_ID] = true;
+        } else if (matchingProp.PROPS_VALUE === "false") {
+          matchingPropsObject[matchingProp.PROPS_ID] = false;
+          console.log("testing", matchingPropsObject[matchingProp.PROPS_ID]);
+        }
       });
-
       if (matchingProps.length > 0) {
         return {
           render: {
@@ -120,7 +127,7 @@ export const getDynamicFormMetaData = async ({
       fields: field,
       // fields: filter,
     };
-    // console.log("dk,f", result);
+    console.log("dk,f", result);
     return result;
   } else {
     throw DefaultErrorObject(message, messageDetails);

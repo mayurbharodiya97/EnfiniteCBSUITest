@@ -70,7 +70,7 @@ export const getDynGridData = async ({
   doccd,
   companyID,
   branchID,
-  customerID,
+  // customerID,
   // TRAN_CD,
 }) => {
   const { data, status, message, messageDetails } =
@@ -78,7 +78,7 @@ export const getDynGridData = async ({
       DOC_CD: doccd,
       COMP_CD: companyID,
       BRANCH_CD: branchID,
-      CUSTOMER_ID: customerID,
+      // CUSTOMER_ID: customerID,
       // TRAN_CD: TRAN_CD,
     });
   if (status === "0") {

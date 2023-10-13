@@ -59,12 +59,6 @@ export const limitEntryMetadata = {
       },
     },
     fields: [
-      // {
-      //   render: {
-      //     componentType: "_accountNumber",
-      //   },
-      //   name: "dfk",
-      // },
       {
         render: {
           componentType: "autocomplete",

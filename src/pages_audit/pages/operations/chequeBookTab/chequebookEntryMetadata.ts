@@ -1,4 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
+import { GetdetailData } from "./chequebookTab";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -51,6 +52,7 @@ export const ChequeBookEntryMetaData = {
       label: "Branch",
       placeholder: "Branch",
       type: "text",
+      isFieldFocused: true,
       required: true,
       // maxLength: 16,
       options: GeneralAPI.getBranchCodeList,
@@ -123,48 +125,48 @@ export const ChequeBookEntryMetaData = {
       label: "No. of Cheque(s)",
       placeholder: "Enter no of Cheque book",
       type: "text",
-      options: () => {
-        return [
-          { value: "15", label: "15" },
-          { value: "45", label: "45" },
-          { value: "90", label: "90" },
-        ];
-      },
-      //   options: GeneralAPI.getChequeLeavesList,
+      isFieldFocused: false,
+      // options: () => {
+      //   return [
+      //     { value: "15", label: "15" },
+      //     { value: "45", label: "45" },
+      //     { value: "90", label: "90" },
+      //   ];
+      // },
+      options: GeneralAPI.getChequeLeavesList,
       _optionsKey: "getChequeLeavesList",
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
 
-      //   postValidationSetCrossFieldValues: async (
-      //     field,
-      //     __,
-      //     ___,
-      //     dependentFieldsValues
-      //   ) => {
-      //     console.log("<<<postvalue", field, __, ___, dependentFieldsValues);
-      //     if (field.value) {
-      //       let postdata = await GetdetailData({
-      //         reportID: "GETLANGMSGDTL",
-      //         otherAPIRequestPara: { TRAN_CD: 1 },
-      //       });
-      //       console.log("<<<postdata", postdata);
-      //       return {
-      //         SERVICE_CHARGE: { value: postdata[0]?.LANG_MSG ?? "" },
-      //         GST: {
-      //           value: postdata[0]?.LANG_CODE ?? "",
-      //         },
-      //         FROM_CHEQUE_NO: { value: postdata[0]?.SR_CD ?? "" },
-      //         TO_CHEQUE_NO: { value: postdata[0]?.TRAN_CD ?? "" },
-      //       };
-      //     }
+      postValidationSetCrossFieldValues: async (
+        field,
+        __,
+        ___,
+        dependentFieldsValues
+      ) => {
+        if (field.value) {
+          let postdata = await GetdetailData({
+            apiID: "GETLANGMSGDTL",
+            otherAPIRequestPara: { TRAN_CD: 1 },
+          });
+          console.log("<<<postdata", postdata);
+          return {
+            SERVICE_CHARGE: { value: postdata[0]?.LANG_MSG ?? "" },
+            GST: {
+              value: postdata[0]?.LANG_CODE ?? "",
+            },
+            FROM_CHEQUE_NO: { value: postdata[0]?.SR_CD ?? "" },
+            TO_CHEQUE_NO: { value: postdata[0]?.TRAN_CD ?? "" },
+          };
+        }
 
-      //     return {};
-      //   },
+        return {};
+      },
       runPostValidationHookAlways: true,
     },
     {
@@ -198,10 +200,10 @@ export const ChequeBookEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 2.25,
+        sm: 2.25,
+        lg: 2.25,
+        xl: 2.25,
       },
     },
     {
@@ -215,10 +217,10 @@ export const ChequeBookEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 2.25,
+        sm: 2.25,
+        lg: 2.25,
+        xl: 2.25,
       },
     },
     {
@@ -232,10 +234,10 @@ export const ChequeBookEntryMetaData = {
       required: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 2.25,
+        sm: 2.25,
+        lg: 2.25,
+        xl: 2.25,
       },
     },
     {
@@ -249,10 +251,10 @@ export const ChequeBookEntryMetaData = {
       required: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 2.25,
+        sm: 2.25,
+        lg: 2.25,
+        xl: 2.25,
       },
     },
 
@@ -290,10 +292,10 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 2.25,
+        sm: 2.25,
+        lg: 2.25,
+        xl: 2.25,
       },
     },
     {
@@ -314,10 +316,10 @@ export const ChequeBookEntryMetaData = {
       _optionsKey: "CHARACTERISTICS",
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 2.25,
+        sm: 2.25,
+        lg: 2.25,
+        xl: 2.25,
       },
     },
     {
@@ -330,10 +332,10 @@ export const ChequeBookEntryMetaData = {
       placeholder: "",
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 2.25,
+        sm: 2.25,
+        lg: 2.25,
+        xl: 2.25,
       },
     },
 
@@ -349,10 +351,10 @@ export const ChequeBookEntryMetaData = {
       // enableDefaultOption: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 2.25,
+        sm: 2.25,
+        lg: 2.25,
+        xl: 2.25,
       },
     },
 

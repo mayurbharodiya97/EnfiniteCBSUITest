@@ -5,7 +5,10 @@ import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { ClearCacheContext, queryClient } from "cache";
 import { RetrievalParametersGridMetaData } from "./retrievalParametersMetadata";
 import { makeStyles } from "@mui/styles";
-
+import { CreateDetailsRequestData } from "components/utils";
+import { useQuery } from "react-query";
+import { AuthContext } from "pages_audit/auth";
+import * as API from "../api";
 export const useDialogStyles = makeStyles({
   topScrollPaper: {
     alignItems: "center",
@@ -26,43 +29,91 @@ export const RetrievalParametersGrid = ({
   onClose,
   rowsData,
   onSaveData,
+  docCD,
 }) => {
   const classes = useDialogStyles();
   const [girdData, setGridData] = useState<any>(rowsData);
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
+  const isErrorFuncRef = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
+  console.log("docCD={docCD}", docCD);
 
+  const { data, isLoading, isError, error } = useQuery<any, any>(
+    ["getDynamicParamterConfigData"],
+    () =>
+      API.getDynamicParamterConfigData({
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        docCD,
+      })
+  );
   useEffect(() => {
     return () => {
       let entries = getEntries() as any[];
       // entries.forEach((one) => {
       //   queryClient.removeQueries(one);
       // });
-      queryClient.removeQueries([""]);
+      queryClient.removeQueries(["getDynamicParamterConfigData"]);
     };
   }, [getEntries]);
-  // useEffect(() => {
-  //   if (Array.isArray(data)) {
-  //     setGridData(data);
-  //   } else {
-  //     setGridData([]);
-  //   }
-  // }, [data]);
-
+  useEffect(() => {
+    if (Array.isArray(data)) {
+      setGridData(data);
+    } else {
+      setGridData([]);
+    }
+  }, [data]);
+  console.log("girdData", girdData);
   const onSaveRecord = async () => {
     let { hasError, data: dataold } = await myGridRef.current?.validate();
+
     if (hasError === true) {
       if (dataold) {
         setGridData(dataold);
       }
+      console.log("dataold", dataold);
     } else {
       let result = myGridRef?.current?.cleanData?.();
       if (!Array.isArray(result)) {
         result = [result];
       }
-      onSaveData(result);
+      console.log("result", result);
+      let finalResult = CreateDetailsRequestData(result);
+      console.log("finalResult", finalResult);
+      if (
+        finalResult?.isDeleteRow?.length === 0 &&
+        finalResult?.isNewRow?.length === 0 &&
+        finalResult?.isUpdatedRow?.length === 0
+      ) {
+        onClose();
+      } else {
+        isErrorFuncRef.current = {
+          DETAILS_DATA: finalResult,
+          _isNewRow: false,
+          // data: {
+          //   _isNewRow: false,
+          // },
+        };
+        onSaveData(isErrorFuncRef.current);
+      }
     }
   };
+  // const onSaveRecord = async () => {
+  //   let { hasError, data: dataold } = await myGridRef.current?.validate();
+  //   console.log("test", dataold);
+  //   if (hasError === true) {
+  //     if (dataold) {
+  //       setGridData(dataold);
+  //     }
+  //   } else {
+  //     let result = myGridRef?.current?.cleanData?.();
+  //     if (!Array.isArray(result)) {
+  //       result = [result];
+  //     }
+  //     onSaveData(result);
+  //   }
+  // };
   return (
     <Dialog
       open={isOpen}

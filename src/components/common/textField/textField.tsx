@@ -197,7 +197,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
   const isError = myTouch && Boolean(myError);
   const result = (
     <>
-      <InputAdornment
+      {/* Changes for bhavyata textfield label */}
+      {/* <InputAdornment
         position="start"
         sx={{
           alignItems: "baseline",
@@ -211,12 +212,13 @@ const MyTextField: FC<MyTextFieldProps> = ({
         {StartIcon ? <StartIcon /> : null}
         <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p>
         {EndIcon ? <EndIcon /> : null}
-      </InputAdornment>
+      </InputAdornment> */}
       <TextField
         {...others}
         key={fieldKey}
         id={fieldKey}
         name={name}
+        label={label}
         value={value}
         error={!isSubmitting && isError}
         helperText={
@@ -290,7 +292,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         }}
         onBlur={handleBlur}
         disabled={isSubmitting}
-        variant={"filled"}
+        variant={"standard"}
         color="secondary"
       />
     </>
