@@ -484,10 +484,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOCHEQUEBKISSUE",
     packageName: "",
   },
-  GETDYNAPILIST: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDYNAPILIST",
-    packageName: "",
-  },
   GETFORMMETALIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORMMETALIST",
     packageName: "",
