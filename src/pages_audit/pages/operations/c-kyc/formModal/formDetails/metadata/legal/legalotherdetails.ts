@@ -209,6 +209,7 @@ import * as API from "../../../../api";
             },
             name: "POLITICALLY_CONNECTED",
             label: "PoliticallyConnected",
+            defaultValue: true,
             GridProps: {xs:4, sm:3},
         },
         {
@@ -228,6 +229,7 @@ import * as API from "../../../../api";
             },
             name: "IS_BLIND",
             label: "Blind",
+            defaultValue: true,
             GridProps: {xs:4, sm:3},
         },
         {
@@ -310,7 +312,8 @@ import * as API from "../../../../api";
                 componentType: "checkbox",
             },
             name: "REFERRED_BY_STAFF",
-            label: "ReferredByStaff",            
+            label: "ReferredByStaff", 
+            defaultValue: true,           
             GridProps: {xs: 4, sm:3},
         },
         {

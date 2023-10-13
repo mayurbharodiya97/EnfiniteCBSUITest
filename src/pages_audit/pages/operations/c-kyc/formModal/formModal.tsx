@@ -185,7 +185,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal} = useContext(CkycContext);
+  const {state, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx} = useContext(CkycContext);
   const { state: data }: any = useLocation();
   const { t } = useTranslation();
   const classes = useDialogStyles();
@@ -352,7 +352,7 @@ export default function FormModal({
         isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
         />
 
-      case "Other Details":
+      case "More Details":
         return <OtherDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
@@ -629,6 +629,7 @@ export default function FormModal({
                       id="req-id"
                       label="Req. ID"
                       size="small"
+                      value={state?.req_cd_ctx}                      
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md>
@@ -697,9 +698,11 @@ export default function FormModal({
                   <Grid item xs={12} sm={6} md>
                     <Autocomplete sx={{width: "100%"}}
                       disablePortal
+                      disabled={!state?.isFreshEntryctx}
                       id="acc-types"
-                      options={AccTypeOptions}
+                      options={AccTypeOptions ?? []}
                       getOptionLabel={(option:any) => `${option?.DISPLAY_VALUE}`}
+                      // value={state?.accTypeValuectx || null}
                       onChange={(e,v) => {
                         // setAccTypeValue(v?.value)
                         handleAccTypeVal(v?.value)
@@ -712,7 +715,13 @@ export default function FormModal({
                   <Grid item xs={12} sm={6} md>
                     <TextField disabled sx={{width: "100%"}}
                       id="customer-ckyc-number"
+                      name="KYC_NUMBER"
                       label="CKYC No."
+                      value={state?.kycNoValuectx}
+                      onChange={(e:any) => {
+                        // console.log("e, vasd", e)
+                        handleKycNoValctx(e?.target?.value)
+                      }}
                       // sx={{ width: {xs: 12, sm: "", md: "", lg: ""}}}
                       // value={accTypeValue}
                       size="small"

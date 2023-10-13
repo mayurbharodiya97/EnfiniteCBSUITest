@@ -9,10 +9,12 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 import { entity_detail_legal_meta_data } from '../../metadata/legal/legalentitydetails';
+import { AuthContext } from "pages_audit/auth";
 // import { format } from 'date-fns';
 
 const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   const { t } = useTranslation();
+  const { authState } = useContext(AuthContext);
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
@@ -43,17 +45,20 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
             let newData = state?.formDatactx
             const commonData = {
                 IsNewRow: true,
-                COMP_CD: "",
-                BRANCH_CD: "",
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "",
-                REQ_CD: "",
-                SR_CD: ""
+                REQ_CD: state?.req_cd_ctx,
+                SR_CD: "3",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                ENTRY_TYPE: "1",
             }
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             handleColTabChangectx(state?.colTabValuectx+1)
             handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-            PODFormRef.current.handleSubmitError(NextBtnRef.current, "save")
+            // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save")
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})

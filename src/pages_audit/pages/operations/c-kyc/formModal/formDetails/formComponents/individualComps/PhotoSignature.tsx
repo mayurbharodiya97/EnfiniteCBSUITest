@@ -167,9 +167,9 @@ const PhotoSignature = () => {
     const handleSavePhotoSign = () => {
       let data = {
         IsNewRow: true,
-        COMP_CD:"132 ",
-        ENTERED_BRANCH_CD:"099",
-        REQ_CD:"",
+        COMP_CD: authState?.companyID ?? "",
+        ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
+        REQ_CD:state?.req_cd_ctx,
         SR_CD:"3",
         SIGN_GROUP:"2",
         FROM_LIMIT:"2",
@@ -178,6 +178,8 @@ const PhotoSignature = () => {
         ACT_FLAG:"F",
         CUST_PHOTO: filesdata.current,
         CUST_SIGN: fileSignName.current,
+        ENT_COMP_CD: authState?.companyID ?? "",
+        ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
       }
 
       let newData = state?.formDatactx

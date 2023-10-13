@@ -707,6 +707,7 @@ export const personal_other_detail_meta_data = {
             name: "KYC_REVIEW_DT",
             label: "KycRevisedDate",
             required: true,
+            maxDate: new Date(),
             schemaValidation: {
                 type: "string",
                 rules: [

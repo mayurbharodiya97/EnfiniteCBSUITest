@@ -7,14 +7,17 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
+import { AuthContext } from "pages_audit/auth";
 
 const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
-  const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
+  const { authState } = useContext(AuthContext);
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
   const RelPersonFormRef = useRef<any>("")
   const [isRelatedPDExpanded, setIsRelatedPDExpanded] = useState(true)
+  const [isNextLoading, setIsNextLoading] = useState(false)
   const handleRelatedPDExpand = () => {
     setIsRelatedPDExpanded(!isRelatedPDExpanded)
   }
@@ -25,26 +28,35 @@ const myGridRef = useRef<any>(null);
         displayData,
         endSubmit,
         setFieldError,
-        actionFlag
+        actionFlag,
+        hasError
     ) => {
-        // setIsNextLoading(true)
+        setIsNextLoading(true)
         console.log("qweqweqwe", data)     
-        if(data) {
+        if(data && !hasError) {
             let newData = state?.formDatactx
             const commonData = {
                 IsNewRow: true,
-                COMP_CD: "",
-                BRANCH_CD: "",
-                REQ_FLAG: "",
-                REQ_CD: "",
-                SR_CD: ""
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                SR_CD: "3",
+                CONFIRMED: "N",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                ACTIVE: "Y"
             }
             newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             // handleColTabChangectx(4)
             handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             // setIsNextLoading(false)
-        }   
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
+        setIsNextLoading(false)
         endSubmit(true)
     }
     const initialVal = useMemo(() => {
@@ -103,10 +115,9 @@ const myGridRef = useRef<any>(null);
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
-                        RelPersonFormRef.current.handleSubmit(e, "save")
+                        RelPersonFormRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>

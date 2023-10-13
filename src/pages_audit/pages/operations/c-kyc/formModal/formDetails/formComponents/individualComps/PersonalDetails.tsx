@@ -10,9 +10,11 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 // import { format } from 'date-fns';
+import { AuthContext } from "pages_audit/auth";
 
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   const { t } = useTranslation();
+  const { authState } = useContext(AuthContext);
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
@@ -47,11 +49,14 @@ const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoa
             let newData = state?.formDatactx
             const commonData = {
                 IsNewRow: true,
-                COMP_CD: "",
-                BRANCH_CD: "",
-                REQ_FLAG: "",
-                REQ_CD: "",
-                SR_CD: ""
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                SR_CD: "3",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                ENTRY_TYPE: "1",
             }
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
