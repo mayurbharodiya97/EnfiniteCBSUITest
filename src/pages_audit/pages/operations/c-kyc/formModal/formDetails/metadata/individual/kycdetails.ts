@@ -53,7 +53,8 @@ export const kyc_proof_of_identity_meta_data = {
             defaultValue: "N",
             type: "text",
             // GridProps: {xs: 4, sm:3},
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: [
                 {label: "Form 61", value: "F"},
                 {label: "No", value: "N"},
@@ -77,7 +78,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "PanNo",
             placeholder: "AAAAA1111A",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             schemaValidation: {
                 type: "string",
                 rules: [
@@ -97,7 +98,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "UIDAadhaar",
             placeholder: "1111 1111 1111",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             schemaValidation: {
                 type: "string",
                 rules: [
@@ -117,7 +118,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "VoterId",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
           render: {
@@ -128,7 +129,7 @@ export const kyc_proof_of_identity_meta_data = {
           defaultValue: "N",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           options: [
               {label: "Yes", value: "T"},
               {label: "No", value: "N"},
@@ -142,7 +143,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "NREGA",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
           render: {
@@ -152,7 +153,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "OtherPoI",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
           render: {
@@ -162,7 +163,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "PoINo",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
           render: {
@@ -172,7 +173,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "GSTIN",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
 
@@ -201,7 +202,7 @@ export const kyc_proof_of_identity_meta_data = {
                     { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -220,7 +221,7 @@ export const kyc_proof_of_identity_meta_data = {
             options: () => API.getPMISCData("Authority"),
             _optionsKey: "passportAuthority",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
           render: {
@@ -239,7 +240,7 @@ export const kyc_proof_of_identity_meta_data = {
         //   required: true,
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
           render: {
@@ -258,7 +259,7 @@ export const kyc_proof_of_identity_meta_data = {
         //   required: true,
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
 
@@ -287,7 +288,7 @@ export const kyc_proof_of_identity_meta_data = {
                 ],
             },
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -306,7 +307,7 @@ export const kyc_proof_of_identity_meta_data = {
             _optionsKey: "drivingLicenseAuthority",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
           render: {
@@ -325,7 +326,7 @@ export const kyc_proof_of_identity_meta_data = {
         //   required: true,
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
           render: {
@@ -344,7 +345,7 @@ export const kyc_proof_of_identity_meta_data = {
         //   required: true,
           // placeholder: "",
           // type: "datePicker",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
     ]
 }
@@ -409,7 +410,8 @@ export const kyc_proof_of_address_meta_data = {
           label: "AddressType",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        //   GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2.4, lg: 2.4, xl:2},
           options: () => API.getPMISCData("ADDRESS_TYPE"),
           _optionsKey: "currentAddType",
       },
@@ -428,7 +430,7 @@ export const kyc_proof_of_address_meta_data = {
           },
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
           render: {
@@ -438,7 +440,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
           render: {
@@ -448,7 +450,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
         {
             render: {
@@ -471,7 +473,7 @@ export const kyc_proof_of_address_meta_data = {
             },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
         },  
       {
           render: {
@@ -484,7 +486,7 @@ export const kyc_proof_of_address_meta_data = {
           dependentFields: ["PIN_CODE"],
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
         },
       {
           render: {
@@ -521,7 +523,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "SubArea",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -539,7 +541,7 @@ export const kyc_proof_of_address_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -550,7 +552,7 @@ export const kyc_proof_of_address_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -561,7 +563,7 @@ export const kyc_proof_of_address_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -572,7 +574,7 @@ export const kyc_proof_of_address_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -583,7 +585,7 @@ export const kyc_proof_of_address_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -594,7 +596,7 @@ export const kyc_proof_of_address_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -611,7 +613,7 @@ export const kyc_proof_of_address_meta_data = {
           },
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
           options: () => API.getPMISCData("CKYC_ADD_PROOF"),
           _optionsKey: "currentPoA",
       },
@@ -623,7 +625,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "OthersPoA",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
 
 
@@ -659,7 +661,7 @@ export const kyc_proof_of_address_meta_data = {
         //     return {}
         //   },
           runPostValidationHookAlways: false,   
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md:2, lg: 2.4, xl:2},
     },
       {
           render: {
@@ -669,7 +671,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "LocalAddressType",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
           options: () => API.getPMISCData("ADDRESS_TYPE"),
           _optionsKey: "currentAddType",
       },
@@ -688,7 +690,7 @@ export const kyc_proof_of_address_meta_data = {
           },         
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
           render: {
@@ -698,7 +700,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
           render: {
@@ -708,7 +710,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
         render: {
@@ -718,7 +720,7 @@ export const kyc_proof_of_address_meta_data = {
         label: "PIN",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
         required: true,
         dependentFields: ["LOC_AREA_CD"],
         setValueOnDependentFieldsChange: (dependentFields) => {
@@ -744,7 +746,7 @@ export const kyc_proof_of_address_meta_data = {
           dependentFields: ["LOC_PIN_CODE"],
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -784,7 +786,7 @@ export const kyc_proof_of_address_meta_data = {
 
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -796,7 +798,7 @@ export const kyc_proof_of_address_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -807,7 +809,7 @@ export const kyc_proof_of_address_meta_data = {
           placeholder: "",
           isReadOnly: true,
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -818,7 +820,7 @@ export const kyc_proof_of_address_meta_data = {
           placeholder: "",
           isReadOnly: true,
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -829,7 +831,7 @@ export const kyc_proof_of_address_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -840,7 +842,7 @@ export const kyc_proof_of_address_meta_data = {
           placeholder: "",
           isReadOnly: true,
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -851,7 +853,7 @@ export const kyc_proof_of_address_meta_data = {
           placeholder: "",
           isReadOnly: true,
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -864,7 +866,7 @@ export const kyc_proof_of_address_meta_data = {
           options: () => API.getPMISCData("CKYC_LOC_POA"),
           _optionsKey: "localPoA",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
 
 
@@ -886,7 +888,7 @@ export const kyc_proof_of_address_meta_data = {
         label: "",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
     },
       {
         render: {
@@ -896,7 +898,7 @@ export const kyc_proof_of_address_meta_data = {
         label: "PhoneO",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
@@ -906,7 +908,7 @@ export const kyc_proof_of_address_meta_data = {
         label: "",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
     },
     {
         render: {
@@ -916,7 +918,7 @@ export const kyc_proof_of_address_meta_data = {
         label: "PhoneR",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
@@ -927,7 +929,7 @@ export const kyc_proof_of_address_meta_data = {
         required: true,
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
     },
     {
         render: {
@@ -938,7 +940,7 @@ export const kyc_proof_of_address_meta_data = {
         required: true,
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
@@ -948,7 +950,7 @@ export const kyc_proof_of_address_meta_data = {
         label: "",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
     },
     {
         render: {
@@ -958,7 +960,7 @@ export const kyc_proof_of_address_meta_data = {
         label: "Fax",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
@@ -975,7 +977,7 @@ export const kyc_proof_of_address_meta_data = {
             ],
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:3},
     },
 
 
@@ -1084,7 +1086,8 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "AddressType",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        //   GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2.4, lg: 2.4, xl:2},
           options: () => API.getPMISCData("ADDRESS_TYPE"),
           _optionsKey: "currentAddType",
       },
@@ -1103,7 +1106,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           },
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
           render: {
@@ -1113,7 +1116,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
           render: {
@@ -1123,7 +1126,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
         {
             render: {
@@ -1146,7 +1149,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
         },  
       {
           render: {
@@ -1159,7 +1162,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           dependentFields: ["PIN_CODE"],
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
         },
       {
           render: {
@@ -1196,7 +1199,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "SubArea",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1214,7 +1217,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1225,7 +1228,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1236,7 +1239,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1247,7 +1250,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1258,7 +1261,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1269,7 +1272,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1286,7 +1289,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           },
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
           options: () => API.getPMISCData("CKYC_ADD_PROOF"),
           _optionsKey: "currentPoA",
       },
@@ -1298,7 +1301,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "OthersPoA",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
 
 
@@ -1333,7 +1336,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             return {}
           },
           runPostValidationHookAlways: false,   
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md:2, lg: 2.4, xl:2},
     },
       {
           render: {
@@ -1343,7 +1346,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "LocalAddressType",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
           options: () => API.getPMISCData("ADDRESS_TYPE"),
           _optionsKey: "currentAddType",
       },
@@ -1362,7 +1365,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           },         
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
           render: {
@@ -1372,7 +1375,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
           render: {
@@ -1382,7 +1385,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:5, md: 4, lg: 3.5, xl: 2},
+          GridProps: {xs:12, sm:5, md: 4, lg: 4.8, xl: 4},
       },
       {
         render: {
@@ -1392,7 +1395,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         label: "PIN",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
         required: true,
         dependentFields: ["LOC_AREA_CD"],
         setValueOnDependentFieldsChange: (dependentFields) => {
@@ -1418,7 +1421,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           dependentFields: ["LOC_PIN_CODE"],
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1458,7 +1461,7 @@ export const kyc_legal_proof_of_add_meta_data = {
 
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1470,7 +1473,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1481,7 +1484,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           isReadOnly: true,
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1492,7 +1495,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           isReadOnly: true,
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1503,7 +1506,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           isReadOnly: true,
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1514,7 +1517,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           isReadOnly: true,
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1525,7 +1528,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           isReadOnly: true,
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -1538,7 +1541,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           options: () => API.getPMISCData("CKYC_LOC_POA"),
           _optionsKey: "localPoA",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
 
 
@@ -1560,7 +1563,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         label: "",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
     },
       {
         render: {
@@ -1570,7 +1573,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         label: "PhoneO",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
@@ -1580,7 +1583,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         label: "",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
     },
     {
         render: {
@@ -1590,7 +1593,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         label: "PhoneR",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
@@ -1601,7 +1604,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         required: true,
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
     },
     {
         render: {
@@ -1612,7 +1615,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         required: true,
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
@@ -1622,7 +1625,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         label: "",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
     },
     {
         render: {
@@ -1632,7 +1635,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         label: "Fax",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
@@ -1649,7 +1652,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             ],
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:3},
     },
     {
         render: {
@@ -1666,7 +1669,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         },
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:3},
     },
 
     // {

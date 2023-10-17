@@ -61,7 +61,8 @@ export const other_details_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        //   GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -74,7 +75,7 @@ export const other_details_meta_data = {
           _optionsKey: "turnoverOptions",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           // maxLength: 3,
           // showMaxLength: false,
           // FormatProps: {
@@ -102,7 +103,7 @@ export const other_details_meta_data = {
             _optionsKey: "otherIncomeOptions",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -112,7 +113,7 @@ export const other_details_meta_data = {
             label: "SourceOfIncome",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:4},
         },
 
 
@@ -134,7 +135,7 @@ export const other_details_meta_data = {
             label: "Funded",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           },
         {
             render: {
@@ -145,7 +146,7 @@ export const other_details_meta_data = {
             label: "NonFunded",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           },
         {
             render: {
@@ -156,7 +157,7 @@ export const other_details_meta_data = {
             label: "ThresholdLimit",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           },
 
 
@@ -178,7 +179,7 @@ export const other_details_meta_data = {
             label: "ChildrenCount",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -190,7 +191,7 @@ export const other_details_meta_data = {
             _optionsKey: "HouseTypes",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -201,7 +202,7 @@ export const other_details_meta_data = {
             label: "AdultsCount",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -210,7 +211,7 @@ export const other_details_meta_data = {
             defaultValue: true,
             name: "POLITICALLY_CONNECTED",
             label: "PoliticallyConnected",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -221,7 +222,7 @@ export const other_details_meta_data = {
             label: "EarningMembers",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -230,7 +231,7 @@ export const other_details_meta_data = {
             defaultValue: true,
             name: "BLINDNESS",
             label: "Blind",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -240,7 +241,8 @@ export const other_details_meta_data = {
             label: "IDMark",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            maxLength: 100,
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:4},
         },
 
 
@@ -263,7 +265,7 @@ export const other_details_meta_data = {
             maxLength: 2,
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             FormatProps: {
                 isAllowed: (values) => {
                   if (values?.value?.length > 2) {
@@ -286,7 +288,7 @@ export const other_details_meta_data = {
             maxLength: 2,
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             FormatProps: {
                 isAllowed: (values) => {
                   if (values?.value?.length > 2) {
@@ -307,7 +309,7 @@ export const other_details_meta_data = {
             label: "CIBILScore",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
 
@@ -329,7 +331,7 @@ export const other_details_meta_data = {
             _optionsKey: "EmpStatus",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -338,7 +340,7 @@ export const other_details_meta_data = {
             defaultValue: true,
             name: "REFERRED_BY_STAFF",
             label: "ReferredByStaff",            
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -350,7 +352,7 @@ export const other_details_meta_data = {
             _optionsKey: "eduQualiOptions",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -360,7 +362,8 @@ export const other_details_meta_data = {
             label: "CompanyName",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:8, md: 6, lg: 5, xl:3},
+            maxLength: 100,
+            GridProps: {xs:12, sm:8, md: 6, lg: 4.8, xl:6},
         },
         {
             render: {
@@ -370,7 +373,7 @@ export const other_details_meta_data = {
             label: "Departname",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -380,7 +383,8 @@ export const other_details_meta_data = {
             label: "CompanyAdd",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:12, md:12, lg:6, xl:5},
+            maxLength: 100,
+            GridProps: {xs:12, sm:12, md:12, lg:7.2, xl:6},
         },
         {
             render: {
@@ -391,7 +395,7 @@ export const other_details_meta_data = {
             label: "JoiningDate",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -402,7 +406,7 @@ export const other_details_meta_data = {
             label: "RetirementDate",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -415,7 +419,7 @@ export const other_details_meta_data = {
             type: "text",
             options: (dependentValue, formState, _, authState) => API.getEmpCompanyTypes(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "PDPrefix",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -426,7 +430,7 @@ export const other_details_meta_data = {
             label: "WorkExperienceYear",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -436,7 +440,8 @@ export const other_details_meta_data = {
             label: "Specialization",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:8, md: 6, lg: 5, xl:3},
+            maxLength: 100,
+            GridProps: {xs:12, sm:8, md: 6, lg: 4.8, xl:6},
         },
     ]
 }

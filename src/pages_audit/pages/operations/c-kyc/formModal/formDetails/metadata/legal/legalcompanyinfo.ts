@@ -17,7 +17,7 @@ export const company_info_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -56,7 +56,7 @@ export const company_info_meta_data = {
             format: "dd/MM/yyyy",
             maxDate: new Date(),
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -70,7 +70,7 @@ export const company_info_meta_data = {
             ],
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -82,7 +82,7 @@ export const company_info_meta_data = {
             maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -94,7 +94,7 @@ export const company_info_meta_data = {
             maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -106,7 +106,7 @@ export const company_info_meta_data = {
             maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -118,7 +118,7 @@ export const company_info_meta_data = {
             maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -130,7 +130,7 @@ export const company_info_meta_data = {
             maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -142,7 +142,7 @@ export const company_info_meta_data = {
             maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -153,7 +153,7 @@ export const company_info_meta_data = {
             placeholder: "",
             format: "dd/MM/yyyy",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -164,7 +164,7 @@ export const company_info_meta_data = {
             required: true,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -176,7 +176,7 @@ export const company_info_meta_data = {
             _optionsKey: "getCompSizedtl",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -187,7 +187,7 @@ export const company_info_meta_data = {
             required: true,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -199,7 +199,7 @@ export const company_info_meta_data = {
             maxLength: 10,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -211,7 +211,7 @@ export const company_info_meta_data = {
             maxLength: 3,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 		
         {
@@ -222,7 +222,7 @@ export const company_info_meta_data = {
             label: "Specialization",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         
     ]

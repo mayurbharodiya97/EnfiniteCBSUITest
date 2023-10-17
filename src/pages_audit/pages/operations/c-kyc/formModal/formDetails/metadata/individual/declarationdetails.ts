@@ -51,7 +51,8 @@ export const declaration_meta_data = {
           label: "DeclarationReceived",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        //   GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           defaultValue: "N",
           options: [
               {label: "FOR FATCA", value: "Y"},
@@ -67,7 +68,7 @@ export const declaration_meta_data = {
         label: "DeclarationReceivedDate",
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -78,7 +79,7 @@ export const declaration_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
         render: {
@@ -95,7 +96,7 @@ export const declaration_meta_data = {
         },
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },      
       {
           render: {
@@ -112,7 +113,7 @@ export const declaration_meta_data = {
               { name: "required", params: ["ThisFieldisrequired"] },
             ],
           },
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -129,7 +130,7 @@ export const declaration_meta_data = {
             ],
           },
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -148,7 +149,7 @@ export const declaration_meta_data = {
         },
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -167,7 +168,7 @@ export const declaration_meta_data = {
             ],
           },
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
   ]
 }

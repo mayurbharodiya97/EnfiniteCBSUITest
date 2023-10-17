@@ -17,7 +17,7 @@ export const nri_detail_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -59,7 +59,8 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -77,7 +78,7 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -96,7 +97,7 @@ export const nri_detail_meta_data = {
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -115,7 +116,7 @@ export const nri_detail_meta_data = {
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -134,7 +135,7 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -153,7 +154,7 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -172,7 +173,7 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -182,7 +183,7 @@ export const nri_detail_meta_data = {
             label: "VisuallyImpaired",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: [
                 {label: "YES", value: "Y"},
                 {label: "NO", value: "N"},
@@ -224,7 +225,7 @@ export const nri_detail_meta_data = {
             },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -237,7 +238,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             type: "text",
             disabled: true,
-            GridProps: {xs:12, sm:4.5, md: 4, lg: 3.5, xl:2.5},
+            GridProps: {xs:12, sm:6, md: 5, lg: 4, xl:3},
         }
     ]
 }
