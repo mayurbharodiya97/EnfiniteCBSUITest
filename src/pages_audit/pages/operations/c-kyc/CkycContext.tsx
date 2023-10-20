@@ -43,6 +43,11 @@ const initialState:any  = {
     isFreshEntryctx: false,
     req_cd_ctx: "",
 
+    photoBlobctx: null,
+    photoBase64ctx: null,
+    signBlobctx: null,
+    signBase64ctx: null,
+
 
     steps: {
         0: {status: ""}
@@ -93,6 +98,11 @@ const Reducer = (state, action) => {
                 ...action.payload
             };
         case "update_req_cd_ctxctx":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "update_photo_signctx":
             return {
                 ...state,
                 ...action.payload
@@ -282,6 +292,27 @@ const CkycProvider = ({children}) => {
         })
     }    
 
+    const handlePhotoOrSignctx = (blob:any, base64:string, img:string) => {
+        // console.log("async called ctx", blob, img, base64)
+        if(img == "photo") {
+            dispatch({
+                type: "update_photo_signctx",
+                payload: {
+                    photoBlobctx: blob,
+                    photoBase64ctx: base64,
+                }
+            })
+        } else if(img === "sign") {
+            dispatch({
+                type: "update_photo_signctx",
+                payload: {
+                    signBlobctx: blob,
+                    signBase64ctx: base64,                
+                }
+            })
+        }
+    }    
+
     const handleSidebarExpansionctx = () => {
         dispatch({
             type: "update_isSidebarExpandedctx",
@@ -427,7 +458,7 @@ const CkycProvider = ({children}) => {
             value={{
                 state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
                 handleApiRes, handleCustCategoryRes,
-                handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handleSidebarExpansionctx, handleColTabChangectx, 
+                handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
                 handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handlecustomerIDctx, handleStepStatusctx, resetCkycctx
             }}
         >
