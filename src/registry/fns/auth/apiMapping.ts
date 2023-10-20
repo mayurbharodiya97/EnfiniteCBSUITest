@@ -509,6 +509,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DODROPDOWNDML",
     packageName: "",
   },
+  GETCUSTOMERHISTORY: {
+    url: "/customerServiceAPI/GETCUSTOMERHISTORY",
+    packageName: "",
+  },
+  GETCUSTATTESTHISDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTATTESTHISDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
