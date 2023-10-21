@@ -306,7 +306,11 @@ export const FilterFormComponents = ({
                         options={column?.optiondata ?? []}
                         _optionsKey={column?._optionsKey ?? ""}
                         handleChange={handleChange}
-                        label={t(column?.label) ?? ""}
+                        label={
+                          column?.required
+                            ? `${t(column?.label)} *`
+                            : t(column?.label) ?? ""
+                        }
                         fullWidth
                         value={colomnValue[column.name]}
                         selectVariant="regular"
@@ -337,7 +341,11 @@ export const FilterFormComponents = ({
                     ) : (
                       <TextField
                         autoFocus={column?.defaultfocus ?? false}
-                        label={t(column?.label) ?? ""}
+                        label={
+                          column?.required
+                            ? `${t(column?.label)} *`
+                            : t(column?.label) ?? ""
+                        }
                         fullWidth
                         placeholder={column?.placeholder ?? ""}
                         type={column?.type ?? "text"}

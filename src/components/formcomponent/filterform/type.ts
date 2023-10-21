@@ -29,6 +29,7 @@ export interface FilterFormFieldType {
   validate?: Function;
   dependFields?: String[];
   dependFieldsonchange?: Function;
+  required?: boolean;
 }
 export interface FilterFormMetaType {
   gridConfig: FiltergridConfig;
