@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, TextField, Select, MenuItem} from '@mui/material';
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, TextField, Select, MenuItem, Checkbox, FormControlLabel} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import { CustomTabs } from '../ckyc';
@@ -50,6 +50,7 @@ import { format } from "date-fns/esm";
 import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails';
 import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
 import { useLocation, useNavigate } from 'react-router-dom';
+import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -185,7 +186,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx} = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx} = useContext(CkycContext);
   const { state: data }: any = useLocation();
   const { t } = useTranslation();
   const classes = useDialogStyles();
@@ -193,7 +194,16 @@ export default function FormModal({
   const appBarClasses = useStyles();
   // const [customerCategories, setCustomerCategories] = useState([])
   const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
-
+  // console.log("statedata", data)
+  useEffect(() => {
+    // console.log("asdasdasdsasdasdas bef", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
+    if(data?.isFormModalOpen && data?.entityType && data?.isFreshEntry) {
+      handleFormModalOpenctx(data?.entityType)
+    }
+  }, [])
+  // useEffect(() => {
+  //   console.log("asdasdasdsasdasdas.", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
+  // }, [state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx])
 
   const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
     ["getPMISCData", {}],
@@ -288,7 +298,8 @@ export default function FormModal({
         return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignature />
+        return <PhotoSignatureCpy />
+        // return <PhotoSignature />
 
       case "Details of Related Person":
         return <RelatedPersonDetails
@@ -380,7 +391,10 @@ export default function FormModal({
   return (
     // <div>
     //   <Button onClick={handleFormModalOpen}>Open modal</Button>
-      <Dialog fullScreen={true} open={state?.isFormModalOpenctx}>
+      <Dialog fullScreen={true} 
+      open={true}
+      // open={state?.isFormModalOpenctx}
+      >
         <AppBar
           position="sticky"
           color="primary"
@@ -727,6 +741,7 @@ export default function FormModal({
                       size="small"
                     />
                   </Grid>
+                  {!state?.isFreshEntryctx && <FormControlLabel control={<Checkbox checked={true} disabled />} label="Active" />}
                   {/* <ButtonGroup size="small" variant="outlined" color="secondary">
                     <Button color="secondary" onClick={() => {
                         setIsCustomerData(false)

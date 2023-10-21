@@ -117,7 +117,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
         return state?.isFreshEntryctx
                 ? state?.formDatactx["OTHER_ADDRESS"]
                     ? {OTHER_ADDRESS: state?.formDatactx["OTHER_ADDRESS"]}
-                    : {}
+                    : {OTHER_ADDRESS: [{}]}
                 : state?.retrieveFormDataApiRes
                     ? {OTHER_ADDRESS: state?.retrieveFormDataApiRes["OTHER_ADDRESS"]}
                     : {}

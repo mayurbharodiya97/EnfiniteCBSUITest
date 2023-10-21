@@ -84,7 +84,7 @@ const myGridRef = useRef<any>(null);
                 ACTIVE: "Y"
             }
 
-            let newFormatRelPerDtl = data?.RELETED_PERSON_DTL.map((el, i) => {
+            let newFormatRelPerDtl = data?.RELATED_PERSON_DTL.map((el, i) => {
                 return {...el, ...commonData, SR_CD: i+1}
             })
 
@@ -115,7 +115,7 @@ const myGridRef = useRef<any>(null);
         return state?.isFreshEntryctx
                 ? state?.formDatactx["RELATED_PERSON_DTL"]
                     ? {RELATED_PERSON_DTL: state?.formDatactx["RELATED_PERSON_DTL"]}
-                    : {}
+                    : {RELATED_PERSON_DTL: [{}]}
                 : state?.retrieveFormDataApiRes
                     ? {RELATED_PERSON_DTL: state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]}
                     : {}

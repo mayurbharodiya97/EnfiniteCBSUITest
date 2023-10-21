@@ -1,77 +1,89 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-// import { declaration_meta_data } from '../../metadata/individual/declarationdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 import * as API from "../../../../api";
 import { corporate_control_dtl_meta_data } from '../../metadata/legal/legal_corporate_control_dtl_meta_data';
-import { declaration_meta_data } from '../../metadata/individual/declarationdetails';
 // import { format } from 'date-fns';
+import { AuthContext } from "pages_audit/auth";
 
 const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
-  const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext)
-  const DeclarationFormRef = useRef<any>("")
+  const { authState } = useContext(AuthContext);
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext)
+  const formRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
-  const [currentTabFormData, setCurrentTabFormData] = useState({declaration_details: {}})
-  const DeclarationSubmitHandler = (
+  const onSubmitHandler = (
     data: any,
     displayData,
     endSubmit,
     setFieldError,
-    actionFlag
+    actionFlag,
+    hasError
    ) => {
-    setIsNextLoading(true)
-    console.log("qweqweqwe", data)     
-    if(data) {
-        // if(Boolean(data["FATCA_DT"])) {
-        //     data["FATCA_DT"] = format(new Date(data["FATCA_DT"]), "dd-MMM-yyyy")
-        // }
-        // if(Boolean(data["DATE_OF_COMMENCEMENT"])) {
-        //     data["DATE_OF_COMMENCEMENT"] = format(new Date(data["DATE_OF_COMMENCEMENT"]), "dd-MMM-yyyy")
-        // }
+        setIsNextLoading(true)
+        // console.log("qweqweqwe", data)     
+        if(data && !hasError) {
+            let newData = state?.formDatactx
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                // SR_CD: "3",
+                CONFIRMED: "N",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                ACTIVE: "Y"
+            }
+            let newFormatRelPerDtl:any = []
+            if(data && data.RELETED_PERSON_DTL) {
+                newFormatRelPerDtl = data?.RELETED_PERSON_DTL?.map((el, i) => {
+                    return {...el, ...commonData, SR_CD: i+1}
+                })
+            }
 
-        setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-
-        let newData = state?.formDatactx
-        newData["CONTROLLING_PERSON_DETAIL"] = {...newData["CONTROLLING_PERSON_DETAIL"], ...data}
-        handleFormDataonSavectx(newData)
-        // handleColTabChangectx(3)
-        // handleColTabChangectx(state?.colTabValuectx+1)
-
-        // setIsNextLoading(false)
-        API.SaveAsDraft({
-            CUSTOMER_TYPE: state?.entityTypectx,
-            CATEGORY_CD: state?.categoryValuectx,
-            ACCT_TYPE: state?.accTypeValuectx,
-            KYC_NUMBER: state?.kycNoValuectx,
-            CONSTITUTION_TYPE: state?.constitutionValuectx,
-            IsNewRow: state?.isFreshEntryctx,
-            PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL
-        })
-    }
-    endSubmit(true)
-    handleColTabChangectx(state?.colTabValuectx+1)
-    setIsNextLoading(false)
+            // newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
+            newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
+            handleFormDataonSavectx(newData)
+            // handleColTabChangectx(4)
+            handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            // setIsNextLoading(false)
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
+        setIsNextLoading(false)
+        endSubmit(true)
    }
-  const [isDeclarationExpanded, setIsDeclarationExpanded] = useState(true)
-  const handleDeclarationExpand = () => {
-    setIsDeclarationExpanded(!isDeclarationExpanded)
+  const [isFormExpanded, setIsFormExpanded] = useState(true)
+  const handleFormExpand = () => {
+    setIsFormExpanded(!isFormExpanded)
   }
 
 const myGridRef = useRef<any>(null);
+    // const initialVal = useMemo(() => {
+    //     return state?.isFreshEntryctx
+    //             ? state?.formDatactx["CONTROLLING_PERSON_DETAIL"]
+    //                 ? state?.formDatactx["CONTROLLING_PERSON_DETAIL"]
+    //                 : {}
+    //             : state?.retrieveFormDataApiRes
+    //                 ? state?.retrieveFormDataApiRes["CONTROLLING_PERSON_DETAIL"]
+    //                 : {}
+    // }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
     const initialVal = useMemo(() => {
         return state?.isFreshEntryctx
-                ? state?.formDatactx["CONTROLLING_PERSON_DETAIL"]
-                    ? state?.formDatactx["CONTROLLING_PERSON_DETAIL"]
-                    : {}
+                ? state?.formDatactx["RELATED_PERSON_DTL"]
+                    ? {RELATED_PERSON_DTL: state?.formDatactx["RELATED_PERSON_DTL"]}
+                    : {RELATED_PERSON_DTL: [{}]}
                 : state?.retrieveFormDataApiRes
-                    ? state?.retrieveFormDataApiRes["CONTROLLING_PERSON_DETAIL"]
+                    ? {RELATED_PERSON_DTL: state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]}
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
@@ -92,19 +104,19 @@ const myGridRef = useRef<any>(null);
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
                     <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("ControllingPersonDTL")}</Typography>
-                    <IconButton onClick={handleDeclarationExpand}>
-                        {!isDeclarationExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
+                    <IconButton onClick={handleFormExpand}>
+                        {!isFormExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
                 </Grid>
 
-                <Collapse in={isDeclarationExpanded}>
+                <Collapse in={isFormExpanded}>
                 <Grid item>
                     <FormWrapper 
-                        ref={DeclarationFormRef}
-                        onSubmitHandler={DeclarationSubmitHandler}
+                        ref={formRef}
+                        onSubmitHandler={onSubmitHandler}
                         // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                         initialValues={initialVal}
-                        key={"declaration-form-kyc"+ initialVal}
+                        key={"controlling-person-form-kyc"+ initialVal}
                         metaData={corporate_control_dtl_meta_data as MetaDataType}
                         formStyle={{}}
                         hideHeader={true}
@@ -122,7 +134,7 @@ const myGridRef = useRef<any>(null);
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
-                        DeclarationFormRef.current.handleSubmit(e, "save")
+                        formRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>

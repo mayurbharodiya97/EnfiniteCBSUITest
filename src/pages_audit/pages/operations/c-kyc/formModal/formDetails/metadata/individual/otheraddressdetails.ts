@@ -17,7 +17,7 @@ import * as API from "../../../../api";
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -67,7 +67,8 @@ import * as API from "../../../../api";
                     label: "AddressType",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2.4, lg: 2.4, xl:2},
                     options: () => API.getPMISCData("ADDRESS_TYPE"),
                     _optionsKey: "AddTypeOptions",
                 },
@@ -86,7 +87,7 @@ import * as API from "../../../../api";
                     },
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:6, md: 5, lg: 3.5, xl:2},
+                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
                     render: {
@@ -96,7 +97,7 @@ import * as API from "../../../../api";
                     label: "Line2",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:6, md: 5, lg: 3.5, xl:2},
+                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
                     render: {
@@ -106,7 +107,7 @@ import * as API from "../../../../api";
                     label: "Line3",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:6, md: 5, lg: 3.5, xl:2},
+                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
                     render: {
@@ -147,7 +148,7 @@ import * as API from "../../../../api";
                     },
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -158,7 +159,7 @@ import * as API from "../../../../api";
                     required: true,
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -169,7 +170,7 @@ import * as API from "../../../../api";
                     required: true,
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -179,7 +180,7 @@ import * as API from "../../../../api";
                     label: "District",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -189,7 +190,7 @@ import * as API from "../../../../api";
                     label: "State",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -199,7 +200,7 @@ import * as API from "../../../../api";
                     label: "Country",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -209,7 +210,7 @@ import * as API from "../../../../api";
                     label: "UnionTerritoriesCode",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -219,7 +220,7 @@ import * as API from "../../../../api";
                     label: "CountryCode",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
         
         
@@ -240,7 +241,7 @@ import * as API from "../../../../api";
                     label: "",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
                 },
                 {
                     render: {
@@ -250,7 +251,7 @@ import * as API from "../../../../api";
                     label: "PhoneO",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
@@ -261,7 +262,7 @@ import * as API from "../../../../api";
                     label: "",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
                 },
                 {
                     render: {
@@ -271,7 +272,7 @@ import * as API from "../../../../api";
                     label: "PhoneR",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
@@ -282,7 +283,7 @@ import * as API from "../../../../api";
                     required: true,
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
                 },
                 {
                     render: {
@@ -292,7 +293,7 @@ import * as API from "../../../../api";
                     label: "MobileNo",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
@@ -302,7 +303,7 @@ import * as API from "../../../../api";
                     label: "MobileNo",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
                 },
                 {
                     render: {
@@ -312,7 +313,7 @@ import * as API from "../../../../api";
                     label: "Fax",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
@@ -322,7 +323,7 @@ import * as API from "../../../../api";
                     label: "EmailId",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
                 },
             ]
         }

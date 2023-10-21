@@ -697,6 +697,26 @@ export const getCustDocumentOpDtl = async (COMP_CD, BRANCH_CD) => {
   }
 }
 
+export const getPhotoSignImage = async ({COMP_CD, reqCD, customerID}) => {
+  const reqObj = reqCD ? {
+    COMP_CD: COMP_CD,
+    REQUEST_CD: reqCD
+  } : {
+    COMP_CD: COMP_CD,
+    CUSTOMER_ID: customerID
+  }
+  if(reqCD || customerID) {
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTOMERHISTORY", reqObj);
+    if(status === "0") {
+      let responseData = data;
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
 export const SaveAsDraft = async ({
   CUSTOMER_TYPE,
   CATEGORY_CD,
@@ -1701,6 +1721,19 @@ export const DeactivateCustomer = async ({CUSTOMER_ID, COMP_CD}) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+
+export const getAttestHistory = async ({COMP_CD, CUSTOMER_ID}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTATTESTHISDTL", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID,
+    });
+    if(status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+} 
 
 export const getOptionsOnPinParentArea = async (dependentValue, formState, _, authState) => {
   // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.PAR_AREA_CD)

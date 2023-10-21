@@ -16,7 +16,7 @@ export const attestation_detail_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -59,7 +59,8 @@ export const attestation_detail_meta_data = {
             },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},            
         },
         {
             render: {
@@ -75,7 +76,7 @@ export const attestation_detail_meta_data = {
             // required: true,
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -96,7 +97,7 @@ export const attestation_detail_meta_data = {
             },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -106,7 +107,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationEmpCode",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -116,7 +117,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationEmpName",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -126,7 +127,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationEmpDesignation",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -136,7 +137,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationBranch",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -146,7 +147,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationDate",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -156,7 +157,7 @@ export const attestation_detail_meta_data = {
             label: "OrganizationCode",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -166,7 +167,7 @@ export const attestation_detail_meta_data = {
             label: "OrganizationName",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -176,7 +177,7 @@ export const attestation_detail_meta_data = {
             label: "PlaceOfDeclaration",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -186,7 +187,7 @@ export const attestation_detail_meta_data = {
             label: "DateOfDeclaration",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
     ]
 }
