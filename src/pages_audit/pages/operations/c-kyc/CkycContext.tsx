@@ -212,6 +212,10 @@ const CkycProvider = ({children}) => {
                 retrieveFormDataApiRes: {},
                 req_cd_ctx: "",
                 customerIDctx: "",
+                photoBlobctx: null,
+                photoBase64ctx: null,
+                signBlobctx: null,
+                signBase64ctx: null,
             }
         })
     }
