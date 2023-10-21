@@ -68,12 +68,13 @@ export const entity_detail_legal_meta_data = {
             render: {
               componentType: "formbutton",
             },
-            name: "PID_DESCRIPTION",
+            name: "SEARCH_BTN",
             label: "Search",
             endsIcon: "Search",
             rotateIcon: "scale(1.5)",
             placeholder: "",
             type: "text",
+            dependentFields: ["SURNAME"],
             GridProps: {md:1.5, lg:1.2, xl:1},
         },
         // {
