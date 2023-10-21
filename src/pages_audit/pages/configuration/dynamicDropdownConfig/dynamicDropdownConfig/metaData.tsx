@@ -146,7 +146,7 @@ export const DynamicDropdownConfigMetaData = {
           render: {
             componentType: "textField",
           },
-          name: "DISPLAY_VALUE",
+          name: "label",
           label: "Display Value",
           placeholder: "Display Value",
           GridProps: { xs: 12, sm: 3, md: 4, lg: 6, xl: 2.5 },
@@ -155,7 +155,7 @@ export const DynamicDropdownConfigMetaData = {
           render: {
             componentType: "textField",
           },
-          name: "DATA_VALUE",
+          name: "value",
           label: "Data Value",
           placeholder: "Data Value",
           GridProps: { xs: 12, sm: 3, md: 4, lg: 6, xl: 2.5 },

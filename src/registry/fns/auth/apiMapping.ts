@@ -509,6 +509,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DODROPDOWNDML",
     packageName: "",
   },
+  GETDROPDOWNDATA: {
+    url: "/commonMasterServiceAPI/GETDROPDOWNDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

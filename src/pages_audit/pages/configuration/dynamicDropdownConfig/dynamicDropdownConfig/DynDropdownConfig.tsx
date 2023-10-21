@@ -14,6 +14,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { ProcessDetailsData, utilFunction } from "components/utils";
 import { useLocation } from "react-router-dom";
 import { DynamicDropdownConfigMetaData } from "./metaData";
+import { GradientButton } from "components/styledComponent/button";
 
 export const DynamicDropdownConfig = ({
   isDataChangedRef,
@@ -41,6 +42,7 @@ export const DynamicDropdownConfig = ({
         variant: "success",
       });
 
+      isDataChangedRef.current = true;
       closeDialog();
     },
   });
@@ -98,7 +100,8 @@ export const DynamicDropdownConfig = ({
       endSubmit,
       setFieldError,
     };
-    setFormMode("view");
+    console.log(" isErrorFuncRef.current", isErrorFuncRef.current);
+    // setFormMode("view");
   };
 
   const onPopupYes = (rows) => {
@@ -123,7 +126,7 @@ export const DynamicDropdownConfig = ({
             height: "100%",
           },
         }}
-        key="actionsFormDialog"
+        key="PropsFormDialog"
       >
         <FormWrapper
           key={"DynamicDropdownConfigMetaData" + formMode}
@@ -139,11 +142,78 @@ export const DynamicDropdownConfig = ({
             background: "white",
           }}
         >
+          {/* {({ isSubmitting, handleSubmit }) => (
+              <>
+                {formMode === "edit" ? (
+                  <>
+                    <Button
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      disabled={isSubmitting}
+                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                      color={"primary"}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setFormMode("view");
+                      }}
+                      color={"primary"}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : formMode === "add" ? (
+                  <>
+                    <Button
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      disabled={isSubmitting}
+                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                      color={"primary"}
+                    >
+                      Save
+                    </Button>
+
+                    <Button
+                      onClick={closeDialog}
+                      //disabled={isSubmitting}
+                      color={"primary"}
+                    >
+                      Close
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => {
+                        setFormMode("edit");
+                      }}
+                      //disabled={isSubmitting}
+                      color={"primary"}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={closeDialog}
+                      //disabled={isSubmitting}
+                      color={"primary"}
+                    >
+                      Close
+                    </Button>
+                  </>
+                )}
+              </>
+            )} */}
           {({ isSubmitting, handleSubmit }) => (
             <>
               {formMode === "edit" ? (
                 <>
-                  <Button
+                  <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
@@ -152,8 +222,8 @@ export const DynamicDropdownConfig = ({
                     color={"primary"}
                   >
                     Save
-                  </Button>
-                  <Button
+                  </GradientButton>
+                  <GradientButton
                     onClick={() => {
                       setFormMode("view");
                     }}
@@ -161,11 +231,11 @@ export const DynamicDropdownConfig = ({
                     disabled={isSubmitting}
                   >
                     Cancel
-                  </Button>
+                  </GradientButton>
                 </>
               ) : formMode === "add" ? (
                 <>
-                  <Button
+                  <GradientButton
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
@@ -174,19 +244,19 @@ export const DynamicDropdownConfig = ({
                     color={"primary"}
                   >
                     Save
-                  </Button>
+                  </GradientButton>
 
-                  <Button
+                  <GradientButton
                     onClick={closeDialog}
                     //disabled={isSubmitting}
                     color={"primary"}
                   >
                     Close
-                  </Button>
+                  </GradientButton>
                 </>
               ) : (
                 <>
-                  <Button
+                  <GradientButton
                     onClick={() => {
                       setFormMode("edit");
                     }}
@@ -194,14 +264,14 @@ export const DynamicDropdownConfig = ({
                     color={"primary"}
                   >
                     Edit
-                  </Button>
-                  <Button
+                  </GradientButton>
+                  <GradientButton
                     onClick={closeDialog}
                     //disabled={isSubmitting}
                     color={"primary"}
                   >
                     Close
-                  </Button>
+                  </GradientButton>
                 </>
               )}
             </>

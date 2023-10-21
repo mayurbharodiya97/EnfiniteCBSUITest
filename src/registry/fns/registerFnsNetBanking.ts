@@ -23,3 +23,4 @@ registerFn("getMetadataList", GeneralAPI.getMetadataList);
 registerFn("getKYCDocTypes", GeneralAPI.getKYCDocTypes);
 registerFn("getTabelListData", GeneralAPI.getTabelListData);
 registerFn("getChequeLeavesList", GeneralAPI.getChequeLeavesList);
+registerFn("getDynDropdownData", GeneralAPI.getDynDropdownData);

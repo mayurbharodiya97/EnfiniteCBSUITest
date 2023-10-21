@@ -32,41 +32,42 @@ export const RetrievalParametersGrid = ({
   docCD,
 }) => {
   const classes = useDialogStyles();
-  const [girdData, setGridData] = useState<any>(rowsData);
+
   const myGridRef = useRef<any>(null);
   const { getEntries } = useContext(ClearCacheContext);
   const isErrorFuncRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const [girdData, setGridData] = useState<any>(rowsData);
 
-  const { data, isLoading, isError, error } = useQuery<any, any>(
-    ["getDynamicParamterConfigData"],
-    () =>
-      API.getDynamicParamterConfigData({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        docCD,
-      })
-  );
-  useEffect(() => {
-    return () => {
-      let entries = getEntries() as any[];
-      // entries.forEach((one) => {
-      //   queryClient.removeQueries(one);
-      // });
-      queryClient.removeQueries(["getDynamicParamterConfigData"]);
-    };
-  }, [getEntries]);
-  useEffect(() => {
-    if (Array.isArray(data)) {
-      setGridData(data);
-    } else {
-      setGridData([]);
-    }
-  }, [data]);
+  // const { data, isFetching, isLoading, isError, error } = useQuery<any, any>(
+  //   ["getDynamicParamterConfigData"],
+  //   () =>
+  //     API.getDynamicParamterConfigData({
+  //       COMP_CD: authState?.companyID ?? "",
+  //       BRANCH_CD: authState?.user?.branchCode ?? "",
+  //       docCD,
+  //     })
+  // );
+
+  // useEffect(() => {
+  //   return () => {
+  //     let entries = getEntries() as any[];
+  //     // entries.forEach((one) => {
+  //     //   queryClient.removeQueries(one);
+  //     // });
+  //     queryClient.removeQueries(["getDynamicParamterConfigData"]);
+  //   };
+  // }, [getEntries]);
+  // useEffect(() => {
+  //   if (Array.isArray(data)) {
+  //     setGridData(data);
+  //   } else {
+  //     setGridData([]);
+  //   }
+  // }, [data]);
 
   const onSaveRecord = async () => {
     let { hasError, data: dataold } = await myGridRef.current?.validate();
-
     if (hasError === true) {
       if (dataold) {
         setGridData(dataold);
@@ -76,28 +77,10 @@ export const RetrievalParametersGrid = ({
       if (!Array.isArray(result)) {
         result = [result];
       }
-
-      let finalResult = CreateDetailsRequestData(result);
-
-      if (
-        finalResult?.isDeleteRow?.length === 0 &&
-        finalResult?.isNewRow?.length === 0 &&
-        finalResult?.isUpdatedRow?.length === 0
-      ) {
-        onClose();
-      } else {
-        isErrorFuncRef.current = {
-          DETAILS_DATA: finalResult,
-          _isNewRow: false,
-          // data: {
-          //   _isNewRow: false,
-          // },
-        };
-        onSaveData(isErrorFuncRef.current);
-      }
+      onSaveData(result);
+      console.log("result", result);
     }
   };
-
   return (
     <Dialog
       open={isOpen}

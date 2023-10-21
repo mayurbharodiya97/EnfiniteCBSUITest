@@ -1,6 +1,7 @@
 import { getProMiscData } from "../../dynamicGridConfig/api";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getSouceListData } from "../api";
+import { GeneralAPI } from "registry/fns/functions";
 export const DynamicFormConfigMetaData = {
   form: {
     name: "Dynamicmetadataconfigure",
@@ -826,7 +827,7 @@ export const PropsComponentFormMetaData: any = {
       fixedRows: true,
       isDisplayCount: false,
       isCustomStyle: true,
-      name: "actionsDetails",
+      name: "propsDetails",
       removeRowFn: "deleteFormArrayFieldData",
       arrayFieldIDName: "DOC_CD",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
@@ -851,8 +852,8 @@ export const PropsComponentFormMetaData: any = {
           GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
           shouldExclude: (val1, dependent) => {
             if (
-              dependent["actionsDetails.PROPS_ID"]?.value === "options" ||
-              dependent["actionsDetails.PROPS_ID"]?.value === "schemaValidation"
+              dependent["propsDetails.PROPS_ID"]?.value === "options" ||
+              dependent["propsDetails.PROPS_ID"]?.value === "schemaValidation"
             ) {
               return true;
             }
@@ -871,8 +872,8 @@ export const PropsComponentFormMetaData: any = {
           GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
           shouldExclude: (val1, dependent) => {
             if (
-              dependent["actionsDetails.PROPS_ID"]?.value === "options" ||
-              dependent["actionsDetails.PROPS_ID"]?.value === "schemaValidation"
+              dependent["propsDetails.PROPS_ID"]?.value === "options" ||
+              dependent["propsDetails.PROPS_ID"]?.value === "schemaValidation"
             ) {
               return false;
             }
@@ -885,26 +886,75 @@ export const PropsComponentFormMetaData: any = {
           disableCaching: true,
         },
         {
+          render: { componentType: "select" },
+          name: "SOURCE_TYPE",
+          label: "Dropdown Source",
+
+          options: [
+            { label: "Dynamic SQL", value: "DS" },
+            { label: "Register Function", value: "RF" },
+            { label: "Defualt Option", value: "DO" },
+          ],
+          // _optionsKey: "defualt",
+          defaultValue: "Dynamic SQL",
+          required: true,
+          GridProps: { xs: 12, sm: 2, md: 3, lg: 2.5, xl: 1.5 },
+          fullWidth: true,
+          // validate: "getValidateValue",
+          runValidationOnDependentFieldsChange: true,
+          shouldExclude: (val1, dependent) => {
+            console.log("dependent", dependent);
+            if (dependent["propsDetails.OPTION_VALUE"]?.value) {
+              return false;
+            }
+
+            return true;
+          },
+          dependentFields: ["OPTION_VALUE"],
+          disableCaching: true,
+          autoComplete: "off",
+          //@ts-ignore
+          isFieldFocused: true,
+        },
+        {
           render: {
             componentType: "select",
           },
           name: "DISPLAY_VALUE",
           label: "Display Value",
-          placeholder: "Display Value",
-          GridProps: { xs: 6, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
+          type: "text",
+          // options: GeneralAPI.getDynDropdownData,
+          options: (value) => {
+            if (value?.["propsDetails[4].OPTION_VALUE"]?.value ?? "") {
+              return GeneralAPI.getDynDropdownData(
+                value?.["propsDetails[4].OPTION_VALUE"]?.value
+              );
+            }
+            return [];
+          },
+          disableCaching: true,
+          _optionsKey: "getDynDropdownData",
           runValidationOnDependentFieldsChange: true,
           dependentFields: ["OPTION_VALUE"],
           shouldExclude: (val1, dependent) => {
-            if (
-              dependent["actionsDetails.OPTION_VALUE"]?.optionData?.[0]
-                ?.SOURCE_TYPE === "DS"
-            ) {
+            const regex = /^[A-Z]+$/;
+            if (regex.test(dependent["propsDetails.OPTION_VALUE"]?.value)) {
               return false;
             }
+
             return true;
           },
+          // shouldExclude: (fieldData, dependentFieldsValues, formState) => {
+          //   if (
+          //     dependentFieldsValues["propsDetails.OPTION_VALUE"]
+          //       ?.optionData?.[0]?.SOURCE_TYPE === "DS"
+          //   ) {
+          //     return false;
+          //   }
+          //   return true;
+          // },
+          GridProps: { xs: 6, sm: 3, md: 3, lg: 3, xl: 1.5 },
         },
-
         {
           render: {
             componentType: "select",
@@ -913,17 +963,24 @@ export const PropsComponentFormMetaData: any = {
           label: "Data Value",
           placeholder: "Data Value",
           GridProps: { xs: 6, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
+          options: (value) => {
+            if (value?.["propsDetails[4].OPTION_VALUE"]?.value ?? "") {
+              return GeneralAPI.getDynDropdownData(
+                value?.["propsDetails[4].OPTION_VALUE"]?.value
+              );
+            }
+            return [];
+          },
+          disableCaching: true,
+          _optionsKey: "getDynDropdown",
           runValidationOnDependentFieldsChange: true,
           dependentFields: ["OPTION_VALUE"],
           shouldExclude: (val1, dependent) => {
-            console.log("dependent", dependent);
-            console.log("val1", val1);
-            if (
-              dependent["actionsDetails.OPTION_VALUE"]?.optionData?.[0]
-                ?.SOURCE_TYPE === "DS"
-            ) {
+            const regex = /^[A-Z]+$/;
+            if (regex.test(dependent["propsDetails.OPTION_VALUE"]?.value)) {
               return false;
             }
+
             return true;
           },
         },
@@ -931,15 +988,15 @@ export const PropsComponentFormMetaData: any = {
           render: {
             componentType: "textField",
           },
-          name: "SCHEME_MESSAGE",
+          name: "SCHEMA_MESSAGE",
           label: "SchemeValidation Message",
           placeholder: "Props Value",
           GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
           shouldExclude: (val1, dependent) => {
             if (
-              dependent["actionsDetails.PROPS_ID"]?.value === "schemaValidation"
+              dependent["propsDetails.PROPS_ID"]?.value === "schemaValidation"
             ) {
-              if (dependent["actionsDetails.OPTION_VALUE"]?.value) {
+              if (dependent["propsDetails.OPTION_VALUE"]?.value) {
                 return false;
               }
             }

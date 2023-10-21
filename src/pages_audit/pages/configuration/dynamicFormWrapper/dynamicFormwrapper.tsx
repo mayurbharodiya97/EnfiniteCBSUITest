@@ -109,40 +109,19 @@ const DynamicForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
-    // if (data) {
-    //   const booleanValue = data;
 
-    //   for (const key in booleanValue) {
-    //     if (booleanValue.hasOwnProperty(key)) {
-    //       // Check if the value is a string "true" or "false" and convert it to a boolean
-    //       if (typeof booleanValue[key] === "string") {
-    //         if (booleanValue[key].toLowerCase() === "true") {
-    //           booleanValue[key] = true;
-    //         } else if (booleanValue[key].toLowerCase() === "false") {
-    //           booleanValue[key] = false;
-    //         }
-    //       }
+    if (data) {
+      const booleanValue = data;
 
-    //       // Convert boolean values to "Y" or "N"
-    //       // if (typeof booleanValue[key] === "boolean") {
-    //       //   booleanValue[key] = booleanValue[key] ? "Y" : "N";
-    //       // }
-    //     }
-    //   }
-    // }
-    // if (data) {
-    //   const booleanValue = data;
-
-    //   for (const key in booleanValue) {
-    //     if (booleanValue.hasOwnProperty(key)) {
-    //       // Convert boolean values to "Y" or "N"
-    //       if (typeof booleanValue[key] === "boolean") {
-    //         booleanValue[key] = booleanValue[key] ? "Y" : "N";
-    //       }
-    //     }
-    //   }
-
-    // }
+      for (const key in booleanValue) {
+        if (booleanValue.hasOwnProperty(key)) {
+          // Convert boolean values to "Y" or "N"
+          if (typeof booleanValue[key] === "boolean") {
+            booleanValue[key] = booleanValue[key] ? "Y" : "N";
+          }
+        }
+      }
+    }
 
     let upd = utilFunction.transformDetailsData(
       data,
@@ -164,7 +143,7 @@ const DynamicForm: FC<{
       endSubmit,
       setFieldError,
     };
-
+    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
     setIsOpenSave(true);
   };
 

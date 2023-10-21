@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQueries, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import { clone, cloneDeep } from "lodash-es";
 import * as API from "../api";
@@ -36,7 +36,7 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { MyFullScreenAppBar } from "pages_audit/appBar/fullScreenAppbar";
-import { utilFunction } from "components/utils";
+import { CreateDetailsRequestData, utilFunction } from "components/utils";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -107,18 +107,35 @@ const DynamicGridConfig: FC<{
     error: { error_msg: "", error_detail: "" },
   });
 
-  const {
-    data: gridData,
-    isLoading,
-    isError,
-    error,
-  } = useQuery<any, any>(["getDynamicGridColConfigData"], () =>
-    API.getDynamicGridColConfigData({
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      docCD,
-    })
-  );
+  const result = useQueries([
+    {
+      queryKey: ["getDynamicGridColConfigData", docCD],
+      queryFn: () =>
+        API.getDynamicGridColConfigData({
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          docCD,
+        }),
+    },
+    {
+      queryKey: ["getDynamicParamterConfigData", docCD],
+      queryFn: () =>
+        API.getDynamicParamterConfigData({
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          docCD,
+        }),
+    },
+  ]);
+  const loading = result[0].isLoading || result[0].isFetching;
+  let isError = result[0].isError;
+  //@ts-ignore
+  let errorMsg = `${result[0].error?.error_msg}`;
+  errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
+
+  //@ts-ignore
+  let error_detail = `${result[0]?.error?.error_detail}`;
+
   useEffect(() => {
     if (
       location.pathname ===
@@ -201,13 +218,9 @@ const DynamicGridConfig: FC<{
         // console.log(oldData, [...existingData, ...newData]);
         return [...existingData, ...newData];
       });
+
       myparameterDataRef.current = data?.[0]?.PARAMETERS;
-      //   .map((item) => {
-      //   return {
-      //     ...item,
-      //     _isNewRow: true,
-      //   };
-      // });
+
       setformName("dynDetail" + myVerifyCntRef.current);
       myVerifyCntRef.current = myVerifyCntRef.current + 1;
       setLocalError(false, "", "");
@@ -285,7 +298,9 @@ const DynamicGridConfig: FC<{
             (item) => item?.COLUMN_ACCESSOR === data?.ROWID_COLUMN
           )) ||
         (formMode === "edit" &&
-          !gridData.find((item) => item.COLUMN_ACCESSOR === data?.ROWID_COLUMN))
+          !result[0]?.data.find(
+            (item) => item.COLUMN_ACCESSOR === data?.ROWID_COLUMN
+          ))
       ) {
         setFieldErrors({
           ROWID_COLUMN: "Please enter a correct ROWID_COLUMN",
@@ -331,8 +346,11 @@ const DynamicGridConfig: FC<{
           }
         }
       }
-      data.PARAMETER = myparameterDataRef.current;
 
+      let finalResult = CreateDetailsRequestData(myparameterDataRef.current);
+      data.PARAMETER = {
+        DETAILS_DATA: finalResult,
+      };
       data.DETAILS_DATA["isUpdatedRow"] = data?.DETAILS_DATA?.isUpdatedRow?.map(
         (item) => {
           return {
@@ -362,8 +380,8 @@ const DynamicGridConfig: FC<{
 
       if (
         data["_UPDATEDCOLUMNS"].length === 0 &&
-        data.DETAILS_DATA["isUpdatedRow"].length === 0 &&
-        data.PARAMETER.DETAILS_DATA["isUpdatedRow"].length === 0
+        data.DETAILS_DATA?.isUpdatedRow?.length === 0 &&
+        data?.PARAMETER?.isUpdatedRow?.length === 0
       ) {
         closeDialog();
       } else {
@@ -403,7 +421,12 @@ const DynamicGridConfig: FC<{
     setSqlSyntax(reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "");
     myoldSqlSyntaxRef.current = reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "";
     mynewSqlSyntaxRef.current = reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "";
-  }, [gridData]);
+  }, [result[0].data]);
+
+  useEffect(() => {
+    myparameterDataRef.current = result[1].data ?? [];
+  }, [result[1].data]);
+
   const dynamicLabel =
     formMode !== "add"
       ? "Dynamic Grid Configure" +
@@ -413,7 +436,7 @@ const DynamicGridConfig: FC<{
 
   return (
     <>
-      {isLoading ? (
+      {loading ? (
         <div style={{ margin: "2rem" }}>
           <LoaderPaperComponent />
           {typeof closeDialog === "function" ? (
@@ -429,8 +452,8 @@ const DynamicGridConfig: FC<{
           <div style={{ margin: "1.2rem" }}>
             <Alert
               severity="error"
-              errorMsg={error?.error_msg ?? ""}
-              errorDetail={error?.error_detail ?? ""}
+              errorMsg={errorMsg}
+              errorDetail={error_detail ?? ""}
             />
           </div>
         </>
@@ -490,7 +513,7 @@ const DynamicGridConfig: FC<{
                         onClick={(event) => {
                           myRef.current?.onSubmitHandler(event);
                         }}
-                        disabled={isLocalLoading}
+                        // disabled={isLocalLoading}
                         // endIcon={
                         //   isLocalLoading ? <CircularProgress size={20} /> : null
                         // }
@@ -519,7 +542,7 @@ const DynamicGridConfig: FC<{
                         onClick={(event) => {
                           myRef.current?.onSubmitHandler(event);
                         }}
-                        disabled={isLocalLoading}
+                        // disabled={isLocalLoading}
                         endIcon={
                           isLocalLoading ? <CircularProgress size={20} /> : null
                         }
@@ -553,7 +576,7 @@ const DynamicGridConfig: FC<{
                 initialData={{
                   _isNewRow: formMode === "add" ? true : false,
                   ...updatedReqData,
-                  DETAILS_DATA: gridData,
+                  DETAILS_DATA: result[0].data,
                 }}
                 displayMode={formMode === "add" ? "New" : formMode}
                 isLoading={formMode === "view" ? true : isLocalLoading}

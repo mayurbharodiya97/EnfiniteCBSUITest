@@ -56,15 +56,15 @@ export const PropsConfigForm: FC<{
   const { authState } = useContext(AuthContext);
   const { getEntries } = useContext(ClearCacheContext);
   const {
-    data: actionData,
+    data: PropsData,
     isLoading,
     isFetching,
     isError,
     error,
     refetch,
   } = useQuery<any, any>(
-    ["getGridFieldComponentData", { ...reqDataRef.current }],
-    () => API.getGridFieldComponentData({ ...reqDataRef.current })
+    ["getFormFieldPropsData", { ...reqDataRef.current }],
+    () => API.getFormFieldPropsData({ ...reqDataRef.current })
   );
 
   const mutation = useMutation(API.dynamiPropsConfigDML, {
@@ -93,7 +93,7 @@ export const PropsConfigForm: FC<{
         queryClient.removeQueries(one);
       });
       queryClient.removeQueries([
-        "getGridFieldComponentData",
+        "getFormFieldPropsData",
         { ...reqDataRef.current },
       ]);
     };
@@ -110,7 +110,6 @@ export const PropsConfigForm: FC<{
   const onPopupYes = (rows) => {
     mutation.mutate(rows);
   };
-
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -120,8 +119,8 @@ export const PropsConfigForm: FC<{
   ) => {
     // @ts-ignore
     endSubmit(true);
-    let oldData = actionData;
-    let newData = data?.actionsDetails.map((item) => {
+    let oldData = PropsData;
+    let newData = data?.propsDetails.map((item) => {
       // Replace OPTION_VALUE with PROPS_VALUE if OPTION_VALUE exists
       if (item?.OPTION_VALUE) {
         item.PROPS_VALUE = item.OPTION_VALUE;
@@ -156,6 +155,7 @@ export const PropsConfigForm: FC<{
       endSubmit,
       setFieldError,
     };
+    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
   };
   if (PropsComponentFormMetaData.form.label) {
     PropsComponentFormMetaData.form.label =
@@ -183,7 +183,7 @@ export const PropsConfigForm: FC<{
             metaData={PropsComponentFormMetaData as MetaDataType}
             // displayMode={formMode}
             onSubmitHandler={onSubmitHandler}
-            initialValues={{ actionsDetails: actionData } as InitialValuesType}
+            initialValues={{ propsDetails: PropsData } as InitialValuesType}
             // hideHeader={true}
             formStyle={{
               background: "white",

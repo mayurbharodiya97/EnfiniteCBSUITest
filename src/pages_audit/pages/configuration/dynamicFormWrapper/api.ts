@@ -24,8 +24,34 @@ export const getDynamicFormMetaData = async ({
       // Initialize an object to store all the matching props
       const matchingPropsObject = {};
       // Iterate over matchingProps and add them to the object
-      matchingProps.forEach((matchingProp) => {
-        matchingPropsObject[matchingProp.PROPS_ID] = matchingProp.PROPS_VALUE;
+      const arrayObjectRegExp = /^\[\{.*\}\]$/;
+
+      matchingProps.forEach(async (matchingProp) => {
+        if (
+          matchingProp.PROPS_ID === "options" &&
+          arrayObjectRegExp.test(matchingProp.PROPS_VALUE)
+        ) {
+          // Apply specific condition for the "options" PROPS_ID with the array of objects format
+
+          const parsedValue = JSON.parse(matchingProp.PROPS_VALUE);
+          matchingPropsObject[matchingProp.PROPS_ID] = parsedValue;
+        } else {
+          matchingPropsObject[matchingProp.PROPS_ID] = matchingProp.PROPS_VALUE;
+        }
+        // For that Dyanmic SQL Function call for api calling purpose
+        const regex = /^[A-Z]+$/;
+        if (
+          matchingProp.PROPS_ID === "options" &&
+          regex.test(matchingProp.PROPS_VALUE)
+        ) {
+          matchingPropsObject[matchingProp.PROPS_ID] =
+            createChargeTemplateFetcher(
+              matchingProp.PROPS_VALUE,
+              matchingProp.DISPLAY_VALUE,
+              matchingProp.DATA_VALUE
+            );
+        }
+        // value get in string so convert to boolean
         if (matchingProp.PROPS_VALUE === "true") {
           matchingPropsObject[matchingProp.PROPS_ID] = true;
         } else if (matchingProp.PROPS_VALUE === "false") {
@@ -124,6 +150,7 @@ export const getDynamicFormMetaData = async ({
       fields: field,
       // fields: filter,
     };
+    console.log("result", result);
     return result;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -134,13 +161,42 @@ export const getDynamicFormData = (DocID) => async (formData: any) => {
     `/commonMasterServiceAPI/DOFORMDML/${DocID}`,
     formData
   );
-  //   await AuthSDK.internalFetcher(
-  //   "DOFORMDML",
-  //   formData
-  // );
   if (status === "0") {
     return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
+};
+const createChargeTemplateFetcher = (
+  PROPS_VALUE,
+  DISPLAY_VALUE,
+  DATA_VALUE
+) => {
+  const GetChargeTemplates = async (_, __, ___, dependent) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher(
+        `/enfinityCommonServiceAPI/GETDYNAMICDATA/${PROPS_VALUE}`,
+        {}
+      );
+    if (status === "0") {
+      console.log("data", data);
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
+            return {
+              value: DATA_VALUE,
+              label: DISPLAY_VALUE,
+              ...other,
+            };
+          }
+        );
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
+  return GetChargeTemplates;
 };

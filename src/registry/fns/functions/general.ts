@@ -263,7 +263,6 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
-      console.log("<<<dare", responseData);
       const newObject = {
         DOC_CD: "DEFAULT",
         USER_DEFINE_CD: "DEFAULT",
@@ -461,6 +460,28 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+  const getDynDropdownData = async (ReqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETDROPDOWNDATA", {
+        ACTION: ReqData,
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
+          return {
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        });
+      }
+
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -481,6 +502,7 @@ const GeneralAPISDK = () => {
     getKYCDocTypes,
     getTabelListData,
     getChequeLeavesList,
+    getDynDropdownData,
   };
 };
 
