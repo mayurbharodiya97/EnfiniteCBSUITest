@@ -11,11 +11,29 @@ import {
   Typography,
 } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import React from "react";
+import React, { useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { getApiFormMetadata } from "./getApiiFormMetadata";
+import { SubmitFnType } from "packages/form";
 
 const GetApiFormCustom = ({ closeDialog }) => {
+  const formRef = useRef<any>(null);
+
+  const ClickEventManage = () => {
+    let event: any = { preventDefault: () => {} };
+    formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+  };
+  const onSubmitHandler: SubmitFnType = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    value
+  ) => {
+    console.log("<<<onsubmit", data);
+    //@ts-ignore
+    endSubmit(true);
+  };
   return (
     <>
       <DialogTitle
@@ -40,7 +58,7 @@ const GetApiFormCustom = ({ closeDialog }) => {
       >
         <Typography>Get Api Configuration</Typography>
         <DialogActions>
-          <Button>Save</Button>
+          <Button onClick={ClickEventManage}>Save</Button>
           <Button onClick={closeDialog}>Close</Button>
         </DialogActions>
       </DialogTitle>
@@ -50,21 +68,18 @@ const GetApiFormCustom = ({ closeDialog }) => {
             key={`MerchantOnboardConfig`}
             metaData={getApiFormMetadata as MetaDataType}
             initialValues={[]}
-            // onSubmitHandler={onSubmitHandler}
+            onSubmitHandler={onSubmitHandler}
             formStyle={{
               background: "white",
             }}
             hideHeader={true}
-
             // onFormButtonCicular={mutation.isLoading}
-            // ref={formRef}
+            ref={formRef}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
                 <Button
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
+                  onClick={ClickEventManage}
                   disabled={isSubmitting}
                   //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                   color={"primary"}

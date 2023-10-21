@@ -2,7 +2,7 @@ export const getApiFormMetadata: any = {
   form: {
     refID: 1667,
     name: "ActionsMetaData",
-    label: "Select-Get Api Configuration",
+    label: "Select-Get API Configuration",
     resetFieldOnUmnount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -42,7 +42,7 @@ export const getApiFormMetadata: any = {
   fields: [
     {
       render: { componentType: "textField", group: 0 },
-      name: "USER_ID",
+      name: "ACTION",
       sequence: 1,
       type: "text",
       label: "Action",
@@ -54,7 +54,7 @@ export const getApiFormMetadata: any = {
     },
     {
       render: { componentType: "textField", group: 0 },
-      name: "GROUP_NAME",
+      name: "GET_API_TYPE",
       sequence: 6,
       type: "text",
       label: "Get Api Type",
@@ -65,7 +65,7 @@ export const getApiFormMetadata: any = {
 
     {
       render: { componentType: "autocomplete", group: 0 },
-      name: "DEFAULT_BRANCH",
+      name: "DOC_CD",
       sequence: 8,
       defaultValue: "DEFAULT",
       type: "text",
@@ -80,9 +80,9 @@ export const getApiFormMetadata: any = {
       render: {
         componentType: "arrayField",
       },
-      name: "actionsDetails",
+      name: "requestParameters",
       removeRowFn: "deleteFormArrayFieldData",
-
+      label: "Request Parameter(s)",
       arrayFieldIDName: "DOC_CD",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
@@ -90,7 +90,7 @@ export const getApiFormMetadata: any = {
           render: {
             componentType: "textField",
           },
-          name: "ACTIONLABEL",
+          name: "REQ_PARA_NM",
           label: "Request Parameter Name",
           placeholder: "Request Parameter",
           schemaValidation: {
@@ -104,7 +104,7 @@ export const getApiFormMetadata: any = {
           render: {
             componentType: "autocomplete",
           },
-          name: "ICON_TYPE",
+          name: "DATA_TYPE",
           label: "Data Type",
           defaultValue: "STRING",
           options: [
@@ -120,13 +120,12 @@ export const getApiFormMetadata: any = {
           render: {
             componentType: "numberFormat",
           },
-          name: "ALRT_MSG",
+          name: "SEQ_ID",
           label: "Sequence Id",
           placeholder: "Var sequence id",
           GridProps: { xs: 12, md: 3.5, sm: 3.5, xl: 3.5, lg: 3.5 },
           FormatProps: {
             isAllowed: (values) => {
-              console.log("<<<isallo", values);
               if (values?.value === "-") {
                 return false;
               }

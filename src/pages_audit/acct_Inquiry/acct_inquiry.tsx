@@ -152,7 +152,6 @@ export const Accountinquiry = ({ open, onClose }) => {
           onKeyPress={(e) => {
             if (e.key === "Enter") {
               let target: any = e?.target;
-              console.log("<<<enter", e);
               if (target?.value) {
                 ClickEventManage();
               }

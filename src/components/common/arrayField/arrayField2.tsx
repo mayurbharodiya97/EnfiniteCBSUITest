@@ -197,11 +197,25 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       />
     );
   });
+  const cardHeaderTitleStyle = {
+    background: "var(--theme-color5)",
+    ml: 1.5,
+    mt: 1,
+    p: 1,
+    color: "var(--theme-color2)",
+  };
   let result = (
     <Fragment>
       <Card className={classes.arrayRowCard}>
         <CardHeader
           style={{ padding: "0px" }}
+          sx={{
+            "& .MuiCardHeader-title": label ? cardHeaderTitleStyle : null,
+            "& .MuiCardHeader-action": {
+              my: 1,
+              mr: 0,
+            },
+          }}
           title={label}
           action={
             !Boolean(fixedRows) ? (

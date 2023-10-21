@@ -1,6 +1,7 @@
 import {
   AppBar,
   Box,
+  Button,
   Container,
   Grid,
   LinearProgress,
@@ -9,28 +10,31 @@ import {
 } from "@mui/material";
 import React, { useContext, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
-import { GetdetailData } from "../chequeBookTab/chequebookTab";
+import { AuthSDK } from "registry/fns/auth";
+import { DefaultErrorObject } from "components/utils";
 import { Alert } from "components/common/alert";
-import { limitEntryMetaData } from "./limitEntryMetadata";
+import { LienGridMetaData } from "./lienEntryGridMetaData";
+import { LienEntryMetadata } from "./lienEntryMetadata";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
-import { SubmitFnType } from "packages/form";
-export const LimitEntry = () => {
-  const [value, setValue] = useState("chequebookEntry");
+
+export const LienEntry = () => {
+  const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
-  const { authState } = useContext(AuthContext);
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
+  const { authState } = useContext(AuthContext);
 
   const mutation: any = useMutation(GetdetailData, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
+
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
     myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
@@ -39,13 +43,13 @@ export const LimitEntry = () => {
     data: any,
     displayData,
     endSubmit,
-    setFieldError
+    setFieldError,
+    value
   ) => {
     //@ts-ignore
     endSubmit(true);
-    limitEntryMetaData.form.label = " ";
-    let ApiKey: any = limitEntryMetaData?.form?.apiKey;
-    let apiID: any = limitEntryMetaData?.form?.apiID;
+    let ApiKey: any = LienEntryMetadata?.form?.apiKey;
+    let apiID: any = LienEntryMetadata?.form?.apiID;
     let response = {};
     for (const key in ApiKey) {
       if (ApiKey.hasOwnProperty(key)) {
@@ -53,22 +57,12 @@ export const LimitEntry = () => {
         response[key] = data[mappedKey];
       }
     }
-
     let otherAPIRequestPara = {
       COMP_CD: authState?.companyID,
       ...response,
       ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
     };
     mutation.mutate({ apiID, otherAPIRequestPara });
-    limitEntryMetaData.fields[3].isFieldFocused = true;
-    limitEntryMetaData.form.label =
-      "Cheque Book Issue " +
-      " " +
-      authState?.companyID +
-      data?.BRANCH_CD +
-      data?.ACCT_TYPE +
-      data?.ACCT_CD;
-    // .replace(data?.BRANCH_CD, data?.BRANCH_CD);
   };
   return (
     <>
@@ -80,9 +74,9 @@ export const LimitEntry = () => {
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
-          <Tab value="chequebookEntry" label="Limit Entry" />
-          <Tab value="chequebookDetail" label="Limit Detail" />
-          {/* <Tab value="three" label="Item Three" /> */}
+          <Tab value="tab1" label="Lien Entry" />
+          <Tab value="tab2" label="Lien Detail" />
+          {/* <Tab value="tab3" label="Processed Cheque(s) Detail" /> */}
         </Tabs>
       </Box>
 
@@ -118,14 +112,14 @@ export const LimitEntry = () => {
               </AppBar>
             </div>
           ) : null}
-          {value === "chequebookEntry" ? (
+          {value === "tab1" ? (
             <div
               onKeyDown={(e) => {
                 if (e.key === "Tab") {
                   let target: any = e?.target;
                   if (
                     (target?.name ?? "") ===
-                    limitEntryMetaData.form.name + "/ACCT_CD"
+                    LienEntryMetadata.form.name + "/ACCT_CD"
                   ) {
                     ClickEventManage();
                   }
@@ -139,12 +133,12 @@ export const LimitEntry = () => {
               )}
               <FormWrapper
                 key={
-                  "chequebookEntry" + mutation?.data?.length &&
+                  "stopPayEntry" + mutation?.data?.length &&
                   Boolean(mutation?.isSuccess)
                     ? mutation?.data
                     : ""
                 }
-                metaData={limitEntryMetaData as MetaDataType}
+                metaData={LienEntryMetadata ?? []}
                 initialValues={mutation?.data?.[0] ?? []}
                 onSubmitHandler={onSubmitHandler}
                 // displayMode={"view"}
@@ -158,13 +152,28 @@ export const LimitEntry = () => {
                 // }}
                 hideHeader={false}
                 ref={myMasterRef}
-              />
+              >
+                {({ isSubmitting, handleSubmit }) => (
+                  <>
+                    <Button
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      disabled={isSubmitting}
+                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                      color={"primary"}
+                    >
+                      Save
+                    </Button>
+                  </>
+                )}
+              </FormWrapper>
             </div>
-          ) : value === "chequebookDetail" ? (
+          ) : value === "tab2" ? (
             <>
               <GridWrapper
                 key={`personalizeQuickView`}
-                finalMetaData={limitEntryGridMetaData as GridMetaDataType}
+                finalMetaData={LienGridMetaData as GridMetaDataType}
                 data={mutation.data ?? []}
                 setData={() => {}}
                 // loading={saveQuickData.isLoading}
@@ -184,4 +193,15 @@ export const LimitEntry = () => {
       </Container>
     </>
   );
+};
+export const GetdetailData = async ({ apiID, otherAPIRequestPara }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(apiID, {
+      ...otherAPIRequestPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };

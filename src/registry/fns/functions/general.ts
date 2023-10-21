@@ -263,7 +263,6 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
-      console.log("<<<dare", responseData);
       const newObject = {
         DOC_CD: "DEFAULT",
         USER_DEFINE_CD: "DEFAULT",
