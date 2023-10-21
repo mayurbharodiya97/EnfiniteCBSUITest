@@ -13,6 +13,9 @@ const StockEntry = lazy(() => import("./stockEntry"));
 const StoppaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const Ckyc = lazy(() => import("./c-kyc"));
+const CashReceiptEntry = lazy(
+  () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
+);
 // const DetailMastersData = lazy(() => import("../components/formcomponent/detailMaster/detailStatic"));
 
 export const OperationsMenu = () => (
@@ -23,6 +26,7 @@ export const OperationsMenu = () => (
     <Route path="stock-entry/*" element={<StockEntry />} />
     <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
+    <Route path="teller/*" element={<CashReceiptEntry />} />
     {/* <Route
       path="chequebook-entry/*"
       element={<DetailMastersData screenFlag="GETCHEQUEBOOK" />}

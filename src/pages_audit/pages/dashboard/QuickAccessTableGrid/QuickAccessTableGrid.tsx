@@ -31,7 +31,6 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import CashReceiptEntry from "../noteDenomination/cashReceiptEntry";
 
 const useHeaderStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -59,7 +58,6 @@ const QuickAccessTableGrid = () => {
   const [apiData, setApiData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
   const [activeButton, setActiveButton] = useState("Favourites");
-  const [testA, setTestA] = useState(false);
   const headerClasses = useHeaderStyles();
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
@@ -131,61 +129,6 @@ const QuickAccessTableGrid = () => {
     }
   };
 
-  const dOpen = () => {
-    setTestA(true);
-  };
-
-  const handleCloseDialog = () => {
-    setTestA(false);
-  };
-
-  const creAmForCashReceipt = 10000;
-  const trx: any = "4";
-
-  const propData = [
-    {
-      label: "Payment",
-      value: "4",
-      textField: "N",
-    },
-    {
-      label: "Acount Number",
-      value: "1320990003000005",
-      textField: "N",
-    },
-
-    {
-      label: "Amount",
-      value: creAmForCashReceipt,
-      textField: "N",
-    },
-    {
-      label: "Remark",
-      value: "BY CASH  ----",
-      textField: "Y",
-    },
-    {
-      label: "Limit",
-      value: "50000",
-      textField: "N",
-    },
-    {
-      label: "",
-      value: "Narendra Dabhi",
-      textField: "N",
-    },
-    // {
-    //   receipt: "1",
-    //   bank: "132",
-    //   branch: "099",
-    //   type: "0003",
-    //   AC_number: "000005",
-    //   amount: creAmForCashReceipt,
-    //   name: "ABC BHAI ABC BHAI ABC",
-    //   remark: "BY CASH --",
-    // },
-  ];
-
   return (
     <>
       {/* <AppBar
@@ -206,16 +149,6 @@ const QuickAccessTableGrid = () => {
       ) : null}
       <Toolbar className={headerClasses.root} variant={"dense"}>
         {" "}
-        <GradientButton
-          style={{
-            width: "38px",
-            minWidth: "38px",
-            padding: "0",
-          }}
-          onClick={dOpen}
-        >
-          =
-        </GradientButton>
         <Typography
           className={headerClasses.title}
           color="secondary"
@@ -323,14 +256,6 @@ const QuickAccessTableGrid = () => {
         loading={isLoading || isFetching}
         refetchData={() => refetch()}
       />
-      {testA && (
-        <CashReceiptEntry
-          open={testA}
-          handleCloseDialog={handleCloseDialog}
-          props={propData}
-          trx={trx}
-        />
-      )}
     </>
   );
 };

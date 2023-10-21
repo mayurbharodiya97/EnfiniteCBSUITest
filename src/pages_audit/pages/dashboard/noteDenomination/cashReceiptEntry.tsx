@@ -9,12 +9,23 @@ import {
   TableHead,
   TableRow /*TextField*/,
   TableSortLabel,
+  Button,
+  Autocomplete,
+  Slide,
+  // TextField,
 } from "@mui/material";
 import { Dialog, Typography } from "@mui/material";
 import * as API from "./api";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { GradientButton } from "components/styledComponent/button";
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { useStyles, StyledTableCell } from "./style";
@@ -22,37 +33,77 @@ import { TextField } from "components/styledComponent";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import getCurrencySymbol from "components/custom/getCurrencySymbol";
 import { FormatCurrency } from "components/custom/currencySymbol";
+import FormWrapper from "components/dyanmicForm";
+// import { DenominationScreenMetaData } from "./metadata";
+import { SubmitFnType } from "packages/form";
+import {
+  FilterFormMetaType,
+  FormComponentView,
+} from "components/formcomponent";
+import { DenominationScreenMetaData } from "./metadata";
+import { UpdateRequestDataVisibleColumn } from "components/utils";
 
-const CashReceiptEntry = ({ open, handleCloseDialog, props, trx }) => {
+const labelStaticStyle = {
+  "&.MuiInputLabel-root": {
+    position: "static", // Set the label position to static
+  },
+};
+
+const CashReceiptEntry = () => {
   const [inputVal, setInputVal] = useState<any>({});
   const [displayError, setDisplayError] = useState<string[]>([]);
   const [multiplicationResult, setMultiplicationResult] = useState<any>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [confirmation, setConfirmation] = useState(false);
-  const [forRemark, setForRemark] = useState();
   const [displayTotal, setDisplayTotal] = useState<any>([]);
-  const [totalInputAmount, setTotalInputAmount] = useState<number>(0);
+  const [totalInputAmount, setTotalInputAmount] = useState<any>(0);
   const [availNote, setAvailNote] = useState<any>([]);
-  const { authState } = useContext(AuthContext);
-
   const customParameter = useContext(CustomPropertiesConfigurationContext);
-
+  const [retData, setRetData] = useState<any>({});
+  const [displayTable, setDisplayTable] = useState(false);
+  const [balance, setBalance] = useState<any>([]);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
 
-  useEffect(() => {
-    props?.map((item) => {
-      if (item?.textField === "Y") {
-        setForRemark(item?.value);
+  // useEffect(() => {
+  //   props?.map((item) => {
+  //     if (item?.textField === "Y") {
+  //       setForRemark(item?.value);
+  //     }
+  //   });
+  // }, [props]);
+
+  const getData: any = useMutation(API.CashReceiptEntrysData, {
+    onSuccess: (response: any) => {
+      setDisplayTable(true);
+    },
+    onError: (error: any) => {
+      setDisplayTable(false);
+    },
+  });
+
+  const ClickEventManage = useCallback(
+    (data, columnvisible) => {
+      let retdata = UpdateRequestDataVisibleColumn(data, columnvisible);
+      setRetData(retdata);
+      {
+        getData.mutate({ a: "a", b: "b" });
       }
-    });
-  }, [props]);
+    },
+    [getData]
+  );
+
+  const data: any = useMemo(() => {
+    if (Array.isArray(getData.data)) {
+      return [...getData.data];
+    }
+  }, [getData.data, retData]);
 
   const classes = useStyles();
-  const { data } = useQuery<any, any>(["CashReceiptEntrysData"], () =>
-    API.CashReceiptEntrysData()
-  );
-  const withdrawAmount = 8000;
-  const upadatedFinalAmount: number = 8000 - totalAmount;
+  // const { data } = useQuery<any, any>(["CashReceiptEntrysData"], () =>
+  //   API.CashReceiptEntrysData()
+  // );
+  const withdrawAmount = retData?.RECEIPT_PAYMENT;
+  const upadatedFinalAmount: number = withdrawAmount - totalAmount;
 
   useEffect(() => {
     setAvailNote(
@@ -60,99 +111,145 @@ const CashReceiptEntry = ({ open, handleCloseDialog, props, trx }) => {
         return el?.AVAIL_NOTE;
       })
     );
+    setBalance(
+      data?.map((el) => {
+        return el?.TOTAL_AMNT;
+      })
+    );
+    // data?.map((elem) => {
+    //   setAvailNote(elem?.AVAIL_NOTE);
+    //   setBalance(elem?.TOTAL_AMNT);
+    // });
   }, [data]);
 
   const handleChange = (value, index) => {
+    //apply acceptable value validation in this
     if (value.startsWith("-")) {
       value = "-" + value.replace(/[^0-9]/g, "");
     } else {
       value = value.replace(/[^0-9]/g, "");
     }
-    // console(value);
+
     let updatedValue = { ...inputVal };
     updatedValue[index] = value;
     setInputVal(updatedValue);
-    const multipliedValue = parseFloat(value) * parseFloat(data?.[index]?.NOTE);
+
+    //setted multiplied values According to  index
+
+    const multipliedValue: any =
+      parseFloat(value) * parseFloat(data?.[index]?.NOTE);
     const updatedMultipliedValue = [...multiplicationResult];
     updatedMultipliedValue[index] = multipliedValue;
     setMultiplicationResult(updatedMultipliedValue);
 
+    //***************************/
     let calcAvailNotValue;
-    if (trx === "4") {
+    let calcBalance;
+    if (retData.TRN === "P") {
       if (value && data?.length > 0 && !isNaN(value) && value !== undefined) {
-        calcAvailNotValue = data?.[index]?.AVAIL_NOTE - value;
+        calcAvailNotValue =
+          parseFloat(data?.[index]?.AVAIL_NOTE) - parseFloat(value);
+        calcBalance =
+          parseFloat(data?.[index]?.TOTAL_AMNT) - parseFloat(multipliedValue);
+      } else {
+        calcAvailNotValue = parseFloat(data?.[index]?.AVAIL_NOTE);
+        calcBalance = parseFloat(data?.[index]?.TOTAL_AMNT);
       }
-    } else if (trx === "1") {
+    } else if (retData.TRN === "R") {
       if (value && data?.length > 0 && !isNaN(value) && value !== undefined) {
-        calcAvailNotValue = data?.[index]?.AVAIL_NOTE + value;
+        calcAvailNotValue =
+          parseFloat(data?.[index]?.AVAIL_NOTE) + parseFloat(value);
+        calcBalance =
+          parseFloat(data?.[index]?.TOTAL_AMNT) + parseFloat(multipliedValue);
+      } else {
+        calcAvailNotValue = parseFloat(data?.[index]?.AVAIL_NOTE);
+        calcBalance = parseFloat(data?.[index]?.TOTAL_AMNT);
       }
     }
 
     const updatedCalcAvailNotes = [...availNote];
     updatedCalcAvailNotes[index] = calcAvailNotValue;
     setAvailNote(updatedCalcAvailNotes);
-    // Calculate the total input amount and update state
-    const newTotalInputAmount: any = Object.values(updatedValue).reduce(
-      (acc: any, val: any) => acc + (parseFloat(val) || 0),
-      0
-    );
-    setTotalInputAmount(newTotalInputAmount);
+
+    const updatedBalance = [...balance];
+    updatedBalance[index] = calcBalance;
+    setBalance(updatedBalance);
+    //*********************//
   };
 
-  const updateTotalAmount = (index) => {
+  const updateTotalAmount = (event, index) => {
+    let value = event.target.value;
     let sum = 0;
+    //get total of all multiplied values
+
     multiplicationResult?.forEach((item) => {
       if (!isNaN(item)) {
         sum += parseFloat(item);
       }
     });
 
+    //for set error according to index
     const newDisplayErrors = [...displayError];
 
-    setTotalAmount((preValue) => {
-      return preValue;
-    });
     newDisplayErrors[
       index
     ] = `Denomination ${data?.[index]?.NOTE} should be less than or equal to Total Amount`;
 
-    ////////
+    //condition for if TRN is Receipt and values is -(negative) and greater then of TotalAmount(absolute(if have - or have + not affect))
 
     if (
-      trx === "1" &&
+      retData.TRN === "R" &&
       multiplicationResult[index] < 0 &&
-      Math.abs(multiplicationResult[index]) > data[index].TOTAL_AMNT
+      Math.abs(multiplicationResult[index]) > data[index]?.TOTAL_AMNT
     ) {
       setDisplayError(newDisplayErrors);
+
+      //set multiplication is `0` when err0 is occurs according to index
       setMultiplicationResult((preVal) => {
         const updatedRslt = [...preVal];
         updatedRslt[index] = 0;
         return updatedRslt;
       });
+
+      //for clear input whe error occur according to index
       const updatedInputVal = { ...inputVal };
       updatedInputVal[index] = "";
       setInputVal(updatedInputVal);
-      setTotalInputAmount((preValue) => preValue);
-    } else if (
-      trx === "4" &&
+    }
+
+    //condition for if TRN is Payment and values is +(positive) and greater then of TotalAmount
+    else if (
+      retData.TRN === "P" &&
       multiplicationResult[index] > 0 &&
-      multiplicationResult[index] > data[index].TOTAL_AMNT
+      multiplicationResult[index] > data[index]?.TOTAL_AMNT
     ) {
       setDisplayError(newDisplayErrors);
+
+      //set multiplication is `0` when err0 is occurs according to index
       setMultiplicationResult((preVal) => {
         const updatedRslt = [...preVal];
         updatedRslt[index] = 0;
         return updatedRslt;
       });
+
+      //for clear input whe error occur according to index
       const updatedInputVal = { ...inputVal };
       updatedInputVal[index] = "";
       setInputVal(updatedInputVal);
-      setTotalInputAmount((preValue) => preValue);
     } else {
       newDisplayErrors[index] = "";
       setTotalAmount(sum);
       setDisplayError([]);
     }
+
+    //if inputvalueTotal not working correctly so please move this part(between //**// ---- //**//) on handle change function and change inputVal ---->>updatedInputVal
+
+    //for display total ammount of all inputs
+    const newTotalInputAmount: any = Object.values(inputVal).reduce(
+      (acc: any, val: any) => acc + (parseFloat(val) || 0),
+      0
+    );
+    setTotalInputAmount(newTotalInputAmount);
   };
 
   useEffect(() => {
@@ -171,292 +268,293 @@ const CashReceiptEntry = ({ open, handleCloseDialog, props, trx }) => {
     }
   };
 
+  //for get total of column
   useEffect(() => {
     if (data && data.length > 0) {
       const initialTotal = {
         // NOTE_CNT: 0,
-        AMOUNT: 0,
         AVAIL_NOTE: 0,
         TOTAL_AMNT: 0,
       };
 
-      const newTotals = data.reduce((acc, item) => {
+      const newTotals = data.reduce((acc, item, index) => {
+        let updatedAvailNote;
+        if (availNote && availNote[index] !== undefined) {
+          updatedAvailNote = availNote[index];
+        } else {
+          updatedAvailNote = parseFloat(data?.[index]?.AVAIL_NOTE);
+        }
+        let updatedBLNC;
+        if (balance && balance[index] !== undefined) {
+          updatedBLNC = balance[index];
+        } else {
+          updatedBLNC = parseFloat(data?.[index]?.TOTAL_AMNT);
+        }
         return {
           // NOTE_CNT: acc.NOTE_CNT + parseFloat(item.NOTE_CNT),
-          AMOUNT: acc.AMOUNT + parseFloat(item.AMOUNT),
-          AVAIL_NOTE: acc.AVAIL_NOTE + parseFloat(item.AVAIL_NOTE),
-          TOTAL_AMNT: acc.TOTAL_AMNT + parseFloat(item.TOTAL_AMNT),
+          AVAIL_NOTE: acc.AVAIL_NOTE + parseFloat(updatedAvailNote),
+          TOTAL_AMNT: acc.TOTAL_AMNT + parseFloat(updatedBLNC),
         };
       }, initialTotal);
 
       setDisplayTotal(newTotals);
     }
-  }, [data]);
+  }, [data, inputVal]);
 
   const handleKeyPress = (event, index) => {
     if (event.key === "Enter") {
-      updateTotalAmount(index);
+      updateTotalAmount(event, index);
     }
   };
 
   return (
     <>
-      <Dialog
-        open={open}
-        maxWidth="md"
-        fullWidth={true}
-        sx={{ boxShadow: "10px 10px 10px 10px" }}
-      >
-        {/* <SortableTable data={data} columns={columns} /> */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            background: "var(--theme-color5)",
-            alignItems: "center",
-            height: "auto",
-            margin: "9px 9px 1px 9px",
-            borderRadius: "4px",
-            padding: "7px",
-          }}
-        >
-          <Typography variant="h5" color="#FFFFFF" sx={{ fontWeight: "bold" }}>
-            {trx === "1"
-              ? `Cash Receipt Entry `
-              : trx === "4"
-              ? `Cash Payment Entry `
-              : `NO_NAME `}
-            ({authState?.roleName})
-          </Typography>
-          <GradientButton onClick={handleCloseDialog}>Close</GradientButton>
+      <Box padding={"0.5rem 1rem 0.5rem 1rem"}>
+        <Box mb={1}>
+          <FormComponentView
+            key={"Denomination"}
+            finalMetaData={DenominationScreenMetaData as FilterFormMetaType}
+            onAction={ClickEventManage}
+            loading={getData.isLoading}
+            data={data ?? {}}
+            propStyles={{
+              titleStyle: {},
+              toolbarStyles: {
+                borderBottom: "2px solid var(--theme-color6)",
+                // background: "transparent !important",
+              },
+              IconButtonStyle: {},
+              paperStyle: {
+                backgroundColor: "white !important",
+                borderRadius: "10px",
+                boxShadow: "rgba(226, 236, 249, 0.5) 0px 11px 70px",
+                border: "2px solid var(--theme-color6)",
+                overflow: "hidden",
+              },
+            }}
+          ></FormComponentView>
         </Box>
-        {/* </> */}
-        <Grid
-          container
-          component={Paper}
-          sx={{
-            display: "flex",
-            margin: "4px 10px 0px 10px",
-            width: "auto",
-            padding: "4px",
-            border: "2px solid var(--theme-color3)",
-          }}
-        >
-          {props?.map((item, index) => {
-            return (
-              item?.value !== "" && (
-                <Grid
+        {displayTable && data ? (
+          <Slide direction="left" in={displayTable} mountOnEnter unmountOnExit>
+            <Box
+              borderRadius={"10px"}
+              boxShadow={"rgba(226, 236, 249, 0.5) 0px 11px 70px"}
+              overflow={"hidden"}
+            >
+              <TableContainer
+                sx={{
+                  width: "auto",
+                }}
+                component={Paper}
+              >
+                <Table
+                  sx={{ minWidth: 650 }}
+                  aria-label="simple table"
+                  className={classes.tableBordered}
+                >
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell align="left" className="cellBordered">
+                        Denomination{" "}
+                        <Box
+                          className="flipHorizontal"
+                          style={{
+                            animation: "flipHorizontal 2s infinite",
+                            display: "inline-block",
+                            transformOrigin: "center",
+                            marginLeft: "10px",
+                          }}
+                        >
+                          {
+                            <Typography
+                              style={{
+                                border: "0.2px solid",
+                                borderRadius: "50%",
+                                height: "22px",
+                                width: "22px",
+                                textAlign: "center",
+                              }}
+                            >
+                              {getCurrencySymbol(dynamicAmountSymbol)}
+                            </Typography>
+                          }
+                        </Box>
+                      </StyledTableCell>
+                      <StyledTableCell className="cellBordered" align="left">
+                        Note count
+                      </StyledTableCell>
+                      <StyledTableCell className="cellBordered" align="right">
+                        Amount
+                      </StyledTableCell>
+                      <StyledTableCell className="cellBordered" align="right">
+                        Available Note(s)
+                      </StyledTableCell>
+                      <StyledTableCell align="right" className="cellBordered">
+                        Balance
+                      </StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data?.map((row, index) => {
+                      return (
+                        <TableRow key={index}>
+                          <StyledTableCell
+                            component="th"
+                            scope="row"
+                            className="cellBordered"
+                          >
+                            {row.NOTE}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="left"
+                            sx={{
+                              borderRight: "1px solid var(--theme-color6)",
+                              borderLeft: "1px solid var(--theme-color6)",
+                              backgroundColor: "var(--theme-color4)",
+                              maxWidth: "167px",
+                            }}
+                            tabIndex={index + 2}
+                            className="cellBordered"
+                          >
+                            <TextField
+                              classes={{ root: classes.leftTextAlign }}
+                              placeholder={"Enter value"}
+                              value={inputVal[index] || ""}
+                              onChange={(event) =>
+                                handleChange(event.target.value, index)
+                              }
+                              onKeyDown={(event) => {
+                                handleKeyPress(event, index);
+                              }}
+                              onBlur={(event) =>
+                                updateTotalAmount(event, index)
+                              }
+                              helperText={displayError[index] || ""}
+                              type={"text"}
+                              InputProps={{
+                                style: { textAlign: "left" },
+                              }}
+                              tabIndex={index + 2}
+                              sx={{ width: "-webkit-fill-available" }}
+                            />
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="right"
+                            className="cellBordered"
+                          >
+                            {" "}
+                            {multiplicationResult[index] || "0.00"}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="right"
+                            // className="cellBordered"
+                          >
+                            {availNote && availNote[index] !== undefined
+                              ? availNote[index]
+                              : availNote}
+                          </StyledTableCell>
+                          <StyledTableCell
+                            align="right"
+                            className="cellBordered"
+                          >
+                            {balance && balance[index] !== undefined
+                              ? balance[index]
+                              : balance}
+                          </StyledTableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                  <TableBody>
+                    <TableRow sx={{ height: "43px" }}>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        className="cellBordered"
+                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      >
+                        {"Total :"}
+                      </StyledTableCell>
+
+                      <StyledTableCell
+                        align="left"
+                        sx={{
+                          backgroundColor: "var(--theme-color4)",
+                          maxWidth: "167px",
+                          padding: "4px 17px !important",
+                          fontWeight: "bold",
+                          fontSize: "1rem",
+                        }}
+                        className="cellBordered"
+                      >
+                        {totalInputAmount}
+                      </StyledTableCell>
+                      <StyledTableCell
+                        align="right"
+                        className="cellBordered"
+                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      >
+                        {totalAmount}
+                      </StyledTableCell>
+                      <StyledTableCell
+                        align="right"
+                        className="cellBordered"
+                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      >
+                        {displayTotal?.AVAIL_NOTE}
+                      </StyledTableCell>
+                      <StyledTableCell
+                        align="right"
+                        className="cellBordered"
+                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
+                      >
+                        {displayTotal?.TOTAL_AMNT}
+                      </StyledTableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Paper
+                sx={{
+                  height: "43px",
+                  width: "auto",
+                  padding: "2px 8px",
+                  borderBottom: "2px solid var(--theme-color6)",
+                  borderLeft: "2px solid var(--theme-color6)",
+                  borderRight: "2px solid var(--theme-color6)",
+                  borderBottomLeftRadius: "10px",
+                  borderBottomRightRadius: "10px",
+                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  variant="body1"
                   sx={{
+                    backgroundColor: "var(--theme-color2)",
+                    padding: "0px 0px",
                     display: "flex",
-                    marginRight: "10px",
-                    padding: "0rem 10px",
                   }}
                 >
-                  {item.textField !== "Y" ? (
-                    <Grid
-                      item
-                      sx={{
-                        margin: "3px 0px",
-                      }}
-                    >
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        {item?.label}
-                      </Typography>
-                      <Typography variant="body1"> {item?.value}</Typography>
-                    </Grid>
-                  ) : (
-                    <TextField
-                      label={item.label}
-                      value={forRemark}
-                      variant="outlined"
-                      onChange={(e: any) => setForRemark(e.target.value)}
-                    />
-                  )}
-                </Grid>
-              )
-            );
-          })}
-        </Grid>
-        <TableContainer
-          sx={{
-            margin: "6px 10px 0px 10px",
-            width: "auto",
-            maxHeight: "calc(100% - 52px)",
-          }}
-          component={Paper}
-        >
-          <Table
-            sx={{ minWidth: 650 }}
-            aria-label="simple table"
-            className={classes.tableBordered}
-          >
-            <TableHead>
-              <TableRow>
-                <StyledTableCell align="left" className="cellBordered">
-                  Denomination{" "}
-                  <Box
-                    className="flipHorizontal"
-                    style={{
-                      animation: "flipHorizontal 2s infinite",
-                      display: "inline-block",
-                      transformOrigin: "center",
-                      // fontSize: "24px", // Adjust the font size as needed
-                      marginLeft: "10px",
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
                     }}
                   >
-                    {
-                      <Typography
-                        style={{
-                          // backgroundColor: " var(--theme-color1)",
-                          // padding: "0px 7px",
-                          border: "0.2px solid",
-                          borderRadius: "50%",
-                          // fontWeight: "bold",
-                          height: "22px",
-                          width: "22px",
-                          textAlign: "center",
-                        }}
-                      >
-                        {getCurrencySymbol(dynamicAmountSymbol)}
-                      </Typography>
-                    }
-                  </Box>
-                </StyledTableCell>
-                <StyledTableCell className="cellBordered" align="left">
-                  Note count
-                </StyledTableCell>
-                <StyledTableCell className="cellBordered" align="right">
-                  Amount
-                </StyledTableCell>
-                <StyledTableCell className="cellBordered" align="right">
-                  Available Note(s)
-                </StyledTableCell>
-                <StyledTableCell align="right" className="cellBordered">
-                  Balance
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data?.map((row, index) => {
-                return (
-                  <TableRow key={index}>
-                    <StyledTableCell
-                      component="th"
-                      scope="row"
-                      className="cellBordered"
-                    >
-                      {/* {FormatCurrency(row.NOTE, dynamicAmountSymbol)} */}
-                      {row.NOTE}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="left"
-                      sx={{
-                        borderRight: "1px solid var(--theme-color6)",
-                        borderLeft: "1px solid var(--theme-color6)",
-                        backgroundColor: "var(--theme-color4)",
-                        maxWidth: "167px",
-                      }}
-                      tabIndex={index + 2}
-                      className="cellBordered"
-                    >
-                      <TextField
-                        classes={{ root: classes.leftTextAlign }}
-                        placeholder={"Enter value"}
-                        value={inputVal[index] || ""}
-                        onChange={(event) =>
-                          handleChange(event.target.value, index)
-                        }
-                        onKeyDown={(event) => {
-                          handleKeyPress(event, index);
-                        }}
-                        onBlur={() => updateTotalAmount(index)}
-                        helperText={displayError[index] || ""}
-                        type={"text"}
-                        InputProps={{
-                          style: { textAlign: "left" },
-                        }}
-                        tabIndex={index + 2}
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell align="right" className="cellBordered">
-                      {" "}
-                      {multiplicationResult[index] || "0.00"}
-                    </StyledTableCell>
-                    <StyledTableCell align="right" className="cellBordered">
-                      {row.AVAIL_NOTE || "0"}
-                    </StyledTableCell>
-                    <StyledTableCell align="right" className="cellBordered">
-                      {/* {FormatCurrency(row.TOTAL_AMNT, dynamicAmountSymbol)} */}
-                      {row.TOTAL_AMNT}
-                    </StyledTableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>{" "}
-        <Paper
-          sx={{
-            height: "auto",
-            margin: "0px 10px 0px 10px",
-            boxShadow:
-              "0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)",
-            borderRadius: "0px",
-            borderBottom: "2px solid var(--theme-color1)",
-            borderTop: "2px solid var(--theme-color1)",
-          }}
-        >
-          <TableBody sx={{ display: "flex", justifyContent: "space-between" }}>
-            <StyledTableCell
-              align="left"
-              sx={{ fontWeight: "bold", fontSize: "1rem" }}
-            >
-              {"Total :"}
-            </StyledTableCell>
-            <StyledTableCell align="left">{totalInputAmount}</StyledTableCell>
-            <StyledTableCell align="right" sx={{ fontWeight: "bold" }}>
-              {totalAmount}
-            </StyledTableCell>
-            <StyledTableCell align="right">
-              {displayTotal?.AVAIL_NOTE}
-            </StyledTableCell>
-            <StyledTableCell align="right">
-              {displayTotal?.TOTAL_AMNT}
-            </StyledTableCell>
-          </TableBody>
-        </Paper>
-        <Paper
-          sx={{
-            height: "auto",
-            margin: "0px 10px 4px 10px",
-            width: "auto",
-            padding: "2px 8px",
-            borderRadius: "0px",
-            borderBottom: "2px solid var(--theme-color1)",
-          }}
-        >
-          <Typography
-            variant="body1"
-            sx={{
-              backgroundColor: "var(--theme-color2)",
-              padding: "0px 0px",
-              display: "flex",
-            }}
-          >
-            <Typography
-              sx={{
-                fontWeight: "bold",
-              }}
-            >
-              {" "}
-              {upadatedFinalAmount >= 0 ? "Remaining" : "Excess"}:
-            </Typography>
-            <Typography sx={{ fontWeight: "bold" }}>
-              {" "}
-              {!isNaN(upadatedFinalAmount) ? upadatedFinalAmount : 0}
-            </Typography>
-          </Typography>
-        </Paper>{" "}
+                    {" "}
+                    {upadatedFinalAmount >= 0 ? "Remaining" : "Excess"}:
+                  </Typography>
+                  <Typography sx={{ fontWeight: "bold" }}>
+                    {" "}
+                    {!isNaN(upadatedFinalAmount) ? upadatedFinalAmount : 0}
+                  </Typography>
+                </Typography>
+              </Paper>{" "}
+            </Box>
+          </Slide>
+        ) : null}
+
         {Boolean(confirmation) ? (
           <PopupRequestWrapper
             MessageTitle={"Confirmation"}
@@ -469,7 +567,7 @@ const CashReceiptEntry = ({ open, handleCloseDialog, props, trx }) => {
             open={confirmation}
           />
         ) : null}
-      </Dialog>
+      </Box>
     </>
   );
 };
