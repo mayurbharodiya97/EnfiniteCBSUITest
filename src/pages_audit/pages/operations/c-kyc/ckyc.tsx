@@ -372,7 +372,7 @@ useEffect(() => {
 }, [state?.entityTypectx])
 
   // useEffect(() => {
-  //   console.log("wadqwdwq", state?.colTabValuectx, state?.formDatactx)
+  //   console.log("wadqwdwq.", state?.colTabValuectx, state?.formDatactx)
   // }, [state?.colTabValuectx, state?.formDatactx])
 
   // const handleFormModalOpen = (type:String) => {
@@ -576,7 +576,7 @@ useEffect(() => {
         // refetch()
         handleViewDetails()
         // retrieveFormRefetch()
-        handleColTabChangectx(0)
+        // handleColTabChangectx(0)
         // if(retrieveFormData && Object.keys(state?.retrieveFormDataApiRes)?.length>0) {
         // if(retrieveFormData) {
           handleFormModalOpenOnEditctx(data?.rows)
@@ -667,8 +667,14 @@ useEffect(() => {
             color="secondary" 
             variant="contained" 
             onClick={() => {
-              handleFormModalOpenctx("I")
-              navigate("new-entry")
+              // handleFormModalOpenctx("I")
+              navigate("new-entry", {
+                state: {
+                  isFormModalOpen: true,
+                  entityType: "I",
+                  isFreshEntry: true
+                }
+              })
             }} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
@@ -693,8 +699,14 @@ useEffect(() => {
             color="secondary" 
             variant="contained" 
             onClick={() => {
-              handleFormModalOpenctx("C")
-              navigate("new-entry")
+              // handleFormModalOpenctx("C")
+              navigate("new-entry", {
+                state: {
+                  isFormModalOpen: true,
+                  entityType: "C",
+                  isFreshEntry: true
+                }
+              })
             }} 
             sx={{
               // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
@@ -836,6 +848,17 @@ useEffect(() => {
         />
 
         <Route
+          path="inactive-customer/*"
+          element={
+            <DeactivateCustomer 
+            rowdata={rowsData} 
+            onClose={() => {
+              navigate(".")
+            }} />
+          }
+        />
+
+        <Route
           path="insurance/*"
           element={
             <InsuranceComp 
@@ -919,7 +942,9 @@ useEffect(() => {
             <Dependencies 
               rowsData={rowsData}
               open={contPersonCompOpen}
-              onClose={() => setContPersonCompOpen(false)} 
+              onClose={() => {
+                navigate(".")
+              }} 
             />
           }
         />
@@ -962,9 +987,10 @@ useEffect(() => {
           //   onClose={() => setAcctOpen(false)}
           //   screenFlag={"ACCT_INQ"}
           // />
-        ) : componentToShow === "DeactivateCustomer" ? (
-            <DeactivateCustomer rowdata={rowsData} />
         ) 
+        // : componentToShow === "DeactivateCustomer" ? (
+        //     <DeactivateCustomer rowdata={rowsData} />
+        // ) 
         // : componentToShow === "insurance" ? (
         //     <InsuranceComp 
         //       rowsData={rowsData}

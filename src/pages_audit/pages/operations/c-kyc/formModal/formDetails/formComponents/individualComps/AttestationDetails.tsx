@@ -6,13 +6,32 @@ import { CkycContext } from "../../../../CkycContext"
 import { useTranslation } from "react-i18next"
 import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
+import { useQuery } from "react-query"
 
 const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
     const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const { t } = useTranslation();
-    const AttestationDTLFormRef = useRef<any>("");
+    const AttestationDTLFormRef = useRef<any>("");  
+
+    const { data:historyData, isError:isHistoryDataError, isLoading: isHistoryDataLoading, error, refetch: historyDataRefetch } = useQuery<any, any>(
+        ["getAttestHistory", state.entityTypectx
+      ],
+        () => API.getAttestHistory({
+            COMP_CD: authState?.companyID ?? "",
+            // BRANCH_CD: authState?.user?.branchCode ?? "",
+            CUSTOMER_ID: state?.customerIDctx,
+        }), {enabled: false}
+    );
+
+    // useEffect(() => {
+    //     if(!isHistoryDataLoading && historyData) {
+    //         console.log("attst data..", historyData)
+    //     }
+    // }, [isHistoryDataLoading, historyData])
+    
+    
     const AttestationDTLSubmitHandler = (
         data: any,
         displayData,
@@ -90,8 +109,16 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
-                <Grid item>
+                <Grid item container direction={"row"} style={{justifyContent: "space-between"}}>
                     <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("AttestationDetails")}</Typography>
+                    {/* <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("AttestationDetails")}</Typography> */}
+                    {!state?.isFreshEntryctx && <Button sx={{mr:2}} 
+                    color="secondary" variant="contained" 
+                    onClick={() => {
+                        historyDataRefetch()
+                    }}>
+                        History
+                    </Button>}
                 </Grid>
                 <Grid container item>
                     <Grid item xs={12}>
