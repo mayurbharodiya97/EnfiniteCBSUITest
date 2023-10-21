@@ -513,6 +513,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/GETDROPDOWNDATA",
     packageName: "",
   },
+  GETSTOCKDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOCKDATA",
+    packageName: "",
+  },
+  GETCUSTNOTIFMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTNOTIFMST",
+    packageName: "",
+  },
+  GETSTOPPAYDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOPPAYDATA",
+    packageName: "",
+  },
+  GETLIENDATA: {
+    url: "/enfinitylCommonServiceAPI/GETDYNAMICDATA/GETLIENDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

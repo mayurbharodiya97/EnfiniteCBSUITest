@@ -134,8 +134,8 @@ export const limitEntryMetaData = {
         componentType: "textField",
       },
       name: "FR",
-      label: "Tran. balance",
-      placeholder: "",
+      label: "Tran. Balance",
+      placeholder: "Balance",
       isFieldFocused: false,
       type: "text",
       //   isReadOnly: true,
@@ -153,7 +153,7 @@ export const limitEntryMetaData = {
       },
       name: "NO_OF_CHEQUE",
       label: "Limit Type",
-      placeholder: "Enter no of Cheque book",
+      placeholder: "Limit Type",
       type: "text",
       options: () => {
         return [
@@ -176,7 +176,7 @@ export const limitEntryMetaData = {
       },
       name: "SECURITY_VALUE",
       label: "Security",
-      placeholder: "",
+      placeholder: "Security",
       type: "text",
       isReadOnly: true,
       GridProps: {
@@ -193,9 +193,8 @@ export const limitEntryMetaData = {
       },
       name: "SERVICE_CHARGE",
       label: "San. Limit",
-      placeholder: "",
+      placeholder: "San. limit",
       type: "text",
-      required: true,
       GridProps: {
         xs: 12,
         md: 2,
@@ -210,9 +209,8 @@ export const limitEntryMetaData = {
       },
       name: "GST",
       label: "Type",
-      placeholder: "",
+      placeholder: "Type",
       type: "text",
-      required: true,
       GridProps: {
         xs: 12,
         md: 2.5,
@@ -228,7 +226,7 @@ export const limitEntryMetaData = {
       name: "REQUISITION_DT",
       // sequence: 9,
       label: "FD No.",
-      placeholder: "",
+      placeholder: "FD Number",
       GridProps: {
         xs: 12,
         md: 2.5,
@@ -309,6 +307,7 @@ export const limitEntryMetaData = {
       // sequence: 1,
       label: "Sec. Value",
       type: "text",
+      placeholder: "Sec. Value",
       // required: true,
       // maxLength: 16,
       isReadOnly: true,
@@ -328,7 +327,7 @@ export const limitEntryMetaData = {
       name: "REMARKS",
       // sequence: 10,
       label: "Margin %",
-      placeholder: "Enter remark.",
+      placeholder: "Margin %",
       GridProps: {
         xs: 12,
         md: 3,
@@ -345,7 +344,7 @@ export const limitEntryMetaData = {
       name: "REMARKS",
       // sequence: 10,
       label: "Sec. Limit",
-      placeholder: "Enter remark.",
+      placeholder: "Sec. Limit",
       GridProps: {
         xs: 12,
         md: 3,
@@ -361,7 +360,7 @@ export const limitEntryMetaData = {
       name: "REMARKS",
       // sequence: 10,
       label: "Over Drawn %",
-      placeholder: "Enter remark.",
+      placeholder: "Enter Remarks",
       GridProps: {
         xs: 12,
         md: 3,
@@ -377,7 +376,7 @@ export const limitEntryMetaData = {
       name: "REMARKS",
       // sequence: 10,
       label: "Int. Amount",
-      placeholder: "Enter remark.",
+      placeholder: "Interest Amount",
       GridProps: {
         xs: 12,
         md: 3,
@@ -393,7 +392,7 @@ export const limitEntryMetaData = {
       name: "REMARKS",
       // sequence: 10,
       label: "Int. Margin %",
-      placeholder: "Enter remark.",
+      placeholder: "Int. Margin %",
       GridProps: {
         xs: 12,
         md: 3,
@@ -409,7 +408,7 @@ export const limitEntryMetaData = {
       name: "REMARKS",
       // sequence: 10,
       label: "Sec. Int. Limit",
-      placeholder: "Enter remark.",
+      placeholder: "Sec. Int. Limit",
       GridProps: {
         xs: 12,
         md: 3,
@@ -425,7 +424,7 @@ export const limitEntryMetaData = {
       name: "LIMIT_AMOUNT",
       // sequence: 10,
       label: "Limit Amount",
-      placeholder: "Enter remark.",
+      placeholder: "Limit Amount",
       GridProps: {
         xs: 12,
         md: 3,

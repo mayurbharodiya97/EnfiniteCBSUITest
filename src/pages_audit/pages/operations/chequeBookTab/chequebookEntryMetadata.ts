@@ -154,7 +154,6 @@ export const ChequeBookEntryMetaData = {
             apiID: "GETLANGMSGDTL",
             otherAPIRequestPara: { TRAN_CD: 1 },
           });
-          console.log("<<<postdata", postdata);
           return {
             SERVICE_CHARGE: { value: postdata[0]?.LANG_MSG ?? "" },
             GST: {
@@ -231,7 +230,6 @@ export const ChequeBookEntryMetaData = {
       label: "Service Charge",
       placeholder: "Service Charge",
       type: "text",
-      required: true,
       GridProps: {
         xs: 12,
         md: 2.25,
@@ -248,7 +246,6 @@ export const ChequeBookEntryMetaData = {
       label: "GST",
       placeholder: "GST",
       type: "text",
-      required: true,
       GridProps: {
         xs: 12,
         md: 2.25,

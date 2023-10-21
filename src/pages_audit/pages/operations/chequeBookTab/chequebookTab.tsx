@@ -22,6 +22,7 @@ import { DefaultErrorObject } from "components/utils";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { Alert } from "components/common/alert";
 import { saveChequebookData } from "./api";
+import { ProcessChequeDTL } from "./processChequeDTL";
 
 export const ChequebookTab = () => {
   const [value, setValue] = useState("chequebookEntry");
@@ -101,7 +102,7 @@ export const ChequebookTab = () => {
         >
           <Tab value="chequebookEntry" label="Chequebook Entry" />
           <Tab value="chequebookDetail" label="Chequebook Detail" />
-          <Tab value="three" label="Item Three" />
+          <Tab value="processChequeDTL" label="Processed Cheque(s) Detail" />
         </Tabs>
       </Box>
 
@@ -200,6 +201,25 @@ export const ChequebookTab = () => {
                 key={`personalizeQuickView`}
                 finalMetaData={ChequebookDtlGridMetaData as GridMetaDataType}
                 data={mutation.data ?? []}
+                setData={() => {}}
+                // loading={saveQuickData.isLoading}
+                // actions={Quickactions}
+                // controlsAtBottom={true}
+                // setAction={setQuickAction}
+                // headerToolbarStyle={{
+                //   background: "var(--theme-color2)",
+                //   color: "black",
+                // }}
+                // refetchData={() => {}}
+                // ref={myGridQuickRef}
+              />
+            </>
+          ) : value === "processChequeDTL" ? (
+            <>
+              <GridWrapper
+                key={`processChequeDTL`}
+                finalMetaData={ProcessChequeDTL as GridMetaDataType}
+                data={[]}
                 setData={() => {}}
                 // loading={saveQuickData.isLoading}
                 // actions={Quickactions}

@@ -35,13 +35,19 @@ const useStyles = makeStyles({
 });
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "var(--theme-color3)",
+    background: "var(--theme-color5)",
     color: theme.palette.common.white,
-    padding: "4px 10px",
+    padding: "10px 10px",
+    // borderRight: "1px solid var(--theme-color6)",
+    // borderLeft: "1px solid var(--theme-color6)",
+    border: "2px solid var(--theme-color6)",
   },
   [`&.${tableCellClasses.body}`]: {
     padding: "4px 10px",
+    border: "2px solid var(--theme-color6)",
     width: "174px",
+    // borderRight: "1px solid var(--theme-color6)",
+    // borderLeft: "1px solid var(--theme-color6)",
     // Apply the animation styles to the .flipHorizontal class
     "& .flipHorizontal": {
       animation: "flipHorizontal 2s infinite",

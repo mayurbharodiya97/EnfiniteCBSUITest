@@ -171,7 +171,6 @@ export const chequebookEntryMetadata = {
               reportID: "GETLANGMSGDTL",
               otherAPIRequestPara: { TRAN_CD: 1 },
             });
-            console.log("<<<postdata", postdata);
             return {
               SERVICE_CHARGE: { value: postdata[0]?.LANG_MSG ?? "" },
               GST: {
