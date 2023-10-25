@@ -79,6 +79,7 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
+      console.log(responseData, "responseData acctype");
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
           return {
@@ -93,6 +94,7 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+
   const getCustomerIdValidate = async (currentField, formState, authState) => {
     // if (currentField?.value) {
     const { status, data, message, messageDetails } =
@@ -385,29 +387,29 @@ const GeneralAPISDK = () => {
   const getKYCDocTypes = async (dependantFields, ...other) => {
     // console.log(">>dependantFields",dependantFields)
     // if (dependantFields.SR_CD.value && dependantFields.TRAN_CD.value) {
-      const { status, data, message, messageDetails } =
-        await AuthSDK.internalFetcher("DOCCUMENTSCANHISTORY", {
-          // SR_CD: dependantFields.SR_CD?.value ?? "",
-          // TRAN_CD: dependantFields.TRAN_CD?.value??"",
-          SR_CD: "1",
-          TRAN_CD: "189084",
-          DOC_TYPE: "KYC",
-        });
-      if (status === "0") {
-        let responseData = data;
-        // if (Array.isArray(responseData)) {
-        //   responseData = responseData.map(({ DOC_TITLE, USER_DEFINE_CD }) => {
-        //     return {
-        //       value: USER_DEFINE_CD,
-        //       label: DOC_TITLE + " - " + USER_DEFINE_CD,
-        //     };
-        //   });
-        // }
+    const { status, data, message, messageDetails } =
+      await AuthSDK.internalFetcher("DOCCUMENTSCANHISTORY", {
+        // SR_CD: dependantFields.SR_CD?.value ?? "",
+        // TRAN_CD: dependantFields.TRAN_CD?.value??"",
+        SR_CD: "1",
+        TRAN_CD: "189084",
+        DOC_TYPE: "KYC",
+      });
+    if (status === "0") {
+      let responseData = data;
+      // if (Array.isArray(responseData)) {
+      //   responseData = responseData.map(({ DOC_TITLE, USER_DEFINE_CD }) => {
+      //     return {
+      //       value: USER_DEFINE_CD,
+      //       label: DOC_TITLE + " - " + USER_DEFINE_CD,
+      //     };
+      //   });
+      // }
 
-        return responseData;
-      } else {
-        throw DefaultErrorObject(message, messageDetails);
-      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
     // }
     // return []
   };
@@ -453,6 +455,59 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+
+  const getSDCList = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher(
+        "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSDCLIST",
+        {
+          USER_NAME: reqData?.[3]?.user.id ?? "",
+          BRANCH_CD: reqData?.[3]?.user?.branchCode,
+          COMP_CD: reqData?.[3]?.companyID,
+        }
+      );
+    if (status === "0") {
+      let responseData = data;
+      console.log(responseData, "responseData SDC");
+
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ CODE, DESCRIPTION }) => {
+          return {
+            value: CODE,
+            label: CODE + "-" + DESCRIPTION,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
+  const getTRXList = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher(
+        "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRXLIST",
+        {
+          USER_NAME: reqData?.[3]?.user.id ?? "",
+        }
+      );
+    if (status === "0") {
+      let responseData = data;
+      console.log(responseData, "responseData TRX");
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ CODE, DESCRIPTION }) => {
+          return {
+            value: CODE,
+            label: CODE + "-" + DESCRIPTION,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -473,6 +528,8 @@ const GeneralAPISDK = () => {
     getKYCDocTypes,
     getTabelListData,
     getChequeLeavesList,
+    getSDCList,
+    getTRXList,
   };
 };
 
