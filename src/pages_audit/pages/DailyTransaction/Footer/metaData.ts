@@ -66,7 +66,7 @@ export const footerForm = {
 
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "Type",
       label: "Type",
@@ -139,7 +139,14 @@ export const footerForm = {
       placeholder: "",
       type: "text",
       fullWidth: false,
-      isReadOnly: true,
+      dependentFields: ["TRX"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.TRX?.value == "4") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 1,
         md: 1,
@@ -169,7 +176,7 @@ export const footerForm = {
       },
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["Type is required."] }],
+        rules: [{ name: "required", params: ["SDC is required."] }],
       },
     },
 
@@ -200,6 +207,18 @@ export const footerForm = {
       placeholder: "",
       type: "text",
       required: true,
+      dependentFields: ["TRX"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          dependentFieldsValues?.TRX?.value == "4" ||
+          dependentFieldsValues?.TRX?.value === "5" ||
+          dependentFieldsValues?.TRX?.value === "6"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 1,
         md: 1,
@@ -223,11 +242,11 @@ export const footerForm = {
       // enableDefaultOption: true,
       // _optionsKey: "GetSubTypeMiscValue",
       GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
+        xs: 1.3,
+        md: 1.3,
+        sm: 1.3,
+        lg: 1.3,
+        xl: 1.3,
       },
     },
 
@@ -240,6 +259,18 @@ export const footerForm = {
       placeholder: "",
       type: "text",
       required: true,
+      dependentFields: ["TRX"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          dependentFieldsValues?.TRX?.value == "4" ||
+          dependentFieldsValues?.TRX?.value === "5" ||
+          dependentFieldsValues?.TRX?.value === "6"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 1,
         md: 1,
@@ -258,6 +289,18 @@ export const footerForm = {
       placeholder: "",
       type: "text",
       required: true,
+      dependentFields: ["TRX"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          dependentFieldsValues?.TRX?.value == "1" ||
+          dependentFieldsValues?.TRX?.value === "2" ||
+          dependentFieldsValues?.TRX?.value === "3"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 1,
         md: 1,
