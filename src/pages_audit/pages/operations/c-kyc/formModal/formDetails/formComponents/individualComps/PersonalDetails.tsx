@@ -11,6 +11,9 @@ import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 // import { format } from 'date-fns';
 import { AuthContext } from "pages_audit/auth";
+import * as API from "../../../../api";
+import { useMutation } from 'react-query';
+import { SearchListdialog } from '../legalComps/EntityDetails';
 
 const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   const { t } = useTranslation();
@@ -22,12 +25,21 @@ const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoa
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [isOtherPDExpanded, setIsOtherPDExpanded] = useState(true)
+  const [acctName, setAcctName] = useState("")
+  const [dialogOpen, setDialogOpen] = useState(false)
   const handlePDExpand = () => {
     setIsPDExpanded(!isPDExpanded)
   }
   const handleOtherPDExpand = () => {
     setIsOtherPDExpanded(!isOtherPDExpanded)
   }
+  const onCloseSearchDialog = () => {
+    setDialogOpen(false)
+  }
+  const mutation: any = useMutation(API.getRetrieveData, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
 
     // useEffect(() => {
     //     console.log("... personal details", isCustomerData)
@@ -53,7 +65,7 @@ const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoa
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
                 REQ_CD: state?.req_cd_ctx,
-                SR_CD: "3",
+                // SR_CD: "3",
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
                 ENTRY_TYPE: "1",
@@ -143,6 +155,26 @@ const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoa
                             hideHeader={true}
                             displayMode={"new"}
                             controlsAtBottom={false}
+                            onFormButtonClickHandel={(fieldID, dependentFields) => {
+                                // console.log("form button clicked...", fieldID, dependentFields, dependentFields?.SURNAME?.value, typeof dependentFields?.SURNAME?.value)
+                                if(fieldID === "SEARCH_BTN" && dependentFields?.ACCT_NM?.value) {
+                                    if(dependentFields?.ACCT_NM?.value.trim().length>0) {
+                                        if(acctName !== dependentFields?.ACCT_NM?.value.trim()) {
+                                            setAcctName(dependentFields?.ACCT_NM?.value.trim())
+                                            let data = {
+                                                COMP_CD: authState?.companyID ?? "",
+                                                SELECT_COLUMN: {
+                                                    ACCT_NM: dependentFields?.ACCT_NM?.value.trim()
+                                                }
+                                            }
+                                            mutation.mutate(data)
+                                        }
+                                        setDialogOpen(true)
+                                    }                                    
+                                }
+                                // let event: any = { preventDefault: () => {} };
+                                // formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+                            }}
                         >
                             {/* {({isSubmitting, handleSubmit}) => {
                                 console.log("isSubmitting, handleSubmit", isSubmitting)
@@ -185,7 +217,12 @@ const PersonalDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoa
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="300px" width="100%"></Skeleton> : null}
 
-
+            {dialogOpen && <SearchListdialog 
+                open={dialogOpen} 
+                onClose={onCloseSearchDialog} 
+                data={mutation?.data} 
+                isLoading={mutation?.isLoading} 
+            />}
 
             <Grid container item sx={{justifyContent: "flex-end"}}>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 

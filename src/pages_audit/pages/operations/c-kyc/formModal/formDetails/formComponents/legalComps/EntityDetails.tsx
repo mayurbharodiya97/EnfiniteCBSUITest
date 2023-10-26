@@ -67,7 +67,7 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "",
                 REQ_CD: state?.req_cd_ctx,
-                SR_CD: "3",
+                // SR_CD: "3",
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
                 ENTRY_TYPE: "1",

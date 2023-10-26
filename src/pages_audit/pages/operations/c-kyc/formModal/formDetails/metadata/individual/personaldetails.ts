@@ -162,7 +162,21 @@ export const personal_detail_prefix_data = {
                 return full_name;
             },
             type: "text",
-            GridProps: {xs:12, sm:5, md: 4, lg: 3.8, xl: 4},
+            GridProps: {xs:12, sm:5, md: 4, lg: 2.8, xl: 3},
+        },
+        {
+            render: {
+              componentType: "formbutton",
+              sequence: 7,
+            },
+            name: "SEARCH_BTN",
+            label: "Search",
+            endsIcon: "Search",
+            rotateIcon: "scale(1.5)",
+            placeholder: "",
+            type: "text",
+            dependentFields: ["ACCT_NM"],
+            GridProps: {lg: 1, xl:1},
         },
         {
             render: {
@@ -721,6 +735,20 @@ export const personal_other_detail_meta_data = {
             // placeholder: "",
             // type: "datePicker",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            options: () => API.getPMISCData("CKYC_RISK_CATEG"),
+            _optionsKey: "ckycRiskCategOptions",
+            name: "RISK_CATEG",
+            label: "RiskCategory",
+            // isReadOnly: true,
+            // required: true,
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
     ]
 }
