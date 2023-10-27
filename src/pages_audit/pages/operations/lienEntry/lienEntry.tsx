@@ -61,6 +61,7 @@ export const LienEntry = () => {
       COMP_CD: authState?.companyID,
       ...response,
       ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
+      SR_CD: "1",
     };
     mutation.mutate({ apiID, otherAPIRequestPara });
   };

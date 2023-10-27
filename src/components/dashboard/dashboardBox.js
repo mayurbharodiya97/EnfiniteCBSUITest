@@ -116,8 +116,13 @@ export const DashboardBox = ({
                 {`${title}`}
               </Typography>
             </Grid>
-            <Grid item>
-              <Avatar
+            <Grid
+              item
+              sx={{
+                alignSelf: "center",
+              }}
+            >
+              {/* <Avatar
                 className={classes.avtar}
                 sx={{
                   backgroundColor: "error.main",
@@ -131,16 +136,16 @@ export const DashboardBox = ({
                   backgroundColor: "var(--theme-color2)",
                   color: "var(--theme-color2)",
                 }}
-              >
-                {/* {Boolean(icon) ? (
+              > */}
+              {/* {Boolean(icon) ? (
                   <FontAwesomeIcon
                     icon={["fa", icon]}
                     // className={classes.icon}
                     className={"avtar"}
                   />
                 ) : null} */}
-                <SvgIcons height={37} width={37} />
-              </Avatar>
+              <SvgIcons height={37} width={37} />
+              {/* </Avatar> */}
             </Grid>
           </Grid>
         </CardContent>

@@ -179,7 +179,7 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       // required: true,
       // maxLength: 16,
-      isReadOnly: true,
+      // isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 3,
@@ -192,11 +192,11 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "FROM_CHEQUE_NO",
+      name: "CHEQUE_FROM",
       label: "From Cheque No.",
       placeholder: "From Cheque No.",
       type: "text",
-      isReadOnly: true,
+      // isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.25,
@@ -209,11 +209,11 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "TO_CHEQUE_NO",
+      name: "CHEQUE_TO",
       label: "To Cheque No.",
       placeholder: "To Cheque No.",
       type: "text",
-      isReadOnly: true,
+      // isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.25,
@@ -226,7 +226,7 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "SERVICE_CHARGE",
+      name: "SERVICE_TAX",
       label: "Service Charge",
       placeholder: "Service Charge",
       type: "text",
@@ -281,8 +281,8 @@ export const ChequeBookEntryMetaData = {
       placeholder: '"Payable At PAR',
       options: () => {
         return [
-          { value: "Yes", label: "Yes" },
-          { value: "No", label: "No" },
+          { value: "Y", label: "Yes" },
+          { value: "N", label: "No" },
         ];
       },
       _optionsKey: "PAYABLE_AT_PAR",
@@ -306,8 +306,8 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       options: () => {
         return [
-          { value: "Bearer", label: "Bearer" },
-          { value: "Order", label: "Order" },
+          { value: "B", label: "Bearer" },
+          { value: "O", label: "Order" },
         ];
       },
       _optionsKey: "CHARACTERISTICS",
@@ -319,6 +319,7 @@ export const ChequeBookEntryMetaData = {
         xl: 2.25,
       },
     },
+
     {
       render: {
         componentType: "datePicker",
@@ -383,6 +384,112 @@ export const ChequeBookEntryMetaData = {
       },
       name: "MACHINE_NMA",
       label: "Joint Account Name",
+      type: "text",
+      shouldExclude(fieldData) {
+        if (fieldData?.value) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    // {
+    //   render: {
+    //     componentType: "datePicker",
+    //   },
+    //   name: "TRAN_DT",
+    //   // sequence: 9,
+    //   label: "tran Date",
+    //   // format: "dd/mm/yyyy",
+    //   placeholder: "",
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2.25,
+    //     sm: 2.25,
+    //     lg: 2.25,
+    //     xl: 2.25,
+    //   },
+    //   __EDIT__: { render: { componentType: "hidden" } },
+    // },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "AUTO_CHQBK_FLAG",
+      label: "Auto chequebook flag",
+      type: "text",
+      shouldExclude(fieldData) {
+        if (fieldData?.value) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "AUTO_CHQBK_PRINT_FLAG",
+      label: "Auto chequebook print flag",
+      type: "text",
+      shouldExclude(fieldData) {
+        if (fieldData?.value) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SR_CD",
+      label: "SR-CD",
+      type: "text",
+      shouldExclude(fieldData) {
+        if (fieldData?.value) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "AMOUNT",
+      label: "SR-CD",
       type: "text",
       shouldExclude(fieldData) {
         if (fieldData?.value) {

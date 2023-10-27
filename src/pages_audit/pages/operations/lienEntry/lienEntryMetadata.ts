@@ -142,17 +142,17 @@ export const LienEntryMetadata = {
       render: {
         componentType: "autocomplete",
       },
-      name: "FLAG",
+      name: "LIEN_CD",
       label: "Lien Code",
-      defaultValue: "S",
-      options: () => {
-        return [
-          { value: "S", label: "Stop Payment" },
-          { value: "D", label: "Surrender Cheque" },
-          { value: "P", label: "PDC" },
-        ];
-      },
-      _optionsKey: "PAYABLE_AT_PAR",
+      // defaultValue: "S",
+      // options: () => {
+      //   return [
+      //     { value: "S", label: "Stop Payment" },
+      //     { value: "D", label: "Surrender Cheque" },
+      //     { value: "P", label: "PDC" },
+      //   ];
+      // },
+      // _optionsKey: "PAYLE_AT_PAR",
       type: "text",
       GridProps: {
         xs: 12,
@@ -167,7 +167,7 @@ export const LienEntryMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "CHEQUE_TO",
+      name: "LIEN_AMOUNT",
       label: "Line Amount",
       type: "text",
       placeholder: "Stock Description",
@@ -183,16 +183,15 @@ export const LienEntryMetadata = {
       render: {
         componentType: "autocomplete",
       },
-      name: "REASON_CD",
+      name: "LIEN_STATUS",
       label: "Lien Status",
-      // options: () => {
-      //   return [
-      //     { value: "", label: " " },
-      //     { value: "", label: " " },
-      //     { value: "", label: "" },
-      //   ];
-      // },
-      // _optionsKey: "PAYAE_AT_PAR",
+      options: () => {
+        return [
+          { value: "A", label: "Active" },
+          { value: "E", label: "Expired" },
+        ];
+      },
+      _optionsKey: "LIEN_STATUS",
       type: "text",
       GridProps: {
         xs: 12,
@@ -206,7 +205,7 @@ export const LienEntryMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "CHEQUE_FROM",
+      name: "PARENT_CD",
       label: "Parent Code/Name",
       type: "text",
       placeholder: "Stock Description",
@@ -222,7 +221,7 @@ export const LienEntryMetadata = {
       render: {
         componentType: "datePicker",
       },
-      name: "CHEQUE_DT",
+      name: "EFECTIVE_DT",
       // sequence: 9,
       label: "Effective Date",
       GridProps: {
@@ -237,7 +236,7 @@ export const LienEntryMetadata = {
       render: {
         componentType: "datePicker",
       },
-      name: "CHEQUE_T",
+      name: "REMOVAL_DT",
       // sequence: 9,
       label: "Removal Date",
       GridProps: {
@@ -252,17 +251,17 @@ export const LienEntryMetadata = {
       render: {
         componentType: "autocomplete",
       },
-      name: "FSWLAG",
+      name: "LIEN_REASON_CD",
       label: "Reason",
       // defaultValue: "S",
-      options: () => {
-        return [
-          { value: "S", label: "Stop Payment" },
-          { value: "D", label: "Surrender Cheque" },
-          { value: "P", label: "PDC" },
-        ];
-      },
-      _optionsKey: "PAYAB_AT_PAR",
+      // options: () => {
+      //   return [
+      //     { value: "S", label: "Stop Payment" },
+      //     { value: "D", label: "Surrender Cheque" },
+      //     { value: "P", label: "PDC" },
+      //   ];
+      // },
+      // _optionsKey: "PAYAB_AT_PAR",
       type: "text",
       GridProps: {
         xs: 12,
@@ -277,7 +276,7 @@ export const LienEntryMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "SERVICE_TAX",
+      name: "REMARKS",
       label: "Remarks",
       placeholder: "Remarks",
       type: "text",

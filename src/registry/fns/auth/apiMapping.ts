@@ -526,7 +526,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETLIENDATA: {
-    url: "/enfinitylCommonServiceAPI/GETDYNAMICDATA/GETLIENDATA",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENDATA",
     packageName: "",
   },
   GETCUSTOMERHISTORY: {

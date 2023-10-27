@@ -5,7 +5,7 @@ import { useStyles } from "./style";
 import { UsernamePasswordField } from "./usernamePassword";
 import { AuthContext } from "./authContext";
 import logo from "../../assets/images/logo.jpg";
-import { OTPModel } from "./otpPopup";
+import { OTPModel, OTPModelForm } from "./otpPopup";
 import { veirfyUsernameandPassword, verifyOTP } from "./api";
 import { useSnackbar } from "notistack";
 import { PasswordRotation } from "./pwdRotation";
@@ -229,6 +229,8 @@ export const AuthLoginController = () => {
   const urlObj = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
+  const otpResendRef = useRef(1);
+
   // const [image, setImage] = useState<any>(null);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
@@ -550,6 +552,34 @@ export const AuthLoginController = () => {
                           open={true}
                           handleClose={() => {}}
                         />
+                      ) : loginState.authType === "TOTP" ? (
+                        <>
+                          {" "}
+                          <OTPModelForm
+                            key={"OTPForm"}
+                            classes={classes}
+                            // handleClose={() => {}}
+                            handleClose={changeUserName}
+                            loginState={loginState}
+                            VerifyOTP={VerifyOTP}
+                            OTPError={loginState?.OtpuserMessage ?? ""}
+                            setOTPError={(error) => {
+                              dispath({
+                                type: "OTPVerificationFailed",
+                                payload: { error: error },
+                              });
+                            }}
+                            resendFlag={"LOGIN"}
+                            setNewRequestID={(newRequestID) => {
+                              dispath({
+                                type: "OTPResendSuccess",
+                                payload: { transactionID: newRequestID },
+                              });
+                              otpResendRef.current = otpResendRef.current + 1;
+                            }}
+                            otpresendCount={otpResendRef.current}
+                          />
+                        </>
                       ) : (
                         <VerifyFinger
                           key="biometric"

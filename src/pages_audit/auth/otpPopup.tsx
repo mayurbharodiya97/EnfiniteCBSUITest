@@ -11,6 +11,7 @@ import { Grid } from "@mui/material";
 import clsx from "clsx";
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
+import { OTPResendRequest } from "./api";
 export const OTPModel = ({
   classes,
   open,
@@ -289,22 +290,22 @@ export const OTPModelForm = ({
   };
   const handleResendClick = async () => {
     setResendotpLoading(true);
-    // const { status, data, message } = await OTPResendRequest(
-    //   resendFlag === "FORGET_PW"
-    //     ? loginState?.requestCd
-    //     : loginState?.transactionID,
-    //   loginState?.username,
-    //   resendFlag
-    // );
+    const { status, data, message } = await OTPResendRequest(
+      resendFlag === "FORGET_PW"
+        ? loginState?.requestCd
+        : loginState?.transactionID,
+      loginState?.username,
+      resendFlag
+    );
     setResendotpLoading(false);
-    // if (status === "0") {
-    //   //console.log(data);
-    //   setNewRequestID(data?.REQUEST_CD);
-    //   setbtnshow(false);
-    //   enqueueSnackbar(message, { variant: "success" });
-    // } else {
-    //   enqueueSnackbar(message, { variant: "error" });
-    // }
+    if (status === "0") {
+      //console.log(data);
+      setNewRequestID(data?.REQUEST_CD);
+      setbtnshow(false);
+      enqueueSnackbar(message, { variant: "success" });
+    } else {
+      enqueueSnackbar(message, { variant: "error" });
+    }
   };
   const handleCloseEvent = () => {
     setOTPError("");
@@ -323,7 +324,7 @@ export const OTPModelForm = ({
       handleCloseEvent();
     }
   }, [loginState.otpmodelClose]);
-  console.log("<<<oginstate", loginState);
+  console.log("<<<loginstate", loginState);
   return (
     <Fragment>
       <Grid alignItems="center">
@@ -359,14 +360,18 @@ export const OTPModelForm = ({
               ? loginState.username.charAt(0).toUpperCase() +
                 loginState.username.slice(1)
               : null}
-            <ResendOTP
-              onResendClick={() => setbtnshow(false)}
-              onTimerComplete={() => setbtnshow(true)}
-              renderButton={renderButton}
-              renderTime={renderTime}
-              maxTime={60}
-              className={classes.resendOTPalign}
-            />
+            {loginState.otploading ||
+            otpresendCount >= 3 ||
+            loginState?.auth_type === "TOTP" ? null : (
+              <ResendOTP
+                onResendClick={() => setbtnshow(false)}
+                onTimerComplete={() => setbtnshow(true)}
+                renderButton={renderButton}
+                renderTime={renderTime}
+                maxTime={60}
+                className={classes.resendOTPalign}
+              />
+            )}
           </div>
           <div
             className={classes.divflex}
@@ -417,7 +422,7 @@ export const OTPModelForm = ({
           {Boolean(OTPError) ? (
             <FormHelperText style={{ color: "red" }}>{OTPError}</FormHelperText>
           ) : null}
-          {loginState?.auth_type === "T" ? (
+          {loginState?.auth_type === "TOTP" ? (
             <div style={{ flex: "auto" }}>
               <a href="forgot-totp">Forgot TOTP</a>
             </div>
@@ -426,7 +431,7 @@ export const OTPModelForm = ({
           )}
           {loginState.otploading ||
           otpresendCount >= 3 ||
-          loginState?.auth_type === "T" ? null : (
+          loginState?.auth_type === "TOTP" ? null : (
             <ResendOTP
               onResendClick={handleResendClick}
               onTimerComplete={() => setbtnshow(true)}
