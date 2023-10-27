@@ -1801,6 +1801,21 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
   }
 }
 
+export const getAttestData = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, USER_NAME}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTATTESTRITDTL", {
+      CUSTOMER_ID: CUSTOMER_ID,
+      USER_NAME: USER_NAME, 
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD,
+    });
+    if(status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+}
+
 export const getOptionsOnLocalPinParentArea = async (dependentValue, formState, _, authState) => {
   // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.LOC_AREA_CD)
   let PIN_CODE = "", PARENT_AREA = ""
