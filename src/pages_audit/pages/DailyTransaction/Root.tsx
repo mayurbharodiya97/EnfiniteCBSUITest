@@ -18,7 +18,6 @@ import { valuer } from "./JointDetails/metaData/valuer";
 import { clearance } from "./JointDetails/metaData/clearance";
 
 const Root = () => {
-  let id = "CFA7EF4DF00A11BD84EA5F242165DD61";
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
@@ -174,7 +173,9 @@ const Root = () => {
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
-            ></FormWrapper>
+            >
+              
+            </FormWrapper>
           </div>
 
           <div

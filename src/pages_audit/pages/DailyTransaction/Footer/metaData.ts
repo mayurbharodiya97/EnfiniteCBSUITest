@@ -236,11 +236,7 @@ export const footerForm = {
       // sequence: 9,
       label: "CHQ Date",
       placeholder: "date",
-      // options: () => {
-      //   return GeneralAPI.GetMiscValue("USER_SUB_TYPE");
-      // },
-      // enableDefaultOption: true,
-      // _optionsKey: "GetSubTypeMiscValue",
+
       GridProps: {
         xs: 1.3,
         md: 1.3,
