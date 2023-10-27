@@ -120,7 +120,17 @@ export const personal_detail_prefix_data = {
                 rules: [
                   { name: "required", params: ["ThisFieldisrequired"] },
                 ],
-            }
+            },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                    return "Please remove extra space";  
+                } else if(columnValue.value !== columnValue.value.trimStart()) {
+                  return "Please remove extra space from the starting";
+                } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                  return "Please remove extra space from the ending";
+                }
+                return "";
+            },
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -134,6 +144,16 @@ export const personal_detail_prefix_data = {
             // placeholder: "Middle Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                    return "Please remove extra space";  
+                } else if(columnValue.value !== columnValue.value.trimStart()) {
+                  return "Please remove extra space from the starting";
+                } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                  return "Please remove extra space from the ending";
+                }
+                return "";
+            },
         },
         {
             render: {
@@ -146,6 +166,16 @@ export const personal_detail_prefix_data = {
             // placeholder: "Last Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                    return "Please remove extra space";  
+                } else if(columnValue.value !== columnValue.value.trimStart()) {
+                  return "Please remove extra space from the starting";
+                } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                  return "Please remove extra space from the ending";
+                }
+                return "";
+            },
         },
         {
             render: {
