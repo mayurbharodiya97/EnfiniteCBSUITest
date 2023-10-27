@@ -57,7 +57,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "autocomplete",
                     },
-                    options: () => API.getPMISCData("CKYC_RELAT_PERS"),
+                    options: () => API.getPMISCData("CKYC_RELAT_PERS", null, "I"),
                     _optionsKey: "kycRelatedtype",
                     name: "RELATED_PERSON_TYPE",
                     label: "Type",
