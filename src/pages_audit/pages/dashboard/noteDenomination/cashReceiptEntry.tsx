@@ -613,7 +613,6 @@ const CashReceiptEntry = () => {
             }}
             buttonNames={["Yes", "No"]}
             rows={[]}
-            loading={getData.isLoading}
             open={openDeno}
           />
         ) : null}
