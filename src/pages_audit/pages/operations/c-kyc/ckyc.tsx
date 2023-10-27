@@ -38,6 +38,7 @@ import ControllingPersonComp from "./ControllingPersonComp";
 import CreditCardDTLComp from "./CreditCardDTLComp";
 import AssetDTLComp from "./AssetDTLComp";
 import FinancialDTLComp from "./FinancialDTLComp";
+import { format } from "date-fns";
 
 export const CustomTabs:any = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -288,12 +289,13 @@ export const Ckyc = () => {
     }), {enabled: false}
   );
 
-  const {data:PendingData, isError: isPendingError, isLoading: isPendingLoading, refetch: PendingRefetch} = useQuery<any, any>(
+  const {data:PendingData, isError: isPendingError, isLoading: isPendingDataLoading, isFetching: isPendingDataFetching, refetch: PendingRefetch} = useQuery<any, any>(
     ["getPendingData", {}],
     () => API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTERED_DATE: "16-03-17"
+      ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
+      // ENTERED_DATE: "16-03-17"
     })
   )
 
@@ -374,6 +376,9 @@ useEffect(() => {
   // useEffect(() => {
   //   console.log("wadqwdwq.", state?.colTabValuectx, state?.formDatactx)
   // }, [state?.colTabValuectx, state?.formDatactx])
+  // useEffect(() => {
+  //   console.log("wadqwdwq.cccc", state?.categoryValuectx)
+  // }, [state?.categoryValuectx])
 
   // const handleFormModalOpen = (type:String) => {
     // setIsFormModalOpen(true)
@@ -794,7 +799,7 @@ useEffect(() => {
           finalMetaData={ckyc_retrieved_meta_data as GridMetaDataType}
           data={mutation.data ?? []}
           setData={() => null}          
-          // loading={isLoading || isFetching}
+          loading={mutation.isLoading || mutation.isFetching}
           actions={actions}
           setAction={setCurrentAction}
           // refetchData={() => refetch()}
@@ -810,7 +815,7 @@ useEffect(() => {
             finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
             data={PendingData ?? []}
             setData={() => null}
-            // loading={isLoading || isFetching}
+            loading={isPendingDataLoading || isPendingDataFetching}
             actions={actions}
             setAction={setCurrentAction}
             // refetchData={() => refetch()}

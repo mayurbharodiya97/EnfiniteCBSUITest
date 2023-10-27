@@ -1,36 +1,45 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
-import { Button, Grid, Skeleton, Typography } from "@mui/material"
+import { Button, Dialog, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
-import { attestation_detail_meta_data } from "../../metadata/individual/attestationdetails"
+import { attest_history_meta_data, attestation_detail_meta_data } from "../../metadata/individual/attestationdetails"
 import { CkycContext } from "../../../../CkycContext"
 import { useTranslation } from "react-i18next"
 import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { useQuery } from "react-query"
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 
 const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
+    const [historyDialog, setHistoryDialog] = useState(false)
     const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const { t } = useTranslation();
     const AttestationDTLFormRef = useRef<any>("");  
+    const onCloseSearchDialog = () => {
+        setHistoryDialog(false)
+    }    
 
+    // attest.history
     const { data:historyData, isError:isHistoryDataError, isLoading: isHistoryDataLoading, error, refetch: historyDataRefetch } = useQuery<any, any>(
-        ["getAttestHistory", state.entityTypectx
-      ],
+        ["getAttestHistory", state?.customerIDctx],
         () => API.getAttestHistory({
             COMP_CD: authState?.companyID ?? "",
             // BRANCH_CD: authState?.user?.branchCode ?? "",
             CUSTOMER_ID: state?.customerIDctx,
-        }), {enabled: false}
+        })
     );
 
-    // useEffect(() => {
-    //     if(!isHistoryDataLoading && historyData) {
-    //         console.log("attst data..", historyData)
-    //     }
-    // }, [isHistoryDataLoading, historyData])
-    
+    // get attest. form data
+    const { data:attestData, isError:isAttestDataError, isLoading: isAttestDataLoading, error: attestDataError, refetch: attestDataRefetch } = useQuery<any, any>(
+        ["getAttestData", state?.customerIDctx],
+        () => API.getAttestData({
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? "",
+            CUSTOMER_ID: state?.customerIDctx,
+            USER_NAME: authState?.user?.id ?? "",
+        })
+    );    
     
     const AttestationDTLSubmitHandler = (
         data: any,
@@ -82,15 +91,34 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         setIsNextLoading(false)
     }
 
+    // const initialVal = useMemo(() => {
+    //     return state?.isFreshEntryctx
+    //             ? state?.formDatactx["ATTESTATION_DTL"]
+    //                 ? state?.formDatactx["ATTESTATION_DTL"]
+    //                 : {}
+    //             : state?.retrieveFormDataApiRes
+    //                 ? state?.retrieveFormDataApiRes["ATTESTATION_DTL"]
+    //                 : {}
+    // }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
     const initialVal = useMemo(() => {
-        return state?.isFreshEntryctx
-                ? state?.formDatactx["ATTESTATION_DTL"]
-                    ? state?.formDatactx["ATTESTATION_DTL"]
-                    : {}
+        return state?.isFreshEntryctx 
+                ? attestData 
+                    ? {...state?.formDatactx["ATTESTATION_DTL"], ...attestData?.[0]}
+                    : state?.formDatactx["ATTESTATION_DTL"]
                 : state?.retrieveFormDataApiRes
-                    ? state?.retrieveFormDataApiRes["ATTESTATION_DTL"]
-                    : {}
-    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+                    ? attestData 
+                        ? {...state?.retrieveFormDataApiRes["ATTESTATION_DTL"], ...attestData?.[0]} 
+                        : state?.retrieveFormDataApiRes["ATTESTATION_DTL"]
+                    : null;
+    }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes, attestData])
+
+    // useEffect(() => {
+    //     if(!isAttestDataLoading && attestData) {
+    //         console.log("attst data..", attestData)
+    //         let newData = state?.formDatactx
+    //     }
+    // }, [isAttestDataLoading, attestData])
+
 
     return (
         <Grid container rowGap={3}
@@ -115,7 +143,11 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     {!state?.isFreshEntryctx && <Button sx={{mr:2}} 
                     color="secondary" variant="contained" 
                     onClick={() => {
-                        historyDataRefetch()
+                        // historyDataRefetch()
+                        if(!isHistoryDataLoading && historyData) {
+                            // console.log("attst data..", historyData)
+                            setHistoryDialog(true)
+                        }
                     }}>
                         History
                     </Button>}
@@ -150,7 +182,41 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     }}
                 >{t("Save")}</Button>
             </Grid>
+            {historyDialog && <AttestHistory 
+                open={historyDialog} 
+                onClose={onCloseSearchDialog} 
+                data={historyData} 
+                isLoading={isHistoryDataLoading} 
+            />}
         </Grid>
+    )
+}
+
+
+const AttestHistory = ({open, onClose, isLoading, data}) => {
+    return (
+        <Dialog open={open} onClose={onClose}
+            PaperProps={{
+                style: {
+                    minWidth: "1000px",
+                    width: "auto",
+                    maxWidth: "1100px",
+                    height: "90%",
+                }
+            }}
+        >
+            <GridWrapper
+                key={`AttestHistoryGrid`}
+                finalMetaData={attest_history_meta_data as GridMetaDataType}
+                data={data ?? []}
+                setData={() => null}          
+                loading={isLoading}
+                // actions={actions}
+                // setAction={setCurrentAction}
+                // refetchData={() => refetch()}
+                // ref={myGridRef}
+            />
+        </Dialog>
     )
 }
 

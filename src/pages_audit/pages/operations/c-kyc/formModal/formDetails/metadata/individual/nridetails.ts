@@ -237,7 +237,6 @@ export const nri_detail_meta_data = {
             label: "RelationshipManager",
             placeholder: "",
             type: "text",
-            disabled: true,
             GridProps: {xs:12, sm:6, md: 5, lg: 4, xl:3},
         }
     ]

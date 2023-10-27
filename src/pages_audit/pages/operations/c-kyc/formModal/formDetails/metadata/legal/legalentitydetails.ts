@@ -62,7 +62,17 @@ export const entity_detail_legal_meta_data = {
             // placeholder: "Prefix",
             type: "text",
             // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
-            GridProps: {md:4.5, lg:3.6, xl:3}
+            GridProps: {md:4.5, lg:3.6, xl:3},
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                    return "Please remove extra space";  
+                } else if(columnValue.value !== columnValue.value.trimStart()) {
+                  return "Please remove extra space from the starting";
+                } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                  return "Please remove extra space from the ending";
+                }
+                return "";
+            },
         },
         {
             render: {

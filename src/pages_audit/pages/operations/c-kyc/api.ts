@@ -201,7 +201,7 @@ export const getRatingOpDTL = async (COMP_CD, BRANCH_CD) => {
     }
 };
 
-export const getPMISCData = async (CATEGORY_CD, dependentValue?) => {
+export const getPMISCData = async (CATEGORY_CD, dependentValue?, CUST_TYPE?) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPMISCDATA", {
       CATEGORY_CD: CATEGORY_CD,
@@ -226,7 +226,27 @@ export const getPMISCData = async (CATEGORY_CD, dependentValue?) => {
           responseData = resOp;
         }
       }
-  
+      if(CATEGORY_CD == "CKYC_RELAT_PERS" && CUST_TYPE) {
+        let resOp:any = []
+        if(CUST_TYPE === "I") {
+          responseData.map((element, i) => {
+            if(element?.REMARKS === "I") {
+              resOp.push(element)
+            }
+          })
+        } else if(CUST_TYPE === "C") {
+          responseData.map((element, i) => {
+            if(element?.REMARKS === "L") {
+              resOp.push(element)
+            }
+          })
+        }
+
+        if(resOp && resOp.length>0) {
+          // return resOp;
+          responseData = resOp;
+        }
+      }
 
       responseData = responseData.map(
         ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
