@@ -244,6 +244,7 @@ export const renderField: RenderFunctionType = (
           sm: gridConfigOverrides?.sm ?? "auto",
           lg: gridConfigOverrides?.lg ?? "auto",
         }}
+        onFormButtonClickHandel={onFormButtonClickHandel}
       />
     );
   }

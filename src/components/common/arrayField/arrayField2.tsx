@@ -51,6 +51,7 @@ export interface ArrayField2Props {
   isDisplayCount?: boolean;
   isCustomStyle?: any;
   getFixedRowsCount?: any;
+  onFormButtonClickHandel?:any
 }
 
 const metaDataTransform = (metaData: MetaDataType): MetaDataType => {
@@ -76,6 +77,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   isDisplayCount,
   isCustomStyle,
   getFixedRowsCount,
+  onFormButtonClickHandel
 }) => {
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
@@ -153,10 +155,10 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       if (!Boolean(currentFieldMetaData)) {
         return null;
       }
-
+      currentFieldMetaData["onFormButtonClickHandel"]=onFormButtonClickHandel;
       let newMTdata;
       if (rowIndex === 0) {
-        newMTdata = { ...currentFieldMetaData };
+        newMTdata = {...currentFieldMetaData };
       } else {
         newMTdata = { ...currentFieldMetaData, label: null };
       }
