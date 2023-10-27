@@ -70,6 +70,18 @@ export const ChequebookTab = () => {
       ...response,
       ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
     };
+
+    let otherAPIRequestPara2 = {
+      ...data,
+      _isNewRow: true,
+      COMP_CD: authState?.companyID,
+      AUTO_CHQBK_FLAG: "N",
+      CHARACTERISTICS: "B",
+      PAYABLE_AT_PAR: "Y",
+      SR_CD: "1",
+      // TRAN_DT: "09-OCT-2023",
+      // REQUISITION_DT: "09-OCT-2023",
+    };
     if (value === "BUTTON_CLICK") {
       mutation.mutate({ apiID, otherAPIRequestPara });
       ChequeBookEntryMetaData.fields[3].isFieldFocused = true;
@@ -84,11 +96,10 @@ export const ChequebookTab = () => {
     } else {
       //@ts-ignore
       endSubmit(true);
-      saveChequeData.mutate({ otherAPIRequestPara });
-      console.log("<<<nowww");
+      saveChequeData.mutate({ otherAPIRequestPara2 });
+      console.log("<<<nowww", data);
     }
   };
-  ChequeBookEntryMetaData.form.label = ChequeBookEntryMetaData.form.label;
 
   return (
     <>
@@ -167,7 +178,7 @@ export const ChequebookTab = () => {
                 metaData={ChequeBookEntryMetaData as MetaDataType}
                 initialValues={mutation?.data?.[0] ?? []}
                 onSubmitHandler={onSubmitHandler}
-                // displayMode={"view"}
+                displayMode={"edit"}
                 // hideDisplayModeInTitle={true}
                 loading={mutation.isLoading}
                 // formStyle={{

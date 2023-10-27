@@ -35,9 +35,9 @@ const useStyles = makeStyles({
 });
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "var(--theme-color5)",
+    background: "var(--theme-color3)",
     color: theme.palette.common.white,
-    padding: "10px 10px",
+    padding: "5px 10px",
     // borderRight: "1px solid var(--theme-color6)",
     // borderLeft: "1px solid var(--theme-color6)",
     border: "2px solid var(--theme-color6)",

@@ -11,14 +11,14 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
 
   // const status = "0";
   return [
-    {
-      NOTE: "2000",
-      NOTE_CNT: 0,
-      AMOUNT: "0",
-      AVAIL_NOTE: "04",
-      TOTAL_AMNT: "8000",
-      ID: 1,
-    },
+    // {
+    //   NOTE: "2000",
+    //   NOTE_CNT: 0,
+    //   AMOUNT: "0",
+    //   AVAIL_NOTE: "04",
+    //   TOTAL_AMNT: "8000",
+    //   ID: 1,
+    // },
     {
       NOTE: "500",
       NOTE_CNT: 0,
@@ -114,40 +114,27 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
   // }
 };
 
-export const getCustomerActivationData = async ({ regWith, accountCardNo }) => {
-  if (!Boolean(regWith)) {
-    throw DefaultErrorObject(
-      "Required value missing for Activation Using.",
-      "",
-      "warning"
-    );
-  } else if (!Boolean(accountCardNo)) {
-    throw DefaultErrorObject(
-      "Required value missing for Account/Card Number.",
-      "",
-      "warning"
-    );
-  } else {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETCUSTOMERACTIVATIONDATA", {
-        ACCT_NO: accountCardNo,
-        REG_WITH: regWith,
+export const getSDCList = async (...authDTL) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETSDCLIST", {
+      COMP_CD: authDTL[1]?.companyID,
+      BRANCH_CD: authDTL[1]?.user?.branchCode,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DISLAY_STANDARD, CODE, ...other }) => {
+        return {
+          ...other,
+          CODE: CODE,
+          DISLAY_STANDARD: DISLAY_STANDARD,
+          value: CODE,
+          label: DISLAY_STANDARD,
+        };
       });
-    if (status === "0") {
-      let responsedata = data;
-      if (Array.isArray(responsedata)) {
-        let allKeyData = responsedata?.[0]?.ALL_ACCOUNT_DETAIL;
-        if (Array.isArray(allKeyData)) {
-          allKeyData = AddIDinResponseData(allKeyData);
-          let repdat = { gender: { F: "Female", M: "Male" } };
-          allKeyData = utilFunction.ChangeJsonValue(allKeyData, repdat);
-          responsedata[0]["ALL_ACCOUNT_DETAIL"] = allKeyData;
-        }
-      }
-      return responsedata;
-      //return data;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
     }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
   }
 };

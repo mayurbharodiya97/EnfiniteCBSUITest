@@ -78,7 +78,8 @@ export const verifyOTP = async (
       USER_ID: username,
       REQUEST_CD: transactionId,
       OTP: otpnumber,
-      AUTH_TYPE: authType,
+      AUTH_TYPE: "OTP",
+      // AUTH_TYPE: authType,
       APP_TRAN_CD: 51,
       BIO_FLAG: bioflag,
     },
@@ -393,6 +394,25 @@ export const updatenewPassword = async (transactionId, username, password) => {
   //   COLOR: "0",
   //   messageDetails: "OTP Verified successfully.",
   // };
+};
+
+export const OTPResendRequest = async (transactionId, username, tran_type) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcherPreLogin("OTPRESEND", {
+      USER_ID: username,
+      REQUEST_CD: transactionId,
+      TRAN_TYPE: tran_type,
+    });
+  if (status === "0") {
+    return {
+      data: data[0],
+      status,
+      message,
+      messageDetails,
+    };
+  } else {
+    return { status, data, message, messageDetails };
+  }
 };
 
 export const capture = async () => {
