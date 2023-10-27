@@ -25,8 +25,8 @@ export const getDynamicFormMetaData = async ({
       const matchingPropsObject = {};
       // Iterate over matchingProps and add them to the object
       const arrayObjectRegExp = /^\[\{.*\}\]$/;
-
       matchingProps.forEach(async (matchingProp) => {
+        // console.log("matchingProp", matchingProp);
         if (
           matchingProp.PROPS_ID === "options" &&
           arrayObjectRegExp.test(matchingProp.PROPS_VALUE)
@@ -39,18 +39,29 @@ export const getDynamicFormMetaData = async ({
           matchingPropsObject[matchingProp.PROPS_ID] = matchingProp.PROPS_VALUE;
         }
         // For that Dyanmic SQL Function call for api calling purpose
-        const regex = /^[A-Z]+$/;
+
         if (
           matchingProp.PROPS_ID === "options" &&
-          regex.test(matchingProp.PROPS_VALUE)
+          matchingProp?.SOURCE_TYPE === "DS"
         ) {
-          matchingPropsObject[matchingProp.PROPS_ID] =
-            createChargeTemplateFetcher(
-              matchingProp.PROPS_VALUE,
-              matchingProp.DISPLAY_VALUE,
-              matchingProp.DATA_VALUE
-            );
+          matchingPropsObject[matchingProp.PROPS_ID] = createDynOptionsFetcher(
+            matchingProp.PROPS_VALUE,
+            matchingProp.DISPLAY_VALUE,
+            matchingProp.DATA_VALUE
+          );
         }
+        if (matchingProp.PROPS_ID === "schemaValidation") {
+          matchingPropsObject[matchingProp.PROPS_ID] = {
+            type: one?.COMPONENT_TYPE === "datePicker" ? "date" : "string",
+            rules: [
+              {
+                name: matchingProp.PROPS_VALUE,
+                params: [matchingProp.SCHEMA_MESSAGE],
+              },
+            ],
+          };
+        }
+
         // value get in string so convert to boolean
         if (matchingProp.PROPS_VALUE === "true") {
           matchingPropsObject[matchingProp.PROPS_ID] = true;
@@ -84,7 +95,7 @@ export const getDynamicFormMetaData = async ({
           },
           name: one?.FIELD_NAME,
           label: one?.FIELD_LABEL,
-          type: "text",
+          // type: "text",
           //@ts-ignore
           required: one?.FIELD_REQUIRED,
 
@@ -167,36 +178,32 @@ export const getDynamicFormData = (DocID) => async (formData: any) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-const createChargeTemplateFetcher = (
-  PROPS_VALUE,
-  DISPLAY_VALUE,
-  DATA_VALUE
-) => {
-  const GetChargeTemplates = async (_, __, ___, dependent) => {
+const createDynOptionsFetcher = (PROPS_VALUE, DISPLAY_VALUE, DATA_VALUE) => {
+  const GetOptionDynData = async (_, __, ___, dependent) => {
+    // console.log("dependent", dependent?.user?.id ?? "");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher(
         `/enfinityCommonServiceAPI/GETDYNAMICDATA/${PROPS_VALUE}`,
-        {}
+        { USER_ID: dependent?.user?.id ?? "" }
       );
     if (status === "0") {
-      console.log("data", data);
+      // console.log("data", data);
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(
-          ({ DATA_VALUE, DISPLAY_VALUE, ...other }) => {
-            return {
-              value: DATA_VALUE,
-              label: DISPLAY_VALUE,
-              ...other,
-            };
-          }
-        );
+        responseData = responseData.map(({ ...item }) => {
+          return {
+            value: item[DATA_VALUE],
+            label: item[DISPLAY_VALUE],
+            ...item,
+          };
+        });
       }
+      // console.log("responseData", responseData);
       return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
 
-  return GetChargeTemplates;
+  return GetOptionDynData;
 };

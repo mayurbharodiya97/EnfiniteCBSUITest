@@ -56,11 +56,12 @@ export const DynamicGrids = () => {
           doccd: docCd || "",
           companyID: authState?.companyID ?? "",
           branchID: authState?.user?.branchCode ?? "",
-          // customerID: "2",
-          // TRAN_CD: "91",
+          userRole: authState?.role ?? "",
+          userName: authState?.user?.name ?? "",
         }),
     },
   ]);
+
   const loading = result[0].isLoading || result[0].isFetching;
   const mutation = useMutation(
     updateAUTHDetailDataWrapperFn(API.getDynActionButtonData),
@@ -89,11 +90,11 @@ export const DynamicGrids = () => {
       const newActions = (mutation?.data || []).map((item) => {
         // Check the conditions before mapping
         if (
-          (metaData?.USER_ACC_INS >= authState?.role &&
+          (metaData?.USER_ACC_INS > authState?.role &&
             item?.actionName === "Add") ||
-          (metaData?.USER_ACC_UPD >= authState?.role &&
+          (metaData?.USER_ACC_UPD > authState?.role &&
             item?.actionName === "View-Detail") ||
-          (metaData?.USER_ACC_DEL >= authState?.role &&
+          (metaData?.USER_ACC_DEL > authState?.role &&
             item?.actionName === "Delete")
         ) {
           return null;
@@ -172,6 +173,7 @@ export const DynamicGrids = () => {
   const onAcceptDelete = (rows) => {
     deleteMutation.mutate({ ...rows?.data, _isDeleteRow: true, DOC_CD: docID });
   };
+
   return (
     <>
       {isLoading || isFetching ? (
@@ -193,8 +195,8 @@ export const DynamicGrids = () => {
             loading={loading || isLoading}
             actions={actions}
             setAction={setCurrentAction}
-            // refetchData={() => result[0].refetch()}
-            refetchData={() => refetch()}
+            refetchData={() => result[0].refetch()}
+            // refetchData={() => refetch()}
 
             // ref={myGridRef}
           />
@@ -215,8 +217,8 @@ export const DynamicGrids = () => {
                   isDataChangedRef={isDataChangedRef}
                   item={item}
                   docID={docID}
-                  gridData={result?.[0]}
-                  defaultView={item.actionLabel}
+                  // defaultView={validViews}
+                  defaultView={item.actionName === "Add" ? "add" : "view"}
                   alertMessage={item?.ALRT_MSG}
                 />
               }

@@ -100,7 +100,7 @@ export const DynamicDropdownConfig = ({
       endSubmit,
       setFieldError,
     };
-    console.log(" isErrorFuncRef.current", isErrorFuncRef.current);
+
     // setFormMode("view");
   };
 
@@ -111,6 +111,14 @@ export const DynamicDropdownConfig = ({
     setIsOpenSave(false);
   };
 
+  if (DynamicDropdownConfigMetaData.form.label) {
+    DynamicDropdownConfigMetaData.form.label =
+      formMode !== "add"
+        ? "Dynamic Dropdown Configure" +
+          " For " +
+          (reqData?.[0]?.data?.DDLB_NAME ?? "")
+        : "Dynamic Dropdown Configure";
+  }
   return (
     <>
       {/* {mutation.isLoading ? (
@@ -142,73 +150,6 @@ export const DynamicDropdownConfig = ({
             background: "white",
           }}
         >
-          {/* {({ isSubmitting, handleSubmit }) => (
-              <>
-                {formMode === "edit" ? (
-                  <>
-                    <Button
-                      onClick={(event) => {
-                        handleSubmit(event, "Save");
-                      }}
-                      disabled={isSubmitting}
-                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                      color={"primary"}
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setFormMode("view");
-                      }}
-                      color={"primary"}
-                      disabled={isSubmitting}
-                    >
-                      Cancel
-                    </Button>
-                  </>
-                ) : formMode === "add" ? (
-                  <>
-                    <Button
-                      onClick={(event) => {
-                        handleSubmit(event, "Save");
-                      }}
-                      disabled={isSubmitting}
-                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                      color={"primary"}
-                    >
-                      Save
-                    </Button>
-
-                    <Button
-                      onClick={closeDialog}
-                      //disabled={isSubmitting}
-                      color={"primary"}
-                    >
-                      Close
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      onClick={() => {
-                        setFormMode("edit");
-                      }}
-                      //disabled={isSubmitting}
-                      color={"primary"}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={closeDialog}
-                      //disabled={isSubmitting}
-                      color={"primary"}
-                    >
-                      Close
-                    </Button>
-                  </>
-                )}
-              </>
-            )} */}
           {({ isSubmitting, handleSubmit }) => (
             <>
               {formMode === "edit" ? (
@@ -285,7 +226,7 @@ export const DynamicDropdownConfig = ({
             onActionNo={() => onActionCancel()}
             rows={isErrorFuncRef.current?.data}
             open={isOpenSave}
-            // loading={mutation.isLoading}`
+            loading={mutation.isLoading}
           />
         ) : null}
       </Dialog>

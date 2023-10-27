@@ -45,28 +45,6 @@ export const DynamicDropdownConfigMetaData = {
     },
   },
   fields: [
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "DDLB_NAME",
-    //   label: "Dropdown Name",
-    //   placeholder: "",
-    //   type: "text",
-    //   fullWidth: true,
-    //   maxLength: 12,
-    //   showMaxLength: false,
-    //   // required: true,
-    //   // // __EDIT__: { isReadOnly: true },
-    //   // schemaValidation: {
-    //   //   type: "string",
-    //   //   rules: [
-    //   //     { name: "required", params: ["Document Code is required."] },
-    //   //     { name: "DOC_CD", params: [12, "Please enter Document Code."] },
-    //   //   ],
-    //   // },
-    //   GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
-    // },
     {
       render: {
         componentType: "textField",
@@ -74,29 +52,40 @@ export const DynamicDropdownConfigMetaData = {
       name: "DDLB_NAME",
       label: "Dropdown Name",
       placeholder: "Dropdown Name",
+      maxLength: 40,
       type: "text",
       required: true,
-      GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Dropdown Name is required."] }],
+      },
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 4, xl: 1.5 },
     },
     {
       render: { componentType: "select" },
       name: "SOURCE_TYPE",
       label: "Dropdown Source",
-
       options: [
         { label: "Dynamic SQL", value: "DS" },
         { label: "Register Function", value: "RF" },
         { label: "Defualt Option", value: "DO" },
       ],
-      // _optionsKey: "defualt",
+      _optionsKey: "defualt",
       defaultValue: "Dynamic SQL",
       required: true,
+      type: "text",
       GridProps: { xs: 12, sm: 2, md: 3, lg: 2.5, xl: 1.5 },
       fullWidth: true,
-      // validate: "getValidateValue",
       autoComplete: "off",
       //@ts-ignore
       isFieldFocused: true,
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Dropdown Source is required."] },
+          { name: "SOURCE_TYPE", params: ["Please enter Dropdown Source."] },
+        ],
+      },
     },
     {
       render: { componentType: "autocomplete" },
@@ -124,6 +113,10 @@ export const DynamicDropdownConfigMetaData = {
         return false;
       },
       autoComplete: "off",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["API List is required."] }],
+      },
     },
     {
       render: {
@@ -150,6 +143,13 @@ export const DynamicDropdownConfigMetaData = {
           label: "Display Value",
           placeholder: "Display Value",
           GridProps: { xs: 12, sm: 3, md: 4, lg: 6, xl: 2.5 },
+          maxLength: 40,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Display Value is required."] },
+            ],
+          },
         },
         {
           render: {
@@ -158,7 +158,12 @@ export const DynamicDropdownConfigMetaData = {
           name: "value",
           label: "Data Value",
           placeholder: "Data Value",
+          maxLength: 40,
           GridProps: { xs: 12, sm: 3, md: 4, lg: 6, xl: 2.5 },
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Data Value is required."] }],
+          },
         },
       ],
     },

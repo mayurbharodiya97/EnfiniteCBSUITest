@@ -77,8 +77,8 @@ export const RetrievalParametersGrid = ({
       if (!Array.isArray(result)) {
         result = [result];
       }
+
       onSaveData(result);
-      console.log("result", result);
     }
   };
   return (

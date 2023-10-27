@@ -1,6 +1,6 @@
 import { getProMiscData } from "../../dynamicGridConfig/api";
 import { GridMetaDataType } from "components/dataTableStatic";
-import { getSouceListData } from "../api";
+import { getSourceListData } from "../api";
 import { GeneralAPI } from "registry/fns/functions";
 export const DynamicFormConfigMetaData = {
   form: {
@@ -60,12 +60,12 @@ export const DynamicFormConfigMetaData = {
       _optionsKey: "getTbgDocMstData",
       fullWidth: true,
       required: true,
-      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 4, xl: 1.5 },
       schemaValidation: {
         type: "string",
         rules: [
-          { name: "required", params: ["Screen Name is required."] },
-          { name: "SCREEN_NAME", params: ["Please enter Screen Name."] },
+          { name: "required", params: ["Document Code is required."] },
+          { name: "DOC_CD", params: ["Please enter Document Code."] },
         ],
       },
     },
@@ -78,6 +78,13 @@ export const DynamicFormConfigMetaData = {
       placeholder: "Metadata Description",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      maxLength: 50,
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Metadata Description is required."] },
+        ],
+      },
     },
     {
       render: {
@@ -88,6 +95,13 @@ export const DynamicFormConfigMetaData = {
       placeholder: "Form name",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      maxLength: 50,
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Metadata Description is required."] },
+        ],
+      },
     },
     {
       render: {
@@ -98,22 +112,33 @@ export const DynamicFormConfigMetaData = {
       placeholder: "Form label",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      maxLength: 50,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Form label is required."] }],
+      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "select",
       },
       name: "SUBMITACTION",
       label: "Submit Action",
       placeholder: "Submit Action",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      maxLength: 10,
+      options: [{ label: "home", value: "home" }],
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Submit Action is required."] }],
+      },
     },
     {
       render: { componentType: "autocomplete" },
 
       name: "VALIDATIONRUN",
-      label: "Validation Run",
+      label: "For Form Metadata Validation Run",
       // required: true,
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
 
@@ -123,10 +148,14 @@ export const DynamicFormConfigMetaData = {
         { label: "onChange", value: "onChange" },
         { label: "all", value: "all" },
       ],
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["This Field is required"] }],
-      // },
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Validation Run is required."] },
+          { name: "VALIDATIONRUN", params: ["Please enter Validation Run."] },
+        ],
+      },
+
       // autoComplete: "off",
     },
     {
@@ -863,6 +892,44 @@ export const PropsComponentFormMetaData: any = {
           dependentFields: ["PROPS_ID", "OPTION_VALUE"],
         },
         {
+          render: { componentType: "select" },
+          name: "SOURCE_TYPE",
+          label: "Dropdown Source",
+          options: [
+            { label: "Dynamic SQL", value: "DS" },
+            { label: "Register Function", value: "RF" },
+            { label: "Defualt Option", value: "DO" },
+          ],
+          // _optionsKey: "defualt",
+          defaultValue: "Dynamic SQL",
+          required: true,
+          GridProps: { xs: 12, sm: 2, md: 3, lg: 2.5, xl: 1.5 },
+          fullWidth: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Source Type is required."] },
+              { name: "SOURCE_TYPE", params: ["Please enter Source Type."] },
+            ],
+          },
+          runValidationOnDependentFieldsChange: true,
+          shouldExclude: (val1, dependent) => {
+            if (
+              dependent["propsDetails.OPTION_VALUE"]?.dependentFields?.[0] ===
+              "propsDetails[4].PROPS_ID"
+            ) {
+              return false;
+            }
+
+            return true;
+          },
+          dependentFields: ["OPTION_VALUE"],
+          disableCaching: true,
+          autoComplete: "off",
+          //@ts-ignore
+          isFieldFocused: true,
+        },
+        {
           render: {
             componentType: "select",
           },
@@ -881,41 +948,11 @@ export const PropsComponentFormMetaData: any = {
           },
           runValidationOnDependentFieldsChange: true,
           dependentFields: ["PROPS_ID"],
-          options: getSouceListData,
-          _optionsKey: "getSouceListData",
+          options: getSourceListData,
+          _optionsKey: "getSourceListData",
           disableCaching: true,
         },
-        {
-          render: { componentType: "select" },
-          name: "SOURCE_TYPE",
-          label: "Dropdown Source",
 
-          options: [
-            { label: "Dynamic SQL", value: "DS" },
-            { label: "Register Function", value: "RF" },
-            { label: "Defualt Option", value: "DO" },
-          ],
-          // _optionsKey: "defualt",
-          defaultValue: "Dynamic SQL",
-          required: true,
-          GridProps: { xs: 12, sm: 2, md: 3, lg: 2.5, xl: 1.5 },
-          fullWidth: true,
-          // validate: "getValidateValue",
-          runValidationOnDependentFieldsChange: true,
-          shouldExclude: (val1, dependent) => {
-            console.log("dependent", dependent);
-            if (dependent["propsDetails.OPTION_VALUE"]?.value) {
-              return false;
-            }
-
-            return true;
-          },
-          dependentFields: ["OPTION_VALUE"],
-          disableCaching: true,
-          autoComplete: "off",
-          //@ts-ignore
-          isFieldFocused: true,
-        },
         {
           render: {
             componentType: "select",
@@ -935,8 +972,9 @@ export const PropsComponentFormMetaData: any = {
           disableCaching: true,
           _optionsKey: "getDynDropdownData",
           runValidationOnDependentFieldsChange: true,
-          dependentFields: ["OPTION_VALUE"],
+          dependentFields: ["OPTION_VALUE", "SOURCE_TYPE"],
           shouldExclude: (val1, dependent) => {
+            // console.log("getValidateValue", dependent);
             const regex = /^[A-Z]+$/;
             if (regex.test(dependent["propsDetails.OPTION_VALUE"]?.value)) {
               return false;
@@ -989,7 +1027,7 @@ export const PropsComponentFormMetaData: any = {
             componentType: "textField",
           },
           name: "SCHEMA_MESSAGE",
-          label: "SchemeValidation Message",
+          label: "SchemaValidation Message",
           placeholder: "Props Value",
           GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
           shouldExclude: (val1, dependent) => {

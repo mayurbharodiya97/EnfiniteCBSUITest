@@ -15,6 +15,7 @@ import { extractMetaData, utilFunction } from "components/utils";
 import { AuthContext } from "pages_audit/auth";
 import { Button, Dialog } from "@mui/material";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { GradientButton } from "components/styledComponent/button";
 
 interface updateAUTHDetailDataType {
   data: any;
@@ -34,8 +35,7 @@ const DynamicForm: FC<{
   docID: any;
   gridData: any;
   alertMessage: any;
-  // defaultView?: "view" | "edit" | "add";
-  defaultView;
+  defaultView?: "view" | "edit" | "add";
 }> = ({
   isDataChangedRef,
   closeDialog,
@@ -49,6 +49,7 @@ const DynamicForm: FC<{
   const isErrorFuncRef = useRef<any>(null);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const { authState } = useContext(AuthContext);
+  const [formMode, setFormMode] = useState(defaultView);
 
   const {
     data: metaData,
@@ -125,25 +126,22 @@ const DynamicForm: FC<{
 
     let upd = utilFunction.transformDetailsData(
       data,
-      gridData?.data?.[0] ?? {}
+      gridData?.[0]?.data ?? {}
     );
 
     isErrorFuncRef.current = {
       data: {
         ...data,
         ...upd,
-        _isNewRow: defaultView === "Add" ? true : false,
-        TRAN_CD: gridData?.data?.[0]?.TRAN_CD ?? "",
+        _isNewRow: formMode === "add" ? true : false,
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: authState?.user?.branchCode ?? "",
-        // COMP_CD: gridData?.data?.[0]?.COMP_CD ?? "",
-        // BRANCH_CD: gridData?.data?.[0]?.BRANCH_CD ?? "",
       },
       displayData,
       endSubmit,
       setFieldError,
     };
-    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
+
     setIsOpenSave(true);
   };
 
@@ -164,39 +162,84 @@ const DynamicForm: FC<{
       ) : (
         <>
           <FormWrapper
-            key={`DynamicForm` + defaultView}
+            key={`DynamicForm` + formMode}
             metaData={metaData}
             onSubmitHandler={onSubmitHandler}
-            initialValues={
-              defaultView === "Add"
-                ? {}
-                : (gridData?.data?.[0] as InitialValuesType)
-            }
+            // initialValues={
+            //   defaultView === "Add" ? {} : (gridData?.data as InitialValuesType)
+            // }
+            initialValues={gridData?.[0]?.data as InitialValuesType}
             // hideHeader={true}
-            displayMode={defaultView}
+            displayMode={formMode}
             formStyle={{
               background: "white",
             }}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                <Button
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                  color={"primary"}
-                >
-                  Save
-                </Button>
-                <Button
-                  onClick={closeDialog}
-                  color={"primary"}
-                  disabled={isSubmitting}
-                >
-                  Close
-                </Button>
+                {formMode === "edit" ? (
+                  <>
+                    <GradientButton
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      disabled={isSubmitting}
+                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                      color={"primary"}
+                    >
+                      Save
+                    </GradientButton>
+                    <GradientButton
+                      onClick={() => {
+                        setFormMode("view");
+                      }}
+                      color={"primary"}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </GradientButton>
+                  </>
+                ) : formMode === "add" ? (
+                  <>
+                    <GradientButton
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      disabled={isSubmitting}
+                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                      color={"primary"}
+                    >
+                      Save
+                    </GradientButton>
+
+                    <GradientButton
+                      onClick={closeDialog}
+                      //disabled={isSubmitting}
+                      color={"primary"}
+                    >
+                      Close
+                    </GradientButton>
+                  </>
+                ) : (
+                  <>
+                    <GradientButton
+                      onClick={() => {
+                        setFormMode("edit");
+                      }}
+                      //disabled={isSubmitting}
+                      color={"primary"}
+                    >
+                      Edit
+                    </GradientButton>
+                    <GradientButton
+                      onClick={closeDialog}
+                      //disabled={isSubmitting}
+                      color={"primary"}
+                    >
+                      Close
+                    </GradientButton>
+                  </>
+                )}
               </>
             )}
           </FormWrapper>
@@ -222,11 +265,11 @@ export const DynamicFormWrapper = ({
   isDataChangedRef,
   item,
   docID,
-  gridData,
   defaultView,
   alertMessage,
 }) => {
   const classes = useDialogStyles();
+  const { state: data }: any = useLocation();
 
   return (
     <>
@@ -251,7 +294,7 @@ export const DynamicFormWrapper = ({
           closeDialog={handleDialogClose}
           item={item}
           docID={docID}
-          gridData={gridData}
+          gridData={data}
           defaultView={defaultView}
           alertMessage={alertMessage}
         />

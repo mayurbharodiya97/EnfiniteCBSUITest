@@ -363,7 +363,7 @@ export const AuthLoginController = () => {
           type: "OTPVerificationFailed",
           payload: { error: message, otpmodelclose: true },
         });
-        enqueueSnackbar(message, { variant: "error" });
+        // enqueueSnackbar(message, { variant: "error" });
       } else {
         dispath({
           type: "OTPVerificationFailed",

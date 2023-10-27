@@ -70,16 +70,16 @@ export const getDynGridData = async ({
   doccd,
   companyID,
   branchID,
-  // customerID,
-  // TRAN_CD,
+  userRole,
+  userName,
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDYNAMICGRIDDATA", {
       DOC_CD: doccd,
       COMP_CD: companyID,
       BRANCH_CD: branchID,
-      // CUSTOMER_ID: customerID,
-      // TRAN_CD: TRAN_CD,
+      USERROLE: userRole,
+      USERNAME: userName,
     });
   if (status === "0") {
     return data;

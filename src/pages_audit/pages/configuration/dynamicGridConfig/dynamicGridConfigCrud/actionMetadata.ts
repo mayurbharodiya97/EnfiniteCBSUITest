@@ -85,6 +85,7 @@ export const ActionsMetaData: any = {
           options: "getMetadataList",
           _optionsKey: "getMetadataList",
           requestProps: "DOC_CD",
+          disableCaching: true,
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           runValidationOnDependentFieldsChange: true,
           dependentFields: ["ACTIONNAME"],

@@ -347,10 +347,23 @@ const DynamicGridConfig: FC<{
         }
       }
 
-      let finalResult = CreateDetailsRequestData(myparameterDataRef.current);
+      // let finalResult = CreateDetailsRequestData(myparameterDataRef.current);
+      // data.PARAMETER = {
+      //   DETAILS_DATA: finalResult,
+      // };
+      const newSomeData = myparameterDataRef.current?.filter(
+        (item) => item && !item?._isTouchedCol?.COMPONENT_TYPE === false
+      );
+
+      let updPara = utilFunction.transformDetailDataForDML(
+        result[1].data ?? [],
+        newSomeData ?? [],
+        ["SR_CD"]
+      );
       data.PARAMETER = {
-        DETAILS_DATA: finalResult,
+        DETAILS_DATA: updPara,
       };
+      console.log("updPara", updPara);
       data.DETAILS_DATA["isUpdatedRow"] = data?.DETAILS_DATA?.isUpdatedRow?.map(
         (item) => {
           return {
@@ -432,7 +445,7 @@ const DynamicGridConfig: FC<{
       ? "Dynamic Grid Configure" +
         " For " +
         (reqData?.[0]?.data?.DESCRIPTION ?? "")
-      : "";
+      : "Dynamic Grid Configure";
 
   return (
     <>
@@ -543,9 +556,9 @@ const DynamicGridConfig: FC<{
                           myRef.current?.onSubmitHandler(event);
                         }}
                         // disabled={isLocalLoading}
-                        endIcon={
-                          isLocalLoading ? <CircularProgress size={20} /> : null
-                        }
+                        // endIcon={
+                        //   isLocalLoading ? <CircularProgress size={20} /> : null
+                        // }
                       >
                         Save
                       </GradientButton>

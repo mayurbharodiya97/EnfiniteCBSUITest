@@ -155,7 +155,6 @@ export const PropsConfigForm: FC<{
       endSubmit,
       setFieldError,
     };
-    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
   };
   if (PropsComponentFormMetaData.form.label) {
     PropsComponentFormMetaData.form.label =

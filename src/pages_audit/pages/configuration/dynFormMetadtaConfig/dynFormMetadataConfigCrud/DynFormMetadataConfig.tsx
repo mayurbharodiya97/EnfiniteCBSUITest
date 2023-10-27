@@ -58,19 +58,19 @@ const DynamicFormMetadataConfig: FC<{
       srcd: fieldRowData?.[0]?.data?.SR_CD ?? "",
     })
   );
-  useEffect(() => {
-    if (
-      location.pathname ===
-      "/cbsenfinity/configuration/dynamic-form-metadata/view-details"
-    ) {
-      if (!fieldRowData?.[0]?.data?.DOC_CD ?? "") {
-        // If docCD is not available in the API response, navigate to the desired route
-        navigate("/cbsenfinity/configuration/dynamic-form-metadata");
-      }
-    } else {
-      navigate(location.pathname);
-    }
-  }, [navigate, location.pathname, fieldRowData?.[0]?.data?.DOC_CD ?? ""]);
+  // useEffect(() => {
+  //   if (
+  //     location.pathname ===
+  //     "/cbsenfinity/configuration/dynamic-form-metadata/view-details"
+  //   ) {
+  //     if (!fieldRowData?.[0]?.data?.DOC_CD ?? "") {
+  //       // If docCD is not available in the API response, navigate to the desired route
+  //       navigate("/cbsenfinity/configuration/dynamic-form-metadata");
+  //     }
+  //   } else {
+  //     navigate(location.pathname);
+  //   }
+  // }, [navigate, location.pathname, fieldRowData?.[0]?.data?.DOC_CD ?? ""]);
 
   const mutation: any = useMutation(API.getDynFormPopulateData);
   const result = useMutation(API.dynamiFormMetadataConfigDML, {

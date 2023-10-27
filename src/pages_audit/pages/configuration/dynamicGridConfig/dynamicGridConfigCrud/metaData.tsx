@@ -98,6 +98,7 @@ export const DynamicGridConfigMetaData = {
         label: "Document Title",
         placeholder: "",
         type: "text",
+        maxLength: 40,
         fullWidth: true,
         required: true,
         schemaValidation: {
@@ -176,6 +177,13 @@ export const DynamicGridConfigMetaData = {
         options: () => getDynamicOwnerList(),
         _optionsKey: "getDynamicOwnerList",
         __EDIT__: { isReadOnly: true },
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Table owner Name is required."] },
+            { name: "OWNER_NM", params: ["Please enter Table owner Name."] },
+          ],
+        },
         // postValidationSetCrossFieldValues: "getTabelListData",
         GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
       },
@@ -261,7 +269,13 @@ export const DynamicGridConfigMetaData = {
           { label: "2", value: "2" },
         ],
         _optionKey: "SeqParameter",
-
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Seq. Parameter is required."] },
+            { name: "SEQ_PARA", params: ["Please enter Seq. Parameter."] },
+          ],
+        },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
       },
 
@@ -281,6 +295,11 @@ export const DynamicGridConfigMetaData = {
           return true;
         },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.2 },
+        maxLength: 40,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["Seq. Name is required."] }],
+        },
       },
       {
         render: {
@@ -292,6 +311,11 @@ export const DynamicGridConfigMetaData = {
         required: true,
         // defaultValue: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
+        maxLength: 5,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["Add For User is required."] }],
+        },
       },
       {
         render: {
@@ -301,6 +325,13 @@ export const DynamicGridConfigMetaData = {
         label: "View-Detail for User",
         // defaultValue: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
+        maxLength: 5,
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["View-Detail for User is required."] },
+          ],
+        },
       },
       {
         render: {
@@ -310,6 +341,13 @@ export const DynamicGridConfigMetaData = {
         label: "Delete for User",
         // defaultValue: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
+        maxLength: 5,
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Delete for User is required."] },
+          ],
+        },
       },
 
       {
@@ -320,6 +358,13 @@ export const DynamicGridConfigMetaData = {
         label: "Default PageSize",
         // defaultValue: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.8, xl: 1.5 },
+        maxLength: 5,
+        schemaValidation: {
+          type: "string",
+          rules: [
+            { name: "required", params: ["Default PageSize is required."] },
+          ],
+        },
       },
       {
         render: {
@@ -351,6 +396,7 @@ export const DynamicGridConfigMetaData = {
         required: true,
         __EDIT__: { isReadOnly: true },
         GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        maxLength: 40,
         validate: (currentField, value) => {
           if (currentField?.value) {
             return;

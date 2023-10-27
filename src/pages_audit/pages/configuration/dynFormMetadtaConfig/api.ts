@@ -1,7 +1,7 @@
 import { AuthSDK } from "registry/fns/auth";
 import { DefaultErrorObject } from "components/utils";
 
-export const getSouceListData = async (_, __, dependent) => {
+export const getSourceListData = async (_, __, dependent) => {
   if (dependent["propsDetails.PROPS_ID"]?.value === "options") {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETDDLBSOURCELIST", {});
@@ -39,20 +39,16 @@ export const getSouceListData = async (_, __, dependent) => {
   } else if (dependent["propsDetails.PROPS_ID"]?.value === "schemaValidation") {
     return [
       {
-        value: "string",
-        label: "string",
+        value: "required",
+        label: "required",
       },
       {
-        value: "number",
-        label: "number",
+        value: "typeError",
+        label: "typeError",
       },
       {
-        value: "boolean",
-        label: "boolean",
-      },
-      {
-        value: "date",
-        label: "date",
+        value: "email",
+        label: "email",
       },
     ];
   }
