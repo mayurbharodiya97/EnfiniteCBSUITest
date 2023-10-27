@@ -76,7 +76,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "autocomplete",
                     },
-                    name: "REF_RELATION",
+                    name: "REF_TYPE",
                     label: "RefType",
                     required: true,
                     schemaValidation: {
@@ -90,9 +90,6 @@ export const related_person_detail_data = {
                         {label: "OTHER", value: "O"},
                         {label: "C-KYC", value: "C"},
                     ],
-                    _optionsKey: "refRelatedType",
-                    placeholder: "",
-                    type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                     // dependentFields: ["DAILY_AMT"],
                     // runValidationOnDependentFieldsChange: true,
@@ -120,13 +117,12 @@ export const related_person_detail_data = {
                           { name: "required", params: ["ThisFieldisrequired"] },
                         ],
                     },
-                    dependentFields: ["REF_RELATION"],
-                    shouldExclude(fieldData, dependentFields) {
-                        console.log(dependentFields, "fieldDtaaaa.", fieldData)
-                        if (dependentFields?.REF_RELATION?.value == "C") {
-                          return false;
+                    dependentFields: ["REF_TYPE"],
+                    shouldExclude(fieldData, dependentFieldsValues, formState) {
+                        if (dependentFieldsValues["RELATED_PERSON_DTL.REF_TYPE"]?.value === "C") {
+                            return false;
                         } else {
-                          return true;
+                            return true;
                         }
                     },
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -136,7 +132,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "FIRST_NAME",
+                    name: "REF_FIRST_NM",
                     label: "FirstName",
                     placeholder: "First Name",
                     required: true,
@@ -154,7 +150,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "MIDDLE_NAME",
+                    name: "REF_MIDDLE_NM",
                     label: "MiddleName",
                     placeholder: "Middle Name",
                     type: "text",
@@ -259,7 +255,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "datePicker",
                     },
-                    name: "PASSPORT_EXP_DT",
+                    name: "PASSPORT_EXPIRY_DT",
                     label: "PassportExpDt",
                     minDate: new Date(),
                     // required: true,
@@ -281,7 +277,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "NREGA_JOB_CARD2",
+                    name: "NREGA_JOB_CARD",
                     label: "NREGAJobCard",
                     placeholder: "",
                     type: "text",
