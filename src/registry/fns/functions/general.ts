@@ -166,7 +166,7 @@ const GeneralAPISDK = () => {
           reqFlag === "ACCT_CD" ? dependentFieldValue?.BRANCH_CD?.value : "",
         ACCT_TYPE:
           reqFlag === "ACCT_CD" ? dependentFieldValue?.ACCT_TYPE?.value : "",
-        ACCT_CD: reqFlag === "ACCT_CD" ? currentField?.value : "",
+        ACCT_CD: reqFlag === "ACCT_CD" ? paddedAcctcode : "",
         FULL_ACCT_NO: reqFlag === "ACCT_CD" ? "" : currentField?.value,
       });
 
@@ -174,7 +174,6 @@ const GeneralAPISDK = () => {
         if (data?.length > 0) {
           const { LST_STATEMENT_DT } = data[0];
           const originalDate: any = new Date(LST_STATEMENT_DT);
-
           return {
             ACCT_NM: {
               value: data?.[0]?.ACCT_NM,
@@ -190,18 +189,19 @@ const GeneralAPISDK = () => {
             WK_STMT_TO_DATE: {
               value: isValidDate(new Date()) ? new Date() : new Date(),
             },
-            // ACCT_CD: {
-            //   value: paddedAcctcode,
-            // },
+            ACCT_CD: {
+              value: paddedAcctcode,
+              ignoreUpdate: true,
+            },
           };
         } else {
           return {
             ACCT_NM: { value: "" },
             STMT_FROM_DATE: { value: "" },
             WK_STMT_TO_DATE: { value: "" },
-            // ACCT_CD: {
-            //   value: "",
-            // },
+            ACCT_CD: {
+              value: "",
+            },
           };
         }
       }
@@ -210,9 +210,9 @@ const GeneralAPISDK = () => {
         ACCT_NM: { value: "" },
         STMT_FROM_DATE: { value: "" },
         WK_STMT_TO_DATE: { value: "" },
-        // ACCT_CD: {
-        //   value: "",
-        // },
+        ACCT_CD: {
+          value: "",
+        },
       };
     }
   };

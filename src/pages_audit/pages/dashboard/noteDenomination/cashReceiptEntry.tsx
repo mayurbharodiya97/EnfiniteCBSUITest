@@ -42,6 +42,7 @@ import {
 } from "components/formcomponent";
 import { DenominationScreenMetaData } from "./metadata";
 import { UpdateRequestDataVisibleColumn } from "components/utils";
+import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
 
 const labelStaticStyle = {
   "&.MuiInputLabel-root": {
@@ -53,7 +54,7 @@ const CashReceiptEntry = () => {
   const [inputVal, setInputVal] = useState<any>({});
   const [displayError, setDisplayError] = useState<string[]>([]);
   const [multiplicationResult, setMultiplicationResult] = useState<any>([]);
-  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [totalAmount, setTotalAmount] = useState<any>(0);
   const [confirmation, setConfirmation] = useState(false);
   const [displayTotal, setDisplayTotal] = useState<any>([]);
   const [totalInputAmount, setTotalInputAmount] = useState<any>(0);
@@ -62,6 +63,7 @@ const CashReceiptEntry = () => {
   const [retData, setRetData] = useState<any>({});
   const [displayTable, setDisplayTable] = useState(false);
   const [balance, setBalance] = useState<any>([]);
+  const [openDeno, setOpenDeno] = useState<boolean>(false);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
 
   // useEffect(() => {
@@ -74,6 +76,7 @@ const CashReceiptEntry = () => {
 
   const getData: any = useMutation(API.CashReceiptEntrysData, {
     onSuccess: (response: any) => {
+      setOpenDeno(false);
       setDisplayTable(true);
     },
     onError: (error: any) => {
@@ -81,13 +84,19 @@ const CashReceiptEntry = () => {
     },
   });
 
+  const manageOpenDeno = (row, buttonName) => {
+    if (buttonName === "Yes") {
+      getData.mutate({ a: "a", b: "b" });
+    } else if (buttonName === "No") {
+      setOpenDeno(false);
+    }
+  };
+
   const ClickEventManage = useCallback(
     (data, columnvisible) => {
+      setOpenDeno(true);
       let retdata = UpdateRequestDataVisibleColumn(data, columnvisible);
       setRetData(retdata);
-      {
-        getData.mutate({ a: "a", b: "b" });
-      }
     },
     [getData]
   );
@@ -103,7 +112,7 @@ const CashReceiptEntry = () => {
   //   API.CashReceiptEntrysData()
   // );
   const withdrawAmount = retData?.RECEIPT_PAYMENT;
-  const upadatedFinalAmount: number = withdrawAmount - totalAmount;
+  const upadatedFinalAmount: any = withdrawAmount - totalAmount;
 
   useEffect(() => {
     setAvailNote(
@@ -330,6 +339,12 @@ const CashReceiptEntry = () => {
                 boxShadow: "rgba(226, 236, 249, 0.5) 0px 11px 70px",
                 border: "2px solid var(--theme-color6)",
                 overflow: "hidden",
+                "& .MuiGrid-root": {
+                  marginBottom: "-10px",
+                  "& .css-1br77t0-MuiGrid-root>.MuiGrid-item": {
+                    paddingTop: "0px !important",
+                  },
+                },
               },
             }}
           ></FormComponentView>
@@ -340,6 +355,7 @@ const CashReceiptEntry = () => {
               borderRadius={"10px"}
               boxShadow={"rgba(226, 236, 249, 0.5) 0px 11px 70px"}
               overflow={"hidden"}
+              style={{ transform: "scale(90deg)" }}
             >
               <TableContainer
                 sx={{
@@ -403,7 +419,12 @@ const CashReceiptEntry = () => {
                             scope="row"
                             className="cellBordered"
                           >
-                            {row.NOTE}
+                            {formatCurrency(
+                              parseFloat(row.NOTE),
+                              getCurrencySymbol(dynamicAmountSymbol),
+                              currencyFormat,
+                              decimalCount
+                            )}
                           </StyledTableCell>
                           <StyledTableCell
                             align="left"
@@ -443,7 +464,12 @@ const CashReceiptEntry = () => {
                             className="cellBordered"
                           >
                             {" "}
-                            {multiplicationResult[index] || "0.00"}
+                            {formatCurrency(
+                              parseFloat(multiplicationResult[index] || "0"),
+                              getCurrencySymbol(dynamicAmountSymbol),
+                              currencyFormat,
+                              decimalCount
+                            )}
                           </StyledTableCell>
                           <StyledTableCell
                             align="right"
@@ -457,9 +483,16 @@ const CashReceiptEntry = () => {
                             align="right"
                             className="cellBordered"
                           >
-                            {balance && balance[index] !== undefined
-                              ? balance[index]
-                              : balance}
+                            {formatCurrency(
+                              parseFloat(
+                                balance && balance[index] !== undefined
+                                  ? balance[index]
+                                  : balance
+                              ),
+                              getCurrencySymbol(dynamicAmountSymbol),
+                              currencyFormat,
+                              decimalCount
+                            )}
                           </StyledTableCell>
                         </TableRow>
                       );
@@ -494,7 +527,12 @@ const CashReceiptEntry = () => {
                         className="cellBordered"
                         sx={{ fontWeight: "bold", fontSize: "1rem" }}
                       >
-                        {totalAmount}
+                        {formatCurrency(
+                          parseFloat(totalAmount),
+                          getCurrencySymbol(dynamicAmountSymbol),
+                          currencyFormat,
+                          decimalCount
+                        )}
                       </StyledTableCell>
                       <StyledTableCell
                         align="right"
@@ -508,7 +546,12 @@ const CashReceiptEntry = () => {
                         className="cellBordered"
                         sx={{ fontWeight: "bold", fontSize: "1rem" }}
                       >
-                        {displayTotal?.TOTAL_AMNT}
+                        {formatCurrency(
+                          parseFloat(displayTotal?.TOTAL_AMNT),
+                          getCurrencySymbol(dynamicAmountSymbol),
+                          currencyFormat,
+                          decimalCount
+                        )}
                       </StyledTableCell>
                     </TableRow>
                   </TableBody>
@@ -516,7 +559,7 @@ const CashReceiptEntry = () => {
               </TableContainer>
               <Paper
                 sx={{
-                  height: "43px",
+                  height: "auto",
                   width: "auto",
                   padding: "2px 8px",
                   borderBottom: "2px solid var(--theme-color6)",
@@ -543,16 +586,36 @@ const CashReceiptEntry = () => {
                     }}
                   >
                     {" "}
-                    {upadatedFinalAmount >= 0 ? "Remaining" : "Excess"}:
+                    {upadatedFinalAmount >= 0 ? "Remaining " : "Excess "} {": "}
                   </Typography>
                   <Typography sx={{ fontWeight: "bold" }}>
-                    {" "}
-                    {!isNaN(upadatedFinalAmount) ? upadatedFinalAmount : 0}
+                    {formatCurrency(
+                      parseFloat(
+                        !isNaN(upadatedFinalAmount) ? upadatedFinalAmount : 0
+                      ),
+                      getCurrencySymbol(dynamicAmountSymbol),
+                      currencyFormat,
+                      decimalCount
+                    )}
                   </Typography>
                 </Typography>
               </Paper>{" "}
             </Box>
           </Slide>
+        ) : null}
+
+        {Boolean(openDeno) ? (
+          <PopupRequestWrapper
+            MessageTitle={"Denomination confirmation"}
+            Message={"Are you sure to open denomination"}
+            onClickButton={(row, buttonName) => {
+              manageOpenDeno(row, buttonName);
+            }}
+            buttonNames={["Yes", "No"]}
+            rows={[]}
+            loading={getData.isLoading}
+            open={openDeno}
+          />
         ) : null}
 
         {Boolean(confirmation) ? (

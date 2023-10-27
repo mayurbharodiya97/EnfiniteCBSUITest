@@ -19,23 +19,24 @@ import getCurrencySymbol from "components/custom/getCurrencySymbol";
 //   return <CellWrapper {...props}>{result}</CellWrapper>;
 // };
 
-function formatCurrency(
+export function formatCurrency(
   amount,
   symbol,
   currencyFormat = "en-IN",
   decimalCount = 0,
-  symbolPosi = "start"
+  symbolPosi = "start",
+  textString = " "
 ) {
   const formattedAmount = new Intl.NumberFormat(currencyFormat, {
     minimumFractionDigits: decimalCount,
   }).format(amount);
 
   if (symbolPosi === "start") {
-    return `${symbol} ${formattedAmount}`;
+    return `${symbol} ${formattedAmount} ${textString} `;
   } else if (symbolPosi === "end") {
-    return `${formattedAmount} ${symbol}`;
+    return `${formattedAmount}  ${symbol} ${textString}`;
   } else {
-    return `${symbol} ${formattedAmount}`;
+    return `${symbol} ${formattedAmount} ${textString}`;
   }
 }
 

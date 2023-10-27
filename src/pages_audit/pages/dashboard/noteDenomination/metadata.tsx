@@ -1,3 +1,4 @@
+import * as API from "./api";
 // export const DenominationScreenMetaData = {
 //   form: {
 //     name: "DenominationScreenMetaData",
@@ -130,6 +131,7 @@
 // };
 
 import { FilterFormMetaType } from "components/formcomponent";
+import { GeneralAPI } from "registry/fns/functions";
 
 export const DenominationScreenMetaData: FilterFormMetaType = {
   gridConfig: {
@@ -137,6 +139,8 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
     title: "Teller Operation",
     allowColumnHiding: true,
     submitButtonName: "Fetch Data",
+    // HideHeader: true,
+    // submitButtonHide: true,
   },
   fields: [
     {
@@ -144,7 +148,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       name: "TRN",
       defaultValue: "R",
       isVisible: true,
-      gridconfig: { xs: 6, sm: 3 },
+      gridconfig: { xs: 6, sm: 2 },
       label: "Transaction",
       autoComplete: "off",
       required: true,
@@ -169,19 +173,19 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       accessor: "BRANCH",
       name: "BRANCH",
       label: "Branch",
-      placeholder: "Enter Branch",
+      placeholder: "Branch",
       type: "text",
       isDisabled: false,
-      gridconfig: { xs: 6, sm: 3 },
+      gridconfig: { xs: 6, sm: 1 },
     },
     {
       accessor: "ACOUNT_TYPE",
       name: "ACCOUNT_TYPE",
       label: "Account Type",
-      placeholder: "Account Type",
+      placeholder: "Type",
       type: "text",
       isDisabled: false,
-      gridconfig: { xs: 6, sm: 3 },
+      gridconfig: { xs: 6, sm: 1 },
     },
     {
       accessor: "ACCOUNT_NUMBER",
@@ -190,28 +194,22 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       placeholder: "Account Number",
       type: "text",
       isDisabled: false,
-      gridconfig: { xs: 6, sm: 3 },
+      gridconfig: { xs: 6, sm: 2 },
     },
     {
       accessor: "SDC",
       name: "SDC",
-      defaultValue: "ABC--",
+      defaultValue: "1   ",
       isVisible: true,
-      gridconfig: { xs: 6, sm: 3 },
+      gridconfig: { xs: 6, sm: 2 },
       label: "SDC",
       autoComplete: "off",
       placeholder: "Select SDC",
       isColumnHidingDisabled: false,
       entertoSubmit: true,
       type: "select",
-      optiondata: [
-        { value: "ABC--", label: "ABC--" },
-        { value: "DEF---", label: "DEF---" },
-        { value: "GHI----", label: "GHI----" },
-        { value: "CBA-----", label: "CBA-----" },
-        // { label: "Single denomination", value: "S" },
-        // { label: "Single denomination", value: "S" },
-      ],
+      optiondata: API.getSDCList,
+      _optionsKey: "getReportAccountType",
     },
     {
       accessor: "REMARK",
@@ -220,7 +218,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       placeholder: "Enter remark",
       type: "text",
       isDisabled: false,
-      gridconfig: { xs: 6, sm: 3 },
+      gridconfig: { xs: 6, sm: 2 },
     },
     {
       accessor: "RECEIPT_PAYMENT",
@@ -228,7 +226,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       defaultValue: "",
       type: "number",
       isVisible: true,
-      gridconfig: { xs: 6, sm: 3 },
+      gridconfig: { xs: 6, sm: 2 },
       defaultfocus: true,
       label: "Receipt",
       required: true,
@@ -243,13 +241,13 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
           return {
             label: "Receipt",
             placeholder: "Please Enter Receipt Value",
-            gridconfig: { xs: 6, sm: 3 },
+            gridconfig: { xs: 6, sm: 2 },
           };
         } else if (value === "P") {
           return {
             label: "Payment",
             placeholder: "Please Enter Payment Value",
-            gridconfig: { xs: 6, sm: 3 },
+            gridconfig: { xs: 6, sm: 2 },
           };
         }
       },
