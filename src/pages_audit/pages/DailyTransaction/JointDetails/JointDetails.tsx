@@ -12,7 +12,6 @@ import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
 const JointDetails = () => {
-  console.log("helloo");
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const isErrorFuncRef = useRef<any>(null);

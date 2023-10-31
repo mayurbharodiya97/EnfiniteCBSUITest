@@ -23,6 +23,61 @@ const Root = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const navArray = [
+    {
+      name: "Account",
+      path: "acc",
+    },
+    {
+      name: "Joint Detail",
+      path: "joint",
+    },
+    {
+      name: "Today Trans",
+      path: "todayTrans",
+    },
+    {
+      name: "ChequeBook",
+      path: "checkBook",
+    },
+    {
+      name: "Snapshot",
+      path: "snapshot",
+    },
+    {
+      name: "HoldCharge",
+      path: "holdCharge",
+    },
+    {
+      name: "Disbursement",
+      path: "disbursement",
+    },
+    {
+      name: "Subsidy",
+      path: "subsidy",
+    },
+    {
+      name: "Document",
+      path: "document",
+    },
+    {
+      name: "Stop Pay",
+      path: "stopPay",
+    },
+    {
+      name: "Search",
+      path: "search",
+    },
+    {
+      name: "Insurance",
+      path: "insurance",
+    },
+  ];
+  const onConfirmFormButtonClickHandel = () => {
+    console.log("helllo");
+  };
+
   return (
     <>
       <div
@@ -38,18 +93,9 @@ const Root = () => {
           marginBottom: "10px",
         }}
       >
-        <div onClick={() => navigate(`acc`)}>Account</div>
-        <div onClick={() => navigate(`joint`)}>Joint Detail</div>
-        <div onClick={() => navigate(`todayTrans`)}>Today Trans</div>
-        <div onClick={() => navigate(`checkBook`)}>Chequebook </div>
-        <div onClick={() => navigate(`snapshot`)}>Snapshot</div>
-        <div onClick={() => navigate(`holdCharge`)}>Hold Charge</div>
-        <div onClick={() => navigate(`disbursement`)}>Disbursement</div>
-        <div onClick={() => navigate(`subsidy`)}>Subsidy</div>
-        <div onClick={() => navigate(`document`)}>Document</div>
-        <div onClick={() => navigate(`stopPay`)}>Stop Pay</div>
-        <div onClick={() => navigate(`search`)}>Search</div>
-        <div onClick={() => navigate(`insurance`)}>Insurance</div>
+        {navArray.map((a) => {
+          return <div onClick={() => navigate(a.path)}>{a.name}</div>;
+        })}
         <div>
           <Button variant="contained" color="primary" onClick={handleOpen}>
             +
@@ -86,6 +132,8 @@ const Root = () => {
             <h3>Reference</h3>
             <FormWrapper
               metaData={reference}
+              // onSubmitHandler={onSubmitHandler}
+              onFormButtonClickHandel={onConfirmFormButtonClickHandel}
               hideHeader={true}
               displayMode={"new"}
               formStyle={{
@@ -164,6 +212,7 @@ const Root = () => {
             }}
           >
             <h3>Mortgage/Hypothication/Security Detail</h3>
+
             <FormWrapper
               metaData={mortgage}
               hideHeader={true}
@@ -173,9 +222,7 @@ const Root = () => {
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
-            >
-              
-            </FormWrapper>
+            ></FormWrapper>
           </div>
 
           <div
