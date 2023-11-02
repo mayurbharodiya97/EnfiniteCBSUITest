@@ -1,8 +1,8 @@
 import { GeneralAPI } from "registry/fns/functions";
-export const footerForm = {
+export const footerFormMetaData = {
   form: {
     name: "footerForm",
-    label: "footer form1",
+    label: "footer form",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -18,7 +18,7 @@ export const footerForm = {
         },
         container: {
           direction: "row",
-          spacing: 0,
+          spacing: 0.8,
         },
       },
     },
@@ -55,13 +55,7 @@ export const footerForm = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
 
     {
@@ -75,17 +69,12 @@ export const footerForm = {
       required: true,
       options: GeneralAPI.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Type is required."] }],
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
+
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Type is required."] }],
+      // },
     },
 
     {
@@ -97,13 +86,7 @@ export const footerForm = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
 
     {
@@ -117,13 +100,8 @@ export const footerForm = {
       required: true,
       options: GeneralAPI.getTRXList,
       _optionsKey: "getTRXList",
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
+
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["TRX is required."] }],
@@ -147,13 +125,7 @@ export const footerForm = {
           return true;
         }
       },
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
 
     {
@@ -167,13 +139,8 @@ export const footerForm = {
       required: true,
       options: GeneralAPI.getSDCList,
       _optionsKey: "getSDCList",
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
+
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["SDC is required."] }],
@@ -189,13 +156,7 @@ export const footerForm = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
 
     {
@@ -219,13 +180,7 @@ export const footerForm = {
           return true;
         }
       },
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
 
     {
@@ -237,13 +192,7 @@ export const footerForm = {
       label: "CHQ Date",
       placeholder: "date",
 
-      GridProps: {
-        xs: 1.3,
-        md: 1.3,
-        sm: 1.3,
-        lg: 1.3,
-        xl: 1.3,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.3 },
     },
 
     {
@@ -267,13 +216,7 @@ export const footerForm = {
           return true;
         }
       },
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
 
     {
@@ -297,13 +240,7 @@ export const footerForm = {
           return true;
         }
       },
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
 
     {
@@ -315,13 +252,7 @@ export const footerForm = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: {
-        xs: 1,
-        md: 1,
-        sm: 1,
-        lg: 1,
-        xl: 1,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
   ],
 };

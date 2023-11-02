@@ -1,7 +1,9 @@
 import FormWrapper from "components/dyanmicForm";
 import React from "react";
-import { footerForm } from "./metaData";
+import { footerFormMetaData } from "./metaData";
 import { Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 
 const Footer = () => {
   return (
@@ -10,32 +12,24 @@ const Footer = () => {
         style={{
           boxShadow: "0px 1px 4px -1px #999999",
           borderRadius: "5px",
-          marginTop: "10px",
+          margin: "9px",
         }}
       >
-        <FormWrapper
-          metaData={footerForm}
-          hideHeader={true}
-          displayMode={"new"}
-          formStyle={{
-            background: "white",
-            overflowY: "auto",
-            overflowX: "hidden",
-          }}
-        ></FormWrapper>
+        <Grid item xl={12} lg={8} xs={12} sm={6} md={4}>
+          <FormWrapper
+            metaData={footerFormMetaData}
+            hideHeader={true}
+            displayMode={"new"}
+            formStyle={{
+              background: "white",
+              overflowY: "auto",
+              overflowX: "hidden",
+            }}
+          ></FormWrapper>{" "}
+        </Grid>
       </div>
 
-      <div
-        style={{
-          boxShadow: "0px 1px 4px -1px #999999",
-          borderRadius: "5px",
-          marginTop: "10px",
-          padding: "10px",
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-        }}
-      >
+      <Grid item xl={12} lg={8} xs={12} sm={6} md={4} spacing={5}>
         <Button variant="contained" color="primary">
           View All
         </Button>
@@ -66,7 +60,7 @@ const Footer = () => {
         <Button variant="contained" color="primary">
           other Tx Detail
         </Button>
-      </div>
+      </Grid>
     </>
   );
 };
