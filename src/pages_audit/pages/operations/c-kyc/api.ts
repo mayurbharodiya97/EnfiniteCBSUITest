@@ -742,8 +742,14 @@ export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM
     if (status === "0") {
       // console.log("asdqwsxavqad", data)
       if(FROM == "metadata") {
-        return {
-          REF_ACCT_NM: {value: data[0].ACCT_NM}
+        if(data[0].ACCT_NM) {
+          return {
+            REF_ACCT_NM: {value: data[0].ACCT_NM}
+          }
+        } else {
+          return {
+            REF_ACCT_NM: {value: ""}
+          }
         }
       } else {
         return data
