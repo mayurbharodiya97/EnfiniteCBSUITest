@@ -84,6 +84,13 @@ export const corporate_control_dtl_meta_data = {
                     // type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
                     // dependentFields: ["DAILY_AMT"],
+                    postValidationSetCrossFieldValues: (
+                        field,
+                        __,
+                        ___,
+                        dependentFieldsValues
+                    ) => API.getControllCustInfo({COMP_CD: ___.companyID, BRANCH_CD: ___.user.branchCode, CUSTOMER_ID: field.value, FROM: "metadata"}),
+                    runPostValidationHookAlways: true,
                 },
                 {
                     render: {
@@ -96,6 +103,7 @@ export const corporate_control_dtl_meta_data = {
                     // type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
                     dependentFields: ["REF_CUST_ID"],
+                    isReadOnly: true,
                     shouldExclude(fieldData) {
                         if (fieldData?.value) {
                           return false;
