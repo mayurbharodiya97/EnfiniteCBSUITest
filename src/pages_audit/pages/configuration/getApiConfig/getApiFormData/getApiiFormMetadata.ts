@@ -49,7 +49,6 @@ export const getApiFormMetadata: any = {
       // isReadOnly: true,
       placeholder: "Action Name",
       maxLength: 100,
-
       GridProps: { xs: 12, md: 4, sm: 4, xl: 4, lg: 4 },
     },
     {
@@ -59,6 +58,7 @@ export const getApiFormMetadata: any = {
       type: "text",
       label: "Get Api Type",
       // isReadOnly: true,
+      defaultValue: "SELECT",
       placeholder: "User Group",
       GridProps: { xs: 12, md: 4, sm: 4, xl: 4, lg: 4 },
     },
@@ -90,13 +90,14 @@ export const getApiFormMetadata: any = {
           render: {
             componentType: "textField",
           },
-          name: "REQ_PARA_NM",
+          name: "REQ_PARA",
           label: "Request Parameter Name",
           placeholder: "Request Parameter",
           schemaValidation: {
             type: "string",
             rules: [{ name: "required", params: ["Action is required."] }],
           },
+
           GridProps: { xs: 12, md: 4, sm: 4, xl: 4, lg: 4 },
         },
 
@@ -104,7 +105,7 @@ export const getApiFormMetadata: any = {
           render: {
             componentType: "autocomplete",
           },
-          name: "DATA_TYPE",
+          name: "REQ_PARA_TYPE",
           label: "Data Type",
           defaultValue: "STRING",
           options: [
@@ -120,16 +121,18 @@ export const getApiFormMetadata: any = {
           render: {
             componentType: "numberFormat",
           },
-          name: "SEQ_ID",
+          name: "WHERE_SEQ_ID",
           label: "Sequence Id",
-          placeholder: "Var sequence id",
+          placeholder: "Where sequence id",
           GridProps: { xs: 12, md: 3.5, sm: 3.5, xl: 3.5, lg: 3.5 },
+          maxLength: 3,
           FormatProps: {
             isAllowed: (values) => {
-              if (values?.value === "-") {
-                return false;
-              }
-              if (values.floatValue === 0) {
+              if (
+                values?.value === "-" ||
+                values.floatValue === 0 ||
+                values?.value.length > 3
+              ) {
                 return false;
               }
               return true;

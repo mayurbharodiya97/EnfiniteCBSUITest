@@ -557,6 +557,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFIELDLIST",
     packageName: "",
   },
+  DOAPICONFIGDATA: {
+    url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
