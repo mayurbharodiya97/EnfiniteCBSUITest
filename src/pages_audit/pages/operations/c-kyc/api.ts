@@ -228,20 +228,11 @@ export const getPMISCData = async (CATEGORY_CD, dependentValue?, CUST_TYPE?) => 
       }
       if(CATEGORY_CD == "CKYC_RELAT_PERS" && CUST_TYPE) {
         let resOp:any = []
-        if(CUST_TYPE === "I") {
-          responseData.map((element, i) => {
-            if(element?.REMARKS === "I") {
-              resOp.push(element)
-            }
-          })
-        } else if(CUST_TYPE === "C") {
-          responseData.map((element, i) => {
-            if(element?.REMARKS === "L") {
-              resOp.push(element)
-            }
-          })
-        }
-
+        responseData.map((element, i) => {
+          if(element?.REMARKS === "I") {
+            resOp.push(element)
+          }
+        })
         if(resOp && resOp.length>0) {
           // return resOp;
           responseData = resOp;
@@ -728,11 +719,43 @@ export const getPhotoSignImage = async ({COMP_CD, reqCD, customerID}) => {
   if(reqCD || customerID) {
     const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTOMERHISTORY", reqObj);
+    // GETCUSTIMGHISMST
     if(status === "0") {
       let responseData = data;
       return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM}) => {
+  if(CUSTOMER_ID) {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETVIEWDTL", {
+        COMP_CD: COMP_CD,
+        BRANCH_CD: BRANCH_CD,
+        CUSTOMER_ID: CUSTOMER_ID,
+        // CATEG_CD: CATEG_CD,
+        // formIndex: formIndex
+      });
+    if (status === "0") {
+      // console.log("asdqwsxavqad", data)
+      if(FROM == "metadata") {
+        return {
+          REF_ACCT_NM: {value: data[0].ACCT_NM}
+        }
+      } else {
+        return data
+      }
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  } else {
+    if(FROM == "metadata") {
+      return {
+        REF_ACCT_NM: {value: ""}
+      }
     }
   }
 }
@@ -1620,74 +1643,93 @@ export const SaveEntry = async ({
   //     ENT_BRANCH_CD:"099 "
   // },
   PHOTO_MST: formData["PHOTO_MST"], //test-done
-   DOC_MST:{
+  //  DOC_MST:{
   
-          IsNewRow: true,
-          MASTER_DATA: [
-              {
-                  ACCT_TYPE: "0",
-                  ACCT_CD: "0",
-                  SR_CD: "1",
-                  TEMPLATE_CD: "4",
-                  SUBMIT: "N",
-                  VALID_UPTO: " ",
-                  DOC_AMOUNT: "",
-                  DOC_NO: "12345",
-                  DOC_TYPE: "KYC",
-                  DOC_WEIGHTAGE: "",
-                  ACTIVE: "Y",
-                  DETAILS_DATA: {
-                      isNewRow: [
-                          {
-                              SR_CD: "1",
-                              ACCT_TYPE: "0",
-                              ACCT_CD: "0",
-                              TEMPLATE_CD: "4",
-                              SUBMIT: "N",
-                              VALID_UPTO: " ",
-                              DOC_AMOUNT: "",
-                              DOC_NO: "12345",
-                              DOC_TYPE: "KYC",
-                              DOC_WEIGHTAGE: "",
-                              ACTIVE: "Y",
-                              DOC_IMAGE:"BASE64"
-                          }
-                      ]
-                  }
-              },
-              {
-                  ACCT_TYPE: "0",
-                  ACCT_CD: "0",
-                  SR_CD: "2",
-                  TEMPLATE_CD: "12",
-                  SUBMIT: "N",
-                  VALID_UPTO: "05-OCT-2023",
-                  DOC_AMOUNT: "",
-                  DOC_NO: "22222",
-                  DOC_TYPE: "KYC",
-                  DOC_WEIGHTAGE: "",
-                  ACTIVE: "Y",
-                  DETAILS_DATA: {
-                      isNewRow: [
-                          {
-                              SR_CD: "2",
-                              ACCT_TYPE: "0",
-                              ACCT_CD: "0",
-                              TEMPLATE_CD: "12",
-                              SUBMIT: "N",
-                              VALID_UPTO: "05-OCT-2023",
-                              DOC_AMOUNT: "",
-                              DOC_NO: "22222",
-                              DOC_TYPE: "KYC",
-                              DOC_WEIGHTAGE: "",
-                              ACTIVE: "Y",
-                              DOC_IMAGE: "BASE64"
-                          }
-                      ]
-                  }
-              }
-          ]
-      },
+  //         IsNewRow: true,
+  //         MASTER_DATA: [
+  //             {
+  //                 ACCT_TYPE: "0",
+  //                 ACCT_CD: "0",
+  //                 SR_CD: "1",
+  //                 TEMPLATE_CD: "4",
+  //                 SUBMIT: "N",
+  //                 VALID_UPTO: " ",
+  //                 DOC_AMOUNT: "",
+  //                 DOC_NO: "12345",
+  //                 DOC_TYPE: "KYC",
+  //                 DOC_WEIGHTAGE: "",
+  //                 ACTIVE: "Y",
+  //                 DETAILS_DATA: {
+  //                     isNewRow: [
+  //                         {
+  //                             SR_CD: "1",
+  //                             ACCT_TYPE: "0",
+  //                             ACCT_CD: "0",
+  //                             TEMPLATE_CD: "4",
+  //                             SUBMIT: "N",
+  //                             VALID_UPTO: " ",
+  //                             DOC_AMOUNT: "",
+  //                             DOC_NO: "12345",
+  //                             DOC_TYPE: "KYC",
+  //                             DOC_WEIGHTAGE: "",
+  //                             ACTIVE: "Y",
+  //                             DOC_IMAGE:"BASE64"
+  //                         }
+  //                     ]
+  //                 }
+  //             },
+  //             {
+  //                 ACCT_TYPE: "0",
+  //                 ACCT_CD: "0",
+  //                 SR_CD: "2",
+  //                 TEMPLATE_CD: "12",
+  //                 SUBMIT: "N",
+  //                 VALID_UPTO: "05-OCT-2023",
+  //                 DOC_AMOUNT: "",
+  //                 DOC_NO: "22222",
+  //                 DOC_TYPE: "KYC",
+  //                 DOC_WEIGHTAGE: "",
+  //                 ACTIVE: "Y",
+  //                 DETAILS_DATA: {
+  //                     isNewRow: [
+  //                         {
+  //                             SR_CD: "2",
+  //                             ACCT_TYPE: "0",
+  //                             ACCT_CD: "0",
+  //                             TEMPLATE_CD: "12",
+  //                             SUBMIT: "N",
+  //                             VALID_UPTO: "05-OCT-2023",
+  //                             DOC_AMOUNT: "",
+  //                             DOC_NO: "22222",
+  //                             DOC_TYPE: "KYC",
+  //                             DOC_WEIGHTAGE: "",
+  //                             ACTIVE: "Y",
+  //                             DOC_IMAGE: "BASE64"
+  //                         }
+  //                     ]
+  //                 }
+  //             }
+  //         ]
+  //     },
+  DOC_MST: [
+    {
+      IsNewRow: true,
+      COMP_CD: "132 ",
+      BRANCH_CD:"099 ",
+      ENT_COMP_CD:"132 ",
+      ENT_BRANCH_CD:"099 ",
+      ACCT_TYPE: "1",
+      ACCT_CD: "2",
+      TEMPLATE_CD: "4",
+      SUBMIT: "N",
+      VALID_UPTO: "05-OCT-23",
+      DOC_AMOUNT: "1234",
+      DOC_NO: "123456",
+      DOC_TYPE: "KYC",
+      DOC_WEIGHTAGE: "1 ",
+      ACTIVE: "Y"
+    }
+  ],
   
   
   // NRI_DTL: {
@@ -1755,6 +1797,21 @@ export const getAttestHistory = async ({COMP_CD, CUSTOMER_ID}) => {
     }
 } 
 
+export const getAttestData = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, USER_NAME}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTATTESTRITDTL", {
+      CUSTOMER_ID: CUSTOMER_ID,
+      USER_NAME: USER_NAME, 
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD,
+    });
+    if(status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+} 
+
 export const getOptionsOnPinParentArea = async (dependentValue, formState, _, authState) => {
   // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.PAR_AREA_CD)
   let PIN_CODE = "", PARENT_AREA = ""
@@ -1798,21 +1855,6 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
       }
       return responseData  
     }
-  }
-}
-
-export const getAttestData = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, USER_NAME}) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTATTESTRITDTL", {
-      CUSTOMER_ID: CUSTOMER_ID,
-      USER_NAME: USER_NAME, 
-      COMP_CD: COMP_CD, 
-      BRANCH_CD: BRANCH_CD,
-    });
-    if(status === "0") {
-      return data;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
     }
 }
 

@@ -85,7 +85,9 @@ const myGridRef = useRef<any>(null);
             }
 
             let newFormatRelPerDtl = data?.RELATED_PERSON_DTL.map((el, i) => {
-                return {...el, ...commonData, SR_CD: i+1}
+                return {...el, ...commonData
+                    // , SR_CD: i+1
+                }
             })
 
             // newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
