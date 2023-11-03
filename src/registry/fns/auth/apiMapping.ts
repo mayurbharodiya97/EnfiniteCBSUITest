@@ -553,6 +553,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETVIEWDTL",
     packageName: "",
   },
+  GETFIELDLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFIELDLIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

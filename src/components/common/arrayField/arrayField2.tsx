@@ -51,7 +51,10 @@ export interface ArrayField2Props {
   isDisplayCount?: boolean;
   isCustomStyle?: any;
   getFixedRowsCount?: any;
-  onFormButtonClickHandel?:any
+  onFormButtonClickHandel?: any;
+  disagreeButtonName: any;
+  agreeButtonName: any;
+  errorTitle: string;
 }
 
 const metaDataTransform = (metaData: MetaDataType): MetaDataType => {
@@ -77,7 +80,10 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   isDisplayCount,
   isCustomStyle,
   getFixedRowsCount,
-  onFormButtonClickHandel
+  onFormButtonClickHandel,
+  disagreeButtonName,
+  agreeButtonName,
+  errorTitle,
 }) => {
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
@@ -155,10 +161,11 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       if (!Boolean(currentFieldMetaData)) {
         return null;
       }
-      currentFieldMetaData["onFormButtonClickHandel"]=onFormButtonClickHandel;
+
+      currentFieldMetaData["onFormButtonClickHandel"] = onFormButtonClickHandel;
       let newMTdata;
       if (rowIndex === 0) {
-        newMTdata = {...currentFieldMetaData };
+        newMTdata = { ...currentFieldMetaData };
       } else {
         newMTdata = { ...currentFieldMetaData, label: null };
       }
@@ -196,6 +203,9 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         fixedRows={fixedRows}
         isDisplayCount={isDisplayCount}
         isCustomStyle={isCustomStyle}
+        disagreeButtonName={disagreeButtonName}
+        agreeButtonName={agreeButtonName}
+        errorTitle={errorTitle}
       />
     );
   });
@@ -214,8 +224,8 @@ export const ArrayField2: FC<ArrayField2Props> = ({
           sx={{
             "& .MuiCardHeader-title": label ? cardHeaderTitleStyle : null,
             "& .MuiCardHeader-action": {
-              my: 1,
-              mr: 0,
+              // my: 1,
+              // mr: 0,
             },
           }}
           title={label}
@@ -228,8 +238,8 @@ export const ArrayField2: FC<ArrayField2Props> = ({
           }
         />
         <CardContent
-          style={{ paddingBottom: "0px" }}
           className={classes.arrayRowCardContent}
+          style={{ paddingBottom: "0px", paddingTop: "0px" }}
         >
           <Grid
             container
@@ -238,7 +248,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
             xs={12}
             md={12}
             sm={12}
-            style={{ padding: "05px" }}
+            style={{ paddingTop: "10px" }}
           >
             {rows}
             {rows.length <= 0 ? (
@@ -297,6 +307,9 @@ export const ArrayFieldRow = ({
   fixedRows,
   isDisplayCount = true,
   isCustomStyle = false,
+  disagreeButtonName,
+  agreeButtonName,
+  errorTitle,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -335,6 +348,7 @@ export const ArrayFieldRow = ({
       },
     [setError, setSuccess, setLoading]
   );
+
   const dialogReject = useCallback(() => {
     if (success) {
       removeFn(rowIndex);
@@ -369,7 +383,6 @@ export const ArrayFieldRow = ({
   } else {
     finalClass = classes.arrayRowContainer;
   }
-
   return (
     <Fragment key={row.fieldIndexKey}>
       {Boolean(isDisplayCount) ? (
@@ -409,6 +422,8 @@ export const ArrayFieldRow = ({
             ? "Please wait deleting record"
             : Boolean(error)
             ? error
+            : errorTitle
+            ? errorTitle
             : "Are you Sure you want to delete this record?"}
         </DialogTitle>
         {success || error ? (
@@ -420,10 +435,10 @@ export const ArrayFieldRow = ({
         ) : loading ? null : (
           <DialogActions>
             <Button onClick={dialogReject} color="primary">
-              Disagree
+              {disagreeButtonName ? disagreeButtonName : "Disagree"}
             </Button>
             <Button onClick={dialogAccept} color="primary">
-              Agree
+              {agreeButtonName ? agreeButtonName : "Agree"}
             </Button>
           </DialogActions>
         )}

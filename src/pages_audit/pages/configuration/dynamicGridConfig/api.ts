@@ -65,6 +65,8 @@ export const getDynamicGridConfigGridData = async ({ COMP_CD, BRANCH_CD }) => {
         IS_CUSRSORFOCUSED: item.IS_CUSRSORFOCUSED === "Y" ? true : false,
         ALLOW_ROW_SELECTION: item.ALLOW_ROW_SELECTION === "Y" ? true : false,
         ISDOWNLOAD: item.ISDOWNLOAD === "Y" ? true : false,
+        PAGE_SIZES: item?.PAGE_SIZES.split(","),
+        DML_ACTION: item?.DML_ACTION.trim(),
       };
     });
     // return data;

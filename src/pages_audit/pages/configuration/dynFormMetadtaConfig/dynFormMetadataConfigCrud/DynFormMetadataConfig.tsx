@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import { FC, useContext, useEffect, useRef, useState } from "react";
-import { Dialog } from "@mui/material";
+import { Dialog, IconButton } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
@@ -11,9 +11,12 @@ import { queryClient } from "cache";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import GridWrapper from "components/dataTableStatic";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import {
+  FullScreenLoader,
+  LoaderPaperComponent,
+} from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
-
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { CreateDetailsRequestData, utilFunction } from "components/utils";
 import {
   DynamicFormConfigGridMetaDataEdit,
@@ -58,6 +61,7 @@ const DynamicFormMetadataConfig: FC<{
       srcd: fieldRowData?.[0]?.data?.SR_CD ?? "",
     })
   );
+
   // useEffect(() => {
   //   if (
   //     location.pathname ===
@@ -101,24 +105,7 @@ const DynamicFormMetadataConfig: FC<{
       closeDialog();
     },
   });
-  // const result = useMutation(API.dynamiFormMetadataConfigDML, {
-  //   onError: (error: any, { endSubmit }) => {
-  //     let errorMsg = "Unknown Error occured";
-  //     if (typeof error === "object") {
-  //       errorMsg = error?.error_msg ?? errorMsg;
-  //     }
-  //     endSubmit(false, errorMsg, error?.error_detail ?? "");
-  //     enqueueSnackbar(errorMsg, { variant: "error" });
-  //     onActionCancel();
-  //   },
-  //   onSuccess: (data) => {
-  //     enqueueSnackbar(data, {
-  //       variant: "success",
-  //     });
-  //     isDataChangedRef.current = true;
-  //     closeDialog();
-  //   },
-  // });
+
   useEffect(() => {
     const gridDataToUpdate = populateClicked ? mutation.data : data;
     setGridData(Array.isArray(gridDataToUpdate) ? gridDataToUpdate : []);
@@ -219,6 +206,11 @@ const DynamicFormMetadataConfig: FC<{
         }
       }
     }
+    // // if (actionFlag === "save" && formMode === "add") {
+    // //   navigate("configuration/dynamic-form-metadata/view-details", {
+    // //     state: data,
+    // //   });
+    // }
   };
   if (formMode !== "add") {
     if (DynamicFormConfigMetaData.form.label) {
@@ -230,16 +222,21 @@ const DynamicFormMetadataConfig: FC<{
         fieldRowData?.[0]?.data?.DESCRIPTION;
     }
   }
-
   return (
     <>
-      {isLoading || isFetching ? (
-        <LoaderPaperComponent />
-      ) : isError ? (
+      {(formMode === "edit" || formMode === "view") &&
+      (isLoading ||
+        isFetching ||
+        !(fieldRowData && fieldRowData.length > 0) ||
+        !(girdData && girdData.length > 0)) ? (
+        <div style={{ minHeight: "50px" }}>
+          <LoaderPaperComponent />
+        </div>
+      ) : formMode !== "add" && isError ? (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Error"}
-          errorDetail={""}
+          errorMsg={error ?? "Error"}
+          errorDetail={error ?? ""}
           color="error"
         />
       ) : (
@@ -334,6 +331,7 @@ const DynamicFormMetadataConfig: FC<{
               formMode +
               mutation?.data?.length
             }
+            loading={mutation.isLoading}
             finalMetaData={
               formMode === "edit"
                 ? DynamicFormConfigGridMetaDataEdit
@@ -349,7 +347,6 @@ const DynamicFormMetadataConfig: FC<{
 
             data={girdData}
             setData={setGridData}
-            loading={mutation.isLoading}
             actions={[]}
             setAction={[]}
             refetchData={() => refetch()}
@@ -359,7 +356,7 @@ const DynamicFormMetadataConfig: FC<{
                 BRANCH_CD: data?.BRANCH_CD,
                 DOC_CD: data?.DOC_CD,
                 LINE_ID: data?.LINE_ID,
-                COMPONENT_TYPE: data?.COMPONENT_TYPE,
+                COMPONENT_TYPE: data?.COMPONENT_TYPE.trim(),
                 FIELD_NAME: data?.FIELD_NAME,
                 SR_CD: data?.SR_CD,
               };
@@ -371,7 +368,6 @@ const DynamicFormMetadataConfig: FC<{
             }}
             ref={myGridRef}
           />
-          {/* )} */}
 
           {isOpenSave ? (
             <PopupMessageAPIWrapper

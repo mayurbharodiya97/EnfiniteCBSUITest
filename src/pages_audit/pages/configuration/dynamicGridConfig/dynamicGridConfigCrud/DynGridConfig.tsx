@@ -150,13 +150,6 @@ const DynamicGridConfig: FC<{
     }
   }, [navigate, location.pathname, docCD]);
 
-  const pageSizesArray = reqData?.[0]?.data?.PAGE_SIZES.split(",");
-  const updatedReqData = {
-    ...reqData?.[0]?.data,
-    PAGE_SIZES: pageSizesArray,
-    DML_ACTION: reqData?.[0]?.data?.DML_ACTION.trim(),
-  };
-
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getDynamicGridColConfigData"]);
@@ -236,6 +229,7 @@ const DynamicGridConfig: FC<{
       ...rows,
       PAGE_SIZES: pageSizesString,
     };
+
     mutation.mutate({
       data: modifiedRows,
       formMode: "",
@@ -347,6 +341,10 @@ const DynamicGridConfig: FC<{
         }
       }
 
+      data["_OLDROWVALUE"] = {
+        ...data["_OLDROWVALUE"],
+        PAGE_SIZES: data["_OLDROWVALUE"]?.PAGE_SIZES.join(","),
+      };
       // let finalResult = CreateDetailsRequestData(myparameterDataRef.current);
       // data.PARAMETER = {
       //   DETAILS_DATA: finalResult,
@@ -363,7 +361,7 @@ const DynamicGridConfig: FC<{
       data.PARAMETER = {
         DETAILS_DATA: updPara,
       };
-      console.log("updPara", updPara);
+
       data.DETAILS_DATA["isUpdatedRow"] = data?.DETAILS_DATA?.isUpdatedRow?.map(
         (item) => {
           return {
@@ -588,7 +586,7 @@ const DynamicGridConfig: FC<{
                 ref={myRef}
                 initialData={{
                   _isNewRow: formMode === "add" ? true : false,
-                  ...updatedReqData,
+                  ...reqData?.[0]?.data,
                   DETAILS_DATA: result[0].data,
                 }}
                 displayMode={formMode === "add" ? "New" : formMode}
@@ -602,7 +600,7 @@ const DynamicGridConfig: FC<{
                 }}
                 formStyle={{
                   background: "white",
-                  height: "47vh",
+                  height: "52vh",
                   overflowY: "auto",
                   overflowX: "hidden",
                 }}
@@ -638,7 +636,7 @@ const DynamicGridConfig: FC<{
                   id="outlined-multiline-static"
                   label="SQL ANSI Query Syntax"
                   multiline
-                  rows={verifySql.isError ? 17 : 19.5}
+                  rows={verifySql.isError ? 21 : 32}
                   // minRows={verifySql.isError ? 21 : 24}
                   value={sqlSyntax}
                   variant="outlined"
