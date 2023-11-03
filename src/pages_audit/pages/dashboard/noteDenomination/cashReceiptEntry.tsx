@@ -1,18 +1,22 @@
 import {
   Box,
+  Grid,
   Paper,
   Table,
   TableBody,
   TableContainer,
+  TableCell,
   TableHead,
   TableRow /*TextField*/,
+  TableSortLabel,
+  Button,
+  Autocomplete,
   Slide,
-  CircularProgress,
   // TextField,
 } from "@mui/material";
-import { Typography } from "@mui/material";
+import { Dialog, Typography } from "@mui/material";
 import * as API from "./api";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { GradientButton } from "components/styledComponent/button";
 import {
   useCallback,
@@ -22,15 +26,16 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  PopupMessageAPIWrapper,
-  PopupRequestWrapper,
-} from "components/custom/popupMessage";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { useStyles, StyledTableCell } from "./style";
 import { TextField } from "components/styledComponent";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import getCurrencySymbol from "components/custom/getCurrencySymbol";
+import { FormatCurrency } from "components/custom/currencySymbol";
+import FormWrapper from "components/dyanmicForm";
+// import { DenominationScreenMetaData } from "./metadata";
+import { SubmitFnType } from "packages/form";
 import {
   FilterFormMetaType,
   FormComponentView,
@@ -38,6 +43,12 @@ import {
 import { DenominationScreenMetaData } from "./metadata";
 import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
+
+const labelStaticStyle = {
+  "&.MuiInputLabel-root": {
+    position: "static", // Set the label position to static
+  },
+};
 
 const CashReceiptEntry = () => {
   const [inputVal, setInputVal] = useState<any>({});
@@ -53,12 +64,8 @@ const CashReceiptEntry = () => {
   const [displayTable, setDisplayTable] = useState(false);
   const [balance, setBalance] = useState<any>([]);
   const [openDeno, setOpenDeno] = useState<boolean>(false);
-  const [isDisableField, setIsDisableField] = useState<boolean>(false);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
-  const authState = useContext(AuthContext);
-  const formComponentViewRef: any = useRef(null);
-  const [referData, setReferData] = useState<any>();
-  // const [externalButtonLoading, setExternalButtonLoading] = useState<any>();
+
   // useEffect(() => {
   //   props?.map((item) => {
   //     if (item?.textField === "Y") {
@@ -66,24 +73,6 @@ const CashReceiptEntry = () => {
   //     }
   //   });
   // }, [props]);
-
-  const getDefaultBranchCode = authState?.authState?.user?.branchCode;
-
-  const updatedMetaData = {
-    ...DenominationScreenMetaData,
-    fields: DenominationScreenMetaData.fields.map((field) => {
-      if (field.accessor === "BRANCH") {
-        return {
-          ...field,
-          defaultValue: getDefaultBranchCode,
-        };
-      }
-      return field;
-    }),
-  };
-
-  console.log(updatedMetaData, "updatedMetaData>>>");
-  console.log(DenominationScreenMetaData, "DenominationScreenMetaData>>>");
 
   const getData: any = useMutation(API.CashReceiptEntrysData, {
     onSuccess: (response: any) => {
@@ -95,13 +84,12 @@ const CashReceiptEntry = () => {
     },
   });
 
-  const manageOpenDenoYes = () => {
-    setIsDisableField(true);
-    getData.mutate({ a: "a", b: "b" });
-  };
-
-  const manageOpenDenoNo = () => {
-    setOpenDeno(false);
+  const manageOpenDeno = (row, buttonName) => {
+    if (buttonName === "Yes") {
+      getData.mutate({ a: "a", b: "b" });
+    } else if (buttonName === "No") {
+      setOpenDeno(false);
+    }
   };
 
   const ClickEventManage = useCallback(
@@ -137,6 +125,10 @@ const CashReceiptEntry = () => {
         return el?.TOTAL_AMNT;
       })
     );
+    // data?.map((elem) => {
+    //   setAvailNote(elem?.AVAIL_NOTE);
+    //   setBalance(elem?.TOTAL_AMNT);
+    // });
   }, [data]);
 
   const handleChange = (value, index) => {
@@ -160,7 +152,37 @@ const CashReceiptEntry = () => {
     setMultiplicationResult(updatedMultipliedValue);
 
     //***************************/
+    let calcAvailNotValue;
+    let calcBalance;
+    if (retData.TRN === "P") {
+      if (value && data?.length > 0 && !isNaN(value) && value !== undefined) {
+        calcAvailNotValue =
+          parseFloat(data?.[index]?.AVAIL_NOTE) - parseFloat(value);
+        calcBalance =
+          parseFloat(data?.[index]?.TOTAL_AMNT) - parseFloat(multipliedValue);
+      } else {
+        calcAvailNotValue = parseFloat(data?.[index]?.AVAIL_NOTE);
+        calcBalance = parseFloat(data?.[index]?.TOTAL_AMNT);
+      }
+    } else if (retData.TRN === "R") {
+      if (value && data?.length > 0 && !isNaN(value) && value !== undefined) {
+        calcAvailNotValue =
+          parseFloat(data?.[index]?.AVAIL_NOTE) + parseFloat(value);
+        calcBalance =
+          parseFloat(data?.[index]?.TOTAL_AMNT) + parseFloat(multipliedValue);
+      } else {
+        calcAvailNotValue = parseFloat(data?.[index]?.AVAIL_NOTE);
+        calcBalance = parseFloat(data?.[index]?.TOTAL_AMNT);
+      }
+    }
 
+    const updatedCalcAvailNotes = [...availNote];
+    updatedCalcAvailNotes[index] = calcAvailNotValue;
+    setAvailNote(updatedCalcAvailNotes);
+
+    const updatedBalance = [...balance];
+    updatedBalance[index] = calcBalance;
+    setBalance(updatedBalance);
     //*********************//
   };
 
@@ -229,41 +251,6 @@ const CashReceiptEntry = () => {
       setDisplayError([]);
     }
 
-    let calcAvailNotValue;
-    let calcBalance;
-
-    if (retData.TRN === "P") {
-      if (value && data?.length > 0 && !isNaN(value) && value !== undefined) {
-        calcAvailNotValue =
-          parseFloat(data?.[index]?.AVAIL_NOTE) - parseFloat(value);
-        calcBalance =
-          parseFloat(data?.[index]?.TOTAL_AMNT) -
-          parseFloat(multiplicationResult[index]);
-      } else {
-        calcAvailNotValue = parseFloat(data?.[index]?.AVAIL_NOTE);
-        calcBalance = parseFloat(data?.[index]?.TOTAL_AMNT);
-      }
-    } else if (retData.TRN === "R") {
-      if (value && data?.length > 0 && !isNaN(value) && value !== undefined) {
-        calcAvailNotValue =
-          parseFloat(data?.[index]?.AVAIL_NOTE) + parseFloat(value);
-        calcBalance =
-          parseFloat(data?.[index]?.TOTAL_AMNT) +
-          parseFloat(multiplicationResult[index]);
-      } else {
-        calcAvailNotValue = parseFloat(data?.[index]?.AVAIL_NOTE);
-        calcBalance = parseFloat(data?.[index]?.TOTAL_AMNT);
-      }
-    }
-
-    const updatedCalcAvailNotes = [...availNote];
-    updatedCalcAvailNotes[index] = calcAvailNotValue;
-    setAvailNote(updatedCalcAvailNotes);
-
-    const updatedBalance = [...balance];
-    updatedBalance[index] = calcBalance;
-    setBalance(updatedBalance);
-
     //if inputvalueTotal not working correctly so please move this part(between //**// ---- //**//) on handle change function and change inputVal ---->>updatedInputVal
 
     //for display total ammount of all inputs
@@ -321,7 +308,7 @@ const CashReceiptEntry = () => {
 
       setDisplayTotal(newTotals);
     }
-  }, [data, inputVal, handleChange]);
+  }, [data, inputVal]);
 
   const handleKeyPress = (event, index) => {
     if (event.key === "Enter") {
@@ -329,93 +316,26 @@ const CashReceiptEntry = () => {
     }
   };
 
-  const getRefData = () => {
-    setReferData(formComponentViewRef?.current);
-  };
-  useEffect(() => {
-    if (
-      referData !== undefined &&
-      referData?.columnVal?.RECEIPT_PAYMENT &&
-      parseFloat(referData?.columnVal?.RECEIPT_PAYMENT) > 0
-    ) {
-      let retdata = UpdateRequestDataVisibleColumn(referData?.columnVal, "");
-      setRetData(retdata);
-      setDisplayTable(true);
-      manageOpenDenoYes();
-    }
-  }, [referData]);
-
   return (
     <>
       <Box padding={"0.5rem 1rem 0.5rem 1rem"}>
         <Box mb={1}>
-          <Box
-            height={"auto"}
-            borderTop={"2px solid var(--theme-color6)"}
-            borderRight={"2px solid var(--theme-color6)"}
-            borderLeft={"2px solid var(--theme-color6)"}
-            sx={{
-              background: "var(--theme-color5)",
-              borderTopRightRadius: "10px",
-              borderTopLeftRadius: "10px",
-              display: "flex",
-              padding: "0 10px",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{
-                padding: "10px",
-                fontWeight: "500",
-                color: "#ffffff",
-                width: "fit-content",
-              }}
-            >
-              {`${DenominationScreenMetaData?.gridConfig?.title} -
-              ${authState?.authState?.user?.name} - (${
-                authState?.authState?.roleName
-              }) - ${getCurrencySymbol(dynamicAmountSymbol)} 20000`}
-            </Typography>
-            <Box display={"flex"}>
-              {/* <GradientButton sx={{ height: "2.5rem" }}>Save </GradientButton>*/}
-              <GradientButton
-                sx={{ height: "2.5rem" }}
-                onClick={getRefData}
-                endIcon={
-                  getData.isLoading ? <CircularProgress size={20} /> : null
-                }
-              >
-                Denomination
-              </GradientButton>
-              <GradientButton
-                onClick={() => {
-                  setIsDisableField(false);
-                  setDisplayTable(false);
-                }}
-                sx={{ height: "2.5rem" }}
-              >
-                Reset
-              </GradientButton>
-            </Box>
-          </Box>
           <FormComponentView
             key={"Denomination"}
             finalMetaData={DenominationScreenMetaData as FilterFormMetaType}
             onAction={ClickEventManage}
-            loading={getData.isLoading || isDisableField}
+            loading={getData.isLoading}
             data={data ?? {}}
             propStyles={{
               titleStyle: {},
               toolbarStyles: {
+                borderBottom: "2px solid var(--theme-color6)",
                 // background: "transparent !important",
               },
               IconButtonStyle: {},
               paperStyle: {
                 backgroundColor: "white !important",
-                borderBottomLeftRadius: "10px",
-                borderBottomRightRadius: "10px",
+                borderRadius: "10px",
                 boxShadow: "rgba(226, 236, 249, 0.5) 0px 11px 70px",
                 border: "2px solid var(--theme-color6)",
                 overflow: "hidden",
@@ -423,18 +343,13 @@ const CashReceiptEntry = () => {
                   marginBottom: "-10px",
                   "& .css-1br77t0-MuiGrid-root>.MuiGrid-item": {
                     paddingTop: "0px !important",
-                    display: "none",
                   },
-                },
-                "& .ForwardRef(Button)-root-80": {
-                  display: "none",
                 },
               },
             }}
-            ref={formComponentViewRef}
           ></FormComponentView>
         </Box>
-        {displayTable && data && isDisableField ? (
+        {displayTable && data ? (
           <Slide direction="left" in={displayTable} mountOnEnter unmountOnExit>
             <Box
               borderRadius={"10px"}
@@ -542,11 +457,6 @@ const CashReceiptEntry = () => {
                               }}
                               tabIndex={index + 2}
                               sx={{ width: "-webkit-fill-available" }}
-                              autoFocus={
-                                displayTable && data && index === 0
-                                  ? true
-                                  : false
-                              }
                             />
                           </StyledTableCell>
                           <StyledTableCell
@@ -666,7 +576,7 @@ const CashReceiptEntry = () => {
                   variant="body1"
                   sx={{
                     backgroundColor: "var(--theme-color2)",
-                    padding: "10px 0px",
+                    padding: "0px 0px",
                     display: "flex",
                   }}
                 >
@@ -695,14 +605,15 @@ const CashReceiptEntry = () => {
         ) : null}
 
         {Boolean(openDeno) ? (
-          <PopupMessageAPIWrapper
-            MessageTitle="Denomination confirmation"
-            Message="Are you sure to open denomination"
-            onActionYes={() => manageOpenDenoYes()}
-            onActionNo={() => manageOpenDenoNo()}
+          <PopupRequestWrapper
+            MessageTitle={"Denomination confirmation"}
+            Message={"Are you sure to open denomination"}
+            onClickButton={(row, buttonName) => {
+              manageOpenDeno(row, buttonName);
+            }}
+            buttonNames={["Yes", "No"]}
             rows={[]}
             open={openDeno}
-            loading={getData.isLoading}
           />
         ) : null}
 
