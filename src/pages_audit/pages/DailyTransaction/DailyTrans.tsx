@@ -3,7 +3,7 @@ import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import JointDetailsForm from "./JointDetails";
 import TodayTransactionForm from "./TodayTransaction";
-
+import CloseIcon from "@mui/icons-material/Close";
 import Insurance from "./Insurance";
 import CheckBook from "./CheckBook";
 import HoldCharge from "./HoldCharge";
@@ -26,9 +26,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { jointViewDetailMetaData } from "./metaData";
-// import { Tab } from "components/styledComponent/tab";
-// import { Tabs } from "components/styledComponent/tabs";
-// import { useStyles } from "pages_audit/common/tabStyles";
+
 import {
   Box,
   Typography,
@@ -256,10 +254,13 @@ export const DailyTrans = () => {
             {navArray.map((a, i) => (
               <Tab label={a.name} />
             ))}
-            <Button variant="contained" color="primary" onClick={handleOpen}>
-              {" "}
-              +{" "}
-            </Button>
+
+            {tabValue == 1 && (
+              <Button variant="contained" color="primary" onClick={handleOpen}>
+                {" "}
+                +{" "}
+              </Button>
+            )}
           </CustomTabs>
         </Grid>
 
@@ -291,7 +292,7 @@ export const DailyTrans = () => {
           },
         }}
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         maxWidth="md"
         scroll="body"
         aria-labelledby="alert-dialog-title"
@@ -300,6 +301,18 @@ export const DailyTrans = () => {
         <DialogTitle id="alert-dialog-title">
           Joint Full View for: Test Customer
         </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent>
           <div
             style={{
