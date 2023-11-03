@@ -38,7 +38,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
                 REQ_CD: state?.req_cd_ctx,
-                SR_CD: "3",
+                // SR_CD: "3",
                 CONFIRMED: "N",
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -84,7 +84,9 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
             }
 
             let newFormatOtherAdd = data?.OTHER_ADDRESS.map((el, i) => {
-                return {...el, ...commonData, SR_CD: i+1}
+                return {...el, ...commonData
+                    // , SR_CD: i+1
+                }
             })
             // data["OTHER_ADDRESS"] = newFormatOtherAdd
 
