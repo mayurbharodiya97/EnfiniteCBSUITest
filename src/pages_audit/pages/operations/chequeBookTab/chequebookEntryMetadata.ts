@@ -1,5 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { GetdetailData } from "./chequebookTab";
+import { TemporaryData } from "./api";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -36,12 +36,6 @@ export const ChequeBookEntryMetaData = {
         fullWidth: true,
       },
     },
-    apiKey: {
-      BRANCH_CD: "BRANCH_CD",
-      ACCT_TYPE: "ACCT_TYPE",
-      ACCT_CD: "ACCT_CD",
-    },
-    apiID: "GETCHEQUEBOOK",
   },
   fields: [
     {
@@ -107,7 +101,6 @@ export const ChequeBookEntryMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["Account no. is required."] }],
       },
-      // padEnds: 20,/
       GridProps: {
         xs: 12,
         md: 2,
@@ -115,59 +108,8 @@ export const ChequeBookEntryMetaData = {
         lg: 3,
         xl: 3,
       },
-      // dependentFields: ["BRANCH_CD", "ACCT_TYPE", "FROM_CHEQU"],
     },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "NO_OF_CHEQUE",
-      label: "No. of Cheque(s)",
-      placeholder: "Enter no of Cheque book",
-      type: "text",
-      isFieldFocused: false,
-      // options: () => {
-      //   return [
-      //     { value: "15", label: "15" },
-      //     { value: "45", label: "45" },
-      //     { value: "90", label: "90" },
-      //   ];
-      // },
-      options: GeneralAPI.getChequeLeavesList,
-      _optionsKey: "getChequeLeavesList",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
 
-      postValidationSetCrossFieldValues: async (
-        field,
-        __,
-        ___,
-        dependentFieldsValues
-      ) => {
-        if (field.value) {
-          let postdata = await GetdetailData({
-            apiID: "GETLANGMSGDTL",
-            otherAPIRequestPara: { TRAN_CD: 1 },
-          });
-          return {
-            SERVICE_CHARGE: { value: postdata[0]?.LANG_MSG ?? "" },
-            GST: {
-              value: postdata[0]?.LANG_CODE ?? "",
-            },
-            FROM_CHEQUE_NO: { value: postdata[0]?.SR_CD ?? "" },
-            TO_CHEQUE_NO: { value: postdata[0]?.TRAN_CD ?? "" },
-          };
-        }
-
-        return {};
-      },
-      runPostValidationHookAlways: true,
-    },
     {
       render: {
         componentType: "textField",
@@ -177,9 +119,7 @@ export const ChequeBookEntryMetaData = {
       label: "Account Name",
       placeholder: "Account Name",
       type: "text",
-      // required: true,
-      // maxLength: 16,
-      // isReadOnly: true,
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 3,
@@ -207,13 +147,80 @@ export const ChequeBookEntryMetaData = {
     },
     {
       render: {
+        componentType: "autocomplete",
+      },
+      name: "NO_OF_CHEQUE",
+      label: "No. of Cheque(s)",
+      placeholder: "Enter no of Cheque book",
+      type: "text",
+      isFieldFocused: false,
+      options: GeneralAPI.getChequeLeavesList,
+      _optionsKey: "getChequeLeavesList",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+      dependentFields: ["CHEQUE_FROM", "SERVICE_TAX", "SERVECE_C_FLAG"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        __,
+        ___,
+        dependentFieldsValues
+      ) => {
+        if (field.value) {
+          let postdata = await TemporaryData();
+          return {
+            SERVECE_C_FLAG: {
+              value: postdata?.[0]?.SERVICE_CHARGE_FLAG ?? "",
+            },
+            GST: {
+              value: parseInt(postdata[0]?.GST) / 100 ?? "",
+            },
+            CHEQUE_TO: {
+              value:
+                parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
+                  parseInt(field?.value) -
+                  1 ?? "",
+            },
+            SERVICE_TAX: {
+              value:
+                postdata?.[0]?.GST_ROUND_OFF === "1"
+                  ? Math.floor(
+                      (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
+                        100
+                    ) ?? ""
+                  : postdata?.[0]?.GST_ROUND_OFF === "2"
+                  ? Math.ceil(
+                      (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
+                        100
+                    ) ?? ""
+                  : postdata?.[0]?.GST_ROUND_OFF === "3"
+                  ? Math.round(
+                      (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
+                        100
+                    ) ?? ""
+                  : (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
+                      100 ?? "",
+            },
+          };
+        }
+
+        return {};
+      },
+      runPostValidationHookAlways: true,
+    },
+    {
+      render: {
         componentType: "textField",
       },
       name: "CHEQUE_TO",
       label: "To Cheque No.",
       placeholder: "To Cheque No.",
       type: "text",
-      // isReadOnly: true,
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.25,
@@ -221,6 +228,12 @@ export const ChequeBookEntryMetaData = {
         lg: 2.25,
         xl: 2.25,
       },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "SERVECE_C_FLAG",
     },
     {
       render: {
@@ -237,6 +250,16 @@ export const ChequeBookEntryMetaData = {
         lg: 2.25,
         xl: 2.25,
       },
+      dependentFields: ["SERVECE_C_FLAG"],
+
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        console.log("<<<dependentFieldsValues", dependentFieldsValues);
+        if (dependentFieldsValues?.SERVECE_C_FLAG?.value === "E") {
+          return true;
+        } else {
+          return false;
+        }
+      },
     },
     {
       render: {
@@ -246,6 +269,7 @@ export const ChequeBookEntryMetaData = {
       label: "GST",
       placeholder: "GST",
       type: "text",
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.25,
@@ -254,24 +278,6 @@ export const ChequeBookEntryMetaData = {
         xl: 2.25,
       },
     },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REMARKS",
-      // sequence: 10,
-      label: "Remark",
-      placeholder: "Enter remark",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
-
     {
       render: {
         componentType: "autocomplete",
@@ -293,6 +299,22 @@ export const ChequeBookEntryMetaData = {
         sm: 2.25,
         lg: 2.25,
         xl: 2.25,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "REMARKS",
+      // sequence: 10,
+      label: "Remark",
+      placeholder: "Enter remark",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -327,6 +349,7 @@ export const ChequeBookEntryMetaData = {
       name: "REQUISITION_DT",
       // sequence: 9,
       label: "Requisition Date",
+      maxDate: new Date(),
       placeholder: "",
       GridProps: {
         xs: 12,
@@ -345,7 +368,7 @@ export const ChequeBookEntryMetaData = {
       label: "No of ChequeBooks",
       placeholder: "Enter no of Cheque book",
       type: "text",
-      // defaultValue: "2",
+      defaultValue: "1",
       // enableDefaultOption: true,
       GridProps: {
         xs: 12,

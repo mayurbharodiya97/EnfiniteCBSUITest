@@ -13,12 +13,12 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
-import { GetdetailData } from "../chequeBookTab/chequebookTab";
 import { Alert } from "components/common/alert";
 import { limitEntryMetaData } from "./limitEntryMetadata";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
 import { SubmitFnType } from "packages/form";
+import { getChequebookData } from "../chequeBookTab/api";
 export const LimitEntry = () => {
   const [value, setValue] = useState("chequebookEntry");
   const myMasterRef = useRef<any>(null);
@@ -27,7 +27,7 @@ export const LimitEntry = () => {
     setValue(newValue);
   };
 
-  const mutation: any = useMutation(GetdetailData, {
+  const mutation: any = useMutation(getChequebookData, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });

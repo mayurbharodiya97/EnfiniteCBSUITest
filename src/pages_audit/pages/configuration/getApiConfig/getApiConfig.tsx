@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect, useRef } from "react";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
@@ -28,6 +28,7 @@ export const GetApiConfig = () => {
   const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
   const { getEntries } = useContext(ClearCacheContext);
+  const isDataChangedRef = useRef(false);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
@@ -46,8 +47,14 @@ export const GetApiConfig = () => {
     };
   }, [getEntries]);
   const ClosedEventCall = useCallback(() => {
+    if (isDataChangedRef.current === true) {
+      // isDataChangedRef.current = true;
+      refetch();
+      // isDataChangedRef.current = false;
+    }
     navigate(".");
   }, [navigate]);
+
   const setCurrentAction = useCallback(
     (data) => {
       navigate(data?.name, {
@@ -76,7 +83,7 @@ export const GetApiConfig = () => {
           path="add/*"
           element={
             <GetApiForm
-              //   isDataChangedRef={isDataChangedRef}
+              isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
               //   defaultView={"add"}
             />

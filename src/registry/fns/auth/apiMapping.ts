@@ -553,6 +553,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETVIEWDTL",
     packageName: "",
   },
+  DOAPICONFIGDATA: {
+    url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

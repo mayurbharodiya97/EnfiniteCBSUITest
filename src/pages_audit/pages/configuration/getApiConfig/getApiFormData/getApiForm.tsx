@@ -1,6 +1,7 @@
 import {
   AppBar,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogTitle,
@@ -11,18 +12,42 @@ import {
   Typography,
 } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import React, { useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getApiFormMetadata } from "./getApiiFormMetadata";
 import { SubmitFnType } from "packages/form";
+import { CreateDetailsRequestData, utilFunction } from "components/utils";
+import { AuthContext } from "pages_audit/auth";
+import { useMutation } from "react-query";
+import { savedynamicAPIconfig } from "../api";
+import { enqueueSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
 
-const GetApiFormCustom = ({ closeDialog }) => {
+const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
   const formRef = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
+  const [sqlSyntax, setSqlSyntax] = useState("");
+  const mynewSqlSyntaxRef = useRef<any>("");
 
-  const ClickEventManage = () => {
-    let event: any = { preventDefault: () => {} };
-    formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-  };
+  useEffect(() => {
+    // setSqlSyntax(sqlSyntax ?? "");
+    mynewSqlSyntaxRef.current = sqlSyntax ?? "";
+  }, [sqlSyntax]);
+  console.log("<<<sqlSyntax", sqlSyntax);
+  // const ClickEventManage = () => {
+  //   let event: any = { preventDefault: () => {} };
+  //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+  // };
+
+  const mutation: any = useMutation(savedynamicAPIconfig, {
+    onSuccess: (data) => {
+      enqueueSnackbar("Data Save successfully", { variant: "success" });
+      isDataChangedRef.current = true;
+      closeDialog();
+    },
+    onError: (error: any) => {},
+  });
+
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -30,9 +55,41 @@ const GetApiFormCustom = ({ closeDialog }) => {
     setFieldError,
     value
   ) => {
-    console.log("<<<onsubmit", data);
     //@ts-ignore
     endSubmit(true);
+
+    console.log("<<<ddd", mynewSqlSyntaxRef.current);
+    let newData = data?.requestParameters?.map((item) => {
+      const newItem = {
+        ...item,
+        _isNewRow: true,
+      };
+      return newItem;
+    });
+    newData = CreateDetailsRequestData(newData);
+    let reqData = {
+      _isNewRow: true,
+      ACTION: data?.ACTION.toUpperCase(),
+      GET_QUERY: mynewSqlSyntaxRef.current,
+      GET_TYPE: data?.GET_API_TYPE,
+      DETAILS_DATA: newData,
+      DOC_API_DTL: {
+        COMP_CD: authState.companyID,
+        _isNewRow: true,
+        BRANCH_CD: authState.user.branchCode,
+        DOC_CD: data?.DOC_CD,
+        // API_ID: "73",
+        API_ENDPOINT: `/enfinityCommonServiceAPI/GETDYNAMICDATA/${data?.ACTION.toUpperCase()}`,
+      },
+    };
+    console.log("<<<reqData", reqData);
+    if (Boolean(mynewSqlSyntaxRef.current)) {
+      mutation.mutate({ ...reqData });
+    } else {
+      enqueueSnackbar("Please Enter SQL Syntax.", {
+        variant: "warning",
+      });
+    }
   };
   return (
     <>
@@ -58,10 +115,27 @@ const GetApiFormCustom = ({ closeDialog }) => {
       >
         <Typography>Get Api Configuration</Typography>
         <DialogActions>
-          <Button onClick={ClickEventManage}>Save</Button>
+          <Button
+            onClick={(event) =>
+              formRef?.current?.handleSubmit(event, "BUTTON_CLICK")
+            }
+            endIcon={
+              mutation?.isLoading ? <CircularProgress size={20} /> : null
+            }
+          >
+            Save
+          </Button>
           <Button onClick={closeDialog}>Close</Button>
         </DialogActions>
       </DialogTitle>
+      {mutation.isError && (
+        <Alert
+          severity={mutation.error?.severity ?? "error"}
+          errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+          errorDetail={mutation.error?.error_detail}
+          color="error"
+        />
+      )}
       <Grid container>
         <Grid item xs={7} sm={7} md={7} lg={7} xl={7}>
           <FormWrapper
@@ -72,30 +146,11 @@ const GetApiFormCustom = ({ closeDialog }) => {
             formStyle={{
               background: "white",
             }}
+            loading={mutation.isLoading}
             hideHeader={true}
             // onFormButtonCicular={mutation.isLoading}
             ref={formRef}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                <Button
-                  onClick={ClickEventManage}
-                  disabled={isSubmitting}
-                  //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                  color={"primary"}
-                >
-                  Save
-                </Button>
-                <Button
-                  onClick={closeDialog}
-                  color={"primary"}
-                  disabled={isSubmitting}
-                >
-                  Close
-                </Button>
-              </>
-            )}
-          </FormWrapper>
+          ></FormWrapper>
         </Grid>
         <Grid
           item
@@ -113,7 +168,7 @@ const GetApiFormCustom = ({ closeDialog }) => {
             minRows="23"
             // rows={verifySql.isError ? 18 : 20}
             // minRows={verifySql.isError ? 21 : 24}
-            // value={sqlSyntax}
+            value={sqlSyntax}
             variant="outlined"
             color="secondary"
             style={{
@@ -123,11 +178,11 @@ const GetApiFormCustom = ({ closeDialog }) => {
             InputLabelProps={{
               shrink: true,
             }}
-            // onChange={(event) => {
-            //   mynewSqlSyntaxRef.current = event.target.value;
-            //   setSqlSyntax(event.target.value);
-            //   mySqlSyntaxRef.current = false;
-            // }}
+            onChange={(event) => {
+              mynewSqlSyntaxRef.current = event.target.value;
+              setSqlSyntax(event.target.value);
+              // mySqlSyntaxRef.current = false;
+            }}
             // onBlur={(event) => {
             //   myTextFieldPositionRef.current = event.target?.selectionStart;
             // }}
@@ -137,7 +192,7 @@ const GetApiFormCustom = ({ closeDialog }) => {
     </>
   );
 };
-export const GetApiForm = ({ closeDialog }) => {
+export const GetApiForm = ({ closeDialog, isDataChangedRef }) => {
   const { state: data }: any = useLocation();
   return (
     <Dialog
@@ -151,7 +206,7 @@ export const GetApiForm = ({ closeDialog }) => {
       // maxWidth="lg"
     >
       <GetApiFormCustom
-        // isDataChangedRef={isDataChangedRef}
+        isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
         // defaultView={defaultView}
         // docCD={data?.[0]?.data?.DOC_CD ?? ""}
