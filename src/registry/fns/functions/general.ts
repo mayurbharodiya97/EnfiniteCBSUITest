@@ -458,14 +458,11 @@ const GeneralAPISDK = () => {
 
   const getSDCList = async (...reqData) => {
     const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher(
-        "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSDCLIST",
-        {
-          USER_NAME: reqData?.[3]?.user.id ?? "",
-          BRANCH_CD: reqData?.[3]?.user?.branchCode,
-          COMP_CD: reqData?.[3]?.companyID,
-        }
-      );
+      await AuthSDK.internalFetcher("GETSDCLIST", {
+        USER_NAME: reqData?.[3]?.user.id ?? "",
+        BRANCH_CD: reqData?.[3]?.user?.branchCode,
+        COMP_CD: reqData?.[3]?.companyID,
+      });
     if (status === "0") {
       let responseData = data;
       console.log(responseData, "responseData SDC");
@@ -486,12 +483,9 @@ const GeneralAPISDK = () => {
 
   const getTRXList = async (...reqData) => {
     const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher(
-        "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRXLIST",
-        {
-          USER_NAME: reqData?.[3]?.user.id ?? "",
-        }
-      );
+      await AuthSDK.internalFetcher("GETTRXLIST", {
+        USER_NAME: reqData?.[3]?.user.id ?? "",
+      });
     if (status === "0") {
       let responseData = data;
       console.log(responseData, "responseData TRX");
@@ -507,6 +501,34 @@ const GeneralAPISDK = () => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  };
+
+  const getJointDetailsList = async (...reqData) => {
+    // const { data, status, message, messageDetails } =
+    //   await AuthSDK.internalFetcher("GETJOINTDETILSLIST", {
+    //     USER_NAME: reqData?.[3]?.user.id ?? "",
+    //   });
+    // if (status === "0") {
+    //   let responseData = data;
+    //   console.log(responseData, "responseData GETJOINTDETILSLIST");
+    //   if (Array.isArray(responseData)) {
+    //     responseData = responseData.map(({ CODE, DESCRIPTION }) => {
+    //       return {
+    //         value: CODE,
+    //         label: CODE + "-" + DESCRIPTION,
+    //       };
+    //     });
+    //   }
+    //   return responseData;
+    // } else {
+    //   throw DefaultErrorObject(message, messageDetails);
+    // }
+    console.log("hello jointDetails");
+    return [
+      { id: 1, name: "abcd", accNo: 12345 },
+      { id: 2, name: "11abcd", accNo: 123445 },
+      { id: 3, name: "aaaa", accNo: 123425 },
+    ];
   };
   return {
     GetMiscValue,
@@ -530,6 +552,7 @@ const GeneralAPISDK = () => {
     getChequeLeavesList,
     getSDCList,
     getTRXList,
+    getJointDetailsList,
   };
 };
 

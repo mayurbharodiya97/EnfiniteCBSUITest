@@ -3,7 +3,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Joint Details",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "id",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -27,7 +27,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "ID",
+      accessor: "id1",
       columnName: "Sr.",
       sequence: 1,
       alignment: "center",
@@ -38,7 +38,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "TRAN_DT",
+      accessor: "name",
       columnName: "Joint Name Infor Type",
       sequence: 2,
       alignment: "center",
@@ -48,7 +48,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "CHEQUE_FROM",
+      accessor: "person",
       columnName: "Person Name",
       sequence: 4,
       alignment: "center",
@@ -59,7 +59,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       isVisible: true,
     },
     {
-      accessor: "CHEQUE_TO",
+      accessor: "designation",
       columnName: "Designation",
       sequence: 5,
       alignment: "center",
@@ -69,7 +69,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "CHEQUE_TOTAL",
+      accessor: "type",
       columnName: "MEM Type A/C No.",
       sequence: 6,
       alignment: "center",
@@ -79,7 +79,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "UNUSED_CHQ",
+      accessor: "ref",
       columnName: "Reference Account",
       sequence: 6,
       alignment: "center",
@@ -89,7 +89,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "AMOUNT",
+      accessor: "phone",
       columnName: "Contact No.",
       sequence: 7,
       alignment: "center",
@@ -99,7 +99,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       maxWidth: 250,
     },
     {
-      accessor: "SERVICE_TAX",
+      accessor: "id",
       columnName: "Customer Id",
       sequence: 8,
       alignment: "center",
