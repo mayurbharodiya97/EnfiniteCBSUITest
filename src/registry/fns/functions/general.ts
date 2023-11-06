@@ -481,6 +481,26 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+  const getDependentFieldList = async (...reqData) => {
+    const { status, data, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETFIELDLIST", {
+        DOC_CD: reqData?.[4] ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ COLUMN_ACCESSOR }) => {
+          return {
+            value: COLUMN_ACCESSOR,
+            label: COLUMN_ACCESSOR,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
 
   return {
     GetMiscValue,
@@ -503,7 +523,7 @@ const GeneralAPISDK = () => {
     getTabelListData,
     getChequeLeavesList,
     getDynDropdownData,
+    getDependentFieldList,
   };
 };
-
 export const GeneralAPI = GeneralAPISDK();

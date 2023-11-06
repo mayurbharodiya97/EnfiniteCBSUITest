@@ -119,12 +119,20 @@ export const PropsConfigForm: FC<{
   ) => {
     // @ts-ignore
     endSubmit(true);
+    // console.log(
+    //   (data["DEPENDENTFIELD_VALUE"] = data?.DEPENDENTFIELD_VALUE.join(","))
+    // );
     let oldData = PropsData;
     let newData = data?.propsDetails.map((item) => {
       // Replace OPTION_VALUE with PROPS_VALUE if OPTION_VALUE exists
       if (item?.OPTION_VALUE) {
         item.PROPS_VALUE = item.OPTION_VALUE;
-        delete item.OPTION_VALUE; // Optional: Delete OPTION_VALUE if you want to remove it
+        delete item.OPTION_VALUE;
+        // Optional: Delete OPTION_VALUE if you want to remove it
+      }
+      if (item.DEPENDENTFIELD_VALUE) {
+        item.PROPS_VALUE = item?.DEPENDENTFIELD_VALUE?.join(",");
+        delete item.DEPENDENTFIELD_VALUE;
       }
 
       return {
@@ -155,7 +163,13 @@ export const PropsConfigForm: FC<{
       endSubmit,
       setFieldError,
     };
+    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
   };
+
+  if (PropsComponentFormMetaData?.fields?.[0]?._fields?.[7]) {
+    PropsComponentFormMetaData.fields[0]._fields[7].requestProps =
+      PropsData?.[0]?.DOC_CD ?? "";
+  }
   if (PropsComponentFormMetaData.form.label) {
     PropsComponentFormMetaData.form.label =
       "Props Configuration" + " For " + reqDataRef.current?.FIELD_NAME ?? "";

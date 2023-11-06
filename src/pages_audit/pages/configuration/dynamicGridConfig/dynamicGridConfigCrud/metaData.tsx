@@ -310,7 +310,7 @@ export const DynamicGridConfigMetaData = {
         type: "text",
         required: true,
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {
           type: "string",
@@ -324,7 +324,7 @@ export const DynamicGridConfigMetaData = {
         name: "USER_ACC_UPD",
         label: "View-Detail for User",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {
           type: "string",
@@ -340,7 +340,7 @@ export const DynamicGridConfigMetaData = {
         name: "USER_ACC_DEL",
         label: "Delete for User",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {
           type: "string",
@@ -357,7 +357,7 @@ export const DynamicGridConfigMetaData = {
         name: "DEFAULT_PAGE_SIZE",
         label: "Default PageSize",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.8, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {
           type: "string",
@@ -395,13 +395,22 @@ export const DynamicGridConfigMetaData = {
         label: "RowId Column",
         required: true,
         __EDIT__: { isReadOnly: true },
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
         maxLength: 40,
         validate: (currentField, value) => {
           if (currentField?.value) {
             return;
           }
         },
+      },
+      {
+        render: {
+          componentType: "checkbox",
+        },
+        name: "DENSE",
+        label: "Dense",
+        defaultValue: true,
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
       },
       {
         render: {
@@ -416,10 +425,10 @@ export const DynamicGridConfigMetaData = {
         render: {
           componentType: "checkbox",
         },
-        name: "DENSE",
-        label: "Dense",
+        name: "ALLOW_ROW_SELECTION",
+        label: "Allow RowSelection",
         defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
       },
       // {
       //   render: {
@@ -458,15 +467,6 @@ export const DynamicGridConfigMetaData = {
         render: {
           componentType: "checkbox",
         },
-        name: "ALLOW_ROW_SELECTION",
-        label: "Allow RowSelection",
-        defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-      },
-      {
-        render: {
-          componentType: "checkbox",
-        },
         name: "IS_CUSRSORFOCUSED",
         label: "Is Cusrsor Focused",
         defaultValue: true,
@@ -484,7 +484,7 @@ export const DynamicGridConfigMetaData = {
       hideHeader: true,
       disableGroupBy: true,
       enablePagination: false,
-      containerHeight: { min: "20vh", max: "20vh" },
+      containerHeight: { min: "55vh", max: "55vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
       disableLoader: true,

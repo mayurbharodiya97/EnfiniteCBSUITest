@@ -49,6 +49,7 @@ export const DynamicGridConfig = () => {
       BRANCH_CD: authState?.user?.branchCode ?? "",
     })
   );
+
   useEffect(() => {
     return () => {
       let entries = getEntries() as any[];

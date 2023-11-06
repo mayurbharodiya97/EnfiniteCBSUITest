@@ -189,6 +189,7 @@ export const getFormFieldPropsData = async (reqdata) => {
       return {
         ...item,
         OPTION_VALUE: item?.PROPS_VALUE,
+        DEPENDENTFIELD_VALUE: item?.PROPS_VALUE?.split(","),
         _isNewRow: item["NEWROW_STATUS"] === "N" ? false : true,
       };
     });

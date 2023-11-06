@@ -213,6 +213,16 @@ export const DynFormMetadataConfig = () => {
             />
             {isLoading || isFetching ? (
               <LoaderPaperComponent />
+            ) : isError ? (
+              <Fragment>
+                <div style={{ width: "100%", paddingTop: "10px" }}>
+                  <Alert
+                    severity={error?.severity ?? "error"}
+                    errorMsg={error?.error_msg ?? "Error"}
+                    errorDetail={error?.error_detail ?? ""}
+                  />
+                </div>
+              </Fragment>
             ) : (
               <Grid item xs={12} sm={12} md={12} style={{ padding: "10px" }}>
                 <Box

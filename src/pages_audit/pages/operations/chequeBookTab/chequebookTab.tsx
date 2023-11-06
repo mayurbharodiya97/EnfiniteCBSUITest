@@ -8,7 +8,7 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
@@ -21,22 +21,36 @@ import { AuthSDK } from "registry/fns/auth";
 import { DefaultErrorObject } from "components/utils";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { Alert } from "components/common/alert";
-import { saveChequebookData } from "./api";
+import { TemporaryData, getChequebookData, saveChequebookData } from "./api";
 import { ProcessChequeDTL } from "./processChequeDTL";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 
 export const ChequebookTab = () => {
   const [value, setValue] = useState("chequebookEntry");
   const myMasterRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const [isOpenSave, setIsOpenSave] = useState<any>(false);
+
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
-  const mutation: any = useMutation(GetdetailData, {
+  // const mutation: any = useMutation(GetdetailData, {
+  //   onSuccess: (data) => {},
+  //   onError: (error: any) => {},
+  // });
+  const mutation: any = useMutation(getChequebookData, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
-
+  useEffect(() => {
+    if (!mutation?.isLoading && mutation?.data) {
+      if (mutation?.data?.[0]?.CHEQUE_BOOK_ISSUE === "N") {
+        setIsOpenSave(true);
+      }
+    }
+  }, [mutation?.data, mutation?.isLoading]);
+  console.log("<<<mutation", mutation);
   const saveChequeData: any = useMutation(saveChequebookData, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
@@ -55,20 +69,11 @@ export const ChequebookTab = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    ChequeBookEntryMetaData.form.label = " ";
-    let ApiKey: any = ChequeBookEntryMetaData?.form?.apiKey;
-    let apiID: any = ChequeBookEntryMetaData?.form?.apiID;
-    let response = {};
-    for (const key in ApiKey) {
-      if (ApiKey.hasOwnProperty(key)) {
-        const mappedKey = ApiKey[key];
-        response[key] = data[mappedKey];
-      }
-    }
     let otherAPIRequestPara = {
       COMP_CD: authState?.companyID,
-      ...response,
       ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
+      ACCT_TYPE: data?.ACCT_TYPE,
+      BRANCH_CD: data?.BRANCH_CD,
     };
 
     let otherAPIRequestPara2 = {
@@ -83,24 +88,18 @@ export const ChequebookTab = () => {
       // REQUISITION_DT: "09-OCT-2023",
     };
     if (value === "BUTTON_CLICK") {
-      mutation.mutate({ apiID, otherAPIRequestPara });
-      ChequeBookEntryMetaData.fields[3].isFieldFocused = true;
-      ChequeBookEntryMetaData.form.label =
-        "Cheque Book Issue " +
-        " " +
-        authState?.companyID +
-        data?.BRANCH_CD +
-        data?.ACCT_TYPE +
-        data?.ACCT_CD;
-      // .replace(data?.BRANCH_CD, data?.BRANCH_CD);
+      mutation.mutate({ otherAPIRequestPara });
+      ChequeBookEntryMetaData.fields[4].isFieldFocused = true;
     } else {
       //@ts-ignore
       endSubmit(true);
       saveChequeData.mutate({ otherAPIRequestPara2 });
-      console.log("<<<nowww", data);
     }
   };
-
+  const onClickButton = (rows, buttonName) => {
+    setIsOpenSave(false);
+    ChequeBookEntryMetaData.fields[2].isFieldFocused = true;
+  };
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -112,8 +111,12 @@ export const ChequebookTab = () => {
           aria-label="secondary tabs example"
         >
           <Tab value="chequebookEntry" label="Chequebook Entry" />
-          <Tab value="chequebookDetail" label="Chequebook Detail" />
-          <Tab value="processChequeDTL" label="Processed Cheque(s) Detail" />
+          {mutation?.data?.length > 1 && (
+            <Tab value="chequebookDetail" label="Chequebook Detail" />
+          )}
+          {mutation?.data?.length > 1 && (
+            <Tab value="processChequeDTL" label="Processed Cheque(s) Detail" />
+          )}
         </Tabs>
       </Box>
 
@@ -247,17 +250,29 @@ export const ChequebookTab = () => {
           ) : null}
         </Grid>
       </Container>
+
+      {isOpenSave && (
+        <div
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              setIsOpenSave(false);
+              ChequeBookEntryMetaData.fields[2].isFieldFocused = true;
+            }
+          }}
+        >
+          {" "}
+          <PopupRequestWrapper
+            MessageTitle="Account Description"
+            Message="Account is not Applicable to Cheque-book"
+            onClickButton={(rows, buttonName) =>
+              onClickButton(rows, buttonName)
+            }
+            buttonNames={["Ok"]}
+            rows={[]}
+            open={isOpenSave}
+          />
+        </div>
+      )}
     </>
   );
-};
-export const GetdetailData = async ({ apiID, otherAPIRequestPara }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(apiID, {
-      ...otherAPIRequestPara,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
 };
