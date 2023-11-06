@@ -6,6 +6,9 @@ import { Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useQuery } from "react-query";
+import * as API from "./api";
+
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
@@ -26,6 +29,13 @@ const responsive = {
   },
 };
 const AccDetails = () => {
+  const {
+    data: accInfo,
+    isSuccess: isAccTypeSuccess,
+    isLoading: isAccTypeLoading,
+  } = useQuery(["getAccInfo", {}], () => API.getAccInfo());
+
+  console.log(accInfo, "accInfo");
   return (
     <>
       <Carousel responsive={responsive}>

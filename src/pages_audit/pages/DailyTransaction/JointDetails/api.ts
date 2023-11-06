@@ -134,7 +134,6 @@ export const getJointDetailsList = async (...reqData) => {
   //   return responseData;
   // } else {
   //   throw DefaultErrorObject(message, messageDetails);
-
   // }
 
   return {

@@ -188,7 +188,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Introductor ",
+      name: "Introductor6 ",
       label: "Introductor A/C",
       placeholder: "",
       type: "text",
@@ -207,7 +207,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Introductor2",
+      name: "Introductor8",
       label: "",
       placeholder: "",
       type: "text",
@@ -226,7 +226,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Introductor3",
+      name: "Introductor90",
       label: "",
       placeholder: "",
       type: "text",
@@ -245,7 +245,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Introductor4",
+      name: "Introductor32",
       label: "",
       placeholder: "",
       type: "text",
@@ -296,7 +296,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Person",
+      name: "Person21",
       label: "Person Name",
       placeholder: "",
       type: "text",
@@ -356,7 +356,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Designation",
+      name: "Designation11",
       label: "Line1",
       placeholder: "",
       type: "text",
@@ -375,7 +375,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Designation",
+      name: "Designation32",
       label: "Line2",
       placeholder: "",
       type: "text",
@@ -394,7 +394,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Designation",
+      name: "Designation123",
       label: "Line3",
       placeholder: "",
       type: "text",
@@ -414,7 +414,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Mobile",
+      name: "Mobile1",
       label: "Mobile No.",
       placeholder: "",
       type: "text",
@@ -432,7 +432,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Phone",
+      name: "Phone1",
       label: "Phone",
       placeholder: "",
       type: "text",
@@ -516,7 +516,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Remarks",
+      name: "Remarks1",
       label: "Remarks",
       placeholder: "",
       type: "text",
@@ -571,7 +571,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Description",
+      name: "Descriptionr4",
       label: "Description",
       placeholder: "",
       type: "text",
@@ -650,7 +650,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Security",
+      name: "Security1",
       label: "Security ",
       placeholder: "",
       type: "text",
@@ -681,7 +681,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "Name",
+      name: "Name456",
       label: "Name",
       placeholder: "",
       type: "text",
@@ -719,7 +719,7 @@ export const jointViewDetailMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "value",
+      name: "value2",
       label: "Value",
       placeholder: "",
       type: "text",
