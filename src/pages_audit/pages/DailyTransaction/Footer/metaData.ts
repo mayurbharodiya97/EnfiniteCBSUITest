@@ -69,7 +69,7 @@ export const footerFormMetaData = {
       required: true,
       options: GeneralAPI.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
-      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.5 },
 
       // schemaValidation: {
       //   type: "string",
