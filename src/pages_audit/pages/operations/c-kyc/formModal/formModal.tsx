@@ -222,10 +222,10 @@ export default function FormModal({
 
 
   useEffect(() => {
-    if(!location.state) {
-      handleFormModalClosectx()
-      onClose()
-    } else {
+    // if(!location.state) {
+    //   handleFormModalClosectx()
+    //   onClose()
+    // } else {
       if(location.pathname.includes("/view-detail")) {
         // console.log(">>>-- edit", location.state, location.state[0].id)
         // handlecustomerIDctx(location.state[0].id)
@@ -242,7 +242,7 @@ export default function FormModal({
         // console.log(">>>-- new", location.state)
         handleFormModalOpenctx(location?.state?.entityType)
       }
-    }
+    // }
   }, [location])
 
   // useEffect(() => {
