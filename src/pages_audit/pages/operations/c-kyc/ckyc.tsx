@@ -305,13 +305,13 @@ export const Ckyc = () => {
     onError: (error: any) => {},
   });
 
-  const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
-    ["getCustomerDetailsonEdit", { }],
-    () => API.getCustomerDetailsonEdit({
-      COMP_CD: authState?.companyID ?? "",
-      CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
-    }), {enabled: false}
-  )
+  // const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
+  //   ["getCustomerDetailsonEdit", { }],
+  //   () => API.getCustomerDetailsonEdit({
+  //     COMP_CD: authState?.companyID ?? "",
+  //     CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
+  //   }), {enabled: false}
+  // )
 
   // const {data:inactivateCustData, isError: isinactivateCustError, isLoading: isinactivateCustLoading, refetch: inactivateCustRefetch} = useQuery<any, any>(
   //   ["InactivateCustomer", { }],
@@ -325,30 +325,30 @@ export const Ckyc = () => {
   // )
 
 
-  useEffect(() => {
-    if(mutation?.data?.[0]?.CUSTOMER_ID) {
-      handlecustomerIDctx(mutation?.data[0]?.CUSTOMER_ID)
-    }
-  }, [mutation?.data])
+  // useEffect(() => {
+  //   if(mutation?.data?.[0]?.CUSTOMER_ID) {
+  //     handlecustomerIDctx(mutation?.data[0]?.CUSTOMER_ID)
+  //   }
+  // }, [mutation?.data])
 
-  const handleViewDetails = async () => {
-    retrieveFormRefetch()
-    handleColTabChangectx(0)
-    // if(retrieveFormData) {
-    //   await handleFormModalOpenOnEditctx(data?.rows, retrieveFormData[0])
-    // }
-  }
+  // const handleViewDetails = async () => {
+  //   retrieveFormRefetch()
+  //   handleColTabChangectx(0)
+  //   // if(retrieveFormData) {
+  //   //   await handleFormModalOpenOnEditctx(data?.rows, retrieveFormData[0])
+  //   // }
+  // }
 
-  useEffect(() => {
-    if(!isRetrieveFormLoading && retrieveFormData) {
-      // console.log("result data....", typeof retrieveFormData[0], retrieveFormData[0])
-      // let data = retrieveFormData[0]
-      handleFormDataonRetrievectx(retrieveFormData[0])
+  // useEffect(() => {
+  //   if(!isRetrieveFormLoading && retrieveFormData) {
+  //     // console.log("result data....", typeof retrieveFormData[0], retrieveFormData[0])
+  //     // let data = retrieveFormData[0]
+  //     handleFormDataonRetrievectx(retrieveFormData[0])
 
 
-      // handleFormModalOpenOnEditctx(data?.rows, retrieveFormData)
-    }
-  }, [isRetrieveFormLoading, retrieveFormData, retrieveFormRefetch])
+  //     // handleFormModalOpenOnEditctx(data?.rows, retrieveFormData)
+  //   }
+  // }, [isRetrieveFormLoading, retrieveFormData, retrieveFormRefetch])
 
 
   useEffect(() => {
@@ -577,20 +577,21 @@ useEffect(() => {
   const setCurrentAction = useCallback(
     (data) => {
       // // console.log("dataddaada", data)
-      if (data.name === "view-detail") {
-        // refetch()
-        handleViewDetails()
-        // retrieveFormRefetch()
-        // handleColTabChangectx(0)
-        // if(retrieveFormData && Object.keys(state?.retrieveFormDataApiRes)?.length>0) {
-        // if(retrieveFormData) {
-          handleFormModalOpenOnEditctx(data?.rows)
-        // }
+      // if (data.name === "view-detail") {
+      //   // refetch()
+      //   handleViewDetails()
+      //   // retrieveFormRefetch()
+      //   // handleColTabChangectx(0)
+      //   // if(retrieveFormData && Object.keys(state?.retrieveFormDataApiRes)?.length>0) {
+      //   // if(retrieveFormData) {
+      //     console.log("data?.rows", data?.rows)
+      //     handleFormModalOpenOnEditctx(data?.rows)
+      //   // }
 
-        navigate(data?.name, {
-          state: data?.rows,
-        })
-      } 
+      //   navigate(data?.name, {
+      //     state: data?.rows,
+      //   })
+      // } 
       // else if (data.name === "dependencies") {
       //   setComponentToShow("Dependencies");
       //   setAcctOpen(true);
@@ -631,15 +632,15 @@ useEffect(() => {
       //   setContPersonCompOpen(true);
       //   setRowsData(data?.rows);
       // } 
-      else {
+      // else {
         setRowsData(data?.rows);
         navigate(data?.name, {
           state: data?.rows,
         });
-      }
+      // }
     },
     // []
-    [navigate, retrieveFormData, retrieveFormRefetch]
+    [navigate]
   );
 
   // insurance-data display api

@@ -178,6 +178,7 @@ const CkycProvider = ({children}) => {
                 categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
                 constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
                 isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+                customerIDctx: recordData[0]?.id
                 // retrieveFormDataApiRes: retrieveFormdata,
                 
                 // categConstitutionValuectx: "kuashd",

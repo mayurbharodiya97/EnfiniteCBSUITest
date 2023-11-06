@@ -38,7 +38,7 @@ import bank_logo_default from "assets/images/BecomePartnerImg.svg";
 import clsx from "clsx";
 
 import * as API from "../api";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { AutoComplete } from 'components/common';
 import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +46,6 @@ import { CkycContext } from '../CkycContext';
 import TabStepper from './TabStepper';
 import KYCDocUpload from './formDetails/formComponents/individualComps/KYCDocUpload';
 import PhotoSignature from './formDetails/formComponents/individualComps/PhotoSignature';
-import { format } from "date-fns/esm";
 import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails';
 import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -186,21 +185,66 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx} = useContext(CkycContext);
-  const { state: data }: any = useLocation();
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx } = useContext(CkycContext);
+  // const { state: data }: any = useLocation();
+  const location: any = useLocation();
   const { t } = useTranslation();
   const classes = useDialogStyles();
   const authController = useContext(AuthContext);
   const appBarClasses = useStyles();
   // const [customerCategories, setCustomerCategories] = useState([])
   const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
-  // console.log("statedata", data)
+
+  // on edit/view
+  // - call retrieveFormRefetch
+  //   - handleFormDataonRetrievectx(pass response)
+  // - handleColTabChangectx(0)
+  // - handleFormModalOpenOnEditctx(data.rows)
+  
+  // retrieve data
+  // const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
+  //   ["getCustomerDetailsonEdit", { }],
+  //   () => API.getCustomerDetailsonEdit({
+  //     COMP_CD: authController?.authState?.companyID ?? "",
+  //     CUSTOMER_ID: location.state[0].id ?? "",
+  //   }), {enabled: false}
+  // )
+
+  const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
+    onSuccess: (data) => {
+      // console.log("on successssss", data, location)
+      handleFormDataonRetrievectx(data[0])
+      // handleColTabChangectx(0)
+      // handleFormModalOpenOnEditctx(location?.state)
+    },
+    onError: (error: any) => {},
+  });
+
+
   useEffect(() => {
-    // console.log("asdasdasdsasdasdas bef", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
-    if(data?.isFormModalOpen && data?.entityType && data?.isFreshEntry) {
-      handleFormModalOpenctx(data?.entityType)
+    if(!location.state) {
+      handleFormModalClosectx()
+      onClose()
+    } else {
+      if(location.pathname.includes("/view-detail")) {
+        // console.log(">>>-- edit", location.state, location.state[0].id)
+        // handlecustomerIDctx(location.state[0].id)
+        handleColTabChangectx(0)
+        handleFormModalOpenOnEditctx(location?.state)
+        // retrieveFormRefetch()
+        let data = {
+          COMP_CD: authController?.authState?.companyID ?? "",
+          CUSTOMER_ID: location.state[0].id ?? "",
+        }
+        
+        mutation.mutate(data)
+      } else if(location?.pathname.includes("/new-entry") && location?.state?.entityType) {
+        // console.log(">>>-- new", location.state)
+        handleFormModalOpenctx(location?.state?.entityType)
+      }
     }
-  }, [])
+  }, [location])
+
   // useEffect(() => {
   //   console.log("asdasdasdsasdasdas.", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
   // }, [state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx])
