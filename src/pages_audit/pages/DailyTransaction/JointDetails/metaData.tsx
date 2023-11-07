@@ -50,11 +50,7 @@ export const jointViewDetailMetaData = {
       },
       name: "reference",
       label: "Reference",
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -69,13 +65,7 @@ export const jointViewDetailMetaData = {
       // isReadOnly: true,
       // required: true,
       // maxLength: 1,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -86,13 +76,7 @@ export const jointViewDetailMetaData = {
       label: "Date",
       placeholder: "",
 
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -105,13 +89,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -124,13 +102,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -143,13 +115,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -162,13 +128,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     //member
@@ -178,11 +138,7 @@ export const jointViewDetailMetaData = {
       },
       name: "memberShip",
       label: "Membership",
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -195,13 +151,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -214,13 +164,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -233,13 +177,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -252,13 +190,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -271,13 +203,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     //personal
     {
@@ -286,11 +212,7 @@ export const jointViewDetailMetaData = {
       },
       name: "personal",
       label: "Personal Details",
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -305,13 +227,7 @@ export const jointViewDetailMetaData = {
       // isReadOnly: true,
       // required: true,
       // maxLength: 1,
-      GridProps: {
-        xs: 3,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -325,13 +241,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -344,13 +254,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -363,13 +267,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -382,13 +280,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -401,13 +293,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -419,13 +305,7 @@ export const jointViewDetailMetaData = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -437,13 +317,7 @@ export const jointViewDetailMetaData = {
       placeholder: "",
       type: "text",
       fullWidth: false,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -455,13 +329,7 @@ export const jointViewDetailMetaData = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -473,13 +341,7 @@ export const jointViewDetailMetaData = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -491,13 +353,7 @@ export const jointViewDetailMetaData = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     //remarks
     {
@@ -506,11 +362,7 @@ export const jointViewDetailMetaData = {
       },
       name: "remarks",
       label: "",
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -525,13 +377,7 @@ export const jointViewDetailMetaData = {
       // isReadOnly: true,
       // required: true,
       // maxLength: 1,
-      GridProps: {
-        xs: 4,
-        md: 4,
-        sm: 4,
-        lg: 4,
-        xl: 4,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -545,13 +391,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     //mortgage
@@ -561,11 +401,7 @@ export const jointViewDetailMetaData = {
       },
       name: "mortgage",
       label: "Mortgage/Hypothication/Security Detail",
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -580,13 +416,7 @@ export const jointViewDetailMetaData = {
       // isReadOnly: true,
       // required: true,
       // maxLength: 1,
-      GridProps: {
-        xs: 3,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -600,13 +430,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -618,13 +442,7 @@ export const jointViewDetailMetaData = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -637,13 +455,7 @@ export const jointViewDetailMetaData = {
       type: "text",
       fullWidth: false,
       isReadOnly: true,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
 
     {
@@ -656,13 +468,7 @@ export const jointViewDetailMetaData = {
       type: "text",
       fullWidth: false,
       isReadOnly: true,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     //valuer
     {
@@ -671,11 +477,7 @@ export const jointViewDetailMetaData = {
       },
       name: "valuer",
       label: "Valuer",
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -690,13 +492,7 @@ export const jointViewDetailMetaData = {
       // isReadOnly: true,
       // required: true,
       // maxLength: 1,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -707,13 +503,7 @@ export const jointViewDetailMetaData = {
       label: "Valuation Date",
       placeholder: "",
 
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     {
       render: {
@@ -726,13 +516,7 @@ export const jointViewDetailMetaData = {
       fullWidth: false,
       // required: true,
       // maxLength: 2,
-      GridProps: {
-        xs: 2,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     //clearance
     {
@@ -741,11 +525,7 @@ export const jointViewDetailMetaData = {
       },
       name: "clearance",
       label: "Clearance",
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-      },
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
     },
     {
       render: {
@@ -760,13 +540,7 @@ export const jointViewDetailMetaData = {
       // isReadOnly: true,
       // required: true,
       // maxLength: 1,
-      GridProps: {
-        xs: 3,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 2 },
     },
     // {
     //   render: { componentType: "formbutton", group: 0 },

@@ -26,6 +26,7 @@ import {
   IconButton,
   Divider,
   Tab,
+  Button,
 } from "@mui/material";
 const JointDetails = () => {
   const myGridRef = useRef<any>(null);
@@ -43,21 +44,6 @@ const JointDetails = () => {
   } = useQuery(["getJointDetailsList", {}], () => API.getJointDetailsList());
 
   console.log(jointDetailsList, "jointDetailsList");
-
-  // const getJointDet: any = useMutation(API.getTRXList, {
-  //   onSuccess: (data) => {
-  //     console.log("hello suc get joint");
-  //   },
-  //   onError: (error: any) => {},
-  // });
-  const getData = useMutation(API.getChequeBookEntryData, {
-    onSuccess: (response: any) => {
-      // Handle success
-    },
-    onError: (error: any) => {
-      // Handle error
-    },
-  });
 
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
@@ -79,17 +65,71 @@ const JointDetails = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const getJointDataById: any = useMutation(API.getJointDataById, {
+    onSuccess: (data) => {
+      console.log("hello getJointDataById");
+    },
+    onError: (error: any) => {},
+  });
+
+  console.log(getJointDataById, "getJointDataById dataaaa");
   const setCurrentAction = useCallback((data) => {
-    console.log(data, "data");
+    console.log(data, "rowdata");
+    let obj = { id: 1, name: "alfa" };
+    getJointDataById.mutate({ obj });
 
     setOpen(true);
   }, []);
 
-  const onConfirmFormButtonClickHandel = () => {
+  const sendJointData: any = useMutation(API.sendJointData, {
+    onSuccess: (data) => {
+      console.log("hello suc get joint");
+    },
+    onError: (error: any) => {},
+  });
+  const handleSave = () => {
     console.log("helllo");
+    sendJointData.mutate({});
   };
+
+  // const onSubmitHandler: SubmitFnType = (
+  //   data: any,
+  //   displayData,
+  //   endSubmit,
+  //   setFieldError,
+  //   actionFlag
+  // ) => {
+  //   // @ts-ignore
+  //   endSubmit(true);
+
+  //   let newData = {
+  //     IS_VIEW_NEXT: Boolean(data?.IS_VIEW_NEXT) ? "Y" : "N" ?? "",
+  //   };
+
+  //   let oldData = {
+  //     IS_VIEW_NEXT: mainData?.[0]?.IS_VIEW_NEXT ?? "",
+  //   };
+
+  //   let upd: any = utilFunction.transformDetailsData(newData, oldData ?? {});
+
+  //   if (upd?._UPDATEDCOLUMNS?.length > 0) {
+  //     isErrorFuncRef.current = {
+  //       data: {
+  //         ...newData,
+  //         ...upd,
+  //         CIRCULAR_TRAN_CD: mainData?.[0]?.TRAN_CD ?? "",
+  //         USER_NM: authState?.user?.id ?? "",
+  //         _isNewRow: formView === "view" ? true : false,
+  //       },
+  //       displayData,
+  //       endSubmit,
+  //       setFieldError,
+  //     };
+  //     setIsOpenSave(true);
+  //   }
+  // };
   return (
-    <Fragment>
+    <>
       <div
         onKeyPress={(e) => {
           if (e.key === "Enter") {
@@ -97,20 +137,12 @@ const JointDetails = () => {
           }
         }}
       >
-        {getData.isError && (
-          <Alert
-            severity={getData.error?.severity ?? "error"}
-            errorMsg={getData.error?.error_msg ?? "Something went to wrong.."}
-            errorDetail={getData.error?.error_detail}
-            color="error"
-          />
-        )}
         <GridWrapper
           key={`JointDetailGridMetaData`}
           finalMetaData={JointDetailGridMetaData as GridMetaDataType}
           data={jointDetailsList?.data ?? []}
           setData={() => null}
-          loading={getData.isLoading}
+          // loading={getData.isLoading}
           actions={actions}
           setAction={setCurrentAction}
           refetchData={() => {}}
@@ -159,7 +191,8 @@ const JointDetails = () => {
             <FormWrapper
               metaData={jointViewDetailMetaData}
               // onSubmitHandler={onSubmitHandler}
-              onFormButtonClickHandel={onConfirmFormButtonClickHandel}
+              onFormButtonClickHandel={handleSave}
+              initialValues={getJointDataById?.data as InitialValuesType}
               hideHeader={true}
               displayMode={"new"}
               formStyle={{
@@ -167,12 +200,26 @@ const JointDetails = () => {
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
-            ></FormWrapper>
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  <Button
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    color={"primary"}
+                  >
+                    Save
+                  </Button>
+                </>
+              )}
+            </FormWrapper>
           </div>
         </DialogContent>
-        <DialogActions></DialogActions>
       </Dialog>
-    </Fragment>
+    </>
   );
 };
 export const JointDetailsForm = () => {

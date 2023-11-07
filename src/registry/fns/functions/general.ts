@@ -465,16 +465,18 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
-      console.log(responseData, "responseData SDC");
 
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ CODE, DESCRIPTION }) => {
           return {
-            value: CODE,
-            label: CODE + "-" + DESCRIPTION,
+            value: CODE?.trim(),
+            label: CODE?.trim() + "-" + DESCRIPTION,
+            CODE: CODE,
+            DESCRIPTION: DESCRIPTION,
           };
         });
       }
+      console.log(responseData, "responseData SDC");
       return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
