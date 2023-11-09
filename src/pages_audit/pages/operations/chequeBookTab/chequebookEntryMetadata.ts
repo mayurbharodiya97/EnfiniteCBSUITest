@@ -149,19 +149,13 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "autocomplete",
       },
-      name: "LEAF_ARR",
+      name: "NO_OF_CHEQUE",
       label: "No. of Cheque(s)",
       placeholder: "Enter no of Cheque book",
       type: "text",
       isFieldFocused: false,
-      // options: () => {
-      //   return [
-      //     { value: "5", label: "5" },
-      //     { value: "10", label: "10" },
-      //     { value: "15", label: "15" },
-      //   ];
-      // },
-      _optionsKey: "LEAF_ARR",
+      options: GeneralAPI.getChequeLeavesList,
+      _optionsKey: "getChequeLeavesList",
       GridProps: {
         xs: 12,
         md: 3,
@@ -259,6 +253,7 @@ export const ChequeBookEntryMetaData = {
       dependentFields: ["SERVECE_C_FLAG"],
 
       isReadOnly(fieldData, dependentFieldsValues, formState) {
+        console.log("<<<dependentFieldsValues", dependentFieldsValues);
         if (dependentFieldsValues?.SERVECE_C_FLAG?.value === "E") {
           return true;
         } else {
@@ -383,28 +378,12 @@ export const ChequeBookEntryMetaData = {
         xl: 2.25,
       },
     },
+
     {
       render: {
         componentType: "textField",
       },
-      name: "ACCT_BAL",
-      label: "Balance",
-      placeholder: "Enter no of Cheque book",
-      type: "text",
-      // enableDefaultOption: true,
-      GridProps: {
-        xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "JOINT_NAME_1",
+      name: "MACHINE_NM",
       label: "Joint Account Name",
       type: "text",
       shouldExclude(fieldData) {
@@ -426,7 +405,7 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "JOINT_NAME_2",
+      name: "MACHINE_NMA",
       label: "Joint Account Name",
       type: "text",
       shouldExclude(fieldData) {

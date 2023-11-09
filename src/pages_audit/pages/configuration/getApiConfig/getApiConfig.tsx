@@ -63,9 +63,6 @@ export const GetApiConfig = () => {
     },
     [navigate]
   );
-  const deleteData = (props) => {
-    console.log("<<<deleteData", props);
-  };
   return (
     <>
       <GridWrapper
@@ -79,9 +76,6 @@ export const GetApiConfig = () => {
         refetchData={() => refetch()}
         // ref={myGridRef}
         // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
-        onClickActionEvent={(index, id, data) => {
-          console.log("<<<defaultSortOrder", index, id, data);
-        }}
       />
 
       <Routes>
@@ -91,7 +85,6 @@ export const GetApiConfig = () => {
             <GetApiForm
               isDataChangedRef={isDataChangedRef}
               closeDialog={ClosedEventCall}
-              deleteData={deleteData}
               //   defaultView={"add"}
             />
           }

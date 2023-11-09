@@ -354,6 +354,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
   useEffect(() => {
     GeneralAPI.setDocumentName("Password Reset");
   }, []);
+  console.log("<<<login", loginState);
   return (
     <>
       <Grid container style={{ height: "100vh", overflow: "hidden" }}>

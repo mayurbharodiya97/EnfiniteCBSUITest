@@ -49,10 +49,6 @@ export const getApiFormMetadata: any = {
       // isReadOnly: true,
       placeholder: "Action Name",
       maxLength: 100,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Actionn Name is required"] }],
-      },
       GridProps: { xs: 12, md: 4, sm: 4, xl: 4, lg: 4 },
     },
     {
