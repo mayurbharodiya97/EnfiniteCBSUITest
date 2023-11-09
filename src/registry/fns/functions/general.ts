@@ -84,8 +84,8 @@ const GeneralAPISDK = () => {
         responseData = responseData.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
           return {
             ...others,
-            value: ACCT_TYPE,
-            label: ACCT_TYPE + " - " + TYPE_NM,
+            value: ACCT_TYPE?.trim(),
+            label: ACCT_TYPE?.trim() + " - " + TYPE_NM,
           };
         });
       }

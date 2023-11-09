@@ -74,7 +74,8 @@ export const footerFormMetaData = {
       options: GeneralAPI.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.5 },
-
+      enableDefaultOption: true,
+      defaultValue: "6",
       // schemaValidation: {
       //   type: "string",
       //   rules: [{ name: "required", params: ["Type is required."] }],
@@ -120,7 +121,6 @@ export const footerFormMetaData = {
       label: "Scroll",
       placeholder: "",
       type: "text",
-      fullWidth: false,
       dependentFields: ["TRX"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.TRX?.value == "4") {
@@ -178,7 +178,7 @@ export const footerFormMetaData = {
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.3 },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.2 },
       dependentFields: ["SDC"],
       setValueOnDependentFieldsChange: (dependentFields) => {
         console.log("dependentFields", dependentFields);
@@ -216,6 +216,7 @@ export const footerFormMetaData = {
       },
       name: "CHQ_date",
       // sequence: 9,
+      defaultValue: new Date(),
       label: "CHQ Date",
       placeholder: "date",
 
