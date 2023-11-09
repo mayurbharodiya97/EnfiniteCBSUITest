@@ -297,7 +297,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
       />
     </>
   );
-  // console.log("<<<")
   if (Boolean(enableGrid)) {
     return <Grid {...GridProps}>{result}</Grid>;
   } else {

@@ -23,7 +23,7 @@ import { savedynamicAPIconfig } from "../api";
 import { enqueueSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
 
-const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
+const GetApiFormCustom = ({ closeDialog, isDataChangedRef, deleteData }) => {
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const [sqlSyntax, setSqlSyntax] = useState("");
@@ -33,7 +33,6 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
     // setSqlSyntax(sqlSyntax ?? "");
     mynewSqlSyntaxRef.current = sqlSyntax ?? "";
   }, [sqlSyntax]);
-  console.log("<<<sqlSyntax", sqlSyntax);
   // const ClickEventManage = () => {
   //   let event: any = { preventDefault: () => {} };
   //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
@@ -47,6 +46,7 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
     },
     onError: (error: any) => {},
   });
+  deleteData("parag");
 
   const onSubmitHandler: SubmitFnType = (
     data: any,
@@ -58,7 +58,6 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
     //@ts-ignore
     endSubmit(true);
 
-    console.log("<<<ddd", mynewSqlSyntaxRef.current);
     let newData = data?.requestParameters?.map((item) => {
       const newItem = {
         ...item,
@@ -82,7 +81,6 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
         API_ENDPOINT: `/enfinityCommonServiceAPI/GETDYNAMICDATA/${data?.ACTION.toUpperCase()}`,
       },
     };
-    console.log("<<<reqData", reqData);
     if (Boolean(mynewSqlSyntaxRef.current)) {
       mutation.mutate({ ...reqData });
     } else {
@@ -192,7 +190,7 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
     </>
   );
 };
-export const GetApiForm = ({ closeDialog, isDataChangedRef }) => {
+export const GetApiForm = ({ closeDialog, isDataChangedRef, deleteData }) => {
   const { state: data }: any = useLocation();
   return (
     <Dialog
@@ -208,6 +206,7 @@ export const GetApiForm = ({ closeDialog, isDataChangedRef }) => {
       <GetApiFormCustom
         isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
+        deleteData={deleteData}
         // defaultView={defaultView}
         // docCD={data?.[0]?.data?.DOC_CD ?? ""}
         // data={data}

@@ -557,6 +557,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
     packageName: "",
   },
+  CHEQUEBKDATA: {
+    url: "/accountServiceAPI/CHEQUEBKDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
