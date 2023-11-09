@@ -21,7 +21,12 @@ import { AuthSDK } from "registry/fns/auth";
 import { DefaultErrorObject } from "components/utils";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { Alert } from "components/common/alert";
-import { TemporaryData, getChequebookData, saveChequebookData } from "./api";
+import {
+  TemporaryData,
+  getChequebookDTL,
+  getChequebookData,
+  saveChequebookData,
+} from "./api";
 import { ProcessChequeDTL } from "./processChequeDTL";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
 
@@ -35,27 +40,47 @@ export const ChequebookTab = () => {
     setValue(newValue);
   };
 
-  // const mutation: any = useMutation(GetdetailData, {
-  //   onSuccess: (data) => {},
-  //   onError: (error: any) => {},
-  // });
-  const mutation: any = useMutation(getChequebookData, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
-  });
-  useEffect(() => {
-    if (!mutation?.isLoading && mutation?.data) {
-      if (mutation?.data?.[0]?.CHEQUE_BOOK_ISSUE === "N") {
-        setIsOpenSave(true);
-      }
-    }
-  }, [mutation?.data, mutation?.isLoading]);
-  console.log("<<<mutation", mutation);
-  const saveChequeData: any = useMutation(saveChequebookData, {
+  const getChequeDetail: any = useMutation(getChequebookDTL, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
 
+  const mutation: any = useMutation(getChequebookData, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+  const messages: any = mutation?.data?.[0]
+    ? Object.values({
+        ACCT_ALLOW_MSG: mutation.data[0].ACCT_ALLOW_MSG,
+        BRN_ALLOW_MSG: mutation.data[0].BRN_ALLOW_MSG,
+        CHEQUBOOK_ALLOW_MSG: mutation.data[0].CHEQUBOOK_ALLOW_MSG,
+        CONFIRM_MSG: mutation.data[0].CONFIRM_MSG,
+        STATUS_MSG: mutation.data[0].STATUS_MSG,
+      })
+        .filter(Boolean)
+        .map((msg, i) => <p>{`(${i + 1})  ${msg}`}</p>)
+    : [];
+  useEffect(() => {
+    if (!mutation?.isLoading && messages.length > 0) {
+      setIsOpenSave(true);
+    }
+
+    if (mutation?.data?.[0]?.LEAF_ARR) {
+      const result = mutation?.data?.[0]?.LEAF_ARR.split(",").map((item) => ({
+        label: item,
+        value: item,
+      }));
+
+      ChequeBookEntryMetaData.fields[5].options = () => {
+        return result;
+      };
+    }
+  }, [mutation?.data, mutation?.isLoading]);
+
+  const saveChequeData: any = useMutation(saveChequebookData, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
     myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
@@ -68,7 +93,7 @@ export const ChequebookTab = () => {
     value
   ) => {
     //@ts-ignore
-    endSubmit(true);
+    // endSubmit(true);
     let otherAPIRequestPara = {
       COMP_CD: authState?.companyID,
       ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
@@ -84,6 +109,10 @@ export const ChequebookTab = () => {
       CHARACTERISTICS: "B",
       PAYABLE_AT_PAR: "Y",
       SR_CD: "1",
+      CHEQUE_FROM: Number(data?.CHEQUE_FROM),
+      CHEQUE_TO: Number(data?.CHEQUE_TO),
+      CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
+      LEAF_ARR: Number(data?.LEAF_ARR),
       // TRAN_DT: "09-OCT-2023",
       // REQUISITION_DT: "09-OCT-2023",
     };
@@ -93,12 +122,39 @@ export const ChequebookTab = () => {
     } else {
       //@ts-ignore
       endSubmit(true);
-      saveChequeData.mutate({ otherAPIRequestPara2 });
+
+      let newArray: any = [];
+
+      for (
+        let i = otherAPIRequestPara2.CHEQUE_FROM;
+        i <=
+        otherAPIRequestPara2.CHEQUE_FROM +
+          (otherAPIRequestPara2.CHEQUE_TOTAL - 1) *
+            otherAPIRequestPara2?.LEAF_ARR;
+        i += otherAPIRequestPara2?.LEAF_ARR
+      ) {
+        newArray.push({
+          ...otherAPIRequestPara2,
+          CHEQUE_FROM: i,
+          CHEQUE_TO: i + otherAPIRequestPara2?.LEAF_ARR - 1,
+        });
+      }
+
+      console.log("<<<newRES", newArray);
+      // saveChequeData.mutate({ otherAPIRequestPara2 });
     }
+    //@ts-ignore
+    endSubmit(true);
   };
   const onClickButton = (rows, buttonName) => {
     setIsOpenSave(false);
     ChequeBookEntryMetaData.fields[2].isFieldFocused = true;
+  };
+  const chequeDTLRequestPara = {
+    COMP_CD: authState?.companyID,
+    ACCT_CD: mutation?.data?.[0]?.ACCT_CD,
+    ACCT_TYPE: mutation?.data?.[0]?.ACCT_TYPE,
+    BRANCH_CD: mutation?.data?.[0]?.BRANCH_CD,
   };
   return (
     <>
@@ -111,12 +167,16 @@ export const ChequebookTab = () => {
           aria-label="secondary tabs example"
         >
           <Tab value="chequebookEntry" label="Chequebook Entry" />
-          {mutation?.data?.length > 1 && (
-            <Tab value="chequebookDetail" label="Chequebook Detail" />
+          {mutation?.data?.length > 0 && messages.length <= 0 && (
+            <Tab
+              value="chequebookDetail"
+              label="Chequebook Detail"
+              onClick={() => getChequeDetail.mutate({ chequeDTLRequestPara })}
+            />
           )}
-          {mutation?.data?.length > 1 && (
+          {/* {mutation?.data?.length > 0 && (
             <Tab value="processChequeDTL" label="Processed Cheque(s) Detail" />
-          )}
+          )} */}
         </Tabs>
       </Box>
 
@@ -214,9 +274,9 @@ export const ChequebookTab = () => {
               <GridWrapper
                 key={`personalizeQuickView`}
                 finalMetaData={ChequebookDtlGridMetaData as GridMetaDataType}
-                data={mutation.data ?? []}
+                data={getChequeDetail?.data ?? []}
                 setData={() => {}}
-                // loading={saveQuickData.isLoading}
+                loading={getChequeDetail.isLoading}
                 // actions={Quickactions}
                 // controlsAtBottom={true}
                 // setAction={setQuickAction}
@@ -256,14 +316,16 @@ export const ChequebookTab = () => {
           onKeyPress={(e) => {
             if (e.key === "Enter") {
               setIsOpenSave(false);
-              ChequeBookEntryMetaData.fields[2].isFieldFocused = true;
+              // ChequeBookEntryMetaData.fields[2].isFieldFocused = true;
             }
           }}
         >
           {" "}
           <PopupRequestWrapper
             MessageTitle="Account Description"
-            Message="Account is not Applicable to Cheque-book"
+            Message={
+              messages ? messages : "Account is not Applicable to Cheque-book"
+            }
             onClickButton={(rows, buttonName) =>
               onClickButton(rows, buttonName)
             }
