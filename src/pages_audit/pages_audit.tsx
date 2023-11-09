@@ -59,6 +59,11 @@ export const PagesAudit = (props, { columns }) => {
                   path="dynamicgrid/CFA7EF4DF00A11BD84EA5F242165DD61/*"
                   element={<DailyTrans />}
                 />
+                <Route
+                  path="dynamicgrid/F7B4F4ABF6915A729A5B64436458497E/*"
+                  element={<DailyTrans />}
+                />
+
                 {/* <Route path="dynamicgrid/:id*" element={<DynamicGrids />} /> */}
 
                 {/* <Route

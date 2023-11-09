@@ -46,20 +46,16 @@ export const footerFormMetaData = {
   fields: [
     {
       render: {
-        componentType: "select",
+        componentType: "textField",
       },
       name: "Branch",
       label: "Branch",
-      placeholder: "Branch",
+      placeholder: "",
       type: "text",
-      required: true,
-      options: GeneralAPI.getTRXList,
-      _optionsKey: "getTRXList",
+      fullWidth: false,
+      // required: true,
+      // maxLength: 2,
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["TRX is required."] }],
-      },
     },
 
     {
@@ -67,7 +63,7 @@ export const footerFormMetaData = {
         componentType: "autocomplete",
       },
       name: "Type",
-      label: "Account Type",
+      label: "Type",
       placeholder: "Type",
       type: "text",
       required: true,
@@ -141,15 +137,11 @@ export const footerFormMetaData = {
       placeholder: "SDC",
       type: "text",
       required: true,
-      options: GeneralAPI.getSDCList,
+      options: () => GeneralAPI.getSDCList,
       _optionsKey: "getSDCList",
-      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
       enableDefaultOption: true,
       defaultValue: "6",
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["SDC is required."] }],
-      },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
       dependentFields: ["Remarks"],
       postValidationSetCrossFieldValues: (
         field,
@@ -158,32 +150,39 @@ export const footerFormMetaData = {
         dependentFieldsValues
       ) => {
         if (field.value) {
-          console.log(field, "field");
-          console.log(dependentFieldsValues, "dependentFieldsValues");
+          console.log("<<<depe", field, __, ___, dependentFieldsValues);
           return {
-            Remarks: { value: field?.name ?? "" },
+            //   SDC: { value: field?.value ?? "" },
+            REMARKS: { value: field?.value ?? "" },
+            //   //     MARITAL_STATUS: {value: field?.optionData[0]?.SET_MARITIAL_STATUS ?? ""},
           };
         }
         return {};
       },
       runPostValidationHookAlways: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["SDC is required."] }],
+      },
     },
 
     {
       render: {
         componentType: "textField",
       },
-      name: "Remarks",
+      name: "REMARKS",
       label: "Remarks",
       placeholder: "",
       type: "text",
       required: true,
-      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.3 },
       dependentFields: ["SDC"],
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        console.log("dependentFields", dependentFields);
-        return dependentFields?.SDC?.name;
-      },
+
+      // setValueOnDependentFieldsChange: (dependentFields) => {
+      //   console.log("asdasdwqdqwdqwd", dependentFields);
+      //   return "5";
+      // },
+
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
 
     {
@@ -199,8 +198,8 @@ export const footerFormMetaData = {
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (
           dependentFieldsValues?.TRX?.value == "4" ||
-          dependentFieldsValues?.TRX?.value === "5" ||
-          dependentFieldsValues?.TRX?.value === "6"
+          dependentFieldsValues?.TRX?.value == "5" ||
+          dependentFieldsValues?.TRX?.value == "6"
         ) {
           return false;
         } else {
@@ -209,16 +208,27 @@ export const footerFormMetaData = {
       },
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
     },
-
     {
       render: {
         componentType: "datePicker",
       },
-      name: "CHQ_date",
-      // sequence: 9,
+      name: "CHQ-Date",
       label: "CHQ Date",
-      placeholder: "date",
-
+      placeholder: "",
+      type: "text",
+      required: true,
+      dependentFields: ["TRX"],
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          dependentFieldsValues?.TRX?.value == "4" ||
+          dependentFieldsValues?.TRX?.value == "5" ||
+          dependentFieldsValues?.TRX?.value == "6"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.3 },
     },
 
@@ -258,7 +268,7 @@ export const footerFormMetaData = {
       dependentFields: ["TRX"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (
-          dependentFieldsValues?.TRX?.value === "1" ||
+          dependentFieldsValues?.TRX?.value == "1" ||
           dependentFieldsValues?.TRX?.value === "2" ||
           dependentFieldsValues?.TRX?.value === "3"
         ) {
