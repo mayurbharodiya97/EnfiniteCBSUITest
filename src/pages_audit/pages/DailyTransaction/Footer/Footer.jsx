@@ -1,12 +1,177 @@
+import React, { useEffect, useRef, useState } from "react";
 import FormWrapper from "components/dyanmicForm";
-import React from "react";
 import { footerFormMetaData } from "./metaData";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+
 const Footer = () => {
+  const top100Films = [
+    { label: "The Shawshank Redemption", year: 1994 },
+    { label: "The Godfather", year: 1972 },
+    { label: "The Godfather: Part II", year: 1974 },
+  ];
+
+  const trxOptions = [
+    { label: "1", year: 1994 },
+    { label: "2", year: 1972 },
+    { label: "3", year: 1974 },
+    { label: "4", year: 1974 },
+    { label: "5", year: 1974 },
+    { label: "6", year: 1974 },
+  ];
+  // let defaulVal = {
+  //   branch: "",
+  //   accType: "",
+  //   accNo: "",
+  //   trx: "",
+  //   scroll: "",
+  //   sdc: "",
+  //   remark: "",
+  //   cNo: "",
+  //   cDate: "",
+  //   debit: 0,
+  //   credit: 0,
+  //   vNo: "",
+  // };
+  let defaulVal = {
+    branch: "",
+    trx: { label: "3" },
+    debit: 0,
+    credit: 0,
+    isCredit: true,
+  };
+
+  const [rows, setRows] = useState([defaulVal]);
+  const [totalDebit, setTotalDebit] = useState(0);
+  const [totalCredit, setTotalCredit] = useState(0);
+  const [diff, setDiff] = useState(0);
+  const [isSave, setIsSave] = useState(false);
+  const [style, setStyle] = useState("transfer");
+
+  useEffect(() => {
+    console.log(rows, "rows");
+    console.log(diff, "diff");
+    let branchBug = rows.some((a) => !a.branch);
+    setIsSave(!branchBug);
+  }, [rows]);
+
+  const handleAddRow = (e, i) => {
+    let branchBug = rows.some((a) => !a.branch);
+    console.log(branchBug);
+
+    let cred = 0;
+    let deb = 0;
+    let trxx = "1";
+    let isCred = true;
+    if (totalDebit > totalCredit) {
+      cred = totalDebit - totalCredit;
+      trxx = { label: "3" };
+      isCred = true;
+    } else if (totalDebit < totalCredit) {
+      deb = totalCredit - totalDebit;
+      trxx = { label: "6" };
+      isCred = false;
+    }
+
+    let defaulVal2 = {
+      branch: "",
+      trx: trxx,
+      debit: deb,
+      credit: cred,
+      isCredit: isCred,
+    };
+
+    if (!branchBug && totalDebit != totalCredit) {
+      let obj = [...rows, defaulVal2];
+
+      setRows(obj);
+      handleTotal(obj);
+    }
+  };
+
+  const handleClear = (e, i) => {
+    let obj = [...rows];
+    obj.splice(i, 1);
+    handleTotal(obj);
+    setRows(obj);
+  };
+
+  const handleTotal = (obj) => {
+    let sumDebit = 0;
+    let sumCredit = 0;
+    obj &&
+      obj.map((data) => {
+        sumDebit += Number(data.debit);
+      });
+    obj &&
+      obj.map((data) => {
+        sumCredit += Number(data.credit);
+      });
+
+    setDiff(sumDebit - sumCredit);
+    setTotalDebit(Number(sumDebit.toFixed(3)));
+    setTotalCredit(Number(sumCredit.toFixed(3)));
+  };
+
+  const handleBranch = (e, value, i) => {
+    console.log(value, "e branch");
+    const obj = [...rows];
+    obj[i].branch = value;
+    setRows(obj);
+    handleTotal(obj);
+  };
+
+  const handleTrx = (e, value, i) => {
+    console.log(value, "e trx");
+    const obj = [...rows];
+    obj[i].trx = value;
+    obj[i].credit = 0;
+    obj[i].debit = 0;
+    if (value.label == "1" || value.label == "2" || value.label == "3") {
+      obj[i].isCredit = true;
+    } else {
+      obj[i].isCredit = false;
+    }
+    setRows(obj);
+    handleTotal(obj);
+  };
+
+  const handleDebit = (e, i) => {
+    const obj = [...rows];
+    obj[i].debit = Number(e.target.value);
+    setRows(obj);
+    handleTotal(obj);
+  };
+  const handleDebitBlur = (e, i) => {
+    const obj = [...rows];
+
+    if (totalDebit != totalCredit) {
+      handleAddRow();
+    }
+  };
+
+  const handleCredit = (e, i) => {
+    const obj = [...rows];
+    obj[i].credit = Number(e.target.value);
+    setRows(obj);
+    handleTotal(obj);
+  };
+  const handleCreditBlur = (e, i) => {
+    const obj = [...rows];
+
+    if (totalDebit != totalCredit) {
+      handleAddRow();
+    }
+  };
+
+  const handleReset = () => {
+    setRows([defaulVal]);
+    setTotalCredit(0);
+    setTotalDebit(0);
+  };
   return (
     <>
       <div
@@ -62,6 +227,135 @@ const Footer = () => {
           other Tx Detail
         </Button>
       </Grid>
+      <br />
+      <table>
+        <thead>
+          {/* <tr>
+            <td>Branch</td>
+            <td>AccType</td>
+            <td>AccNo</td>
+            <td>TRX</td>
+            <td>Scroll</td>
+            <td>SDC</td>
+            <td>Remarks</td>
+            <td>ChqNo</td>
+            <td>ChqDate</td>
+            <td>Debit</td>
+            <td>Credit</td>
+            <td>Vno.</td>
+            <td></td>
+          </tr> */}
+          <tr>
+            <td>Branch</td>
+            <td>TRX</td>
+            <td>Debit </td>
+            <td>Credit</td>
+            <td></td>
+          </tr>
+        </thead>
+
+        {rows.length > 0 ? (
+          rows.map((a, i) => {
+            return (
+              <tbody>
+                <tr>
+                  <td>
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={top100Films}
+                      sx={{ width: 250 }}
+                      value={a.branch}
+                      onChange={(e, value) => handleBranch(e, value, i)}
+                      renderInput={(params) => (
+                        <TextField {...params} label="" />
+                      )}
+                    />
+                  </td>
+                  <td>
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={trxOptions}
+                      sx={{ width: 250 }}
+                      value={a.trx}
+                      onChange={(e, value) => handleTrx(e, value, i)}
+                      renderInput={(params) => (
+                        <TextField {...params} label="" />
+                      )}
+                    />
+                  </td>
+                  <td>
+                    <TextField
+                      disabled={a?.isCredit || !a.branch ? true : false}
+                      type="number"
+                      value={a.debit}
+                      onChange={(e) => handleDebit(e, i)}
+                      onBlur={(e) => handleDebitBlur(e, i)}
+                    />
+                  </td>{" "}
+                  <td>
+                    <TextField
+                      disabled={!a?.isCredit || !a.branch ? true : false}
+                      type="number"
+                      value={a.credit}
+                      onChange={(e) => handleCredit(e, i)}
+                      onBlur={(e) => handleCreditBlur(e, i)}
+                    />
+                  </td>
+                  <td>
+                    {rows.length > 1 && (
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={(e) => handleClear(e, i)}
+                      >
+                        X
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            );
+          })
+        ) : (
+          <>no records</>
+        )}
+        <tr>
+          <td></td>
+          <td>total:</td>
+
+          <td>{totalDebit}</td>
+          <td>{totalCredit}</td>
+          <td></td>
+        </tr>
+      </table>
+
+      <br />
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => handleAddRow()}
+      >
+        add new
+      </Button>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => handleReset()}
+      >
+        reset
+      </Button>
+
+      {totalCredit == totalDebit && isSave && (
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => console.log("saved")}
+        >
+          save
+        </Button>
+      )}
     </>
   );
 };

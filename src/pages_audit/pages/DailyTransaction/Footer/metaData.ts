@@ -46,15 +46,15 @@ export const footerFormMetaData = {
   fields: [
     {
       render: {
-        componentType: "select",
+        componentType: "branchCode",
       },
       name: "Branch",
       label: "Branch",
       placeholder: "Branch",
       type: "text",
       required: true,
-      options: GeneralAPI.getTRXList,
-      _optionsKey: "getTRXList",
+      // options: GeneralAPI.getTRXList,
+      _optionsKey: "",
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1 },
       schemaValidation: {
         type: "string",
@@ -158,10 +158,10 @@ export const footerFormMetaData = {
         dependentFieldsValues
       ) => {
         if (field.value) {
-          console.log(field, "field");
+          console.log(field?.optionData[0]?.DESCRIPTION, "field");
           console.log(dependentFieldsValues, "dependentFieldsValues");
           return {
-            Remarks: { value: field?.name ?? "" },
+            Remarks: { value: field?.optionData[0]?.DESCRIPTION ?? "" },
           };
         }
         return {};
@@ -180,10 +180,10 @@ export const footerFormMetaData = {
       required: true,
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.2 },
       dependentFields: ["SDC"],
-      setValueOnDependentFieldsChange: (dependentFields) => {
-        console.log("dependentFields", dependentFields);
-        return dependentFields?.SDC?.name;
-      },
+      // setValueOnDependentFieldsChange: (dependentFields) => {
+      //   console.log("dependentFields", dependentFields);
+      //   return dependentFields?.SDC?.name;
+      // },
     },
 
     {
@@ -215,12 +215,22 @@ export const footerFormMetaData = {
         componentType: "datePicker",
       },
       name: "CHQ_date",
-      // sequence: 9,
       defaultValue: new Date(),
       label: "CHQ Date",
       placeholder: "date",
-
+      dependentFields: ["TRX"],
       GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 1.5, xl: 1.3 },
+      shouldExclude(fieldData, dependentFieldsValues, formState) {
+        if (
+          dependentFieldsValues?.TRX?.value == "4" ||
+          dependentFieldsValues?.TRX?.value === "5" ||
+          dependentFieldsValues?.TRX?.value === "6"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
 
     {

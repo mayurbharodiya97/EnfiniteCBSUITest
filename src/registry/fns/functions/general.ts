@@ -419,8 +419,10 @@ const GeneralAPISDK = () => {
       await AuthSDK.internalFetcher("GETCHQLEAVESLIST", {
         COMP_CD: reqData?.[3]?.companyID ?? "",
       });
+
     if (status === "0") {
       let responseData = data;
+
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ NO_OF_LEAF, TRAN_CD }) => {
           return {
@@ -429,18 +431,22 @@ const GeneralAPISDK = () => {
           };
         });
       }
+
       return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+
   const getTabelListData = async (ReqData) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETDBTABLELIST", {
         OWNER: ReqData,
       });
+
     if (status === "0") {
       let responseData = data;
+
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ TABLE_NAME }) => {
           return {
@@ -463,6 +469,7 @@ const GeneralAPISDK = () => {
         BRANCH_CD: reqData?.[3]?.user?.branchCode,
         COMP_CD: reqData?.[3]?.companyID,
       });
+
     if (status === "0") {
       let responseData = data;
 
@@ -476,7 +483,9 @@ const GeneralAPISDK = () => {
           };
         });
       }
+
       console.log(responseData, "responseData SDC");
+
       return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
