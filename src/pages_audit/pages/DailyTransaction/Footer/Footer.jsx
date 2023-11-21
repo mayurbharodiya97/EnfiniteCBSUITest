@@ -14,7 +14,7 @@ const Footer = () => {
     { label: "The Godfather: Part II", year: 1974 },
   ];
 
-  const trxOptions = [
+  let arr = [
     { label: "1", year: 1994 },
     { label: "2", year: 1972 },
     { label: "3", year: 1974 },
@@ -22,6 +22,14 @@ const Footer = () => {
     { label: "5", year: 1974 },
     { label: "6", year: 1974 },
   ];
+  const [trxOptions, setTrxOptions] = useState(arr);
+  const [trxOptions2, setTrxOptions2] = useState(arr);
+
+  const handleFilterTrx = () => {
+    let result = trxOptions2.filter((a) => a.label == "3" || a.label == "6");
+    setTrxOptions(result);
+  };
+
   // let defaulVal = {
   //   branch: "",
   //   accType: "",
@@ -36,9 +44,10 @@ const Footer = () => {
   //   credit: 0,
   //   vNo: "",
   // };
+
   let defaulVal = {
     branch: "",
-    trx: { label: "3" },
+    trx: { label: "" },
     debit: 0,
     credit: 0,
     isCredit: true,
@@ -102,14 +111,14 @@ const Footer = () => {
   const handleTotal = (obj) => {
     let sumDebit = 0;
     let sumCredit = 0;
-    obj &&
-      obj.map((data) => {
-        sumDebit += Number(data.debit);
-      });
-    obj &&
-      obj.map((data) => {
-        sumCredit += Number(data.credit);
-      });
+
+    obj?.map((data) => {
+      sumDebit += Number(data.debit);
+    });
+
+    obj?.map((data) => {
+      sumCredit += Number(data.credit);
+    });
 
     setDiff(sumDebit - sumCredit);
     setTotalDebit(Number(sumDebit.toFixed(3)));
@@ -127,14 +136,19 @@ const Footer = () => {
   const handleTrx = (e, value, i) => {
     console.log(value, "e trx");
     const obj = [...rows];
+
+    obj?.length == 1 &&
+      (value?.label == "3" || value?.label == "6") &&
+      handleFilterTrx();
     obj[i].trx = value;
     obj[i].credit = 0;
     obj[i].debit = 0;
-    if (value.label == "1" || value.label == "2" || value.label == "3") {
+    if (value?.label == "1" || value?.label == "2" || value?.label == "3") {
       obj[i].isCredit = true;
     } else {
       obj[i].isCredit = false;
     }
+
     setRows(obj);
     handleTotal(obj);
   };
@@ -145,13 +159,6 @@ const Footer = () => {
     setRows(obj);
     handleTotal(obj);
   };
-  const handleDebitBlur = (e, i) => {
-    const obj = [...rows];
-
-    if (totalDebit != totalCredit) {
-      handleAddRow();
-    }
-  };
 
   const handleCredit = (e, i) => {
     const obj = [...rows];
@@ -159,18 +166,27 @@ const Footer = () => {
     setRows(obj);
     handleTotal(obj);
   };
+
+  const handleDebitBlur = (e, i) => {
+    const obj = [...rows];
+    totalDebit != totalCredit &&
+      (obj[i].trx.label == "3" || obj[i].trx.label == "6") &&
+      obj[i].credit != obj[i].debit &&
+      handleAddRow();
+  };
   const handleCreditBlur = (e, i) => {
     const obj = [...rows];
-
-    if (totalDebit != totalCredit) {
+    totalDebit != totalCredit &&
+      (obj[i].trx.label == "3" || obj[i].trx.label == "6") &&
+      obj[i].credit != obj[i].debit &&
       handleAddRow();
-    }
   };
 
   const handleReset = () => {
     setRows([defaulVal]);
     setTotalCredit(0);
     setTotalDebit(0);
+    setTrxOptions(arr);
   };
   return (
     <>
@@ -246,7 +262,7 @@ const Footer = () => {
             <td></td>
           </tr> */}
           <tr>
-            <td>Branch</td>
+            <td>Account</td>
             <td>TRX</td>
             <td>Debit </td>
             <td>Credit</td>
@@ -255,7 +271,7 @@ const Footer = () => {
         </thead>
 
         {rows.length > 0 ? (
-          rows.map((a, i) => {
+          rows?.map((a, i) => {
             return (
               <tbody>
                 <tr>
@@ -332,30 +348,32 @@ const Footer = () => {
       </table>
 
       <br />
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => handleAddRow()}
-      >
-        add new
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => handleReset()}
-      >
-        reset
-      </Button>
-
-      {totalCredit == totalDebit && isSave && (
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => console.log("saved")}
-        >
-          save
-        </Button>
+      {(rows[0]?.trx?.label == "3" || rows[0]?.trx?.label == "6") && (
+        <>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => handleAddRow()}
+          >
+            add new
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => handleReset()}
+          >
+            reset
+          </Button>
+        </>
       )}
+
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => console.log("saved")}
+      >
+        save
+      </Button>
     </>
   );
 };
