@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button, Dialog, DialogTitle } from '@mui/material';
+import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button, Dialog, DialogTitle, Box } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -192,20 +192,20 @@ const myGridRef = useRef<any>(null);
 
 export const EntiyDialog = ({open, onClose, data, isLoading}) => {
   const PDFormRef = useRef<any>("")
-
     return (
-        <Dialog open={open} onClose={onClose}
+        <Dialog open={open} maxWidth="lg"
             PaperProps={{
                 style: {
-                    minWidth: "1000px",
-                    width: "auto",
-                    maxWidth: "1100px",
-                    height: "90%",
+                    minWidth: "70%",
+                    width: "80%",
                 }
             }}
         >
             <DialogTitle
                 sx={{
+                    display: "flex",
+                    justifyContent: 'space-between',
+                    alignItems: "center",
                     background: "var(--theme-color3)",
                     color: "var(--theme-color2)",
                     letterSpacing: "1.3px",
@@ -215,11 +215,14 @@ export const EntiyDialog = ({open, onClose, data, isLoading}) => {
                     fontWeight: 500,
                     borderRadius: "inherit",
                     minWidth: "450px",
-                    py: 1,
+                    p: 1
                 }}
                 id="responsive-dialog-title"
             >
-                {`Customer Info - Customer ID ${data?.[0]?.CUSTOMER_ID ? data[0].CUSTOMER_ID : ""}`}
+                <Box>
+                    {`Customer Info - Customer ID ${data?.[0]?.CUSTOMER_ID ? data[0].CUSTOMER_ID : ""}`}
+                </Box>
+                <Button onClick={() => onClose()}>Close</Button>
                 {/* rowdata?.[0]?.data?.CUSTOMER_ID */}
             </DialogTitle>
             <FormWrapper 
