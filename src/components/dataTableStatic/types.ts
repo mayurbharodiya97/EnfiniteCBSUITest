@@ -47,6 +47,7 @@ export interface GridColumnType {
   skipDefaultOption?: boolean;
   isCurrencyCode?: boolean;
   symbolPosi?: any;
+  shouldExclude?:any;
 }
 
 export interface GridConfigType {
