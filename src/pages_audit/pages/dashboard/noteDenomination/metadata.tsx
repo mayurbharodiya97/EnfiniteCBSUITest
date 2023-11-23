@@ -138,11 +138,9 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
     dense: true,
     title: "Teller Operation",
     allowColumnHiding: true,
-    submitButtonName: "Denomination",
-
-    HideHeader: true,
-    submitButtonHide: false,
-    isDisplayOnly: false,
+    submitButtonName: "Fetch Data",
+    // HideHeader: true,
+    submitButtonHide: true,
   },
   fields: [
     {

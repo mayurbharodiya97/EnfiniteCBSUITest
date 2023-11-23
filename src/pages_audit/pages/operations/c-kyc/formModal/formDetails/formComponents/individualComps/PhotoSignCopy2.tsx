@@ -4,7 +4,7 @@ import * as API from "../../../../api";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Slider, Tooltip, Typography, makeStyles } from "@mui/material";
+import { Box, Button, CircularProgress, Container, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Slider, Tooltip, Typography, makeStyles } from "@mui/material";
 import { transformFileObject } from "components/fileUpload/utils";
 import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
@@ -15,6 +15,10 @@ import { useTranslation } from "react-i18next";
 import AvatarEditor from "react-avatar-editor";
 import { GradientButton } from "components/styledComponent/button";
 import { useLocation } from "react-router-dom";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
+import { ActionTypes } from "components/dataTable";
 
 
 // const useTypeStyles = makeStyles((theme) => ({
@@ -30,10 +34,19 @@ import { useLocation } from "react-router-dom";
 //     },
 //     refreshiconhover: {},
 // }));
+interface PhotoSignProps {
+    componentIn?: string;
+    formMode?: string;
+    setFormMode?: any;
+    isHistoryGridVisible?: boolean; 
+    setIsHistoryGridVisible?: any; 
+    isSaveDisabled?: boolean; 
+    setIsSaveDisabled?: any;
+}
 
-const PhotoSignatureCpy: FC<any> = ({
-    componentIn
-}) => {
+const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
+    const {componentIn, formMode="edit", setFormMode, isHistoryGridVisible, setIsHistoryGridVisible, isSaveDisabled, setIsSaveDisabled} = props
+
     const {state, handleFormDataonSavectx, handleColTabChangectx, handlePhotoOrSignctx, handleStepStatusctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const classes = useStyles();
@@ -57,18 +70,33 @@ const PhotoSignatureCpy: FC<any> = ({
     const location: any = useLocation();
 
     const [fileSelected, setFileSelected] = useState(false);
+
     const [photoHistory, setPhotoHistory] = useState<any[]>([]);
+    const [activePhotoHist, setActivePhotoHist] = useState<any>(null);
+    
+    // const [isHistoryGridVisible, setIsHistoryGridVisible] = useState<boolean>(false);
 
     console.log(componentIn, "adqwsqwsqsw", location)
 
+    useEffect(() => {
+        if(componentIn) {
+            console.log("asdkjnasidnqiwndiqnbwdqwd", componentIn)
+        }
+    }, [])
+
+    // to get photo/sign history, on edit
     const mutation: any = useMutation(API.getPhotoSignHistory, {
         onSuccess: (data) => {
-            console.log("photohistory", data)
+
+            // console.log("photohistory", data)
             setPhotoHistory(data)
+            let activeHistory = null
+            activeHistory = (data && data.length>0) && data.findLast(el => el.ACT_FLAG === "Y")  
+            setActivePhotoHist(activeHistory)
+            // console.log("photohistory ac", activeHistory)
         },
         onError: (error: any) => {},
     });
-
     console.log("locationnn..m", location)
     useEffect(() => {
         if(location && componentIn==="kycUpdate") {
@@ -80,6 +108,13 @@ const PhotoSignatureCpy: FC<any> = ({
             mutation.mutate(data)
         }
     }, [location])
+    useEffect(() => {
+        if(activePhotoHist) {
+            console.log("asdqwdq", photoHistory, activePhotoHist)
+            setPhotoImageURL(activePhotoHist.CUST_PHOTO,"photo")
+            setPhotoImageURL(activePhotoHist.CUST_SIGN, "sign")
+        }
+    }, [photoHistory, activePhotoHist])
 
     // const result: any = useQuery(["getPhotoSignImage", reqCD, customerID], () =>
     //     API.getPhotoSignImage({
@@ -152,12 +187,12 @@ const PhotoSignatureCpy: FC<any> = ({
             // console.log("async called", photoFileURL.current)
             setFilecnt(filecnt + 1);
         };
-        if(state?.signBlobctx && state?.photoBlobctx) {
+        if(state?.signBlobctx || state?.photoBlobctx) {
             getImageURL()
         }
     }, [])
 
-    // set image url by getting response in base64, convert to blob;
+    // set image url by getting response in base64, convert to blob;, on edit
     const setPhotoImageURL = async (filedata, img:string) => {
         if (filedata !== null) {
           let blob = utilFunction.base64toBlob(filedata, "image/png");
@@ -232,6 +267,9 @@ const PhotoSignatureCpy: FC<any> = ({
                 fileName.current = filesObj?.[0]?.blob?.name;
                 //submitBtnRef.current?.click?.();
                 setFilecnt(filecnt + 1);
+                if(isSaveDisabled) {
+                    setIsSaveDisabled(false)
+                }
               } else {
                 enqueueSnackbar("Image size should be less than 5 MB.", {
                   variant: "warning",
@@ -246,7 +284,7 @@ const PhotoSignatureCpy: FC<any> = ({
         }
       };
 
-    const formMode:any = "view";
+    // const formMode:any = "view";
 
     // format object for save api on save&next button
     const handleSavePhotoSign = () => {
@@ -274,7 +312,7 @@ const PhotoSignatureCpy: FC<any> = ({
         handleColTabChangectx(state?.colTabValuectx+1)
       }
 
-
+    const actions: ActionTypes[] = []
     return (
         <>
                 <Grid container>
@@ -557,6 +595,21 @@ const PhotoSignatureCpy: FC<any> = ({
                         )}
                     </Grid>
 
+
+                    {(photoHistory && isHistoryGridVisible) &&
+                        <GridWrapper
+                            key={`AssetDTLGrid`}
+                            finalMetaData={PhotoHistoryMetadata as GridMetaDataType}
+                            data={photoHistory ?? []}
+                            setData={() => null}          
+                            loading={mutation.isLoading || mutation.isFetching}
+                            // actions={actions}
+                            // setAction={setCurrentAction}
+                            // refetchData={() => assetDTLRefetch()}
+                            // ref={myGridRef}
+                        />
+                    }
+
                     {/* {fileSelected && filesdata.length > 0 ? (
                       <PhotoDialog
                         open={fileSelected}
@@ -566,7 +619,8 @@ const PhotoSignatureCpy: FC<any> = ({
                       />
                     ) : null} */}
 
-                    <Grid container item sx={{justifyContent: "flex-end"}}>
+                    {componentIn !== "kycUpdate" 
+                    ? <Grid container item sx={{justifyContent: "flex-end"}}>
                         <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                             onClick={(e) => {
                                 // handleColTabChangectx(0)
@@ -576,7 +630,38 @@ const PhotoSignatureCpy: FC<any> = ({
                         <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                             onClick={handleSavePhotoSign}
                         >{t("Save & Next")}</Button>
-                    </Grid>
+                    </Grid> 
+                    : null
+                    // <Grid container item sx={{justifyContent: "flex-end"}}>
+                    //     {!isHistoryGridVisible 
+                    //     ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                    //     // disabled={isNextLoading}
+                    //         onClick={(e) => {
+                    //             // handleColTabChangectx(0)
+                    //             // handleColTabChangectx(state?.colTabValuectx-1)
+                    //             setIsHistoryGridVisible(true)
+                    //         }}
+                    //     >{t("View All")}
+                    //     </Button>
+                    //     : <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                    //     // disabled={isNextLoading}
+                    //         onClick={(e) => {
+                    //             // handleColTabChangectx(0)
+                    //             // handleColTabChangectx(state?.colTabValuectx-1)
+                    //             setIsHistoryGridVisible(false)
+                    //         }}
+                    //     >{t("Close")}
+                    //     </Button>
+                    //     }
+                    //     {!isHistoryGridVisible && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                    //     // disabled={isNextLoading}
+                    //         // onClick={handleSavePhotoSign}
+                    //         onClick={() => {
+                    //             setFormMode("edit")
+                    //         }}
+                    //     >{t("Edit")}</Button>}
+                    // </Grid>
+                    }
                 </Grid>
         </>
     );
@@ -709,17 +794,19 @@ export const PhotoSignUpdateDialog = ({open, onClose}) => {
     //     setOpen(false)
     // }
     const [formMode, setFormMode] = useState<any>("view")
+    const [isHistoryGridVisible, setIsHistoryGridVisible] = useState<boolean>(false);
+    const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
+
     const location: any = useLocation();
 
     console.log("locationasdawd", location)
     return (
-        <Dialog open={open} onClose={onClose}
+        <Dialog open={open} maxWidth="lg"
             PaperProps={{
                 style: {
-                    minWidth: "1000px",
-                    width: "auto",
-                    maxWidth: "1100px",
-                    height: "90%",
+                    minWidth: "70%",
+                    width: "80%",
+                    // maxWidth: "90%",
                 }
             }}
         >
@@ -744,13 +831,47 @@ export const PhotoSignUpdateDialog = ({open, onClose}) => {
                 id="responsive-dialog-title"
             >
                 {`Photo & Signature - ${location?.state?.[0]?.data?.CUSTOMER_NAME} - ${location?.state?.[0]?.id}`}
-                <div>
-                    <div style={{border: "1px solid #ddd", padding: "5px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "normal", userSelect: "none"}}>
-                        {formMode === "view" &&  "View Mode"}
+                <div style={{display: "flex", alignItems: "center"}}>
+                    {/* <div style={{maxWidth: "150px", border: "1px solid #ddd", padding: "5px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "normal", userSelect: "none"}}>
+                        EDIT
+                    </div> */}
+                    {/* <GradientButton onClick={() => {}}>View All</GradientButton>
+                    <GradientButton onClick={() => {}}>Edit</GradientButton> */}
+                    
+
+                    {/* <Button sx={{mr:2}} color="secondary" variant="contained" 
+                    // disabled={isNextLoading}
+                        // onClick={(e) => {
+                        //     // handleColTabChangectx(0)
+                        //     handleColTabChangectx(state?.colTabValuectx-1)
+                        // }}
+                    >View All</Button>
+                    <Button sx={{mr:2}} color="secondary" variant="contained" 
+                    // disabled={isNextLoading}
+                        // onClick={handleSavePhotoSign}
+                    >Edit</Button> */}
+                    {!isHistoryGridVisible && <Button onClick={() => setIsHistoryGridVisible(true)}>View History</Button>}
+                    {isHistoryGridVisible && <Button onClick={() => setIsHistoryGridVisible(false)}>Close History</Button>}
+
+                    {formMode === "view" && <Button onClick={() => setFormMode("edit")}>Edit</Button>}
+                    {formMode === "edit" && <Button disabled={isSaveDisabled}>Save</Button>}
+
+                    {/* {formMode === "edit" && <Button onClick={() => setFormMode("view")}>Cancel</Button>} */}
+                    {formMode === "view" && <Button onClick={onClose}>Close</Button>}
+
+                    <div style={{display: "flex", alignItems: "center", justifyContent: "center",maxWidth: "150px", maxHeight: "50px", border: "1px solid #ddd", padding: "5px 10px", borderRadius: "20px", fontSize: "10px", fontWeight: "normal", userSelect: "none"}}>
+                        {formMode === "view" ?  "View Mode" : "Edit Mode"}
                     </div>
                 </div>
             </DialogTitle>
-            <PhotoSignatureCpy componentIn={"kycUpdate"} />
+            <PhotoSignatureCpy 
+                componentIn={"kycUpdate"} 
+                formMode={formMode} 
+                setFormMode={setFormMode}
+                isHistoryGridVisible={isHistoryGridVisible}
+                setIsHistoryGridVisible={setIsHistoryGridVisible}
+                isSaveDisabled={isSaveDisabled}
+                setIsSaveDisabled={setIsSaveDisabled} />
         </Dialog>
     )
 }

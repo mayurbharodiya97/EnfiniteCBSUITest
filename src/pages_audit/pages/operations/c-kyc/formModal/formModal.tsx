@@ -14,18 +14,18 @@ import OtherAddressDetails from './formDetails/formComponents/individualComps/Ot
 import NRIDetails from './formDetails/formComponents/individualComps/NRIDetails';
 import AttestationDetails from './formDetails/formComponents/individualComps/AttestationDetails';
 
-import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
-import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import InfoIcon from '@mui/icons-material/Info'; // other-details
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'; //edit-pencil-icon
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-icon
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
+// import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
+// import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
+// import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+// import InfoIcon from '@mui/icons-material/Info'; // other-details
+// import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'; //edit-pencil-icon
+// import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-icon
+// import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
-import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
+// import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+// import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+// import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
+// import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
 import CancelIcon from '@mui/icons-material/Cancel'; // close-icon
 import RefreshIcon from '@mui/icons-material/Refresh'; // refresh-icon
 import { makeStyles } from '@mui/styles';

@@ -31,7 +31,7 @@ import { GradientButton } from "components/styledComponent/button";
 // }));
 
 const PhotoSignatureCpy: FC = () => {
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handlePhotoOrSignctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handlePhotoOrSignctx, handleStepStatusctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const classes = useStyles();
     const [reqCD, setReqCD] = useState(state?.req_cd_ctx);
@@ -69,25 +69,26 @@ const PhotoSignatureCpy: FC = () => {
     //     console.log("result[0].data", result[0].data)
     // }, [result, result[0].loading, result[0].data])
 
-    const {data:photohistoryData, isError: isPhotohistoryError, isLoading: ishotohistoryLoading, refetch: PhotohistoryRefetch} = useQuery<any, any>(
-        ["getPhotoSignImage", {}], 
-        () => API.getPhotoSignImage({
-            COMP_CD: authState?.companyID, 
-            reqCD: reqCD, //634 
-            customerID: customerID
-        })
-    );    
+    // const {data:photohistoryData, isError: isPhotohistoryError, isLoading: ishotohistoryLoading, refetch: PhotohistoryRefetch} = useQuery<any, any>(
+    //     ["getPhotoSignImage", {}], 
+    //     () => API.getPhotoSignImage({
+    //         COMP_CD: authState?.companyID, 
+    //         reqCD: reqCD, //634 
+    //         customerID: "211555"
+    //         // customerID: customerID
+    //     })
+    // );    
     // useEffect(() => {
     //     if(!ishotohistoryLoading && photohistoryData) {
     //         console.log("eqweqres PendingData", photohistoryData)
     //     }
     // }, [photohistoryData, ishotohistoryLoading])
 
-    useEffect(() => {
-        return () => {
-          queryClient.removeQueries(["getPhotoSignImage", reqCD, customerID]);
-        };
-    }, [reqCD, customerID]);
+    // useEffect(() => {
+    //     return () => {
+    //       queryClient.removeQueries(["getPhotoSignImage", reqCD, customerID]);
+    //     };
+    // }, [reqCD, customerID]);
 
     // useEffect(() => {
     //     if (Boolean(photohistoryData?.[0]?.CARD_IMAGE)) {
@@ -127,7 +128,7 @@ const PhotoSignatureCpy: FC = () => {
             // console.log("async called", photoFileURL.current)
             setFilecnt(filecnt + 1);
         };
-        if(state?.signBlobctx && state?.photoBlobctx) {
+        if(state?.signBlobctx || state?.photoBlobctx) {
             getImageURL()
         }
     }, [])
@@ -223,7 +224,7 @@ const PhotoSignatureCpy: FC = () => {
           COMP_CD: authState?.companyID ?? "",
           ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
           REQ_CD:state?.req_cd_ctx,
-          SR_CD:"3",
+        //   SR_CD:"3",
           SIGN_GROUP:"2",
           FROM_LIMIT:"2",
           TO_LIMIT:"2",
@@ -238,43 +239,13 @@ const PhotoSignatureCpy: FC = () => {
         let newData = state?.formDatactx
         newData["PHOTO_MST"] = {...newData["PHOTO_MST"], ...data}
         handleFormDataonSavectx(newData)
+        handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
         handleColTabChangectx(state?.colTabValuectx+1)
-        // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
       }
 
 
     return (
         <>
-            {ishotohistoryLoading ? (
-                <div style={{ margin: "2rem" }}>
-                    <LoaderPaperComponent />
-                    {/* {typeof closeDialog === "function" ? (
-                    <div style={{ position: "absolute", right: 0, top: 0 }}>
-                        <IconButton onClick={closeDialog}>
-                        <HighlightOffOutlinedIcon />
-                        </IconButton>
-                    </div>
-                    ) : null} */}
-              </div>
-            ) : isPhotohistoryError ? ( ""
-                // <>
-                //     <span>{errorMsg}</span>
-                //     <div style={{ margin: "1.2rem" }}>
-                //         <Alert
-                //         severity="error"
-                //         errorMsg={errorMsg ?? "Something went to wrong.."}
-                //         errorDetail={result?.error?.error_detail ?? ""}
-                //         />
-                //     </div>
-                //     {typeof closeDialog === "function" ? (
-                //         <div style={{ position: "absolute", right: 0, top: 0 }}>
-                //         <IconButton onClick={closeDialog}>
-                //             <HighlightOffOutlinedIcon />
-                //         </IconButton>
-                //         </div>
-                //     ) : null}
-                // </>
-            ) : (
                 <Grid container>
 
                     {/* photo */}
@@ -576,7 +547,6 @@ const PhotoSignatureCpy: FC = () => {
                         >{t("Save & Next")}</Button>
                     </Grid>
                 </Grid>
-            )}
         </>
     );
 }

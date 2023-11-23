@@ -39,6 +39,7 @@ import CreditCardDTLComp from "./CreditCardDTLComp";
 import AssetDTLComp from "./AssetDTLComp";
 import FinancialDTLComp from "./FinancialDTLComp";
 import { format } from "date-fns";
+import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";
 
 export const CustomTabs:any = styled(StyledTabs)(({orientation, theme}) => ({
   border: "unset !important",
@@ -294,8 +295,8 @@ export const Ckyc = () => {
     () => API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      // ENTERED_DATE: "16-03-17"
+      // ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
+      ENTERED_DATE: "16-03-17"
     })
   )
 
@@ -861,6 +862,18 @@ useEffect(() => {
             onClose={() => {
               navigate(".")
             }} />
+          }
+        />
+
+        <Route
+          path="photo-signature/*"
+          element={
+            <PhotoSignUpdateDialog
+              open={true}
+              onClose={() => {
+                navigate(".")
+              }}
+            />
           }
         />
 

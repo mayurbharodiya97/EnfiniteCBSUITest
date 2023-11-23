@@ -665,13 +665,13 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ FULLNAME, EMP_ID, ...other }) => {
+      responseData = responseData.map(({ DOC_DESCRIPTION, BANK_DOC_TRAN_CD, ...other }) => {
           return {
             ...other,
-            FULLNAME:FULLNAME,
-            EMP_ID: EMP_ID,
-            label: FULLNAME,
-            value: EMP_ID,
+            DOC_DESCRIPTION:DOC_DESCRIPTION,
+            BANK_DOC_TRAN_CD: BANK_DOC_TRAN_CD,
+            label: DOC_DESCRIPTION,
+            value: BANK_DOC_TRAN_CD,
           };
         }
       );
@@ -682,7 +682,7 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
   }
 }
 
-export const getCustDocumentOpDtl = async (COMP_CD, BRANCH_CD) => {
+export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTDOCUMENT", {
       COMP_CD: COMP_CD, 
@@ -690,18 +690,18 @@ export const getCustDocumentOpDtl = async (COMP_CD, BRANCH_CD) => {
     });
   if (status === "0") {
     let responseData = data;
-    // if (Array.isArray(responseData)) {
-    //   responseData = responseData.map(({ FULLNAME, EMP_ID, ...other }) => {
-    //       return {
-    //         ...other,
-    //         FULLNAME:FULLNAME,
-    //         EMP_ID: EMP_ID,
-    //         label: FULLNAME,
-    //         value: EMP_ID,
-    //       };
-    //     }
-    //   );
-    // }
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DESCRIPTION, SR_CD, ...other }) => {
+          return {
+            ...other,
+            DESCRIPTION:DESCRIPTION,
+            SR_CD: SR_CD,
+            label: DESCRIPTION,
+            value: SR_CD,
+          };
+        }
+      );
+    }
     return responseData
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -726,6 +726,19 @@ export const getPhotoSignImage = async ({COMP_CD, reqCD, customerID}) => {
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  }
+}
+
+export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTPHOTODTL", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID,
+    });
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
   }
 }
 
