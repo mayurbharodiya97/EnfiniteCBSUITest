@@ -1,4 +1,4 @@
-export const KYCDocumentMasterMetaData = {
+export const DocumentFormMetadata = {
     form: {
       name: "EditDocuments",
       label: "Documents",
@@ -54,10 +54,15 @@ export const KYCDocumentMasterMetaData = {
       {
         render: {componentType: "select"},
         name: "BANK_DOC_TRAN_CD",
+        // name: "DOC_DESCRIPTION",
         label: "Document",
-        options: "getKYCDocTypes",
-        dependentFields: ["TRAN_CD", "SR_CD"],        
-        _optionsKey: "getKYCDocTypes",
+        // options: "getKYCDocTypes",
+        dependentFields: ["TRAN_CD", "SR_CD"],  
+        isReadOnly: false,
+        // _optionsKey: "getKYCDocTypes",
+        // options: (dependentValue?, formState?, _?, authState?) => API.getCustDocumentOpDtl({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+        options: () => [],
+        // _optionsKey: "getDocumentOptionsDTL",
         disableCaching:true,
         required: true,   
         GridProps: {
@@ -65,7 +70,26 @@ export const KYCDocumentMasterMetaData = {
           sm: 6,
           md: 6,
           lg:3, xl:2
-        },     
+        },
+        postValidationSetCrossFieldValues: (
+          field,
+          __,
+          ___,
+          dependentFieldsValues
+        ) => {
+          if((field.optionData && field.optionData.length>0) && field.optionData[0].DESCRIPTION) {
+            return {
+              DOC_DESCRIPTION: {value: field.optionData[0].DESCRIPTION ?? ""},
+            }
+          } else {
+            return {}
+          }
+        },
+        __EDIT__: {isReadOnly: true}
+      },
+      {
+        render: {componentType: "hidden"},
+        name: "DOC_DESCRIPTION",
       },
       {
         render: {componentType: "textField"},
@@ -80,7 +104,8 @@ export const KYCDocumentMasterMetaData = {
       },
       {
         render: {componentType: "datePicker"},
-        name: "VALID_TILL_DT",
+        // name: "VALID_TILL_DT",
+        name: "VALID_TILL_DATE",
         label: "Valid Till Date",
         required: true,   
         GridProps: {

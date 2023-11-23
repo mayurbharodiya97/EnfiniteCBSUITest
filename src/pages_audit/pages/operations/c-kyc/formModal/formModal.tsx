@@ -44,12 +44,14 @@ import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../CkycContext';
 import TabStepper from './TabStepper';
-import KYCDocUpload from './formDetails/formComponents/individualComps/KYCDocUpload';
 import PhotoSignature from './formDetails/formComponents/individualComps/PhotoSignature';
 import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails';
 import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
 import { useLocation, useNavigate } from 'react-router-dom';
-import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy';
+// import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy';
+import Document from './formDetails/formComponents/document/Document';
+import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy2';
+import { format } from 'date-fns';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -194,6 +196,7 @@ export default function FormModal({
   const appBarClasses = useStyles();
   // const [customerCategories, setCustomerCategories] = useState([])
   const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
+  const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
 
   // on edit/view
   // - call retrieveFormRefetch
@@ -214,6 +217,9 @@ export default function FormModal({
     onSuccess: (data) => {
       // console.log("on successssss", data, location)
       handleFormDataonRetrievectx(data[0])
+      let acctTypevalue = data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+      let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+      setAcctTypeState(acctType[0])
       // handleColTabChangectx(0)
       // handleFormModalOpenOnEditctx(location?.state)
     },
@@ -253,6 +259,13 @@ export default function FormModal({
     ["getPMISCData", {}],
     () => API.getPMISCData("CKYC_ACCT_TYPE")
   );
+
+  // useEffect(() => {
+  //   if(!isAccTypeLoading && AccTypeOptions) {
+  //     console.log("asdasdasdasda", AccTypeOptions)
+  //     // setAcctTypeState(AccTypeOptions[1]?.value)
+  //   }
+  // }, [isAccTypeLoading, AccTypeOptions])
 
 
   const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
@@ -339,10 +352,12 @@ export default function FormModal({
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
       case "KYC Document Upload":
-        return <KYCDocUpload />
+        return <Document />
+        // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
         return <PhotoSignatureCpy />
+        // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
       case "Details of Related Person":
@@ -396,10 +411,12 @@ export default function FormModal({
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
       case "KYC Document Upload":
-        return <KYCDocUpload />
+        return <Document />
+        // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignature />
+        return <PhotoSignatureCpy />
+        // return <PhotoSignature />
 
       case "Details of Controlling Persons":
         return <ControllingPersonDTL
@@ -614,7 +631,7 @@ export default function FormModal({
                 color="inherit"
                 variant="subtitle1"
                 component="div"
-              >{`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD}`}</Typography>
+              >{`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD ? state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD : ""}`}</Typography>
               )
             :""}
 
@@ -627,7 +644,7 @@ export default function FormModal({
                 color="inherit"
                 variant="subtitle2"
                 component="div"
-              >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE}`}</Typography>
+              >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE ? format(new Date(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE), "dd-MM-yyyy") : ""}`}</Typography>
               // format(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE, "dd/MM/yyyy")
               )
             :""}
@@ -759,10 +776,12 @@ export default function FormModal({
                       disabled={!state?.isFreshEntryctx}
                       id="acc-types"
                       options={AccTypeOptions ?? []}
-                      getOptionLabel={(option:any) => `${option?.DISPLAY_VALUE}`}
-                      // value={state?.accTypeValuectx || null}
+                      getOptionLabel={(option:any) => `${option?.label}`}
+                      // value={state?.accTypeValuectx ?? null}
+                      value={acctTypeState}
                       onChange={(e,v) => {
                         // setAccTypeValue(v?.value)
+                        setAcctTypeState(v)
                         handleAccTypeVal(v?.value)
                       }}
                       // sx={{ width: 200 }}
