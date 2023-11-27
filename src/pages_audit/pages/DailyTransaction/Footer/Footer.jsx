@@ -8,10 +8,11 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
 const Footer = () => {
+  const inputElement = useRef();
   const top100Films = [
-    { label: "The Shawshank Redemption", year: 1994 },
-    { label: "The Godfather", year: 1972 },
-    { label: "The Godfather: Part II", year: 1974 },
+    { label: "acc1", year: 1994 },
+    { label: "acc2", year: 1972 },
+    { label: "acc3", year: 1974 },
   ];
 
   let arr = [
@@ -103,9 +104,12 @@ const Footer = () => {
 
   const handleClear = (e, i) => {
     let obj = [...rows];
-    obj.splice(i, 1);
-    handleTotal(obj);
-    setRows(obj);
+
+    if (rows.length > 1) {
+      obj.splice(i, 1);
+      handleTotal(obj);
+      setRows(obj);
+    }
   };
 
   const handleTotal = (obj) => {
@@ -143,6 +147,7 @@ const Footer = () => {
     obj[i].trx = value;
     obj[i].credit = 0;
     obj[i].debit = 0;
+
     if (value?.label == "1" || value?.label == "2" || value?.label == "3") {
       obj[i].isCredit = true;
     } else {
@@ -246,20 +251,20 @@ const Footer = () => {
       <br />
       <table>
         <thead>
-          {/* <tr>
+          {/* <tr>          
             <td>Branch</td>
             <td>AccType</td>
-            <td>AccNo</td>
-            <td>TRX</td>
+            <td>AccNo</td>  
+            <td>TRX</td>   
             <td>Scroll</td>
-            <td>SDC</td>
+            <td>SDC</td>  
             <td>Remarks</td>
             <td>ChqNo</td>
             <td>ChqDate</td>
             <td>Debit</td>
             <td>Credit</td>
-            <td>Vno.</td>
-            <td></td>
+            <td>Vno.</td>  
+            <td></td>      
           </tr> */}
           <tr>
             <td>Account</td>
@@ -277,6 +282,7 @@ const Footer = () => {
                 <tr>
                   <td>
                     <Autocomplete
+                      ref={inputElement}
                       disablePortal
                       id="combo-box-demo"
                       options={top100Films}
@@ -303,16 +309,22 @@ const Footer = () => {
                   </td>
                   <td>
                     <TextField
-                      disabled={a?.isCredit || !a.branch ? true : false}
+                      disabled={
+                        a?.isCredit || !a.branch || !a.trx?.label ? true : false
+                      }
                       type="number"
                       value={a.debit}
                       onChange={(e) => handleDebit(e, i)}
                       onBlur={(e) => handleDebitBlur(e, i)}
                     />
-                  </td>{" "}
+                  </td>
                   <td>
                     <TextField
-                      disabled={!a?.isCredit || !a.branch ? true : false}
+                      disabled={
+                        !a?.isCredit || !a.branch || !a.trx?.label
+                          ? true
+                          : false
+                      }
                       type="number"
                       value={a.credit}
                       onChange={(e) => handleCredit(e, i)}
@@ -320,8 +332,10 @@ const Footer = () => {
                     />
                   </td>
                   <td>
-                    {rows.length > 1 && (
+                    {(rows[i].trx?.label == "3" ||
+                      rows[i].trx?.label == "6") && (
                       <Button
+                        // disabled={rows.length > 1 ? false : true}
                         variant="outlined"
                         color="secondary"
                         onClick={(e) => handleClear(e, i)}
@@ -340,7 +354,6 @@ const Footer = () => {
         <tr>
           <td></td>
           <td>total:</td>
-
           <td>{totalDebit}</td>
           <td>{totalCredit}</td>
           <td></td>
@@ -357,6 +370,7 @@ const Footer = () => {
           >
             add new
           </Button>
+
           <Button
             variant="outlined"
             color="secondary"
