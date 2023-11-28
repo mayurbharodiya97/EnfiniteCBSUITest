@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQueries, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
 import { clone, cloneDeep } from "lodash-es";
 import * as API from "../api";
@@ -28,17 +28,15 @@ import { MasterDetailsForm } from "components/formcomponent";
 import { Alert } from "components/common/alert";
 import { RetrievalParametersGrid } from "./retrievalParameters";
 import { makeStyles } from "@mui/styles";
-
-import { useStyles } from "pages_audit/appBar/style";
-
 import { queryClient } from "cache";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ActionFormWrapper } from "./actionsform";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import { MyFullScreenAppBar } from "pages_audit/appBar/fullScreenAppbar";
+import { CreateDetailsRequestData, utilFunction } from "components/utils";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -74,7 +72,7 @@ const DynamicGridConfig: FC<{
   isDataChangedRef: any;
   closeDialog?: any;
   defaultView?: "view" | "edit" | "add";
-  docCD: number;
+  docCD: any;
   data: any;
 }> = ({
   isDataChangedRef,
@@ -98,34 +96,59 @@ const DynamicGridConfig: FC<{
   const [formMode, setFormMode] = useState(defaultView);
   const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
   const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
-
   const [isActionsForm, setActionsForm] = useState(false);
   const { authState } = useContext(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
   const [errorObjData, seterrorObjData] = useState({
     isError: false,
     error: { error_msg: "", error_detail: "" },
   });
 
-  const {
-    data: gridData,
-    isLoading,
-    isError,
-    error,
-  } = useQuery<any, any>(["getDynamicGridColConfigData"], () =>
-    API.getDynamicGridColConfigData({
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      docCD,
-    })
-  );
+  const result = useQueries([
+    {
+      queryKey: ["getDynamicGridColConfigData", docCD],
+      queryFn: () =>
+        API.getDynamicGridColConfigData({
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          docCD,
+        }),
+    },
+    {
+      queryKey: ["getDynamicParamterConfigData", docCD],
+      queryFn: () =>
+        API.getDynamicParamterConfigData({
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          docCD,
+        }),
+    },
+  ]);
+  const loading = result[0].isLoading || result[0].isFetching;
+  let isError = result[0].isError;
+  //@ts-ignore
+  let errorMsg = `${result[0].error?.error_msg}`;
+  errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
 
-  const pageSizesArray = reqData?.[0]?.data?.PAGE_SIZES.split(",");
-  const updatedReqData = {
-    ...reqData?.[0]?.data,
-    PAGE_SIZES: pageSizesArray,
-  };
+  //@ts-ignore
+  let error_detail = `${result[0]?.error?.error_detail}`;
+
+  useEffect(() => {
+    if (
+      location.pathname ===
+      "/cbsenfinity/configuration/dynamic-grid-config/view-details"
+    ) {
+      if (!docCD) {
+        // If docCD is not available in the API response, navigate to the desired route
+        navigate("/cbsenfinity/configuration/dynamic-grid-config");
+      }
+    } else {
+      navigate(location.pathname);
+    }
+  }, [navigate, location.pathname, docCD]);
 
   useEffect(() => {
     return () => {
@@ -164,7 +187,31 @@ const DynamicGridConfig: FC<{
         };
       });
 
-      myRef.current?.setGridData(detailData);
+      myRef.current?.setGridData((oldData) => {
+        let existingData = oldData.map((item) => {
+          let isExists = detailData.some((itemfilter) => {
+            return itemfilter.COLUMN_ACCESSOR === item.COLUMN_ACCESSOR;
+          });
+          if (isExists) {
+            return { ...item, _hidden: false };
+          } else {
+            return { ...item, _hidden: true };
+          }
+        });
+        let newData = detailData.filter((itemFilter) => {
+          let isExists = oldData.some((olditem) => {
+            return olditem.COLUMN_ACCESSOR === itemFilter.COLUMN_ACCESSOR;
+          });
+          return !isExists;
+        });
+        let srCount = utilFunction.GetMaxCdForDetails(oldData, "SR_CD");
+        newData = newData.map((newData) => {
+          return { ...newData, _isNewRow: true, SR_CD: srCount++ };
+        });
+        // console.log(oldData, [...existingData, ...newData]);
+        return [...existingData, ...newData];
+      });
+
       myparameterDataRef.current = data?.[0]?.PARAMETERS;
 
       setformName("dynDetail" + myVerifyCntRef.current);
@@ -182,6 +229,7 @@ const DynamicGridConfig: FC<{
       ...rows,
       PAGE_SIZES: pageSizesString,
     };
+
     mutation.mutate({
       data: modifiedRows,
       formMode: "",
@@ -200,7 +248,6 @@ const DynamicGridConfig: FC<{
       setFieldErrors,
       actionFlag,
     }) => {
-      // console.log(data);
       let data = clone(datares);
       //@ts-ignore
       endSubmit(true);
@@ -210,30 +257,55 @@ const DynamicGridConfig: FC<{
         endSubmit(true, "Please Verify Query..");
         return;
       }
+      const query = mynewSqlSyntaxRef.current;
+      if (data?.DML_ACTION === "MD") {
+        const tableNames = ["MST_TABLE_NM", "DET_TABLE_NM"];
+        const errors = {};
+
+        for (const tableNameKey of tableNames) {
+          const tableName = data?.[tableNameKey];
+          if (!tableName || !query.includes(tableName)) {
+            errors[
+              tableNameKey
+            ] = `The ${tableNameKey} table name "${tableName}" is not included in the query.`;
+          }
+        }
+        if (Object.keys(errors).length > 0) {
+          setFieldErrors(errors);
+          return;
+        }
+      } else {
+        const tableNameKey =
+          data?.DML_ACTION === "M" ? "MST_TABLE_NM" : "DET_TABLE_NM";
+        const tableName = data?.[tableNameKey];
+
+        if (!tableName || !query.includes(tableName)) {
+          setFieldErrors({
+            [tableNameKey]: `The ${tableNameKey} table name "${tableName}" is not included in the query.`,
+          });
+          return;
+        }
+      }
       if (
         (formMode === "add" &&
           !data?.DETAILS_DATA?.isNewRow.some(
             (item) => item?.COLUMN_ACCESSOR === data?.ROWID_COLUMN
           )) ||
         (formMode === "edit" &&
-          !gridData.find((item) => item.COLUMN_ACCESSOR === data?.ROWID_COLUMN))
+          !result[0]?.data.find(
+            (item) => item.COLUMN_ACCESSOR === data?.ROWID_COLUMN
+          ))
       ) {
         setFieldErrors({
           ROWID_COLUMN: "Please enter a correct ROWID_COLUMN",
         });
         return;
       }
+
       setLocalLoading(true);
       const SetLoadingOWN = (isLoading, error_msg = "", error_detail = "") => {
         setLocalLoading(isLoading);
         endSubmit(isLoading, error_msg, error_detail);
-      };
-      data.PARAMETER = {
-        DETAILS_DATA: {
-          isNewRow: myparameterDataRef.current,
-          isDeleteRow: [],
-          isUpdatedRow: [],
-        },
       };
 
       // data.SQL_ANSI_SYNTAX = mynewSqlSyntaxRef.current;
@@ -268,6 +340,28 @@ const DynamicGridConfig: FC<{
           }
         }
       }
+
+      data["_OLDROWVALUE"] = {
+        ...data["_OLDROWVALUE"],
+        PAGE_SIZES: data["_OLDROWVALUE"]?.PAGE_SIZES.join(","),
+      };
+      // let finalResult = CreateDetailsRequestData(myparameterDataRef.current);
+      // data.PARAMETER = {
+      //   DETAILS_DATA: finalResult,
+      // };
+      const newSomeData = myparameterDataRef.current?.filter(
+        (item) => item && !item?._isTouchedCol?.COMPONENT_TYPE === false
+      );
+
+      let updPara = utilFunction.transformDetailDataForDML(
+        result[1].data ?? [],
+        newSomeData ?? [],
+        ["SR_CD"]
+      );
+      data.PARAMETER = {
+        DETAILS_DATA: updPara,
+      };
+
       data.DETAILS_DATA["isUpdatedRow"] = data?.DETAILS_DATA?.isUpdatedRow?.map(
         (item) => {
           return {
@@ -297,7 +391,8 @@ const DynamicGridConfig: FC<{
 
       if (
         data["_UPDATEDCOLUMNS"].length === 0 &&
-        data.DETAILS_DATA["isUpdatedRow"].length === 0
+        data.DETAILS_DATA?.isUpdatedRow?.length === 0 &&
+        data?.PARAMETER?.isUpdatedRow?.length === 0
       ) {
         closeDialog();
       } else {
@@ -310,7 +405,6 @@ const DynamicGridConfig: FC<{
         };
         setIsOpenSave(true);
       }
-      // console.log("??>>>???", isErrorFuncRef.current);
     },
     [formMode]
   );
@@ -336,14 +430,24 @@ const DynamicGridConfig: FC<{
 
   useEffect(() => {
     setSqlSyntax(reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "");
-    myparameterDataRef.current = gridData?.[0]?.PARA_DETAILS ?? [];
     myoldSqlSyntaxRef.current = reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "";
     mynewSqlSyntaxRef.current = reqData?.[0]?.data?.SQL_ANSI_SYNTAX ?? "";
-  }, [gridData]);
+  }, [result[0].data]);
+
+  useEffect(() => {
+    myparameterDataRef.current = result[1].data ?? [];
+  }, [result[1].data]);
+
+  const dynamicLabel =
+    formMode !== "add"
+      ? "Dynamic Grid Configure" +
+        " For " +
+        (reqData?.[0]?.data?.DESCRIPTION ?? "")
+      : "Dynamic Grid Configure";
 
   return (
     <>
-      {isLoading ? (
+      {loading ? (
         <div style={{ margin: "2rem" }}>
           <LoaderPaperComponent />
           {typeof closeDialog === "function" ? (
@@ -359,244 +463,251 @@ const DynamicGridConfig: FC<{
           <div style={{ margin: "1.2rem" }}>
             <Alert
               severity="error"
-              errorMsg={error?.error_msg ?? ""}
-              errorDetail={error?.error_detail ?? ""}
+              errorMsg={errorMsg}
+              errorDetail={error_detail ?? ""}
             />
           </div>
         </>
       ) : (
-        <Grid container>
-          <MyFullScreenAppBar />
+        <>
           <Grid
-            item
-            xs={12}
-            sm={12}
-            md={12}
-            style={{
-              paddingTop: "10px",
-              paddingLeft: "10px",
-              paddingRight: "10px",
-            }}
+            container
+            // style={{ marginTop: "27px" }}
           >
-            <AppBar
-              position="relative"
-              color="secondary"
-              style={{ marginBottom: "5px" }}
+            <MyFullScreenAppBar />
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              // style={{
+              //   paddingTop: "10px",
+              //   paddingLeft: "10px",
+              //   paddingRight: "10px",
+              // }}
             >
-              <Toolbar className={headerClasses.root} variant={"dense"}>
-                <Typography
-                  className={headerClasses.title}
-                  color="inherit"
-                  variant={"h6"}
-                  component="div"
-                >
-                  Dynamic Grid Configure
-                </Typography>
-                {formMode === "view" ? (
-                  <GradientButton
-                    onClick={() => {
-                      setActionsForm(true);
-                    }}
+              <AppBar
+                position="relative"
+                color="secondary"
+                style={{ marginBottom: "5px" }}
+              >
+                <Toolbar className={headerClasses.root} variant={"dense"}>
+                  <Typography
+                    className={headerClasses.title}
+                    color="inherit"
+                    variant={"h6"}
+                    component="div"
                   >
-                    Actions
-                  </GradientButton>
-                ) : formMode === "edit" ? (
-                  <GradientButton
-                    onClick={() => {
-                      setActionsForm(true);
-                    }}
-                  >
-                    Actions
-                  </GradientButton>
-                ) : null}
+                    {dynamicLabel}
+                  </Typography>
+                  {formMode === "view" ? (
+                    <GradientButton
+                      onClick={() => {
+                        setActionsForm(true);
+                      }}
+                    >
+                      Actions
+                    </GradientButton>
+                  ) : formMode === "edit" ? (
+                    <GradientButton
+                      onClick={() => {
+                        setActionsForm(true);
+                      }}
+                    >
+                      Actions
+                    </GradientButton>
+                  ) : null}
 
-                {formMode === "edit" ? (
-                  <>
-                    <GradientButton
-                      onClick={(event) => {
-                        // console.log(event, myRef.current);
-                        myRef.current?.onSubmitHandler(event);
-                      }}
-                      // disabled={isLocalLoading}
-                      // endIcon={
-                      //   isLocalLoading ? <CircularProgress size={20} /> : null
-                      // }
-                    >
-                      Save
-                    </GradientButton>
-                    <GradientButton
-                      onClick={moveToViewMode}
-                      // disabled={isLocalLoading}
-                      color={"primary"}
-                    >
-                      Cancel
-                    </GradientButton>
-                  </>
-                ) : formMode === "view" ? (
-                  <>
-                    <GradientButton onClick={moveToEditMode}>
-                      Edit
-                    </GradientButton>
-                    <GradientButton onClick={closeDialog}>Close</GradientButton>
-                  </>
-                ) : (
-                  <>
-                    <GradientButton
-                      onClick={(event) => {
-                        myRef.current?.onSubmitHandler(event);
-                      }}
-                      // endIcon={
-                      //   isLocalLoading ? <CircularProgress size={20} /> : null
-                      // }
-                    >
-                      Save
-                    </GradientButton>
-                    <GradientButton onClick={closeDialog}>Close</GradientButton>
-                  </>
-                )}
-              </Toolbar>
-            </AppBar>
-            {mutation?.isError ? (
-              <>
-                <Alert
-                  severity="error"
-                  errorMsg={mutation?.error?.error_msg ?? ""}
-                  errorDetail={mutation?.error?.error_detail ?? ""}
-                />
-              </>
-            ) : null}
-          </Grid>
-          <Grid item xs={8} sm={6} md={8}>
-            <MasterDetailsForm
-              key={"dynGridConfig" + formMode}
-              formNameMaster={"dynGridConfig" + formMode}
-              formName={formName + formMode}
-              metaData={metadata}
-              ref={myRef}
-              initialData={{
-                _isNewRow: formMode === "add" ? true : false,
-                ...updatedReqData,
-                DETAILS_DATA: gridData,
-                // ...reqData?.[0]?.data,
-                // DETAILS_DATA: data,
-              }}
-              // initialData={{ _isNewRow: true, DETAILS_DATA: [] }}
-              displayMode={formMode === "add" ? "New" : formMode}
-              isLoading={formMode === "view" ? true : isLocalLoading}
-              onSubmitData={onSubmitHandler}
-              isNewRow={formMode === "add" ? true : false}
-              containerstyle={{
-                paddingRight: "10px",
-                paddingLeft: "10px",
-                paddingTop: "5px",
-              }}
-              formStyle={{
-                background: "white",
-                height: "25vh",
-                overflowY: "auto",
-                overflowX: "hidden",
-              }}
-              hideHeader={true}
-              isError={errorObjData.isError}
-              errorObj={errorObjData.error}
-            >
-              {({ isSubmitting, handleSubmit }) => {
-                return <></>;
-              }}
-            </MasterDetailsForm>
-          </Grid>
-          <Grid item xs={4} sm={6} md={4} style={{ paddingRight: "10px" }}>
-            <Grid item xs={12} sm={12} md={12}>
-              {verifySql.isError ? (
-                <div style={{ marginBottom: "5px" }}>
-                  <AppBar position="relative" color="primary">
-                    <Alert
-                      severity="error"
-                      errorMsg={
-                        verifySql?.error?.error_msg ??
-                        "Something went to wrong.."
-                      }
-                      errorDetail={verifySql?.error?.error_detail}
-                      color="error"
-                    />
-                  </AppBar>
-                </div>
+                  {formMode === "edit" ? (
+                    <>
+                      <GradientButton
+                        onClick={(event) => {
+                          myRef.current?.onSubmitHandler(event);
+                        }}
+                        // disabled={isLocalLoading}
+                        // endIcon={
+                        //   isLocalLoading ? <CircularProgress size={20} /> : null
+                        // }
+                      >
+                        Save
+                      </GradientButton>
+                      <GradientButton
+                        onClick={moveToViewMode}
+                        color={"primary"}
+                      >
+                        Cancel
+                      </GradientButton>
+                    </>
+                  ) : formMode === "view" ? (
+                    <>
+                      <GradientButton onClick={moveToEditMode}>
+                        Edit
+                      </GradientButton>
+                      <GradientButton onClick={closeDialog}>
+                        Close
+                      </GradientButton>
+                    </>
+                  ) : (
+                    <>
+                      <GradientButton
+                        onClick={(event) => {
+                          myRef.current?.onSubmitHandler(event);
+                        }}
+                        // disabled={isLocalLoading}
+                        // endIcon={
+                        //   isLocalLoading ? <CircularProgress size={20} /> : null
+                        // }
+                      >
+                        Save
+                      </GradientButton>
+                      <GradientButton onClick={closeDialog}>
+                        Close
+                      </GradientButton>
+                    </>
+                  )}
+                </Toolbar>
+              </AppBar>
+              {mutation?.isError ? (
+                <>
+                  <Alert
+                    severity="error"
+                    errorMsg={mutation?.error?.error_msg ?? ""}
+                    errorDetail={mutation?.error?.error_detail ?? ""}
+                  />
+                </>
               ) : null}
             </Grid>
-            <Grid item xs={12} sm={12} md={12} style={{ paddingTop: "12px" }}>
-              <TextField
-                id="outlined-multiline-static"
-                label="SQL ANSI Query Syntax"
-                multiline
-                rows={verifySql.isError ? 18 : 20}
-                // minRows={verifySql.isError ? 21 : 24}
-                value={sqlSyntax}
-                variant="outlined"
-                color="secondary"
-                style={{
-                  width: "100%",
+            <Grid item xs={8} sm={6} md={8}>
+              <MasterDetailsForm
+                key={"dynGridConfig" + formMode}
+                formNameMaster={"dynGridConfig" + formMode}
+                formName={formName + formMode}
+                metaData={metadata}
+                ref={myRef}
+                initialData={{
+                  _isNewRow: formMode === "add" ? true : false,
+                  ...reqData?.[0]?.data,
+                  DETAILS_DATA: result[0].data,
                 }}
-                disabled={formMode === "view" ? true : false}
-                InputLabelProps={{
-                  shrink: true,
+                displayMode={formMode === "add" ? "New" : formMode}
+                isLoading={formMode === "view" ? true : isLocalLoading}
+                onSubmitData={onSubmitHandler}
+                isNewRow={formMode === "add" ? true : false}
+                containerstyle={{
+                  paddingRight: "10px",
+                  paddingLeft: "10px",
+                  paddingTop: "5px",
                 }}
-                onChange={(event) => {
-                  mynewSqlSyntaxRef.current = event.target.value;
-                  setSqlSyntax(event.target.value);
-                  mySqlSyntaxRef.current = false;
+                formStyle={{
+                  background: "white",
+                  height: "52vh",
+                  overflowY: "auto",
+                  overflowX: "hidden",
                 }}
-                // onBlur={(event) => {
-                //   myTextFieldPositionRef.current = event.target?.selectionStart;
-                // }}
-              />
+                hideHeader={true}
+                isError={errorObjData.isError}
+                errorObj={errorObjData.error}
+              >
+                {({ isSubmitting, handleSubmit }) => {
+                  return <></>;
+                }}
+              </MasterDetailsForm>
             </Grid>
-            <Grid
-              container
-              style={{ paddingTop: "07px", placeContent: "center" }}
-            >
-              <Grid item xs={12} sm={12} md={3}>
-                <GradientButton
-                  disabled={verifySql.isLoading}
-                  endIcon={
-                    verifySql.isLoading ? <CircularProgress size={20} /> : null
-                  }
-                  onClick={() => {
-                    if (Boolean(sqlSyntax)) {
-                      verifySql.mutate({ sqlSyntax, detailsData: [] });
-                    } else {
-                      enqueueSnackbar("Please Enter SQL Syntax.", {
-                        variant: "warning",
-                      });
-                    }
-                  }}
-                >
-                  Verify
-                </GradientButton>
+            <Grid item xs={4} sm={6} md={4} style={{ paddingRight: "10px" }}>
+              <Grid item xs={12} sm={12} md={12}>
+                {verifySql.isError ? (
+                  <div style={{ marginBottom: "5px" }}>
+                    <AppBar position="relative" color="primary">
+                      <Alert
+                        severity="error"
+                        errorMsg={
+                          verifySql?.error?.error_msg ??
+                          "Something went to wrong.."
+                        }
+                        errorDetail={verifySql?.error?.error_detail}
+                        color="error"
+                      />
+                    </AppBar>
+                  </div>
+                ) : null}
               </Grid>
-              <Grid item xs={12} sm={12} md={3}>
-                <GradientButton
-                  // style={{ marginLeft: "20px" }}
-                  onClick={() => {
-                    if (!Boolean(sqlSyntax)) {
-                      enqueueSnackbar("Please Enter SQL Syntax.", {
-                        variant: "warning",
-                      });
-                    } else if (!mySqlSyntaxRef.current) {
-                      enqueueSnackbar("Please Verify SQL Syntax.", {
-                        variant: "warning",
-                      });
-                    } else {
-                      // createRetrievalMetaData(sqlSyntax);
-                      setIsOpenRerieval(true);
-                    }
+              <Grid item xs={12} sm={12} md={12} style={{ paddingTop: "12px" }}>
+                <TextField
+                  id="outlined-multiline-static"
+                  label="SQL ANSI Query Syntax"
+                  multiline
+                  rows={verifySql.isError ? 21 : 32}
+                  // minRows={verifySql.isError ? 21 : 24}
+                  value={sqlSyntax}
+                  variant="outlined"
+                  color="secondary"
+                  style={{
+                    width: "100%",
                   }}
-                >
-                  Parameter
-                </GradientButton>
+                  disabled={formMode === "view" ? true : false}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={(event) => {
+                    mynewSqlSyntaxRef.current = event.target.value;
+                    setSqlSyntax(event.target.value);
+                    mySqlSyntaxRef.current = false;
+                  }}
+                  // onBlur={(event) => {
+                  //   myTextFieldPositionRef.current = event.target?.selectionStart;
+                  // }}
+                />
+              </Grid>
+              <Grid
+                container
+                style={{ paddingTop: "07px", placeContent: "center" }}
+              >
+                <Grid item xs={12} sm={12} md={3}>
+                  <GradientButton
+                    disabled={verifySql.isLoading}
+                    endIcon={
+                      verifySql.isLoading ? (
+                        <CircularProgress size={20} />
+                      ) : null
+                    }
+                    onClick={() => {
+                      if (Boolean(sqlSyntax)) {
+                        verifySql.mutate({ sqlSyntax, detailsData: [] });
+                      } else {
+                        enqueueSnackbar("Please Enter SQL Syntax.", {
+                          variant: "warning",
+                        });
+                      }
+                    }}
+                  >
+                    Verify
+                  </GradientButton>
+                </Grid>
+                <Grid item xs={12} sm={12} md={3}>
+                  <GradientButton
+                    // style={{ marginLeft: "20px" }}
+                    onClick={() => {
+                      if (!Boolean(sqlSyntax)) {
+                        enqueueSnackbar("Please Enter SQL Syntax.", {
+                          variant: "warning",
+                        });
+                      } else if (!mySqlSyntaxRef.current) {
+                        enqueueSnackbar("Please Verify SQL Syntax.", {
+                          variant: "warning",
+                        });
+                      } else {
+                        // createRetrievalMetaData(sqlSyntax);
+                        setIsOpenRerieval(true);
+                      }
+                    }}
+                  >
+                    Parameter
+                  </GradientButton>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </>
       )}
       {isActionsForm ? (
         <ActionFormWrapper
@@ -617,6 +728,7 @@ const DynamicGridConfig: FC<{
           onClose={onCloseDialog}
           rowsData={myparameterDataRef.current}
           onSaveData={onSaveParameters}
+          docCD={docCD}
         />
       ) : null}
       {isOpenSave ? (
@@ -647,10 +759,11 @@ export const DynamicGridConfigWrapper = ({
       PaperProps={{
         style: {
           width: "100%",
-          overflow: "hidden",
+          // height: "110vh",
+          overflow: "auto",
         },
       }}
-      maxWidth="lg"
+      // maxWidth="lg"
     >
       <DynamicGridConfig
         isDataChangedRef={isDataChangedRef}
@@ -661,14 +774,4 @@ export const DynamicGridConfigWrapper = ({
       />
     </Dialog>
   );
-};
-const Greetings = () => {
-  let hours = new Date().getHours();
-  let greet;
-
-  if (hours < 12) greet = "morning";
-  else if (hours >= 12 && hours <= 16) greet = "afternoon";
-  else if (hours >= 16 && hours <= 24) greet = "evening";
-
-  return <span>Good {greet},</span>;
 };

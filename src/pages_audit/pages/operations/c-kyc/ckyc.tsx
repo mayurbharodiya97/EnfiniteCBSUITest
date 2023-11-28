@@ -47,8 +47,9 @@ import ControllingPersonComp from "./ControllingPersonComp";
 import CreditCardDTLComp from "./CreditCardDTLComp";
 import AssetDTLComp from "./AssetDTLComp";
 import FinancialDTLComp from "./FinancialDTLComp";
+import { format } from "date-fns";
 
-export const CustomTabs = styled(StyledTabs)(({ orientation, theme }) => ({
+export const CustomTabs: any = styled(StyledTabs)(({ orientation, theme }) => ({
   border: "unset !important",
   boxShadow: "unset !important",
   background: "unset !important",
@@ -317,13 +318,15 @@ export const Ckyc = () => {
   const {
     data: PendingData,
     isError: isPendingError,
-    isLoading: isPendingLoading,
+    isLoading: isPendingDataLoading,
+    isFetching: isPendingDataFetching,
     refetch: PendingRefetch,
   } = useQuery<any, any>(["getPendingData", {}], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTERED_DATE: "16-03-17",
+      ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
+      // ENTERED_DATE: "16-03-17"
     })
   );
 
@@ -331,21 +334,14 @@ export const Ckyc = () => {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
-  console.log(mutation, "mutation");
-  const {
-    data: retrieveFormData,
-    isError: isRetrieveFormError,
-    isLoading: isRetrieveFormLoading,
-    refetch: retrieveFormRefetch,
-  } = useQuery<any, any>(
-    ["getCustomerDetailsonEdit", {}],
-    () =>
-      API.getCustomerDetailsonEdit({
-        COMP_CD: authState?.companyID ?? "",
-        CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
-      }),
-    { enabled: false }
-  );
+
+  // const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
+  //   ["getCustomerDetailsonEdit", { }],
+  //   () => API.getCustomerDetailsonEdit({
+  //     COMP_CD: authState?.companyID ?? "",
+  //     CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
+  //   }), {enabled: false}
+  // )
 
   // const {data:inactivateCustData, isError: isinactivateCustError, isLoading: isinactivateCustLoading, refetch: inactivateCustRefetch} = useQuery<any, any>(
   //   ["InactivateCustomer", { }],
@@ -358,29 +354,29 @@ export const Ckyc = () => {
   //   }), {enabled: false}
   // )
 
-  useEffect(() => {
-    if (mutation?.data?.[0]?.CUSTOMER_ID) {
-      handlecustomerIDctx(mutation?.data[0]?.CUSTOMER_ID);
-    }
-  }, [mutation?.data]);
+  // useEffect(() => {
+  //   if(mutation?.data?.[0]?.CUSTOMER_ID) {
+  //     handlecustomerIDctx(mutation?.data[0]?.CUSTOMER_ID)
+  //   }
+  // }, [mutation?.data])
 
-  const handleViewDetails = async () => {
-    retrieveFormRefetch();
-    handleColTabChangectx(0);
-    // if(retrieveFormData) {
-    //   await handleFormModalOpenOnEditctx(data?.rows, retrieveFormData[0])
-    // }
-  };
+  // const handleViewDetails = async () => {
+  //   retrieveFormRefetch()
+  //   handleColTabChangectx(0)
+  //   // if(retrieveFormData) {
+  //   //   await handleFormModalOpenOnEditctx(data?.rows, retrieveFormData[0])
+  //   // }
+  // }
 
-  useEffect(() => {
-    if (!isRetrieveFormLoading && retrieveFormData) {
-      // console.log("result data....", typeof retrieveFormData[0], retrieveFormData[0])
-      // let data = retrieveFormData[0]
-      handleFormDataonRetrievectx(retrieveFormData[0]);
+  // useEffect(() => {
+  //   if(!isRetrieveFormLoading && retrieveFormData) {
+  //     // console.log("result data....", typeof retrieveFormData[0], retrieveFormData[0])
+  //     // let data = retrieveFormData[0]
+  //     handleFormDataonRetrievectx(retrieveFormData[0])
 
-      // handleFormModalOpenOnEditctx(data?.rows, retrieveFormData)
-    }
-  }, [isRetrieveFormLoading, retrieveFormData, retrieveFormRefetch]);
+  //     // handleFormModalOpenOnEditctx(data?.rows, retrieveFormData)
+  //   }
+  // }, [isRetrieveFormLoading, retrieveFormData, retrieveFormRefetch])
 
   useEffect(() => {
     if (!isLoading) {
@@ -405,8 +401,11 @@ export const Ckyc = () => {
   }, [state?.entityTypectx]);
 
   // useEffect(() => {
-  //   console.log("wadqwdwq", state?.colTabValuectx, state?.formDatactx)
+  //   console.log("wadqwdwq.", state?.colTabValuectx, state?.formDatactx)
   // }, [state?.colTabValuectx, state?.formDatactx])
+  // useEffect(() => {
+  //   console.log("wadqwdwq.cccc", state?.categoryValuectx)
+  // }, [state?.categoryValuectx])
 
   // const handleFormModalOpen = (type:String) => {
   // setIsFormModalOpen(true)
@@ -610,20 +609,21 @@ export const Ckyc = () => {
   const setCurrentAction = useCallback(
     (data) => {
       // // console.log("dataddaada", data)
-      if (data.name === "view-detail") {
-        // refetch()
-        handleViewDetails();
-        // retrieveFormRefetch()
-        handleColTabChangectx(0);
-        // if(retrieveFormData && Object.keys(state?.retrieveFormDataApiRes)?.length>0) {
-        // if(retrieveFormData) {
-        handleFormModalOpenOnEditctx(data?.rows);
-        // }
+      // if (data.name === "view-detail") {
+      //   // refetch()
+      //   handleViewDetails()
+      //   // retrieveFormRefetch()
+      //   // handleColTabChangectx(0)
+      //   // if(retrieveFormData && Object.keys(state?.retrieveFormDataApiRes)?.length>0) {
+      //   // if(retrieveFormData) {
+      //     console.log("data?.rows", data?.rows)
+      //     handleFormModalOpenOnEditctx(data?.rows)
+      //   // }
 
-        navigate(data?.name, {
-          state: data?.rows,
-        });
-      }
+      //   navigate(data?.name, {
+      //     state: data?.rows,
+      //   })
+      // }
       // else if (data.name === "dependencies") {
       //   setComponentToShow("Dependencies");
       //   setAcctOpen(true);
@@ -664,15 +664,15 @@ export const Ckyc = () => {
       //   setContPersonCompOpen(true);
       //   setRowsData(data?.rows);
       // }
-      else {
-        setRowsData(data?.rows);
-        navigate(data?.name, {
-          state: data?.rows,
-        });
-      }
+      // else {
+      setRowsData(data?.rows);
+      navigate(data?.name, {
+        state: data?.rows,
+      });
+      // }
     },
     // []
-    [navigate, retrieveFormData, retrieveFormRefetch]
+    [navigate]
   );
 
   // insurance-data display api
@@ -721,8 +721,14 @@ export const Ckyc = () => {
               color="secondary"
               variant="contained"
               onClick={() => {
-                handleFormModalOpenctx("I");
-                navigate("new-entry");
+                // handleFormModalOpenctx("I")
+                navigate("new-entry", {
+                  state: {
+                    isFormModalOpen: true,
+                    entityType: "I",
+                    isFreshEntry: true,
+                  },
+                });
               }}
               sx={{
                 // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
@@ -749,8 +755,14 @@ export const Ckyc = () => {
               color="secondary"
               variant="contained"
               onClick={() => {
-                handleFormModalOpenctx("C");
-                navigate("new-entry");
+                // handleFormModalOpenctx("C")
+                navigate("new-entry", {
+                  state: {
+                    isFormModalOpen: true,
+                    entityType: "C",
+                    isFreshEntry: true,
+                  },
+                });
               }}
               sx={{
                 // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
@@ -858,7 +870,7 @@ export const Ckyc = () => {
           finalMetaData={ckyc_retrieved_meta_data as GridMetaDataType}
           data={mutation.data ?? []}
           setData={() => null}
-          // loading={isLoading || isFetching}
+          loading={mutation.isLoading || mutation.isFetching}
           actions={actions}
           setAction={setCurrentAction}
           // refetchData={() => refetch()}
@@ -882,7 +894,7 @@ export const Ckyc = () => {
             finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
             data={PendingData ?? []}
             setData={() => null}
-            // loading={isLoading || isFetching}
+            loading={isPendingDataLoading || isPendingDataFetching}
             actions={actions}
             setAction={setCurrentAction}
             // refetchData={() => refetch()}
@@ -914,6 +926,18 @@ export const Ckyc = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
+            />
+          }
+        />
+
+        <Route
+          path="inactive-customer/*"
+          element={
+            <DeactivateCustomer
+              rowdata={rowsData}
+              onClose={() => {
+                navigate(".");
+              }}
             />
           }
         />
@@ -1002,7 +1026,9 @@ export const Ckyc = () => {
             <Dependencies
               rowsData={rowsData}
               open={contPersonCompOpen}
-              onClose={() => setContPersonCompOpen(false)}
+              onClose={() => {
+                navigate(".");
+              }}
             />
           }
         />
@@ -1021,80 +1047,81 @@ export const Ckyc = () => {
         />
       </Routes>
 
-      {componentToShow === "ViewDetail" ? (
-        ""
-      ) : // <ViewDetail
-      //   rowsData={rowsData}
-      //   open={acctOpen}
-      //   onClose={() => setAcctOpen(false)}
-      // />
-      // : componentToShow === "Dependencies" ? (
-      //   <Dependencies
-      //     rowsData={rowsData}
-      //     open={acctOpen}
-      //     onClose={() => setAcctOpen(false)}
-      //   />
-      // )
-      componentToShow === "ViewStatement" ? (
-        ""
-      ) : // <ViewStatement
-      //   rowsData={rowsData}
-      //   open={acctOpen}
-      //   onClose={() => setAcctOpen(false)}
-      //   screenFlag={"ACCT_INQ"}
-      // />
-      componentToShow === "DeactivateCustomer" ? (
-        <DeactivateCustomer rowdata={rowsData} />
-      ) : // : componentToShow === "insurance" ? (
-      //     <InsuranceComp
-      //       rowsData={rowsData}
-      //       open={insuranceOpen}
-      //       onClose={() => setInsuranceOpen(false)}
-      //     />
-      // )
-      //  : componentToShow === "bankDetails" ? (
-      //     <BankDTLComp
-      //       rowsData={rowsData}
-      //       open={bankCompOpen}
-      //       onClose={() => setBankCompOpen(false)}
-      //     />
-      // )
-      // : componentToShow === "creditCard" ? (
-      //     <CreditCardDTLComp
-      //       rowsData={rowsData}
-      //       open={creditCardCompOpen}
-      //       onClose={() => setCreditCardCompOpen(false)}
-      //     />
-      // )
-      //  : componentToShow === "offencesDetails" ? (
-      //     <OffencesDTLComp
-      //       rowsData={rowsData}
-      //       open={offencesCompOpen}
-      //       onClose={() => setOffencesCompOpen(false)}
-      //     />
-      // )
-      // : componentToShow === "assetDetails" ? (
-      //   <AssetDTLComp
-      //     rowsData={rowsData}
-      //     open={assetDTLCompOpen}
-      //     onClose={() => setAssetDTLCompOpen(false)}
-      //   />
-      // )
-      // : componentToShow === "financialDetails" ? (
-      //     <FinancialDTLComp
-      //       rowsData={rowsData}
-      //       open={financialDTLCompOpen}
-      //       onClose={() => setFinancialDTLCompOpen(false)}
-      //     />
-      // )
-      // : componentToShow === "controllingPersonDTL" ? (
-      //     <ControllingPersonComp
-      //       rowsData={rowsData}
-      //       open={contPersonCompOpen}
-      //       onClose={() => setContPersonCompOpen(false)}
-      //     />
-      // )
-      null}
+      {componentToShow === "ViewDetail"
+        ? ""
+        : // <ViewDetail
+        //   rowsData={rowsData}
+        //   open={acctOpen}
+        //   onClose={() => setAcctOpen(false)}
+        // />
+        // : componentToShow === "Dependencies" ? (
+        //   <Dependencies
+        //     rowsData={rowsData}
+        //     open={acctOpen}
+        //     onClose={() => setAcctOpen(false)}
+        //   />
+        // )
+        componentToShow === "ViewStatement"
+        ? ""
+        : // <ViewStatement
+          //   rowsData={rowsData}
+          //   open={acctOpen}
+          //   onClose={() => setAcctOpen(false)}
+          //   screenFlag={"ACCT_INQ"}
+          // />
+          // : componentToShow === "DeactivateCustomer" ? (
+          //     <DeactivateCustomer rowdata={rowsData} />
+          // )
+          // : componentToShow === "insurance" ? (
+          //     <InsuranceComp
+          //       rowsData={rowsData}
+          //       open={insuranceOpen}
+          //       onClose={() => setInsuranceOpen(false)}
+          //     />
+          // )
+          //  : componentToShow === "bankDetails" ? (
+          //     <BankDTLComp
+          //       rowsData={rowsData}
+          //       open={bankCompOpen}
+          //       onClose={() => setBankCompOpen(false)}
+          //     />
+          // )
+          // : componentToShow === "creditCard" ? (
+          //     <CreditCardDTLComp
+          //       rowsData={rowsData}
+          //       open={creditCardCompOpen}
+          //       onClose={() => setCreditCardCompOpen(false)}
+          //     />
+          // )
+          //  : componentToShow === "offencesDetails" ? (
+          //     <OffencesDTLComp
+          //       rowsData={rowsData}
+          //       open={offencesCompOpen}
+          //       onClose={() => setOffencesCompOpen(false)}
+          //     />
+          // )
+          // : componentToShow === "assetDetails" ? (
+          //   <AssetDTLComp
+          //     rowsData={rowsData}
+          //     open={assetDTLCompOpen}
+          //     onClose={() => setAssetDTLCompOpen(false)}
+          //   />
+          // )
+          // : componentToShow === "financialDetails" ? (
+          //     <FinancialDTLComp
+          //       rowsData={rowsData}
+          //       open={financialDTLCompOpen}
+          //       onClose={() => setFinancialDTLCompOpen(false)}
+          //     />
+          // )
+          // : componentToShow === "controllingPersonDTL" ? (
+          //     <ControllingPersonComp
+          //       rowsData={rowsData}
+          //       open={contPersonCompOpen}
+          //       onClose={() => setContPersonCompOpen(false)}
+          //     />
+          // )
+          null}
 
       {/* <FormModal 
         // isFormModalOpen={state?.isFormModalOpenctx} 

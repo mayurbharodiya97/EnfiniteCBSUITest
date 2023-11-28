@@ -108,6 +108,10 @@ export const ChequeBookIssueEntry = {
       fullWidth: true,
       required: true,
       maxLength: 20,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Branch Code is required."] }],
+      },
       GridProps: {
         xs: 12,
         md: 2,

@@ -3,7 +3,7 @@ export const AllScreensGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "All Screens",
-    rowIdColumn: "user_code",
+    rowIdColumn: "system_code",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,

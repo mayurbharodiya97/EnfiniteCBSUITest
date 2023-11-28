@@ -1,18 +1,28 @@
 import * as API from "pages_audit/pages/reports/api";
-import { detailMetadata01 } from "./createMetadata/detailMetadata01";
+import { chequebookEntryMetadata } from "./createMetadata/chequebookEntry";
 import { DetailMaster } from "./detailmaster";
-import { detailMetadata002 } from "./createMetadata/detailMetadata002";
+import { limitEntryMetadata } from "./createMetadata/limitEntry";
+import { lienEntryMetadata } from "./createMetadata/lienEntry";
+import { stockEntryMetadata } from "./createMetadata/stockEntry";
+import { stopPaymentEntryMetadata } from "./createMetadata/stopPaymentEntry";
+import { createContext, useContext, useState } from "react";
+import { DefaultErrorObject } from "components/utils";
+import { AuthSDK } from "registry/fns/auth";
 
 export const DetailMastersData = ({ screenFlag, subScreenFlag = "" }) => {
   let metaData;
   let otherAPIRequestPara;
 
-  if (screenFlag === "ACCOUNTDELETION") {
-    // metaData = accountDeletionMetaData;
-  } else if (screenFlag === "GETCHEQUEBOOK") {
-    metaData = detailMetadata01;
-  } else if (screenFlag === "GETACCTINQUIRY") {
-    metaData = detailMetadata002;
+  if (screenFlag === "GETCHEQUEBOOK") {
+    metaData = chequebookEntryMetadata;
+  } else if (screenFlag === "GETLIMITENTRY") {
+    metaData = limitEntryMetadata;
+  } else if (screenFlag === "GETLIENENTRY") {
+    metaData = lienEntryMetadata;
+  } else if (screenFlag === "GETSTOCKENTRY") {
+    metaData = stockEntryMetadata;
+  } else if (screenFlag === "GETSTOPPAYMENTENTRY") {
+    metaData = stopPaymentEntryMetadata;
   }
   // UTILITYBILLRPT
 
@@ -21,23 +31,7 @@ export const DetailMastersData = ({ screenFlag, subScreenFlag = "" }) => {
       <DetailMaster
         key={"reportID" + screenFlag + subScreenFlag}
         reportID={screenFlag}
-        // reportName={screenFlag}
-        dataFetcher={API.getReportData}
         metaData={metaData}
-        // disableFilters
-        // maxHeight={window.innerHeight - 310}
-        // title={metaData.title}
-        // options={{
-        //   disableGroupBy: metaData.disableGroupBy,
-        // }}
-        // hideFooter={metaData.hideFooter}
-        // hideAmountIn={metaData.hideAmountIn}
-        // retrievalType={metaData.retrievalType}
-        // initialState={{
-        //   groupBy: metaData?.groupBy ?? [],
-        // }}
-        autoFetch={metaData?.autoFetch ?? true}
-        otherAPIRequestPara={otherAPIRequestPara}
       />
     </>
   );

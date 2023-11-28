@@ -15,6 +15,8 @@ const StyledTextField = withStyles({
       fontWeight: 600,
       textTransform: "capitalize",
       fontSize: "1rem",
+      whiteSpace: "normal",
+      lineHeight: "0.95",
       "@media (max-width: 1200px)": {
         fontSize: "0.75rem",
       },
@@ -44,7 +46,7 @@ const StyledTextField = withStyles({
       "& input": {
         padding: "6px 7px ",
         height: "22px",
-        //color: "#000",
+        inputMode: "auto", // Use "auto" or remove this line to enable browser default behavior
         "&::placeholder": {
           //color: "#000",
           //fontSize: "0.875rem",
@@ -83,7 +85,7 @@ const StyledTextField = withStyles({
       borderRight: "2px dashed #BABABA",
       height: "23px",
       maxHeight: "36px",
-      padding: "0 0.6rem 0 0",
+      padding: "0 0.6rem 0 0.6rem",
       margin: "6px 0px !important",
     },
 

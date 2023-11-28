@@ -1,7 +1,7 @@
-// import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-// import { getProMiscData } from "./api";
 import { getProMiscData } from "../../dynamicGridConfig/api";
 import { GridMetaDataType } from "components/dataTableStatic";
+import { getSourceListData } from "../api";
+import { GeneralAPI } from "registry/fns/functions";
 export const DynamicFormConfigMetaData = {
   form: {
     name: "Dynamicmetadataconfigure",
@@ -60,36 +60,15 @@ export const DynamicFormConfigMetaData = {
       _optionsKey: "getTbgDocMstData",
       fullWidth: true,
       required: true,
-      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 4, xl: 1.5 },
       schemaValidation: {
         type: "string",
         rules: [
-          { name: "required", params: ["Screen Name is required."] },
-          { name: "SCREEN_NAME", params: ["Please enter Screen Name."] },
+          { name: "required", params: ["Document Code is required."] },
+          { name: "DOC_CD", params: ["Please enter Document Code."] },
         ],
       },
     },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "DOC_CD",
-    //   label: "Document Code",
-    //   placeholder: "Document Code",
-    //   defaultValue: "",
-    //   type: "text",
-    //   maxLength: 12,
-    //   showMaxLength: false,
-    //   required: false,
-    //   fullWidth: true,
-    //   autoComplete: false,
-    //   // startsIcon: Account_Number_Svg,
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 2.5,
-    //     sm: 2.5,
-    //   },
-    // },
     {
       render: {
         componentType: "textField",
@@ -99,6 +78,13 @@ export const DynamicFormConfigMetaData = {
       placeholder: "Metadata Description",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      maxLength: 50,
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Metadata Description is required."] },
+        ],
+      },
     },
     {
       render: {
@@ -109,6 +95,13 @@ export const DynamicFormConfigMetaData = {
       placeholder: "Form name",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      maxLength: 50,
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Metadata Description is required."] },
+        ],
+      },
     },
     {
       render: {
@@ -119,22 +112,33 @@ export const DynamicFormConfigMetaData = {
       placeholder: "Form label",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      maxLength: 50,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Form label is required."] }],
+      },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "select",
       },
       name: "SUBMITACTION",
       label: "Submit Action",
       placeholder: "Submit Action",
       type: "text",
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      maxLength: 10,
+      options: [{ label: "home", value: "home" }],
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Submit Action is required."] }],
+      },
     },
     {
       render: { componentType: "autocomplete" },
 
       name: "VALIDATIONRUN",
-      label: "Validation Run",
+      label: "For Form Metadata Validation Run",
       // required: true,
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
 
@@ -144,10 +148,14 @@ export const DynamicFormConfigMetaData = {
         { label: "onChange", value: "onChange" },
         { label: "all", value: "all" },
       ],
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["This Field is required"] }],
-      // },
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Validation Run is required."] },
+          { name: "VALIDATIONRUN", params: ["Please enter Validation Run."] },
+        ],
+      },
+
       // autoComplete: "off",
     },
     {
@@ -157,6 +165,16 @@ export const DynamicFormConfigMetaData = {
       name: "RESETFIELDONUNMOUNT",
       label: "Reset Field On Unmount",
       defaultValue: true,
+      GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "typography",
+      },
+      name: "RESET_FIELD",
+      label:
+        "Note:Reset Field On Unmount always untick for form does not Re-render. ",
+      TypographyProps: { variant: "subtitle2", color: "red" },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
     },
     {
@@ -182,7 +200,7 @@ export const DynamicFormConfigMetaData = {
 export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Search Criteria Data",
+    gridLabel: "Create Form Metadata",
     rowIdColumn: "LINE_ID",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
@@ -194,7 +212,7 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
     disableSorting: false,
     hideHeader: true,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 20,
     containerHeight: {
@@ -232,6 +250,23 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
         return "";
       },
       sequence: 2,
+      width: 200,
+      maxWidth: 300,
+      minWidth: 150,
+    },
+    {
+      accessor: "DATA_TYPE",
+      columnName: "Field Data Type",
+      componentType: "editableTextField",
+      // required: true,
+      isReadOnly: true,
+      // validation: (value, data) => {
+      //   if (!Boolean(value)) {
+      //     return "This field is required.";
+      //   }
+      //   return "";
+      // },
+      sequence: 3,
       width: 200,
       maxWidth: 300,
       minWidth: 150,
@@ -277,7 +312,7 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
     },
     {
       accessor: "TAB_SEQ",
-      columnName: "Tab. Seq",
+      columnName: "Tab Sequnce",
       componentType: "editableTextField",
       required: true,
       isReadOnly: true,
@@ -287,7 +322,7 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
         }
         return "";
       },
-      sequence: 5,
+      sequence: 6,
       width: 200,
       maxWidth: 300,
       minWidth: 150,
@@ -296,15 +331,15 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
       accessor: "FIELD_REQUIRED",
       columnName: "Field Required",
       componentType: "editableTextField",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 6,
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 7,
       width: 200,
       maxWidth: 300,
       minWidth: 150,
@@ -314,15 +349,15 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
       columnName: "xl",
       componentType: "editableTextField",
       defaultValue: "1.5",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 7,
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 8,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -332,15 +367,15 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
       columnName: "md",
       componentType: "editableTextField",
       defaultValue: "3",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 8,
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 9,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -350,15 +385,15 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
       columnName: "sm",
       componentType: "editableTextField",
       defaultValue: "4",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 9,
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 10,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -368,15 +403,15 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
       columnName: "xs",
       componentType: "editableTextField",
       defaultValue: "12",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 10,
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 11,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -386,15 +421,15 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
       columnName: "lg",
       componentType: "editableTextField",
       required: true,
-      // isReadOnly: true,
-      // defaultValue: "2.5",
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 11,
+      isReadOnly: true,
+      defaultValue: "2.5",
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 12,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -404,7 +439,7 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
 export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Search Criteria Data",
+    gridLabel: "Create Form Metadata",
     rowIdColumn: "LINE_ID",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
@@ -416,7 +451,7 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
     disableSorting: false,
     hideHeader: true,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 20,
     containerHeight: {
@@ -457,6 +492,23 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
       minWidth: 150,
     },
     {
+      accessor: "DATA_TYPE",
+      columnName: "Field Data Type",
+      componentType: "editableTextField",
+      // required: true,
+      isReadOnly: true,
+      // validation: (value, data) => {
+      //   if (!Boolean(value)) {
+      //     return "This field is required.";
+      //   }
+      //   return "";
+      // },
+      sequence: 3,
+      width: 200,
+      maxWidth: 300,
+      minWidth: 150,
+    },
+    {
       accessor: "COMPONENT_TYPE",
       columnName: "Component Type",
       componentType: "editableSelect",
@@ -470,7 +522,7 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
         }
         return "";
       },
-      sequence: 3,
+      sequence: 4,
       width: 200,
       maxWidth: 350,
       minWidth: 180,
@@ -478,23 +530,6 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
     {
       accessor: "FIELD_LABEL",
       columnName: "Field Label",
-      componentType: "editableTextField",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 5,
-      width: 200,
-      maxWidth: 300,
-      minWidth: 150,
-    },
-    {
-      accessor: "TAB_SEQ",
-      columnName: "Tab. Seq",
       componentType: "editableTextField",
       required: true,
       isReadOnly: true,
@@ -504,7 +539,24 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
         }
         return "";
       },
-      sequence: 5,
+      sequence: 6,
+      width: 200,
+      maxWidth: 300,
+      minWidth: 150,
+    },
+    {
+      accessor: "TAB_SEQ",
+      columnName: "Tab Sequnce",
+      componentType: "editableTextField",
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 7,
       width: 200,
       maxWidth: 300,
       minWidth: 150,
@@ -513,15 +565,15 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
       accessor: "FIELD_REQUIRED",
       columnName: "Field Required",
       componentType: "editableTextField",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 6,
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 8,
       width: 200,
       maxWidth: 300,
       minWidth: 150,
@@ -530,15 +582,16 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
       accessor: "XL",
       columnName: "xl",
       componentType: "editableTextField",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 7,
+      defaultValue: "1.5",
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 9,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -547,16 +600,16 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
       accessor: "MD",
       columnName: "md",
       componentType: "editableTextField",
-      // defaultValue: "3",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 8,
+      defaultValue: "3",
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 10,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -565,16 +618,16 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
       accessor: "SM",
       columnName: "sm",
       componentType: "editableTextField",
+      defaultValue: "4",
       required: true,
-      // isReadOnly: true,
-      // defaultValue: "4",
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 9,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 11,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -583,16 +636,16 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
       accessor: "XS",
       columnName: "xs",
       componentType: "editableTextField",
+      defaultValue: "12",
       required: true,
-      // isReadOnly: true,
-      // defaultValue: "12",
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 10,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 12,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -602,15 +655,15 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
       columnName: "lg",
       componentType: "editableTextField",
       required: true,
-      // isReadOnly: true,
-      // defaultValue: "2.5",
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 11,
+      isReadOnly: true,
+      defaultValue: "2.5",
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 13,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -632,7 +685,7 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
 export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Search Criteria Data",
+    gridLabel: "Create Form Metadata",
     rowIdColumn: "LINE_ID",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
@@ -644,7 +697,7 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
     disableSorting: false,
     hideHeader: true,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 20,
     containerHeight: {
@@ -685,6 +738,23 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
       minWidth: 150,
     },
     {
+      accessor: "DATA_TYPE",
+      columnName: "Field Data Type",
+      componentType: "editableTextField",
+      // required: true,
+      isReadOnly: true,
+      // validation: (value, data) => {
+      //   if (!Boolean(value)) {
+      //     return "This field is required.";
+      //   }
+      //   return "";
+      // },
+      sequence: 3,
+      width: 200,
+      maxWidth: 300,
+      minWidth: 150,
+    },
+    {
       accessor: "COMPONENT_TYPE",
       columnName: "Component Type",
       componentType: "editableSelect",
@@ -698,7 +768,7 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
         }
         return "";
       },
-      sequence: 3,
+      sequence: 4,
       width: 200,
       maxWidth: 350,
       minWidth: 180,
@@ -722,7 +792,7 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
     },
     {
       accessor: "TAB_SEQ",
-      columnName: "Tab. Seq",
+      columnName: "Tab Sequnce",
       componentType: "editableTextField",
       required: true,
       isReadOnly: true,
@@ -732,7 +802,7 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
         }
         return "";
       },
-      sequence: 5,
+      sequence: 6,
       width: 200,
       maxWidth: 300,
       minWidth: 150,
@@ -741,15 +811,15 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
       accessor: "FIELD_REQUIRED",
       columnName: "Field Required",
       componentType: "editableTextField",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 6,
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 7,
       width: 200,
       maxWidth: 300,
       minWidth: 150,
@@ -758,16 +828,16 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
       accessor: "XL",
       columnName: "xl",
       componentType: "editableTextField",
+      defaultValue: "1.5",
       required: true,
-      // isReadOnly: true,
-      // defaultValue: "1.5",
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 7,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 8,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -777,15 +847,15 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
       columnName: "md",
       componentType: "editableTextField",
       defaultValue: "3",
-      // required: true,
-      // isReadOnly: true,
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 8,
+      required: true,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 9,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -794,16 +864,16 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
       accessor: "SM",
       columnName: "sm",
       componentType: "editableTextField",
+      defaultValue: "4",
       required: true,
-      // isReadOnly: true,
-      // defaultValue: "4",
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 9,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 10,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -812,16 +882,16 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
       accessor: "XS",
       columnName: "xs",
       componentType: "editableTextField",
+      defaultValue: "12",
       required: true,
-      // isReadOnly: true,
-      // defaultValue: "12",
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 10,
+      isReadOnly: true,
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 11,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -831,15 +901,15 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
       columnName: "lg",
       componentType: "editableTextField",
       required: true,
-      // isReadOnly: true,
-      // defaultValue: "2.5",
-      // validation: (value, data) => {
-      //   if (!Boolean(value)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
-      sequence: 11,
+      isReadOnly: true,
+      defaultValue: "2.5",
+      validation: (value, data) => {
+        if (!Boolean(value)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      sequence: 12,
       width: 100,
       maxWidth: 300,
       minWidth: 150,
@@ -847,82 +917,283 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
   ],
 };
 
-export const FieldComponentGridMetaData: GridMetaDataType = {
-  gridConfig: {
-    dense: true,
-    gridLabel: " Numbers",
-    rowIdColumn: "PROPS_ID",
-    defaultColumnConfig: {
-      width: 400,
-      maxWidth: 450,
-      minWidth: 300,
+export const PropsComponentFormMetaData: any = {
+  form: {
+    refID: 1667,
+    name: "PropsComponentFormMetaData",
+    label: "PropsComponentFormMetaData",
+    resetFieldOnUmnount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 6,
+          md: 6,
+        },
+        container: {
+          direction: "row",
+          spacing: 2,
+        },
+      },
     },
-    allowColumnReordering: true,
-    disableSorting: false,
-    hideHeader: true,
-    disableGroupBy: true,
-    enablePagination: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
-    containerHeight: {
-      min: "40vh",
-      max: "50vh",
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
     },
-    allowFilter: false,
-    allowColumnHiding: false,
-    allowRowSelection: false,
-    isCusrsorFocused: true,
-    hiddenFlag: "_hidden",
-    disableLoader: true,
   },
-  filters: [],
-  columns: [
+  fields: [
     {
-      accessor: "_displaySequence",
-      columnName: "Sr. No.",
-      sequence: 1,
-      alignment: "right",
-      componentType: "default",
-      width: 100,
-      minWidth: 80,
-      maxWidth: 120,
-      isAutoSequence: true,
-    },
-    {
-      accessor: "PROPS_ID",
-      columnName: "Props ID",
-      sequence: 2,
-      alignment: "left",
-      componentType: "editableTextField",
-      placeholder: "",
-      width: 200,
-      minWidth: 180,
-      maxWidth: 250,
-      // validation: (value, data, prev) => {
-      //   if (!Boolean(value)) {
-      //     return "This is a required field";
-      //   } else {
-      //     let response = "";
-      //     prev?.forEach((item) => {
-      //       if (item.TENURE && item.TENURE === value) {
-      //         response = "This Value already exists.";
-      //         return;
-      //       }
-      //     });
-      //     return response;
-      //   }
-      // },
-    },
-    {
-      accessor: "PROPS_VALUE",
-      columnName: "Props Value",
-      sequence: 3,
-      alignment: "left",
-      componentType: "editableTextField",
-      placeholder: "",
-      width: 200,
-      minWidth: 180,
-      maxWidth: 250,
+      render: {
+        componentType: "arrayField",
+      },
+      fixedRows: true,
+      isDisplayCount: false,
+      isCustomStyle: true,
+      name: "propsDetails",
+      removeRowFn: "deleteFormArrayFieldData",
+      arrayFieldIDName: "DOC_CD",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      _fields: [
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "PROPS_ID",
+          label: "Props ID",
+          placeholder: "Props ID",
+          isReadOnly: true,
+          GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "PROPS_VALUE",
+          label: "Props Value",
+          placeholder: "Props Value",
+          GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
+          shouldExclude: (val1, dependent) => {
+            if (
+              dependent["propsDetails.PROPS_ID"]?.value === "options" ||
+              dependent["propsDetails.PROPS_ID"]?.value ===
+                "schemaValidation" ||
+              dependent["propsDetails.PROPS_ID"]?.value === "dependentFields"
+            ) {
+              return true;
+            }
+            return false;
+          },
+          runValidationOnDependentFieldsChange: true,
+          dependentFields: ["PROPS_ID", "OPTION_VALUE"],
+        },
+        {
+          render: { componentType: "select" },
+          name: "SOURCE_TYPE",
+          label: "Dropdown Source",
+          options: [
+            { label: "Dynamic SQL", value: "DS" },
+            { label: "Register Function", value: "RF" },
+            { label: "Defualt Option", value: "DO" },
+          ],
+          // _optionsKey: "defualt",
+          defaultValue: "Dynamic SQL",
+          required: true,
+          GridProps: { xs: 12, sm: 2, md: 3, lg: 2.5, xl: 1.5 },
+          fullWidth: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Source Type is required."] },
+              { name: "SOURCE_TYPE", params: ["Please enter Source Type."] },
+            ],
+          },
+          runValidationOnDependentFieldsChange: true,
+          shouldExclude: (val1, dependent) => {
+            // console.log("dependent", dependent);
+            if (dependent["propsDetails.PROPS_ID"]?.value === "options") {
+              return false;
+            }
+
+            return true;
+          },
+          dependentFields: ["OPTION_VALUE", "PROPS_ID"],
+          disableCaching: true,
+          autoComplete: "off",
+          //@ts-ignore
+          isFieldFocused: true,
+        },
+        {
+          render: {
+            componentType: "select",
+          },
+          name: "OPTION_VALUE",
+          label: "Options Value",
+          placeholder: "Props Value",
+          GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
+          shouldExclude: (val1, dependent) => {
+            if (
+              dependent["propsDetails.PROPS_ID"]?.value === "options" ||
+              dependent["propsDetails.PROPS_ID"]?.value === "schemaValidation"
+            ) {
+              return false;
+            }
+            return true;
+          },
+          runValidationOnDependentFieldsChange: true,
+          dependentFields: ["PROPS_ID"],
+          options: getSourceListData,
+          _optionsKey: "getSourceListData",
+          disableCaching: true,
+        },
+
+        {
+          render: {
+            componentType: "select",
+          },
+          name: "DISPLAY_VALUE",
+          label: "Display Value",
+          type: "text",
+          // options: GeneralAPI.getDynDropdownData,
+          options: (value) => {
+            // console.log("value", value);
+            if (value?.["propsDetails[5].OPTION_VALUE"]?.value ?? "") {
+              return GeneralAPI.getDynDropdownData(
+                value?.["propsDetails[5].OPTION_VALUE"]?.value
+              );
+            }
+            return [];
+          },
+          disableCaching: true,
+          _optionsKey: "getDynDropdownData",
+          runValidationOnDependentFieldsChange: true,
+          dependentFields: ["OPTION_VALUE", "SOURCE_TYPE"],
+          shouldExclude: (val1, dependent) => {
+            // console.log("getValidateValue", dependent);
+            const regex = /^[A-Z]+$/;
+            if (regex.test(dependent["propsDetails.OPTION_VALUE"]?.value)) {
+              return false;
+            }
+
+            return true;
+          },
+          // shouldExclude: (fieldData, dependentFieldsValues, formState) => {
+          //   if (
+          //     dependentFieldsValues["propsDetails.OPTION_VALUE"]
+          //       ?.optionData?.[0]?.SOURCE_TYPE === "DS"
+          //   ) {
+          //     return false;
+          //   }
+          //   return true;
+          // },
+          GridProps: { xs: 6, sm: 3, md: 3, lg: 3, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "select",
+          },
+          name: "DATA_VALUE",
+          label: "Data Value",
+          placeholder: "Data Value",
+          GridProps: { xs: 6, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
+          options: (value) => {
+            if (value?.["propsDetails[5].OPTION_VALUE"]?.value ?? "") {
+              return GeneralAPI.getDynDropdownData(
+                value?.["propsDetails[5].OPTION_VALUE"]?.value
+              );
+            }
+            return [];
+          },
+          disableCaching: true,
+          _optionsKey: "getDynDropdown",
+          runValidationOnDependentFieldsChange: true,
+          dependentFields: ["OPTION_VALUE"],
+          shouldExclude: (val1, dependent) => {
+            const regex = /^[A-Z]+$/;
+            if (regex.test(dependent["propsDetails.OPTION_VALUE"]?.value)) {
+              return false;
+            }
+
+            return true;
+          },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "SCHEMA_MESSAGE",
+          label: "SchemaValidation Message",
+          placeholder: "Props Value",
+          GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
+          shouldExclude: (val1, dependent) => {
+            if (
+              dependent["propsDetails.PROPS_ID"]?.value === "schemaValidation"
+            ) {
+              if (dependent["propsDetails.OPTION_VALUE"]?.value) {
+                return false;
+              }
+            }
+            return true;
+          },
+          runValidationOnDependentFieldsChange: true,
+          dependentFields: ["PROPS_ID", "OPTION_VALUE"],
+        },
+        {
+          render: {
+            componentType: "select",
+          },
+          name: "DEPENDENTFIELD_VALUE",
+          label: "DependentFields Value",
+          placeholder: "Props Value",
+          GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
+          shouldExclude: (val1, dependent) => {
+            if (
+              dependent["propsDetails.PROPS_ID"]?.value === "dependentFields"
+            ) {
+              return false;
+            }
+            return true;
+          },
+          runValidationOnDependentFieldsChange: true,
+          multiple: true,
+          showCheckbox: true,
+          skipDefaultOption: true,
+          dependentFields: ["PROPS_ID"],
+          options: "getDependentFieldList",
+          _optionsKey: "getDependentFieldList",
+          requestProps: "DOC_CD",
+          disableCaching: true,
+        },
+
+        // {
+        //   render: {
+        //     componentType: "textField",
+        //   },
+        //   name: "RECOMMONDATION",
+        //   label: "recommondation",
+        //   placeholder: "Props Value",
+        //   isReadOnly: true,
+        //   GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
+        //   runValidationOnDependentFieldsChange: true,
+        // },
+      ],
     },
   ],
 };

@@ -65,6 +65,8 @@ export const getDynamicGridConfigGridData = async ({ COMP_CD, BRANCH_CD }) => {
         IS_CUSRSORFOCUSED: item.IS_CUSRSORFOCUSED === "Y" ? true : false,
         ALLOW_ROW_SELECTION: item.ALLOW_ROW_SELECTION === "Y" ? true : false,
         ISDOWNLOAD: item.ISDOWNLOAD === "Y" ? true : false,
+        PAGE_SIZES: item?.PAGE_SIZES.split(","),
+        DML_ACTION: item?.DML_ACTION.trim(),
       };
     });
     // return data;
@@ -117,6 +119,26 @@ export const getDynamicGridColConfigData = async ({
       };
     });
     // return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getDynamicParamterConfigData = async ({
+  COMP_CD,
+  BRANCH_CD,
+  docCD,
+}) => {
+  // if (formMode === "add") {
+  //   return [];
+  // }
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETTBGGRIDPARADATA", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+      DOC_CD: docCD + "",
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

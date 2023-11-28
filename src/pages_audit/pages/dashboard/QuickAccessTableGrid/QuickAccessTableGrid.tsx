@@ -148,6 +148,7 @@ const QuickAccessTableGrid = () => {
         </Fragment>
       ) : null}
       <Toolbar className={headerClasses.root} variant={"dense"}>
+        {" "}
         <Typography
           className={headerClasses.title}
           color="secondary"
@@ -195,22 +196,32 @@ const QuickAccessTableGrid = () => {
         >
           <GradientButton
             onClick={() => handleButtonClick("Recent")}
+            color={
+              activeButton === "Recent"
+                ? "var(--theme-color2)"
+                : "var(--theme-color6)"
+            }
             style={{
               backgroundColor:
                 activeButton === "Recent" ? "var(--theme-color3)" : "inherit",
               height: "26px",
               width: "71px",
               borderRadius: "08px",
-              color:
-                activeButton === "Recent"
-                  ? "var(--theme-color2)"
-                  : "var(--theme-color6)",
+              // color:
+              //   activeButton === "Recent"
+              //     ? "var(--theme-color2)"
+              //     : "var(--theme-color6)",
             }}
           >
             {t("Recent")}
           </GradientButton>
           <GradientButton
             onClick={() => handleButtonClick("Favourites")}
+            color={
+              activeButton === "Favourites"
+                ? "var(--theme-color2)"
+                : "var(--theme-color6)"
+            }
             style={{
               backgroundColor:
                 activeButton === "Favourites"
@@ -219,10 +230,10 @@ const QuickAccessTableGrid = () => {
               height: "26px",
               width: "71px",
               borderRadius: "08px",
-              color:
-                activeButton === "Favourites"
-                  ? "var(--theme-color2)"
-                  : "var(--theme-color6)",
+              // color:
+              //   activeButton === "Favourites"
+              //     ? "var(--theme-color2)"
+              //     : "var(--theme-color6)",
             }}
           >
             {t("Favourites")}

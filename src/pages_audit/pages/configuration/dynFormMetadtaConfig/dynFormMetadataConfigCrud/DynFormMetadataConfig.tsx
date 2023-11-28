@@ -1,17 +1,9 @@
 import { useMutation, useQuery } from "react-query";
 import { useSnackbar } from "notistack";
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Theme, Dialog } from "@mui/material";
+import { FC, useContext, useEffect, useRef, useState } from "react";
+import { Dialog, IconButton } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
-import { makeStyles } from "@mui/styles";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../api";
@@ -19,9 +11,12 @@ import { queryClient } from "cache";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import GridWrapper from "components/dataTableStatic";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import {
+  FullScreenLoader,
+  LoaderPaperComponent,
+} from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
-import { FieldComponentGrid } from "./fieldComponentGrid";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { CreateDetailsRequestData, utilFunction } from "components/utils";
 import {
   DynamicFormConfigGridMetaDataEdit,
@@ -29,31 +24,8 @@ import {
   DynamicFormConfigGridMetaDataAdd,
   DynamicFormConfigMetaData,
 } from "./metaData";
-const useTypeStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color1)",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-  refreshiconhover: {},
-}));
-interface updateAUTHDetailDataType {
-  data: object;
-  displayData?: object;
-  endSubmit?: any;
-  setFieldError?: any;
-}
-const updateAUTHDetailDataWrapperFn =
-  (insertFormData) =>
-  async ({ data }: updateAUTHDetailDataType) => {
-    return insertFormData(data);
-  };
+import { PropsConfigForm } from "./propsConfigForm";
+
 const DynamicFormMetadataConfig: FC<{
   isDataChangedRef: any;
   closeDialog?: any;
@@ -65,12 +37,8 @@ const DynamicFormMetadataConfig: FC<{
   defaultView = "view",
   fieldRowData,
 }) => {
-  const myRef = useRef<any>(null);
-  const headerClasses = useTypeStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [formMode, setFormMode] = useState(defaultView);
-  const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
-  const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
   const { authState } = useContext(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
@@ -80,7 +48,8 @@ const DynamicFormMetadataConfig: FC<{
   const [girdData, setGridData] = useState<any>([]);
   const [populateClicked, setPopulateClicked] = useState(false);
   const [isFieldComponentGrid, setFieldComponentGrid] = useState(false);
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -93,15 +62,39 @@ const DynamicFormMetadataConfig: FC<{
     })
   );
 
+  // useEffect(() => {
+  //   if (
+  //     location.pathname ===
+  //     "/cbsenfinity/configuration/dynamic-form-metadata/view-details"
+  //   ) {
+  //     if (!fieldRowData?.[0]?.data?.DOC_CD ?? "") {
+  //       // If docCD is not available in the API response, navigate to the desired route
+  //       navigate("/cbsenfinity/configuration/dynamic-form-metadata");
+  //     }
+  //   } else {
+  //     navigate(location.pathname);
+  //   }
+  // }, [navigate, location.pathname, fieldRowData?.[0]?.data?.DOC_CD ?? ""]);
+
   const mutation: any = useMutation(API.getDynFormPopulateData);
   const result = useMutation(API.dynamiFormMetadataConfigDML, {
-    onError: (error: any, { endSubmit }) => {
+    onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      endSubmit(false, errorMsg, error?.error_detail ?? "");
-      enqueueSnackbar(errorMsg, { variant: "error" });
+      //endSubmit(false, errorMsg, error?.error_detail ?? "");
+      if (isErrorFuncRef.current == null) {
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      } else {
+        isErrorFuncRef.current?.endSubmit(
+          false,
+          errorMsg,
+          error?.error_detail ?? ""
+        );
+      }
       onActionCancel();
     },
     onSuccess: (data) => {
@@ -112,6 +105,7 @@ const DynamicFormMetadataConfig: FC<{
       closeDialog();
     },
   });
+
   useEffect(() => {
     const gridDataToUpdate = populateClicked ? mutation.data : data;
     setGridData(Array.isArray(gridDataToUpdate) ? gridDataToUpdate : []);
@@ -142,11 +136,16 @@ const DynamicFormMetadataConfig: FC<{
     data["RESETFIELDONUNMOUNT"] = Boolean(data["RESETFIELDONUNMOUNT"])
       ? "Y"
       : "N";
+
     endSubmit(true);
-    let upd = utilFunction.transformDetailsData(
-      data,
-      fieldRowData?.[0]?.data ?? {}
-    );
+    let oldData = {
+      ...fieldRowData?.[0]?.data,
+      RESETFIELDONUNMOUNT: Boolean(fieldRowData?.[0]?.data?.RESETFIELDONUNMOUNT)
+        ? "Y"
+        : "N",
+    };
+
+    let upd = utilFunction.transformDetailsData(data, oldData ?? {});
 
     if (actionFlag === "POPULATE") {
       data["COMP_CD"] = authState.companyID.trim();
@@ -207,17 +206,37 @@ const DynamicFormMetadataConfig: FC<{
         }
       }
     }
+    // // if (actionFlag === "save" && formMode === "add") {
+    // //   navigate("configuration/dynamic-form-metadata/view-details", {
+    // //     state: data,
+    // //   });
+    // }
   };
-
+  if (formMode !== "add") {
+    if (DynamicFormConfigMetaData.form.label) {
+      DynamicFormConfigMetaData.form.label =
+        "Dynamic Metadata Configure" +
+        " " +
+        fieldRowData?.[0]?.data?.FORM_LABEL +
+        " " +
+        fieldRowData?.[0]?.data?.DESCRIPTION;
+    }
+  }
   return (
     <>
-      {isLoading || isFetching ? (
-        <LoaderPaperComponent />
-      ) : isError ? (
+      {(formMode === "edit" || formMode === "view") &&
+      (isLoading ||
+        isFetching ||
+        !(fieldRowData && fieldRowData.length > 0) ||
+        !(girdData && girdData.length > 0)) ? (
+        <div style={{ minHeight: "50px" }}>
+          <LoaderPaperComponent />
+        </div>
+      ) : formMode !== "add" && isError ? (
         <Alert
           severity="error"
-          errorMsg={error?.error_msg ?? "Error"}
-          errorDetail={""}
+          errorMsg={error ?? "Error"}
+          errorDetail={error ?? ""}
           color="error"
         />
       ) : (
@@ -312,6 +331,7 @@ const DynamicFormMetadataConfig: FC<{
               formMode +
               mutation?.data?.length
             }
+            loading={mutation.isLoading}
             finalMetaData={
               formMode === "edit"
                 ? DynamicFormConfigGridMetaDataEdit
@@ -327,7 +347,6 @@ const DynamicFormMetadataConfig: FC<{
 
             data={girdData}
             setData={setGridData}
-            loading={mutation.isLoading}
             actions={[]}
             setAction={[]}
             refetchData={() => refetch()}
@@ -335,18 +354,20 @@ const DynamicFormMetadataConfig: FC<{
               mysubdtlRef.current = {
                 COMP_CD: data?.COMP_CD,
                 BRANCH_CD: data?.BRANCH_CD,
-                DOC_CD: data?.DOC_CD.trim(),
+                DOC_CD: data?.DOC_CD,
                 LINE_ID: data?.LINE_ID,
-                COMPONENT_TYPE: data?.COMPONENT_TYPE,
+                COMPONENT_TYPE: data?.COMPONENT_TYPE.trim(),
                 FIELD_NAME: data?.FIELD_NAME,
                 SR_CD: data?.SR_CD,
               };
-
-              setFieldComponentGrid(true);
+              if (data?.COMPONENT_TYPE === "hidden") {
+                setFieldComponentGrid(false);
+              } else {
+                setFieldComponentGrid(true);
+              }
             }}
             ref={myGridRef}
           />
-          {/* )} */}
 
           {isOpenSave ? (
             <PopupMessageAPIWrapper
@@ -360,13 +381,13 @@ const DynamicFormMetadataConfig: FC<{
             />
           ) : null}
           {isFieldComponentGrid ? (
-            <FieldComponentGrid
+            <PropsConfigForm
               isOpen={isFieldComponentGrid}
-              formMode={formMode}
               onClose={() => {
                 setFieldComponentGrid(false);
               }}
               reqDataRef={mysubdtlRef}
+              formView={formMode}
             />
           ) : null}
         </>

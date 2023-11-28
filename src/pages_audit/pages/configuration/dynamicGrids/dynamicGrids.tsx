@@ -1,5 +1,5 @@
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQueries, useQuery } from "react-query";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
@@ -9,6 +9,8 @@ import { Alert } from "reactstrap";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { ActionTypes } from "components/dataTable";
 import { DynamicFormWrapper } from "../dynamicFormWrapper/dynamicFormwrapper";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { useSnackbar } from "notistack";
 
 interface updateAUTHDetailDataType {
   DOC_CD: any;
@@ -24,10 +26,12 @@ const actions: ActionTypes[] = [];
 export const DynamicGrids = () => {
   const { authState } = useContext(AuthContext);
   const isDataChangedRef = useRef(false);
+  const isDeleteDataRef = useRef<any>(null);
+  const [isDelete, SetDelete] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const docID = id;
-
+  const { enqueueSnackbar } = useSnackbar();
   const {
     data: metaData,
     isLoading,
@@ -52,11 +56,12 @@ export const DynamicGrids = () => {
           doccd: docCd || "",
           companyID: authState?.companyID ?? "",
           branchID: authState?.user?.branchCode ?? "",
-          customerID: "2",
-          TRAN_CD: "86",
+          userRole: authState?.role ?? "",
+          userName: authState?.user?.name ?? "",
         }),
     },
   ]);
+
   const loading = result[0].isLoading || result[0].isFetching;
   const mutation = useMutation(
     updateAUTHDetailDataWrapperFn(API.getDynActionButtonData),
@@ -66,42 +71,89 @@ export const DynamicGrids = () => {
     }
   );
 
+  const deleteMutation = useMutation(API.getDynamicFormData(), {
+    onError: (error: any) => {},
+    onSuccess: (data) => {
+      isDataChangedRef.current = true;
+      enqueueSnackbar("Records successfully deleted", {
+        variant: "success",
+      });
+      // closeDialog();
+      SetDelete(false);
+      result[0]?.refetch();
+      // refetch();
+    },
+  });
+
   useEffect(() => {
     if (!mutation?.isLoading) {
       const newActions = (mutation?.data || []).map((item) => {
-        return {
-          actionName: item.actionName,
-          actionLabel: item.actionLabel,
-          multiple:
-            item?.actionLabel === "Add"
-              ? (item.multiple = undefined)
-              : item.multiple,
-          rowDoubleClick: item.rowDoubleClick,
-          alwaysAvailable: item.alwaysAvailable,
-        };
+        // Check the conditions before mapping
+        if (
+          (metaData?.USER_ACC_INS > authState?.role &&
+            item?.actionName === "Add") ||
+          (metaData?.USER_ACC_UPD > authState?.role &&
+            item?.actionName === "View-Detail") ||
+          (metaData?.USER_ACC_DEL > authState?.role &&
+            item?.actionName === "Delete")
+        ) {
+          return null;
+        } else {
+          return {
+            actionName: item.actionName,
+            actionLabel: item.actionLabel,
+            multiple:
+              item?.actionLabel === "Add"
+                ? (item.multiple = undefined)
+                : item.multiple,
+            rowDoubleClick: item.rowDoubleClick,
+            alwaysAvailable: item.alwaysAvailable,
+          };
+        }
       });
 
       actions.length = 0;
-      actions.push(...newActions);
+      actions.push(...newActions.filter(Boolean));
     }
-  }, [actions, mutation?.data]);
+  }, [
+    actions,
+    mutation?.data,
+    metaData?.USER_ACC_INS,
+    metaData?.USER_ACC_UPD,
+    metaData?.USER_ACC_DEL,
+    authState?.role,
+  ]);
 
   const setCurrentAction = useCallback(
     (data) => {
-      navigate(data?.name, {
-        state: data?.rows,
-      });
+      if (data?.name === "Delete") {
+        isDeleteDataRef.current = data?.rows?.[0];
+        SetDelete(true);
+      } else {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
     },
     [navigate]
   );
+  // const setCurrentAction = useCallback(
+  //   (data) => {
+  //     navigate(data?.name, {
+  //       state: data?.rows,
+  //     });
+  //   },
+  //   [navigate]
+  // );
   const handleDialogClose = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
-      refetch();
+      result[0]?.refetch();
       isDataChangedRef.current = false;
     }
     navigate(".");
   };
+
   useEffect(() => {
     if (docCd || "" === null) {
       const mutationArguments: any = {
@@ -118,6 +170,9 @@ export const DynamicGrids = () => {
       queryClient.removeQueries(["getDynGridData"]);
     };
   }, [docID]);
+  const onAcceptDelete = (rows) => {
+    deleteMutation.mutate({ ...rows?.data, _isDeleteRow: true, DOC_CD: docID });
+  };
 
   return (
     <>
@@ -137,17 +192,42 @@ export const DynamicGrids = () => {
             finalMetaData={metaData as GridMetaDataType}
             data={result[0].data ?? []}
             setData={() => null}
-            loading={loading}
+            loading={loading || isLoading}
             actions={actions}
             setAction={setCurrentAction}
             refetchData={() => result[0].refetch()}
+            // refetchData={() => refetch()}
 
             // ref={myGridRef}
           />
         </>
       )}
-
       <Routes>
+        {(mutation?.data || []).map((item) => {
+          if (item.actionName === "Delete") {
+            return null;
+          }
+          return (
+            <Route
+              key={item.actionName}
+              path={`/${item.actionName}`}
+              element={
+                <DynamicFormWrapper
+                  handleDialogClose={handleDialogClose}
+                  isDataChangedRef={isDataChangedRef}
+                  item={item}
+                  docID={docID}
+                  // defaultView={validViews}
+                  defaultView={item.actionName === "Add" ? "add" : "view"}
+                  alertMessage={item?.ALRT_MSG}
+                />
+              }
+            />
+          );
+        })}
+      </Routes>
+
+      {/* <Routes>
         {(mutation?.data || []).map((item) => (
           <Route
             key={item.actionName}
@@ -156,13 +236,25 @@ export const DynamicGrids = () => {
               <DynamicFormWrapper
                 handleDialogClose={handleDialogClose}
                 isDataChangedRef={isDataChangedRef}
-                data={item}
+                item={item}
                 docID={docID}
+                gridData={result?.[0]}
               />
             }
           />
         ))}
-      </Routes>
+      </Routes> */}
+      {isDelete ? (
+        <PopupMessageAPIWrapper
+          MessageTitle="Confirmation"
+          Message="Are you sure to delete selected row?"
+          onActionYes={(rows) => onAcceptDelete(rows)}
+          onActionNo={() => SetDelete(false)}
+          rows={isDeleteDataRef.current}
+          open={isDelete}
+          loading={mutation.isLoading}
+        />
+      ) : null}
     </>
   );
 };

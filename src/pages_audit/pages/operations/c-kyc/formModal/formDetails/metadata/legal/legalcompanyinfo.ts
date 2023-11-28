@@ -17,7 +17,7 @@ export const company_info_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -54,8 +54,9 @@ export const company_info_meta_data = {
             label: "Commencement Date",
             placeholder: "",
             format: "dd/MM/yyyy",
+            maxDate: new Date(),
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -69,7 +70,7 @@ export const company_info_meta_data = {
             ],
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -78,9 +79,10 @@ export const company_info_meta_data = {
             name: "COMP_REG_NO",
             label: "Reg.No.",
             required: true,
+            maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -89,9 +91,10 @@ export const company_info_meta_data = {
             name: "COMP_SALES_TAX_NO",
             label: "Sales Tax No.",
             required: true,
+            maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -100,9 +103,10 @@ export const company_info_meta_data = {
             name: "COMP_EXCISE_NO",
             label: "Excise No.",
             required: true,
+            maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -111,9 +115,10 @@ export const company_info_meta_data = {
             name: "COMP_IT_NO",
             label: "IT No.",
             required: true,
+            maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -122,9 +127,10 @@ export const company_info_meta_data = {
             name: "COMP_TAN_NO",
             label: "TAN No.",
             required: true,
+            maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -133,9 +139,10 @@ export const company_info_meta_data = {
             name: "COMP_CIN_NO",
             label: "CIN No.",
             required: true,
+            maxLength: 50,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -146,7 +153,7 @@ export const company_info_meta_data = {
             placeholder: "",
             format: "dd/MM/yyyy",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -157,7 +164,7 @@ export const company_info_meta_data = {
             required: true,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -169,7 +176,7 @@ export const company_info_meta_data = {
             _optionsKey: "getCompSizedtl",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -180,7 +187,7 @@ export const company_info_meta_data = {
             required: true,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -189,9 +196,10 @@ export const company_info_meta_data = {
             name: "STAFF_STRENGTH",
             label: "Staff Strength",
             required: true,
+            maxLength: 10,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -200,9 +208,10 @@ export const company_info_meta_data = {
             name: "CIBIL_SCORE",
             label: "CIBIL MSME Rank",
             required: true,
+            maxLength: 3,
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 		
         {
@@ -213,7 +222,7 @@ export const company_info_meta_data = {
             label: "Specialization",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         
     ]
@@ -282,6 +291,13 @@ export const kyc_poa_legal_meta_data = {
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             options: () => API.getPMISCData("ADDRESS_TYPE"),
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             _optionsKey: "currentAddType",
         },
         {
@@ -376,7 +392,8 @@ export const kyc_poa_legal_meta_data = {
                       // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
                       PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
                       PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
-                      CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                      CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                    //   CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
                       DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
                       STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
                       COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
@@ -389,6 +406,13 @@ export const kyc_poa_legal_meta_data = {
             runPostValidationHookAlways: false, 
             name: "AREA_CD",
             label: "SubArea",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
@@ -511,6 +535,7 @@ export const kyc_poa_legal_meta_data = {
           render: { componentType: "checkbox"},
           name: "SAME_AS_PER",
           label: "SameAsPermanentAddress",
+          defaultValue: true,
           GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
       },
         {
@@ -619,9 +644,12 @@ export const kyc_poa_legal_meta_data = {
                       // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
                       LOC_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
                       LOC_PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
-                      LOC_CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                      LOC_DISTRICT_CD: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
-                      LOC_STATE_CD: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                      LOC_CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                    //   LOC_CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                      LOC_DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                    //   LOC_DISTRICT_CD: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                      LOC_STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                    //   LOC_STATE_CD: {value: field?.optionData[0]?.STATE_NM ?? ""},
                       LOC_COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
                       STATE_UT_CODE: {value: field?.optionData[0]?.STATE_CD ?? ""},
                       LOC_COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
@@ -641,7 +669,13 @@ export const kyc_poa_legal_meta_data = {
             },
             name: "LOC_CITY_CD",
             label: "City",
-          //   required: true,
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             isReadOnly: true,
             placeholder: "",
             type: "text",
@@ -708,7 +742,13 @@ export const kyc_poa_legal_meta_data = {
             },
             name: "LOC_PROOF_OF_ADD",
             label: "ProofofAdd",
-          //   required: true,
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             options: () => API.getPMISCData("CKYC_LOC_POA"),
             _optionsKey: "localPoA",

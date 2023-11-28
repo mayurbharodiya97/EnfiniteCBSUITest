@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse } from '@mui/material';
+import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse, Dialog } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import {GridMetaDataType} from "../../../../../../../../components/dataTableStatic/types"
@@ -9,18 +9,38 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 import { entity_detail_legal_meta_data } from '../../metadata/legal/legalentitydetails';
+import { AuthContext } from "pages_audit/auth";
+import { useMutation, useQuery } from 'react-query';
+import * as API from "../../../../api";
+import { ckyc_retrieved_meta_data } from 'pages_audit/pages/operations/c-kyc/metadata';
 // import { format } from 'date-fns';
 
 const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   const { t } = useTranslation();
+  const { authState } = useContext(AuthContext);
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
   const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [acctName, setAcctName] = useState("")
   const handlePDExpand = () => {
     setIsPDExpanded(!isPDExpanded)
+  }
+
+  const mutation: any = useMutation(API.getRetrieveData, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+
+//   useEffect(() => {
+//     console.log("asdasdasdas", mutation)
+//   }, [mutation.data])
+
+  const onCloseSearchDialog = () => {
+    setDialogOpen(false)
   }
 
     // useEffect(() => {
@@ -43,17 +63,20 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
             let newData = state?.formDatactx
             const commonData = {
                 IsNewRow: true,
-                COMP_CD: "",
-                BRANCH_CD: "",
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "",
-                REQ_CD: "",
-                SR_CD: ""
+                REQ_CD: state?.req_cd_ctx,
+                // SR_CD: "3",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                ENTRY_TYPE: "1",
             }
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
             handleColTabChangectx(state?.colTabValuectx+1)
             handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-            PODFormRef.current.handleSubmitError(NextBtnRef.current, "save")
+            // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save")
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
@@ -110,6 +133,26 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                             hideHeader={true}
                             displayMode={"new"}
                             controlsAtBottom={false}
+                            onFormButtonClickHandel={(fieldID, dependentFields) => {
+                                // console.log("form button clicked...", fieldID, dependentFields, dependentFields?.SURNAME?.value, typeof dependentFields?.SURNAME?.value)
+                                if(fieldID === "SEARCH_BTN" && dependentFields?.SURNAME?.value) {
+                                    if(dependentFields?.SURNAME?.value.trim().length>0) {
+                                        if(acctName !== dependentFields?.SURNAME?.value.trim()) {
+                                            setAcctName(dependentFields?.SURNAME?.value.trim())
+                                            let data = {
+                                                COMP_CD: authState?.companyID ?? "",
+                                                SELECT_COLUMN: {
+                                                    ACCT_NM: dependentFields?.SURNAME?.value.trim()
+                                                }
+                                            }
+                                            mutation.mutate(data)
+                                        }
+                                        setDialogOpen(true)
+                                    }                                    
+                                }
+                                // let event: any = { preventDefault: () => {} };
+                                // formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+                            }}
                         >
                             {/* {({isSubmitting, handleSubmit}) => {
                                 console.log("isSubmitting, handleSubmit", isSubmitting)
@@ -132,8 +175,44 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                 >{t("Save & Next")}</Button>
             </Grid>
 
+            {dialogOpen && <SearchListdialog 
+                open={dialogOpen} 
+                onClose={onCloseSearchDialog} 
+                data={mutation?.data} 
+                isLoading={mutation?.isLoading} 
+            />}
+
         </Grid>        
     )
 }
+
+
+export const SearchListdialog = ({open, onClose, data, isLoading}) => {
+    return (
+        <Dialog open={open} onClose={onClose}
+            PaperProps={{
+                style: {
+                    minWidth: "1000px",
+                    width: "auto",
+                    maxWidth: "1100px",
+                    height: "90%",
+                }
+            }}
+        >
+            <GridWrapper
+                key={`SearchListGrid`}
+                finalMetaData={ckyc_retrieved_meta_data as GridMetaDataType}
+                data={data ?? []}
+                setData={() => null}          
+                loading={isLoading}
+                // actions={actions}
+                // setAction={setCurrentAction}
+                // refetchData={() => refetch()}
+                // ref={myGridRef}
+            />
+        </Dialog>
+    )
+}
+
 
 export default EntityDetails;

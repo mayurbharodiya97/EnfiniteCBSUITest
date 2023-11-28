@@ -18,18 +18,71 @@ export const getDynamicFormMetaData = async ({
 
   if (status === "0") {
     const field = data[0]?.FIELD?.map((one) => {
-      const matchingProp = data[0]?.PROP.find(
+      const matchingProps = data[0]?.PROP.filter(
         (prop) => prop.LINE_ID === one.LINE_ID
       );
-      if (matchingProp) {
+      // Initialize an object to store all the matching props
+      const matchingPropsObject = {};
+      // Iterate over matchingProps and add them to the object
+      const arrayObjectRegExp = /^\[\{.*\}\]$/;
+      matchingProps.forEach(async (matchingProp) => {
+        // console.log("matchingProp", matchingProp);
+        if (
+          matchingProp.PROPS_ID === "options" &&
+          arrayObjectRegExp.test(matchingProp.PROPS_VALUE)
+        ) {
+          // Apply specific condition for the "options" PROPS_ID with the array of objects format
+
+          const parsedValue = JSON.parse(matchingProp.PROPS_VALUE);
+          matchingPropsObject[matchingProp.PROPS_ID] = parsedValue;
+        } else {
+          matchingPropsObject[matchingProp.PROPS_ID] = matchingProp.PROPS_VALUE;
+        }
+        // For that Dyanmic SQL Function call for api calling purpose
+        if (
+          matchingProp.PROPS_ID === "options" &&
+          matchingProp?.SOURCE_TYPE === "DS"
+        ) {
+          matchingPropsObject[matchingProp.PROPS_ID] = createDynOptionsFetcher(
+            matchingProp.PROPS_VALUE,
+            matchingProp.DISPLAY_VALUE,
+            matchingProp.DATA_VALUE
+          );
+        }
+        // For schemaValidation condition write
+        if (matchingProp.PROPS_ID === "schemaValidation") {
+          matchingPropsObject[matchingProp.PROPS_ID] = {
+            type: one?.COMPONENT_TYPE === "datePicker" ? "date" : "string",
+            rules: [
+              {
+                name: matchingProp.PROPS_VALUE,
+                params: [matchingProp.SCHEMA_MESSAGE],
+              },
+            ],
+          };
+        }
+        // For dependentFields string to array convert
+        if (matchingProp.PROPS_ID === "dependentFields") {
+          matchingPropsObject[matchingProp.PROPS_ID] =
+            matchingProp.PROPS_VALUE.split(",");
+        }
+        // value get in string so convert to boolean
+        if (matchingProp.PROPS_VALUE === "true") {
+          matchingPropsObject[matchingProp.PROPS_ID] = true;
+        } else if (matchingProp.PROPS_VALUE === "false") {
+          matchingPropsObject[matchingProp.PROPS_ID] = false;
+        }
+      });
+      if (matchingProps.length > 0) {
         return {
           render: {
             componentType: one?.COMPONENT_TYPE,
           },
           name: one?.FIELD_NAME,
           label: one?.FIELD_LABEL,
-          type: "text",
+          // type: "text",
           //@ts-ignore
+          sequence: one?.TAB_SEQ,
           required: one?.FIELD_REQUIRED,
           GridProps: {
             xs: one?.XS,
@@ -38,14 +91,7 @@ export const getDynamicFormMetaData = async ({
             lg: one?.LG,
             xl: one?.XL,
           },
-          ...{ [matchingProp.PROPS_ID]: matchingProp.PROPS_VALUE },
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [
-          //     { name: "required", params: ["Screen Name is required."] },
-          //     { name: "SCREEN_NAME", params: ["Please enter Screen Name."] },
-          //   ],
-          // },
+          ...matchingPropsObject, // Spread all matching props into the object
         };
       } else {
         return {
@@ -54,10 +100,10 @@ export const getDynamicFormMetaData = async ({
           },
           name: one?.FIELD_NAME,
           label: one?.FIELD_LABEL,
-          type: "text",
+          sequence: one?.TAB_SEQ,
+          // type: "text",
           //@ts-ignore
           required: one?.FIELD_REQUIRED,
-
           GridProps: {
             xs: one?.XS,
             sm: one?.SM,
@@ -65,14 +111,6 @@ export const getDynamicFormMetaData = async ({
             lg: one?.LG,
             xl: one?.XL,
           },
-
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [
-          //     { name: "required", params: ["Screen Name is required."] },
-          //     { name: "SCREEN_NAME", params: ["Please enter Screen Name."] },
-          //   ],
-          // },
         };
       }
     });
@@ -82,12 +120,14 @@ export const getDynamicFormMetaData = async ({
       form: {
         name: data[0]?.FORM_NAME,
         label: data[0]?.FORM_LABEL,
-        resetFieldOnUnmount: data[0]?.RESETFIELDONUNMOUNT,
+        // always set false value otherwsie re render form
+        resetFieldOnUnmount:
+          data[0]?.RESETFIELDONUNMOUNT === "Y" ? true : false,
         validationRun: data[0]?.VALIDATIONRUN,
         submitAction: data[0]?.SUBMITACTION,
         // allowColumnHiding: true,
         render: {
-          ordering: "auto",
+          ordering: "sequence",
           renderType: "simple",
           gridConfig: {
             item: {
@@ -122,17 +162,19 @@ export const getDynamicFormMetaData = async ({
           },
         },
       },
+
       fields: field,
       // fields: filter,
     };
+    console.log("result", result);
     return result;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getDynamicFormData = () => async (formData: any) => {
+export const getDynamicFormData = (DocID) => async (formData: any) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "FORMDML",
+    `/commonMasterServiceAPI/DOFORMDML/${DocID}`,
     formData
   );
   if (status === "0") {
@@ -140,4 +182,32 @@ export const getDynamicFormData = () => async (formData: any) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
+};
+const createDynOptionsFetcher = (PROPS_VALUE, DISPLAY_VALUE, DATA_VALUE) => {
+  const GetOptionDynData = async (_, __, ___, dependent) => {
+    // console.log("dependent", dependent?.user?.id ?? "");
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher(
+        `/enfinityCommonServiceAPI/GETDYNAMICDATA/${PROPS_VALUE}`,
+        { USER_ID: dependent?.user?.id ?? "" }
+      );
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ ...item }) => {
+          return {
+            value: item[DATA_VALUE],
+            label: item[DISPLAY_VALUE],
+            ...item,
+          };
+        });
+      }
+      // console.log("responseData", responseData);
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
+  return GetOptionDynData;
 };

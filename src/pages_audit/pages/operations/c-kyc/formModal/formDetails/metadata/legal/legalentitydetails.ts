@@ -17,7 +17,7 @@ export const entity_detail_legal_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -53,9 +53,39 @@ export const entity_detail_legal_meta_data = {
             name: "SURNAME",
             label: "Entity Name",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // placeholder: "Prefix",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {md:4.5, lg:3.6, xl:3},
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                    return "Please remove extra space";  
+                } else if(columnValue.value !== columnValue.value.trimStart()) {
+                  return "Please remove extra space from the starting";
+                } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                  return "Please remove extra space from the ending";
+                }
+                return "";
+            },
+        },
+        {
+            render: {
+              componentType: "formbutton",
+            },
+            name: "SEARCH_BTN",
+            label: "Search",
+            endsIcon: "Search",
+            rotateIcon: "scale(1.5)",
+            placeholder: "",
+            type: "text",
+            dependentFields: ["SURNAME"],
+            GridProps: {md:1.5, lg:1.2, xl:1},
         },
         // {
         //     render: {
@@ -75,12 +105,18 @@ export const entity_detail_legal_meta_data = {
             },
             name: "TRADE_CD",
             label: "Occupation",
-            required: true,
             options: (dependentValue, formState, _, authState) => API.getOccupationDTL(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "occupationOpdtl",
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // placeholder: "First Name",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -93,7 +129,7 @@ export const entity_detail_legal_meta_data = {
             _optionsKey: "getSubCustTypeOpdtl",
             // placeholder: "Middle Name",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -105,7 +141,7 @@ export const entity_detail_legal_meta_data = {
             _optionsKey: "GroupOptionsdtl",
             // placeholder: "Last Name",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -117,7 +153,7 @@ export const entity_detail_legal_meta_data = {
             _optionsKey: "ratingOpdtl",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -129,7 +165,7 @@ export const entity_detail_legal_meta_data = {
             maxDate: new Date(),
             format: "dd/MM/yyyy",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -138,12 +174,19 @@ export const entity_detail_legal_meta_data = {
             name: "EXPLICIT_TDS",
             label: "Explicit TDS",
             options: [
-                {label: "YES", value: "YES"},
-                {label: "NO", value: "NO"},
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"},
             ],
+            required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -153,7 +196,7 @@ export const entity_detail_legal_meta_data = {
             label: "GSTIN",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -165,7 +208,7 @@ export const entity_detail_legal_meta_data = {
             format: "dd/MM/yyyy",
             maxDate: new Date(),
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -177,7 +220,7 @@ export const entity_detail_legal_meta_data = {
             _optionsKey: "kycRiskCategOpdtl",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -189,7 +232,7 @@ export const entity_detail_legal_meta_data = {
             _optionsKey: "countryOptionsdtl",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -201,7 +244,7 @@ export const entity_detail_legal_meta_data = {
             _optionsKey: "ResisdenceStatusdtl",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -211,7 +254,7 @@ export const entity_detail_legal_meta_data = {
             label: "GIIN",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -221,7 +264,7 @@ export const entity_detail_legal_meta_data = {
             label: "TIN",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -233,7 +276,7 @@ export const entity_detail_legal_meta_data = {
             _optionsKey: "TINIssuingCountriesdtl",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },        
         {
             render: {
@@ -241,6 +284,7 @@ export const entity_detail_legal_meta_data = {
             },
             name: "CCIL_ID",
             label: "CCIL ID",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -248,6 +292,7 @@ export const entity_detail_legal_meta_data = {
             },
             name: "LEI_NO",
             label: "LEI NO.",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -255,6 +300,7 @@ export const entity_detail_legal_meta_data = {
             },
             name: "LEI_EXPIRY_DT",
             label: "LEI Expiry Date",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 		{
             render: {
@@ -268,7 +314,7 @@ export const entity_detail_legal_meta_data = {
             ],
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },        		
 		{
             render: {
@@ -278,7 +324,7 @@ export const entity_detail_legal_meta_data = {
             label: "Parent Company Name",            
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },        		
     ]
 }

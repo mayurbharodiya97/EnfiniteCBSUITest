@@ -45,6 +45,7 @@ const authAPI = () => {
       BROWSER_FINGERPRINT: browserFingerPrint,
       MACHINE_NAME: "Auto",
       BRANCH_CD: branchCode,
+      THROUGH_CHANNEL: "E_CBS",
     };
   };
   const setToken = (argaccessToken) => {

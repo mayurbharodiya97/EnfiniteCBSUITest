@@ -1,3 +1,4 @@
+import { GridMetaDataType } from "components/dataTableStatic";
 import * as API from "../../../../api";
 export const attestation_detail_meta_data = {
     form: {
@@ -16,7 +17,7 @@ export const attestation_detail_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -59,23 +60,8 @@ export const attestation_detail_meta_data = {
             },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
-        },
-        {
-            render: {
-                componentType: "autocomplete",
-            },
-            options: [
-                {label: "Risk Category 1", value: "riskcat1"},
-                {label: "Risk Category 2", value: "riskcat2"}
-            ],
-            name: "RISK_CATEGORY",
-            label: "RiskCategory",
-            isReadOnly: true,
-            // required: true,
-            placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -96,7 +82,25 @@ export const attestation_detail_meta_data = {
             },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+        },
+        {
+            render: {
+                componentType: "select",
+            },
+            // options: [
+            //     {label: "Risk Category 1", value: "riskcat1"},
+            //     {label: "Risk Category 2", value: "riskcat2"}
+            // ],
+            options: () => API.getPMISCData("CKYC_RISK_CATEG"),
+            _optionsKey: "ckycRiskCategOp",
+            name: "RISK_CATEGORY",
+            label: "RiskCategory",
+            isReadOnly: true,
+            // required: true,
+            placeholder: "",
+            type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -106,7 +110,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationEmpCode",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -116,7 +120,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationEmpName",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -126,7 +130,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationEmpDesignation",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -136,7 +140,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationBranch",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -146,7 +150,7 @@ export const attestation_detail_meta_data = {
             label: "KYCVerificationDate",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -156,7 +160,7 @@ export const attestation_detail_meta_data = {
             label: "OrganizationCode",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -166,7 +170,7 @@ export const attestation_detail_meta_data = {
             label: "OrganizationName",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -176,7 +180,7 @@ export const attestation_detail_meta_data = {
             label: "PlaceOfDeclaration",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -186,7 +190,165 @@ export const attestation_detail_meta_data = {
             label: "DateOfDeclaration",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
     ]
 }
+
+export const attest_history_meta_data: GridMetaDataType = {
+    gridConfig: {
+      dense: true,
+      gridLabel: "Attestation Hsitory",
+      rowIdColumn: "CUSTOMER_ID",
+      defaultColumnConfig: {
+        width: 150,
+        maxWidth: 250,
+        minWidth: 100,
+      },
+      allowColumnReordering: true,
+      disableSorting: false,
+      hideHeader: false,
+      disableGroupBy: true,
+      enablePagination: true,
+      pageSizes: [10, 20, 30],
+      defaultPageSize: 10,
+      containerHeight: {
+        min: "42vh",
+        max: "65vh",
+      },
+      allowFilter: false,
+      allowColumnHiding: false,
+    },
+    // filters: [],
+    columns: [
+      {
+        accessor: "RCV_DOC_TYPE",
+        columnName: "TypeOfDocSubmitted",
+        sequence: 1,
+        alignment: "left",
+        componentType: "default",
+        width: 300,
+        minWidth: 300,
+        maxWidth: 580,
+      },
+      {
+        accessor: "RISK_CATEG",
+        columnName: "RiskCategory",
+        sequence: 2,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "IPV_FLAG",
+        columnName: "KYCVerificationFlag",
+        sequence: 3,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "IPV_EMP_CODE",
+        columnName: "KYCVerificationEmpCode",
+        sequence: 4,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "LAST_ENTERED_BY",
+        columnName: "Last Entered By",
+        sequence: 5,
+        alignment: "left",
+        componentType: "default",
+        width: 340,
+        minWidth: 240,
+        maxWidth: 340,
+      },
+      {
+        accessor: "IPV_EMP_DESIG",
+        columnName: "KYCVerificationEmpDesignation",
+        sequence: 6,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "IPV_BRANCH",
+        columnName: "Branch Name",
+        sequence: 7,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "IPV_DATE",
+        columnName: "IPV Date",
+        sequence: 8,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "ORG_CODE",
+        columnName: "ORG. Code",
+        sequence: 9,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "ORG_NAME",
+        columnName: "ORG. Name",
+        sequence: 10,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "PLACE_OF_DECLARE",
+        columnName: "PlaceOfDeclaration",
+        sequence: 11,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+      {
+        accessor: "DATE_OF_DECLARE",
+        columnName: "DateOfDeclaration",
+        sequence: 12,
+        alignment: "left",
+        componentType: "default",
+        width: 140,
+        minWidth: 140,
+        maxWidth: 180,
+      },
+    //   {
+    //     columnName: "Remarks",
+    //     componentType: "buttonRowCell",
+    //     accessor: "REMARKS",
+    //     sequence: 10,
+    //     buttonLabel: "Remarks",
+    //     // isVisible: false,
+    //     // __EDIT__: { isVisible: true },
+    //   },
+    ],
+  };

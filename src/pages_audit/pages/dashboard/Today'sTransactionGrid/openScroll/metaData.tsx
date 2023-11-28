@@ -37,18 +37,6 @@ export const scrollMetaData = {
       width: 120,
       type: "default",
     },
-    {
-      columnName: "Credit",
-      accessor: "CREDIT",
-      width: 150,
-      color: "green",
-      isDisplayTotal: true,
-      Cell: components.NumberCell,
-      alignment: "right",
-      // currencyRefColumn: "CURR_CD",
-      // isCurrencyCode: true,
-      // symbolPosi: "end",
-    },
 
     {
       columnName: "Debit",
@@ -60,6 +48,18 @@ export const scrollMetaData = {
       alignment: "right",
       // isCurrencyCode: true,
       // currencyRefColumn: "CURR_CD",
+      // symbolPosi: "end",
+    },
+    {
+      columnName: "Credit",
+      accessor: "CREDIT",
+      width: 150,
+      color: "green",
+      isDisplayTotal: true,
+      Cell: components.NumberCell,
+      alignment: "right",
+      // currencyRefColumn: "CURR_CD",
+      // isCurrencyCode: true,
       // symbolPosi: "end",
     },
     {

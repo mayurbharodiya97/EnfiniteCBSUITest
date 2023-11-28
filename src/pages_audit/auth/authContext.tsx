@@ -183,6 +183,7 @@ export const AuthProvider = ({ children }) => {
     }
     queryClient.clear();
     if (window.location.pathname === "/cbsenfinity/forgotpassword") {
+    } else if (window.location.pathname === "/cbsenfinity/forgot-totp") {
     } else {
       navigate("/cbsenfinity/login");
     }

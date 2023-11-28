@@ -7,13 +7,15 @@ import {
 } from '../../metadata/individual/otheraddressdetails';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
+import { AuthContext } from "pages_audit/auth";
 
 const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+    const { authState } = useContext(AuthContext);
     const [isNextLoading, setIsNextLoading] = useState(false)
     const { t } = useTranslation();
-    const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
     const OtherAddDTLFormRef = useRef<any>("");
     const myGridRef = useRef<any>(null);
     const OtherAddDTLSubmitHandler = (
@@ -21,40 +23,105 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
         displayData,
         endSubmit,
         setFieldError,
-        actionFlag
+        actionFlag,
+        hasError
     ) => {
         setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
-        if(data) {
+        if(data && !hasError) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
             let newData = state?.formDatactx
             const commonData = {
                 IsNewRow: true,
-                COMP_CD: "",
-                BRANCH_CD: "",
-                REQ_FLAG: "",
-                REQ_CD: "",
-                SR_CD: ""
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                // SR_CD: "3",
+                CONFIRMED: "N",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
             }
             newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
+            handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             // handleColTabChangectx(6)
             // handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
-        }   
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
         endSubmit(true)
-        handleColTabChangectx(state?.colTabValuectx+1)
         setIsNextLoading(false)
     }
+    const OtherAddDTLSubmitHandler2 = (
+        data: any,
+        displayData,
+        endSubmit,
+        setFieldError,
+        actionFlag,
+        hasError
+    ) => {
+        setIsNextLoading(true)
+        // console.log("qweqweqweo", data)     
+        if(data && !hasError) {
+            // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
+
+            let newData = state?.formDatactx
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                // SR_CD: "3",
+                CONFIRMED: "N",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+            }
+
+            let newFormatOtherAdd = data?.OTHER_ADDRESS.map((el, i) => {
+                return {...el, ...commonData
+                    // , SR_CD: i+1
+                }
+            })
+            // data["OTHER_ADDRESS"] = newFormatOtherAdd
+
+            newData["OTHER_ADDRESS"] = [...newFormatOtherAdd]
+            // newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...newFormatOtherAdd}
+            handleFormDataonSavectx(newData)
+            handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            // handleColTabChangectx(6)
+            // handleColTabChangectx(state?.colTabValuectx+1)
+
+            // setIsNextLoading(false)
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
+        endSubmit(true)
+        setIsNextLoading(false)
+    }
+    // const initialVal = useMemo(() => {
+    //     return state?.isFreshEntryctx
+    //             ? state?.formDatactx["OTHER_ADDRESS"]
+    //                 ? state?.formDatactx["OTHER_ADDRESS"]
+    //                 : {}
+    //             : state?.retrieveFormDataApiRes
+    //                 ? state?.retrieveFormDataApiRes["OTHER_ADDRESS"]
+    //                 : {}
+    // }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
     const initialVal = useMemo(() => {
         return state?.isFreshEntryctx
                 ? state?.formDatactx["OTHER_ADDRESS"]
-                    ? state?.formDatactx["OTHER_ADDRESS"]
-                    : {}
+                    ? {OTHER_ADDRESS: state?.formDatactx["OTHER_ADDRESS"]}
+                    : {OTHER_ADDRESS: [{}]}
                 : state?.retrieveFormDataApiRes
-                    ? state?.retrieveFormDataApiRes["OTHER_ADDRESS"]
+                    ? {OTHER_ADDRESS: state?.retrieveFormDataApiRes["OTHER_ADDRESS"]}
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
@@ -81,7 +148,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                 <Grid item>
                     <FormWrapper 
                         ref={OtherAddDTLFormRef}
-                        onSubmitHandler={OtherAddDTLSubmitHandler}
+                        onSubmitHandler={OtherAddDTLSubmitHandler2}
                         // initialValues={state?.formDatactx["OTHER_ADDRESS"] ?? {}}
                         initialValues={initialVal}
                         key={"other-address-form-kyc"+initialVal}
@@ -102,7 +169,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
-                        OtherAddDTLFormRef.current.handleSubmit(e, "save")
+                        OtherAddDTLFormRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>

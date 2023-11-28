@@ -30,6 +30,7 @@ const initialState:any  = {
     categoryValuectx: null,
     constitutionValuectx: null,
     accTypeValuectx: null,
+    kycNoValuectx: null,
     setCategoryValue: () => {},
     setConstitutionValuectx: () => {},
     setAccTypeValuectx: () => {},
@@ -40,7 +41,12 @@ const initialState:any  = {
     customerIDctx: "",
     formDataDraftctx: {},
     isFreshEntryctx: false,
-    REQ_CD: "375",
+    req_cd_ctx: "",
+
+    photoBlobctx: null,
+    photoBase64ctx: null,
+    signBlobctx: null,
+    signBase64ctx: null,
 
 
     steps: {
@@ -82,6 +88,21 @@ const Reducer = (state, action) => {
                 ...action.payload
             };
         case "update_accTypeValuectx":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "update_kycNoValuectx":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "update_req_cd_ctxctx":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "update_photo_signctx":
             return {
                 ...state,
                 ...action.payload
@@ -157,6 +178,7 @@ const CkycProvider = ({children}) => {
                 categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
                 constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
                 isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+                customerIDctx: recordData[0]?.id
                 // retrieveFormDataApiRes: retrieveFormdata,
                 
                 // categConstitutionValuectx: "kuashd",
@@ -188,7 +210,13 @@ const CkycProvider = ({children}) => {
                 formDatactx: {},
                 steps: {},
 
-                retrieveFormDataApiRes: {}
+                retrieveFormDataApiRes: {},
+                req_cd_ctx: "",
+                customerIDctx: "",
+                photoBlobctx: null,
+                photoBase64ctx: null,
+                signBlobctx: null,
+                signBase64ctx: null,
             }
         })
     }
@@ -251,6 +279,45 @@ const CkycProvider = ({children}) => {
         })
     }
 
+    const handleKycNoValctx = (value) => {
+        dispatch({
+            type: "update_kycNoValuectx",
+            payload: {
+                kycNoValuectx: value
+            }
+        })
+    }
+
+    const handleReqCDctx = (value) => {
+        dispatch({
+            type: "update_req_cd_ctxctx",
+            payload: {
+                req_cd_ctx: value
+            }
+        })
+    }    
+
+    const handlePhotoOrSignctx = (blob:any, base64:string, img:string) => {
+        // console.log("async called ctx", blob, img, base64)
+        if(img == "photo") {
+            dispatch({
+                type: "update_photo_signctx",
+                payload: {
+                    photoBlobctx: blob,
+                    photoBase64ctx: base64,
+                }
+            })
+        } else if(img === "sign") {
+            dispatch({
+                type: "update_photo_signctx",
+                payload: {
+                    signBlobctx: blob,
+                    signBase64ctx: base64,                
+                }
+            })
+        }
+    }    
+
     const handleSidebarExpansionctx = () => {
         dispatch({
             type: "update_isSidebarExpandedctx",
@@ -311,19 +378,36 @@ const CkycProvider = ({children}) => {
     }
 
     const handleFormDataonRetrievectx = (data) => {
+        // console.log("retrieved form dataaa", data)
+        // const categConstitutionValue = {
+        //     value: recordData[0]?.data?.CATEGORY_CODE,
+        //     label: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[0],
+        //     CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
+        //     CONSTITUTION_NAME: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[1],
+        // }
+
+        // categConstitutionValuectx: categConstitutionValue,
+        // categoryValuectx: recordData[0]?.data?.CATEGORY_CODE, // 05  
+        // constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE, // 01
+        // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE // I, 
+        // isFreshEntryctx: false,
+
+
         // let apiRes = {...data[0]}
         // console.log("wqkdhqiwuheqieqwdata", data)
         dispatch({
             type: "update_retrieveFormData",
             payload: {
-                retrieveFormDataApiRes: {...data}
+                retrieveFormDataApiRes: {...data},
+                accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE, //ACCT_TYPE
+
             }
         })
     }
 
     const handlecustomerIDctx = (data) => {
         dispatch({
-            type: "",
+            type: "update_customerIDctx",
             payload: {
                 customerIDctx: data
             }
@@ -379,7 +463,7 @@ const CkycProvider = ({children}) => {
             value={{
                 state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
                 handleApiRes, handleCustCategoryRes,
-                handleCategoryChangectx, handleAccTypeVal, handleSidebarExpansionctx, handleColTabChangectx, 
+                handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
                 handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handlecustomerIDctx, handleStepStatusctx, resetCkycctx
             }}
         >

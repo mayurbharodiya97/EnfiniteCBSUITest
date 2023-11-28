@@ -268,7 +268,7 @@ export const PasswordRotation = ({
               style={{
                 border: "var(--theme-color3)1px solid",
                 color: "var(--theme-color3)",
-                background: "var(--theme-color2)",
+                // pebbackground: "var(--theme-color2)",
                 borderRadius: "10px",
               }}
             >

@@ -17,7 +17,7 @@ export const nri_detail_meta_data = {
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -47,9 +47,10 @@ export const nri_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "Visa_Details",
+            name: "VISA_DETAIL",
             label: "VisaDetails",
             placeholder: "",
+            maxLength: 50,
             type: "text",
             required: true,
             schemaValidation: {
@@ -58,15 +59,17 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "Visa_Issue_By",
+            name: "VISA_ISSUE_BY",
             label: "VisaIssueBy",
             placeholder: "",
+            maxLength: 50,
             type: "text",
             required: true,
             schemaValidation: {
@@ -75,14 +78,15 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "datePicker",
             },
-            name: "Visa_Issue_Date",
+            name: "VISA_ISSUE_DT",
             label: "VisaIssueDate",
+            maxDate: new Date(),
             required: true,
             schemaValidation: {
                 type: "string",
@@ -93,15 +97,16 @@ export const nri_detail_meta_data = {
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "datePicker",
             },
-            name: "Visa_Expiry_Date",
+            name: "VISA_EXPIRY_DT",
             label: "VisaExpiryDate",
             required: true,
+            minDate: new Date(),
             schemaValidation: {
               type: "string",
               rules: [
@@ -111,13 +116,13 @@ export const nri_detail_meta_data = {
             format: "dd/MM/yyyy",
             // placeholder: "",
             // type: "datePicker",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "autocomplete",
             },
-            name: "Domestic_Risk",
+            name: "DOMESTIC_RISK",
             label: "DomesticRisk",
             options: () => API.getPMISCData("DOMESTIC_RISK"),
             _optionsKey: "DomesticRiskTypes",
@@ -130,13 +135,13 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "autocomplete",
             },
-            name: "Country_Of_Risk",
+            name: "COUNTRY_OF_RISK",
             label: "CountryOfRisk",
             options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "CountryRiskTypes",
@@ -149,13 +154,13 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "autocomplete",
             },
-            name: "Cross_Border_Risk",
+            name: "CROSS_BORDER_RISK",
             label: "CrossBorderRisk",
             options: () => API.getPMISCData("CROSS_BORDER"),
             _optionsKey: "CrossBorderRiskTypes",
@@ -168,17 +173,17 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
             },
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "autocomplete",
             },
-            name: "Visually_Impaired",
+            name: "VISUALLY_IMPAIRED",
             label: "VisuallyImpaired",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: [
                 {label: "YES", value: "Y"},
                 {label: "NO", value: "N"},
@@ -209,7 +214,7 @@ export const nri_detail_meta_data = {
                 {label: "YES", value: "Y"},
                 {label: "NO", value: "N"}
             ],
-            name: "Customer_Evaluation_Required",
+            name: "CUSTOMER_EVALUATION_FLAG",
             label: "CustomerEvaluationRequired",
             required: true,
             schemaValidation: {
@@ -220,7 +225,7 @@ export const nri_detail_meta_data = {
             },
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -228,12 +233,11 @@ export const nri_detail_meta_data = {
             },
             options: (dependentValue, formState, _, authState) => API.getRelationshipManagerOptions(authState?.companyID),          
             _optionsKey: "RelManager",  
-            name: "Relationship_Manager",
+            name: "RELATIONSHIP_MANAGER",
             label: "RelationshipManager",
             placeholder: "",
             type: "text",
-            disabled: true,
-            GridProps: {xs:12, sm:4.5, md: 4, lg: 3.5, xl:2.5},
+            GridProps: {xs:12, sm:6, md: 5, lg: 4, xl:3},
         }
     ]
 }

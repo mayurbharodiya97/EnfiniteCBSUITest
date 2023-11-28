@@ -25,31 +25,8 @@ export const DynamicGridConfigGridMData: GridMetaDataType = {
     allowRowSelection: false,
     isCusrsorFocused: true,
   },
-  filters: [
-    // {
-    //   accessor: "TITLE",
-    //   columnName: "Title",
-    //   filterComponentType: "valueFilter",
-    //   gridProps: {
-    //     xs: 12,
-    //     md: 12,
-    //     sm: 12,
-    //   },
-    // },
-  ],
+  filters: [],
   columns: [
-    // {
-    //   accessor: "TRAN_CD",
-    //   columnName: "Serial No",
-    //   sequence: 1,
-    //   alignment: "right",
-    //   componentType: "default",
-    //   width: 90,
-    //   minWidth: 50,
-    //   maxWidth: 150,
-    //   //isAutoSequence: true,
-    // },
-
     {
       accessor: "DOC_CD",
       columnName: "Document CD",
@@ -80,26 +57,17 @@ export const DynamicGridConfigGridMData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 200,
     },
-    {
-      accessor: "DOC_GROUP",
-      columnName: "Document Group",
-      sequence: 2,
-      alignment: "left",
-      componentType: "default",
-      width: 130,
-      minWidth: 100,
-      maxWidth: 150,
-    },
-    {
-      accessor: "RETRIEVAL_TYPE",
-      columnName: "Retrieval Type",
-      sequence: 3,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 120,
-      maxWidth: 200,
-    },
+    // {
+    //   accessor: "DOC_GROUP",
+    //   columnName: "Document Group",
+    //   sequence: 2,
+    //   alignment: "left",
+    //   componentType: "default",
+    //   width: 130,
+    //   minWidth: 100,
+    //   maxWidth: 150,
+    // },
+
     {
       accessor: "ENTERED_BY",
       columnName: "Created By",

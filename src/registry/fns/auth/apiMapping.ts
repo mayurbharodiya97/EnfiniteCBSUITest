@@ -16,7 +16,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETMISCVALUE: {
-    url: "adminPanelCommonServiceAPI/GETMISCVALUE",
+    url: "/enfinitylCommonServiceAPI/GETMISCVALUE",
     packageName: "",
   },
   GETLOGINIMGDATA: {
@@ -183,8 +183,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUSRDASHBOX",
     packageName: "",
   },
-  GETBOXDML: {
-    url: "dashboardServiceAPI/GETBOXDML",
+  DOBOXDML: {
+    url: "dashboardServiceAPI/DOBOXDML",
     packageName: "",
   },
   GETQUICKVIEWSCREEN: {
@@ -356,10 +356,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CUSTOMERDEPENDENCYDTL",
     packageName: "",
   },
-  GETDYNAMICGRIDMETADATA: {
-    url: "commonMasterServiceAPI/GETDYNAMICGRIDMETADATA",
-    packageName: "",
-  },
   GETTBGMENUGRPLIST: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGMENUGRPLIST",
     packageName: "",
@@ -424,10 +420,10 @@ export const ActionWiseAPIConfiguration = {
     url: "commonMasterServiceAPI/GETDYNFORMGRIDMETADATA",
     packageName: "",
   },
-  FORMDML: {
-    url: "commonMasterServiceAPI/FORMDML",
-    packageName: "",
-  },
+  // FORMDML: {
+  //   url: "commonMasterServiceAPI/FORMDML",
+  //   packageName: "",
+  // },
   GETDBOWNERLIST: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETDBOWNERLIST",
     packageName: "",
@@ -480,8 +476,89 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTDOCUMENT",
     packageName: "",
   },
+  GETLIMITENTRY: {
+    url: "/accountServiceAPI/GETLIMITENTRY",
+    packageName: "",
+  },
+  DOCHEQUEBKISSUE: {
+    url: "/accountServiceAPI/DOCHEQUEBKISSUE",
+    packageName: "",
+  },
+  GETFORMMETALIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFORMMETALIST",
+    packageName: "",
+  },
+  GETTBGGRIDPARADATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTBGGRIDPARADATA",
+    packageName: "",
+  },
+  GETDYNAPILIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDYNAPILIST",
+    packageName: "",
+  },
+
+  GETDROPDOWNCONFIG: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDROPDOWNCONFIG",
+    packageName: "",
+  },
+  GETDDLBSOURCELIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDLBSOURCELIST",
+    packageName: "",
+  },
+  DODROPDOWNDML: {
+    url: "/commonMasterServiceAPI/DODROPDOWNDML",
+    packageName: "",
+  },
+  GETDROPDOWNDATA: {
+    url: "/commonMasterServiceAPI/GETDROPDOWNDATA",
+    packageName: "",
+  },
+  GETSTOCKDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOCKDATA",
+    packageName: "",
+  },
+  GETCUSTNOTIFMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTNOTIFMST",
+    packageName: "",
+  },
+  GETSTOPPAYDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOPPAYDATA",
+    packageName: "",
+  },
+  GETLIENDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENDATA",
+    packageName: "",
+  },
+  GETCUSTOMERHISTORY: {
+    url: "/customerServiceAPI/GETCUSTOMERHISTORY",
+    packageName: "",
+  },
+  GETCUSTATTESTHISDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTATTESTHISDTL",
+    packageName: "",
+  },
   GETSDCLIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSDCLIST",
+    packageName: "",
+  },
+  GETCUSTATTESTRITDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTATTESTRITDTL",
+    packageName: "",
+  },
+  GETCUSTIMGHISMST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTIMGHISMST",
+    packageName: "",
+  },
+  GETVIEWDTL: {
+    url: "/customerServiceAPI/GETVIEWDTL",
+    packageName: "",
+  },
+  GETFIELDLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFIELDLIST",
+    packageName: "",
+  },
+  DOAPICONFIGDATA: {
+    url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
     packageName: "",
   },
   GETTRXLIST: {

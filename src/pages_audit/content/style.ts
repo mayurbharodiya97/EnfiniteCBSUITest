@@ -13,7 +13,9 @@ export const useStyles = makeStyles((theme: any) => ({
   container: {
     // padding: theme.spacing(2),
     height: "100px",
-    marginTop: "70px",
+    // changes from bhavyata for grid ui
+    // marginTop: "70px",
+    marginTop: "57px",
     // display: "auto",
     // height: `calc(100vh - 109px)`,
   },

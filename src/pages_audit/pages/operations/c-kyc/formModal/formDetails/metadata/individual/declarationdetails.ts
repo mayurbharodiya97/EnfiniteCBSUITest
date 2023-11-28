@@ -51,7 +51,8 @@ export const declaration_meta_data = {
           label: "DeclarationReceived",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        //   GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           defaultValue: "N",
           options: [
               {label: "FOR FATCA", value: "Y"},
@@ -67,7 +68,7 @@ export const declaration_meta_data = {
         label: "DeclarationReceivedDate",
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -78,7 +79,7 @@ export const declaration_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
         render: {
@@ -86,9 +87,16 @@ export const declaration_meta_data = {
         },
         name: "DATE_OF_COMMENCEMENT",
         label: "DateOfIncorporation",
+        required: true,
+        schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
         // placeholder: "",
         // type: "datePicker",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },      
       {
           render: {
@@ -98,7 +106,14 @@ export const declaration_meta_data = {
           label: "PlaceOfIncorporation",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -107,8 +122,15 @@ export const declaration_meta_data = {
           name: "TIN",
           label: "TIN",
           placeholder: "",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -118,9 +140,16 @@ export const declaration_meta_data = {
           label: "CountryOfIncorporation",
           options: (dependentValue, formState, _, authState) => API.getCountryOptions(authState?.companyID, authState?.user?.branchCode),
           _optionsKey: "CountriesOfIncorporation",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -131,8 +160,15 @@ export const declaration_meta_data = {
           name: "TIN_ISSUING_COUNTRY",
           label: "TINIssuingCountry",
           placeholder: "",
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+          },
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
   ]
 }

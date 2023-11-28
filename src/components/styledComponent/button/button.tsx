@@ -9,8 +9,7 @@ const GradientButtonCustom = withStyles({
     background: "var(--theme-color3)",
     border: 0,
     //Comment By Bhavyata to Change color on OTP verify screen.
-    // color: "#fff !important",
-    color: "#fff",
+    // color: "#fff",
     fontWeight: 700,
     minWidth: "90px",
     width: "fit-content",
@@ -36,17 +35,17 @@ const GradientButtonCustom = withStyles({
 })(Button);
 
 const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
-  const { starticon, endicon, rotateIcon, ...other } = props;
+  const { starticon, endicon, rotateIcon, color, ...other } = props;
   const FormContextData = useContext(FormContext);
   let FormButtonCicular =
     FormContextData?.onFormButtonCicular?.onFormButtonCicular;
 
   let StartIcon = Icons[starticon] || null;
   let EndIcon = Icons[endicon] || null;
-
   return (
     <GradientButtonCustom
       sx={{
+        color: color ? color : "#fff !important",
         "&:hover": {
           // background: "#4462bbbd",
           backgroundColor: "var(--theme-color3)",

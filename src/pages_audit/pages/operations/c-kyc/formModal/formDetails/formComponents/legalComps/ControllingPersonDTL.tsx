@@ -1,76 +1,103 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button } from '@mui/material';
+import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button, Dialog, DialogTitle } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
-// import { declaration_meta_data } from '../../metadata/individual/declarationdetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 import * as API from "../../../../api";
 import { corporate_control_dtl_meta_data } from '../../metadata/legal/legal_corporate_control_dtl_meta_data';
-import { declaration_meta_data } from '../../metadata/individual/declarationdetails';
 // import { format } from 'date-fns';
+import { AuthContext } from "pages_audit/auth";
+import { useMutation } from 'react-query';
+import { personal_individual_detail_metadata } from '../../metadata/individual/personaldetails';
 
 const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
-  const {state, handleFormDataonSavectx, handleColTabChangectx} = useContext(CkycContext)
-  const DeclarationFormRef = useRef<any>("")
+  const { authState } = useContext(AuthContext);
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext)
+  const formRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
-  const [currentTabFormData, setCurrentTabFormData] = useState({declaration_details: {}})
-  const DeclarationSubmitHandler = (
+  const [acctName, setAcctName] = useState("")
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const onCloseSearchDialog = () => {
+    setDialogOpen(false)
+  }
+  const mutation: any = useMutation(API.getControllCustInfo, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+  const onSubmitHandler = (
     data: any,
     displayData,
     endSubmit,
     setFieldError,
-    actionFlag
+    actionFlag,
+    hasError
    ) => {
-    setIsNextLoading(true)
-    console.log("qweqweqwe", data)     
-    if(data) {
-        // if(Boolean(data["FATCA_DT"])) {
-        //     data["FATCA_DT"] = format(new Date(data["FATCA_DT"]), "dd-MMM-yyyy")
-        // }
-        // if(Boolean(data["DATE_OF_COMMENCEMENT"])) {
-        //     data["DATE_OF_COMMENCEMENT"] = format(new Date(data["DATE_OF_COMMENCEMENT"]), "dd-MMM-yyyy")
-        // }
+        setIsNextLoading(true)
+        // console.log("qweqweqwe", data)     
+        if(data && !hasError) {
+            // console.log("12345--control data", data)
+            let newData = state?.formDatactx
+            const commonData = {
+                IsNewRow: true,
+                COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? "",
+                REQ_FLAG: "F",
+                REQ_CD: state?.req_cd_ctx,
+                // SR_CD: "3",
+                CONFIRMED: "N",
+                ENT_COMP_CD: authState?.companyID ?? "",
+                ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+                ACTIVE: "Y"
+            }
+            let newFormatRelPerDtl:any = []
+            if(data && data.RELATED_PERSON_DTL) {
+                newFormatRelPerDtl = data?.RELETED_PERSON_DTL?.map((el, i) => {
+                    return {...el, ...commonData, 
+                        // SR_CD: i+1
+                    }
+                })
+            }
 
-        setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-
-        let newData = state?.formDatactx
-        newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
-        handleFormDataonSavectx(newData)
-        // handleColTabChangectx(3)
-        // handleColTabChangectx(state?.colTabValuectx+1)
-
-        // setIsNextLoading(false)
-        API.SaveAsDraft({
-            CUSTOMER_TYPE: state?.entityTypectx,
-            CATEGORY_CD: state?.categoryValuectx,
-            ACCT_TYPE: state?.accTypeValuectx,
-            CONSTITUTION_TYPE: state?.constitutionValuectx,
-            IsNewRow: state?.isFreshEntryctx,
-            PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL
-        })
-    }
-    endSubmit(true)
-    handleColTabChangectx(state?.colTabValuectx+1)
-    setIsNextLoading(false)
+            // newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
+            newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
+            handleFormDataonSavectx(newData)
+            // handleColTabChangectx(4)
+            handleColTabChangectx(state?.colTabValuectx+1)
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            // setIsNextLoading(false)
+        } else {
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        }
+        setIsNextLoading(false)
+        endSubmit(true)
    }
-  const [isDeclarationExpanded, setIsDeclarationExpanded] = useState(true)
-  const handleDeclarationExpand = () => {
-    setIsDeclarationExpanded(!isDeclarationExpanded)
+  const [isFormExpanded, setIsFormExpanded] = useState(true)
+  const handleFormExpand = () => {
+    setIsFormExpanded(!isFormExpanded)
   }
 
 const myGridRef = useRef<any>(null);
+    // const initialVal = useMemo(() => {
+    //     return state?.isFreshEntryctx
+    //             ? state?.formDatactx["CONTROLLING_PERSON_DETAIL"]
+    //                 ? state?.formDatactx["CONTROLLING_PERSON_DETAIL"]
+    //                 : {}
+    //             : state?.retrieveFormDataApiRes
+    //                 ? state?.retrieveFormDataApiRes["CONTROLLING_PERSON_DETAIL"]
+    //                 : {}
+    // }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
     const initialVal = useMemo(() => {
         return state?.isFreshEntryctx
-                ? state?.formDatactx["PERSONAL_DETAIL"]
-                    ? state?.formDatactx["PERSONAL_DETAIL"]
-                    : {}
+                ? state?.formDatactx["RELATED_PERSON_DTL"]
+                    ? {RELATED_PERSON_DTL: state?.formDatactx["RELATED_PERSON_DTL"]}
+                    : {RELATED_PERSON_DTL: [{}]}
                 : state?.retrieveFormDataApiRes
-                    ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
+                    ? {RELATED_PERSON_DTL: state?.retrieveFormDataApiRes["RELATED_PERSON_DTL"]}
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
@@ -91,27 +118,60 @@ const myGridRef = useRef<any>(null);
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
                     <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("ControllingPersonDTL")}</Typography>
-                    <IconButton onClick={handleDeclarationExpand}>
-                        {!isDeclarationExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
+                    <IconButton onClick={handleFormExpand}>
+                        {!isFormExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                     </IconButton>
                 </Grid>
 
-                <Collapse in={isDeclarationExpanded}>
-                <Divider sx={{mt: 3, color: "var(--theme-color3)"}} textAlign={"left"}>{t("FATCACRSDetails")}</Divider>
+                <Collapse in={isFormExpanded}>
                 <Grid item>
-                    <FormWrapper 
-                        ref={DeclarationFormRef}
-                        onSubmitHandler={DeclarationSubmitHandler}
-                        // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
-                        initialValues={initialVal}
-                        key={"declaration-form-kyc"+ initialVal}
-                        metaData={corporate_control_dtl_meta_data as MetaDataType}
-                        formStyle={{}}
-                        hideHeader={true}
-                    />
+                        <FormWrapper 
+                            ref={formRef}
+                            onSubmitHandler={onSubmitHandler}
+                            // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                            initialValues={initialVal}
+                            key={"controlling-person-form-kyc"+ initialVal}
+                            metaData={corporate_control_dtl_meta_data as MetaDataType}
+                            formStyle={{}}
+                            hideHeader={true}
+                            onFormButtonClickHandel={(fieldID, dependentFields) => {
+                                // console.log("form button CTRL clicked...", fieldID, dependentFields)
+                                // if(fieldID === "RELATED_PERSON_DTL[0].CUST_DTL_BTN")
+                                //     console.log("form button CTRL clicked... in", fieldID, dependentFields["RELATED_PERSON_DTL.REF_CUST_ID"]?.value)
+                                // if(fieldID === "RELATED_PERSON_DTL[0].CUST_DTL_BTN") {
+                                if(fieldID.indexOf("CUST_DTL_BTN") !== -1) {
+                                    const refCustID = dependentFields["RELATED_PERSON_DTL.REF_CUST_ID"]?.value?.trim()
+                                    if(refCustID.length>0) {
+                                        if(acctName !== refCustID) {
+                                            setAcctName(refCustID)
+                                            let data = {
+                                                COMP_CD: authState?.companyID ?? "",
+                                                BRANCH_CD: authState?.user?.branchCode ?? "",
+                                                CUSTOMER_ID: refCustID,
+                                                FROM: ""
+                                                // CATEG_CD: state?.categoryValuectx ?? "",
+                                                // formIndex: null
+                                            }
+                                            mutation.mutate(data)
+                                        }
+                                        setDialogOpen(true)
+                                    }
+                                }}
+                                // let event: any = { preventDefault: () => {} };
+                                // formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+                            }
+                        />
                 </Grid>
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+
+
+            {dialogOpen && <EntiyDialog 
+                open={dialogOpen} 
+                onClose={onCloseSearchDialog} 
+                data={mutation?.data} 
+                isLoading={mutation?.isLoading} 
+            />}
 
             <Grid container item sx={{justifyContent: "flex-end"}}>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
@@ -122,11 +182,65 @@ const myGridRef = useRef<any>(null);
                 >{t("Previous")}</Button>
                 <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
-                        DeclarationFormRef.current.handleSubmit(e, "save")
+                        formRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save & Next")}</Button>
             </Grid>
         </Grid>        
+    )
+}
+
+export const EntiyDialog = ({open, onClose, data, isLoading}) => {
+  const PDFormRef = useRef<any>("")
+
+    return (
+        <Dialog open={open} onClose={onClose}
+            PaperProps={{
+                style: {
+                    minWidth: "1000px",
+                    width: "auto",
+                    maxWidth: "1100px",
+                    height: "90%",
+                }
+            }}
+        >
+            <DialogTitle
+                sx={{
+                    background: "var(--theme-color3)",
+                    color: "var(--theme-color2)",
+                    letterSpacing: "1.3px",
+                    margin: "10px",
+                    boxShadow:
+                    "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+                    fontWeight: 500,
+                    borderRadius: "inherit",
+                    minWidth: "450px",
+                    py: 1,
+                }}
+                id="responsive-dialog-title"
+            >
+                {`Customer Info - Customer ID ${data?.[0]?.CUSTOMER_ID ? data[0].CUSTOMER_ID : ""}`}
+                {/* rowdata?.[0]?.data?.CUSTOMER_ID */}
+            </DialogTitle>
+            <FormWrapper 
+                ref={PDFormRef}
+                // onSubmitHandler={onSubmitPDHandler}
+                // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+                initialValues={data?.[0]} //{initialVal}
+                key={"pd-form-kyc"+ data}
+                metaData={personal_individual_detail_metadata as MetaDataType}
+                formStyle={{}}
+                hideHeader={true}
+                displayMode={"view"}
+                controlsAtBottom={false}
+            >
+                {/* {({isSubmitting, handleSubmit}) => {
+                    console.log("isSubmitting, handleSubmit", isSubmitting)
+                    return <Button color="secondary" onClick={handleSubmit}>Save</Button>
+                }} */}
+                {/* <p>Controll Components</p> */}
+            </FormWrapper>
+        </Dialog>
     )
 }
 

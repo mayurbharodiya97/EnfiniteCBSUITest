@@ -61,7 +61,8 @@ export const other_details_meta_data = {
           required: true,          
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+        //   GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
           render: {
@@ -74,7 +75,7 @@ export const other_details_meta_data = {
           _optionsKey: "turnoverOptions",
           placeholder: "",
           type: "text",
-          GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+          GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           // maxLength: 3,
           // showMaxLength: false,
           // FormatProps: {
@@ -102,7 +103,7 @@ export const other_details_meta_data = {
             _optionsKey: "otherIncomeOptions",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -112,7 +113,7 @@ export const other_details_meta_data = {
             label: "SourceOfIncome",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:4},
         },
 
 
@@ -130,33 +131,33 @@ export const other_details_meta_data = {
               componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "FUNDED",
+            name: "FUNDED_AMT",
             label: "Funded",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           },
         {
             render: {
               componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "NON_FUNDED",
+            name: "NON_FUNDED_AMT",
             label: "NonFunded",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           },
         {
             render: {
               componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "THRESHOLD_LIMIT",
+            name: "THRESHOLD_AMT",
             label: "ThresholdLimit",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           },
 
 
@@ -178,7 +179,7 @@ export const other_details_meta_data = {
             label: "ChildrenCount",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -190,7 +191,7 @@ export const other_details_meta_data = {
             _optionsKey: "HouseTypes",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -201,34 +202,36 @@ export const other_details_meta_data = {
             label: "AdultsCount",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "checkbox",
             },
+            defaultValue: true,
             name: "POLITICALLY_CONNECTED",
             label: "PoliticallyConnected",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "EARNING_MEMBER_COUNT",
+            name: "EARNING_MEMEBER",
             label: "EarningMembers",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "checkbox",
             },
-            name: "IS_BLIND",
+            defaultValue: true,
+            name: "BLINDNESS",
             label: "Blind",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -238,7 +241,8 @@ export const other_details_meta_data = {
             label: "IDMark",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            maxLength: 100,
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:4},
         },
 
 
@@ -256,22 +260,46 @@ export const other_details_meta_data = {
                 componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "NO_OF_TWO_WHEELERS",
+            name: "NO_OF_2_WHEELERS",
             label: "TwoWheelers",
+            maxLength: 2,
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 2) {
+                    return false;
+                  }
+                //   if (values.floatValue === 0) {
+                //     return false;
+                //   }
+                  return true;
+                },
+              },
         },
         {
             render: {
                 componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "NO_OF_FOUR_WHEELERS",
+            name: "NO_OF_4_WHEELERS",
             label: "FourWheelers",
+            maxLength: 2,
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 2) {
+                    return false;
+                  }
+                //   if (values.floatValue === 0) {
+                //     return false;
+                //   }
+                  return true;
+                },
+              },
         },
         {
             render: {
@@ -281,7 +309,7 @@ export const other_details_meta_data = {
             label: "CIBILScore",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
 
@@ -297,43 +325,45 @@ export const other_details_meta_data = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "EMPLOYEMENT_STATUS",
+            name: "EMPLOYMENT_STATUS",
             label: "EmpStatus",
             options: () => API.getPMISCData("Emp_Status"),
             _optionsKey: "EmpStatus",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "checkbox",
             },
+            defaultValue: true,
             name: "REFERRED_BY_STAFF",
             label: "ReferredByStaff",            
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "autocomplete",
             },
-            name: "EDUCATION_QUALIFICATION",
+            name: "EDUCATION_CD",
             label: "EduQualification",
             options: (dependentValue, formState, _, authState) => API.getEduQualiOptions(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "eduQualiOptions",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "COMPANY_NAME",
+            name: "COMPANY_NM",
             label: "CompanyName",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:8, md: 6, lg: 5, xl:3},
+            maxLength: 100,
+            GridProps: {xs:12, sm:8, md: 6, lg: 4.8, xl:6},
         },
         {
             render: {
@@ -343,7 +373,7 @@ export const other_details_meta_data = {
             label: "Departname",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
@@ -353,63 +383,65 @@ export const other_details_meta_data = {
             label: "CompanyAdd",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:12, md:12, lg:6, xl:5},
+            maxLength: 100,
+            GridProps: {xs:12, sm:12, md:12, lg:7.2, xl:6},
         },
         {
             render: {
                 componentType: "datePicker",
             },
             // className: "textInputFromRight",
-            name: "JOINING_DATE",
+            name: "JOINING_DT",
             label: "JoiningDate",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "datePicker",
             },
             // className: "textInputFromRight",
-            name: "RETIREMENT_DATE",
+            name: "RETIREMENT_DT",
             label: "RetirementDate",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "autocomplete",
             },
             // className: "textInputFromRight",
-            name: "EMP.COMPANY_TYPE",
+            name: "EMP_COMPANY_TYPE",
             label: "EmpCompanyType",
             placeholder: "",
             type: "text",
             options: (dependentValue, formState, _, authState) => API.getEmpCompanyTypes(authState?.companyID, authState?.user?.branchCode),
             _optionsKey: "PDPrefix",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "numberFormat",
             },
             // className: "textInputFromRight",
-            name: "WORK_EXPERIENCE_IN_YEAR",
+            name: "WORK_EXP",
             label: "WorkExperienceYear",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "textField",
             },
-            name: "SPECIALIZATION",
+            name: "SPECIALIZATION_REMARKS",
             label: "Specialization",
             placeholder: "",
             type: "text",
-            GridProps: {xs:12, sm:8, md: 6, lg: 5, xl:3},
+            maxLength: 100,
+            GridProps: {xs:12, sm:8, md: 6, lg: 4.8, xl:6},
         },
     ]
 }

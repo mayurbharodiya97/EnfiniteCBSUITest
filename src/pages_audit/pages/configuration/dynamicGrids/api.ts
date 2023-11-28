@@ -4,11 +4,15 @@ import { filters } from "components/report";
 
 export const getDynamicGridMetaData = async ({ docID, COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDYNAMICGRIDMETADATA", {
-      DOC_CD: docID,
-      COMP_CD: COMP_CD,
-      BRANCH_CD: BRANCH_CD,
-    });
+    await AuthSDK.internalFetcher(
+      `/commonMasterServiceAPI/GETDYNAMICGRIDMETADATA/${docID}`,
+      { COMP_CD: COMP_CD, BRANCH_CD: BRANCH_CD }
+    );
+  // await AuthSDK.internalFetcher("GETDYNAMICGRIDMETADATA", {
+  //   DOC_CD: docID,
+  //   COMP_CD: COMP_CD,
+  //   BRANCH_CD: BRANCH_CD,
+  // });
 
   if (status === "0") {
     const columns = data[0]?.COLUMNS?.map((one) => {
@@ -27,6 +31,10 @@ export const getDynamicGridMetaData = async ({ docID, COMP_CD, BRANCH_CD }) => {
 
     let result = {
       DOC_CD: data[0].DOC_CD,
+      USER_ACC_INS: data[0].USER_ACC_INS,
+      USER_ACC_UPD: data[0].USER_ACC_UPD,
+      USER_ACC_DEL: data[0].USER_ACC_DEL,
+
       gridConfig: {
         dense: data[0].DENSE,
         gridLabel: data[0].DESCRIPTION,
@@ -52,6 +60,7 @@ export const getDynamicGridMetaData = async ({ docID, COMP_CD, BRANCH_CD }) => {
       columns: columns,
       // fields: filter,
     };
+    console.log("result", result);
     return result;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -62,16 +71,16 @@ export const getDynGridData = async ({
   doccd,
   companyID,
   branchID,
-  customerID,
-  TRAN_CD,
+  userRole,
+  userName,
 }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDYNAMICGRIDDATA", {
       DOC_CD: doccd,
       COMP_CD: companyID,
       BRANCH_CD: branchID,
-      CUSTOMER_ID: customerID,
-      TRAN_CD: TRAN_CD,
+      USERROLE: userRole,
+      USERNAME: userName,
     });
   if (status === "0") {
     return data;
@@ -102,7 +111,7 @@ export const getDynActionButtonData = async ({
         alwaysAvailable: item?.ALWAYSAVAILABLE === "Y" ? true : false,
         shouldExclude: item?.SHOULDEXCLUDE,
         isNodataThenShow: item?.ISNODATATHENSHOW === "Y" ? true : false,
-        onEnterSubmit: item?.ONENTERSUBMIT,
+        onEnterSubmit: item?.ONENTERSUBMIT === "Y" ? true : false,
         startsIcon: item?.ICON_TYPE,
         endsIcon: item?.ACTIONNAME,
         rotateIcon: item?.ACTIONNAME,
@@ -111,9 +120,21 @@ export const getDynActionButtonData = async ({
         FORM_METADATA_SR_CD: item?.FORM_METADATA_SR_CD,
         BRANCH_CD: item?.BRANCH_CD,
         SR_CD: item?.SR_CD,
+        ALRT_MSG: item?.ALRT_MSG,
       };
     });
     return result;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getDynamicFormData = () => async (formData: any) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "FORMDML",
+    formData
+  );
+  if (status === "0") {
+    return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

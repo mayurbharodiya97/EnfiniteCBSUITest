@@ -17,7 +17,7 @@ import * as API from "../../../../api";
             },
             container: {
                 direction: "row",
-                spacing: 3,
+                spacing: 1,
             },
             },
         },
@@ -47,7 +47,8 @@ import * as API from "../../../../api";
             render: {
                 componentType: "arrayField",
             },
-            name: "",
+            name: "OTHER_ADDRESS",
+            // fixedRows: 1,
             GridProps: {xs:12, sm:12, md:12, lg:12, xl:12},
             _fields: [
                 {
@@ -66,7 +67,8 @@ import * as API from "../../../../api";
                     label: "AddressType",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2.4, lg: 2.4, xl:2},
                     options: () => API.getPMISCData("ADDRESS_TYPE"),
                     _optionsKey: "AddTypeOptions",
                 },
@@ -85,7 +87,7 @@ import * as API from "../../../../api";
                     },
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:6, md: 5, lg: 3.5, xl:2},
+                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
                     render: {
@@ -95,7 +97,7 @@ import * as API from "../../../../api";
                     label: "Line2",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:6, md: 5, lg: 3.5, xl:2},
+                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
                     render: {
@@ -105,13 +107,15 @@ import * as API from "../../../../api";
                     label: "Line3",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:6, md: 5, lg: 3.5, xl:2},
+                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
                     render: {
                         componentType: "select",
                     },
-                    options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
+                    options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),  // parent-area        
+                    // _optionsKey: "localParentAreaList",
+                    // options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
                     _optionsKey: "otherAddSubArea",
                     name: "AREA",
                     label: "Area",
@@ -144,7 +148,7 @@ import * as API from "../../../../api";
                     },
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -155,7 +159,7 @@ import * as API from "../../../../api";
                     required: true,
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -166,7 +170,7 @@ import * as API from "../../../../api";
                     required: true,
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -176,7 +180,7 @@ import * as API from "../../../../api";
                     label: "District",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -186,7 +190,7 @@ import * as API from "../../../../api";
                     label: "State",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -196,7 +200,7 @@ import * as API from "../../../../api";
                     label: "Country",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -206,7 +210,7 @@ import * as API from "../../../../api";
                     label: "UnionTerritoriesCode",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
@@ -216,7 +220,7 @@ import * as API from "../../../../api";
                     label: "CountryCode",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
         
         
@@ -233,41 +237,83 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "PHONE_o",
+                    name: "STD_1",
+                    label: "",
+                    placeholder: "",
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+                },
+                {
+                    render: {
+                        componentType: "textField",
+                    },
+                    name: "CONTACT1",
                     label: "PhoneO",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
                         componentType: "textField",
                     },
-                    name: "PHONE_R",
+                    name: "STD_2",
+                    maxLength: 3,
+                    label: "",
+                    placeholder: "",
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+                },
+                {
+                    render: {
+                        componentType: "textField",
+                    },
+                    name: "CONTACT2",
                     label: "PhoneR",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
                         componentType: "textField",
                     },
-                    name: "MOBILE_NO",
+                    name: "STD_3",
+                    label: "",
+                    required: true,
+                    placeholder: "",
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+                },
+                {
+                    render: {
+                        componentType: "textField",
+                    },
+                    name: "CONTACT3",
                     label: "MobileNo",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
                         componentType: "textField",
                     },
-                    name: "FAX",
+                    name: "STD_4",
+                    label: "MobileNo",
+                    placeholder: "",
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+                },
+                {
+                    render: {
+                        componentType: "textField",
+                    },
+                    name: "CONTACT4",
                     label: "Fax",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
@@ -277,7 +323,7 @@ import * as API from "../../../../api";
                     label: "EmailId",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
+                    GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
                 },
             ]
         }

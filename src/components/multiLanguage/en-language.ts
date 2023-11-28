@@ -119,7 +119,7 @@ export const en_language_data = {
   SrNo: "Sr.No.",
   BrCode: "Br.Code",
   AcctType: "Acct Type",
-  ACNo: "A/C No",
+  ACNo: "A/C No.",
   TrnDate: "Trn. Date",
   Chequeno: "Cheque no",
   Trx: "Trx.",
@@ -415,5 +415,5 @@ export const en_language_data = {
   EntityDetails: "Entity Details",
   CompanyInfo: "Company Info",
   // tab - controlling person dtl
-  ControllingPersonDTL: "Details of Controlling Person"
+  ControllingPersonDTL: "Details of Controlling Person",
 };

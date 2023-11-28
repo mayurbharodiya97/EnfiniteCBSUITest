@@ -21,6 +21,7 @@ export const getUserDetails = async ({ userID }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const getUserLoginDetails = async ({ userID }) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETUSERACTIVITY", {
@@ -33,6 +34,7 @@ export const getUserLoginDetails = async ({ userID }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const getUserAccessBranch = async ({ userID }) => {
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("GETUSERACESSBRNCH", {
@@ -150,7 +152,7 @@ export const getdashboxData = async () => {
 };
 export const updateDashboxData = async (reqData) => {
   const { status, data, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETBOXDML", reqData);
+    await AuthSDK.internalFetcher("DOBOXDML", reqData);
   if (status === "0") {
     return data;
   } else {

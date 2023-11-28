@@ -168,7 +168,7 @@ const GeneralAPISDK = () => {
           reqFlag === "ACCT_CD" ? dependentFieldValue?.BRANCH_CD?.value : "",
         ACCT_TYPE:
           reqFlag === "ACCT_CD" ? dependentFieldValue?.ACCT_TYPE?.value : "",
-        ACCT_CD: reqFlag === "ACCT_CD" ? currentField?.value : "",
+        ACCT_CD: reqFlag === "ACCT_CD" ? paddedAcctcode : "",
         FULL_ACCT_NO: reqFlag === "ACCT_CD" ? "" : currentField?.value,
       });
 
@@ -176,7 +176,6 @@ const GeneralAPISDK = () => {
         if (data?.length > 0) {
           const { LST_STATEMENT_DT } = data[0];
           const originalDate: any = new Date(LST_STATEMENT_DT);
-
           return {
             ACCT_NM: {
               value: data?.[0]?.ACCT_NM,
@@ -192,18 +191,19 @@ const GeneralAPISDK = () => {
             WK_STMT_TO_DATE: {
               value: isValidDate(new Date()) ? new Date() : new Date(),
             },
-            // ACCT_CD: {
-            //   value: paddedAcctcode,
-            // },
+            ACCT_CD: {
+              value: paddedAcctcode,
+              ignoreUpdate: true,
+            },
           };
         } else {
           return {
             ACCT_NM: { value: "" },
             STMT_FROM_DATE: { value: "" },
             WK_STMT_TO_DATE: { value: "" },
-            // ACCT_CD: {
-            //   value: "",
-            // },
+            ACCT_CD: {
+              value: "",
+            },
           };
         }
       }
@@ -212,9 +212,9 @@ const GeneralAPISDK = () => {
         ACCT_NM: { value: "" },
         STMT_FROM_DATE: { value: "" },
         WK_STMT_TO_DATE: { value: "" },
-        // ACCT_CD: {
-        //   value: "",
-        // },
+        ACCT_CD: {
+          value: "",
+        },
       };
     }
   };
@@ -265,12 +265,19 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
+      const newObject = {
+        DOC_CD: "DEFAULT",
+        USER_DEFINE_CD: "DEFAULT",
+      };
+      responseData = [...responseData, newObject];
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
           ({ DOC_TITLE, DOC_CD, USER_DEFINE_CD }) => {
             return {
               value: DOC_CD,
-              label: DOC_TITLE + " - " + USER_DEFINE_CD,
+              label: DOC_TITLE
+                ? USER_DEFINE_CD + " - " + DOC_TITLE
+                : USER_DEFINE_CD,
             };
           }
         );
@@ -461,6 +468,47 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+  const getDynDropdownData = async (ReqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETDROPDOWNDATA", {
+        ACTION: ReqData,
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
+          return {
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        });
+      }
+
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const getDependentFieldList = async (...reqData) => {
+    const { status, data, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETFIELDLIST", {
+        DOC_CD: reqData?.[4] ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ COLUMN_ACCESSOR }) => {
+          return {
+            value: COLUMN_ACCESSOR,
+            label: COLUMN_ACCESSOR,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
 
   const getSDCList = async (...reqData) => {
     const { data, status, message, messageDetails } =
@@ -564,7 +612,8 @@ const GeneralAPISDK = () => {
     getSDCList,
     getTRXList,
     getJointDetailsList,
+    getDynDropdownData,
+    getDependentFieldList,
   };
 };
-
 export const GeneralAPI = GeneralAPISDK();

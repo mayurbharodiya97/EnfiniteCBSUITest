@@ -36,6 +36,7 @@ export const LoaderPaperComponent = (props) => {
         <div className="bounceball"></div>
         <div className="text"> Loading...</div>
       </div> */}
+
       <div className="loading" style={{ textAlign: "center", margin: "2px" }}>
         <div className="bounceball"></div>
         <div className="text-forloader">

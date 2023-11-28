@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import {
   Box,
@@ -14,9 +14,23 @@ import PersonIcon from "@mui/icons-material/Person";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import dash from "assets/images/not4.svg";
 import { HeaderNotificationSvg } from "assets/icons/svgIcons";
+import { useQuery } from "react-query";
+import { getNotificationData } from "./api";
+import { queryClient } from "cache";
 export const Notification_App = () => {
   //   const classes = useStyles();
   const [anchorEl1, setAnchorEl1] = useState(null);
+
+  const { data, isLoading, isFetching, refetch } = useQuery(
+    ["getNotificationData"],
+    () => getNotificationData()
+  );
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getNotificationData"]);
+    };
+  }, []);
   const handleClick = (event) => {
     setAnchorEl1(event.currentTarget);
   };

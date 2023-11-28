@@ -1,56 +1,66 @@
 import { FilterFormComponents } from "./filterForm";
 import { cloneDeep } from "lodash-es";
+import { forwardRef, useRef } from "react";
 import { useTranslation } from "react-i18next";
-export const FormComponentView = ({
-  finalMetaData,
-  onAction,
-  loading,
-  data,
-  submitSecondButtonHide = true,
-  submitSecondButtonName = "submit",
-  submitSecondLoading = false,
-  submitSecondAction = (arg1, arg2) => {},
-  submitSecondValidtion = true,
-  propStyles={
-    titleStyle: {},
-    toolbarStyles: {},
-    IconButtonStyle: {},
-    paperStyle: {}
-  }
-}) => {
-  const { t } = useTranslation();
-  const isDisplayOnly = finalMetaData.gridConfig?.isDisplayOnly ?? false;
-  let metadata = transformMetaData({
-    metaData: finalMetaData,
-    isDisplayOnly,
-    data,
-  });
+export const FormComponentView = forwardRef<any, any>(
+  (
+    {
+      finalMetaData,
+      onAction,
+      loading,
+      data,
+      submitSecondButtonHide = true,
+      submitSecondButtonName = "submit",
+      submitSecondLoading = false,
+      submitSecondAction = (arg1, arg2) => {},
+      submitSecondValidtion = true,
+      propStyles = {
+        titleStyle: {},
+        toolbarStyles: {},
+        IconButtonStyle: {},
+        paperStyle: {},
+      },
+    },
+    ref = null
+  ) => {
+    const { t } = useTranslation();
+    console.log(finalMetaData, "finalMetaData*");
+    const isDisplayOnly = finalMetaData.gridConfig?.isDisplayOnly ?? false;
+    let metadata = transformMetaData({
+      metaData: finalMetaData,
+      isDisplayOnly,
+      data,
+    });
 
-  return (
-    <FilterFormComponents
-      dense={metadata.gridConfig?.dense ?? true}
-      title={t(metadata.gridConfig?.title) ?? "No Title"}
-      fields={metadata.fields}
-      allowColumnHiding={metadata.gridConfig?.allowColumnHiding ?? false}
-      initialDataValue={metadata.initialData}
-      initialVisibleColumnData={metadata.initialVisibleColumnData}
-      submitButtonHide={metadata.gridConfig?.submitButtonHide ?? false}
-      submitButtonName={metadata.gridConfig?.submitButtonName ?? "SUBMIT"}
-      hideHeader={metadata.gridConfig?.HideHeader ?? false}
-      isDisplayOnly={isDisplayOnly}
-      onAction={onAction}
-      loading={loading}
-      submitSecondButtonHide={submitSecondButtonHide}
-      submitSecondButtonName={submitSecondButtonName}
-      submitSecondLoading={submitSecondLoading}
-      submitSecondAction={submitSecondAction}
-      submitSecondValidtion={submitSecondValidtion}
-      propStyles={propStyles}
-    ></FilterFormComponents>
-  );
-};
+    return (
+      <FilterFormComponents
+        dense={metadata.gridConfig?.dense ?? true}
+        title={t(metadata.gridConfig?.title) ?? "No Title"}
+        fields={metadata.fields}
+        allowColumnHiding={metadata.gridConfig?.allowColumnHiding ?? false}
+        initialDataValue={metadata.initialData}
+        initialVisibleColumnData={metadata.initialVisibleColumnData}
+        submitButtonHide={metadata.gridConfig?.submitButtonHide ?? false}
+        submitButtonName={metadata.gridConfig?.submitButtonName ?? "SUBMIT"}
+        hideHeader={metadata.gridConfig?.HideHeader ?? false}
+        isDisplayOnly={isDisplayOnly}
+        onAction={onAction}
+        loading={loading}
+        submitSecondButtonHide={submitSecondButtonHide}
+        submitSecondButtonName={submitSecondButtonName}
+        submitSecondLoading={submitSecondLoading}
+        submitSecondAction={submitSecondAction}
+        submitSecondValidtion={submitSecondValidtion}
+        propStyles={propStyles}
+        //@ts-ignore
+        ref={ref}
+      ></FilterFormComponents>
+    );
+  }
+);
 const transformMetaData = ({ metaData, isDisplayOnly, data }) => {
   let metadata = cloneDeep(metaData);
+  console.log(metadata, "metadatadtadta");
   let initialData = metadata.fields.reduce((value, item) => {
     //console.log(item, Boolean(item?.isDisabled), data[item?.accessor]);
     value = {
