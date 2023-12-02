@@ -553,6 +553,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETVIEWDTL",
     packageName: "",
   },
+  GETFIELDLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETFIELDLIST",
+    packageName: "",
+  },
   DOAPICONFIGDATA: {
     url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
     packageName: "",
@@ -563,6 +567,14 @@ export const ActionWiseAPIConfiguration = {
   },
   CHEQUEBKCHARGE: {
     url: "/accountServiceAPI/CHEQUEBKCHARGE",
+    packageName: "",
+  },
+  GETTRXLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRXLIST",
+    packageName: "",
+  },
+  GETJOINTDETILSLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
     packageName: "",
   },
 };

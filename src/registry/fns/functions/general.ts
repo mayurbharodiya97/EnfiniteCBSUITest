@@ -79,12 +79,13 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
+      console.log(responseData, "responseData acctype");
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
           return {
             ...others,
-            value: ACCT_TYPE,
-            label: ACCT_TYPE + " - " + TYPE_NM,
+            value: ACCT_TYPE?.trim(),
+            label: ACCT_TYPE?.trim() + " - " + TYPE_NM,
           };
         });
       }
@@ -93,6 +94,7 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+
   const getCustomerIdValidate = async (currentField, formState, authState) => {
     // if (currentField?.value) {
     const { status, data, message, messageDetails } =
@@ -424,8 +426,10 @@ const GeneralAPISDK = () => {
       await AuthSDK.internalFetcher("GETCHQLEAVESLIST", {
         COMP_CD: reqData?.[3]?.companyID ?? "",
       });
+
     if (status === "0") {
       let responseData = data;
+
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ NO_OF_LEAF, TRAN_CD }) => {
           return {
@@ -434,18 +438,22 @@ const GeneralAPISDK = () => {
           };
         });
       }
+
       return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+
   const getTabelListData = async (ReqData) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETDBTABLELIST", {
         OWNER: ReqData,
       });
+
     if (status === "0") {
       let responseData = data;
+
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ TABLE_NAME }) => {
           return {
@@ -481,7 +489,106 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+  const getDependentFieldList = async (...reqData) => {
+    const { status, data, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETFIELDLIST", {
+        DOC_CD: reqData?.[4] ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ COLUMN_ACCESSOR }) => {
+          return {
+            value: COLUMN_ACCESSOR,
+            label: COLUMN_ACCESSOR,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
 
+  const getSDCList = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETSDCLIST", {
+        USER_NAME: reqData?.[3]?.user.id ?? "",
+        BRANCH_CD: reqData?.[3]?.user?.branchCode,
+        COMP_CD: reqData?.[3]?.companyID,
+      });
+
+    if (status === "0") {
+      let responseData = data;
+
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ CODE, DESCRIPTION }) => {
+          return {
+            value: CODE?.trim(),
+            label: CODE?.trim() + "-" + DESCRIPTION,
+            CODE: CODE,
+            DESCRIPTION: DESCRIPTION,
+          };
+        });
+      }
+
+      console.log(responseData, "responseData SDC");
+
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
+  const getTRXList = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETTRXLIST", {
+        USER_NAME: reqData?.[3]?.user.id ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      console.log(responseData, "responseData TRX");
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ CODE, DESCRIPTION }) => {
+          return {
+            value: CODE,
+            label: CODE + "-" + DESCRIPTION,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
+  const getJointDetailsList = async (...reqData) => {
+    // const { data, status, message, messageDetails } =
+    //   await AuthSDK.internalFetcher("GETJOINTDETILSLIST", {
+    //     USER_NAME: reqData?.[3]?.user.id ?? "",
+    //   });
+    // if (status === "0") {
+    //   let responseData = data;
+    //   console.log(responseData, "responseData GETJOINTDETILSLIST");
+    //   if (Array.isArray(responseData)) {
+    //     responseData = responseData.map(({ CODE, DESCRIPTION }) => {
+    //       return {
+    //         value: CODE,
+    //         label: CODE + "-" + DESCRIPTION,
+    //       };
+    //     });
+    //   }
+    //   return responseData;
+    // } else {
+    //   throw DefaultErrorObject(message, messageDetails);
+    // }
+    console.log("hello jointDetails");
+    return [
+      { id: 1, name: "abcd", accNo: 12345 },
+      { id: 2, name: "11abcd", accNo: 123445 },
+      { id: 3, name: "aaaa", accNo: 123425 },
+    ];
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -502,8 +609,11 @@ const GeneralAPISDK = () => {
     getKYCDocTypes,
     getTabelListData,
     getChequeLeavesList,
+    getSDCList,
+    getTRXList,
+    getJointDetailsList,
     getDynDropdownData,
+    getDependentFieldList,
   };
 };
-
 export const GeneralAPI = GeneralAPISDK();

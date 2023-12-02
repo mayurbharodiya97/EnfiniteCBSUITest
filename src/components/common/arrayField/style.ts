@@ -96,7 +96,7 @@ export const useStyles = makeStyles((theme: any) => ({
   arrayRowCard: {
     width: "100%",
     position: "relative",
-    overflow: "auto",
+    // overflow: "auto",
   },
   arrayRowCardContent: {
     paddingLeft: "32px",
@@ -104,7 +104,7 @@ export const useStyles = makeStyles((theme: any) => ({
   arrayRowCount: {
     display: "flex",
     width: "100%",
-    margin: "0 0 16px -8px",
+    margin: "8px 0 16px -8px",
   },
   newArrayRowCardContent: {
     paddingLeft: "32px",

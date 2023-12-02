@@ -18,7 +18,7 @@ const MyTypography: FC<AllTypographyProps> = ({
     <Fragment key={name}>
       <Grid {...GridProps}>
         {/* <Typography {...TypographyProps}>{label}</Typography> */}
-        <Typography {...TypographyProps} variant="h6" style={undefined}>
+        <Typography variant="h6" style={undefined} {...TypographyProps}>
           {label}
         </Typography>
       </Grid>

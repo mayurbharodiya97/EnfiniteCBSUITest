@@ -39,7 +39,6 @@ export const getDynamicFormMetaData = async ({
           matchingPropsObject[matchingProp.PROPS_ID] = matchingProp.PROPS_VALUE;
         }
         // For that Dyanmic SQL Function call for api calling purpose
-
         if (
           matchingProp.PROPS_ID === "options" &&
           matchingProp?.SOURCE_TYPE === "DS"
@@ -50,6 +49,7 @@ export const getDynamicFormMetaData = async ({
             matchingProp.DATA_VALUE
           );
         }
+        // For schemaValidation condition write
         if (matchingProp.PROPS_ID === "schemaValidation") {
           matchingPropsObject[matchingProp.PROPS_ID] = {
             type: one?.COMPONENT_TYPE === "datePicker" ? "date" : "string",
@@ -61,7 +61,11 @@ export const getDynamicFormMetaData = async ({
             ],
           };
         }
-
+        // For dependentFields string to array convert
+        if (matchingProp.PROPS_ID === "dependentFields") {
+          matchingPropsObject[matchingProp.PROPS_ID] =
+            matchingProp.PROPS_VALUE.split(",");
+        }
         // value get in string so convert to boolean
         if (matchingProp.PROPS_VALUE === "true") {
           matchingPropsObject[matchingProp.PROPS_ID] = true;
@@ -78,6 +82,7 @@ export const getDynamicFormMetaData = async ({
           label: one?.FIELD_LABEL,
           // type: "text",
           //@ts-ignore
+          sequence: one?.TAB_SEQ,
           required: one?.FIELD_REQUIRED,
           GridProps: {
             xs: one?.XS,
@@ -95,10 +100,10 @@ export const getDynamicFormMetaData = async ({
           },
           name: one?.FIELD_NAME,
           label: one?.FIELD_LABEL,
+          sequence: one?.TAB_SEQ,
           // type: "text",
           //@ts-ignore
           required: one?.FIELD_REQUIRED,
-
           GridProps: {
             xs: one?.XS,
             sm: one?.SM,
@@ -122,7 +127,7 @@ export const getDynamicFormMetaData = async ({
         submitAction: data[0]?.SUBMITACTION,
         // allowColumnHiding: true,
         render: {
-          ordering: "auto",
+          ordering: "sequence",
           renderType: "simple",
           gridConfig: {
             item: {
@@ -187,7 +192,6 @@ const createDynOptionsFetcher = (PROPS_VALUE, DISPLAY_VALUE, DATA_VALUE) => {
         { USER_ID: dependent?.user?.id ?? "" }
       );
     if (status === "0") {
-      // console.log("data", data);
       let responseData = data;
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ ...item }) => {

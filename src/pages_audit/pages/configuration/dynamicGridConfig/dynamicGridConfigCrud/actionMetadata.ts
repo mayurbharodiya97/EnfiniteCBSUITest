@@ -49,6 +49,10 @@ export const ActionsMetaData: any = {
       },
       name: "actionsDetails",
       removeRowFn: "deleteFormArrayFieldData",
+      disagreeButtonName: "No",
+      agreeButtonName: "Yes",
+      errorTitle: "Are you Sure you want to delete this action?",
+      // label: "Actions",
       arrayFieldIDName: "DOC_CD",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
@@ -158,11 +162,12 @@ export const ActionsMetaData: any = {
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "checkbox",
           },
           name: "ONENTERSUBMIT",
           label: "OnEnter Submit",
           placeholder: "OnEnter Submit",
+          defaultValue: true,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 2, xl: 1.5 },
         },
         {

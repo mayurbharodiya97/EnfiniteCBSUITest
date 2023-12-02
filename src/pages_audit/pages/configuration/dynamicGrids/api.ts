@@ -60,6 +60,7 @@ export const getDynamicGridMetaData = async ({ docID, COMP_CD, BRANCH_CD }) => {
       columns: columns,
       // fields: filter,
     };
+    console.log("result", result);
     return result;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -110,7 +111,7 @@ export const getDynActionButtonData = async ({
         alwaysAvailable: item?.ALWAYSAVAILABLE === "Y" ? true : false,
         shouldExclude: item?.SHOULDEXCLUDE,
         isNodataThenShow: item?.ISNODATATHENSHOW === "Y" ? true : false,
-        onEnterSubmit: item?.ONENTERSUBMIT,
+        onEnterSubmit: item?.ONENTERSUBMIT === "Y" ? true : false,
         startsIcon: item?.ICON_TYPE,
         endsIcon: item?.ACTIONNAME,
         rotateIcon: item?.ACTIONNAME,
