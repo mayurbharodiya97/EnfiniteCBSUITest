@@ -23,7 +23,7 @@ import { savedynamicAPIconfig } from "../api";
 import { enqueueSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
 
-const GetApiFormCustom = ({ closeDialog, isDataChangedRef, deleteData }) => {
+const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
   const formRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const [sqlSyntax, setSqlSyntax] = useState("");
@@ -46,7 +46,6 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef, deleteData }) => {
     },
     onError: (error: any) => {},
   });
-  deleteData("parag");
 
   const onSubmitHandler: SubmitFnType = (
     data: any,
@@ -190,7 +189,7 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef, deleteData }) => {
     </>
   );
 };
-export const GetApiForm = ({ closeDialog, isDataChangedRef, deleteData }) => {
+export const GetApiForm = ({ closeDialog, isDataChangedRef }) => {
   const { state: data }: any = useLocation();
   return (
     <Dialog
@@ -206,7 +205,6 @@ export const GetApiForm = ({ closeDialog, isDataChangedRef, deleteData }) => {
       <GetApiFormCustom
         isDataChangedRef={isDataChangedRef}
         closeDialog={closeDialog}
-        deleteData={deleteData}
         // defaultView={defaultView}
         // docCD={data?.[0]?.data?.DOC_CD ?? ""}
         // data={data}

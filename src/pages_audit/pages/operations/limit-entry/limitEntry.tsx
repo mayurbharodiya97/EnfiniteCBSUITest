@@ -18,58 +18,48 @@ import { limitEntryMetaData } from "./limitEntryMetadata";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
 import { SubmitFnType } from "packages/form";
-import { getChequebookData } from "../chequeBookTab/api";
+import { getLimitEntryData } from "./api";
 export const LimitEntry = () => {
-  const [value, setValue] = useState("chequebookEntry");
+  const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
-  const mutation: any = useMutation(getChequebookData, {
+  const mutation: any = useMutation(getLimitEntryData, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
+  console.log("<<<mutation", mutation);
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
     myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
   };
+
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
     endSubmit,
-    setFieldError
+    setFieldError,
+    value
   ) => {
     //@ts-ignore
     endSubmit(true);
-    limitEntryMetaData.form.label = " ";
-    let ApiKey: any = limitEntryMetaData?.form?.apiKey;
-    let apiID: any = limitEntryMetaData?.form?.apiID;
-    let response = {};
-    for (const key in ApiKey) {
-      if (ApiKey.hasOwnProperty(key)) {
-        const mappedKey = ApiKey[key];
-        response[key] = data[mappedKey];
-      }
-    }
-
     let otherAPIRequestPara = {
       COMP_CD: authState?.companyID,
-      ...response,
-      ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
+      ACCT_CD: data?.ACCT_CD.padStart(6, "0").padEnd(20, " "),
+      ACCT_TYPE: data?.ACCT_TYPE,
+      BRANCH_CD: data?.BRANCH_CD,
     };
-    mutation.mutate({ apiID, otherAPIRequestPara });
-    limitEntryMetaData.fields[3].isFieldFocused = true;
-    limitEntryMetaData.form.label =
-      "Cheque Book Issue " +
-      " " +
-      authState?.companyID +
-      data?.BRANCH_CD +
-      data?.ACCT_TYPE +
-      data?.ACCT_CD;
-    // .replace(data?.BRANCH_CD, data?.BRANCH_CD);
+    if (value === "BUTTON_CLICK") {
+      mutation.mutate({ otherAPIRequestPara });
+      console.log("<<<if", data);
+    } else {
+      console.log("<<<else", data);
+    }
   };
+
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -80,9 +70,9 @@ export const LimitEntry = () => {
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
-          <Tab value="chequebookEntry" label="Limit Entry" />
-          <Tab value="chequebookDetail" label="Limit Detail" />
-          {/* <Tab value="three" label="Item Three" /> */}
+          <Tab value="tab1" label="Limit Entry" />
+          <Tab value="tab2" label="Limit Detail" />
+          {/* <Tab value="tab3" label="Item Three" /> */}
         </Tabs>
       </Box>
 
@@ -118,14 +108,15 @@ export const LimitEntry = () => {
               </AppBar>
             </div>
           ) : null}
-          {value === "chequebookEntry" ? (
+          {value === "tab1" ? (
             <div
               onKeyDown={(e) => {
                 if (e.key === "Tab") {
                   let target: any = e?.target;
                   if (
                     (target?.name ?? "") ===
-                    limitEntryMetaData.form.name + "/ACCT_CD"
+                      limitEntryMetaData.form.name + "/ACCT_CD" &&
+                    target?.value !== ""
                   ) {
                     ClickEventManage();
                   }
@@ -139,7 +130,7 @@ export const LimitEntry = () => {
               )}
               <FormWrapper
                 key={
-                  "chequebookEntry" + mutation?.data?.length &&
+                  "limitEntry" + mutation?.data?.length &&
                   Boolean(mutation?.isSuccess)
                     ? mutation?.data
                     : ""
@@ -160,7 +151,7 @@ export const LimitEntry = () => {
                 ref={myMasterRef}
               />
             </div>
-          ) : value === "chequebookDetail" ? (
+          ) : value === "tab2" ? (
             <>
               <GridWrapper
                 key={`personalizeQuickView`}

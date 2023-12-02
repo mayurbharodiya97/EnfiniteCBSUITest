@@ -28,7 +28,8 @@ export const getChequebookDTL = async ({ chequeDTLRequestPara }) => {
   }
 };
 
-export const saveChequebookData = async ({ otherAPIRequestPara2 }) => {
+export const saveChequebookData = async (otherAPIRequestPara2) => {
+  // console.log("<<<otherAPIRequestPara2", otherAPIRequestPara2);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOCHEQUEBKISSUE", {
       ...otherAPIRequestPara2,
@@ -40,6 +41,17 @@ export const saveChequebookData = async ({ otherAPIRequestPara2 }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const chequebookCharge = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHEQUEBKCHARGE", { ...Apireq });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const TemporaryData = () => {
   return [
     {

@@ -1,4 +1,5 @@
 import { GeneralAPI } from "registry/fns/functions";
+import { securityDropDownList } from "./api";
 
 export const limitEntryMetaData = {
   form: {
@@ -50,12 +51,12 @@ export const limitEntryMetaData = {
         fullWidth: true,
       },
     },
-    apiKey: {
-      BRANCH_CD: "BRANCH_CD",
-      ACCT_TYPE: "ACCT_TYPE",
-      ACCT_CD: "ACCT_CD",
-    },
-    apiID: "GETLIMITENTRY",
+    // apiKey: {
+    //   BRANCH_CD: "BRANCH_CD",
+    //   ACCT_TYPE: "ACCT_TYPE",
+    //   ACCT_CD: "ACCT_CD",
+    // },
+    // apiID: "GETLIMITENTRY",
   },
   fields: [
     {
@@ -133,12 +134,12 @@ export const limitEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "FR",
+      name: "ACCT_MST_TRN_BAL",
       label: "Tran. Balance",
       placeholder: "Balance",
       isFieldFocused: false,
       type: "text",
-      //   isReadOnly: true,
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 3,
@@ -151,14 +152,14 @@ export const limitEntryMetaData = {
       render: {
         componentType: "autocomplete",
       },
-      name: "NO_OF_CHEQUE",
+      name: "NOHEQUE",
       label: "Limit Type",
       placeholder: "Limit Type",
       type: "text",
       options: () => {
         return [
-          { value: "Normal Limit", label: "Normal Limit" },
-          { value: "Ad-hoc Limit", label: "Ad-hoc Limit" },
+          { value: "Nw", label: "Normal Limit" },
+          { value: "Hf", label: "Ad-hoc Limit" },
         ];
       },
       _optionsKey: "getChequeLeavesList",
@@ -172,13 +173,15 @@ export const limitEntryMetaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "autocomplete",
       },
       name: "SECURITY_VALUE",
       label: "Security",
       placeholder: "Security",
       type: "text",
-      isReadOnly: true,
+      // isReadOnly: true,
+      options: securityDropDownList,
+      _optionsKey: "securityDropDownList",
       GridProps: {
         xs: 12,
         md: 2.5,
@@ -191,7 +194,7 @@ export const limitEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "SERVICE_CHARGE",
+      name: "SERRGE",
       label: "San. Limit",
       placeholder: "San. limit",
       type: "text",
@@ -201,6 +204,22 @@ export const limitEntryMetaData = {
         sm: 2,
         lg: 2,
         xl: 2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "GST",
+      label: "Certi. No.",
+      // placeholder: "Type",
+      type: "text",
+      GridProps: {
+        xs: 12,
+        md: 2.5,
+        sm: 2.5,
+        lg: 2.5,
+        xl: 2.5,
       },
     },
     {
@@ -219,22 +238,32 @@ export const limitEntryMetaData = {
         xl: 2.5,
       },
     },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REQUISITION_DT",
-      // sequence: 9,
-      label: "FD No.",
-      placeholder: "FD Number",
-      GridProps: {
-        xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
-      },
-    },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "REQUISITION_DT",
+    //   // sequence: 9,
+    //   label: "FD No.",
+    //   placeholder: "FD Number",
+    //   // dependentFields: ["SECURITY_VALUE"],
+    //   // shouldExclude(fieldData, dependentFields, __) {
+    //   //   if (dependentFields.SECURITY_VALUE.value === "") {
+    //   //     return true;
+    //   //   } else if (dependentFields.SECURITY_VALUE.value === "11") {
+    //   //     return false;
+    //   //   } else {
+    //   //     return true;
+    //   //   }
+    //   // },
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 2.5,
+    //     sm: 2.5,
+    //     lg: 2.5,
+    //     xl: 2.5,
+    //   },
+    // },
     {
       render: {
         componentType: "datePicker",
@@ -324,7 +353,7 @@ export const limitEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "REMARKS",
+      name: "REMAKS",
       // sequence: 10,
       label: "Margin %",
       placeholder: "Margin %",
@@ -341,7 +370,7 @@ export const limitEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "REMARKS",
+      name: "REMKS",
       // sequence: 10,
       label: "Sec. Limit",
       placeholder: "Sec. Limit",
@@ -357,7 +386,7 @@ export const limitEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "REMARKS",
+      name: "REMARS",
       // sequence: 10,
       label: "Over Drawn %",
       placeholder: "Enter Remarks",
@@ -373,10 +402,23 @@ export const limitEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "REMARKS",
+      name: "EMARKS",
       // sequence: 10,
       label: "Int. Amount",
       placeholder: "Interest Amount",
+      dependentFields: ["SECURITY_VALUE"],
+      shouldExclude(fieldData, dependentFields, __) {
+        if (
+          dependentFields.SECURITY_VALUE.value === "12" ||
+          dependentFields.SECURITY_VALUE.value === "16" ||
+          dependentFields.SECURITY_VALUE.value === "19"
+        ) {
+          console.log("<<<if");
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 12,
         md: 3,
@@ -389,7 +431,7 @@ export const limitEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "REMARKS",
+      name: "REMARK",
       // sequence: 10,
       label: "Int. Margin %",
       placeholder: "Int. Margin %",
@@ -399,6 +441,18 @@ export const limitEntryMetaData = {
         sm: 3,
         lg: 3,
         xl: 3,
+      },
+      dependentFields: ["SECURITY_VALUE"],
+      shouldExclude(fieldData, dependentFields, __) {
+        if (
+          dependentFields.SECURITY_VALUE.value === "12" ||
+          dependentFields.SECURITY_VALUE.value === "16" ||
+          dependentFields.SECURITY_VALUE.value === "19"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
       },
     },
     {
@@ -416,6 +470,18 @@ export const limitEntryMetaData = {
         lg: 3,
         xl: 3,
       },
+      dependentFields: ["SECURITY_VALUE"],
+      shouldExclude(fieldData, dependentFields, __) {
+        if (
+          dependentFields.SECURITY_VALUE.value === "12" ||
+          dependentFields.SECURITY_VALUE.value === "16" ||
+          dependentFields.SECURITY_VALUE.value === "19"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
     {
       render: {
@@ -425,6 +491,118 @@ export const limitEntryMetaData = {
       // sequence: 10,
       label: "Limit Amount",
       placeholder: "Limit Amount",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "INT_RATE",
+      // sequence: 10,
+      label: "Int. Rate",
+      // placeholder: "Limit Amount",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "REMARKS",
+      // sequence: 10,
+      label: "Remarks",
+      // placeholder: "Limit Amount",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DESCRIPTION",
+      // sequence: 10,
+      label: "Description",
+      // placeholder: "Limit Amount",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DOCKET",
+      // sequence: 10,
+      label: "Docket No.",
+      // placeholder: "Limit Amount",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CHARGE",
+      // sequence: 10,
+      label: "Charge",
+      // placeholder: "Limit Amount",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "GST",
+      // sequence: 10,
+      label: "GST",
+      // placeholder: "Limit Amount",
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "RESOLUTION",
+      // sequence: 10,
+      label: "Resolution No.",
+      // placeholder: "Limit Amount",
       GridProps: {
         xs: 12,
         md: 3,

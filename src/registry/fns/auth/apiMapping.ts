@@ -561,6 +561,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/CHEQUEBKDATA",
     packageName: "",
   },
+  CHEQUEBKCHARGE: {
+    url: "/accountServiceAPI/CHEQUEBKCHARGE",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -60,6 +60,8 @@ export const SimpleFormWrapper = ({
   controlsAtBottom,
   hideHeader,
   containerstyle = {},
+  subHeaderLable,
+  subHeaderLableStyle,
 }) => (
   <Container
     component="main"
@@ -77,6 +79,8 @@ export const SimpleFormWrapper = ({
         classes={classes}
         handleSubmit={handleSubmit}
         controlsAtBottom={controlsAtBottom}
+        subHeaderLable={subHeaderLable}
+        subHeaderLableStyle={subHeaderLableStyle}
       />
     )}
     <div style={{ ...formStyle, paddingTop: "10px" }}>
@@ -133,11 +137,14 @@ export const SimpleFormTitle = ({
   classes,
   handleSubmit,
   controlsAtBottom,
+  subHeaderLable,
+  subHeaderLableStyle,
 }) => (
   <AppBar position="relative">
     <Toolbar variant="dense" style={{ background: "var(--theme-color5)" }}>
-      <Typography component="div" variant="h6" color="primary">
+      <Typography component="span" variant="h6" color="primary">
         {formDisplayLabel}
+
         {Boolean(displayMode) && !Boolean(hideDisplayModeInTitle) ? (
           <Chip
             style={{ color: "white", marginLeft: "8px" }}
@@ -149,6 +156,15 @@ export const SimpleFormTitle = ({
         ) : (
           ""
         )}
+      </Typography>
+      <Typography
+        component="span"
+        variant="h3"
+        color="primary"
+        sx={{ ...subHeaderLableStyle }}
+        px={2}
+      >
+        {subHeaderLable}
       </Typography>
       <div className={classes.formControlLabelSpacer} />
       {!controlsAtBottom

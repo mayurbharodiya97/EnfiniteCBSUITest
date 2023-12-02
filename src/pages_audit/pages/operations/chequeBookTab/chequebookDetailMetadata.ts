@@ -71,7 +71,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_TOTAL",
-      columnName: "No. Chq(s)",
+      columnName: "No of ChequeBooks",
       sequence: 6,
       alignment: "center",
       componentType: "default",
@@ -90,7 +90,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "AMOUNT",
+      accessor: "SERVICE_TAX",
       columnName: "Charge",
       sequence: 7,
       alignment: "center",
@@ -100,7 +100,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
       maxWidth: 250,
     },
     {
-      accessor: "SERVICE_TAX",
+      accessor: "GST",
       columnName: "GST",
       sequence: 8,
       alignment: "center",
