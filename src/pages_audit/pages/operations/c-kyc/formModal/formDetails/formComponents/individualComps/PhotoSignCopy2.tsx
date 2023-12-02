@@ -21,19 +21,6 @@ import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
 import { ActionTypes } from "components/dataTable";
 
 
-// const useTypeStyles = makeStyles((theme) => ({
-//     title: {
-//       flex: "1 1 100%",
-//       color: "var(--theme-color1)",
-//       textAlign: "center",
-//     },
-//     typography: {
-//       flex: "1 1 100%",
-//       color: "var(--theme-color1)",
-//       textAlign: "left",
-//     },
-//     refreshiconhover: {},
-// }));
 interface PhotoSignProps {
     componentIn?: string;
     formMode?: string;
@@ -42,10 +29,26 @@ interface PhotoSignProps {
     setIsHistoryGridVisible?: any; 
     isSaveDisabled?: boolean; 
     setIsSaveDisabled?: any;
+    dialogAction?: "close" | "cancel" | "save" | null;
+    setDialogAction?: any; 
+    dialogOpen?: boolean;
+    setDialogOpen?: any;
 }
 
 const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
-    const {componentIn, formMode="edit", setFormMode, isHistoryGridVisible, setIsHistoryGridVisible, isSaveDisabled, setIsSaveDisabled} = props
+    const {
+        componentIn, 
+        formMode="edit", 
+        setFormMode, 
+        isHistoryGridVisible, 
+        setIsHistoryGridVisible, 
+        isSaveDisabled, 
+        setIsSaveDisabled, 
+        dialogAction, 
+        setDialogAction, 
+        dialogOpen, 
+        setDialogOpen
+    } = props
 
     const {state, handleFormDataonSavectx, handleColTabChangectx, handlePhotoOrSignctx, handleStepStatusctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
@@ -76,13 +79,13 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
     
     // const [isHistoryGridVisible, setIsHistoryGridVisible] = useState<boolean>(false);
 
-    console.log(componentIn, "adqwsqwsqsw", location)
+    // console.log(componentIn, "adqwsqwsqsw", location)
 
-    useEffect(() => {
-        if(componentIn) {
-            console.log("asdkjnasidnqiwndiqnbwdqwd", componentIn)
-        }
-    }, [])
+    // useEffect(() => {
+    //     if(componentIn) {
+    //         console.log("asdkjnasidnqiwndiqnbwdqwd", componentIn)
+    //     }
+    // }, [])
 
     // to get photo/sign history, on edit
     const mutation: any = useMutation(API.getPhotoSignHistory, {
@@ -97,7 +100,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
         },
         onError: (error: any) => {},
     });
-    console.log("locationnn..m", location)
+    // console.log("locationnn..m", location)
     useEffect(() => {
         if(location && componentIn==="kycUpdate") {
             // console.log("asdkjhqaiwdiquwdqwd", location)
@@ -108,14 +111,28 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
             mutation.mutate(data)
         }
     }, [location])
+
+    // set photo, sign url from history api active record
     useEffect(() => {
         if(activePhotoHist) {
-            console.log("asdqwdq", photoHistory, activePhotoHist)
+            // console.log("asdqwdq", photoHistory, activePhotoHist)
             setPhotoImageURL(activePhotoHist.CUST_PHOTO,"photo")
             setPhotoImageURL(activePhotoHist.CUST_SIGN, "sign")
         }
     }, [photoHistory, activePhotoHist])
 
+    useEffect(() => {
+        if(dialogAction == "cancel") {
+            if(!isSaveDisabled) {
+                setDialogOpen(true)
+            }
+        }
+    }, [dialogAction])
+
+    // useEffect(() => {
+    //     console.log("dialogAction, isSaveDisabled", dialogAction, isSaveDisabled)
+    // }, [dialogAction, isSaveDisabled])
+        
     // const result: any = useQuery(["getPhotoSignImage", reqCD, customerID], () =>
     //     API.getPhotoSignImage({
     //         COMP_CD: authState?.companyID, 
@@ -171,24 +188,26 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
 
     // set data back from store state
     useEffect(() => {
-        async function getImageURL() {
-            // console.log("async called", state?.photoBase64ctx)
-            let photoBlob = utilFunction.base64toBlob(state?.photoBase64ctx, "image/png");
-            photoFileURL.current =
-            typeof state?.photoBlobctx === "object" && Boolean(state?.photoBlobctx)
-            ? await URL.createObjectURL(state?.photoBlobctx as any)
-            : null;
-
-            signFileURL.current =
-            typeof state?.signBlobctx === "object" && Boolean(state?.signBlobctx)
-            ? await URL.createObjectURL(state?.signBlobctx as any)
-            : null;
-
-            // console.log("async called", photoFileURL.current)
-            setFilecnt(filecnt + 1);
-        };
-        if(state?.signBlobctx || state?.photoBlobctx) {
-            getImageURL()
+        if(!(componentIn && componentIn=="kycUpdate")) {
+            async function getImageURL() {
+                // console.log("async called", state?.photoBase64ctx)
+                let photoBlob = utilFunction.base64toBlob(state?.photoBase64ctx, "image/png");
+                photoFileURL.current =
+                typeof state?.photoBlobctx === "object" && Boolean(state?.photoBlobctx)
+                ? await URL.createObjectURL(state?.photoBlobctx as any)
+                : null;
+    
+                signFileURL.current =
+                typeof state?.signBlobctx === "object" && Boolean(state?.signBlobctx)
+                ? await URL.createObjectURL(state?.signBlobctx as any)
+                : null;
+    
+                // console.log("async called", photoFileURL.current)
+                setFilecnt(filecnt + 1);
+            };
+            if(state?.signBlobctx || state?.photoBlobctx) {
+                getImageURL()
+            }
         }
     }, [])
 
@@ -227,22 +246,24 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
             signFilesdata.current = base64?.[1];
         }
         // console.log("aqdqwedqwedqwe", blob, base64, img)
-        if(base64) {
-            handlePhotoOrSignctx(blob, base64?.[1], img)
+        if(!(componentIn && componentIn=="kycUpdate")) {
+            if(base64 && base64[1]) {
+                handlePhotoOrSignctx(blob, base64?.[1], img)
+            }
         }
     };
 
 
     // on file selection/change
     const handleFileSelect = async (e, img:string) => {
-        console.log("kwqdiuqhiuwqgdeqweq", e)
+        // console.log("kwqdiuqhiuwqgdeqweq", e)
         const files = e.target.files;
         const filesArray = Array.from(files);
         if (filesArray.length > 0) {
           let resdata = filesArray.map(async (one) => await customTransformFileObj(one));
           if (resdata.length > 0) {
             let filesObj: any = await Promise.all(resdata);
-            console.log(filesObj, "kwqdiuqhiuwqgdeqweq", resdata)
+            // console.log(filesObj, "kwqdiuqhiuwqgdeqweq", resdata)
             let fileExt = filesObj?.[0]?.fileExt?.toUpperCase();
             if (fileExt === "JPG" || fileExt === "JPEG" || fileExt === "PNG") {
               let fileSize = filesObj?.[0]?.size / 1024 / 1024;
@@ -261,7 +282,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                         ? await URL.createObjectURL(filesObj?.[0]?.blob as any)
                         : null;                    
                 }
-                console.log("kwqdiuqhiuwqgdeqweq url", photoFileURL.current, typeof photoFileURL.current)
+                // console.log("kwqdiuqhiuwqgdeqweq url", photoFileURL.current, typeof photoFileURL.current)
                 setImageData(filesObj?.[0]?.blob, img);
     
                 fileName.current = filesObj?.[0]?.blob?.name;
@@ -596,7 +617,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                     </Grid>
 
 
-                    {(photoHistory && isHistoryGridVisible) &&
+                    {((componentIn && componentIn=="kycUpdate") && (photoHistory && isHistoryGridVisible)) &&
                         <GridWrapper
                             key={`AssetDTLGrid`}
                             finalMetaData={PhotoHistoryMetadata as GridMetaDataType}
@@ -662,131 +683,67 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                     //     >{t("Edit")}</Button>}
                     // </Grid>
                     }
+
+                    {((componentIn && componentIn=="kycUpdate") && dialogOpen) && 
+                        <Dialog open={true} maxWidth="sm"
+                            PaperProps={{
+                                style: {
+                                    minWidth: "40%",
+                                    width: "40%",
+                                    // maxWidth: "90%",
+                                }
+                            }}
+                        >
+                            <DialogTitle
+                                sx={{
+                                    background: "var(--theme-color3)",
+                                    color: "var(--theme-color2)",
+                                    letterSpacing: "1.3px",
+                                    margin: "10px",
+                                    boxShadow:
+                                    "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+                                    fontWeight: "light",
+                                    borderRadius: "inherit",
+                                    minWidth: "450px",
+                                    py: 1,
+
+                                    display: "flex",
+                                    mx: 1,
+                                    alignItems: "center",
+                                    justifyContent: "space-between"
+                                }}
+                                id="data-lost-confirmation"
+                            >
+                                <Typography variant="h6">Confirmation</Typography>
+                            </DialogTitle>
+                            <DialogContent>
+                                <Typography variant="body1">Your changes will be removed.</Typography>
+                            </DialogContent>
+                            <DialogActions>
+                                <GradientButton
+                                    onClick={() => {
+                                        setDialogOpen(false)
+                                        setDialogAction(null)
+                                        setIsSaveDisabled(true)
+                                    }}
+                                >Cancel</GradientButton>
+                                <GradientButton
+                                    onClick={() => {                                    
+                                        setPhotoImageURL(activePhotoHist.CUST_PHOTO,"photo")
+                                        setPhotoImageURL(activePhotoHist.CUST_SIGN, "sign")
+                                        setDialogOpen(false)                        
+                                        setDialogAction(null)
+                                        setIsSaveDisabled(true)
+                                    }}
+                                >Ok</GradientButton>
+                            </DialogActions>
+                        </Dialog>
+                    }
                 </Grid>
         </>
     );
 }
 
-// const style = ({ disabled }): CSSProperties => ({
-//     pointerEvents: disabled ? "none" : "all",
-//     opacity: disabled ? 0.5 : 1,
-// });
-// const PhotoDialog = ({open, onClose, files}) => {
-//     const classes = useStyles();
-//     const editor = useRef<any>(null);
-//     const [zoom, setZoomValue] = useState<number>(1);
-//     const [rotate, setRotate] = useState<number>(0);
-//     const handleChange = (event: any, newValue: number | number[]) => {
-//         setZoomValue(newValue as number);
-//     };
-//     const handleRotateChange = (event: any, newValue: number | number[]) => {
-//         setRotate(newValue as number);
-//     };
-    
-//     return (
-//         <Dialog
-//             open= {true} //{open}
-//             //@ts-ignore
-//             TransitionComponent={Transition}
-//             fullWidth={false}
-//         >
-//             <DialogTitle>Upload Profile Photo</DialogTitle>
-//             <DialogContent>
-//                 <div
-//                     style={style({ disabled: false })}
-//                     className={classes.uploadWrapper}
-//                 >
-//                     {filesdata.length > 0 ? (
-//                         <>
-//                         <Grid
-//                             container
-//                             spacing={0}
-//                             justifyContent="center"
-//                             alignItems="center"
-//                         >
-//                             <Grid item xs={9} md={9} sm={9}>
-//                             <AvatarEditor
-//                                 ref={editor}
-//                                 image={fileURL.current}
-//                                 width={250}
-//                                 height={250}
-//                                 border={[10, 10]}
-//                                 scale={zoom}
-//                                 borderRadius={150}
-//                                 rotate={rotate}
-//                             />
-//                             </Grid>
-//                             <Grid item xs={9} md={9} sm={9}>
-//                             <div>
-//                                 <Typography>Zoom:</Typography>
-//                                 <Slider
-//                                     value={zoom}
-//                                     onChange={handleChange}
-//                                     aria-labelledby="continuous-slider"
-//                                     color="secondary"
-//                                     defaultValue={1}
-//                                     step={0.1}
-//                                     min={0.2}
-//                                     max={3}
-//                                 />
-//                             </div>
-//                             </Grid>
-//                             <Grid item xs={9} md={9} sm={9}>
-//                             <Typography>Rotate :</Typography>
-
-//                             <Slider
-//                                 value={rotate}
-//                                 onChange={handleRotateChange}
-//                                 aria-labelledby="continuous-slider"
-//                                 color="secondary"
-//                                 defaultValue={0}
-//                                 step={1}
-//                                 min={0}
-//                                 max={360}
-//                             />
-//                             </Grid>
-//                         </Grid>
-//                         </>
-//                     ) : (
-//                         <Typography>File not found</Typography>
-//                     )}
-//                 </div>
-//             </DialogContent>
-//             <DialogActions>
-//                 <GradientButton disabled={mutation.isLoading} onClick={onClose}>
-//                     Close
-//                 </GradientButton>
-//                 {filesdata.length > 0 ? (
-//                     <GradientButton
-//                         disabled={mutation.isLoading}
-//                         endIcon={mutation.isLoading ? <CircularProgress size={20} /> : null}
-//                         onClick={async (e) => {
-//                         console.log("editor.current", editor.current)
-//                         if (Boolean(editor.current)) {
-//                             const canvasScaled = editor.current.getImageScaledToCanvas();
-//                             console.log("editor.current, canvasScaled", canvasScaled)
-//                             canvasScaled.toBlob(async (blob) => {
-//                             console.log("editor.current, canvasScaled - blob", blob)
-//                             let imageData: any = await utilFunction.convertBlobToBase64(
-//                                 blob
-//                             );
-//                             console.log("editor.current, canvasScaled - imageData", imageData)
-//                             mutation.mutate({
-//                                 userID: userID,
-//                                 imageData: imageData[1],
-//                                 blob: blob,
-//                             });
-//                             }, filesdata?.[0]?.mimeType ?? "image/png");
-//                         }
-//                         }}
-//                     >
-//                         Update
-//                     </GradientButton>
-//                 ) : null}
-//             </DialogActions>
-//         </Dialog>
-//     )
-// }
 
 export const PhotoSignUpdateDialog = ({open, onClose}) => {
     // const [open, setOpen] = useState(true)
@@ -796,10 +753,13 @@ export const PhotoSignUpdateDialog = ({open, onClose}) => {
     const [formMode, setFormMode] = useState<any>("view")
     const [isHistoryGridVisible, setIsHistoryGridVisible] = useState<boolean>(false);
     const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
+    const [dialogAction, setDialogAction] = useState<"close" | "cancel" | "save" | null>(null);
+    
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
     const location: any = useLocation();
 
-    console.log("locationasdawd", location)
+    // console.log("locationasdawd", location)
     return (
         <Dialog open={open} maxWidth="lg"
             PaperProps={{
@@ -830,7 +790,7 @@ export const PhotoSignUpdateDialog = ({open, onClose}) => {
                 }}
                 id="responsive-dialog-title"
             >
-                {`Photo & Signature - ${location?.state?.[0]?.data?.CUSTOMER_NAME} - ${location?.state?.[0]?.id}`}
+                <Typography variant="h6">{`Photo & Signature - ${location?.state?.[0]?.data?.CUSTOMER_NAME} - ${location?.state?.[0]?.id}`}</Typography>
                 <div style={{display: "flex", alignItems: "center"}}>
                     {/* <div style={{maxWidth: "150px", border: "1px solid #ddd", padding: "5px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "normal", userSelect: "none"}}>
                         EDIT
@@ -856,8 +816,14 @@ export const PhotoSignUpdateDialog = ({open, onClose}) => {
                     {formMode === "view" && <Button onClick={() => setFormMode("edit")}>Edit</Button>}
                     {formMode === "edit" && <Button disabled={isSaveDisabled}>Save</Button>}
 
-                    {/* {formMode === "edit" && <Button onClick={() => setFormMode("view")}>Cancel</Button>} */}
-                    {formMode === "view" && <Button onClick={onClose}>Close</Button>}
+                    {formMode === "edit" && <Button onClick={() => {
+                        setFormMode("view")
+                        setDialogAction("cancel")
+                    }}>Cancel</Button>}
+                    {formMode === "view" && <Button onClick={() => {
+                        setDialogAction(null)
+                        onClose()
+                    }}>Close</Button>}
 
                     <div style={{display: "flex", alignItems: "center", justifyContent: "center",maxWidth: "150px", maxHeight: "50px", border: "1px solid #ddd", padding: "5px 10px", borderRadius: "20px", fontSize: "10px", fontWeight: "normal", userSelect: "none"}}>
                         {formMode === "view" ?  "View Mode" : "Edit Mode"}
@@ -871,7 +837,11 @@ export const PhotoSignUpdateDialog = ({open, onClose}) => {
                 isHistoryGridVisible={isHistoryGridVisible}
                 setIsHistoryGridVisible={setIsHistoryGridVisible}
                 isSaveDisabled={isSaveDisabled}
-                setIsSaveDisabled={setIsSaveDisabled} />
+                setIsSaveDisabled={setIsSaveDisabled}
+                dialogAction={dialogAction} 
+                setDialogAction={setDialogAction}
+                dialogOpen={dialogOpen} 
+                setDialogOpen={setDialogOpen} />
         </Dialog>
     )
 }
