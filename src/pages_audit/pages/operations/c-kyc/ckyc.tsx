@@ -295,11 +295,16 @@ export const Ckyc = () => {
     () => API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      // ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      ENTERED_DATE: "16-03-17"
+      ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
+      // ENTERED_DATE: "25-10-2023"
     })
   )
 
+  // useEffect(() => {
+  //   if(PendingData && !isPendingDataLoading) {
+  //     console.log("dqwiojdqowhdq", PendingData)
+  //   }
+  // },[PendingData, isPendingDataLoading])
 
   const mutation: any = useMutation(API.getRetrieveData, {
     onSuccess: (data) => {},
@@ -353,7 +358,7 @@ export const Ckyc = () => {
 
 
   useEffect(() => {
-    if(!isLoading) {
+    if(!isLoading && data) {
       // console.log(data, "asddsa")
       // setCustomerCategories(data)
       handleCustCategoryRes(data)
@@ -577,6 +582,7 @@ useEffect(() => {
 
   const setCurrentAction = useCallback(
     (data) => {
+      // console.log("jwdoijoijwdwedwe", data)
       // // console.log("dataddaada", data)
       // if (data.name === "view-detail") {
       //   // refetch()
@@ -797,7 +803,7 @@ useEffect(() => {
         </Grid>        
 
         <GridWrapper
-          key={`EmailAcctMstGrid`}
+          key={`RetrieveCustEntries` + mutation.data}
           finalMetaData={ckyc_retrieved_meta_data as GridMetaDataType}
           data={mutation.data ?? []}
           setData={() => null}          
@@ -813,14 +819,14 @@ useEffect(() => {
         <Typography sx={{color: (theme) => theme.palette.grey[700], mb: (theme) => theme.spacing(2)}} variant="h6">{t("PendingReq")}</Typography>        
         <Grid item>
           <GridWrapper
-            key={`EmailAcctMstGrid`}
+            key={`PendingCustEntrties`+PendingData}
             finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
             data={PendingData ?? []}
             setData={() => null}
             loading={isPendingDataLoading || isPendingDataFetching}
             actions={actions}
             setAction={setCurrentAction}
-            // refetchData={() => refetch()}
+            refetchData={() => PendingRefetch()}
             // ref={myGridRef}
           />
         </Grid>

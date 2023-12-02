@@ -90,12 +90,24 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
   }
 };
 
-export const getCustomerDetailsonEdit = async ({COMP_CD, CUSTOMER_ID}) => {
+export const getCustomerDetailsonEdit = async (reqData) => {
+  // COMP_CD, CUSTOMER_ID?, REQUEST_CD?}
+  const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
+  let payload = {}
+  // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
+  if(CUSTOMER_ID) {
+    payload = {
+      COMP_CD: COMP_CD,
+      CUSTOMER_ID: CUSTOMER_ID
+    }
+  } else {
+    payload = {
+      COMP_CD: COMP_CD,
+      REQUEST_CD: REQUEST_CD
+    }
+  }
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", {
-      COMP_CD: COMP_CD, 
-      CUSTOMER_ID: CUSTOMER_ID, 
-    });
+    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", payload);
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
@@ -500,6 +512,7 @@ export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
   }
 }
 
+// for retrieveing data, in retrieve, personal/entity details, in grid
 export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTOMERLIST", {
@@ -512,6 +525,8 @@ export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+
+// for getting pending entries, in grid
 export const getPendingData = async ({COMP_CD, BRANCH_CD, ENTERED_DATE}) => {
   const { data, status, message, messageDetails } =
   await AuthSDK.internalFetcher("GETPENDINGCUSTLIST", {
@@ -653,6 +668,7 @@ export const getDocumentTypes = async ({TRAN_CD, SR_CD, DOC_TYPE}) => {
   }
 }
 
+// retrieving document medatory docs in grid
 export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CONSTITUTION_TYPE}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOCTEMPLATEDTL", {
@@ -787,6 +803,7 @@ export const SaveAsDraft = async ({
   CONSTITUTION_TYPE,
   IsNewRow,
   PERSONAL_DETAIL,
+  COMP_CD
 }) => {
   // console.log("reqdataa..",
   //   // `
@@ -806,6 +823,7 @@ export const SaveAsDraft = async ({
     SAVE_FLAG: "D",
     ENTRY_TYPE: "1",
     CUSTOMER_ID: "",
+    COMP_CD: COMP_CD
   }
   const remainingPD = {
       IsNewRow: IsNewRow,
@@ -820,7 +838,7 @@ export const SaveAsDraft = async ({
       CATEG_CD: CONSTITUTION_TYPE,
       // entityType: CUSTOMER_TYPE,
       // COUNTRY_CD: "123 ",
-      KYC_NUMBER: KYC_NUMBER ?? "",
+      // KYC_NUMBER: KYC_NUMBER ?? "",
       // GST_NO: "",
   }
 
@@ -1777,6 +1795,7 @@ export const SaveEntry = async ({
   });
 }
 
+// to show total_acct number, in deactivate customer
 export const DeactivateCustomer = async ({CUSTOMER_ID, COMP_CD}) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CUSTOMERDEPENDENCYCOUNT", {
@@ -1923,6 +1942,7 @@ export const getOptionsOnLocalPinParentArea = async (dependentValue, formState, 
   }
 }
 
+// to get data, in grid
 export const getInsuranceGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   // const { data, status, message, messageDetails } =
   // await AuthSDK.internalFetcher("CUSTOMERDEPENDENCYCOUNT", {
@@ -1942,6 +1962,7 @@ export const getInsuranceGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
+// get bank detail data, in grid
 export const getBankDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   const {data, status, message, messageDetails} = 
   await AuthSDK.internalFetcher("OTHERBANKDETAIL", {
@@ -1955,6 +1976,7 @@ export const getBankDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
+// to get data, in grid
 export const getCreditCardDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   const {data, status, message, messageDetails} = 
   await AuthSDK.internalFetcher("CUSTOMERCREDITCARDDTL", {
@@ -1968,6 +1990,7 @@ export const getCreditCardDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
+// to get data, in grid
 export const getOffencesDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   const {data, status, message, messageDetails} = 
   await AuthSDK.internalFetcher("OFFENCESDTL", {
@@ -1981,6 +2004,7 @@ export const getOffencesDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
+// to get data, in grid
 export const getControllingPersonDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   const {data, status, message, messageDetails} = 
   await AuthSDK.internalFetcher("CONTROLLINGPERSONDTL", {
@@ -2002,6 +2026,7 @@ export const getControllingPersonDTLGridData = async ({COMP_CD, CUSTOMER_ID}) =>
   }  
 }
 
+// to get data, in grid
 export const getAssetDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   const {data, status, message, messageDetails} = 
   await AuthSDK.internalFetcher("GETASSETDTL", {
@@ -2025,6 +2050,7 @@ export const getAssetDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
+// to get data, in grid
 export const getFinancialDTLGridData = async ({COMP_CD, CUSTOMER_ID}) => {
   const {data, status, message, messageDetails} = 
   await AuthSDK.internalFetcher("GETFINANCIALDETAIL", {

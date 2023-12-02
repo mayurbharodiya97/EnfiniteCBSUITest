@@ -213,18 +213,74 @@ export default function FormModal({
   //   }), {enabled: false}
   // )
 
+  const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
+    ["getPMISCData", {}],
+    () => API.getPMISCData("CKYC_ACCT_TYPE")
+  );
+
+
   const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
     onSuccess: (data) => {
-      // console.log("on successssss", data, location)
-      handleFormDataonRetrievectx(data[0])
-      let acctTypevalue = data[0]?.PERSONAL_DETAIL.ACCT_TYPE
-      let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-      setAcctTypeState(acctType[0])
-      // handleColTabChangectx(0)
-      // handleFormModalOpenOnEditctx(location?.state)
+      // // console.log("on successssss", data, location)
+      // handleFormDataonRetrievectx(data[0])
+      // let acctTypevalue = data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+      // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+      // setAcctTypeState(acctType[0])
+      // // handleColTabChangectx(0)
+      // // handleFormModalOpenOnEditctx(location?.state)
     },
     onError: (error: any) => {},
   });
+
+
+  useEffect(() => {
+    if(!mutation.isLoading && mutation.data) {
+      // console.log("mutation.data, mutation.isLoading", mutation, mutation.data, mutation.isLoading)
+              // console.log("on successssss", data, location)
+            handleFormDataonRetrievectx(mutation.data[0])
+            // let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+            // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+            // setAcctTypeState(acctType[0])
+              // handleColTabChangectx(0)
+              // handleFormModalOpenOnEditctx(location?.state)
+    }    
+  }, [mutation.data, mutation.isLoading])
+
+  useEffect(() => {
+    if(!mutation.isLoading && mutation.data) {
+      if(AccTypeOptions && !isAccTypeLoading) {
+        let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+        let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+        setAcctTypeState(acctType[0])
+      }
+    }
+  }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])
+
+
+  // useEffect(() => {
+  //   // if(!location.state) {
+  //   //   handleFormModalClosectx()
+  //   //   onClose()
+  //   // } else {
+  //     if(location.pathname.includes("/view-detail")) {
+  //       console.log(">>>-- edit", location.state, location.state[0].id)
+  //       // handlecustomerIDctx(location.state[0].id)
+  //       handleColTabChangectx(0)
+  //       handleFormModalOpenOnEditctx(location?.state)
+  //       // retrieveFormRefetch()
+  //       let data = {
+  //         COMP_CD: authController?.authState?.companyID ?? "",
+  //         CUSTOMER_ID: location.state[0].id ?? "",
+  //       }
+        
+  //       mutation.mutate(data)
+  //     } else if(location?.pathname.includes("/new-entry") && location?.state?.entityType) {
+  //       // console.log(">>>-- new", location.state)
+  //       handleFormModalOpenctx(location?.state?.entityType)
+  //     }
+  //   // }
+  // }, [location])
+
 
 
   useEffect(() => {
@@ -238,12 +294,26 @@ export default function FormModal({
         handleColTabChangectx(0)
         handleFormModalOpenOnEditctx(location?.state)
         // retrieveFormRefetch()
-        let data = {
-          COMP_CD: authController?.authState?.companyID ?? "",
-          CUSTOMER_ID: location.state[0].id ?? "",
+        let data = {}
+        // if(location.state.length && location.state?.[0]?.id && location.state?.[0]?.data?.REQUEST_ID) {
+        //   data = {
+        //     COMP_CD: authController?.authState?.companyID ?? "",
+        //     REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
+        //   }  
+        // } else {
+          if((location.state && location.state.length>0) && (location.state[0].id && location.state[0].data.REQUEST_ID)) {
+            data = {
+              COMP_CD: authController?.authState?.companyID ?? "",
+              REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
+            }
+          } else {
+          data = {
+            COMP_CD: authController?.authState?.companyID ?? "",
+            CUSTOMER_ID: location.state[0].id ?? "",
+          }
         }
-        
-        mutation.mutate(data)
+        Object.keys(data).length>1 && mutation.mutate(data)
+        // mutation.mutate(data)
       } else if(location?.pathname.includes("/new-entry") && location?.state?.entityType) {
         // console.log(">>>-- new", location.state)
         handleFormModalOpenctx(location?.state?.entityType)
@@ -251,14 +321,16 @@ export default function FormModal({
     // }
   }, [location])
 
+
+
+
+
+
+
   // useEffect(() => {
   //   console.log("asdasdasdsasdasdas.", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
   // }, [state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx])
 
-  const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
-    ["getPMISCData", {}],
-    () => API.getPMISCData("CKYC_ACCT_TYPE")
-  );
 
   // useEffect(() => {
   //   if(!isAccTypeLoading && AccTypeOptions) {
@@ -661,13 +733,20 @@ export default function FormModal({
             >
               {t("SaveAsDraft")}
             </Button> */}
-            <Button
+            {!state?.isFreshEntryctx &&<Button
+              // onClick={handleFormModalClose}
+              color="primary"
+              // disabled={mutation.isLoading}
+            >
+              {t("Update")}
+            </Button>}
+            {state?.isFreshEntryctx &&<Button
               // onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
             >
               {t("Save")}
-            </Button>
+            </Button>}
             <Button
               onClick={() => {
                 handleFormModalClosectx()
