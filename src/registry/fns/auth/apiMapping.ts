@@ -561,6 +561,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
     packageName: "",
   },
+  GETCLGZONELIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGZONELIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -310,7 +310,7 @@ export const DynamicGridConfigMetaData = {
         type: "text",
         required: true,
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 1, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {
           type: "string",
@@ -324,7 +324,7 @@ export const DynamicGridConfigMetaData = {
         name: "USER_ACC_UPD",
         label: "View-Detail for User",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 1, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {
           type: "string",
@@ -340,7 +340,7 @@ export const DynamicGridConfigMetaData = {
         name: "USER_ACC_DEL",
         label: "Delete for User",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 1, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {
           type: "string",
@@ -357,7 +357,7 @@ export const DynamicGridConfigMetaData = {
         name: "DEFAULT_PAGE_SIZE",
         label: "Default PageSize",
         // defaultValue: true,
-        GridProps: { xs: 12, sm: 3, md: 3, lg: 1, xl: 1.5 },
+        GridProps: { xs: 12, sm: 3, md: 3, lg: 1.5, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {
           type: "string",

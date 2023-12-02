@@ -6,7 +6,12 @@ import { CircularProgress, Container, Typography } from "@mui/material";
 import { Grid } from "@mui/material";
 import "./verify.css";
 import { useTranslation } from "react-i18next";
-export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
+export const VerifyFinger = ({
+  classes,
+  loginState,
+  verifyFinger,
+  previousStep,
+}) => {
   const { t } = useTranslation();
   return (
     <Fragment>
@@ -147,16 +152,39 @@ export const VerifyFinger = ({ classes, loginState, verifyFinger }) => {
             style={{
               display: "flex",
               justifyContent: "center",
-              margin: "38px 0 0 0",
+              margin: "42px 0 0 42px",
+              // margin: "38px 0 0 0",
               gap: "10px",
             }}
           >
             <GradientButton
+              fullWidth
+              disabled={loginState.loading}
+              onClick={() => {
+                previousStep(false, "");
+              }}
+              className={classes.otpButtons}
+              starticon={"West"}
+              rotateIcon="scale(1.4) rotateX(360deg)"
+              color={"var(--theme-color3) !important"}
+              style={{
+                border: "var(--theme-color3)1px solid",
+                color: "var(--theme-color3)",
+                background: "var(--theme-color2)",
+                borderRadius: "10px",
+                minWidth: "48%",
+              }}
+            >
+              {t("otp.Back")}
+            </GradientButton>
+            <GradientButton
               style={{
                 borderRadius: loginState.loading ? "50%" : "10px",
                 height: loginState.loading ? "40px" : "100%",
-                width: loginState.loading ? "0px" : "90%",
+                width: loginState.loading ? "0px" : "100%",
                 minWidth: loginState.loading ? "40px" : "80px",
+                // width: loginState.loading ? "0px" : "90%",
+                // minWidth: loginState.loading ? "40px" : "80px",
               }}
               disabled={loginState.loading}
               onKeyDown={(e) => e.keyCode === 13 && verifyFinger}

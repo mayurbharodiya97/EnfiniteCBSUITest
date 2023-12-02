@@ -343,7 +343,7 @@ const DynamicGridConfig: FC<{
 
       data["_OLDROWVALUE"] = {
         ...data["_OLDROWVALUE"],
-        PAGE_SIZES: data["_OLDROWVALUE"]?.PAGE_SIZES.join(","),
+        PAGE_SIZES: data["_OLDROWVALUE"]?.PAGE_SIZES?.join(",") ?? "",
       };
       // let finalResult = CreateDetailsRequestData(myparameterDataRef.current);
       // data.PARAMETER = {
@@ -636,7 +636,7 @@ const DynamicGridConfig: FC<{
                   id="outlined-multiline-static"
                   label="SQL ANSI Query Syntax"
                   multiline
-                  rows={verifySql.isError ? 21 : 32}
+                  rows={verifySql.isError ? 29.4 : 32}
                   // minRows={verifySql.isError ? 21 : 24}
                   value={sqlSyntax}
                   variant="outlined"

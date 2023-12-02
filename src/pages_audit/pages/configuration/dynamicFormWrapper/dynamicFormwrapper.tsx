@@ -1,4 +1,12 @@
-import { FC, useEffect, useState, useContext, useRef, Fragment } from "react";
+import {
+  FC,
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+  Fragment,
+  useMemo,
+} from "react";
 import { useMutation, useQuery } from "react-query";
 import { ClearCacheContext, queryClient } from "cache";
 import { InitialValuesType, SubmitFnType } from "packages/form";
@@ -36,6 +44,7 @@ const DynamicForm: FC<{
   gridData: any;
   alertMessage: any;
   defaultView?: "view" | "edit" | "add";
+  existingData: any;
 }> = ({
   isDataChangedRef,
   closeDialog,
@@ -44,6 +53,7 @@ const DynamicForm: FC<{
   gridData,
   defaultView,
   alertMessage,
+  existingData,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const isErrorFuncRef = useRef<any>(null);
@@ -52,7 +62,7 @@ const DynamicForm: FC<{
   const [formMode, setFormMode] = useState(defaultView);
 
   const {
-    data: metaData,
+    data: formMetaData,
     isLoading,
     isFetching,
     isError,
@@ -100,7 +110,7 @@ const DynamicForm: FC<{
   const onPopupYes = (rows) => {
     mutation.mutate({ data: rows });
   };
-
+  console.log("existingData", existingData);
   const onSubmitHandler: SubmitFnType = (
     data,
     displayData,
@@ -128,6 +138,19 @@ const DynamicForm: FC<{
       data,
       gridData?.[0]?.data ?? {}
     );
+    console.log("test", data);
+    if (upd["_OLDROWVALUE"]) {
+      const oldRowValue = upd["_OLDROWVALUE"];
+
+      for (const key in oldRowValue) {
+        if (oldRowValue.hasOwnProperty(key)) {
+          // Convert boolean values to "Y" or "N"
+          if (typeof oldRowValue[key] === "boolean") {
+            oldRowValue[key] = oldRowValue[key] ? "Y" : "N";
+          }
+        }
+      }
+    }
 
     isErrorFuncRef.current = {
       data: {
@@ -141,7 +164,7 @@ const DynamicForm: FC<{
       endSubmit,
       setFieldError,
     };
-
+    console.log(" isErrorFuncRef.current", isErrorFuncRef.current);
     setIsOpenSave(true);
   };
 
@@ -163,7 +186,8 @@ const DynamicForm: FC<{
         <>
           <FormWrapper
             key={`DynamicForm` + formMode}
-            metaData={metaData}
+            // metaData={formMetaData}
+            metaData={extractMetaData(formMetaData, formMode) as MetaDataType}
             onSubmitHandler={onSubmitHandler}
             // initialValues={
             //   defaultView === "Add" ? {} : (gridData?.data as InitialValuesType)
@@ -267,6 +291,7 @@ export const DynamicFormWrapper = ({
   docID,
   defaultView,
   alertMessage,
+  existingData,
 }) => {
   const classes = useDialogStyles();
   const { state: data }: any = useLocation();
@@ -297,6 +322,7 @@ export const DynamicFormWrapper = ({
           gridData={data}
           defaultView={defaultView}
           alertMessage={alertMessage}
+          existingData={existingData}
         />
       </Dialog>
     </>

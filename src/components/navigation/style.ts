@@ -61,12 +61,21 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   item: {
     display: "flex",
     borderBottom: "1px solid #ddd",
+    borderRadius: "4px",
+    marginLeft: "7px",
+    marginTop: "7px",
+    width: "90%",
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(2),
     background: "var(--theme-color2)",
     "& svg": {
       // color: theme.palette.primary.main,
       color: "var(--theme-color6)",
+    },
+    "&:hover": {
+      boxShadow:
+        "8px 8px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
+      background: "var(--theme-color4)",
     },
   },
   button: {
@@ -77,6 +86,10 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     letterSpacing: 0,
     width: "100%",
     textAlign: "left",
+    // "&:hover": {
+    //   backgroundColor: "var(--theme-color1)",
+    //   // boxShadow: "0px 15px 20px rgb(221 176 176 / 37%)",
+    // },
   },
   btnRoot: {
     paddingLeft: "24px",
@@ -165,24 +178,24 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     },
   },
   slimList: {
-    paddingTop: "4px",
-    paddingBottom: "4px",
+    paddingTop: "5px",
+    paddingBottom: "5px",
   },
   activeMenuItem: {
-    backgroundColor: "var(--theme-color2)!important", //"var(--theme-color2)!important",
+    backgroundColor: "var(--theme-color3)!important", //"var(--theme-color2)!important",
     "& > div": {
-      color: "var(--theme-color3)",
+      color: "var(--theme-color4)",
     },
     "& svg": {
-      color: "var(--theme-color1)",
+      color: "var(--theme-color4)",
     },
     "& hover": {
       "& > div": {
-        color: "var(--theme-color1)",
+        color: "var(--theme-color4)",
       },
     },
     "& p": {
-      color: "var(--theme-color1)",
+      color: "var(--theme-color4)",
     },
   },
 }));

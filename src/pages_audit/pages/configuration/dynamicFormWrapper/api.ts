@@ -18,6 +18,7 @@ export const getDynamicFormMetaData = async ({
 
   if (status === "0") {
     const field = data[0]?.FIELD?.map((one) => {
+      // console.log("data[0]?.PROP", data[0]?.PROP);
       const matchingProps = data[0]?.PROP.filter(
         (prop) => prop.LINE_ID === one.LINE_ID
       );
@@ -61,6 +62,13 @@ export const getDynamicFormMetaData = async ({
             ],
           };
         }
+        // For __EDIT__
+        if (matchingProp.PROPS_ID === "__EDIT__") {
+          matchingPropsObject[matchingProp.PROPS_ID] = {
+            [matchingProp?.PROPS_VALUE]: Boolean(matchingProp.EDIT_VALUE),
+          };
+        }
+
         // For dependentFields string to array convert
         if (matchingProp.PROPS_ID === "dependentFields") {
           matchingPropsObject[matchingProp.PROPS_ID] =
@@ -68,9 +76,13 @@ export const getDynamicFormMetaData = async ({
         }
         // value get in string so convert to boolean
         if (matchingProp.PROPS_VALUE === "true") {
-          matchingPropsObject[matchingProp.PROPS_ID] = true;
+          matchingPropsObject[matchingProp.PROPS_ID] = Boolean(
+            matchingProp.PROPS_VALUE
+          );
         } else if (matchingProp.PROPS_VALUE === "false") {
-          matchingPropsObject[matchingProp.PROPS_ID] = false;
+          matchingPropsObject[matchingProp.PROPS_ID] = Boolean(
+            matchingProp.PROPS_VALUE
+          );
         }
       });
       if (matchingProps.length > 0) {
@@ -103,7 +115,7 @@ export const getDynamicFormMetaData = async ({
           sequence: one?.TAB_SEQ,
           // type: "text",
           //@ts-ignore
-          required: one?.FIELD_REQUIRED,
+          required: Boolean(one?.FIELD_REQUIRED),
           GridProps: {
             xs: one?.XS,
             sm: one?.SM,
@@ -167,6 +179,7 @@ export const getDynamicFormMetaData = async ({
       // fields: filter,
     };
     console.log("result", result);
+
     return result;
   } else {
     throw DefaultErrorObject(message, messageDetails);
