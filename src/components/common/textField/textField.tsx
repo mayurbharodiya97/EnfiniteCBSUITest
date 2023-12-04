@@ -198,7 +198,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   const result = (
     <>
       {/* Changes for bhavyata textfield label */}
-      {/* <InputAdornment
+      <InputAdornment
         position="start"
         sx={{
           alignItems: "baseline",
@@ -212,13 +212,13 @@ const MyTextField: FC<MyTextFieldProps> = ({
         {StartIcon ? <StartIcon /> : null}
         <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p>
         {EndIcon ? <EndIcon /> : null}
-      </InputAdornment> */}
+      </InputAdornment>
       <TextField
         {...others}
         key={fieldKey}
         id={fieldKey}
         name={name}
-        label={label}
+        // label={label}
         value={value}
         error={!isSubmitting && isError}
         helperText={
@@ -252,10 +252,16 @@ const MyTextField: FC<MyTextFieldProps> = ({
         }}
         //@ts-ignore
         InputProps={{
-          style:
-            !isSubmitting && Boolean(currentColor)
-              ? { color: currentColor, fontWeight: "bold" }
-              : {},
+          style: {
+            background: Boolean(readOnly) ? "#e7e5e563" : "",
+            ...(!isSubmitting && Boolean(currentColor)
+              ? {
+                  color: currentColor,
+                  fontWeight: "bold",
+                }
+              : {}),
+          },
+
           endAdornment: validationRunning ? (
             <InputAdornment position="end">
               <CircularProgress
@@ -297,7 +303,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
       />
     </>
   );
-  // console.log("<<<")
   if (Boolean(enableGrid)) {
     return <Grid {...GridProps}>{result}</Grid>;
   } else {

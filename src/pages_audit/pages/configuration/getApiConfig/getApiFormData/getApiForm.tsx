@@ -33,7 +33,6 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
     // setSqlSyntax(sqlSyntax ?? "");
     mynewSqlSyntaxRef.current = sqlSyntax ?? "";
   }, [sqlSyntax]);
-  console.log("<<<sqlSyntax", sqlSyntax);
   // const ClickEventManage = () => {
   //   let event: any = { preventDefault: () => {} };
   //   formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
@@ -58,7 +57,6 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
     //@ts-ignore
     endSubmit(true);
 
-    console.log("<<<ddd", mynewSqlSyntaxRef.current);
     let newData = data?.requestParameters?.map((item) => {
       const newItem = {
         ...item,
@@ -82,7 +80,6 @@ const GetApiFormCustom = ({ closeDialog, isDataChangedRef }) => {
         API_ENDPOINT: `/enfinityCommonServiceAPI/GETDYNAMICDATA/${data?.ACTION.toUpperCase()}`,
       },
     };
-    console.log("<<<reqData", reqData);
     if (Boolean(mynewSqlSyntaxRef.current)) {
       mutation.mutate({ ...reqData });
     } else {

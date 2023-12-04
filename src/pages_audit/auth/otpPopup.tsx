@@ -334,7 +334,6 @@ export const OTPModelForm = ({
       handleCloseEvent();
     }
   }, [loginState.otpmodelClose]);
-  console.log("<<<loginstate", loginState);
   return (
     <Fragment>
       <Grid alignItems="center">

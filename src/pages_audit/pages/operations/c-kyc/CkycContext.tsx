@@ -164,32 +164,35 @@ const CkycProvider = ({children}) => {
 
     const handleFormModalOpenOnEditctx = (recordData, retrieveFormdata) => {
         // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData[0].data)
-        const categConstitutionValue = {
-            value: recordData[0]?.data?.CATEGORY_CODE,
-            label: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[0],
-            CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
-            CONSTITUTION_NAME: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[1],
-        }
-
-        dispatch({
-            type: "handleCategoryChangectx",
-            payload: {
-                categConstitutionValuectx: categConstitutionValue,
-                categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
-                constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
-                isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
-                // retrieveFormDataApiRes: retrieveFormdata,
-                
-                // categConstitutionValuectx: "kuashd",
-                // categoryValuectx: "kub",
-                // constitutionValuectx: "yuu",
-                // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false 
-
-                // categoryValuectx: value?.value,
-                // constitutionValuectx: value?.CONSTITUTION_TYPE,
-                // colTabValuectx: 0,
+        if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
+            const categConstitutionValue = {
+                value: recordData[0]?.data?.CATEGORY_CODE,
+                label: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[0],
+                CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
+                CONSTITUTION_NAME: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[1],
             }
-        })
+
+            dispatch({
+                type: "handleCategoryChangectx",
+                payload: {
+                    categConstitutionValuectx: categConstitutionValue,
+                    categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
+                    constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
+                    isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+                    customerIDctx: recordData[0]?.id
+                    // retrieveFormDataApiRes: retrieveFormdata,
+                    
+                    // categConstitutionValuectx: "kuashd",
+                    // categoryValuectx: "kub",
+                    // constitutionValuectx: "yuu",
+                    // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false 
+
+                    // categoryValuectx: value?.value,
+                    // constitutionValuectx: value?.CONSTITUTION_TYPE,
+                    // colTabValuectx: 0,
+                }
+            })
+        }
     }
 
     const handleFormModalClosectx = () => {
@@ -202,7 +205,7 @@ const CkycProvider = ({children}) => {
                 categConstitutionValuectx: null,
                 categoryValuectx: null,
                 constitutionValuectx: null,
-                accTypeValuectx: null,
+                accTypeValuectx: "",
                 tabsApiResctx: [],
                 isFreshEntryctx: false,
                 tabNameList: [],
@@ -273,7 +276,7 @@ const CkycProvider = ({children}) => {
         dispatch({
             type: "update_accTypeValuectx",
             payload: {
-                accTypeValuectx: value
+                accTypeValuectx: value ?? ""
             }
         })
     }
@@ -398,7 +401,7 @@ const CkycProvider = ({children}) => {
             type: "update_retrieveFormData",
             payload: {
                 retrieveFormDataApiRes: {...data},
-                accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE, //ACCT_TYPE
+                accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE ?? "", //ACCT_TYPE
 
             }
         })

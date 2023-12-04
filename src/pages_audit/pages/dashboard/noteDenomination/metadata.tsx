@@ -139,7 +139,6 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
     title: "Teller Operation",
     allowColumnHiding: true,
     submitButtonName: "Denomination",
-
     HideHeader: true,
     submitButtonHide: false,
     isDisplayOnly: false,
@@ -157,7 +156,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       isDisabled: false,
       placeholder: "Select Transaction",
       isColumnHidingDisabled: true,
-      entertoSubmit: true,
+      // entertoSubmit: true,
       type: "select",
       optiondata: [
         { label: " Cash Receipt", value: "R" },
@@ -173,85 +172,109 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       },
     },
     {
-      accessor: "BRANCH",
-      name: "BRANCH",
-      label: "Branch",
-      placeholder: "Branch",
-      type: "text",
-      isDisabled: false,
-      gridconfig: { xs: 6, sm: 1 },
       // accessor: "BRANCH",
       // name: "BRANCH",
-      // defaultValue: "",
-      // isVisible: true,
-      // gridconfig: { xs: 6, sm: 2 },
       // label: "Branch",
-      // autoComplete: "off",
-      // required: true,
+      // placeholder: "Branch",
+      // type: "text",
       // isDisabled: false,
-      // placeholder: "Select Branch",
-      // isColumnHidingDisabled: true,
+      // gridconfig: { xs: 6, sm: 1 },
+      accessor: "BRANCH",
+      name: "BRANCH",
+      defaultValue: "",
+      isVisible: true,
+      gridconfig: { xs: 6, sm: 2 },
+      label: "Branch",
+      autoComplete: "off",
+      required: true,
+      isDisabled: false,
+      placeholder: "Select Branch",
+      isColumnHidingDisabled: true,
       // entertoSubmit: true,
-      // type: "select",
-      // optiondata: GeneralAPI.getBranchCodeList,
-      // _optionsKey: "getBranchCodeList",
-      // validate: (columnValue, allField, flag) => {
-      //   if (!Boolean(columnValue)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
+      type: "select",
+      optiondata: GeneralAPI.getBranchCodeList,
+      _optionsKey: "getBranchCodeList",
+      validate: (columnValue, allField, flag) => {
+        if (!Boolean(columnValue)) {
+          return "This field is required.";
+        }
+        return "";
+      },
     },
     {
-      accessor: "ACOUNT_TYPE",
-      name: "ACCOUNT_TYPE",
-      label: "Account Type",
-      placeholder: "Account Type",
-      type: "text",
-      isDisabled: false,
-      gridconfig: { xs: 6, sm: 1 },
-      // accessor: "ACCOUNT_TYPE",
+      // accessor: "ACOUNT_TYPE",
       // name: "ACCOUNT_TYPE",
-      // defaultValue: "",
-      // isVisible: true,
-      // gridconfig: { xs: 6, sm: 2 },
       // label: "Account Type",
-      // autoComplete: "off",
-      // required: true,
+      // placeholder: "Account Type",
+      // type: "text",
       // isDisabled: false,
-      // placeholder: "Select Account Type",
-      // isColumnHidingDisabled: true,
+      // gridconfig: { xs: 6, sm: 1 },
+      accessor: "ACCOUNT_TYPE",
+      name: "ACCOUNT_TYPE",
+      defaultValue: "CCO1",
+      isVisible: true,
+      gridconfig: { xs: 6, sm: 2 },
+      label: "Account Type",
+      autoComplete: "off",
+      required: true,
+      isDisabled: false,
+      placeholder: "Select Account Type",
+      isColumnHidingDisabled: true,
       // entertoSubmit: true,
-      // type: "select",
-      // optiondata: GeneralAPI.getAccountTypeList,
-      // _optionsKey: "getAccountTypeList",
-      // validate: (columnValue, allField, flag) => {
-      //   if (!Boolean(columnValue)) {
-      //     return "This field is required.";
-      //   }
-      //   return "";
-      // },
+      type: "select",
+      optiondata: GeneralAPI.getAccountTypeList,
+      _optionsKey: "getAccountTypeList",
+      validate: (columnValue, allField, flag) => {
+        if (!Boolean(columnValue)) {
+          return "This field is required.";
+        }
+        return "";
+      },
     },
     {
       accessor: "ACCOUNT_NUMBER",
       name: "ACCOUNT_NUMBER",
       label: "Account Number",
       placeholder: "Account Number",
-      type: "text",
+      type: "number",
       isDisabled: false,
       gridconfig: { xs: 6, sm: 2 },
+      entertoSubmit: false,
+      tabToSubmit: true,
+      validate: (columnValue, allField, flag) => {
+        if (!Boolean(columnValue)) {
+          return "This field is required.";
+        }
+        return "";
+      },
+      // FormatProps: {
+      //   thousandSeparator: true,
+      //   thousandsGroupStyle: "lakh",
+      //   allowNegative: false,
+      //   allowLeadingZeros: false,
+      //   decimalScale: 2,
+      //   isAllowed: (values) => {
+      //     if (values?.value?.length > 14) {
+      //       return false;
+      //     }
+      //     if (values.floatValue === 0) {
+      //       return false;
+      //     }
+      //     return true;
+      //   },
+      // },
     },
     {
       accessor: "SDC",
       name: "SDC",
-      defaultValue: "1   ",
+      defaultValue: "BY CASH -",
       isVisible: true,
       gridconfig: { xs: 6, sm: 2 },
       label: "SDC",
       autoComplete: "off",
       placeholder: "Select SDC",
       isColumnHidingDisabled: false,
-      entertoSubmit: true,
+      // entertoSubmit: true,
       type: "select",
       isDisabled: false,
       optiondata: API.getSDCList,
@@ -261,10 +284,23 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       accessor: "REMARK",
       name: "REMARK",
       label: "remark",
+      defaultValue: "",
       placeholder: "Enter remark",
       type: "text",
       isDisabled: false,
       gridconfig: { xs: 6, sm: 2 },
+      dependFields: ["SDC"],
+      dependFieldsonchange: (colomnValue, value, name, extraData) => {
+        if (value) {
+          return {
+            // label: "Default Remarkz",
+            // gridconfig: { xs: 12, sm: 12 },
+            // placeholder: "Placeholder Is Changed",
+            value: value,
+            defaultValue: value,
+          };
+        }
+      },
     },
     {
       accessor: "RECEIPT_PAYMENT",
@@ -274,17 +310,18 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       isVisible: true,
       gridconfig: { xs: 6, sm: 2 },
       defaultfocus: true,
-      // defaultfocus: true,
+      entertoSubmit: true,
       label: "Receipt",
-      required: true,
+      required: false,
       autoComplete: "off",
       isDisabled: false,
       placeholder: "Please Enter Receipt Value",
       isColumnHidingDisabled: true,
-      entertoSubmit: true,
+      // entertoSubmit: true,
       dependFields: ["TRN"],
       dependFieldsonchange: (colomnValue, value, name, extraData) => {
         // console.log(colomnValue, value, name, extraData, "OOOOOOOO");
+        // console.log("working!!");
         if (value === "R") {
           return {
             label: "Receipt",
@@ -300,13 +337,33 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
         }
       },
       validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue)) {
-          return "This field is required.";
-        } else if (Boolean(parseFloat(columnValue) <= 0)) {
-          return "Value must be greater then 0(zero).";
+        if (flag === "FIRST") {
+          if (!Boolean(columnValue)) {
+            return "This field is required.";
+          } else if (Boolean(parseFloat(columnValue) <= 0)) {
+            return "Value must be greater then 0(zero).";
+          }
+          return "";
         }
-        return "";
       },
+    },
+    {
+      accessor: "NAME",
+      name: "NAME",
+      label: "Name",
+      placeholder: "Name",
+      type: "text",
+      isDisabled: false,
+      gridconfig: { xs: 6, sm: 3 },
+    },
+    {
+      accessor: "BALANCE",
+      name: "BALANCE",
+      label: "Balance",
+      placeholder: "Balance",
+      type: "number",
+      isDisabled: false,
+      gridconfig: { xs: 6, sm: 3 },
     },
   ],
 };

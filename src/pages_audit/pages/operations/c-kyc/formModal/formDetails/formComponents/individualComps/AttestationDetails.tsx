@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Button, Dialog, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { attest_history_meta_data, attestation_detail_meta_data } from "../../metadata/individual/attestationdetails"
@@ -8,6 +8,16 @@ import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { useQuery } from "react-query"
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+
+const actions = [
+    {
+      actionName: "close",
+      actionLabel: "Close",
+      multiple: undefined,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+    },
+];
 
 const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
@@ -194,14 +204,20 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
 
 
 const AttestHistory = ({open, onClose, isLoading, data}) => {
+    const setCurrentAction = useCallback(
+        (data) => {
+          if(data.name === "close") {
+            onClose()
+          }
+        },
+        []
+    );
     return (
-        <Dialog open={open} onClose={onClose}
+        <Dialog open={open} maxWidth="lg"
             PaperProps={{
                 style: {
-                    minWidth: "1000px",
-                    width: "auto",
-                    maxWidth: "1100px",
-                    height: "90%",
+                    minWidth: "70%",
+                    width: "80%",
                 }
             }}
         >
@@ -211,8 +227,8 @@ const AttestHistory = ({open, onClose, isLoading, data}) => {
                 data={data ?? []}
                 setData={() => null}          
                 loading={isLoading}
-                // actions={actions}
-                // setAction={setCurrentAction}
+                actions={actions}
+                setAction={setCurrentAction}
                 // refetchData={() => refetch()}
                 // ref={myGridRef}
             />

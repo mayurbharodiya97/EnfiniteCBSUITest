@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse, Dialog } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
@@ -14,6 +14,16 @@ import { useMutation, useQuery } from 'react-query';
 import * as API from "../../../../api";
 import { ckyc_retrieved_meta_data } from 'pages_audit/pages/operations/c-kyc/metadata';
 // import { format } from 'date-fns';
+
+const actions = [
+    {
+      actionName: "close",
+      actionLabel: "Close",
+      multiple: undefined,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+    },
+];
 
 const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
   const { t } = useTranslation();
@@ -188,14 +198,22 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
 
 
 export const SearchListdialog = ({open, onClose, data, isLoading}) => {
+    const setCurrentAction = useCallback(
+        (data) => {
+          if(data.name === "close") {
+            onClose()
+          }
+        },
+        []
+    );
+    
     return (
-        <Dialog open={open} onClose={onClose}
+        <Dialog open={open} maxWidth="lg"
+        // onClose={onClose}
             PaperProps={{
                 style: {
-                    minWidth: "1000px",
-                    width: "auto",
-                    maxWidth: "1100px",
-                    height: "90%",
+                    minWidth: "70%",
+                    width: "80%",
                 }
             }}
         >
@@ -205,8 +223,8 @@ export const SearchListdialog = ({open, onClose, data, isLoading}) => {
                 data={data ?? []}
                 setData={() => null}          
                 loading={isLoading}
-                // actions={actions}
-                // setAction={setCurrentAction}
+                actions={actions}
+                setAction={setCurrentAction}
                 // refetchData={() => refetch()}
                 // ref={myGridRef}
             />

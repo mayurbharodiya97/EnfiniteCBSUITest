@@ -885,58 +885,74 @@ export const kyc_proof_of_address_meta_data = {
             componentType: "textField",
         },
         name: "STD_1",
-        label: "",
+        label: "PhoneO",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
     },
       {
         render: {
             componentType: "textField",
         },
         name: "CONTACT1",
-        label: "PhoneO",
+        label: "",
         placeholder: "",
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
+    },
+    {
+        render: {
+            componentType: "spacer"
+        },
+        GridProps: {
+            xs: 0.2
+        }
     },
     {
         render: {
             componentType: "textField",
         },
         name: "STD_2",
-        label: "",
+        label: "PhoneR",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
     },
     {
         render: {
             componentType: "textField",
         },
         name: "CONTACT2",
-        label: "PhoneR",
+        label: "",
         placeholder: "",
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
+    },
+    {
+        render: {
+            componentType: "spacer"
+        },
+        GridProps: {
+            xs: 0.2
+        }
     },
     {
         render: {
             componentType: "textField",
         },
         name: "STD_3",
-        label: "",
+        label: "MobileNo",
         required: true,
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
     },
     {
         render: {
             componentType: "textField",
         },
         name: "CONTACT3",
-        label: "MobileNo",
+        label: "",
         required: true,
         placeholder: "",
         type: "text",
@@ -944,20 +960,28 @@ export const kyc_proof_of_address_meta_data = {
     },
     {
         render: {
+            componentType: "spacer"
+        },
+        GridProps: {
+            xs: 0.2
+        }
+    },
+    {
+        render: {
             componentType: "textField",
         },
         name: "STD_4",
-        label: "",
+        label: "Fax",
         placeholder: "",
         type: "text",
-        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
     },
     {
         render: {
             componentType: "textField",
         },
         name: "CONTACT4",
-        label: "Fax",
+        label: "",
         placeholder: "",
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},

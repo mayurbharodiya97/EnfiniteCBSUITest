@@ -14,18 +14,18 @@ import OtherAddressDetails from './formDetails/formComponents/individualComps/Ot
 import NRIDetails from './formDetails/formComponents/individualComps/NRIDetails';
 import AttestationDetails from './formDetails/formComponents/individualComps/AttestationDetails';
 
-import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
-import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import InfoIcon from '@mui/icons-material/Info'; // other-details
-import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'; //edit-pencil-icon
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-icon
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
+// import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
+// import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
+// import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+// import InfoIcon from '@mui/icons-material/Info'; // other-details
+// import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline'; //edit-pencil-icon
+// import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'; // delete-icon
+// import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined'; // close-icon
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
-import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
+// import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+// import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+// import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
+// import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
 import CancelIcon from '@mui/icons-material/Cancel'; // close-icon
 import RefreshIcon from '@mui/icons-material/Refresh'; // refresh-icon
 import { makeStyles } from '@mui/styles';
@@ -38,19 +38,20 @@ import bank_logo_default from "assets/images/BecomePartnerImg.svg";
 import clsx from "clsx";
 
 import * as API from "../api";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { AutoComplete } from 'components/common';
 import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../CkycContext';
 import TabStepper from './TabStepper';
-import KYCDocUpload from './formDetails/formComponents/individualComps/KYCDocUpload';
 import PhotoSignature from './formDetails/formComponents/individualComps/PhotoSignature';
-import { format } from "date-fns/esm";
 import EntityDetails from './formDetails/formComponents/legalComps/EntityDetails';
 import ControllingPersonDTL from './formDetails/formComponents/legalComps/ControllingPersonDTL';
 import { useLocation, useNavigate } from 'react-router-dom';
-import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy';
+// import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy';
+import Document from './formDetails/formComponents/document/Document';
+import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy2';
+import { format } from 'date-fns';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -186,29 +187,157 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx} = useContext(CkycContext);
-  const { state: data }: any = useLocation();
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx } = useContext(CkycContext);
+  // const { state: data }: any = useLocation();
+  const location: any = useLocation();
   const { t } = useTranslation();
   const classes = useDialogStyles();
   const authController = useContext(AuthContext);
   const appBarClasses = useStyles();
   // const [customerCategories, setCustomerCategories] = useState([])
   const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
-  // console.log("statedata", data)
-  useEffect(() => {
-    // console.log("asdasdasdsasdasdas bef", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
-    if(data?.isFormModalOpen && data?.entityType && data?.isFreshEntry) {
-      handleFormModalOpenctx(data?.entityType)
-    }
-  }, [])
-  // useEffect(() => {
-  //   console.log("asdasdasdsasdasdas.", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
-  // }, [state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx])
+  const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
+
+  // on edit/view
+  // - call retrieveFormRefetch
+  //   - handleFormDataonRetrievectx(pass response)
+  // - handleColTabChangectx(0)
+  // - handleFormModalOpenOnEditctx(data.rows)
+  
+  // retrieve data
+  // const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
+  //   ["getCustomerDetailsonEdit", { }],
+  //   () => API.getCustomerDetailsonEdit({
+  //     COMP_CD: authController?.authState?.companyID ?? "",
+  //     CUSTOMER_ID: location.state[0].id ?? "",
+  //   }), {enabled: false}
+  // )
 
   const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
     ["getPMISCData", {}],
     () => API.getPMISCData("CKYC_ACCT_TYPE")
   );
+
+
+  const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
+    onSuccess: (data) => {
+      // // console.log("on successssss", data, location)
+      // handleFormDataonRetrievectx(data[0])
+      // let acctTypevalue = data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+      // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+      // setAcctTypeState(acctType[0])
+      // // handleColTabChangectx(0)
+      // // handleFormModalOpenOnEditctx(location?.state)
+    },
+    onError: (error: any) => {},
+  });
+
+
+  useEffect(() => {
+    if(!mutation.isLoading && mutation.data) {
+      // console.log("mutation.data, mutation.isLoading", mutation, mutation.data, mutation.isLoading)
+              // console.log("on successssss", data, location)
+            handleFormDataonRetrievectx(mutation.data[0])
+            // let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+            // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+            // setAcctTypeState(acctType[0])
+              // handleColTabChangectx(0)
+              // handleFormModalOpenOnEditctx(location?.state)
+    }    
+  }, [mutation.data, mutation.isLoading])
+
+  useEffect(() => {
+    if(!mutation.isLoading && mutation.data) {
+      if(AccTypeOptions && !isAccTypeLoading) {
+        let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+        let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+        setAcctTypeState(acctType[0])
+      }
+    }
+  }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])
+
+
+  // useEffect(() => {
+  //   // if(!location.state) {
+  //   //   handleFormModalClosectx()
+  //   //   onClose()
+  //   // } else {
+  //     if(location.pathname.includes("/view-detail")) {
+  //       console.log(">>>-- edit", location.state, location.state[0].id)
+  //       // handlecustomerIDctx(location.state[0].id)
+  //       handleColTabChangectx(0)
+  //       handleFormModalOpenOnEditctx(location?.state)
+  //       // retrieveFormRefetch()
+  //       let data = {
+  //         COMP_CD: authController?.authState?.companyID ?? "",
+  //         CUSTOMER_ID: location.state[0].id ?? "",
+  //       }
+        
+  //       mutation.mutate(data)
+  //     } else if(location?.pathname.includes("/new-entry") && location?.state?.entityType) {
+  //       // console.log(">>>-- new", location.state)
+  //       handleFormModalOpenctx(location?.state?.entityType)
+  //     }
+  //   // }
+  // }, [location])
+
+
+
+  useEffect(() => {
+    // if(!location.state) {
+    //   handleFormModalClosectx()
+    //   onClose()
+    // } else {
+      if(location.pathname.includes("/view-detail")) {
+        // console.log(">>>-- edit", location.state, location.state[0].id)
+        // handlecustomerIDctx(location.state[0].id)
+        handleColTabChangectx(0)
+        handleFormModalOpenOnEditctx(location?.state)
+        // retrieveFormRefetch()
+        let data = {}
+        // if(location.state.length && location.state?.[0]?.id && location.state?.[0]?.data?.REQUEST_ID) {
+        //   data = {
+        //     COMP_CD: authController?.authState?.companyID ?? "",
+        //     REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
+        //   }  
+        // } else {
+          if((location.state && location.state.length>0) && (location.state[0].id && location.state[0].data.REQUEST_ID)) {
+            data = {
+              COMP_CD: authController?.authState?.companyID ?? "",
+              REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
+            }
+          } else {
+          data = {
+            COMP_CD: authController?.authState?.companyID ?? "",
+            CUSTOMER_ID: location.state[0].id ?? "",
+          }
+        }
+        Object.keys(data).length>1 && mutation.mutate(data)
+        // mutation.mutate(data)
+      } else if(location?.pathname.includes("/new-entry") && location?.state?.entityType) {
+        // console.log(">>>-- new", location.state)
+        handleFormModalOpenctx(location?.state?.entityType)
+      }
+    // }
+  }, [location])
+
+
+
+
+
+
+
+  // useEffect(() => {
+  //   console.log("asdasdasdsasdasdas.", state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx)
+  // }, [state?.isFormModalOpenctx, state?.entityTypectx, state?.isFreshEntryctx])
+
+
+  // useEffect(() => {
+  //   if(!isAccTypeLoading && AccTypeOptions) {
+  //     console.log("asdasdasdasda", AccTypeOptions)
+  //     // setAcctTypeState(AccTypeOptions[1]?.value)
+  //   }
+  // }, [isAccTypeLoading, AccTypeOptions])
 
 
   const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
@@ -295,10 +424,12 @@ export default function FormModal({
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
       case "KYC Document Upload":
-        return <KYCDocUpload />
+        return <Document />
+        // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
         return <PhotoSignatureCpy />
+        // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
       case "Details of Related Person":
@@ -352,10 +483,12 @@ export default function FormModal({
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
       case "KYC Document Upload":
-        return <KYCDocUpload />
+        return <Document />
+        // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignature />
+        return <PhotoSignatureCpy />
+        // return <PhotoSignature />
 
       case "Details of Controlling Persons":
         return <ControllingPersonDTL
@@ -570,7 +703,7 @@ export default function FormModal({
                 color="inherit"
                 variant="subtitle1"
                 component="div"
-              >{`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD}`}</Typography>
+              >{`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD ? state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD : ""}`}</Typography>
               )
             :""}
 
@@ -583,7 +716,7 @@ export default function FormModal({
                 color="inherit"
                 variant="subtitle2"
                 component="div"
-              >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE}`}</Typography>
+              >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE ? format(new Date(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE), "dd-MM-yyyy") : ""}`}</Typography>
               // format(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE, "dd/MM/yyyy")
               )
             :""}
@@ -600,13 +733,20 @@ export default function FormModal({
             >
               {t("SaveAsDraft")}
             </Button> */}
-            <Button
+            {!state?.isFreshEntryctx &&<Button
+              // onClick={handleFormModalClose}
+              color="primary"
+              // disabled={mutation.isLoading}
+            >
+              {t("Update")}
+            </Button>}
+            {state?.isFreshEntryctx &&<Button
               // onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
             >
               {t("Save")}
-            </Button>
+            </Button>}
             <Button
               onClick={() => {
                 handleFormModalClosectx()
@@ -715,10 +855,12 @@ export default function FormModal({
                       disabled={!state?.isFreshEntryctx}
                       id="acc-types"
                       options={AccTypeOptions ?? []}
-                      getOptionLabel={(option:any) => `${option?.DISPLAY_VALUE}`}
-                      // value={state?.accTypeValuectx || null}
+                      getOptionLabel={(option:any) => `${option?.label}`}
+                      // value={state?.accTypeValuectx ?? null}
+                      value={acctTypeState}
                       onChange={(e,v) => {
                         // setAccTypeValue(v?.value)
+                        setAcctTypeState(v)
                         handleAccTypeVal(v?.value)
                       }}
                       // sx={{ width: 200 }}
