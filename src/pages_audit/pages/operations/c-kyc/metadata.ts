@@ -560,8 +560,6 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
   ],
 };
 
-
-
 // insurance component
 export const insurance_grid_meta_data: GridMetaDataType = {
   gridConfig: {

@@ -20,11 +20,18 @@ export const FormComponentView = forwardRef<any, any>(
         IconButtonStyle: {},
         paperStyle: {},
       },
+      displayStyle1,
+      displayStyle2,
+      submitThirdAction,
+      submitThirdButtonHide = false,
+      submitThirdButtonName = "click",
+      submitThirdLoading = false,
+      displayStyle3,
     },
     ref = null
   ) => {
     const { t } = useTranslation();
-    console.log(finalMetaData, "finalMetaData*");
+    // console.log(finalMetaData, "finalMetaData*");
     const isDisplayOnly = finalMetaData.gridConfig?.isDisplayOnly ?? false;
     let metadata = transformMetaData({
       metaData: finalMetaData,
@@ -52,6 +59,13 @@ export const FormComponentView = forwardRef<any, any>(
         submitSecondAction={submitSecondAction}
         submitSecondValidtion={submitSecondValidtion}
         propStyles={propStyles}
+        displayStyle1={displayStyle1}
+        displayStyle2={displayStyle2}
+        submitThirdAction={submitThirdAction}
+        submitThirdButtonHide={submitThirdButtonHide}
+        submitThirdButtonName={submitThirdButtonName}
+        submitThirdLoading={submitThirdLoading}
+        displayStyle3={displayStyle3}
         //@ts-ignore
         ref={ref}
       ></FilterFormComponents>
@@ -60,7 +74,7 @@ export const FormComponentView = forwardRef<any, any>(
 );
 const transformMetaData = ({ metaData, isDisplayOnly, data }) => {
   let metadata = cloneDeep(metaData);
-  console.log(metadata, "metadatadtadta");
+  // console.log(metadata, "metadatadtadta");
   let initialData = metadata.fields.reduce((value, item) => {
     //console.log(item, Boolean(item?.isDisabled), data[item?.accessor]);
     value = {

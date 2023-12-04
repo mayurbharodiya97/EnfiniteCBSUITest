@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Tooltip,
 } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { useStyles } from "pages_audit/auth/style";
@@ -35,19 +36,23 @@ export const PopupMessageAPIWrapper = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.verifybutton}>
-          <GradientButton
-            endIcon={loading ? <CircularProgress size={20} /> : null}
-            onClick={() => onActionYes(rows)}
-            disabled={loading}
-          >
-            Yes
-          </GradientButton>
-          <GradientButton
-            // disabled={loading}
-            onClick={() => onActionNo()}
-          >
-            No
-          </GradientButton>
+          <Tooltip title="Yes">
+            <GradientButton
+              endIcon={loading ? <CircularProgress size={20} /> : null}
+              onClick={() => onActionYes(rows)}
+              disabled={loading}
+            >
+              Yes
+            </GradientButton>
+          </Tooltip>
+          <Tooltip title="No">
+            <GradientButton
+              // disabled={loading}
+              onClick={() => onActionNo()}
+            >
+              No
+            </GradientButton>
+          </Tooltip>
         </DialogActions>
       </Dialog>
     </>
@@ -85,12 +90,14 @@ export const PopupRequestWrapper = ({
         <DialogActions className={classes.verifybutton}>
           {buttonNames.map((buttonName, index) => {
             return (
-              <GradientButton
-                endIcon={loading ? <CircularProgress size={20} /> : null}
-                onClick={() => onClickButton(rows, buttonName)}
-              >
-                {buttonName}
-              </GradientButton>
+              <Tooltip title={buttonName}>
+                <GradientButton
+                  endIcon={loading ? <CircularProgress size={20} /> : null}
+                  onClick={() => onClickButton(rows, buttonName)}
+                >
+                  {buttonName}
+                </GradientButton>
+              </Tooltip>
             );
           })}
           {/* <GradientButton //disabled={loading}

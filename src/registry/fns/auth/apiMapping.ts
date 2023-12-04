@@ -564,6 +564,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
     packageName: "",
   },
+  CHEQUEBKDATA: {
+    url: "/accountServiceAPI/CHEQUEBKDATA",
+    packageName: "",
+  },
+  CHEQUEBKCHARGE: {
+    url: "/accountServiceAPI/CHEQUEBKCHARGE",
+    packageName: "",
+  },
+  GETTRXLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRXLIST",
+    packageName: "",
+  },
+  GETJOINTDETILSLIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

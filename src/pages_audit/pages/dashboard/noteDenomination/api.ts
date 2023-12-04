@@ -123,17 +123,42 @@ export const getSDCList = async (...authDTL) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DISLAY_STANDARD, CODE, ...other }) => {
-        return {
-          ...other,
-          CODE: CODE,
-          DISLAY_STANDARD: DISLAY_STANDARD,
-          value: CODE,
-          label: DISLAY_STANDARD,
-        };
-      });
+      responseData = responseData.map(
+        ({ DISLAY_STANDARD, CODE, DESCRIPTION, ...other }) => {
+          return {
+            ...other,
+            CODE: CODE,
+            DISLAY_STANDARD: DISLAY_STANDARD,
+            value: DESCRIPTION,
+            label: DISLAY_STANDARD,
+          };
+        }
+      );
     }
     return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getAcctDTL = async ({
+  ACCT_CD,
+  ACCT_TYPE,
+  BRANCH_CD,
+  COMP_CD,
+  FULL_ACCT_NO,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETACCTDATA", {
+      ACCT_CD: ACCT_CD,
+      ACCT_TYPE: ACCT_TYPE,
+      BRANCH_CD: BRANCH_CD,
+      COMP_CD: COMP_CD,
+      FULL_ACCT_NO: FULL_ACCT_NO,
+    });
+  if (status === "0") {
+    // console.log(data, "data@@@@");
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

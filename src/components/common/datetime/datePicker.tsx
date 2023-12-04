@@ -165,6 +165,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore
         onChange={handleChange}
+        sx={{ background: Boolean(readOnly) ? "#e7e5e563" : "" }}
         slotProps={{
           textField: {
             fullWidth: true,

@@ -128,10 +128,8 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
       let event: any = { preventDefault: () => {} };
       myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
     };
-    console.log("<<<mutation11", mutation.data);
 
     useEffect(() => {
-      console.log("<<<mutation12", mutation.data?.[0]?.ACCT_CD);
       detailsMetadatarep.gridConfig.gridLabel = mutation.data?.[0]?.ACCT_CD
         ? detailsMetadatarep?.gridConfig?.gridLabel +
           "Account NO. =" +
@@ -144,7 +142,6 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
 
     // let gridLabel = detailsMetadatarep.gridConfig.gridLabel;
     // if (mutation.data) {
-    //   console.log("<<<length", mutation.data);
     //   gridLabel =
     //     mutation.data &&
     //     detailsMetadatarep?.gridConfig?.gridLabel +
@@ -158,7 +155,6 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
     //   //   : detailsMetadatarep?.gridConfig?.gridLabel;
     // }
 
-    // console.log("<<<mutation.data?.ACCT_CD", mutation.data?.[0]?.ACCT_CD);
     // detailsMetadatarep.gridConfig.gridLabel = "sdadgj";
     return (
       <Fragment>
@@ -211,7 +207,6 @@ export const DetailMaster = forwardRef<any, MasterDetailsArgumentType>(
           </div>
           <div
             onKeyDown={(e) => {
-              console.log("<<<ee", e);
               if (e.key === "Tab") {
                 let target: any = e?.target;
                 if (

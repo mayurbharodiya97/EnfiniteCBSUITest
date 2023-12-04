@@ -64,12 +64,21 @@ export const FilterFormComponents = forwardRef<any, any>(
       onAction,
       loading,
       propStyles,
+      displayStyle1,
+      displayStyle2,
+      submitThirdAction,
+      submitThirdButtonHide = false,
+      submitThirdButtonName = "click",
+      submitThirdLoading = false,
+      displayStyle3,
     },
     ref
   ) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const inputButtonRef = useRef<any>(null);
+    const secondButtonRef = useRef<any>(null);
+    const thirdButtonRef = useRef<any>(null);
     const [ErrorData, setErrorData] = useState({});
     const [colomnValue, setColomnValue] = useState(initialDataValue);
     const [fields, setFields] = useState(oldfielddata);
@@ -385,13 +394,20 @@ export const FilterFormComponents = forwardRef<any, any>(
                               ? ErrorData[column.name]?.ErrorMessage ?? "Error"
                               : " "
                           }
-                          onKeyPress={(e) => {
+                          onKeyDown={(e) => {
                             if (
-                              (e.key === "Enter" && column?.entertoSubmit) ??
+                              (e.key === "Tab" && column?.entertoSubmit) ??
                               false
                             ) {
                               //console.log(inputButtonRef.current);
                               inputButtonRef?.current?.click?.();
+                            }
+                            if (
+                              (e.key === "Tab" && column?.tabToSubmit) ??
+                              false
+                            ) {
+                              //console.log(inputButtonRef.current);
+                              secondButtonRef?.current?.click?.();
                             }
                           }}
                         />
@@ -409,7 +425,11 @@ export const FilterFormComponents = forwardRef<any, any>(
                   alignItems="center"
                   spacing={2}
                 >
-                  <Grid key={`gird${submitButtonName}`} item>
+                  <Grid
+                    key={`gird${submitButtonName}`}
+                    item
+                    sx={{ display: displayStyle1 }}
+                  >
                     <GradientButton
                       disabled={loading || submitSecondLoading}
                       endIcon={loading ? <CircularProgress size={20} /> : null}
@@ -429,8 +449,27 @@ export const FilterFormComponents = forwardRef<any, any>(
                           ) : null
                         }
                         onClick={handleSecondButtonClick}
+                        ref={secondButtonRef}
+                        sx={{ display: displayStyle2 }}
                       >
                         {submitSecondButtonName}
+                      </GradientButton>
+                    </Grid>
+                  )}
+                  {submitThirdButtonHide ? null : (
+                    <Grid key={`gird${submitThirdButtonName}`} item>
+                      <GradientButton
+                        disabled={loading || submitThirdLoading}
+                        endIcon={
+                          submitThirdLoading ? (
+                            <CircularProgress size={20} />
+                          ) : null
+                        }
+                        onClick={submitThirdAction}
+                        ref={thirdButtonRef}
+                        sx={{ display: displayStyle3 }}
+                      >
+                        {submitThirdButtonName}
                       </GradientButton>
                     </Grid>
                   )}
