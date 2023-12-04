@@ -46,7 +46,8 @@ export const DeactivateCustomer = ({rowdata, onClose}) => {
         }} 
       />
       }
-      <Dialog open={true} onClose={() => setIsDialogOpen(false)}
+      <Dialog open={true}
+      // onClose={() => setIsDialogOpen(false)}
         // PaperProps={{
         //   style: {
         //       minWidth: "1000px",

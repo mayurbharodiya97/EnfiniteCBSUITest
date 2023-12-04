@@ -79,6 +79,7 @@ const KYCDetails = ({
   const POIMetadata = state?.entityTypectx === "I" 
     ? kyc_proof_of_identity_meta_data 
     : company_info_meta_data
+  // const POIMetadata = company_info_meta_data
   const POAMetadata = state?.entityTypectx === "I" 
     ? kyc_proof_of_address_meta_data 
     : kyc_legal_proof_of_add_meta_data
@@ -109,7 +110,7 @@ const KYCDetails = ({
         coltabvalue: state?.colTabValuectx,
       });
     setIsNextLoading(false);
-    // endSubmit(true)
+    endSubmit(true)
   };
   const PoASubmitHandler = (
     data: any,
@@ -191,7 +192,7 @@ const KYCDetails = ({
               sx={{ alignItems: "center", justifyContent: "space-between" }}
             >
               <Typography sx={{ color: "var(--theme-color3)" }} variant={"h6"}>
-                {t("ProofOfIdentity")}
+                {state?.entityTypectx === "I"  ? t("ProofOfIdentity") : "Company Info"}
               </Typography>
               <IconButton onClick={handlePoIExpand}>
                 {!isPoIExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}

@@ -496,7 +496,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDYNAPILIST",
     packageName: "",
   },
-
   GETDROPDOWNCONFIG: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDROPDOWNCONFIG",
     packageName: "",
@@ -559,6 +558,10 @@ export const ActionWiseAPIConfiguration = {
   },
   DOAPICONFIGDATA: {
     url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
+    packageName: "",
+  },
+  GETCUSTPHOTODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
     packageName: "",
   },
   GETTRXLIST: {
