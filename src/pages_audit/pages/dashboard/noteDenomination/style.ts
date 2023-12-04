@@ -75,5 +75,3 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 export { useStyles, StyledTableCell };
-
-//for currency symbol animation//
