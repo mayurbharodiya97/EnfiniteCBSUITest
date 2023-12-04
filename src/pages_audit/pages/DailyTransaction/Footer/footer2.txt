@@ -7,7 +7,7 @@ import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
-const Footer = () => {
+const Footer2 = () => {
   const inputElement = useRef();
   const top100Films = [
     { label: "acc1", year: 1994 },
@@ -248,6 +248,8 @@ const Footer = () => {
         </Button>
       </Grid>
       <br />
+
+      <br />
       <table>
         <thead>
           {/* <tr>          
@@ -390,4 +392,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default Footer2;
