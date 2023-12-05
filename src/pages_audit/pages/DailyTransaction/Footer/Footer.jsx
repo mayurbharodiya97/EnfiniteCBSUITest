@@ -1,11 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import FormWrapper from "components/dyanmicForm";
 import { footerFormMetaData } from "./metaData";
-import { Button } from "@mui/material";
+import { Button, Toolbar, AppBar, Card } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+//table
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+//table
 
 const Footer = () => {
   const inputElement = useRef();
@@ -214,151 +223,247 @@ const Footer = () => {
           ></FormWrapper>{" "}
         </Grid>
       </div>
-
-      <Grid item xl={12} lg={8} xs={12} sm={6} md={4} spacing={5}>
-        <Button variant="contained" color="primary">
-          View All
-        </Button>
-        <Button variant="contained" color="primary">
-          Search
-        </Button>
-        <Button variant="contained" color="primary">
-          Calculator
-        </Button>
-        <Button variant="contained" color="primary">
-          Query
-        </Button>
-        <Button variant="contained" color="primary">
-          Delete
-        </Button>
-        <Button variant="contained" color="primary">
-          refresh
-        </Button>
-        <Button variant="contained" color="primary">
-          scroll search
-        </Button>
-        <Button variant="contained" color="primary">
-          scroll del
-        </Button>
-        <Button variant="contained" color="primary">
-          other a/c
-        </Button>
-        <Button variant="contained" color="primary">
-          other Tx Detail
-        </Button>
-      </Grid>
+      <Grid container spacing={2}>
+        <Grid item>
+          <Button variant="contained" color="primary">
+            View All
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Search
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Calculator
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Query
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Delete
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            refresh
+          </Button>{" "}
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            scroll search
+          </Button>{" "}
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            scroll del
+          </Button>{" "}
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            other a/c
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            other Tx Detail
+          </Button>
+        </Grid>{" "}
+      </Grid>{" "}
       <br />
-      <table>
-        <thead>
-          {/* <tr>          
-            <td>Branch</td>
-            <td>AccType</td>
-            <td>AccNo</td>  
-            <td>TRX</td>   
-            <td>Scroll</td>
-            <td>SDC</td>  
-            <td>Remarks</td>
-            <td>ChqNo</td>
-            <td>ChqDate</td>
-            <td>Debit</td>
-            <td>Credit</td>
-            <td>Vno.</td>  
-            <td></td>      
-          </tr> */}
-          <tr>
-            <td>Account</td>
-            <td>TRX</td>
-            <td>Debit </td>
-            <td>Credit</td>
-            <td></td>
-          </tr>
-        </thead>
-
-        {rows.length > 0 ? (
-          rows?.map((a, i) => {
-            return (
-              <tbody>
-                <tr>
-                  <td>
-                    <Autocomplete
-                      ref={inputElement}
-                      disablePortal
-                      id="combo-box-demo"
-                      options={top100Films}
-                      sx={{ width: 250 }}
-                      value={a.branch}
-                      onChange={(e, value) => handleBranch(e, value, i)}
-                      renderInput={(params) => (
-                        <TextField {...params} label="" />
-                      )}
-                    />
-                  </td>
-                  <td>
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={trxOptions}
-                      sx={{ width: 250 }}
-                      value={a.trx}
-                      onChange={(e, value) => handleTrx(e, value, i)}
-                      renderInput={(params) => (
-                        <TextField {...params} label="" />
-                      )}
-                    />
-                  </td>
-                  <td>
-                    <TextField
-                      disabled={
-                        a?.isCredit || !a.branch || !a.trx?.label ? true : false
-                      }
-                      type="number"
-                      value={a.debit}
-                      onChange={(e) => handleDebit(e, i)}
-                      onBlur={(e) => handleDebitBlur(e, i)}
-                    />
-                  </td>
-                  <td>
-                    <TextField
-                      disabled={
-                        !a?.isCredit || !a.branch || !a.trx?.label
-                          ? true
-                          : false
-                      }
-                      type="number"
-                      value={a.credit}
-                      onChange={(e) => handleCredit(e, i)}
-                      onBlur={(e) => handleCreditBlur(e, i)}
-                    />
-                  </td>
-                  <td>
-                    {(rows[i].trx?.label == "3" ||
-                      rows[i].trx?.label == "6") && (
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={(e) => handleClear(e, i)}
-                      >
-                        X
-                      </Button>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            );
-          })
-        ) : (
-          <>no records</>
-        )}
-        <tr>
-          <td></td>
-          <td>total:</td>
-          <td>{totalDebit}</td>
-          <td>{totalCredit}</td>
-          <td></td>
-        </tr>
-      </table>
-
-      <br />
+      <Card
+        sx={{
+          boxShadow: "0px 1px 4px -1px #999999",
+          borderRadius: "5px",
+          padding: "8px",
+          margin: "4px",
+        }}
+      >
+        <TableContainer>
+          <Table aria-label="simple table" padding="none">
+            <TableHead>
+              <TableRow>
+                <TableCell>Branch</TableCell>
+                <TableCell>AccType</TableCell>
+                <TableCell>AccNo</TableCell>
+                <TableCell>TRX</TableCell>
+                <TableCell>Scroll</TableCell>
+                <TableCell>SDC</TableCell>
+                <TableCell>Remarks</TableCell>
+                <TableCell>ChqNo</TableCell>
+                <TableCell>ChqDate</TableCell>
+                <TableCell>Debit</TableCell>
+                <TableCell>Credit</TableCell>
+                <TableCell>Vno.</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody sx>
+              {rows.length > 0 ? (
+                rows?.map((a, i) => {
+                  return (
+                    <TableRow key={i}>
+                      <TableCell sx={{ minWidth: 120 }}>
+                        <Autocomplete
+                          size="small"
+                          ref={inputElement}
+                          disablePortal
+                          options={top100Films}
+                          value={a.branch}
+                          onChange={(e, value) => handleBranch(e, value, i)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="" />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 120 }}>
+                        <Autocomplete
+                          size="small"
+                          ref={inputElement}
+                          disablePortal
+                          options={top100Films}
+                          value={a.branch}
+                          onChange={(e, value) => handleBranch(e, value, i)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="" />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 60 }}>
+                        <TextField
+                          id="acNo"
+                          size="small"
+                          type="number"
+                          value={a.credit}
+                          // onChange={(e) => handleCredit(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 120 }}>
+                        <Autocomplete
+                          size="small"
+                          disablePortal
+                          id="combo-box-demo"
+                          options={trxOptions}
+                          value={a.trx}
+                          onChange={(e, value) => handleTrx(e, value, i)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="" />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 60 }}>
+                        <TextField
+                          id="scroll"
+                          size="small"
+                          type="number"
+                          value={a.credit}
+                          // onChange={(e) => handleCredit(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 160 }}>
+                        <Autocomplete
+                          id="sdc"
+                          size="small"
+                          disablePortal
+                          options={trxOptions}
+                          value={a.trx}
+                          onChange={(e, value) => handleTrx(e, value, i)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="" />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 80 }}>
+                        <TextField
+                          id="remarks"
+                          size="small"
+                          type="number"
+                          value={a.credit}
+                          // onChange={(e) => handleCredit(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 60 }}>
+                        <TextField
+                          id="cNo"
+                          size="small"
+                          type="number"
+                          value={a.credit}
+                          // onChange={(e) => handleCredit(e, i)}
+                        />
+                      </TableCell>{" "}
+                      <TableCell sx={{ width: 60 }}>
+                        <TextField
+                          type="date"
+                          size="small"
+                          // value={a.credit}
+                          // onChange={(e) => handleCredit(e, i)}
+                        />{" "}
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 60 }}>
+                        <TextField
+                          size="small"
+                          disabled={
+                            a?.isCredit || !a.branch || !a.trx?.label
+                              ? true
+                              : false
+                          }
+                          type="number"
+                          value={a.debit}
+                          onChange={(e) => handleDebit(e, i)}
+                          onBlur={(e) => handleDebitBlur(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 60 }}>
+                        <TextField
+                          size="small"
+                          disabled={
+                            !a?.isCredit || !a.branch || !a.trx?.label
+                              ? true
+                              : false
+                          }
+                          type="number"
+                          value={a.credit}
+                          onChange={(e) => handleCredit(e, i)}
+                          onBlur={(e) => handleCreditBlur(e, i)}
+                        />
+                      </TableCell>{" "}
+                      <TableCell sx={{ minWidth: 60 }}>
+                        <TextField
+                          id="vNo"
+                          size="small"
+                          type="number"
+                          value={a.credit}
+                          // onChange={(e) => handleCredit(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {(rows[i].trx?.label == "3" ||
+                          rows[i].trx?.label == "6") && (
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={(e) => handleClear(e, i)}
+                          >
+                            X
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <>no records</>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
+      <br />{" "}
       {(rows[0]?.trx?.label == "3" || rows[0]?.trx?.label == "6") && (
         <>
           <Button
@@ -378,7 +483,6 @@ const Footer = () => {
           </Button>
         </>
       )}
-
       <Button
         variant="outlined"
         color="secondary"

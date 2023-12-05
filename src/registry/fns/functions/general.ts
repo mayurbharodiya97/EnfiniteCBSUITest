@@ -562,6 +562,31 @@ const GeneralAPISDK = () => {
     }
   };
 
+  const getDailyTrxMakerDetail = async (...reqData) => {
+    console.log(reqData, "reqData getDailyTrxMakerDetail");
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETJOINTDETILSLIST", {
+        COMP_CD: reqData?.[3]?.companyID,
+        BRANCH_CD: reqData?.[3]?.user?.branchCode,
+        ACCT_TYPE: {},
+        ACCT_CD: {},
+      });
+    if (status === "0") {
+      let responseData = data;
+      console.log(responseData, "responseData getDailyTrxMakerDetail");
+      if (Array.isArray(responseData)) {
+        // responseData = responseData.map(({ CODE, DESCRIPTION }) => {
+        //   return {
+        //     value: CODE,
+        //     label: CODE + "-" + DESCRIPTION,
+        //   };
+        // });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   const getJointDetailsList = async (...reqData) => {
     // const { data, status, message, messageDetails } =
     //   await AuthSDK.internalFetcher("GETJOINTDETILSLIST", {
@@ -612,6 +637,7 @@ const GeneralAPISDK = () => {
     getSDCList,
     getTRXList,
     getJointDetailsList,
+    getDailyTrxMakerDetail,
     getDynDropdownData,
     getDependentFieldList,
   };
