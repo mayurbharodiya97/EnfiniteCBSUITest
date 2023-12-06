@@ -53,6 +53,8 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
       containerstyle = { padding: "10px" },
       onFormButtonClickHandel = (id) => {},
       onFormButtonCicular,
+      subHeaderLable,
+      subHeaderLableStyle,
     },
     ref
   ) => {
@@ -121,6 +123,8 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
               defaultActiveStep={defaultActiveStep}
               hideHeader={hideHeader}
               containerstyle={containerstyle}
+              subHeaderLable={subHeaderLable}
+              subHeaderLableStyle={subHeaderLableStyle}
             />
           </FormContext.Provider>
         </LocalizationProvider>
@@ -148,6 +152,8 @@ const ChildFormWrapper = forwardRef<any, any>(
       defaultActiveStep,
       hideHeader,
       containerstyle = {},
+      subHeaderLable,
+      subHeaderLableStyle,
     },
     ref
   ) => {
@@ -237,6 +243,8 @@ const ChildFormWrapper = forwardRef<any, any>(
         controlsAtBottom={controlsAtBottom}
         hideHeader={hideHeader}
         containerstyle={containerstyle}
+        subHeaderLable={subHeaderLable}
+        subHeaderLableStyle={subHeaderLableStyle}
       />
     ) : (
       <div>RenderType {formRenderType} not available</div>

@@ -30,6 +30,7 @@ export interface FilterFormFieldType {
   dependFields?: String[];
   dependFieldsonchange?: Function;
   required?: boolean;
+  tabToSubmit?: boolean;
 }
 export interface FilterFormMetaType {
   gridConfig: FiltergridConfig;

@@ -73,9 +73,12 @@ const GeneralAPISDK = () => {
     console.log("changed...");
   };
   const getAccountTypeList = async (...reqData) => {
+    console.log(reqData, "reqData...");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETUSERACCTTYPE", {
-        USER_NAME: reqData?.[3]?.user.id ?? "",
+        USER_NAME: reqData?.[3]?.user.id
+          ? reqData?.[3]?.user.id
+          : reqData?.[1]?.user.id ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -220,17 +223,21 @@ const GeneralAPISDK = () => {
   const getBranchCodeList = async (...reqData) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETBRACCESSLST", {
-        USER_NAME: reqData?.[3]?.user.id ?? "",
+        USER_NAME: reqData?.[3]?.user.id
+          ? reqData?.[3]?.user.id
+          : reqData?.[1]?.user.id ?? "",
       });
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ BRANCH_CD, BRANCH_NM }) => {
-          return {
-            value: BRANCH_CD,
-            label: BRANCH_CD + " - " + BRANCH_NM,
-          };
-        });
+        responseData = responseData.map(
+          ({ BRANCH_CD, BRANCH_NM, ...other }) => {
+            return {
+              value: BRANCH_CD,
+              label: BRANCH_CD + " - " + BRANCH_NM,
+            };
+          }
+        );
       }
       return responseData;
     } else {

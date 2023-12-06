@@ -8,6 +8,9 @@ import {
   TableRow /*TextField*/,
   Slide,
   CircularProgress,
+  Tooltip,
+  Dialog,
+  LinearProgress,
   // TextField,
 } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -15,6 +18,7 @@ import * as API from "./api";
 import { useMutation } from "react-query";
 import { GradientButton } from "components/styledComponent/button";
 import {
+  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -38,6 +42,10 @@ import {
 import { DenominationScreenMetaData } from "./metadata";
 import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
+import { Button } from "reactstrap";
+import { getAcctInqStatement } from "pages_audit/acct_Inquiry/api";
+import AccDetails from "pages_audit/pages/DailyTransaction/AccountDetails/AccDetails";
+import { Alert } from "components/common/alert";
 
 const CashReceiptEntry = () => {
   const [inputVal, setInputVal] = useState<any>({});
@@ -54,11 +62,13 @@ const CashReceiptEntry = () => {
   const [balance, setBalance] = useState<any>([]);
   const [openDeno, setOpenDeno] = useState<boolean>(false);
   const [isDisableField, setIsDisableField] = useState<boolean>(false);
+  const [openAccountDTL, setOpenAccountDTL] = useState<boolean>(false);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
   const authState = useContext(AuthContext);
-  const formComponentViewRef: any = useRef(null);
+  const formComponentViewRef = useRef<any>(null);
   const [referData, setReferData] = useState<any>();
-  // const [externalButtonLoading, setExternalButtonLoading] = useState<any>();
+  const [secondReferData, setSecondReferData] = useState<any>();
+  const [formData, setFormData] = useState<any>({});
   // useEffect(() => {
   //   props?.map((item) => {
   //     if (item?.textField === "Y") {
@@ -78,12 +88,22 @@ const CashReceiptEntry = () => {
           defaultValue: getDefaultBranchCode,
         };
       }
+      // if (field?.accessor === "REMARK") {
+      //   console.log(field, "field");
+      //   console.log(DenominationScreenMetaData, "DenominationScreenMetaData");
+      //   return {
+      //     ...field,
+      //     defaultValue: retData?.SDC,
+      //   };
+      // }
       return field;
     }),
   };
 
-  console.log(updatedMetaData, "updatedMetaData>>>");
-  console.log(DenominationScreenMetaData, "DenominationScreenMetaData>>>");
+  // useEffect(() => {
+  //   console.log("asdasdas", secondReferData, formComponentViewRef.current);
+  // }, [secondReferData]);
+  useEffect(() => {}, [formComponentViewRef]);
 
   const getData: any = useMutation(API.CashReceiptEntrysData, {
     onSuccess: (response: any) => {
@@ -123,7 +143,7 @@ const CashReceiptEntry = () => {
   // const { data } = useQuery<any, any>(["CashReceiptEntrysData"], () =>
   //   API.CashReceiptEntrysData()
   // );
-  const withdrawAmount = retData?.RECEIPT_PAYMENT;
+  const withdrawAmount: any = retData?.RECEIPT_PAYMENT;
   const upadatedFinalAmount: any = withdrawAmount - totalAmount;
 
   useEffect(() => {
@@ -256,11 +276,11 @@ const CashReceiptEntry = () => {
       }
     }
 
-    const updatedCalcAvailNotes = [...availNote];
+    const updatedCalcAvailNotes = [...(availNote || [])];
     updatedCalcAvailNotes[index] = calcAvailNotValue;
     setAvailNote(updatedCalcAvailNotes);
 
-    const updatedBalance = [...balance];
+    const updatedBalance = [...(balance || [])];
     updatedBalance[index] = calcBalance;
     setBalance(updatedBalance);
 
@@ -330,8 +350,61 @@ const CashReceiptEntry = () => {
   };
 
   const getRefData = () => {
-    setReferData(formComponentViewRef?.current);
+    setReferData(formComponentViewRef.current);
   };
+
+  const getMoreData: any = useMutation(API.getAcctDTL, {
+    onSuccess: (response: any) => {
+      setFormData({
+        NAME: response?.[0]?.ACCT_NM,
+        BALANCE: response?.[0]?.WIDTH_BAL,
+        TRN: secondReferData?.columnVal?.TRN,
+        BRANCH: secondReferData?.columnVal?.BRANCH,
+        ACCOUNT_TYPE: secondReferData?.columnVal?.ACCOUNT_TYPE,
+        ACCOUNT_NUMBER: secondReferData?.columnVal?.ACCOUNT_NUMBER,
+        SDC: secondReferData?.columnVal?.SDC,
+        REMARK: secondReferData?.columnVal?.REMARK,
+        RECEIPT_PAYMENT: secondReferData?.columnVal?.RECEIPT_PAYMENT,
+      });
+    },
+    onError: (error: any) => {
+      console.log(error, "failed ---");
+    },
+  });
+
+  // const ClickSecondButtonEventManage = () => {
+  //   // console.log(formComponentViewRef?.current, "asasasdddad");
+  //   // setSecondReferData(formComponentViewRef.current);
+  //   // console.log(secondReferData, "kjdkskhdk");
+  //   // getMoreData.mutate({
+  //   //   // C: "C",
+  //   //   // D: "D",
+  //   //   ACCT_CD: secondReferData?.columnVal?.ACCOUNT_NUMBER ?? "003617",
+  //   //   ACCT_TYPE: secondReferData?.columnVal?.ACCOUNT_TYPE ?? "101 ",
+  //   //   BRANCH_CD: secondReferData?.columnVal?.BRANCH ?? "005 ",
+  //   //   COMP_CD: "132 ",
+  //   //   FULL_ACCT_NO: "",
+  //   // });
+  // };
+
+  const ClickSecondButtonEventManage = () => {
+    // Schedule the state update
+    setSecondReferData(formComponentViewRef.current);
+  };
+  useEffect(() => {
+    // This block will be executed after the state has been updated
+    if (secondReferData) {
+      // Now you can safely use secondReferData in other logic or functions
+      getMoreData.mutate({
+        ACCT_CD: secondReferData?.columnVal?.ACCOUNT_NUMBER ?? "",
+        ACCT_TYPE: secondReferData?.columnVal?.ACCOUNT_TYPE ?? "",
+        BRANCH_CD: secondReferData?.columnVal?.BRANCH ?? "",
+        COMP_CD: "132 ",
+        FULL_ACCT_NO: "",
+      });
+    }
+  }, [secondReferData]);
+
   useEffect(() => {
     if (
       referData !== undefined &&
@@ -344,6 +417,28 @@ const CashReceiptEntry = () => {
       manageOpenDenoYes();
     }
   }, [referData]);
+
+  const closeAccountDTL = () => {
+    setOpenAccountDTL(false);
+  };
+
+  // DenominationScreenMetaData?.fields?.map((field) => {
+  //   console.log(field, "field>>>>>");
+  //   if (field.accessor === "ACCOUNT_NUMBER") {
+  //     <input
+  //       key={field?.accessor}
+  //       value={""}
+  //       type="text"
+  //       onKeyDown={(event) => handleTabPress(event)}
+  //       placeholder="Acct no"
+  //     ></input>;
+  //   }
+  // });
+
+  const setThirdData = () => {
+    // setSecondReferData(formComponentViewRef.current);
+    setOpenAccountDTL(true);
+  };
 
   return (
     <>
@@ -380,38 +475,58 @@ const CashReceiptEntry = () => {
             </Typography>
             <Box display={"flex"}>
               {/* <GradientButton sx={{ height: "2.5rem" }}>Save </GradientButton>*/}
-              <GradientButton
-                sx={{ height: "2.5rem" }}
-                onClick={getRefData}
-                endIcon={
-                  getData.isLoading ? <CircularProgress size={20} /> : null
-                }
-              >
-                Denomination
-              </GradientButton>
-              <GradientButton
-                onClick={() => {
-                  setIsDisableField(false);
-                  setDisplayTable(false);
-                }}
-                sx={{ height: "2.5rem" }}
-              >
-                Reset
-              </GradientButton>
+              {/* {displayTable ? (
+                <Tooltip title="View Transactions">
+                  <GradientButton
+                    sx={{ height: "2.5rem" }}
+                    // onClick={() => {
+                    //   console.log("any bhi");
+                    // }}
+                    endIcon={
+                      getData.isLoading ? <CircularProgress size={20} /> : null
+                    }
+                  >
+                    View Transactions
+                  </GradientButton>
+                </Tooltip>
+              ) : null} */}
+              <Tooltip title="Denomination">
+                <GradientButton
+                  sx={{ height: "2.5rem" }}
+                  onClick={getRefData}
+                  endIcon={
+                    getData.isLoading ? <CircularProgress size={20} /> : null
+                  }
+                >
+                  Denomination
+                </GradientButton>
+              </Tooltip>
+              <Tooltip title="Reset">
+                <GradientButton
+                  onClick={() => {
+                    setIsDisableField(false);
+                    setDisplayTable(false);
+                  }}
+                  sx={{ height: "2.5rem" }}
+                >
+                  Reset
+                </GradientButton>
+              </Tooltip>
             </Box>
           </Box>
+          {getMoreData.isLoading ? <LinearProgress color="secondary" /> : null}
           <FormComponentView
-            key={"Denomination"}
-            finalMetaData={DenominationScreenMetaData as FilterFormMetaType}
+            key={"denomination" + formData + formData.NAME ?? ""}
+            finalMetaData={updatedMetaData as FilterFormMetaType}
             onAction={ClickEventManage}
             loading={getData.isLoading || isDisableField}
-            data={data ?? {}}
+            data={formData ?? {}}
             propStyles={{
               titleStyle: {},
               toolbarStyles: {
                 // background: "transparent !important",
               },
-              IconButtonStyle: {},
+              IconButtonStyle: "                  ",
               paperStyle: {
                 backgroundColor: "white !important",
                 borderBottomLeftRadius: "10px",
@@ -423,17 +538,42 @@ const CashReceiptEntry = () => {
                   marginBottom: "-10px",
                   "& .css-1br77t0-MuiGrid-root>.MuiGrid-item": {
                     paddingTop: "0px !important",
-                    display: "none",
+                    // display: "none",
                   },
                 },
                 "& .ForwardRef(Button)-root-80": {
-                  display: "none",
+                  // display: "none",
+                },
+                "& .css-wh7pzv-MuiGrid-root": {
+                  flexBasis: "13.666667%",
                 },
               },
             }}
             ref={formComponentViewRef}
+            submitSecondButtonName={"more details"}
+            submitSecondAction={() => ClickSecondButtonEventManage()}
+            submitSecondButtonHide={false}
+            // submitSecondLoading={openAccountDTL}
+            firstSubmitButtonHide={true}
+            displayStyle1={"none"}
+            displayStyle2={"none"}
+            submitThirdAction={setThirdData}
+            submitThirdButtonHide={false}
+            submitThirdButtonName={"More Details"}
+            // submitThirdLoading = false,
+            displayStyle3={"flex"}
           ></FormComponentView>
         </Box>
+        {openAccountDTL ? (
+          <Dialog
+            open={openAccountDTL}
+            maxWidth={"lg"}
+            fullWidth
+            onClose={closeAccountDTL}
+          >
+            <AccDetails />
+          </Dialog>
+        ) : null}
         {displayTable && data && isDisableField ? (
           <Slide direction="left" in={displayTable} mountOnEnter unmountOnExit>
             <Box

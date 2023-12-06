@@ -329,7 +329,7 @@ export const Ckyc = () => {
       ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       // ENTERED_DATE: "25-10-2023"
     })
-  );
+  )
 
   // useEffect(() => {
   //   if(PendingData && !isPendingDataLoading) {
@@ -386,7 +386,7 @@ export const Ckyc = () => {
   // }, [isRetrieveFormLoading, retrieveFormData, retrieveFormRefetch])
 
   useEffect(() => {
-    if (!isLoading && data) {
+    if(!isLoading && data) {
       // console.log(data, "asddsa")
       // setCustomerCategories(data)
       handleCustCategoryRes(data);
