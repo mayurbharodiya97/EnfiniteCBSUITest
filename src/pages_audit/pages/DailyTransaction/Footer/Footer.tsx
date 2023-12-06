@@ -1,12 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
-import FormWrapper from "components/dyanmicForm";
-import { footerFormMetaData } from "./metaData";
+//UI
 import { Button, Toolbar, AppBar, Card } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-//table
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -14,52 +11,46 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-//table
+import CancelIcon from "@mui/icons-material/Cancel";
+
+//Logical
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useMutation, useQuery } from "react-query";
+import { footerFormMetaData } from "./metaData";
+import FormWrapper from "components/dyanmicForm";
+import { GeneralAPI } from "registry/fns/functions";
+import * as API from "./api";
 
 const Footer = () => {
-  const inputElement = useRef();
-  const top100Films = [
-    { label: "acc1", year: 1994 },
-    { label: "acc2", year: 1972 },
-    { label: "acc3", year: 1974 },
-  ];
+  let authDetails = JSON.parse(localStorage?.getItem("authDetails"));
 
-  let arr = [
-    { label: "1", year: 1994 },
-    { label: "2", year: 1972 },
-    { label: "3", year: 1974 },
-    { label: "4", year: 1974 },
-    { label: "5", year: 1974 },
-    { label: "6", year: 1974 },
-  ];
-  const [trxOptions, setTrxOptions] = useState(arr);
-  const [trxOptions2, setTrxOptions2] = useState(arr);
+  const inputElement = useRef();
+
+  const [trxOptions, setTrxOptions] = useState([]);
+  const [trxOptions2, setTrxOptions2] = useState([]);
+  const [sdcOptions, setSdcOptions] = useState([]);
+  const [accTypeOptions, setAccTypeOptions] = useState([]);
+  const [branchOptions, setBranchOptions] = useState([]);
+  const [accInfo, setAccInfo] = useState([]);
 
   const handleFilterTrx = () => {
-    let result = trxOptions2.filter((a) => a.label == "3" || a.label == "6");
+    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
     setTrxOptions(result);
   };
 
-  // let defaulVal = {
-  //   branch: "",
-  //   accType: "",
-  //   accNo: "",
-  //   trx: "",
-  //   scroll: "",
-  //   sdc: "",
-  //   remark: "",
-  //   cNo: "",
-  //   cDate: "",
-  //   debit: 0,
-  //   credit: 0,
-  //   vNo: "",
-  // };
-
   let defaulVal = {
-    branch: "",
-    trx: { label: "" },
+    branch: { label: "", value: "" },
+    accType: { label: "", value: "" },
+    accNo: "",
+    trx: { label: "", value: "", code: "" },
+    scroll: "",
+    sdc: { label: "", value: "" },
+    remark: "",
+    cNo: 0,
+    date: "",
     debit: 0,
     credit: 0,
+    vNo: 0,
     isCredit: true,
   };
 
@@ -77,13 +68,68 @@ const Footer = () => {
     setIsSave(!branchBug);
   }, [rows]);
 
-  const handleAddRow = (e, i) => {
+  const getBranchOptions: any = useMutation(API.getBranchList, {
+    onSuccess: (data) => {
+      setBranchOptions(data);
+      console.log(data, "branch");
+    },
+    onError: (error: any) => {},
+  });
+  const getAccTypeOptions: any = useMutation(API.getAccTypeList, {
+    onSuccess: (data) => {
+      setAccTypeOptions(data);
+    },
+    onError: (error: any) => {},
+  });
+
+  const getSdcOptions: any = useMutation(API.getSDCList, {
+    onSuccess: (data) => {
+      setSdcOptions(data);
+    },
+    onError: (error: any) => {},
+  });
+
+  const getTrxOptions: any = useMutation(API.getTRXList, {
+    onSuccess: (data) => {
+      setTrxOptions(data);
+      console.log(data, "trx");
+
+      setTrxOptions2(data);
+    },
+    onError: (error: any) => {},
+  });
+  useEffect(() => {
+    getBranchOptions.mutate(authDetails);
+    getSdcOptions.mutate(authDetails);
+    getAccTypeOptions.mutate(authDetails);
+    getTrxOptions.mutate(authDetails);
+  }, []);
+
+  const getAccInfo: any = useMutation(API.getAccInfo, {
+    onSuccess: (data) => {
+      console.log(data, "accInfo");
+      setAccInfo(data);
+    },
+    onError: (error: any) => {},
+  });
+  const handleGetAccInfo = () => {
+    let data = {
+      COMP_CD: rows[0]?.branch?.info?.COMP_CD,
+      BRANCH_CD: rows[0]?.branch?.value,
+      ACCT_TYPE: rows[0]?.accType?.value,
+      ACCT_CD: rows[0]?.accNo,
+    };
+
+    getAccInfo.mutate(data);
+  };
+
+  const handleAddRow = () => {
     let branchBug = rows.some((a) => !a.branch);
-    console.log(branchBug);
+    console.log(branchBug, "branchBug");
 
     let cred = 0;
     let deb = 0;
-    let trxx = "1";
+    let trxx = { label: "1" };
     let isCred = true;
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
@@ -150,13 +196,13 @@ const Footer = () => {
     const obj = [...rows];
 
     obj?.length == 1 &&
-      (value?.label == "3" || value?.label == "6") &&
+      (value?.code == "3" || value?.code == "6") &&
       handleFilterTrx();
     obj[i].trx = value;
     obj[i].credit = 0;
     obj[i].debit = 0;
 
-    if (value?.label == "1" || value?.label == "2" || value?.label == "3") {
+    if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
       obj[i].isCredit = true;
     } else {
       obj[i].isCredit = false;
@@ -183,14 +229,14 @@ const Footer = () => {
   const handleDebitBlur = (e, i) => {
     const obj = [...rows];
     totalDebit != totalCredit &&
-      (obj[i].trx.label == "3" || obj[i].trx.label == "6") &&
+      (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
       handleAddRow();
   };
   const handleCreditBlur = (e, i) => {
     const obj = [...rows];
     totalDebit != totalCredit &&
-      (obj[i].trx.label == "3" || obj[i].trx.label == "6") &&
+      (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
       handleAddRow();
   };
@@ -199,11 +245,59 @@ const Footer = () => {
     setRows([defaulVal]);
     setTotalCredit(0);
     setTotalDebit(0);
-    setTrxOptions(arr);
+    setTrxOptions(trxOpt);
   };
+
+  //simple fns
+  const handleRemark = (e, i) => {
+    console.log(e, "remark e");
+    const obj = [...rows];
+    obj[i].remark = e.target.value;
+    setRows(obj);
+  };
+  const handleSdc = (e, value, i) => {
+    console.log(e, "sdc e");
+    const obj = [...rows];
+    obj[i].sdc = value;
+    setRows(obj);
+  };
+  const handleVNo = (e, i) => {
+    const obj = [...rows];
+    obj[i].vNo = Number(e.target.value);
+    setRows(obj);
+  };
+  const handleDate = (e, i) => {
+    console.log(e, "date e");
+    const obj = [...rows];
+    obj[i].date = e.target.value;
+    setRows(obj);
+  };
+  const handleCNo = (e, i) => {
+    const obj = [...rows];
+    obj[i].cNo = Number(e.target.value);
+    setRows(obj);
+  };
+
+  const handleScroll = (e, i) => {
+    const obj = [...rows];
+    obj[i].scroll = e.target.value;
+    setRows(obj);
+  };
+
+  const handleAccType = (e, value, i) => {
+    const obj = [...rows];
+    obj[i].accType = value;
+    setRows(obj);
+  };
+  const handleAccNo = (e, i) => {
+    const obj = [...rows];
+    obj[i].accNo = e.target.value;
+    setRows(obj);
+  };
+
   return (
     <>
-      <div
+      {/* <div
         style={{
           boxShadow: "0px 1px 4px -1px #999999",
           borderRadius: "5px",
@@ -222,7 +316,226 @@ const Footer = () => {
             }}
           ></FormWrapper>{" "}
         </Grid>
-      </div>
+      </div> */}
+      <Card
+        sx={{
+          boxShadow: "0px 1px 4px -1px #999999",
+          borderRadius: "5px",
+          padding: "8px",
+          margin: "4px",
+        }}
+      >
+        <TableContainer>
+          <Table aria-label="simple table" padding="none">
+            <TableHead>
+              <TableRow>
+                <TableCell>Branch</TableCell>
+                <TableCell>AccType</TableCell>
+                <TableCell>AccNo</TableCell>
+                <TableCell>TRX</TableCell>
+                <TableCell>Scroll</TableCell>
+                <TableCell>SDC</TableCell>
+                <TableCell>Remarks</TableCell>
+                <TableCell>ChqNo</TableCell>
+                <TableCell>ChqDate</TableCell>
+                <TableCell>Debit</TableCell>
+                <TableCell>Credit</TableCell>
+                <TableCell>Vno.</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.length > 0 ? (
+                rows?.map((a, i) => {
+                  return (
+                    <TableRow key={i}>
+                      <TableCell sx={{ minWidth: 160 }}>
+                        <Autocomplete
+                          size="small"
+                          ref={inputElement}
+                          disablePortal={true}
+                          options={branchOptions}
+                          value={a.branch}
+                          onChange={(e, value) => handleBranch(e, value, i)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="" />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 160 }}>
+                        <Autocomplete
+                          size="small"
+                          ref={inputElement}
+                          options={accTypeOptions}
+                          value={a.accType}
+                          onChange={(e, value) => handleAccType(e, value, i)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="" />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 50 }}>
+                        <TextField
+                          id="accNo"
+                          size="small"
+                          type="number"
+                          value={a.accNo}
+                          onChange={(e) => handleAccNo(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 160 }}>
+                        <Autocomplete
+                          size="small"
+                          id="combo-box-demo"
+                          options={trxOptions}
+                          value={a.trx}
+                          onChange={(e, value) => handleTrx(e, value, i)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="" />
+                          )}
+                        />
+                      </TableCell>
+
+                      <TableCell sx={{ minWidth: 50 }}>
+                        <TextField
+                          id="scroll"
+                          size="small"
+                          type="number"
+                          value={a.scroll}
+                          onChange={(e) => handleScroll(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 160 }}>
+                        <Autocomplete
+                          id="sdc"
+                          size="small"
+                          options={sdcOptions}
+                          value={a.sdc}
+                          onChange={(e, value) => handleSdc(e, value, i)}
+                          renderInput={(params) => (
+                            <TextField {...params} label="" />
+                          )}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 80 }}>
+                        <TextField
+                          id="remarks"
+                          size="small"
+                          type="number"
+                          value={a.remark}
+                          onChange={(e) => handleRemark(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 50 }}>
+                        <TextField
+                          id="cNo"
+                          size="small"
+                          type="number"
+                          value={a.cNo}
+                          onChange={(e) => handleCNo(e, i)}
+                        />
+                      </TableCell>
+
+                      <TableCell>
+                        <TextField
+                          type="date"
+                          size="small"
+                          value={a.date}
+                          onChange={(e) => handleDate(e, i)}
+                        />{" "}
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 50 }}>
+                        <TextField
+                          size="small"
+                          disabled={
+                            a?.isCredit || !a.branch || !a.trx?.code
+                              ? true
+                              : false
+                          }
+                          type="number"
+                          value={a.debit}
+                          onChange={(e) => handleDebit(e, i)}
+                          onBlur={(e) => handleDebitBlur(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell sx={{ minWidth: 50 }}>
+                        <TextField
+                          size="small"
+                          disabled={
+                            !a?.isCredit || !a.branch || !a.trx?.code
+                              ? true
+                              : false
+                          }
+                          type="number"
+                          value={a.credit}
+                          onChange={(e) => handleCredit(e, i)}
+                          onBlur={(e) => handleCreditBlur(e, i)}
+                        />
+                      </TableCell>
+
+                      <TableCell sx={{ minWidth: 40 }}>
+                        <TextField
+                          id="vNo"
+                          size="small"
+                          type="number"
+                          value={a.vNo}
+                          onChange={(e) => handleVNo(e, i)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {(rows[i].trx?.code == "3" ||
+                          rows[i].trx?.code == "6") && (
+                          <CancelIcon
+                            onClick={(e) => handleClear(e, i)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <>no records</>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
+      <br />{" "}
+      {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
+        <>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => handleAddRow()}
+          >
+            add new
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => handleReset()}
+          >
+            reset
+          </Button>
+        </>
+      )}
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => console.log("saved")}
+      >
+        save
+      </Button>
+      <Button
+        variant="outlined"
+        color="secondary"
+        onClick={() => handleGetAccInfo()}
+      >
+        fetch accInfo
+      </Button>
+      <br /> <br />
       <Grid container spacing={2}>
         <Grid item>
           <Button variant="contained" color="primary">
@@ -276,220 +589,6 @@ const Footer = () => {
         </Grid>{" "}
       </Grid>{" "}
       <br />
-      <Card
-        sx={{
-          boxShadow: "0px 1px 4px -1px #999999",
-          borderRadius: "5px",
-          padding: "8px",
-          margin: "4px",
-        }}
-      >
-        <TableContainer>
-          <Table aria-label="simple table" padding="none">
-            <TableHead>
-              <TableRow>
-                <TableCell>Branch</TableCell>
-                <TableCell>AccType</TableCell>
-                <TableCell>AccNo</TableCell>
-                <TableCell>TRX</TableCell>
-                <TableCell>Scroll</TableCell>
-                <TableCell>SDC</TableCell>
-                <TableCell>Remarks</TableCell>
-                <TableCell>ChqNo</TableCell>
-                <TableCell>ChqDate</TableCell>
-                <TableCell>Debit</TableCell>
-                <TableCell>Credit</TableCell>
-                <TableCell>Vno.</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody sx>
-              {rows.length > 0 ? (
-                rows?.map((a, i) => {
-                  return (
-                    <TableRow key={i}>
-                      <TableCell sx={{ minWidth: 120 }}>
-                        <Autocomplete
-                          size="small"
-                          ref={inputElement}
-                          disablePortal
-                          options={top100Films}
-                          value={a.branch}
-                          onChange={(e, value) => handleBranch(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField {...params} label="" />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 120 }}>
-                        <Autocomplete
-                          size="small"
-                          ref={inputElement}
-                          disablePortal
-                          options={top100Films}
-                          value={a.branch}
-                          onChange={(e, value) => handleBranch(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField {...params} label="" />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 60 }}>
-                        <TextField
-                          id="acNo"
-                          size="small"
-                          type="number"
-                          value={a.credit}
-                          // onChange={(e) => handleCredit(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 120 }}>
-                        <Autocomplete
-                          size="small"
-                          disablePortal
-                          id="combo-box-demo"
-                          options={trxOptions}
-                          value={a.trx}
-                          onChange={(e, value) => handleTrx(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField {...params} label="" />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 60 }}>
-                        <TextField
-                          id="scroll"
-                          size="small"
-                          type="number"
-                          value={a.credit}
-                          // onChange={(e) => handleCredit(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 160 }}>
-                        <Autocomplete
-                          id="sdc"
-                          size="small"
-                          disablePortal
-                          options={trxOptions}
-                          value={a.trx}
-                          onChange={(e, value) => handleTrx(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField {...params} label="" />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 80 }}>
-                        <TextField
-                          id="remarks"
-                          size="small"
-                          type="number"
-                          value={a.credit}
-                          // onChange={(e) => handleCredit(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 60 }}>
-                        <TextField
-                          id="cNo"
-                          size="small"
-                          type="number"
-                          value={a.credit}
-                          // onChange={(e) => handleCredit(e, i)}
-                        />
-                      </TableCell>{" "}
-                      <TableCell sx={{ width: 60 }}>
-                        <TextField
-                          type="date"
-                          size="small"
-                          // value={a.credit}
-                          // onChange={(e) => handleCredit(e, i)}
-                        />{" "}
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 60 }}>
-                        <TextField
-                          size="small"
-                          disabled={
-                            a?.isCredit || !a.branch || !a.trx?.label
-                              ? true
-                              : false
-                          }
-                          type="number"
-                          value={a.debit}
-                          onChange={(e) => handleDebit(e, i)}
-                          onBlur={(e) => handleDebitBlur(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ minWidth: 60 }}>
-                        <TextField
-                          size="small"
-                          disabled={
-                            !a?.isCredit || !a.branch || !a.trx?.label
-                              ? true
-                              : false
-                          }
-                          type="number"
-                          value={a.credit}
-                          onChange={(e) => handleCredit(e, i)}
-                          onBlur={(e) => handleCreditBlur(e, i)}
-                        />
-                      </TableCell>{" "}
-                      <TableCell sx={{ minWidth: 60 }}>
-                        <TextField
-                          id="vNo"
-                          size="small"
-                          type="number"
-                          value={a.credit}
-                          // onChange={(e) => handleCredit(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {(rows[i].trx?.label == "3" ||
-                          rows[i].trx?.label == "6") && (
-                          <Button
-                            variant="outlined"
-                            color="secondary"
-                            onClick={(e) => handleClear(e, i)}
-                          >
-                            X
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
-                <>no records</>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Card>
-      <br />{" "}
-      {(rows[0]?.trx?.label == "3" || rows[0]?.trx?.label == "6") && (
-        <>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => handleAddRow()}
-          >
-            add new
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => handleReset()}
-          >
-            reset
-          </Button>
-        </>
-      )}
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => console.log("saved")}
-      >
-        save
-      </Button>
     </>
   );
 };

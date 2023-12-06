@@ -79,13 +79,12 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
-      console.log(responseData, "responseData acctype");
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
           return {
             ...others,
-            value: ACCT_TYPE?.trim(),
-            label: ACCT_TYPE?.trim() + " - " + TYPE_NM,
+            value: ACCT_TYPE,
+            label: ACCT_TYPE + " - " + TYPE_NM,
           };
         });
       }
@@ -524,15 +523,13 @@ const GeneralAPISDK = () => {
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ CODE, DESCRIPTION }) => {
           return {
-            value: CODE?.trim(),
-            label: CODE?.trim() + "-" + DESCRIPTION,
+            value: CODE,
+            label: CODE + "-" + DESCRIPTION,
             CODE: CODE,
             DESCRIPTION: DESCRIPTION,
           };
         });
       }
-
-      console.log(responseData, "responseData SDC");
 
       return responseData;
     } else {
@@ -547,7 +544,6 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
-      console.log(responseData, "responseData TRX");
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ CODE, DESCRIPTION }) => {
           return {
@@ -562,52 +558,7 @@ const GeneralAPISDK = () => {
     }
   };
 
-  const getDailyTrxMakerDetail = async (...reqData) => {
-    console.log(reqData, "reqData getDailyTrxMakerDetail");
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETJOINTDETILSLIST", {
-        COMP_CD: reqData?.[3]?.companyID,
-        BRANCH_CD: reqData?.[3]?.user?.branchCode,
-        ACCT_TYPE: {},
-        ACCT_CD: {},
-      });
-    if (status === "0") {
-      let responseData = data;
-      console.log(responseData, "responseData getDailyTrxMakerDetail");
-      if (Array.isArray(responseData)) {
-        // responseData = responseData.map(({ CODE, DESCRIPTION }) => {
-        //   return {
-        //     value: CODE,
-        //     label: CODE + "-" + DESCRIPTION,
-        //   };
-        // });
-      }
-      return responseData;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
   const getJointDetailsList = async (...reqData) => {
-    // const { data, status, message, messageDetails } =
-    //   await AuthSDK.internalFetcher("GETJOINTDETILSLIST", {
-    //     USER_NAME: reqData?.[3]?.user.id ?? "",
-    //   });
-    // if (status === "0") {
-    //   let responseData = data;
-    //   console.log(responseData, "responseData GETJOINTDETILSLIST");
-    //   if (Array.isArray(responseData)) {
-    //     responseData = responseData.map(({ CODE, DESCRIPTION }) => {
-    //       return {
-    //         value: CODE,
-    //         label: CODE + "-" + DESCRIPTION,
-    //       };
-    //     });
-    //   }
-    //   return responseData;
-    // } else {
-    //   throw DefaultErrorObject(message, messageDetails);
-    // }
-    console.log("hello jointDetails");
     return [
       { id: 1, name: "abcd", accNo: 12345 },
       { id: 2, name: "11abcd", accNo: 123445 },
@@ -637,7 +588,6 @@ const GeneralAPISDK = () => {
     getSDCList,
     getTRXList,
     getJointDetailsList,
-    getDailyTrxMakerDetail,
     getDynDropdownData,
     getDependentFieldList,
   };

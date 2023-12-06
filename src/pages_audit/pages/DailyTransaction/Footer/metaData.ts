@@ -86,6 +86,7 @@ export const footerFormMetaData = {
       render: {
         componentType: "textField",
       },
+      isReadOnly: true,
       name: "acc",
       label: "A/C No.",
       placeholder: "",
