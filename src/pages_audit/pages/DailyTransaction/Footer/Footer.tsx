@@ -24,19 +24,13 @@ import * as API from "./api";
 const Footer = () => {
   let authDetails = JSON.parse(localStorage?.getItem("authDetails"));
 
-  const inputElement = useRef();
-
   const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState([]);
   const [sdcOptions, setSdcOptions] = useState([]);
   const [accTypeOptions, setAccTypeOptions] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
   const [accInfo, setAccInfo] = useState([]);
-
-  const handleFilterTrx = () => {
-    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
-    setTrxOptions(result);
-  };
+  const [defSdc, setDefSdc] = useState({});
 
   let defaulVal = {
     branch: { label: "", value: "" },
@@ -59,7 +53,11 @@ const Footer = () => {
   const [totalCredit, setTotalCredit] = useState(0);
   const [diff, setDiff] = useState(0);
   const [isSave, setIsSave] = useState(false);
-  const [style, setStyle] = useState("transfer");
+
+  const handleFilterTrx = () => {
+    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
+    setTrxOptions(result);
+  };
 
   useEffect(() => {
     console.log(rows, "rows");
@@ -85,16 +83,23 @@ const Footer = () => {
   const getSdcOptions: any = useMutation(API.getSDCList, {
     onSuccess: (data) => {
       setSdcOptions(data);
+      let def = data.filter((a) => a.value == "6   ");
+      setDefSdc(def[0]);
+
+      const obj = [...rows];
+      obj[0].sdc = def[0];
+      obj[0].remark = def[0]?.label;
+      setRows(obj);
     },
     onError: (error: any) => {},
   });
 
   const getTrxOptions: any = useMutation(API.getTRXList, {
     onSuccess: (data) => {
-      setTrxOptions(data);
-      console.log(data, "trx");
-
       setTrxOptions2(data);
+      setTrxOptions(data);
+
+      console.log(data, "trx");
     },
     onError: (error: any) => {},
   });
@@ -133,11 +138,11 @@ const Footer = () => {
     let isCred = true;
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
-      trxx = { label: "3" };
+      trxx = trxOptions2[2];
       isCred = true;
     } else if (totalDebit < totalCredit) {
       deb = totalCredit - totalDebit;
-      trxx = { label: "6" };
+      trxx = trxOptions2[5];
       isCred = false;
     }
 
@@ -245,7 +250,7 @@ const Footer = () => {
     setRows([defaulVal]);
     setTotalCredit(0);
     setTotalDebit(0);
-    setTrxOptions(trxOpt);
+    setTrxOptions(trxOptions2);
   };
 
   //simple fns
@@ -259,6 +264,9 @@ const Footer = () => {
     console.log(e, "sdc e");
     const obj = [...rows];
     obj[i].sdc = value;
+    console.log(value, "value");
+    obj[i].remark = value.label;
+
     setRows(obj);
   };
   const handleVNo = (e, i) => {
@@ -326,18 +334,21 @@ const Footer = () => {
         }}
       >
         <TableContainer>
-          <Table aria-label="simple table" padding="none">
+          <Table aria-label="caption table" padding="none">
+            <caption>
+              Total ( Debit:{totalDebit} | Credit:{totalCredit} )
+            </caption>
             <TableHead>
               <TableRow>
                 <TableCell>Branch</TableCell>
-                <TableCell>AccType</TableCell>
-                <TableCell>AccNo</TableCell>
+                <TableCell>A/C Type</TableCell>
+                <TableCell>A/C No</TableCell>
                 <TableCell>TRX</TableCell>
                 <TableCell>Scroll</TableCell>
                 <TableCell>SDC</TableCell>
                 <TableCell>Remarks</TableCell>
-                <TableCell>ChqNo</TableCell>
-                <TableCell>ChqDate</TableCell>
+                <TableCell>Chq No</TableCell>
+                <TableCell>Chq Date</TableCell>
                 <TableCell>Debit</TableCell>
                 <TableCell>Credit</TableCell>
                 <TableCell>Vno.</TableCell>
@@ -351,23 +362,18 @@ const Footer = () => {
                     <TableRow key={i}>
                       <TableCell sx={{ minWidth: 160 }}>
                         <Autocomplete
-                          size="small"
-                          ref={inputElement}
-                          disablePortal={true}
-                          options={branchOptions}
                           value={a.branch}
+                          size="small"
+                          options={branchOptions}
                           onChange={(e, value) => handleBranch(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField {...params} label="" />
-                          )}
+                          renderInput={(params) => <TextField {...params} />}
                         />
                       </TableCell>
                       <TableCell sx={{ minWidth: 160 }}>
                         <Autocomplete
-                          size="small"
-                          ref={inputElement}
-                          options={accTypeOptions}
                           value={a.accType}
+                          size="small"
+                          options={accTypeOptions}
                           onChange={(e, value) => handleAccType(e, value, i)}
                           renderInput={(params) => (
                             <TextField {...params} label="" />
@@ -376,19 +382,18 @@ const Footer = () => {
                       </TableCell>
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
-                          id="accNo"
+                          value={a.accNo}
                           size="small"
                           type="number"
-                          value={a.accNo}
                           onChange={(e) => handleAccNo(e, i)}
                         />
                       </TableCell>
                       <TableCell sx={{ minWidth: 160 }}>
                         <Autocomplete
+                          value={a.trx}
                           size="small"
                           id="combo-box-demo"
                           options={trxOptions}
-                          value={a.trx}
                           onChange={(e, value) => handleTrx(e, value, i)}
                           renderInput={(params) => (
                             <TextField {...params} label="" />
@@ -398,9 +403,9 @@ const Footer = () => {
 
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
+                          disabled={a?.trx?.code == "4" ? false : true}
                           id="scroll"
                           size="small"
-                          type="number"
                           value={a.scroll}
                           onChange={(e) => handleScroll(e, i)}
                         />
@@ -419,33 +424,45 @@ const Footer = () => {
                       </TableCell>
                       <TableCell sx={{ minWidth: 80 }}>
                         <TextField
-                          id="remarks"
-                          size="small"
-                          type="number"
                           value={a.remark}
+                          size="small"
                           onChange={(e) => handleRemark(e, i)}
                         />
                       </TableCell>
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
-                          id="cNo"
+                          value={a.cNo}
+                          disabled={
+                            a?.trx?.code == "4" ||
+                            a?.trx?.code == "5" ||
+                            a?.trx?.code == "6"
+                              ? false
+                              : true
+                          }
                           size="small"
                           type="number"
-                          value={a.cNo}
                           onChange={(e) => handleCNo(e, i)}
                         />
                       </TableCell>
 
                       <TableCell>
                         <TextField
-                          type="date"
-                          size="small"
                           value={a.date}
+                          type="date"
+                          disabled={
+                            a?.trx?.code == "4" ||
+                            a?.trx?.code == "5" ||
+                            a?.trx?.code == "6"
+                              ? false
+                              : true
+                          }
+                          size="small"
                           onChange={(e) => handleDate(e, i)}
                         />{" "}
                       </TableCell>
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
+                          value={a.debit}
                           size="small"
                           disabled={
                             a?.isCredit || !a.branch || !a.trx?.code
@@ -453,13 +470,13 @@ const Footer = () => {
                               : false
                           }
                           type="number"
-                          value={a.debit}
                           onChange={(e) => handleDebit(e, i)}
                           onBlur={(e) => handleDebitBlur(e, i)}
                         />
                       </TableCell>
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
+                          value={a.credit}
                           size="small"
                           disabled={
                             !a?.isCredit || !a.branch || !a.trx?.code
@@ -467,7 +484,6 @@ const Footer = () => {
                               : false
                           }
                           type="number"
-                          value={a.credit}
                           onChange={(e) => handleCredit(e, i)}
                           onBlur={(e) => handleCreditBlur(e, i)}
                         />
@@ -475,10 +491,9 @@ const Footer = () => {
 
                       <TableCell sx={{ minWidth: 40 }}>
                         <TextField
-                          id="vNo"
+                          value={a.vNo}
                           size="small"
                           type="number"
-                          value={a.vNo}
                           onChange={(e) => handleVNo(e, i)}
                         />
                       </TableCell>

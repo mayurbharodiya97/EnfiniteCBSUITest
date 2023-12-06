@@ -44,13 +44,6 @@ export const getBranchList = async (reqData) => {
           info: row,
         };
       });
-
-      // responseData = responseData.map(({ BRANCH_CD, BRANCH_NM }) => {
-      //   return {
-      //     value: BRANCH_CD,
-      //     label: BRANCH_CD + " - " + BRANCH_NM,
-      //   };
-      // });
     }
     return responseData;
   } else {
@@ -72,14 +65,6 @@ export const getAccTypeList = async (reqData) => {
           info: row,
         };
       });
-
-      // responseData = responseData.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
-      //   return {
-      //     ...others,
-      //     value: ACCT_TYPE,
-      //     label: ACCT_TYPE + " - " + TYPE_NM,
-      //   };
-      // });
     }
     return responseData;
   } else {
@@ -115,8 +100,9 @@ export const getAccInfo = async (reqData) => {
     await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
       COMP_CD: "132 ",
       BRANCH_CD: "099 ",
-      ACCT_TYPE: "405 ",
-      ACCT_CD: "017825              ",
+      ACCT_TYPE: "001 ",
+      ACCT_CD: "009455",
+      // A_ASON_DT: "02/JAN/2023",
       // COMP_CD: reqData.COMP_CD,
       // BRANCH_CD: reqData.BRANCH_CD,
       // ACCT_TYPE: reqData.ACCT_TYPE,
