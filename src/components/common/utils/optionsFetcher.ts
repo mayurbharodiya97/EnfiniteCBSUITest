@@ -3,6 +3,7 @@ import { useQuery } from "react-query";
 import { cacheWrapperKeyGen, ClearCacheContext } from "cache";
 import { transformDependentFieldsState } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import _ from "lodash";
 const computeDependentKey = (dependentValues = {}) => {
   let keys = Object.keys(dependentValues).sort();
   return keys.reduce((accum, one) => {
@@ -107,6 +108,7 @@ export const useOptionsFetcher = (
         // );
         // options = uniqueOptions;
       }
+      options = _.uniqBy(options, "value");
       setOptions(options);
       loadingOptions = false;
     } else if (typeof options === "object") {
@@ -267,6 +269,7 @@ export const useOptionsFetcherSimple = (
           ...options,
         ];
       }
+      options = _.uniqBy(options, "value");
       setOptions(options);
       loadingOptions = false;
     } else if (queryOptions.isLoading) {
