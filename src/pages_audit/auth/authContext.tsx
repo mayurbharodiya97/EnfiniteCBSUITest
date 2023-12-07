@@ -174,6 +174,7 @@ export const AuthProvider = ({ children }) => {
     }
     localStorage.removeItem("authDetails");
     localStorage.removeItem("tokenchecksum");
+    localStorage.removeItem("token_status");
     dispatch({
       type: "logout",
       payload: {},
@@ -269,7 +270,7 @@ export const AuthProvider = ({ children }) => {
       let geneTime = Number.parseInt(generateTime);
       let exTime = Number.parseInt(expireTime);
       let totalTime = (utilFunction.getCurrentDateinLong() - geneTime) / 1000;
-      exTime = exTime - totalTime - 50;
+      exTime = exTime - totalTime - 10;
       if (exTime > 0) {
         exTime = exTime * 1000;
         if (Boolean(timeoutID)) {
