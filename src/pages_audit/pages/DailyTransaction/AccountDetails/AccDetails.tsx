@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -8,7 +8,18 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useQuery } from "react-query";
 import * as API from "./api";
-
+import { AuthContext } from "pages_audit/auth";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import { styled } from "@mui/material/styles";
+import "./accDetails.css";
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+}));
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
@@ -29,13 +40,12 @@ const responsive = {
   },
 };
 const AccDetails = () => {
-  const {
-    data: accInfo,
-    isSuccess: isAccTypeSuccess,
-    isLoading: isAccTypeLoading,
-  } = useQuery(["getAccInfo", {}], () => API.getAccInfo());
+  const { authState } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AuthContext);
 
-  console.log(accInfo, "accInfo");
+  const [accInfo, setAccInfo]: any = useState({});
+
+  console.log(tempStore, "tempStore");
   return (
     <>
       <Carousel responsive={responsive}>
@@ -46,7 +56,11 @@ const AccDetails = () => {
             borderRadius: "5px",
           }}
         >
-          <CardContent>
+          <CardContent
+            style={{
+              margin: "10px",
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -62,22 +76,59 @@ const AccDetails = () => {
                 <AccountCircleIcon />
               </div>
             </div>
-            <div style={{ overflowY: "scroll", maxHeight: "35vh" }}>
-              <Typography component="div">Name</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Address</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Account No</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Phone</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Pan</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Id</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
+
+            <div
+              style={{
+                overflowY: "scroll",
+                height: "30vh",
+              }}
+            >
+              <Grid container spacing={2}>
+                <Grid item id="accInfo">
+                  <Typography>Name</Typography>
+                  <Typography>{tempStore?.accInfo?.ACCT_NM}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography>Account</Typography>
+                  <Typography>{tempStore?.accInfo?.ACCT_CD_NEW}</Typography>
+                </Grid>
+                {tempStore?.accInfo?.E_MAIL_ID && (
+                  <Grid item xs={6}>
+                    <Typography>Email</Typography>
+                    <Typography>{tempStore?.accInfo?.E_MAIL_ID}</Typography>
+                  </Grid>
+                )}
+                <Grid item id="accInfo">
+                  <Typography>Contact</Typography>
+                  <Typography>{tempStore?.accInfo?.CONTACT2}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography>Address</Typography>
+
+                  <Typography>{tempStore?.accInfo?.ADD1}</Typography>
+                  {tempStore?.accInfo?.ADD2 && (
+                    <Typography>{tempStore?.accInfo?.ADD2}</Typography>
+                  )}
+                  <Typography>{tempStore?.accInfo?.AREA_NM}</Typography>
+                </Grid>
+
+                <Grid item id="accInfo">
+                  <Typography>Branch Code</Typography>
+                  <Typography>{tempStore?.accInfo?.BRANCH_CD}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography>COMP_CD</Typography>
+                  <Typography>{tempStore?.accInfo?.COMP_CD}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography>PAN_NO</Typography>
+                  <Typography>{tempStore?.accInfo?.PAN_NO}</Typography>
+                </Grid>
+              </Grid>
             </div>
           </CardContent>
         </Card>
+
         <Card
           sx={{
             width: "450px",
@@ -85,7 +136,11 @@ const AccDetails = () => {
             borderRadius: "5px",
           }}
         >
-          <CardContent>
+          <CardContent
+            style={{
+              margin: "10px",
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -101,19 +156,32 @@ const AccDetails = () => {
                 <AccountCircleIcon />
               </div>
             </div>
-            <div style={{ overflowY: "scroll", maxHeight: "35vh" }}>
-              <Typography component="div">Opening</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Shadow</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Clearing Chq</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Current</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">aaaa</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">aaaa</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
+            <div
+              style={{
+                overflowY: "scroll",
+                height: "30vh",
+              }}
+            >
+              <Grid container spacing={2}>
+                <Grid item id="accInfo">
+                  <Typography>CUSTOMER_ID</Typography>
+                  <Typography>{tempStore?.accInfo?.CUSTOMER_ID}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography>SCR_ADD</Typography>
+                  <Typography>{tempStore?.accInfo?.SCR_ADD}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography>TRAN_BAL</Typography>
+                  <Typography>{tempStore?.accInfo?.TRAN_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography>OP_DATE</Typography>
+                  <Typography>
+                    {tempStore?.accInfo?.OP_DATE.substring(0, 10)}
+                  </Typography>
+                </Grid>
+              </Grid>
             </div>
           </CardContent>
         </Card>
@@ -124,7 +192,11 @@ const AccDetails = () => {
             borderRadius: "5px",
           }}
         >
-          <CardContent>
+          <CardContent
+            style={{
+              margin: "10px",
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -140,19 +212,32 @@ const AccDetails = () => {
                 <AccountCircleIcon />
               </div>
             </div>
-            <div style={{ overflowY: "scroll", maxHeight: "35vh" }}>
-              <Typography component="div">Inst Amt</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Inst Start</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Disburse amt</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Total debit in amt</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Sanction date</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">Last Statement</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
+            <div
+              style={{
+                overflowY: "scroll",
+                height: "30vh",
+              }}
+            >
+              <Grid container spacing={2}>
+                <Grid item id="accInfo">
+                  <Typography>CUSTOMER_ID</Typography>
+                  <Typography>{tempStore?.accInfo?.CUSTOMER_ID}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography>SCR_ADD</Typography>
+                  <Typography>{tempStore?.accInfo?.SCR_ADD}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography>TRAN_BAL</Typography>
+                  <Typography>{tempStore?.accInfo?.TRAN_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography>OP_DATE</Typography>
+                  <Typography>
+                    {tempStore?.accInfo?.OP_DATE.substring(0, 10)}
+                  </Typography>
+                </Grid>
+              </Grid>
             </div>
           </CardContent>
         </Card>
@@ -163,7 +248,11 @@ const AccDetails = () => {
             borderRadius: "5px",
           }}
         >
-          <CardContent>
+          <CardContent
+            style={{
+              margin: "10px",
+            }}
+          >
             <div
               style={{
                 display: "flex",
@@ -179,7 +268,12 @@ const AccDetails = () => {
                 <AccountCircleIcon />
               </div>
             </div>
-            <div style={{ overflowY: "scroll", maxHeight: "35vh" }}>
+            <div
+              style={{
+                overflowY: "scroll",
+                height: "30vh",
+              }}
+            >
               <Typography component="div">Name</Typography>
               <Typography sx={{ mb: 1.5 }}>xyz</Typography>
               <Typography component="div">aaaa</Typography>
@@ -196,6 +290,7 @@ const AccDetails = () => {
           </CardContent>
         </Card>
       </Carousel>
+      <br />
     </>
   );
 };

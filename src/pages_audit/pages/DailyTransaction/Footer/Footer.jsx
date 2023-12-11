@@ -12,38 +12,45 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { createContext } from "react";
 
 //Logical
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useContext,
+} from "react";
 import { useMutation, useQuery } from "react-query";
-import { footerFormMetaData } from "./metaData";
-import FormWrapper from "components/dyanmicForm";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
+import { AuthContext } from "pages_audit/auth";
+import "./footer.css";
 
 const Footer = () => {
-  let authDetails = JSON.parse(localStorage?.getItem("authDetails"));
-
+  const { authState } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AuthContext);
   const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState([]);
   const [sdcOptions, setSdcOptions] = useState([]);
   const [accTypeOptions, setAccTypeOptions] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
-  const [accInfo, setAccInfo] = useState([]);
-  const [defSdc, setDefSdc] = useState({});
+
+  const [branchBug, setBranchBug] = useState(true);
 
   let defaulVal = {
-    branch: { label: "", value: "" },
-    accType: { label: "", value: "" },
+    branch: { label: "", value: "", info: "" },
+    accType: { label: "", value: "", info: "" },
     accNo: "",
     trx: { label: "", value: "", code: "" },
     scroll: "",
-    sdc: { label: "", value: "" },
+    sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: 0,
-    date: "",
-    debit: 0,
-    credit: 0,
+    date: new Date().toISOString().substring(0, 10),
+    debit: "0.00",
+    credit: "0.00",
     vNo: 0,
     isCredit: true,
   };
@@ -52,7 +59,6 @@ const Footer = () => {
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [diff, setDiff] = useState(0);
-  const [isSave, setIsSave] = useState(false);
 
   const handleFilterTrx = () => {
     let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
@@ -60,78 +66,84 @@ const Footer = () => {
   };
 
   useEffect(() => {
+    setTempStore({ ...tempStore, accInfo: {} });
+  }, []);
+
+  useEffect(() => {
     console.log(rows, "rows");
-    console.log(diff, "diff");
-    let branchBug = rows.some((a) => !a.branch);
-    setIsSave(!branchBug);
+    let bug = rows.some((a) => !a.branch || !a.accType || !a.accNo);
+    let i = rows.length - 1;
+    if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
+      bug = true;
+    }
+    setBranchBug(bug);
+    console.log(bug, "branchBug");
   }, [rows]);
 
-  const getBranchOptions: any = useMutation(API.getBranchList, {
+  const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
       setBranchOptions(data);
       console.log(data, "branch");
     },
-    onError: (error: any) => {},
+    onError: (error) => {},
   });
-  const getAccTypeOptions: any = useMutation(API.getAccTypeList, {
+  const getAccTypeOptions = useMutation(API.getAccTypeList, {
     onSuccess: (data) => {
       setAccTypeOptions(data);
     },
-    onError: (error: any) => {},
+    onError: (error) => {},
   });
 
-  const getSdcOptions: any = useMutation(API.getSDCList, {
+  const getSdcOptions = useMutation(API.getSDCList, {
     onSuccess: (data) => {
       setSdcOptions(data);
-      let def = data.filter((a) => a.value == "6   ");
-      setDefSdc(def[0]);
-
       const obj = [...rows];
-      obj[0].sdc = def[0];
-      obj[0].remark = def[0]?.label;
       setRows(obj);
     },
-    onError: (error: any) => {},
+    onError: (error) => {},
   });
 
-  const getTrxOptions: any = useMutation(API.getTRXList, {
+  const getTrxOptions = useMutation(API.getTRXList, {
     onSuccess: (data) => {
       setTrxOptions2(data);
       setTrxOptions(data);
 
       console.log(data, "trx");
     },
-    onError: (error: any) => {},
+    onError: (error) => {},
   });
   useEffect(() => {
-    getBranchOptions.mutate(authDetails);
-    getSdcOptions.mutate(authDetails);
-    getAccTypeOptions.mutate(authDetails);
-    getTrxOptions.mutate(authDetails);
+    getBranchOptions.mutate(authState);
+    getSdcOptions.mutate(authState);
+    getAccTypeOptions.mutate(authState);
+    getTrxOptions.mutate(authState);
   }, []);
 
-  const getAccInfo: any = useMutation(API.getAccInfo, {
-    onSuccess: (data) => {
-      console.log(data, "accInfo");
-      setAccInfo(data);
-    },
-    onError: (error: any) => {},
-  });
-  const handleGetAccInfo = () => {
+  useEffect(() => {
+    //accInfo api call onChange
     let data = {
       COMP_CD: rows[0]?.branch?.info?.COMP_CD,
       BRANCH_CD: rows[0]?.branch?.value,
       ACCT_TYPE: rows[0]?.accType?.value,
       ACCT_CD: rows[0]?.accNo,
+      authState: authState,
     };
 
-    getAccInfo.mutate(data);
-  };
+    rows[0]?.accNo &&
+      rows[0]?.accType?.value &&
+      rows[0]?.branch?.value &&
+      getAccInfo.mutate(data);
+  }, [rows[0]?.accNo, rows[0]?.accType?.value, rows[0]?.branch?.value]);
+
+  const getAccInfo = useMutation(API.getAccInfo, {
+    onSuccess: (data) => {
+      console.log(data[0], "accInfo");
+      setTempStore({ ...tempStore, accInfo: data[0] });
+    },
+    onError: (error) => {},
+  });
 
   const handleAddRow = () => {
-    let branchBug = rows.some((a) => !a.branch);
-    console.log(branchBug, "branchBug");
-
     let cred = 0;
     let deb = 0;
     let trxx = { label: "1" };
@@ -145,13 +157,17 @@ const Footer = () => {
       trxx = trxOptions2[5];
       isCred = false;
     }
-
+    let tr = trxx.code + "   ";
+    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
     let defaulVal2 = {
       branch: "",
       trx: trxx,
       debit: deb,
       credit: cred,
       isCredit: isCred,
+      date: new Date().toISOString().substring(0, 10),
+      sdc: defSdc,
+      remark: defSdc?.label,
     };
 
     if (!branchBug && totalDebit != totalCredit) {
@@ -206,7 +222,11 @@ const Footer = () => {
     obj[i].trx = value;
     obj[i].credit = 0;
     obj[i].debit = 0;
+    let tr = value.code + "   ";
+    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
+    obj[i].sdc = defSdc;
+    obj[i].remark = defSdc?.label;
     if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
       obj[i].isCredit = true;
     } else {
@@ -233,6 +253,8 @@ const Footer = () => {
 
   const handleDebitBlur = (e, i) => {
     const obj = [...rows];
+    obj[i].debit = Number(Number(e.target.value)?.toFixed(2));
+    setRows(obj);
     totalDebit != totalCredit &&
       (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
@@ -240,6 +262,8 @@ const Footer = () => {
   };
   const handleCreditBlur = (e, i) => {
     const obj = [...rows];
+    obj[i].credit = Number(Number(e.target.value)?.toFixed(2));
+    setRows(obj);
     totalDebit != totalCredit &&
       (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
@@ -305,26 +329,6 @@ const Footer = () => {
 
   return (
     <>
-      {/* <div
-        style={{
-          boxShadow: "0px 1px 4px -1px #999999",
-          borderRadius: "5px",
-          margin: "9px",
-        }}
-      >
-        <Grid item xl={12} lg={8} xs={12} sm={6} md={4}>
-          <FormWrapper
-            metaData={footerFormMetaData}
-            hideHeader={true}
-            displayMode={"new"}
-            formStyle={{
-              background: "white",
-              overflowY: "auto",
-              overflowX: "hidden",
-            }}
-          ></FormWrapper>{" "}
-        </Grid>
-      </div> */}
       <Card
         sx={{
           boxShadow: "0px 1px 4px -1px #999999",
@@ -383,6 +387,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.accNo}
+                          id="txtRight"
                           size="small"
                           type="number"
                           onChange={(e) => handleAccNo(e, i)}
@@ -403,10 +408,9 @@ const Footer = () => {
 
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
-                          disabled={a?.trx?.code == "4" ? false : true}
-                          id="scroll"
-                          size="small"
                           value={a.scroll}
+                          disabled={a?.trx?.code == "4" ? false : true}
+                          size="small"
                           onChange={(e) => handleScroll(e, i)}
                         />
                       </TableCell>
@@ -425,6 +429,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 80 }}>
                         <TextField
                           value={a.remark}
+                          error={true}
                           size="small"
                           onChange={(e) => handleRemark(e, i)}
                         />
@@ -432,6 +437,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.cNo}
+                          id="txtRight"
                           disabled={
                             a?.trx?.code == "4" ||
                             a?.trx?.code == "5" ||
@@ -463,6 +469,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.debit}
+                          id="txtRight"
                           size="small"
                           disabled={
                             a?.isCredit || !a.branch || !a.trx?.code
@@ -477,6 +484,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.credit}
+                          id="txtRight"
                           size="small"
                           disabled={
                             !a?.isCredit || !a.branch || !a.trx?.code
@@ -492,6 +500,8 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 40 }}>
                         <TextField
                           value={a.vNo}
+                          id="txtRight"
+                          disabled={true}
                           size="small"
                           type="number"
                           onChange={(e) => handleVNo(e, i)}
@@ -516,7 +526,7 @@ const Footer = () => {
           </Table>
         </TableContainer>
       </Card>
-      <br />{" "}
+      <br /> <br />
       {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
         <>
           <Button
@@ -543,13 +553,13 @@ const Footer = () => {
       >
         save
       </Button>
-      <Button
+      {/* <Button
         variant="outlined"
         color="secondary"
         onClick={() => handleGetAccInfo()}
       >
         fetch accInfo
-      </Button>
+      </Button> */}
       <br /> <br />
       <Grid container spacing={2}>
         <Grid item>
