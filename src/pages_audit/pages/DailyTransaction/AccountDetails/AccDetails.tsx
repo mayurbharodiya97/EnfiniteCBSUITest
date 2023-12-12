@@ -66,7 +66,7 @@ const AccDetails = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "10px",
+                marginBottom: "15px",
               }}
             >
               <Typography variant="h5" component="div">
@@ -85,43 +85,45 @@ const AccDetails = () => {
             >
               <Grid container spacing={2}>
                 <Grid item id="accInfo">
-                  <Typography>Name</Typography>
+                  <Typography variant="button">Name</Typography>
                   <Typography>{tempStore?.accInfo?.ACCT_NM}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography>Account</Typography>
+                  <Typography variant="button">Account</Typography>
                   <Typography>{tempStore?.accInfo?.ACCT_CD_NEW}</Typography>
                 </Grid>
                 {tempStore?.accInfo?.E_MAIL_ID && (
-                  <Grid item xs={6}>
-                    <Typography>Email</Typography>
+                  <Grid item id="accInfo">
+                    <Typography variant="button">Email</Typography>
                     <Typography>{tempStore?.accInfo?.E_MAIL_ID}</Typography>
                   </Grid>
                 )}
-                <Grid item id="accInfo">
-                  <Typography>Contact</Typography>
-                  <Typography>{tempStore?.accInfo?.CONTACT2}</Typography>
-                </Grid>
+                {tempStore?.accInfo?.CONTACT2 && (
+                  <Grid item id="accInfo">
+                    <Typography variant="button">Contact</Typography>
+                    <Typography>{tempStore?.accInfo?.CONTACT2}</Typography>
+                  </Grid>
+                )}
                 <Grid item xs={12}>
-                  <Typography>Address</Typography>
+                  <Typography variant="button">Address</Typography>
 
-                  <Typography>{tempStore?.accInfo?.ADD1}</Typography>
-                  {tempStore?.accInfo?.ADD2 && (
-                    <Typography>{tempStore?.accInfo?.ADD2}</Typography>
-                  )}
-                  <Typography>{tempStore?.accInfo?.AREA_NM}</Typography>
+                  <Typography>
+                    {tempStore?.accInfo?.ADD1}{" "}
+                    {tempStore?.accInfo?.ADD2 && tempStore?.accInfo?.ADD2}{" "}
+                    {tempStore?.accInfo?.AREA_NM}
+                  </Typography>
                 </Grid>
 
                 <Grid item id="accInfo">
-                  <Typography>Branch Code</Typography>
+                  <Typography variant="button">Branch Code</Typography>
                   <Typography>{tempStore?.accInfo?.BRANCH_CD}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography>COMP_CD</Typography>
+                  <Typography variant="button">COMP_CD</Typography>
                   <Typography>{tempStore?.accInfo?.COMP_CD}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography>PAN_NO</Typography>
+                  <Typography variant="button">PAN_NO</Typography>
                   <Typography>{tempStore?.accInfo?.PAN_NO}</Typography>
                 </Grid>
               </Grid>
@@ -146,7 +148,7 @@ const AccDetails = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "10px",
+                marginBottom: "15px",
               }}
             >
               <Typography variant="h5" component="div">
@@ -164,21 +166,21 @@ const AccDetails = () => {
             >
               <Grid container spacing={2}>
                 <Grid item id="accInfo">
-                  <Typography>CUSTOMER_ID</Typography>
+                  <Typography variant="button">CUSTOMER_ID</Typography>
                   <Typography>{tempStore?.accInfo?.CUSTOMER_ID}</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography>SCR_ADD</Typography>
+                  <Typography variant="button">SCR_ADD</Typography>
                   <Typography>{tempStore?.accInfo?.SCR_ADD}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography>TRAN_BAL</Typography>
+                  <Typography variant="button">TRAN_BAL</Typography>
                   <Typography>{tempStore?.accInfo?.TRAN_BAL}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography>OP_DATE</Typography>
+                  <Typography variant="button">OP_DATE</Typography>
                   <Typography>
-                    {tempStore?.accInfo?.OP_DATE.substring(0, 10)}
+                    {tempStore?.accInfo?.OP_DATE?.substring(0, 10)}
                   </Typography>
                 </Grid>
               </Grid>
@@ -202,7 +204,7 @@ const AccDetails = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "10px",
+                marginBottom: "15px",
               }}
             >
               <Typography variant="h5" component="div">
@@ -220,21 +222,21 @@ const AccDetails = () => {
             >
               <Grid container spacing={2}>
                 <Grid item id="accInfo">
-                  <Typography>CUSTOMER_ID</Typography>
+                  <Typography variant="button">CUSTOMER_ID</Typography>
                   <Typography>{tempStore?.accInfo?.CUSTOMER_ID}</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography>SCR_ADD</Typography>
+                  <Typography variant="button">SCR_ADD</Typography>
                   <Typography>{tempStore?.accInfo?.SCR_ADD}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography>TRAN_BAL</Typography>
+                  <Typography variant="button">TRAN_BAL</Typography>
                   <Typography>{tempStore?.accInfo?.TRAN_BAL}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography>OP_DATE</Typography>
+                  <Typography variant="button">OP_DATE</Typography>
                   <Typography>
-                    {tempStore?.accInfo?.OP_DATE.substring(0, 10)}
+                    {tempStore?.accInfo?.OP_DATE?.substring(0, 10)}
                   </Typography>
                 </Grid>
               </Grid>
@@ -258,7 +260,7 @@ const AccDetails = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "10px",
+                marginBottom: "15px",
               }}
             >
               <Typography variant="h5" component="div">

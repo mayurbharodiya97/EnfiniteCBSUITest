@@ -12,7 +12,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { createContext } from "react";
+
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import CloseIcon from "@mui/icons-material/Close";
 
 //Logical
 import React, {
@@ -37,7 +43,7 @@ const Footer = () => {
   const [accTypeOptions, setAccTypeOptions] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
 
-  const [branchBug, setBranchBug] = useState(true);
+  const [isSave, setIsSave] = useState(false);
 
   let defaulVal = {
     branch: { label: "", value: "", info: "" },
@@ -48,10 +54,11 @@ const Footer = () => {
     sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: 0,
-    date: new Date().toISOString().substring(0, 10),
+    date: new Date().toISOString()?.substring(0, 10),
     debit: "0.00",
     credit: "0.00",
     vNo: 0,
+    bug: true,
     isCredit: true,
   };
 
@@ -71,14 +78,50 @@ const Footer = () => {
 
   useEffect(() => {
     console.log(rows, "rows");
-    let bug = rows.some((a) => !a.branch || !a.accType || !a.accNo);
-    let i = rows.length - 1;
-    if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
-      bug = true;
+    let i = 0;
+    if (rows.length > 0) {
+      i = rows.length - 1;
     }
-    setBranchBug(bug);
-    console.log(bug, "branchBug");
+    rows[i].bug = false;
+    if (!rows[i].branch || !rows[i].accType || !rows[i].accNo) {
+      rows[i].bug = true;
+    }
+
+    if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
+      rows[i].bug = true;
+    }
+
+    let result = rows.some((a) => a.bug);
+    setIsSave(!result);
+    console.log("isSave", !result);
   }, [rows]);
+
+  useEffect(() => {
+    getBranchOptions.mutate(authState);
+    getSdcOptions.mutate(authState);
+    getAccTypeOptions.mutate(authState);
+    getTrxOptions.mutate(authState);
+  }, []);
+
+  useEffect(() => {
+    //accInfo api call onChange
+    console.log("sssss");
+    let data = {
+      COMP_CD: rows[0]?.branch?.info?.COMP_CD,
+      BRANCH_CD: rows[0]?.branch?.value,
+      ACCT_TYPE: rows[0]?.accType?.value,
+      ACCT_CD: rows[0]?.accNo,
+      authState: authState,
+    };
+
+    if (rows[0]?.accNo && rows[0]?.accType?.value && rows[0]?.branch?.value) {
+      console.log(rows[0]?.accNo, "rows[0]?.accNo");
+    }
+    rows[0]?.accNo &&
+      rows[0]?.accType?.value &&
+      rows[0]?.branch?.value &&
+      getAccInfo.mutate(data);
+  }, [rows[0]?.accNo, rows[0]?.accType?.value, rows[0]?.branch?.value]);
 
   const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
@@ -112,33 +155,16 @@ const Footer = () => {
     },
     onError: (error) => {},
   });
-  useEffect(() => {
-    getBranchOptions.mutate(authState);
-    getSdcOptions.mutate(authState);
-    getAccTypeOptions.mutate(authState);
-    getTrxOptions.mutate(authState);
-  }, []);
-
-  useEffect(() => {
-    //accInfo api call onChange
-    let data = {
-      COMP_CD: rows[0]?.branch?.info?.COMP_CD,
-      BRANCH_CD: rows[0]?.branch?.value,
-      ACCT_TYPE: rows[0]?.accType?.value,
-      ACCT_CD: rows[0]?.accNo,
-      authState: authState,
-    };
-
-    rows[0]?.accNo &&
-      rows[0]?.accType?.value &&
-      rows[0]?.branch?.value &&
-      getAccInfo.mutate(data);
-  }, [rows[0]?.accNo, rows[0]?.accType?.value, rows[0]?.branch?.value]);
-
   const getAccInfo = useMutation(API.getAccInfo, {
     onSuccess: (data) => {
       console.log(data[0], "accInfo");
       setTempStore({ ...tempStore, accInfo: data[0] });
+    },
+    onError: (error) => {},
+  });
+  const getAccInquiry = useMutation(API.getAccInquiry, {
+    onSuccess: (data) => {
+      console.log(data, "getAccInquiry");
     },
     onError: (error) => {},
   });
@@ -162,15 +188,15 @@ const Footer = () => {
     let defaulVal2 = {
       branch: "",
       trx: trxx,
-      debit: deb,
-      credit: cred,
+      debit: deb?.toFixed(2),
+      credit: cred?.toFixed(2),
       isCredit: isCred,
-      date: new Date().toISOString().substring(0, 10),
+      date: new Date().toISOString()?.substring(0, 10),
       sdc: defSdc,
       remark: defSdc?.label,
     };
 
-    if (!branchBug && totalDebit != totalCredit) {
+    if (isSave && totalDebit != totalCredit) {
       let obj = [...rows, defaulVal2];
 
       setRows(obj);
@@ -239,21 +265,21 @@ const Footer = () => {
 
   const handleDebit = (e, i) => {
     const obj = [...rows];
-    obj[i].debit = Number(e.target.value);
+    obj[i].debit = e.target.value;
     setRows(obj);
     handleTotal(obj);
   };
 
   const handleCredit = (e, i) => {
     const obj = [...rows];
-    obj[i].credit = Number(e.target.value);
+    obj[i].credit = e.target.value;
     setRows(obj);
     handleTotal(obj);
   };
 
   const handleDebitBlur = (e, i) => {
     const obj = [...rows];
-    obj[i].debit = Number(Number(e.target.value)?.toFixed(2));
+    obj[i].debit = Number(e.target.value)?.toFixed(2);
     setRows(obj);
     totalDebit != totalCredit &&
       (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
@@ -262,7 +288,7 @@ const Footer = () => {
   };
   const handleCreditBlur = (e, i) => {
     const obj = [...rows];
-    obj[i].credit = Number(Number(e.target.value)?.toFixed(2));
+    obj[i].credit = Number(e.target.value)?.toFixed(2);
     setRows(obj);
     totalDebit != totalCredit &&
       (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
@@ -325,8 +351,23 @@ const Footer = () => {
     const obj = [...rows];
     obj[i].accNo = e.target.value;
     setRows(obj);
+    console.log(i, "i");
+    // if (i == 0) {
+    //   getAccInquiry.mutate(e.target.value);
+    //   console.log("1111");
+    // }
   };
 
+  const [saveDialog, setSaveDialog] = useState(false);
+  const closeSaveDialog = () => {
+    setSaveDialog(false);
+  };
+
+  const handleSave = () => {
+    console.log("saved");
+    handleReset();
+    setSaveDialog(false);
+  };
   return (
     <>
       <Card
@@ -370,7 +411,12 @@ const Footer = () => {
                           size="small"
                           options={branchOptions}
                           onChange={(e, value) => handleBranch(e, value, i)}
-                          renderInput={(params) => <TextField {...params} />}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              error={a.branch?.value ? false : true}
+                            />
+                          )}
                         />
                       </TableCell>
                       <TableCell sx={{ minWidth: 160 }}>
@@ -380,13 +426,17 @@ const Footer = () => {
                           options={accTypeOptions}
                           onChange={(e, value) => handleAccType(e, value, i)}
                           renderInput={(params) => (
-                            <TextField {...params} label="" />
+                            <TextField
+                              {...params}
+                              error={a.accType?.value ? false : true}
+                            />
                           )}
                         />
                       </TableCell>
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.accNo}
+                          error={a.accNo ? false : true}
                           id="txtRight"
                           size="small"
                           type="number"
@@ -401,7 +451,10 @@ const Footer = () => {
                           options={trxOptions}
                           onChange={(e, value) => handleTrx(e, value, i)}
                           renderInput={(params) => (
-                            <TextField {...params} label="" />
+                            <TextField
+                              {...params}
+                              error={a.trx?.value ? false : true}
+                            />
                           )}
                         />
                       </TableCell>
@@ -429,7 +482,6 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 80 }}>
                         <TextField
                           value={a.remark}
-                          error={true}
                           size="small"
                           onChange={(e) => handleRemark(e, i)}
                         />
@@ -437,6 +489,9 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.cNo}
+                          error={
+                            !a.isCredit && (a.cNo == 0 || !a.cNo) ? true : false
+                          }
                           id="txtRight"
                           disabled={
                             a?.trx?.code == "4" ||
@@ -454,6 +509,7 @@ const Footer = () => {
                       <TableCell>
                         <TextField
                           value={a.date}
+                          error={a.isCredit && !a.date ? true : false}
                           type="date"
                           disabled={
                             a?.trx?.code == "4" ||
@@ -546,13 +602,15 @@ const Footer = () => {
           </Button>
         </>
       )}
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => console.log("saved")}
-      >
-        save
-      </Button>
+      {isSave && (
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => setSaveDialog(true)}
+        >
+          save
+        </Button>
+      )}
       {/* <Button
         variant="outlined"
         color="secondary"
@@ -614,6 +672,25 @@ const Footer = () => {
         </Grid>{" "}
       </Grid>{" "}
       <br />
+      <Dialog
+        open={saveDialog}
+        // onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          Do you wish to save this scroll?
+        </DialogTitle>
+
+        <DialogActions>
+          <Button color="secondary" onClick={closeSaveDialog}>
+            Cancel
+          </Button>
+          <Button color="success" onClick={handleSave} autoFocus>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
