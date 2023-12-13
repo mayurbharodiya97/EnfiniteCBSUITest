@@ -178,9 +178,9 @@ export const addDailyTrxScroll = async (reqData) => {
       VALUE_DT: date2,
       ENTERED_BRANCH_CD: a.branch?.value,
       ENTERED_COMP_CD: a.branch?.info.COMP_CD,
-      SDC: a.sdc.value, //a.sdc.value
+      SDC: a.sdc.value,
       AMOUNT: a.isCredit ? a.credit : a.debit,
-      SCROLL1: a.scroll ? a.scroll : "186482",
+      SCROLL1: a.scroll ? a.scroll : "",
       CURRENCY_CD: "00  ",
       CONFIRMED: "0",
     };

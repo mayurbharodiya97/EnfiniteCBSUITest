@@ -85,7 +85,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "30vh",
+                height: "27vh",
               }}
             >
               <Grid container spacing={2}>
@@ -166,7 +166,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "30vh",
+                height: "27vh",
               }}
             >
               <Grid container spacing={2}>
@@ -222,7 +222,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "30vh",
+                height: "27vh",
               }}
             >
               <Grid container spacing={2}>
@@ -278,7 +278,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "30vh",
+                height: "27vh",
               }}
             >
               <Typography component="div">Name</Typography>
