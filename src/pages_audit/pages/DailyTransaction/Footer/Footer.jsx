@@ -66,6 +66,7 @@ const Footer = () => {
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [diff, setDiff] = useState(0);
+  const [index, setIndex] = useState(0);
 
   const handleFilterTrx = () => {
     let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
@@ -103,30 +104,24 @@ const Footer = () => {
     getTrxOptions.mutate(authState);
   }, []);
 
-  useEffect(() => {
-    //accInfo api call onChange
-    console.log("sssss");
+  const handleGetAccInfo = (i) => {
     let data = {
-      COMP_CD: rows[0]?.branch?.info?.COMP_CD,
-      BRANCH_CD: rows[0]?.branch?.value,
-      ACCT_TYPE: rows[0]?.accType?.value,
-      ACCT_CD: rows[0]?.accNo,
+      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
+      BRANCH_CD: rows[i]?.branch?.value,
+      ACCT_TYPE: rows[i]?.accType?.value,
+      ACCT_CD: rows[i]?.accNo,
       authState: authState,
     };
 
-    if (rows[0]?.accNo && rows[0]?.accType?.value && rows[0]?.branch?.value) {
-      console.log(rows[0]?.accNo, "rows[0]?.accNo");
-    }
-    rows[0]?.accNo &&
-      rows[0]?.accType?.value &&
-      rows[0]?.branch?.value &&
+    rows[i]?.accNo &&
+      rows[i]?.accType?.value &&
+      rows[i]?.branch?.value &&
       getAccInfo.mutate(data);
-  }, [rows[0]?.accNo, rows[0]?.accType?.value, rows[0]?.branch?.value]);
+  };
 
   const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
       setBranchOptions(data);
-      console.log(data, "branch");
     },
     onError: (error) => {},
   });
@@ -150,8 +145,6 @@ const Footer = () => {
     onSuccess: (data) => {
       setTrxOptions2(data);
       setTrxOptions(data);
-
-      console.log(data, "trx");
     },
     onError: (error) => {},
   });
@@ -187,6 +180,7 @@ const Footer = () => {
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
     let defaulVal2 = {
       branch: "",
+      scroll: "",
       trx: trxx,
       debit: deb?.toFixed(2),
       credit: cred?.toFixed(2),
@@ -231,15 +225,14 @@ const Footer = () => {
   };
 
   const handleBranch = (e, value, i) => {
-    console.log(value, "e branch");
     const obj = [...rows];
     obj[i].branch = value;
     setRows(obj);
     handleTotal(obj);
+    handleGetAccInfo(i);
   };
 
   const handleTrx = (e, value, i) => {
-    console.log(value, "e trx");
     const obj = [...rows];
 
     obj?.length == 1 &&
@@ -248,6 +241,7 @@ const Footer = () => {
     obj[i].trx = value;
     obj[i].credit = 0;
     obj[i].debit = 0;
+    obj[i].cNo = 0;
     let tr = value.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
@@ -303,18 +297,14 @@ const Footer = () => {
     setTrxOptions(trxOptions2);
   };
 
-  //simple fns
   const handleRemark = (e, i) => {
-    console.log(e, "remark e");
     const obj = [...rows];
     obj[i].remark = e.target.value;
     setRows(obj);
   };
   const handleSdc = (e, value, i) => {
-    console.log(e, "sdc e");
     const obj = [...rows];
     obj[i].sdc = value;
-    console.log(value, "value");
     obj[i].remark = value.label;
 
     setRows(obj);
@@ -346,12 +336,13 @@ const Footer = () => {
     const obj = [...rows];
     obj[i].accType = value;
     setRows(obj);
+    handleGetAccInfo(i);
   };
   const handleAccNo = (e, i) => {
     const obj = [...rows];
     obj[i].accNo = e.target.value;
     setRows(obj);
-    console.log(i, "i");
+    handleGetAccInfo(i);
     // if (i == 0) {
     //   getAccInquiry.mutate(e.target.value);
     //   console.log("1111");
@@ -363,9 +354,17 @@ const Footer = () => {
     setSaveDialog(false);
   };
 
+  const addScroll = useMutation(API.addDailyTrxScroll, {
+    onSuccess: (data) => {
+      console.log(data, "save scroll api");
+    },
+    onError: (error) => {},
+  });
+
+  //
   const handleSave = () => {
-    console.log("saved");
-    handleReset();
+    // handleReset();
+    addScroll.mutate(rows);
     setSaveDialog(false);
   };
   return (

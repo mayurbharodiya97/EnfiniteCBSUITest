@@ -26,6 +26,7 @@ let month = today.getMonth();
 let year = today.getFullYear();
 
 let date = day + "/" + arr[month] + "/" + year;
+let date2 = day + "-" + arr[month] + "-" + year;
 
 export const getSDCList = async (reqData) => {
   const { data, status, message, messageDetails } =
@@ -149,6 +150,46 @@ export const getAccInquiry = async (reqData) => {
       MOB_NO: "7350373771",
       PAN_NO: "FORM-60",
       CUST_ID: "210610",
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const addDailyTrxScroll = async (reqData) => {
+  let arr = [];
+  const localInfo = localStorage.getItem("authDetails");
+  let localInfo1 = localInfo && JSON.parse(localInfo);
+
+  console.log(localInfo1, "localInfo1");
+  arr = reqData.map((a) => {
+    return {
+      BRANCH_CD: localInfo1?.user?.branchCode,
+      COMP_CD: localInfo1?.companyID,
+      ACCT_TYPE: a.accType?.value,
+      ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
+      REMARKS: a.remark,
+      CHEQUE_NO: "0", //!a.isCredit ? a.cNo?.toString() : "0"
+      TYPE_CD: a.trx.code + "   ",
+      TRAN_DT: date2,
+      VALUE_DT: date2,
+      ENTERED_BRANCH_CD: a.branch?.value,
+      ENTERED_COMP_CD: a.branch?.info.COMP_CD,
+      SDC: "F", //a.sdc.value
+      AMOUNT: a.isCredit ? a.credit : a.debit,
+      SCROLL1: a.scroll ? a.scroll : "186482",
+      CURRENCY_CD: "00  ",
+      CONFIRMED: "0",
+    };
+  });
+  console.log(arr, "Arr");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DODAILYTRNDML", {
+      DETAILS_DATA: { isDeleteRow: [], isUpdatedRow: [], isNewRow: arr },
     });
   if (status === "0") {
     let responseData = data;
