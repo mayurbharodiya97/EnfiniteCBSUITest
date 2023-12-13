@@ -127,9 +127,22 @@ const AccDetails = () => {
                   <Typography variant="button">COMP_CD</Typography>
                   <Typography>{tempStore?.accInfo?.COMP_CD}</Typography>
                 </Grid>
+                {tempStore?.accInfo?.ORG_PAN && (
+                  <Grid item id="accInfo">
+                    <Typography variant="button">PAN_NO</Typography>
+                    <Typography>{tempStore?.accInfo?.ORG_PAN}</Typography>
+                  </Grid>
+                )}
                 <Grid item id="accInfo">
-                  <Typography variant="button">PAN_NO</Typography>
-                  <Typography>{tempStore?.accInfo?.PAN_NO}</Typography>
+                  <Typography variant="button">Status</Typography>
+                  <Typography>
+                    {tempStore?.accInfo?.STATUS == "O" && "Open"}
+                    {tempStore?.accInfo?.STATUS == "C" && "Close"}
+                    {tempStore?.accInfo?.STATUS == "U" && "Unclaimed"}
+                    {tempStore?.accInfo?.STATUS == "F" && "Freeze"}
+                    {tempStore?.accInfo?.STATUS == "I" && "Inoperative"}
+                    {tempStore?.accInfo?.STATUS == "D" && "Dormant"}
+                  </Typography>
                 </Grid>
               </Grid>
             </div>

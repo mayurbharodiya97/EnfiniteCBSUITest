@@ -146,10 +146,10 @@ export const getAccInquiry = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTINQUIRY", {
       // ACCT_NO: "132005001007851",
-      ACCT_NO: "000026              ",
-      MOB_NO: "7350373771",
-      PAN_NO: "FORM-60",
-      CUST_ID: "210610",
+      ACCT_NO: "",
+      MOB_NO: "",
+      PAN_NO: "",
+      CUST_ID: "12",
     });
   if (status === "0") {
     let responseData = data;

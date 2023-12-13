@@ -77,11 +77,27 @@ const Footer = () => {
       i = rows.length - 1;
     }
     rows[i].bug = false;
-    if (!rows[i].branch || !rows[i].accType || !rows[i].accNo) {
+    if (
+      !rows[i].trx?.code ||
+      !rows[i].branch ||
+      !rows[i].accType ||
+      !rows[i].accNo
+    ) {
       rows[i].bug = true;
     }
 
     if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
+      rows[i].bug = true;
+    }
+
+    if (rows[i]?.isCredit && !Number(rows[i]?.credit) > 0) {
+      rows[i].bug = true;
+    }
+    if (!rows[i]?.isCredit && !Number(rows[i]?.debit) > 0) {
+      rows[i].bug = true;
+    }
+
+    if (rows[i]?.trx.code == "4" && !rows[i]?.scroll) {
       rows[i].bug = true;
     }
 
@@ -213,6 +229,7 @@ const Footer = () => {
     setTotalCredit(0);
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
+    setResetDialog(false);
   };
 
   const handleScrollSave = () => {
@@ -273,9 +290,9 @@ const Footer = () => {
       (value?.code == "3" || value?.code == "6") &&
       handleFilterTrx();
     obj[i].trx = value;
-    obj[i].credit = 0;
-    obj[i].debit = 0;
-    obj[i].cNo = 0;
+    obj[i].credit = "0.00";
+    obj[i].debit = "0.00";
+    obj[i].cNo = "0";
     let tr = value?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
@@ -453,6 +470,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.scroll}
+                          error={!a.scroll && a.trx.code == "4" ? true : false}
                           disabled={a?.trx?.code == "4" ? false : true}
                           size="small"
                           onChange={(e) => handleScroll(e, i)}
@@ -514,6 +532,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.debit}
+                          error={Number(a.debit > 0) ? false : true}
                           id="txtRight"
                           size="small"
                           disabled={
@@ -529,6 +548,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.credit}
+                          error={Number(a.credit > 0) ? false : true}
                           id="txtRight"
                           size="small"
                           disabled={
