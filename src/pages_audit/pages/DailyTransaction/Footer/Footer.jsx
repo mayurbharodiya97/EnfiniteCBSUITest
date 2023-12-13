@@ -12,14 +12,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import CancelIcon from "@mui/icons-material/Cancel";
-
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
-
+import AddIcon from "@mui/icons-material/Add";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 //Logical
 import React, {
   useEffect,
@@ -35,16 +34,6 @@ import { AuthContext } from "pages_audit/auth";
 import "./footer.css";
 
 const Footer = () => {
-  const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AuthContext);
-  const [trxOptions, setTrxOptions] = useState([]);
-  const [trxOptions2, setTrxOptions2] = useState([]);
-  const [sdcOptions, setSdcOptions] = useState([]);
-  const [accTypeOptions, setAccTypeOptions] = useState([]);
-  const [branchOptions, setBranchOptions] = useState([]);
-
-  const [isSave, setIsSave] = useState(false);
-
   let defaulVal = {
     branch: { label: "", value: "", info: "" },
     accType: { label: "", value: "", info: "" },
@@ -53,7 +42,7 @@ const Footer = () => {
     scroll: "",
     sdc: { label: "", value: "", info: "" },
     remark: "",
-    cNo: 0,
+    cNo: "0",
     date: new Date().toISOString()?.substring(0, 10),
     debit: "0.00",
     credit: "0.00",
@@ -62,16 +51,20 @@ const Footer = () => {
     isCredit: true,
   };
 
+  const { authState } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AuthContext);
   const [rows, setRows] = useState([defaulVal]);
+  const [trxOptions, setTrxOptions] = useState([]);
+  const [trxOptions2, setTrxOptions2] = useState([]);
+  const [sdcOptions, setSdcOptions] = useState([]);
+  const [accTypeOptions, setAccTypeOptions] = useState([]);
+  const [branchOptions, setBranchOptions] = useState([]);
+  const [isSave, setIsSave] = useState(false);
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [diff, setDiff] = useState(0);
-  const [index, setIndex] = useState(0);
-
-  const handleFilterTrx = () => {
-    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
-    setTrxOptions(result);
-  };
+  const [saveDialog, setSaveDialog] = useState(false);
+  const [resetDialog, setResetDialog] = useState(false);
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -103,21 +96,6 @@ const Footer = () => {
     getAccTypeOptions.mutate(authState);
     getTrxOptions.mutate(authState);
   }, []);
-
-  const handleGetAccInfo = (i) => {
-    let data = {
-      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
-      BRANCH_CD: rows[i]?.branch?.value,
-      ACCT_TYPE: rows[i]?.accType?.value,
-      ACCT_CD: rows[i]?.accNo,
-      authState: authState,
-    };
-
-    rows[i]?.accNo &&
-      rows[i]?.accType?.value &&
-      rows[i]?.branch?.value &&
-      getAccInfo.mutate(data);
-  };
 
   const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
@@ -161,6 +139,12 @@ const Footer = () => {
     },
     onError: (error) => {},
   });
+  const addScroll = useMutation(API.addDailyTrxScroll, {
+    onSuccess: (data) => {
+      console.log(data, "save scroll api");
+    },
+    onError: (error) => {},
+  });
 
   const handleAddRow = () => {
     let cred = 0;
@@ -176,7 +160,7 @@ const Footer = () => {
       trxx = trxOptions2[5];
       isCred = false;
     }
-    let tr = trxx.code + "   ";
+    let tr = trxx?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
     let defaulVal2 = {
       branch: "",
@@ -224,12 +208,62 @@ const Footer = () => {
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
 
+  const handleReset = () => {
+    setRows([defaulVal]);
+    setTotalCredit(0);
+    setTotalDebit(0);
+    setTrxOptions(trxOptions2);
+  };
+
+  const handleScrollSave = () => {
+    // handleReset();
+    addScroll.mutate(rows);
+    setSaveDialog(false);
+  };
+
+  const handleFilterTrx = () => {
+    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
+    setTrxOptions(result);
+  };
+
+  const handleGetAccInfo = (i) => {
+    let data = {
+      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
+      BRANCH_CD: rows[i]?.branch?.value,
+      ACCT_TYPE: rows[i]?.accType?.value,
+      ACCT_CD: rows[i]?.accNo,
+      authState: authState,
+    };
+
+    rows[i]?.accNo &&
+      rows[i]?.accType?.value &&
+      rows[i]?.branch?.value &&
+      getAccInfo.mutate(data);
+  };
+
+  //TABLE FNs
   const handleBranch = (e, value, i) => {
     const obj = [...rows];
     obj[i].branch = value;
     setRows(obj);
     handleTotal(obj);
     handleGetAccInfo(i);
+  };
+  const handleAccType = (e, value, i) => {
+    const obj = [...rows];
+    obj[i].accType = value;
+    setRows(obj);
+    handleGetAccInfo(i);
+  };
+  const handleAccNo = (e, i) => {
+    const obj = [...rows];
+    obj[i].accNo = e.target.value;
+    setRows(obj);
+    handleGetAccInfo(i);
+    // if (i == 0) {
+    //   getAccInquiry.mutate(e.target.value);
+    //   console.log("1111");
+    // }
   };
 
   const handleTrx = (e, value, i) => {
@@ -242,7 +276,7 @@ const Footer = () => {
     obj[i].credit = 0;
     obj[i].debit = 0;
     obj[i].cNo = 0;
-    let tr = value.code + "   ";
+    let tr = value?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
     obj[i].sdc = defSdc;
@@ -255,6 +289,35 @@ const Footer = () => {
 
     setRows(obj);
     handleTotal(obj);
+  };
+  const handleScroll = (e, i) => {
+    const obj = [...rows];
+    obj[i].scroll = e.target.value;
+    setRows(obj);
+  };
+  const handleSdc = (e, value, i) => {
+    const obj = [...rows];
+    obj[i].sdc = value;
+    obj[i].remark = value.label;
+
+    setRows(obj);
+  };
+  const handleRemark = (e, i) => {
+    const obj = [...rows];
+    obj[i].remark = e.target.value;
+    setRows(obj);
+  };
+
+  const handleCNo = (e, i) => {
+    const obj = [...rows];
+    obj[i].cNo = e.target.value;
+    setRows(obj);
+  };
+  const handleDate = (e, i) => {
+    console.log(e, "date e");
+    const obj = [...rows];
+    obj[i].date = e.target.value;
+    setRows(obj);
   };
 
   const handleDebit = (e, i) => {
@@ -290,83 +353,12 @@ const Footer = () => {
       handleAddRow();
   };
 
-  const handleReset = () => {
-    setRows([defaulVal]);
-    setTotalCredit(0);
-    setTotalDebit(0);
-    setTrxOptions(trxOptions2);
-  };
-
-  const handleRemark = (e, i) => {
-    const obj = [...rows];
-    obj[i].remark = e.target.value;
-    setRows(obj);
-  };
-  const handleSdc = (e, value, i) => {
-    const obj = [...rows];
-    obj[i].sdc = value;
-    obj[i].remark = value.label;
-
-    setRows(obj);
-  };
   const handleVNo = (e, i) => {
     const obj = [...rows];
     obj[i].vNo = Number(e.target.value);
     setRows(obj);
   };
-  const handleDate = (e, i) => {
-    console.log(e, "date e");
-    const obj = [...rows];
-    obj[i].date = e.target.value;
-    setRows(obj);
-  };
-  const handleCNo = (e, i) => {
-    const obj = [...rows];
-    obj[i].cNo = Number(e.target.value);
-    setRows(obj);
-  };
 
-  const handleScroll = (e, i) => {
-    const obj = [...rows];
-    obj[i].scroll = e.target.value;
-    setRows(obj);
-  };
-
-  const handleAccType = (e, value, i) => {
-    const obj = [...rows];
-    obj[i].accType = value;
-    setRows(obj);
-    handleGetAccInfo(i);
-  };
-  const handleAccNo = (e, i) => {
-    const obj = [...rows];
-    obj[i].accNo = e.target.value;
-    setRows(obj);
-    handleGetAccInfo(i);
-    // if (i == 0) {
-    //   getAccInquiry.mutate(e.target.value);
-    //   console.log("1111");
-    // }
-  };
-
-  const [saveDialog, setSaveDialog] = useState(false);
-  const closeSaveDialog = () => {
-    setSaveDialog(false);
-  };
-
-  const addScroll = useMutation(API.addDailyTrxScroll, {
-    onSuccess: (data) => {
-      console.log(data, "save scroll api");
-    },
-    onError: (error) => {},
-  });
-
-  //
-  const handleSave = () => {
-    // handleReset();
-    addScroll.mutate(rows);
-    setSaveDialog(false);
-  };
   return (
     <>
       <Card
@@ -488,9 +480,7 @@ const Footer = () => {
                       <TableCell sx={{ minWidth: 50 }}>
                         <TextField
                           value={a.cNo}
-                          error={
-                            !a.isCredit && (a.cNo == 0 || !a.cNo) ? true : false
-                          }
+                          error={!a.isCredit && !a.cNo ? true : false}
                           id="txtRight"
                           disabled={
                             a?.trx?.code == "4" ||
@@ -587,36 +577,31 @@ const Footer = () => {
           <Button
             variant="outlined"
             color="secondary"
+            sx={{ margin: "8px" }}
             onClick={() => handleAddRow()}
           >
-            add new
+            <AddIcon /> new row
           </Button>
 
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => handleReset()}
+            onClick={() => setResetDialog(true)}
           >
-            reset
+            <RestartAltIcon /> reset
           </Button>
         </>
       )}
       {isSave && (
         <Button
-          variant="outlined"
+          variant="contained"
           color="secondary"
+          sx={{ margin: "8px" }}
           onClick={() => setSaveDialog(true)}
         >
           save
         </Button>
       )}
-      {/* <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => handleGetAccInfo()}
-      >
-        fetch accInfo
-      </Button> */}
       <br /> <br />
       <Grid container spacing={2}>
         <Grid item>
@@ -669,27 +654,59 @@ const Footer = () => {
             other Tx Detail
           </Button>
         </Grid>{" "}
-      </Grid>{" "}
+      </Grid>
       <br />
-      <Dialog
-        open={saveDialog}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          Do you wish to save this scroll?
-        </DialogTitle>
+      <>
+        <Dialog
+          open={saveDialog}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Do you wish to save this scroll?
+          </DialogTitle>
 
-        <DialogActions>
-          <Button color="secondary" onClick={closeSaveDialog}>
-            Cancel
-          </Button>
-          <Button color="success" onClick={handleSave} autoFocus>
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+          <DialogActions>
+            <Button variant="contained" onClick={() => setSaveDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              color="success"
+              variant="contained"
+              onClick={handleScrollSave}
+              autoFocus
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={resetDialog}
+          maxWidth={"lg"}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Do you wish to reset ?
+          </DialogTitle>
+
+          <DialogActions>
+            <Button onClick={() => setResetDialog(false)} variant="contained">
+              No
+            </Button>
+            <Button
+              color="warning"
+              variant="contained"
+              onClick={handleReset}
+              autoFocus
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </>
   );
 };

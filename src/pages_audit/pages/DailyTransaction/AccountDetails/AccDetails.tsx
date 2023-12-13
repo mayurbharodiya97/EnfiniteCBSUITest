@@ -1,4 +1,3 @@
-import React, { useContext, useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -6,13 +5,19 @@ import { Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { useQuery } from "react-query";
-import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import "./accDetails.css";
+
+//logical
+import React, { useContext, useEffect, useState } from "react";
+
+import { useQuery } from "react-query";
+import * as API from "./api";
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
@@ -73,7 +78,7 @@ const AccDetails = () => {
                 Personal Information
               </Typography>
               <div>
-                <AccountCircleIcon />
+                <AccountCircleIcon fontSize="medium" />
               </div>
             </div>
 
@@ -155,7 +160,7 @@ const AccDetails = () => {
                 Balance Details
               </Typography>
               <div>
-                <AccountCircleIcon />
+                <AccountBalanceWalletIcon fontSize="medium" />
               </div>
             </div>
             <div
@@ -211,7 +216,7 @@ const AccDetails = () => {
                 Loan Details
               </Typography>
               <div>
-                <AccountCircleIcon />
+                <CreditScoreIcon fontSize="medium" />
               </div>
             </div>
             <div

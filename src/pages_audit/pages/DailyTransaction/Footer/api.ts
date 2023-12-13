@@ -161,12 +161,11 @@ export const getAccInquiry = async (reqData) => {
 };
 
 export const addDailyTrxScroll = async (reqData) => {
-  let arr = [];
   const localInfo = localStorage.getItem("authDetails");
   let localInfo1 = localInfo && JSON.parse(localInfo);
 
   console.log(localInfo1, "localInfo1");
-  arr = reqData.map((a) => {
+  let arr = reqData.map((a) => {
     return {
       BRANCH_CD: localInfo1?.user?.branchCode,
       COMP_CD: localInfo1?.companyID,
@@ -179,7 +178,7 @@ export const addDailyTrxScroll = async (reqData) => {
       VALUE_DT: date2,
       ENTERED_BRANCH_CD: a.branch?.value,
       ENTERED_COMP_CD: a.branch?.info.COMP_CD,
-      SDC: "F", //a.sdc.value
+      SDC: a.sdc.value, //a.sdc.value
       AMOUNT: a.isCredit ? a.credit : a.debit,
       SCROLL1: a.scroll ? a.scroll : "186482",
       CURRENCY_CD: "00  ",
