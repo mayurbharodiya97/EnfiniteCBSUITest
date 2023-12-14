@@ -560,6 +560,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
     packageName: "",
   },
+  GETCLGZONELIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGZONELIST",
+    packageName: "",
+  },
   GETCUSTPHOTODTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
     packageName: "",

@@ -515,7 +515,49 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-
+  const getProMiscData = async (...reqData) => {
+    // console.log("ReqData", reqData);
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher(`GETPROPMISCDATA`, {
+        CATEGORY_CD: reqData?.[4] ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ DATA_VALUE, DISPLAY_VALUE }) => {
+          return {
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const getZoneListData = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher(`GETCLGZONELIST`, {
+        ZONE_TRAN_TYPE: reqData?.[4] ?? "",
+        COMP_CD: reqData?.[3]?.companyID ?? "",
+        BRANCH_CD: reqData?.[3]?.user?.branchCode,
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ DISPLAY_NM }) => {
+          return {
+            value: DISPLAY_NM,
+            label: DISPLAY_NM,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   const getSDCList = async (...reqData) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETSDCLIST", {
@@ -597,6 +639,8 @@ const GeneralAPISDK = () => {
     getJointDetailsList,
     getDynDropdownData,
     getDependentFieldList,
+    getProMiscData,
+    getZoneListData,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

@@ -73,20 +73,22 @@ export const DynamicDropdownConfig = ({
   ) => {
     // @ts-ignore
     endSubmit(true);
-
+    console.log("data");
     let oldData = reqData?.[0]?.data;
     let newData = data;
-
+    console.log("oldData", oldData);
+    console.log("newData", newData);
     if (newData?.DDW_OPTION) {
       let newDataString = JSON.stringify(newData?.DDW_OPTION);
       newData.DDW_OPTION = newDataString;
+      console.log("newDataString", newDataString);
     }
     let updatedValue: any = utilFunction.transformDetailsData(
       newData,
       oldData ?? {}
     );
+    console.log("updatedValue", updatedValue);
 
-    setIsOpenSave(true);
     isErrorFuncRef.current = {
       data: {
         ...newData,
@@ -100,7 +102,8 @@ export const DynamicDropdownConfig = ({
       endSubmit,
       setFieldError,
     };
-
+    setIsOpenSave(true);
+    console.log("testing", isErrorFuncRef.current);
     // setFormMode("view");
   };
 

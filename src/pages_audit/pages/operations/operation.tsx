@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { ClearCacheProvider } from "cache";
 import CkycProvider from "./c-kyc/CkycContext";
 import { DetailMastersData } from "../../../components/formcomponent/detailMaster/detailStatic";
+
 // import { ChequebookTab } from "./chequeBookTab/chequebookTab";
 // import { Ckyc } from "./c-kyc/ckyc";
 
@@ -16,6 +17,7 @@ const Ckyc = lazy(() => import("./c-kyc"));
 const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
 );
+const CtsOutwardClearing = lazy(() => import("./ctsOutwardClearing"));
 // const DetailMastersData = lazy(() => import("../components/formcomponent/detailMaster/detailStatic"));
 
 export const OperationsMenu = () => (
@@ -54,6 +56,10 @@ export const OperationsMenu = () => (
           <Ckyc />
         </CkycProvider>
       }
+    />
+    <Route
+      path="cts-outward-clearing/*"
+      element={<CtsOutwardClearing zoneTranType="S" />}
     />
   </Routes>
 );

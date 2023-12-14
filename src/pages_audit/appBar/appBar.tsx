@@ -40,6 +40,7 @@ import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
 import { useTranslation } from "react-i18next";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import { GradientButton } from "components/styledComponent/button";
+import SearchScreen from "./searchScreen";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -282,11 +283,12 @@ export const MyAppBar = ({
           >
             {openDialog && <AccountDetails />}
 
-            <MySearchField
+            {/* <MySearchField
               fieldKey="dashboardSearch"
               name="dashboardSearch"
               enableGrid={true}
-            />
+            /> */}
+            <SearchScreen />
             <MultiLanguages />
 
             <Box width={170} display={"flex"} justifyContent={"space-evenly"}>
@@ -377,6 +379,13 @@ export const MyAppBar = ({
                   // fullScreen={fullScreen}
                   open={true}
                   // onClose={handleClose}
+                  // maxWidth={"sm"}
+                  PaperProps={{
+                    style: {
+                      width: "26%",
+                      height: "36%",
+                    },
+                  }}
                   aria-labelledby="responsive-dialog-title"
                 >
                   <DialogTitle
@@ -389,7 +398,7 @@ export const MyAppBar = ({
                         "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
                       fontWeight: 500,
                       borderRadius: "inherit",
-                      minWidth: "450px",
+                      minWidth: "150px",
                       py: 1,
                     }}
                     id="responsive-dialog-title"
@@ -398,13 +407,29 @@ export const MyAppBar = ({
                   </DialogTitle>
                   <DialogContent>
                     <DialogContentText
-                      sx={{ fontSize: "19px", display: "flex" }}
+                      sx={{
+                        fontSize: "22px",
+
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: "15px",
+                      }}
                     >
-                      Are you sure want to logout...{" "}
-                      <HelpIcon color="secondary" fontSize="large" />
+                      Are you sure want to
+                      {/* <HelpIcon color="secondary" fontSize="large" /> */}
+                    </DialogContentText>
+                    <DialogContentText
+                      sx={{
+                        fontSize: "20px",
+                        display: "flex",
+                        fontWeight: "Bold",
+                        justifyContent: "center",
+                      }}
+                    >
+                      logout... <HelpIcon color="secondary" fontSize="large" />
                     </DialogContentText>
                   </DialogContent>
-                  <DialogActions>
+                  <DialogActions style={{ justifyContent: "center" }}>
                     <GradientButton
                       // sx={{
                       //   color: "var(--theme-color2)",

@@ -119,10 +119,9 @@ export const PropsConfigForm: FC<{
   ) => {
     // @ts-ignore
     endSubmit(true);
-    // console.log(
-    //   (data["DEPENDENTFIELD_VALUE"] = data?.DEPENDENTFIELD_VALUE.join(","))
-    // );
+
     let oldData = PropsData;
+
     let newData = data?.propsDetails.map((item) => {
       // Replace OPTION_VALUE with PROPS_VALUE if OPTION_VALUE exists
       if (item?.OPTION_VALUE) {
@@ -133,6 +132,15 @@ export const PropsConfigForm: FC<{
       if (item.DEPENDENTFIELD_VALUE) {
         item.PROPS_VALUE = item?.DEPENDENTFIELD_VALUE?.join(",");
         delete item.DEPENDENTFIELD_VALUE;
+      }
+      // let replacedValue = item?.PROPS_ID;
+      if (item?.PROPS_ID === "fullWidth") {
+        item.PROPS_VALUE = item?.FULLWIDTH ? "Y" : "N";
+        delete item.FULLWIDTH;
+      }
+      if (item?.PROPS_ID === "disableCaching") {
+        item.PROPS_VALUE = item?.DISABLE_CATCHING ? "Y" : "N";
+        delete item.DISABLE_CATCHING;
       }
 
       return {
@@ -150,12 +158,29 @@ export const PropsConfigForm: FC<{
       newData ?? [],
       ["PROPS_ID"]
     );
+    console.log("upd", upd);
+
+    upd["isUpdatedRow"] = upd?.isUpdatedRow?.map((item) => {
+      return {
+        ...item,
+        _OLDROWVALUE: {
+          ...(item?._OLDROWVALUE || {}),
+          ...Object.fromEntries(
+            Object.entries(item?._OLDROWVALUE || {}).map(([key, value]) => [
+              key,
+              typeof value === "boolean" ? (value ? "Y" : "N") : value,
+            ])
+          ),
+        },
+      };
+    });
 
     const updatedData: any = {
       COMP_CD: authState.companyID,
       BRANCH_CD: authState.user.branchCode,
       DETAILS_DATA: upd,
     };
+
     setIsOpenSave(true);
     isErrorFuncRef.current = {
       data: updatedData,
@@ -166,8 +191,8 @@ export const PropsConfigForm: FC<{
     console.log("isErrorFuncRef.current", isErrorFuncRef.current);
   };
 
-  if (PropsComponentFormMetaData?.fields?.[0]?._fields?.[7]) {
-    PropsComponentFormMetaData.fields[0]._fields[7].requestProps =
+  if (PropsComponentFormMetaData?.fields?.[0]?._fields?.[6]) {
+    PropsComponentFormMetaData.fields[0]._fields[6].requestProps =
       PropsData?.[0]?.DOC_CD ?? "";
   }
   if (PropsComponentFormMetaData.form.label) {
