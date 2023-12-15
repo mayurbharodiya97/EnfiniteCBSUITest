@@ -160,8 +160,8 @@ const Footer = () => {
   });
   const getAccInfo = useMutation(API.getAccInfo, {
     onSuccess: (data) => {
-      console.log(data[0], "accInfo");
-      setTempStore({ ...tempStore, accInfo: data[0] });
+      console.log(data, "accInfo");
+      setTempStore({ ...tempStore, accInfo: data });
     },
     onError: (error) => {},
   });

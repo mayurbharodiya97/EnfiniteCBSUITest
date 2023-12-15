@@ -26,7 +26,7 @@ let month = today.getMonth();
 let year = today.getFullYear();
 
 let date = day + "/" + arr[month] + "/" + year;
-let date2 = "13" + "-" + arr[month] + "-" + year;
+let date2 = "14" + "-" + arr[month] + "-" + year;
 
 export const getSDCList = async (reqData) => {
   const { data, status, message, messageDetails } =
@@ -126,7 +126,7 @@ export const getAccInfo = async (reqData) => {
       // BRANCH_CD: "099 ",
       // ACCT_TYPE: "001 ",
       // ACCT_CD: "000026              ",
-      // A_ASON_DT: "07/DEC/2023",
+      // A_ASON_DT: "15/DEC/2023",
       COMP_CD: reqData.COMP_CD,
       BRANCH_CD: reqData.BRANCH_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
@@ -135,8 +135,7 @@ export const getAccInfo = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
-
-    return responseData;
+    return responseData[0];
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
