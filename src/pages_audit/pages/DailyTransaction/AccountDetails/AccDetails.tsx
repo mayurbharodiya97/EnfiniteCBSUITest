@@ -1,5 +1,4 @@
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import { Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -18,13 +17,7 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { useQuery } from "react-query";
 import * as API from "./api";
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
@@ -45,10 +38,7 @@ const responsive = {
   },
 };
 const AccDetails = () => {
-  const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
-
-  const [accInfo, setAccInfo]: any = useState({});
 
   console.log(tempStore, "tempStore");
   return (
