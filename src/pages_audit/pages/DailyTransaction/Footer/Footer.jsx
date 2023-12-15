@@ -50,15 +50,16 @@ const Footer = () => {
     accType: { label: "", value: "", info: "" },
     accNo: "",
     trx: { label: "", value: "", code: "" },
-    scroll: "123a", //token
+    scroll: "", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
-    cNo: "0",
+    cNo: "",
     date: new Date().toISOString()?.substring(0, 10),
     debit: "0.00",
     credit: "0.00",
-    vNo: "0123",
+    vNo: "",
     bug: true,
+    bugChq: true,
     isCredit: true,
   };
   let filterOpt = [
@@ -81,6 +82,8 @@ const Footer = () => {
   const [isArray, setIsArray] = useState(false);
   const [filter, setFilter] = useState({ value: "", label: "" });
   const [search, setSearch] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -114,6 +117,9 @@ const Footer = () => {
     }
 
     if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
+      rows[i].bug = true;
+    }
+    if (!rows[i]?.isCredit && rows[i]?.bugChq) {
       rows[i].bug = true;
     }
 
@@ -177,6 +183,17 @@ const Footer = () => {
     },
     onError: (error) => {},
   });
+  const getChqValidation = useMutation(API.getChqValidation, {
+    onSuccess: (data) => {
+      console.log(data, "getChqValidation api");
+      if (data.ERR_CODE == "-1") {
+        rows[index].bug = true;
+        rows[index].bugChq = true;
+      }
+      setErrMsg(data);
+    },
+    onError: (error) => {},
+  });
 
   const handleAddRow = () => {
     let cred = 0;
@@ -206,6 +223,8 @@ const Footer = () => {
       sdc: defSdc,
       remark: defSdc?.label,
       accNo: "",
+      cNo: "",
+      bugChq: true,
     };
 
     if (isSave && totalDebit != totalCredit) {
@@ -319,7 +338,10 @@ const Footer = () => {
     obj[i].trx = value;
     obj[i].credit = "0.00";
     obj[i].debit = "0.00";
-    obj[i].cNo = "0";
+    obj[i].cNo = "";
+    obj[i].bugChq = true;
+    setErrMsg({});
+
     obj[i].scroll = "";
     let tr = value?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
@@ -357,10 +379,24 @@ const Footer = () => {
   };
 
   const handleCNo = (e, i) => {
+    setErrMsg({});
     const obj = [...rows];
-    obj[i].cNo = e.target.value;
+    let txt = e.target.value;
+    obj[i].cNo = txt;
+
+    txt &&
+      obj[i].accNo &&
+      obj[i].accType.value &&
+      obj[i].branch.value &&
+      getChqValidation.mutate(obj[i]);
     setRows(obj);
+    setIndex(i);
   };
+  const handleCNoBlur = (e, i) => {
+    const obj = [...rows];
+    // getChqValidation.mutate(obj[i]);
+  };
+
   const handleDate = (e, i) => {
     console.log(e, "date e");
     const obj = [...rows];
@@ -470,8 +506,11 @@ const Footer = () => {
       >
         <TableContainer>
           <Table aria-label="caption table" padding="none">
-            <caption>
+            <caption style={{ fontWeight: "600" }}>
               Total ( Debit:{totalDebit} | Credit:{totalCredit} )
+            </caption>
+            <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
+              {errMsg && errMsg?.ERR_MSG}
             </caption>
             <TableHead>
               <TableRow>
@@ -494,209 +533,208 @@ const Footer = () => {
               {rows.length > 0 ? (
                 rows?.map((a, i) => {
                   return (
-                    <TableRow key={i}>
-                      <TableCell
-                        sx={{ minWidth: 160 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <Autocomplete
-                          value={a.branch}
-                          size="small"
-                          options={branchOptions}
-                          onChange={(e, value) => handleBranch(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              error={a.branch?.value ? false : true}
-                            />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{ minWidth: 160 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <Autocomplete
-                          value={a.accType}
-                          size="small"
-                          options={accTypeOptions}
-                          onChange={(e, value) => handleAccType(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              error={a.accType?.value ? false : true}
-                            />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{ minWidth: 50 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <TextField
-                          value={a.accNo}
-                          error={a.accNo ? false : true}
-                          size="small"
-                          type="number"
-                          onChange={(e) => handleAccNo(e, i)}
-                          onBlur={(e) => handleAccNoBlur(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{ minWidth: 160 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <Autocomplete
-                          value={a.trx}
-                          size="small"
-                          id="combo-box-demo"
-                          options={trxOptions}
-                          onChange={(e, value) => handleTrx(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              error={a.trx?.value ? false : true}
-                            />
-                          )}
-                        />
-                      </TableCell>
-
-                      <TableCell
-                        sx={{ minWidth: 50 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <TextField
-                          value={a.scroll}
-                          error={!a.scroll && a.trx?.code == "4" ? true : false}
-                          // disabled={a?.trx?.code == "4" ? false : true}
-                          size="small"
-                          onChange={(e) => handleScroll(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{ minWidth: 160 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <Autocomplete
-                          id="sdc"
-                          size="small"
-                          options={sdcOptions}
-                          value={a.sdc}
-                          onChange={(e, value) => handleSdc(e, value, i)}
-                          renderInput={(params) => (
-                            <TextField {...params} label="" />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{ minWidth: 80 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <TextField
-                          value={a.remark}
-                          size="small"
-                          onChange={(e) => handleRemark(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{ minWidth: 50 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <TextField
-                          value={a.cNo}
-                          error={!a.isCredit && !a.cNo ? true : false}
-                          id="txtRight"
-                          disabled={
-                            a?.trx?.code == "4" ||
-                            a?.trx?.code == "5" ||
-                            a?.trx?.code == "6"
-                              ? false
-                              : true
-                          }
-                          size="small"
-                          type="number"
-                          onChange={(e) => handleCNo(e, i)}
-                        />
-                      </TableCell>
-
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
-                        <TextField
-                          value={a.date}
-                          error={a.isCredit && !a.date ? true : false}
-                          type="date"
-                          disabled={
-                            a?.trx?.code == "4" ||
-                            a?.trx?.code == "5" ||
-                            a?.trx?.code == "6"
-                              ? false
-                              : true
-                          }
-                          size="small"
-                          onChange={(e) => handleDate(e, i)}
-                        />{" "}
-                      </TableCell>
-                      <TableCell
-                        sx={{ minWidth: 50 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <TextField
-                          value={a.debit}
-                          error={Number(a.debit > 0) ? false : true}
-                          id="txtRight"
-                          size="small"
-                          disabled={
-                            a?.isCredit || !a.branch || !a.trx?.code
-                              ? true
-                              : false
-                          }
-                          type="number"
-                          onChange={(e) => handleDebit(e, i)}
-                          onBlur={(e) => handleDebitBlur(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell
-                        sx={{ minWidth: 50 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <TextField
-                          value={a.credit}
-                          error={Number(a.credit > 0) ? false : true}
-                          id="txtRight"
-                          size="small"
-                          disabled={
-                            !a?.isCredit || !a.branch || !a.trx?.code
-                              ? true
-                              : false
-                          }
-                          type="number"
-                          onChange={(e) => handleCredit(e, i)}
-                          onBlur={(e) => handleCreditBlur(e, i)}
-                        />
-                      </TableCell>
-
-                      <TableCell
-                        sx={{ minWidth: 40 }}
-                        id={a?.isFav ? "isFav" : ""}
-                      >
-                        <TextField
-                          value={a.vNo}
-                          id="txtRight"
-                          // disabled={true}
-                          size="small"
-                          // type="number"
-                          onChange={(e) => handleVNo(e, i)}
-                        />
-                      </TableCell>
-                      <TableCell style={{ border: "0px" }}>
-                        {(rows[i].trx?.code == "3" ||
-                          rows[i].trx?.code == "6") && (
-                          <CancelIcon
-                            onClick={(e) => handleClear(e, i)}
-                            style={{ cursor: "pointer" }}
+                    <>
+                      <TableRow key={i}>
+                        <TableCell
+                          sx={{ minWidth: 160 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <Autocomplete
+                            value={a.branch}
+                            size="small"
+                            options={branchOptions}
+                            onChange={(e, value) => handleBranch(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.branch?.value ? false : true}
+                              />
+                            )}
                           />
-                        )}
-                      </TableCell>
-                    </TableRow>
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 160 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <Autocomplete
+                            value={a.accType}
+                            size="small"
+                            options={accTypeOptions}
+                            onChange={(e, value) => handleAccType(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.accType?.value ? false : true}
+                              />
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.accNo}
+                            error={a.accNo ? false : true}
+                            size="small"
+                            type="number"
+                            onChange={(e) => handleAccNo(e, i)}
+                            onBlur={(e) => handleAccNoBlur(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 160 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <Autocomplete
+                            value={a.trx}
+                            size="small"
+                            id="combo-box-demo"
+                            options={trxOptions}
+                            onChange={(e, value) => handleTrx(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.trx?.value ? false : true}
+                              />
+                            )}
+                          />
+                        </TableCell>
+
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.scroll}
+                            type="number"
+                            error={
+                              !a.scroll && a.trx?.code == "4" ? true : false
+                            }
+                            disabled={a?.trx?.code == "4" ? false : true}
+                            size="small"
+                            onChange={(e) => handleScroll(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 160 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <Autocomplete
+                            id="sdc"
+                            size="small"
+                            options={sdcOptions}
+                            value={a.sdc}
+                            onChange={(e, value) => handleSdc(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField {...params} label="" />
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 80 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.remark}
+                            size="small"
+                            onChange={(e) => handleRemark(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.cNo}
+                            error={!a.cNo || a.bugChq ? true : false}
+                            id="txtRight"
+                            disabled={!a.isCredit ? false : true}
+                            size="small"
+                            type="number"
+                            onChange={(e) => handleCNo(e, i)}
+                            onBlur={(e) => handleCNoBlur(e, i)}
+                          />
+                        </TableCell>
+
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          <TextField
+                            value={a.date}
+                            error={a.isCredit && !a.date ? true : false}
+                            type="date"
+                            disabled={
+                              a?.trx?.code == "4" ||
+                              a?.trx?.code == "5" ||
+                              a?.trx?.code == "6"
+                                ? false
+                                : true
+                            }
+                            size="small"
+                            onChange={(e) => handleDate(e, i)}
+                          />{" "}
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.debit}
+                            error={Number(a.debit > 0) ? false : true}
+                            id="txtRight"
+                            size="small"
+                            disabled={
+                              a?.isCredit || !a.branch || !a.trx?.code
+                                ? true
+                                : false
+                            }
+                            type="number"
+                            onChange={(e) => handleDebit(e, i)}
+                            onBlur={(e) => handleDebitBlur(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.credit}
+                            error={Number(a.credit > 0) ? false : true}
+                            id="txtRight"
+                            size="small"
+                            disabled={
+                              !a?.isCredit || !a.branch || !a.trx?.code
+                                ? true
+                                : false
+                            }
+                            type="number"
+                            onChange={(e) => handleCredit(e, i)}
+                            onBlur={(e) => handleCreditBlur(e, i)}
+                          />
+                        </TableCell>
+
+                        <TableCell
+                          sx={{ minWidth: 40 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.vNo}
+                            id="txtRight"
+                            disabled={true}
+                            size="small"
+                            onChange={(e) => handleVNo(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell style={{ border: "0px" }}>
+                          {(rows[i].trx?.code == "3" ||
+                            rows[i].trx?.code == "6") && (
+                            <CancelIcon
+                              onClick={(e) => handleClear(e, i)}
+                              style={{ cursor: "pointer" }}
+                            />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    </>
                   );
                 })
               ) : (
@@ -767,16 +805,6 @@ const Footer = () => {
           <Button variant="contained" color="primary">
             View All
           </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Search
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Scroll search
-          </Button>{" "}
         </Grid>{" "}
         <Grid item>
           <Button variant="contained" color="primary">

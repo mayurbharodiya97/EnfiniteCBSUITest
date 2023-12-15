@@ -197,3 +197,41 @@ export const addDailyTrxScroll = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const getScrollListF2 = async (reqData) => {
+  console.log(reqData, "reqData F2 scrolllist");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDAILYTRNCNFF2", {
+      // ACCT_NO: "132005001007851",
+      ACCT_NO: "",
+      MOB_NO: "",
+      PAN_NO: "",
+      CUST_ID: "12",
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getChqValidation = async (reqData) => {
+  console.log(reqData, "chqvalid");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
+      COMP_CD: reqData?.branch?.info?.COMP_CD,
+      BRANCH_CD: reqData?.branch?.value,
+      ACCT_TYPE: reqData?.accType?.value,
+      ACCT_CD: reqData.accNo.padEnd(20, " "),
+      CHEQUE_NO: reqData?.cNo,
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
