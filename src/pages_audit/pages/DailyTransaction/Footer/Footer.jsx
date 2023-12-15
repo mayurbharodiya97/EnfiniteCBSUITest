@@ -1,12 +1,12 @@
 //UI
 import { Button, Toolbar, AppBar, Card } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -19,6 +19,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
 //Logical
 import React, {
   useEffect,
@@ -34,25 +36,36 @@ import { AuthContext } from "pages_audit/auth";
 import "./footer.css";
 
 const Footer = () => {
+  const { authState } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AuthContext);
+
+  let defBranch = {
+    label: authState?.user?.branchCode + "-" + authState?.user?.branch,
+    value: authState?.user?.branchCode,
+    info: { COMP_CD: authState?.companyID },
+  };
+
   let defaulVal = {
-    branch: { label: "", value: "", info: "" },
+    branch: defBranch,
     accType: { label: "", value: "", info: "" },
     accNo: "",
     trx: { label: "", value: "", code: "" },
-    scroll: "",
+    scroll: "123a", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: "0",
     date: new Date().toISOString()?.substring(0, 10),
     debit: "0.00",
     credit: "0.00",
-    vNo: 0,
+    vNo: "0123",
     bug: true,
     isCredit: true,
   };
+  let filterOpt = [
+    { label: "Scroll search", value: "scroll" },
+    { label: "Vno search", value: "vno" },
+  ];
 
-  const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AuthContext);
   const [rows, setRows] = useState([defaulVal]);
   const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState([]);
@@ -65,6 +78,9 @@ const Footer = () => {
   const [diff, setDiff] = useState(0);
   const [saveDialog, setSaveDialog] = useState(false);
   const [resetDialog, setResetDialog] = useState(false);
+  const [isArray, setIsArray] = useState(false);
+  const [filter, setFilter] = useState({ value: "", label: "" });
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -97,7 +113,7 @@ const Footer = () => {
       rows[i].bug = true;
     }
 
-    if (rows[i]?.trx.code == "4" && !rows[i]?.scroll) {
+    if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
       rows[i].bug = true;
     }
 
@@ -179,8 +195,9 @@ const Footer = () => {
     let tr = trxx?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
     let defaulVal2 = {
-      branch: "",
-      scroll: "",
+      branch: defBranch,
+      scroll: rows.length + "abc",
+      vNo: rows.length + "vno" + 123,
       trx: trxx,
       debit: deb?.toFixed(2),
       credit: cred?.toFixed(2),
@@ -188,6 +205,7 @@ const Footer = () => {
       date: new Date().toISOString()?.substring(0, 10),
       sdc: defSdc,
       remark: defSdc?.label,
+      accNo: "",
     };
 
     if (isSave && totalDebit != totalCredit) {
@@ -211,12 +229,12 @@ const Footer = () => {
     let sumDebit = 0;
     let sumCredit = 0;
 
-    obj?.map((data) => {
-      sumDebit += Number(data.debit);
+    obj?.map((a) => {
+      sumDebit += Number(a.debit);
     });
 
-    obj?.map((data) => {
-      sumCredit += Number(data.credit);
+    obj?.map((a) => {
+      sumCredit += Number(a.credit);
     });
 
     setDiff(sumDebit - sumCredit);
@@ -274,13 +292,22 @@ const Footer = () => {
   };
   const handleAccNo = (e, i) => {
     const obj = [...rows];
-    obj[i].accNo = e.target.value;
+    let txt = e.target.value;
+
+    obj[i].accNo = txt;
     setRows(obj);
-    handleGetAccInfo(i);
+
     // if (i == 0) {
     //   getAccInquiry.mutate(e.target.value);
     //   console.log("1111");
     // }
+  };
+  const handleAccNoBlur = (e, i) => {
+    const obj = [...rows];
+    let abc = obj[i]?.accNo?.padStart(6, "0");
+    obj[i].accNo = abc;
+    handleGetAccInfo(i);
+    setRows(obj);
   };
 
   const handleTrx = (e, value, i) => {
@@ -293,6 +320,7 @@ const Footer = () => {
     obj[i].credit = "0.00";
     obj[i].debit = "0.00";
     obj[i].cNo = "0";
+    obj[i].scroll = "";
     let tr = value?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
@@ -304,6 +332,9 @@ const Footer = () => {
       obj[i].isCredit = false;
     }
 
+    if (value?.code == "3" || value?.code == "6") {
+      setIsArray(true);
+    }
     setRows(obj);
     handleTotal(obj);
   };
@@ -339,14 +370,31 @@ const Footer = () => {
 
   const handleDebit = (e, i) => {
     const obj = [...rows];
-    obj[i].debit = e.target.value;
+    let txt = e.target.value;
+    if (txt.includes(".")) {
+      let a = txt?.split(".")[0];
+      let b = txt?.split(".")[1];
+      let c = b?.substring(0, 2);
+      obj[i].debit = a + "." + c;
+    } else {
+      obj[i].debit = txt;
+    }
     setRows(obj);
     handleTotal(obj);
   };
 
   const handleCredit = (e, i) => {
     const obj = [...rows];
-    obj[i].credit = e.target.value;
+    let txt = e.target.value;
+    if (txt.includes(".")) {
+      let a = txt?.split(".")[0];
+      let b = txt?.split(".")[1];
+      let c = b?.substring(0, 2);
+      obj[i].credit = a + "." + c;
+    } else {
+      obj[i].credit = txt;
+    }
+
     setRows(obj);
     handleTotal(obj);
   };
@@ -372,10 +420,44 @@ const Footer = () => {
 
   const handleVNo = (e, i) => {
     const obj = [...rows];
-    obj[i].vNo = Number(e.target.value);
+    obj[i].vNo = e.target.value;
     setRows(obj);
   };
 
+  const handleSearch = (e) => {
+    let txt = e.target.value;
+    setSearch(txt);
+    const obj = [...rows];
+    if (filter.value == "scroll") {
+      obj.map((a, j) => {
+        if (txt && txt == a.scroll) {
+          a.isFav = true;
+        } else {
+          a.isFav = false;
+        }
+      });
+    }
+    if (filter.value == "vno") {
+      obj.map((a, j) => {
+        if (txt && txt == a.vNo) {
+          a.isFav = true;
+        } else {
+          a.isFav = false;
+        }
+      });
+    }
+
+    setRows(obj);
+  };
+
+  const handleFilter = (e, value) => {
+    setSearch("");
+    setFilter(value);
+    const obj = [...rows];
+    obj.map((a) => {
+      a.isFav = false;
+    });
+  };
   return (
     <>
       <Card
@@ -397,7 +479,7 @@ const Footer = () => {
                 <TableCell>A/C Type</TableCell>
                 <TableCell>A/C No</TableCell>
                 <TableCell>TRX</TableCell>
-                <TableCell>Scroll</TableCell>
+                <TableCell>Token</TableCell>
                 <TableCell>SDC</TableCell>
                 <TableCell>Remarks</TableCell>
                 <TableCell>Chq No</TableCell>
@@ -405,7 +487,7 @@ const Footer = () => {
                 <TableCell>Debit</TableCell>
                 <TableCell>Credit</TableCell>
                 <TableCell>Vno.</TableCell>
-                <TableCell></TableCell>
+                <TableCell style={{ border: "0px" }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -413,7 +495,10 @@ const Footer = () => {
                 rows?.map((a, i) => {
                   return (
                     <TableRow key={i}>
-                      <TableCell sx={{ minWidth: 160 }}>
+                      <TableCell
+                        sx={{ minWidth: 160 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <Autocomplete
                           value={a.branch}
                           size="small"
@@ -427,7 +512,10 @@ const Footer = () => {
                           )}
                         />
                       </TableCell>
-                      <TableCell sx={{ minWidth: 160 }}>
+                      <TableCell
+                        sx={{ minWidth: 160 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <Autocomplete
                           value={a.accType}
                           size="small"
@@ -441,17 +529,23 @@ const Footer = () => {
                           )}
                         />
                       </TableCell>
-                      <TableCell sx={{ minWidth: 50 }}>
+                      <TableCell
+                        sx={{ minWidth: 50 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <TextField
                           value={a.accNo}
                           error={a.accNo ? false : true}
-                          id="txtRight"
                           size="small"
                           type="number"
                           onChange={(e) => handleAccNo(e, i)}
+                          onBlur={(e) => handleAccNoBlur(e, i)}
                         />
                       </TableCell>
-                      <TableCell sx={{ minWidth: 160 }}>
+                      <TableCell
+                        sx={{ minWidth: 160 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <Autocomplete
                           value={a.trx}
                           size="small"
@@ -467,16 +561,22 @@ const Footer = () => {
                         />
                       </TableCell>
 
-                      <TableCell sx={{ minWidth: 50 }}>
+                      <TableCell
+                        sx={{ minWidth: 50 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <TextField
                           value={a.scroll}
-                          error={!a.scroll && a.trx.code == "4" ? true : false}
-                          disabled={a?.trx?.code == "4" ? false : true}
+                          error={!a.scroll && a.trx?.code == "4" ? true : false}
+                          // disabled={a?.trx?.code == "4" ? false : true}
                           size="small"
                           onChange={(e) => handleScroll(e, i)}
                         />
                       </TableCell>
-                      <TableCell sx={{ minWidth: 160 }}>
+                      <TableCell
+                        sx={{ minWidth: 160 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <Autocomplete
                           id="sdc"
                           size="small"
@@ -488,14 +588,20 @@ const Footer = () => {
                           )}
                         />
                       </TableCell>
-                      <TableCell sx={{ minWidth: 80 }}>
+                      <TableCell
+                        sx={{ minWidth: 80 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <TextField
                           value={a.remark}
                           size="small"
                           onChange={(e) => handleRemark(e, i)}
                         />
                       </TableCell>
-                      <TableCell sx={{ minWidth: 50 }}>
+                      <TableCell
+                        sx={{ minWidth: 50 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <TextField
                           value={a.cNo}
                           error={!a.isCredit && !a.cNo ? true : false}
@@ -513,7 +619,7 @@ const Footer = () => {
                         />
                       </TableCell>
 
-                      <TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
                         <TextField
                           value={a.date}
                           error={a.isCredit && !a.date ? true : false}
@@ -529,7 +635,10 @@ const Footer = () => {
                           onChange={(e) => handleDate(e, i)}
                         />{" "}
                       </TableCell>
-                      <TableCell sx={{ minWidth: 50 }}>
+                      <TableCell
+                        sx={{ minWidth: 50 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <TextField
                           value={a.debit}
                           error={Number(a.debit > 0) ? false : true}
@@ -545,7 +654,10 @@ const Footer = () => {
                           onBlur={(e) => handleDebitBlur(e, i)}
                         />
                       </TableCell>
-                      <TableCell sx={{ minWidth: 50 }}>
+                      <TableCell
+                        sx={{ minWidth: 50 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <TextField
                           value={a.credit}
                           error={Number(a.credit > 0) ? false : true}
@@ -562,17 +674,20 @@ const Footer = () => {
                         />
                       </TableCell>
 
-                      <TableCell sx={{ minWidth: 40 }}>
+                      <TableCell
+                        sx={{ minWidth: 40 }}
+                        id={a?.isFav ? "isFav" : ""}
+                      >
                         <TextField
                           value={a.vNo}
                           id="txtRight"
-                          disabled={true}
+                          // disabled={true}
                           size="small"
-                          type="number"
+                          // type="number"
                           onChange={(e) => handleVNo(e, i)}
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell style={{ border: "0px" }}>
                         {(rows[i].trx?.code == "3" ||
                           rows[i].trx?.code == "6") && (
                           <CancelIcon
@@ -612,7 +727,7 @@ const Footer = () => {
           </Button>
         </>
       )}
-      {isSave && (
+      {(isArray && diff == 0 && isSave) || (!isArray && isSave) ? (
         <Button
           variant="contained"
           color="secondary"
@@ -621,9 +736,33 @@ const Footer = () => {
         >
           save
         </Button>
+      ) : (
+        <></>
       )}
-      <br /> <br />
+      <br />
       <Grid container spacing={2}>
+        <Grid item sx={{ width: 180 }}>
+          <Autocomplete
+            value={filter}
+            size="small"
+            options={filterOpt}
+            onChange={(e, value) => handleFilter(e, value)}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </Grid>
+        <Grid item>
+          <div id="searchContainer">
+            <SearchIcon style={{ margin: "5px" }} />
+            <input
+              disabled={filter?.value ? false : true}
+              placeholder="Search.."
+              id="searchField"
+              // type="number"
+              value={search}
+              onChange={(e) => handleSearch(e)}
+            />
+          </div>
+        </Grid>
         <Grid item>
           <Button variant="contained" color="primary">
             View All
@@ -633,6 +772,11 @@ const Footer = () => {
           <Button variant="contained" color="primary">
             Search
           </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Scroll search
+          </Button>{" "}
         </Grid>{" "}
         <Grid item>
           <Button variant="contained" color="primary">
@@ -652,11 +796,6 @@ const Footer = () => {
         <Grid item>
           <Button variant="contained" color="primary">
             refresh
-          </Button>{" "}
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            scroll search
           </Button>{" "}
         </Grid>{" "}
         <Grid item>

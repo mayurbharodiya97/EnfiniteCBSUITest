@@ -59,13 +59,10 @@ const AccDetails = () => {
             width: "450px",
             boxShadow: "0px 1px 4px -1px #999999",
             borderRadius: "5px",
+            marginBottom: "5px",
           }}
         >
-          <CardContent
-            style={{
-              margin: "10px",
-            }}
-          >
+          <CardContent>
             <div
               style={{
                 display: "flex",
@@ -85,7 +82,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "27vh",
+                height: "25vh",
               }}
             >
               <Grid container spacing={2}>
@@ -154,13 +151,10 @@ const AccDetails = () => {
             width: "450px",
             boxShadow: "0px 1px 4px -1px #999999",
             borderRadius: "5px",
+            marginBottom: "5px",
           }}
         >
-          <CardContent
-            style={{
-              margin: "10px",
-            }}
-          >
+          <CardContent>
             <div
               style={{
                 display: "flex",
@@ -179,7 +173,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "27vh",
+                height: "25vh",
               }}
             >
               <Grid container spacing={2}>
@@ -210,13 +204,10 @@ const AccDetails = () => {
             width: "450px",
             boxShadow: "0px 1px 4px -1px #999999",
             borderRadius: "5px",
+            marginBottom: "5px",
           }}
         >
-          <CardContent
-            style={{
-              margin: "10px",
-            }}
-          >
+          <CardContent>
             <div
               style={{
                 display: "flex",
@@ -235,7 +226,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "27vh",
+                height: "25vh",
               }}
             >
               <Grid container spacing={2}>
@@ -258,54 +249,6 @@ const AccDetails = () => {
                   </Typography>
                 </Grid>
               </Grid>
-            </div>
-          </CardContent>
-        </Card>
-        <Card
-          sx={{
-            width: "450px",
-            boxShadow: "0px 1px 4px -1px #999999",
-            borderRadius: "5px",
-          }}
-        >
-          <CardContent
-            style={{
-              margin: "10px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
-              <Typography variant="h5" component="div">
-                Personal Information
-              </Typography>
-              <div>
-                <AccountCircleIcon />
-              </div>
-            </div>
-            <div
-              style={{
-                overflowY: "scroll",
-                height: "27vh",
-              }}
-            >
-              <Typography component="div">Name</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">aaaa</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">aaaa</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">aaaa</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">aaaa</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
-              <Typography component="div">aaaa</Typography>
-              <Typography sx={{ mb: 1.5 }}>xyz</Typography>
             </div>
           </CardContent>
         </Card>
