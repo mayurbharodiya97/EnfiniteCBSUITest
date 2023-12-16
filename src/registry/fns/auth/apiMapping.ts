@@ -485,7 +485,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   DOCHEQUEBKISSUE: {
-    url: "/accountServiceAPI/DOCHEQUEBKISSUE",
+    url: "/chequeServiceAPI/DOCHEQUEBKISSUE",
     packageName: "",
   },
   GETFORMMETALIST: {
@@ -564,16 +564,20 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
     packageName: "",
   },
+  GETCLGZONELIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGZONELIST",
+    packageName: "",
+  },
   GETCUSTPHOTODTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
     packageName: "",
   },
   CHEQUEBKDATA: {
-    url: "/accountServiceAPI/CHEQUEBKDATA",
+    url: "/chequeServiceAPI/CHEQUEBKDATA",
     packageName: "",
   },
   CHEQUEBKCHARGE: {
-    url: "/accountServiceAPI/CHEQUEBKCHARGE",
+    url: "/chequeServiceAPI/CHEQUEBKCHARGE",
     packageName: "",
   },
   GETTRXLIST: {
@@ -582,6 +586,42 @@ export const ActionWiseAPIConfiguration = {
   },
   GETJOINTDETILSLIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
+    packageName: "",
+  },
+  GETLIMITSECUMSTPARENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITSECUMSTPARENT",
+    packageName: "",
+  },
+  GETLIMITDDWACCTTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITDDWACCTTYPE",
+    packageName: "",
+  },
+  GETLIMITSECFIELDDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITSECFIELDDISP",
+    packageName: "",
+  },
+  GETLIMITACTNMBALDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITACTNMBALDISP",
+    packageName: "",
+  },
+  GETFDBRDDETAIL: {
+    url: "accountServiceAPI/GETFDBRDDETAIL",
+    packageName: "",
+  },
+  GETDAILYTRANMAKERDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRANMAKERDTL",
+    packageName: "",
+  },
+  DODAILYTRNDML: {
+    url: "/transactionServiceAPI/DODAILYTRNDML",
+    packageName: "",
+  },
+  CHEQUENOVALIDATION: {
+    url: "/chequeServiceAPI/CHEQUENOVALIDATION",
+    packageName: "",
+  },
+  GETDAILYTRNCNFF2: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNCNFF2",
     packageName: "",
   },
 };

@@ -83,7 +83,15 @@ export const getDynGridData = async ({
       USERNAME: userName,
     });
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return Object.assign(
+        {},
+        ...Object.keys(item).map((key) => ({
+          [key]:
+            item[key] === "Y" ? true : item[key] === "N" ? false : item[key],
+        }))
+      );
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

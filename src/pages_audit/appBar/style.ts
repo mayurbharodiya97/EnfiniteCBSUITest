@@ -15,6 +15,44 @@ export const useStyles = makeStyles((theme: any) => ({
     background: "var(--theme-color2)",
     boxShadow: "0px 1px 0px -0.5px #DEE0E2",
   },
+  searchBar: {
+    width: 290,
+    border: "none",
+    color: "rgba(0, 0, 0, 0.87) !important",
+    backgroundColor: "rgb(235 237 238 / 26%)!important",
+
+    "& input": {
+      width: "100% !important",
+    },
+  },
+  searchList: {
+    position: "absolute",
+    background: "#fff",
+    width: "100%",
+    borderRadius: "6px",
+    boxShadow: "0 12px 25px rgba(0,0,0,.3)",
+    top: "120%",
+    height: "auto",
+    maxHeight: "325px",
+    overflowY: "auto",
+
+    "& .list-links": {
+      background: "none",
+      border: "none",
+      outline: "none",
+      cursor: "pointer",
+      textDecoration: "none",
+      padding: "0.7rem 1rem",
+      fontSize: "0.90rem",
+      textAlign: "left",
+      borderBottom: "1px solid #ddd",
+      color: "#222 !important",
+      fontWeight: 500,
+      "&:hover, &.active": {
+        backgroundColor: "#f4f4f4",
+      },
+    },
+  },
   appBarShift: {
     paddingLeft: "0px",
     // width: `calc(100% - ${drawerWidth}px)`,

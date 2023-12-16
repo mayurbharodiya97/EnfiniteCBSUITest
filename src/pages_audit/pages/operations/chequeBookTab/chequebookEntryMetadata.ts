@@ -1,5 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import { TemporaryData, chequebookCharge } from "./api";
+import { format } from "date-fns";
 
 export const ChequeBookEntryMetaData = {
   form: {
@@ -110,7 +111,6 @@ export const ChequeBookEntryMetaData = {
         xl: 3,
       },
     },
-
     {
       render: {
         componentType: "textField",
@@ -131,6 +131,24 @@ export const ChequeBookEntryMetaData = {
     },
     {
       render: {
+        componentType: "amountField",
+      },
+      name: "ACCT_BAL",
+      label: "Balance",
+      placeholder: "Enter no of Cheque book",
+      type: "text",
+      isReadOnly: true,
+      // enableDefaultOption: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
         componentType: "textField",
       },
       name: "CHEQUE_FROM",
@@ -140,102 +158,12 @@ export const ChequeBookEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
     },
-    // {
-    //   render: {
-    //     componentType: "autocomplete",
-    //   },
-    //   name: "LEAF_ARR",
-    //   label: "No. of Cheque(s)",
-    //   placeholder: "Enter no of Cheque book",
-    //   type: "text",
-    //   isFieldFocused: false,
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 3,
-    //     sm: 3,
-    //     lg: 3,
-    //     xl: 3,
-    //   },
-    //   dependentFields: [
-    //     "CHEQUE_FROM",
-    //     // "SERVICE_TAX",
-    //     // "SERVECE_C_FLAG",
-    //     // "ACCT_NM",
-    //     "BRANCH_CD",
-    //     "ACCT_TYPE",
-    //     "ACCT_CD",
-    //   ],
-
-    //   postValidationSetCrossFieldValues: async (
-    //     field,
-    //     __,
-    //     auth,
-    //     dependentFieldsValues
-    //   ) => {
-    //     console.log(
-    //       "<<<postValidationSetCrossFieldValues",
-    //       field,
-    //       __,
-    //       auth,
-    //       dependentFieldsValues
-    //     );
-
-    //     let Apireq = {
-    //       COMP_CD: auth.companyID,
-    //       BRANCH_CD: dependentFieldsValues.BRANCH_CD.value,
-    //       ACCT_TYPE: dependentFieldsValues.ACCT_TYPE.value,
-    //       ACCT_CD: dependentFieldsValues.ACCT_CD.value,
-    //       NO_OF_LEAVES: field.value,
-    //     };
-    //     if (field.value) {
-    //       let postdata = await chequebookCharge(Apireq);
-    //       console.log("<<<posrtdata", postdata);
-    //       return {
-    //         SERVECE_C_FLAG: {
-    //           value: postdata?.[0]?.SERVICE_CHARGE_FLAG ?? "",
-    //         },
-    //         GST: {
-    //           value: parseInt(postdata[0]?.TAX_RATE) / 100 ?? "",
-    //         },
-    //         CHEQUE_TO: {
-    //           value:
-    //             parseInt(dependentFieldsValues?.CHEQUE_FROM?.value) +
-    //               parseInt(field?.value) -
-    //               1 ?? "",
-    //         },
-    //         SERVICE_TAX: {
-    //           value: postdata?.[0]?.GST_AMT,
-    //           // postdata?.[0]?.GST_ROUND_OFF === "1"
-    //           //   ? Math.floor(
-    //           //       (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
-    //           //         100
-    //           //     ) ?? ""
-    //           //   : postdata?.[0]?.GST_ROUND_OFF === "2"
-    //           //   ? Math.ceil(
-    //           //       (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
-    //           //         100
-    //           //     ) ?? ""
-    //           //   : postdata?.[0]?.GST_ROUND_OFF === "3"
-    //           //   ? Math.round(
-    //           //       (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
-    //           //         100
-    //           //     ) ?? ""
-    //           //   : (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
-    //           //       100 ?? "",
-    //         },
-    //       };
-    //     }
-
-    //     return {};
-    //   },
-    // },
-
     {
       render: {
         componentType: "autocomplete",
@@ -247,32 +175,53 @@ export const ChequeBookEntryMetaData = {
       isFieldFocused: false,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
       dependentFields: [
         "CHEQUE_FROM",
-        "SERVICE_TAX",
-        "SERVECE_C_FLAG",
-        "ACCT_NM",
+        "BRANCH_CD",
+        "ACCT_TYPE",
+        "ACCT_CD",
+        "CHEQUE_TOTAL",
       ],
-
       postValidationSetCrossFieldValues: async (
         field,
         __,
-        ___,
+        auth,
         dependentFieldsValues
       ) => {
+        // console.log("<<<focus", field, __, auth, dependentFieldsValues);
         if (field.value) {
-          let postdata = await TemporaryData();
+          let Apireq = {
+            COMP_CD: auth.companyID,
+            BRANCH_CD: dependentFieldsValues.BRANCH_CD.value,
+            ACCT_TYPE: dependentFieldsValues.ACCT_TYPE.value,
+            ACCT_CD: dependentFieldsValues.ACCT_CD.value,
+            NO_OF_LEAVES: field.value,
+            ENT_COMP: auth.companyID,
+            ENT_BRANCH: dependentFieldsValues.BRANCH_CD.value,
+            SYS_DATE: format(new Date(), "dd-MMM-yyyy"),
+          };
+          let postdata = await chequebookCharge(Apireq);
           return {
             SERVECE_C_FLAG: {
-              value: postdata?.[0]?.SERVICE_CHARGE_FLAG ?? "",
+              value: postdata?.[0]?.FLAG_ENABLE_DISABLE ?? "",
+            },
+            ROUND_OFF_FLAG: {
+              value: postdata?.[0]?.GST_ROUND ?? "",
             },
             GST: {
-              value: parseInt(postdata[0]?.GST) / 100 ?? "",
+              value: postdata?.[0]?.TAX_RATE ?? "",
+            },
+            SERVICE_TAX: {
+              value: postdata?.[0]?.SERVICE_CHRG,
+              isFieldFocused: true,
+            },
+            GST_AMOUNT: {
+              value: postdata[0]?.GST_AMT ?? "",
             },
             CHEQUE_TO: {
               value:
@@ -280,32 +229,16 @@ export const ChequeBookEntryMetaData = {
                   parseInt(field?.value) -
                   1 ?? "",
             },
-            SERVICE_TAX: {
-              value:
-                postdata?.[0]?.GST_ROUND_OFF === "1"
-                  ? Math.floor(
-                      (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
-                        100
-                    ) ?? ""
-                  : postdata?.[0]?.GST_ROUND_OFF === "2"
-                  ? Math.ceil(
-                      (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
-                        100
-                    ) ?? ""
-                  : postdata?.[0]?.GST_ROUND_OFF === "3"
-                  ? Math.round(
-                      (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
-                        100
-                    ) ?? ""
-                  : (parseInt(field?.value) * parseInt(postdata[0]?.GST)) /
-                      100 ?? "",
-            },
+            // CHEQUE_TOTAL: { value : isFieldFocused (true )},
+            //   {
+            //  value : myMasterRef?.current?.focus?.()
+            //   },
           };
         }
-
         return {};
       },
     },
+
     {
       render: {
         componentType: "textField",
@@ -317,10 +250,10 @@ export const ChequeBookEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
     },
     {
@@ -342,21 +275,16 @@ export const ChequeBookEntryMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
     },
+
     {
       render: {
-        componentType: "hidden",
-      },
-      name: "SERVECE_C_FLAG",
-    },
-    {
-      render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
       name: "SERVICE_TAX",
       label: "Service Charge",
@@ -364,19 +292,71 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       GridProps: {
         xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
-      dependentFields: ["SERVECE_C_FLAG"],
-
+      dependentFields: ["SERVECE_C_FLAG", "GST", "ROUND_OFF_FLAG"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.SERVECE_C_FLAG?.value === "D") {
+        if (dependentFieldsValues?.SERVECE_C_FLAG?.value === "N") {
           return false;
         } else {
           return true;
         }
+      },
+      postValidationSetCrossFieldValues: (
+        field,
+        __,
+        auth,
+        dependentFieldsValues
+      ) => {
+        if (field.value) {
+          return {
+            GST_AMOUNT: {
+              value:
+                dependentFieldsValues?.ROUND_OFF_FLAG?.value === "3"
+                  ? Math.floor(
+                      (parseInt(field?.value) *
+                        parseInt(dependentFieldsValues?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : dependentFieldsValues?.ROUND_OFF_FLAG?.value === "2"
+                  ? Math.ceil(
+                      (parseInt(field?.value) *
+                        parseInt(dependentFieldsValues?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : dependentFieldsValues?.ROUND_OFF_FLAG?.value === "1"
+                  ? Math.round(
+                      (parseInt(field?.value) *
+                        parseInt(dependentFieldsValues?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : (parseInt(field?.value) *
+                      parseInt(dependentFieldsValues?.GST?.value)) /
+                      100 ?? "",
+            },
+          };
+        }
+        return {};
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "GST_AMOUNT",
+      label: "GST-Amount",
+      placeholder: "GST-AMOUNT",
+      type: "text",
+      isReadOnly: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
     },
     {
@@ -397,28 +377,13 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       GridProps: {
         xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
     },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REMARKS",
-      // sequence: 10,
-      label: "Remark",
-      placeholder: "Enter remark",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
+
     {
       render: {
         componentType: "autocomplete",
@@ -438,13 +403,12 @@ export const ChequeBookEntryMetaData = {
       _optionsKey: "CHARACTERISTICS",
       GridProps: {
         xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
     },
-
     {
       render: {
         componentType: "datePicker",
@@ -458,45 +422,26 @@ export const ChequeBookEntryMetaData = {
       placeholder: "",
       GridProps: {
         xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
     },
     {
       render: {
         componentType: "textField",
       },
-      name: "GST",
-      label: "GST",
-      placeholder: "GST",
-      type: "text",
-      isReadOnly: true,
+      name: "REMARKS",
+      // sequence: 10,
+      label: "Remark",
+      placeholder: "Enter remark",
       GridProps: {
         xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
-      },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "ACCT_BAL",
-      label: "Balance",
-      placeholder: "Enter no of Cheque book",
-      type: "text",
-      isReadOnly: true,
-      // enableDefaultOption: true,
-      GridProps: {
-        xs: 12,
-        md: 2.25,
-        sm: 2.25,
-        lg: 2.25,
-        xl: 2.25,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -543,114 +488,36 @@ export const ChequeBookEntryMetaData = {
         xl: 3,
       },
     },
-
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
-      name: "legend",
-      // sequence: 10,
-      label: "legend Description",
-      // placeholder: "Enter remark",
-      defaultValue:
-        "CI = No. of chequebook issued , CU = No of cheque used , CS = No of cheque stop , CSU = No of cheque surrender , CUN = No of unused cheque",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 12,
-        sm: 12,
-        lg: 12,
-        xl: 12,
-      },
+      name: "SERVECE_C_FLAG",
     },
-
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "GST",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ROUND_OFF_FLAG",
+    },
     {
       render: {
         componentType: "hidden",
       },
       name: "AUTO_CHQBK_FLAG",
-      label: "Auto chequebook flag",
-      type: "text",
-      shouldExclude(fieldData) {
-        if (fieldData?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "AUTO_CHQBK_PRINT_FLAG",
-      label: "Auto chequebook print flag",
-      type: "text",
-      shouldExclude(fieldData) {
-        if (fieldData?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
+
     {
       render: {
         componentType: "hidden",
       },
       name: "SR_CD",
-      label: "SR-CD",
-      type: "text",
-      shouldExclude(fieldData) {
-        if (fieldData?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "AMOUNT",
-      label: "SR-CD",
-      type: "text",
-      shouldExclude(fieldData) {
-        if (fieldData?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
     },
   ],
 };

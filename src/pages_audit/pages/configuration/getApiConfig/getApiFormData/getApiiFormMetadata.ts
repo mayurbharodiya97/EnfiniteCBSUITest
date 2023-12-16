@@ -147,3 +147,74 @@ export const getApiFormMetadata: any = {
     },
   ],
 };
+export const getApiViewDetailMetadata: any = {
+  form: {
+    // refID: 1667,
+    name: "ActionsMetaData",
+    label: "Select-Get API Configuration Detail",
+    resetFieldOnUmnount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 6,
+          md: 6,
+        },
+        container: {
+          direction: "row",
+          spacing: 2,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: { componentType: "textField", group: 0 },
+      name: "ACTION",
+      sequence: 1,
+      type: "text",
+      label: "Action Name",
+      // isReadOnly: true,
+      placeholder: "Action Name",
+      GridProps: { xs: 12, md: 4, sm: 4, xl: 4, lg: 4 },
+    },
+    {
+      render: { componentType: "textField", group: 0 },
+      name: "GET_QUERY",
+      sequence: 1,
+      type: "text",
+      label: "SQL-Query",
+      // isReadOnly: true,
+      width: "100%",
+      placeholder: "",
+      fullWidth: true,
+      multiline: true,
+      minRows: 15,
+      maxRows: 32,
+      // maxLength: 100,
+
+      GridProps: { xs: 12, md: 12, sm: 12, xl: 12, lg: 12 },
+    },
+  ],
+};

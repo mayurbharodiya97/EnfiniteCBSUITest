@@ -50,6 +50,7 @@ const DynamicFormMetadataConfig: FC<{
   const [isFieldComponentGrid, setFieldComponentGrid] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const myRef = useRef<any>(null);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -62,21 +63,45 @@ const DynamicFormMetadataConfig: FC<{
     })
   );
 
-  // useEffect(() => {
-  //   if (
-  //     location.pathname ===
-  //     "/cbsenfinity/configuration/dynamic-form-metadata/view-details"
-  //   ) {
-  //     if (!fieldRowData?.[0]?.data?.DOC_CD ?? "") {
-  //       // If docCD is not available in the API response, navigate to the desired route
-  //       navigate("/cbsenfinity/configuration/dynamic-form-metadata");
-  //     }
-  //   } else {
-  //     navigate(location.pathname);
-  //   }
-  // }, [navigate, location.pathname, fieldRowData?.[0]?.data?.DOC_CD ?? ""]);
-
-  const mutation: any = useMutation(API.getDynFormPopulateData);
+  const mutation: any = useMutation(API.getDynFormPopulateData, {
+    onError: (error: any) => {},
+    // onSuccess: (data) => {
+    //   let detailData = data?.map((item) => {
+    //     return {
+    //       ...item,
+    //       // _isNewRow: true,
+    //     };
+    //   });
+    //   console.log("myGridRef.current", myRef.current);
+    //   setGridData((oldData) => {
+    //     console.log("oldData", girdData);
+    //     let existingData = oldData.map((item) => {
+    //       console.log("item", item);
+    //       let isExists = detailData.some((itemfilter) => {
+    //         console.log("itemfilter", itemfilter);
+    //         return itemfilter.COLUMN_ACCESSOR === item.COLUMN_ACCESSOR;
+    //       });
+    //       if (isExists) {
+    //         return { ...item, _hidden: false };
+    //       } else {
+    //         return { ...item, _hidden: true };
+    //       }
+    //     });
+    //     let newData = detailData.filter((itemFilter) => {
+    //       let isExists = oldData.some((olditem) => {
+    //         return olditem.COLUMN_ACCESSOR === itemFilter.COLUMN_ACCESSOR;
+    //       });
+    //       return !isExists;
+    //     });
+    //     let srCount = utilFunction.GetMaxCdForDetails(oldData, "SR_CD");
+    //     newData = newData.map((newData) => {
+    //       return { ...newData, _isNewRow: true, SR_CD: srCount++ };
+    //     });
+    //     // console.log(oldData, [...existingData, ...newData]);
+    //     return [...existingData, ...newData];
+    //   });
+    // },
+  });
   const result = useMutation(API.dynamiFormMetadataConfigDML, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -201,6 +226,7 @@ const DynamicFormMetadataConfig: FC<{
               endSubmit,
               setFieldError,
             };
+            console.log("isErrorFuncRef.current", isErrorFuncRef.current);
             setIsOpenSave(true);
           }
         }
@@ -228,7 +254,8 @@ const DynamicFormMetadataConfig: FC<{
       (isLoading ||
         isFetching ||
         !(fieldRowData && fieldRowData.length > 0) ||
-        !(girdData && girdData.length > 0)) ? (
+        !(girdData && girdData.length > 0)) &&
+      !populateClicked ? (
         <div style={{ minHeight: "50px" }}>
           <LoaderPaperComponent />
         </div>
@@ -253,6 +280,7 @@ const DynamicFormMetadataConfig: FC<{
             onFormButtonClickHandel={() => {
               let event: any = { preventDefault: () => {} };
               formRef?.current?.handleSubmit(event, "POPULATE");
+              console.log("formRef?.current", event);
             }}
             // onFormButtonCicular={mutation.isLoading}
             ref={formRef}
@@ -349,7 +377,7 @@ const DynamicFormMetadataConfig: FC<{
             setData={setGridData}
             actions={[]}
             setAction={[]}
-            refetchData={() => refetch()}
+            // refetchData={() => refetch()}
             onClickActionEvent={(index, id, data) => {
               mysubdtlRef.current = {
                 COMP_CD: data?.COMP_CD,

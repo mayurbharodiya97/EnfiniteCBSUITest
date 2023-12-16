@@ -380,7 +380,7 @@ export const CommonMSTConfig = () => {
       ) : (
         <>
           <MasterDetailsForm
-            key={"leavesMaster"}
+            key={"commonMSTGrid"}
             metaData={commonMSTGridMetaData}
             ref={myRef}
             initialData={{

@@ -963,7 +963,7 @@ export const Ckyc = () => {
         </Typography>
         <Grid item>
           <GridWrapper
-            key={`PendingCustEntrties`+PendingData}
+            key={`PendingCustEntrties` + PendingData}
             finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
             data={PendingData ?? []}
             setData={() => null}
@@ -1023,7 +1023,7 @@ export const Ckyc = () => {
             <PhotoSignUpdateDialog
               open={true}
               onClose={() => {
-                navigate(".")
+                navigate(".");
               }}
             />
           }

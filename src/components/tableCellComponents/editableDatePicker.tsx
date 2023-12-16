@@ -1,26 +1,41 @@
-import { useState, useEffect } from "react";
+import FormHelperText from "@mui/material/FormHelperText";
+import { useState, useEffect, useMemo } from "react";
 import { CellWrapper } from "./cellWrapper";
 import {
   ThemeProvider,
   unstable_createMuiStrictModeTheme,
 } from "@mui/material/styles";
-import DateFnsUtils from "@date-io/date-fns";
+// import DateFnsUtils from "@date-io/date-fns";
+// import {
+//   KeyboardDatePicker,
+//   MuiPickersUtilsProvider,
+// } from "@material-ui/pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { theme2 } from "app/audit/theme";
-import { FormHelperText } from "@mui/material";
-
-// import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DatePicker from "@mui/lab/DatePicker";
-
+import { KeyboardDatePicker } from "components/styledComponent/datetime";
+import { makeStyles } from "@mui/styles";
+const useStyles = makeStyles({
+  root: {
+    "& .MuiInputBase-root.MuiOutlinedInput-root input": {
+      padding: "8px 7px",
+    },
+    "& .css-1sizj2k-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+      {
+        borderColor: "rgba(0, 0, 0, 0.23)",
+      },
+  },
+});
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
+
 export const EditableDatePicker = (props) => {
+  const classes = useStyles();
   const {
     value: initialValue,
     rows,
     row: { index, original },
-    column: { id, options, validation, requestProps, dateFormat },
+    column: { id, validation, dateFormat, mindate, isReadOnly, __EDIT__ },
     updateGridData,
-    gridProps,
     hiddenFlag,
     loading,
   } = props;
@@ -28,6 +43,16 @@ export const EditableDatePicker = (props) => {
   const externalError = original?._error?.[id] ?? "";
   const [loadingcall, setLoading] = useState(false);
   const [value, setValue] = useState(initialValue);
+
+  const isReadOnlyLocal = useMemo(() => {
+    if (isReadOnly) {
+      return true;
+    }
+    if (original?._isNewRow === false && __EDIT__?.isReadOnly === true) {
+      return true;
+    }
+    return false;
+  }, [isReadOnly, original?._isNewRow, __EDIT__]);
 
   const prevRows = rows
     .slice(0, index)
@@ -40,9 +65,12 @@ export const EditableDatePicker = (props) => {
     .filter((one) => Boolean(one[hiddenFlag]) !== true);
 
   const onChange = (date) => {
-    //console.log("e.target.value", e.target.checked);
     setValue(date);
-    //onBlur();
+    // setLoading(true);
+    validation(date, original, prevRows, nextRows).then((result) => {
+      // setLoading(false);
+      updateGridData(index, id, date, true, result);
+    });
   };
 
   const onBlur = () => {
@@ -54,29 +82,44 @@ export const EditableDatePicker = (props) => {
   };
 
   useEffect(() => {
-    setValue(initialValue);
+    let initialDate = initialValue;
+    if (!initialDate) {
+      initialDate = new Date();
+    }
+    setValue(initialDate);
   }, [initialValue]);
+
+  useEffect(() => {
+    onBlur();
+  }, []);
+
   return (
     <CellWrapper showBorder {...props}>
       <ThemeProvider theme={themeObj}>
-        <LocalizationProvider utils={DateFnsUtils}>
-          {/* {console.log("DatePicker", DatePicker)} */}
-          <DatePicker
-            format={dateFormat ?? "dd/MM/yyyy HH:mm:ss"}
-            KeyboardButtonProps={{
-              "aria-label": "Select Date",
-            }}
-            name={id}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <KeyboardDatePicker
+            format={dateFormat ?? "dd/MM/yyyy"}
             onChange={onChange}
-            value={value}
-            InputLabelProps={{ shrink: true }}
-            color="primary"
-            autoComplete="off"
-            autoOk={true}
-            showTodayButton={true}
-            onBlur={onBlur}
+            className={classes.root}
+            value={new Date(value)}
             disabled={loadingcall || loading}
+            readOnly={isReadOnlyLocal}
+            minDate={mindate || new Date("1900-01-01")}
+            disablePast
             // error={Boolean(externalTouched) && Boolean(externalError)}
+            slotProps={{
+              textField: {
+                onBlur,
+                "aria-label": "Select Date",
+                name: id,
+                autoComplete: "off",
+                InputLabelProps: { shrink: true },
+                InputProps: { disableUnderline: true },
+              },
+              actionBar: {
+                actions: ["today", "accept", "cancel"],
+              },
+            }}
           />
         </LocalizationProvider>
       </ThemeProvider>

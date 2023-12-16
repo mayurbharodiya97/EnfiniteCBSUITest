@@ -16,6 +16,7 @@ export const useStyles = makeStyles((theme: any) => ({
     // changes from bhavyata for grid ui
     // marginTop: "70px",
     marginTop: "57px",
+
     // display: "auto",
     // height: `calc(100vh - 109px)`,
   },

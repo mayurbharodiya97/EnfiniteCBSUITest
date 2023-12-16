@@ -44,4 +44,6 @@ export interface AuthContextType {
   branchSelect: any;
   getProfileImage: any;
   setProfileImage: any;
+  tempStore: any;
+  setTempStore: any;
 }

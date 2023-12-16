@@ -56,6 +56,11 @@ export const OTPModel = ({
     handleClose("");
   };
   const renderTime = (remainingtime) => {
+    if (parseInt(remainingtime) === 0) {
+      setTimeout(() => {
+        setbtnshow(true);
+      }, 700);
+    }
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
         {t("otp.ValidFor")} {remainingtime}
@@ -131,7 +136,7 @@ export const OTPModel = ({
                 : null}
               <ResendOTP
                 onResendClick={() => setbtnshow(false)}
-                onTimerComplete={() => setbtnshow(true)}
+                // onTimerComplete={() => setbtnshow(true)}
                 renderButton={renderButton}
                 renderTime={renderTime}
                 maxTime={60}
@@ -182,7 +187,7 @@ export const OTPModel = ({
               }}
             >
               <GradientButton
-                fullWidth
+                // fullWidth
                 disabled={loginState.otploading}
                 onClick={() => {
                   previousStep(false, "");
@@ -191,7 +196,7 @@ export const OTPModel = ({
                 color={"var(--theme-color3) !important"}
                 style={{
                   border: "var(--theme-color3)1px solid",
-                  width: "100%",
+                  minWidth: "50%",
                   background: "var(--theme-color2)",
                   borderRadius: "10px",
                 }}
@@ -313,6 +318,11 @@ export const OTPModelForm = ({
     handleClose();
   };
   const renderTime = (remainingtime) => {
+    if (parseInt(remainingtime) === 0) {
+      setTimeout(() => {
+        setbtnshow(true);
+      }, 700);
+    }
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
         {t("otp.ValidFor")} {remainingtime}
@@ -364,7 +374,7 @@ export const OTPModelForm = ({
             loginState?.auth_type === "TOTP" ? null : (
               <ResendOTP
                 onResendClick={() => setbtnshow(false)}
-                onTimerComplete={() => setbtnshow(true)}
+                // onTimerComplete={() => setbtnshow(true)}
                 renderButton={renderButton}
                 renderTime={renderTime}
                 maxTime={60}
@@ -433,7 +443,7 @@ export const OTPModelForm = ({
           loginState?.auth_type === "TOTP" ? null : (
             <ResendOTP
               onResendClick={handleResendClick}
-              onTimerComplete={() => setbtnshow(true)}
+              // onTimerComplete={() => setbtnshow(true)}
               renderButton={renderButton}
               renderTime={renderTime}
               maxTime={60}
@@ -453,11 +463,15 @@ export const OTPModelForm = ({
               disabled={loginState.otploading}
               onClick={handleCloseEvent}
               className={classes.otpButtons}
+              starticon={"West"}
+              color={"var(--theme-color3) !important"}
+              rotateIcon="scale(1.4) rotateX(360deg)"
               style={{
                 border: "var(--theme-color3)1px solid",
                 color: "var(--theme-color3)",
                 background: "var(--theme-color2)",
                 borderRadius: "10px",
+                minWidth: "48%",
               }}
             >
               {t("otp.Back")}
@@ -469,7 +483,7 @@ export const OTPModelForm = ({
                 width: loginState.loading ? "0px" : "100%",
                 minWidth: loginState.loading ? "40px" : "80px",
               }}
-              fullWidth
+              // fullWidth
               disabled={loginState.loading}
               onClick={ClickEventHandler}
               ref={inputButtonRef}
