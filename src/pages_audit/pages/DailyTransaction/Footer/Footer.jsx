@@ -19,7 +19,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 //Logical
 import React, {
@@ -34,6 +33,7 @@ import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import "./footer.css";
+import BaseFooter from "./BaseFooter";
 
 const Footer = () => {
   const { authState } = useContext(AuthContext);
@@ -53,19 +53,15 @@ const Footer = () => {
     scroll: "", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
-    cNo: "",
+    cNo: "0",
     date: new Date().toISOString()?.substring(0, 10),
     debit: "0.00",
     credit: "0.00",
     vNo: "",
     bug: true,
-    bugChq: true,
+    bugChq: false,
     isCredit: true,
   };
-  let filterOpt = [
-    { label: "Scroll search", value: "scroll" },
-    { label: "Vno search", value: "vno" },
-  ];
 
   const [rows, setRows] = useState([defaulVal]);
   const [trxOptions, setTrxOptions] = useState([]);
@@ -80,9 +76,7 @@ const Footer = () => {
   const [saveDialog, setSaveDialog] = useState(false);
   const [resetDialog, setResetDialog] = useState(false);
   const [isArray, setIsArray] = useState(false);
-  const [filter, setFilter] = useState({ value: "", label: "" });
-  const [search, setSearch] = useState("");
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState({ cNo: {}, accNo: {} });
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -164,16 +158,11 @@ const Footer = () => {
     },
     onError: (error) => {},
   });
+
   const getAccInfo = useMutation(API.getAccInfo, {
     onSuccess: (data) => {
       console.log(data, "accInfo");
       setTempStore({ ...tempStore, accInfo: data });
-    },
-    onError: (error) => {},
-  });
-  const getAccInquiry = useMutation(API.getAccInquiry, {
-    onSuccess: (data) => {
-      console.log(data, "getAccInquiry");
     },
     onError: (error) => {},
   });
@@ -194,6 +183,12 @@ const Footer = () => {
     },
     onError: (error) => {},
   });
+  const getScrollListF2 = useMutation(API.getScrollListF2, {
+    onSuccess: (data) => {
+      console.log(data, "getScrollListF2 api");
+    },
+    onError: (error) => {},
+  });
 
   const handleAddRow = () => {
     let cred = 0;
@@ -211,22 +206,23 @@ const Footer = () => {
     }
     let tr = trxx?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
+
     let defaulVal2 = {
       branch: defBranch,
-      scroll: rows.length + "abc",
-      vNo: rows.length + "vno" + 123,
+      accType: { label: "", value: "", info: "" },
+      accNo: "",
       trx: trxx,
-      debit: deb?.toFixed(2),
-      credit: cred?.toFixed(2),
-      isCredit: isCred,
-      date: new Date().toISOString()?.substring(0, 10),
+      scroll: "", //token
       sdc: defSdc,
       remark: defSdc?.label,
-      accNo: "",
-      cNo: "",
-      bugChq: true,
+      cNo: "0",
+      date: new Date().toISOString()?.substring(0, 10),
+      debit: deb?.toFixed(2),
+      credit: cred?.toFixed(2),
+      vNo: "",
+      bugChq: false,
+      isCredit: isCred,
     };
-
     if (isSave && totalDebit != totalCredit) {
       let obj = [...rows, defaulVal2];
 
@@ -240,6 +236,12 @@ const Footer = () => {
     if (rows.length > 1) {
       obj.splice(i, 1);
       handleTotal(obj);
+
+      rows.map((a) => {
+        if (!a.bug) {
+          setErrMsg({});
+        }
+      });
       setRows(obj);
     }
   };
@@ -302,6 +304,7 @@ const Footer = () => {
     setRows(obj);
     handleTotal(obj);
     handleGetAccInfo(i);
+    getScrollListF2.mutate(rows[0]);
   };
   const handleAccType = (e, value, i) => {
     const obj = [...rows];
@@ -315,11 +318,6 @@ const Footer = () => {
 
     obj[i].accNo = txt;
     setRows(obj);
-
-    // if (i == 0) {
-    //   getAccInquiry.mutate(e.target.value);
-    //   console.log("1111");
-    // }
   };
   const handleAccNoBlur = (e, i) => {
     const obj = [...rows];
@@ -338,8 +336,8 @@ const Footer = () => {
     obj[i].trx = value;
     obj[i].credit = "0.00";
     obj[i].debit = "0.00";
-    obj[i].cNo = "";
-    obj[i].bugChq = true;
+    obj[i].cNo = "0";
+    obj[i].bugChq = false;
     setErrMsg({});
 
     obj[i].scroll = "";
@@ -379,16 +377,20 @@ const Footer = () => {
   };
 
   const handleCNo = (e, i) => {
-    setErrMsg({});
+    setErrMsg({ ...errMsg, cNo: {} });
     const obj = [...rows];
     let txt = e.target.value;
     obj[i].cNo = txt;
-
-    txt &&
-      obj[i].accNo &&
-      obj[i].accType.value &&
-      obj[i].branch.value &&
-      getChqValidation.mutate(obj[i]);
+    if (Number(txt) > 0) {
+      obj[i].bugChq = true;
+      txt &&
+        obj[i].accNo &&
+        obj[i].accType.value &&
+        obj[i].branch.value &&
+        getChqValidation.mutate(obj[i]);
+    } else {
+      obj[i].bugChq = false;
+    }
     setRows(obj);
     setIndex(i);
   };
@@ -460,40 +462,6 @@ const Footer = () => {
     setRows(obj);
   };
 
-  const handleSearch = (e) => {
-    let txt = e.target.value;
-    setSearch(txt);
-    const obj = [...rows];
-    if (filter.value == "scroll") {
-      obj.map((a, j) => {
-        if (txt && txt == a.scroll) {
-          a.isFav = true;
-        } else {
-          a.isFav = false;
-        }
-      });
-    }
-    if (filter.value == "vno") {
-      obj.map((a, j) => {
-        if (txt && txt == a.vNo) {
-          a.isFav = true;
-        } else {
-          a.isFav = false;
-        }
-      });
-    }
-
-    setRows(obj);
-  };
-
-  const handleFilter = (e, value) => {
-    setSearch("");
-    setFilter(value);
-    const obj = [...rows];
-    obj.map((a) => {
-      a.isFav = false;
-    });
-  };
   return (
     <>
       <Card
@@ -641,6 +609,7 @@ const Footer = () => {
                             onChange={(e) => handleRemark(e, i)}
                           />
                         </TableCell>
+
                         <TableCell
                           sx={{ minWidth: 50 }}
                           id={a?.isFav ? "isFav" : ""}
@@ -738,7 +707,7 @@ const Footer = () => {
                   );
                 })
               ) : (
-                <>no records</>
+                <></>
               )}
             </TableBody>
           </Table>
@@ -777,71 +746,16 @@ const Footer = () => {
       ) : (
         <></>
       )}
+      <Button
+        variant="contained"
+        color="secondary"
+        sx={{ margin: "8px" }}
+        onClick={() => setSaveDialog(true)}
+      >
+        save
+      </Button>
       <br />
-      <Grid container spacing={2}>
-        <Grid item sx={{ width: 180 }}>
-          <Autocomplete
-            value={filter}
-            size="small"
-            options={filterOpt}
-            onChange={(e, value) => handleFilter(e, value)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </Grid>
-        <Grid item>
-          <div id="searchContainer">
-            <SearchIcon style={{ margin: "5px" }} />
-            <input
-              disabled={filter?.value ? false : true}
-              placeholder="Search.."
-              id="searchField"
-              // type="number"
-              value={search}
-              onChange={(e) => handleSearch(e)}
-            />
-          </div>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary">
-            View All
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Calculator
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Query
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Delete
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            refresh
-          </Button>{" "}
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            scroll del
-          </Button>{" "}
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            other a/c
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            other Tx Detail
-          </Button>
-        </Grid>{" "}
-      </Grid>
+      <BaseFooter />
       <br />
       <>
         <Dialog

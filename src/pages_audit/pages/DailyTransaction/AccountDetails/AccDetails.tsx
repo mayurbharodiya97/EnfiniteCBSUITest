@@ -107,7 +107,7 @@ const AccDetails = () => {
                 </Grid>
 
                 <Grid item id="accInfo">
-                  <Typography variant="button">Branch Code</Typography>
+                  <Typography variant="button">Branch</Typography>
                   <Typography>{tempStore?.accInfo?.BRANCH_CD}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
@@ -122,7 +122,13 @@ const AccDetails = () => {
                 )}
                 <Grid item id="accInfo">
                   <Typography variant="button">Status</Typography>
-                  <Typography>
+                  <Typography
+                    style={
+                      tempStore?.accInfo?.STATUS == "C"
+                        ? { color: "#ea3a1b" }
+                        : { color: "" }
+                    }
+                  >
                     {tempStore?.accInfo?.STATUS == "O" && "Open"}
                     {tempStore?.accInfo?.STATUS == "C" && "Close"}
                     {tempStore?.accInfo?.STATUS == "U" && "Unclaimed"}

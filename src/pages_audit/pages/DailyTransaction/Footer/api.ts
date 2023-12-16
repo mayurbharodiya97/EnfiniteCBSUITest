@@ -6,15 +6,15 @@ import {
 import { AuthSDK } from "registry/fns/auth";
 
 const arr = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEp",
   "OCT",
   "NOV",
   "DEC",
@@ -26,7 +26,7 @@ let month = today.getMonth();
 let year = today.getFullYear();
 
 let date = day + "/" + arr[month] + "/" + year;
-let date2 = "14" + "-" + arr[month] + "-" + year;
+let date2 = day + "-" + arr[month] + "-" + year;
 
 export const getSDCList = async (reqData) => {
   const { data, status, message, messageDetails } =
@@ -202,11 +202,8 @@ export const getScrollListF2 = async (reqData) => {
   console.log(reqData, "reqData F2 scrolllist");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRNCNFF2", {
-      // ACCT_NO: "132005001007851",
-      ACCT_NO: "",
-      MOB_NO: "",
-      PAN_NO: "",
-      CUST_ID: "12",
+      COMP_CD: reqData?.branch?.info.COMP_CD,
+      BRANCH_CD: reqData?.branch?.value,
     });
   if (status === "0") {
     let responseData = data;

@@ -56,7 +56,7 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="grid/*" element={<MastersMenu />} />
                 <Route path="configuration/*" element={<Configuration />} />
                 <Route
-                  path="dynamicgrid/CFA7EF4DF00A11BD84EA5F242165DD61/*"
+                  path="dynamicgrid/C54BA228AA955DF1B1FECF663736B1D8/*"
                   element={<DailyTrans />}
                 />
                 <Route

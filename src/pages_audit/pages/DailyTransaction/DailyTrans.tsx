@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import JointDetailsForm from "./JointDetails";
 import TodayTransactionForm from "./TodayTransaction";
 import CloseIcon from "@mui/icons-material/Close";
@@ -30,6 +30,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import StyledTabs from "components/styledComponent/tabs/tabs";
+import TableF2 from "./TRN_F2/TableF2";
 
 // const JointDetails = lazy(() => import("./JointDetails"));
 console.log("daily trans");
@@ -62,6 +63,8 @@ function TabPanel(props: TabPanelProps) {
 }
 export const DailyTrans = () => {
   const [tabValue, setTabValue] = React.useState(0);
+  const loc = useLocation();
+  console.log(loc, "loc");
 
   const navArray = [
     {
@@ -153,8 +156,11 @@ export const DailyTrans = () => {
           </TabPanel>
         ))}
       </>
-
-      <Footer />
+      {loc.pathname.includes("C54BA228AA955DF1B1FECF663736B1D8") ? (
+        <TableF2 />
+      ) : (
+        <Footer />
+      )}
     </div>
   );
 };
