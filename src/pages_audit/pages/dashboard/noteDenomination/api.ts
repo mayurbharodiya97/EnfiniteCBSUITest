@@ -173,3 +173,26 @@ export const getAcctDTL = async ({
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const getAccInfoTeller = async (reqData) => {
+  console.log(reqData, "reqDatareqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
+      // COMP_CD: "132 ",
+      // BRANCH_CD: "099 ",
+      // ACCT_TYPE: "001 ",
+      // ACCT_CD: "000026              ",
+      // A_ASON_DT: "15/DEC/2023",
+      COMP_CD: reqData.COMP_CD,
+      BRANCH_CD: reqData.BRANCH_CD,
+      ACCT_TYPE: reqData.ACCT_TYPE,
+      ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
+      A_ASON_DT: reqData.A_ASON_DT,
+    });
+  if (status === "0") {
+    let responseData = data;
+    return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

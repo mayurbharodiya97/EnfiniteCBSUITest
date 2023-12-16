@@ -53,6 +53,8 @@ import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import DenoTable from "./denoTable";
 import DualPartTable from "./dualPartTable";
+import { isValidDate } from "components/utils/utilFunctions/function";
+import { format } from "date-fns";
 
 const CashReceiptEntry = () => {
   const [inputVal, setInputVal] = useState<any>({});
@@ -71,12 +73,14 @@ const CashReceiptEntry = () => {
   const [isDisableField, setIsDisableField] = useState<boolean>(false);
   const [openAccountDTL, setOpenAccountDTL] = useState<boolean>(false);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
-  const authState = useContext(AuthContext);
+  const authState: any = useContext(AuthContext);
   const formComponentViewRef = useRef<any>(null);
   const [referData, setReferData] = useState<any>();
   const [secondReferData, setSecondReferData] = useState<any>();
+  const [thirdReferData, setthirdReferData] = useState<any>();
   const [formData, setFormData] = useState<any>({});
   const [viewTRN, setViewTRN] = useState<any>(false);
+  const { tempStore, setTempStore } = useContext(AuthContext);
   // useEffect(() => {
   //   props?.map((item) => {
   //     if (item?.textField === "Y") {
@@ -413,6 +417,32 @@ const CashReceiptEntry = () => {
     }
   }, [secondReferData]);
 
+  const setThirdData = () => {
+    setthirdReferData(formComponentViewRef.current);
+    setOpenAccountDTL(true);
+  };
+
+  useEffect(() => {
+    if (thirdReferData) {
+      console.log(thirdReferData, "thirdReferData");
+
+      let reqPara = {
+        COMP_CD: authState?.authState?.companyID ?? "",
+        BRANCH_CD: thirdReferData?.columnVal?.BRANCH ?? "",
+        ACCT_TYPE: thirdReferData?.columnVal?.ACCOUNT_TYPE ?? "",
+        ACCT_CD: thirdReferData?.columnVal?.ACCOUNT_NUMBER ?? "",
+        A_ASON_DT: format(
+          isValidDate(authState?.authState?.workingDate)
+            ? authState?.authState?.workingDate
+            : new Date(),
+          "dd/MMM/yyyy"
+        ),
+        authState: authState ?? {},
+      };
+      getAccInfo.mutate(reqPara);
+    }
+  }, [thirdReferData]);
+
   useEffect(() => {
     if (
       referData !== undefined &&
@@ -443,10 +473,13 @@ const CashReceiptEntry = () => {
   //   }
   // });
 
-  const setThirdData = () => {
-    // setSecondReferData(formComponentViewRef.current);
-    setOpenAccountDTL(true);
-  };
+  const getAccInfo = useMutation(API.getAccInfoTeller, {
+    onSuccess: (data) => {
+      console.log(data, "accInfo");
+      setTempStore({ ...tempStore, accInfo: data });
+    },
+    onError: (error) => {},
+  });
 
   const handleViewDetails = () => {
     setViewTRN(true);
@@ -590,9 +623,10 @@ const CashReceiptEntry = () => {
         {openAccountDTL ? (
           <Dialog
             open={openAccountDTL}
-            maxWidth={"lg"}
+            maxWidth={"xl"}
             fullWidth
             onClose={closeAccountDTL}
+            // style={{ height: "40vh" }}
           >
             <AccDetails />
           </Dialog>
