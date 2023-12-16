@@ -9,16 +9,19 @@ import { CkycContext } from '../../../../CkycContext';
 import * as API from "../../../../api";
 import { useMutation, useQuery } from 'react-query';
 import { AuthContext } from 'pages_audit/auth';
+import _ from 'lodash';
 // import { format } from 'date-fns';
 
-const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
+  const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleReqCDctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleReqCDctx, handleModifiedColsctx} = useContext(CkycContext)
   const DeclarationFormRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [currentTabFormData, setCurrentTabFormData] = useState({declaration_details: {}})
+  const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
 
 //   const {data:saveDraftData, isSuccess, isLoading: isSaveDraftLoading, error, refetch} = useQuery(
 //     ["getSaveDraftData"],
@@ -67,6 +70,11 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     setIsNextLoading(true)
     console.log("qweqweqwe", data)     
     if(data && !hasError) {
+        let formFields = Object.keys(data) // array, get all form-fields-name 
+        formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+        formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+        const formData = _.pick(data, formFieldsRef.current)
+  
         // if(Boolean(data["FATCA_DT"])) {
         //     data["FATCA_DT"] = format(new Date(data["FATCA_DT"]), "dd-MMM-yyyy")
         // }
@@ -77,7 +85,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
         let newData = state?.formDatactx
-        newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data}
+        newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...formData}
         handleFormDataonSavectx(newData)
         // handleColTabChangectx(2)
         handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
@@ -93,7 +101,14 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         //     IsNewRow: state?.isFreshEntryctx,
         //     PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL
         // })
-        if(state?.req_cd_ctx) {
+        if(state?.req_cd_ctx || !state?.isFreshEntryctx) {
+            let tabModifiedCols:any = state?.modifiedFormCols
+            let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+            tabModifiedCols = {
+                ...tabModifiedCols,
+                PERSONAL_DETAIL: [...updatedCols]
+            }
+            handleModifiedColsctx(tabModifiedCols)
             handleColTabChangectx(state?.colTabValuectx+1)
         } else {
             let data = {
@@ -103,7 +118,8 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 KYC_NUMBER: state?.kycNoValuectx,
                 CONSTITUTION_TYPE: state?.constitutionValuectx,
                 IsNewRow: state?.isFreshEntryctx,
-                PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL
+                PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
+                COMP_CD: authState?.companyID ?? "",
             }
             mutation.mutate(data)
             // refetch()
@@ -164,6 +180,7 @@ const myGridRef = useRef<any>(null);
                         onSubmitHandler={DeclarationSubmitHandler}
                         // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                         initialValues={initialVal}
+                        displayMode={displayMode}
                         key={"declaration-form-kyc"+ initialVal}
                         metaData={declaration_meta_data as MetaDataType}
                         formStyle={{}}
@@ -180,11 +197,16 @@ const myGridRef = useRef<any>(null);
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
                         DeclarationFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Save & Next")}</Button>
+                >{t("Save & Next")}</Button>}
+                {!state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={(e) => {
+                        DeclarationFormRef.current.handleSubmitError(e, "save")
+                    }}
+                >{t("Update & Next")}</Button>}
             </Grid>
         </Grid>        
     )

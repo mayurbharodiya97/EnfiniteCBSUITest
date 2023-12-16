@@ -19,8 +19,8 @@ export const DocumentGridMetadata: GridMetaDataType = {
     pageSizes: [15, 25, 50],
     defaultPageSize: 15,
     containerHeight: {
-      min: "68vh",
-      max: "68vh",
+      min: "30vh",
+      max: "50vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
