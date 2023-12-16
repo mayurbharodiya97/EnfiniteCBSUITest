@@ -47,7 +47,7 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "autocomplete",
             },
-            name: "DOC_TYPE",
+            name: "RCV_DOC_TYPE",
             label: "TypeOfDocSubmitted",
             options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
             _optionsKey: "ckycDocTypes",
@@ -71,7 +71,7 @@ export const attestation_detail_meta_data = {
                 {label: "YES", value: "Y"},
                 {label: "NO", value: "N"}
             ],
-            name: "KYC_VERIFICATION_FLAG",
+            name: "IPV_FLAG",
             label: "KYCVerificationFlag",
             required: true,
             schemaValidation: {
@@ -94,7 +94,7 @@ export const attestation_detail_meta_data = {
             // ],
             options: () => API.getPMISCData("CKYC_RISK_CATEG"),
             _optionsKey: "ckycRiskCategOp",
-            name: "RISK_CATEGORY",
+            name: "RISK_CATEG",
             label: "RiskCategory",
             isReadOnly: true,
             // required: true,
@@ -106,7 +106,7 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "KYC_VERIFICATION_EMP_CODE",
+            name: "IPV_EMP_CODE",
             label: "KYCVerificationEmpCode",
             placeholder: "",
             type: "text",
@@ -116,7 +116,7 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "KYC_VERIFICATION_EMP_NAME",
+            name: "IPV_NAME",
             label: "KYCVerificationEmpName",
             placeholder: "",
             type: "text",
@@ -126,7 +126,7 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "KYC_VERIFICATION_EMP_DESIGNATION",
+            name: "IPV_EMP_DESIG",
             label: "KYCVerificationEmpDesignation",
             placeholder: "",
             type: "text",
@@ -136,7 +136,7 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "KYC_VERIFICATION_BRANCH",
+            name: "IPV_BRANCH",
             label: "KYCVerificationBranch",
             placeholder: "",
             type: "text",
@@ -146,7 +146,7 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "datePicker",
             },
-            name: "KYC_VERIFICATION_DATE",
+            name: "IPV_DATE",
             label: "KYCVerificationDate",
             // placeholder: "",
             // type: "datePicker",
@@ -176,7 +176,7 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "textField",
             },
-            name: "PLACE_OF_DECLARATION",
+            name: "PLACE_OF_DECLARE",
             label: "PlaceOfDeclaration",
             placeholder: "",
             type: "text",
@@ -186,7 +186,7 @@ export const attestation_detail_meta_data = {
             render: {
                 componentType: "datePicker",
             },
-            name: "DATE_OF_DECLARATION",
+            name: "DATE_OF_DECLARE",
             label: "DateOfDeclaration",
             // placeholder: "",
             // type: "datePicker",

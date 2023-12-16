@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import { ClearCacheProvider } from "cache";
 import CkycProvider from "./c-kyc/CkycContext";
 import { DetailMastersData } from "../../../components/formcomponent/detailMaster/detailStatic";
+import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
+import AcctMST from "./acct-mst/AcctMST";
 // import { ChequebookTab } from "./chequeBookTab/chequebookTab";
 // import { Ckyc } from "./c-kyc/ckyc";
 
@@ -27,6 +29,8 @@ export const OperationsMenu = () => (
     <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="teller/*" element={<CashReceiptEntry />} />
+    <Route path="ckyc-confirmation/*" element={<CkycConfirm />} />
+    <Route path="account-mst/*" element={<AcctMST />} />
     {/* <Route
       path="chequebook-entry/*"
       element={<DetailMastersData screenFlag="GETCHEQUEBOOK" />}
@@ -50,9 +54,9 @@ export const OperationsMenu = () => (
     <Route
       path="ckyc/*"
       element={
-        <CkycProvider>
+        // <CkycProvider>
           <Ckyc />
-        </CkycProvider>
+        // </CkycProvider>
       }
     />
   </Routes>
