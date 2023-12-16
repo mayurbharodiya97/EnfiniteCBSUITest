@@ -586,6 +586,7 @@ export const AuthLoginController = () => {
                           classes={classes}
                           loginState={loginState}
                           verifyFinger={verifyFinger}
+                          previousStep={changeUserName}
                         />
                       )}
                     </>

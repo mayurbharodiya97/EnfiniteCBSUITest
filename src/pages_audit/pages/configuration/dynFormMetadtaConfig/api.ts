@@ -51,6 +51,21 @@ export const getSourceListData = async (_, __, dependent) => {
         label: "email",
       },
     ];
+  } else if (dependent["propsDetails.PROPS_ID"]?.value === "__EDIT__") {
+    return [
+      {
+        value: "isVisible",
+        label: "isVisible",
+      },
+      {
+        value: "isReadOnly",
+        label: "isReadOnly",
+      },
+      {
+        value: "isFieldFocused",
+        label: "isFieldFocused",
+      },
+    ];
   }
   return [];
 };
@@ -189,6 +204,8 @@ export const getFormFieldPropsData = async (reqdata) => {
       return {
         ...item,
         OPTION_VALUE: item?.PROPS_VALUE,
+        DISABLE_CATCHING: item?.PROPS_VALUE === "Y" ? true : false,
+        FULLWIDTH: item?.PROPS_VALUE === "Y" ? true : false,
         DEPENDENTFIELD_VALUE: item?.PROPS_VALUE?.split(","),
         _isNewRow: item["NEWROW_STATUS"] === "N" ? false : true,
       };

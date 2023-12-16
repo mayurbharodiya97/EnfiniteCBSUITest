@@ -268,7 +268,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Customer Searching",
-    rowIdColumn: "CUST_ID",
+    rowIdColumn: "REQUEST_ID",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -276,9 +276,9 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     },
     allowColumnReordering: true,
     disableSorting: false,
-    hideHeader: true,
+    hideHeader: false,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
@@ -291,9 +291,39 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
   // filters: [],
   columns: [
     {
+      accessor: "temp_req_id",
+      columnName: "Req. ID",
+      sequence: 1,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    },
+    {
+      accessor: "temp_req_type",
+      columnName: "Req. Type", // value for fresh/existing
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    },
+    {
+      accessor: "temp_remark",
+      columnName: "Remarks",
+      sequence: 3,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    },
+    {
       accessor: "CUST_ID",
       columnName: "CustomerId",
-      sequence: 1,
+      sequence: 6,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -303,7 +333,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     {
       accessor: "CUST_NAME",
       columnName: "CustomerName",
-      sequence: 2,
+      sequence: 5,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -313,7 +343,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     {
       accessor: "CUST_TYPE",
       columnName: "CustomerType",
-      sequence: 3,
+      sequence: 4,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -323,8 +353,9 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     {
       accessor: "LAST_MODIFIED",
       columnName: "LastModified",
-      sequence: 4,
+      sequence: 7,
       alignment: "left",
+      dateFormat: "dd/MM/yyyy",
       componentType: "default",
       width: 140,
       minWidth: 140,
@@ -333,7 +364,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     {
       accessor: "MAKER",
       columnName: "Maker",
-      sequence: 5,
+      sequence: 8,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -344,7 +375,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     {
       accessor: "CHECKER",
       columnName: "Checker",
-      sequence: 6,
+      sequence: 9,
       alignment: "center",
       componentType: "default",
       isReadOnly: true,
@@ -362,7 +393,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
     title: "RetrieveTitle",
     allowColumnHiding: true,
     submitButtonName: "Retrieve",
-    // submitButtonHide: true,
+    submitButtonHide: false,
     // isDisplayOnly: false,
   },
   fields: [

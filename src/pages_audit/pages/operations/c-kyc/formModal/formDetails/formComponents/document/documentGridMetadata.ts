@@ -1,6 +1,7 @@
 import { GridMetaDataType } from "components/dataTableStatic";
+import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 
-export const KycDocumentMetadata: GridMetaDataType = {
+export const DocumentGridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Documents",
@@ -23,7 +24,7 @@ export const KycDocumentMetadata: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
   },
@@ -41,7 +42,7 @@ export const KycDocumentMetadata: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "BANK_DOC_TRAN_CD",
+      accessor: "DOC_DESCRIPTION",
       columnName: "Document*",
       sequence: 2,
       alignment: "left",
@@ -78,7 +79,7 @@ export const KycDocumentMetadata: GridMetaDataType = {
     {
       accessor: "DOCUMENT_NO",
       columnName: "Document No.",
-      sequence: 4,
+      sequence: 5,
       alignment: "left",
       componentType: "default",
       placeholder: "",
@@ -88,9 +89,39 @@ export const KycDocumentMetadata: GridMetaDataType = {
       isReadOnly: true,
     },  
     {
+      accessor: "DOC_WEIGHTAGE",
+      columnName: "Document Weightage",
+      sequence: 7,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 200,
+      minWidth: 100,
+      maxWidth: 300,
+      isReadOnly: true,
+    },  
+    {
+      accessor: "REMARKS",
+      columnName: "Remarks",
+      sequence: 8,
+      alignment: "left",
+      componentType: "default",
+      placeholder: "",
+      width: 2250,
+      minWidth: 200,
+      maxWidth: 400,
+      isReadOnly: true,
+    },  
+    // {
+    //   accessor: "VALID_DT_APPLICABLE",
+    //   columnName: "VALID DATE APPLICABLE",
+    //   componentType: "hidden",
+    //   sequence: 7,
+    // },
+    {
       accessor: "VALID_TILL_DATE",
       columnName: "Valid till Date",
-      sequence: 8,
+      sequence: 6,
       alignment: "left",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
@@ -103,6 +134,43 @@ export const KycDocumentMetadata: GridMetaDataType = {
       minWidth: 250,
       maxWidth: 400,
     },
+    // {
+    //   accessor: "SUBMIT_BTN",
+    //   columnName: "Action",
+    //   componentType: "buttonRowCell",
+    //   sequence: 4,
+    //   buttonLabel: "EDIT/VIEW",
+    //   isVisible: true,
+    //   width: 140,
+    //   minWidth: 140,
+    //   maxWidth: 200,
+    //   __EDIT__: { isVisible: true },
+    // },
+    {
+      columnName: "",
+      componentType: "deleteRowCell",
+      // accessor: "_hidden",
+      accessor: "_hidden",
+      buttonLabel: "Submit",
+      shouldExclude:(initialValue,original,prevRows,nextRows)=>{
+        if(original?.IS_MANDATORY==='Y'){
+          return true;
+        }
+        return false;
+      },
+      sequence: 9,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 400,
+      // shouldExclude: () => {
+
+      // },
+      // isVisible: false,
+      __EDIT__: { isVisible: true },
+    },
+    // {
+
+    // }
     // {
     //   accessor: "ENTERED_DATE",
     //   columnName: "Entered Date",

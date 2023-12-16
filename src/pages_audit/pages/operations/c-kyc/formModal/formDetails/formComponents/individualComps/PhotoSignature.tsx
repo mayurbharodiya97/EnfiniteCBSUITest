@@ -15,7 +15,6 @@ import { CkycContext } from '../../../../CkycContext';
 import { AuthContext } from "pages_audit/auth";
 import { useQuery } from 'react-query';
 import * as API from "../../../../api";
-import KYCDocument from '../../KYCDocument';
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { transformFileObject } from "components/fileUpload/utils";
 import { extractMetaData, utilFunction } from "components/utils";
@@ -170,7 +169,7 @@ const PhotoSignature = () => {
         COMP_CD: authState?.companyID ?? "",
         ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
         REQ_CD:state?.req_cd_ctx,
-        SR_CD:"3",
+        // SR_CD:"3",
         SIGN_GROUP:"2",
         FROM_LIMIT:"2",
         TO_LIMIT:"2",

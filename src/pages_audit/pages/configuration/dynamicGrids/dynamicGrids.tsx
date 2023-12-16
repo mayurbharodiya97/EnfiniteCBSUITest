@@ -217,7 +217,7 @@ export const DynamicGrids = () => {
                   isDataChangedRef={isDataChangedRef}
                   item={item}
                   docID={docID}
-                  // defaultView={validViews}
+                  existingData={result[0].data}
                   defaultView={item.actionName === "Add" ? "add" : "view"}
                   alertMessage={item?.ALRT_MSG}
                 />

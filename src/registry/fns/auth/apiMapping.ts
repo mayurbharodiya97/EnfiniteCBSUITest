@@ -496,7 +496,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDYNAPILIST",
     packageName: "",
   },
-
   GETDROPDOWNCONFIG: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDROPDOWNCONFIG",
     packageName: "",
@@ -561,6 +560,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/commonMasterServiceAPI/DOAPICONFIGDATA",
     packageName: "",
   },
+  GETCLGZONELIST: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGZONELIST",
+    packageName: "",
+  },
+  GETCUSTPHOTODTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
+    packageName: "",
+  },
   CHEQUEBKDATA: {
     url: "/chequeServiceAPI/CHEQUEBKDATA",
     packageName: "",
@@ -595,6 +602,22 @@ export const ActionWiseAPIConfiguration = {
   },
   GETFDBRDDETAIL: {
     url: "accountServiceAPI/GETFDBRDDETAIL",
+    packageName: "",
+  },
+  GETDAILYTRANMAKERDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRANMAKERDTL",
+    packageName: "",
+  },
+  DODAILYTRNDML: {
+    url: "/transactionServiceAPI/DODAILYTRNDML",
+    packageName: "",
+  },
+  CHEQUENOVALIDATION: {
+    url: "/chequeServiceAPI/CHEQUENOVALIDATION",
+    packageName: "",
+  },
+  GETDAILYTRNCNFF2: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNCNFF2",
     packageName: "",
   },
 };

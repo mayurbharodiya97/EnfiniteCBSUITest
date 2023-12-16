@@ -1,16 +1,35 @@
 import { Button } from "@mui/material";
 import { CellWrapper } from "./cellWrapper";
+import { useEffect, useMemo } from "react";
 
 export const DeleteRowButton = (props) => {
   const {
-    row: { index },
-    column: { id },
+    value: initialValue,
+    rows,
+    row: { index,original },
+    column: { id,shouldExclude },
     updateGridData,
+    hiddenFlag
   } = props;
+  
+  const prevRows = rows
+  .slice(0, index)
+  .map((one) => one?.original)
+  .filter((one) => Boolean(one[hiddenFlag]) !== true);
 
+  const nextRows = rows
+  .slice(index + 1)
+  .map((one) => one?.original)
+  .filter((one) => Boolean(one[hiddenFlag]) !== true);
+  const isShouldExclude = useMemo(()=>{ if(typeof shouldExclude === "function"){
+    return shouldExclude(initialValue,original,prevRows,nextRows);
+  } return false; },[initialValue,prevRows,nextRows,original]);
   const handleClick = (e) => {
     updateGridData(index, id, true, true, "");
   };
+  if(isShouldExclude){
+    return null;
+  }
   return (
     <CellWrapper showBorder {...props}>
       <Button

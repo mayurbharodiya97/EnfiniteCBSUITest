@@ -9,15 +9,14 @@ import { Button, Dialog } from "@mui/material";
 import { MasterDetailsForm } from "components/formcomponent";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import { cloneDeep } from "lodash";
-import { documentMasterDetailsMetaData } from "./metadata/documentMasterDetailsMetaData";
-import ImgaeViewerandUpdate from "./ImgaeViewerandUpdate";
+import { documentMasterDetailsMetaData } from "../../metadata/documentMasterDetailsMetaData";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { extractMetaData } from "components/utils";
 import { MetaDataType } from "components/dyanmicForm";
-import { KYCDocumentMasterMetaData } from "./metadata/kycDocument/kycDocumentMetadata";
+import { DocumentFormMetadata } from "./documentFormMetadata";
 import { UploadTarget } from "components/fileUpload/uploadTarget";
 import { FileObjectType } from "components/fileUpload/type";
 import {
@@ -31,24 +30,31 @@ import {
 } from "components/fileUpload/preView";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
-import * as API from "../../api";
-import { CkycContext } from "../../CkycContext";
+import * as API from "../../../../api";
+import { CkycContext } from "../../../../CkycContext";
 
 const KYCDocumentMasterDetails = ({
   ClosedEventCall,
   isDataChangedRef,
-  defaultmode = "view",
+  formMode,
+  setFormMode,
+  afterFormSubmit,
+  open,
+  onClose,
   defaultFileData = [],
   allowedExtensions = ["pdf"],
   maxAllowedSize = 1024 * 1024 * 3,
+  gridData,
+  rowsData
 }) => {
   const classes = useDialogStyles();
   const myImgRef = useRef<any>(null);
   const myRef = useRef<any>(null);
-  const [formMode, setFormMode] = useState(defaultmode);
   const [isopenImgViewer, setOpenImgViewer] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [options, setOptions] = useState<any>([]);
   const [files, setFiles] = useState<any>(defaultFileData);
+  const [formMetadata, setFormMetadata] = useState<any>(DocumentFormMetadata);
   const onFormButtonClickHandel = (id) => {
     setOpenImgViewer(true);
   };
@@ -65,9 +71,104 @@ const KYCDocumentMasterDetails = ({
   // const mutationRet: any = useMutation(
   //   updateOperatorMasterDetailsDataWrapperFn(API.getOperatorDetailGridData)
   // );
+  console.log(rowsData, "adskjhqnhweiudhqw", gridData)
+  useEffect(() => {
+    console.log("renderededdd")
+  }, [])
+  useEffect(() => {
+    console.log("formModeformMode", formMode)
+  }, [formMode])
+  useEffect(() => {
+    // if(defaultmode==="new") {  
+      // let data = {
+      //   COMP_CD: authState?.companyID ?? "",
+      //   BRANCH_CD: authState?.user?.branchCode ?? "",
+      // }
+      // mutation.mutate(data)
+    // } else if(defaultmode==="edit") {
+    if(formMode==="edit") {
+      console.log("adkuuiqwuidsquwid", rowsData[0].data)
+      let docOption:any = [];
+      docOption.push(rowsData[0].data)
+      // // docOption.push(rowsData[0].data)
+      // KYCDocumentMasterMetaData.fields[2].options = () => {
+      //   return docOption
+      // }
+      // setOptions(docOption)
+    }
+  }, [formMode, gridData])
+
+  // API.getCustDocumentOpDtl(authState?.companyID, authState?.user?.branchCode)
+  const mutation: any = useMutation(API.getCustDocumentOpDtl, {
+    onSuccess: (data) => {
+      if (data) {
+        let selectedOptions = gridData.map(el => el.DOC_DESCRIPTION)
+        let result = data.filter(el => !selectedOptions.includes(el.DESCRIPTION))
+        console.log( DocumentFormMetadata.fields[2], "insideeeeeeee", data, selectedOptions, result)
+        // if(result && result.length>0) {
+        // }
+        // KYCDocumentMasterMetaData.fields[2].options = () => {
+        //   return result
+        // }        
+
+        // setOptions(result)
+        setOptions(data)
+
+
+        // console.log(data, "insidee oppp", data.map(el => el.DOC_DESCRIPTION))
+        // let selectedDocTypes = data.map(el => {
+        //   if(el.DOC_DESCRIPTION) {
+        //     return el.DOC_DESCRIPTION
+        //   }
+        // })
+        // let result = selectedDocTypes && data.filter(el => selectedDocTypes.includes(el?.DESCRIPTION))
+        // console.log(selectedDocTypes, "insidee oppp", data, "c", result)
+        // KYCDocumentMasterMetaData.fields[2].options = result
+      }
+    },
+    onError: (error: any) => {},
+  });
+  useEffect(() => {
+    let data = {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+    }
+    mutation.mutate(data)
+  }, [])
+
+
+  useEffect(() => {
+    console.log(rowsData, "optionssssss", options)
+    let metadata = formMetadata
+    metadata.fields[2].options = () => {
+      return options
+    }
+    setFormMetadata(metadata)
+    // KYCDocumentMasterMetaData.fields[2].options = () => {
+    //   return options
+    // }   
+  }, [options])
+  useEffect(() => {
+    let metadata = formMetadata
+    if(options && options.length) {
+      if(rowsData && rowsData.length) {
+        console.log("optionssssss disable", rowsData)
+        metadata.fields[2].isReadOnly = true
+      } else {
+        metadata.fields[2].isReadOnly = false
+      }     
+      setFormMetadata(metadata)
+    }
+  }, [rowsData, options])
+
+  useEffect(() => {
+    console.log("options, formMetadata", options, formMetadata)
+  }, [options, formMetadata])
+
   const customTransformFileObj = (currentObj) => {
     return transformFileObject({})(currentObj);
   };
+
   const validateFilesAndAddToListCB = useCallback(
     async (newFiles: File[], existingFiles: FileObjectType[] | undefined) => {
       if (newFiles.length > 0) {
@@ -145,6 +246,7 @@ const KYCDocumentMasterDetails = ({
     setFieldError,
     actionFlag
   ) => {
+    afterFormSubmit(data)
     //@ts-ignore
     // endSubmit(true);
   };
@@ -178,12 +280,13 @@ const KYCDocumentMasterDetails = ({
 
   return (
     <Dialog
-      open={true}
+      open={open}
       //@ts-ignore
       // TransitionComponent={Transition}
       PaperProps={{
         style: {
-          width: "100%",
+          minWidth: "70%",
+          width: "80%",
         },
       }}
       maxWidth="lg"
@@ -192,16 +295,23 @@ const KYCDocumentMasterDetails = ({
         paperScrollBody: classes.topPaperScrollBody,
       }}
     >
-      <FormWrapper
-        key={"MobileAppReviewGridMetaData"}
+      {(options.length >0) && <FormWrapper
+        key={"MobileAppReviewGridMetaData"+setFormMetadata+rowsData+options+formMode}
         // metaData={MobileAppReviewMetaData}
+        // metaData={
+        //   extractMetaData(
+        //     KYCDocumentMasterMetaData,
+        //     formMode === "add" ? "new" : "edit"
+        //   ) as MetaDataType
+        // }
         metaData={
           extractMetaData(
-            KYCDocumentMasterMetaData,
-            formMode === "add" ? "new" : "edit"
+            formMetadata,formMode
+            // formMode === "view"
           ) as MetaDataType
         }
-        initialValues={rows?.[0]?.data as InitialValuesType}
+        // metadata={formMetadata}
+        initialValues={rowsData?.[0]?.data as InitialValuesType}
         onSubmitHandler={onSubmitHandler}
         //@ts-ignore
         displayMode={formMode}
@@ -216,7 +326,18 @@ const KYCDocumentMasterDetails = ({
           console.log("q3qwedqwe", isSubmitting);
           return (
             <>
-              <Button
+              {formMode === "view" && <Button
+                onClick={(event) => {
+                  // handleSubmit(event, "Save");
+                  setFormMode("edit")
+                }}
+                // disabled={isSubmitting}
+                //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                color={"primary"}
+              >
+                Edit
+              </Button>}
+              {(formMode === "edit" || formMode === "new") && <Button
                 onClick={(event) => {
                   handleSubmit(event, "Save");
                 }}
@@ -225,9 +346,10 @@ const KYCDocumentMasterDetails = ({
                 color={"primary"}
               >
                 Save
-              </Button>
+              </Button>}
               <Button
-                onClick={ClosedEventCall}
+                // onClick={ClosedEventCall}
+                onClick={onClose}
                 color={"primary"}
                 // disabled={isSubmitting}
               >
@@ -236,7 +358,7 @@ const KYCDocumentMasterDetails = ({
             </>
           );
         }}
-      </FormWrapper>
+      </FormWrapper>}
       <UploadTarget
         existingFiles={files}
         onDrop={validateFilesAndAddToListCB}
