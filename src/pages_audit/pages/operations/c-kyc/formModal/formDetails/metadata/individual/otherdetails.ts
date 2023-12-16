@@ -208,7 +208,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "checkbox",
             },
-            defaultValue: true,
+            defaultValue: false,
             name: "POLITICALLY_CONNECTED",
             label: "PoliticallyConnected",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -228,7 +228,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "checkbox",
             },
-            defaultValue: true,
+            defaultValue: false,
             name: "BLINDNESS",
             label: "Blind",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -337,7 +337,7 @@ export const other_details_meta_data = {
             render: {
                 componentType: "checkbox",
             },
-            defaultValue: true,
+            defaultValue: false,
             name: "REFERRED_BY_STAFF",
             label: "ReferredByStaff",            
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
