@@ -388,6 +388,13 @@ export const FilterFormComponents = forwardRef<any, any>(
                               ? loading || submitSecondLoading
                               : true
                           }
+                          InputProps={{
+                            style: {
+                              background: Boolean(column?.isDisabled)
+                                ? "#e7e5e563"
+                                : "",
+                            },
+                          }}
                           error={Boolean(ErrorData[column.name]?.isError)}
                           helperText={
                             Boolean(ErrorData[column.name]?.isError)
@@ -396,17 +403,16 @@ export const FilterFormComponents = forwardRef<any, any>(
                           }
                           onKeyDown={(e) => {
                             if (
-                              (e.key === "Tab" && column?.entertoSubmit) ??
+                              ((e.key === "Tab" || e.key === "Enter") &&
+                                column?.entertoSubmit) ??
                               false
                             ) {
-                              //console.log(inputButtonRef.current);
                               inputButtonRef?.current?.click?.();
                             }
                             if (
                               (e.key === "Tab" && column?.tabToSubmit) ??
                               false
                             ) {
-                              //console.log(inputButtonRef.current);
                               secondButtonRef?.current?.click?.();
                             }
                           }}
@@ -459,7 +465,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                   {submitThirdButtonHide ? null : (
                     <Grid key={`gird${submitThirdButtonName}`} item>
                       <GradientButton
-                        disabled={loading || submitThirdLoading}
+                        disabled={submitThirdLoading}
                         endIcon={
                           submitThirdLoading ? (
                             <CircularProgress size={20} />

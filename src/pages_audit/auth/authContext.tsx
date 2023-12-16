@@ -78,10 +78,13 @@ export const AuthContext = createContext<AuthContextType>({
   branchSelect: () => true,
   getProfileImage: "",
   setProfileImage: () => false,
+  tempStore: {},
+  setTempStore: () => false,
 });
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, inititalState);
+  const [tempStore, setTempStore]: any = useState({});
   const [authenticating, setAuthenticating] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -174,6 +177,7 @@ export const AuthProvider = ({ children }) => {
     }
     localStorage.removeItem("authDetails");
     localStorage.removeItem("tokenchecksum");
+    localStorage.removeItem("token_status");
     dispatch({
       type: "logout",
       payload: {},
@@ -269,7 +273,7 @@ export const AuthProvider = ({ children }) => {
       let geneTime = Number.parseInt(generateTime);
       let exTime = Number.parseInt(expireTime);
       let totalTime = (utilFunction.getCurrentDateinLong() - geneTime) / 1000;
-      exTime = exTime - totalTime - 50;
+      exTime = exTime - totalTime - 10;
       if (exTime > 0) {
         exTime = exTime * 1000;
         if (Boolean(timeoutID)) {
@@ -321,6 +325,8 @@ export const AuthProvider = ({ children }) => {
         branchSelect,
         getProfileImage: profileImage,
         setProfileImage,
+        tempStore,
+        setTempStore,
       }}
     >
       {authenticating ? <LinearProgress color="secondary" /> : children}

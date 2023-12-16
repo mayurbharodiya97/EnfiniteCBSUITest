@@ -21,6 +21,7 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
     // },
     {
       NOTE: "500",
+      PYNOTE: "500",
       NOTE_CNT: 0,
       AMOUNT: "0",
       AVAIL_NOTE: "10",
@@ -29,6 +30,7 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
     },
     {
       NOTE: "200",
+      PYNOTE: "200",
       NOTE_CNT: 0,
       AMOUNT: "0",
       AVAIL_NOTE: "20",
@@ -37,6 +39,7 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
     },
     {
       NOTE: "100",
+      PYNOTE: "100",
       NOTE_CNT: 0,
       AMOUNT: "0",
       AVAIL_NOTE: "40",
@@ -45,6 +48,7 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
     },
     {
       NOTE: "50",
+      PYNOTE: "50",
       NOTE_CNT: 0,
       AMOUNT: "0",
       AVAIL_NOTE: "20",
@@ -53,6 +57,7 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
     },
     {
       NOTE: "20",
+      PYNOTE: "20",
       NOTE_CNT: 0,
       AMOUNT: "0",
       AVAIL_NOTE: "80",
@@ -61,6 +66,7 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
     },
     {
       NOTE: "10",
+      PYNOTE: "10",
       NOTE_CNT: 0,
       AMOUNT: "0",
       AVAIL_NOTE: "88",
@@ -69,7 +75,7 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
     },
     {
       NOTE: "5",
-      NOTE_CNT: 0,
+      PYNOTE: "0",
       AMOUNT: "0",
       AVAIL_NOTE: "60",
       TOTAL_AMNT: "300",
@@ -117,8 +123,12 @@ export const CashReceiptEntrysData = async ({ a, b }) => {
 export const getSDCList = async (...authDTL) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSDCLIST", {
-      COMP_CD: authDTL[1]?.companyID,
-      BRANCH_CD: authDTL[1]?.user?.branchCode,
+      COMP_CD: authDTL[1]?.companyID
+        ? authDTL[1]?.companyID
+        : authDTL[3]?.companyID,
+      BRANCH_CD: authDTL[1]?.user?.branchCode
+        ? authDTL[1]?.user?.branchCode
+        : authDTL[3]?.user?.branchCode,
     });
   if (status === "0") {
     let responseData = data;
@@ -159,6 +169,29 @@ export const getAcctDTL = async ({
   if (status === "0") {
     // console.log(data, "data@@@@");
     return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getAccInfoTeller = async (reqData) => {
+  console.log(reqData, "reqDatareqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
+      // COMP_CD: "132 ",
+      // BRANCH_CD: "099 ",
+      // ACCT_TYPE: "001 ",
+      // ACCT_CD: "000026              ",
+      // A_ASON_DT: "15/DEC/2023",
+      COMP_CD: reqData.COMP_CD,
+      BRANCH_CD: reqData.BRANCH_CD,
+      ACCT_TYPE: reqData.ACCT_TYPE,
+      ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
+      A_ASON_DT: reqData.A_ASON_DT,
+    });
+  if (status === "0") {
+    let responseData = data;
+    return responseData[0];
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

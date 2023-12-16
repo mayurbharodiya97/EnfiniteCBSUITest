@@ -71,7 +71,7 @@ export const getCustomerDetails = async ({COMP_CD, CUST_ID, CONTACT_NO, PAN_NO, 
     }
   };
 
-export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_TYPE, isFreshEntry }) => {
+export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_TYPE, isFreshEntry, updateCase }) => {
   if(!CATEGORY_CD || !CONS_TYPE) {
     return []
   }
@@ -81,7 +81,11 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
       ENTITY_TYPE: ENTITY_TYPE,
       CATEGORY_CD: CATEGORY_CD,
       CONS_TYPE: CONS_TYPE,
-      ENTRY_MODE: isFreshEntry ? "NEW" : "EDIT"
+      ENTRY_MODE: isFreshEntry 
+                  ? "NEW"
+                  : (updateCase && updateCase ==  "A")
+                    ? "NEW"
+                    : "EDIT"
     });
   if (status === "0") {
     return data;
@@ -221,7 +225,7 @@ export const getPMISCData = async (CATEGORY_CD, dependentValue?, CUST_TYPE?) => 
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      console.log("qweqwerr", responseData) // checked for pass, dr - expiry date
+      // console.log("qweqwerr", responseData) // checked for pass, dr - expiry date
 
       if(CATEGORY_CD == "Marital") {
         // console.log("dkjawhdiqwuiugeqweqe", dependentValue)
@@ -527,12 +531,38 @@ export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
 }
 
 // for getting pending entries, in grid
-export const getPendingData = async ({COMP_CD, BRANCH_CD, ENTERED_DATE}) => {
+export const getPendingData = async (reqObj:any) => {
+  const {COMP_CD, BRANCH_CD, ENTERED_DATE} = reqObj
+  let payload = {}
+  if(reqObj && reqObj.REQ_FLAG) {
+    payload = {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
+      ENTERED_DATE: ENTERED_DATE,
+      REQ_FLAG: reqObj.REQ_FLAG
+    }
+  } else {
+    payload = {
+      COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
+      ENTERED_DATE: ENTERED_DATE,
+    }
+  }
   const { data, status, message, messageDetails } =
-  await AuthSDK.internalFetcher("GETPENDINGCUSTLIST", {
-    COMP_CD: COMP_CD, 
-    BRANCH_CD: BRANCH_CD, 
-    ENTERED_DATE: ENTERED_DATE
+  await AuthSDK.internalFetcher("GETPENDINGCUSTLIST", payload);
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+// for getting pending entries, in grid
+export const ConfirmPendingCustomers = async ({REQUEST_CD, REMARKS, CONFIRMED}) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("CONFIRMCUSTOMERDATA", {
+    REQUEST_CD: REQUEST_CD,
+    REMARKS: REMARKS,
+    CONFIRMED: CONFIRMED,
   });
   if (status === "0") {
     return data
@@ -540,6 +570,7 @@ export const getPendingData = async ({COMP_CD, BRANCH_CD, ENTERED_DATE}) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+
 export const getRangeOptions = async (COMP_CD, BRANCH_CD) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETNNULINCOME", {
@@ -846,19 +877,19 @@ export const SaveAsDraft = async ({
   const ExtraData = {
     APPLICATION_TYPE: "Y",
     // ENTERED_DATE: format(new Date(), "dd-MMM-yyyy"),
-    ENTERED_DATE: "20-July-2023",
-    STD_1: "",
-    STD_4: "54890",
-    STD_2: "",
-    STD_3: "",
+    // ENTERED_DATE: "20-July-2023",
+    // STD_1: "",
+    // STD_4: "54890",
+    // STD_2: "",
+    // STD_3: "",
     CONTACT1: "",
     CONTACT4: "",
     CONTACT2: "7858089344",
     CONTACT3: "",
     SAME_AS_PER: PERSONAL_DETAIL.SAME_AS_PER ? "Y" : "N",
     // formData["PERSONAL_DETAIL"].SAME_AS_PER = formData["PERSONAL_DETAIL"].SAME_AS_PER ? "Y" : "N";
-    // ENT_BRANCH_CD :"099 ", //need-in-legal
-    // ENT_COMP_CD: "132 ", //need-in-legal
+    ENT_BRANCH_CD :"099 ", //need-in-legal
+    ENT_COMP_CD: "132 ", //need-in-legal
 
     // SCREEN: "",
     // ISD_CD:"456783",
@@ -1318,14 +1349,14 @@ export const SaveEntry = async ({
     APPLICATION_TYPE: "Y",
     // ENTERED_DATE: format(new Date(), "dd-MMM-yyyy"),
     ENTERED_DATE: "20-July-2023",
-    STD_1: "",
-    STD_4: "54890",
-    STD_2: "",
-    STD_3: "",
-    CONTACT1: "",
-    CONTACT4: "",
-    CONTACT2: "7858089344",
-    CONTACT3: "",
+    // STD_1: "",
+    // STD_4: "54890",
+    // STD_2: "",
+    // STD_3: "",
+    // CONTACT1: "",
+    // CONTACT4: "",
+    // CONTACT2: "7858089344",
+    // CONTACT3: "",
     // ENT_BRANCH_CD :"099 ", //need-in-legal
     // ENT_COMP_CD: "132 ", //need-in-legal
     // SCREEN: "",
@@ -1793,6 +1824,11 @@ export const SaveEntry = async ({
   NRI_DTL: formData["NRI_DTL"], //test-done
   
   });
+  if(status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 }
 
 // to show total_acct number, in deactivate customer

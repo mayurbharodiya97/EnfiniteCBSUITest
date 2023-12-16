@@ -36,7 +36,7 @@ export const getApiGridMetaData: GridMetaDataType = {
       width: 70,
       minWidth: 70,
       maxWidth: 200,
-      isAutoSequence: true,
+      // isAutoSequence: true,
     },
 
     {
@@ -69,15 +69,15 @@ export const getApiGridMetaData: GridMetaDataType = {
       minWidth: 500,
       maxWidth: 1000,
     },
-    {
-      accessor: "BUTTONCELL",
-      columnName: "Delete",
-      sequence: 6,
-      // alignment: "left",
-      componentType: "buttonRowCell",
-      width: 100,
-      minWidth: 70,
-      maxWidth: 200,
-    },
+    // {
+    //   accessor: "BUTTONCELL",
+    //   columnName: "Delete",
+    //   sequence: 6,
+    //   // alignment: "left",
+    //   componentType: "buttonRowCell",
+    //   width: 100,
+    //   minWidth: 70,
+    //   maxWidth: 200,
+    // },
   ],
 };

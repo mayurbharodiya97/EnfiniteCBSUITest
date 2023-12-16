@@ -7,34 +7,57 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { limitEntryMetaData } from "./limitEntryMetadata";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
 import { SubmitFnType } from "packages/form";
-import { getLimitEntryData } from "./api";
+import { LimitSecurityData, getFDdetail, getLimitDTL } from "./api";
 export const LimitEntry = () => {
   const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const [newFormMetadata, setNewFormMetadata] =
+    useState<any>(limitEntryMetaData);
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
-  const mutation: any = useMutation(getLimitEntryData, {
+  const getFDdetailData: any = useMutation("getFDdetail", getFDdetail, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
-  console.log("<<<mutation", mutation);
-  const ClickEventManage = () => {
+  useEffect(() => {
+    getFDdetailData.mutate();
+  }, []);
+  console.log("<<<getFDdetailData", getFDdetailData);
+  const securityLimitData: any = useMutation(LimitSecurityData, {
+    onSuccess: (data) => {
+      let newData;
+      if (data.length > 0) {
+        let newMetadata: any = [...limitEntryMetaData.fields, ...data];
+        newData = { ...newFormMetadata, fields: newMetadata };
+      } else {
+        newData = { ...limitEntryMetaData };
+      }
+      setNewFormMetadata(newData);
+    },
+    onError: (error: any) => {},
+  });
+  const getLimitDetailData: any = useMutation("getChequebookDTL", getLimitDTL, {
+    onSuccess: (data) => {},
+    onError: (error: any) => {},
+  });
+
+  const ClickEventManage = (fieldName) => {
     let event: any = { preventDefault: () => {} };
-    myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+    myMasterRef?.current?.handleSubmit(event, fieldName);
   };
 
   const onSubmitHandler: SubmitFnType = (
@@ -46,17 +69,13 @@ export const LimitEntry = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    let otherAPIRequestPara = {
+    let otherAPIRequestPara2 = {
       COMP_CD: authState?.companyID,
-      ACCT_CD: data?.ACCT_CD.padStart(6, "0").padEnd(20, " "),
-      ACCT_TYPE: data?.ACCT_TYPE,
-      BRANCH_CD: data?.BRANCH_CD,
+      SECURITY_TYPE: data?.SECURITY_CODE,
+      BRANCH_CD: authState?.user?.branchCode,
     };
-    if (value === "BUTTON_CLICK") {
-      mutation.mutate({ otherAPIRequestPara });
-      console.log("<<<if", data);
-    } else {
-      console.log("<<<else", data);
+    if (value === "limitEntry/SECURITY_CODE") {
+      securityLimitData.mutate(otherAPIRequestPara2);
     }
   };
 
@@ -71,7 +90,11 @@ export const LimitEntry = () => {
           aria-label="secondary tabs example"
         >
           <Tab value="tab1" label="Limit Entry" />
-          <Tab value="tab2" label="Limit Detail" />
+          {/* <Tab
+            value="tab2"
+            label="Limit Detail"
+            // onClick={() => getLimitDetailData.mutate(limitDTLRequestPara)}
+          /> */}
           {/* <Tab value="tab3" label="Item Three" /> */}
         </Tabs>
       </Box>
@@ -86,24 +109,16 @@ export const LimitEntry = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {mutation?.isError ? (
+          {securityLimitData?.isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
-                  errorMsg={mutation?.error?.error_msg ?? "Unknow Error"}
-                  errorDetail={mutation?.error?.error_detail ?? ""}
+                  errorMsg={
+                    securityLimitData?.error?.error_msg ?? "Unknow Error"
+                  }
+                  errorDetail={securityLimitData?.error?.error_detail ?? ""}
                   color="error"
-                />
-              </AppBar>
-            </div>
-          ) : mutation?.data?.length < 1 && Boolean(mutation?.isSuccess) ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  errorMsg="No data found"
-                  errorDetail="No any data found"
-                  severity="error"
                 />
               </AppBar>
             </div>
@@ -111,36 +126,32 @@ export const LimitEntry = () => {
           {value === "tab1" ? (
             <div
               onKeyDown={(e) => {
+                let target: any = e?.target;
                 if (e.key === "Tab") {
-                  let target: any = e?.target;
                   if (
                     (target?.name ?? "") ===
-                      limitEntryMetaData.form.name + "/ACCT_CD" &&
+                      limitEntryMetaData.form.name + "/SECURITY_CODE" &&
                     target?.value !== ""
                   ) {
-                    ClickEventManage();
+                    ClickEventManage(target?.name);
                   }
                 }
               }}
             >
-              {mutation.isLoading || mutation.isFetching ? (
+              {securityLimitData.isLoading || securityLimitData.isFetching ? (
                 <LinearProgress color="secondary" />
               ) : (
                 <LinearProgressBarSpacer />
               )}
+              {/* {formWrapperMemo} */}
               <FormWrapper
-                key={
-                  "limitEntry" + mutation?.data?.length &&
-                  Boolean(mutation?.isSuccess)
-                    ? mutation?.data
-                    : ""
-                }
-                metaData={limitEntryMetaData as MetaDataType}
-                initialValues={mutation?.data?.[0] ?? []}
+                key={"limitEntryForm" + newFormMetadata + setNewFormMetadata}
+                metaData={newFormMetadata}
+                initialValues={[]}
                 onSubmitHandler={onSubmitHandler}
                 // displayMode={"view"}
                 // hideDisplayModeInTitle={true}
-                loading={mutation.isLoading}
+                loading={securityLimitData.isLoading}
                 // formStyle={{
                 //   background: "white",
                 //   // height: "40vh",
@@ -156,7 +167,7 @@ export const LimitEntry = () => {
               <GridWrapper
                 key={`personalizeQuickView`}
                 finalMetaData={limitEntryGridMetaData as GridMetaDataType}
-                data={mutation.data ?? []}
+                data={getLimitDetailData.data ?? []}
                 setData={() => {}}
                 // loading={saveQuickData.isLoading}
                 // actions={Quickactions}

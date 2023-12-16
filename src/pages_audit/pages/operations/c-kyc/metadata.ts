@@ -287,11 +287,12 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
+    allowRowSelection: false
   },
   // filters: [],
   columns: [
     {
-      accessor: "temp_req_id",
+      accessor: "REQUEST_ID",
       columnName: "Req. ID",
       sequence: 1,
       alignment: "left",
@@ -301,9 +302,9 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "temp_req_type",
+      accessor: "ENTRY_TYPE",
       columnName: "Req. Type", // value for fresh/existing
-      sequence: 2,
+      sequence: 8,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -311,7 +312,17 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "temp_remark",
+      accessor: "CONFIRMED_FLAG",
+      columnName: "Confirm Flag", // value of fresh/existing
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    },
+    {
+      accessor: "REMARKS",
       columnName: "Remarks",
       sequence: 3,
       alignment: "left",
@@ -321,7 +332,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "CUST_ID",
+      accessor: "CUSTOMER_ID",
       columnName: "CustomerId",
       sequence: 6,
       alignment: "left",
@@ -331,8 +342,18 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "CUST_NAME",
+      accessor: "CUSTOMER_NAME",
       columnName: "CustomerName",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 280,
+    },
+    {
+      accessor: "UPD_TAB_NAME",
+      columnName: "Update Type",
       sequence: 5,
       alignment: "left",
       componentType: "default",
@@ -341,9 +362,9 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "CUST_TYPE",
+      accessor: "CUSTOMER_TYPE_FLAG",
       columnName: "CustomerType",
-      sequence: 4,
+      sequence: 7,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -353,7 +374,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     {
       accessor: "LAST_MODIFIED",
       columnName: "LastModified",
-      sequence: 7,
+      sequence: 9,
       alignment: "left",
       dateFormat: "dd/MM/yyyy",
       componentType: "default",
@@ -364,7 +385,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     {
       accessor: "MAKER",
       columnName: "Maker",
-      sequence: 8,
+      sequence: 10,
       alignment: "left",
       componentType: "default",
       width: 140,
@@ -375,7 +396,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     {
       accessor: "CHECKER",
       columnName: "Checker",
-      sequence: 9,
+      sequence: 11,
       alignment: "center",
       componentType: "default",
       isReadOnly: true,
@@ -393,7 +414,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
     title: "RetrieveTitle",
     allowColumnHiding: true,
     submitButtonName: "Retrieve",
-    // submitButtonHide: true,
+    submitButtonHide: false,
     // isDisplayOnly: false,
   },
   fields: [

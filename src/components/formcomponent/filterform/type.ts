@@ -31,6 +31,7 @@ export interface FilterFormFieldType {
   dependFieldsonchange?: Function;
   required?: boolean;
   tabToSubmit?: boolean;
+  options?: any;
 }
 export interface FilterFormMetaType {
   gridConfig: FiltergridConfig;

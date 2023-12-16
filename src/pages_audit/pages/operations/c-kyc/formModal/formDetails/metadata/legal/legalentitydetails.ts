@@ -78,7 +78,7 @@ export const entity_detail_legal_meta_data = {
             render: {
               componentType: "formbutton",
             },
-            name: "SEARCH_BTN",
+            name: "SEARCH_BTN_ignoreField",
             label: "Search",
             endsIcon: "Search",
             rotateIcon: "scale(1.5)",

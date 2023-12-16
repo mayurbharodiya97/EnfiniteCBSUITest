@@ -135,7 +135,12 @@ export const verifyOTP = async (
   }
 };
 
+const setTokenStatusInStorage = (key: string, value: string) => {
+  localStorage.setItem(key, value);
+};
+
 export const RefreshTokenData = async (refreshToken) => {
+  setTokenStatusInStorage("token_status", "refreshing");
   const { status, access_token } = await AuthSDK.internalFetcherPreLogin(
     "LOGIN",
     {
@@ -143,6 +148,8 @@ export const RefreshTokenData = async (refreshToken) => {
       grant_type: "refresh_token",
     }
   );
+  localStorage.removeItem("token_status");
+
   //console.log(status, !Boolean(status), typeof status, typeof access_token);
   if (Boolean(status) && status === "0") {
     return {
