@@ -73,7 +73,7 @@ const GeneralAPISDK = () => {
     console.log("changed...");
   };
   const getAccountTypeList = async (...reqData) => {
-    console.log(reqData, "reqData...");
+    // console.log(reqData, "reqData...");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETUSERACCTTYPE", {
         USER_NAME: reqData?.[3]?.user.id
@@ -82,7 +82,7 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
-      console.log(responseData, "responseData acctype");
+      // console.log(responseData, "responseData acctype");
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
           return {
@@ -547,12 +547,15 @@ const GeneralAPISDK = () => {
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ DISPLAY_NM }) => {
-          return {
-            value: DISPLAY_NM,
-            label: DISPLAY_NM,
-          };
-        });
+        responseData = responseData.map(
+          ({ DISPLAY_NM, ZONE_CD, ...others }) => {
+            return {
+              value: ZONE_CD,
+              label: DISPLAY_NM,
+              ...others,
+            };
+          }
+        );
       }
       return responseData;
     } else {
@@ -581,7 +584,7 @@ const GeneralAPISDK = () => {
         });
       }
 
-      console.log(responseData, "responseData SDC");
+      // console.log(responseData, "responseData SDC");
 
       return responseData;
     } else {
@@ -596,7 +599,7 @@ const GeneralAPISDK = () => {
       });
     if (status === "0") {
       let responseData = data;
-      console.log(responseData, "responseData TRX");
+      // console.log(responseData, "responseData TRX");
       if (Array.isArray(responseData)) {
         responseData = responseData.map(({ CODE, DESCRIPTION }) => {
           return {
@@ -631,13 +634,14 @@ const GeneralAPISDK = () => {
     // } else {
     //   throw DefaultErrorObject(message, messageDetails);
     // }
-    console.log("hello jointDetails");
+    // console.log("hello jointDetails");
     return [
       { id: 1, name: "abcd", accNo: 12345 },
       { id: 2, name: "11abcd", accNo: 123445 },
       { id: 3, name: "aaaa", accNo: 123425 },
     ];
   };
+
   return {
     GetMiscValue,
     getValidateValue,

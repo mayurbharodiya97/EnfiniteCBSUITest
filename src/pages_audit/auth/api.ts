@@ -320,7 +320,7 @@ export const verifyOTPForPWDReset = async (
   transactionId,
   username,
   otpnumber,
-  authType,
+  auth_Type,
   screenFlag
 ) => {
   // return {
@@ -345,7 +345,7 @@ export const verifyOTPForPWDReset = async (
     USER_ID: username,
     REQUEST_CD: transactionId,
     OTP: otpnumber,
-    AUTH_TYPE: authType,
+    AUTH_TYPE: auth_Type,
     SCREEN_FLAG: screenFlag,
   });
   if (status === "0") {
