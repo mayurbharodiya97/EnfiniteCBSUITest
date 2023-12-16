@@ -71,6 +71,13 @@ import * as API from "../../../../api";
                     GridProps: {xs:12, sm:4, md: 2.4, lg: 2.4, xl:2},
                     options: () => API.getPMISCData("ADDRESS_TYPE"),
                     _optionsKey: "AddTypeOptions",
+                    required: true,          
+                    schemaValidation: {
+                        type: "string",
+                        rules: [
+                        { name: "required", params: ["ThisFieldisrequired"] },
+                        ],
+                    },
                 },
                 {
                     render: {

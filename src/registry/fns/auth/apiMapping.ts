@@ -239,6 +239,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETPENDINGCUSTLIST",
     packageName: "",
   },
+  CONFIRMCUSTOMERDATA: {
+    url: "/customerServiceAPI/CONFIRMCUSTOMERDATA",
+    packageName: "",
+  },
   DOCTEMPLATEDTL: {
     url: "/customerServiceAPI/DOCTEMPLATEDTL",
     packageName: "",
