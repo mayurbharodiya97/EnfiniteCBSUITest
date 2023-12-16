@@ -393,7 +393,7 @@ export const RetrieveDataFilterForm: FilterFormMetaType = {
     title: "RetrieveTitle",
     allowColumnHiding: true,
     submitButtonName: "Retrieve",
-    // submitButtonHide: true,
+    submitButtonHide: false,
     // isDisplayOnly: false,
   },
   fields: [

@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { ClearCacheProvider } from "cache";
 import CkycProvider from "./c-kyc/CkycContext";
 import { DetailMastersData } from "../../../components/formcomponent/detailMaster/detailStatic";
+import SingleDeno from "../dashboard/noteDenomination/singleDeno";
 
 // import { ChequebookTab } from "./chequeBookTab/chequebookTab";
 // import { Ckyc } from "./c-kyc/ckyc";
@@ -29,6 +30,7 @@ export const OperationsMenu = () => (
     <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="teller/*" element={<CashReceiptEntry />} />
+    <Route path="single-deno/*" element={<SingleDeno />} />
     {/* <Route
       path="chequebook-entry/*"
       element={<DetailMastersData screenFlag="GETCHEQUEBOOK" />}
