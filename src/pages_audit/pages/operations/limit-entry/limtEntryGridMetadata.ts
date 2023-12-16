@@ -102,7 +102,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "SECURITY_VALUE",
+      accessor: "SECURITY_CODE",
       columnName: "Security Value",
       sequence: 6,
       alignment: "center",

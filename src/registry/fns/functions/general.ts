@@ -87,8 +87,8 @@ const GeneralAPISDK = () => {
         responseData = responseData.map(({ ACCT_TYPE, TYPE_NM, ...others }) => {
           return {
             ...others,
-            value: ACCT_TYPE?.trim(),
-            label: ACCT_TYPE?.trim() + " - " + TYPE_NM,
+            value: ACCT_TYPE,
+            label: ACCT_TYPE + " - " + TYPE_NM,
           };
         });
       }
@@ -589,7 +589,7 @@ const GeneralAPISDK = () => {
     // } else {
     //   throw DefaultErrorObject(message, messageDetails);
     // }
-    console.log("hello jointDetails");
+
     return [
       { id: 1, name: "abcd", accNo: 12345 },
       { id: 2, name: "11abcd", accNo: 123445 },

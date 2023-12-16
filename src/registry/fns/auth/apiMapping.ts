@@ -481,7 +481,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   DOCHEQUEBKISSUE: {
-    url: "/accountServiceAPI/DOCHEQUEBKISSUE",
+    url: "/chequeServiceAPI/DOCHEQUEBKISSUE",
     packageName: "",
   },
   GETFORMMETALIST: {
@@ -562,11 +562,11 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   CHEQUEBKDATA: {
-    url: "/accountServiceAPI/CHEQUEBKDATA",
+    url: "/chequeServiceAPI/CHEQUEBKDATA",
     packageName: "",
   },
   CHEQUEBKCHARGE: {
-    url: "/accountServiceAPI/CHEQUEBKCHARGE",
+    url: "/chequeServiceAPI/CHEQUEBKCHARGE",
     packageName: "",
   },
   GETTRXLIST: {
@@ -575,6 +575,26 @@ export const ActionWiseAPIConfiguration = {
   },
   GETJOINTDETILSLIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
+    packageName: "",
+  },
+  GETLIMITSECUMSTPARENT: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITSECUMSTPARENT",
+    packageName: "",
+  },
+  GETLIMITDDWACCTTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITDDWACCTTYPE",
+    packageName: "",
+  },
+  GETLIMITSECFIELDDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITSECFIELDDISP",
+    packageName: "",
+  },
+  GETLIMITACTNMBALDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITACTNMBALDISP",
+    packageName: "",
+  },
+  GETFDBRDDETAIL: {
+    url: "accountServiceAPI/GETFDBRDDETAIL",
     packageName: "",
   },
 };

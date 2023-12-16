@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Badge,
   Box,
   Button,
   Container,
@@ -8,6 +9,7 @@ import {
   LinearProgress,
   Tab,
   Tabs,
+  Toolbar,
   Typography,
 } from "@mui/material";
 import React, {
@@ -118,7 +120,6 @@ export const ChequebookTab = () => {
         .filter(Boolean)
         .map((msg, i) => <p>{`(${i + 1})  ${msg}`}</p>)
     : [];
-
   useEffect(() => {
     if (!mutation?.isLoading && messages.length > 0) {
       setIsOpenSave(true);
@@ -137,7 +138,7 @@ export const ChequebookTab = () => {
     // if (mutation?.data && "BRANCH_CD" in mutation?.data?.[0]) {
     //   ChequeBookEntryMetaData.fields[5].isFieldFocused = true;
     // } else {
-    //   ChequeBookEntryMetaData.fields[5].isFieldFocused = false;
+    //   ChequeBookEntryMetaData.fields[0].isFieldFocused = true;
     // }
   }, [mutation?.data, mutation?.isLoading]);
 
@@ -161,7 +162,6 @@ export const ChequebookTab = () => {
       ACCT_TYPE: data?.ACCT_TYPE,
       BRANCH_CD: data?.BRANCH_CD,
     };
-    console.log("<<<data", data);
     let otherAPIRequestPara2 = {
       ...data,
       _isNewRow: true,
@@ -172,6 +172,8 @@ export const ChequebookTab = () => {
       CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
       LEAF_ARR: Number(data?.LEAF_ARR),
       TRAN_DT: authState?.workingDate,
+      ENTERED_BRANCH_CD: data?.BRANCH_CD,
+      ENTERED_COMP_CD: authState?.companyID,
     };
 
     if (value === "BUTTON_CLICK") {
@@ -219,6 +221,17 @@ export const ChequebookTab = () => {
           //   CHEQUE_FROM: "" + otherAPIRequestPara2.CHEQUE_FROM,
           //   CHEQUE_TO: "" + otherAPIRequestPara2.CHEQUE_TO,
           // };
+
+          otherAPIRequestPara2 = {
+            isNewRow: true,
+            BRANCH_CD: authState.user.branchCode,
+            COMP_CD: authState.companyID,
+            DETAILS_DATA: {
+              isNewRow: [otherAPIRequestPara2],
+              isDeleteRow: [],
+              isUpdatedRow: [],
+            },
+          };
 
           saveChequeData.mutate(otherAPIRequestPara2);
         }
@@ -277,13 +290,21 @@ export const ChequebookTab = () => {
           aria-label="secondary tabs example"
         >
           <Tab value="chequebookEntry" label="Chequebook Entry" />
-          {mutation?.data?.length > 0 && messages.length <= 0 && (
-            <Tab
-              value="chequebookDetail"
-              label="Chequebook Detail"
-              onClick={() => getChequeDetail.mutate({ chequeDTLRequestPara })}
-            />
-          )}
+          {mutation?.data &&
+            messages.length < 1 &&
+            (mutation?.data?.[0]?.NO_CHEQUEBOOK_ISSUE ||
+              mutation?.data?.[0]?.NO_CHEQUE_USED ||
+              mutation?.data?.[0]?.NO_CHEQUE_STOP ||
+              mutation?.data?.[0]?.NO_CHEQUE_SURRENDER ||
+              mutation.data[0].NO_OF_CHEQUE_UNUSED) && (
+              // <Badge color="secondary" badgeContent={0}>
+              <Tab
+                value="chequebookDetail"
+                label="Chequebook Detail"
+                onClick={() => getChequeDetail.mutate({ chequeDTLRequestPara })}
+              />
+              // </Badge>
+            )}
           {/* {mutation?.data?.length > 0 && (
             <Tab value="processChequeDTL" label="Processed Cheque(s) Detail" />
           )} */}
@@ -366,26 +387,14 @@ export const ChequebookTab = () => {
                 // displayMode={"edit"}
                 // hideDisplayModeInTitle={true}
                 loading={mutation.isLoading}
-                // formStyle={{
-                //   background: "white",
-                //   // height: "40vh",
-                //   overflowY: "auto",
-                //   overflowX: "hidden",
-                // }}
+                formStyle={{
+                  background: "white",
+                  height: "calc(100vh - 300px)",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                }}
                 hideHeader={false}
                 ref={myMasterRef}
-                subHeaderLable={
-                  mutation?.data
-                    ? `CI = ${mutation?.data?.[0]?.NO_CHEQUEBOOK_ISSUE} 
-                 , CU = ${mutation.data[0].NO_CHEQUE_USED} , CS = ${mutation.data[0].NO_CHEQUE_STOP} , CSU = ${mutation.data[0].NO_CHEQUE_SURRENDER} , CUN = ${mutation.data[0].NO_OF_CHEQUE_UNUSED}
-                `
-                    : null
-                }
-                subHeaderLableStyle={{
-                  fontSize: "15px",
-                  alignSelf: "end",
-                  paddingBottom: "10px",
-                }}
               >
                 {({ isSubmitting, handleSubmit }) => (
                   <>
@@ -444,6 +453,29 @@ export const ChequebookTab = () => {
           ) : null}
         </Grid>
       </Container>
+      {mutation?.data &&
+      value === "chequebookEntry" &&
+      messages.length < 1 &&
+      (mutation?.data?.[0]?.NO_CHEQUEBOOK_ISSUE ||
+        mutation?.data?.[0]?.NO_CHEQUE_USED ||
+        mutation?.data?.[0]?.NO_CHEQUE_STOP ||
+        mutation?.data?.[0]?.NO_CHEQUE_SURRENDER ||
+        mutation.data[0].NO_OF_CHEQUE_UNUSED) ? (
+        <Container>
+          <Toolbar
+            sx={{
+              background: "var(--theme-color5)",
+              minHeight: "40px !important",
+              fontSize: "15px",
+              color: "white",
+            }}
+          >
+            {`No. of chequebook issued = ${mutation?.data?.[0]?.NO_CHEQUEBOOK_ISSUE} , No of cheque used = ${mutation.data[0].NO_CHEQUE_USED}, No of
+            cheque stop = ${mutation.data[0].NO_CHEQUE_STOP} , No of cheque surrender = ${mutation.data[0].NO_CHEQUE_SURRENDER} , No of unused
+            cheque =  ${mutation.data[0].NO_OF_CHEQUE_UNUSED} `}
+          </Toolbar>
+        </Container>
+      ) : null}
 
       {chequeBookData.length > 1 && (
         <>
