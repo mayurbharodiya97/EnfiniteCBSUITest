@@ -862,14 +862,14 @@ export default function FormModal({
             >
               {t("Update")}
             </Button>}
-            {state?.isFreshEntryctx &&<Button
+            {/* {state?.isFreshEntryctx &&<Button
               // onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
               // disabled={!state?.isReadyToSavectx}
             >
               {t("Save")}
-            </Button>}
+            </Button>} */}
             <Button
               onClick={onCancelForm}
               color="primary"
