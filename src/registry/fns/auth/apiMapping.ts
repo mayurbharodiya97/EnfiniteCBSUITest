@@ -584,6 +584,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
     packageName: "",
   },
+  GETDAILYTRANMAKERDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRANMAKERDTL",
+    packageName: "",
+  },
+  DODAILYTRNDML: {
+    url: "/transactionServiceAPI/DODAILYTRNDML",
+    packageName: "",
+  },
+  CHEQUENOVALIDATION: {
+    url: "/chequeServiceAPI/CHEQUENOVALIDATION",
+    packageName: "",
+  },
+  GETDAILYTRNCNFF2: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNCNFF2",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

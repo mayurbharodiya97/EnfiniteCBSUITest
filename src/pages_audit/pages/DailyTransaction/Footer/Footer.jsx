@@ -1,100 +1,233 @@
-import React, { useEffect, useRef, useState } from "react";
-import FormWrapper from "components/dyanmicForm";
-import { footerFormMetaData } from "./metaData";
-import { Button } from "@mui/material";
-import { styled } from "@mui/material/styles";
+//UI
+import { Button, Toolbar, AppBar, Card } from "@mui/material";
+import { styled, alpha } from "@mui/material/styles";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import CancelIcon from "@mui/icons-material/Cancel";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
+//Logical
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useContext,
+} from "react";
+import { useMutation, useQuery } from "react-query";
+import { GeneralAPI } from "registry/fns/functions";
+import * as API from "./api";
+import { AuthContext } from "pages_audit/auth";
+import "./footer.css";
 
 const Footer = () => {
-  const inputElement = useRef();
-  const top100Films = [
-    { label: "acc1", year: 1994 },
-    { label: "acc2", year: 1972 },
-    { label: "acc3", year: 1974 },
-  ];
+  const { authState } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AuthContext);
 
-  let arr = [
-    { label: "1", year: 1994 },
-    { label: "2", year: 1972 },
-    { label: "3", year: 1974 },
-    { label: "4", year: 1974 },
-    { label: "5", year: 1974 },
-    { label: "6", year: 1974 },
-  ];
-  const [trxOptions, setTrxOptions] = useState(arr);
-  const [trxOptions2, setTrxOptions2] = useState(arr);
-
-  const handleFilterTrx = () => {
-    let result = trxOptions2.filter((a) => a.label == "3" || a.label == "6");
-    setTrxOptions(result);
+  let defBranch = {
+    label: authState?.user?.branchCode + "-" + authState?.user?.branch,
+    value: authState?.user?.branchCode,
+    info: { COMP_CD: authState?.companyID },
   };
-
-  // let defaulVal = {
-  //   branch: "",
-  //   accType: "",
-  //   accNo: "",
-  //   trx: "",
-  //   scroll: "",
-  //   sdc: "",
-  //   remark: "",
-  //   cNo: "",
-  //   cDate: "",
-  //   debit: 0,
-  //   credit: 0,
-  //   vNo: "",
-  // };
 
   let defaulVal = {
-    branch: "",
-    trx: { label: "" },
-    debit: 0,
-    credit: 0,
+    branch: defBranch,
+    accType: { label: "", value: "", info: "" },
+    accNo: "",
+    trx: { label: "", value: "", code: "" },
+    scroll: "", //token
+    sdc: { label: "", value: "", info: "" },
+    remark: "",
+    cNo: "",
+    date: new Date().toISOString()?.substring(0, 10),
+    debit: "0.00",
+    credit: "0.00",
+    vNo: "",
+    bug: true,
+    bugChq: true,
     isCredit: true,
   };
+  let filterOpt = [
+    { label: "Scroll search", value: "scroll" },
+    { label: "Vno search", value: "vno" },
+  ];
 
   const [rows, setRows] = useState([defaulVal]);
+  const [trxOptions, setTrxOptions] = useState([]);
+  const [trxOptions2, setTrxOptions2] = useState([]);
+  const [sdcOptions, setSdcOptions] = useState([]);
+  const [accTypeOptions, setAccTypeOptions] = useState([]);
+  const [branchOptions, setBranchOptions] = useState([]);
+  const [isSave, setIsSave] = useState(false);
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [diff, setDiff] = useState(0);
-  const [isSave, setIsSave] = useState(false);
-  const [style, setStyle] = useState("transfer");
+  const [saveDialog, setSaveDialog] = useState(false);
+  const [resetDialog, setResetDialog] = useState(false);
+  const [isArray, setIsArray] = useState(false);
+  const [filter, setFilter] = useState({ value: "", label: "" });
+  const [search, setSearch] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    setTempStore({ ...tempStore, accInfo: {} });
+  }, []);
 
   useEffect(() => {
     console.log(rows, "rows");
-    console.log(diff, "diff");
-    let branchBug = rows.some((a) => !a.branch);
-    setIsSave(!branchBug);
+    let i = 0;
+    if (rows.length > 0) {
+      i = rows.length - 1;
+    }
+    rows[i].bug = false;
+    if (
+      !rows[i].trx?.code ||
+      !rows[i].branch ||
+      !rows[i].accType ||
+      !rows[i].accNo
+    ) {
+      rows[i].bug = true;
+    }
+
+    if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
+      rows[i].bug = true;
+    }
+
+    if (rows[i]?.isCredit && !Number(rows[i]?.credit) > 0) {
+      rows[i].bug = true;
+    }
+    if (!rows[i]?.isCredit && !Number(rows[i]?.debit) > 0) {
+      rows[i].bug = true;
+    }
+
+    if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
+      rows[i].bug = true;
+    }
+    if (!rows[i]?.isCredit && rows[i]?.bugChq) {
+      rows[i].bug = true;
+    }
+
+    let result = rows.some((a) => a.bug);
+    setIsSave(!result);
+    console.log("isSave", !result);
   }, [rows]);
 
-  const handleAddRow = (e, i) => {
-    let branchBug = rows.some((a) => !a.branch);
-    console.log(branchBug);
+  useEffect(() => {
+    getBranchOptions.mutate(authState);
+    getSdcOptions.mutate(authState);
+    getAccTypeOptions.mutate(authState);
+    getTrxOptions.mutate(authState);
+  }, []);
 
+  const getBranchOptions = useMutation(API.getBranchList, {
+    onSuccess: (data) => {
+      setBranchOptions(data);
+    },
+    onError: (error) => {},
+  });
+  const getAccTypeOptions = useMutation(API.getAccTypeList, {
+    onSuccess: (data) => {
+      setAccTypeOptions(data);
+    },
+    onError: (error) => {},
+  });
+
+  const getSdcOptions = useMutation(API.getSDCList, {
+    onSuccess: (data) => {
+      setSdcOptions(data);
+      const obj = [...rows];
+      setRows(obj);
+    },
+    onError: (error) => {},
+  });
+
+  const getTrxOptions = useMutation(API.getTRXList, {
+    onSuccess: (data) => {
+      setTrxOptions2(data);
+      setTrxOptions(data);
+    },
+    onError: (error) => {},
+  });
+  const getAccInfo = useMutation(API.getAccInfo, {
+    onSuccess: (data) => {
+      console.log(data, "accInfo");
+      setTempStore({ ...tempStore, accInfo: data });
+    },
+    onError: (error) => {},
+  });
+  const getAccInquiry = useMutation(API.getAccInquiry, {
+    onSuccess: (data) => {
+      console.log(data, "getAccInquiry");
+    },
+    onError: (error) => {},
+  });
+  const addScroll = useMutation(API.addDailyTrxScroll, {
+    onSuccess: (data) => {
+      console.log(data, "save scroll api");
+    },
+    onError: (error) => {},
+  });
+  const getChqValidation = useMutation(API.getChqValidation, {
+    onSuccess: (data) => {
+      console.log(data, "getChqValidation api");
+      if (data.ERR_CODE == "-1") {
+        rows[index].bug = true;
+        rows[index].bugChq = true;
+      }
+      setErrMsg(data);
+    },
+    onError: (error) => {},
+  });
+
+  const handleAddRow = () => {
     let cred = 0;
     let deb = 0;
-    let trxx = "1";
+    let trxx = { label: "1" };
     let isCred = true;
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
-      trxx = { label: "3" };
+      trxx = trxOptions2[2];
       isCred = true;
     } else if (totalDebit < totalCredit) {
       deb = totalCredit - totalDebit;
-      trxx = { label: "6" };
+      trxx = trxOptions2[5];
       isCred = false;
     }
-
+    let tr = trxx?.code + "   ";
+    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
     let defaulVal2 = {
-      branch: "",
+      branch: defBranch,
+      scroll: rows.length + "abc",
+      vNo: rows.length + "vno" + 123,
       trx: trxx,
-      debit: deb,
-      credit: cred,
+      debit: deb?.toFixed(2),
+      credit: cred?.toFixed(2),
       isCredit: isCred,
+      date: new Date().toISOString()?.substring(0, 10),
+      sdc: defSdc,
+      remark: defSdc?.label,
+      accNo: "",
+      cNo: "",
+      bugChq: true,
     };
 
-    if (!branchBug && totalDebit != totalCredit) {
+    if (isSave && totalDebit != totalCredit) {
       let obj = [...rows, defaulVal2];
 
       setRows(obj);
@@ -104,7 +237,6 @@ const Footer = () => {
 
   const handleClear = (e, i) => {
     let obj = [...rows];
-
     if (rows.length > 1) {
       obj.splice(i, 1);
       handleTotal(obj);
@@ -116,12 +248,12 @@ const Footer = () => {
     let sumDebit = 0;
     let sumCredit = 0;
 
-    obj?.map((data) => {
-      sumDebit += Number(data.debit);
+    obj?.map((a) => {
+      sumDebit += Number(a.debit);
     });
 
-    obj?.map((data) => {
-      sumCredit += Number(data.credit);
+    obj?.map((a) => {
+      sumCredit += Number(a.credit);
     });
 
     setDiff(sumDebit - sumCredit);
@@ -129,265 +261,639 @@ const Footer = () => {
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
 
+  const handleReset = () => {
+    setRows([defaulVal]);
+    setTotalCredit(0);
+    setTotalDebit(0);
+    setTrxOptions(trxOptions2);
+    setResetDialog(false);
+  };
+
+  const handleScrollSave = () => {
+    // handleReset();
+    addScroll.mutate(rows);
+    setSaveDialog(false);
+  };
+
+  const handleFilterTrx = () => {
+    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
+    setTrxOptions(result);
+  };
+
+  const handleGetAccInfo = (i) => {
+    let data = {
+      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
+      BRANCH_CD: rows[i]?.branch?.value,
+      ACCT_TYPE: rows[i]?.accType?.value,
+      ACCT_CD: rows[i]?.accNo,
+      authState: authState,
+    };
+
+    rows[i]?.accNo &&
+      rows[i]?.accType?.value &&
+      rows[i]?.branch?.value &&
+      getAccInfo.mutate(data);
+  };
+
+  //TABLE FNs
   const handleBranch = (e, value, i) => {
-    console.log(value, "e branch");
     const obj = [...rows];
     obj[i].branch = value;
     setRows(obj);
     handleTotal(obj);
+    handleGetAccInfo(i);
+  };
+  const handleAccType = (e, value, i) => {
+    const obj = [...rows];
+    obj[i].accType = value;
+    setRows(obj);
+    handleGetAccInfo(i);
+  };
+  const handleAccNo = (e, i) => {
+    const obj = [...rows];
+    let txt = e.target.value;
+
+    obj[i].accNo = txt;
+    setRows(obj);
+
+    // if (i == 0) {
+    //   getAccInquiry.mutate(e.target.value);
+    //   console.log("1111");
+    // }
+  };
+  const handleAccNoBlur = (e, i) => {
+    const obj = [...rows];
+    let abc = obj[i]?.accNo?.padStart(6, "0");
+    obj[i].accNo = abc;
+    handleGetAccInfo(i);
+    setRows(obj);
   };
 
   const handleTrx = (e, value, i) => {
-    console.log(value, "e trx");
     const obj = [...rows];
 
     obj?.length == 1 &&
-      (value?.label == "3" || value?.label == "6") &&
+      (value?.code == "3" || value?.code == "6") &&
       handleFilterTrx();
     obj[i].trx = value;
-    obj[i].credit = 0;
-    obj[i].debit = 0;
+    obj[i].credit = "0.00";
+    obj[i].debit = "0.00";
+    obj[i].cNo = "";
+    obj[i].bugChq = true;
+    setErrMsg({});
 
-    if (value?.label == "1" || value?.label == "2" || value?.label == "3") {
+    obj[i].scroll = "";
+    let tr = value?.code + "   ";
+    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
+
+    obj[i].sdc = defSdc;
+    obj[i].remark = defSdc?.label;
+    if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
       obj[i].isCredit = true;
     } else {
       obj[i].isCredit = false;
     }
 
+    if (value?.code == "3" || value?.code == "6") {
+      setIsArray(true);
+    }
     setRows(obj);
     handleTotal(obj);
+  };
+  const handleScroll = (e, i) => {
+    const obj = [...rows];
+    obj[i].scroll = e.target.value;
+    setRows(obj);
+  };
+  const handleSdc = (e, value, i) => {
+    const obj = [...rows];
+    obj[i].sdc = value;
+    obj[i].remark = value.label;
+
+    setRows(obj);
+  };
+  const handleRemark = (e, i) => {
+    const obj = [...rows];
+    obj[i].remark = e.target.value;
+    setRows(obj);
+  };
+
+  const handleCNo = (e, i) => {
+    setErrMsg({});
+    const obj = [...rows];
+    let txt = e.target.value;
+    obj[i].cNo = txt;
+
+    txt &&
+      obj[i].accNo &&
+      obj[i].accType.value &&
+      obj[i].branch.value &&
+      getChqValidation.mutate(obj[i]);
+    setRows(obj);
+    setIndex(i);
+  };
+  const handleCNoBlur = (e, i) => {
+    const obj = [...rows];
+    // getChqValidation.mutate(obj[i]);
+  };
+
+  const handleDate = (e, i) => {
+    console.log(e, "date e");
+    const obj = [...rows];
+    obj[i].date = e.target.value;
+    setRows(obj);
   };
 
   const handleDebit = (e, i) => {
     const obj = [...rows];
-    obj[i].debit = Number(e.target.value);
+    let txt = e.target.value;
+    if (txt.includes(".")) {
+      let a = txt?.split(".")[0];
+      let b = txt?.split(".")[1];
+      let c = b?.substring(0, 2);
+      obj[i].debit = a + "." + c;
+    } else {
+      obj[i].debit = txt;
+    }
     setRows(obj);
     handleTotal(obj);
   };
 
   const handleCredit = (e, i) => {
     const obj = [...rows];
-    obj[i].credit = Number(e.target.value);
+    let txt = e.target.value;
+    if (txt.includes(".")) {
+      let a = txt?.split(".")[0];
+      let b = txt?.split(".")[1];
+      let c = b?.substring(0, 2);
+      obj[i].credit = a + "." + c;
+    } else {
+      obj[i].credit = txt;
+    }
+
     setRows(obj);
     handleTotal(obj);
   };
 
   const handleDebitBlur = (e, i) => {
     const obj = [...rows];
+    obj[i].debit = Number(e.target.value)?.toFixed(2);
+    setRows(obj);
     totalDebit != totalCredit &&
-      (obj[i].trx.label == "3" || obj[i].trx.label == "6") &&
+      (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
       handleAddRow();
   };
   const handleCreditBlur = (e, i) => {
     const obj = [...rows];
+    obj[i].credit = Number(e.target.value)?.toFixed(2);
+    setRows(obj);
     totalDebit != totalCredit &&
-      (obj[i].trx.label == "3" || obj[i].trx.label == "6") &&
+      (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
       handleAddRow();
   };
 
-  const handleReset = () => {
-    setRows([defaulVal]);
-    setTotalCredit(0);
-    setTotalDebit(0);
-    setTrxOptions(arr);
+  const handleVNo = (e, i) => {
+    const obj = [...rows];
+    obj[i].vNo = e.target.value;
+    setRows(obj);
+  };
+
+  const handleSearch = (e) => {
+    let txt = e.target.value;
+    setSearch(txt);
+    const obj = [...rows];
+    if (filter.value == "scroll") {
+      obj.map((a, j) => {
+        if (txt && txt == a.scroll) {
+          a.isFav = true;
+        } else {
+          a.isFav = false;
+        }
+      });
+    }
+    if (filter.value == "vno") {
+      obj.map((a, j) => {
+        if (txt && txt == a.vNo) {
+          a.isFav = true;
+        } else {
+          a.isFav = false;
+        }
+      });
+    }
+
+    setRows(obj);
+  };
+
+  const handleFilter = (e, value) => {
+    setSearch("");
+    setFilter(value);
+    const obj = [...rows];
+    obj.map((a) => {
+      a.isFav = false;
+    });
   };
   return (
     <>
-      <div
-        style={{
+      <Card
+        sx={{
           boxShadow: "0px 1px 4px -1px #999999",
           borderRadius: "5px",
-          margin: "9px",
+          padding: "8px",
+          margin: "4px",
         }}
       >
-        <Grid item xl={12} lg={8} xs={12} sm={6} md={4}>
-          <FormWrapper
-            metaData={footerFormMetaData}
-            hideHeader={true}
-            displayMode={"new"}
-            formStyle={{
-              background: "white",
-              overflowY: "auto",
-              overflowX: "hidden",
-            }}
-          ></FormWrapper>{" "}
-        </Grid>
-      </div>
+        <TableContainer>
+          <Table aria-label="caption table" padding="none">
+            <caption style={{ fontWeight: "600" }}>
+              Total ( Debit:{totalDebit} | Credit:{totalCredit} )
+            </caption>
+            <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
+              {errMsg && errMsg?.ERR_MSG}
+            </caption>
+            <TableHead>
+              <TableRow>
+                <TableCell>Branch</TableCell>
+                <TableCell>A/C Type</TableCell>
+                <TableCell>A/C No</TableCell>
+                <TableCell>TRX</TableCell>
+                <TableCell>Token</TableCell>
+                <TableCell>SDC</TableCell>
+                <TableCell>Remarks</TableCell>
+                <TableCell>Chq No</TableCell>
+                <TableCell>Chq Date</TableCell>
+                <TableCell>Debit</TableCell>
+                <TableCell>Credit</TableCell>
+                <TableCell>Vno.</TableCell>
+                <TableCell style={{ border: "0px" }}></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.length > 0 ? (
+                rows?.map((a, i) => {
+                  return (
+                    <>
+                      <TableRow key={i}>
+                        <TableCell
+                          sx={{ minWidth: 160 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <Autocomplete
+                            value={a.branch}
+                            size="small"
+                            options={branchOptions}
+                            onChange={(e, value) => handleBranch(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.branch?.value ? false : true}
+                              />
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 160 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <Autocomplete
+                            value={a.accType}
+                            size="small"
+                            options={accTypeOptions}
+                            onChange={(e, value) => handleAccType(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.accType?.value ? false : true}
+                              />
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.accNo}
+                            error={a.accNo ? false : true}
+                            size="small"
+                            type="number"
+                            onChange={(e) => handleAccNo(e, i)}
+                            onBlur={(e) => handleAccNoBlur(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 160 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <Autocomplete
+                            value={a.trx}
+                            size="small"
+                            id="combo-box-demo"
+                            options={trxOptions}
+                            onChange={(e, value) => handleTrx(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.trx?.value ? false : true}
+                              />
+                            )}
+                          />
+                        </TableCell>
 
-      <Grid item xl={12} lg={8} xs={12} sm={6} md={4} spacing={5}>
-        <Button variant="contained" color="primary">
-          View All
-        </Button>
-        <Button variant="contained" color="primary">
-          Search
-        </Button>
-        <Button variant="contained" color="primary">
-          Calculator
-        </Button>
-        <Button variant="contained" color="primary">
-          Query
-        </Button>
-        <Button variant="contained" color="primary">
-          Delete
-        </Button>
-        <Button variant="contained" color="primary">
-          refresh
-        </Button>
-        <Button variant="contained" color="primary">
-          scroll search
-        </Button>
-        <Button variant="contained" color="primary">
-          scroll del
-        </Button>
-        <Button variant="contained" color="primary">
-          other a/c
-        </Button>
-        <Button variant="contained" color="primary">
-          other Tx Detail
-        </Button>
-      </Grid>
-      <br />
-      <table>
-        <thead>
-          {/* <tr>          
-            <td>Branch</td>
-            <td>AccType</td>
-            <td>AccNo</td>  
-            <td>TRX</td>   
-            <td>Scroll</td>
-            <td>SDC</td>  
-            <td>Remarks</td>
-            <td>ChqNo</td>
-            <td>ChqDate</td>
-            <td>Debit</td>
-            <td>Credit</td>
-            <td>Vno.</td>  
-            <td></td>      
-          </tr> */}
-          <tr>
-            <td>Account</td>
-            <td>TRX</td>
-            <td>Debit </td>
-            <td>Credit</td>
-            <td></td>
-          </tr>
-        </thead>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.scroll}
+                            type="number"
+                            error={
+                              !a.scroll && a.trx?.code == "4" ? true : false
+                            }
+                            disabled={a?.trx?.code == "4" ? false : true}
+                            size="small"
+                            onChange={(e) => handleScroll(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 160 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <Autocomplete
+                            id="sdc"
+                            size="small"
+                            options={sdcOptions}
+                            value={a.sdc}
+                            onChange={(e, value) => handleSdc(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField {...params} label="" />
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 80 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.remark}
+                            size="small"
+                            onChange={(e) => handleRemark(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.cNo}
+                            error={!a.cNo || a.bugChq ? true : false}
+                            id="txtRight"
+                            disabled={!a.isCredit ? false : true}
+                            size="small"
+                            type="number"
+                            onChange={(e) => handleCNo(e, i)}
+                            onBlur={(e) => handleCNoBlur(e, i)}
+                          />
+                        </TableCell>
 
-        {rows.length > 0 ? (
-          rows?.map((a, i) => {
-            return (
-              <tbody>
-                <tr>
-                  <td>
-                    <Autocomplete
-                      ref={inputElement}
-                      disablePortal
-                      id="combo-box-demo"
-                      options={top100Films}
-                      sx={{ width: 250 }}
-                      value={a.branch}
-                      onChange={(e, value) => handleBranch(e, value, i)}
-                      renderInput={(params) => (
-                        <TextField {...params} label="" />
-                      )}
-                    />
-                  </td>
-                  <td>
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={trxOptions}
-                      sx={{ width: 250 }}
-                      value={a.trx}
-                      onChange={(e, value) => handleTrx(e, value, i)}
-                      renderInput={(params) => (
-                        <TextField {...params} label="" />
-                      )}
-                    />
-                  </td>
-                  <td>
-                    <TextField
-                      disabled={
-                        a?.isCredit || !a.branch || !a.trx?.label ? true : false
-                      }
-                      type="number"
-                      value={a.debit}
-                      onChange={(e) => handleDebit(e, i)}
-                      onBlur={(e) => handleDebitBlur(e, i)}
-                    />
-                  </td>
-                  <td>
-                    <TextField
-                      disabled={
-                        !a?.isCredit || !a.branch || !a.trx?.label
-                          ? true
-                          : false
-                      }
-                      type="number"
-                      value={a.credit}
-                      onChange={(e) => handleCredit(e, i)}
-                      onBlur={(e) => handleCreditBlur(e, i)}
-                    />
-                  </td>
-                  <td>
-                    {(rows[i].trx?.label == "3" ||
-                      rows[i].trx?.label == "6") && (
-                      <Button
-                        // disabled={rows.length > 1 ? false : true}
-                        variant="outlined"
-                        color="secondary"
-                        onClick={(e) => handleClear(e, i)}
-                      >
-                        X
-                      </Button>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            );
-          })
-        ) : (
-          <>no records</>
-        )}
-        <tr>
-          <td></td>
-          <td>total:</td>
-          <td>{totalDebit}</td>
-          <td>{totalCredit}</td>
-          <td></td>
-        </tr>
-      </table>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          <TextField
+                            value={a.date}
+                            error={a.isCredit && !a.date ? true : false}
+                            type="date"
+                            disabled={
+                              a?.trx?.code == "4" ||
+                              a?.trx?.code == "5" ||
+                              a?.trx?.code == "6"
+                                ? false
+                                : true
+                            }
+                            size="small"
+                            onChange={(e) => handleDate(e, i)}
+                          />{" "}
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.debit}
+                            error={Number(a.debit > 0) ? false : true}
+                            id="txtRight"
+                            size="small"
+                            disabled={
+                              a?.isCredit || !a.branch || !a.trx?.code
+                                ? true
+                                : false
+                            }
+                            type="number"
+                            onChange={(e) => handleDebit(e, i)}
+                            onBlur={(e) => handleDebitBlur(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell
+                          sx={{ minWidth: 50 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.credit}
+                            error={Number(a.credit > 0) ? false : true}
+                            id="txtRight"
+                            size="small"
+                            disabled={
+                              !a?.isCredit || !a.branch || !a.trx?.code
+                                ? true
+                                : false
+                            }
+                            type="number"
+                            onChange={(e) => handleCredit(e, i)}
+                            onBlur={(e) => handleCreditBlur(e, i)}
+                          />
+                        </TableCell>
 
-      <br />
-      {(rows[0]?.trx?.label == "3" || rows[0]?.trx?.label == "6") && (
+                        <TableCell
+                          sx={{ minWidth: 40 }}
+                          id={a?.isFav ? "isFav" : ""}
+                        >
+                          <TextField
+                            value={a.vNo}
+                            id="txtRight"
+                            disabled={true}
+                            size="small"
+                            onChange={(e) => handleVNo(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell style={{ border: "0px" }}>
+                          {(rows[i].trx?.code == "3" ||
+                            rows[i].trx?.code == "6") && (
+                            <CancelIcon
+                              onClick={(e) => handleClear(e, i)}
+                              style={{ cursor: "pointer" }}
+                            />
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  );
+                })
+              ) : (
+                <>no records</>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Card>
+      <br /> <br />
+      {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
         <>
           <Button
             variant="outlined"
             color="secondary"
+            sx={{ margin: "8px" }}
             onClick={() => handleAddRow()}
           >
-            add new
+            <AddIcon /> new row
           </Button>
 
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => handleReset()}
+            onClick={() => setResetDialog(true)}
           >
-            reset
+            <RestartAltIcon /> reset
           </Button>
         </>
       )}
+      {(isArray && diff == 0 && isSave) || (!isArray && isSave) ? (
+        <Button
+          variant="contained"
+          color="secondary"
+          sx={{ margin: "8px" }}
+          onClick={() => setSaveDialog(true)}
+        >
+          save
+        </Button>
+      ) : (
+        <></>
+      )}
+      <br />
+      <Grid container spacing={2}>
+        <Grid item sx={{ width: 180 }}>
+          <Autocomplete
+            value={filter}
+            size="small"
+            options={filterOpt}
+            onChange={(e, value) => handleFilter(e, value)}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </Grid>
+        <Grid item>
+          <div id="searchContainer">
+            <SearchIcon style={{ margin: "5px" }} />
+            <input
+              disabled={filter?.value ? false : true}
+              placeholder="Search.."
+              id="searchField"
+              // type="number"
+              value={search}
+              onChange={(e) => handleSearch(e)}
+            />
+          </div>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary">
+            View All
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Calculator
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Query
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Delete
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            refresh
+          </Button>{" "}
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            scroll del
+          </Button>{" "}
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            other a/c
+          </Button>
+        </Grid>{" "}
+        <Grid item>
+          <Button variant="contained" color="primary">
+            other Tx Detail
+          </Button>
+        </Grid>{" "}
+      </Grid>
+      <br />
+      <>
+        <Dialog
+          open={saveDialog}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Do you wish to save this scroll?
+          </DialogTitle>
 
-      <Button
-        variant="outlined"
-        color="secondary"
-        onClick={() => console.log("saved")}
-      >
-        save
-      </Button>
+          <DialogActions>
+            <Button variant="contained" onClick={() => setSaveDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              color="success"
+              variant="contained"
+              onClick={handleScrollSave}
+              autoFocus
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={resetDialog}
+          maxWidth={"lg"}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Do you wish to reset ?
+          </DialogTitle>
+
+          <DialogActions>
+            <Button onClick={() => setResetDialog(false)} variant="contained">
+              No
+            </Button>
+            <Button
+              color="warning"
+              variant="contained"
+              onClick={handleReset}
+              autoFocus
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </>
   );
 };
