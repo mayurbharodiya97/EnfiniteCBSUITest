@@ -60,6 +60,7 @@ const Footer = () => {
     vNo: "",
     bug: true,
     bugChq: false,
+    bugAccNo: false,
     isCredit: true,
   };
 
@@ -163,6 +164,18 @@ const Footer = () => {
     onSuccess: (data) => {
       console.log(data, "accInfo");
       setTempStore({ ...tempStore, accInfo: data });
+      if (data.STATUS == "C") {
+        setErrMsg({
+          ...errMsg,
+          accNo: { ERR_MSG: data.ACCT_CD_NEW + " Account Closed!" },
+        });
+        rows[index].bugAccNo = true;
+        rows[index].bug = true;
+      } else {
+        setErrMsg({ ...errMsg, accNo: { ERR_MSG: "" } });
+        rows[index].bugAccNo = false;
+        rows[index].bug = false;
+      }
     },
     onError: (error) => {},
   });
@@ -179,7 +192,7 @@ const Footer = () => {
         rows[index].bug = true;
         rows[index].bugChq = true;
       }
-      setErrMsg(data);
+      setErrMsg({ ...errMsg, cNo: data });
     },
     onError: (error) => {},
   });
@@ -271,12 +284,6 @@ const Footer = () => {
     setResetDialog(false);
   };
 
-  const handleScrollSave = () => {
-    // handleReset();
-    addScroll.mutate(rows);
-    setSaveDialog(false);
-  };
-
   const handleFilterTrx = () => {
     let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
     setTrxOptions(result);
@@ -318,6 +325,7 @@ const Footer = () => {
 
     obj[i].accNo = txt;
     setRows(obj);
+    setErrMsg({ ...errMsg, accNo: {} });
   };
   const handleAccNoBlur = (e, i) => {
     const obj = [...rows];
@@ -462,6 +470,12 @@ const Footer = () => {
     setRows(obj);
   };
 
+  const handleScrollSave = () => {
+    // handleReset();
+    addScroll.mutate(rows);
+    setSaveDialog(false);
+  };
+
   return (
     <>
       <Card
@@ -477,8 +491,12 @@ const Footer = () => {
             <caption style={{ fontWeight: "600" }}>
               Total ( Debit:{totalDebit} | Credit:{totalCredit} )
             </caption>
+
             <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-              {errMsg && errMsg?.ERR_MSG}
+              {errMsg?.cNo && errMsg?.cNo.ERR_MSG}
+            </caption>
+            <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
+              {errMsg?.accNo && errMsg?.accNo.ERR_MSG}
             </caption>
             <TableHead>
               <TableRow>
@@ -543,7 +561,7 @@ const Footer = () => {
                         >
                           <TextField
                             value={a.accNo}
-                            error={a.accNo ? false : true}
+                            error={!a.accNo || a.bugAccNo ? true : false}
                             size="small"
                             type="number"
                             onChange={(e) => handleAccNo(e, i)}
@@ -734,7 +752,7 @@ const Footer = () => {
           </Button>
         </>
       )}
-      {(isArray && diff == 0 && isSave) || (!isArray && isSave) ? (
+      {/* {(isArray && diff == 0 && isSave) || (!isArray && isSave) ? (
         <Button
           variant="contained"
           color="secondary"
@@ -745,7 +763,7 @@ const Footer = () => {
         </Button>
       ) : (
         <></>
-      )}
+      )} */}
       <Button
         variant="contained"
         color="secondary"

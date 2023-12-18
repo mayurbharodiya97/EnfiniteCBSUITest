@@ -119,7 +119,6 @@ export const getTRXList = async (reqData) => {
 };
 
 export const getAccInfo = async (reqData) => {
-  console.log(reqData, "reqDatareqData");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
       // COMP_CD: "132 ",
@@ -162,8 +161,6 @@ export const getAccInquiry = async (reqData) => {
 export const addDailyTrxScroll = async (reqData) => {
   const localInfo = localStorage.getItem("authDetails");
   let localInfo1 = localInfo && JSON.parse(localInfo);
-
-  console.log(localInfo1, "localInfo1");
   let arr = reqData.map((a) => {
     return {
       BRANCH_CD: localInfo1?.user?.branchCode,
@@ -171,7 +168,7 @@ export const addDailyTrxScroll = async (reqData) => {
       ACCT_TYPE: a.accType?.value,
       ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
       REMARKS: a.remark,
-      CHEQUE_NO: "0", //!a.isCredit ? a.cNo?.toString() : "0"
+      CHEQUE_NO: a.cNo, //!a.isCredit ? a.cNo?.toString() : "0"
       TYPE_CD: a.trx.code + "   ",
       TRAN_DT: date2,
       VALUE_DT: date2,
@@ -184,7 +181,6 @@ export const addDailyTrxScroll = async (reqData) => {
       CONFIRMED: "0",
     };
   });
-  console.log(arr, "Arr");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
       DETAILS_DATA: { isDeleteRow: [], isUpdatedRow: [], isNewRow: arr },
@@ -199,7 +195,6 @@ export const addDailyTrxScroll = async (reqData) => {
 };
 
 export const getScrollListF2 = async (reqData) => {
-  console.log(reqData, "reqData F2 scrolllist");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRNCNFF2", {
       COMP_CD: reqData?.branch?.info.COMP_CD,
@@ -215,7 +210,6 @@ export const getScrollListF2 = async (reqData) => {
 };
 
 export const getChqValidation = async (reqData) => {
-  console.log(reqData, "chqvalid");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
       COMP_CD: reqData?.branch?.info?.COMP_CD,

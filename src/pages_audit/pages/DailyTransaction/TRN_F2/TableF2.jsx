@@ -34,8 +34,10 @@ import React, {
 import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
+import * as API2 from "../Footer/api";
 import { AuthContext } from "pages_audit/auth";
 import "./F2.css";
+import BaseFooter from "../Footer/BaseFooter";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
 const TableF2 = () => {
@@ -65,225 +67,22 @@ const TableF2 = () => {
     getScrollListF2.mutate(data);
   }, []);
 
+  const getAccInfo = useMutation(API2.getAccInfo, {
+    onSuccess: (data) => {
+      console.log(data, "accInfo");
+      setTempStore({ ...tempStore, accInfo: data });
+    },
+    onError: (error) => {},
+  });
+
   const getScrollListF2 = useMutation(API.getScrollListF2, {
     onSuccess: (data) => {
       console.log(data, "getScrollListF2 api");
       data.map((a) => {
         a.check = false;
       });
-      let arr = [
-        {
-          DUMMY_COL: "Y",
-          TRAN_CD: "206844",
-          MODIFIED_BY: "",
-          ACCT_NM: "JIGAR NAVINBHAI SHAH",
-          REMARKS: "BY CASH -",
-          ACCT_CD_NEW: "132099001201112 ",
-          CONFIRMATION_COLOR: "0",
-          CHEQUE_NO: "",
-          PENDING_CYCLE: "0",
-          ENTERED_BY: "shoeb",
-          SDC: "1   ",
-          AMOUNT: "10000",
-          CONFIRMED: "0",
-          TRAN_DT: "2023-12-15 00:00:00.0",
-          FD_NO: "",
-          VERIFIED_BY: "",
-          SHARE_CERTI_NO: "",
-          COMP_CD: "132 ",
-          SCROLL1: "",
-          ACCT_CD: "201112              ",
-          L_INST_DT: "2023-12-15 00:00:00.0",
-          TRN_FLAG: "",
-          REF_TRAN_CD: "",
-          ACCT_TYPE: "001 ",
-          MACHINE_NM: "DESKTOP-M3K3479",
-          VERIFIED_DATE: "",
-          TYPE_CD: "1   ",
-          COLOR_CD: "65535",
-          ENTERED_BRANCH_CD: "099 ",
-          BRANCH_CD: "099 ",
-          ENTERED_COMP_CD: "132 ",
-          ENTERED_DATE: "2023-12-15 11:08:35.0",
-          VERIFIED_MACHINE_NM: "",
-        },
-        {
-          DUMMY_COL: "Y",
-          TRAN_CD: "206844",
-          MODIFIED_BY: "",
-          ACCT_NM: "JIGAR NAVINBHAI SHAH",
-          REMARKS: "BY CASH -",
-          ACCT_CD_NEW: "132099001201112 ",
-          CONFIRMATION_COLOR: "0",
-          CHEQUE_NO: "",
-          PENDING_CYCLE: "0",
-          ENTERED_BY: "shoeb",
-          SDC: "1   ",
-          AMOUNT: "10000",
-          CONFIRMED: "0",
-          TRAN_DT: "2023-12-15 00:00:00.0",
-          FD_NO: "",
-          VERIFIED_BY: "",
-          SHARE_CERTI_NO: "",
-          COMP_CD: "132 ",
-          SCROLL1: "",
-          ACCT_CD: "201112              ",
-          L_INST_DT: "2023-12-15 00:00:00.0",
-          TRN_FLAG: "",
-          REF_TRAN_CD: "",
-          ACCT_TYPE: "001 ",
-          MACHINE_NM: "DESKTOP-M3K3479",
-          VERIFIED_DATE: "",
-          TYPE_CD: "1   ",
-          COLOR_CD: "65535",
-          ENTERED_BRANCH_CD: "099 ",
-          BRANCH_CD: "099 ",
-          ENTERED_COMP_CD: "132 ",
-          ENTERED_DATE: "2023-12-15 11:08:35.0",
-          VERIFIED_MACHINE_NM: "",
-        },
-        {
-          DUMMY_COL: "Y",
-          TRAN_CD: "206844",
-          MODIFIED_BY: "",
-          ACCT_NM: "JIGAR NAVINBHAI SHAH",
-          REMARKS: "BY CASH -",
-          ACCT_CD_NEW: "132099001201112 ",
-          CONFIRMATION_COLOR: "0",
-          CHEQUE_NO: "",
-          PENDING_CYCLE: "0",
-          ENTERED_BY: "shoeb",
-          SDC: "1   ",
-          AMOUNT: "10000",
-          CONFIRMED: "0",
-          TRAN_DT: "2023-12-15 00:00:00.0",
-          FD_NO: "",
-          VERIFIED_BY: "",
-          SHARE_CERTI_NO: "",
-          COMP_CD: "132 ",
-          SCROLL1: "",
-          ACCT_CD: "201112              ",
-          L_INST_DT: "2023-12-15 00:00:00.0",
-          TRN_FLAG: "",
-          REF_TRAN_CD: "",
-          ACCT_TYPE: "001 ",
-          MACHINE_NM: "DESKTOP-M3K3479",
-          VERIFIED_DATE: "",
-          TYPE_CD: "1   ",
-          COLOR_CD: "65535",
-          ENTERED_BRANCH_CD: "099 ",
-          BRANCH_CD: "099 ",
-          ENTERED_COMP_CD: "132 ",
-          ENTERED_DATE: "2023-12-15 11:08:35.0",
-          VERIFIED_MACHINE_NM: "",
-        },
-        {
-          DUMMY_COL: "Y",
-          TRAN_CD: "206844",
-          MODIFIED_BY: "",
-          ACCT_NM: "pankaj NAVINBHAI SHAH",
-          REMARKS: "BY CASH -",
-          ACCT_CD_NEW: "132099001201112 ",
-          CONFIRMATION_COLOR: "0",
-          CHEQUE_NO: "",
-          PENDING_CYCLE: "0",
-          ENTERED_BY: "shoeb",
-          SDC: "1   ",
-          AMOUNT: "10000",
-          CONFIRMED: "0",
-          TRAN_DT: "2023-12-15 00:00:00.0",
-          FD_NO: "",
-          VERIFIED_BY: "",
-          SHARE_CERTI_NO: "",
-          COMP_CD: "132 ",
-          SCROLL1: "",
-          ACCT_CD: "201112              ",
-          L_INST_DT: "2023-12-15 00:00:00.0",
-          TRN_FLAG: "",
-          REF_TRAN_CD: "",
-          ACCT_TYPE: "001 ",
-          MACHINE_NM: "DESKTOP-M3K3479",
-          VERIFIED_DATE: "",
-          TYPE_CD: "1   ",
-          COLOR_CD: "65535",
-          ENTERED_BRANCH_CD: "099 ",
-          BRANCH_CD: "099 ",
-          ENTERED_COMP_CD: "132 ",
-          ENTERED_DATE: "2023-12-15 11:08:35.0",
-          VERIFIED_MACHINE_NM: "",
-        },
-        {
-          DUMMY_COL: "Y",
-          TRAN_CD: "206844",
-          MODIFIED_BY: "",
-          ACCT_NM: "mahesh NAVINBHAI SHAH",
-          REMARKS: "BY CASH -",
-          ACCT_CD_NEW: "132099001201112 ",
-          CONFIRMATION_COLOR: "0",
-          CHEQUE_NO: "",
-          PENDING_CYCLE: "0",
-          ENTERED_BY: "shoeb",
-          SDC: "1   ",
-          AMOUNT: "10000",
-          CONFIRMED: "0",
-          TRAN_DT: "2023-12-15 00:00:00.0",
-          FD_NO: "",
-          VERIFIED_BY: "",
-          SHARE_CERTI_NO: "",
-          COMP_CD: "132 ",
-          SCROLL1: "",
-          ACCT_CD: "201112              ",
-          L_INST_DT: "2023-12-15 00:00:00.0",
-          TRN_FLAG: "",
-          REF_TRAN_CD: "",
-          ACCT_TYPE: "001 ",
-          MACHINE_NM: "DESKTOP-M3K3479",
-          VERIFIED_DATE: "",
-          TYPE_CD: "1   ",
-          COLOR_CD: "65535",
-          ENTERED_BRANCH_CD: "099 ",
-          BRANCH_CD: "099 ",
-          ENTERED_COMP_CD: "132 ",
-          ENTERED_DATE: "2023-12-15 11:08:35.0",
-          VERIFIED_MACHINE_NM: "",
-        },
-        {
-          DUMMY_COL: "Y",
-          TRAN_CD: "123321",
-          MODIFIED_BY: "",
-          ACCT_NM: "rahul NAVINBHAI SHAH",
-          REMARKS: "BY CASH -",
-          ACCT_CD_NEW: "132099001201112 ",
-          CONFIRMATION_COLOR: "0",
-          CHEQUE_NO: "",
-          PENDING_CYCLE: "0",
-          ENTERED_BY: "shoeb",
-          SDC: "1   ",
-          AMOUNT: "10000",
-          CONFIRMED: "0",
-          TRAN_DT: "2023-12-15 00:00:00.0",
-          FD_NO: "",
-          VERIFIED_BY: "",
-          SHARE_CERTI_NO: "",
-          COMP_CD: "132 ",
-          SCROLL1: "",
-          ACCT_CD: "201112              ",
-          L_INST_DT: "2023-12-15 00:00:00.0",
-          TRN_FLAG: "",
-          REF_TRAN_CD: "",
-          ACCT_TYPE: "001 ",
-          MACHINE_NM: "DESKTOP-M3K3479",
-          VERIFIED_DATE: "",
-          TYPE_CD: "1   ",
-          COLOR_CD: "65535",
-          ENTERED_BRANCH_CD: "099 ",
-          BRANCH_CD: "099 ",
-          ENTERED_COMP_CD: "132 ",
-          ENTERED_DATE: "2023-12-15 11:08:35.0",
-          VERIFIED_MACHINE_NM: "",
-        },
-      ];
-      setRows(arr);
+
+      setRows(data);
     },
     onError: (error) => {},
   });
@@ -306,7 +105,18 @@ const TableF2 = () => {
     });
     setRows(obj);
   };
-
+  const handleRowClick = (e, a) => {
+    const obj = [...rows];
+    console.log(a, "aaaaaa");
+    let data = {
+      COMP_CD: a?.COMP_CD,
+      BRANCH_CD: a?.BRANCH_CD,
+      ACCT_TYPE: a?.ACCT_TYPE,
+      ACCT_CD: a?.ACCT_CD,
+      authState: authState,
+    };
+    getAccInfo.mutate(data);
+  };
   return (
     <>
       <Card
@@ -348,7 +158,11 @@ const TableF2 = () => {
               {rows.length > 0 ? (
                 rows.map((a, i) => {
                   return (
-                    <TableRow key={i}>
+                    <TableRow
+                      key={i}
+                      style={{ cursor: "pointer" }}
+                      onClick={(e) => handleRowClick(e, a)}
+                    >
                       <TableCell>
                         {" "}
                         <input
@@ -382,6 +196,15 @@ const TableF2 = () => {
         </TableContainer>
       </Card>
       <br />
+      <Button
+        variant="contained"
+        color="secondary"
+        sx={{ margin: "8px" }}
+        // onClick={() => setSaveDialog(true)}
+      >
+        Confirm
+      </Button>
+      <BaseFooter />
     </>
   );
 };

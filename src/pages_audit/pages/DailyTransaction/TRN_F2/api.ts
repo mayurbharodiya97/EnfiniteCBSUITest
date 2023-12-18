@@ -26,10 +26,9 @@ let month = today.getMonth();
 let year = today.getFullYear();
 
 let date = day + "/" + arr[month] + "/" + year;
-let date2 = "14" + "-" + arr[month] + "-" + year;
+let date2 = day + "-" + arr[month] + "-" + year;
 
 export const getScrollListF2 = async (reqData) => {
-  console.log(reqData, "reqData F2 scrolllist");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRNCNFF2", {
       COMP_CD: reqData?.COMP_CD,
