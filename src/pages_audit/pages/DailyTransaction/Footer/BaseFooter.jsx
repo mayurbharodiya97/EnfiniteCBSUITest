@@ -24,7 +24,7 @@ import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import "./footer.css";
 
-const BaseFooter = ({ rows }) => {
+const BaseFooter = ({ rows, handleUpdateRows }) => {
   let filterOpt = [
     { label: "Scroll search", value: "scroll" },
     { label: "Vno search", value: "vno" },
@@ -37,8 +37,9 @@ const BaseFooter = ({ rows }) => {
     setSearch(txt);
     const obj = [...rows];
     if (filter.value == "scroll") {
+      console.log("inscroll");
       obj.map((a, j) => {
-        if (txt && txt == a.scroll) {
+        if (txt && (txt == a?.scroll || txt == a?.SCROLL1)) {
           a.isFav = true;
         } else {
           a.isFav = false;
@@ -54,8 +55,9 @@ const BaseFooter = ({ rows }) => {
         }
       });
     }
-
+    console.log(obj, "objjjjj");
     // setRows(obj);
+    handleUpdateRows(obj);
   };
 
   const handleFilter = (e, value) => {
@@ -65,6 +67,7 @@ const BaseFooter = ({ rows }) => {
     obj.map((a) => {
       a.isFav = false;
     });
+    handleUpdateRows(obj);
   };
 
   return (
@@ -76,7 +79,9 @@ const BaseFooter = ({ rows }) => {
             size="small"
             options={filterOpt}
             onChange={(e, value) => handleFilter(e, value)}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => (
+              <TextField {...params} placeholder="Filter" />
+            )}
           />
         </Grid>
         <Grid item>
@@ -98,7 +103,11 @@ const BaseFooter = ({ rows }) => {
           </Button>
         </Grid>{" "}
         <Grid item>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.open("Calculator:///")}
+          >
             Calculator
           </Button>
         </Grid>{" "}

@@ -81,6 +81,7 @@ const TableF2 = () => {
       data.map((a) => {
         a.check = false;
       });
+      data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
 
       setRows(data);
     },
@@ -116,6 +117,11 @@ const TableF2 = () => {
       authState: authState,
     };
     getAccInfo.mutate(data);
+  };
+
+  const handleUpdateRows = (data) => {
+    console.log(data, "dataaaa");
+    setRows(data);
   };
   return (
     <>
@@ -158,11 +164,7 @@ const TableF2 = () => {
               {rows.length > 0 ? (
                 rows.map((a, i) => {
                   return (
-                    <TableRow
-                      key={i}
-                      style={{ cursor: "pointer" }}
-                      onClick={(e) => handleRowClick(e, a)}
-                    >
+                    <TableRow key={i}>
                       <TableCell>
                         {" "}
                         <input
@@ -172,19 +174,45 @@ const TableF2 = () => {
                           onChange={(e) => handleCheck(e, i)}
                         />
                       </TableCell>
-                      <TableCell>Vno.</TableCell>
-                      <TableCell>{a.ACCT_CD_NEW}</TableCell>
-                      <TableCell>{a.ACCT_NM}</TableCell>
-                      <TableCell>TRX</TableCell>
-                      <TableCell>{a.AMOUNT}</TableCell>
-                      <TableCell>{a.REMARKS}</TableCell>
-                      <TableCell>{a.CHEQUE_NO}</TableCell>
-                      <TableCell>{a.SDC}</TableCell>
-                      <TableCell>{a.ENTERED_DATE.substring(0, 10)}</TableCell>
-                      <TableCell>{a.SCROLL1}</TableCell>
-                      <TableCell>{a.ENTERED_BY}</TableCell>
-                      <TableCell>VerifiedBy</TableCell>
-                      <TableCell>PendingCycle</TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>Vno.</TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.ACCT_CD_NEW}
+                      </TableCell>
+                      <TableCell
+                        id={a?.isFav ? "isFav" : ""}
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) => handleRowClick(e, a)}
+                      >
+                        {a.ACCT_NM}
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>TRX</TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.AMOUNT}
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.REMARKS}
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.CHEQUE_NO}
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.SDC}
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.ENTERED_DATE.substring(0, 10)}
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.SCROLL1}
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.ENTERED_BY}
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        VerifiedBy
+                      </TableCell>
+                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                        PendingCycle
+                      </TableCell>
                     </TableRow>
                   );
                 })
@@ -204,7 +232,7 @@ const TableF2 = () => {
       >
         Confirm
       </Button>
-      <BaseFooter />
+      <BaseFooter handleUpdateRows={handleUpdateRows} rows={rows} />
     </>
   );
 };

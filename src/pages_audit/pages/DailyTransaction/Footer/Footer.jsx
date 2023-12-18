@@ -60,7 +60,7 @@ const Footer = () => {
     vNo: "",
     bug: true,
     bugChq: false,
-    bugAccNo: false,
+    // bugAccNo: false,
     isCredit: true,
   };
 
@@ -77,7 +77,7 @@ const Footer = () => {
   const [saveDialog, setSaveDialog] = useState(false);
   const [resetDialog, setResetDialog] = useState(false);
   const [isArray, setIsArray] = useState(false);
-  const [errMsg, setErrMsg] = useState({ cNo: {}, accNo: {} });
+  const [errMsg, setErrMsg] = useState({ cNo: "", accNo: "" });
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -164,24 +164,43 @@ const Footer = () => {
     onSuccess: (data) => {
       console.log(data, "accInfo");
       setTempStore({ ...tempStore, accInfo: data });
+
       if (data.STATUS == "C") {
+        console.log("c1");
         setErrMsg({
           ...errMsg,
-          accNo: { ERR_MSG: data.ACCT_CD_NEW + " Account Closed!" },
+          accNo: data.ACCT_CD_NEW + " Account Closed!",
         });
-        rows[index].bugAccNo = true;
+        rows[index].bug = true;
+      } else if (data.STATUS == "U") {
+        console.log("c2");
+        setErrMsg({
+          ...errMsg,
+          accNo: data.ACCT_CD_NEW + " Account Unclaimed!",
+        });
+        rows[index].bug = true;
+      } else if (data == [] || !data || data?.length == 0) {
+        console.log("c3");
+        setErrMsg({
+          ...errMsg,
+          accNo: "No record found for given A/C type & A/C No",
+        });
         rows[index].bug = true;
       } else {
-        setErrMsg({ ...errMsg, accNo: { ERR_MSG: "" } });
-        rows[index].bugAccNo = false;
-        rows[index].bug = false;
+        console.log("c4");
+        setErrMsg({ ...errMsg, accNo: "" });
       }
     },
     onError: (error) => {},
   });
+
+  console.log(errMsg, "errMsg");
   const addScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
       console.log(data, "save scroll api");
+      if (Number(data[0]?.INSERT) > 0) {
+        handleReset();
+      }
     },
     onError: (error) => {},
   });
@@ -191,8 +210,8 @@ const Footer = () => {
       if (data.ERR_CODE == "-1") {
         rows[index].bug = true;
         rows[index].bugChq = true;
+        setErrMsg({ ...errMsg, cNo: data?.ERR_MSG });
       }
-      setErrMsg({ ...errMsg, cNo: data });
     },
     onError: (error) => {},
   });
@@ -236,7 +255,12 @@ const Footer = () => {
       bugChq: false,
       isCredit: isCred,
     };
-    if (isSave && totalDebit != totalCredit) {
+    if (
+      isSave &&
+      totalDebit != totalCredit &&
+      errMsg?.accNo == "" &&
+      errMsg?.cNo == ""
+    ) {
       let obj = [...rows, defaulVal2];
 
       setRows(obj);
@@ -249,12 +273,6 @@ const Footer = () => {
     if (rows.length > 1) {
       obj.splice(i, 1);
       handleTotal(obj);
-
-      rows.map((a) => {
-        if (!a.bug) {
-          setErrMsg({});
-        }
-      });
       setRows(obj);
     }
   };
@@ -320,12 +338,12 @@ const Footer = () => {
     handleGetAccInfo(i);
   };
   const handleAccNo = (e, i) => {
+    setIndex(i);
     const obj = [...rows];
     let txt = e.target.value;
-
     obj[i].accNo = txt;
     setRows(obj);
-    setErrMsg({ ...errMsg, accNo: {} });
+    setErrMsg({ ...errMsg, accNo: "" });
   };
   const handleAccNoBlur = (e, i) => {
     const obj = [...rows];
@@ -346,7 +364,7 @@ const Footer = () => {
     obj[i].debit = "0.00";
     obj[i].cNo = "0";
     obj[i].bugChq = false;
-    setErrMsg({});
+    setErrMsg({ ...errMsg, cNo: "" });
 
     obj[i].scroll = "";
     let tr = value?.code + "   ";
@@ -362,6 +380,8 @@ const Footer = () => {
 
     if (value?.code == "3" || value?.code == "6") {
       setIsArray(true);
+    } else {
+      setIsArray(false);
     }
     setRows(obj);
     handleTotal(obj);
@@ -385,7 +405,7 @@ const Footer = () => {
   };
 
   const handleCNo = (e, i) => {
-    setErrMsg({ ...errMsg, cNo: {} });
+    setErrMsg({ ...errMsg, cNo: "" });
     const obj = [...rows];
     let txt = e.target.value;
     obj[i].cNo = txt;
@@ -393,8 +413,8 @@ const Footer = () => {
       obj[i].bugChq = true;
       txt &&
         obj[i].accNo &&
-        obj[i].accType.value &&
-        obj[i].branch.value &&
+        obj[i].accType?.value &&
+        obj[i].branch?.value &&
         getChqValidation.mutate(obj[i]);
     } else {
       obj[i].bugChq = false;
@@ -470,12 +490,33 @@ const Footer = () => {
     setRows(obj);
   };
 
+  const handleSaveDialog = () => {
+    console.log(isSave, "isSaveeeee");
+    console.log(errMsg, "errMsg");
+    console.log(isArray, "isArray");
+    console.log(diff, "diff");
+
+    if (
+      errMsg.accNo ||
+      errMsg.cNo ||
+      !isSave ||
+      (!isArray && diff == 0) ||
+      (isArray && diff != 0)
+    ) {
+    } else {
+      setSaveDialog(true);
+    }
+  };
   const handleScrollSave = () => {
     // handleReset();
+
     addScroll.mutate(rows);
     setSaveDialog(false);
   };
-
+  const handleUpdateRows = (data) => {
+    console.log(data, "dataaaa");
+    setRows(data);
+  };
   return (
     <>
       <Card
@@ -493,10 +534,10 @@ const Footer = () => {
             </caption>
 
             <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-              {errMsg?.cNo && errMsg?.cNo.ERR_MSG}
+              {errMsg?.cNo && errMsg?.cNo}
             </caption>
             <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-              {errMsg?.accNo && errMsg?.accNo.ERR_MSG}
+              {errMsg?.accNo && errMsg?.accNo}
             </caption>
             <TableHead>
               <TableRow>
@@ -512,7 +553,7 @@ const Footer = () => {
                 <TableCell>Debit</TableCell>
                 <TableCell>Credit</TableCell>
                 <TableCell>Vno.</TableCell>
-                <TableCell style={{ border: "0px" }}></TableCell>
+                <TableCell style={{ border: "0px", width: "10px" }}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -561,7 +602,7 @@ const Footer = () => {
                         >
                           <TextField
                             value={a.accNo}
-                            error={!a.accNo || a.bugAccNo ? true : false}
+                            error={!a.accNo ? true : false}
                             size="small"
                             type="number"
                             onChange={(e) => handleAccNo(e, i)}
@@ -636,7 +677,11 @@ const Footer = () => {
                             value={a.cNo}
                             error={!a.cNo || a.bugChq ? true : false}
                             id="txtRight"
-                            disabled={!a.isCredit ? false : true}
+                            disabled={
+                              a.isCredit || !a.accNo || !a.accType?.value
+                                ? true
+                                : false
+                            }
                             size="small"
                             type="number"
                             onChange={(e) => handleCNo(e, i)}
@@ -711,13 +756,16 @@ const Footer = () => {
                             onChange={(e) => handleVNo(e, i)}
                           />
                         </TableCell>
-                        <TableCell style={{ border: "0px" }}>
+                        <TableCell style={{ border: "0px", width: "10px" }}>
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (
-                            <CancelIcon
+                            <Button
+                              variant="secondary"
                               onClick={(e) => handleClear(e, i)}
-                              style={{ cursor: "pointer" }}
-                            />
+                              size="small"
+                            >
+                              <CancelIcon />
+                            </Button>
                           )}
                         </TableCell>
                       </TableRow>
@@ -731,7 +779,7 @@ const Footer = () => {
           </Table>
         </TableContainer>
       </Card>
-      <br /> <br />
+
       {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
         <>
           <Button
@@ -757,7 +805,7 @@ const Footer = () => {
           variant="contained"
           color="secondary"
           sx={{ margin: "8px" }}
-          onClick={() => setSaveDialog(true)}
+          onClick={() => handleSaveDialog()}
         >
           save
         </Button>
@@ -768,12 +816,13 @@ const Footer = () => {
         variant="contained"
         color="secondary"
         sx={{ margin: "8px" }}
-        onClick={() => setSaveDialog(true)}
+        onClick={() => handleSaveDialog()}
       >
         save
       </Button>
       <br />
-      <BaseFooter />
+      <br />
+      <BaseFooter handleUpdateRows={handleUpdateRows} rows={rows} />
       <br />
       <>
         <Dialog

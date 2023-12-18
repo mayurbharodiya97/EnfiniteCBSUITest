@@ -134,7 +134,11 @@ export const getAccInfo = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
-    return responseData[0];
+    if (responseData.length > 0) {
+      return responseData[0];
+    } else {
+      return responseData;
+    }
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
