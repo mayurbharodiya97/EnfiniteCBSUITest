@@ -32,7 +32,7 @@ import { styled } from "@mui/material/styles";
 import StyledTabs from "components/styledComponent/tabs/tabs";
 
 // const JointDetails = lazy(() => import("./JointDetails"));
-console.log("daily trans");
+// console.log("daily trans");
 
 interface TabPanelProps {
   children?: React.ReactNode;

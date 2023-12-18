@@ -215,7 +215,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         }}
       >
         {StartIcon ? <StartIcon /> : null}
-        <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p>
+        {/* <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p> */}
         {EndIcon ? <EndIcon /> : null}
       </InputAdornment>
       <TextField
@@ -223,7 +223,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         key={fieldKey}
         id={fieldKey}
         name={name}
-        // label={label}
+        label={label}
         value={value}
         error={!isSubmitting && isError}
         helperText={

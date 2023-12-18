@@ -73,7 +73,7 @@ const GeneralAPISDK = () => {
     console.log("changed...");
   };
   const getAccountTypeList = async (...reqData) => {
-    console.log(reqData, "reqData...");
+    // console.log(reqData, "reqData...");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETUSERACCTTYPE", {
         USER_NAME: reqData?.[3]?.user.id
@@ -546,12 +546,15 @@ const GeneralAPISDK = () => {
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ DISPLAY_NM }) => {
-          return {
-            value: DISPLAY_NM,
-            label: DISPLAY_NM,
-          };
-        });
+        responseData = responseData.map(
+          ({ DISPLAY_NM, ZONE_CD, ...others }) => {
+            return {
+              value: ZONE_CD,
+              label: DISPLAY_NM,
+              ...others,
+            };
+          }
+        );
       }
       return responseData;
     } else {
@@ -614,6 +617,7 @@ const GeneralAPISDK = () => {
       { id: 3, name: "aaaa", accNo: 123425 },
     ];
   };
+
   return {
     GetMiscValue,
     getValidateValue,

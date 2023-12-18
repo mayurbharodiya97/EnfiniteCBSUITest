@@ -588,6 +588,26 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
     packageName: "",
   },
+  GETBUSINESSDATE: {
+    url: "/chequeServiceAPI/GETBUSINESSDATE",
+    packageName: "",
+  },
+  GETSLIPNO: {
+    url: "/chequeServiceAPI/GETSLIPNO",
+    packageName: "",
+  },
+  GETACCOUNTNM: {
+    url: "/chequeServiceAPI/GETACCOUNTNM",
+    packageName: "",
+  },
+  DOBANKDETAIL: {
+    url: "/chequeServiceAPI/DOBANKDETAIL",
+    packageName: "",
+  },
+  DOOWCLEARINGDML: {
+    url: "/chequeServiceAPI/DOOWCLEARINGDML",
+    packageName: "",
+  },
   GETLIMITSECUMSTPARENT: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITSECUMSTPARENT",
     packageName: "",

@@ -30,7 +30,12 @@ export const PopupMessageAPIWrapper = ({
         </DialogTitle>
         <DialogContent>
           <DialogContentText
-            style={{ color: "black", marginTop: "8px", marginBottom: "6px" }}
+            style={{
+              color: "black",
+              marginTop: "8px",
+              marginBottom: "6px",
+              textAlign: "center",
+            }}
           >
             {Message}
           </DialogContentText>

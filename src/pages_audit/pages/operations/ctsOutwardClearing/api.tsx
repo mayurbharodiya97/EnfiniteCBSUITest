@@ -3,92 +3,77 @@ import {
   DefaultErrorObject,
   utilFunction,
 } from "components/utils";
+import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getChequeBookEntryData = async ({
-  companyID,
-  branchCD,
-  acctType,
-  accountNo,
-}) => {
-  if (!Boolean(branchCD)) {
-    throw DefaultErrorObject(
-      "Required value missing for Branch.",
-      "",
-      "warning"
-    );
-  } else if (!Boolean(acctType)) {
-    throw DefaultErrorObject(
-      "Required value missing for Account Type.",
-      "",
-      "warning"
-    );
-  } else if (!Boolean(accountNo)) {
-    throw DefaultErrorObject(
-      "Required value missing for Account Number.",
-      "",
-      "warning"
-    );
-  } else {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETCHEQUEBOOK", {
-        COMP_CD: companyID,
-        BRANCH_CD: branchCD,
-        ACCT_TYPE: acctType,
-        ACCT_CD: accountNo,
-      });
-
-    if (status === "0") {
-      let responsedata = data;
-      return responsedata;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  }
-};
-
-export const getChequeLeavesList88888 = async () => {
+export const getBussinessDate = async ({ companyID, branchID }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("", {});
-  if (status === "0") {
-    return [
-      {
-        // CHEQUE_FROM: "8080808",
-        // CHEQUE_TO: "9090909",
-        SERVICE_CHARGE: "757754",
-        GST: "4564564 ",
-        FROM_CHEQUE_NO: "8080808",
-        TO_CHEQUE_NO: "9090909",
+    await AuthSDK.internalFetcher("GETBUSINESSDATE", {
+      TRAN_DATE: format(new Date(), "dd/MMM/yyyy"),
+      COMP_CD: companyID,
+      BRANCH_CD: branchID,
+    });
 
-        // SERVICE_CHARGE: "757754",
-        // GST: "4564564 ",
-      },
-    ];
+  if (status === "0") {
+    let responseData = data;
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
-export const getCustomerCardDetailThroughCB = async ({ clientID }) => {
+export const getAccountName = async ({ Apireq }) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETUSERDTL360", {
-      CUSTOMER_DTL_LIST: { CBNUMBER: clientID, APP_INDICATOR: "TRANZWARE" },
-    });
+    await AuthSDK.internalFetcher("GETACCOUNTNM", { ...Apireq });
   if (status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
-export const saveCustomerRegisterRequest = async ({ inputData }) => {
+export const getSlipNumber = async (Apireq) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("INSCUSTREGREQ", {
-      INPUT_DATA: inputData,
-    });
+    await AuthSDK.internalFetcher(`GETSLIPNO`, { ...Apireq });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const clearingBankMasterConfigDML = async ({ data: formData }) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOBANKDETAIL",
+    formData
+  );
   if (status === "0") {
     return message;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
+};
+export const outwardClearingConfigDML = async (formData) => {
+  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
+    "DOOWCLEARINGDML",
+    formData
+  );
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const TemporaryData = () => {
+  return [
+    {
+      CHEQUE_NO: "",
+      BANK_CD: "",
+      BANK_NAME: "",
+      PAYEE_AC_NO: "",
+      CHEQUE_DATE: "",
+      DESCRIPTION: "",
+      CHQ_MICR_CD: "",
+      NAME: "",
+      AMOUNT: "",
+      id: 1,
+    },
+  ];
 };
