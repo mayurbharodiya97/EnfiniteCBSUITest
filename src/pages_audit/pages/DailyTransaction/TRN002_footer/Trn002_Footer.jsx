@@ -137,7 +137,7 @@ const Trn002_Footer = () => {
                 <TableCell>PendingCycle</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody style={{ overflowY: "scroll", height: "65vh" }}>
+            <TableBody>
               {rows.length > 0 ? (
                 rows.map((a, i) => {
                   return (
