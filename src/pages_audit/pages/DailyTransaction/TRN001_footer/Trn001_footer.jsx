@@ -32,10 +32,10 @@ import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import "./footer.css";
+import "./Trn001_Footer.css";
 import BaseFooter from "./BaseFooter";
 
-const Footer = () => {
+const Trn001_footer = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
 
@@ -879,4 +879,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default Trn001_footer;

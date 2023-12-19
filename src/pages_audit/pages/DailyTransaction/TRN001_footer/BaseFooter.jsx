@@ -1,3 +1,4 @@
+//UI
 import { Button, Toolbar, AppBar, Card } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
@@ -11,6 +12,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import SearchIcon from "@mui/icons-material/Search";
 
+//logic
 import React, {
   useEffect,
   useRef,
@@ -22,7 +24,7 @@ import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import "./footer.css";
+import "./Trn001_Footer.css";
 
 const BaseFooter = ({ rows, handleUpdateRows }) => {
   let filterOpt = [

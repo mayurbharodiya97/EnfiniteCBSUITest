@@ -34,13 +34,14 @@ import React, {
 import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
-import * as API2 from "../Footer/api";
+import * as API2 from "../TRN001_footer/api";
 import { AuthContext } from "pages_audit/auth";
-import "./F2.css";
-import BaseFooter from "../Footer/BaseFooter";
+import "./Trn002_Footer.css";
+import BaseFooter from "../TRN001_footer/BaseFooter";
 
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
-const TableF2 = () => {
+
+const Trn002_Footer = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
 
@@ -160,7 +161,7 @@ const TableF2 = () => {
                 <TableCell>PendingCycle</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody style={{ overflowY: "scroll", height: "65vh" }}>
               {rows.length > 0 ? (
                 rows.map((a, i) => {
                   return (
@@ -237,4 +238,4 @@ const TableF2 = () => {
   );
 };
 
-export default TableF2;
+export default Trn002_Footer;

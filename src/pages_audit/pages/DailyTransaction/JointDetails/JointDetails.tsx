@@ -1,23 +1,10 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
-import { JointDetailGridMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
-import * as API from "./api";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { AuthContext } from "pages_audit/auth";
-import { useContext } from "react";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+//UI
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
-import { jointViewDetailMetaData } from "./metaData";
-
 import {
   Box,
   Typography,
@@ -28,6 +15,22 @@ import {
   Tab,
   Button,
 } from "@mui/material";
+
+//logic
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { useMutation, useQuery } from "react-query";
+import { JointDetailGridMetaData } from "./gridMetadata";
+import GridWrapper from "components/dataTableStatic";
+import { Alert } from "components/common/alert";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
+import { ClearCacheProvider, queryClient } from "cache";
+import { FormWrapper } from "components/dyanmicForm/formWrapper";
+import { AuthContext } from "pages_audit/auth";
+import { useContext } from "react";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import { jointViewDetailMetaData } from "./metaData";
+import * as API from "./api";
+
 const JointDetails = () => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);

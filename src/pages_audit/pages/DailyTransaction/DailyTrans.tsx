@@ -1,24 +1,4 @@
-import React, { useState } from "react";
-import { lazy } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import JointDetailsForm from "./JointDetails";
-import TodayTransactionForm from "./TodayTransaction";
-import CloseIcon from "@mui/icons-material/Close";
-import Insurance from "./Insurance";
-import CheckBook from "./CheckBook";
-import HoldCharge from "./HoldCharge";
-import Snapshot from "./SnapShot";
-import Search from "./Search";
-import StopPay from "./StopPay";
-import Document from "./Document";
-import Subsidy from "./Subsidy";
-import Disbursement from "./Disbursement";
-import Footer from "./Footer/Footer";
-import AccDetails from "./AccountDetails/AccDetails";
-import { Button, Tabs } from "@mui/material";
-
-import { useNavigate } from "react-router-dom";
-
+// UI
 import {
   Box,
   Typography,
@@ -30,7 +10,28 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import StyledTabs from "components/styledComponent/tabs/tabs";
-import TableF2 from "./TRN_F2/TableF2";
+import CloseIcon from "@mui/icons-material/Close";
+import { Button, Tabs } from "@mui/material";
+
+//logic
+import React, { useState } from "react";
+import { lazy } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
+import JointDetailsForm from "./JointDetails";
+import TodayTransactionForm from "./TodayTransaction";
+import Insurance from "./Insurance";
+import CheckBook from "./CheckBook";
+import HoldCharge from "./HoldCharge";
+import Snapshot from "./SnapShot";
+import Search from "./Search";
+import StopPay from "./StopPay";
+import Document from "./Document";
+import Subsidy from "./Subsidy";
+import Disbursement from "./Disbursement";
+import AccDetails from "./AccountDetails/AccDetails";
+import { useNavigate } from "react-router-dom";
+import Trn001_footer from "./TRN001_footer/Trn001_footer";
+import Trn002_footer from "./TRN002_footer/Trn002_Footer";
 
 // const JointDetails = lazy(() => import("./JointDetails"));
 console.log("daily trans");
@@ -162,9 +163,9 @@ export const DailyTrans = () => {
         ))}
       </>
       {loc.pathname.includes("C54BA228AA955DF1B1FECF663736B1D8") ? (
-        <TableF2 />
+        <Trn002_footer />
       ) : (
-        <Footer />
+        <Trn001_footer />
       )}
     </div>
   );
