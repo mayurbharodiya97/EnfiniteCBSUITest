@@ -10,47 +10,21 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import CancelIcon from "@mui/icons-material/Cancel";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import CloseIcon from "@mui/icons-material/Close";
-import AddIcon from "@mui/icons-material/Add";
-import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import SearchIcon from "@mui/icons-material/Search";
-import InputBase from "@mui/material/InputBase";
-import Checkbox from "@mui/material/Checkbox";
 
 //Logical
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useContext,
-} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
-import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import * as API2 from "../TRN001_footer/api";
 import { AuthContext } from "pages_audit/auth";
 import "./Trn002_Footer.css";
 import BaseFooter from "../TRN001_footer/BaseFooter";
 
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
 const Trn002_Footer = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
 
   const [rows, setRows] = useState([]);
-
-  const [filter, setFilter] = useState({ value: "", label: "" });
-  const [search, setSearch] = useState("");
-  const [errMsg, setErrMsg] = useState("");
-  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -68,6 +42,7 @@ const Trn002_Footer = () => {
     getScrollListF2.mutate(data);
   }, []);
 
+  //api define ===============================================================
   const getAccInfo = useMutation(API2.getAccInfo, {
     onSuccess: (data) => {
       console.log(data, "accInfo");
@@ -89,6 +64,7 @@ const Trn002_Footer = () => {
     onError: (error) => {},
   });
 
+  // functions ===============================================================
   const handleCheck = (e, i) => {
     let obj = [...rows];
     obj[i].check = e.target.checked;

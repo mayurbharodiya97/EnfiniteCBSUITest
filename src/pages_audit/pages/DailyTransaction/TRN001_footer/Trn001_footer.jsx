@@ -20,7 +20,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import InputBase from "@mui/material/InputBase";
-//Logical
+//Logic
 import React, {
   useEffect,
   useRef,
@@ -70,15 +70,15 @@ const Trn001_footer = () => {
   const [sdcOptions, setSdcOptions] = useState([]);
   const [accTypeOptions, setAccTypeOptions] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
-  const [isSave, setIsSave] = useState(false);
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
+  const [isSave, setIsSave] = useState(false);
   const [diff, setDiff] = useState(0);
-  const [saveDialog, setSaveDialog] = useState(false);
-  const [resetDialog, setResetDialog] = useState(false);
   const [isArray, setIsArray] = useState(false);
   const [errMsg, setErrMsg] = useState({ cNo: "", accNo: "" });
   const [index, setIndex] = useState(0);
+  const [resetDialog, setResetDialog] = useState(false);
+  const [saveDialog, setSaveDialog] = useState(false);
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -130,6 +130,7 @@ const Trn001_footer = () => {
     getTrxOptions.mutate(authState);
   }, []);
 
+  //api define
   const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
       setBranchOptions(data);
@@ -193,8 +194,6 @@ const Trn001_footer = () => {
     },
     onError: (error) => {},
   });
-
-  console.log(errMsg, "errMsg");
   const addScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
       console.log(data, "save scroll api");
@@ -222,107 +221,7 @@ const Trn001_footer = () => {
     onError: (error) => {},
   });
 
-  const handleAddRow = () => {
-    let cred = 0;
-    let deb = 0;
-    let trxx = { label: "1" };
-    let isCred = true;
-    if (totalDebit > totalCredit) {
-      cred = totalDebit - totalCredit;
-      trxx = trxOptions2[2];
-      isCred = true;
-    } else if (totalDebit < totalCredit) {
-      deb = totalCredit - totalDebit;
-      trxx = trxOptions2[5];
-      isCred = false;
-    }
-    let tr = trxx?.code + "   ";
-    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
-
-    let defaulVal2 = {
-      branch: defBranch,
-      accType: { label: "", value: "", info: "" },
-      accNo: "",
-      trx: trxx,
-      scroll: "", //token
-      sdc: defSdc,
-      remark: defSdc?.label,
-      cNo: "0",
-      date: new Date().toISOString()?.substring(0, 10),
-      debit: deb?.toFixed(2),
-      credit: cred?.toFixed(2),
-      vNo: "",
-      bugChq: false,
-      isCredit: isCred,
-    };
-    if (
-      isSave &&
-      totalDebit != totalCredit &&
-      errMsg?.accNo == "" &&
-      errMsg?.cNo == ""
-    ) {
-      let obj = [...rows, defaulVal2];
-
-      setRows(obj);
-      handleTotal(obj);
-    }
-  };
-
-  const handleClear = (e, i) => {
-    let obj = [...rows];
-    if (rows.length > 1) {
-      obj.splice(i, 1);
-      handleTotal(obj);
-      setRows(obj);
-    }
-  };
-
-  const handleTotal = (obj) => {
-    let sumDebit = 0;
-    let sumCredit = 0;
-
-    obj?.map((a) => {
-      sumDebit += Number(a.debit);
-    });
-
-    obj?.map((a) => {
-      sumCredit += Number(a.credit);
-    });
-
-    setDiff(sumDebit - sumCredit);
-    setTotalDebit(Number(sumDebit.toFixed(3)));
-    setTotalCredit(Number(sumCredit.toFixed(3)));
-  };
-
-  const handleReset = () => {
-    setRows([defaulVal]);
-    setTotalCredit(0);
-    setTotalDebit(0);
-    setTrxOptions(trxOptions2);
-    setResetDialog(false);
-  };
-
-  const handleFilterTrx = () => {
-    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
-    setTrxOptions(result);
-  };
-
-  const handleGetAccInfo = (i) => {
-    let data = {
-      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
-      BRANCH_CD: rows[i]?.branch?.value,
-      ACCT_TYPE: rows[i]?.accType?.value,
-      ACCT_CD: rows[i]?.accNo,
-      authState: authState,
-    };
-
-    rows[i]?.accNo &&
-      rows[i]?.accType?.value &&
-      rows[i]?.branch?.value &&
-      getAccInfo.mutate(data);
-  };
-
-  //TABLE FNs
+  //TABLE FNs ===============================================================
   const handleBranch = (e, value, i) => {
     const obj = [...rows];
     obj[i].branch = value;
@@ -422,10 +321,6 @@ const Trn001_footer = () => {
     setRows(obj);
     setIndex(i);
   };
-  const handleCNoBlur = (e, i) => {
-    const obj = [...rows];
-    // getChqValidation.mutate(obj[i]);
-  };
 
   const handleDate = (e, i) => {
     console.log(e, "date e");
@@ -489,6 +384,107 @@ const Trn001_footer = () => {
     obj[i].vNo = e.target.value;
     setRows(obj);
   };
+  //=====================================================================
+  const handleAddRow = () => {
+    let cred = 0;
+    let deb = 0;
+    let trxx = { label: "1" };
+    let isCred = true;
+    if (totalDebit > totalCredit) {
+      cred = totalDebit - totalCredit;
+      trxx = trxOptions2[2];
+      isCred = true;
+    } else if (totalDebit < totalCredit) {
+      deb = totalCredit - totalDebit;
+      trxx = trxOptions2[5];
+      isCred = false;
+    }
+    let tr = trxx?.code + "   ";
+    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
+
+    let defaulVal2 = {
+      branch: defBranch,
+      accType: { label: "", value: "", info: "" },
+      accNo: "",
+      trx: trxx,
+      scroll: "", //token
+      sdc: defSdc,
+      remark: defSdc?.label,
+      cNo: "0",
+      date: new Date().toISOString()?.substring(0, 10),
+      debit: deb?.toFixed(2),
+      credit: cred?.toFixed(2),
+      vNo: "",
+      bugChq: false,
+      isCredit: isCred,
+    };
+    if (
+      isSave &&
+      totalDebit != totalCredit &&
+      errMsg?.accNo == "" &&
+      errMsg?.cNo == ""
+    ) {
+      let obj = [...rows, defaulVal2];
+
+      setRows(obj);
+      handleTotal(obj);
+    }
+  };
+
+  const handleClear = (e, i) => {
+    let obj = [...rows];
+    if (rows.length > 1) {
+      obj.splice(i, 1);
+      handleTotal(obj);
+      setRows(obj);
+    }
+  };
+
+  const handleTotal = (obj) => {
+    let sumDebit = 0;
+    let sumCredit = 0;
+
+    obj?.map((a) => {
+      sumDebit += Number(a.debit);
+    });
+
+    obj?.map((a) => {
+      sumCredit += Number(a.credit);
+    });
+
+    setDiff(sumDebit - sumCredit);
+    setTotalDebit(Number(sumDebit.toFixed(3)));
+    setTotalCredit(Number(sumCredit.toFixed(3)));
+  };
+
+  const handleReset = () => {
+    setRows([defaulVal]);
+    setTotalCredit(0);
+    setTotalDebit(0);
+    setTrxOptions(trxOptions2);
+    setResetDialog(false);
+  };
+
+  const handleFilterTrx = () => {
+    //to limit the trxOptions on 3,6
+    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
+    setTrxOptions(result);
+  };
+
+  const handleGetAccInfo = (i) => {
+    let data = {
+      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
+      BRANCH_CD: rows[i]?.branch?.value,
+      ACCT_TYPE: rows[i]?.accType?.value,
+      ACCT_CD: rows[i]?.accNo,
+      authState: authState,
+    };
+
+    rows[i]?.accNo &&
+      rows[i]?.accType?.value &&
+      rows[i]?.branch?.value &&
+      getAccInfo.mutate(data);
+  };
 
   const handleSaveDialog = () => {
     console.log(isSave, "isSaveeeee");
@@ -508,13 +504,12 @@ const Trn001_footer = () => {
     }
   };
   const handleScrollSave = () => {
-    // handleReset();
-
     addScroll.mutate(rows);
     setSaveDialog(false);
   };
   const handleUpdateRows = (data) => {
-    console.log(data, "dataaaa");
+    //to apply filter from baseFooter
+    console.log(data, "databaseFooter");
     setRows(data);
   };
   return (
@@ -532,7 +527,6 @@ const Trn001_footer = () => {
             <caption style={{ fontWeight: "600" }}>
               Total ( Debit:{totalDebit} | Credit:{totalCredit} )
             </caption>
-
             <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
               {errMsg?.cNo && errMsg?.cNo}
             </caption>
@@ -685,7 +679,6 @@ const Trn001_footer = () => {
                             size="small"
                             type="number"
                             onChange={(e) => handleCNo(e, i)}
-                            onBlur={(e) => handleCNoBlur(e, i)}
                           />
                         </TableCell>
 
@@ -800,18 +793,7 @@ const Trn001_footer = () => {
           </Button>
         </>
       )}
-      {/* {(isArray && diff == 0 && isSave) || (!isArray && isSave) ? (
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={{ margin: "8px" }}
-          onClick={() => handleSaveDialog()}
-        >
-          save
-        </Button>
-      ) : (
-        <></>
-      )} */}
+
       <Button
         variant="contained"
         color="secondary"
