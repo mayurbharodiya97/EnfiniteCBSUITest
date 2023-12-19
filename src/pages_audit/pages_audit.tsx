@@ -52,24 +52,27 @@ export const PagesAudit = (props, { columns }) => {
                 /> */}
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
-                <Route path="operation/*" element={
-                  <CkycProvider>
-                    <OperationsMenu />
-                  </CkycProvider>
-                } />
+                <Route
+                  path="operation/*"
+                  element={
+                    <CkycProvider>
+                      <OperationsMenu />
+                    </CkycProvider>
+                  }
+                />
                 <Route path="view-statement/*" element={<AccountDetails />} />
                 <Route path="grid/*" element={<MastersMenu />} />
                 <Route path="configuration/*" element={<Configuration />} />
-                <Route
+                {/* <Route
                   path="dynamicgrid/C54BA228AA955DF1B1FECF663736B1D8/*"
                   element={<DailyTrans />}
                 />
                 <Route
                   path="dynamicgrid/F7B4F4ABF6915A729A5B64436458497E/*"
                   element={<DailyTrans />}
-                />
+                /> */}
 
-                {/* <Route path="dynamicgrid/:id*" element={<DynamicGrids />} /> */}
+                <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
 
                 {/* <Route
                   path="branch-selection/*"
