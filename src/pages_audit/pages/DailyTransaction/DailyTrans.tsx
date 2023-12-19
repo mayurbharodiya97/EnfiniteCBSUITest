@@ -34,7 +34,7 @@ import Trn001_footer from "./TRN001_footer/Trn001_footer";
 import Trn002_footer from "./TRN002_footer/Trn002_Footer";
 
 // const JointDetails = lazy(() => import("./JointDetails"));
-console.log("daily trans");
+// console.log("daily trans");
 
 interface TabPanelProps {
   children?: React.ReactNode;

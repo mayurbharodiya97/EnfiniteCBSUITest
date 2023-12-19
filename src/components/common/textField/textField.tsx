@@ -125,17 +125,19 @@ const MyTextField: FC<MyTextFieldProps> = ({
     },
     [handleChange]
   );
-
   const focusRef = useRef();
   useEffect(() => {
     if (isFieldFocused) {
       //@ts-ignore
-      setTimeout(() => {
-        //@ts-ignore
-        focusRef?.current?.focus?.();
-      }, 1);
+      getFocus()
     }
-  }, [isFieldFocused]);
+  }, [isFieldFocused, value]);
+  const getFocus = () => {
+    setTimeout(() => {
+      //@ts-ignore
+      focusRef?.current?.focus?.();
+    }, 1);
+  }
 
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
@@ -150,9 +152,12 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value, ignoreUpdate } = incomingMessage;
+      const { value, ignoreUpdate, isFieldFocused } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
+        if(isFieldFocused) {
+          getFocus()
+        }  
         if (ignoreUpdate) {
           //ignore Validation
         } else if (whenToRunValidation === "onBlur") {
@@ -210,7 +215,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         }}
       >
         {StartIcon ? <StartIcon /> : null}
-        <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p>
+        {/* <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p> */}
         {EndIcon ? <EndIcon /> : null}
       </InputAdornment>
       <TextField
@@ -218,7 +223,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         key={fieldKey}
         id={fieldKey}
         name={name}
-        // label={label}
+        label={label}
         value={value}
         error={!isSubmitting && isError}
         helperText={

@@ -78,7 +78,7 @@
     "react-query-devtools": "^2.6.3",
     "react-quill": "^2.0.0",
     "react-responsive-carousel": "^3.2.23",
-    "react-router-dom": "^6.8.1",
+    "react-router-dom": "6.8.1",
     "react-scripts": "^5.0.1",
     "react-table": "^7.8.0",
     "react-to-print": "^2.14.11",

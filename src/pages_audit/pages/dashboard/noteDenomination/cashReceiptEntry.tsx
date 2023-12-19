@@ -39,13 +39,22 @@ import {
   FilterFormMetaType,
   FormComponentView,
 } from "components/formcomponent";
-import { DenominationScreenMetaData } from "./metadata";
+import {
+  DenominationScreenMetaData,
+  denoViewTrnGridMetaData,
+} from "./metadata";
 import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
 import { Button } from "reactstrap";
 import { getAcctInqStatement } from "pages_audit/acct_Inquiry/api";
 import AccDetails from "pages_audit/pages/DailyTransaction/AccountDetails/AccDetails";
 import { Alert } from "components/common/alert";
+import GridWrapper from "components/dataTableStatic";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
+import DenoTable from "./denoTable";
+import DualPartTable from "./dualPartTable";
+import { isValidDate } from "components/utils/utilFunctions/function";
+import { format } from "date-fns";
 
 const CashReceiptEntry = () => {
   const [inputVal, setInputVal] = useState<any>({});
@@ -64,11 +73,14 @@ const CashReceiptEntry = () => {
   const [isDisableField, setIsDisableField] = useState<boolean>(false);
   const [openAccountDTL, setOpenAccountDTL] = useState<boolean>(false);
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
-  const authState = useContext(AuthContext);
+  const authState: any = useContext(AuthContext);
   const formComponentViewRef = useRef<any>(null);
   const [referData, setReferData] = useState<any>();
   const [secondReferData, setSecondReferData] = useState<any>();
+  const [thirdReferData, setthirdReferData] = useState<any>();
   const [formData, setFormData] = useState<any>({});
+  const [viewTRN, setViewTRN] = useState<any>(false);
+  const { tempStore, setTempStore } = useContext(AuthContext);
   // useEffect(() => {
   //   props?.map((item) => {
   //     if (item?.textField === "Y") {
@@ -399,11 +411,37 @@ const CashReceiptEntry = () => {
         ACCT_CD: secondReferData?.columnVal?.ACCOUNT_NUMBER ?? "",
         ACCT_TYPE: secondReferData?.columnVal?.ACCOUNT_TYPE ?? "",
         BRANCH_CD: secondReferData?.columnVal?.BRANCH ?? "",
-        COMP_CD: "132 ",
+        COMP_CD: authState?.authState?.companyID ?? "",
         FULL_ACCT_NO: "",
       });
     }
   }, [secondReferData]);
+
+  const setThirdData = () => {
+    setthirdReferData(formComponentViewRef.current);
+    setOpenAccountDTL(true);
+  };
+
+  useEffect(() => {
+    if (thirdReferData) {
+      console.log(thirdReferData, "thirdReferData");
+
+      let reqPara = {
+        COMP_CD: authState?.authState?.companyID ?? "",
+        BRANCH_CD: thirdReferData?.columnVal?.BRANCH ?? "",
+        ACCT_TYPE: thirdReferData?.columnVal?.ACCOUNT_TYPE ?? "",
+        ACCT_CD: thirdReferData?.columnVal?.ACCOUNT_NUMBER ?? "",
+        A_ASON_DT: format(
+          isValidDate(authState?.authState?.workingDate)
+            ? authState?.authState?.workingDate
+            : new Date(),
+          "dd/MMM/yyyy"
+        ),
+        authState: authState ?? {},
+      };
+      getAccInfo.mutate(reqPara);
+    }
+  }, [thirdReferData]);
 
   useEffect(() => {
     if (
@@ -435,10 +473,33 @@ const CashReceiptEntry = () => {
   //   }
   // });
 
-  const setThirdData = () => {
-    // setSecondReferData(formComponentViewRef.current);
-    setOpenAccountDTL(true);
+  const getAccInfo = useMutation(API.getAccInfoTeller, {
+    onSuccess: (data) => {
+      console.log(data, "accInfo");
+      setTempStore({ ...tempStore, accInfo: data });
+    },
+    onError: (error) => {},
+  });
+
+  const handleViewDetails = () => {
+    setViewTRN(true);
   };
+
+  const actions: ActionTypes[] = [
+    {
+      actionName: "Close",
+      actionLabel: "Close",
+      multiple: false,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+    },
+  ];
+
+  const setCurrentAction = useCallback((data) => {
+    if (data?.name === "Close") {
+      setViewTRN(false);
+    }
+  }, []);
 
   return (
     <>
@@ -475,21 +536,17 @@ const CashReceiptEntry = () => {
             </Typography>
             <Box display={"flex"}>
               {/* <GradientButton sx={{ height: "2.5rem" }}>Save </GradientButton>*/}
-              {/* {displayTable ? (
-                <Tooltip title="View Transactions">
-                  <GradientButton
-                    sx={{ height: "2.5rem" }}
-                    // onClick={() => {
-                    //   console.log("any bhi");
-                    // }}
-                    endIcon={
-                      getData.isLoading ? <CircularProgress size={20} /> : null
-                    }
-                  >
-                    View Transactions
-                  </GradientButton>
-                </Tooltip>
-              ) : null} */}
+              <Tooltip title="View Transactions">
+                <GradientButton
+                  sx={{ height: "2.5rem" }}
+                  onClick={handleViewDetails}
+                  endIcon={
+                    getData.isLoading ? <CircularProgress size={20} /> : null
+                  }
+                >
+                  View Transactions
+                </GradientButton>
+              </Tooltip>
               <Tooltip title="Denomination">
                 <GradientButton
                   sx={{ height: "2.5rem" }}
@@ -551,288 +608,47 @@ const CashReceiptEntry = () => {
             }}
             ref={formComponentViewRef}
             submitSecondButtonName={"more details"}
-            submitSecondAction={() => ClickSecondButtonEventManage()}
+            submitSecondAction={ClickSecondButtonEventManage}
             submitSecondButtonHide={false}
             // submitSecondLoading={openAccountDTL}
             firstSubmitButtonHide={true}
             displayStyle1={"none"}
             displayStyle2={"none"}
             submitThirdAction={setThirdData}
-            submitThirdButtonHide={false}
             submitThirdButtonName={"More Details"}
-            // submitThirdLoading = false,
+            submitThirdLoading={false}
             displayStyle3={"flex"}
           ></FormComponentView>
         </Box>
         {openAccountDTL ? (
           <Dialog
             open={openAccountDTL}
-            maxWidth={"lg"}
+            maxWidth={"xl"}
             fullWidth
             onClose={closeAccountDTL}
+            // style={{ height: "40vh" }}
           >
             <AccDetails />
           </Dialog>
         ) : null}
-        {displayTable && data && isDisableField ? (
-          <Slide direction="left" in={displayTable} mountOnEnter unmountOnExit>
-            <Box
-              borderRadius={"10px"}
-              boxShadow={"rgba(226, 236, 249, 0.5) 0px 11px 70px"}
-              overflow={"hidden"}
-              style={{ transform: "scale(90deg)" }}
-            >
-              <TableContainer
-                sx={{
-                  width: "auto",
-                }}
-                component={Paper}
-              >
-                <Table
-                  sx={{ minWidth: 650 }}
-                  aria-label="simple table"
-                  className={classes.tableBordered}
-                >
-                  <TableHead>
-                    <TableRow>
-                      <StyledTableCell align="left" className="cellBordered">
-                        Denomination{" "}
-                        <Box
-                          className="flipHorizontal"
-                          style={{
-                            animation: "flipHorizontal 2s infinite",
-                            display: "inline-block",
-                            transformOrigin: "center",
-                            marginLeft: "10px",
-                          }}
-                        >
-                          {
-                            <Typography
-                              style={{
-                                border: "0.2px solid",
-                                borderRadius: "50%",
-                                height: "22px",
-                                width: "22px",
-                                textAlign: "center",
-                              }}
-                            >
-                              {getCurrencySymbol(dynamicAmountSymbol)}
-                            </Typography>
-                          }
-                        </Box>
-                      </StyledTableCell>
-                      <StyledTableCell className="cellBordered" align="left">
-                        Note count
-                      </StyledTableCell>
-                      <StyledTableCell className="cellBordered" align="right">
-                        Amount
-                      </StyledTableCell>
-                      <StyledTableCell className="cellBordered" align="right">
-                        Available Note(s)
-                      </StyledTableCell>
-                      <StyledTableCell align="right" className="cellBordered">
-                        Balance
-                      </StyledTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data?.map((row, index) => {
-                      return (
-                        <TableRow key={index}>
-                          <StyledTableCell
-                            component="th"
-                            scope="row"
-                            className="cellBordered"
-                          >
-                            {formatCurrency(
-                              parseFloat(row.NOTE),
-                              getCurrencySymbol(dynamicAmountSymbol),
-                              currencyFormat,
-                              decimalCount
-                            )}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="left"
-                            sx={{
-                              borderRight: "1px solid var(--theme-color6)",
-                              borderLeft: "1px solid var(--theme-color6)",
-                              backgroundColor: "var(--theme-color4)",
-                              maxWidth: "167px",
-                            }}
-                            tabIndex={index + 2}
-                            className="cellBordered"
-                          >
-                            <TextField
-                              classes={{ root: classes.leftTextAlign }}
-                              placeholder={"Enter value"}
-                              value={inputVal[index] || ""}
-                              onChange={(event) =>
-                                handleChange(event.target.value, index)
-                              }
-                              onKeyDown={(event) => {
-                                handleKeyPress(event, index);
-                              }}
-                              onBlur={(event) =>
-                                updateTotalAmount(event, index)
-                              }
-                              helperText={displayError[index] || ""}
-                              type={"text"}
-                              InputProps={{
-                                style: { textAlign: "left" },
-                              }}
-                              tabIndex={index + 2}
-                              sx={{ width: "-webkit-fill-available" }}
-                              autoFocus={
-                                displayTable && data && index === 0
-                                  ? true
-                                  : false
-                              }
-                            />
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="right"
-                            className="cellBordered"
-                          >
-                            {" "}
-                            {formatCurrency(
-                              parseFloat(multiplicationResult[index] || "0"),
-                              getCurrencySymbol(dynamicAmountSymbol),
-                              currencyFormat,
-                              decimalCount
-                            )}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="right"
-                            // className="cellBordered"
-                          >
-                            {availNote && availNote[index] !== undefined
-                              ? availNote[index]
-                              : availNote}
-                          </StyledTableCell>
-                          <StyledTableCell
-                            align="right"
-                            className="cellBordered"
-                          >
-                            {formatCurrency(
-                              parseFloat(
-                                balance && balance[index] !== undefined
-                                  ? balance[index]
-                                  : balance
-                              ),
-                              getCurrencySymbol(dynamicAmountSymbol),
-                              currencyFormat,
-                              decimalCount
-                            )}
-                          </StyledTableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                  <TableBody>
-                    <TableRow sx={{ height: "43px" }}>
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        className="cellBordered"
-                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      >
-                        {"Total :"}
-                      </StyledTableCell>
 
-                      <StyledTableCell
-                        align="left"
-                        sx={{
-                          backgroundColor: "var(--theme-color4)",
-                          maxWidth: "167px",
-                          padding: "4px 17px !important",
-                          fontWeight: "bold",
-                          fontSize: "1rem",
-                        }}
-                        className="cellBordered"
-                      >
-                        {totalInputAmount}
-                      </StyledTableCell>
-                      <StyledTableCell
-                        align="right"
-                        className="cellBordered"
-                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      >
-                        {formatCurrency(
-                          parseFloat(totalAmount),
-                          getCurrencySymbol(dynamicAmountSymbol),
-                          currencyFormat,
-                          decimalCount
-                        )}
-                      </StyledTableCell>
-                      <StyledTableCell
-                        align="right"
-                        className="cellBordered"
-                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      >
-                        {displayTotal?.AVAIL_NOTE}
-                      </StyledTableCell>
-                      <StyledTableCell
-                        align="right"
-                        className="cellBordered"
-                        sx={{ fontWeight: "bold", fontSize: "1rem" }}
-                      >
-                        {formatCurrency(
-                          parseFloat(displayTotal?.TOTAL_AMNT),
-                          getCurrencySymbol(dynamicAmountSymbol),
-                          currencyFormat,
-                          decimalCount
-                        )}
-                      </StyledTableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <Paper
-                sx={{
-                  height: "auto",
-                  width: "auto",
-                  padding: "2px 8px",
-                  borderBottom: "2px solid var(--theme-color6)",
-                  borderLeft: "2px solid var(--theme-color6)",
-                  borderRight: "2px solid var(--theme-color6)",
-                  borderBottomLeftRadius: "10px",
-                  borderBottomRightRadius: "10px",
-                  textAlign: "center",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    backgroundColor: "var(--theme-color2)",
-                    padding: "10px 0px",
-                    display: "flex",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {" "}
-                    {upadatedFinalAmount >= 0 ? "Remaining " : "Excess "} {": "}
-                  </Typography>
-                  <Typography sx={{ fontWeight: "bold" }}>
-                    {formatCurrency(
-                      parseFloat(
-                        !isNaN(upadatedFinalAmount) ? upadatedFinalAmount : 0
-                      ),
-                      getCurrencySymbol(dynamicAmountSymbol),
-                      currencyFormat,
-                      decimalCount
-                    )}
-                  </Typography>
-                </Typography>
-              </Paper>{" "}
-            </Box>
-          </Slide>
-        ) : null}
+        <DenoTable
+          displayTable={displayTable}
+          data={data}
+          isDisableField={isDisableField}
+          inputVal={inputVal}
+          handleChange={handleChange}
+          handleKeyPress={handleKeyPress}
+          updateTotalAmount={updateTotalAmount}
+          displayError={displayError}
+          multiplicationResult={multiplicationResult}
+          availNote={availNote}
+          balance={balance}
+          totalInputAmount={totalInputAmount}
+          totalAmount={totalAmount}
+          displayTotal={displayTotal}
+          upadatedFinalAmount={upadatedFinalAmount}
+        />
 
         {Boolean(openDeno) ? (
           <PopupMessageAPIWrapper
@@ -857,6 +673,44 @@ const CashReceiptEntry = () => {
             rows={[]}
             open={confirmation}
           />
+        ) : null}
+
+        {/* <DualPartTable /> */}
+        {viewTRN ? (
+          <Dialog open={viewTRN}>
+            <GridWrapper
+              key={`denoViewTrnGrid`}
+              finalMetaData={denoViewTrnGridMetaData as GridMetaDataType}
+              data={[
+                {
+                  AB: "AB",
+                  CD: "CD",
+                  EF: "EF",
+                  id: "1",
+                },
+                {
+                  AB: "12",
+                  CD: "13",
+                  EF: "14",
+                  id: "2",
+                },
+                {
+                  AB: "$$",
+                  CD: "%%",
+                  EF: "**",
+                  id: "3",
+                },
+              ]}
+              setData={() => null}
+              actions={actions}
+              setAction={setCurrentAction}
+              headerToolbarStyle={{
+                backgroundColor: "var(theme-color5)",
+              }}
+              loading={false}
+              // refetchData={() => refetch()}
+            />
+          </Dialog>
         ) : null}
       </Box>
     </>

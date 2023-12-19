@@ -9,15 +9,18 @@ import {DocumentGridMetadata} from "./documentGridMetadata"
 import { useNavigate } from "react-router-dom";
 import KYCDocumentMasterDetails from "./KYCDocumentMasterDetails";
 import { utilFunction } from "components/utils";
-const Document = () => {
+import { Button, Grid } from "@mui/material";
+import { t } from "i18next";
+const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
     const { authState } = useContext(AuthContext);
-    const {state} = useContext(CkycContext);
+    const {state, handleColTabChangectx} = useContext(CkycContext);
     const navigate = useNavigate();
     const [componentToShow, setComponentToShow] = useState("");
     const [open, setOpen] = useState(true);
     const [rowsData, setRowsData] = useState([]);
     const [data, setData] = useState<any>([]);
     const [formMode, setFormMode] = useState<any>("");
+    const [isNextLoading, setIsNextLoading] = useState(false)
     const isDataChangedRef = useRef(false);
     const handleDialogClose = () => {
       if (isDataChangedRef.current === true) {
@@ -29,9 +32,9 @@ const Document = () => {
     };
     const myGridRef = useRef<any>(null);
 
-    useEffect(() => {
-      console.log('rowsData change', rowsData)
-    }, [rowsData])
+    // useEffect(() => {
+    //   console.log('rowsData change', rowsData)
+    // }, [rowsData])
 
     const { data:DocGridData, isError, isLoading:isDocGridLoading, error, refetch } = useQuery<any, any>(
         ["getKYCDocumentGridData"],
@@ -44,19 +47,19 @@ const Document = () => {
     );
 
     useEffect(() => {
-        console.log("existingDataexistingData", myGridRef.current)
+        // console.log("existingDataexistingData", myGridRef.current)
       // myGridRef.current.setGridData
       if(!isDocGridLoading && DocGridData) {
         setData(DocGridData)
         // setTimeout(() => {
         //   setData([])
-        //   console.log("aqwsqwsq", myGridRef.current?.cleanData?.())
+          // console.log("aqwsqwsq", myGridRef.current?.cleanData?.())
         // }, 5000);
       }
     }, [DocGridData, isDocGridLoading])
 
     const afterFormSubmit = (formData) => {
-      console.log(data, "data in afterFormSubmit", formData)
+      // console.log(data, "data in afterFormSubmit", formData)
       // let dummyObj = {
       //   VALID_UPTO: "9999",
       //   VALID_DT_APPLICABLE: "Y",
@@ -153,12 +156,32 @@ const Document = () => {
                 setAction={setCurrentAction}
                 // refetchData={() => refetch()}
                 ref={myGridRef}
-                onClickActionEvent= {(index, id, data) => {
-                  console.log("qjwkdjbiqwudqd", index, id, data)
+                // onClickActionEvent= {(index, id, data) => {
+                //   // console.log("qjwkdjbiqwudqd", index, id, data)
 
-                  // DELETE_BTN
-                }}
+                //   // DELETE_BTN
+                // }}
             />
+
+            <Grid container item sx={{justifyContent: "flex-end"}}>
+                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={(e) => {
+                        // handleColTabChangectx(1)
+                        handleColTabChangectx(state?.colTabValuectx-1)
+                    }}
+                >{t("Previous")}</Button>
+                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    // onClick={(e) => {
+                    //     DeclarationFormRef.current.handleSubmitError(e, "save")
+                    // }}
+                >{t("Save & Next")}</Button>}
+                {!state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    // onClick={(e) => {
+                    //     DeclarationFormRef.current.handleSubmitError(e, "save")
+                    // }}
+                >{t("Update & Next")}</Button>}
+            </Grid>
+
 
             {componentToShow === "Add" 
               ? <KYCDocumentMasterDetails

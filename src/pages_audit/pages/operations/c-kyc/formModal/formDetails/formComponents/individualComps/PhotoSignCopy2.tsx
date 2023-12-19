@@ -112,7 +112,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
         }
     }, [location])
 
-    // set photo, sign url from history api active record
+    // set photo, sign url from history api active record, on edit
     useEffect(() => {
         if(activePhotoHist) {
             // console.log("asdqwdq", photoHistory, activePhotoHist)
@@ -186,6 +186,20 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
     // }, [state?.photoBlobctx,state?.photoBase64ctx, state?.signBlobctx, state?.signBase64ctx])
 
 
+
+    // for common tabs on form open
+    useEffect(() => {
+        if(!state?.isFreshEntryctx) {
+            // console.log("saldjnqiwudhnqw", state?.update_casectx, state?.update_casectx.includes("A"), state?.photoBase64ctx, state?.signBase64ctx)
+            if(state?.update_casectx && (state?.update_casectx.includes("A") || state?.update_casectx.includes("P"))) {
+                // could be, update_casectx !== "P - EXISTING_PHOTO_MODIFY"
+                setPhotoImageURL(state?.photoBase64ctx, "photo")
+                setPhotoImageURL(state?.signBase64ctx, "sign")
+            }
+        }
+    }, [])
+
+
     // set data back from store state
     useEffect(() => {
         if(!(componentIn && componentIn=="kycUpdate")) {
@@ -213,7 +227,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
 
     // set image url by getting response in base64, convert to blob;, on edit
     const setPhotoImageURL = async (filedata, img:string) => {
-        if (filedata !== null) {
+        if (filedata && filedata !== null && filedata.length>6) {
           let blob = utilFunction.base64toBlob(filedata, "image/png");
           if(img === "photo") {
               photoFileURL.current =
@@ -313,15 +327,15 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
           IsNewRow: true,
           COMP_CD: authState?.companyID ?? "",
           ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
-          REQ_CD:state?.req_cd_ctx,
+        //   REQ_CD:state?.req_cd_ctx,
         //   SR_CD:"3",
           SIGN_GROUP:"2",
           FROM_LIMIT:"2",
           TO_LIMIT:"2",
           REQ_FLAG:"F",
           ACT_FLAG:"F",
-          CUST_PHOTO: photoFilesdata.current,
-          CUST_SIGN: signFilesdata.current,
+          CUST_PHOTO: photoFilesdata.current ?? "",
+          CUST_SIGN: signFilesdata.current ?? "",
           ENT_COMP_CD: authState?.companyID ?? "",
           ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
         }

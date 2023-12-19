@@ -55,6 +55,7 @@ export interface ArrayField2Props {
   disagreeButtonName: any;
   agreeButtonName: any;
   errorTitle: string;
+  isScreenStyle?: any;
 }
 
 const metaDataTransform = (metaData: MetaDataType): MetaDataType => {
@@ -84,6 +85,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   disagreeButtonName,
   agreeButtonName,
   errorTitle,
+  isScreenStyle,
 }) => {
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
@@ -184,6 +186,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       });
       return <Fragment key={row.cells[field].key}>{clonedComponent}</Fragment>;
     });
+
     return (
       <ArrayFieldRow
         key={row.fieldIndexKey}
@@ -206,9 +209,11 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         disagreeButtonName={disagreeButtonName}
         agreeButtonName={agreeButtonName}
         errorTitle={errorTitle}
+        isScreenStyle={isScreenStyle}
       />
     );
   });
+
   const cardHeaderTitleStyle = {
     background: "var(--theme-color5)",
     ml: 1.5,
@@ -310,6 +315,7 @@ export const ArrayFieldRow = ({
   disagreeButtonName,
   agreeButtonName,
   errorTitle,
+  isScreenStyle,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -380,6 +386,8 @@ export const ArrayFieldRow = ({
     } else {
       finalClass = classes.newSecondArrayRowContainer;
     }
+  } else if (Boolean(isScreenStyle)) {
+    finalClass = classes.arrayScreenRowContainer;
   } else {
     finalClass = classes.arrayRowContainer;
   }

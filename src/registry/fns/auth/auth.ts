@@ -134,6 +134,22 @@ const authAPI = () => {
       };
     }
   };
+
+  const waitForToken = (key: string) => {
+    return new Promise((res) => {
+      if (localStorage.getItem(key) === null) res("no data set yet");
+      const intervalId = setInterval(() => {
+        const localVal = localStorage.getItem(key);
+
+        if (localVal !== "refreshing") {
+          clearInterval(intervalId);
+          localStorage.removeItem(key);
+          res("ok");
+        }
+      }, 200);
+    });
+  };
+
   const internalFetcher = async (
     url: string,
     payload: any,
@@ -163,6 +179,7 @@ const authAPI = () => {
       // ) {
       //   localbaseURL = new URL("http://localhost:8088/");
       // }
+      await waitForToken("token_status");
       let response = await fetchWithTimeout(
         new URL(apiurl, localbaseURL).href,
         {

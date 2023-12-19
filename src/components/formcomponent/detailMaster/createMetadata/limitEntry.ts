@@ -173,7 +173,7 @@ export const limitEntryMetadata = {
         render: {
           componentType: "textField",
         },
-        name: "SECURITY_VALUE",
+        name: "SECURITY_CODE",
         label: "Security",
         placeholder: "",
         type: "text",
@@ -538,7 +538,7 @@ export const limitEntryMetadata = {
         maxWidth: 400,
       },
       {
-        accessor: "SECURITY_VALUE",
+        accessor: "SECURITY_CODE",
         columnName: "Security Value",
         sequence: 6,
         alignment: "center",

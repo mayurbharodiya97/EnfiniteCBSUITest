@@ -158,7 +158,6 @@ export const PropsConfigForm: FC<{
       newData ?? [],
       ["PROPS_ID"]
     );
-    console.log("upd", upd);
 
     upd["isUpdatedRow"] = upd?.isUpdatedRow?.map((item) => {
       return {

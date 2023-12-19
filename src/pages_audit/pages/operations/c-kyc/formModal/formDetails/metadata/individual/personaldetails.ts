@@ -53,7 +53,7 @@ export const personal_detail_prefix_data = {
                 sequence: 1,
             },
             dividerText: "Prefix",
-            name: "prefixDivider",
+            name: "prefixDivider_ignoreField",
             label: "prefixDivider"
         },
         {
@@ -83,8 +83,11 @@ export const personal_detail_prefix_data = {
               ) => {
                 if(field.value) {
                     return {
+                        // MOTHER_LAST_NM: {value: "", isFieldFocused:true},
                         GENDER: {value: field?.optionData[0]?.SET_GENDER ?? "" },
                         MARITAL_STATUS: {value: field?.optionData[0]?.SET_MARITIAL_STATUS ?? ""},
+                        // SURNAME: {value: "", isFieldFocused:true},
+                        // LAST_NM: {value: "", isFieldFocused:true},
                     }
                 }
                 return {}
@@ -122,12 +125,16 @@ export const personal_detail_prefix_data = {
                 ],
             },
             validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                // only character, trim value
                 if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
                     return "Please remove extra space";  
                 } else if(columnValue.value !== columnValue.value.trimStart()) {
                   return "Please remove extra space from the starting";
                 } else if (columnValue.value !== columnValue.value.trimEnd()) {
                   return "Please remove extra space from the ending";
+                } else if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
                 }
                 return "";
             },
@@ -145,12 +152,17 @@ export const personal_detail_prefix_data = {
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => {
-                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                    return "Please remove extra space";  
-                } else if(columnValue.value !== columnValue.value.trimStart()) {
-                  return "Please remove extra space from the starting";
-                } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                  return "Please remove extra space from the ending";
+                let regex = /^[a-zA-Z]+$/;
+                if(columnValue.value) {
+                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                        return "Please remove extra space";  
+                    } else if(columnValue.value !== columnValue.value.trimStart()) {
+                      return "Please remove extra space from the starting";
+                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                      return "Please remove extra space from the ending";
+                    } else if(!regex.test(columnValue.value)) {
+                        return "Please Enter Valid Format";
+                    }
                 }
                 return "";
             },
@@ -167,12 +179,17 @@ export const personal_detail_prefix_data = {
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => {
-                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                    return "Please remove extra space";  
-                } else if(columnValue.value !== columnValue.value.trimStart()) {
-                  return "Please remove extra space from the starting";
-                } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                  return "Please remove extra space from the ending";
+                if(columnValue.value) {
+                    let regex = /^[a-zA-Z]+$/;
+                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                        return "Please remove extra space";  
+                    } else if(columnValue.value !== columnValue.value.trimStart()) {
+                      return "Please remove extra space from the starting";
+                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                      return "Please remove extra space from the ending";
+                    } else if(!regex.test(columnValue.value)) {
+                        return "Please Enter Valid Format";
+                    }                    
                 }
                 return "";
             },
@@ -199,7 +216,7 @@ export const personal_detail_prefix_data = {
               componentType: "formbutton",
               sequence: 7,
             },
-            name: "SEARCH_BTN",
+            name: "SEARCH_BTN_ignoreField",
             label: "Search",
             endsIcon: "Search",
             rotateIcon: "scale(1.5)",
@@ -260,7 +277,7 @@ export const personal_detail_prefix_data = {
                 sequence: 8,
             },
             dividerText: "MaidenName",
-            name: "maidenHeaderdivider",
+            name: "maidenHeaderdivider_ignoreField",
             label: "maidenHeaderDivider"
         },
         {
@@ -300,8 +317,12 @@ export const personal_detail_prefix_data = {
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => {
-                if (!Boolean(columnValue)) {
-                  return "This field is required.";
+                let regex = /^[a-zA-Z]+$/;
+                // if (!Boolean(columnValue)) {
+                //   return "This field is required.";
+                // } else 
+                if(columnValue.value && !regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
                 }
                 return "";
             },
@@ -322,6 +343,12 @@ export const personal_detail_prefix_data = {
             label: "MiddleName",
             // placeholder: "Middle Name",
             type: "text",
+            validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                if(columnValue.value && !regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -333,6 +360,12 @@ export const personal_detail_prefix_data = {
             label: "LastName",
             // placeholder: "Last Name",
             type: "text",
+            validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                if(columnValue.value && !regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -386,7 +419,7 @@ export const personal_detail_prefix_data = {
                 sequence: 15,
             },
             dividerText: "FatherName",
-            name: "fatherHeaderDivider",
+            name: "fatherHeaderDivider_ignoreField",
             label: "fatherHeaderDivider",
             // dependentFields: ["FATHER_SPOUSE"],
             // setValueOnDependentFieldsChange: (dependentFields) => {
@@ -430,11 +463,21 @@ export const personal_detail_prefix_data = {
             // placeholder: "First Name",
             type: "text",
             required: true,
-            schemaValidation: {
-                type: "string",
-                rules: [
-                  { name: "required", params: ["ThisFieldisrequired"] },
-                ],
+            validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                // only character, trim value
+                if(!columnValue.value) {
+                    return "This field is required.";
+                } else if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                    return "Please remove extra space";  
+                } else if(columnValue.value !== columnValue.value.trimStart()) {
+                  return "Please remove extra space from the starting";
+                } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                  return "Please remove extra space from the ending";
+                } else if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+                return "";
             },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             // dependentFields: ["DAILY_AMT"],
@@ -447,6 +490,22 @@ export const personal_detail_prefix_data = {
             name: "FATHER_MIDDLE_NM",
             label: "MiddleName",
             // placeholder: "Middle Name",
+            validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                // only character, trim value
+                if(columnValue.value) {
+                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                        return "Please remove extra space";  
+                    } else if(columnValue.value !== columnValue.value.trimStart()) {
+                      return "Please remove extra space from the starting";
+                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                      return "Please remove extra space from the ending";
+                    } else if(!regex.test(columnValue.value)) {
+                        return "Please Enter Valid Format";
+                    }
+                }
+                return "";
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -458,6 +517,22 @@ export const personal_detail_prefix_data = {
             name: "FATHER_LAST_NM",
             label: "LastName",
             // placeholder: "Last Name",
+            validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                // only character, trim value
+                if(columnValue.value) {
+                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                        return "Please remove extra space";  
+                    } else if(columnValue.value !== columnValue.value.trimStart()) {
+                      return "Please remove extra space from the starting";
+                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                      return "Please remove extra space from the ending";
+                    } else if(!regex.test(columnValue.value)) {
+                        return "Please Enter Valid Format";
+                    }
+                }
+                return "";
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -470,7 +545,7 @@ export const personal_detail_prefix_data = {
                 sequence: 20,
             },
             dividerText: "MotherName",
-            name: "motherHeaderDivider",
+            name: "motherHeaderDivider_ignoreField",
             label: "motherHeaderDivider"
         },
         {
@@ -505,11 +580,21 @@ export const personal_detail_prefix_data = {
             name: "MOTHER_FIRST_NM",
             label: "FirstName",
             required: true,
-            schemaValidation: {
-                type: "string",
-                rules: [
-                  { name: "required", params: ["ThisFieldisrequired"] },
-                ],
+            validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                // only character, trim value
+                if(!columnValue.value) {
+                    return "This field is required.";
+                } else if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                    return "Please remove extra space";  
+                } else if(columnValue.value !== columnValue.value.trimStart()) {
+                  return "Please remove extra space from the starting";
+                } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                  return "Please remove extra space from the ending";
+                } else if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+                return "";
             },
             // placeholder: "First Name",
             type: "text",
@@ -524,6 +609,22 @@ export const personal_detail_prefix_data = {
             name: "MOTHER_MIDDLE_NM",
             label: "MiddleName",
             // placeholder: "Middle Name",
+            validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                // only character, trim value
+                if(columnValue.value) {
+                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                        return "Please remove extra space";  
+                    } else if(columnValue.value !== columnValue.value.trimStart()) {
+                      return "Please remove extra space from the starting";
+                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                      return "Please remove extra space from the ending";
+                    } else if(!regex.test(columnValue.value)) {
+                        return "Please Enter Valid Format";
+                    }
+                }
+                return "";
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -535,6 +636,22 @@ export const personal_detail_prefix_data = {
             name: "MOTHER_LAST_NM",
             label: "LastName",
             // placeholder: "Last Name",
+            validate: (columnValue, allField, flag) => {
+                let regex = /^[a-zA-Z]+$/;
+                // only character, trim value
+                if(columnValue.value) {
+                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                        return "Please remove extra space";  
+                    } else if(columnValue.value !== columnValue.value.trimStart()) {
+                      return "Please remove extra space from the starting";
+                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                      return "Please remove extra space from the ending";
+                    } else if(!regex.test(columnValue.value)) {
+                        return "Please Enter Valid Format";
+                    }
+                }
+                return "";
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         }
@@ -837,7 +954,7 @@ export const personal_individual_detail_metadata = {
                 sequence: 1,
             },
             dividerText: "Prefix",
-            name: "prefixDivider",
+            name: "prefixDivider_ignoreField",
             label: "prefixDivider"
         },
         {
@@ -1000,7 +1117,7 @@ export const personal_individual_detail_metadata = {
                 sequence: 8,
             },
             dividerText: "MaidenName",
-            name: "maidenHeaderdivider",
+            name: "maidenHeaderdivider_ignoreField",
             label: "maidenHeaderDivider"
         },
         {
@@ -1126,7 +1243,7 @@ export const personal_individual_detail_metadata = {
                 sequence: 15,
             },
             dividerText: "FatherName",
-            name: "fatherHeaderDivider",
+            name: "fatherHeaderDivider_ignoreField",
             label: "fatherHeaderDivider",
             // dependentFields: ["FATHER_SPOUSE"],
             // setValueOnDependentFieldsChange: (dependentFields) => {
@@ -1210,7 +1327,7 @@ export const personal_individual_detail_metadata = {
                 sequence: 20,
             },
             dividerText: "MotherName",
-            name: "motherHeaderDivider",
+            name: "motherHeaderDivider_ignoreField",
             label: "motherHeaderDivider"
         },
         {

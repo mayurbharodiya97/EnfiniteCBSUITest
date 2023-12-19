@@ -22,12 +22,14 @@ import { DocumentGridMetaData } from "./metadata/individual/personaldetails";
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "../../CkycContext";
 import { company_info_meta_data } from "./metadata/legal/legalcompanyinfo";
+import _ from "lodash";
 
 const KYCDetails = ({
   isCustomerData,
   setIsCustomerData,
   isLoading,
   setIsLoading,
+  displayMode,
 }) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
@@ -38,6 +40,7 @@ const KYCDetails = ({
     handleFormDataonSavectx,
     handleColTabChangectx,
     handleStepStatusctx,
+    handleModifiedColsctx
   } = useContext(CkycContext);
   const [isPoIExpanded, setIsPoIExpanded] = useState(true);
   const [isPoAExpanded, setIsPoAExpanded] = useState(true);
@@ -45,6 +48,7 @@ const KYCDetails = ({
   const KyCPoIFormRef = useRef<any>("");
   const KyCPoAFormRef = useRef<any>("");
   const NextBtnRef = useRef<any>("");
+  const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const [currentTabFormData, setCurrentTabFormData] = useState({
     proof_of_identity: {},
     proof_of_address: {},
@@ -95,20 +99,29 @@ const KYCDetails = ({
     setIsNextLoading(true);
 
     if (data && !hasError) {
+
+      let formFields = Object.keys(data) // array, get all form-fields-name 
+      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+      const formData = _.pick(data, formFieldsRef.current)
+
       setCurrentTabFormData((formData) => ({
         ...formData,
         proof_of_identity: data,
       }));
       let newData = state?.formDatactx;
-      newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...data };
+      newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
-      handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-      KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
-    } else
+      // if(state?.isFreshEntryctx) {
+        handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
+        KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // }
+    } else {
       handleStepStatusctx({
         status: "error",
         coltabvalue: state?.colTabValuectx,
       });
+    }
     setIsNextLoading(false);
     endSubmit(true)
   };
@@ -122,19 +135,37 @@ const KYCDetails = ({
   ) => {
     setIsNextLoading(true);
     if (data && !hasError) {
+      let formFields = Object.keys(data) // array, get all form-fields-name 
+      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+      const formData = _.pick(data, formFieldsRef.current)
+
+
       setCurrentTabFormData((formData) => ({
         ...formData,
         proof_of_address: data,
       }));
 
       let newData = state?.formDatactx;
-      newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...data };
+      newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
-      handleColTabChangectx(2);
-      handleStepStatusctx({
-        status: "completed",
-        coltabvalue: state?.colTabValuectx,
-      });
+      if(!state?.isFreshEntryctx) {
+        // on edit/view
+        let tabModifiedCols:any = state?.modifiedFormCols
+        let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+        tabModifiedCols = {
+          ...tabModifiedCols,
+          PERSONAL_DETAIL: [...updatedCols]
+        }
+        handleModifiedColsctx(tabModifiedCols)        
+      } 
+      // else {
+        handleColTabChangectx(2);
+        handleStepStatusctx({
+          status: "completed",
+          coltabvalue: state?.colTabValuectx,
+        });
+      // }
       // setIsNextLoading(false)
     } else
       handleStepStatusctx({
@@ -206,6 +237,7 @@ const KYCDetails = ({
                 onSubmitHandler={PoISubmitHandler}
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
+                displayMode={displayMode}
                 key={"poi-form-kyc" + initialVal}
                 metaData={POIMetadata as MetaDataType}
                 formStyle={{}}
@@ -255,6 +287,7 @@ const KYCDetails = ({
                 onSubmitHandler={PoASubmitHandler}
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
+                displayMode={displayMode}
                 key={"poa-form-kyc" + initialVal}
                 metaData={POAMetadata as MetaDataType}
                 formStyle={{}}
@@ -331,7 +364,7 @@ const KYCDetails = ({
         >
           {t("Previous")}
         </Button>
-        <Button
+        {state?.isFreshEntryctx && <Button
           sx={{ mr: 2, mb: 2 }}
           color="secondary"
           variant="contained"
@@ -342,7 +375,21 @@ const KYCDetails = ({
           }}
         >
           {t("Save & Next")}
-        </Button>
+        </Button>}
+
+        {!state?.isFreshEntryctx && <Button
+          sx={{ mr: 2, mb: 2 }}
+          color="secondary"
+          variant="contained"
+          disabled={isNextLoading}
+          onClick={(e) => {
+            // Promise.all([KyCPoIFormRef.current.handleSubmitError(e, "save"), KyCPoAFormRef.current.handleSubmitError(e, "save")])
+            NextBtnRef.current = e;
+            KyCPoIFormRef.current.handleSubmitError(e, "save");
+          }}
+        >
+          {t("Update & Next")}
+        </Button>}
       </Grid>
     </Grid>
   );

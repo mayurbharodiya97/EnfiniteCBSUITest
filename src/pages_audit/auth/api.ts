@@ -135,7 +135,12 @@ export const verifyOTP = async (
   }
 };
 
+const setTokenStatusInStorage = (key: string, value: string) => {
+  localStorage.setItem(key, value);
+};
+
 export const RefreshTokenData = async (refreshToken) => {
+  setTokenStatusInStorage("token_status", "refreshing");
   const { status, access_token } = await AuthSDK.internalFetcherPreLogin(
     "LOGIN",
     {
@@ -143,6 +148,8 @@ export const RefreshTokenData = async (refreshToken) => {
       grant_type: "refresh_token",
     }
   );
+  localStorage.removeItem("token_status");
+
   //console.log(status, !Boolean(status), typeof status, typeof access_token);
   if (Boolean(status) && status === "0") {
     return {
@@ -320,7 +327,7 @@ export const verifyOTPForPWDReset = async (
   transactionId,
   username,
   otpnumber,
-  authType,
+  auth_Type,
   screenFlag
 ) => {
   // return {
@@ -345,7 +352,7 @@ export const verifyOTPForPWDReset = async (
     USER_ID: username,
     REQUEST_CD: transactionId,
     OTP: otpnumber,
-    AUTH_TYPE: authType,
+    AUTH_TYPE: auth_Type,
     SCREEN_FLAG: screenFlag,
   });
   if (status === "0") {

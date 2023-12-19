@@ -25,7 +25,7 @@ const actions = [
     },
 ];
 
-const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const PDFormRef = useRef<any>("")
@@ -76,7 +76,7 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                 COMP_CD: authState?.companyID ?? "",
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "",
-                REQ_CD: state?.req_cd_ctx,
+                // REQ_CD: state?.req_cd_ctx,
                 // SR_CD: "3",
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -141,11 +141,12 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                             metaData={entity_detail_legal_meta_data as MetaDataType}
                             formStyle={{}}
                             hideHeader={true}
-                            displayMode={"new"}
+                            // displayMode={"new"}
+                            displayMode={displayMode}
                             controlsAtBottom={false}
                             onFormButtonClickHandel={(fieldID, dependentFields) => {
                                 // console.log("form button clicked...", fieldID, dependentFields, dependentFields?.SURNAME?.value, typeof dependentFields?.SURNAME?.value)
-                                if(fieldID === "SEARCH_BTN" && dependentFields?.SURNAME?.value) {
+                                if(fieldID === "SEARCH_BTN_ignoreField" && dependentFields?.SURNAME?.value) {
                                     if(dependentFields?.SURNAME?.value.trim().length>0) {
                                         if(acctName !== dependentFields?.SURNAME?.value.trim()) {
                                             setAcctName(dependentFields?.SURNAME?.value.trim())

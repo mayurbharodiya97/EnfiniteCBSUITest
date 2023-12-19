@@ -5,13 +5,16 @@ import { nri_detail_meta_data } from "../../metadata/individual/nridetails"
 import { CkycContext } from "../../../../CkycContext"
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next"
+import _ from "lodash"
 
-const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
     const { t } = useTranslation();
     const NRIDTLFormRef = useRef<any>("");
     const { authState } = useContext(AuthContext);
+    const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+
 
     const NRIDTLSubmitHandler = (
         data: any,
@@ -21,6 +24,9 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
         actionFlag,
         hasError
     ) => {
+        let formFields = Object.keys(data) // array, get all form-fields-name 
+        formFieldsRef.current = [...formFields] // array, added distinct all form-field names
+
         setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
         if(data && !hasError) {
@@ -30,7 +36,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                 COMP_CD: authState?.companyID ?? "",
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
-                REQ_CD: state?.req_cd_ctx,
+                // REQ_CD: state?.req_cd_ctx,
                 // SR_CD: "3",
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -38,6 +44,15 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
             let newData = state?.formDatactx
             newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
+            if(!state?.isFreshEntryctx) {
+                let tabModifiedCols:any = state?.modifiedFormCols
+                let updatedCols = tabModifiedCols.NRI_DTL ? _.uniq([...tabModifiedCols.NRI_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+                tabModifiedCols = {
+                    ...tabModifiedCols,
+                    NRI_DTL: [...updatedCols]
+                }
+                handleModifiedColsctx(tabModifiedCols)
+            }
             // handleColTabChangectx(7)
             handleColTabChangectx(state?.colTabValuectx+1)
             handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
@@ -87,6 +102,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                             metaData={nri_detail_meta_data as MetaDataType}
                             // initialValues={state?.formDatactx["NRI_DTL"] ?? {}}
                             initialValues={initialVal}
+                            displayMode={displayMode}
                             formStyle={{}}
                             hideHeader={true}
                         />
@@ -101,12 +117,18 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
                         NRIDTLFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Save & Next")}</Button>
+                >{t("Save & Next")}</Button>}
+                {!state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                disabled={isNextLoading}
+                    onClick={(e) => {
+                        NRIDTLFormRef.current.handleSubmitError(e, "save")
+                    }}
+                >{t("Update & Next")}</Button>}
             </Grid>
         </Grid>
     )

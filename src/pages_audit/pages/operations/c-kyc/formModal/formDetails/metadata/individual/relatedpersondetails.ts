@@ -109,6 +109,15 @@ export const related_person_detail_data = {
                     name: "REF_CUST_ID",
                     label: "RefCustID",
                     placeholder: "First Name",
+                    maxLength: 12,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                        if (values?.value?.length > 12) {
+                            return false;
+                        }
+                        return true;
+                        },
+                    },
                     type: "text",
                     reqired: true,
                     schemaValidation: {
@@ -142,6 +151,21 @@ export const related_person_detail_data = {
                         { name: "required", params: ["ThisFieldisrequired"] },
                         ],
                     },
+                    validate: (columnValue, allField, flag) => {
+                        let regex = /^[a-zA-Z]+$/;
+                        if(columnValue.value) {
+                            if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                                return "Please remove extra space";  
+                            } else if(columnValue.value !== columnValue.value.trimStart()) {
+                              return "Please remove extra space from the starting";
+                            } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                              return "Please remove extra space from the ending";
+                            } else if(!regex.test(columnValue.value)) {
+                                return "Please Enter Valid Format";
+                            }
+                        }
+                        return "";
+                    },
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                     // dependentFields: ["DAILY_AMT"],
@@ -153,6 +177,21 @@ export const related_person_detail_data = {
                     name: "REF_MIDDLE_NM",
                     label: "MiddleName",
                     placeholder: "Middle Name",
+                    validate: (columnValue, allField, flag) => {
+                        let regex = /^[a-zA-Z]+$/;
+                        if(columnValue.value) {
+                            if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                                return "Please remove extra space";  
+                            } else if(columnValue.value !== columnValue.value.trimStart()) {
+                              return "Please remove extra space from the starting";
+                            } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                              return "Please remove extra space from the ending";
+                            } else if(!regex.test(columnValue.value)) {
+                                return "Please Enter Valid Format";
+                            }
+                        }
+                        return "";
+                    },
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
@@ -160,9 +199,24 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "LAST_NAME",
+                    name: "REF_LAST_NM",
                     label: "LastName",
                     placeholder: "Last Name",
+                    validate: (columnValue, allField, flag) => {
+                        let regex = /^[a-zA-Z]+$/;
+                        if(columnValue.value) {
+                            if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+                                return "Please remove extra space";  
+                            } else if(columnValue.value !== columnValue.value.trimStart()) {
+                              return "Please remove extra space from the starting";
+                            } else if (columnValue.value !== columnValue.value.trimEnd()) {
+                              return "Please remove extra space from the ending";
+                            } else if(!regex.test(columnValue.value)) {
+                                return "Please Enter Valid Format";
+                            }
+                        }
+                        return "";
+                    },
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
@@ -170,9 +224,18 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "numberFormat",
                     },
-                    name: "CKYC_NO",
+                    name: "RELATED_PERSON_KYC",
                     label: "CkycNo",
                     placeholder: "",
+                    maxLength: 14,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                        if (values?.value?.length > 14) {
+                            return false;
+                        }
+                        return true;
+                        },
+                    },
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
@@ -180,10 +243,16 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "REF_NAME",
+                    name: "REF_ACCT_NM",
                     label: "RefName",
+                    isReadOnly: true,
                     placeholder: "",
                     type: "text",
+                    dependentFields: ["REF_FIRST_NM", "REF_MIDDLE_NM", "REF_LAST_NM"],
+                    setValueOnDependentFieldsChange: (dependentFields) => {
+                        let full_name = `${dependentFields?.REF_FIRST_NM?.value ?? ""} ${dependentFields?.REF_MIDDLE_NM?.value ?? ""} ${dependentFields?.REF_LAST_NM?.value ?? ""}`
+                        return full_name;
+                    },
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
         
@@ -202,7 +271,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "PAN",
+                    name: "PAN_NO",
                     label: "PAN",
                     placeholder: "",
                     type: "text",
@@ -212,7 +281,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "DRIVING_LIC_NO",
+                    name: "DRIVING_LICENSE_NO",
                     label: "DrivingLicNo",
                     placeholder: "First Name",
                     type: "text",
@@ -223,7 +292,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "datePicker",
                     },
-                    name: "DRIVING_LIC_EXP_DT",
+                    name: "DRIVING_LICENSE_EXPIRY_DT",
                     label: "DrivingLicExpDt",
                     minDate: new Date(),
                     // required: true,
@@ -235,7 +304,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "VOTER_ID",
+                    name: "ELECTION_CARD_NO",
                     label: "VoterId",
                     placeholder: "",
                     type: "text",
@@ -319,7 +388,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "autocomplete",
                     },
-                    name: "DOC_RECEIVED",
+                    name: "RCV_DOC_TYPE",
                     label: "DocReceived",
                     options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
                     _optionsKey: "kycDocReceivedType",
@@ -383,7 +452,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "EMP_CODE",
+                    name: "IPV_EMP_CODE",
                     label: "EmpCode",
                     placeholder: "",
                     type: "text",
@@ -393,7 +462,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "EMP_NAME",
+                    name: "IPV_NAME",
                     label: "EmpName",
                     placeholder: "",
                     type: "text",
@@ -403,7 +472,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "EMP_DESIGNATION",
+                    name: "IPV_EMP_DESIG",
                     label: "EmpDesig",
                     placeholder: "",
                     type: "text",
@@ -423,7 +492,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "Org_Name",
+                    name: "ORG_NAME",
                     label: "OrgName",
                     placeholder: "",
                     type: "text",
@@ -433,7 +502,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "Org_Code",
+                    name: "ORG_CODE",
                     label: "OrgCode",
                     placeholder: "",
                     type: "text",
@@ -443,7 +512,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "textField",
                     },
-                    name: "DEC_PLACE",
+                    name: "PLACE_OF_DECLARE",
                     label: "DecPlace",
                     placeholder: "",
                     type: "text",
@@ -453,7 +522,7 @@ export const related_person_detail_data = {
                     render: {
                         componentType: "datePicker",
                     },
-                    name: "DEC_DATE",
+                    name: "DATE_OF_DECLARE",
                     label: "DecDate",
                     // placeholder: "",
                     // type: "datePicker",

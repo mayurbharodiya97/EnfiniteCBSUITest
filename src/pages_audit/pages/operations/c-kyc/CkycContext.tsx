@@ -1,5 +1,9 @@
 import React, {useReducer} from 'react'
+import * as API from "./api";
 import { CkycStateType } from './type';
+import { AuthSDK } from 'registry/fns/auth';
+import { DefaultErrorObject, utilFunction } from 'components/utils';
+import _ from 'lodash';
 
 const initialState:any  = {
     isFormModalOpenctx: false,
@@ -48,10 +52,17 @@ const initialState:any  = {
     signBlobctx: null,
     signBase64ctx: null,
 
-
+    confirmFlagctx: null,
+    update_casectx: null,
+    isReadyToSavectx: false,
+    isReadyToUpdatectx: false,
     steps: {
         0: {status: ""}
-    }
+    },
+    currentFormRefctx: null,
+    modifiedFormCols: {},
+    updateFormDatactx: {},
+    modifiedFormFormat: {}
 
     // steps: {
     //     error: [],
@@ -122,6 +133,16 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
+        case "handle_isreadytosave":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "handle_isreadytoupdate":
+            return {
+                ...state,
+                ...action.payload
+            };
         case "update_formData":
             return {
                 ...state,
@@ -137,12 +158,27 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
+        case "modify_formdata":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "modify_tabCols":
+            return {
+                ...state,
+                ...action.payload
+            };
         case "update_customerIDctx":
             return {
                 ...state,
                 ...action.payload
             };
         case "reset_ckyc":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "set_currentFormRef":
             return {
                 ...state,
                 ...action.payload
@@ -163,34 +199,71 @@ const CkycProvider = ({children}) => {
     }
 
     const handleFormModalOpenOnEditctx = (recordData, retrieveFormdata) => {
-        // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData[0].data)
+        // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData)
+        // required - CATEGORY_CODE, CONSTITUTION_TYPE, CUSTOMER_TYPE
         if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
             const categConstitutionValue = {
                 value: recordData[0]?.data?.CATEGORY_CODE,
                 label: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[0],
                 CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
                 CONSTITUTION_NAME: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[1],
+                
+                
+
+                // value: "05  ",
+                // label: "OTHER",
+                // CONSTITUTION_TYPE: "01",
+                // CONSTITUTION_NAME: "INDIVIDUAL",
             }
+            let payload = {
+                categConstitutionValuectx: categConstitutionValue,
+                categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
+                constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
+                isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+                customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
+                req_cd_ctx: recordData[0]?.data?.REQUEST_ID ?? "",
+            }
+            if(recordData[0]?.data?.CONFIRMED) {
+                payload["confirmFlagctx"] = recordData[0]?.data?.CONFIRMED
+            }
+            if(recordData[0]?.data?.UPD_TAB_FLAG_NM) {
+                // D	EXISTING_DOC_MODIFY
+                // M	EXISTING_MODIFY
+                // O	EXISTING_OTHER_ADD_MODIFY
+                // P	EXISTING_PHOTO_MODIFY
+                // A	FRESH_MODIFY
+                payload["update_casectx"] = recordData[0]?.data?.UPD_TAB_FLAG_NM
+            }
+
 
             dispatch({
                 type: "handleCategoryChangectx",
-                payload: {
-                    categConstitutionValuectx: categConstitutionValue,
-                    categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
-                    constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
-                    isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
-                    customerIDctx: recordData[0]?.id
-                    // retrieveFormDataApiRes: retrieveFormdata,
-                    
-                    // categConstitutionValuectx: "kuashd",
-                    // categoryValuectx: "kub",
-                    // constitutionValuectx: "yuu",
-                    // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false 
+                payload: payload
+                // payload: {
+                //     // categConstitutionValuectx: categConstitutionValue,
+                //     // categoryValuectx: "05  ",
+                //     // constitutionValuectx: "01",
+                //     // isFormModalOpenctx: true, entityTypectx: "I", isFreshEntryctx: false,
+                //     // customerIDctx: "2",
 
-                    // categoryValuectx: value?.value,
-                    // constitutionValuectx: value?.CONSTITUTION_TYPE,
-                    // colTabValuectx: 0,
-                }
+
+                //     categConstitutionValuectx: categConstitutionValue,
+                //     categoryValuectx: recordData[0]?.data?.CATEGORY_CODE,
+                //     constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
+                //     isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
+                //     customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
+                //     req_cd_ctx: recordData[0]?.data?.REQUEST_ID ?? "",
+                //     // retrieveFormDataApiRes: retrieveFormdata,
+                    
+                //     // categConstitutionValuectx: "kuashd",
+                //     // categoryValuectx: "kub",
+                //     // constitutionValuectx: "yuu",
+                //     // isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false 
+
+                //     // categoryValuectx: value?.value,
+                //     // constitutionValuectx: value?.CONSTITUTION_TYPE,
+                //     // colTabValuectx: 0,
+                // }
             })
         }
     }
@@ -219,6 +292,15 @@ const CkycProvider = ({children}) => {
                 photoBase64ctx: null,
                 signBlobctx: null,
                 signBase64ctx: null,
+
+                modifiedFormCols: {},
+                updateFormDatactx: {},
+                confirmFlagctx: null, 
+                update_casectx: null, 
+                isReadyToSavectx: false,
+                isReadyToUpdatectx: false,
+                modifiedFormFormat: {},                
+                currentFormRefctx: null,            
             }
         })
     }
@@ -370,11 +452,48 @@ const CkycProvider = ({children}) => {
         // })
     }
 
+    const handleReadyToSavectx = (value:boolean) => {
+        dispatch({
+            type: "handle_isreadytosave",
+            payload: {
+                isReadyToSavectx: value
+            }
+        })
+    }
+
+    const handleReadyToUpdatectx = (value:boolean) => {
+        dispatch({
+            type: "handle_isreadytoupdate",
+            payload: {
+                isReadyToUpdatectx: value
+            }
+        })
+    }
+
     const handleFormDataonSavectx = (data) => {
         dispatch({
             type: "update_formData",
             payload: {
                 formDatactx: {...data}
+            }
+        })
+    }
+
+    const handleEditFormDatactx = (tabFormat, tabModifiedCols ) => {    
+        dispatch({
+            type: "modify_formdata",
+            payload: {
+                updateFormDatactx: {...tabFormat},
+                modifiedFormCols: {...tabModifiedCols}
+            }
+        })
+    }
+
+    const handleModifiedColsctx = (tabModifiedCols ) => {    
+        dispatch({
+            type: "modify_tabCols",
+            payload: {
+                modifiedFormCols: {...tabModifiedCols}
             }
         })
     }
@@ -397,13 +516,24 @@ const CkycProvider = ({children}) => {
 
         // let apiRes = {...data[0]}
         // console.log("wqkdhqiwuheqieqwdata", data)
+
+        // console.log("daatadtatad", data)
+        let payload = {
+            retrieveFormDataApiRes: {...data},
+            accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE ?? "", //ACCT_TYPE
+        }
+        // getting photo sign on retrieve form data to populate images
+        if(data && data.PHOTO_DTL) {
+            // photoBase64ctx
+            // signBase64ctx
+            // if(data.PHOTO_DTL) {
+                payload["photoBase64ctx"] = data.PHOTO_DTL.CUST_PHOTO
+                payload["signBase64ctx"] = data.PHOTO_DTL.CUST_SIGN
+            // }
+        }
         dispatch({
             type: "update_retrieveFormData",
-            payload: {
-                retrieveFormDataApiRes: {...data},
-                accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE ?? "", //ACCT_TYPE
-
-            }
+            payload: payload
         })
     }
 
@@ -412,6 +542,15 @@ const CkycProvider = ({children}) => {
             type: "update_customerIDctx",
             payload: {
                 customerIDctx: data
+            }
+        })
+    }
+
+    const handleCurrentFormRefctx = (ref) => {
+        dispatch({
+            type: "set_currentFormRef",
+            payload: {
+                currentFormRefctx: ref
             }
         })
     }
@@ -460,13 +599,137 @@ const CkycProvider = ({children}) => {
         // })
     }
 
+    const handleUpdatectx = async ({COMP_CD}) => {
+        let update_type = "";
+        let updated_tabs = Object.keys(state?.modifiedFormCols ?? {})
+        // let updated_tab_format:any = {}
+        let updated_tab_format:any = {}
+        if(updated_tabs.length == 1 && updated_tabs[0] == "PERSONAL_DETAIL") {
+            // if(updated_tabs[0] == "PERSONAL_DETAIL") {
+                update_type = "save_as_draft";
+            // }
+        } else if(updated_tabs.length>0 ) {
+            update_type = "full_save";
+        }
+        let other_data = {
+            IsNewRow: !state?.req_cd_ctx ? true : false,
+            REQ_CD: state?.req_cd_ctx ?? "",
+            COMP_CD: COMP_CD ?? "",
+        }
+        let dataa = updated_tabs.map(async (TAB, i) => {
+            return new Promise((res, rej) => {
+                let oldFormData = _.pick(state?.retrieveFormDataApiRes[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                let newFormData = _.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+                if(Object.keys(updated_tab_format).includes(TAB)) {
+                    updated_tab_format[TAB] = {
+                        ...updated_tab_format.TAB,
+                        ...upd,
+                        ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                        ...other_data
+                    }
+                } else {
+                    updated_tab_format[TAB] = {
+                        ...upd,
+                        ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                        ...other_data
+                    }                
+                }
+                res(1)
+            })
+            // return (async () => {
+            //     let oldFormData = _.pick(state?.retrieveFormDataApiRes[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+            //     let newFormData = _.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+            //     let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+            //     if(Object.keys(updated_tab_format).includes(TAB)) {
+            //         updated_tab_format[TAB] = {
+            //             ...updated_tab_format.TAB,
+            //             ...upd,
+            //             ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS))
+            //         }                
+            //     } else {
+            //         updated_tab_format[TAB] = {
+            //             ...upd,
+            //             ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS))
+            //         }                
+            //     }
+            // })()
+        })
+
+        //     let oldFormData = _.pick(state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}, state?.modifiedFormCols["PERSONAL_DETAIL"])
+        //     let newFormData = _.pick(state?.formDatactx["PERSONAL_DETAIL"] ?? {}, state?.modifiedFormCols["PERSONAL_DETAIL"])
+        //     let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+
+        // updated_tab_format["PERSONAL_DETAIL"] = {
+        //     ...updated_tab_format["PERSONAL_DETAIL"],
+        //     ...upd,
+        //     ...(_.pick(state?.formDatactx["PERSONAL_DETAIL"], state?.modifiedFormCols["PERSONAL_DETAIL"]))
+        // }                
+
+
+
+        // updated_tabs.forEach(TAB => {
+        //     // let oldFormData = _.pick(state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}, formFieldsRef.current)
+        //     // let newFormData = _.pick(state?.formDatactx["PERSONAL_DETAIL"] ?? {}, formFieldsRef.current)
+        //     // let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+
+        //     let oldFormData = _.pick(state?.retrieveFormDataApiRes[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+        //     let newFormData = _.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+        //     let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+        //     if(Object.keys(updated_tab_format).includes(TAB)) {
+        //         updated_tab_format.TAB = {
+        //             ...updated_tab_format.TAB,
+        //             ...upd,
+        //             ...(_.pick(state?.formDatactx[TAB], state?.modifiedFormCols[TAB]))
+        //         }                
+        //     }
+        // });
+        // if(dataa) {
+        //     console.log(dataa, "updated_tab_format", updated_tab_format, "type ", update_type, "tabs", updated_tabs)
+        // }
+        const { data, status, message, messageDetails } =
+        await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
+            // IsNewRow: true,
+            // // REQ_CD:"734",
+            // REQ_CD:REQ_CD,
+            // REQ_FLAG:"F",
+            // SAVE_FLAG:"F",
+            // ENTRY_TYPE :"1",
+            // CUSTOMER_ID:"",
+            // NRI_DTL: formData["NRI_DTL"], //test-done        
+            CUSTOMER_ID: state?.customerIDctx ?? "",
+            REQ_CD: state?.req_cd_ctx ?? "",
+            REQ_FLAG: state?.customerIDctx ? "E" : "F",
+            SAVE_FLAG: state?.customerIDctx 
+                        ? "" 
+                        : update_type == "save_as_draft" 
+                            ? "D" 
+                            : update_type == "full_save" 
+                                ? "F" 
+                                : "",
+            // SAVE_FLAG: "",
+            ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
+            IsNewRow: !state?.req_cd_ctx ? true : false,
+            // CUSTOMER_ID:"",
+            // NRI_DTL: formData["NRI_DTL"], //test-done,
+            
+            ...updated_tab_format
+
+        });
+        if(status === "0") {
+          return data;
+        } else {
+          throw DefaultErrorObject(message, messageDetails);
+        }      
+    }
+
     return (
         <CkycContext.Provider 
             value={{
                 state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
                 handleApiRes, handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
-                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handlecustomerIDctx, handleStepStatusctx, resetCkycctx
+                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, handleReadyToSavectx, handleReadyToUpdatectx, resetCkycctx, handleUpdatectx, handleCurrentFormRefctx
             }}
         >
             {children}

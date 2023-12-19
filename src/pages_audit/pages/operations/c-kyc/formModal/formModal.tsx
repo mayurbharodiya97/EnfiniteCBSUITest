@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, TextField, Select, MenuItem, Checkbox, FormControlLabel} from '@mui/material';
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, TextField, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import { CustomTabs } from '../ckyc';
@@ -12,7 +12,7 @@ import RelatedPersonDetails from './formDetails/formComponents/individualComps/R
 import OtherDetails from './formDetails/formComponents/individualComps/OtherDetails';
 import OtherAddressDetails from './formDetails/formComponents/individualComps/OtherAddressDetails';
 import NRIDetails from './formDetails/formComponents/individualComps/NRIDetails';
-import AttestationDetails from './formDetails/formComponents/individualComps/AttestationDetails';
+import AttestationDetails, { UpdateDialog } from './formDetails/formComponents/individualComps/AttestationDetails';
 
 // import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
 // import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
@@ -52,6 +52,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Document from './formDetails/formComponents/document/Document';
 import PhotoSignatureCpy from './formDetails/formComponents/individualComps/PhotoSignCopy2';
 import { format } from 'date-fns';
+import { GradientButton } from 'components/styledComponent/button';
+import { ckyc_confirmation_form_metadata } from './formDetails/metadata/confirmation';
 // import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -178,7 +180,7 @@ export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
-  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose
+  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, displayMode
   // entityType, setEntityType, 
   // customerCategories, 
   // tabsApiRes, setTabsApiRes, 
@@ -187,7 +189,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx } = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, handleReadyToSavectx, handleReadyToUpdatectx } = useContext(CkycContext);
   // const { state: data }: any = useLocation();
   const location: any = useLocation();
   const { t } = useTranslation();
@@ -197,6 +199,11 @@ export default function FormModal({
   // const [customerCategories, setCustomerCategories] = useState([])
   const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
   const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
+  const [updateDialog, setUpdateDialog] = useState(false)
+  const [actionDialog, setActionDialog] = useState(false)
+  const [cancelDialog, setCancelDialog] = useState(false)
+  const [from, setFrom] = useState("");
+  const [confirmAction, setConfirmAction] = useState<any>("confirm");
 
   // on edit/view
   // - call retrieveFormRefetch
@@ -256,6 +263,46 @@ export default function FormModal({
     }
   }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])
 
+  useEffect(() => {
+    // state?.tabsApiResctx
+    if(state?.tabsApiResctx && state?.tabsApiResctx.length>0) {
+      let totalStepCount = state?.tabsApiResctx.length
+      let attemptedSteps:any = Object.values(state?.steps ?? {})
+      // console.log("stepssss", state?.steps, attemptedSteps)
+      if(attemptedSteps.length == totalStepCount) {
+        let readyToSave = true;
+        for (let index = 0; index < attemptedSteps.length; index++) {
+          // const element = array[index];
+          // for(let i)
+          if(attemptedSteps[index].steps != "completed") {
+            readyToSave = false
+            // handleReadyToSavectx(false)
+            break;
+          }
+        }
+        handleReadyToSavectx(readyToSave)
+      } else {
+        let readyToUpdate = true;
+        for (let index = 0; index < attemptedSteps.length; index++) {
+          // const element = array[index];
+          // for(let i)
+          if(attemptedSteps[index].steps != "completed") {
+            readyToUpdate = false
+            // handleReadyToSavectx(false)
+            break;
+          }
+        }
+        handleReadyToUpdatectx(readyToUpdate)
+      }
+      // console.log("state?.steps, state?.tabsApiResctx", state?.steps, state?.tabsApiResctx)
+      // attemptedSteps.map((el:any) => {
+      //   if(el.status && el.status != "completed") {
+      //     handleReadyToSavectx(false)
+      //   }
+      // })
+    }
+  }, [state?.steps, state?.tabsApiResctx])
+
 
   // useEffect(() => {
   //   // if(!location.state) {
@@ -289,6 +336,9 @@ export default function FormModal({
     //   onClose()
     // } else {
       if(location.pathname.includes("/view-detail")) {
+        if(location.pathname.includes("/ckyc-confirmation")) {
+          setFrom("confirmation")
+        }
         // console.log(">>>-- edit", location.state, location.state[0].id)
         // handlecustomerIDctx(location.state[0].id)
         handleColTabChangectx(0)
@@ -353,7 +403,8 @@ export default function FormModal({
         ENTITY_TYPE: state?.entityTypectx,
         CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
         CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
-        isFreshEntry: state?.isFreshEntryctx
+        isFreshEntry: state?.isFreshEntryctx,
+        updateCase: state?.update_casectx,
       }  
       )
   );
@@ -411,20 +462,23 @@ export default function FormModal({
       case "Personal Details":
         return <PersonalDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "KYC Details":
         return <KYCDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
       
       case "Declaration Details":
         return <DeclarationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "KYC Document Upload":
-        return <Document />
+        return <Document
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
@@ -435,28 +489,28 @@ export default function FormModal({
       case "Details of Related Person":
         return <RelatedPersonDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode}
         />
 
       case "More Details":
         return <OtherDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "Other Address":
         return <OtherAddressDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "NRI Details":
         return <NRIDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "Attestation Details":
         return <AttestationDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
         />
 
       default:
@@ -467,7 +521,7 @@ export default function FormModal({
     switch (tabName) {
       case "Entity Details":
         return <EntityDetails isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} />
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode}  />
         // return <PersonalDetails 
         // isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         // isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
@@ -475,15 +529,17 @@ export default function FormModal({
       case "KYC Details":
         return <KYCDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
       
       case "Declaration Details":
         return <DeclarationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "KYC Document Upload":
-        return <Document />
+        return <Document
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
@@ -493,33 +549,75 @@ export default function FormModal({
       case "Details of Controlling Persons":
         return <ControllingPersonDTL
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData}
-        />
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} />
 
       case "More Details":
         return <OtherDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "Other Address":
         return <OtherAddressDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "NRI Details":
         return <NRIDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
         
       case "Attestation Details":
         return <AttestationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} onFormClose={onClose} />
 
       default:
         return <p>Not Found - {tabName}</p>;
     }
   }
+
+  const openUpdateDialog = (e) => {
+    // if(state?.currentFormRefctx) {
+    //   if(typeof state?.currentFormRefctx.current.handleSubmitError === "function") {
+    //     state?.currentFormRefctx.current.handleSubmitError(e, "save")
+    //   }
+    // }
+    setUpdateDialog(true)
+  }
+  const onCloseUpdateDialog = () => {
+    setUpdateDialog(false)
+  }
+
+  const openActionDialog = (state:string) => {
+    setActionDialog(true)
+    setConfirmAction(state)
+  }
+  const onCloseActionDialog = () => {
+    setActionDialog(false)
+  }
+
+  const onCloseCancelDialog = () => {
+    setCancelDialog(false)
+  }
+
+  const closeForm = () => {
+    handleFormModalClosectx()
+    onClose()
+  }
+
+  const onCancelForm = () => {
+    // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
+    if(displayMode == "new" || displayMode == "edit") {
+      if(Object.keys(state?.formDatactx).length >0) {
+        setCancelDialog(true)
+      } else {
+        closeForm()
+      }
+    } else {
+      closeForm()
+    }
+  }
+
 
   return (
     // <div>
@@ -733,9 +831,33 @@ export default function FormModal({
             >
               {t("SaveAsDraft")}
             </Button> */}
-            {!state?.isFreshEntryctx &&<Button
-              // onClick={handleFormModalClose}
+
+            {/* for checker, view-only */}
+            {from=="confirmation" && <Button
+              onClick={() => openActionDialog("confirm")}
               color="primary"
+              // disabled={mutation.isLoading}
+            >
+              {t("Confirm")}
+            </Button>}
+            {from=="confirmation" && <Button
+              onClick={() => openActionDialog("query")}
+              color="primary"
+              // disabled={mutation.isLoading}
+            >
+              {t("Raise Query")}
+            </Button>}
+            {from=="confirmation" && <Button
+              onClick={() => openActionDialog("reject")}
+              color="primary"
+              // disabled={mutation.isLoading}
+            >
+              {t("Reject")}
+            </Button>}
+            {(!state?.isFreshEntryctx && from!="confirmation" && (state?.confirmFlagctx !== "R" && state?.confirmFlagctx !== "Y")) &&<Button
+              onClick={openUpdateDialog}
+              color="primary"
+              // disabled={!state?.isReadyToUpdatectx}
               // disabled={mutation.isLoading}
             >
               {t("Update")}
@@ -744,14 +866,12 @@ export default function FormModal({
               // onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
+              // disabled={!state?.isReadyToSavectx}
             >
               {t("Save")}
             </Button>}
             <Button
-              onClick={() => {
-                handleFormModalClosectx()
-                onClose()
-              }}
+              onClick={onCancelForm}
               color="primary"
               // disabled={mutation.isLoading}
             >
@@ -968,6 +1088,24 @@ export default function FormModal({
             </Grid>
           </Grid>
         {/* </Box> */}
+
+        {updateDialog && <UpdateDialog 
+            open={updateDialog} 
+            onClose={onCloseUpdateDialog} 
+        />}
+
+        {actionDialog && <ActionDialog 
+            open={actionDialog} 
+            onClose={onCloseActionDialog} 
+            closeForm = {onClose}
+            action= {confirmAction}
+        />}
+
+        {cancelDialog && <CancelDialolg 
+            open={cancelDialog} 
+            onClose={onCloseCancelDialog} 
+            closeForm = {onClose}
+        />}
       </Dialog>
     // </div>
   );
@@ -983,3 +1121,165 @@ const Greetings = () => {
 
   return <span>Good {greet},</span>;
 };
+
+export const ActionDialog = ({open, onClose, closeForm, action
+  // isLoading, setIsLoading, data, mt
+}) => {
+  const { authState } = useContext(AuthContext);
+  const {state, handleUpdatectx, handleFormModalClosectx} = useContext(CkycContext);
+  const confirmFormRef = React.useRef<any>("");
+  let initialVal = {}
+  const confirmed = action == "confirm" 
+                                ? "Y" 
+                                : action == "query" 
+                                  ? "M"
+                                  : action == "reject" && "R"
+  const mutation: any = useMutation(API.ConfirmPendingCustomers, {
+      onSuccess: (data) => {
+          // console.log("data o n save", data)
+          handleFormModalClosectx()
+          closeForm()
+      },
+      onError: (error: any) => {
+          // console.log("data o n error", error)
+          // setIsUpdated(true)
+      },
+  });
+
+  const onAction = (e) => {
+    confirmFormRef.current.handleSubmitError(e, "save")
+  }
+
+  const onSubmitFormHandler = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag,
+    hasError
+  ) => {
+    if(data && !hasError) {
+        if(data.REMARKS) {
+          mutation.mutate({
+            REQUEST_CD: state?.req_cd_ctx ?? "",
+            REMARKS: data.REMARKS ?? "",
+            CONFIRMED: confirmed
+        })
+      }
+    }
+  };
+
+  return <Dialog open={open} maxWidth="sm"
+      PaperProps={{
+          style: {
+              minWidth: "40%",
+              width: "40%",
+          }
+      }}
+  >
+      <DialogTitle
+          sx={{
+              background: "var(--theme-color3)",
+              color: "var(--theme-color2)",
+              letterSpacing: "1.3px",
+              margin: "10px",
+              boxShadow:
+              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+              fontWeight: 500,
+              borderRadius: "inherit",
+              minWidth: "450px",
+              py: 1,
+          }}
+          id="responsive-dialog-title"
+      >
+          Confirmation
+          {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
+          {/* {"Updating..."} */}
+      </DialogTitle>
+      <DialogContent>
+
+        <FormWrapper
+          ref={confirmFormRef}
+          key={"pod-form-kyc" + initialVal}
+          metaData={ckyc_confirmation_form_metadata as MetaDataType}
+          // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
+          initialValues={initialVal}
+          formStyle={{}}
+          hideHeader={true}
+          onSubmitHandler={onSubmitFormHandler}
+        />
+      </DialogContent>
+      <DialogActions>
+          <GradientButton
+              autoFocus
+              onClick={onAction}
+          >
+              {action && action == "confirm" 
+                ? "CONFIRM" 
+                : action == "query" 
+                  ? "RAISE QUERY"
+                  : action == "reject" && "REJECT"
+              }
+          </GradientButton>
+          <GradientButton
+              autoFocus
+              onClick={onClose}
+          >
+              Cancel
+          </GradientButton>
+      </DialogActions> 
+  </Dialog>
+}
+
+export const CancelDialolg = ({open, onClose, closeForm}) => {
+  const {state, handleUpdatectx, handleFormModalClosectx} = useContext(CkycContext);
+
+  return <Dialog open={open} maxWidth="sm"
+      PaperProps={{
+          style: {
+              minWidth: "40%",
+              width: "40%",
+          }
+      }}
+  >
+      <DialogTitle
+          sx={{
+              background: "var(--theme-color3)",
+              color: "var(--theme-color2)",
+              letterSpacing: "1.3px",
+              margin: "10px",
+              boxShadow:
+              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+              fontWeight: 500,
+              borderRadius: "inherit",
+              minWidth: "450px",
+              py: 1,
+          }}
+          id="responsive-dialog-title"
+      >
+          CONFIRM
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText
+          sx={{ fontSize: "19px", display: "flex" }}
+        >
+          Your Changes will be Lost.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+          <GradientButton
+              autoFocus
+              onClick={() => {
+                handleFormModalClosectx()
+                closeForm()
+              }}
+          >OK</GradientButton>
+          <GradientButton
+              autoFocus
+              onClick={onClose}
+          >
+              Cancel
+          </GradientButton>
+      </DialogActions> 
+  </Dialog>
+}
