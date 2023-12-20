@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import { JointDetailIssueEntry } from "./metaData";
 import { JointDetailGridMetaData } from "./gridMetadata";
@@ -9,12 +9,29 @@ import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
-import { useContext } from "react";
+
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
 const TodayTransaction = () => {
-  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AuthContext);
+  const [rows, setRows] = useState([]);
+  console.log(tempStore, "temppp");
+  console.log(rows, "rows");
+
+  const getTodayTransList = useMutation(API.getTodayTransList, {
+    onSuccess: (data) => {
+      console.log(data, " getTodayTransList detailssss");
+      setRows(data);
+    },
+    onError: (error) => {},
+  });
+
+  useEffect(() => {
+    tempStore?.accInfo?.ACCT_CD && getTodayTransList.mutate(tempStore.accInfo);
+  }, [tempStore]);
+
+  const myGridRef = useRef<any>(null);
   const isErrorFuncRef = useRef<any>(null);
 
   const getData = useMutation(API.getChequeBookEntryData, {
@@ -80,7 +97,7 @@ const TodayTransaction = () => {
         <GridWrapper
           key={`JointDetailGridMetaData`}
           finalMetaData={JointDetailGridMetaData as GridMetaDataType}
-          data={getData?.data ?? []}
+          data={rows}
           setData={() => null}
           loading={getData.isLoading}
           // setAction={setCurrentAction}

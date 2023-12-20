@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { JointDetailIssueEntry } from "./metaData";
 import { DocumentGridMetaData } from "./gridMetadata";
@@ -13,8 +13,25 @@ import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
 export const Document = () => {
-  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+
+  const { tempStore, setTempStore } = useContext(AuthContext);
+  const [rows, setRows] = useState([]);
+  console.log(tempStore, "temppp");
+
+  const getDocTemplateList = useMutation(API.getDocTemplateList, {
+    onSuccess: (data) => {
+      console.log(data, " getDocTemplateList");
+      setRows(data);
+    },
+    onError: (error) => {},
+  });
+
+  useEffect(() => {
+    tempStore?.accInfo?.ACCT_CD && getDocTemplateList.mutate(tempStore.accInfo);
+  }, [tempStore]);
+
+  const myGridRef = useRef<any>(null);
   const isErrorFuncRef = useRef<any>(null);
 
   const getData = useMutation(API.getChequeBookEntryData, {
@@ -80,7 +97,7 @@ export const Document = () => {
         <GridWrapper
           key={`DocumentGridMetaData`}
           finalMetaData={DocumentGridMetaData as GridMetaDataType}
-          data={getData?.data ?? []}
+          data={rows}
           setData={() => null}
           loading={getData.isLoading}
           // setAction={setCurrentAction}

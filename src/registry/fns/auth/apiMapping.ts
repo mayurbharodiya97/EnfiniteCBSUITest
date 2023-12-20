@@ -644,6 +644,38 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNCNFF2",
     packageName: "",
   },
+  GETJOINTACCTDTL: {
+    url: "/transactionServiceAPI/GETJOINTACCTDTL",
+    packageName: "",
+  },
+  GETTODAYTRAN: {
+    url: "/transactionServiceAPI/GETTODAYTRAN",
+    packageName: "",
+  },
+  GETCHEQUEDTL: {
+    url: "/transactionServiceAPI/GETCHEQUEDTL",
+    packageName: "",
+  },
+  GETINSURANCEDTL: {
+    url: "/transactionServiceAPI/GETINSURANCEDTL",
+    packageName: "",
+  },
+  GETDOCTEMPLTEDTL: {
+    url: "/transactionServiceAPI/GETDOCTEMPLTEDTL",
+    packageName: "",
+  },
+  GETSEARCHDTL: {
+    url: "/transactionServiceAPI/GETSEARCHDTL",
+    packageName: "",
+  },
+  GETDAILYTRNLIST: {
+    url: "/transactionServiceAPI/GETDAILYTRNLIST",
+    packageName: "",
+  },
+  CONFIRMDAILYTRNDATA: {
+    url: "/transactionServiceAPI/CONFIRMDAILYTRNDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

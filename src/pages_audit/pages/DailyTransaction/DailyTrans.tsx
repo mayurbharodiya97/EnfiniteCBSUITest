@@ -126,7 +126,7 @@ export const DailyTrans = () => {
     <div style={{ padding: "8px" }}>
       <h1>
         Daily Transaction
-        {loc.pathname.includes("C54BA228AA955DF1B1FECF663736B1D8")
+        {loc.pathname.includes("teller_daily_tran_cnf_F2")
           ? " Confirmation (F2) (TRN/002)"
           : " (Maker) (TRN/001)"}
       </h1>
@@ -162,7 +162,7 @@ export const DailyTrans = () => {
           </TabPanel>
         ))}
       </>
-      {loc.pathname.includes("C54BA228AA955DF1B1FECF663736B1D8") ? (
+      {loc.pathname.includes("teller_daily_tran_cnf_F2") ? (
         <Trn002_footer />
       ) : (
         <Trn001_footer />

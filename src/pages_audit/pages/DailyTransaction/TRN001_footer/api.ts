@@ -198,21 +198,6 @@ export const addDailyTrxScroll = async (reqData) => {
   }
 };
 
-export const getScrollListF2 = async (reqData) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDAILYTRNCNFF2", {
-      COMP_CD: reqData?.branch?.info.COMP_CD,
-      BRANCH_CD: reqData?.branch?.value,
-    });
-  if (status === "0") {
-    let responseData = data;
-
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
 export const getChqValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
@@ -226,6 +211,21 @@ export const getChqValidation = async (reqData) => {
     let responseData = data;
 
     return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getTRN001List = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
+      COMP_CD: reqData?.COMP_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

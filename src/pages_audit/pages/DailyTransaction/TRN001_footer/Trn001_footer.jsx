@@ -214,9 +214,40 @@ const Trn001_footer = () => {
     },
     onError: (error) => {},
   });
-  const getScrollListF2 = useMutation(API.getScrollListF2, {
+
+  const getTRN001List = useMutation(API.getTRN001List, {
     onSuccess: (data) => {
-      console.log(data, "getScrollListF2 api");
+      console.log(data, "getTRN001List api");
+      let arr = [];
+
+      data.map((a) => {
+        a.branch = { value: a.ENTERED_BRANCH_CD, label: a.ENTERED_BRANCH_CD };
+        a.accType = {
+          label: a.ACCT_TYPE,
+          value: a.ACCT_TYPE,
+          info: a.ACCT_TYPE,
+        };
+        a.accNo = a.ACCT_CD?.trim();
+        a.trx = { label: a.REMARKS, value: a.TYPE_CD, code: a.TYPE_CD.trim() };
+        a.scroll = a.SCROLL1;
+        a.sdc = { label: a.REMARKS, value: a.SDC, info: a.SDC };
+        a.remark = a.REMARKS;
+        a.cNo = a.CHEQUE_NO;
+        a.date = new Date(a.ENTERED_DATE).toISOString()?.substring(0, 10);
+        a.debit = a.TYPE_CD.includes("4" || "5" || "6")
+          ? Number(a.AMOUNT).toFixed(2)
+          : "0";
+        a.credit = a.TYPE_CD.includes("1" || "2" || "3")
+          ? Number(a.AMOUNT).toFixed(2)
+          : "0";
+        a.vNo = a.TRAN_CD;
+        a.bug = false;
+        a.bugChq = false;
+        a.isCredit = a.TYPE_CD.includes("1" || "2" || "3") ? true : false;
+        a.viewOnly = true;
+      });
+      console.log("ss");
+      setRows(data);
     },
     onError: (error) => {},
   });
@@ -228,7 +259,6 @@ const Trn001_footer = () => {
     setRows(obj);
     handleTotal(obj);
     handleGetAccInfo(i);
-    getScrollListF2.mutate(rows[0]);
   };
   const handleAccType = (e, value, i) => {
     const obj = [...rows];
@@ -512,6 +542,15 @@ const Trn001_footer = () => {
     console.log(data, "databaseFooter");
     setRows(data);
   };
+
+  const handleGetTRN001List = () => {
+    let data = {
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: authState?.user?.branchCode,
+    };
+    getTRN001List.mutate(data);
+  };
+
   return (
     <>
       <Card
@@ -687,13 +726,7 @@ const Trn001_footer = () => {
                             value={a.date}
                             error={a.isCredit && !a.date ? true : false}
                             type="date"
-                            disabled={
-                              a?.trx?.code == "4" ||
-                              a?.trx?.code == "5" ||
-                              a?.trx?.code == "6"
-                                ? false
-                                : true
-                            }
+                            disabled={a.isCredit ? true : false}
                             size="small"
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
@@ -804,7 +837,11 @@ const Trn001_footer = () => {
       </Button>
       <br />
       <br />
-      <BaseFooter handleUpdateRows={handleUpdateRows} rows={rows} />
+      <BaseFooter
+        handleUpdateRows={handleUpdateRows}
+        rows={rows}
+        handleGetTRN001List={handleGetTRN001List}
+      />
       <br />
       <>
         <Dialog

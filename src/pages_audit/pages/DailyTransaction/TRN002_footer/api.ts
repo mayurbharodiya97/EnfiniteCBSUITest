@@ -28,11 +28,25 @@ let year = today.getFullYear();
 let date = day + "/" + arr[month] + "/" + year;
 let date2 = day + "-" + arr[month] + "-" + year;
 
-export const getScrollListF2 = async (reqData) => {
+export const getTRN002List = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRNCNFF2", {
       COMP_CD: reqData?.COMP_CD,
       BRANCH_CD: reqData?.BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const confirmScroll = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CONFIRMDAILYTRNDATA", {
+      CONFIRMED: "Y",
+      TRAN_CD: reqData?.TRAN_CD,
+      COMP_CD: reqData?.COMP_CD,
     });
   if (status === "0") {
     let responseData = data;

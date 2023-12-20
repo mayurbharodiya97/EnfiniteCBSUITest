@@ -31,6 +31,7 @@ export const getMenulistData = async () => {
     await AuthSDK.internalFetcher("GETTBGMENUGRPLIST", {});
   if (status === "0") {
     let responseData = data;
+    console.log(data, "responseData menulist1");
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DOC_TYPE, DESCRIPTION, ...other }) => {
         //let { VALUE, LABEL, ...other } = one;
@@ -41,6 +42,7 @@ export const getMenulistData = async () => {
         };
       });
     }
+    console.log(responseData, "responseData menulist");
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);

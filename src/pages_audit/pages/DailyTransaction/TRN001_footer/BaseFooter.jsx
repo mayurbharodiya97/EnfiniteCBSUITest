@@ -25,15 +25,16 @@ import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import "./Trn001_Footer.css";
+import { useLocation } from "react-router-dom";
 
-const BaseFooter = ({ rows, handleUpdateRows }) => {
+const BaseFooter = ({ rows, handleUpdateRows, handleGetTRN001List }) => {
   let filterOpt = [
     { label: "Scroll search", value: "scroll" },
     { label: "Vno search", value: "vno" },
   ];
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState({ value: "", label: "" });
-
+  const loc = useLocation();
   const handleSearch = (e) => {
     let txt = e.target.value;
     setSearch(txt);
@@ -99,11 +100,19 @@ const BaseFooter = ({ rows, handleUpdateRows }) => {
             />
           </div>
         </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary">
-            View All
-          </Button>
-        </Grid>{" "}
+        {loc.pathname.includes("teller_daily_tran_cnf_F2") ? (
+          <></>
+        ) : (
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleGetTRN001List()}
+            >
+              View All
+            </Button>
+          </Grid>
+        )}
         <Grid item>
           <Button
             variant="contained"

@@ -25,6 +25,7 @@ const Trn002_Footer = () => {
   const { tempStore, setTempStore } = useContext(AuthContext);
 
   const [rows, setRows] = useState([]);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -39,7 +40,7 @@ const Trn002_Footer = () => {
       COMP_CD: authState?.companyID,
       BRANCH_CD: authState?.user?.branchCode,
     };
-    getScrollListF2.mutate(data);
+    getTRN002List.mutate(data);
   }, []);
 
   //api define ===============================================================
@@ -51,9 +52,15 @@ const Trn002_Footer = () => {
     onError: (error) => {},
   });
 
-  const getScrollListF2 = useMutation(API.getScrollListF2, {
+  const confirmScroll = useMutation(API.confirmScroll, {
     onSuccess: (data) => {
-      console.log(data, "getScrollListF2 api");
+      console.log(data, "confirmScroll");
+    },
+    onError: (error) => {},
+  });
+  const getTRN002List = useMutation(API.getTRN002List, {
+    onSuccess: (data) => {
+      console.log(data, "getTRN002List api");
       data.map((a) => {
         a.check = false;
       });
@@ -69,6 +76,7 @@ const Trn002_Footer = () => {
     let obj = [...rows];
     obj[i].check = e.target.checked;
     setRows(obj);
+    setIndex(i);
   };
   const handleCheckAll = (e) => {
     console.log(e.target.checked, "all");
@@ -99,6 +107,10 @@ const Trn002_Footer = () => {
   const handleUpdateRows = (data) => {
     console.log(data, "dataaaa");
     setRows(data);
+  };
+
+  const handleConfirm = () => {
+    index && confirmScroll.mutate(rows[index]);
   };
   return (
     <>
@@ -205,7 +217,7 @@ const Trn002_Footer = () => {
         variant="contained"
         color="secondary"
         sx={{ margin: "8px" }}
-        // onClick={() => setSaveDialog(true)}
+        onClick={() => handleConfirm()}
       >
         Confirm
       </Button>

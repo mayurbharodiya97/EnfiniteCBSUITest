@@ -17,7 +17,14 @@ import {
 } from "@mui/material";
 
 //logic
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+} from "react";
 import { useMutation, useQuery } from "react-query";
 import { JointDetailGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
@@ -25,29 +32,32 @@ import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider, queryClient } from "cache";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { AuthContext } from "pages_audit/auth";
-import { useContext } from "react";
+
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { jointViewDetailMetaData } from "./metaData";
 import * as API from "./api";
+import { AuthContext } from "pages_audit/auth";
 
 const JointDetails = () => {
-  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AuthContext);
+  const [rows, setRows] = useState([]);
+  console.log(tempStore, "temppp");
+
+  const getJointDetails = useMutation(API.getJointDetailsList, {
+    onSuccess: (data) => {
+      console.log(data, " joint detailssss");
+      setRows(data);
+    },
+    onError: (error) => {},
+  });
+
+  useEffect(() => {
+    tempStore?.accInfo?.ACCT_CD && getJointDetails.mutate(tempStore.accInfo);
+  }, [tempStore]);
+
+  const myGridRef = useRef<any>(null);
   const isErrorFuncRef = useRef<any>(null);
-
-  // useEffect(() => {
-  //   getJointDet.mutate({});
-  // }, []);
-
-  const {
-    data: jointDetailsList,
-    isSuccess: isAccTypeSuccess,
-    isLoading: isAccTypeLoading,
-  } = useQuery(["getJointDetailsList", {}], () => API.getJointDetailsList());
-
-  console.log(jointDetailsList, "jointDetailsList");
-
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
     isErrorFuncRef?.current?.handleSubmit(event, "BUTTON_CLICK");
@@ -92,7 +102,7 @@ const JointDetails = () => {
   });
   const handleSave = () => {
     console.log("helllo");
-    sendJointData.mutate({});
+    // sendJointData.mutate(tempStore.accInfo);
   };
 
   // const onSubmitHandler: SubmitFnType = (
@@ -143,7 +153,7 @@ const JointDetails = () => {
         <GridWrapper
           key={`JointDetailGridMetaData`}
           finalMetaData={JointDetailGridMetaData as GridMetaDataType}
-          data={jointDetailsList?.data ?? []}
+          data={rows}
           setData={() => null}
           // loading={getData.isLoading}
           actions={actions}
