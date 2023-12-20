@@ -221,7 +221,7 @@ const CkycProvider = ({children}) => {
                 constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
                 isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
                 customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
-                req_cd_ctx: recordData[0]?.data?.REQUEST_ID ?? "",
+                req_cd_ctx: parseInt(recordData[0]?.data?.REQUEST_ID) ?? "",
             }
             if(recordData[0]?.data?.CONFIRMED) {
                 payload["confirmFlagctx"] = recordData[0]?.data?.CONFIRMED

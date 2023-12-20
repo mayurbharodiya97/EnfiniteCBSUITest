@@ -42,7 +42,8 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
   const mutation: any = useMutation(API.SaveAsDraft, {
     onSuccess: (data) => {
         if(data?.[0]?.REQ_CD) {
-            handleReqCDctx(data?.[0]?.REQ_CD)
+            let req_cd = parseInt(data?.[0]?.REQ_CD) ?? ""
+            handleReqCDctx(req_cd)
             handleColTabChangectx(state?.colTabValuectx+1)
         }
     },

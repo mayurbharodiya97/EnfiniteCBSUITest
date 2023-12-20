@@ -36,7 +36,7 @@ export const CkycConfirm = () => {
       BRANCH_CD: authState?.user?.branchCode ?? "",
     //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       REQ_FLAG: "P  ",
-      ENTERED_DATE: "06-12-2023",
+      ENTERED_DATE:  format(new Date(), "dd-MM-yyyy"),
     })
   )
 
