@@ -214,7 +214,8 @@ import * as API from "../../../../api";
                         componentType: "textField",
                     },
                     name: "STATE_UT_CODE",
-                    label: "UnionTerritoriesCode",
+                    // label: "UnionTerritoriesCode",
+                    label: "State/U.T(Union Territories) Code",
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -224,7 +225,7 @@ import * as API from "../../../../api";
                         componentType: "textField",
                     },
                     name: "ISO_COUNTRY_CODE",
-                    label: "CountryCode",
+                    label: "ISO-3166 Country Code of Residence",
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -242,83 +243,179 @@ import * as API from "../../../../api";
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "numberFormat",
                     },
                     name: "STD_1",
-                    label: "",
-                    placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
-                },
-                {
-                    render: {
-                        componentType: "textField",
-                    },
-                    name: "CONTACT1",
                     label: "PhoneO",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
-                },
-                {
-                    render: {
-                        componentType: "textField",
+                    maxLength: 5,
+                    GridProps: {xs:12, sm:4.5, md: 0.9, lg: 0.8, xl:0.6},
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 5) {
+                            return false;
+                          }
+                          return true;
+                        },
                     },
-                    name: "STD_2",
-                    maxLength: 3,
+                },
+                  {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "CONTACT1",
                     label: "",
                     placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
-                },
-                {
-                    render: {
-                        componentType: "textField",
+                    maxLength: 20,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 20) {
+                            return false;
+                          }
+                          return true;
+                        },
                     },
-                    name: "CONTACT2",
-                    label: "PhoneR",
-                    placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "spacer"
+                    },
+                    GridProps: {
+                        xs: 0, sm:0.2, md:0.1
+                    }
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "STD_2",
+                    label: "PhoneR",
+                    placeholder: "",
+                    maxLength: 5,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 5) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
+                    type: "text",
+                    GridProps: {xs:12, sm:4.5, md: 0.9, lg: 0.8, xl:0.6},
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "CONTACT2",
+                    label: "",
+                    placeholder: "",
+                    maxLength: 20,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 20) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
+                },
+                {
+                    render: {
+                        componentType: "spacer"
+                    },
+                    GridProps: {
+                        xs: 0, sm:0.2, md:0.1
+                    }
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
                     },
                     name: "STD_3",
+                    label: "MobileNo",
+                    required: true,
+                    placeholder: "",
+                    maxLength: 3,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 3) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
+                    type: "text",
+                    GridProps: {xs:12, sm:4.5, md: 0.9, lg: 0.8, xl:0.6},
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "CONTACT3",
                     label: "",
                     required: true,
                     placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
-                },
-                {
-                    render: {
-                        componentType: "textField",
+                    maxLength: 20,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 20) {
+                            return false;
+                          }
+                          return true;
+                        },
                     },
-                    name: "CONTACT3",
-                    label: "MobileNo",
-                    placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "spacer"
                     },
-                    name: "STD_4",
-                    label: "MobileNo",
-                    placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+                    GridProps: {
+                        xs: 0, sm:0.2, md:0.1
+                    }
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "numberFormat",
                     },
-                    name: "CONTACT4",
+                    name: "STD_4",
                     label: "Fax",
                     placeholder: "",
+                    maxLength: 5,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 5) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
+                    type: "text",
+                    GridProps: {xs:12, sm:4.5, md: 0.9, lg: 0.8, xl:0.6},
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "CONTACT4",
+                    label: "",
+                    placeholder: "",
+                    maxLength: 20,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 20) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
@@ -334,101 +431,5 @@ import * as API from "../../../../api";
                 },
             ]
         }
-    ]
-  }
-  
-  export const other_address_poa_contact_meta_data = {
-    form: {
-        name: "other_address_poa_contact_details_form",
-        label: "", 
-        resetFieldOnUnmount: false,
-        validationRun: "onBlur", 
-        submitAction: "home",  
-        render: {
-            ordering: "auto",
-            renderType: "simple",
-            gridConfig: {
-            item: {
-                xs: 12,
-                sm: 6,
-            },
-            container: {
-                direction: "row",
-                spacing: 3,
-            },
-            },
-        },
-        componentProps: {
-            textField: {
-                fullWidth: true,
-            },
-            select: {
-                fullWidth: true,
-            },
-            datePicker: {
-                fullWidth: true,
-            },
-            numberFormat: {
-                fullWidth: true,
-            },
-            inputMask: {
-                fullWidth: true,
-            },
-            datetimePicker: {
-                fullWidth: true,
-            },
-        },
-    },
-    fields: [
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "PHONE_o",
-            label: "Phone(O)",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "PHONE_R",
-            label: "Phone(R)",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "MOBILE_NO",
-            label: "Mobile No.",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "FAX",
-            label: "Fax",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "EMAIL_ID",
-            label: "Email ID",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
     ]
   }  
