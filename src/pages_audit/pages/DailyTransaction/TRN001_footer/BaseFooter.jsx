@@ -27,7 +27,12 @@ import { AuthContext } from "pages_audit/auth";
 import "./Trn001_Footer.css";
 import { useLocation } from "react-router-dom";
 
-const BaseFooter = ({ rows, handleUpdateRows, handleGetTRN001List }) => {
+const BaseFooter = ({
+  rows,
+  handleUpdateRows,
+  handleViewAll,
+  handleRefresh,
+}) => {
   let filterOpt = [
     { label: "Scroll search", value: "scroll" },
     { label: "Vno search", value: "vno" },
@@ -75,7 +80,11 @@ const BaseFooter = ({ rows, handleUpdateRows, handleGetTRN001List }) => {
 
   return (
     <>
-      <Grid container spacing={2}>
+      <Grid
+        container
+        spacing={2}
+        style={{ marginTop: "5px", marginBottom: "5px" }}
+      >
         <Grid item sx={{ width: 180 }}>
           <Autocomplete
             value={filter}
@@ -100,19 +109,24 @@ const BaseFooter = ({ rows, handleUpdateRows, handleGetTRN001List }) => {
             />
           </div>
         </Grid>
-        {loc.pathname.includes("teller_daily_tran_cnf_F2") ? (
-          <></>
-        ) : (
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleGetTRN001List()}
-            >
-              View All
-            </Button>
-          </Grid>
-        )}
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleViewAll()}
+          >
+            View All
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleRefresh()}
+          >
+            refresh
+          </Button>{" "}
+        </Grid>{" "}
         <Grid item>
           <Button
             variant="contained"
@@ -126,11 +140,6 @@ const BaseFooter = ({ rows, handleUpdateRows, handleGetTRN001List }) => {
           <Button variant="contained" color="primary">
             Delete
           </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            refresh
-          </Button>{" "}
         </Grid>{" "}
         <Grid item>
           <Button variant="contained" color="primary">

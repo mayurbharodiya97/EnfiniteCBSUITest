@@ -10,7 +10,9 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
+import Tooltip from "@mui/material/Tooltip";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 //Logical
 import React, { useEffect, useState, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -24,24 +26,41 @@ const Trn002_Footer = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
 
+  const [pendingRows, setPendingRows] = useState([]);
   const [rows, setRows] = useState([]);
-  const [index, setIndex] = useState(0);
+  const [snack, setSnack] = useState({});
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
   }, []);
 
   useEffect(() => {
-    console.log(rows, "rows");
-  }, [rows]);
+    console.log(pendingRows, "pendingRows");
+  }, [pendingRows]);
 
   useEffect(() => {
+    handleGetTRN002List();
+  }, []);
+
+  const handleGetTRN002List = () => {
     let data = {
       COMP_CD: authState?.companyID,
       BRANCH_CD: authState?.user?.branchCode,
     };
     getTRN002List.mutate(data);
-  }, []);
+  };
 
   //api define ===============================================================
   const getAccInfo = useMutation(API2.getAccInfo, {
@@ -55,44 +74,42 @@ const Trn002_Footer = () => {
   const confirmScroll = useMutation(API.confirmScroll, {
     onSuccess: (data) => {
       console.log(data, "confirmScroll");
+      setOpen(true);
+      setSnack({ code: true, msg: "Record Confirm" });
+      handleGetTRN002List();
     },
-    onError: (error) => {},
+    onError: (error) => {
+      console.log(error, "error");
+      setOpen(true);
+      setSnack({ code: false, msg: error?.error_msg });
+    },
   });
   const getTRN002List = useMutation(API.getTRN002List, {
     onSuccess: (data) => {
-      console.log(data, "getTRN002List api");
       data.map((a) => {
         a.check = false;
       });
       data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
-
+      let arr = data.filter((a) => a.CONFIRMED == "0");
+      setPendingRows(arr);
       setRows(data);
     },
     onError: (error) => {},
   });
 
   // functions ===============================================================
+
   const handleCheck = (e, i) => {
-    let obj = [...rows];
+    let obj = [...pendingRows];
     obj[i].check = e.target.checked;
-    setRows(obj);
-    setIndex(i);
+    setTimeout(() => {
+      obj[i].check = false;
+    }, 500);
+    confirmScroll.mutate(obj[i]);
+    setPendingRows(obj);
   };
-  const handleCheckAll = (e) => {
-    console.log(e.target.checked, "all");
-    let txt = e.target.checked;
-    let obj = [...rows];
-    obj.map((a) => {
-      if (txt) {
-        a.check = true;
-      } else {
-        a.check = false;
-      }
-    });
-    setRows(obj);
-  };
+
   const handleRowClick = (e, a) => {
-    const obj = [...rows];
     console.log(a, "aaaaaa");
     let data = {
       COMP_CD: a?.COMP_CD,
@@ -106,12 +123,17 @@ const Trn002_Footer = () => {
 
   const handleUpdateRows = (data) => {
     console.log(data, "dataaaa");
-    setRows(data);
+    setPendingRows(data);
   };
 
-  const handleConfirm = () => {
-    index && confirmScroll.mutate(rows[index]);
+  const handleViewAll = () => {
+    let arr = [...rows];
+    setPendingRows(arr);
   };
+  const handleRefresh = () => {
+    handleGetTRN002List();
+  };
+
   return (
     <>
       <Card
@@ -126,45 +148,47 @@ const Trn002_Footer = () => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>
-                  <input
-                    id="check"
-                    type="checkbox"
-                    // checked={a.check}
-                    onChange={(e) => handleCheckAll(e)}
-                  />
-                </TableCell>
+                <TableCell></TableCell>
                 <TableCell>Vno.</TableCell>
-                <TableCell>A/C No</TableCell>
+                <TableCell className="txtRight">A/C No</TableCell>
                 <TableCell>A/C holder name</TableCell>
                 <TableCell>TRX</TableCell>
-                <TableCell>Amount</TableCell>
+                <TableCell className="txtRight">Amount</TableCell>
                 <TableCell>Remarks</TableCell>
                 <TableCell>Chq No</TableCell>
                 <TableCell>SDC</TableCell>
                 <TableCell>Chq Date</TableCell>
                 <TableCell>Scroll/Token</TableCell>
                 <TableCell>EnteredBy</TableCell>
-                <TableCell>VerifiedBy</TableCell>
-                <TableCell>PendingCycle</TableCell>
+                {/* <TableCell>VerifiedBy</TableCell>
+                <TableCell>PendingCycle</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.length > 0 ? (
-                rows.map((a, i) => {
+              {pendingRows.length > 0 ? (
+                pendingRows.map((a, i) => {
                   return (
                     <TableRow key={i}>
                       <TableCell>
-                        {" "}
-                        <input
-                          id="check"
-                          type="checkbox"
-                          checked={a.check}
-                          onChange={(e) => handleCheck(e, i)}
-                        />
+                        <Tooltip title="Confirm Record">
+                          <IconButton>
+                            <input
+                              disabled={a.CONFIRMED == "Y" ? true : false}
+                              id="check"
+                              type="checkbox"
+                              checked={a.check}
+                              onChange={(e) => handleCheck(e, i)}
+                            />
+                          </IconButton>
+                        </Tooltip>{" "}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>Vno.</TableCell>
                       <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.TRAN_CD}
+                      </TableCell>
+                      <TableCell
+                        id={a?.isFav ? "isFav" : ""}
+                        className="txtRight"
+                      >
                         {a.ACCT_CD_NEW}
                       </TableCell>
                       <TableCell
@@ -174,8 +198,13 @@ const Trn002_Footer = () => {
                       >
                         {a.ACCT_NM}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>TRX</TableCell>
                       <TableCell id={a?.isFav ? "isFav" : ""}>
+                        {a.TYPE_CD}
+                      </TableCell>
+                      <TableCell
+                        id={a?.isFav ? "isFav" : ""}
+                        className="txtRight"
+                      >
                         {a.AMOUNT}
                       </TableCell>
                       <TableCell id={a?.isFav ? "isFav" : ""}>
@@ -196,12 +225,12 @@ const Trn002_Footer = () => {
                       <TableCell id={a?.isFav ? "isFav" : ""}>
                         {a.ENTERED_BY}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      {/* <TableCell id={a?.isFav ? "isFav" : ""}>
                         VerifiedBy
                       </TableCell>
                       <TableCell id={a?.isFav ? "isFav" : ""}>
                         PendingCycle
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   );
                 })
@@ -213,15 +242,22 @@ const Trn002_Footer = () => {
         </TableContainer>
       </Card>
       <br />
-      <Button
-        variant="contained"
-        color="secondary"
-        sx={{ margin: "8px" }}
-        onClick={() => handleConfirm()}
-      >
-        Confirm
-      </Button>
-      <BaseFooter handleUpdateRows={handleUpdateRows} rows={rows} />
+
+      <BaseFooter
+        handleUpdateRows={handleUpdateRows}
+        rows={pendingRows}
+        handleViewAll={handleViewAll}
+        handleRefresh={handleRefresh}
+      />
+      <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity={snack.code ? "success" : "error"}
+          sx={{ width: "100%" }}
+        >
+          {snack?.msg}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

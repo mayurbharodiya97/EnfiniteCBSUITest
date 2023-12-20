@@ -19,7 +19,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import InputBase from "@mui/material/InputBase";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
 //Logic
 import React, {
   useEffect,
@@ -77,8 +79,22 @@ const Trn001_footer = () => {
   const [isArray, setIsArray] = useState(false);
   const [errMsg, setErrMsg] = useState({ cNo: "", accNo: "" });
   const [index, setIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [resetDialog, setResetDialog] = useState(false);
   const [saveDialog, setSaveDialog] = useState(false);
+  const [snack, setSnack] = useState({});
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -194,14 +210,23 @@ const Trn001_footer = () => {
     },
     onError: (error) => {},
   });
-  const addScroll = useMutation(API.addDailyTrxScroll, {
+
+  const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
+      setLoading(false);
       console.log(data, "save scroll api");
       if (Number(data[0]?.INSERT) > 0) {
+        setOpen(true);
+        setSnack({ code: true, msg: "Record Added" });
         handleReset();
       }
     },
-    onError: (error) => {},
+    onError: (error) => {
+      console.log(error, "error");
+      setLoading(false);
+      setOpen(true);
+      setSnack({ code: false, msg: error?.error_msg });
+    },
   });
   const getChqValidation = useMutation(API.getChqValidation, {
     onSuccess: (data) => {
@@ -534,7 +559,8 @@ const Trn001_footer = () => {
     }
   };
   const handleScrollSave = () => {
-    addScroll.mutate(rows);
+    setLoading(true);
+    saveScroll.mutate(rows);
     setSaveDialog(false);
   };
   const handleUpdateRows = (data) => {
@@ -806,41 +832,57 @@ const Trn001_footer = () => {
         </TableContainer>
       </Card>
 
-      {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
-        <>
-          <Button
-            variant="outlined"
-            color="secondary"
-            sx={{ margin: "8px" }}
-            onClick={() => handleAddRow()}
-          >
-            <AddIcon /> new row
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={() => setResetDialog(true)}
-          >
-            <RestartAltIcon /> reset
-          </Button>
-        </>
-      )}
-
-      <Button
-        variant="contained"
-        color="secondary"
-        sx={{ margin: "8px" }}
-        onClick={() => handleSaveDialog()}
+      <Grid
+        container
+        spacing={2}
+        style={{ marginTop: "5px", marginBottom: "5px" }}
       >
-        save
-      </Button>
+        {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
+          <>
+            <Grid item>
+              <Button
+                variant="outlined"
+                color="secondary"
+                sx={{ margin: "8px" }}
+                onClick={() => handleAddRow()}
+              >
+                <AddIcon /> new row
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => setResetDialog(true)}
+              >
+                <RestartAltIcon /> reset
+              </Button>
+            </Grid>
+          </>
+        )}
+
+        <Grid item>
+          {loading ? (
+            <CircularProgress color="secondary" />
+          ) : (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ margin: "8px" }}
+              onClick={() => handleSaveDialog()}
+            >
+              Save
+            </Button>
+          )}
+        </Grid>
+      </Grid>
+
       <br />
       <br />
       <BaseFooter
         handleUpdateRows={handleUpdateRows}
         rows={rows}
-        handleGetTRN001List={handleGetTRN001List}
+        handleViewAll={handleGetTRN001List}
+        handleRefresh={handleGetTRN001List}
       />
       <br />
       <>
@@ -893,6 +935,16 @@ const Trn001_footer = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity={snack.code ? "success" : "error"}
+            sx={{ width: "100%" }}
+          >
+            {snack?.msg}
+          </Alert>
+        </Snackbar>
       </>
     </>
   );
