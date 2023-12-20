@@ -76,7 +76,16 @@ export const declaration_meta_data = {
           },
           name: "US_GIIN",
           label: "GIIN",
-          required: true,          
+          required: true,      
+          maxLength: 21,
+          FormatProps: {
+            isAllowed: (values) => {
+            if (values?.value?.length > 21) {
+                return false;
+            }
+            return true;
+            },
+          },    
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -113,6 +122,15 @@ export const declaration_meta_data = {
               { name: "required", params: ["ThisFieldisrequired"] },
             ],
           },
+          maxLength: 20,
+          FormatProps: {
+            isAllowed: (values) => {
+            if (values?.value?.length > 20) {
+                return false;
+            }
+            return true;
+            },
+          },
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },
       {
@@ -122,6 +140,15 @@ export const declaration_meta_data = {
           name: "TIN",
           label: "TIN",
           placeholder: "",
+          maxLength: 20,
+          FormatProps: {
+            isAllowed: (values) => {
+            if (values?.value?.length > 20) {
+                return false;
+            }
+            return true;
+            },
+          },
           required: true,
           schemaValidation: {
             type: "string",

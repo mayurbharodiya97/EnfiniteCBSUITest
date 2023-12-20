@@ -111,6 +111,24 @@ export const other_details_meta_data = {
             },
             name: "SOURCE_OF_INCOME",
             label: "SourceOfIncome",
+            maxLength: 200,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 200) {
+                    return false;
+                }
+                return true;
+                },
+            },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value) {
+                    let regex = /^[0-9A-Z]+$/;
+                    if(!regex.test(columnValue.value)) {
+                        return "Numeric and Uppercase characters are allowed";
+                    }
+                }
+                return "";
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:4},
@@ -178,6 +196,21 @@ export const other_details_meta_data = {
             name: "NO_OF_CHILDREN",
             label: "ChildrenCount",
             placeholder: "",
+            maxLength: 2,
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 2) {
+                    return false;
+                  }
+                  return true;
+                },
+            },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value && (columnValue.value<0)) {
+                        return "minimum allowed value is zero";
+                }
+                return "";
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -201,6 +234,21 @@ export const other_details_meta_data = {
             name: "NO_OF_ADULTS",
             label: "AdultsCount",
             placeholder: "",
+            maxLength: 2,
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 2) {
+                    return false;
+                  }
+                  return true;
+                },
+            },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value && (columnValue.value<0)) {
+                        return "minimum allowed value is zero";
+                }
+                return "";
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -221,6 +269,21 @@ export const other_details_meta_data = {
             name: "EARNING_MEMEBER",
             label: "EarningMembers",
             placeholder: "",
+            maxLength: 3,
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 3) {
+                    return false;
+                  }
+                  return true;
+                },
+            },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value && (columnValue.value<0)) {
+                        return "minimum allowed value is zero";
+                }
+                return "";
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -277,6 +340,12 @@ export const other_details_meta_data = {
                   return true;
                 },
               },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value && (columnValue.value<0)) {
+                        return "minimum allowed value is zero";
+                }
+                return "";
+            },
         },
         {
             render: {
@@ -299,7 +368,13 @@ export const other_details_meta_data = {
                 //   }
                   return true;
                 },
-              },
+            },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value && (columnValue.value<0)) {
+                        return "minimum allowed value is zero";
+                }
+                return "";
+            },
         },
         {
             render: {
@@ -309,6 +384,21 @@ export const other_details_meta_data = {
             label: "CIBILScore",
             placeholder: "",
             type: "text",
+            maxLength: 3,
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 3) {
+                    return false;
+                  }
+                  return true;
+                },
+            },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value && (columnValue.value>900 || columnValue.value<0)) {
+                        return "CIBIL Score should be between 0 to 900";
+                }
+                return "";
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
@@ -370,10 +460,19 @@ export const other_details_meta_data = {
                 componentType: "textField",
             },
             name: "DEPARTNAME",
-            label: "Departname",
+            label: "Department",
             placeholder: "",
+            maxLength: 100,
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 100) {
+                    return false;
+                  }
+                  return true;
+                },
+            },
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            GridProps: {xs:12, sm:12, md: 12, lg: 6, xl:6},
         },
         {
             render: {
@@ -384,7 +483,7 @@ export const other_details_meta_data = {
             placeholder: "",
             type: "text",
             maxLength: 100,
-            GridProps: {xs:12, sm:12, md:12, lg:7.2, xl:6},
+            GridProps: {xs:12, sm:12, md:12, lg:6, xl:6},
         },
         {
             render: {
@@ -423,17 +522,6 @@ export const other_details_meta_data = {
         },
         {
             render: {
-                componentType: "numberFormat",
-            },
-            // className: "textInputFromRight",
-            name: "WORK_EXP",
-            label: "WorkExperienceYear",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-        },
-        {
-            render: {
                 componentType: "textField",
             },
             name: "SPECIALIZATION_REMARKS",
@@ -442,6 +530,37 @@ export const other_details_meta_data = {
             type: "text",
             maxLength: 100,
             GridProps: {xs:12, sm:8, md: 6, lg: 4.8, xl:6},
+        },
+        {
+            render: {
+                componentType: "numberFormat",
+            },
+            // className: "textInputFromRight",
+            name: "WORK_EXP",
+            label: "WorkExperienceYear",
+            placeholder: "",
+            maxLength: 2,
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 2) {
+                    return false;
+                  }
+                  return true;
+                },
+            },
+            validate: (columnValue, allField, flag) => {
+                if(columnValue.value) {
+                    if(columnValue.value && (columnValue.value<0)) {
+                        return "minimum allowed value is zero";
+                    }
+                    if(columnValue.value>10) {
+                        return "maximum allwed value is 10"
+                    }
+                }
+                return "";
+            },
+            type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
     ]
 }

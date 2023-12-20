@@ -252,6 +252,15 @@ export const entity_detail_legal_meta_data = {
             },
             name: "US_GIIN",
             label: "GIIN",
+            maxLength: 24,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 24) {
+                    return false;
+                }
+                return true;
+                },
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -263,6 +272,15 @@ export const entity_detail_legal_meta_data = {
             name: "TIN",
             label: "TIN",
             placeholder: "",
+            maxLength: 24,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 24) {
+                    return false;
+                }
+                return true;
+                },
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -284,6 +302,15 @@ export const entity_detail_legal_meta_data = {
             },
             name: "CCIL_ID",
             label: "CCIL ID",
+            maxLength: 24,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 24) {
+                    return false;
+                }
+                return true;
+                },
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -292,6 +319,15 @@ export const entity_detail_legal_meta_data = {
             },
             name: "LEI_NO",
             label: "LEI NO.",
+            maxLength: 24,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 24) {
+                    return false;
+                }
+                return true;
+                },
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
