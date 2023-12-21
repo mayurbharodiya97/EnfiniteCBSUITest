@@ -235,7 +235,11 @@ const Trn002_Footer = () => {
                   );
                 })
               ) : (
-                <></>
+                <TableRow>
+                  {" "}
+                  <TableCell></TableCell>
+                  <TableCell id="txtRight">No Records Found</TableCell>
+                </TableRow>
               )}{" "}
             </TableBody>
           </Table>

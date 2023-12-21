@@ -23,13 +23,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 //Logic
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useContext,
-} from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
@@ -51,19 +45,20 @@ const Trn001_footer = () => {
     branch: defBranch,
     accType: { label: "", value: "", info: "" },
     accNo: "",
-    trx: { label: "", value: "", code: "" },
-    scroll: "", //token
+    trx: { label: "", value: "", code: "" }, //TYPE_CD
+    scroll: "0", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: "0",
     date: new Date().toISOString()?.substring(0, 10),
     debit: "0.00",
     credit: "0.00",
-    vNo: "",
+    vNo: "", //TRAN_CD
     bug: true,
     bugChq: false,
     // bugAccNo: false,
     isCredit: true,
+    viewOnly: false,
   };
 
   const [rows, setRows] = useState([defaulVal]);
@@ -81,6 +76,7 @@ const Trn001_footer = () => {
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [resetDialog, setResetDialog] = useState(false);
+  const [viewOnly, setViewOnly] = useState(false);
   const [saveDialog, setSaveDialog] = useState(false);
   const [snack, setSnack] = useState({});
   const [open, setOpen] = React.useState(false);
@@ -244,35 +240,50 @@ const Trn001_footer = () => {
     onSuccess: (data) => {
       console.log(data, "getTRN001List api");
       let arr = [];
-
-      data.map((a) => {
-        a.branch = { value: a.ENTERED_BRANCH_CD, label: a.ENTERED_BRANCH_CD };
-        a.accType = {
-          label: a.ACCT_TYPE,
-          value: a.ACCT_TYPE,
-          info: a.ACCT_TYPE,
-        };
-        a.accNo = a.ACCT_CD?.trim();
-        a.trx = { label: a.REMARKS, value: a.TYPE_CD, code: a.TYPE_CD.trim() };
-        a.scroll = a.SCROLL1;
-        a.sdc = { label: a.REMARKS, value: a.SDC, info: a.SDC };
-        a.remark = a.REMARKS;
-        a.cNo = a.CHEQUE_NO;
-        a.date = new Date(a.ENTERED_DATE).toISOString()?.substring(0, 10);
-        a.debit = a.TYPE_CD.includes("4" || "5" || "6")
-          ? Number(a.AMOUNT).toFixed(2)
-          : "0";
-        a.credit = a.TYPE_CD.includes("1" || "2" || "3")
-          ? Number(a.AMOUNT).toFixed(2)
-          : "0";
-        a.vNo = a.TRAN_CD;
-        a.bug = false;
-        a.bugChq = false;
-        a.isCredit = a.TYPE_CD.includes("1" || "2" || "3") ? true : false;
-        a.viewOnly = true;
-      });
-      console.log("ss");
-      setRows(data);
+      if (data.length > 0) {
+        arr = data.map((a) => {
+          let isDebit =
+            a.TYPE_CD.includes("4") ||
+            a.TYPE_CD.includes("5") ||
+            a.TYPE_CD.includes("6");
+          let isCredit =
+            a.TYPE_CD.includes("1") ||
+            a.TYPE_CD.includes("2") ||
+            a.TYPE_CD.includes("3");
+          return {
+            branch: {
+              label: a.ENTERED_BRANCH_CD + a.BRANCH_NM,
+              value: a.ENTERED_BRANCH_CD,
+            },
+            accType: {
+              label: a.ACCT_TYPE + a.TYPE_NM,
+              value: a.ACCT_TYPE,
+              info: a.ACCT_TYPE,
+            },
+            accNo: a.ACCT_CD?.trim(),
+            trx: {
+              label: a.TYPE_CD + a.TYPE_CD_DESC,
+              value: a.TYPE_CD,
+              code: a.TYPE_CD.trim(),
+            },
+            scroll: a.SCROLL1,
+            sdc: { label: a.SDC_DESC, value: a.SDC, info: a.SDC },
+            remark: a.REMARKS,
+            cNo: a.CHEQUE_NO,
+            date: new Date(a.ENTERED_DATE).toISOString()?.substring(0, 10),
+            debit: isDebit ? Number(a.AMOUNT).toFixed(2) : "0",
+            credit: isCredit ? Number(a.AMOUNT).toFixed(2) : "0",
+            vNo: a.TRAN_CD,
+            isCredit: isCredit ? true : false,
+            viewOnly: true,
+          };
+        });
+        console.log(arr, "arr");
+        setRows(arr);
+      } else {
+        setOpen(true);
+        setSnack({ code: false, msg: "No Record Found" });
+      }
     },
     onError: (error) => {},
   });
@@ -285,12 +296,14 @@ const Trn001_footer = () => {
     handleTotal(obj);
     handleGetAccInfo(i);
   };
+
   const handleAccType = (e, value, i) => {
     const obj = [...rows];
     obj[i].accType = value;
     setRows(obj);
     handleGetAccInfo(i);
   };
+
   const handleAccNo = (e, i) => {
     setIndex(i);
     const obj = [...rows];
@@ -299,6 +312,7 @@ const Trn001_footer = () => {
     setRows(obj);
     setErrMsg({ ...errMsg, accNo: "" });
   };
+
   const handleAccNoBlur = (e, i) => {
     const obj = [...rows];
     let abc = obj[i]?.accNo?.padStart(6, "0");
@@ -309,23 +323,22 @@ const Trn001_footer = () => {
 
   const handleTrx = (e, value, i) => {
     const obj = [...rows];
+    let tr = value?.code + "   ";
+    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
     obj?.length == 1 &&
       (value?.code == "3" || value?.code == "6") &&
       handleFilterTrx();
+
     obj[i].trx = value;
     obj[i].credit = "0.00";
     obj[i].debit = "0.00";
     obj[i].cNo = "0";
     obj[i].bugChq = false;
-    setErrMsg({ ...errMsg, cNo: "" });
-
-    obj[i].scroll = "";
-    let tr = value?.code + "   ";
-    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
-
+    obj[i].scroll = "0";
     obj[i].sdc = defSdc;
     obj[i].remark = defSdc?.label;
+
     if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
       obj[i].isCredit = true;
     } else {
@@ -337,14 +350,17 @@ const Trn001_footer = () => {
     } else {
       setIsArray(false);
     }
+    setErrMsg({ ...errMsg, cNo: "" });
     setRows(obj);
     handleTotal(obj);
   };
+
   const handleScroll = (e, i) => {
     const obj = [...rows];
     obj[i].scroll = e.target.value;
     setRows(obj);
   };
+
   const handleSdc = (e, value, i) => {
     const obj = [...rows];
     obj[i].sdc = value;
@@ -352,6 +368,7 @@ const Trn001_footer = () => {
 
     setRows(obj);
   };
+
   const handleRemark = (e, i) => {
     const obj = [...rows];
     obj[i].remark = e.target.value;
@@ -424,6 +441,7 @@ const Trn001_footer = () => {
       obj[i].credit != obj[i].debit &&
       handleAddRow();
   };
+
   const handleCreditBlur = (e, i) => {
     const obj = [...rows];
     obj[i].credit = Number(e.target.value)?.toFixed(2);
@@ -462,7 +480,7 @@ const Trn001_footer = () => {
       accType: { label: "", value: "", info: "" },
       accNo: "",
       trx: trxx,
-      scroll: "", //token
+      scroll: "0", //token
       sdc: defSdc,
       remark: defSdc?.label,
       cNo: "0",
@@ -518,6 +536,7 @@ const Trn001_footer = () => {
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
     setResetDialog(false);
+    setViewOnly(false);
   };
 
   const handleFilterTrx = () => {
@@ -575,6 +594,7 @@ const Trn001_footer = () => {
       BRANCH_CD: authState?.user?.branchCode,
     };
     getTRN001List.mutate(data);
+    setViewOnly(true);
   };
 
   return (
@@ -604,7 +624,9 @@ const Trn001_footer = () => {
                 <TableCell>A/C Type</TableCell>
                 <TableCell>A/C No</TableCell>
                 <TableCell>TRX</TableCell>
-                <TableCell>Token</TableCell>
+                <TableCell>
+                  {rows[0]?.trx?.code == "4" ? "Token" : "Scroll"}
+                </TableCell>
                 <TableCell>SDC</TableCell>
                 <TableCell>Remarks</TableCell>
                 <TableCell>Chq No</TableCell>
@@ -627,7 +649,9 @@ const Trn001_footer = () => {
                         >
                           <Autocomplete
                             value={a.branch}
+                            autoHighlight
                             size="small"
+                            disabled={viewOnly ? true : false}
                             options={branchOptions}
                             onChange={(e, value) => handleBranch(e, value, i)}
                             renderInput={(params) => (
@@ -644,7 +668,9 @@ const Trn001_footer = () => {
                         >
                           <Autocomplete
                             value={a.accType}
+                            autoHighlight
                             size="small"
+                            disabled={viewOnly ? true : false}
                             options={accTypeOptions}
                             onChange={(e, value) => handleAccType(e, value, i)}
                             renderInput={(params) => (
@@ -661,6 +687,7 @@ const Trn001_footer = () => {
                         >
                           <TextField
                             value={a.accNo}
+                            disabled={viewOnly ? true : false}
                             error={!a.accNo ? true : false}
                             size="small"
                             type="number"
@@ -674,8 +701,9 @@ const Trn001_footer = () => {
                         >
                           <Autocomplete
                             value={a.trx}
+                            autoHighlight
                             size="small"
-                            id="combo-box-demo"
+                            disabled={viewOnly ? true : false}
                             options={trxOptions}
                             onChange={(e, value) => handleTrx(e, value, i)}
                             renderInput={(params) => (
@@ -694,10 +722,7 @@ const Trn001_footer = () => {
                           <TextField
                             value={a.scroll}
                             type="number"
-                            error={
-                              !a.scroll && a.trx?.code == "4" ? true : false
-                            }
-                            disabled={a?.trx?.code == "4" ? false : true}
+                            disabled={viewOnly ? true : false}
                             size="small"
                             onChange={(e) => handleScroll(e, i)}
                           />
@@ -707,10 +732,11 @@ const Trn001_footer = () => {
                           id={a?.isFav ? "isFav" : ""}
                         >
                           <Autocomplete
-                            id="sdc"
+                            value={a.sdc}
+                            autoHighlight
+                            disabled={viewOnly ? true : false}
                             size="small"
                             options={sdcOptions}
-                            value={a.sdc}
                             onChange={(e, value) => handleSdc(e, value, i)}
                             renderInput={(params) => (
                               <TextField {...params} label="" />
@@ -723,6 +749,7 @@ const Trn001_footer = () => {
                         >
                           <TextField
                             value={a.remark}
+                            disabled={viewOnly ? true : false}
                             size="small"
                             onChange={(e) => handleRemark(e, i)}
                           />
@@ -737,7 +764,10 @@ const Trn001_footer = () => {
                             error={!a.cNo || a.bugChq ? true : false}
                             id="txtRight"
                             disabled={
-                              a.isCredit || !a.accNo || !a.accType?.value
+                              a.isCredit ||
+                              !a.accNo ||
+                              !a.accType?.value ||
+                              viewOnly
                                 ? true
                                 : false
                             }
@@ -752,7 +782,7 @@ const Trn001_footer = () => {
                             value={a.date}
                             error={a.isCredit && !a.date ? true : false}
                             type="date"
-                            disabled={a.isCredit ? true : false}
+                            disabled={a.isCredit || viewOnly ? true : false}
                             size="small"
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
@@ -767,7 +797,10 @@ const Trn001_footer = () => {
                             id="txtRight"
                             size="small"
                             disabled={
-                              a?.isCredit || !a.branch || !a.trx?.code
+                              a?.isCredit ||
+                              !a.branch ||
+                              !a.trx?.code ||
+                              viewOnly
                                 ? true
                                 : false
                             }
@@ -786,7 +819,10 @@ const Trn001_footer = () => {
                             id="txtRight"
                             size="small"
                             disabled={
-                              !a?.isCredit || !a.branch || !a.trx?.code
+                              !a?.isCredit ||
+                              !a.branch ||
+                              !a.trx?.code ||
+                              viewOnly
                                 ? true
                                 : false
                             }
@@ -813,6 +849,7 @@ const Trn001_footer = () => {
                             rows[i].trx?.code == "6") && (
                             <Button
                               variant="secondary"
+                              disabled={viewOnly ? true : false}
                               onClick={(e) => handleClear(e, i)}
                               size="small"
                             >
@@ -832,49 +869,41 @@ const Trn001_footer = () => {
         </TableContainer>
       </Card>
 
-      <Grid
-        container
-        spacing={2}
-        style={{ marginTop: "5px", marginBottom: "5px" }}
-      >
+      <div>
         {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
-          <>
-            <Grid item>
-              <Button
-                variant="outlined"
-                color="secondary"
-                sx={{ margin: "8px" }}
-                onClick={() => handleAddRow()}
-              >
-                <AddIcon /> new row
-              </Button>
-
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => setResetDialog(true)}
-              >
-                <RestartAltIcon /> reset
-              </Button>
-            </Grid>
-          </>
+          <Button
+            variant="outlined"
+            color="secondary"
+            disabled={viewOnly ? true : false}
+            sx={{ margin: "8px" }}
+            onClick={() => handleAddRow()}
+          >
+            <AddIcon /> new row
+          </Button>
         )}
 
-        <Grid item>
-          {loading ? (
-            <CircularProgress color="secondary" />
-          ) : (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ margin: "8px" }}
-              onClick={() => handleSaveDialog()}
-            >
-              Save
-            </Button>
-          )}
-        </Grid>
-      </Grid>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => setResetDialog(true)}
+        >
+          <RestartAltIcon /> reset
+        </Button>
+
+        {loading ? (
+          <CircularProgress color="secondary" />
+        ) : (
+          <Button
+            variant="contained"
+            disabled={viewOnly ? true : false}
+            color="secondary"
+            sx={{ margin: "8px" }}
+            onClick={() => handleSaveDialog()}
+          >
+            Save
+          </Button>
+        )}
+      </div>
 
       <br />
       <br />
@@ -882,7 +911,7 @@ const Trn001_footer = () => {
         handleUpdateRows={handleUpdateRows}
         rows={rows}
         handleViewAll={handleGetTRN001List}
-        handleRefresh={handleGetTRN001List}
+        handleRefresh={handleReset}
       />
       <br />
       <>
@@ -910,6 +939,7 @@ const Trn001_footer = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
         <Dialog
           open={resetDialog}
           maxWidth={"lg"}

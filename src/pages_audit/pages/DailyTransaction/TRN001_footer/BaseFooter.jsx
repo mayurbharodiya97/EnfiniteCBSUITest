@@ -26,6 +26,7 @@ import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import "./Trn001_Footer.css";
 import { useLocation } from "react-router-dom";
+import CommonDialog from "./CommonDialog";
 
 const BaseFooter = ({
   rows,
@@ -38,6 +39,11 @@ const BaseFooter = ({
     { label: "Vno search", value: "vno" },
   ];
   const [search, setSearch] = useState("");
+  const [dialogBox, setDialogBox] = useState({
+    open: false,
+    title: "",
+    okBtnTxt: "",
+  });
   const [filter, setFilter] = useState({ value: "", label: "" });
   const loc = useLocation();
   const handleSearch = (e) => {
@@ -56,7 +62,7 @@ const BaseFooter = ({
     }
     if (filter.value == "vno") {
       obj.map((a, j) => {
-        if (txt && txt == a.vNo) {
+        if (txt && (txt == a.vNo || txt == a?.TRAN_CD)) {
           a.isFav = true;
         } else {
           a.isFav = false;
@@ -76,6 +82,23 @@ const BaseFooter = ({
       a.isFav = false;
     });
     handleUpdateRows(obj);
+  };
+
+  const handleDialog2 = () => {
+    setDialogBox({
+      ...dialogBox,
+      open: true,
+      saveBtn: "Save",
+      title: "hello world",
+    });
+  };
+
+  const handleSave = () => {
+    console.log("d1 saved");
+  };
+
+  const handleClose = () => {
+    console.log("d1 closed");
   };
 
   return (
@@ -146,17 +169,27 @@ const BaseFooter = ({
             scroll del
           </Button>{" "}
         </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            other a/c
+        {/* <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleDialog2()}
+          >
+            dialog2
           </Button>
         </Grid>{" "}
         <Grid item>
           <Button variant="contained" color="primary">
-            other Tx Detail
+            dialog1
           </Button>
-        </Grid>{" "}
+        </Grid>{" "} */}
       </Grid>
+
+      {/* <CommonDialog
+        handleSave={handleSave}
+        handleClose={handleClose}
+        dialogBox={dialogBox}
+      /> */}
     </>
   );
 };

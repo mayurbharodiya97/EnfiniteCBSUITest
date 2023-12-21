@@ -172,7 +172,7 @@ export const addDailyTrxScroll = async (reqData) => {
       ACCT_TYPE: a.accType?.value,
       ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
       REMARKS: a.remark,
-      CHEQUE_NO: a.cNo, //!a.isCredit ? a.cNo?.toString() : "0"
+      CHEQUE_NO: a.cNo ? a.cNo : "0", //!a.isCredit ? a.cNo?.toString() : "0"
       TYPE_CD: a.trx.code + "   ",
       TRAN_DT: date2,
       VALUE_DT: date2,
@@ -180,7 +180,7 @@ export const addDailyTrxScroll = async (reqData) => {
       ENTERED_COMP_CD: a.branch?.info.COMP_CD,
       SDC: a.sdc.value,
       AMOUNT: a.isCredit ? a.credit : a.debit,
-      SCROLL1: a.scroll ? a.scroll : "",
+      SCROLL1: a.scroll ? a.scroll : "0",
       CURRENCY_CD: "00  ",
       CONFIRMED: "0",
     };
