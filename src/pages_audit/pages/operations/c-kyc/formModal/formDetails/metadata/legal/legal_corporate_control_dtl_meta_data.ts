@@ -55,6 +55,16 @@ export const corporate_control_dtl_meta_data = {
             _fields: [
                 {
                     render: {
+                        componentType: "hidden",
+                    },
+                    name: "SR_CD",
+                    label: "Sr. No.",
+                    placeholder: "",
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
+                },
+                {
+                    render: {
                         componentType: "select",
                     },
                     name: "RELATED_PERSON_TYPE",

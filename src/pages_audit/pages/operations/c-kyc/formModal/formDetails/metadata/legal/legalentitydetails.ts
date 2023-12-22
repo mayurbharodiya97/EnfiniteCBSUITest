@@ -334,7 +334,7 @@ export const entity_detail_legal_meta_data = {
             render: {
                 componentType: "datePicker"
             },
-            name: "LEI_EXPIRY_DT",
+            name: "LEI_EXPIRY_DATE",
             label: "LEI Expiry Date",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },

@@ -55,6 +55,16 @@ export const related_person_detail_data = {
             _fields: [
                 {
                     render: {
+                        componentType: "hidden",
+                    },
+                    name: "SR_CD",
+                    label: "Sr. No.",
+                    placeholder: "",
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
+                },
+                {
+                    render: {
                         componentType: "autocomplete",
                     },
                     options: () => API.getPMISCData("CKYC_RELAT_PERS", null, "I"),
@@ -264,7 +274,7 @@ export const related_person_detail_data = {
                         sequence: 20,
                     },
                     dividerText: "PoIOfRelatedPerson",
-                    name: "PoIOfRelatedPersonDivider",
+                    name: "PoIOfRelatedPersonDivider_ignoreField",
                     label: "PoIOfRelatedPersonDivider"
                 },
                 {
@@ -283,7 +293,7 @@ export const related_person_detail_data = {
                     },
                     name: "DRIVING_LICENSE_NO",
                     label: "DrivingLicNo",
-                    placeholder: "First Name",
+                    placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                     // dependentFields: ["DAILY_AMT"],
@@ -316,7 +326,7 @@ export const related_person_detail_data = {
                     },
                     name: "PASSPORT_NO",
                     label: "PassportNo",
-                    placeholder: "Last Name",
+                    placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
@@ -381,7 +391,7 @@ export const related_person_detail_data = {
                         sequence: 20,
                     },
                     dividerText: "AttesDetailsIPVBy",
-                    name: "AttesDetailsIPVByDivider",
+                    name: "AttesDetailsIPVByDivider_ignoreField",
                     label: "AttesDetailsIPVByDivider"
                 },
                 {

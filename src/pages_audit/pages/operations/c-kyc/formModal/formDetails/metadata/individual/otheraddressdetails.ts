@@ -83,7 +83,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "LINE1",
+                    name: "ADD1",
                     label: "Line1",
                     required: true,          
                     schemaValidation: {
@@ -100,7 +100,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "LINE2",
+                    name: "ADD2",
                     label: "Line2",
                     placeholder: "",
                     type: "text",
@@ -110,7 +110,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "LINE3",
+                    name: "ADD3",
                     label: "Line3",
                     placeholder: "",
                     type: "text",
@@ -124,7 +124,7 @@ import * as API from "../../../../api";
                     // _optionsKey: "localParentAreaList",
                     // options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
                     _optionsKey: "otherAddSubArea",
-                    name: "AREA",
+                    name: "AREA_CD",
                     label: "Area",
                     postValidationSetCrossFieldValues: (
                     field,
@@ -161,7 +161,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "PIN",
+                    name: "PIN_CODE",
                     label: "PIN",
                     required: true,
                     placeholder: "",
@@ -183,7 +183,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "DISTRICT",
+                    name: "DISTRICT_CD",
                     label: "District",
                     placeholder: "",
                     type: "text",
@@ -213,7 +213,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "STATE_UT_CODE",
+                    name: "STATE_CD",
                     // label: "UnionTerritoriesCode",
                     label: "State/U.T(Union Territories) Code",
                     placeholder: "",
@@ -224,7 +224,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "ISO_COUNTRY_CODE",
+                    name: "COUNTRY_CD",
                     label: "ISO-3166 Country Code of Residence",
                     placeholder: "",
                     type: "text",
@@ -425,6 +425,16 @@ import * as API from "../../../../api";
                     },
                     name: "EMAIL_ID",
                     label: "EmailId",
+                    placeholder: "",
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
+                },
+                {
+                    render: {
+                        componentType: "hidden",
+                    },
+                    name: "SR_CD",
+                    label: "Sr. No.",
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},

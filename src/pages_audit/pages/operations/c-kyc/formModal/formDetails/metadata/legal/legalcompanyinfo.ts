@@ -231,7 +231,7 @@ export const company_info_meta_data = {
 
 export const kyc_poa_legal_meta_data = {
     form: {
-        name: "kyc_poa_details_form",
+        name: "kyc_poaa_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
