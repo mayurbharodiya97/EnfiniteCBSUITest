@@ -105,10 +105,10 @@ const KYCDetails = ({
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
       const formData = _.pick(data, formFieldsRef.current)
 
-      setCurrentTabFormData((formData) => ({
-        ...formData,
-        proof_of_identity: data,
-      }));
+      // setCurrentTabFormData((formData) => ({
+      //   ...formData,
+      //   proof_of_identity: data,
+      // }));
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
@@ -133,18 +133,19 @@ const KYCDetails = ({
     actionFlag,
     hasError
   ) => {
+    // console.log("qekdiwqeydwyegdwef", data)
     setIsNextLoading(true);
     if (data && !hasError) {
       let formFields = Object.keys(data) // array, get all form-fields-name 
-      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+      formFields = formFields.filter(field => !(field.includes("_ignoreField") || field.includes("DISTRICT_NM") || field.includes("LOC_DISTRICT_NM"))) // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
       const formData = _.pick(data, formFieldsRef.current)
 
 
-      setCurrentTabFormData((formData) => ({
-        ...formData,
-        proof_of_address: data,
-      }));
+      // setCurrentTabFormData((formData) => ({
+      //   ...formData,
+      //   proof_of_address: data,
+      // }));
 
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
@@ -167,11 +168,12 @@ const KYCDetails = ({
         });
       // }
       // setIsNextLoading(false)
-    } else
+    } else {
       handleStepStatusctx({
         status: "error",
         coltabvalue: state?.colTabValuectx,
       });
+    }
     endSubmit(true);
     setIsNextLoading(false);
   };

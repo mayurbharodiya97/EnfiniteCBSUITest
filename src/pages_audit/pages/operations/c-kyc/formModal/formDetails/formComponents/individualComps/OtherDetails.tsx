@@ -41,23 +41,24 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
 
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
             let resData = formData;
-            if(Boolean(resData["POLITICALLY_CONNECTED"])) {
-                resData["POLITICALLY_CONNECTED"] = "Y"
-            } else {
-                resData["POLITICALLY_CONNECTED"] = "N"
-            }
+            // if(Boolean(resData["POLITICALLY_CONNECTED"])) {
+            //     resData["POLITICALLY_CONNECTED"] = "Y"
+            // } else {
+            //     resData["POLITICALLY_CONNECTED"] = "N"
+            // }
 
-            if(Boolean(resData["BLINDNESS"])) {
-                resData["BLINDNESS"] = "Y"
-            } else {
-                resData["BLINDNESS"] = "N"
-            }
+            // if(Boolean(resData["BLINDNESS"])) {
+            //     resData["BLINDNESS"] = "Y"
+            // } else {
+            //     resData["BLINDNESS"] = "N"
+            // }
 
-            if(Boolean(resData["REFERRED_BY_STAFF"])) {
-                resData["REFERRED_BY_STAFF"] = "Y"
-            } else {
-                resData["REFERRED_BY_STAFF"] = "N"
-            }
+            // if(Boolean(resData["REFERRED_BY_STAFF"])) {
+            //     resData["REFERRED_BY_STAFF"] = "Y"
+            // } else {
+            //     resData["REFERRED_BY_STAFF"] = "N"
+            // }
+            console.log(resData,"otherdtl", data)
 
             let newData = state?.formDatactx
             const commonData = {

@@ -986,7 +986,7 @@ export const Ckyc = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
-              displayMode={"new"}
+              formmode={"new"}
             />
           }
         />
@@ -1000,7 +1000,7 @@ export const Ckyc = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
-              displayMode={"edit"}
+              formmode={"edit"}
             />
           }
         />

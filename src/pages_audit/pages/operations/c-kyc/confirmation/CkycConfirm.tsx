@@ -112,7 +112,7 @@ export const CkycConfirm = () => {
                 isCustomerData={isCustomerData}
                 setIsCustomerData={setIsCustomerData}
                 onClose={() => navigate(".")}
-                displayMode={"view"}
+                formmode={"view"}
               />
             }
           />
