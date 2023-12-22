@@ -244,48 +244,7 @@ const Trn001_footer = () => {
   const getTRN001List = useMutation(API.getTRN001List, {
     onSuccess: (data) => {
       console.log(data, "getTRN001List api");
-      let arr = [];
-      if (data.length > 0) {
-        arr = data.map((a) => {
-          let isDebit =
-            a.TYPE_CD.includes("4") ||
-            a.TYPE_CD.includes("5") ||
-            a.TYPE_CD.includes("6");
-          let isCredit =
-            a.TYPE_CD.includes("1") ||
-            a.TYPE_CD.includes("2") ||
-            a.TYPE_CD.includes("3");
-          return {
-            branch: {
-              label: a.ENTERED_BRANCH_CD + a.BRANCH_NM,
-              value: a.ENTERED_BRANCH_CD,
-            },
-            accType: {
-              label: a.ACCT_TYPE + a.TYPE_NM,
-              value: a.ACCT_TYPE,
-              info: a.ACCT_TYPE,
-            },
-            accNo: a.ACCT_CD?.trim(),
-            trx: {
-              label: a.TYPE_CD + a.TYPE_CD_DESC,
-              value: a.TYPE_CD,
-              code: a.TYPE_CD.trim(),
-            },
-            scroll: a.SCROLL1,
-            sdc: { label: a.SDC_DESC, value: a.SDC, info: a.SDC },
-            remark: a.REMARKS,
-            cNo: a.CHEQUE_NO,
-            date: new Date(a.ENTERED_DATE).toISOString()?.substring(0, 10),
-            debit: isDebit ? Number(a.AMOUNT).toFixed(2) : "0",
-            credit: isCredit ? Number(a.AMOUNT).toFixed(2) : "0",
-            vNo: a.TRAN_CD,
-            isCredit: isCredit ? true : false,
-            viewOnly: true,
-          };
-        });
-        console.log(arr, "arr");
-      }
-      setRows2(arr);
+      setRows2(data);
     },
     onError: (error) => {},
   });
@@ -539,6 +498,7 @@ const Trn001_footer = () => {
     setTrxOptions(trxOptions2);
     setResetDialog(false);
     setViewOnly(false);
+    setTempStore({ ...tempStore, accInfo: {} });
   };
 
   const handleFilterTrx = () => {
@@ -674,44 +634,54 @@ const Trn001_footer = () => {
                     <TableBody>
                       <TableRow>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.branch?.label}
+                          {a.BRANCH_NM}
                         </TableCell>
                         <TableCell
                           id={a?.isFav ? "isFav" : ""}
                           style={{ cursor: "pointer" }}
                           onClick={(e) => handleRowClick(e, a)}
                         >
-                          {a.accType?.label}
+                          {a.ACCT_TYPE} {a.TYPE_NM}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.accNo}
+                          {a.ACCT_CD}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.trx?.label}
+                          {a.TYPE_CD}
+                          {a.TYPE_CD_DESC}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.scroll}
+                          {a.SCROLL1}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.sdc?.label}
+                          {a.SDC}
+                          {a.SDC_DESC}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.remark}
+                          {a.REMARKS}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.cNo}
+                          {a.CHEQUE_NO}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.date}
+                          {a.TRAN_DT?.substring(0, 10)}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.debit}
+                          {a.TYPE_CD.includes("4") ||
+                          a.TYPE_CD.includes("5") ||
+                          a.TYPE_CD.includes("6")
+                            ? Number(a.AMOUNT).toFixed(2)
+                            : "0.00"}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.credit}
+                          {a.TYPE_CD.includes("1") ||
+                          a.TYPE_CD.includes("2") ||
+                          a.TYPE_CD.includes("3")
+                            ? Number(a.AMOUNT).toFixed(2)
+                            : "0.00"}
                         </TableCell>
                         <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.vNo}
+                          {a.TRAN_CD}
                         </TableCell>
                         <TableCell
                           style={{ border: "0px", width: "10px" }}

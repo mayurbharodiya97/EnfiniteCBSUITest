@@ -160,8 +160,6 @@ const Trn002_Footer = () => {
                 <TableCell id="head">Chq Date</TableCell>
                 <TableCell id="head">Scroll/Token</TableCell>
                 <TableCell id="head">EnteredBy</TableCell>
-                {/* <TableCell>VerifiedBy</TableCell> 
-                <TableCell>PendingCycle</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -169,7 +167,7 @@ const Trn002_Footer = () => {
                 pendingRows.map((a, i) => {
                   return (
                     <TableRow key={i}>
-                      <TableCell>
+                      <TableCell align="center">
                         <Tooltip title="Confirm Record">
                           <IconButton>
                             <input
@@ -182,55 +180,49 @@ const Trn002_Footer = () => {
                           </IconButton>
                         </Tooltip>{" "}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {a.TRAN_CD}
                       </TableCell>
                       <TableCell
+                        align="center"
                         id={a?.isFav ? "isFav" : ""}
-                        className="txtRight"
+                        style={{ cursor: "pointer" }}
+                        onClick={(e) => handleRowClick(e, a)}
                       >
                         {a.ACCT_CD_NEW}
                       </TableCell>
                       <TableCell
+                        align="center"
                         id={a?.isFav ? "isFav" : ""}
                         style={{ cursor: "pointer" }}
                         onClick={(e) => handleRowClick(e, a)}
                       >
                         {a.ACCT_NM}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {a.TYPE_CD}
                       </TableCell>
-                      <TableCell
-                        id={a?.isFav ? "isFav" : ""}
-                        className="txtRight"
-                      >
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {Number(a.AMOUNT)?.toFixed(2)}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {a.REMARKS}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {a.CHEQUE_NO}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {a.SDC}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {a.ENTERED_DATE.substring(0, 10)}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {a.SCROLL1}
                       </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
+                      <TableCell align="center" id={a?.isFav ? "isFav" : ""}>
                         {a.ENTERED_BY}
                       </TableCell>
-                      {/* <TableCell id={a?.isFav ? "isFav" : ""}>
-                        VerifiedBy
-                      </TableCell>
-                      <TableCell id={a?.isFav ? "isFav" : ""}>
-                        PendingCycle
-                      </TableCell> */}
                     </TableRow>
                   );
                 })}

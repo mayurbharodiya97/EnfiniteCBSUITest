@@ -40,7 +40,11 @@
 #head {
   font-size: small;
   padding: 7px;
-  text-align: center;
+  /* text-align: center; */
   color: #00458e;
   font-weight: 600;
+}
+
+.cell {
+  /* text-align: center; */
 }
