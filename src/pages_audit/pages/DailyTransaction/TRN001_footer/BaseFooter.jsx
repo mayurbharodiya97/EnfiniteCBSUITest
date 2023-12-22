@@ -26,7 +26,6 @@ import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import "./Trn001_Footer.css";
 import { useLocation } from "react-router-dom";
-import CommonDialog from "./CommonDialog";
 
 const BaseFooter = ({
   rows,
@@ -91,7 +90,7 @@ const BaseFooter = ({
       <Grid
         container
         spacing={2}
-        style={{ marginTop: "5px", marginBottom: "5px" }}
+        style={{ marginTop: "5px", marginBottom: "15px" }}
       >
         <Grid item sx={{ width: 180 }}>
           <Autocomplete
@@ -144,7 +143,7 @@ const BaseFooter = ({
             Calculator
           </Button>
         </Grid>{" "}
-        <Grid item>
+        {/* <Grid item>
           <Button variant="contained" color="primary">
             Delete
           </Button>
@@ -153,8 +152,9 @@ const BaseFooter = ({
           <Button variant="contained" color="primary">
             scroll del
           </Button>{" "}
-        </Grid>{" "}
+        </Grid>{" "} */}
       </Grid>
+      <br />
     </>
   );
 };

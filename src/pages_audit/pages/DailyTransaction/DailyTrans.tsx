@@ -1,13 +1,5 @@
 // UI
-import {
-  Box,
-  Typography,
-  Grid,
-  TextField,
-  IconButton,
-  Divider,
-  Tab,
-} from "@mui/material";
+import { Box, Grid, Tab } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import CloseIcon from "@mui/icons-material/Close";
@@ -34,7 +26,6 @@ import Trn001_footer from "./TRN001_footer/Trn001_footer";
 import Trn002_footer from "./TRN002_footer/Trn002_Footer";
 import "./DailyTrans.css";
 // const JointDetails = lazy(() => import("./JointDetails"));
-// console.log("daily trans");
 
 interface TabPanelProps {
   children?: React.ReactNode;

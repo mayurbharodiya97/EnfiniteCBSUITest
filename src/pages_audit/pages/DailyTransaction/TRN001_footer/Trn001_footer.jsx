@@ -21,7 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import CircularProgress from "@mui/material/CircularProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 //Logic
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -30,6 +30,7 @@ import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import "./Trn001_Footer.css";
 import BaseFooter from "./BaseFooter";
+import TRN001_Table from "./Table";
 
 const Trn001_footer = () => {
   const { authState } = useContext(AuthContext);
@@ -96,6 +97,10 @@ const Trn001_footer = () => {
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
   }, []);
+
+  useEffect(() => {
+    console.log(loading, "loading trn001");
+  }, [loading]);
 
   useEffect(() => {
     console.log(rows, "rows");
@@ -177,9 +182,9 @@ const Trn001_footer = () => {
 
   const getAccInfo = useMutation(API.getAccInfo, {
     onSuccess: (data) => {
+      setLoading(false);
       console.log(data, "accInfo");
       setTempStore({ ...tempStore, accInfo: data });
-
       if (data.STATUS == "C") {
         console.log("c1");
         setErrMsg({
@@ -207,6 +212,7 @@ const Trn001_footer = () => {
       }
     },
     onError: (error) => {
+      setLoading(false);
       setOpen(true);
       setSnack({ code: false, msg: "Error Fetching Account Info" });
     },
@@ -508,6 +514,7 @@ const Trn001_footer = () => {
   };
 
   const handleGetAccInfo = (i) => {
+    setLoading(true);
     let data = {
       COMP_CD: rows[i]?.branch?.info?.COMP_CD,
       BRANCH_CD: rows[i]?.branch?.value,
@@ -558,18 +565,7 @@ const Trn001_footer = () => {
     getTRN001List.mutate(data);
     setViewOnly(true);
   };
-  const handleRowClick = (e, a) => {
-    console.log(a, "a");
-    let data = {
-      COMP_CD: a?.COMP_CD,
-      BRANCH_CD: a?.BRANCH_CD,
-      ACCT_TYPE: a?.ACCT_TYPE,
-      ACCT_CD: a?.ACCT_CD,
-      authState: authState,
-    };
-    console.log(data, "data.....");
-    getAccInfo.mutate(data);
-  };
+
   return (
     <>
       <Card
@@ -581,11 +577,12 @@ const Trn001_footer = () => {
           marginBottom: "10px",
         }}
       >
-        <TableContainer>
-          <Table aria-label="simple table" padding={viewOnly ? "" : "none"}>
-            {viewOnly ? (
-              ""
-            ) : (
+        {loading && <LinearProgress color="secondary" />}
+        {viewOnly && <TRN001_Table />}
+
+        {!viewOnly && (
+          <TableContainer>
+            <Table aria-label="simple table" padding={"none"}>
               <>
                 <caption>
                   <h3>
@@ -607,90 +604,27 @@ const Trn001_footer = () => {
                   <></>
                 )}
               </>
-            )}
-            <TableHead>
-              <TableRow id="topHead">
-                <TableCell id="head">Branch</TableCell>
-                <TableCell id="head">A/C Type</TableCell>
-                <TableCell id="head">A/C No</TableCell>
-                <TableCell id="head">TRX</TableCell>
-                <TableCell id="head">
-                  {rows[0]?.trx?.code == "4" ? "Token" : "Scroll"}
-                </TableCell>
-                <TableCell id="head">SDC</TableCell>
-                <TableCell id="head">Remarks</TableCell>
-                <TableCell id="head">Chq No</TableCell>
-                <TableCell id="head">Chq Date</TableCell>
-                <TableCell id="head">Debit</TableCell>
-                <TableCell id="head">Credit</TableCell>
-                <TableCell id="head">Vno.</TableCell>
-              </TableRow>
-            </TableHead>
 
-            {viewOnly
-              ? rows2 &&
-                rows2?.map((a) => {
-                  return (
-                    <TableBody>
-                      <TableRow>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.BRANCH_NM}
-                        </TableCell>
-                        <TableCell
-                          id={a?.isFav ? "isFav" : ""}
-                          style={{ cursor: "pointer" }}
-                          onClick={(e) => handleRowClick(e, a)}
-                        >
-                          {a.ACCT_TYPE} {a.TYPE_NM}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.ACCT_CD}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.TYPE_CD}
-                          {a.TYPE_CD_DESC}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.SCROLL1}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.SDC}
-                          {a.SDC_DESC}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.REMARKS}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.CHEQUE_NO}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.TRAN_DT?.substring(0, 10)}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.TYPE_CD.includes("4") ||
-                          a.TYPE_CD.includes("5") ||
-                          a.TYPE_CD.includes("6")
-                            ? Number(a.AMOUNT).toFixed(2)
-                            : "0.00"}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.TYPE_CD.includes("1") ||
-                          a.TYPE_CD.includes("2") ||
-                          a.TYPE_CD.includes("3")
-                            ? Number(a.AMOUNT).toFixed(2)
-                            : "0.00"}
-                        </TableCell>
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
-                          {a.TRAN_CD}
-                        </TableCell>
-                        <TableCell
-                          style={{ border: "0px", width: "10px" }}
-                        ></TableCell>
-                      </TableRow>
-                    </TableBody>
-                  );
-                })
-              : rows &&
+              <TableHead>
+                <TableRow id="topHead">
+                  <TableCell id="head">Branch</TableCell>
+                  <TableCell id="head">A/C Type</TableCell>
+                  <TableCell id="head">A/C No</TableCell>
+                  <TableCell id="head">TRX</TableCell>
+                  <TableCell id="head">
+                    {rows[0]?.trx?.code == "4" ? "Token" : "Scroll"}
+                  </TableCell>
+                  <TableCell id="head">SDC</TableCell>
+                  <TableCell id="head">Remarks</TableCell>
+                  <TableCell id="head">Chq No</TableCell>
+                  <TableCell id="head">Chq Date</TableCell>
+                  <TableCell id="head">Debit</TableCell>
+                  <TableCell id="head">Credit</TableCell>
+                  <TableCell id="head">Vno.</TableCell>
+                </TableRow>
+              </TableHead>
+
+              {rows &&
                 rows?.map((a, i) => {
                   return (
                     <TableBody>
@@ -913,48 +847,47 @@ const Trn001_footer = () => {
                     </TableBody>
                   );
                 })}
-          </Table>
-        </TableContainer>
-        {viewOnly && !rows2.length > 0 && (
-          <div id="noRecord">No Record Found</div>
+            </Table>
+          </TableContainer>
         )}
-      </Card>
 
-      <div>
-        {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
+        {/* {viewOnly && !rows2.length > 0 && (
+          <div id="noRecord">No Record Found</div>
+        )} */}
+      </Card>
+      {!viewOnly && (
+        <div>
+          {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              sx={{ margin: "8px" }}
+              onClick={() => handleAddRow()}
+            >
+              <AddIcon /> new row
+            </Button>
+          )}
+
           <Button
             variant="outlined"
             color="secondary"
-            disabled={viewOnly ? true : false}
-            sx={{ margin: "8px" }}
-            onClick={() => handleAddRow()}
+            onClick={() => setResetDialog(true)}
           >
-            <AddIcon /> new row
+            <RestartAltIcon /> reset
           </Button>
-        )}
 
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={() => setResetDialog(true)}
-        >
-          <RestartAltIcon /> reset
-        </Button>
-
-        {loading ? (
-          <CircularProgress color="secondary" />
-        ) : (
-          <Button
-            variant="contained"
-            disabled={viewOnly ? true : false}
-            color="secondary"
-            sx={{ margin: "8px" }}
-            onClick={() => handleSaveDialog()}
-          >
-            Save
-          </Button>
-        )}
-      </div>
+          {!loading && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ margin: "8px" }}
+              onClick={() => handleSaveDialog()}
+            >
+              Save
+            </Button>
+          )}
+        </div>
+      )}
 
       <br />
       <BaseFooter

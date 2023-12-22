@@ -217,6 +217,7 @@ export const getChqValidation = async (reqData) => {
 };
 
 export const getTRN001List = async (reqData) => {
+  //for table
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
       COMP_CD: reqData?.COMP_CD,

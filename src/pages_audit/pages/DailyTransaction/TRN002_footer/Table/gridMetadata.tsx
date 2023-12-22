@@ -1,0 +1,98 @@
+import { GridMetaDataType } from "components/dataTableStatic";
+export const TRN001_TableMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "TRN_001 Table",
+    rowIdColumn: "index",
+    defaultColumnConfig: {
+      width: 150,
+      maxWidth: 250,
+      minWidth: 100,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    disableGroupBy: true,
+    enablePagination: true,
+    hideFooter: true,
+    pageSizes: [10, 20, 30],
+    defaultPageSize: 10,
+    containerHeight: {
+      min: "26vh",
+      max: "30vh",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    hideHeader: true,
+    isCusrsorFocused: true,
+  },
+  filters: [],
+  columns: [
+    {
+      accessor: "BRANCH_NM",
+      columnName: "Branch",
+      sequence: 2,
+      componentType: "default",
+    },
+    {
+      accessor: "account1",
+      columnName: "Account",
+      sequence: 3,
+      componentType: "default",
+    },
+    {
+      accessor: "ACCT_CD",
+      columnName: "Account No",
+      sequence: 4,
+      componentType: "default",
+    },
+    {
+      accessor: "trx1",
+      columnName: "TRX",
+      sequence: 5,
+      componentType: "default",
+    },
+    {
+      accessor: "SCROLL1",
+      columnName: "Scroll/Token",
+      sequence: 6,
+      componentType: "default",
+    },
+    {
+      accessor: "sdc1",
+      columnName: "SDC",
+      sequence: 7,
+      componentType: "default",
+    },
+    {
+      accessor: "REMARKS",
+      columnName: "Remarks",
+      sequence: 8,
+      componentType: "default",
+    },
+    {
+      accessor: "date1",
+      columnName: "Date",
+      sequence: 9,
+      componentType: "default",
+    },
+    {
+      accessor: "debit1",
+      columnName: "Debit",
+      sequence: 10,
+      componentType: "default",
+    },
+    {
+      accessor: "credit1",
+      columnName: "Credit",
+      sequence: 11,
+      componentType: "default",
+    },
+    {
+      accessor: "TRAN_CD",
+      columnName: "Voucher No",
+      sequence: 12,
+      componentType: "default",
+    },
+  ],
+};
