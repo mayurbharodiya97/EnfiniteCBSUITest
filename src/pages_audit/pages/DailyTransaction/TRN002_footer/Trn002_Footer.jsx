@@ -147,25 +147,25 @@ const Trn002_Footer = () => {
         <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>Vno.</TableCell>
-                <TableCell className="txtRight">A/C No</TableCell>
-                <TableCell>A/C holder name</TableCell>
-                <TableCell>TRX</TableCell>
-                <TableCell className="txtRight">Amount</TableCell>
-                <TableCell>Remarks</TableCell>
-                <TableCell>Chq No</TableCell>
-                <TableCell>SDC</TableCell>
-                <TableCell>Chq Date</TableCell>
-                <TableCell>Scroll/Token</TableCell>
-                <TableCell>EnteredBy</TableCell>
-                {/* <TableCell>VerifiedBy</TableCell>
+              <TableRow id="topHead">
+                <TableCell id="head"></TableCell>
+                <TableCell id="head">Vno.</TableCell>
+                <TableCell id="head">A/C No</TableCell>
+                <TableCell id="head">A/C holder name</TableCell>
+                <TableCell id="head">TRX</TableCell>
+                <TableCell id="head">Amount</TableCell>
+                <TableCell id="head">Remarks</TableCell>
+                <TableCell id="head">Chq No</TableCell>
+                <TableCell id="head">SDC</TableCell>
+                <TableCell id="head">Chq Date</TableCell>
+                <TableCell id="head">Scroll/Token</TableCell>
+                <TableCell id="head">EnteredBy</TableCell>
+                {/* <TableCell>VerifiedBy</TableCell> 
                 <TableCell>PendingCycle</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
-              {pendingRows.length > 0 ? (
+              {pendingRows &&
                 pendingRows.map((a, i) => {
                   return (
                     <TableRow key={i}>
@@ -205,7 +205,7 @@ const Trn002_Footer = () => {
                         id={a?.isFav ? "isFav" : ""}
                         className="txtRight"
                       >
-                        {a.AMOUNT}
+                        {Number(a.AMOUNT)?.toFixed(2)}
                       </TableCell>
                       <TableCell id={a?.isFav ? "isFav" : ""}>
                         {a.REMARKS}
@@ -233,17 +233,11 @@ const Trn002_Footer = () => {
                       </TableCell> */}
                     </TableRow>
                   );
-                })
-              ) : (
-                <TableRow>
-                  {" "}
-                  <TableCell></TableCell>
-                  <TableCell id="txtRight">No Records Found</TableCell>
-                </TableRow>
-              )}{" "}
+                })}
             </TableBody>
           </Table>
         </TableContainer>
+        {!pendingRows.length > 0 && <div id="noRecord">No Record Found</div>}
       </Card>
       <br />
 

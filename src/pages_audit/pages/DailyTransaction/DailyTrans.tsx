@@ -32,7 +32,7 @@ import AccDetails from "./AccountDetails/AccDetails";
 import { useNavigate } from "react-router-dom";
 import Trn001_footer from "./TRN001_footer/Trn001_footer";
 import Trn002_footer from "./TRN002_footer/Trn002_Footer";
-
+import "./DailyTrans.css";
 // const JointDetails = lazy(() => import("./JointDetails"));
 // console.log("daily trans");
 
@@ -132,7 +132,7 @@ export const DailyTrans = () => {
       </h1>
 
       <>
-        <Grid item xs="auto">
+        <Grid item xs="auto" id="dailyTabs">
           <Tabs
             textColor="secondary"
             value={tabValue}

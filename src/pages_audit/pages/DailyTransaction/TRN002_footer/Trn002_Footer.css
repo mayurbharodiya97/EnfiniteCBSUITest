@@ -1,7 +1,9 @@
 .txtRight {
   text-align: end !important;
 }
-
+.txtCenter {
+  text-align: center !important;
+}
 #isFav {
   background-color: #98e0ff;
   border: 0px;
@@ -25,4 +27,20 @@
 #searchField {
   border: 0px;
   height: 34px;
+}
+#noRecord {
+  height: 13vh;
+  text-align: center;
+  margin-top: 10vh;
+}
+#topHead {
+  /* background-image: linear-gradient(to right, red, yellow); */
+  background: #e9f1ff;
+}
+#head {
+  font-size: small;
+  padding: 7px;
+  text-align: center;
+  color: #00458e;
+  font-weight: 600;
 }

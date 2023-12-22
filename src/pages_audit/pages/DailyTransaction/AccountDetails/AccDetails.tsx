@@ -53,14 +53,7 @@ const AccDetails = () => {
           }}
         >
           <CardContent>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
+            <div id="accHead">
               <Typography variant="h5" component="div">
                 Personal Information
               </Typography>
@@ -151,14 +144,7 @@ const AccDetails = () => {
           }}
         >
           <CardContent>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
+            <div id="accHead">
               <Typography variant="h5" component="div">
                 Balance Details
               </Typography>
@@ -204,14 +190,7 @@ const AccDetails = () => {
           }}
         >
           <CardContent>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
+            <div id="accHead">
               <Typography variant="h5" component="div">
                 Loan Details
               </Typography>

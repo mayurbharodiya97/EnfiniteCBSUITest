@@ -22,6 +22,11 @@ export const Insurance = () => {
   const getJointDetails = useMutation(API.getInsuranceList, {
     onSuccess: (data) => {
       console.log(data, " insurance detailssss");
+      data.map((a) => {
+        a.INSURANCE_DATE = a.INSURANCE_DATE.substring(0, 10);
+        a.DUE_DATE = a.DUE_DATE.substring(0, 10);
+      });
+      console.log(data, "data");
       setRows(data);
     },
     onError: (error) => {},

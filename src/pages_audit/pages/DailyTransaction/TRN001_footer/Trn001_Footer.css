@@ -28,11 +28,21 @@
   border: 0px;
   background: white;
 }
-.css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
-  -webkit-text-fill-color: rgb(0 0 0 / 68%);
+
+#noRecord {
+  height: 13vh;
+  text-align: center;
+  margin-top: 10vh;
 }
 
-.css-19qh8xo-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
-  opacity: 1;
-  -webkit-text-fill-color: rgba(0, 0, 0, 0.78);
+#topHead {
+  /* background-image: linear-gradient(to right, red, yellow); */
+  background: #e9f1ff;
+}
+#head {
+  font-size: small;
+  padding: 7px;
+  text-align: center;
+  color: #00458e;
+  font-weight: 600;
 }

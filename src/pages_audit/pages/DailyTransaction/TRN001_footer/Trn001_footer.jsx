@@ -62,6 +62,7 @@ const Trn001_footer = () => {
   };
 
   const [rows, setRows] = useState([defaulVal]);
+  const [rows2, setRows2] = useState([]);
   const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState([]);
   const [sdcOptions, setSdcOptions] = useState([]);
@@ -98,6 +99,8 @@ const Trn001_footer = () => {
 
   useEffect(() => {
     console.log(rows, "rows");
+
+    console.log("hello bug");
     let i = 0;
     if (rows.length > 0) {
       i = rows.length - 1;
@@ -126,13 +129,12 @@ const Trn001_footer = () => {
     if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
       rows[i].bug = true;
     }
-    if (!rows[i]?.isCredit && rows[i]?.bugChq) {
+    if (!rows[i]?.isCredit && rows[i].bugChq) {
       rows[i].bug = true;
     }
 
-    let result = rows.some((a) => a.bug);
+    let result = rows && rows.some((a) => a?.bug);
     setIsSave(!result);
-    console.log("isSave", !result);
   }, [rows]);
 
   useEffect(() => {
@@ -192,7 +194,7 @@ const Trn001_footer = () => {
           accNo: data.ACCT_CD_NEW + " Account Unclaimed!",
         });
         rows[index].bug = true;
-      } else if (data == [] || !data || data?.length == 0) {
+      } else if (!data || data?.length == 0) {
         console.log("c3");
         setErrMsg({
           ...errMsg,
@@ -204,7 +206,10 @@ const Trn001_footer = () => {
         setErrMsg({ ...errMsg, accNo: "" });
       }
     },
-    onError: (error) => {},
+    onError: (error) => {
+      setOpen(true);
+      setSnack({ code: false, msg: "Error Fetching Account Info" });
+    },
   });
 
   const saveScroll = useMutation(API.addDailyTrxScroll, {
@@ -279,11 +284,8 @@ const Trn001_footer = () => {
           };
         });
         console.log(arr, "arr");
-        setRows(arr);
-      } else {
-        setOpen(true);
-        setSnack({ code: false, msg: "No Record Found" });
       }
+      setRows2(arr);
     },
     onError: (error) => {},
   });
@@ -585,7 +587,7 @@ const Trn001_footer = () => {
   const handleUpdateRows = (data) => {
     //to apply filter from baseFooter
     console.log(data, "databaseFooter");
-    setRows(data);
+    setRows2(data);
   };
 
   const handleGetTRN001List = () => {
@@ -596,7 +598,18 @@ const Trn001_footer = () => {
     getTRN001List.mutate(data);
     setViewOnly(true);
   };
-
+  const handleRowClick = (e, a) => {
+    console.log(a, "a");
+    let data = {
+      COMP_CD: a?.COMP_CD,
+      BRANCH_CD: a?.BRANCH_CD,
+      ACCT_TYPE: a?.ACCT_TYPE,
+      ACCT_CD: a?.ACCT_CD,
+      authState: authState,
+    };
+    console.log(data, "data.....");
+    getAccInfo.mutate(data);
+  };
   return (
     <>
       <Card
@@ -605,43 +618,112 @@ const Trn001_footer = () => {
           borderRadius: "5px",
           padding: "8px",
           margin: "4px",
+          marginBottom: "10px",
         }}
       >
         <TableContainer>
-          <Table aria-label="caption table" padding="none">
-            <caption style={{ fontWeight: "600" }}>
-              Total ( Debit:{totalDebit} | Credit:{totalCredit} )
-            </caption>
-            <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-              {errMsg?.cNo && errMsg?.cNo}
-            </caption>
-            <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-              {errMsg?.accNo && errMsg?.accNo}
-            </caption>
+          <Table aria-label="simple table" padding={viewOnly ? "" : "none"}>
+            {viewOnly ? (
+              ""
+            ) : (
+              <>
+                <caption>
+                  <h3>
+                    Total ( Debit:{totalDebit} | Credit:{totalCredit} )
+                  </h3>
+                </caption>
+                {errMsg?.cNo ? (
+                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
+                    {errMsg?.cNo}
+                  </caption>
+                ) : (
+                  <></>
+                )}
+                {errMsg?.accNo ? (
+                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
+                    {errMsg?.accNo}
+                  </caption>
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
             <TableHead>
-              <TableRow>
-                <TableCell>Branch</TableCell>
-                <TableCell>A/C Type</TableCell>
-                <TableCell>A/C No</TableCell>
-                <TableCell>TRX</TableCell>
-                <TableCell>
+              <TableRow id="topHead">
+                <TableCell id="head">Branch</TableCell>
+                <TableCell id="head">A/C Type</TableCell>
+                <TableCell id="head">A/C No</TableCell>
+                <TableCell id="head">TRX</TableCell>
+                <TableCell id="head">
                   {rows[0]?.trx?.code == "4" ? "Token" : "Scroll"}
                 </TableCell>
-                <TableCell>SDC</TableCell>
-                <TableCell>Remarks</TableCell>
-                <TableCell>Chq No</TableCell>
-                <TableCell>Chq Date</TableCell>
-                <TableCell>Debit</TableCell>
-                <TableCell>Credit</TableCell>
-                <TableCell>Vno.</TableCell>
-                <TableCell style={{ border: "0px", width: "10px" }}></TableCell>
+                <TableCell id="head">SDC</TableCell>
+                <TableCell id="head">Remarks</TableCell>
+                <TableCell id="head">Chq No</TableCell>
+                <TableCell id="head">Chq Date</TableCell>
+                <TableCell id="head">Debit</TableCell>
+                <TableCell id="head">Credit</TableCell>
+                <TableCell id="head">Vno.</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {rows.length > 0 ? (
+
+            {viewOnly
+              ? rows2 &&
+                rows2?.map((a) => {
+                  return (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.branch?.label}
+                        </TableCell>
+                        <TableCell
+                          id={a?.isFav ? "isFav" : ""}
+                          style={{ cursor: "pointer" }}
+                          onClick={(e) => handleRowClick(e, a)}
+                        >
+                          {a.accType?.label}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.accNo}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.trx?.label}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.scroll}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.sdc?.label}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.remark}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.cNo}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.date}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.debit}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.credit}
+                        </TableCell>
+                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                          {a.vNo}
+                        </TableCell>
+                        <TableCell
+                          style={{ border: "0px", width: "10px" }}
+                        ></TableCell>
+                      </TableRow>
+                    </TableBody>
+                  );
+                })
+              : rows &&
                 rows?.map((a, i) => {
                   return (
-                    <>
+                    <TableBody>
                       <TableRow key={i}>
                         <TableCell
                           sx={{ minWidth: 160 }}
@@ -761,7 +843,7 @@ const Trn001_footer = () => {
                         >
                           <TextField
                             value={a.cNo}
-                            error={!a.cNo || a.bugChq ? true : false}
+                            error={!a.cNo || a?.bugChq ? true : false}
                             id="txtRight"
                             disabled={
                               a.isCredit ||
@@ -858,15 +940,14 @@ const Trn001_footer = () => {
                           )}
                         </TableCell>
                       </TableRow>
-                    </>
+                    </TableBody>
                   );
-                })
-              ) : (
-                <></>
-              )}
-            </TableBody>
+                })}
           </Table>
         </TableContainer>
+        {viewOnly && !rows2.length > 0 && (
+          <div id="noRecord">No Record Found</div>
+        )}
       </Card>
 
       <div>
@@ -906,10 +987,9 @@ const Trn001_footer = () => {
       </div>
 
       <br />
-      <br />
       <BaseFooter
         handleUpdateRows={handleUpdateRows}
-        rows={rows}
+        rows={rows2}
         handleViewAll={handleGetTRN001List}
         handleRefresh={handleReset}
       />

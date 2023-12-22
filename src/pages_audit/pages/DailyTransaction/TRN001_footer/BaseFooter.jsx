@@ -55,6 +55,7 @@ const BaseFooter = ({
       obj.map((a, j) => {
         if (txt && (txt == a?.scroll || txt == a?.SCROLL1)) {
           a.isFav = true;
+          console.log("scroll matched");
         } else {
           a.isFav = false;
         }
@@ -62,8 +63,9 @@ const BaseFooter = ({
     }
     if (filter.value == "vno") {
       obj.map((a, j) => {
-        if (txt && (txt == a.vNo || txt == a?.TRAN_CD)) {
+        if (txt && (txt == a?.vNo || txt == a?.TRAN_CD)) {
           a.isFav = true;
+          console.log("vNo matched");
         } else {
           a.isFav = false;
         }
@@ -82,23 +84,6 @@ const BaseFooter = ({
       a.isFav = false;
     });
     handleUpdateRows(obj);
-  };
-
-  const handleDialog2 = () => {
-    setDialogBox({
-      ...dialogBox,
-      open: true,
-      saveBtn: "Save",
-      title: "hello world",
-    });
-  };
-
-  const handleSave = () => {
-    console.log("d1 saved");
-  };
-
-  const handleClose = () => {
-    console.log("d1 closed");
   };
 
   return (
@@ -169,27 +154,7 @@ const BaseFooter = ({
             scroll del
           </Button>{" "}
         </Grid>{" "}
-        {/* <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleDialog2()}
-          >
-            dialog2
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            dialog1
-          </Button>
-        </Grid>{" "} */}
       </Grid>
-
-      {/* <CommonDialog
-        handleSave={handleSave}
-        handleClose={handleClose}
-        dialogBox={dialogBox}
-      /> */}
     </>
   );
 };
