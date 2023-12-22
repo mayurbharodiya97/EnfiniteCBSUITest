@@ -21,6 +21,7 @@ import * as API2 from "../TRN001_footer/api";
 import { AuthContext } from "pages_audit/auth";
 import "./Trn002_Footer.css";
 import BaseFooter from "../TRN001_footer/BaseFooter";
+import TRN002_Table from "./Table";
 
 const Trn002_Footer = () => {
   const { authState } = useContext(AuthContext);
@@ -144,7 +145,9 @@ const Trn002_Footer = () => {
           margin: "4px",
         }}
       >
-        <TableContainer>
+        <TRN002_Table />
+        <br />
+        {/* <TableContainer>
           <Table aria-label="simple table">
             <TableHead>
               <TableRow id="topHead">
@@ -229,7 +232,7 @@ const Trn002_Footer = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        {!pendingRows.length > 0 && <div id="noRecord">No Record Found</div>}
+        {!pendingRows.length > 0 && <div id="noRecord">No Record Found</div>} */}
       </Card>
       <br />
 

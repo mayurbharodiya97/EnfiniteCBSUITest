@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
-import { TRN001_TableMetaData } from "./gridMetadata";
+import { TRN002_TableMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
@@ -18,10 +18,11 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const TRN001_Table = () => {
+export const TRN002_Table = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
   const [rows, setRows] = useState([]);
+  const [rows2, setRows2] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -33,16 +34,21 @@ export const TRN001_Table = () => {
       COMP_CD: authState?.companyID,
       BRANCH_CD: authState?.user?.branchCode,
     };
-    getTRN001List.mutate(data);
+    getTRN002List.mutate(data);
   }, []);
 
   const myGridRef = useRef<any>(null);
 
   // api define
-  const getTRN001List = useMutation(API.getTRN001List, {
+  const getTRN002List = useMutation(API.getTRN002List, {
     onSuccess: (data) => {
-      setLoading(false);
-      console.log(data, "001 table list");
+      // data.map((a) => {
+      //   a.check = false;
+      // });
+      // data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
+
+      let arr = data.filter((a) => a.CONFIRMED == "0");
+      setRows2(arr);
       setRows(data);
     },
     onError: (error) => {
@@ -82,9 +88,9 @@ export const TRN001_Table = () => {
     <>
       {loading && <LinearProgress color="secondary" />}
       <GridWrapper
-        key={`TRN001_TableMetaData`}
-        finalMetaData={TRN001_TableMetaData as GridMetaDataType}
-        data={rows}
+        key={`TRN002_TableMetaData`}
+        finalMetaData={TRN002_TableMetaData as GridMetaDataType}
+        data={rows2}
         setData={() => null}
         // loading={getAccInfo.isLoading}
         refetchData={() => {}}
