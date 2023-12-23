@@ -1,6 +1,7 @@
 import {
   AppBar,
   Box,
+  Button,
   Container,
   Grid,
   LinearProgress,
@@ -18,7 +19,8 @@ import { limitEntryMetaData } from "./limitEntryMetadata";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
 import { SubmitFnType } from "packages/form";
-import { LimitSecurityData, getFDdetail, getLimitDTL } from "./api";
+import { LimitSecurityData, getLimitDTL, getLimitNSCdetail } from "./api";
+import { queryClient } from "cache";
 export const LimitEntry = () => {
   const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
@@ -29,38 +31,44 @@ export const LimitEntry = () => {
     setValue(newValue);
   };
 
-  const getFDdetailData: any = useMutation("getFDdetail", getFDdetail, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
-  });
+  const securityLimitData: any = useMutation(
+    "securityLimitData",
+    LimitSecurityData,
+    {
+      onSuccess: (data) => {
+        let newData;
+        if (data.length > 0) {
+          let newMetadata: any = [...limitEntryMetaData.fields, ...data];
+          newData = { ...newFormMetadata, fields: newMetadata };
+        } else {
+          newData = { ...limitEntryMetaData };
+        }
+        setNewFormMetadata(newData);
+      },
+      onError: (error: any) => {},
+    }
+  );
+
+  const getLimitDetailData: any = useMutation(
+    "getLimitDetailData",
+    getLimitDTL,
+    {
+      onSuccess: (data) => {},
+      onError: (error: any) => {},
+    }
+  );
+
   useEffect(() => {
-    getFDdetailData.mutate();
+    return () => {
+      queryClient.removeQueries(["getLimitDetailData"]);
+      queryClient.removeQueries(["securityLimitData"]);
+    };
   }, []);
-  console.log("<<<getFDdetailData", getFDdetailData);
-  const securityLimitData: any = useMutation(LimitSecurityData, {
-    onSuccess: (data) => {
-      let newData;
-      if (data.length > 0) {
-        let newMetadata: any = [...limitEntryMetaData.fields, ...data];
-        newData = { ...newFormMetadata, fields: newMetadata };
-      } else {
-        newData = { ...limitEntryMetaData };
-      }
-      setNewFormMetadata(newData);
-    },
-    onError: (error: any) => {},
-  });
-  const getLimitDetailData: any = useMutation("getChequebookDTL", getLimitDTL, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
-  });
 
-  const ClickEventManage = (fieldName) => {
-    let event: any = { preventDefault: () => {} };
-    myMasterRef?.current?.handleSubmit(event, fieldName);
-  };
+  let sjdbjhdb = getLimitNSCdetail();
+  console.log("<<<getLimitNSCdetail", sjdbjhdb);
 
-  const onSubmitHandler: SubmitFnType = (
+  const onSubmitHandler = (
     data: any,
     displayData,
     endSubmit,
@@ -69,13 +77,14 @@ export const LimitEntry = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    let otherAPIRequestPara2 = {
-      COMP_CD: authState?.companyID,
-      SECURITY_TYPE: data?.SECURITY_CODE,
-      BRANCH_CD: authState?.user?.branchCode,
-    };
-    if (value === "limitEntry/SECURITY_CODE") {
-      securityLimitData.mutate(otherAPIRequestPara2);
+    console.log("<<<datajkcdjn", data);
+
+    if (value === "SECURITY_CD") {
+      securityLimitData.mutate({
+        COMP_CD: authState?.companyID,
+        SECURITY_CD: data?.SECURITY_CD,
+        BRANCH_CD: authState?.user?.branchCode,
+      });
     }
   };
 
@@ -126,16 +135,22 @@ export const LimitEntry = () => {
           {value === "tab1" ? (
             <div
               onKeyDown={(e) => {
-                let target: any = e?.target;
-                if (e.key === "Tab") {
+                const { target, key } = e;
+                const { name, value }: any = target || {};
+
+                const handleSubmitTab = (field) => {
                   if (
-                    (target?.name ?? "") ===
-                      limitEntryMetaData.form.name + "/SECURITY_CODE" &&
-                    target?.value !== ""
+                    name === `${limitEntryMetaData.form.name}/${field}` &&
+                    value !== ""
                   ) {
-                    ClickEventManage(target?.name);
+                    myMasterRef?.current?.handleSubmit(
+                      { preventDefault: () => {} },
+                      field
+                    );
                   }
-                }
+                };
+
+                key === "Tab" && handleSubmitTab("SECURITY_CD");
               }}
             >
               {securityLimitData.isLoading || securityLimitData.isFetching ? (
@@ -152,7 +167,7 @@ export const LimitEntry = () => {
                 // displayMode={"view"}
                 // hideDisplayModeInTitle={true}
                 loading={securityLimitData.isLoading}
-                // formStyle={{
+                // formStyle={
                 //   background: "white",
                 //   // height: "40vh",
                 //   overflowY: "auto",
@@ -160,7 +175,19 @@ export const LimitEntry = () => {
                 // }}
                 hideHeader={false}
                 ref={myMasterRef}
-              />
+              >
+                {/* {({ isSubmitting, handleSubmit }) => {
+                  console.log("isSubmitting, handleSubmit", isSubmitting);
+                  return (
+                    <Button
+                      color="primary"
+                      onClick={(e) => handleSubmit(e, "FDdetail")}
+                    >
+                      Save
+                    </Button>
+                  );
+                }} */}
+              </FormWrapper>
             </div>
           ) : value === "tab2" ? (
             <>
