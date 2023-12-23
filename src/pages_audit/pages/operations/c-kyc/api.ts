@@ -71,7 +71,7 @@ export const getCustomerDetails = async ({COMP_CD, CUST_ID, CONTACT_NO, PAN_NO, 
     }
   };
 
-export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_TYPE, isFreshEntry, updateCase }) => {
+export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_TYPE, isFreshEntry, CONFIRMFLAG }) => {
   if(!CATEGORY_CD || !CONS_TYPE) {
     return []
   }
@@ -83,7 +83,7 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
       CONS_TYPE: CONS_TYPE,
       ENTRY_MODE: isFreshEntry 
                   ? "NEW"
-                  : (updateCase && updateCase ==  "A")
+                  : (CONFIRMFLAG && !CONFIRMFLAG.includes("Y"))
                     ? "NEW"
                     : "EDIT"
     });
@@ -730,6 +730,14 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
 }
 
 export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
+  // const {gridData, formMode} = formState;
+  // let selectedDoc:any[] = []
+  // if(formState.gridData && formState.gridData.length>0) {
+  //   selectedDoc = formState.gridData.map(el => {
+  //     return el.BANK_DOC_TRAN_CD && el.BANK_DOC_TRAN_CD
+  //   })
+  // } 
+  // console.log(gridData, "auedhniuwehdwe", formMode)
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTDOCUMENT", {
       COMP_CD: COMP_CD, 
@@ -737,17 +745,22 @@ export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
     });
   if (status === "0") {
     let responseData = data;
+    // console.log("auedhniuwehdwe  qwed", data)
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DESCRIPTION, SR_CD, ...other }) => {
-          return {
-            ...other,
-            DESCRIPTION:DESCRIPTION,
-            SR_CD: SR_CD,
-            label: DESCRIPTION,
-            value: SR_CD,
-          };
-        }
-      );
+          // if(selectedDoc.includes(SR_CD)) {
+
+          // } else {
+            return {
+              ...other,
+              DESCRIPTION:DESCRIPTION,
+              SR_CD: SR_CD,
+              label: DESCRIPTION,
+              value: SR_CD,
+            };
+          // }
+        // }
+      });
     }
     return responseData
   } else {
@@ -826,6 +839,22 @@ export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM
   }
 }
 
+export const TrimSpaceValidation = (columnValue, allField, flag) => {
+  if(columnValue.value) {
+      let regex = /^[a-zA-Z]+$/;
+      if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
+          return "Space before name is not allowed.";  
+      } else if(columnValue.value !== columnValue.value.trimStart()) {
+        return "Space before name is not allowed.";
+      } else if (columnValue.value !== columnValue.value.trimEnd()) {
+        return "Space after name is not allowed.";
+      } else if(!regex.test(columnValue.value)) {
+          return "Please Enter Character Value.";
+      }                    
+  }
+  return "";
+}
+
 export const SaveAsDraft = async ({
   CUSTOMER_TYPE,
   CATEGORY_CD,
@@ -859,14 +888,14 @@ export const SaveAsDraft = async ({
   const remainingPD = {
       IsNewRow: IsNewRow,
       CUSTOMER_TYPE: CUSTOMER_TYPE,
-      CATEGORY_CD: CATEGORY_CD,
+      // CATEGORY_CD: CATEGORY_CD,
       // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       COMP_CD: "132 ",
       BRANCH_CD: "099 ",
       ACCT_TYPE: ACCT_TYPE,
       REQ_FLAG: "F",
-      CATEG_CD: CONSTITUTION_TYPE,
+      CATEG_CD: CATEGORY_CD,
       // entityType: CUSTOMER_TYPE,
       // COUNTRY_CD: "123 ",
       // KYC_NUMBER: KYC_NUMBER ?? "",
@@ -1270,17 +1299,19 @@ export const SaveAsDraft = async ({
   }
 }
 
-export const SaveEntry = async ({
-  CUSTOMER_ID,
-  CUSTOMER_TYPE,
-  CATEGORY_CD,
-  ACCT_TYPE,
-  KYC_NUMBER,
-  CONSTITUTION_TYPE,
-  IsNewRow,
-  REQ_CD,
-  formData,
-}) => {
+export const SaveEntry = async (reqdata) => {
+  const {
+    CUSTOMER_ID,
+    CUSTOMER_TYPE,
+    CATEGORY_CD,
+    ACCT_TYPE,
+    KYC_NUMBER,
+    CONSTITUTION_TYPE,
+    IsNewRow,
+    REQ_CD,
+    formData,
+  } = reqdata
+
   // console.log("aaaaaaaaa", formData)
   const PHOTO_MST = {
     IsNewRow: true,
@@ -1331,14 +1362,14 @@ export const SaveEntry = async ({
   const remainingPD = {
     IsNewRow: IsNewRow,
     CUSTOMER_TYPE: CUSTOMER_TYPE,
-    CATEGORY_CD: CATEGORY_CD,
+    // CATEGORY_CD: CATEGORY_CD,
     // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
     CONSTITUTION_TYPE: CONSTITUTION_TYPE,
     COMP_CD: "132 ",
     BRANCH_CD: "099 ",
     ACCT_TYPE: ACCT_TYPE,
     REQ_FLAG: "F",
-    CATEG_CD: CONSTITUTION_TYPE,
+    CATEG_CD: CATEGORY_CD,
     // entityType: CUSTOMER_TYPE,
     // COUNTRY_CD: "123 ",
     KYC_NUMBER: KYC_NUMBER ?? "",
@@ -1372,6 +1403,27 @@ export const SaveEntry = async ({
   }
   // SAME_AS_PER
   // formData["PERSONAL_DETAIL"].SAME_AS_PER = formData["PERSONAL_DETAIL"].SAME_AS_PER ? "Y" : "N";
+
+
+  let otherDTL = formData["OTHER_DTL"]
+  if(Boolean(otherDTL["POLITICALLY_CONNECTED"])) {
+      otherDTL["POLITICALLY_CONNECTED"] = "Y"
+  } else {
+      otherDTL["POLITICALLY_CONNECTED"] = "N"
+  }
+
+  if(Boolean(otherDTL["BLINDNESS"])) {
+      otherDTL["BLINDNESS"] = "Y"
+  } else {
+      otherDTL["BLINDNESS"] = "N"
+  }
+
+  if(Boolean(otherDTL["REFERRED_BY_STAFF"])) {
+      otherDTL["REFERRED_BY_STAFF"] = "Y"
+  } else {
+      otherDTL["REFERRED_BY_STAFF"] = "N"
+  }
+
 
   const { data, status, message, messageDetails } =
   await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
@@ -1693,7 +1745,8 @@ export const SaveEntry = async ({
   //      ENT_COMP_CD:"132 ",
   //     ENT_BRANCH_CD:"099 "
   // },
-  OTHER_DTL: formData["OTHER_DTL"], //test-done
+  // OTHER_DTL: formData["OTHER_DTL"], //test-done
+  OTHER_DTL: otherDTL, //test-done
   // PHOTO_MST:{
   
   //      IsNewRow: true,
@@ -1795,7 +1848,7 @@ export const SaveEntry = async ({
       DOC_NO: "123456",
       DOC_TYPE: "KYC",
       DOC_WEIGHTAGE: "1 ",
-      ACTIVE: "Y"
+      ACTIVE: "Y",
     }
   ],
   
@@ -1932,17 +1985,57 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
     }
 }
 
+
+export const getOptionsOnPin = async (dependentValue, formState, _, authState) => {
+  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.PAR_AREA_CD)
+  let PIN_CODE = "";
+  if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length>5) {
+    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value, dependentValue?.PAR_AREA_CD?.value)
+    PIN_CODE = dependentValue?.PIN_CODE?.value
+  }
+  if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length<5) {
+
+  } else if(PIN_CODE) {
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETAREALIST", {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      PIN_CODE: PIN_CODE,
+      FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+    });
+
+    if(status == 0) {
+      // console.log("getOptionsOnPinParentArea data", data)
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
+            return {
+              ...other,
+              AREA_CD: AREA_CD,
+              AREA_NM: AREA_NM,
+              label: AREA_NM,
+              value: AREA_CD,
+            };
+          }
+        );
+      }
+      return responseData  
+    }
+    }
+}
+
+
 export const getOptionsOnLocalPinParentArea = async (dependentValue, formState, _, authState) => {
   // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.LOC_AREA_CD)
   let PIN_CODE = "", PARENT_AREA = ""
-  if(dependentValue?.LOC_PIN_CODE?.value && dependentValue?.LOC_PIN_CODE?.value?.length>5) {
+  if(dependentValue.LOC_PIN_CODE && dependentValue?.LOC_PIN_CODE?.value && dependentValue.LOC_PIN_CODE?.value?.length>5) {
     // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.LOC_PIN_CODE?.value, dependentValue?.LOC_AREA_CD?.value)
     PIN_CODE = dependentValue?.LOC_PIN_CODE?.value
   } else if(dependentValue?.LOC_AREA_CD?.value) {
     // console.log("getOptionsOnPinParentArea dp parea", dependentValue?.LOC_PIN_CODE?.value, dependentValue?.LOC_AREA_CD?.value)
     PARENT_AREA = dependentValue?.LOC_AREA_CD?.value
   }
-  if(dependentValue?.LOC_PIN_CODE?.value && dependentValue?.LOC_PIN_CODE?.value?.length<5) {
+  if(dependentValue.LOC_PIN_CODE && dependentValue?.LOC_PIN_CODE?.value && dependentValue?.LOC_PIN_CODE?.value?.length<5) {
 
   } else if(PIN_CODE || PARENT_AREA) {
     // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)

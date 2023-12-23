@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -32,12 +33,11 @@ import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "../../../../api";
 import { CkycContext } from "../../../../CkycContext";
-
+ 
 const KYCDocumentMasterDetails = ({
   ClosedEventCall,
   isDataChangedRef,
-  formMode,
-  setFormMode,
+  formMode, 
   afterFormSubmit,
   open,
   onClose,
@@ -246,7 +246,7 @@ const KYCDocumentMasterDetails = ({
     setFieldError,
     actionFlag
   ) => {
-    afterFormSubmit(data)
+    afterFormSubmit(data,formMode)
     //@ts-ignore
     // endSubmit(true);
   };
@@ -278,6 +278,74 @@ const KYCDocumentMasterDetails = ({
       })
   );
 
+  const formMemo = useMemo(() => {
+    return <FormWrapper
+      key={"MobileAppReviewGridMetaData"+setFormMetadata+rowsData+options+formMode}
+      // metaData={MobileAppReviewMetaData}
+      // metaData={
+      //   extractMetaData(
+      //     KYCDocumentMasterMetaData,
+      //     formMode === "add" ? "new" : "edit"
+      //   ) as MetaDataType
+      // }
+      metaData={
+        extractMetaData(
+          formMetadata,formMode
+          // formMode === "view"
+        ) as MetaDataType
+      }
+      // metadata={formMetadata}
+      initialValues={rowsData?.[0]?.data as InitialValuesType}
+      onSubmitHandler={onSubmitHandler}
+      //@ts-ignore
+      displayMode={formMode}
+      formState={gridData}
+      formStyle={{
+        background: "white",
+        // height: "30vh",
+        // overflowY: "auto",
+        // overflowX: "hidden",
+      }}
+    >
+      {({ isSubmitting, handleSubmit }) => {
+        console.log("q3qwedqwe", isSubmitting);
+        return (
+          <>
+            {/* {formMode === "view" && <Button
+              onClick={(event) => {
+                // handleSubmit(event, "Save");
+                setFormMode("edit")
+              }}
+              // disabled={isSubmitting}
+              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+              color={"primary"}
+            >
+              Edit
+            </Button>} */}
+            {(formMode === "edit" || formMode === "new") && <Button
+              onClick={(event) => {
+                handleSubmit(event, "Save");
+              }}
+              // disabled={isSubmitting}
+              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+              color={"primary"}
+            >
+              Save
+            </Button>}
+            <Button
+              // onClick={ClosedEventCall}
+              onClick={onClose}
+              color={"primary"}
+              // disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+          </>
+        );
+      }}
+    </FormWrapper>
+  }, [setFormMetadata, rowsData, options, formMode])
+
   return (
     <Dialog
       open={open}
@@ -295,70 +363,7 @@ const KYCDocumentMasterDetails = ({
         paperScrollBody: classes.topPaperScrollBody,
       }}
     >
-      {(options.length >0) && <FormWrapper
-        key={"MobileAppReviewGridMetaData"+setFormMetadata+rowsData+options+formMode}
-        // metaData={MobileAppReviewMetaData}
-        // metaData={
-        //   extractMetaData(
-        //     KYCDocumentMasterMetaData,
-        //     formMode === "add" ? "new" : "edit"
-        //   ) as MetaDataType
-        // }
-        metaData={
-          extractMetaData(
-            formMetadata,formMode
-            // formMode === "view"
-          ) as MetaDataType
-        }
-        // metadata={formMetadata}
-        initialValues={rowsData?.[0]?.data as InitialValuesType}
-        onSubmitHandler={onSubmitHandler}
-        //@ts-ignore
-        displayMode={formMode}
-        formStyle={{
-          background: "white",
-          // height: "30vh",
-          // overflowY: "auto",
-          // overflowX: "hidden",
-        }}
-      >
-        {({ isSubmitting, handleSubmit }) => {
-          console.log("q3qwedqwe", isSubmitting);
-          return (
-            <>
-              {formMode === "view" && <Button
-                onClick={(event) => {
-                  // handleSubmit(event, "Save");
-                  setFormMode("edit")
-                }}
-                // disabled={isSubmitting}
-                //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                color={"primary"}
-              >
-                Edit
-              </Button>}
-              {(formMode === "edit" || formMode === "new") && <Button
-                onClick={(event) => {
-                  handleSubmit(event, "Save");
-                }}
-                // disabled={isSubmitting}
-                //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                color={"primary"}
-              >
-                Save
-              </Button>}
-              <Button
-                // onClick={ClosedEventCall}
-                onClick={onClose}
-                color={"primary"}
-                // disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-            </>
-          );
-        }}
-      </FormWrapper>}
+      {(options.length >0) && formMemo}
       <UploadTarget
         existingFiles={files}
         onDrop={validateFilesAndAddToListCB}

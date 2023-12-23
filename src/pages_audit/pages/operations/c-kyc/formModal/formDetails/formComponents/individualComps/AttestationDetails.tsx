@@ -119,8 +119,13 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     ...tabModifiedCols,
                     ATTESTATION_DTL: [...updatedCols]
                 }
-                handleModifiedColsctx(tabModifiedCols)
-                setUpdateDialog(true)
+                // handleModifiedColsctx(tabModifiedCols)
+                // if() {
+                //     setAlertOnUpdate
+                // } else {
+
+                // }
+                // setUpdateDialog(true)
                 // updateMutation.mutate()
             } else {
                 let data = {
@@ -171,6 +176,11 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     //     }
     // }, [isAttestDataLoading, attestData])
 
+    const retrieveonupdate: any = useMutation(API.getCustomerDetailsonEdit, {
+        onSuccess: (data) => {
+        },
+        onError: (error: any) => {},
+    });
 
     return (
         <Grid container rowGap={3}
@@ -234,7 +244,8 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                         AttestationDTLFormRef.current.handleSubmitError(e, "save")
                     }}
                 >{t("Save")}</Button>}
-                {!state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
+                && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
                         AttestationDTLFormRef.current.handleSubmitError(e, "save")
@@ -251,6 +262,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
             {updateDialog && <UpdateDialog 
                 open={updateDialog} 
                 onClose={onCloseUpdateDialog} 
+                mutationFormDTL={retrieveonupdate}
                 // data={historyData} 
                 // isLoading={!isUpdated} 
                 // setIsLoading={setIsUpdated}
@@ -304,7 +316,7 @@ const AttestHistory = ({open, onClose, isLoading, data}) => {
     )
 }
 
-export const UpdateDialog = ({open, onClose, 
+export const UpdateDialog = ({open, onClose, mutationFormDTL,
     // isLoading, setIsLoading, data, mt
 }) => {
     const [shouldUpdate, setShouldUpdate] = useState(false)
@@ -313,10 +325,17 @@ export const UpdateDialog = ({open, onClose,
 
 
     const mutation: any = useMutation(handleUpdatectx, {
-        onSuccess: (data) => {
+        onSuccess: (data:any) => {
             // setIsUpdated(true)
             // console.log("data on save", data)
             handleModifiedColsctx({})
+
+            // calling this api for getting updated formdata from updated req_cd
+            let reqPayload = {
+                COMP_CD: authState?.companyID ?? "",
+                REQUEST_CD: data[0].REQ_CD ?? "",
+            }
+            mutationFormDTL.mutate(reqPayload)
             // if(data?.[0]?.REQ_CD) {
             //     // handleReqCDctx(data?.[0]?.REQ_CD)
             //     // handleColTabChangectx(state?.colTabValuectx+1)
@@ -327,6 +346,12 @@ export const UpdateDialog = ({open, onClose,
             // setIsUpdated(true)
         },
     });
+
+    // useEffect(() => {
+    //         if(mutationFormDTL.isSuccess && mutationFormDTL.data) {
+    //         // on success of form data retrieve            
+    //     }
+    // }, [mutationFormDTL.data, mutationFormDTL.isSuccess])
 
 
     return <Dialog open={open} maxWidth="sm"

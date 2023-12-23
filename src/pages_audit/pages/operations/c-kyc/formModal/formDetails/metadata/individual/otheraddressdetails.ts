@@ -56,7 +56,7 @@ import * as API from "../../../../api";
                         componentType: "Divider",
                     },
                     dividerText: "CurrentAddress",
-                    name: "CurrentAddressDivider",
+                    name: "CurrentAddressDivider_ignoreField",
                     label: "CurrentAddressDivider",
                 },
                 {
@@ -153,7 +153,8 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "select",
                     },
-                    options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentArea(dependentValue, formState, _, authState),  // parent-area        
+                    options: (dependentValue, formState, _, authState) => API.getOptionsOnPin(dependentValue, formState, _, authState),  // parent-area        
+                    // options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),        
                     // _optionsKey: "localParentAreaList",
                     // options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
                     _optionsKey: "otherAddSubArea",
@@ -297,7 +298,7 @@ import * as API from "../../../../api";
                         componentType: "Divider",
                     },
                     dividerText: "Contact",
-                    name: "ContactDivider",
+                    name: "ContactDivider_ignoreField",
                     label: "ContactDivider",
                 },
                 {

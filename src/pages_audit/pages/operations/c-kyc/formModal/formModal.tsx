@@ -180,7 +180,7 @@ export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
-  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, displayMode
+  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, formmode
   // entityType, setEntityType, 
   // customerCategories, 
   // tabsApiRes, setTabsApiRes, 
@@ -204,6 +204,7 @@ export default function FormModal({
   const [cancelDialog, setCancelDialog] = useState(false)
   const [from, setFrom] = useState("");
   const [confirmAction, setConfirmAction] = useState<any>("confirm");
+  const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
 
   // on edit/view
   // - call retrieveFormRefetch
@@ -394,7 +395,8 @@ export default function FormModal({
     ["getTabsDetail", {
       ENTITY_TYPE: state?.entityTypectx, 
       CATEGORY_CD: state?.categoryValuectx, 
-      CONS_TYPE: state?.constitutionValuectx
+      CONS_TYPE: state?.constitutionValuectx,
+      CONFIRMFLAG: state?.confirmFlagctx,
     }],
     () =>
       API.getTabsDetail(
@@ -404,7 +406,7 @@ export default function FormModal({
         CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
         CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
         isFreshEntry: state?.isFreshEntryctx,
-        updateCase: state?.update_casectx,
+        CONFIRMFLAG: state?.confirmFlagctx,
       }  
       )
   );
@@ -462,22 +464,22 @@ export default function FormModal({
       case "Personal Details":
         return <PersonalDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
       case "KYC Details":
         return <KYCDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
       
       case "Declaration Details":
         return <DeclarationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
       case "KYC Document Upload":
         return <Document
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
         // return <KYCDocUpload />
 
@@ -489,28 +491,28 @@ export default function FormModal({
       case "Details of Related Person":
         return <RelatedPersonDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={formmode}
         />
 
       case "More Details":
         return <OtherDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
       case "Other Address":
         return <OtherAddressDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
       case "NRI Details":
         return <NRIDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
       case "Attestation Details":
         return <AttestationDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={formmode} onFormClose={onClose}
         />
 
       default:
@@ -521,7 +523,7 @@ export default function FormModal({
     switch (tabName) {
       case "Entity Details":
         return <EntityDetails isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode}  />
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={formmode}  />
         // return <PersonalDetails 
         // isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         // isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
@@ -529,17 +531,17 @@ export default function FormModal({
       case "KYC Details":
         return <KYCDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
       
       case "Declaration Details":
         return <DeclarationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
       case "KYC Document Upload":
         return <Document
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
@@ -549,34 +551,34 @@ export default function FormModal({
       case "Details of Controlling Persons":
         return <ControllingPersonDTL
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} />
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={formmode} />
 
       case "More Details":
         return <OtherDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
       case "Other Address":
         return <OtherAddressDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
 
       case "NRI Details":
         return <NRIDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
         
       case "Attestation Details":
         return <AttestationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} onFormClose={onClose} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} onFormClose={onClose} />
 
       default:
         return <p>Not Found - {tabName}</p>;
     }
   }
 
-  const openUpdateDialog = (e) => {
+  const openUpdateDialog = () => {
     // if(state?.currentFormRefctx) {
     //   if(typeof state?.currentFormRefctx.current.handleSubmitError === "function") {
     //     state?.currentFormRefctx.current.handleSubmitError(e, "save")
@@ -600,6 +602,10 @@ export default function FormModal({
     setCancelDialog(false)
   }
 
+  const onClosePreventUpdateDialog = () => {
+    setAlertOnUpdate(false)
+  }
+
   const closeForm = () => {
     handleFormModalClosectx()
     onClose()
@@ -607,7 +613,7 @@ export default function FormModal({
 
   const onCancelForm = () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if(displayMode == "new" || displayMode == "edit") {
+    if(formmode == "new" || formmode == "edit") {
       if(Object.keys(state?.formDatactx).length >0) {
         setCancelDialog(true)
       } else {
@@ -1092,6 +1098,7 @@ export default function FormModal({
         {updateDialog && <UpdateDialog 
             open={updateDialog} 
             onClose={onCloseUpdateDialog} 
+            mutationFormDTL={mutation}
         />}
 
         {actionDialog && <ActionDialog 
@@ -1105,6 +1112,11 @@ export default function FormModal({
             open={cancelDialog} 
             onClose={onCloseCancelDialog} 
             closeForm = {onClose}
+        />}
+
+        {alertOnUpdate && <PreventModificationAlert 
+            open={alertOnUpdate} 
+            onClose={onClosePreventUpdateDialog} 
         />}
       </Dialog>
     // </div>
@@ -1281,5 +1293,59 @@ export const CancelDialolg = ({open, onClose, closeForm}) => {
               Cancel
           </GradientButton>
       </DialogActions> 
+  </Dialog>
+}
+
+export const PreventModificationAlert = ({open, onClose}) => {
+  return <Dialog open={open} maxWidth="sm"
+  PaperProps={{
+      style: {
+          minWidth: "40%",
+          width: "40%",
+      }
+  }}>
+      <DialogTitle
+          sx={{
+              background: "var(--theme-color3)",
+              color: "var(--theme-color2)",
+              letterSpacing: "1.3px",
+              margin: "10px",
+              boxShadow:
+              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+              fontWeight: 500,
+              borderRadius: "inherit",
+              minWidth: "450px",
+              py: 1,
+          }}
+          id="responsive-dialog-title"
+      >
+          Update Required
+          {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
+          {/* {"Updating..."} */}
+      </DialogTitle>
+      <DialogContent>
+      <DialogContentText
+          sx={{ fontSize: "19px", display: "flex" }}
+      >
+          <p>You have not made any changes yet.</p>
+          {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
+          {/* <HelpIcon color="secondary" fontSize="large" /> */}
+      </DialogContentText>
+      <DialogContentText
+          sx={{ fontSize: "19px", display: "flex" }}
+      >
+          <p>Please kindly make any changes and update.</p>
+          {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
+          {/* <HelpIcon color="secondary" fontSize="large" /> */}
+      </DialogContentText>
+      <DialogActions>
+        <GradientButton
+            autoFocus
+            onClick={onClose}
+        >
+            Close
+        </GradientButton>
+      </DialogActions>      
+  </DialogContent>  
   </Dialog>
 }

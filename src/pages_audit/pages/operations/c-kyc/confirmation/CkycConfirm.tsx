@@ -91,7 +91,7 @@ export const CkycConfirm = () => {
           {t("PendingReq")}
         </Typography>
         <GridWrapper
-          key={`PendingCustEntrties`+PendingData}
+          key={`ckycConfirmation`+PendingData}
           finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
           data={PendingData ?? []}
           setData={() => null}

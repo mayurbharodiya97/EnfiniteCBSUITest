@@ -19,6 +19,7 @@ import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
 import { ActionTypes } from "components/dataTable";
+import _ from "lodash";
 
 
 interface PhotoSignProps {
@@ -50,7 +51,7 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
         setDialogOpen
     } = props
 
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handlePhotoOrSignctx, handleStepStatusctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handlePhotoOrSignctx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const classes = useStyles();
     const [reqCD, setReqCD] = useState(state?.req_cd_ctx);
@@ -191,13 +192,33 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
     useEffect(() => {
         if(!state?.isFreshEntryctx) {
             // console.log("saldjnqiwudhnqw", state?.update_casectx, state?.update_casectx.includes("A"), state?.photoBase64ctx, state?.signBase64ctx)
-            if(state?.update_casectx && (state?.update_casectx.includes("A") || state?.update_casectx.includes("P"))) {
+            if(state?.update_casectx && (state?.update_casectx.includes("A"))
+            //  || state?.update_casectx.includes("P"))
+            ) {
+
+
+                // let formFields = Object.keys(data) // array, get all form-fields-name 
+                // formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+                // formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+                // const formData = ["CUST_PHOTO", "CUST_SIGN"]
+                    
+                // let newData = state?.formDatactx;
+                // newData["PHOTO_MST"] = {
+                //     CUST_PHOTO: state?.retrieveFormDataApiRes?.["PHOTO_MST"]?.CUST_PHOTO ?? "",
+                //     CUST_SIGN: state?.retrieveFormDataApiRes?.["PHOTO_MST"]?.CUST_SIGN ?? ""
+                // };
+                // handleFormDataonSavectx(newData);        
+
+
+
                 // could be, update_casectx !== "P - EXISTING_PHOTO_MODIFY"
                 setPhotoImageURL(state?.photoBase64ctx, "photo")
                 setPhotoImageURL(state?.signBase64ctx, "sign")
+                // setPhotoImageURL(state?.retrieveFormDataApiRes?.["PHOTO_MST"]?.CUST_PHOTO, "photo")
+                // setPhotoImageURL(state?.retrieveFormDataApiRes?.["PHOTO_MST"]?.CUST_SIGN, "sign")
             }
         }
-    }, [])
+    }, [state?.retrieveFormDataApiRes])
 
 
     // set data back from store state
@@ -263,6 +284,20 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
         if(!(componentIn && componentIn=="kycUpdate")) {
             if(base64 && base64[1]) {
                 handlePhotoOrSignctx(blob, base64?.[1], img)
+
+                let newData = state?.formDatactx;
+                if(img == "photo") {
+                    newData["PHOTO_MST"] = {
+                        CUST_PHOTO: state?.retrieveFormDataApiRes?.["PHOTO_MST"]?.CUST_PHOTO ?? "",
+                        // CUST_SIGN: state?.retrieveFormDataApiRes?.["PHOTO_MST"]?.CUST_SIGN ?? ""
+                    };
+                } else if(img == "sign") {
+                    newData["PHOTO_MST"] = {
+                        // CUST_PHOTO: state?.retrieveFormDataApiRes?.["PHOTO_MST"]?.CUST_PHOTO ?? "",
+                        CUST_SIGN: state?.retrieveFormDataApiRes?.["PHOTO_MST"]?.CUST_SIGN ?? ""
+                    };
+                }
+                handleFormDataonSavectx(newData);        
             }
         }
     };
@@ -323,26 +358,56 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
 
     // format object for save api on save&next button
     const handleSavePhotoSign = () => {
-        let data = {
-          IsNewRow: true,
-          COMP_CD: authState?.companyID ?? "",
-          ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
-        //   REQ_CD:state?.req_cd_ctx,
-        //   SR_CD:"3",
-          SIGN_GROUP:"2",
-          FROM_LIMIT:"2",
-          TO_LIMIT:"2",
-          REQ_FLAG:"F",
-          ACT_FLAG:"F",
-          CUST_PHOTO: photoFilesdata.current ?? "",
-          CUST_SIGN: signFilesdata.current ?? "",
-          ENT_COMP_CD: authState?.companyID ?? "",
-          ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
-        }
-  
-        let newData = state?.formDatactx
-        newData["PHOTO_MST"] = {...newData["PHOTO_MST"], ...data}
-        handleFormDataonSavectx(newData)
+        if(state?.isFreshEntryctx) {
+            let data = {
+              IsNewRow: true,
+              COMP_CD: authState?.companyID ?? "",
+              ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
+            //   REQ_CD:state?.req_cd_ctx,
+            //   SR_CD:"3",
+              SIGN_GROUP:"2",
+              FROM_LIMIT:"2",
+              TO_LIMIT:"2",
+              REQ_FLAG:"F",
+              ACT_FLAG:"F",
+              CUST_PHOTO: photoFilesdata.current ?? "",
+              CUST_SIGN: signFilesdata.current ?? "",
+              ENT_COMP_CD: authState?.companyID ?? "",
+              ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
+            }
+            // if(!state?.isFreshEntryctx) {
+            //     if(state?.retrieveFormDataApiRes["PHOTO_MST"].CUST_PHOTO) {
+            //         if()
+            //     }
+            // }
+      
+            let newData = state?.formDatactx
+            newData["PHOTO_MST"] = {...newData["PHOTO_MST"], ...data}
+            handleFormDataonSavectx(newData)
+        } else if(!state?.isFreshEntryctx) {
+            let newData = state?.formDatactx
+            let data = {
+                CUST_PHOTO: state?.photoBase64ctx,
+                CUST_SIGN: state?.signBase64ctx
+            }
+            newData["PHOTO_MST"] = {...newData["PHOTO_MST"], ...data}
+            handleFormDataonSavectx(newData)
+
+
+
+            let tabModifiedCols:any = state?.modifiedFormCols    
+            // for storing tab-wise updated cols
+            // let updatedCols = tabModifiedCols.PHOTO_MST ? _.uniq([...tabModifiedCols.PHOTO_MST, ...upd._UPDATEDCOLUMNS]) : _.uniq([...upd._UPDATEDCOLUMNS])
+            // let updatedCols = tabModifiedCols.PHOTO_MST ? _.uniq([...tabModifiedCols.PHOTO_MST, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+            let updatedCols = ["CUST_PHOTO", "CUST_SIGN"]
+            tabModifiedCols = {
+              ...tabModifiedCols,
+              PHOTO_MST: [...updatedCols]
+            }
+            handleModifiedColsctx(tabModifiedCols)
+          }
+
+
         handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
         handleColTabChangectx(state?.colTabValuectx+1)
       }
@@ -662,9 +727,17 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                                 handleColTabChangectx(state?.colTabValuectx-1)
                             }}
                         >{t("Previous")}</Button>
-                        <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                        {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                             onClick={handleSavePhotoSign}
-                        >{t("Save & Next")}</Button>
+                        >{t("Save & Next")}</Button>}
+                        {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
+                            ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                            onClick={handleSavePhotoSign}
+                            >{t("Update & Next")}</Button>
+                            : !state?.isFreshEntryctx ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                            onClick={ () => handleColTabChangectx(state?.colTabValuectx+1)}
+                            >{t("Next")}</Button> : null
+                        }
                     </Grid> 
                     : null
                     // <Grid container item sx={{justifyContent: "flex-end"}}>
