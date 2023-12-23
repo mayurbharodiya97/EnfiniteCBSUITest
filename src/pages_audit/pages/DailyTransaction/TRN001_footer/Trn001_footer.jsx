@@ -514,7 +514,6 @@ const Trn001_footer = () => {
   };
 
   const handleGetAccInfo = (i) => {
-    setLoading(true);
     let data = {
       COMP_CD: rows[i]?.branch?.info?.COMP_CD,
       BRANCH_CD: rows[i]?.branch?.value,
@@ -522,11 +521,10 @@ const Trn001_footer = () => {
       ACCT_CD: rows[i]?.accNo,
       authState: authState,
     };
-
-    rows[i]?.accNo &&
-      rows[i]?.accType?.value &&
-      rows[i]?.branch?.value &&
+    if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
+      setLoading(true);
       getAccInfo.mutate(data);
+    }
   };
 
   const handleSaveDialog = () => {
