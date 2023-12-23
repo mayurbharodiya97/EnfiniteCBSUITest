@@ -81,8 +81,10 @@ export const TRN001_TableMetaData: GridMetaDataType = {
       accessor: "date1",
       columnName: "Date",
       sequence: 9,
-      componentType: "default",
       width: 80,
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
     },
     {
       accessor: "debit1",

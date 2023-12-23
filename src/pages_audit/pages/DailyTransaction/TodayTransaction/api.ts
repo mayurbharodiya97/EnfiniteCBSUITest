@@ -14,7 +14,11 @@ export const getTodayTransList = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
-
+    responseData.map((a, i) => {
+      a.index = i;
+      a.DEBIT = a.DEBIT == "" ? "0.00" : a.DEBIT;
+      a.CREDIT = a.CREDIT == "" ? "0.00" : a.CREDIT;
+    });
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);

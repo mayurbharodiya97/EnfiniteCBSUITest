@@ -3,11 +3,11 @@ export const DocumentGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Document",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
-      minWidth: 100,
+      minWidth: 120,
     },
     allowColumnReordering: true,
     disableSorting: false,
@@ -27,47 +27,48 @@ export const DocumentGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "ID",
-      columnName: "Sr",
-      sequence: 1,
-      componentType: "default",
-      isAutoSequence: true,
-    },
-    {
       accessor: "DOC_TYPE",
       columnName: "Document",
       sequence: 2,
       componentType: "default",
+      width: 120,
     },
-    {
-      accessor: "VALID_UPTO",
-      columnName: "Valid Upto",
-      sequence: 4,
-      componentType: "default",
-    },
+
     {
       accessor: "TEMPLATE_DOC_TYPE",
       columnName: "Document Type",
       sequence: 6,
       componentType: "default",
+      width: 200,
     },
-    {
-      accessor: "DOC_AMOUNT",
-      columnName: "Document Amount",
-      sequence: 6,
-      componentType: "default",
-    },
+
     {
       accessor: "DESCRIPTION",
       columnName: "DESCRIPTION",
       sequence: 7,
       componentType: "default",
+      width: 200,
     },
     {
       accessor: "CUSTOMER_ID",
       columnName: "CUSTOMER_ID",
       sequence: 7,
       componentType: "default",
+      width: 120,
+    },
+    {
+      accessor: "TRAN_CD",
+      columnName: "Voucher No",
+      sequence: 7,
+      componentType: "default",
+      width: 120,
+    },
+    {
+      accessor: "BRANCH_CD",
+      columnName: "Branch No",
+      sequence: 7,
+      componentType: "default",
+      width: 120,
     },
   ],
 };
