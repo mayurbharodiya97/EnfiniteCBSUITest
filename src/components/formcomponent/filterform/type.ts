@@ -7,6 +7,7 @@ export interface FiltergridConfig {
   HideHeader?: boolean;
   submitButtonHide?: boolean;
   isDisplayOnly?: boolean;
+  validationRun?: string;
 }
 export interface FilterFormFieldType {
   accessor?: string;
@@ -32,6 +33,8 @@ export interface FilterFormFieldType {
   required?: boolean;
   tabToSubmit?: boolean;
   options?: any;
+  onBlurHandler?: any;
+  value?: any;
 }
 export interface FilterFormMetaType {
   gridConfig: FiltergridConfig;

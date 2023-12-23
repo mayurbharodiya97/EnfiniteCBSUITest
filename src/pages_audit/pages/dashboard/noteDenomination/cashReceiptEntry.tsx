@@ -55,6 +55,7 @@ import DenoTable from "./denoTable";
 import DualPartTable from "./dualPartTable";
 import { isValidDate } from "components/utils/utilFunctions/function";
 import { format } from "date-fns";
+import SingleDeno from "./singleDeno";
 
 const CashReceiptEntry = () => {
   const [inputVal, setInputVal] = useState<any>({});
@@ -80,6 +81,7 @@ const CashReceiptEntry = () => {
   const [thirdReferData, setthirdReferData] = useState<any>();
   const [formData, setFormData] = useState<any>({});
   const [viewTRN, setViewTRN] = useState<any>(false);
+  const [manageOperator, setManageOperator] = useState<any>(false);
   const { tempStore, setTempStore } = useContext(AuthContext);
   // useEffect(() => {
   //   props?.map((item) => {
@@ -88,7 +90,6 @@ const CashReceiptEntry = () => {
   //     }
   //   });
   // }, [props]);
-
   const getDefaultBranchCode = authState?.authState?.user?.branchCode;
 
   const updatedMetaData = {
@@ -112,10 +113,22 @@ const CashReceiptEntry = () => {
     }),
   };
 
+  useEffect(() => {
+    //@ts-ignore
+    window._CHANGE_OPERATOR_TYPE = (value, flag) => {
+      if (flag === "TRN") {
+        if (value === "S") {
+          setManageOperator(true);
+        } else {
+          return setManageOperator(false);
+        }
+      }
+    };
+  }, []);
+
   // useEffect(() => {
   //   console.log("asdasdas", secondReferData, formComponentViewRef.current);
   // }, [secondReferData]);
-  useEffect(() => {}, [formComponentViewRef]);
 
   const getData: any = useMutation(API.CashReceiptEntrysData, {
     onSuccess: (response: any) => {
@@ -424,8 +437,6 @@ const CashReceiptEntry = () => {
 
   useEffect(() => {
     if (thirdReferData) {
-      console.log(thirdReferData, "thirdReferData");
-
       let reqPara = {
         COMP_CD: authState?.authState?.companyID ?? "",
         BRANCH_CD: thirdReferData?.columnVal?.BRANCH ?? "",
@@ -475,7 +486,6 @@ const CashReceiptEntry = () => {
 
   const getAccInfo = useMutation(API.getAccInfoTeller, {
     onSuccess: (data) => {
-      console.log(data, "accInfo");
       setTempStore({ ...tempStore, accInfo: data });
     },
     onError: (error) => {},
@@ -607,7 +617,7 @@ const CashReceiptEntry = () => {
               },
             }}
             ref={formComponentViewRef}
-            submitSecondButtonName={"more details"}
+            submitSecondButtonName={"Acc DTL"}
             submitSecondAction={ClickSecondButtonEventManage}
             submitSecondButtonHide={false}
             // submitSecondLoading={openAccountDTL}
@@ -628,7 +638,7 @@ const CashReceiptEntry = () => {
             onClose={closeAccountDTL}
             // style={{ height: "40vh" }}
           >
-            <AccDetails />
+            <AccDetails flag={"TELLER"} />
           </Dialog>
         ) : null}
 
@@ -676,31 +686,15 @@ const CashReceiptEntry = () => {
         ) : null}
 
         {/* <DualPartTable /> */}
+
+        {manageOperator ? <SingleDeno /> : null}
+
         {viewTRN ? (
           <Dialog open={viewTRN}>
             <GridWrapper
               key={`denoViewTrnGrid`}
               finalMetaData={denoViewTrnGridMetaData as GridMetaDataType}
-              data={[
-                {
-                  AB: "AB",
-                  CD: "CD",
-                  EF: "EF",
-                  id: "1",
-                },
-                {
-                  AB: "12",
-                  CD: "13",
-                  EF: "14",
-                  id: "2",
-                },
-                {
-                  AB: "$$",
-                  CD: "%%",
-                  EF: "**",
-                  id: "3",
-                },
-              ]}
+              data={[]}
               setData={() => null}
               actions={actions}
               setAction={setCurrentAction}

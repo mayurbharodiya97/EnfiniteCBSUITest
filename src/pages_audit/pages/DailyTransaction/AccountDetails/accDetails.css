@@ -1,3 +1,10 @@
 #accInfo {
   padding: "10px";
 }
+
+.styleforteller {
+  height: "49vh";
+}
+.stylefortellerofChild {
+  height: "25vh";
+}
