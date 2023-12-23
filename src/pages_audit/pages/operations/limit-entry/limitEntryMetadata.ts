@@ -1,5 +1,4 @@
-import { GeneralAPI } from "registry/fns/functions";
-// import { LimitSecurityData } from "./api";
+import { errorSelector } from "recoil";
 import * as API from "./api";
 
 export const limitEntryMetaData = {
@@ -17,7 +16,8 @@ export const limitEntryMetaData = {
       overflowX: "hidden",
     },
     render: {
-      ordering: "sequence",
+      ordering: "auto",
+      // ordering: "sequence",
       renderType: "simple",
       gridConfig: {
         item: {
@@ -62,7 +62,21 @@ export const limitEntryMetaData = {
     //   // postValidationSetCrossFieldValues: "testingFn",
     //   // name: "ACCT_CD",
     // },
-
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "FD_BRANCH_CD",
+    //   label: "FD Branch",
+    //   sequence: "9",
+    //   GridProps: {
+    //     xs: "12",
+    //     md: "3",
+    //     sm: "4",
+    //     lg: "3",
+    //     xl: "2",
+    //   },
+    // },
     {
       render: {
         componentType: "branchCode",
@@ -106,7 +120,7 @@ export const limitEntryMetaData = {
         );
       },
       _optionsKey: "securityDropDownListType",
-      dependentFields: ["BRANCH_CD", "SECURITY_CODE"],
+      dependentFields: ["BRANCH_CD", "SECURITY_CD"],
       GridProps: {
         xs: 12,
         md: 3,
@@ -134,15 +148,13 @@ export const limitEntryMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["Account No. is required."] }],
       },
-      dependentFields: ["ACCT_TYPE"],
+      dependentFields: ["ACCT_TYPE", "SECURITY_CD"],
       postValidationSetCrossFieldValues: async (
         field,
         __,
         authState,
         dependentValue
       ) => {
-        // console.log("<<<bsjhcbsjhdc", dependentValue);
-
         if (field?.value) {
           let otherAPIRequestPara = {
             COMP_CD: authState?.companyID,
@@ -150,9 +162,7 @@ export const limitEntryMetaData = {
             ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
             BRANCH_CD: authState?.user?.branchCode,
           };
-
           let postData = await API.getLimitEntryData(otherAPIRequestPara);
-          console.log("<<<postData", postData);
           return {
             ACCT_NM: {
               value: postData?.[0]?.ACCT_NM,
@@ -223,6 +233,7 @@ export const limitEntryMetaData = {
       placeholder: "San. limit",
       isReadOnly: true,
       type: "text",
+      sequence: 0,
       GridProps: {
         xs: 12,
         md: 2,
@@ -259,15 +270,14 @@ export const limitEntryMetaData = {
       render: {
         componentType: "autocomplete",
       },
-      name: "SECURITY_CODE",
+      name: "SECURITY_CD",
       label: "Security Code",
       placeholder: "Security",
       type: "text",
       disableCaching: true,
       _optionsKey: "getSecurityListData",
       dependentFields: ["ACCT_TYPE"],
-      options: (dependentValue, formState, _, authState) => {
-        // console.log("<<<datass222", dependentValue, formState, _);
+      options: (dependentValue, formState, _, authState, other) => {
         if (dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
           return API.getSecurityListData(
             authState?.companyID,
@@ -277,7 +287,6 @@ export const limitEntryMetaData = {
         }
         return [];
       },
-
       GridProps: {
         xs: 12,
         md: 4,
