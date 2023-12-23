@@ -92,6 +92,17 @@ import * as API from "../../../../api";
                         { name: "required", params: ["ThisFieldisrequired"] },
                         ],
                     },
+                    maxLength: 50,
+                    validate: (columnValue, allField, flag) => {
+                      let regex = /^[a-zA-Z0-9 ]*$/;
+                          // special-character not allowed
+                      if(columnValue.value) {
+                          if(!regex.test(columnValue.value)) {
+                              return "Alphanumeric Value is Allowed";
+                          }
+                      }
+                      return "";
+                    },          
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
@@ -104,6 +115,17 @@ import * as API from "../../../../api";
                     label: "Line2",
                     placeholder: "",
                     type: "text",
+                    maxLength: 50,
+                    validate: (columnValue, allField, flag) => {
+                      let regex = /^[a-zA-Z0-9 ]*$/;
+                          // special-character not allowed
+                      if(columnValue.value) {
+                          if(!regex.test(columnValue.value)) {
+                              return "Alphanumeric Value is Allowed";
+                          }
+                      }
+                      return "";
+                    },          
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
@@ -113,6 +135,17 @@ import * as API from "../../../../api";
                     name: "ADD3",
                     label: "Line3",
                     placeholder: "",
+                    maxLength: 50,
+                    validate: (columnValue, allField, flag) => {
+                      let regex = /^[a-zA-Z0-9 ]*$/;
+                          // special-character not allowed
+                      if(columnValue.value) {
+                          if(!regex.test(columnValue.value)) {
+                              return "Alphanumeric Value is Allowed";
+                          }
+                      }
+                      return "";
+                    },          
                     type: "text",
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
@@ -120,7 +153,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "select",
                     },
-                    options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),  // parent-area        
+                    options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentArea(dependentValue, formState, _, authState),  // parent-area        
                     // _optionsKey: "localParentAreaList",
                     // options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
                     _optionsKey: "otherAddSubArea",
@@ -134,13 +167,16 @@ import * as API from "../../../../api";
                     ) => {
                         if(field.value) {
                             return {
-                                PIN: {value: field?.optionData[0]?.PIN_CODE ?? ""},
-                                CITY: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                                DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                                PIN_CODE: {value: field?.optionData[0]?.PIN_CODE ?? ""},
+                                CITY_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                                CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                                DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                                DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
                                 STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
-                                COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
-                                STATE_UT_CODE: {value: field?.optionData[0]?.STATE_CD ?? ""},
-                                ISO_COUNTRY_CODE: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                                // STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                                COUNTRY_ignoreField: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                                STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                                COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
                             }
                         }
                         return {}
@@ -159,35 +195,58 @@ import * as API from "../../../../api";
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "numberFormat",
                     },
                     name: "PIN_CODE",
                     label: "PIN",
                     required: true,
                     placeholder: "",
                     type: "text",
+                    maxLength: 6,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 6) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },            
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
                         componentType: "textField",
                     },
-                    name: "CITY",
+                    name: "CITY_ignoreField",
                     label: "City",
                     required: true,
+                    isReadOnly: true,
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
+                        componentType: "hidden",
+                        name: "CITY_CD"
+                    }
+                },
+                {
+                    render: {
                         componentType: "textField",
                     },
-                    name: "DISTRICT_CD",
+                    name: "DISTRICT_ignoreField",
                     label: "District",
                     placeholder: "",
+                    isReadOnly: true,
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+                },
+                {
+                    render: {
+                        componentType: "hidden",
+                        name: "DISTRICT_CD"
+                    }
                 },
                 {
                     render: {
@@ -203,7 +262,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "COUNTRY",
+                    name: "COUNTRY_ignoreField",
                     label: "Country",
                     placeholder: "",
                     type: "text",
@@ -423,10 +482,18 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "EMAIL_ID",
+                    name: "E_MAIL_ID",
                     label: "EmailId",
                     placeholder: "",
                     type: "text",
+                    maxLength: 60,
+                    validate: (columnValue, allField, flag) => {
+                        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        if(columnValue.value && !emailRegex.test(columnValue.value)) {
+                            return "Please Enter Valid Email ID."
+                        }
+                        return "";
+                    },            
                     GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
                 },
                 {
