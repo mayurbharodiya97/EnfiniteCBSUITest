@@ -34,7 +34,7 @@ const actions: ActionTypes[] = [
 ];
 
 export const TRN002_Table = () => {
-  const myGridRef = useRef<any>(null);
+  // const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
   const [rows, setRows] = useState([]);
@@ -108,7 +108,10 @@ export const TRN002_Table = () => {
     onError: (error) => {
       console.log(error, "error");
       setOpen(true);
-      setSnack({ code: false, msg: error?.error_msg });
+      setSnack({
+        code: false,
+        msg: "You can not confirm your own posted transaction",
+      }); //error?.error_msg
     },
   });
   // function define  ======================================================================
@@ -178,7 +181,7 @@ export const TRN002_Table = () => {
           setData={() => null}
           // loading={getAccInfo.isLoading}
           refetchData={() => {}}
-          ref={myGridRef}
+          // ref={myGridRef}
           actions={actions}
           setAction={setCurrentAction}
         />

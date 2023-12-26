@@ -22,6 +22,10 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import LinearProgress from "@mui/material/LinearProgress";
+//date
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 //Logic
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
@@ -364,9 +368,15 @@ const Trn001_footer = () => {
   const handleDate = (e, i) => {
     console.log(e, "date e");
     const obj = [...rows];
-    obj[i].date = e.target.value;
+    obj[i].date = e.target?.value;
     setRows(obj);
   };
+  // const handleDate = (e, i) => {
+  //   console.log(e, "date e");
+  //   const obj = [...rows];
+  //   obj[i].date = e;
+  //   setRows(obj);
+  // };
 
   const handleDebit = (e, i) => {
     const obj = [...rows];
@@ -627,10 +637,7 @@ const Trn001_footer = () => {
                   return (
                     <TableBody>
                       <TableRow key={i}>
-                        <TableCell
-                          sx={{ minWidth: 160 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.branch}
                             autoHighlight
@@ -646,10 +653,7 @@ const Trn001_footer = () => {
                             )}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 160 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.accType}
                             autoHighlight
@@ -665,10 +669,7 @@ const Trn001_footer = () => {
                             )}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.accNo}
                             disabled={viewOnly ? true : false}
@@ -679,10 +680,7 @@ const Trn001_footer = () => {
                             onBlur={(e) => handleAccNoBlur(e, i)}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 160 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.trx}
                             autoHighlight
@@ -699,10 +697,7 @@ const Trn001_footer = () => {
                           />
                         </TableCell>
 
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.scroll}
                             type="number"
@@ -711,10 +706,7 @@ const Trn001_footer = () => {
                             onChange={(e) => handleScroll(e, i)}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 160 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.sdc}
                             autoHighlight
@@ -727,10 +719,7 @@ const Trn001_footer = () => {
                             )}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 80 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 80 }}>
                           <TextField
                             value={a.remark}
                             disabled={viewOnly ? true : false}
@@ -739,10 +728,7 @@ const Trn001_footer = () => {
                           />
                         </TableCell>
 
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.cNo}
                             error={!a.cNo || a?.bugChq ? true : false}
@@ -761,7 +747,7 @@ const Trn001_footer = () => {
                           />
                         </TableCell>
 
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                        <TableCell>
                           <TextField
                             value={a.date}
                             error={a.isCredit && !a.date ? true : false}
@@ -770,11 +756,16 @@ const Trn001_footer = () => {
                             size="small"
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
+                          {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                              // value={a.date}
+                              error={a.isCredit && !a.date ? true : false}
+                              disabled={a.isCredit || viewOnly ? true : false}
+                              onChange={(e) => handleDate(e, i)}
+                            />
+                          </LocalizationProvider> */}
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.debit}
                             error={Number(a.debit > 0) ? false : true}
@@ -793,10 +784,7 @@ const Trn001_footer = () => {
                             onBlur={(e) => handleDebitBlur(e, i)}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.credit}
                             error={Number(a.credit > 0) ? false : true}
@@ -816,10 +804,7 @@ const Trn001_footer = () => {
                           />
                         </TableCell>
 
-                        <TableCell
-                          sx={{ minWidth: 40 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 40 }}>
                           <TextField
                             value={a.vNo}
                             id="txtRight"
