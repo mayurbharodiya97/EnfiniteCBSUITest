@@ -48,6 +48,7 @@ const inititalState = {
   isScanning: false,
   auth_data: [],
   auth_type: "O",
+  otpValidFor: 60,
 };
 
 const reducer = (state, action) => {
@@ -157,6 +158,7 @@ const reducer = (state, action) => {
         currentFlow: "OTP",
         authType: action?.payload?.authType,
         auth_data: action?.payload?.auth_data,
+        otpValidFor: action?.payload?.otpValidFor,
       };
     }
     case "inititatebiometricVerification": {
@@ -302,6 +304,7 @@ export const AuthLoginController = () => {
             token_type: access_token?.token_type,
             authType: data?.AUTH_TYPE,
             auth_data: data?.AUTH_DATA,
+            otpValidFor: data?.OTP_VALID,
           },
         });
         setOpen(true);

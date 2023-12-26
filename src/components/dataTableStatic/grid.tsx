@@ -444,6 +444,7 @@ export const DataGrid = ({
                     {
                       style: {
                         background: row?.original?._rowColor,
+                        width: "100%",
                       },
                     },
                   ];

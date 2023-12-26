@@ -1,6 +1,13 @@
 #accInfo {
   padding: "10px";
 }
+
+.styleforteller {
+  height: "49vh";
+}
+.stylefortellerofChild {
+  height: "25vh";
+}
 #accHead {
   /* background-image: linear-gradient(to right, red, yellow); */
   background: #e9f1ff;

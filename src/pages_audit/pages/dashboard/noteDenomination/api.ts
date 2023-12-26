@@ -175,7 +175,7 @@ export const getAcctDTL = async ({
 };
 
 export const getAccInfoTeller = async (reqData) => {
-  console.log(reqData, "reqDatareqData");
+  // console.log(reqData, "reqDatareqData");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
       // COMP_CD: "132 ",
@@ -195,4 +195,32 @@ export const getAccInfoTeller = async (reqData) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
+};
+
+export const justForTestings = async () => {
+  const data = [
+    {
+      A: "A",
+      B: "AA",
+      C: "AAA",
+    },
+    {
+      A: "B",
+      B: "BB",
+      C: "BBB",
+    },
+    {
+      A: "C",
+      B: "CC",
+      C: "CCC",
+    },
+  ];
+
+  let respose: any = data;
+
+  respose = respose?.map(({ A, C, ...other }) => {
+    return { ...other, A: A, C: C, value: A, label: C };
+  });
+
+  return respose;
 };

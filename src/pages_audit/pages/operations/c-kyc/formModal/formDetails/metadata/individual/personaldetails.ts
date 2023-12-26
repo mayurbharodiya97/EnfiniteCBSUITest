@@ -67,6 +67,7 @@ export const personal_detail_prefix_data = {
             options: () => API.GetDynamicSalutationData("Salutation"),
             _optionsKey: "PDPrefix",
             type: "text",
+            required: true,
             // GridProps: {xs:12, sm:2.5, md: 2.5, lg: 1.5, xl: 1 },
             GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
             schemaValidation: {
@@ -124,20 +125,7 @@ export const personal_detail_prefix_data = {
                   { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                // only character, trim value
-                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                    return "Please remove extra space";  
-                } else if(columnValue.value !== columnValue.value.trimStart()) {
-                  return "Please remove extra space from the starting";
-                } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                  return "Please remove extra space from the ending";
-                } else if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // dependentFields: ["DAILY_AMT"],
         },
         {
@@ -151,21 +139,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Middle Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                if(columnValue.value) {
-                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                        return "Please remove extra space";  
-                    } else if(columnValue.value !== columnValue.value.trimStart()) {
-                      return "Please remove extra space from the starting";
-                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                      return "Please remove extra space from the ending";
-                    } else if(!regex.test(columnValue.value)) {
-                        return "Please Enter Valid Format";
-                    }
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
         },
         {
             render: {
@@ -178,21 +152,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Last Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            validate: (columnValue, allField, flag) => {
-                if(columnValue.value) {
-                    let regex = /^[a-zA-Z]+$/;
-                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                        return "Please remove extra space";  
-                    } else if(columnValue.value !== columnValue.value.trimStart()) {
-                      return "Please remove extra space from the starting";
-                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                      return "Please remove extra space from the ending";
-                    } else if(!regex.test(columnValue.value)) {
-                        return "Please Enter Valid Format";
-                    }                    
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
         },
         {
             render: {
@@ -313,19 +273,11 @@ export const personal_detail_prefix_data = {
             accessor: "MAIDEN_FIRST_NM",
             name: "MAIDEN_FIRST_NM",
             label: "FirstName",
+            maxLength: 50,
             // placeholder: "First Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                // if (!Boolean(columnValue)) {
-                //   return "This field is required.";
-                // } else 
-                if(columnValue.value && !regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // schemaValidation: {
             //     type: "string",
             //     rules: [
@@ -341,14 +293,10 @@ export const personal_detail_prefix_data = {
             },
             name: "MAIDEN_MIDDLE_NM",
             label: "MiddleName",
+            maxLength: 50,
             // placeholder: "Middle Name",
             type: "text",
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                if(columnValue.value && !regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -358,14 +306,10 @@ export const personal_detail_prefix_data = {
             },
             name: "MAIDEN_LAST_NM",
             label: "LastName",
+            maxLength: 50,
             // placeholder: "Last Name",
             type: "text",
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                if(columnValue.value && !regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -460,25 +404,17 @@ export const personal_detail_prefix_data = {
             },
             name: "FATHER_FIRST_NM",
             label: "FirstName",
+            maxLength: 50,
             // placeholder: "First Name",
             type: "text",
             required: true,
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                // only character, trim value
-                if(!columnValue.value) {
-                    return "This field is required.";
-                } else if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                    return "Please remove extra space";  
-                } else if(columnValue.value !== columnValue.value.trimStart()) {
-                  return "Please remove extra space from the starting";
-                } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                  return "Please remove extra space from the ending";
-                } else if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-                return "";
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
             },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             // dependentFields: ["DAILY_AMT"],
         },
@@ -489,23 +425,9 @@ export const personal_detail_prefix_data = {
             },
             name: "FATHER_MIDDLE_NM",
             label: "MiddleName",
+            maxLength: 50,
             // placeholder: "Middle Name",
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                // only character, trim value
-                if(columnValue.value) {
-                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                        return "Please remove extra space";  
-                    } else if(columnValue.value !== columnValue.value.trimStart()) {
-                      return "Please remove extra space from the starting";
-                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                      return "Please remove extra space from the ending";
-                    } else if(!regex.test(columnValue.value)) {
-                        return "Please Enter Valid Format";
-                    }
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -516,23 +438,9 @@ export const personal_detail_prefix_data = {
             },
             name: "FATHER_LAST_NM",
             label: "LastName",
+            maxLength: 50,
             // placeholder: "Last Name",
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                // only character, trim value
-                if(columnValue.value) {
-                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                        return "Please remove extra space";  
-                    } else if(columnValue.value !== columnValue.value.trimStart()) {
-                      return "Please remove extra space from the starting";
-                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                      return "Please remove extra space from the ending";
-                    } else if(!regex.test(columnValue.value)) {
-                        return "Please Enter Valid Format";
-                    }
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -579,23 +487,15 @@ export const personal_detail_prefix_data = {
             },
             name: "MOTHER_FIRST_NM",
             label: "FirstName",
+            maxLength: 50,
             required: true,
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                // only character, trim value
-                if(!columnValue.value) {
-                    return "This field is required.";
-                } else if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                    return "Please remove extra space";  
-                } else if(columnValue.value !== columnValue.value.trimStart()) {
-                  return "Please remove extra space from the starting";
-                } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                  return "Please remove extra space from the ending";
-                } else if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-                return "";
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
             },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // placeholder: "First Name",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -608,23 +508,9 @@ export const personal_detail_prefix_data = {
             },
             name: "MOTHER_MIDDLE_NM",
             label: "MiddleName",
+            maxLength: 50,
             // placeholder: "Middle Name",
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                // only character, trim value
-                if(columnValue.value) {
-                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                        return "Please remove extra space";  
-                    } else if(columnValue.value !== columnValue.value.trimStart()) {
-                      return "Please remove extra space from the starting";
-                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                      return "Please remove extra space from the ending";
-                    } else if(!regex.test(columnValue.value)) {
-                        return "Please Enter Valid Format";
-                    }
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -635,23 +521,9 @@ export const personal_detail_prefix_data = {
             },
             name: "MOTHER_LAST_NM",
             label: "LastName",
+            maxLength: 50,
             // placeholder: "Last Name",
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z]+$/;
-                // only character, trim value
-                if(columnValue.value) {
-                    if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                        return "Please remove extra space";  
-                    } else if(columnValue.value !== columnValue.value.trimStart()) {
-                      return "Please remove extra space from the starting";
-                    } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                      return "Please remove extra space from the ending";
-                    } else if(!regex.test(columnValue.value)) {
-                        return "Please Enter Valid Format";
-                    }
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         }

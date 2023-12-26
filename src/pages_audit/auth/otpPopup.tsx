@@ -139,7 +139,7 @@ export const OTPModel = ({
                 // onTimerComplete={() => setbtnshow(true)}
                 renderButton={renderButton}
                 renderTime={renderTime}
-                maxTime={60}
+                maxTime={loginState?.otpValidFor ?? 60}
                 className={classes.resendOTPalign}
               />
             </div>
@@ -377,7 +377,7 @@ export const OTPModelForm = ({
                 // onTimerComplete={() => setbtnshow(true)}
                 renderButton={renderButton}
                 renderTime={renderTime}
-                maxTime={60}
+                maxTime={loginState?.otpValidFor ?? 60}
                 className={classes.resendOTPalign}
               />
             )}

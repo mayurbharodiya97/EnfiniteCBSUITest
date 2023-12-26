@@ -55,6 +55,16 @@ export const corporate_control_dtl_meta_data = {
             _fields: [
                 {
                     render: {
+                        componentType: "hidden",
+                    },
+                    name: "SR_CD",
+                    label: "Sr. No.",
+                    placeholder: "",
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
+                },
+                {
+                    render: {
                         componentType: "select",
                     },
                     name: "RELATED_PERSON_TYPE",
@@ -83,6 +93,15 @@ export const corporate_control_dtl_meta_data = {
                     // placeholder: "First Name",
                     // type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+                    maxLength: 12,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 12) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },            
                     // dependentFields: ["DAILY_AMT"],
                     postValidationSetCrossFieldValues: (
                         field,

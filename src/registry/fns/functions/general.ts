@@ -194,7 +194,7 @@ const GeneralAPISDK = () => {
               value: isValidDate(new Date()) ? new Date() : new Date(),
             },
             ACCT_CD: {
-              value: paddedAcctcode,
+              value: data?.[0]?.ACCT_CD,
               ignoreUpdate: true,
             },
           };

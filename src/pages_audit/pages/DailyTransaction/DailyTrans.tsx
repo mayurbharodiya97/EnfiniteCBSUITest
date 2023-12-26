@@ -109,7 +109,7 @@ export const DailyTrans = () => {
   ];
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log(newValue, "newValue");
+    // console.log(newValue, "newValue");
     setTabValue(newValue);
   };
   return (
@@ -137,7 +137,7 @@ export const DailyTrans = () => {
 
         {navArray.map((a, i) => (
           <TabPanel value={tabValue} index={i}>
-            {i == 0 && <AccDetails />}
+            {i == 0 && <AccDetails flag={"DLYTRN"} />}
             {i == 1 && <JointDetailsForm />}
             {i == 2 && <TodayTransactionForm />}
             {i == 3 && <CheckBook />}

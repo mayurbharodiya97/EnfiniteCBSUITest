@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const DynamicGridConfigGridMData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Dynamic Grid Configure",
+    gridLabel: "Flexible Grid Configuration",
     rowIdColumn: "DOC_CD",
     defaultColumnConfig: {
       width: 400,

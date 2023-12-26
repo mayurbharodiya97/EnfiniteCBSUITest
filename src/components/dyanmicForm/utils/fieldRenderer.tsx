@@ -74,7 +74,9 @@ const DataTable = lazy(() => import("components/common/dataTable"));
 
 const FormButton = lazy(() => import("components/common/formbutton"));
 
-const EmptyComponent: FC<{ componentType: string }> = ({ componentType }) => {
+const EmptyComponent: FC<{ componentType: string | any }> = ({
+  componentType,
+}) => {
   return <div>No Component of type: ${componentType}</div>;
 };
 

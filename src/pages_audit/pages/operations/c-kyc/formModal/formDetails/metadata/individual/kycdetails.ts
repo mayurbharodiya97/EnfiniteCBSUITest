@@ -78,6 +78,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "PanNo",
             placeholder: "AAAAA1111A",
             type: "text",
+            required: true,
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             schemaValidation: {
                 type: "string",
@@ -88,7 +89,8 @@ export const kyc_proof_of_identity_meta_data = {
                     params: ["Please enter valid Pan Number"],
                   },
                 ],
-              },
+            },
+            maxLength: 10,
         },
         {
             render: {
@@ -97,7 +99,9 @@ export const kyc_proof_of_identity_meta_data = {
             name: "UNIQUE_ID",
             label: "UIDAadhaar",
             placeholder: "1111 1111 1111",
+            required: true,
             type: "text",
+            maxLength: 12,
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             schemaValidation: {
                 type: "string",
@@ -117,6 +121,7 @@ export const kyc_proof_of_identity_meta_data = {
             name: "ELECTION_CARD_NO",
             label: "VoterId",
             placeholder: "",
+            maxLength: 20,
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -141,6 +146,7 @@ export const kyc_proof_of_identity_meta_data = {
           },
           name: "NREGA_JOB_CARD",
           label: "NREGA",
+          maxLength: 20,
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -153,7 +159,15 @@ export const kyc_proof_of_identity_meta_data = {
           label: "OtherPoI",
           placeholder: "",
           type: "text",
+          maxLength: 50,
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z]+$/;
+            if(columnValue.value && !regex.test(columnValue.value)) {
+                return "Please Enter Character Value."
+            }
+            return ""
+          }
         },
         {
           render: {
@@ -162,6 +176,7 @@ export const kyc_proof_of_identity_meta_data = {
           name: "OTHER_DOC_NO",
           label: "PoINo",
           placeholder: "",
+          maxLength: 20,
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -172,6 +187,7 @@ export const kyc_proof_of_identity_meta_data = {
           name: "GSTIN",
           label: "GSTIN",
           placeholder: "",
+          maxLength: 20,
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -194,6 +210,7 @@ export const kyc_proof_of_identity_meta_data = {
             name: "PASSPORT_NO",
             label: "No",
             placeholder: "",
+            maxLength: 20,
             type: "text",
             required: true,          
             schemaValidation: {
@@ -281,6 +298,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "No",
             placeholder: "",
             required: true,          
+            maxLength: 20,
             schemaValidation: {
                 type: "string",
                 rules: [
@@ -352,7 +370,7 @@ export const kyc_proof_of_identity_meta_data = {
 
 export const kyc_proof_of_address_meta_data = {
   form: {
-      name: "kyc_poa_details_form",
+      name: "kyc_poa_individual_details_form",
       label: "", 
       resetFieldOnUnmount: false,
       validationRun: "onBlur", 
@@ -421,7 +439,8 @@ export const kyc_proof_of_address_meta_data = {
           },
           name: "ADD1",
           label: "Line1",
-          required: true,          
+          required: true,      
+          maxLength: 50,    
           schemaValidation: {
               type: "string",
               rules: [
@@ -449,6 +468,7 @@ export const kyc_proof_of_address_meta_data = {
           name: "ADD2",
           label: "Line2",
           placeholder: "",
+          maxLength: 50,
           validate: (columnValue, allField, flag) => {
             let regex = /^[a-zA-Z0-9 ]*$/;
                 // special-character not allowed
@@ -469,6 +489,7 @@ export const kyc_proof_of_address_meta_data = {
           name: "ADD3",
           label: "Line3",
           placeholder: "",
+          maxLength: 50,
           validate: (columnValue, allField, flag) => {
             let regex = /^[a-zA-Z0-9 ]*$/;
                 // special-character not allowed
@@ -484,36 +505,49 @@ export const kyc_proof_of_address_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "numberFormat",
             },
             name: "PIN_CODE",
             label: "PIN",
             required: true,
+            dependentFields: ["PAR_AREA_CD"],
             schemaValidation: {
               type: "string",
               rules: [
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
             },
-            dependentFields: ["PAR_AREA_CD"],
-            setValueOnDependentFieldsChange: (dependentFields) => {
-                if(dependentFields?.PAR_AREA_CD?.value) {
-                    return ""
-                }
+            maxLength: 6,
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 6) {
+                    return false;
+                  }
+                  return true;
+                },
             },
+            // dependentFields: ["PAR_AREA_CD"],
+            // setValueOnDependentFieldsChange: (dependentFields) => {
+            //     console.log("wkefiduwgeufwf", dependentFields)
+            //     // if(dependentFields?.PAR_AREA_CD?.value && dependentFields?.PAR_AREA_CD?.incomingMessage)
+            //     if(dependentFields?.PAR_AREA_CD?.value) {
+            //         if(!(dependentFields?.PAR_AREA_CD?.incomingMessage?.ignoreUpdate)) {
+            //             return ""
+            //         }
+            //     }
+            // },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
         },  
       {
           render: {
-              componentType: "select",
+              componentType: "autocomplete",
           },
           options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
           _optionsKey: "parentAreaList",
           name: "PAR_AREA_CD",
           label: "ParentArea",
-          dependentFields: ["PIN_CODE"],
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -522,6 +556,9 @@ export const kyc_proof_of_address_meta_data = {
           render: {
               componentType: "select",
           },
+          runPostValidationHookAlways: false, 
+          name: "AREA_CD",
+          label: "SubArea",
           dependentFields: ["PAR_AREA_CD", "PIN_CODE"],
           disableCaching: true,
           options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentArea(dependentValue, formState, _, authState),
@@ -534,7 +571,48 @@ export const kyc_proof_of_address_meta_data = {
           ) => {
             // console.log("sdhaiuwqidquwdqwe", dependentFieldsValues)
             if(field.value) {
-                // let values = {
+                let values = {
+                    CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                    CITY_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                    // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                    DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                    DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                    STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                    COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                    STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                    COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                }
+                // console.log(dependentFieldsValues.PAR_AREA_CD.value == field?.optionData[0]?.PARENT_AREA, "dsadsaasdasdasdasd", dependentFieldsValues.PIN_CODE.value == field?.optionData[0]?.PIN_CODE)
+                console.log(`${field?.optionData[0]}, aisudhoptions,
+                ${dependentFieldsValues.PIN_CODE.value !== field?.optionData[0]?.PIN_CODE},
+                dfield -> ${dependentFieldsValues.PIN_CODE.value}, 
+                field -> ${field?.optionData[0]?.PIN_CODE}, 
+                ${dependentFieldsValues.PAR_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA},
+                dfield -> ${dependentFieldsValues.PAR_AREA_CD.value} ,
+                field ->${field?.optionData[0]?.PARENT_AREA}`)
+                if(dependentFieldsValues) {
+                    console.log("akaskjdhciuqhwdiquhwdwd", dependentFieldsValues.PIN_CODE.value, " - ",field?.optionData[0]?.PIN_CODE, dependentFieldsValues.PAR_AREA_CD.value, " - ", field?.optionData[0]?.PARENT_AREA)
+                    if(!dependentFieldsValues.PIN_CODE.value) {
+                        values["PIN_CODE"] = {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true}
+                    } else if(dependentFieldsValues.PIN_CODE.value != field?.optionData[0]?.PIN_CODE) {
+                        values["PIN_CODE"] = {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true}
+                    }
+                    if(!dependentFieldsValues.PAR_AREA_CD.value) {
+                        values["PAR_AREA_CD"] = {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true}
+                    } else if(dependentFieldsValues.PAR_AREA_CD.value != field?.optionData[0]?.PARENT_AREA) {
+                        values["PAR_AREA_CD"] = {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true}
+                    }
+                    // if(dependentFieldsValues.PIN_CODE.value !== field?.optionData[0]?.PIN_CODE) {
+                    //     values["PIN_CODE"] = field?.optionData[0]?.PIN_CODE
+                    // } else if(dependentFieldsValues.PAR_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA) {
+                    //     values["PAR_AREA_CD"] = field?.optionData[0]?.PARENT_AREA
+                    // }
+                }
+                return values;
+                // return {
+                //     // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
+                //     PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
+                //     PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
                 //     CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
                 //     // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
                 //     DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
@@ -543,34 +621,9 @@ export const kyc_proof_of_address_meta_data = {
                 //     STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
                 //     COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
                 // }
-                // // console.log(dependentFieldsValues.PAR_AREA_CD.value == field?.optionData[0]?.PARENT_AREA, "dsadsaasdasdasdasd", dependentFieldsValues.PIN_CODE.value == field?.optionData[0]?.PIN_CODE)
-                // console.log(dependentFieldsValues.PIN_CODE.value !== field?.optionData[0]?.PIN_CODE, field?.optionData[0]?.PIN_CODE, "dsadsaasdasdasdasd", dependentFieldsValues.PAR_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA, field?.optionData[0]?.PARENT_AREA)
-                // if(dependentFieldsValues) {
-                //     if(dependentFieldsValues.PIN_CODE.value !== field?.optionData[0]?.PIN_CODE) {
-                //         values["PIN_CODE"] = field?.optionData[0]?.PIN_CODE
-                //     } else if(dependentFieldsValues.PAR_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA) {
-                //         values["PAR_AREA_CD"] = field?.optionData[0]?.PARENT_AREA
-                //     }
-                // }
-                // return values;
-                return {
-                    // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
-                    PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
-                    PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
-                    CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
-                    // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                    DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
-                    STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
-                    COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
-                    STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
-                    COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
-                }
             }
             return {}
           },
-          runPostValidationHookAlways: false, 
-          name: "AREA_CD",
-          label: "SubArea",
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -579,9 +632,9 @@ export const kyc_proof_of_address_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "CITY_CD",
+          name: "CITY_ignoreField",
           label: "City",
-          required: true,
+        //   required: true,
           schemaValidation: {
             type: "string",
             rules: [
@@ -594,15 +647,28 @@ export const kyc_proof_of_address_meta_data = {
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
+        render: {
+            componentType: "hidden",        
+        },
+        name: "CITY_CD",
+      },
+      {
           render: {
               componentType: "textField",
           },
-          name: "DISTRICT",
-          label: "District",
+          name: "DISTRICT_ignoreField",
+          label: "District Name",
           isReadOnly: true,
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+      },
+      {
+        render: {
+            componentType: "hidden",
+        },
+        name: "DISTRICT_CD",
+        label: "hidden district"
       },
       {
           render: {
@@ -674,6 +740,14 @@ export const kyc_proof_of_address_meta_data = {
           name: "OTHER_POA",
           label: "OthersPoA",
           placeholder: "",
+          maxLength: 50,
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z]+$/;
+            if(columnValue.value && !regex.test(columnValue.value)) {
+                return "Please Enter Character Value."
+            }
+            return ""
+          },
           type: "text",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
@@ -693,23 +767,62 @@ export const kyc_proof_of_address_meta_data = {
         render: { componentType: "checkbox"},
         name: "SAME_AS_PER",
         label: "SameAsPermanentAddress",
-        defaultValue: true,
+        defaultValue: false,
         // dependentFields: ["ADDRESS_TYPE", "ADD1"],
-        // postValidationSetCrossFieldValues: (
-        //     field,
-        //     __,
-        //     ___,
-        //     dependentFieldsValues
-        //   ) => {
-        //       console.log(field, "fieldvalueee..", dependentFieldsValues)
-        //     if(field.value) {
-        //         return {
-        //             // // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
-        //             // LOC_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
-        //         }
-        //     }
-        //     return {}
-        //   },
+        // dependentFields: ["PIN_CODE", "PAR_AREA_CD", "AREA_CD", "CITY_CD", "DISTRICT", "STATE", "COUNTRY", "STATE_CD", "COUNTRY_CD"],
+        dependentFields: ["PIN_CODE", "PAR_AREA_CD", "AREA_CD", "CITY_ignoreField", "CITY_CD", "DISTRICT_ignoreField", "DISTRICT_CD", "STATE", "COUNTRY","STATE_CD", "COUNTRY_CD"],
+        postValidationSetCrossFieldValues: (
+            field,
+            __,
+            ___,
+            dependentFieldsValues
+          ) => {
+              console.log(field, "fieldvalueee..", dependentFieldsValues)
+            if(field.value) {
+                return {
+                    // // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
+                    // LOC_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
+                    // LOC_PIN_CODE: {value: }
+                    // LOC_AREA_CD
+                    // LOC_AREA_CD2
+                    // LOC_CITY_CD
+                    // LOC_DISTRICT_CD
+                    // LOC_STATE_CD
+                    // LOC_COUNTRY
+                    // STATE_UT_CODE
+                    // LOC_COUNTRY_CD
+
+
+
+                    LOC_PIN_CODE : {value: Number(dependentFieldsValues?.PIN_CODE?.value ?? ""), ignoreUpdate: true},
+                    LOC_AREA_CD : {value: dependentFieldsValues?.PAR_AREA_CD?.value, ignoreUpdate: true},
+                    LOC_AREA_CD2 : {value: dependentFieldsValues?.AREA_CD?.value, ignoreUpdate: true},
+                    LOC_CITY_CD_ignoreField : {value: dependentFieldsValues?.CITY_ignoreField?.value, ignoreUpdate: true},
+                    LOC_CITY_CD : {value: dependentFieldsValues?.CITY_CD?.value, ignoreUpdate: true},
+                    LOC_DISTRICT_ignoreField : {value: dependentFieldsValues?.DISTRICT_ignoreField?.value, ignoreUpdate: true},
+                    LOC_DISTRICT_CD : {value: dependentFieldsValues?.DISTRICT_CD?.value, ignoreUpdate: true},
+                    LOC_STATE : {value: dependentFieldsValues?.STATE?.value, ignoreUpdate: true},
+                    LOC_COUNTRY : {value: dependentFieldsValues?.COUNTRY?.value, ignoreUpdate: true},
+                    LOC_STATE_CD : {value: dependentFieldsValues?.STATE_CD?.value, ignoreUpdate: true},
+                    LOC_COUNTRY_CD : {value: dependentFieldsValues?.COUNTRY_CD?.value, ignoreUpdate: true},
+                }
+            } else {
+                return {
+                    LOC_PIN_CODE : {value: "", ignoreUpdate: true},
+                    LOC_AREA_CD : {value: "", ignoreUpdate: true},
+                    LOC_AREA_CD2 : {value: "", ignoreUpdate: true},
+                    LOC_CITY_CD_ignoreField : {value: "", ignoreUpdate: true},
+                    LOC_CITY_CD : {value: "", ignoreUpdate: true},
+                    LOC_DISTRICT_ignoreField : {value: "", ignoreUpdate: true},
+                    LOC_DISTRICT_CD : {value: "", ignoreUpdate: true},
+                    LOC_STATE : {value: "", ignoreUpdate: true},
+                    LOC_COUNTRY : {value: "", ignoreUpdate: true},
+                    LOC_STATE_CD : {value: "", ignoreUpdate: true},
+                    LOC_COUNTRY_CD : {value: "", ignoreUpdate: true},
+                }
+            }
+            return {}
+          },
           runPostValidationHookAlways: false,   
         GridProps: {xs:12, sm:4, md:2, lg: 2.4, xl:2},
     },
@@ -731,7 +844,8 @@ export const kyc_proof_of_address_meta_data = {
           },
           name: "LOC_ADD1",
           label: "Line1",
-          required: true,          
+          required: true,        
+          maxLength: 50,
           schemaValidation: {
             type: "string",
             rules: [
@@ -759,6 +873,7 @@ export const kyc_proof_of_address_meta_data = {
           name: "LOC_ADD2",
           label: "Line2",
           placeholder: "",
+          maxLength: 50,
           validate: (columnValue, allField, flag) => {
             let regex = /^[a-zA-Z0-9 ]*$/;
                 // special-character not allowed
@@ -779,6 +894,7 @@ export const kyc_proof_of_address_meta_data = {
           name: "LOC_ADD3",
           label: "Line3",
           placeholder: "",
+          maxLength: 50,
           validate: (columnValue, allField, flag) => {
             let regex = /^[a-zA-Z0-9 ]*$/;
                 // special-character not allowed
@@ -794,7 +910,7 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "LOC_PIN_CODE",
         label: "PIN",
@@ -802,12 +918,21 @@ export const kyc_proof_of_address_meta_data = {
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
         required: true,
-        dependentFields: ["LOC_AREA_CD"],
-        setValueOnDependentFieldsChange: (dependentFields) => {
-            if(dependentFields?.LOC_AREA_CD?.value) {
-                return ""
-            }
+        maxLength: 6,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 6) {
+                return false;
+              }
+              return true;
+            },
         },
+        // dependentFields: ["LOC_AREA_CD"],
+        // setValueOnDependentFieldsChange: (dependentFields) => {
+        //     if(dependentFields?.LOC_AREA_CD?.value) {
+        //         return ""
+        //     }
+        // },
         schemaValidation: {
           type: "string",
           rules: [
@@ -823,7 +948,7 @@ export const kyc_proof_of_address_meta_data = {
           options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
           _optionsKey: "localParentAreaList",
           label: "Parent Area",
-          dependentFields: ["LOC_PIN_CODE"],
+        //   dependentFields: ["LOC_PIN_CODE"],
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
@@ -845,20 +970,59 @@ export const kyc_proof_of_address_meta_data = {
             dependentFieldsValues
           ) => {
             if(field.value) {
-                return {
-                    // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
-                    LOC_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
-                    LOC_PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
+                let values = {
                     LOC_CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
-                    // LOC_CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                    LOC_CITY_CD_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                    // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
                     LOC_DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
-                    // LOC_DISTRICT_CD: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
-                    LOC_STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
-                    // LOC_STATE_CD: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                    LOC_DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                    LOC_STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
                     LOC_COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
-                    STATE_UT_CODE: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                    LOC_STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
                     LOC_COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
                 }
+                // console.log(dependentFieldsValues.LOC_AREA_CD.value == field?.optionData[0]?.PARENT_AREA, "dsadsaasdasdasdasd", dependentFieldsValues.LOC_PIN_CODE.value == field?.optionData[0]?.PIN_CODE)
+                // console.log(`${field?.optionData[0]}, aisudhoptions,
+                // ${dependentFieldsValues.LOC_PIN_CODE.value !== field?.optionData[0]?.PIN_CODE},
+                // dfield -> ${dependentFieldsValues.LOC_PIN_CODE.value}, 
+                // field -> ${field?.optionData[0]?.PIN_CODE}, 
+                // ${dependentFieldsValues.LOC_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA},
+                // dfield -> ${dependentFieldsValues.LOC_AREA_CD.value} ,
+                // field ->${field?.optionData[0]?.PARENT_AREA}`)
+                if(dependentFieldsValues) {
+                    console.log("akaskjdhciuqhwdiquhwdwd", dependentFieldsValues.LOC_PIN_CODE.value, " - ",field?.optionData[0]?.PIN_CODE, dependentFieldsValues.LOC_AREA_CD.value, " - ", field?.optionData[0]?.PARENT_AREA)
+                    if(!dependentFieldsValues.LOC_PIN_CODE.value) {
+                        values["LOC_PIN_CODE"] = {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true}
+                    } else if(dependentFieldsValues.LOC_PIN_CODE.value != field?.optionData[0]?.PIN_CODE) {
+                        values["LOC_PIN_CODE"] = {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true}
+                    }
+                    if(!dependentFieldsValues.LOC_AREA_CD.value) {
+                        values["LOC_AREA_CD"] = {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true}
+                    } else if(dependentFieldsValues.LOC_AREA_CD.value != field?.optionData[0]?.PARENT_AREA) {
+                        values["LOC_AREA_CD"] = {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true}
+                    }
+                    // if(dependentFieldsValues.LOC_PIN_CODE.value !== field?.optionData[0]?.PIN_CODE) {
+                    //     values["LOC_PIN_CODE"] = field?.optionData[0]?.PIN_CODE
+                    // } else if(dependentFieldsValues.LOC_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA) {
+                    //     values["LOC_AREA_CD"] = field?.optionData[0]?.PARENT_AREA
+                    // }
+                }
+                return values;
+
+                // return {
+                //     // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
+                //     LOC_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
+                //     LOC_PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
+                //     LOC_CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                //     // LOC_CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                //     LOC_DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                //     // LOC_DISTRICT_CD: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                //     LOC_STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                //     // LOC_STATE_CD: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                //     LOC_COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                //     STATE_UT_CODE: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                //     LOC_COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                // }
             }
             return {}
           },
@@ -872,7 +1036,7 @@ export const kyc_proof_of_address_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "LOC_CITY_CD",
+          name: "LOC_CITY_CD_ignoreField",
           label: "City",
         //   required: true,
           isReadOnly: true,
@@ -882,9 +1046,15 @@ export const kyc_proof_of_address_meta_data = {
       },
       {
           render: {
+              componentType: "hidden",
+          },
+          name: "LOC_CITY_CD",
+      },
+      {
+          render: {
               componentType: "textField",
           },
-          name: "LOC_DISTRICT_CD",
+          name: "LOC_DISTRICT_ignoreField",
           label: "District",
           placeholder: "",
           isReadOnly: true,
@@ -892,10 +1062,18 @@ export const kyc_proof_of_address_meta_data = {
           GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
+        render: {
+          componentType: "hidden",
+        },
+        name: "LOC_DISTRICT_CD",
+        label: "hidden district"
+      },
+
+      {
           render: {
               componentType: "textField",
           },
-          name: "LOC_STATE_CD",
+          name: "LOC_STATE",
           label: "State",
           placeholder: "",
           isReadOnly: true,
@@ -917,7 +1095,7 @@ export const kyc_proof_of_address_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "STATE_UT_CODE",
+          name: "LOC_STATE_CD",
           label: "UnionTerritoriesCode",
           placeholder: "",
           isReadOnly: true,
@@ -1152,8 +1330,16 @@ export const kyc_proof_of_address_meta_data = {
             { name: "required", params: ["ThisFieldisrequired"] },
             ],
         },
+        maxLength: 60,
+        validate: (columnValue, allField, flag) => {
+            let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+                return "Please Enter Valid Email ID."
+            }
+            return "";
+        },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:3},
+        GridProps: {xs:12, sm:4, md: 4, lg: 2.4, xl:3},
     },
 
 
@@ -1281,7 +1467,18 @@ export const kyc_legal_proof_of_add_meta_data = {
               ],
           },
           placeholder: "",
+          maxLength: 50,
           type: "text",
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
@@ -1291,7 +1488,18 @@ export const kyc_legal_proof_of_add_meta_data = {
           name: "ADD2",
           label: "Line2",
           placeholder: "",
+          maxLength: 50,
           type: "text",
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
@@ -1301,12 +1509,23 @@ export const kyc_legal_proof_of_add_meta_data = {
           name: "ADD3",
           label: "Line3",
           placeholder: "",
+          maxLength: 50,
           type: "text",
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "numberFormat",
             },
             name: "PIN_CODE",
             label: "PIN",
@@ -1317,12 +1536,21 @@ export const kyc_legal_proof_of_add_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
             },
-            dependentFields: ["PAR_AREA_CD"],
-            setValueOnDependentFieldsChange: (dependentFields) => {
-                if(dependentFields?.PAR_AREA_CD?.value) {
-                    return ""
-                }
-            },
+            maxLength: 6,
+            FormatProps: {
+                isAllowed: (values) => {
+                  if (values?.value?.length > 6) {
+                    return false;
+                  }
+                  return true;
+                },
+            },    
+            // dependentFields: ["PAR_AREA_CD"],
+            // setValueOnDependentFieldsChange: (dependentFields) => {
+            //     if(dependentFields?.PAR_AREA_CD?.value) {
+            //         return ""
+            //     }
+            // },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -1335,7 +1563,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           _optionsKey: "parentAreaList",
           name: "PAR_AREA_CD",
           label: "ParentArea",
-          dependentFields: ["PIN_CODE"],
+        //   dependentFields: ["PIN_CODE"],
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -1355,18 +1583,58 @@ export const kyc_legal_proof_of_add_meta_data = {
             dependentFieldsValues
           ) => {
             if(field.value) {
-                return {
-                    // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
-                    PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
-                    PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
+                let values = {
                     CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                    CITY_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
                     // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                    DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                    DISTRICT: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                    DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                    DISTRICT_NM: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : ""},
                     STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
                     COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
                     STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
                     COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
                 }
+                // console.log(dependentFieldsValues.PAR_AREA_CD.value == field?.optionData[0]?.PARENT_AREA, "dsadsaasdasdasdasd", dependentFieldsValues.PIN_CODE.value == field?.optionData[0]?.PIN_CODE)
+                console.log(`${field?.optionData[0]}, aisudhoptions,
+                ${dependentFieldsValues.PIN_CODE.value !== field?.optionData[0]?.PIN_CODE},
+                dfield -> ${dependentFieldsValues.PIN_CODE.value}, 
+                field -> ${field?.optionData[0]?.PIN_CODE}, 
+                ${dependentFieldsValues.PAR_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA},
+                dfield -> ${dependentFieldsValues.PAR_AREA_CD.value} ,
+                field ->${field?.optionData[0]?.PARENT_AREA}`)
+                if(dependentFieldsValues) {
+                    console.log("akaskjdhciuqhwdiquhwdwd", dependentFieldsValues.PIN_CODE.value, " - ",field?.optionData[0]?.PIN_CODE, dependentFieldsValues.PAR_AREA_CD.value, " - ", field?.optionData[0]?.PARENT_AREA)
+                    if(!dependentFieldsValues.PIN_CODE.value) {
+                        values["PIN_CODE"] = {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true}
+                    } else if(dependentFieldsValues.PIN_CODE.value != field?.optionData[0]?.PIN_CODE) {
+                        values["PIN_CODE"] = {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true}
+                    }
+                    if(!dependentFieldsValues.PAR_AREA_CD.value) {
+                        values["PAR_AREA_CD"] = {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true}
+                    } else if(dependentFieldsValues.PAR_AREA_CD.value != field?.optionData[0]?.PARENT_AREA) {
+                        values["PAR_AREA_CD"] = {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true}
+                    }
+                    // if(dependentFieldsValues.PIN_CODE.value !== field?.optionData[0]?.PIN_CODE) {
+                    //     values["PIN_CODE"] = field?.optionData[0]?.PIN_CODE
+                    // } else if(dependentFieldsValues.PAR_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA) {
+                    //     values["PAR_AREA_CD"] = field?.optionData[0]?.PARENT_AREA
+                    // }
+                }
+                return values;
+
+                // return {
+                //     // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
+                //     PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
+                //     PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
+                //     CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                //     // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                //     DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                //     STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                //     COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                //     STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                //     COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                // }
             }
             return {}
           },
@@ -1381,7 +1649,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "CITY_CD",
+          name: "CITY_ignoreField",
           label: "City",
           required: true,
           schemaValidation: {
@@ -1397,15 +1665,29 @@ export const kyc_legal_proof_of_add_meta_data = {
       },
       {
           render: {
+              componentType: "hidden",
+          },
+          name: "CITY_CD",
+      },
+      {
+          render: {
               componentType: "textField",
           },
-          name: "DISTRICT",
+          name: "DISTRICT_ignoreField",
           label: "District",
           isReadOnly: true,
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
+      {
+          render: {
+            componentType: "hidden",
+          },
+          name: "DISTRICT_CD",
+          label: "hidden district"
+      },
+
       {
           render: {
               componentType: "textField",
@@ -1475,6 +1757,14 @@ export const kyc_legal_proof_of_add_meta_data = {
           },
           name: "OTHER_POA",
           label: "OthersPoA",
+          maxLength: 50,
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z]+$/;
+            if(columnValue.value && !regex.test(columnValue.value)) {
+                return "Please Enter Character Value."
+            }
+            return ""
+          },
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -1495,7 +1785,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         render: { componentType: "checkbox"},
         name: "SAME_AS_PER",
         label: "SameAsPermanentAddress",
-        defaultValue: true,
+        defaultValue: false,
         postValidationSetCrossFieldValues: (
             field,
             __,
@@ -1539,6 +1829,17 @@ export const kyc_legal_proof_of_add_meta_data = {
               { name: "required", params: ["ThisFieldisrequired"] },
             ],
           },         
+          maxLength: 50,
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
@@ -1551,6 +1852,17 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "Line2",
           placeholder: "",
           type: "text",
+          maxLength: 50,
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
@@ -1561,11 +1873,22 @@ export const kyc_legal_proof_of_add_meta_data = {
           label: "Line3",
           placeholder: "",
           type: "text",
+          maxLength: 50,
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           GridProps: {xs:12, sm:5, md: 4, lg: 4.8, xl: 4},
       },
       {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "LOC_PIN_CODE",
         label: "PIN",
@@ -1573,12 +1896,21 @@ export const kyc_legal_proof_of_add_meta_data = {
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
         required: true,
-        dependentFields: ["LOC_AREA_CD"],
-        setValueOnDependentFieldsChange: (dependentFields) => {
-            if(dependentFields?.LOC_AREA_CD?.value) {
-                return ""
-            }
+        maxLength: 6,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 6) {
+                return false;
+              }
+              return true;
+            },
         },
+        // dependentFields: ["LOC_AREA_CD"],
+        // setValueOnDependentFieldsChange: (dependentFields) => {
+        //     if(dependentFields?.LOC_AREA_CD?.value) {
+        //         return ""
+        //     }
+        // },
         schemaValidation: {
           type: "string",
           rules: [
@@ -1594,7 +1926,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),          
           _optionsKey: "localParentAreaList",
           label: "Parent Area",
-          dependentFields: ["LOC_PIN_CODE"],
+        //   dependentFields: ["LOC_PIN_CODE"],
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
@@ -1616,20 +1948,58 @@ export const kyc_legal_proof_of_add_meta_data = {
             dependentFieldsValues
           ) => {
             if(field.value) {
-                return {
-                    // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
-                    LOC_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
-                    LOC_PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
+                let values = {
                     LOC_CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
-                    // LOC_CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                    // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
                     LOC_DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
-                    // LOC_DISTRICT_CD: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
-                    LOC_STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
-                    // LOC_STATE_CD: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                    LOC_DISTRICT_NM: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : ""},
+                    LOC_STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
                     LOC_COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
-                    STATE_UT_CODE: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                    LOC_STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
                     LOC_COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
                 }
+                // console.log(dependentFieldsValues.LOC_AREA_CD.value == field?.optionData[0]?.PARENT_AREA, "dsadsaasdasdasdasd", dependentFieldsValues.LOC_PIN_CODE.value == field?.optionData[0]?.PIN_CODE)
+                // console.log(`${field?.optionData[0]}, aisudhoptions,
+                // ${dependentFieldsValues.LOC_PIN_CODE.value !== field?.optionData[0]?.PIN_CODE},
+                // dfield -> ${dependentFieldsValues.LOC_PIN_CODE.value}, 
+                // field -> ${field?.optionData[0]?.PIN_CODE}, 
+                // ${dependentFieldsValues.LOC_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA},
+                // dfield -> ${dependentFieldsValues.LOC_AREA_CD.value} ,
+                // field ->${field?.optionData[0]?.PARENT_AREA}`)
+                if(dependentFieldsValues) {
+                    console.log("akaskjdhciuqhwdiquhwdwd", dependentFieldsValues.LOC_PIN_CODE.value, " - ",field?.optionData[0]?.PIN_CODE, dependentFieldsValues.LOC_AREA_CD.value, " - ", field?.optionData[0]?.PARENT_AREA)
+                    if(!dependentFieldsValues.LOC_PIN_CODE.value) {
+                        values["LOC_PIN_CODE"] = {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true}
+                    } else if(dependentFieldsValues.LOC_PIN_CODE.value != field?.optionData[0]?.PIN_CODE) {
+                        values["LOC_PIN_CODE"] = {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true}
+                    }
+                    if(!dependentFieldsValues.LOC_AREA_CD.value) {
+                        values["LOC_AREA_CD"] = {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true}
+                    } else if(dependentFieldsValues.LOC_AREA_CD.value != field?.optionData[0]?.PARENT_AREA) {
+                        values["LOC_AREA_CD"] = {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true}
+                    }
+                    // if(dependentFieldsValues.LOC_PIN_CODE.value !== field?.optionData[0]?.PIN_CODE) {
+                    //     values["LOC_PIN_CODE"] = field?.optionData[0]?.PIN_CODE
+                    // } else if(dependentFieldsValues.LOC_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA) {
+                    //     values["LOC_AREA_CD"] = field?.optionData[0]?.PARENT_AREA
+                    // }
+                }
+                return values;
+
+                // return {
+                //     // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
+                //     LOC_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
+                //     LOC_PIN_CODE: {value: field?.optionData[0]?.PIN_CODE, ignoreUpdate: true},
+                //     LOC_CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                //     // LOC_CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                //     LOC_DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                //     // LOC_DISTRICT_CD: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                //     LOC_STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                //     // LOC_STATE_CD: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                //     LOC_COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                //     STATE_UT_CODE: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                //     LOC_COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                // }
             }
             return {}
           },
@@ -1655,7 +2025,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "LOC_DISTRICT_CD",
+          name: "LOC_DISTRICT_NM",
           label: "District",
           placeholder: "",
           isReadOnly: true,
@@ -1663,10 +2033,18 @@ export const kyc_legal_proof_of_add_meta_data = {
           GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
       },
       {
+        render: {
+          componentType: "hidden",
+        },
+        name: "LOC_DISTRICT_CD",
+        label: "hidden district"
+      },
+
+      {
           render: {
               componentType: "textField",
           },
-          name: "LOC_STATE_CD",
+          name: "LOC_STATE",
           label: "State",
           placeholder: "",
           isReadOnly: true,
@@ -1688,7 +2066,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           render: {
               componentType: "textField",
           },
-          name: "STATE_UT_CODE",
+          name: "LOC_STATE_CD",
           label: "UnionTerritoriesCode",
           placeholder: "",
           isReadOnly: true,
@@ -1733,83 +2111,179 @@ export const kyc_legal_proof_of_add_meta_data = {
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "STD_1",
-        label: "",
-        placeholder: "",
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
-    },
-      {
-        render: {
-            componentType: "textField",
-        },
-        name: "CONTACT1",
         label: "PhoneO",
         placeholder: "",
         type: "text",
+        maxLength: 5,
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 5) {
+                return false;
+              }
+              return true;
+            },
+        },
+    },
+      {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "CONTACT1",
+        label: "",
+        placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
+        type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "spacer"
+        },
+        GridProps: {
+            xs: 0.2
+        }
+    },
+    {
+        render: {
+            componentType: "numberFormat",
         },
         name: "STD_2",
-        label: "",
+        label: "PhoneR",
         placeholder: "",
+        maxLength: 5,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 5) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "CONTACT2",
-        label: "PhoneR",
+        label: "",
         placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "spacer"
         },
-        name: "STD_3",
-        label: "",
-        required: true,
-        placeholder: "",
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+        GridProps: {
+            xs: 0.2
+        }
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
-        name: "CONTACT3",
+        name: "STD_3",
         label: "MobileNo",
         required: true,
         placeholder: "",
+        maxLength: 3,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 3) {
+                return false;
+              }
+              return true;
+            },
+        },
+        type: "text",
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+    },
+    {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "CONTACT3",
+        label: "",
+        required: true,
+        placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "spacer"
         },
-        name: "STD_4",
-        label: "",
-        placeholder: "",
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+        GridProps: {
+            xs: 0.2
+        }
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
-        name: "CONTACT4",
+        name: "STD_4",
         label: "Fax",
         placeholder: "",
+        maxLength: 5,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 5) {
+                return false;
+              }
+              return true;
+            },
+        },
+        type: "text",
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+    },
+    {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "CONTACT4",
+        label: "",
+        placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
@@ -1827,6 +2301,14 @@ export const kyc_legal_proof_of_add_meta_data = {
             { name: "required", params: ["ThisFieldisrequired"] },
             ],
         },
+        maxLength: 60,
+        validate: (columnValue, allField, flag) => {
+            let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+                return "Please Enter Valid Email ID."
+            }
+            return "";
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:3},
     },
@@ -1842,6 +2324,14 @@ export const kyc_legal_proof_of_add_meta_data = {
             rules: [
             { name: "required", params: ["ThisFieldisrequired"] },
             ],
+        },
+        maxLength: 60,
+        validate: (columnValue, allField, flag) => {
+            let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+                return "Please Enter Valid Email ID."
+            }
+            return "";
         },
         placeholder: "",
         type: "text",
