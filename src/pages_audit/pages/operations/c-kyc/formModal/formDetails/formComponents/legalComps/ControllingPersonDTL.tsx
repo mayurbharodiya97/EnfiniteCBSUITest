@@ -12,7 +12,7 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation } from 'react-query';
 import { personal_individual_detail_metadata } from '../../metadata/individual/personaldetails';
 
-const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
@@ -47,7 +47,7 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
                 COMP_CD: authState?.companyID ?? "",
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
-                REQ_CD: state?.req_cd_ctx,
+                // REQ_CD: state?.req_cd_ctx,
                 // SR_CD: "3",
                 CONFIRMED: "N",
                 ENT_COMP_CD: authState?.companyID ?? "",
@@ -132,6 +132,7 @@ const myGridRef = useRef<any>(null);
                             initialValues={initialVal}
                             key={"controlling-person-form-kyc"+ initialVal}
                             metaData={corporate_control_dtl_meta_data as MetaDataType}
+                            displayMode={displayMode}
                             formStyle={{}}
                             hideHeader={true}
                             onFormButtonClickHandel={(fieldID, dependentFields) => {

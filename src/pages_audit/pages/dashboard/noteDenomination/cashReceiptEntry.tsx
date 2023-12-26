@@ -675,7 +675,7 @@ const CashReceiptEntry = () => {
           />
         ) : null}
 
-        <DualPartTable />
+        {/* <DualPartTable /> */}
         {viewTRN ? (
           <Dialog open={viewTRN}>
             <GridWrapper

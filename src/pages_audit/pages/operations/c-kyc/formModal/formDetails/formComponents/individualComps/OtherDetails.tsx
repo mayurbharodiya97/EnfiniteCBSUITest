@@ -7,17 +7,19 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { CkycContext } from '../../../../CkycContext';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from "pages_audit/auth";
+import _ from 'lodash';
 
 
-const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
     const { authState } = useContext(AuthContext);
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
     const { t } = useTranslation();
     const OtherDTLFormRef = useRef<any>("")
     const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(true)
+    const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
     const handleOtherDetailsExpand = () => {
         setIsOtherDetailsExpanded(!isOtherDetailsExpanded)
     }
@@ -32,8 +34,13 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
     ) => {
         setIsNextLoading(true)
         if(data && !hasError) {
+            let formFields = Object.keys(data) // array, get all form-fields-name 
+            formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+            formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+            const formData = _.pick(data, formFieldsRef.current)      
+
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-            let resData = data;
+            let resData = formData;
             if(Boolean(resData["POLITICALLY_CONNECTED"])) {
                 resData["POLITICALLY_CONNECTED"] = "Y"
             } else {
@@ -58,13 +65,22 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                 COMP_CD: authState?.companyID ?? "",
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
-                REQ_CD: state?.req_cd_ctx,
+                // REQ_CD: state?.req_cd_ctx,
                 // SR_CD: "3",
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
             }
             newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...resData, ...commonData}
             handleFormDataonSavectx(newData)
+            if(!state?.isFreshEntryctx) {
+                let tabModifiedCols:any = state?.modifiedFormCols
+                let updatedCols = tabModifiedCols.OTHER_DTL ? _.uniq([...tabModifiedCols.OTHER_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+                tabModifiedCols = {
+                    ...tabModifiedCols,
+                    OTHER_DTL: [...updatedCols]
+                }
+                handleModifiedColsctx(tabModifiedCols)
+            }
             // handleColTabChangectx(5)
             handleColTabChangectx(state?.colTabValuectx+1)
             handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
@@ -113,6 +129,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                         onSubmitHandler={OtherDTLSubmitHandler}
                         key={"other-details-form-kyc"+initialVal}
                         metaData={other_details_meta_data as MetaDataType}
+                        displayMode={displayMode}
                         // initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
                         initialValues={initialVal}
                         formStyle={{}}

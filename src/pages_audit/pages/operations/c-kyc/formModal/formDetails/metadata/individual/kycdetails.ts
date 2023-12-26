@@ -184,7 +184,7 @@ export const kyc_proof_of_identity_meta_data = {
                 sequence: 1,
             },
             dividerText: "PassportDetails",
-            name: "passportDivider",
+            name: "passportDivider_ignoreField",
             label: "passportDivider"
         },
         {
@@ -270,7 +270,7 @@ export const kyc_proof_of_identity_meta_data = {
                 sequence: 1,
             },
             dividerText: "DrivingLicenseDetails",
-            name: "drivingLicenseDivider",
+            name: "drivingLicenseDivider_ignoreField",
             label: "drivingLicenseDivider"
         },
         {
@@ -399,7 +399,7 @@ export const kyc_proof_of_address_meta_data = {
                 sequence: 1,
             },
             dividerText: "CurrentAddress",
-            name: "currentAddDivider",
+            name: "currentAddDivider_ignoreField",
             label: "currentAddDivider"
         },
       {
@@ -428,6 +428,16 @@ export const kyc_proof_of_address_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
           },
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
@@ -439,6 +449,16 @@ export const kyc_proof_of_address_meta_data = {
           name: "ADD2",
           label: "Line2",
           placeholder: "",
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           type: "text",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
@@ -449,6 +469,16 @@ export const kyc_proof_of_address_meta_data = {
           name: "ADD3",
           label: "Line3",
           placeholder: "",
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           type: "text",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
@@ -502,7 +532,27 @@ export const kyc_proof_of_address_meta_data = {
             ___,
             dependentFieldsValues
           ) => {
+            // console.log("sdhaiuwqidquwdqwe", dependentFieldsValues)
             if(field.value) {
+                // let values = {
+                //     CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                //     // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                //     DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                //     STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                //     COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                //     STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                //     COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                // }
+                // // console.log(dependentFieldsValues.PAR_AREA_CD.value == field?.optionData[0]?.PARENT_AREA, "dsadsaasdasdasdasd", dependentFieldsValues.PIN_CODE.value == field?.optionData[0]?.PIN_CODE)
+                // console.log(dependentFieldsValues.PIN_CODE.value !== field?.optionData[0]?.PIN_CODE, field?.optionData[0]?.PIN_CODE, "dsadsaasdasdasdasd", dependentFieldsValues.PAR_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA, field?.optionData[0]?.PARENT_AREA)
+                // if(dependentFieldsValues) {
+                //     if(dependentFieldsValues.PIN_CODE.value !== field?.optionData[0]?.PIN_CODE) {
+                //         values["PIN_CODE"] = field?.optionData[0]?.PIN_CODE
+                //     } else if(dependentFieldsValues.PAR_AREA_CD.value !== field?.optionData[0]?.PARENT_AREA) {
+                //         values["PAR_AREA_CD"] = field?.optionData[0]?.PARENT_AREA
+                //     }
+                // }
+                // return values;
                 return {
                     // PIN_CODE: {value: (dependentFieldsValues?.PIN_CODE?.value && dependentFieldsValues?.PIN_CODE?.value?.length>5) ? dependentFieldsValues?.PIN_CODE?.value :  field?.optionData[0]?.PIN_CODE ?? ""},
                     PAR_AREA_CD: {value: field?.optionData[0]?.PARENT_AREA, ignoreUpdate: true},
@@ -636,7 +686,7 @@ export const kyc_proof_of_address_meta_data = {
             sequence: 1,
         },
         dividerText: "CorrespondenceAddress",
-        name: "localAddDivider",
+        name: "localAddDivider_ignoreField",
         label: "localAddDivider"
     },
     {
@@ -688,6 +738,16 @@ export const kyc_proof_of_address_meta_data = {
               { name: "required", params: ["ThisFieldisrequired"] },
             ],
           },         
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
@@ -699,6 +759,16 @@ export const kyc_proof_of_address_meta_data = {
           name: "LOC_ADD2",
           label: "Line2",
           placeholder: "",
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           type: "text",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
@@ -709,6 +779,16 @@ export const kyc_proof_of_address_meta_data = {
           name: "LOC_ADD3",
           label: "Line3",
           placeholder: "",
+          validate: (columnValue, allField, flag) => {
+            let regex = /^[a-zA-Z0-9 ]*$/;
+                // special-character not allowed
+            if(columnValue.value) {
+                if(!regex.test(columnValue.value)) {
+                    return "Please Enter Valid Format";
+                }
+            }
+            return "";
+          },
           type: "text",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
@@ -877,26 +957,44 @@ export const kyc_proof_of_address_meta_data = {
             sequence: 1,
         },
         dividerText: "Contact",
-        name: "contactDivider",
+        name: "contactDivider_ignoreField",
         label: "contactDivider"
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "STD_1",
         label: "PhoneO",
         placeholder: "",
         type: "text",
+        maxLength: 5,
         GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 5) {
+                return false;
+              }
+              return true;
+            },
+        },
     },
       {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "CONTACT1",
         label: "",
         placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
@@ -910,21 +1008,39 @@ export const kyc_proof_of_address_meta_data = {
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "STD_2",
         label: "PhoneR",
         placeholder: "",
+        maxLength: 5,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 5) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "CONTACT2",
         label: "",
         placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
@@ -938,23 +1054,41 @@ export const kyc_proof_of_address_meta_data = {
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "STD_3",
         label: "MobileNo",
         required: true,
         placeholder: "",
+        maxLength: 3,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 3) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "CONTACT3",
         label: "",
         required: true,
         placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
@@ -968,21 +1102,39 @@ export const kyc_proof_of_address_meta_data = {
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "STD_4",
         label: "Fax",
         placeholder: "",
+        maxLength: 5,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 5) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
     },
     {
         render: {
-            componentType: "textField",
+            componentType: "numberFormat",
         },
         name: "CONTACT4",
         label: "",
         placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
@@ -1099,7 +1251,7 @@ export const kyc_legal_proof_of_add_meta_data = {
                 sequence: 1,
             },
             dividerText: "CurrentAddress",
-            name: "currentAddDivider",
+            name: "currentAddDivider_ignoreField",
             label: "currentAddDivider"
         },
       {
@@ -1336,7 +1488,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             sequence: 1,
         },
         dividerText: "CorrespondenceAddress",
-        name: "localAddDivider",
+        name: "localAddDivider_ignoreField",
         label: "localAddDivider"
     },
     {
@@ -1576,7 +1728,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             sequence: 1,
         },
         dividerText: "Contact",
-        name: "contactDivider",
+        name: "contactDivider_ignoreField",
         label: "contactDivider"
     },
     {

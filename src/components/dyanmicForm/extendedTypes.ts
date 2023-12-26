@@ -401,6 +401,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowLeadingZeros: false,
       decimalScale: 2,
       fixedDecimalScale: true,
+      autoComplete: "off",
       isAllowed: (values) => {
         if (values?.value?.length > 14) {
           return false;

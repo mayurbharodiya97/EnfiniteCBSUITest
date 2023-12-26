@@ -239,6 +239,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETPENDINGCUSTLIST",
     packageName: "",
   },
+  CONFIRMCUSTOMERDATA: {
+    url: "/customerServiceAPI/CONFIRMCUSTOMERDATA",
+    packageName: "",
+  },
   DOCTEMPLATEDTL: {
     url: "/customerServiceAPI/DOCTEMPLATEDTL",
     packageName: "",
@@ -582,6 +586,26 @@ export const ActionWiseAPIConfiguration = {
   },
   GETJOINTDETILSLIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
+    packageName: "",
+  },
+  GETBUSINESSDATE: {
+    url: "/chequeServiceAPI/GETBUSINESSDATE",
+    packageName: "",
+  },
+  GETSLIPNO: {
+    url: "/chequeServiceAPI/GETSLIPNO",
+    packageName: "",
+  },
+  GETACCOUNTNM: {
+    url: "/chequeServiceAPI/GETACCOUNTNM",
+    packageName: "",
+  },
+  DOBANKDETAIL: {
+    url: "/chequeServiceAPI/DOBANKDETAIL",
+    packageName: "",
+  },
+  DOOWCLEARINGDML: {
+    url: "/chequeServiceAPI/DOOWCLEARINGDML",
     packageName: "",
   },
   GETLIMITSECUMSTPARENT: {

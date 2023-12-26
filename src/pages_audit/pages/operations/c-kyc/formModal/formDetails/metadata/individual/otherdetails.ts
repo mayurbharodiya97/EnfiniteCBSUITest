@@ -47,7 +47,7 @@ export const other_details_meta_data = {
               componentType: "Divider",
           },
           dividerText: "AnnualIncome",
-          name: "AnnualIncomeDivider",
+          name: "AnnualIncomeDivider_ignoreField",
           label: "AnnualIncomeDivider",
       },
       {
@@ -123,7 +123,7 @@ export const other_details_meta_data = {
                 componentType: "Divider",
             },
             dividerText: "ExposureInfo",
-            name: "ExposureInfoDivider",
+            name: "ExposureInfoDivider_ignoreField",
             label: "ExposureInfoDivider",
         },
         {
@@ -167,7 +167,7 @@ export const other_details_meta_data = {
                 componentType: "Divider",
             },
             dividerText: "PersonalInfo",
-            name: "PersonalInfoDivider",
+            name: "PersonalInfoDivider_ignoreField",
             label: "PersonalInfoDivider",
         },
         {
@@ -252,7 +252,7 @@ export const other_details_meta_data = {
                 componentType: "Divider",
             },
             dividerText: "VehicleInfo",
-            name: "VehicleInfoDivider",
+            name: "VehicleInfoDivider_ignoreField",
             label: "VehicleInfoDivider",
         },
         {
@@ -318,7 +318,7 @@ export const other_details_meta_data = {
                 componentType: "Divider",
             },
             dividerText: "Employment Info.",
-            name: "EmpInfoDivider",
+            name: "EmpInfoDivider_ignoreField",
             label: "EmpInfoDivider",
         },
         {

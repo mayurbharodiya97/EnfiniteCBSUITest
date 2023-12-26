@@ -54,6 +54,7 @@ export const ClearingBankMaster: FC<{
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { getEntries } = useContext(ClearCacheContext);
+
   // const {
   //   data: PropsData,
   //   isLoading,
@@ -65,46 +66,45 @@ export const ClearingBankMaster: FC<{
   //   ["getFormFieldPropsData", { ...reqDataRef.current }],
   //   () => API.getFormFieldPropsData({ ...reqDataRef.current })
   // );
+  const mutation = useMutation(API.clearingBankMasterConfigDML, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      if (isErrorFuncRef.current == null) {
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      } else {
+        isErrorFuncRef.current?.endSubmit(
+          false,
+          errorMsg,
+          error?.error_detail ?? ""
+        );
+      }
+      onActionCancel();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
 
-  // const mutation = useMutation(API.dynamiPropsConfigDML, {
-  //   onError: (error: any, { endSubmit }) => {
-  //     let errorMsg = "Unknown Error occured";
-  //     if (typeof error === "object") {
-  //       errorMsg = error?.error_msg ?? errorMsg;
-  //     }
-  //     endSubmit(false, errorMsg, error?.error_detail ?? "");
-  //     enqueueSnackbar(errorMsg, { variant: "error" });
-  //     onActionCancel();
-  //   },
-  //   onSuccess: (data) => {
-  //     enqueueSnackbar(data, {
-  //       variant: "success",
-  //     });
-
-  //     onClose();
-  //   },
-  // });
+      onClose();
+    },
+  });
 
   useEffect(() => {
     return () => {
-      let entries = getEntries() || [];
-      entries.forEach((one) => {
-        queryClient.removeQueries(one);
-      });
-      queryClient.removeQueries(["getFormFieldPropsData"]);
+      queryClient.removeQueries(["clearingBankMasterConfigDML"]);
     };
-  }, [getEntries]);
-  // useEffect(() => {
-  //   return () => {
-  //     queryClient.removeQueries(["getGridFieldComponentData"]);
-  //   };
-  // }, []);
+  }, []);
 
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
   const onPopupYes = (rows) => {
-    // mutation.mutate(rows);
+    mutation.mutate({ data: rows });
   };
   const onSubmitHandler: SubmitFnType = (
     data: any,
@@ -115,21 +115,21 @@ export const ClearingBankMaster: FC<{
   ) => {
     // @ts-ignore
     endSubmit(true);
+    data["EXCLUDE"] = Boolean(data["EXCLUDE"]) ? "Y" : "N";
+    data["CTS"] = Boolean(data["CTS"]) ? "Y" : "N";
 
-    const updatedData: any = {
-      COMP_CD: authState.companyID,
-      BRANCH_CD: authState.user.branchCode,
-      DETAILS_DATA: [],
-    };
-
-    setIsOpenSave(true);
     isErrorFuncRef.current = {
-      data: updatedData,
+      data: {
+        ...data,
+        _isNewRow: true,
+        COMP_CD: authState.companyID,
+        BRANCH_CD: authState.user.branchCode,
+      },
       displayData,
       endSubmit,
       setFieldError,
     };
-    console.log("isErrorFuncRef.current", isErrorFuncRef.current);
+    setIsOpenSave(true);
   };
 
   return (
@@ -150,7 +150,7 @@ export const ClearingBankMaster: FC<{
         key="actionsFormDialog"
       >
         <FormWrapper
-          key={"PropsComponentFormMetaData"}
+          key={"ClearingBankMasterFormMetadata"}
           metaData={ClearingBankMasterFormMetadata as MetaDataType}
           // displayMode={formMode}
           onSubmitHandler={onSubmitHandler}
@@ -191,7 +191,7 @@ export const ClearingBankMaster: FC<{
             onActionNo={() => onActionCancel()}
             rows={isErrorFuncRef.current?.data}
             open={isOpenSave}
-            // loading={mutation.isLoading}
+            loading={mutation.isLoading}
           />
         ) : null}
       </Dialog>

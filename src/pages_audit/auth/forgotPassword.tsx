@@ -316,7 +316,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
         loginState?.requestCd,
         loginState?.username,
         OTPNumber,
-        loginState?.authType,
+        loginState?.auth_type,
         screenFlag
       );
       console.log("loginState?.authType", loginState);

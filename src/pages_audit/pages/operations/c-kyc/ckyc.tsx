@@ -37,7 +37,7 @@ import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next";
 import { CkycContext } from "./CkycContext";
 import { ActionTypes } from "components/dataTable";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Dependencies from "pages_audit/acct_Inquiry/dependencies";
 import { DeactivateCustomer } from "./DeactivateCustomer";
 import InsuranceComp from "./InsuranceComp";
@@ -264,6 +264,7 @@ export const Ckyc = () => {
     handleFormDataonRetrievectx,
     handlecustomerIDctx,
   } = useContext(CkycContext);
+  const location: any = useLocation();
   const [inputSearchValue, setInputSearchValue] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
@@ -327,9 +328,13 @@ export const Ckyc = () => {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
       ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      // ENTERED_DATE: "25-10-2023"
+      // ENTERED_DATE: "06-12-2023"
     })
   )
+
+  useEffect(() => {
+    PendingRefetch()
+  }, [location])
 
   // useEffect(() => {
   //   if(PendingData && !isPendingDataLoading) {
@@ -408,8 +413,49 @@ export const Ckyc = () => {
   }, [state?.entityTypectx]);
 
   // useEffect(() => {
-  //   console.log("wadqwdwq.", state?.colTabValuectx, state?.formDatactx)
-  // }, [state?.colTabValuectx, state?.formDatactx])
+  //   console.log("wadqwdwq.", state?.colTabValuectx, state?.formDatactx, state?.steps)
+  // }, [state?.colTabValuectx, state?.formDatactx, state?.steps])
+  // useEffect(() => {
+  //   console.log("wadqwdwq.", state?.formDatactx, state?.modifiedFormCols)
+  // }, [state?.formDatactx, state?.modifiedFormCols])
+  // useEffect(() => {
+  //   console.log("wadqwdwq..", state?.photoBase64ctx, state?.signBase64ctx)
+  // }, [state?.photoBase64ctx, state?.signBase64ctx])
+  // useEffect(() => {
+  //   console.log("state?.tabsApiResctxstate?.tabsApiResctx", state?.tabsApiResctx)
+  // }, [state?.tabsApiResctx])
+  // useEffect(() => {
+  //   console.log("wadqwdwq. categ", state?.categConstitutionValuectx, state?.categoryValuectx, state?.constitutionValuectx)
+  // }, [state?.categConstitutionValuectx, state?.categoryValuectx, state?.constitutionValuectx])
+  // useEffect(() => {
+  //   console.log("updateFormDatactx, modifiedFormCols", state?.updateFormDatactx, state?.modifiedFormCols)
+  // }, [state?.formDatactx, state?.modifiedFormCols])
+  // useEffect(() => {
+  //   console.log(state?.updateFormDatactx, "< state?.updateFormDatactx state?.retrieveFormDataApiRes >", state?.retrieveFormDataApiRes, "state?.modifiedFormCols >", state?.modifiedFormCols, "state?.modifiedFormCols >", state?.modifiedFormCols)
+  // }, [state?.updateFormDatactx, state?.retrieveFormDataApiRes, state?.modifiedFormCols, state?.modifiedFormCols])
+  // useEffect(() => {
+  //   console.log("state?.entityTypectx, state?.categoryValuectx, state?.constitutionValuectx",state?.entityTypectx, state?.categoryValuectx, state?.constitutionValuectx)
+  // }, [state?.entityTypectx, state?.categoryValuectx, state?.constitutionValuectx])
+  // useEffect(() => {
+  //   console.log(`allonedit,
+  //     categConstitutionValuectx - ${state?.categConstitutionValuectx},
+  //     categoryValuectx - ${state?.categoryValuectx},
+  //     constitutionValuectx - ${state?.constitutionValuectx},
+  //     isFormModalOpenctx - ${state?.isFormModalOpenctx}, 
+  //     entityTypectx - ${state?.entityTypectx}, 
+  //     isFreshEntryctx - ${state?.isFreshEntryctx},
+  //     customerIDctx - ${state?.customerIDctx},
+  //     req_cd_ctx - ${state?.req_cd_ctx}
+  //   `)
+  // }, [
+  //   state?.categConstitutionValuectx,
+  //   state?.categoryValuectx,
+  //   state?.constitutionValuectx,
+  //   state?.isFormModalOpenctx, 
+  //   state?.entityTypectx, 
+  //   state?.isFreshEntryctx,
+  //   state?.customerIDctx,
+  //   state?.req_cd_ctx])
   // useEffect(() => {
   //   console.log("wadqwdwq.cccc", state?.categoryValuectx)
   // }, [state?.categoryValuectx])
@@ -612,6 +658,24 @@ export const Ckyc = () => {
       rowDoubleClick: false,
     },
   ];
+
+  const pendingActions: ActionTypes[] = [
+    {
+      actionName: "view-detail",
+      actionLabel: "View Detail",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+    {
+      actionName: "view-all",
+      actionLabel: "View All",
+      multiple: false,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+      isNodataThenShow: true
+    },
+  ];
+
 
   const setCurrentAction = useCallback(
     (data) => {
@@ -858,6 +922,7 @@ export const Ckyc = () => {
             submitSecondAction={() => {}}
             submitSecondButtonName="Save"
             submitSecondButtonHide={true}
+            submitThirdButtonHide={true}
             submitSecondLoading={false}
             propStyles={{
               titleStyle: { color: "var(--theme-color3) !important" },
@@ -903,7 +968,7 @@ export const Ckyc = () => {
             data={PendingData ?? []}
             setData={() => null}
             loading={isPendingDataLoading || isPendingDataFetching}
-            actions={actions}
+            actions={pendingActions}
             setAction={setCurrentAction}
             refetchData={() => PendingRefetch()}
             // ref={myGridRef}
@@ -921,6 +986,7 @@ export const Ckyc = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
+              displayMode={"new"}
             />
           }
         />
@@ -934,6 +1000,7 @@ export const Ckyc = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
+              displayMode={"edit"}
             />
           }
         />

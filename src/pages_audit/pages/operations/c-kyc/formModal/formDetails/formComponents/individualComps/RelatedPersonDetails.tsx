@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 import { AuthContext } from "pages_audit/auth";
 
-const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading}) => {
+const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ const myGridRef = useRef<any>(null);
                 COMP_CD: authState?.companyID ?? "",
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
-                REQ_CD: state?.req_cd_ctx,
+                // REQ_CD: state?.req_cd_ctx,
                 // SR_CD: "3",
                 CONFIRMED: "N",
                 ENT_COMP_CD: authState?.companyID ?? "",
@@ -76,7 +76,7 @@ const myGridRef = useRef<any>(null);
                 COMP_CD: authState?.companyID ?? "",
                 BRANCH_CD: authState?.user?.branchCode ?? "",
                 REQ_FLAG: "F",
-                REQ_CD: state?.req_cd_ctx,
+                // REQ_CD: state?.req_cd_ctx,
                 // SR_CD: "3",
                 CONFIRMED: "N",
                 ENT_COMP_CD: authState?.companyID ?? "",
@@ -153,6 +153,7 @@ const myGridRef = useRef<any>(null);
                             onSubmitHandler={RelPersonSubmitHandler2}
                             // initialValues={state?.formDatactx["RELATED_PERSON_DTL"] ?? {}}
                             initialValues={initialVal}
+                            displayMode={displayMode}
                             key={"new-form-in-kyc"}
                             metaData={related_person_detail_data as MetaDataType}
                             formStyle={{}}

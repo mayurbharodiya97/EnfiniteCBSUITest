@@ -438,18 +438,7 @@ export const OTPModelForm = ({
           ) : (
             <></>
           )}
-          {loginState.otploading ||
-          otpresendCount >= 3 ||
-          loginState?.auth_type === "TOTP" ? null : (
-            <ResendOTP
-              onResendClick={handleResendClick}
-              // onTimerComplete={() => setbtnshow(true)}
-              renderButton={renderButton}
-              renderTime={renderTime}
-              maxTime={60}
-              className={classes.resendOTPalign}
-            />
-          )}
+
           <div
             style={{
               display: "flex",
@@ -464,12 +453,12 @@ export const OTPModelForm = ({
               onClick={handleCloseEvent}
               className={classes.otpButtons}
               starticon={"West"}
-              color={"var(--theme-color3) !important"}
+              color={"var(--theme-color2) !important"}
               rotateIcon="scale(1.4) rotateX(360deg)"
               style={{
                 border: "var(--theme-color3)1px solid",
-                color: "var(--theme-color3)",
-                background: "var(--theme-color2)",
+                color: "var(--theme-color2)",
+                // background: "var(--theme-color2)",
                 borderRadius: "10px",
                 minWidth: "48%",
               }}
@@ -489,7 +478,7 @@ export const OTPModelForm = ({
               ref={inputButtonRef}
               className={classes.otpButtons}
             >
-              {!loginState.loading ? (
+              {loginState.loading ? (
                 <CircularProgress size={25} thickness={4.6} />
               ) : (
                 t("otp.VerifyOTP")
