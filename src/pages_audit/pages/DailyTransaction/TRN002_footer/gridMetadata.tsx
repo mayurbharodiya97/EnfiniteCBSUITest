@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const TRN002_TableMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Pending Scrolls",
+    gridLabel: "Today's Transactions",
     rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
@@ -28,6 +28,13 @@ export const TRN002_TableMetaData: GridMetaDataType = {
   },
   filters: [],
   columns: [
+    {
+      accessor: "CONFIRMED",
+      columnName: "IsConfirmed",
+      sequence: 0,
+      componentType: "default",
+      width: 80,
+    },
     {
       accessor: "TRAN_CD",
       columnName: "Voucher No",
