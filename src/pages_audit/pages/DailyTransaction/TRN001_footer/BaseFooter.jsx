@@ -92,7 +92,7 @@ const BaseFooter = ({
         spacing={2}
         style={{ marginTop: "5px", marginBottom: "15px" }}
       >
-        <Grid item sx={{ width: 180 }}>
+        {/* <Grid item sx={{ width: 180 }}>
           <Autocomplete
             value={filter}
             size="small"
@@ -115,7 +115,7 @@ const BaseFooter = ({
               onChange={(e) => handleSearch(e)}
             />
           </div>
-        </Grid>
+        </Grid> */}
         <Grid item>
           <Button
             variant="contained"

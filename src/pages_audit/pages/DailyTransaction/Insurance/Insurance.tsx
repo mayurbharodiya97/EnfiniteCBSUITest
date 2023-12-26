@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { JointDetailIssueEntry } from "./metaData";
 import { InsuranceGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
@@ -19,7 +18,7 @@ export const Insurance = () => {
   const [rows, setRows] = useState([]);
 
   // api define
-  const getJointDetails = useMutation(API.getInsuranceList, {
+  const getInsuranceList = useMutation(API.getInsuranceList, {
     onSuccess: (data) => {
       console.log(data, " insurance detailssss");
       setRows(data);
@@ -28,7 +27,7 @@ export const Insurance = () => {
   });
 
   useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getJointDetails.mutate(tempStore.accInfo);
+    tempStore?.accInfo?.ACCT_CD && getInsuranceList.mutate(tempStore.accInfo);
   }, [tempStore]);
 
   return (

@@ -676,6 +676,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/CONFIRMDAILYTRNDATA",
     packageName: "",
   },
+  GETSTOPDISPLAY: {
+    url: "/transactionServiceAPI/GETSTOPDISPLAY",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

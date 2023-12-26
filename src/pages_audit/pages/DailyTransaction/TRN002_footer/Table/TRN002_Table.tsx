@@ -15,10 +15,19 @@ const actions: ActionTypes[] = [
     actionLabel: "View Detail",
     multiple: false,
     rowDoubleClick: true,
+    // alwaysAvailable: true,
+  },
+  {
+    actionName: "view",
+    actionLabel: "Confirm",
+    actionIcon: "detail",
+    multiple: false,
+    rowDoubleClick: true,
   },
 ];
 
-export const TRN002_Table = () => {
+export const TRN002_Table = ({ handleConfirm }) => {
+  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
   const [rows, setRows] = useState([]);
@@ -30,23 +39,20 @@ export const TRN002_Table = () => {
   }, [loading]);
 
   useEffect(() => {
+    getList();
+  }, []);
+
+  const getList = () => {
     let data = {
       COMP_CD: authState?.companyID,
       BRANCH_CD: authState?.user?.branchCode,
     };
     getTRN002List.mutate(data);
-  }, []);
-
-  const myGridRef = useRef<any>(null);
+  };
 
   // api define
   const getTRN002List = useMutation(API.getTRN002List, {
     onSuccess: (data) => {
-      // data.map((a) => {
-      //   a.check = false;
-      // });
-      // data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
-
       let arr = data.filter((a) => a.CONFIRMED == "0");
       setRows2(arr);
       setRows(data);
@@ -70,9 +76,12 @@ export const TRN002_Table = () => {
   //-----------------------------
 
   const setCurrentAction = useCallback((data) => {
-    setLoading(true);
     let row = data.rows[0]?.data;
+
     if (data.name === "view-detail") {
+      setLoading(true);
+      console.log(row, "roww viewdetail");
+
       let obj = {
         COMP_CD: row?.COMP_CD,
         BRANCH_CD: row?.BRANCH_CD,
@@ -82,7 +91,13 @@ export const TRN002_Table = () => {
       };
       getAccInfo.mutate(obj);
     }
+    if (data.name === "view") {
+      console.log(row, "roww view");
+      handleConfirm(row);
+    }
   }, []);
+
+  const handleRefreshF2 = () => {};
 
   return (
     <>

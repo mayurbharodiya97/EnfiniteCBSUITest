@@ -110,6 +110,10 @@ const Trn002_Footer = () => {
     setPendingRows(obj);
   };
 
+  const handleConfirm = (row) => {
+    console.log(row, "aaaaaaaaaaaa");
+    confirmScroll.mutate(row);
+  };
   const handleRowClick = (e, a) => {
     console.log(a, "aaaaaa");
     let data = {
@@ -145,7 +149,7 @@ const Trn002_Footer = () => {
           margin: "4px",
         }}
       >
-        <TRN002_Table />
+        <TRN002_Table handleConfirm={handleConfirm} />
         <br />
         {/* <TableContainer>
           <Table aria-label="simple table">

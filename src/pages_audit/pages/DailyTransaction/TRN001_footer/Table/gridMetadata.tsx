@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const TRN001_TableMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "TRN_001 Table",
+    gridLabel: "Today Transaction",
     rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
@@ -17,13 +17,13 @@ export const TRN001_TableMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "26vh",
+      min: "20vh",
       max: "30vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
-    hideHeader: true,
+    hideHeader: false,
     isCusrsorFocused: true,
   },
   filters: [],
