@@ -724,6 +724,8 @@ export const PassbookStatementInq = {
         xs: 12,
         md: 11,
         sm: 11,
+        lg:11,
+        xl:11,
       },
     },
     {
@@ -755,6 +757,8 @@ export const PassbookStatementInq = {
         xs: 12,
         md: 12,
         sm: 12,
+        lg: 12,
+        xl: 12,
       },
     },
     {
