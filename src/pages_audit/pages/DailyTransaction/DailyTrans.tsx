@@ -1,5 +1,5 @@
 // UI
-import { Box, Grid, Tab } from "@mui/material";
+import { AppBar, Box, Grid, Tab } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import CloseIcon from "@mui/icons-material/Close";

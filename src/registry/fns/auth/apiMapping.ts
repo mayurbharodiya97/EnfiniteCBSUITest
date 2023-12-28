@@ -676,6 +676,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/CONFIRMDAILYTRNDATA",
     packageName: "",
   },
+  GETDLYTRNHOLDCHRGF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNHOLDCHRGF1",
+    packageName: "",
+  },
+  GETDLYTRNACCTDISBDTLF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACCTDISBDTLF1",
+    packageName: "",
+  },
+  GETDLYTRNSUBSIDYDTLF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSUBSIDYDTLF1",
+    packageName: "",
+  },
   GETSTOPDISPLAY: {
     url: "/transactionServiceAPI/GETSTOPDISPLAY",
     packageName: "",
