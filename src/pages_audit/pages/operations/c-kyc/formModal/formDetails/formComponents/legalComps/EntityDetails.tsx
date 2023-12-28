@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse, Dialog } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
@@ -112,6 +112,54 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    NextBtnRef.current = e
+                    PDFormRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        NextBtnRef.current = e
+                        PDFormRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [displayMode])
+
     // useEffect(() => {
     //     console.log("state?.isFreshEntryctx",state?.isFreshEntryctx)
     // }, [state?.isFreshEntryctx])
@@ -184,13 +232,14 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
 
 
             <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                {/* <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
                         NextBtnRef.current = e
                         PDFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Save & Next")}</Button>
+                >{t("Save & Next")}</Button> */}
+                {SaveUpdateBTNs}
             </Grid>
 
             {dialogOpen && <SearchListdialog 

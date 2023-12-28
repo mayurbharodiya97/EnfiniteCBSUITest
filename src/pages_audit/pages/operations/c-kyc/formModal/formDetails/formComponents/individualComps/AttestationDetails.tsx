@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
+import React, { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { attest_history_meta_data, attestation_detail_meta_data } from "../../metadata/individual/attestationdetails"
@@ -169,6 +169,41 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     : null;
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes, attestData])
 
+
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    AttestationDTLFormRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        AttestationDTLFormRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && null;
+        }
+    }, [displayMode])
+
     // useEffect(() => {
     //     if(!isAttestDataLoading && attestData) {
     //         console.log("attst data..", attestData)
@@ -238,7 +273,8 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                {SaveUpdateBTNs}
+                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
                         AttestationDTLFormRef.current.handleSubmitError(e, "save")
@@ -250,7 +286,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     onClick={(e) => {
                         AttestationDTLFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Update")}</Button>}
+                >{t("Update")}</Button>} */}
             </Grid>
             {historyDialog && <AttestHistory 
                 open={historyDialog} 
@@ -321,7 +357,7 @@ export const UpdateDialog = ({open, onClose, mutationFormDTL,
 }) => {
     const [shouldUpdate, setShouldUpdate] = useState(false)
     const { authState } = useContext(AuthContext);
-    const {state, handleUpdatectx, handleModifiedColsctx} = useContext(CkycContext);
+    const {state, handleUpdatectx, handleFormDataonSavectx, handleModifiedColsctx} = useContext(CkycContext);
 
 
     const mutation: any = useMutation(handleUpdatectx, {
@@ -329,6 +365,7 @@ export const UpdateDialog = ({open, onClose, mutationFormDTL,
             // setIsUpdated(true)
             // console.log("data on save", data)
             handleModifiedColsctx({})
+            handleFormDataonSavectx({})
 
             // calling this api for getting updated formdata from updated req_cd
             let reqPayload = {
@@ -342,6 +379,8 @@ export const UpdateDialog = ({open, onClose, mutationFormDTL,
             // }
         },
         onError: (error: any) => {
+            handleModifiedColsctx({})
+            handleFormDataonSavectx({})
             // console.log("data on error", error)
             // setIsUpdated(true)
         },

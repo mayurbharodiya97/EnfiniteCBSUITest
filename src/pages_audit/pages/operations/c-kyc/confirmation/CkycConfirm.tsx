@@ -88,7 +88,8 @@ export const CkycConfirm = () => {
           }}
           variant="h6"
         >
-          {t("PendingReq")}
+          {t("Confirmation Pending Request")}
+          {/* {t("PendingReq")} */}
         </Typography>
         <GridWrapper
           key={`ckycConfirmation`+PendingData}

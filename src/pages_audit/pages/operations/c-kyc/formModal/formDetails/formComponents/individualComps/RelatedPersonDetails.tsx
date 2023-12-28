@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, Collapse, IconButton } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
@@ -217,6 +217,53 @@ const myGridRef = useRef<any>(null);
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    RelPersonFormRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        RelPersonFormRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [displayMode])
+
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
@@ -264,23 +311,7 @@ const myGridRef = useRef<any>(null);
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        RelPersonFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save & Next")}</Button>}
-                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
-                ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        RelPersonFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Update & Next")}</Button>
-                : !state?.isFreshEntryctx ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        handleColTabChangectx(state?.colTabValuectx+1)
-                    }}
-                >{t("Next")}</Button> : null
-                }
+                {SaveUpdateBTNs}
             </Grid>
         </Grid>        
     )

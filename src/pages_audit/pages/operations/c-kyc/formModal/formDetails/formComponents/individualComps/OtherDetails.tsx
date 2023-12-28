@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useContext, useMemo, Fragment } from 'react';
 import { Grid, Typography, Divider, Skeleton, Collapse, IconButton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { other_details_meta_data } from '../../metadata/individual/otherdetails';
@@ -102,6 +102,51 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    OtherDTLFormRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        OtherDTLFormRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [displayMode])
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography> */}
@@ -147,11 +192,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        OtherDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save & Next")}</Button>
+                {SaveUpdateBTNs}
             </Grid>
         </Grid>        
     )

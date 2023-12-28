@@ -153,7 +153,8 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "select",
                     },
-                    options: (dependentValue, formState, _, authState) => API.getOptionsOnPin(dependentValue, formState, _, authState),  // parent-area        
+                    options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),  // parent-area
+                    // options: (dependentValue, formState, _, authState) => API.getOptionsOnPin(dependentValue, formState, _, authState),  // parent-area        
                     // options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),        
                     // _optionsKey: "localParentAreaList",
                     // options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),

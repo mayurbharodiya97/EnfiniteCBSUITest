@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useContext, useMemo } from "react";
+import { useRef, useState, useEffect, useContext, useMemo, Fragment } from "react";
 import {
   Grid,
   Typography,
@@ -188,6 +188,57 @@ const KYCDetails = ({
       : {};
   }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
 
+
+
+  const SaveUpdateBTNs = useMemo(() => {
+    if(displayMode) {
+    return displayMode == "new"
+      ? <Fragment>
+        <Button
+          sx={{ mr: 2, mb: 2 }}
+          color="secondary"
+          variant="contained"
+          disabled={isNextLoading}
+          onClick={(e) => {
+            NextBtnRef.current = e;
+            KyCPoIFormRef.current.handleSubmitError(e, "save");
+          }}
+        >
+          {t("Save & Next")}
+        </Button>
+      </Fragment>
+      : displayMode == "edit"
+          ? <Fragment>
+            <Button
+              sx={{ mr: 2, mb: 2 }}
+              color="secondary"
+              variant="contained"
+              disabled={isNextLoading}
+              onClick={(e) => {
+                NextBtnRef.current = e;
+                KyCPoIFormRef.current.handleSubmitError(e, "save");
+              }}
+            >
+              {t("Update & Next")}
+            </Button>
+          </Fragment>
+          : displayMode == "view" && <Fragment>
+              <Button
+              sx={{ mr: 2, mb: 2 }}
+              color="secondary"
+              variant="contained"
+              disabled={isNextLoading}
+              onClick={(e) => {
+                handleColTabChangectx(state?.colTabValuectx + 1)
+              }}
+            >
+              {t("Next")}
+            </Button>
+          </Fragment>
+    }
+  }, [displayMode])
+
+
   //    useEffect(() => {
   //     console.log("asdfweafdw",currentTabFormData)
   //    }, [currentTabFormData])
@@ -366,7 +417,7 @@ const KYCDetails = ({
         >
           {t("Previous")}
         </Button>
-        {state?.isFreshEntryctx && <Button
+        {/* {state?.isFreshEntryctx && <Button
           sx={{ mr: 2, mb: 2 }}
           color="secondary"
           variant="contained"
@@ -391,7 +442,8 @@ const KYCDetails = ({
           }}
         >
           {t("Update & Next")}
-        </Button>}
+        </Button>} */}
+        {SaveUpdateBTNs}
       </Grid>
     </Grid>
   );

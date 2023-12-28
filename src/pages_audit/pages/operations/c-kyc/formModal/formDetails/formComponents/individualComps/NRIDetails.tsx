@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useRef, useState } from "react"
+import React, { Fragment, useContext, useMemo, useRef, useState } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { nri_detail_meta_data } from "../../metadata/individual/nridetails"
@@ -73,6 +73,52 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    NRIDTLFormRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        NRIDTLFormRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [displayMode])
+
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
@@ -117,7 +163,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                {SaveUpdateBTNs}
+                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
                         NRIDTLFormRef.current.handleSubmitError(e, "save")
@@ -128,7 +175,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     onClick={(e) => {
                         NRIDTLFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Update & Next")}</Button>}
+                >{t("Update & Next")}</Button>} */}
             </Grid>
         </Grid>
     )

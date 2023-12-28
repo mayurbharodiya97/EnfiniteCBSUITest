@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, useMemo, useRef } from 'react';
+import { useContext, useState, useEffect, useMemo, useRef, Fragment } from 'react';
 import { Grid, Typography, Divider, Skeleton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
@@ -177,6 +177,53 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    OtherAddDTLFormRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        OtherAddDTLFormRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [displayMode])
+
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>             */}
@@ -219,7 +266,8 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                {SaveUpdateBTNs}
+                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
                         OtherAddDTLFormRef.current.handleSubmitError(e, "save")
@@ -238,7 +286,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                         handleColTabChangectx(state?.colTabValuectx+1)
                     }}
                 >{t("Next")}</Button> : null
-                }
+                } */}
             </Grid>
         </Grid>        
     )

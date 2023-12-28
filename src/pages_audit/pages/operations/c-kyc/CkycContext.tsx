@@ -221,9 +221,14 @@ const CkycProvider = ({children}) => {
                 constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
                 isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
                 customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
-                req_cd_ctx: parseInt(recordData[0]?.data?.REQUEST_ID) ?? "",
+                req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
             }
             if(recordData[0]?.data?.CONFIRMED) {
+                        // A - ALL ,
+                        // Y - CONFIRMED,
+                        // M - SENT TO MODIFICATION 
+                        // R - REJECT 
+                        // P - SENT TO CONFIRMATION
                 payload["confirmFlagctx"] = recordData[0]?.data?.CONFIRMED
             }
             if(recordData[0]?.data?.UPD_TAB_FLAG_NM) {
@@ -717,18 +722,35 @@ const CkycProvider = ({children}) => {
                     upd = utilFunction.transformDetailsData(newFormData, oldFormData);
                 }
                 if(Object.keys(updated_tab_format).includes(TAB)) {
-                    updated_tab_format[TAB] = {
-                        ...updated_tab_format.TAB,
-                        ...upd,
-                        ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
-                        ...other_data
+                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL") {
+                        updated_tab_format[TAB] = [{
+                            ...updated_tab_format.TAB,
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }]
+                    } else {
+                        updated_tab_format[TAB] = {
+                            ...updated_tab_format.TAB,
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }
                     }
                 } else {
-                    updated_tab_format[TAB] = {
-                        ...upd,
-                        ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
-                        ...other_data
-                    }                
+                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL") {
+                        updated_tab_format[TAB] = [{
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }]
+                    } else {
+                        updated_tab_format[TAB] = {
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }
+                    }
                 }
                 // console.log("updated_tab_format[TAB]", updated_tab_format[TAB])
                 res(1)

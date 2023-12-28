@@ -205,6 +205,7 @@ export default function FormModal({
   const [from, setFrom] = useState("");
   const [confirmAction, setConfirmAction] = useState<any>("confirm");
   const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
+  const [displayMode, setDisplayMode] = useState<any>(formmode)
 
   // on edit/view
   // - call retrieveFormRefetch
@@ -337,8 +338,14 @@ export default function FormModal({
     //   onClose()
     // } else {
       if(location.pathname.includes("/view-detail")) {
-        if(location.pathname.includes("/ckyc-confirmation")) {
+        // setDisplayMode(formmode)
+        if(location.pathname.includes("/confirm-ckyc")) {
           setFrom("confirmation")
+          setDisplayMode("view")
+        } else if(location.state[0].data.REQUEST_ID) {
+          if(location.state[0].data.CONFIRMED && (location.state[0].data.CONFIRMED.includes("Y") || location.state[0].data.CONFIRMED.includes("R"))) {
+            setDisplayMode("view")
+          }
         }
         // console.log(">>>-- edit", location.state, location.state[0].id)
         // handlecustomerIDctx(location.state[0].id)
@@ -352,15 +359,15 @@ export default function FormModal({
         //     REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
         //   }  
         // } else {
-          if((location.state && location.state.length>0) && (location.state[0].id && location.state[0].data.REQUEST_ID)) {
+          if((location.state && location.state.length>0) && (location.state[0].data.REQUEST_ID)) {
             data = {
               COMP_CD: authController?.authState?.companyID ?? "",
               REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
             }
-          } else {
+          } else if((location.state && location.state.length>0) && (location.state[0].data.CUSTOMER_ID)) {
           data = {
             COMP_CD: authController?.authState?.companyID ?? "",
-            CUSTOMER_ID: location.state[0].id ?? "",
+            CUSTOMER_ID: location.state[0].data?.CUSTOMER_ID ?? "",
           }
         }
         Object.keys(data).length>1 && mutation.mutate(data)
@@ -414,6 +421,10 @@ export default function FormModal({
   //   setAccTypeValue(e.target.value)
   // }
 
+  // useEffect(() => {
+  //   console.log(formmode, "wfewdeqwqwd", displayMode, state?.confirmFlagctx)
+  // }, [formmode, displayMode, state?.confirmFlagctx])
+
   useEffect(() => {
     if(!isLoading) {
       // console.log("ResultResult", TabsData)
@@ -464,55 +475,55 @@ export default function FormModal({
       case "Personal Details":
         return <PersonalDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "KYC Details":
         return <KYCDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
       
       case "Declaration Details":
         return <DeclarationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "KYC Document Upload":
         return <Document
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy />
+        return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
       case "Details of Related Person":
         return <RelatedPersonDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={formmode}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode}
         />
 
       case "More Details":
         return <OtherDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "Other Address":
         return <OtherAddressDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "NRI Details":
         return <NRIDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "Attestation Details":
         return <AttestationDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={formmode} onFormClose={onClose}
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
         />
 
       default:
@@ -523,7 +534,7 @@ export default function FormModal({
     switch (tabName) {
       case "Entity Details":
         return <EntityDetails isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={formmode}  />
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode}  />
         // return <PersonalDetails 
         // isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         // isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
@@ -531,47 +542,47 @@ export default function FormModal({
       case "KYC Details":
         return <KYCDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
       
       case "Declaration Details":
         return <DeclarationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "KYC Document Upload":
         return <Document
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy />
+        return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
         return <ControllingPersonDTL
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={formmode} />
+        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} />
 
       case "More Details":
         return <OtherDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "Other Address":
         return <OtherAddressDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
       case "NRI Details":
         return <NRIDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
         
       case "Attestation Details":
         return <AttestationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={formmode} onFormClose={onClose} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} onFormClose={onClose} />
 
       default:
         return <p>Not Found - {tabName}</p>;
@@ -611,9 +622,27 @@ export default function FormModal({
     onClose()
   }
 
+  const onUpdateForm = () => {
+    // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
+    if(displayMode == "new" || displayMode == "edit") {
+      if(Object.keys(state?.modifiedFormCols).length >0) {
+        setUpdateDialog(true)
+        // setCancelDialog(true)
+      } else {
+        setAlertOnUpdate(true)
+      }
+    }
+    // console.log(Object.keys(state?.modifiedFormCols).length >0, "djweijd", displayMode, state?.modifiedFormCols)
+      //  else {
+      //   closeForm()
+      // }
+
+    // setUpdateDialog(true)
+  }
+
   const onCancelForm = () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if(formmode == "new" || formmode == "edit") {
+    if(displayMode == "new" || displayMode == "edit") {
       if(Object.keys(state?.formDatactx).length >0) {
         setCancelDialog(true)
       } else {
@@ -623,6 +652,39 @@ export default function FormModal({
       closeForm()
     }
   }
+
+  const ActionBTNs = React.useMemo(() => {
+    return displayMode == "view"
+      ? (from && from == "confirmation") && <React.Fragment>
+        <Button
+          onClick={() => openActionDialog("confirm")}
+          color="primary"
+          // disabled={mutation.isLoading}
+        >
+          {t("Confirm")}
+        </Button>
+        <Button
+          onClick={() => openActionDialog("query")}
+          color="primary"
+          // disabled={mutation.isLoading}
+        >
+          {t("Raise Query")}
+        </Button>
+        <Button
+          onClick={() => openActionDialog("reject")}
+          color="primary"
+          // disabled={mutation.isLoading}
+        >
+          {t("Reject")}
+        </Button>
+      </React.Fragment>
+      : displayMode == "edit" && <Button
+          onClick={onUpdateForm}
+          color="primary"
+        >
+          {t("Update")}
+        </Button>
+  }, [displayMode, from, state?.modifiedFormCols])
 
 
   return (
@@ -839,7 +901,8 @@ export default function FormModal({
             </Button> */}
 
             {/* for checker, view-only */}
-            {from=="confirmation" && <Button
+            {ActionBTNs}
+            {/* {from=="confirmation" && <Button
               onClick={() => openActionDialog("confirm")}
               color="primary"
               // disabled={mutation.isLoading}
@@ -867,7 +930,7 @@ export default function FormModal({
               // disabled={mutation.isLoading}
             >
               {t("Update")}
-            </Button>}
+            </Button>} */}
             {/* {state?.isFreshEntryctx &&<Button
               // onClick={handleFormModalClose}
               color="primary"
