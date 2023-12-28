@@ -328,7 +328,7 @@ export const Ckyc = () => {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
       // ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      ENTERED_DATE: "22-12-2023"
+      ENTERED_DATE: "27-12-2023"
     })
   )
 
