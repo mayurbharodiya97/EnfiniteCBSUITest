@@ -33,6 +33,7 @@ interface MyGridExtendedProps {
   startsIcon?: any;
   endsIcon?: any;
   iconStyle?: any;
+  textFieldStyle?: any;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -69,6 +70,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   startsIcon,
   endsIcon,
   iconStyle,
+  textFieldStyle,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -129,7 +131,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   useEffect(() => {
     if (isFieldFocused) {
       //@ts-ignore
-      getFocus()
+      getFocus();
     }
   }, [isFieldFocused, value]);
   const getFocus = () => {
@@ -137,7 +139,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
       //@ts-ignore
       focusRef?.current?.focus?.();
     }, 1);
-  }
+  };
 
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
@@ -155,9 +157,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
       const { value, ignoreUpdate, isFieldFocused } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
-        if(isFieldFocused) {
-          getFocus()
-        }  
+        if (isFieldFocused) {
+          getFocus();
+        }
         if (ignoreUpdate) {
           //ignore Validation
         } else if (whenToRunValidation === "onBlur") {
@@ -251,6 +253,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
             ) : null}
           </div>
         }
+        sx={{
+          "& .MuiInputBase-root": {
+            ...textFieldStyle,
+          },
+        }}
         FormHelperTextProps={{
           //@ts-ignore
           component: "div",

@@ -8,3 +8,19 @@
 .stylefortellerofChild {
   height: "25vh";
 }
+#accHead {
+  /* background-image: linear-gradient(to right, red, yellow); */
+  background: #e9f1ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 7px;
+  border-radius: 8px;
+}
+#head {
+  font-size: small;
+  padding: 7px;
+  text-align: center;
+  color: #1c8aff;
+}

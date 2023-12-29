@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Dialog,
   Grid,
   LinearProgress,
   Tab,
@@ -21,12 +22,16 @@ import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
 import { SubmitFnType } from "packages/form";
 import { LimitSecurityData, getLimitDTL, getLimitNSCdetail } from "./api";
 import { queryClient } from "cache";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 export const LimitEntry = () => {
   const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const [newFormMetadata, setNewFormMetadata] =
     useState<any>(limitEntryMetaData);
+  const [isOpenSave, setIsOpenSave] = useState<any>(false);
+  const [messageData, setMessageData] = useState<any>();
+  const [detailForm, setDetailForm] = useState<any>();
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -65,8 +70,7 @@ export const LimitEntry = () => {
     };
   }, []);
 
-  let sjdbjhdb = getLimitNSCdetail();
-  console.log("<<<getLimitNSCdetail", sjdbjhdb);
+  // let sjdbjhdb = getLimitNSCdetail();
 
   const onSubmitHandler = (
     data: any,
@@ -77,7 +81,6 @@ export const LimitEntry = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    console.log("<<<datajkcdjn", data);
 
     if (value === "SECURITY_CD") {
       securityLimitData.mutate({
@@ -86,6 +89,22 @@ export const LimitEntry = () => {
         BRANCH_CD: authState?.user?.branchCode,
       });
     }
+    if (value === "FD_ACCT_CD" || value === "FD_NO") {
+      if (data?.MESSAGES) {
+        setMessageData(data?.MESSAGES);
+        setIsOpenSave(true);
+      }
+    }
+  };
+
+  let messageArray;
+  if (messageData) {
+    messageArray = messageData.split(", ").map((msg, i) => {
+      return <p>{`(${i + 1})  ${msg}`}</p>;
+    });
+  }
+  const onClickButton = (rows, buttonName) => {
+    setIsOpenSave(false);
   };
 
   return (
@@ -134,8 +153,8 @@ export const LimitEntry = () => {
           ) : null}
           {value === "tab1" ? (
             <div
-              onKeyDown={(e) => {
-                const { target, key } = e;
+              onBlur={(e) => {
+                const { target } = e;
                 const { name, value }: any = target || {};
 
                 const handleSubmitTab = (field) => {
@@ -150,7 +169,11 @@ export const LimitEntry = () => {
                   }
                 };
 
-                key === "Tab" && handleSubmitTab("SECURITY_CD");
+                handleSubmitTab("SECURITY_CD");
+                setTimeout(() => {
+                  handleSubmitTab("FD_ACCT_CD");
+                  handleSubmitTab("FD_NO");
+                }, 1000);
               }}
             >
               {securityLimitData.isLoading || securityLimitData.isFetching ? (
@@ -176,17 +199,25 @@ export const LimitEntry = () => {
                 hideHeader={false}
                 ref={myMasterRef}
               >
-                {/* {({ isSubmitting, handleSubmit }) => {
+                {({ isSubmitting, handleSubmit }) => {
                   console.log("isSubmitting, handleSubmit", isSubmitting);
                   return (
-                    <Button
-                      color="primary"
-                      onClick={(e) => handleSubmit(e, "FDdetail")}
-                    >
-                      Save
-                    </Button>
+                    <>
+                      <Button
+                        color="primary"
+                        onClick={() => setDetailForm("fddetail")}
+                      >
+                        FD Detail
+                      </Button>
+                      <Button
+                        color="primary"
+                        onClick={() => setDetailForm("nscdetail")}
+                      >
+                        NSC Detail
+                      </Button>
+                    </>
                   );
-                }} */}
+                }}
               </FormWrapper>
             </div>
           ) : value === "tab2" ? (
@@ -211,6 +242,118 @@ export const LimitEntry = () => {
           ) : null}
         </Grid>
       </Container>
+
+      {isOpenSave && (
+        <div
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              setIsOpenSave(false);
+            }
+          }}
+        >
+          {" "}
+          <PopupRequestWrapper
+            MessageTitle="Account Description"
+            Message={messageArray ? messageArray : "something is wrong "}
+            onClickButton={(rows, buttonName) =>
+              onClickButton(rows, buttonName)
+            }
+            buttonNames={["Ok"]}
+            rows={[]}
+            open={isOpenSave}
+          />
+        </div>
+      )}
+
+      {detailForm === "fddetail" ? (
+        <Dialog
+          open={true}
+          // onClose={onClose}
+          // fullWidth={true}
+          PaperProps={{
+            style: {
+              maxWidth: "950px",
+            },
+          }}
+        >
+          <FormWrapper
+            key={"fddetailForm"}
+            metaData={newFormMetadata}
+            initialValues={[]}
+            // onSubmitHandler={}
+            // displayMode={"view"}
+            // hideDisplayModeInTitle={true}
+            // loading={}
+            // formStyle={
+            //   background: "white",
+            //   // height: "40vh",
+            //   overflowY: "auto",
+            //   overflowX: "hidden",
+            // }}
+            hideHeader={false}
+            // ref={}
+          >
+            {({ isSubmitting, handleSubmit }) => {
+              console.log("isSubmitting, handleSubmit", isSubmitting);
+              return (
+                // <Button
+                //   color="primary"
+                //   onClick={(e) => handleSubmit(e, "FDdetail")}
+                // >
+                //   Save
+                // </Button>
+                <Button color="primary" onClick={() => setDetailForm("")}>
+                  close
+                </Button>
+              );
+            }}
+          </FormWrapper>
+        </Dialog>
+      ) : detailForm === "nscdetail" ? (
+        <Dialog
+          open={true}
+          // onClose={onClose}
+          // fullWidth={true}
+          PaperProps={{
+            style: {
+              maxWidth: "950px",
+            },
+          }}
+        >
+          <FormWrapper
+            key={"nscdetailForm"}
+            metaData={newFormMetadata}
+            initialValues={[]}
+            // onSubmitHandler={}
+            // displayMode={"view"}
+            // hideDisplayModeInTitle={true}
+            // loading={}
+            // formStyle={
+            //   background: "white",
+            //   // height: "40vh",
+            //   overflowY: "auto",
+            //   overflowX: "hidden",
+            // }}
+            hideHeader={false}
+            // ref={}
+          >
+            {({ isSubmitting, handleSubmit }) => {
+              console.log("isSubmitting, handleSubmit", isSubmitting);
+              return (
+                // <Button
+                //   color="primary"
+                //   onClick={(e) => handleSubmit(e, "FDdetail")}
+                // >
+                //   Save
+                // </Button>
+                <Button color="primary" onClick={() => setDetailForm("")}>
+                  close
+                </Button>
+              );
+            }}
+          </FormWrapper>
+        </Dialog>
+      ) : null}
     </>
   );
 };

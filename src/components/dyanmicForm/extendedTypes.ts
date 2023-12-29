@@ -188,13 +188,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
         return false;
       },
     },
-    schemaValidation: {
-      type: "string",
-      rules: [
-        { name: "typeError", params: ["ThisFieldisrequired"] },
-        { name: "required", params: ["ThisFieldisrequired"] },
-      ],
-    },
+    // schemaValidation: {
+    //   type: "string",
+    //   rules: [
+    //     { name: "typeError", params: ["ThisFieldisrequired"] },
+    //     { name: "required", params: ["ThisFieldisrequired"] },
+    //   ],
+    // },
   },
   MonthlyEmiPayCurrency: {
     render: {
@@ -573,6 +573,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     name: "BRANCH_CD",
     label: "Branch Code",
+    defaultValue: "",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
     GridProps: {
@@ -582,6 +583,9 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       lg: 4,
       xl: 4,
     },
+
+    // NOTE : this props only for set default brranch and only use in branchCode component do not use this key any other place or any component
+    defaultBranchTrue: true,
   },
 
   accountType: {
@@ -679,5 +683,11 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     label: "AccountType",
     // options: GeneralAPI.getAccountTypeList,
     _optionsKey: "",
+  },
+  Remark: {
+    render: {
+      componentType: "textField",
+    },
+    maxLength: 100,
   },
 };

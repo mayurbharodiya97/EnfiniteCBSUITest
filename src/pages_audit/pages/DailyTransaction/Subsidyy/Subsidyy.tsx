@@ -1,24 +1,22 @@
-import { Fragment, useEffect, useRef, useContext, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { JointDetailIssueEntry } from "./metaData";
-import { CheckBookGridMetaData } from "./gridMetadata";
+import { SubsidyGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
 import { GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import { useContext } from "react";
 
-export const CheckBook = () => {
+export const Subsidyy = () => {
+  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
   const [rows, setRows] = useState([]);
 
-  const getCheckDetailsList = useMutation(API.getCheckDetailsList, {
+  // api define
+  const getDisbursementList = useMutation(API.getSubsidyList, {
     onSuccess: (data) => {
-      console.log(data, " check detailssss");
+      console.log(data, " getDisbursementList detailssss");
       setRows(data);
     },
     onError: (error) => {},
@@ -26,16 +24,14 @@ export const CheckBook = () => {
 
   useEffect(() => {
     tempStore?.accInfo?.ACCT_CD &&
-      getCheckDetailsList.mutate(tempStore.accInfo);
+      getDisbursementList.mutate(tempStore.accInfo);
   }, [tempStore]);
-
-  const myGridRef = useRef<any>(null);
 
   return (
     <>
       <GridWrapper
-        key={`CheckBookGridMetaData`}
-        finalMetaData={CheckBookGridMetaData as GridMetaDataType}
+        key={`SubsidyGridMetaData`}
+        finalMetaData={SubsidyGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
         // loading={getData.isLoading}

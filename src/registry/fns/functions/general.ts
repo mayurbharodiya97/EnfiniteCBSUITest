@@ -73,7 +73,6 @@ const GeneralAPISDK = () => {
     console.log("changed...");
   };
   const getAccountTypeList = async (...reqData) => {
-    // console.log(reqData, "reqData...");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETUSERACCTTYPE", {
         USER_NAME: reqData?.[3]?.user.id
@@ -561,62 +560,6 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  const getSDCList = async (...reqData) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETSDCLIST", {
-        USER_NAME: reqData?.[3]?.user.id ?? "",
-        BRANCH_CD: reqData?.[3]?.user?.branchCode,
-        COMP_CD: reqData?.[3]?.companyID,
-      });
-
-    if (status === "0") {
-      let responseData = data;
-
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ CODE, DESCRIPTION }) => {
-          return {
-            value: CODE,
-            label: CODE + "-" + DESCRIPTION,
-            CODE: CODE,
-            DESCRIPTION: DESCRIPTION,
-          };
-        });
-      }
-
-      return responseData;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
-
-  const getTRXList = async (...reqData) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETTRXLIST", {
-        USER_NAME: reqData?.[3]?.user.id ?? "",
-      });
-    if (status === "0") {
-      let responseData = data;
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ CODE, DESCRIPTION }) => {
-          return {
-            value: CODE,
-            label: CODE + "-" + DESCRIPTION,
-          };
-        });
-      }
-      return responseData;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
-
-  const getJointDetailsList = async (...reqData) => {
-    return [
-      { id: 1, name: "abcd", accNo: 12345 },
-      { id: 2, name: "11abcd", accNo: 123445 },
-      { id: 3, name: "aaaa", accNo: 123425 },
-    ];
-  };
 
   return {
     GetMiscValue,
@@ -638,9 +581,7 @@ const GeneralAPISDK = () => {
     getKYCDocTypes,
     getTabelListData,
     getChequeLeavesList,
-    getSDCList,
-    getTRXList,
-    getJointDetailsList,
+
     getDynDropdownData,
     getDependentFieldList,
     getProMiscData,

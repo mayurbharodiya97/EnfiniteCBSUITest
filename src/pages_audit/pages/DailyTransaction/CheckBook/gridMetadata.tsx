@@ -3,7 +3,7 @@ export const CheckBookGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "ChequeBook Details",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,

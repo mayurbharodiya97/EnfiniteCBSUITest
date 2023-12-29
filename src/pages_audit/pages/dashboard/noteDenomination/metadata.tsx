@@ -42,7 +42,7 @@ import * as API from "./api";
 //       datetimePicker: {
 //         fullWidth: true,
 //       },
-//       autocomplete: {
+//       select: {
 //         fullWidth: true,
 //       },
 //     },
@@ -342,17 +342,17 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       isDisabled: false,
       gridconfig: { xs: 6, sm: 2 },
       dependFields: ["SDC"],
-      dependFieldsonchange: (colomnValue, value, name, extraData) => {
-        if (value) {
-          return {
-            label: "Default Remarkz",
-            // gridconfig: { xs: 12, sm: 12 },
-            // placeholder: "Placeholder Is Changed",
-            value: value,
-            defaultValue: value,
-          };
-        }
-      },
+      // dependFieldsonchange: (colomnValue, value, name, extraData) => {
+      //   if (value) {
+      //     return {
+      //       label: "Default Remarkz",
+      //       // gridconfig: { xs: 12, sm: 12 },
+      //       // placeholder: "Placeholder Is Changed",
+      //       value: value,
+      //       defaultValue: value,
+      //     };
+      //   }
+      // },
       // dependFields: ["TRN"],
       // dependFieldsonchange: (colomnValue, value, name, extraData) => {
       //   if (value === "R" || value === "P") {
@@ -368,7 +368,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       accessor: "RECEIPT_PAYMENT",
       name: "RECEIPT_PAYMENT",
       defaultValue: "",
-      type: "currency",
+      type: "amountfield",
       isVisible: true,
       gridconfig: { xs: 6, sm: 2 },
       defaultfocus: true,
@@ -409,6 +409,10 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
           }
           return "";
         }
+      },
+      FormatProps: {
+        decimalScale: 2,
+        thousandsGroupStyle: "thousand",
       },
     },
     {

@@ -39,7 +39,7 @@ const AccountDetails = () => {
   const [openBoxes, setOpenBoxes] = useState<any>([false]);
   const [reqPara, setReqPara] = useState<any>([]);
 
-  const authState = useContext(AuthContext);
+  const { authState, logout } = useContext(AuthContext);
 
   const rowsDataRef: any = useRef([]);
 
@@ -58,12 +58,29 @@ const AccountDetails = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const checkLocalStorage = () => {
+      // Check if the key you're interested in is changed
+      if (!localStorage.getItem("tokenchecksum")) {
+        window.location.reload();
+        logout();
+      }
+    };
+
+    window.addEventListener("storage", checkLocalStorage);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener("storage", checkLocalStorage);
+    };
+  }, [localStorage]);
+
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
   >(["StatementDetailsData"], () =>
     API.StatementDetailsData({
-      COMP_CD: authState?.authState?.companyID,
+      COMP_CD: authState?.companyID,
       ACCT_CD: rowsDataRef?.current?.FULL_ACCT_NO
         ? ""
         : rowsDataRef.current?.ACCT_CD ?? "",
@@ -151,9 +168,9 @@ const AccountDetails = () => {
   //   }
   // }, [data]);
 
-  const companyName = authState?.authState?.user?.branch;
-  const generatedBy = authState?.authState?.user?.id;
-  const RequestingBranchCode = authState?.authState?.user?.branchCode;
+  const companyName = authState?.user?.branch;
+  const generatedBy = authState?.user?.id;
+  const RequestingBranchCode = authState?.user?.branchCode;
 
   return (
     <Dialog fullScreen={true} open={true}>
