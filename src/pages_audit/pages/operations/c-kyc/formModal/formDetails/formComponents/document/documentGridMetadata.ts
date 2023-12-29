@@ -31,7 +31,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "id",
+      accessor: "SR_CD",
       columnName: "Sr.No.",
       sequence: 1,
       alignment: "right",
@@ -39,7 +39,6 @@ export const DocumentGridMetadata: GridMetaDataType = {
       width: 70,
       minWidth: 60,
       maxWidth: 120,
-      isAutoSequence: true,
     },
     {
       accessor: "DOC_DESCRIPTION",

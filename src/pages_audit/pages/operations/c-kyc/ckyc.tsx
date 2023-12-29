@@ -327,8 +327,8 @@ export const Ckyc = () => {
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      // ENTERED_DATE: "06-12-2023"
+      // ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
+      ENTERED_DATE: "22-12-2023"
     })
   )
 
@@ -412,12 +412,21 @@ export const Ckyc = () => {
     }
   }, [state?.entityTypectx]);
 
+  useEffect(() => {
+    console.log(state?.retrieveFormDataApiRes, "wadqwdwq.", state?.formDatactx, "upd ->", state?.modifiedFormCols)
+  }, [state?.retrieveFormDataApiRes, state?.formDatactx, state?.modifiedFormCols])
   // useEffect(() => {
   //   console.log("wadqwdwq.", state?.colTabValuectx, state?.formDatactx, state?.steps)
   // }, [state?.colTabValuectx, state?.formDatactx, state?.steps])
   // useEffect(() => {
-  //   console.log("wadqwdwq.", state?.formDatactx, state?.modifiedFormCols)
-  // }, [state?.formDatactx, state?.modifiedFormCols])
+  //   console.log(Boolean(state?.photoBase64ctx && state?.signBase64ctx), state?.retrieveFormDataApiRes, "wadqwdwq.", state?.formDatactx, "upd -> ", state?.modifiedFormCols)
+  // }, [state?.photoBase64ctx, state?.signBase64ctx, state?.retrieveFormDataApiRes, state?.formDatactx, state?.modifiedFormCols])
+  // useEffect(() => {
+  //   console.log("wsfewiehifwef", state?.categConstitutionValuectx, state?.categoryValuectx, state?.constitutionValuectx)
+  // }, [state?.categConstitutionValuectx, state?.categoryValuectx, state?.constitutionValuectx])
+  // useEffect(() => {
+  //   console.log(state?.retrieveFormDataApiRes, "wadqwdwq.", state?.formDatactx)
+  // }, [state?.formDatactx, state?.retrieveFormDataApiRes])
   // useEffect(() => {
   //   console.log("wadqwdwq..", state?.photoBase64ctx, state?.signBase64ctx)
   // }, [state?.photoBase64ctx, state?.signBase64ctx])
@@ -986,7 +995,7 @@ export const Ckyc = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
-              displayMode={"new"}
+              formmode={"new"}
             />
           }
         />
@@ -1000,7 +1009,7 @@ export const Ckyc = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
-              displayMode={"edit"}
+              formmode={"edit"}
             />
           }
         />

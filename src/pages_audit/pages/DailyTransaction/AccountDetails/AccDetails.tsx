@@ -54,14 +54,7 @@ const AccDetails = ({ flag }) => {
           className={flag === "TELLER" ? "styleforteller" : ""}
         >
           <CardContent>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
+            <div id="accHead">
               <Typography variant="h5" component="div">
                 Personal Information
               </Typography>
@@ -108,7 +101,7 @@ const AccDetails = ({ flag }) => {
                 </Grid>
 
                 <Grid item id="accInfo">
-                  <Typography variant="button">Branch Code</Typography>
+                  <Typography variant="button">Branch</Typography>
                   <Typography>{tempStore?.accInfo?.BRANCH_CD}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
@@ -123,7 +116,13 @@ const AccDetails = ({ flag }) => {
                 )}
                 <Grid item id="accInfo">
                   <Typography variant="button">Status</Typography>
-                  <Typography>
+                  <Typography
+                    style={
+                      tempStore?.accInfo?.STATUS == "C"
+                        ? { color: "#ea3a1b" }
+                        : { color: "" }
+                    }
+                  >
                     {tempStore?.accInfo?.STATUS == "O" && "Open"}
                     {tempStore?.accInfo?.STATUS == "C" && "Close"}
                     {tempStore?.accInfo?.STATUS == "U" && "Unclaimed"}
@@ -148,14 +147,7 @@ const AccDetails = ({ flag }) => {
           className={flag === "TELLER" ? "style-for-teller" : ""}
         >
           <CardContent>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
+            <div id="accHead">
               <Typography variant="h5" component="div">
                 Balance Details
               </Typography>
@@ -203,14 +195,7 @@ const AccDetails = ({ flag }) => {
           className={flag === "TELLER" ? "style-for-teller" : ""}
         >
           <CardContent>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
+            <div id="accHead">
               <Typography variant="h5" component="div">
                 Loan Details
               </Typography>

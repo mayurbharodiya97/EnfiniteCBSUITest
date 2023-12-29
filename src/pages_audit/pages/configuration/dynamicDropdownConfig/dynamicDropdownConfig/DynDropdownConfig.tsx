@@ -114,10 +114,10 @@ export const DynamicDropdownConfig = ({
   if (DynamicDropdownConfigMetaData.form.label) {
     DynamicDropdownConfigMetaData.form.label =
       formMode !== "add"
-        ? "Dynamic Dropdown Configure" +
+        ? "Flexible Dropdown Configuration" +
           " For " +
           (reqData?.[0]?.data?.DDLB_NAME ?? "")
-        : "Dynamic Dropdown Configure";
+        : "Flexible Dropdown Configuration";
   }
   return (
     <>

@@ -42,7 +42,8 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
   const mutation: any = useMutation(API.SaveAsDraft, {
     onSuccess: (data) => {
         if(data?.[0]?.REQ_CD) {
-            handleReqCDctx(data?.[0]?.REQ_CD)
+            let req_cd = parseInt(data?.[0]?.REQ_CD) ?? ""
+            handleReqCDctx(req_cd)
             handleColTabChangectx(state?.colTabValuectx+1)
         }
     },
@@ -71,7 +72,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     console.log("qweqweqwe", data)     
     if(data && !hasError) {
         let formFields = Object.keys(data) // array, get all form-fields-name 
-        formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+        formFields = formFields.filter(field => !field.includes("_ignoreField") && field !== "AGE") // array, removed divider field
         formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
         const formData = _.pick(data, formFieldsRef.current)
   
@@ -82,13 +83,12 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         //     data["DATE_OF_COMMENCEMENT"] = format(new Date(data["DATE_OF_COMMENCEMENT"]), "dd-MMM-yyyy")
         // }
 
-        setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
+        // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
         let newData = state?.formDatactx
         newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...formData}
         handleFormDataonSavectx(newData)
         // handleColTabChangectx(2)
-        handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
         // handleColTabChangectx(3)
         // handleColTabChangectx(state?.colTabValuectx+1)
 
@@ -111,6 +111,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
             handleModifiedColsctx(tabModifiedCols)
             handleColTabChangectx(state?.colTabValuectx+1)
         } else {
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             let data = {
                 CUSTOMER_TYPE: state?.entityTypectx,
                 CATEGORY_CD: state?.categoryValuectx,
@@ -129,7 +130,9 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         //     console.log("saveDraftData", saveDraftData)
         //     handleColTabChangectx(state?.colTabValuectx+1)
         // }
-    } else handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+    } else {
+        handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+    }
     endSubmit(true)
     // handleColTabChangectx(state?.colTabValuectx+1)
     setIsNextLoading(false)

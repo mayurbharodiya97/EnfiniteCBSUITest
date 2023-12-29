@@ -236,7 +236,22 @@ const areObjectsEqual = (obj1, obj2, keys) => {
 };
 
 const getChangedColumns = (obj1, obj2, keys) => {
-  return keys.filter((key) => obj1[key] !== obj2[key]);
+  return keys.filter((key) => {
+    if(obj1[key] !== obj2[key]) {
+      if (
+        (typeof obj2[key] === "object" ||
+          typeof obj1[key] === "object" ||
+          typeof obj2[key] === "string") &&
+        isValidDate(obj2[key]) &&
+        isValidDate(obj1[key]) &&
+        format(new Date(obj2[key]), "dd/MM/yyyy HH:mm:ss") ===
+          format(new Date(obj1[key]), "dd/MM/yyyy HH:mm:ss")
+      ) {
+      } else {
+        return key;
+      }
+    }
+  });
 };
 
 export const transformDetailDataForDML = (input1, input2, keysToCompare) => {
@@ -289,10 +304,10 @@ export const transformDetailDataForDML = (input1, input2, keysToCompare) => {
   }
 
   // Process DELETE operation
-  // for (const [id, item1] of idMapInput1) {
-  //   if (!idMapInput2.has(id)) {
-  //     output.isDeleteRow.push(item1);
-  //   }
-  // }
+  for (const [id, item1] of idMapInput1) {
+    if (!idMapInput2.has(id)) {
+      output.isDeleteRow.push(item1);
+    }
+  }
   return output;
 };

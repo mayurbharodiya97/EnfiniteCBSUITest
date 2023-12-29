@@ -440,10 +440,10 @@ const DynamicGridConfig: FC<{
 
   const dynamicLabel =
     formMode !== "add"
-      ? "Dynamic Grid Configure" +
+      ? "Flexible Grid Configuration" +
         " For " +
         (reqData?.[0]?.data?.DESCRIPTION ?? "")
-      : "Dynamic Grid Configure";
+      : "Flexible Grid Configuration";
 
   return (
     <>

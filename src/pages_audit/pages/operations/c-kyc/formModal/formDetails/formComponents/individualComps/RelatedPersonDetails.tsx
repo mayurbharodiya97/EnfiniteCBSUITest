@@ -8,16 +8,18 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 import { AuthContext } from "pages_audit/auth";
+import _ from 'lodash';
 
 const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
   const RelPersonFormRef = useRef<any>("")
   const [isRelatedPDExpanded, setIsRelatedPDExpanded] = useState(true)
   const [isNextLoading, setIsNextLoading] = useState(false)
+  const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const handleRelatedPDExpand = () => {
     setIsRelatedPDExpanded(!isRelatedPDExpanded)
   }
@@ -67,6 +69,23 @@ const myGridRef = useRef<any>(null);
         actionFlag,
         hasError
     ) => {
+        // console.log("skefdiweufiweufwef", data)
+        // let formFields = Object.keys(data?.RELATED_PERSON_DTL?.[0]) // array, get all form-fields-name 
+        // formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+        // formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+        // // const formData = _.pick(data, formFieldsRef.current)
+
+        // console.log(formDT, "reltedaw", data.RELATED_PERSON_DTL)
+        
+        // let formDT = (data.RELATED_PERSON_DTL && data.RELATED_PERSON_DTL.length>0) && data.RELATED_PERSON_DTL.map((formRow, i) => {
+        //     let formFields = Object.keys(formRow)
+        //     formFields = formFields.filter(field => !field.includes("_ignoreField"))
+        //     const formData = _.pick(data.RELATED_PERSON_DTL[i], formFields)
+        //     return formData;
+        // })
+
+        
+
         setIsNextLoading(true)
         console.log("qweqweqwe", data)     
         if(data && !hasError) {
@@ -83,19 +102,94 @@ const myGridRef = useRef<any>(null);
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
                 ACTIVE: "Y"
             }
-
-            let newFormatRelPerDtl = data?.RELATED_PERSON_DTL.map((el, i) => {
-                return {...el, ...commonData
-                    // , SR_CD: i+1
+            if(data.RELATED_PERSON_DTL) {
+                let filteredCols:any[]=[]
+                // if(data.RELATED_PERSON_DTL.length>0) {
+                filteredCols = Object.keys(data.RELATED_PERSON_DTL[0])
+                filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
+                if(state?.isFreshEntryctx) {
+                    filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
                 }
-            })
+                // }
 
-            // newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
-            newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
-            handleFormDataonSavectx(newData)
-            // handleColTabChangectx(4)
-            handleColTabChangectx(state?.colTabValuectx+1)
+                let newFormatRelPerDtl = data.RELATED_PERSON_DTL.map((formRow, i) => {
+                    let formFields = Object.keys(formRow)
+                            // console.log("reltedaw formFields", formFields)
+                    formFields = formFields.filter(field => !field.includes("_ignoreField"))
+                            // console.log("reltedaw formFields 2", formFields)
+                            // formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+                    const formData = _.pick(data.RELATED_PERSON_DTL[i], formFields)
+                            // console.log("reltedaw formData", formData)
+                    return {...formData, ...commonData};
+                })
+
+                // console.log("reltedaw", data.RELATED_PERSON_DTL)
+                
+                            
+                    
+                    
+                
+                
+                
+                // let newFormatRelPerDtl = data?.RELATED_PERSON_DTL.map((el, i) => {
+                //     return {...el, ...commonData
+                //         // , SR_CD: i+1
+                //     }
+                // })
+    
+                // newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
+                newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
+                handleFormDataonSavectx(newData)
+                // handleColTabChangectx(4)
+
+
+                if(!state?.isFreshEntryctx) {
+    
+                    let tabModifiedCols:any = state?.modifiedFormCols
+                    // let updatedCols = tabModifiedCols.RELATED_PERSON_DTL ? _.uniq([...tabModifiedCols.RELATED_PERSON_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+                    // let updatedCols = [" "]
+                    tabModifiedCols = {
+                      ...tabModifiedCols,
+                      RELATED_PERSON_DTL: [...filteredCols]
+                    }
+                    handleModifiedColsctx(tabModifiedCols)
+                      
+    
+    
+                    // let updPara = utilFunction.transformDetailDataForDML(
+                    //     result[1].data ?? [],
+                    //     newSomeData ?? [],
+                    //     ["SR_CD"]
+                    //   );
+                    //     let tabModifiedCols:any = state?.modifiedFormCols
+                    //     let updatedCols = tabModifiedCols.RELATED_PERSON_DTL ? _.uniq([...tabModifiedCols.RELATED_PERSON_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+                
+                    //     tabModifiedCols = {
+                    //       ...tabModifiedCols,
+                    //       RELATED_PERSON_DTL: [...updatedCols]
+                    //     }
+                    //     // handleEditFormDatactx(updateFormData, tabModifiedCols)
+                    //     handleModifiedColsctx(tabModifiedCols)
+                    //   } else {
+                    //     handleStepStatusctx({
+                    //       status: "completed",
+                    //       coltabvalue: state?.colTabValuectx,
+                    //     });
+                }
+            } else {
+                newData["RELATED_PERSON_DTL"] = []
+                handleFormDataonSavectx(newData)
+                if(!state?.isFreshEntryctx) {
+                    let tabModifiedCols:any = state?.modifiedFormCols
+                    tabModifiedCols = {
+                      ...tabModifiedCols,
+                      RELATED_PERSON_DTL: []
+                    }
+                    handleModifiedColsctx(tabModifiedCols)
+                }
+            }
             handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            handleColTabChangectx(state?.colTabValuectx+1)
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
@@ -170,11 +264,23 @@ const myGridRef = useRef<any>(null);
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
                         RelPersonFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Save & Next")}</Button>
+                >{t("Save & Next")}</Button>}
+                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
+                ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={(e) => {
+                        RelPersonFormRef.current.handleSubmitError(e, "save")
+                    }}
+                >{t("Update & Next")}</Button>
+                : !state?.isFreshEntryctx ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx+1)
+                    }}
+                >{t("Next")}</Button> : null
+                }
             </Grid>
         </Grid>        
     )

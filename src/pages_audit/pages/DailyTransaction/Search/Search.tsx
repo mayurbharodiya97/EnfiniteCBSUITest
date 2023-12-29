@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { JointDetailIssueEntry } from "./metaData";
 import { SearchGridMetaData } from "./gridMetadata";
@@ -13,8 +13,25 @@ import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
 export const Search = () => {
-  const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
+
+  const { tempStore, setTempStore } = useContext(AuthContext);
+  const [rows, setRows] = useState([]);
+  console.log(tempStore, "temppp");
+
+  const getSearchList = useMutation(API.getSearchList, {
+    onSuccess: (data) => {
+      console.log(data, " getSearchList detailssss");
+      setRows(data);
+    },
+    onError: (error) => {},
+  });
+
+  useEffect(() => {
+    tempStore?.accInfo?.ACCT_CD && getSearchList.mutate(tempStore.accInfo);
+  }, [tempStore]);
+
+  const myGridRef = useRef<any>(null);
   const isErrorFuncRef = useRef<any>(null);
 
   const getData = useMutation(API.getChequeBookEntryData, {
@@ -80,7 +97,7 @@ export const Search = () => {
         <GridWrapper
           key={`SearchGridMetaData`}
           finalMetaData={SearchGridMetaData as GridMetaDataType}
-          data={getData?.data ?? []}
+          data={rows}
           setData={() => null}
           loading={getData.isLoading}
           // setAction={setCurrentAction}
