@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useRef, useState, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
-import { JointDetailIssueEntry } from "./metaData";
 import { TodayTransGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";

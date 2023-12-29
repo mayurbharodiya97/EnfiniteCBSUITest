@@ -121,9 +121,6 @@ export const getTRXList = async (reqData) => {
 export const getAccInfo = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
-      // COMP_CD: "132 ",
-      // BRANCH_CD: "099 ",
-      // ACCT_TYPE: "001 ",
       // ACCT_CD: "000026              ",
       // A_ASON_DT: "15/DEC/2023",
       COMP_CD: reqData.COMP_CD,
@@ -163,6 +160,7 @@ export const getAccInquiry = async (reqData) => {
 };
 
 export const addDailyTrxScroll = async (reqData) => {
+  console.log(reqData, "reqData");
   const localInfo = localStorage.getItem("authDetails");
   let localInfo1 = localInfo && JSON.parse(localInfo);
   let arr = reqData.map((a) => {
@@ -172,10 +170,10 @@ export const addDailyTrxScroll = async (reqData) => {
       ACCT_TYPE: a.accType?.value,
       ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
       REMARKS: a.remark,
-      CHEQUE_NO: a.cNo ? a.cNo : "0", //!a.isCredit ? a.cNo?.toString() : "0"
+      CHEQUE_NO: a.cNo ? a.cNo : "0",
       TYPE_CD: a.trx.code + "   ",
-      TRAN_DT: date2,
-      VALUE_DT: date2,
+      // TRAN_DT: date2,
+      // VALUE_DT: date2,
       ENTERED_BRANCH_CD: a.branch?.value,
       ENTERED_COMP_CD: a.branch?.info.COMP_CD,
       SDC: a.sdc.value,
