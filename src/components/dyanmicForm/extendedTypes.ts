@@ -188,13 +188,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
         return false;
       },
     },
-    schemaValidation: {
-      type: "string",
-      rules: [
-        { name: "typeError", params: ["ThisFieldisrequired"] },
-        { name: "required", params: ["ThisFieldisrequired"] },
-      ],
-    },
+    // schemaValidation: {
+    //   type: "string",
+    //   rules: [
+    //     { name: "typeError", params: ["ThisFieldisrequired"] },
+    //     { name: "required", params: ["ThisFieldisrequired"] },
+    //   ],
+    // },
   },
   MonthlyEmiPayCurrency: {
     render: {
@@ -647,5 +647,11 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     label: "AccountType",
     // options: GeneralAPI.getAccountTypeList,
     _optionsKey: "",
+  },
+  Remark: {
+    render: {
+      componentType: "textField",
+    },
+    maxLength: 100,
   },
 };

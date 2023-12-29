@@ -481,7 +481,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETLIMITENTRY: {
-    url: "/accountServiceAPI/GETLIMITENTRY",
+    url: "/loanServiceAPI/GETLIMITENTRY",
     packageName: "",
   },
   DOCHEQUEBKISSUE: {
@@ -625,7 +625,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETFDBRDDETAIL: {
-    url: "accountServiceAPI/GETFDBRDDETAIL",
+    url: "/loanServiceAPI/GETFDBRDDETAIL",
     packageName: "",
   },
   GETDAILYTRANMAKERDTL: {
@@ -649,7 +649,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETFDBFDDETAIL: {
-    url: "accountServiceAPI/GETFDBFDDETAIL",
+    url: "/loanServiceAPI/GETFDBFDDETAIL",
     packageName: "",
   },
   GETLIMITFDTYPEDDW: {
