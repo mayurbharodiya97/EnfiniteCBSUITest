@@ -89,7 +89,6 @@ export const TRN002_Table = () => {
 
   const getAccInfo = useMutation(API2.getAccInfo, {
     onSuccess: (data) => {
-      console.log(data, "accInfo");
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
     },
@@ -100,7 +99,6 @@ export const TRN002_Table = () => {
 
   const confirmScroll = useMutation(API.confirmScroll, {
     onSuccess: (data) => {
-      console.log(data, "confirmScroll");
       setOpen(true);
       setSnack({ code: true, msg: "Record Confirm" });
       handleGetTRN002List();
@@ -128,7 +126,6 @@ export const TRN002_Table = () => {
 
     if (data.name === "view-detail") {
       setLoading(true);
-      console.log(row, "roww viewdetail");
 
       let obj = {
         COMP_CD: row?.COMP_CD,
@@ -141,7 +138,6 @@ export const TRN002_Table = () => {
     }
 
     if (data.name === "view") {
-      console.log(row, "roww view");
       if (row.CONFIRMED == "0") {
         confirmScroll.mutate(row);
       } else {
@@ -151,7 +147,6 @@ export const TRN002_Table = () => {
     }
   }, []);
   const handleUpdateRows = (data) => {
-    console.log(data, "dataaaa");
     setRows2(data);
   };
 

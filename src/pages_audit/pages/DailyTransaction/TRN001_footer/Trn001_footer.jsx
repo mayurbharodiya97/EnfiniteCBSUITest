@@ -109,7 +109,6 @@ const Trn001_footer = () => {
   useEffect(() => {
     console.log(rows, "rows");
 
-    console.log("hello bug");
     let i = 0;
     if (rows.length > 0) {
       i = rows.length - 1;
@@ -187,7 +186,6 @@ const Trn001_footer = () => {
   const getAccInfo = useMutation(API.getAccInfo, {
     onSuccess: (data) => {
       setLoading(false);
-      console.log(data, "accInfo");
       setTempStore({ ...tempStore, accInfo: data });
       if (data.STATUS == "C") {
         console.log("c1");
@@ -211,7 +209,6 @@ const Trn001_footer = () => {
         });
         rows[index].bug = true;
       } else {
-        console.log("c4");
         setErrMsg({ ...errMsg, accNo: "" });
       }
     },
@@ -225,7 +222,6 @@ const Trn001_footer = () => {
   const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
       setLoading(false);
-      console.log(data, "save scroll api");
       if (Number(data[0]?.INSERT) > 0) {
         setOpen(true);
         setSnack({ code: true, msg: "Record Added" });
@@ -241,7 +237,6 @@ const Trn001_footer = () => {
   });
   const getChqValidation = useMutation(API.getChqValidation, {
     onSuccess: (data) => {
-      console.log(data, "getChqValidation api");
       if (data.ERR_CODE == "-1") {
         rows[index].bug = true;
         rows[index].bugChq = true;
@@ -253,7 +248,6 @@ const Trn001_footer = () => {
 
   const getTRN001List = useMutation(API.getTRN001List, {
     onSuccess: (data) => {
-      console.log(data, "getTRN001List api");
       setRows2(data);
     },
     onError: (error) => {},
@@ -371,12 +365,6 @@ const Trn001_footer = () => {
     obj[i].date = e.target?.value;
     setRows(obj);
   };
-  // const handleDate = (e, i) => {
-  //   console.log(e, "date e");
-  //   const obj = [...rows];
-  //   obj[i].date = e;
-  //   setRows(obj);
-  // };
 
   const handleDebit = (e, i) => {
     const obj = [...rows];
@@ -538,11 +526,6 @@ const Trn001_footer = () => {
   };
 
   const handleSaveDialog = () => {
-    console.log(isSave, "isSaveeeee");
-    console.log(errMsg, "errMsg");
-    console.log(isArray, "isArray");
-    console.log(diff, "diff");
-
     if (
       errMsg.accNo ||
       errMsg.cNo ||
@@ -752,18 +735,11 @@ const Trn001_footer = () => {
                             value={a.date}
                             error={a.isCredit && !a.date ? true : false}
                             type="date"
-                            disabled={a.isCredit || viewOnly ? true : false}
+                            // disabled={a.isCredit || viewOnly ? true : false}
+                            disabled={true}
                             size="small"
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
-                          {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                              // value={a.date}
-                              error={a.isCredit && !a.date ? true : false}
-                              disabled={a.isCredit || viewOnly ? true : false}
-                              onChange={(e) => handleDate(e, i)}
-                            />
-                          </LocalizationProvider> */}
                         </TableCell>
                         <TableCell sx={{ minWidth: 50 }}>
                           <TextField

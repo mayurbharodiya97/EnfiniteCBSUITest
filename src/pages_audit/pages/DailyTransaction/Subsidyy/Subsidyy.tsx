@@ -23,7 +23,6 @@ export const Subsidyy = () => {
   });
 
   useEffect(() => {
-    console.log(tempStore, "tempStore");
     tempStore?.accInfo?.ACCT_CD &&
       getDisbursementList.mutate(tempStore.accInfo);
   }, [tempStore]);

@@ -49,7 +49,6 @@ function TabPanel(props: TabPanelProps) {
 export const DailyTrans = () => {
   const [tabValue, setTabValue] = React.useState(0);
   const loc = useLocation();
-  console.log(loc, "loc");
 
   const navArray = [
     {
@@ -103,7 +102,6 @@ export const DailyTrans = () => {
   ];
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    // console.log(newValue, "newValue");
     setTabValue(newValue);
   };
   return (
