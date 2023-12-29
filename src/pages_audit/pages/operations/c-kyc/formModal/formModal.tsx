@@ -180,7 +180,7 @@ export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
-  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, displayMode
+  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, formmode
   // entityType, setEntityType, 
   // customerCategories, 
   // tabsApiRes, setTabsApiRes, 
@@ -204,6 +204,8 @@ export default function FormModal({
   const [cancelDialog, setCancelDialog] = useState(false)
   const [from, setFrom] = useState("");
   const [confirmAction, setConfirmAction] = useState<any>("confirm");
+  const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
+  const [displayMode, setDisplayMode] = useState<any>(formmode)
 
   // on edit/view
   // - call retrieveFormRefetch
@@ -336,8 +338,14 @@ export default function FormModal({
     //   onClose()
     // } else {
       if(location.pathname.includes("/view-detail")) {
-        if(location.pathname.includes("/ckyc-confirmation")) {
+        // setDisplayMode(formmode)
+        if(location.pathname.includes("/confirm-ckyc")) {
           setFrom("confirmation")
+          setDisplayMode("view")
+        } else if(location.state[0].data.REQUEST_ID) {
+          if(location.state[0].data.CONFIRMED && (location.state[0].data.CONFIRMED.includes("Y") || location.state[0].data.CONFIRMED.includes("R"))) {
+            setDisplayMode("view")
+          }
         }
         // console.log(">>>-- edit", location.state, location.state[0].id)
         // handlecustomerIDctx(location.state[0].id)
@@ -351,15 +359,15 @@ export default function FormModal({
         //     REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
         //   }  
         // } else {
-          if((location.state && location.state.length>0) && (location.state[0].id && location.state[0].data.REQUEST_ID)) {
+          if((location.state && location.state.length>0) && (location.state[0].data.REQUEST_ID)) {
             data = {
               COMP_CD: authController?.authState?.companyID ?? "",
               REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
             }
-          } else {
+          } else if((location.state && location.state.length>0) && (location.state[0].data.CUSTOMER_ID)) {
           data = {
             COMP_CD: authController?.authState?.companyID ?? "",
-            CUSTOMER_ID: location.state[0].id ?? "",
+            CUSTOMER_ID: location.state[0].data?.CUSTOMER_ID ?? "",
           }
         }
         Object.keys(data).length>1 && mutation.mutate(data)
@@ -394,7 +402,8 @@ export default function FormModal({
     ["getTabsDetail", {
       ENTITY_TYPE: state?.entityTypectx, 
       CATEGORY_CD: state?.categoryValuectx, 
-      CONS_TYPE: state?.constitutionValuectx
+      CONS_TYPE: state?.constitutionValuectx,
+      CONFIRMFLAG: state?.confirmFlagctx,
     }],
     () =>
       API.getTabsDetail(
@@ -404,13 +413,17 @@ export default function FormModal({
         CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
         CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
         isFreshEntry: state?.isFreshEntryctx,
-        updateCase: state?.update_casectx,
+        CONFIRMFLAG: state?.confirmFlagctx,
       }  
       )
   );
   // const handleChangeAccType = (e) => {
   //   setAccTypeValue(e.target.value)
   // }
+
+  // useEffect(() => {
+  //   console.log(formmode, "wfewdeqwqwd", displayMode, state?.confirmFlagctx)
+  // }, [formmode, displayMode, state?.confirmFlagctx])
 
   useEffect(() => {
     if(!isLoading) {
@@ -482,7 +495,7 @@ export default function FormModal({
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy />
+        return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
@@ -543,7 +556,7 @@ export default function FormModal({
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy />
+        return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
@@ -576,7 +589,7 @@ export default function FormModal({
     }
   }
 
-  const openUpdateDialog = (e) => {
+  const openUpdateDialog = () => {
     // if(state?.currentFormRefctx) {
     //   if(typeof state?.currentFormRefctx.current.handleSubmitError === "function") {
     //     state?.currentFormRefctx.current.handleSubmitError(e, "save")
@@ -600,9 +613,31 @@ export default function FormModal({
     setCancelDialog(false)
   }
 
+  const onClosePreventUpdateDialog = () => {
+    setAlertOnUpdate(false)
+  }
+
   const closeForm = () => {
     handleFormModalClosectx()
     onClose()
+  }
+
+  const onUpdateForm = () => {
+    // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
+    if(displayMode == "new" || displayMode == "edit") {
+      if(Object.keys(state?.modifiedFormCols).length >0) {
+        setUpdateDialog(true)
+        // setCancelDialog(true)
+      } else {
+        setAlertOnUpdate(true)
+      }
+    }
+    // console.log(Object.keys(state?.modifiedFormCols).length >0, "djweijd", displayMode, state?.modifiedFormCols)
+      //  else {
+      //   closeForm()
+      // }
+
+    // setUpdateDialog(true)
   }
 
   const onCancelForm = () => {
@@ -617,6 +652,39 @@ export default function FormModal({
       closeForm()
     }
   }
+
+  const ActionBTNs = React.useMemo(() => {
+    return displayMode == "view"
+      ? (from && from == "confirmation") && <React.Fragment>
+        <Button
+          onClick={() => openActionDialog("confirm")}
+          color="primary"
+          // disabled={mutation.isLoading}
+        >
+          {t("Confirm")}
+        </Button>
+        <Button
+          onClick={() => openActionDialog("query")}
+          color="primary"
+          // disabled={mutation.isLoading}
+        >
+          {t("Raise Query")}
+        </Button>
+        <Button
+          onClick={() => openActionDialog("reject")}
+          color="primary"
+          // disabled={mutation.isLoading}
+        >
+          {t("Reject")}
+        </Button>
+      </React.Fragment>
+      : displayMode == "edit" && <Button
+          onClick={onUpdateForm}
+          color="primary"
+        >
+          {t("Update")}
+        </Button>
+  }, [displayMode, from, state?.modifiedFormCols])
 
 
   return (
@@ -833,7 +901,8 @@ export default function FormModal({
             </Button> */}
 
             {/* for checker, view-only */}
-            {from=="confirmation" && <Button
+            {ActionBTNs}
+            {/* {from=="confirmation" && <Button
               onClick={() => openActionDialog("confirm")}
               color="primary"
               // disabled={mutation.isLoading}
@@ -861,15 +930,15 @@ export default function FormModal({
               // disabled={mutation.isLoading}
             >
               {t("Update")}
-            </Button>}
-            {state?.isFreshEntryctx &&<Button
+            </Button>} */}
+            {/* {state?.isFreshEntryctx &&<Button
               // onClick={handleFormModalClose}
               color="primary"
               // disabled={mutation.isLoading}
               // disabled={!state?.isReadyToSavectx}
             >
               {t("Save")}
-            </Button>}
+            </Button>} */}
             <Button
               onClick={onCancelForm}
               color="primary"
@@ -1092,6 +1161,7 @@ export default function FormModal({
         {updateDialog && <UpdateDialog 
             open={updateDialog} 
             onClose={onCloseUpdateDialog} 
+            mutationFormDTL={mutation}
         />}
 
         {actionDialog && <ActionDialog 
@@ -1105,6 +1175,11 @@ export default function FormModal({
             open={cancelDialog} 
             onClose={onCloseCancelDialog} 
             closeForm = {onClose}
+        />}
+
+        {alertOnUpdate && <PreventModificationAlert 
+            open={alertOnUpdate} 
+            onClose={onClosePreventUpdateDialog} 
         />}
       </Dialog>
     // </div>
@@ -1281,5 +1356,59 @@ export const CancelDialolg = ({open, onClose, closeForm}) => {
               Cancel
           </GradientButton>
       </DialogActions> 
+  </Dialog>
+}
+
+export const PreventModificationAlert = ({open, onClose}) => {
+  return <Dialog open={open} maxWidth="sm"
+  PaperProps={{
+      style: {
+          minWidth: "40%",
+          width: "40%",
+      }
+  }}>
+      <DialogTitle
+          sx={{
+              background: "var(--theme-color3)",
+              color: "var(--theme-color2)",
+              letterSpacing: "1.3px",
+              margin: "10px",
+              boxShadow:
+              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+              fontWeight: 500,
+              borderRadius: "inherit",
+              minWidth: "450px",
+              py: 1,
+          }}
+          id="responsive-dialog-title"
+      >
+          Update Required
+          {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
+          {/* {"Updating..."} */}
+      </DialogTitle>
+      <DialogContent>
+      <DialogContentText
+          sx={{ fontSize: "19px", display: "flex" }}
+      >
+          <p>You have not made any changes yet.</p>
+          {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
+          {/* <HelpIcon color="secondary" fontSize="large" /> */}
+      </DialogContentText>
+      <DialogContentText
+          sx={{ fontSize: "19px", display: "flex" }}
+      >
+          <p>Please kindly make any changes and update.</p>
+          {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
+          {/* <HelpIcon color="secondary" fontSize="large" /> */}
+      </DialogContentText>
+      <DialogActions>
+        <GradientButton
+            autoFocus
+            onClick={onClose}
+        >
+            Close
+        </GradientButton>
+      </DialogActions>      
+  </DialogContent>  
   </Dialog>
 }

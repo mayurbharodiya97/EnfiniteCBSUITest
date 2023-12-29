@@ -1,13 +1,14 @@
-import { useContext, useState, useEffect, useMemo, useRef } from 'react';
+import { useContext, useState, useEffect, useMemo, useRef, Fragment } from 'react';
 import { Grid, Typography, Divider, Skeleton, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { 
-    other_address_poa_contact_meta_data, 
     other_address_meta_data
 } from '../../metadata/individual/otheraddressdetails';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 import { AuthContext } from "pages_audit/auth";
+import { utilFunction } from 'components/utils';
+import _ from 'lodash';
 
 const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -15,7 +16,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     const { authState } = useContext(AuthContext);
     const [isNextLoading, setIsNextLoading] = useState(false)
     const { t } = useTranslation();
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
     const OtherAddDTLFormRef = useRef<any>("");
     const myGridRef = useRef<any>(null);
     const OtherAddDTLSubmitHandler = (
@@ -66,7 +67,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
         hasError
     ) => {
         setIsNextLoading(true)
-        // console.log("qweqweqweo", data)     
+        // console.log("qweqweqweo", data, data.OTHER_ADDRESS)     
         if(data && !hasError) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
@@ -82,19 +83,70 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                 ENT_COMP_CD: authState?.companyID ?? "",
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
             }
-
-            let newFormatOtherAdd = data?.OTHER_ADDRESS.map((el, i) => {
-                return {...el, ...commonData
-                    // , SR_CD: i+1
+            if(data.OTHER_ADDRESS) {
+                let filteredCols:any[]=[]
+                filteredCols = Object.keys(data.OTHER_ADDRESS[0])
+                filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
+                if(state?.isFreshEntryctx) {
+                    filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
                 }
-            })
-            // data["OTHER_ADDRESS"] = newFormatOtherAdd
 
-            newData["OTHER_ADDRESS"] = [...newFormatOtherAdd]
+                let newFormatOtherAdd = data.OTHER_ADDRESS.map((formRow, i) => {
+                    let formFields = Object.keys(formRow)
+                            // console.log("reltedaw formFields", formFields)
+                    formFields = formFields.filter(field => !field.includes("_ignoreField"))
+                            // console.log("reltedaw formFields 2", formFields)
+                            // formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+                    const formData = _.pick(data.OTHER_ADDRESS[i], formFields)
+                            // console.log("reltedaw formData", formData)
+                    return {...formData, ...commonData};
+                })
+                console.log("reltedaw", data.OTHER_ADDRESS)
+
+
+
+
+
+
+                // let newFormatOtherAdd = data?.OTHER_ADDRESS.map((el, i) => {
+                //     return {...el, ...commonData
+                //         // , SR_CD: i+1
+                //     }
+                // })
+                // data["OTHER_ADDRESS"] = newFormatOtherAdd
+    
+                newData["OTHER_ADDRESS"] = [...newFormatOtherAdd]
+                handleFormDataonSavectx(newData)
+    
+    
+    
+                if(!state?.isFreshEntryctx) {
+                    let tabModifiedCols:any = state?.modifiedFormCols
+                    tabModifiedCols = {
+                        ...tabModifiedCols,
+                        OTHER_ADDRESS: [...filteredCols]
+                    }
+                    handleModifiedColsctx(tabModifiedCols)
+                }
+            } else {
+                newData["OTHER_ADDRESS"] = []
+                handleFormDataonSavectx(newData)
+                if(!state?.isFreshEntryctx) {
+                    let tabModifiedCols:any = state?.modifiedFormCols
+                    tabModifiedCols = {
+                      ...tabModifiedCols,
+                      OTHER_ADDRESS: []
+                    }
+                    handleModifiedColsctx(tabModifiedCols)
+                }
+            }
+
+
+
+
             // newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...newFormatOtherAdd}
-            handleFormDataonSavectx(newData)
-            handleColTabChangectx(state?.colTabValuectx+1)
             handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            handleColTabChangectx(state?.colTabValuectx+1)
             // handleColTabChangectx(6)
             // handleColTabChangectx(state?.colTabValuectx+1)
 
@@ -124,6 +176,53 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     ? {OTHER_ADDRESS: state?.retrieveFormDataApiRes["OTHER_ADDRESS"]}
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
+
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    OtherAddDTLFormRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        OtherAddDTLFormRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [displayMode])
 
     return (
         <Grid container rowGap={3}>
@@ -167,12 +266,27 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                {SaveUpdateBTNs}
+                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
                         OtherAddDTLFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Save & Next")}</Button>
+                >{t("Save & Next")}</Button>}
+                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
+                ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                disabled={isNextLoading}
+                    onClick={(e) => {
+                        OtherAddDTLFormRef.current.handleSubmitError(e, "save")
+                    }}
+                >{t("Update & Next")}</Button>
+                : !state?.isFreshEntryctx ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx+1)
+                    }}
+                >{t("Next")}</Button> : null
+                } */}
             </Grid>
         </Grid>        
     )

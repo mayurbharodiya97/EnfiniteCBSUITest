@@ -59,7 +59,7 @@ const initialState:any  = {
     steps: {
         0: {status: ""}
     },
-    currentFormRefctx: null,
+    currentFormRefctx: () => {},
     modifiedFormCols: {},
     updateFormDatactx: {},
     modifiedFormFormat: {}
@@ -221,9 +221,14 @@ const CkycProvider = ({children}) => {
                 constitutionValuectx: recordData[0]?.data?.CONSTITUTION_TYPE,
                 isFormModalOpenctx: true, entityTypectx: recordData[0]?.data?.CUSTOMER_TYPE, isFreshEntryctx: false,
                 customerIDctx: recordData[0]?.data?.CUSTOMER_ID ?? "",
-                req_cd_ctx: recordData[0]?.data?.REQUEST_ID ?? "",
+                req_cd_ctx: !isNaN(parseInt(recordData[0]?.data?.REQUEST_ID)) ? parseInt(recordData[0]?.data?.REQUEST_ID) : "",
             }
             if(recordData[0]?.data?.CONFIRMED) {
+                        // A - ALL ,
+                        // Y - CONFIRMED,
+                        // M - SENT TO MODIFICATION 
+                        // R - REJECT 
+                        // P - SENT TO CONFIRMATION
                 payload["confirmFlagctx"] = recordData[0]?.data?.CONFIRMED
             }
             if(recordData[0]?.data?.UPD_TAB_FLAG_NM) {
@@ -295,12 +300,12 @@ const CkycProvider = ({children}) => {
 
                 modifiedFormCols: {},
                 updateFormDatactx: {},
-                confirmFlagctx: null, 
-                update_casectx: null, 
+                confirmFlagctx: "", 
+                update_casectx: "", 
                 isReadyToSavectx: false,
                 isReadyToUpdatectx: false,
                 modifiedFormFormat: {},                
-                currentFormRefctx: null,            
+                currentFormRefctx: () => {},            
             }
         })
     }
@@ -515,21 +520,45 @@ const CkycProvider = ({children}) => {
 
 
         // let apiRes = {...data[0]}
-        // console.log("wqkdhqiwuheqieqwdata", data)
-
+        console.log("wqkdhqiwuheqieqwdata", data)
+        let retrieveApiRes = data
         // console.log("daatadtatad", data)
         let payload = {
-            retrieveFormDataApiRes: {...data},
+            retrieveFormDataApiRes: {...retrieveApiRes},
             accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE ?? "", //ACCT_TYPE
         }
-        // getting photo sign on retrieve form data to populate images
-        if(data && data.PHOTO_DTL) {
+        // PHOTO_MST - getting photo sign on retrieve form data to populate images
+        if(data && data.PHOTO_MST) {
             // photoBase64ctx
             // signBase64ctx
-            // if(data.PHOTO_DTL) {
-                payload["photoBase64ctx"] = data.PHOTO_DTL.CUST_PHOTO
-                payload["signBase64ctx"] = data.PHOTO_DTL.CUST_SIGN
+            // if(data.PHOTO_MST) {
+                payload["photoBase64ctx"] = data.PHOTO_MST.CUST_PHOTO
+                payload["signBase64ctx"] = data.PHOTO_MST.CUST_SIGN
             // }
+        }
+
+        // OTHER-DTL, Y-> true, N -> false
+        if(retrieveApiRes && retrieveApiRes.OTHER_DTL) {
+            let resData = retrieveApiRes.OTHER_DTL
+            if(resData["POLITICALLY_CONNECTED"] == "Y") {
+                resData["POLITICALLY_CONNECTED"] = true
+            } else {
+                resData["POLITICALLY_CONNECTED"] = false
+            }
+
+            if(resData["BLINDNESS"] == "Y") {
+                resData["BLINDNESS"] = true
+            } else {
+                resData["BLINDNESS"] = false
+            }
+
+            if(resData["REFERRED_BY_STAFF"] == "Y") {
+                resData["REFERRED_BY_STAFF"] = true
+            } else {
+                resData["REFERRED_BY_STAFF"] = false
+            }
+            retrieveApiRes = {...retrieveApiRes, OTHER_DTL: {...retrieveApiRes.OTHER_DTL, resData}}
+            // payload.retrieveFormDataApiRes.OTHER_DTL = {...resData}
         }
         dispatch({
             type: "update_retrieveFormData",
@@ -546,11 +575,11 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleCurrentFormRefctx = (ref) => {
+    const handleCurrentFormRefctx = (fun:any) => {
         dispatch({
             type: "set_currentFormRef",
             payload: {
-                currentFormRefctx: ref
+                currentFormRefctx: fun
             }
         })
     }
@@ -604,6 +633,8 @@ const CkycProvider = ({children}) => {
         let updated_tabs = Object.keys(state?.modifiedFormCols ?? {})
         // let updated_tab_format:any = {}
         let updated_tab_format:any = {}
+        if(updated_tabs.length>0) {
+
         if(updated_tabs.length == 1 && updated_tabs[0] == "PERSONAL_DETAIL") {
             // if(updated_tabs[0] == "PERSONAL_DETAIL") {
                 update_type = "save_as_draft";
@@ -616,25 +647,112 @@ const CkycProvider = ({children}) => {
             REQ_CD: state?.req_cd_ctx ?? "",
             COMP_CD: COMP_CD ?? "",
         }
+        console.log("feiuqwdwqduyqewd",updated_tabs)
         let dataa = updated_tabs.map(async (TAB, i) => {
             return new Promise((res, rej) => {
                 let oldFormData = _.pick(state?.retrieveFormDataApiRes[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                console.log(_.pick(state?.retrieveFormDataApiRes[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? []), "oldddddd", state?.retrieveFormDataApiRes[TAB], state?.modifiedFormCols[TAB])
                 let newFormData = _.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
-                let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+                console.log(_.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? []), "oldddddd new", state?.formDatactx[TAB], state?.modifiedFormCols[TAB])
+
+                let upd;
+                if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL") {
+                    let oldRow:any[] = []
+                    let newRow:any[] = []
+                    // if(state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) {
+                        oldRow = (state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) && state?.retrieveFormDataApiRes[TAB].map((formRow, i) => {
+                            let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                            return filteredRow;
+                        })
+                        console.log(oldRow, "asdasdawdawqqqqqq", state?.retrieveFormDataApiRes[TAB])
+
+                        newRow = (state?.formDatactx[TAB] && state?.formDatactx[TAB].length>0) && state?.formDatactx[TAB].map((formRow, i) => {
+                            let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                            return filteredRow;
+                        })
+                        console.log(newRow, "asdasdawdawqqqqqq new", state?.formDatactx[TAB])
+                        console.log("feiuqwdwqduyqewd", TAB)
+                        upd = utilFunction.transformDetailDataForDML(
+                            oldRow ?? [],
+                            newRow ?? [],
+                            ["SR_CD"]
+                        );
+                        if(upd) {
+                            console.log("feiuqwdwqduyqewd", upd)
+                        }
+                    // }
+
+
+                    // if(TAB == "RELATED_PERSON_DTL") {
+                    //     // let newVal = _.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                    //     // let oldVal = _.pick(state?.retrieveFormDataApiRes[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+    
+                    //     let old = (state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) && state?.retrieveFormDataApiRes[TAB].map((formRow, i) => {
+                    //         let DateFields = []
+                    //         let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                    //         return filteredRow;
+                    //     })
+                    //     console.log(old, "asdasdawdawqqqqqq", state?.retrieveFormDataApiRes[TAB])
+    
+                    //     let neww = (state?.formDatactx[TAB] && state?.formDatactx[TAB].length>0) && state?.formDatactx[TAB].map((formRow, i) => {
+                    //         let DateFields = []
+                    //         let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                    //         return filteredRow;
+                    //     })
+
+                    //     console.log(neww, "asdasdawdawqqqqqq new", state?.formDatactx[TAB])
+    
+    
+    
+                    //     console.log("feiuqwdwqduyqewd", TAB)
+                    //     upd = utilFunction.transformDetailDataForDML(
+                    //         old ?? [],
+                    //         neww ?? [],
+                    //         ["SR_CD"]
+
+                    //         // state?.retrieveFormDataApiRes[TAB] ?? [],
+                    //         // state?.formDatactx[TAB] ?? [],
+                    //         // ["SR_CD"]
+                    //     );    
+                    //     if(upd) {
+                    //         console.log("feiuqwdwqduyqewd", upd)
+                    //     }
+                    // }
+                } else {
+                    upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+                }
                 if(Object.keys(updated_tab_format).includes(TAB)) {
-                    updated_tab_format[TAB] = {
-                        ...updated_tab_format.TAB,
-                        ...upd,
-                        ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
-                        ...other_data
+                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL") {
+                        updated_tab_format[TAB] = [{
+                            ...updated_tab_format.TAB,
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }]
+                    } else {
+                        updated_tab_format[TAB] = {
+                            ...updated_tab_format.TAB,
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }
                     }
                 } else {
-                    updated_tab_format[TAB] = {
-                        ...upd,
-                        ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
-                        ...other_data
-                    }                
+                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL") {
+                        updated_tab_format[TAB] = [{
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }]
+                    } else {
+                        updated_tab_format[TAB] = {
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }
+                    }
                 }
+                // console.log("updated_tab_format[TAB]", updated_tab_format[TAB])
                 res(1)
             })
             // return (async () => {
@@ -720,7 +838,8 @@ const CkycProvider = ({children}) => {
           return data;
         } else {
           throw DefaultErrorObject(message, messageDetails);
-        }      
+        }   
+        }
     }
 
     return (

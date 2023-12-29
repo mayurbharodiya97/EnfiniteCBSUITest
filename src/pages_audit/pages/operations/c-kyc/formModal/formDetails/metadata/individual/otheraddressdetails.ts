@@ -56,7 +56,7 @@ import * as API from "../../../../api";
                         componentType: "Divider",
                     },
                     dividerText: "CurrentAddress",
-                    name: "CurrentAddressDivider",
+                    name: "CurrentAddressDivider_ignoreField",
                     label: "CurrentAddressDivider",
                 },
                 {
@@ -83,7 +83,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "LINE1",
+                    name: "ADD1",
                     label: "Line1",
                     required: true,          
                     schemaValidation: {
@@ -92,6 +92,17 @@ import * as API from "../../../../api";
                         { name: "required", params: ["ThisFieldisrequired"] },
                         ],
                     },
+                    maxLength: 50,
+                    validate: (columnValue, allField, flag) => {
+                      let regex = /^[a-zA-Z0-9 ]*$/;
+                          // special-character not allowed
+                      if(columnValue.value) {
+                          if(!regex.test(columnValue.value)) {
+                              return "Alphanumeric Value is Allowed";
+                          }
+                      }
+                      return "";
+                    },          
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
@@ -100,19 +111,41 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "LINE2",
+                    name: "ADD2",
                     label: "Line2",
                     placeholder: "",
                     type: "text",
+                    maxLength: 50,
+                    validate: (columnValue, allField, flag) => {
+                      let regex = /^[a-zA-Z0-9 ]*$/;
+                          // special-character not allowed
+                      if(columnValue.value) {
+                          if(!regex.test(columnValue.value)) {
+                              return "Alphanumeric Value is Allowed";
+                          }
+                      }
+                      return "";
+                    },          
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
                     render: {
                         componentType: "textField",
                     },
-                    name: "LINE3",
+                    name: "ADD3",
                     label: "Line3",
                     placeholder: "",
+                    maxLength: 50,
+                    validate: (columnValue, allField, flag) => {
+                      let regex = /^[a-zA-Z0-9 ]*$/;
+                          // special-character not allowed
+                      if(columnValue.value) {
+                          if(!regex.test(columnValue.value)) {
+                              return "Alphanumeric Value is Allowed";
+                          }
+                      }
+                      return "";
+                    },          
                     type: "text",
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
@@ -120,11 +153,13 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "select",
                     },
-                    options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),  // parent-area        
+                    options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),  // parent-area
+                    // options: (dependentValue, formState, _, authState) => API.getOptionsOnPin(dependentValue, formState, _, authState),  // parent-area        
+                    // options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),        
                     // _optionsKey: "localParentAreaList",
                     // options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
                     _optionsKey: "otherAddSubArea",
-                    name: "AREA",
+                    name: "AREA_CD",
                     label: "Area",
                     postValidationSetCrossFieldValues: (
                     field,
@@ -134,13 +169,16 @@ import * as API from "../../../../api";
                     ) => {
                         if(field.value) {
                             return {
-                                PIN: {value: field?.optionData[0]?.PIN_CODE ?? ""},
-                                CITY: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
-                                DISTRICT: {value: (field?.optionData[0]?.DISTRICT_CD || field?.optionData[0]?.DISTRICT_NM) ? `${field?.optionData[0]?.DISTRICT_NM} - ${field?.optionData[0]?.DISTRICT_CD}` : ""},
+                                PIN_CODE: {value: field?.optionData[0]?.PIN_CODE ?? ""},
+                                CITY_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                                CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                                DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                                DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
                                 STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
-                                COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
-                                STATE_UT_CODE: {value: field?.optionData[0]?.STATE_CD ?? ""},
-                                ISO_COUNTRY_CODE: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                                // STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                                COUNTRY_ignoreField: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                                STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                                COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
                             }
                         }
                         return {}
@@ -159,35 +197,58 @@ import * as API from "../../../../api";
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "numberFormat",
                     },
-                    name: "PIN",
+                    name: "PIN_CODE",
                     label: "PIN",
                     required: true,
                     placeholder: "",
                     type: "text",
+                    maxLength: 6,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 6) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },            
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
                         componentType: "textField",
                     },
-                    name: "CITY",
+                    name: "CITY_ignoreField",
                     label: "City",
                     required: true,
+                    isReadOnly: true,
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
+                        componentType: "hidden",
+                        name: "CITY_CD"
+                    }
+                },
+                {
+                    render: {
                         componentType: "textField",
                     },
-                    name: "DISTRICT",
+                    name: "DISTRICT_ignoreField",
                     label: "District",
                     placeholder: "",
+                    isReadOnly: true,
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+                },
+                {
+                    render: {
+                        componentType: "hidden",
+                        name: "DISTRICT_CD"
+                    }
                 },
                 {
                     render: {
@@ -203,7 +264,7 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "COUNTRY",
+                    name: "COUNTRY_ignoreField",
                     label: "Country",
                     placeholder: "",
                     type: "text",
@@ -213,8 +274,9 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "STATE_UT_CODE",
-                    label: "UnionTerritoriesCode",
+                    name: "STATE_CD",
+                    // label: "UnionTerritoriesCode",
+                    label: "State/U.T(Union Territories) Code",
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -223,8 +285,8 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "ISO_COUNTRY_CODE",
-                    label: "CountryCode",
+                    name: "COUNTRY_CD",
+                    label: "ISO-3166 Country Code of Residence",
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
@@ -237,88 +299,184 @@ import * as API from "../../../../api";
                         componentType: "Divider",
                     },
                     dividerText: "Contact",
-                    name: "ContactDivider",
+                    name: "ContactDivider_ignoreField",
                     label: "ContactDivider",
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "numberFormat",
                     },
                     name: "STD_1",
-                    label: "",
-                    placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
-                },
-                {
-                    render: {
-                        componentType: "textField",
-                    },
-                    name: "CONTACT1",
                     label: "PhoneO",
                     placeholder: "",
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
-                },
-                {
-                    render: {
-                        componentType: "textField",
+                    maxLength: 5,
+                    GridProps: {xs:12, sm:4.5, md: 0.9, lg: 0.8, xl:0.6},
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 5) {
+                            return false;
+                          }
+                          return true;
+                        },
                     },
-                    name: "STD_2",
-                    maxLength: 3,
+                },
+                  {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "CONTACT1",
                     label: "",
                     placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
-                },
-                {
-                    render: {
-                        componentType: "textField",
+                    maxLength: 20,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 20) {
+                            return false;
+                          }
+                          return true;
+                        },
                     },
-                    name: "CONTACT2",
-                    label: "PhoneR",
-                    placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "spacer"
+                    },
+                    GridProps: {
+                        xs: 0, sm:0.2, md:0.1
+                    }
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "STD_2",
+                    label: "PhoneR",
+                    placeholder: "",
+                    maxLength: 5,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 5) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
+                    type: "text",
+                    GridProps: {xs:12, sm:4.5, md: 0.9, lg: 0.8, xl:0.6},
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "CONTACT2",
+                    label: "",
+                    placeholder: "",
+                    maxLength: 20,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 20) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
+                    type: "text",
+                    GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
+                },
+                {
+                    render: {
+                        componentType: "spacer"
+                    },
+                    GridProps: {
+                        xs: 0, sm:0.2, md:0.1
+                    }
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
                     },
                     name: "STD_3",
+                    label: "MobileNo",
+                    required: true,
+                    placeholder: "",
+                    maxLength: 3,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 3) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
+                    type: "text",
+                    GridProps: {xs:12, sm:4.5, md: 0.9, lg: 0.8, xl:0.6},
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
+                    },
+                    name: "CONTACT3",
                     label: "",
                     required: true,
                     placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
-                },
-                {
-                    render: {
-                        componentType: "textField",
+                    maxLength: 20,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 20) {
+                            return false;
+                          }
+                          return true;
+                        },
                     },
-                    name: "CONTACT3",
-                    label: "MobileNo",
-                    placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "spacer"
+                    },
+                    GridProps: {
+                        xs: 0, sm:0.2, md:0.1
+                    }
+                },
+                {
+                    render: {
+                        componentType: "numberFormat",
                     },
                     name: "STD_4",
-                    label: "MobileNo",
+                    label: "Fax",
                     placeholder: "",
+                    maxLength: 5,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 5) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
                     type: "text",
-                    GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
+                    GridProps: {xs:12, sm:4.5, md: 0.9, lg: 0.8, xl:0.6},
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "numberFormat",
                     },
                     name: "CONTACT4",
-                    label: "Fax",
+                    label: "",
                     placeholder: "",
+                    maxLength: 20,
+                    FormatProps: {
+                        isAllowed: (values) => {
+                          if (values?.value?.length > 20) {
+                            return false;
+                          }
+                          return true;
+                        },
+                    },
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
                 },
@@ -326,109 +484,31 @@ import * as API from "../../../../api";
                     render: {
                         componentType: "textField",
                     },
-                    name: "EMAIL_ID",
+                    name: "E_MAIL_ID",
                     label: "EmailId",
+                    placeholder: "",
+                    type: "text",
+                    maxLength: 60,
+                    validate: (columnValue, allField, flag) => {
+                        let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        if(columnValue.value && !emailRegex.test(columnValue.value)) {
+                            return "Please Enter Valid Email ID."
+                        }
+                        return "";
+                    },            
+                    GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
+                },
+                {
+                    render: {
+                        componentType: "hidden",
+                    },
+                    name: "SR_CD",
+                    label: "Sr. No.",
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:4, md: 3, lg: 3, xl:3},
                 },
             ]
         }
-    ]
-  }
-  
-  export const other_address_poa_contact_meta_data = {
-    form: {
-        name: "other_address_poa_contact_details_form",
-        label: "", 
-        resetFieldOnUnmount: false,
-        validationRun: "onBlur", 
-        submitAction: "home",  
-        render: {
-            ordering: "auto",
-            renderType: "simple",
-            gridConfig: {
-            item: {
-                xs: 12,
-                sm: 6,
-            },
-            container: {
-                direction: "row",
-                spacing: 3,
-            },
-            },
-        },
-        componentProps: {
-            textField: {
-                fullWidth: true,
-            },
-            select: {
-                fullWidth: true,
-            },
-            datePicker: {
-                fullWidth: true,
-            },
-            numberFormat: {
-                fullWidth: true,
-            },
-            inputMask: {
-                fullWidth: true,
-            },
-            datetimePicker: {
-                fullWidth: true,
-            },
-        },
-    },
-    fields: [
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "PHONE_o",
-            label: "Phone(O)",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "PHONE_R",
-            label: "Phone(R)",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "MOBILE_NO",
-            label: "Mobile No.",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "FAX",
-            label: "Fax",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
-        {
-            render: {
-                componentType: "textField",
-            },
-            name: "EMAIL_ID",
-            label: "Email ID",
-            placeholder: "",
-            type: "text",
-            GridProps: {xs: 4, sm:3},
-        },
     ]
   }  

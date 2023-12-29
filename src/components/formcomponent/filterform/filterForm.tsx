@@ -166,6 +166,13 @@ export const FilterFormComponents = forwardRef<any, any>(
         });
       }
     };
+    const onBlur = () => {
+      fields.forEach((element) => {
+        if (typeof element?.onBlurHandler === "function") {
+          element.onBlurHandler(colomnValue[element.name], colomnValue);
+        }
+      });
+    };
     const handleClick = () => {
       if (
         ValidateColumnValue(fields, colomnValue, initialVisibleColumn, "FIRST")
@@ -348,6 +355,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                               ? loading || submitSecondLoading
                               : true
                           }
+                          handleBlur={onBlur}
                           skipDefaultOption={true}
                           error={
                             Boolean(ErrorData[column.name]?.isError)
@@ -375,7 +383,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                           placeholder={column?.placeholder ?? ""}
                           type={column?.type ?? "text"}
                           name={column.name}
-                          value={colomnValue[column.name]}
+                          value={colomnValue[column.name] || column?.value}
                           onChange={handleChange}
                           InputLabelProps={{ shrink: true }}
                           //required

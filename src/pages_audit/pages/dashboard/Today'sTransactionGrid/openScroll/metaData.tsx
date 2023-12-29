@@ -3,7 +3,7 @@ import { AmountProvider } from "components/report/amountContext";
 
 export const scrollMetaData = {
   title: "",
-  disableGroupBy: true,
+  disableGroupBy: "",
   hideFooter: false,
   hideAmountIn: true,
   retrievalType: "",

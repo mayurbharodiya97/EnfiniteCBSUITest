@@ -1,6 +1,8 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
 import { components } from "components/report";
+import { API } from "pages_audit/common";
+import { justForTestings } from "pages_audit/pages/dashboard/noteDenomination/api";
 
 export const AccountInquiryMetadata = {
   form: {
@@ -212,6 +214,15 @@ export const AccountInquiryMetadata = {
         sm: 1,
       },
     },
+    // {
+    //   render: {
+    //     componentType: "reportAccType",
+    //   },
+    //   options: getBranchCodeList,
+    //   _optionsKey: "justForTestings",
+    //   name: "TEST",
+    //   label: "test",
+    // },
   ],
 };
 export const AccountInquiryGridMetaData: GridMetaDataType = {
@@ -687,7 +698,7 @@ export const PassbookStatementInq = {
         componentType: "radio",
       },
       name: "PD_DESTION",
-      label: "hello",
+      label: "",
       RadioGroupProps: { row: true },
       defaultValue: "P",
       options: [
@@ -713,6 +724,8 @@ export const PassbookStatementInq = {
         xs: 12,
         md: 11,
         sm: 11,
+        lg:11,
+        xl:11,
       },
     },
     {
@@ -744,6 +757,8 @@ export const PassbookStatementInq = {
         xs: 12,
         md: 12,
         sm: 12,
+        lg: 12,
+        xl: 12,
       },
     },
     {

@@ -189,7 +189,7 @@ export const DynFormMetadataConfig = () => {
                 variant={"h6"}
                 component="div"
               >
-                Dynamic Form Metadata Configure
+                Flexible Form Metadata Configuration
               </Typography>
             </Toolbar>
           </AppBar>

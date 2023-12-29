@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import { declaration_meta_data } from '../../metadata/individual/declarationdetails';
@@ -42,7 +42,8 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
   const mutation: any = useMutation(API.SaveAsDraft, {
     onSuccess: (data) => {
         if(data?.[0]?.REQ_CD) {
-            handleReqCDctx(data?.[0]?.REQ_CD)
+            let req_cd = parseInt(data?.[0]?.REQ_CD) ?? ""
+            handleReqCDctx(req_cd)
             handleColTabChangectx(state?.colTabValuectx+1)
         }
     },
@@ -71,7 +72,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     console.log("qweqweqwe", data)     
     if(data && !hasError) {
         let formFields = Object.keys(data) // array, get all form-fields-name 
-        formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+        formFields = formFields.filter(field => !field.includes("_ignoreField") && field !== "AGE") // array, removed divider field
         formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
         const formData = _.pick(data, formFieldsRef.current)
   
@@ -82,13 +83,12 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         //     data["DATE_OF_COMMENCEMENT"] = format(new Date(data["DATE_OF_COMMENCEMENT"]), "dd-MMM-yyyy")
         // }
 
-        setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
+        // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
 
         let newData = state?.formDatactx
         newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...formData}
         handleFormDataonSavectx(newData)
         // handleColTabChangectx(2)
-        handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
         // handleColTabChangectx(3)
         // handleColTabChangectx(state?.colTabValuectx+1)
 
@@ -111,6 +111,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
             handleModifiedColsctx(tabModifiedCols)
             handleColTabChangectx(state?.colTabValuectx+1)
         } else {
+            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             let data = {
                 CUSTOMER_TYPE: state?.entityTypectx,
                 CATEGORY_CD: state?.categoryValuectx,
@@ -129,7 +130,9 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         //     console.log("saveDraftData", saveDraftData)
         //     handleColTabChangectx(state?.colTabValuectx+1)
         // }
-    } else handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+    } else {
+        handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+    }
     endSubmit(true)
     // handleColTabChangectx(state?.colTabValuectx+1)
     setIsNextLoading(false)
@@ -150,6 +153,52 @@ const myGridRef = useRef<any>(null);
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+        return displayMode == "new"
+          ? <Fragment>
+            <Button
+              sx={{ mr: 2, mb: 2 }}
+              color="secondary"
+              variant="contained"
+              disabled={isNextLoading}
+              onClick={(e) => {
+                DeclarationFormRef.current.handleSubmitError(e, "save")
+              }}
+            >
+              {t("Save & Next")}
+            </Button>
+          </Fragment>
+          : displayMode == "edit"
+              ? <Fragment>
+                <Button
+                  sx={{ mr: 2, mb: 2 }}
+                  color="secondary"
+                  variant="contained"
+                  disabled={isNextLoading}
+                  onClick={(e) => {
+                    DeclarationFormRef.current.handleSubmitError(e, "save")
+                  }}
+                >
+                  {t("Update & Next")}
+                </Button>
+              </Fragment>
+              : displayMode == "view" && <Fragment>
+                  <Button
+                  sx={{ mr: 2, mb: 2 }}
+                  color="secondary"
+                  variant="contained"
+                  disabled={isNextLoading}
+                  onClick={(e) => {
+                    handleColTabChangectx(state?.colTabValuectx + 1)
+                  }}
+                >
+                  {t("Next")}
+                </Button>
+              </Fragment>
+        }
+    }, [displayMode])
+    
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>             */}
@@ -197,7 +246,8 @@ const myGridRef = useRef<any>(null);
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                {SaveUpdateBTNs}
+                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
                         DeclarationFormRef.current.handleSubmitError(e, "save")
                     }}
@@ -206,7 +256,7 @@ const myGridRef = useRef<any>(null);
                     onClick={(e) => {
                         DeclarationFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Update & Next")}</Button>}
+                >{t("Update & Next")}</Button>} */}
             </Grid>
         </Grid>        
     )

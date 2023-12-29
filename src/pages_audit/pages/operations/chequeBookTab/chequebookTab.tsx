@@ -131,7 +131,7 @@ export const ChequebookTab = () => {
         value: item,
       }));
 
-      ChequeBookEntryMetaData.fields[5].options = () => {
+      ChequeBookEntryMetaData.fields[6].options = () => {
         return result;
       };
     }

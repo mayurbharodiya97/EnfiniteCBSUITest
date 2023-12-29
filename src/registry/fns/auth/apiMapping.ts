@@ -644,6 +644,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNCNFF2",
     packageName: "",
   },
+  GETLIMITFDBRANCHDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDBRANCHDDW",
+    packageName: "",
+  },
+  GETFDBFDDETAIL: {
+    url: "accountServiceAPI/GETFDBFDDETAIL",
+    packageName: "",
+  },
+  GETLIMITFDTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDTYPEDDW",
+    packageName: "",
+  },
+  GETLIMITNSCDTLBTN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITNSCDTLBTN",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

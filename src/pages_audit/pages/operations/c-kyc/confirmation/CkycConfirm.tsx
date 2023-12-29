@@ -36,7 +36,7 @@ export const CkycConfirm = () => {
       BRANCH_CD: authState?.user?.branchCode ?? "",
     //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       REQ_FLAG: "P  ",
-      ENTERED_DATE: "06-12-2023",
+      ENTERED_DATE:  format(new Date(), "dd-MM-yyyy"),
     })
   )
 
@@ -88,10 +88,11 @@ export const CkycConfirm = () => {
           }}
           variant="h6"
         >
-          {t("PendingReq")}
+          {t("Confirmation Pending Request")}
+          {/* {t("PendingReq")} */}
         </Typography>
         <GridWrapper
-          key={`PendingCustEntrties`+PendingData}
+          key={`ckycConfirmation`+PendingData}
           finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
           data={PendingData ?? []}
           setData={() => null}
@@ -112,7 +113,7 @@ export const CkycConfirm = () => {
                 isCustomerData={isCustomerData}
                 setIsCustomerData={setIsCustomerData}
                 onClose={() => navigate(".")}
-                displayMode={"view"}
+                formmode={"view"}
               />
             }
           />

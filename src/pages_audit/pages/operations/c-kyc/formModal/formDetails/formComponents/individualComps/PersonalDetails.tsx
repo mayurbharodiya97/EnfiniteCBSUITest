@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { Fragment, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   Grid,
   Typography,
@@ -65,12 +65,6 @@ const PersonalDetails = ({
     setDialogOpen(false)
   }
 
-  useEffect(() => {
-    if(PDFormRef.current.handleSubmitError) {
-      // console.log("PDFormRefPDFormRef", PDFormRef.current.handleSubmitError)
-      handleCurrentFormRefctx(PDFormRef)
-    }
-  }, [])
 
   // useEffect(() => {
   //     console.log("... personal details", isCustomerData)
@@ -180,11 +174,12 @@ const PersonalDetails = ({
       }
       handleColTabChangectx(state?.colTabValuectx + 1);
       // setIsNextLoading(false)
-    } else
+    } else {
       handleStepStatusctx({
         status: "error",
         coltabvalue: state?.colTabValuectx,
       });
+    }
     setIsNextLoading(false);
     endSubmit(true);
   };
@@ -202,6 +197,132 @@ const PersonalDetails = ({
   // useEffect(() => {
   //     console.log("state?.isFreshEntryctx",state?.isFreshEntryctx)
   // }, [state?.isFreshEntryctx])
+
+  const SaveUpdateBTNs = useMemo(() => {
+    if(displayMode) {
+    return displayMode == "new"
+      ? <Fragment>
+        <Button
+          sx={{ mr: 2, mb: 2 }}
+          color="secondary"
+          variant="contained"
+          disabled={isNextLoading}
+          onClick={(e) => {
+            NextBtnRef.current = e;
+            PDFormRef.current.handleSubmitError(e, "save");
+          }}
+          endIcon={
+            isNextLoading ? <CircularProgress size={20} /> : null
+          }
+        >
+          {t("Save & Next")}
+        </Button>
+      </Fragment>
+      : displayMode == "edit"
+          ? <Fragment>
+            <Button
+              sx={{ mr: 2, mb: 2 }}
+              color="secondary"
+              variant="contained"
+              disabled={isNextLoading}
+              onClick={(e) => {
+                NextBtnRef.current = e;
+                PDFormRef.current.handleSubmitError(e, "save");
+              }}
+            >
+              {t("Update & Next")}
+            </Button>
+          </Fragment>
+          : displayMode == "view" && <Fragment>
+              <Button
+              sx={{ mr: 2, mb: 2 }}
+              color="secondary"
+              variant="contained"
+              disabled={isNextLoading}
+              onClick={(e) => {
+                handleColTabChangectx(state?.colTabValuectx + 1)
+              }}
+            >
+              {t("Next")}
+            </Button>
+          </Fragment>
+    }
+
+
+
+
+
+
+
+    // if(state?.isFreshEntryctx) {
+    //   return <Fragment>
+    //     <Button
+    //       sx={{ mr: 2, mb: 2 }}
+    //       color="secondary"
+    //       variant="contained"
+    //       disabled={isNextLoading}
+    //       onClick={(e) => {
+    //         NextBtnRef.current = e;
+    //         PDFormRef.current.handleSubmitError(e, "save");
+    //       }}
+    //       endIcon={
+    //         isNextLoading ? <CircularProgress size={20} /> : null
+    //       }
+    //     >
+    //       {t("Save & Next")}
+    //     </Button>
+    //   </Fragment> 
+    // } else if(!state?.isFreshEntryctx) {
+    //   if(state?.req_cd_ctx) {
+    //     if(state?.confirmFlagctx && (state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R"))) {
+    //       return <Fragment>
+    //           <Button
+    //           sx={{ mr: 2, mb: 2 }}
+    //           color="secondary"
+    //           variant="contained"
+    //           disabled={isNextLoading}
+    //           onClick={(e) => {
+    //             handleColTabChangectx(state?.colTabValuectx + 1)
+    //           }}
+    //         >
+    //           {t("Next")}
+    //         </Button>
+    //       </Fragment>
+    //     } else {
+    //     return <Fragment>
+    //       <Button
+    //         sx={{ mr: 2, mb: 2 }}
+    //         color="secondary"
+    //         variant="contained"
+    //         disabled={isNextLoading}
+    //         onClick={(e) => {
+    //           NextBtnRef.current = e;
+    //           PDFormRef.current.handleSubmitError(e, "save");
+    //         }}
+    //       >
+    //         {t("Update & Next")}
+    //       </Button>
+    //     </Fragment>
+    //     }
+    //   } else if(state?.customerIDctx) {
+    //     return <Fragment>
+    //       <Button
+    //         sx={{ mr: 2, mb: 2 }}
+    //         color="secondary"
+    //         variant="contained"
+    //         disabled={isNextLoading}
+    //         onClick={(e) => {
+    //           NextBtnRef.current = e;
+    //           PDFormRef.current.handleSubmitError(e, "save");
+    //         }}
+    //       >
+    //         {t("Update & Next")}
+    //       </Button>
+    //     </Fragment>
+    //   }
+    // }  
+  }, [displayMode])
+
   return (
     <Grid
       container
@@ -349,7 +470,7 @@ const PersonalDetails = ({
       ) : null}
 
       <Grid container item sx={{ justifyContent: "flex-end" }}>
-        {state?.isFreshEntryctx && <Button
+        {/* {state?.isFreshEntryctx && <Button
           sx={{ mr: 2, mb: 2 }}
           color="secondary"
           variant="contained"
@@ -363,9 +484,11 @@ const PersonalDetails = ({
           }
         >
           {t("Save & Next")}
-        </Button>}
+        </Button>} */}
 
-        {!state?.isFreshEntryctx && <Button
+        {SaveUpdateBTNs}
+
+        {/* {!state?.isFreshEntryctx && <Button
           sx={{ mr: 2, mb: 2 }}
           color="secondary"
           variant="contained"
@@ -376,7 +499,7 @@ const PersonalDetails = ({
           }}
         >
           {t("Update & Next")}
-        </Button>}
+        </Button>} */}
 
         {dialogOpen && <SearchListdialog 
             open={dialogOpen} 

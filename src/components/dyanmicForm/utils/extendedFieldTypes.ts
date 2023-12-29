@@ -153,13 +153,32 @@ export const extendFieldTypes = (
       } else if (key === "accountType") {
         // Set autofocus on the accountType field
         field["autoFocus"] = true;
+        field["defaultValue"] = "333 ";
       }
       newMetaDataFieldsCustom.push(field);
     }
   };
 
   newMetaDataFields?.forEach((item) => {
-    if (item.render.componentType === "_accountNumber") {
+    if (item.render.componentType === "reportAccType") {
+      const reportAcctTypes: any = extendedTypes["reportAccountType"];
+
+      if (item["options"]) {
+        extendedTypes["reportAccountType"]["options"] = item["options"];
+      }
+      if (item["_optionsKey"]) {
+        extendedTypes["reportAccountType"]["_optionsKey"] = item["_optionsKey"];
+      }
+
+      // Check if the '_optionsKey' property is present in the 'item' object
+      // if (item._optionsKey) {
+      //   reportAccType._optionsKey = item._optionsKey;
+      // }
+
+      if (typeof reportAcctTypes === "object") {
+        newMetaDataFieldsCustom.push(reportAcctTypes);
+      }
+    } else if (item.render.componentType === "_accountNumber") {
       if (item["postValidationSetCrossFieldValues"]) {
         extendedTypes["accountCode"]["postValidationSetCrossFieldValues"] =
           item["postValidationSetCrossFieldValues"];

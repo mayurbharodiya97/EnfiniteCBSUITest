@@ -29,6 +29,7 @@ import {
   AllDataTableProps,
   AllFormButtonProps,
   CustomAccountProps,
+  CustomReportAccTypeProps,
 } from "./typesFields";
 import {
   TextFieldPropsOptional,
@@ -167,7 +168,8 @@ export type FieldMetaDataTypeX =
   | ArrayFieldProps
   | AllDataTableProps
   | AllFormButtonProps
-  | CustomAccountProps;
+  | CustomAccountProps
+  | CustomReportAccTypeProps;
 
 export type FieldMetaDataType = Merge<
   FieldMetaDataTypeX,

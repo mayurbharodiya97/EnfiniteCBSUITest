@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Grid, Typography, Divider, Skeleton, IconButton, Collapse, Button, Dialog, DialogTitle, Box } from '@mui/material';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -11,13 +11,14 @@ import { corporate_control_dtl_meta_data } from '../../metadata/legal/legal_corp
 import { AuthContext } from "pages_audit/auth";
 import { useMutation } from 'react-query';
 import { personal_individual_detail_metadata } from '../../metadata/individual/personaldetails';
+import _ from 'lodash';
 
 const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext)
   const formRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [acctName, setAcctName] = useState("")
@@ -54,28 +55,73 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
                 ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
                 ACTIVE: "Y"
             }
-            let newFormatRelPerDtl:any = []
-            if(data && data.RELATED_PERSON_DTL) {
-                newFormatRelPerDtl = data?.RELETED_PERSON_DTL?.map((el, i) => {
-                    return {...el, ...commonData, 
-                        // SR_CD: i+1
-                    }
+            if(data.RELATED_PERSON_DTL) {
+                let filteredCols:any[]=[]
+                filteredCols = Object.keys(data.RELATED_PERSON_DTL[0])
+                filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
+                if(state?.isFreshEntryctx) {
+                    filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
+                }
+
+                let newFormatRelPerDtl = data.RELATED_PERSON_DTL.map((formRow, i) => {
+                    let formFields = Object.keys(formRow)
+                            // console.log("reltedaw formFields", formFields)
+                    formFields = formFields.filter(field => !field.includes("_ignoreField"))
+                            // console.log("reltedaw formFields 2", formFields)
+                            // formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+                    const formData = _.pick(data.RELATED_PERSON_DTL[i], formFields)
+                            // console.log("reltedaw formData", formData)
+                    return {...formData, ...commonData};
                 })
+                console.log("reltedaw", data.RELATED_PERSON_DTL)
+    
+
+
+
+                // let newFormatRelPerDtl:any = []
+                // if(data && data.RELATED_PERSON_DTL) {
+                //     newFormatRelPerDtl = data.RELATED_PERSON_DTL?.map((el, i) => {
+                //         return {...el, ...commonData, 
+                //             // SR_CD: i+1
+                //         }
+                //     })
+                // }
+
+
+                newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
+                handleFormDataonSavectx(newData)
+
+                if(!state?.isFreshEntryctx) {
+                    let tabModifiedCols:any = state?.modifiedFormCols
+                    tabModifiedCols = {
+                        ...tabModifiedCols,
+                        RELATED_PERSON_DTL: [...filteredCols]
+                    }
+                    handleModifiedColsctx(tabModifiedCols)
+                }
+            } else {
+                newData["RELATED_PERSON_DTL"] = []
+                handleFormDataonSavectx(newData)
+                if(!state?.isFreshEntryctx) {
+                    let tabModifiedCols:any = state?.modifiedFormCols
+                    tabModifiedCols = {
+                      ...tabModifiedCols,
+                      RELATED_PERSON_DTL: []
+                    }
+                    handleModifiedColsctx(tabModifiedCols)
+                }    
             }
 
-            // newData["RELATED_PERSON_DTL"] = {...newData["RELATED_PERSON_DTL"], ...data, ...commonData}
-            newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
-            handleFormDataonSavectx(newData)
             // handleColTabChangectx(4)
-            handleColTabChangectx(state?.colTabValuectx+1)
             handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            handleColTabChangectx(state?.colTabValuectx+1)
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
         }
         setIsNextLoading(false)
         endSubmit(true)
-   }
+    }
   const [isFormExpanded, setIsFormExpanded] = useState(true)
   const handleFormExpand = () => {
     setIsFormExpanded(!isFormExpanded)
@@ -101,6 +147,53 @@ const myGridRef = useRef<any>(null);
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    formRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        formRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [displayMode])
+    
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>             */}
@@ -181,11 +274,21 @@ const myGridRef = useRef<any>(null);
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                {SaveUpdateBTNs}
+                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     onClick={(e) => {
                         formRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Save & Next")}</Button>
+                >{t("Save & Next")}</Button>}
+                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
+                ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={(e) => {
+                        formRef.current.handleSubmitError(e, "save")
+                    }}
+                >{t("Update & Next")}</Button>
+                : !state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={(e) => handleColTabChangectx(state?.colTabValuectx+1)}
+                >{t("Next")}</Button>} */}
             </Grid>
         </Grid>        
     )

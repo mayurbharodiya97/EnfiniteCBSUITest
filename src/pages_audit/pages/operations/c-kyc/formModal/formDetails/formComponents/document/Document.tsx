@@ -1,9 +1,8 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
+import React, { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
 import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useQuery } from "react-query";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import {DocumentGridMetadata} from "./documentGridMetadata"
 import { useNavigate } from "react-router-dom";
@@ -11,12 +10,12 @@ import KYCDocumentMasterDetails from "./KYCDocumentMasterDetails";
 import { utilFunction } from "components/utils";
 import { Button, Grid } from "@mui/material";
 import { t } from "i18next";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
     const { authState } = useContext(AuthContext);
     const {state, handleColTabChangectx} = useContext(CkycContext);
     const navigate = useNavigate();
-    const [componentToShow, setComponentToShow] = useState("");
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [rowsData, setRowsData] = useState([]);
     const [data, setData] = useState<any>([]);
     const [formMode, setFormMode] = useState<any>("");
@@ -58,41 +57,38 @@ const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, d
       }
     }, [DocGridData, isDocGridLoading])
 
-    const afterFormSubmit = (formData) => {
-      // console.log(data, "data in afterFormSubmit", formData)
-      // let dummyObj = {
-      //   VALID_UPTO: "9999",
-      //   VALID_DT_APPLICABLE: "Y",
-      //   COMP_CD: "132 ",
-      //   TRAN_CD: "1",
-      //   BRANCH_CD: "099 ",
-      //   SR_CD: "3",
-      //   REMARKS: "",
-      //   DOC_WEIGHTAGE: "",
-      //   DOC_DESCRIPTION: "PAN CARD2",
-      //   BANK_DOC_TRAN_CD: "3",
-      //   IS_MANDATORY: "Y"
-      // }
-
-      // setData(data:any => [...data, formDT])
-      // setData([...data, dummyObj])
-      setData((old) => {
-        if(!Array.isArray(old)) {
-          return [
-            {
-              ...formData, SR_CD: 1
+    const afterFormSubmit = (formData,submitFormMode) => {
+      if(submitFormMode==='new'){
+        setData((old) => {
+          if(!Array.isArray(old)) {
+            return [
+              {
+                ...formData, SR_CD: 1
+              }
+            ]
+          } else {
+            let srCount = utilFunction.GetMaxCdForDetails(old, "SR_CD");
+            const myNewRowObj = {
+              ...formData,
+              SR_CD: String(srCount),
+              _isNewRow: true,
+            };
+            return [...old, myNewRowObj];
+          }
+        })
+      }else{
+        setData((old) => {
+          return old.map(item=>{
+            if(item.SR_CD === formData.SR_CD){
+              let {SR_CD,...other} = formData;
+              return {...item,...other};
+            }else{
+              return item;
             }
-          ]
-        } else {
-          let srCount = utilFunction.GetMaxCdForDetails(old, "SR_CD");
-          const myNewRowObj = {
-            ...formData,
-            SR_CD: String(srCount),
-            _isNewRow: true,
-          };
-          return [...old, myNewRowObj];
-        }
-      })
+          });
+        }) 
+      }
+      
       setOpen(false)
     }
 
@@ -122,18 +118,17 @@ const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, d
         (data) => {
           if(data.name === "add") {
             setOpen(true)
-            setComponentToShow("Add")
             setFormMode("new")
             setRowsData(data?.rows);
           } else if(data.name === "delete") {
             setOpen(true)
-            setComponentToShow("Delete")
+            // setComponentToShow("Delete")
             setRowsData(data?.rows);
           } else if(data.name === "view-details") {
-            setOpen(true)
-            setComponentToShow("view-details")
-            setFormMode("view")
+            // setComponentToShow("view-details")
+            setFormMode("edit")
             setRowsData(data?.rows);
+            setOpen(true)
           }
           // navigate(data?.name, {
           //   state: data?.rows,
@@ -145,7 +140,7 @@ const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, d
     
     
     return (
-        <React.Fragment>
+      <Grid container style={{position:"absolute", paddingRight: !state?.isFreshEntryctx ? "113px" : "12px"}}>
             <GridWrapper
                 key={`operatorMasterGrid` + data}
                 finalMetaData={DocumentGridMetadata as GridMetaDataType}
@@ -175,41 +170,34 @@ const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, d
                     //     DeclarationFormRef.current.handleSubmitError(e, "save")
                     // }}
                 >{t("Save & Next")}</Button>}
-                {!state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R"))) 
+                ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
                     // onClick={(e) => {
                     //     DeclarationFormRef.current.handleSubmitError(e, "save")
                     // }}
-                >{t("Update & Next")}</Button>}
+                >{t("Update & Next")}</Button>
+                : !state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                    onClick={() => handleColTabChangectx(state?.colTabValuectx+1)}
+                    // onClick={(e) => {
+                    //     DeclarationFormRef.current.handleSubmitError(e, "save")
+                    // }}
+                >{t("Next")}</Button>}
             </Grid>
 
 
-            {componentToShow === "Add" 
+            {open
               ? <KYCDocumentMasterDetails
                   isDataChangedRef={isDataChangedRef}
                   ClosedEventCall={handleDialogClose}
                   formMode={formMode}
-                  setFormMode={setFormMode}
                   afterFormSubmit={afterFormSubmit}
                   open={open}
                   onClose={() => setOpen(false)}
                   gridData={data}
                   rowsData={rowsData}
                 />
-              : componentToShow === "view-details" 
-                ? <KYCDocumentMasterDetails
-                    isDataChangedRef={isDataChangedRef}
-                    ClosedEventCall={handleDialogClose}
-                    formMode={formMode}
-                    setFormMode={setFormMode}  
-                    afterFormSubmit={afterFormSubmit}
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    gridData={data}
-                    rowsData={rowsData}
-                  /> 
-                : null}
-
-        </React.Fragment>
+              :null}
+    </Grid>
     )
 }
 

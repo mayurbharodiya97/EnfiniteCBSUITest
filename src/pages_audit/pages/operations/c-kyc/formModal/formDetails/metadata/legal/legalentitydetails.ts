@@ -59,20 +59,12 @@ export const entity_detail_legal_meta_data = {
                   { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
+            maxLength: 100,
+            validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // placeholder: "Prefix",
             type: "text",
             // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             GridProps: {md:4.5, lg:3.6, xl:3},
-            validate: (columnValue, allField, flag) => {
-                if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
-                    return "Please remove extra space";  
-                } else if(columnValue.value !== columnValue.value.trimStart()) {
-                  return "Please remove extra space from the starting";
-                } else if (columnValue.value !== columnValue.value.trimEnd()) {
-                  return "Please remove extra space from the ending";
-                }
-                return "";
-            },
         },
         {
             render: {
@@ -195,6 +187,7 @@ export const entity_detail_legal_meta_data = {
             name: "GSTIN",
             label: "GSTIN",
             placeholder: "",
+            maxLength: 20,
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -252,6 +245,15 @@ export const entity_detail_legal_meta_data = {
             },
             name: "US_GIIN",
             label: "GIIN",
+            maxLength: 24,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 24) {
+                    return false;
+                }
+                return true;
+                },
+            },
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -263,6 +265,15 @@ export const entity_detail_legal_meta_data = {
             name: "TIN",
             label: "TIN",
             placeholder: "",
+            maxLength: 24,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 24) {
+                    return false;
+                }
+                return true;
+                },
+            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -284,6 +295,15 @@ export const entity_detail_legal_meta_data = {
             },
             name: "CCIL_ID",
             label: "CCIL ID",
+            maxLength: 24,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 24) {
+                    return false;
+                }
+                return true;
+                },
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -292,13 +312,22 @@ export const entity_detail_legal_meta_data = {
             },
             name: "LEI_NO",
             label: "LEI NO.",
+            maxLength: 24,
+            FormatProps: {
+                isAllowed: (values) => {
+                if (values?.value?.length > 24) {
+                    return false;
+                }
+                return true;
+                },
+            },
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
             render: {
                 componentType: "datePicker"
             },
-            name: "LEI_EXPIRY_DT",
+            name: "LEI_EXPIRY_DATE",
             label: "LEI Expiry Date",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -322,9 +351,18 @@ export const entity_detail_legal_meta_data = {
             },
             name: "PARENT_COMP_NM",
             label: "Parent Company Name",            
+            maxLength: 100,
             placeholder: "",
+            dependentFields: ["PARENT_COMPANY"],
+            shouldExclude(fieldData, dependentFieldsValues, formState) {
+                if (dependentFieldsValues["PARENT_COMPANY"]?.value === "Y") {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
             type: "text",
-            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            GridProps: {xs:12, sm:5, md: 4, lg: 2.4, xl:2},
         },        		
     ]
 }

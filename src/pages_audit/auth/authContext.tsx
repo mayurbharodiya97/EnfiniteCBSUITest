@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
   const [authenticating, setAuthenticating] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const [comingFromRoute] = useState(location.pathname);
+  const [comingFromRoute, setComingFromRoute] = useState(location.pathname);
   const [profileImage, setProfileImagestate] = useState("");
   const setProfileImage = (imgData) => {
     if (Boolean(imgData)) {
@@ -189,6 +189,7 @@ export const AuthProvider = ({ children }) => {
     if (window.location.pathname === "/cbsenfinity/forgotpassword") {
     } else if (window.location.pathname === "/cbsenfinity/forgot-totp") {
     } else {
+      setComingFromRoute("/cbsenfinity");
       navigate("/cbsenfinity/login");
     }
   }, [dispatch, navigate]);
@@ -222,7 +223,7 @@ export const AuthProvider = ({ children }) => {
         }
         timeoutLogout = setTimeout(() => {
           logout();
-        }, 1500);
+        }, 500);
       }
     }
   });

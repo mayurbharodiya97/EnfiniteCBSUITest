@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Fragment, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Grid, Typography, Paper, TextField, Button, Divider, Skeleton, IconButton, Collapse, Dialog } from '@mui/material';
 import {styled} from "@mui/material/styles";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
@@ -13,6 +13,7 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from 'react-query';
 import * as API from "../../../../api";
 import { ckyc_retrieved_meta_data } from 'pages_audit/pages/operations/c-kyc/metadata';
+import _ from 'lodash';
 // import { format } from 'date-fns';
 
 const actions = [
@@ -31,11 +32,12 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [acctName, setAcctName] = useState("")
+  const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const handlePDExpand = () => {
     setIsPDExpanded(!isPDExpanded)
   }
@@ -69,6 +71,11 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
         setIsNextLoading(true)
         // console.log("qweqweqwesdcas", data, displayData, actionFlag)     
         if(data && !hasError) {
+            let formFields = Object.keys(data) // array, get all form-fields-name 
+            formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+            formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+            const formData = _.pick(data, formFieldsRef.current)      
+
 
             let newData = state?.formDatactx
             const commonData = {
@@ -104,6 +111,54 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                     ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
+
+    const SaveUpdateBTNs = useMemo(() => {
+        if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={(e) => {
+                    NextBtnRef.current = e
+                    PDFormRef.current.handleSubmitError(e, "save")
+                }}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        NextBtnRef.current = e
+                        PDFormRef.current.handleSubmitError(e, "save")
+                    }}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [displayMode])
 
     // useEffect(() => {
     //     console.log("state?.isFreshEntryctx",state?.isFreshEntryctx)
@@ -177,13 +232,14 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
 
 
             <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
+                {/* <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
                 disabled={isNextLoading}
                     onClick={(e) => {
                         NextBtnRef.current = e
                         PDFormRef.current.handleSubmitError(e, "save")
                     }}
-                >{t("Save & Next")}</Button>
+                >{t("Save & Next")}</Button> */}
+                {SaveUpdateBTNs}
             </Grid>
 
             {dialogOpen && <SearchListdialog 

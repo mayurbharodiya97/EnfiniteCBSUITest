@@ -59,6 +59,8 @@ export interface FieldMetaData<T> {
   thousandsGroupStyle?: string;
   isCurrencyField?: boolean;
   format?: string;
+  options?: any;
+  _optionsKey?: string;
 }
 
 export type Omitted<T> = Omit<T, "fieldKey" | "enableGrid">;
@@ -220,6 +222,10 @@ export type AllFormButtonProps = Merge<
 export type CustomAccountProps = Merge<
   Omitted<TextFieldProps>,
   FieldMetaData<"_accountNumber">
+>;
+export type CustomReportAccTypeProps = Merge<
+  Omitted<SelectProps>,
+  FieldMetaData<"reportAccType">
 >;
 
 export type DataTablePropsOptional = Optional<AllDataTableProps>;

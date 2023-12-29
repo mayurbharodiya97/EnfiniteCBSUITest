@@ -468,7 +468,6 @@ export const useField = ({
               finalResult = err.message;
             } else {
               finalResult = err?.error_msg ?? "unkown error type check console";
-              // finalResult = "unkown error type check console";
               console.log("unknown error type", err);
             }
             if (!Boolean(touchAndValidate)) {

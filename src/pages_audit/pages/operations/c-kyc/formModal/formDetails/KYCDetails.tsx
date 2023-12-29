@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useContext, useMemo } from "react";
+import { useRef, useState, useEffect, useContext, useMemo, Fragment } from "react";
 import {
   Grid,
   Typography,
@@ -105,10 +105,10 @@ const KYCDetails = ({
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
       const formData = _.pick(data, formFieldsRef.current)
 
-      setCurrentTabFormData((formData) => ({
-        ...formData,
-        proof_of_identity: data,
-      }));
+      // setCurrentTabFormData((formData) => ({
+      //   ...formData,
+      //   proof_of_identity: data,
+      // }));
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
@@ -133,18 +133,19 @@ const KYCDetails = ({
     actionFlag,
     hasError
   ) => {
+    // console.log("qekdiwqeydwyegdwef", data)
     setIsNextLoading(true);
     if (data && !hasError) {
       let formFields = Object.keys(data) // array, get all form-fields-name 
-      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+      formFields = formFields.filter(field => !(field.includes("_ignoreField") || field.includes("DISTRICT_NM") || field.includes("LOC_DISTRICT_NM"))) // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
       const formData = _.pick(data, formFieldsRef.current)
 
 
-      setCurrentTabFormData((formData) => ({
-        ...formData,
-        proof_of_address: data,
-      }));
+      // setCurrentTabFormData((formData) => ({
+      //   ...formData,
+      //   proof_of_address: data,
+      // }));
 
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
@@ -167,11 +168,12 @@ const KYCDetails = ({
         });
       // }
       // setIsNextLoading(false)
-    } else
+    } else {
       handleStepStatusctx({
         status: "error",
         coltabvalue: state?.colTabValuectx,
       });
+    }
     endSubmit(true);
     setIsNextLoading(false);
   };
@@ -185,6 +187,57 @@ const KYCDetails = ({
       ? state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]
       : {};
   }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
+
+
+
+  const SaveUpdateBTNs = useMemo(() => {
+    if(displayMode) {
+    return displayMode == "new"
+      ? <Fragment>
+        <Button
+          sx={{ mr: 2, mb: 2 }}
+          color="secondary"
+          variant="contained"
+          disabled={isNextLoading}
+          onClick={(e) => {
+            NextBtnRef.current = e;
+            KyCPoIFormRef.current.handleSubmitError(e, "save");
+          }}
+        >
+          {t("Save & Next")}
+        </Button>
+      </Fragment>
+      : displayMode == "edit"
+          ? <Fragment>
+            <Button
+              sx={{ mr: 2, mb: 2 }}
+              color="secondary"
+              variant="contained"
+              disabled={isNextLoading}
+              onClick={(e) => {
+                NextBtnRef.current = e;
+                KyCPoIFormRef.current.handleSubmitError(e, "save");
+              }}
+            >
+              {t("Update & Next")}
+            </Button>
+          </Fragment>
+          : displayMode == "view" && <Fragment>
+              <Button
+              sx={{ mr: 2, mb: 2 }}
+              color="secondary"
+              variant="contained"
+              disabled={isNextLoading}
+              onClick={(e) => {
+                handleColTabChangectx(state?.colTabValuectx + 1)
+              }}
+            >
+              {t("Next")}
+            </Button>
+          </Fragment>
+    }
+  }, [displayMode])
+
 
   //    useEffect(() => {
   //     console.log("asdfweafdw",currentTabFormData)
@@ -364,7 +417,7 @@ const KYCDetails = ({
         >
           {t("Previous")}
         </Button>
-        {state?.isFreshEntryctx && <Button
+        {/* {state?.isFreshEntryctx && <Button
           sx={{ mr: 2, mb: 2 }}
           color="secondary"
           variant="contained"
@@ -389,7 +442,8 @@ const KYCDetails = ({
           }}
         >
           {t("Update & Next")}
-        </Button>}
+        </Button>} */}
+        {SaveUpdateBTNs}
       </Grid>
     </Grid>
   );

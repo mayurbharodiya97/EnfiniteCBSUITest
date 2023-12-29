@@ -32,7 +32,7 @@ export const OperationsMenu = () => (
     <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="teller/*" element={<CashReceiptEntry />} />
-    <Route path="ckyc-confirmation/*" element={<CkycConfirm />} />
+    <Route path="confirm-ckyc/*" element={<CkycConfirm />} />
     <Route path="account-mst/*" element={<AcctMST />} />
     <Route path="single-deno/*" element={<SingleDeno />} />
     {/* <Route
