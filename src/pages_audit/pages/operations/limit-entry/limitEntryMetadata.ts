@@ -289,11 +289,19 @@ export const limitEntryMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 4,
-        sm: 4,
-        lg: 4,
-        xl: 4,
+        md: 3.5,
+        sm: 3.5,
+        lg: 3.5,
+        xl: 3.5,
       },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "MESSAGES",
+      label: "",
+      isReadOnly: true,
     },
   ],
 };

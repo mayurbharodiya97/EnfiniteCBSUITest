@@ -35,6 +35,7 @@ interface MyGridExtendedProps {
   startsIcon?: any;
   endsIcon?: any;
   iconStyle?: any;
+  textFieldStyle?: any;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -73,6 +74,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   iconStyle,
   runExternalFunction,
   onFormDataChange,
+  textFieldStyle,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -268,6 +270,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
             ) : null}
           </div>
         }
+        sx={{
+          "& .MuiInputBase-root": {
+            ...textFieldStyle,
+          },
+        }}
         FormHelperTextProps={{
           //@ts-ignore
           component: "div",
