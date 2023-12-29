@@ -56,6 +56,9 @@ export interface ArrayField2Props {
   agreeButtonName: any;
   errorTitle: string;
   isScreenStyle?: any;
+  runExternalFunction?: Boolean;
+  isRemoveButton?: Boolean;
+  onFormDataChange?: any;
 }
 
 const metaDataTransform = (metaData: MetaDataType): MetaDataType => {
@@ -82,10 +85,12 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   isCustomStyle,
   getFixedRowsCount,
   onFormButtonClickHandel,
+  onFormDataChange,
   disagreeButtonName,
   agreeButtonName,
   errorTitle,
   isScreenStyle,
+  isRemoveButton,
 }) => {
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
@@ -165,6 +170,8 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       }
 
       currentFieldMetaData["onFormButtonClickHandel"] = onFormButtonClickHandel;
+      currentFieldMetaData["onFormDataChange"] = onFormDataChange;
+
       let newMTdata;
       if (rowIndex === 0) {
         newMTdata = { ...currentFieldMetaData };
@@ -210,6 +217,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         agreeButtonName={agreeButtonName}
         errorTitle={errorTitle}
         isScreenStyle={isScreenStyle}
+        isRemoveButton={isRemoveButton}
       />
     );
   });
@@ -316,6 +324,7 @@ export const ArrayFieldRow = ({
   agreeButtonName,
   errorTitle,
   isScreenStyle,
+  isRemoveButton,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -408,7 +417,8 @@ export const ArrayFieldRow = ({
         className={finalClass}
       >
         {oneRow}
-        {typeof removeFn === "function" && !Boolean(fixedRows) ? (
+        {(typeof removeFn === "function" && !Boolean(fixedRows)) ||
+        !Boolean(isRemoveButton) ? (
           <IconButton
             onClick={dialogOpen}
             className={classes.arrayRowRemoveBtn}

@@ -1,6 +1,10 @@
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { GeneralAPI } from "registry/fns/functions";
-import { getAccountName, getSlipNumber } from "./api";
+import {
+  clearingBankMasterConfigDML,
+  getAccountName,
+  getSlipNumber,
+} from "./api";
 import { format } from "date-fns";
 
 export const CtsOutwardClearingMetadata = {
@@ -113,6 +117,7 @@ export const CtsOutwardClearingMetadata = {
       isReadOnly: true,
       GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
     },
+
     {
       render: {
         componentType: "textField",
@@ -338,7 +343,7 @@ export const ChequeDetailFormMetaData: any = {
     name: "ChequeDetailFormMetaData",
     label: "Cheque Detail",
     resetFieldOnUmnount: false,
-    validationRun: "onBlur",
+    validationRun: "all",
     submitAction: "home",
     render: {
       ordering: "auto",
@@ -380,11 +385,11 @@ export const ChequeDetailFormMetaData: any = {
         componentType: "arrayField",
       },
       fixedRows: true,
-      // isDisplayCount: true,
       isScreenStyle: true,
+      isRemoveButton: true,
       name: "chequeDetails",
       removeRowFn: "deleteFormArrayFieldData",
-      arrayFieldIDName: "DOC_CD",
+      arrayFieldIDName: "",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -410,48 +415,80 @@ export const ChequeDetailFormMetaData: any = {
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "numberFormat",
           },
           name: "BANK_CD",
-          label: "Bank",
-          placeholder: "Bank",
+          label: "Ifsc Code",
+          placeholder: "Ifsc Code",
           type: "text",
-          // required: true,
-          // maxLength: 10,
-          // options: GeneralAPI.getBranchCodeList,
-          // _optionsKey: "getBranchCodeList",
+          // dependentFields: ["BANK_NM"],
+          FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 10) {
+                return false;
+              }
+              return true;
+            },
+          },
+          runExternalFunction: true,
+          disableCaching: true,
+          runValidationOnDependentFieldsChange: true,
+          postValidationSetCrossFieldValues: async (
+            field,
+            __,
+            auth,
+            dependentFieldsValues
+          ) => {
+            let formData = {
+              COMP_CD: auth.companyID ?? "",
+              BRANCH_CD: auth.user.branchCode ?? "",
+              BANK_CD:
+                field.value && Number.isNaN(Number(field.value))
+                  ? ""
+                  : field.value.padEnd(10, " "),
+              BANK_NM:
+                field.value && Number.isNaN(Number(field.value))
+                  ? field.value
+                  : "",
+            };
+
+            if (field.value & field.value.length) {
+              let postdata = await clearingBankMasterConfigDML(formData);
+              return {
+                BANK_CD: { value: postdata?.[0]?.BANK_CD, ignoreUpdate: true },
+                BANK_NM: { value: postdata?.[0].BANK_NM, ignoreUpdate: true },
+              };
+            }
+
+            return {};
+          },
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 2.5 },
           // schemaValidation: {
           //   type: "string",
           //   rules: [{ name: "required", params: ["Branch Code is required."] }],
           // },
         },
-        // {
-        //   render: {
-        //     componentType: "formbutton",
-        //   },
-        //   name: "BANK_NAME",
-        //   label: "...",
-        //   placeholder: "",
-        //   type: "text",
-        //   // required: true,
-        //   // maxLength: 16,
-        //   // options: GeneralAPI.getBranchCodeList,
-        //   // _optionsKey: "getBranchCodeList",
-        //   // GridProps: { xs: 12, sm: 1, md: 1.5, lg: 1.2, xl: 1 },
-        //   GridProps: { sm: 1, md: 1.5, lg: 1.2, xl: 1 },
-        //   // GridProps: { xs: 12, sm: 1, md: 1, lg: 1.2, xl: 1.2 },
-        //   // schemaValidation: {
-        //   //   type: "string",
-        //   //   rules: [{ name: "required", params: ["Branch Code is required."] }],
-        //   // },
-        // },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "BANK_NM",
+          label: "Bank Name",
+          placeholder: "",
+          type: "text",
+          required: true,
+          maxLength: 100,
+          showMaxLength: true,
+          GridProps: { xs: 12, sm: 3, md: 4, lg: 4, xl: 1.5 },
+        },
+
         {
           render: {
             componentType: "numberFormat",
           },
           name: "ECS_SEQ_NO",
           label: "Payee A/C No.",
+          runExternalFunction: true,
           placeholder: "",
           type: "text",
           required: true,
@@ -485,6 +522,7 @@ export const ChequeDetailFormMetaData: any = {
           // defaultValue: new Date(),
           type: "text",
           fullWidth: true,
+          maxDate: new Date(),
           // required: true,
           maxLength: 6,
           defaultfocus: true,
@@ -663,6 +701,3 @@ export const ClearingBankMasterFormMetadata = {
     },
   ],
 };
-function addFormArrayFieldData() {
-  throw new Error("Function not implemented.");
-}

@@ -50,6 +50,7 @@ export interface FieldMetaData<T> {
     | string;
   isReadOnly?: typeof shouldExcludeFnType | CustomRuleType | Boolean | string;
   onFormButtonClickHandel?: any;
+  onFormDataChange?: any;
   postValidationSetCrossFieldValues?: any;
   acctFieldPara?: string;
   FormatProps?: any;
