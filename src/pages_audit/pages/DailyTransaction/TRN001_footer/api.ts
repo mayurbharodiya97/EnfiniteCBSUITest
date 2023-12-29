@@ -160,32 +160,9 @@ export const getAccInquiry = async (reqData) => {
 };
 
 export const addDailyTrxScroll = async (reqData) => {
-  console.log(reqData, "reqData");
-  const localInfo = localStorage.getItem("authDetails");
-  let localInfo1 = localInfo && JSON.parse(localInfo);
-  let arr = reqData.map((a) => {
-    return {
-      BRANCH_CD: localInfo1?.user?.branchCode,
-      COMP_CD: localInfo1?.companyID,
-      ACCT_TYPE: a.accType?.value,
-      ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
-      REMARKS: a.remark,
-      CHEQUE_NO: a.cNo ? a.cNo : "0",
-      TYPE_CD: a.trx.code + "   ",
-      // TRAN_DT: date2,
-      // VALUE_DT: date2,
-      ENTERED_BRANCH_CD: a.branch?.value,
-      ENTERED_COMP_CD: a.branch?.info.COMP_CD,
-      SDC: a.sdc.value,
-      AMOUNT: a.isCredit ? a.credit : a.debit,
-      SCROLL1: a.scroll ? a.scroll : "0",
-      CURRENCY_CD: "00  ",
-      CONFIRMED: "0",
-    };
-  });
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
-      DETAILS_DATA: { isDeleteRow: [], isUpdatedRow: [], isNewRow: arr },
+      DETAILS_DATA: { isDeleteRow: [], isUpdatedRow: [], isNewRow: reqData },
     });
   if (status === "0") {
     let responseData = data;

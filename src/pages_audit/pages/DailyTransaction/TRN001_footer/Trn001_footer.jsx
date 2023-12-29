@@ -537,9 +537,69 @@ const Trn001_footer = () => {
       setSaveDialog(true);
     }
   };
+  const dateArr = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEp",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
+
   const handleScrollSave = () => {
     setLoading(true);
-    saveScroll.mutate(rows);
+    const dateArr = [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEp",
+      "OCT",
+      "NOV",
+      "DEC",
+    ];
+
+    let str = authState.workingDate;
+    let split = str.split("/");
+
+    let today = new Date();
+    let day = today.getDate(split[0]);
+    let month = today.getMonth(split[1]);
+    let year = today.getFullYear(split[2]);
+
+    let date = day + "-" + dateArr[month] + "-" + year;
+
+    let arr = rows.map((a) => {
+      return {
+        BRANCH_CD: authState?.user?.branchCode,
+        COMP_CD: authState?.companyID,
+        ACCT_TYPE: a.accType?.value,
+        ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
+        REMARKS: a.remark,
+        CHEQUE_NO: a.cNo ? a.cNo : "0",
+        TYPE_CD: a.trx.code + "   ",
+        TRAN_DT: date,
+        VALUE_DT: date,
+        ENTERED_BRANCH_CD: a.branch?.value,
+        ENTERED_COMP_CD: a.branch?.info.COMP_CD,
+        SDC: a.sdc.value,
+        AMOUNT: a.isCredit ? a.credit : a.debit,
+        SCROLL1: a.scroll ? a.scroll : "0",
+        CURRENCY_CD: "00  ",
+        CONFIRMED: "0",
+      };
+    });
+    saveScroll.mutate(arr);
     setSaveDialog(false);
   };
   const handleUpdateRows = (data) => {
