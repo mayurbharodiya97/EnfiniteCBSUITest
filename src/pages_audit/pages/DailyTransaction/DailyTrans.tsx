@@ -18,7 +18,7 @@ import Snapshot from "./SnapShot";
 import Search from "./Search";
 import StopPay from "./StopPay";
 import Document from "./Document";
-import Subsidy from "./Subsidy";
+import Subsidyy from "./Subsidyy";
 import Disbursement from "./Disbursement";
 import AccDetails from "./AccountDetails/AccDetails";
 import { useNavigate } from "react-router-dom";
@@ -138,7 +138,7 @@ export const DailyTrans = () => {
             {i == 4 && <Snapshot />}
             {i == 5 && <HoldCharge />}
             {i == 6 && <Disbursement />}
-            {i == 7 && <Subsidy />}
+            {i == 7 && <Subsidyy />}
             {i == 8 && <Document />}
             {i == 9 && <StopPay />}
             {i == 10 && <Search />}
