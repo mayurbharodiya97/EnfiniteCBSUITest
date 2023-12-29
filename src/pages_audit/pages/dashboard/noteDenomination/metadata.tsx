@@ -42,7 +42,7 @@ import * as API from "./api";
 //       datetimePicker: {
 //         fullWidth: true,
 //       },
-//       autocomplete: {
+//       select: {
 //         fullWidth: true,
 //       },
 //     },
@@ -368,7 +368,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       accessor: "RECEIPT_PAYMENT",
       name: "RECEIPT_PAYMENT",
       defaultValue: "",
-      type: "currency",
+      type: "amountfield",
       isVisible: true,
       gridconfig: { xs: 6, sm: 2 },
       defaultfocus: true,
@@ -409,6 +409,10 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
           }
           return "";
         }
+      },
+      FormatProps: {
+        decimalScale: 2,
+        thousandsGroupStyle: "thousand",
       },
     },
     {

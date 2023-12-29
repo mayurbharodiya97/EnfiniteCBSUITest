@@ -73,7 +73,6 @@ const GeneralAPISDK = () => {
     console.log("changed...");
   };
   const getAccountTypeList = async (...reqData) => {
-    // console.log(reqData, "reqData...");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETUSERACCTTYPE", {
         USER_NAME: reqData?.[3]?.user.id

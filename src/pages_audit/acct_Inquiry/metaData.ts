@@ -216,12 +216,12 @@ export const AccountInquiryMetadata = {
     },
     // {
     //   render: {
-    //     componentType: "reportAccType",
+    //     componentType: "fullAccountNumber",
     //   },
-    //   options: getBranchCodeList,
-    //   _optionsKey: "justForTestings",
-    //   name: "TEST",
-    //   label: "test",
+    //   // options: getBranchCodeList,
+    //   // _optionsKey: "justForTestings",
+    //   // name: "TEST",
+    //   // label: "test",
     // },
   ],
 };
@@ -594,6 +594,16 @@ export const PassbookStatement: any = {
     //   // },
     //   enableNumWords: false,
     //   // StartAdornment: "BDT",
+    // },
+
+    // {
+    //   render: {
+    //     componentType: "amountField",
+    //   },
+    //   // options: getBranchCodeList,
+    //   // _optionsKey: "justForTestings",
+    //   // name: "TEST",
+    //   // label: "test",
     // },
   ],
 };
