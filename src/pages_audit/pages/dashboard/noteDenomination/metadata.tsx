@@ -342,17 +342,17 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       isDisabled: false,
       gridconfig: { xs: 6, sm: 2 },
       dependFields: ["SDC"],
-      dependFieldsonchange: (colomnValue, value, name, extraData) => {
-        if (value) {
-          return {
-            label: "Default Remarkz",
-            // gridconfig: { xs: 12, sm: 12 },
-            // placeholder: "Placeholder Is Changed",
-            value: value,
-            defaultValue: value,
-          };
-        }
-      },
+      // dependFieldsonchange: (colomnValue, value, name, extraData) => {
+      //   if (value) {
+      //     return {
+      //       label: "Default Remarkz",
+      //       // gridconfig: { xs: 12, sm: 12 },
+      //       // placeholder: "Placeholder Is Changed",
+      //       value: value,
+      //       defaultValue: value,
+      //     };
+      //   }
+      // },
       // dependFields: ["TRN"],
       // dependFieldsonchange: (colomnValue, value, name, extraData) => {
       //   if (value === "R" || value === "P") {
