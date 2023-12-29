@@ -644,6 +644,70 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNCNFF2",
     packageName: "",
   },
+  GETJOINTACCTDTL: {
+    url: "/transactionServiceAPI/GETJOINTACCTDTL",
+    packageName: "",
+  },
+  GETTODAYTRAN: {
+    url: "/transactionServiceAPI/GETTODAYTRAN",
+    packageName: "",
+  },
+  GETCHEQUEDTL: {
+    url: "/transactionServiceAPI/GETCHEQUEDTL",
+    packageName: "",
+  },
+  GETINSURANCEDTL: {
+    url: "/transactionServiceAPI/GETINSURANCEDTL",
+    packageName: "",
+  },
+  GETDOCTEMPLTEDTL: {
+    url: "/transactionServiceAPI/GETDOCTEMPLTEDTL",
+    packageName: "",
+  },
+  GETSEARCHDTL: {
+    url: "/transactionServiceAPI/GETSEARCHDTL",
+    packageName: "",
+  },
+  GETDAILYTRNLIST: {
+    url: "/transactionServiceAPI/GETDAILYTRNLIST",
+    packageName: "",
+  },
+  CONFIRMDAILYTRNDATA: {
+    url: "/transactionServiceAPI/CONFIRMDAILYTRNDATA",
+    packageName: "",
+  },
+  GETDLYTRNHOLDCHRGF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNHOLDCHRGF1",
+    packageName: "",
+  },
+  GETDLYTRNACCTDISBDTLF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACCTDISBDTLF1",
+    packageName: "",
+  },
+  GETDLYTRNSUBSIDYDTLF1: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSUBSIDYDTLF1",
+    packageName: "",
+  },
+  GETSTOPDISPLAY: {
+    url: "/transactionServiceAPI/GETSTOPDISPLAY",
+    packageName: "",
+  },
+  GETLIMITFDBRANCHDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDBRANCHDDW",
+    packageName: "",
+  },
+  GETFDBFDDETAIL: {
+    url: "accountServiceAPI/GETFDBFDDETAIL",
+    packageName: "",
+  },
+  GETLIMITFDTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDTYPEDDW",
+    packageName: "",
+  },
+  GETLIMITNSCDTLBTN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITNSCDTLBTN",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

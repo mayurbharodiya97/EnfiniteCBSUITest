@@ -1,3 +1,5 @@
+import * as API from "../../../../api";
+
 export const DocumentFormMetadata = {
     form: {
       name: "EditDocuments",
@@ -60,10 +62,10 @@ export const DocumentFormMetadata = {
         dependentFields: ["TRAN_CD", "SR_CD"],  
         isReadOnly: false,
         // _optionsKey: "getKYCDocTypes",
-        // options: (dependentValue?, formState?, _?, authState?) => API.getCustDocumentOpDtl({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+        // options: (dependentValue?, formState?, _?, authState?) => API.getCustDocumentOpDtl({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, formState}),
         options: () => [],
         // _optionsKey: "getDocumentOptionsDTL",
-        disableCaching:true,
+        // disableCaching:true,
         required: true,   
         GridProps: {
           xs: 12,

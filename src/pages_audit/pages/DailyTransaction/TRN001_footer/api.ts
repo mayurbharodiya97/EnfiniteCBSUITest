@@ -6,15 +6,15 @@ import {
 import { AuthSDK } from "registry/fns/auth";
 
 const arr = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEp",
   "OCT",
   "NOV",
   "DEC",
@@ -26,7 +26,7 @@ let month = today.getMonth();
 let year = today.getFullYear();
 
 let date = day + "/" + arr[month] + "/" + year;
-let date2 = "14" + "-" + arr[month] + "-" + year;
+let date2 = day + "-" + arr[month] + "-" + year;
 
 export const getSDCList = async (reqData) => {
   const { data, status, message, messageDetails } =
@@ -119,12 +119,8 @@ export const getTRXList = async (reqData) => {
 };
 
 export const getAccInfo = async (reqData) => {
-  console.log(reqData, "reqDatareqData");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
-      // COMP_CD: "132 ",
-      // BRANCH_CD: "099 ",
-      // ACCT_TYPE: "001 ",
       // ACCT_CD: "000026              ",
       // A_ASON_DT: "15/DEC/2023",
       COMP_CD: reqData.COMP_CD,
@@ -135,7 +131,11 @@ export const getAccInfo = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
-    return responseData[0];
+    if (responseData.length > 0) {
+      return responseData[0];
+    } else {
+      return responseData;
+    }
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -160,53 +160,9 @@ export const getAccInquiry = async (reqData) => {
 };
 
 export const addDailyTrxScroll = async (reqData) => {
-  const localInfo = localStorage.getItem("authDetails");
-  let localInfo1 = localInfo && JSON.parse(localInfo);
-
-  console.log(localInfo1, "localInfo1");
-  let arr = reqData.map((a) => {
-    return {
-      BRANCH_CD: localInfo1?.user?.branchCode,
-      COMP_CD: localInfo1?.companyID,
-      ACCT_TYPE: a.accType?.value,
-      ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
-      REMARKS: a.remark,
-      CHEQUE_NO: "0", //!a.isCredit ? a.cNo?.toString() : "0"
-      TYPE_CD: a.trx.code + "   ",
-      TRAN_DT: date2,
-      VALUE_DT: date2,
-      ENTERED_BRANCH_CD: a.branch?.value,
-      ENTERED_COMP_CD: a.branch?.info.COMP_CD,
-      SDC: a.sdc.value,
-      AMOUNT: a.isCredit ? a.credit : a.debit,
-      SCROLL1: a.scroll ? a.scroll : "",
-      CURRENCY_CD: "00  ",
-      CONFIRMED: "0",
-    };
-  });
-  console.log(arr, "Arr");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
-      DETAILS_DATA: { isDeleteRow: [], isUpdatedRow: [], isNewRow: arr },
-    });
-  if (status === "0") {
-    let responseData = data;
-
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getScrollListF2 = async (reqData) => {
-  console.log(reqData, "reqData F2 scrolllist");
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDAILYTRNCNFF2", {
-      // ACCT_NO: "132005001007851",
-      ACCT_NO: "",
-      MOB_NO: "",
-      PAN_NO: "",
-      CUST_ID: "12",
+      DETAILS_DATA: { isDeleteRow: [], isUpdatedRow: [], isNewRow: reqData },
     });
   if (status === "0") {
     let responseData = data;
@@ -218,7 +174,6 @@ export const getScrollListF2 = async (reqData) => {
 };
 
 export const getChqValidation = async (reqData) => {
-  console.log(reqData, "chqvalid");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
       COMP_CD: reqData?.branch?.info?.COMP_CD,
@@ -231,6 +186,22 @@ export const getChqValidation = async (reqData) => {
     let responseData = data;
 
     return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getTRN001List = async (reqData) => {
+  //for table
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
+      COMP_CD: reqData?.COMP_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

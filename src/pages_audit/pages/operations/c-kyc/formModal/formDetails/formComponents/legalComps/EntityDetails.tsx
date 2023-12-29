@@ -13,6 +13,7 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation, useQuery } from 'react-query';
 import * as API from "../../../../api";
 import { ckyc_retrieved_meta_data } from 'pages_audit/pages/operations/c-kyc/metadata';
+import _ from 'lodash';
 // import { format } from 'date-fns';
 
 const actions = [
@@ -31,11 +32,12 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [acctName, setAcctName] = useState("")
+  const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const handlePDExpand = () => {
     setIsPDExpanded(!isPDExpanded)
   }
@@ -69,6 +71,11 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
         setIsNextLoading(true)
         // console.log("qweqweqwesdcas", data, displayData, actionFlag)     
         if(data && !hasError) {
+            let formFields = Object.keys(data) // array, get all form-fields-name 
+            formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+            formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+            const formData = _.pick(data, formFieldsRef.current)      
+
 
             let newData = state?.formDatactx
             const commonData = {

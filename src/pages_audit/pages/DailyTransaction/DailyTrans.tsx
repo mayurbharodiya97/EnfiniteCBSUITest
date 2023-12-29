@@ -1,9 +1,16 @@
+// UI
+import { AppBar, Box, Grid, Tab } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import StyledTabs from "components/styledComponent/tabs/tabs";
+import CloseIcon from "@mui/icons-material/Close";
+import { Button, Tabs } from "@mui/material";
+
+//logic
 import React, { useState } from "react";
 import { lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import JointDetailsForm from "./JointDetails";
 import TodayTransactionForm from "./TodayTransaction";
-import CloseIcon from "@mui/icons-material/Close";
 import Insurance from "./Insurance";
 import CheckBook from "./CheckBook";
 import HoldCharge from "./HoldCharge";
@@ -11,28 +18,13 @@ import Snapshot from "./SnapShot";
 import Search from "./Search";
 import StopPay from "./StopPay";
 import Document from "./Document";
-import Subsidy from "./Subsidy";
+import Subsidyy from "./Subsidyy";
 import Disbursement from "./Disbursement";
-import Footer from "./Footer/Footer";
 import AccDetails from "./AccountDetails/AccDetails";
-import { Button, Tabs } from "@mui/material";
-
 import { useNavigate } from "react-router-dom";
-
-import {
-  Box,
-  Typography,
-  Grid,
-  TextField,
-  IconButton,
-  Divider,
-  Tab,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import StyledTabs from "components/styledComponent/tabs/tabs";
-
-// const JointDetails = lazy(() => import("./JointDetails"));
-// console.log("daily trans");
+import Trn001_footer from "./TRN001_footer/Trn001_footer";
+import "./DailyTrans.css";
+import TRN002_Table from "./TRN002_footer/";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,18 +42,13 @@ function TabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 1 }}>
-          {/* <Typography> */}
-          {children}
-          {/* </Typography> */}
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 1 }}>{children}</Box>}
     </div>
   );
 }
 export const DailyTrans = () => {
   const [tabValue, setTabValue] = React.useState(0);
+  const loc = useLocation();
 
   const navArray = [
     {
@@ -115,15 +102,19 @@ export const DailyTrans = () => {
   ];
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    // console.log(newValue, "newValue");
     setTabValue(newValue);
   };
   return (
     <div style={{ padding: "8px" }}>
-      <h1>Daily Transaction (Maker) (TRN/001) </h1>
+      <h1>
+        Daily Transaction
+        {loc.pathname.includes("teller_daily_tran_cnf_F2")
+          ? " Confirmation (F2) (TRN/002)"
+          : " (Maker) (TRN/001)"}
+      </h1>
 
       <>
-        <Grid item xs="auto">
+        <Grid item xs="auto" id="dailyTabs">
           <Tabs
             textColor="secondary"
             value={tabValue}
@@ -145,7 +136,7 @@ export const DailyTrans = () => {
             {i == 4 && <Snapshot />}
             {i == 5 && <HoldCharge />}
             {i == 6 && <Disbursement />}
-            {i == 7 && <Subsidy />}
+            {i == 7 && <Subsidyy />}
             {i == 8 && <Document />}
             {i == 9 && <StopPay />}
             {i == 10 && <Search />}
@@ -153,8 +144,11 @@ export const DailyTrans = () => {
           </TabPanel>
         ))}
       </>
-
-      <Footer />
+      {loc.pathname.includes("teller_daily_tran_cnf_F2") ? (
+        <TRN002_Table />
+      ) : (
+        <Trn001_footer />
+      )}
     </div>
   );
 };

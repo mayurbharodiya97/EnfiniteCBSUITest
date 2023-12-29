@@ -19,23 +19,24 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import SearchIcon from "@mui/icons-material/Search";
-import InputBase from "@mui/material/InputBase";
-//Logical
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useContext,
-} from "react";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import LinearProgress from "@mui/material/LinearProgress";
+//date
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+//Logic
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import "./footer.css";
+import "./Trn001_Footer.css";
+import BaseFooter from "./BaseFooter";
+import TRN001_Table from "./Table";
 
-const Footer = () => {
+const Trn001_footer = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
 
@@ -49,48 +50,65 @@ const Footer = () => {
     branch: defBranch,
     accType: { label: "", value: "", info: "" },
     accNo: "",
-    trx: { label: "", value: "", code: "" },
-    scroll: "", //token
+    trx: { label: "", value: "", code: "" }, //TYPE_CD
+    scroll: "0", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
-    cNo: "",
+    cNo: "0",
     date: new Date().toISOString()?.substring(0, 10),
     debit: "0.00",
     credit: "0.00",
-    vNo: "",
+    vNo: "", //TRAN_CD
     bug: true,
-    bugChq: true,
+    bugChq: false,
+    // bugAccNo: false,
     isCredit: true,
+    viewOnly: false,
   };
-  let filterOpt = [
-    { label: "Scroll search", value: "scroll" },
-    { label: "Vno search", value: "vno" },
-  ];
 
   const [rows, setRows] = useState([defaulVal]);
+  const [rows2, setRows2] = useState([]);
   const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState([]);
   const [sdcOptions, setSdcOptions] = useState([]);
   const [accTypeOptions, setAccTypeOptions] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
-  const [isSave, setIsSave] = useState(false);
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
+  const [isSave, setIsSave] = useState(false);
   const [diff, setDiff] = useState(0);
-  const [saveDialog, setSaveDialog] = useState(false);
-  const [resetDialog, setResetDialog] = useState(false);
   const [isArray, setIsArray] = useState(false);
-  const [filter, setFilter] = useState({ value: "", label: "" });
-  const [search, setSearch] = useState("");
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState({ cNo: "", accNo: "" });
   const [index, setIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [resetDialog, setResetDialog] = useState(false);
+  const [viewOnly, setViewOnly] = useState(false);
+  const [saveDialog, setSaveDialog] = useState(false);
+  const [snack, setSnack] = useState({});
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
   }, []);
 
   useEffect(() => {
+    console.log(loading, "loading trn001");
+  }, [loading]);
+
+  useEffect(() => {
     console.log(rows, "rows");
+
     let i = 0;
     if (rows.length > 0) {
       i = rows.length - 1;
@@ -119,13 +137,12 @@ const Footer = () => {
     if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
       rows[i].bug = true;
     }
-    if (!rows[i]?.isCredit && rows[i]?.bugChq) {
+    if (!rows[i]?.isCredit && rows[i].bugChq) {
       rows[i].bug = true;
     }
 
-    let result = rows.some((a) => a.bug);
+    let result = rows && rows.some((a) => a?.bug);
     setIsSave(!result);
-    console.log("isSave", !result);
   }, [rows]);
 
   useEffect(() => {
@@ -135,6 +152,7 @@ const Footer = () => {
     getTrxOptions.mutate(authState);
   }, []);
 
+  //api define
   const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
       setBranchOptions(data);
@@ -164,138 +182,78 @@ const Footer = () => {
     },
     onError: (error) => {},
   });
+
   const getAccInfo = useMutation(API.getAccInfo, {
     onSuccess: (data) => {
-      console.log(data, "accInfo");
+      setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
+      if (data.STATUS == "C") {
+        console.log("c1");
+        setErrMsg({
+          ...errMsg,
+          accNo: data.ACCT_CD_NEW + " Account Closed!",
+        });
+        rows[index].bug = true;
+      } else if (data.STATUS == "U") {
+        console.log("c2");
+        setErrMsg({
+          ...errMsg,
+          accNo: data.ACCT_CD_NEW + " Account Unclaimed!",
+        });
+        rows[index].bug = true;
+      } else if (!data || data?.length == 0) {
+        console.log("c3");
+        setErrMsg({
+          ...errMsg,
+          accNo: "No record found for given A/C type & A/C No",
+        });
+        rows[index].bug = true;
+      } else {
+        setErrMsg({ ...errMsg, accNo: "" });
+      }
     },
-    onError: (error) => {},
+    onError: (error) => {
+      setLoading(false);
+      setOpen(true);
+      setSnack({ code: false, msg: "Error Fetching Account Info" });
+    },
   });
-  const getAccInquiry = useMutation(API.getAccInquiry, {
+
+  const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
-      console.log(data, "getAccInquiry");
+      setLoading(false);
+      if (Number(data[0]?.INSERT) > 0) {
+        setOpen(true);
+        setSnack({ code: true, msg: "Record Added" });
+        handleReset();
+      }
     },
-    onError: (error) => {},
-  });
-  const addScroll = useMutation(API.addDailyTrxScroll, {
-    onSuccess: (data) => {
-      console.log(data, "save scroll api");
+    onError: (error) => {
+      console.log(error, "error");
+      setLoading(false);
+      setOpen(true);
+      setSnack({ code: false, msg: error?.error_msg });
     },
-    onError: (error) => {},
   });
   const getChqValidation = useMutation(API.getChqValidation, {
     onSuccess: (data) => {
-      console.log(data, "getChqValidation api");
       if (data.ERR_CODE == "-1") {
         rows[index].bug = true;
         rows[index].bugChq = true;
+        setErrMsg({ ...errMsg, cNo: data?.ERR_MSG });
       }
-      setErrMsg(data);
     },
     onError: (error) => {},
   });
 
-  const handleAddRow = () => {
-    let cred = 0;
-    let deb = 0;
-    let trxx = { label: "1" };
-    let isCred = true;
-    if (totalDebit > totalCredit) {
-      cred = totalDebit - totalCredit;
-      trxx = trxOptions2[2];
-      isCred = true;
-    } else if (totalDebit < totalCredit) {
-      deb = totalCredit - totalDebit;
-      trxx = trxOptions2[5];
-      isCred = false;
-    }
-    let tr = trxx?.code + "   ";
-    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
-    let defaulVal2 = {
-      branch: defBranch,
-      scroll: rows.length + "abc",
-      vNo: rows.length + "vno" + 123,
-      trx: trxx,
-      debit: deb?.toFixed(2),
-      credit: cred?.toFixed(2),
-      isCredit: isCred,
-      date: new Date().toISOString()?.substring(0, 10),
-      sdc: defSdc,
-      remark: defSdc?.label,
-      accNo: "",
-      cNo: "",
-      bugChq: true,
-    };
+  const getTRN001List = useMutation(API.getTRN001List, {
+    onSuccess: (data) => {
+      setRows2(data);
+    },
+    onError: (error) => {},
+  });
 
-    if (isSave && totalDebit != totalCredit) {
-      let obj = [...rows, defaulVal2];
-
-      setRows(obj);
-      handleTotal(obj);
-    }
-  };
-
-  const handleClear = (e, i) => {
-    let obj = [...rows];
-    if (rows.length > 1) {
-      obj.splice(i, 1);
-      handleTotal(obj);
-      setRows(obj);
-    }
-  };
-
-  const handleTotal = (obj) => {
-    let sumDebit = 0;
-    let sumCredit = 0;
-
-    obj?.map((a) => {
-      sumDebit += Number(a.debit);
-    });
-
-    obj?.map((a) => {
-      sumCredit += Number(a.credit);
-    });
-
-    setDiff(sumDebit - sumCredit);
-    setTotalDebit(Number(sumDebit.toFixed(3)));
-    setTotalCredit(Number(sumCredit.toFixed(3)));
-  };
-
-  const handleReset = () => {
-    setRows([defaulVal]);
-    setTotalCredit(0);
-    setTotalDebit(0);
-    setTrxOptions(trxOptions2);
-    setResetDialog(false);
-  };
-
-  const handleScrollSave = () => {
-    // handleReset();
-    addScroll.mutate(rows);
-    setSaveDialog(false);
-  };
-
-  const handleFilterTrx = () => {
-    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
-    setTrxOptions(result);
-  };
-
-  const handleGetAccInfo = (i) => {
-    let data = {
-      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
-      BRANCH_CD: rows[i]?.branch?.value,
-      ACCT_TYPE: rows[i]?.accType?.value,
-      ACCT_CD: rows[i]?.accNo,
-      authState: authState,
-    };
-
-    rows[i]?.accNo &&
-      rows[i]?.accType?.value &&
-      rows[i]?.branch?.value &&
-      getAccInfo.mutate(data);
-  };
-
-  //TABLE FNs
+  //TABLE FNs ===============================================================
   const handleBranch = (e, value, i) => {
     const obj = [...rows];
     obj[i].branch = value;
@@ -303,24 +261,23 @@ const Footer = () => {
     handleTotal(obj);
     handleGetAccInfo(i);
   };
+
   const handleAccType = (e, value, i) => {
     const obj = [...rows];
     obj[i].accType = value;
     setRows(obj);
     handleGetAccInfo(i);
   };
+
   const handleAccNo = (e, i) => {
+    setIndex(i);
     const obj = [...rows];
     let txt = e.target.value;
-
     obj[i].accNo = txt;
     setRows(obj);
-
-    // if (i == 0) {
-    //   getAccInquiry.mutate(e.target.value);
-    //   console.log("1111");
-    // }
+    setErrMsg({ ...errMsg, accNo: "" });
   };
+
   const handleAccNoBlur = (e, i) => {
     const obj = [...rows];
     let abc = obj[i]?.accNo?.padStart(6, "0");
@@ -331,23 +288,22 @@ const Footer = () => {
 
   const handleTrx = (e, value, i) => {
     const obj = [...rows];
+    let tr = value?.code + "   ";
+    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
     obj?.length == 1 &&
       (value?.code == "3" || value?.code == "6") &&
       handleFilterTrx();
+
     obj[i].trx = value;
     obj[i].credit = "0.00";
     obj[i].debit = "0.00";
-    obj[i].cNo = "";
-    obj[i].bugChq = true;
-    setErrMsg({});
-
-    obj[i].scroll = "";
-    let tr = value?.code + "   ";
-    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
-
+    obj[i].cNo = "0";
+    obj[i].bugChq = false;
+    obj[i].scroll = "0";
     obj[i].sdc = defSdc;
     obj[i].remark = defSdc?.label;
+
     if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
       obj[i].isCredit = true;
     } else {
@@ -356,15 +312,20 @@ const Footer = () => {
 
     if (value?.code == "3" || value?.code == "6") {
       setIsArray(true);
+    } else {
+      setIsArray(false);
     }
+    setErrMsg({ ...errMsg, cNo: "" });
     setRows(obj);
     handleTotal(obj);
   };
+
   const handleScroll = (e, i) => {
     const obj = [...rows];
     obj[i].scroll = e.target.value;
     setRows(obj);
   };
+
   const handleSdc = (e, value, i) => {
     const obj = [...rows];
     obj[i].sdc = value;
@@ -372,6 +333,7 @@ const Footer = () => {
 
     setRows(obj);
   };
+
   const handleRemark = (e, i) => {
     const obj = [...rows];
     obj[i].remark = e.target.value;
@@ -379,28 +341,28 @@ const Footer = () => {
   };
 
   const handleCNo = (e, i) => {
-    setErrMsg({});
+    setErrMsg({ ...errMsg, cNo: "" });
     const obj = [...rows];
     let txt = e.target.value;
     obj[i].cNo = txt;
-
-    txt &&
-      obj[i].accNo &&
-      obj[i].accType.value &&
-      obj[i].branch.value &&
-      getChqValidation.mutate(obj[i]);
+    if (Number(txt) > 0) {
+      obj[i].bugChq = true;
+      txt &&
+        obj[i].accNo &&
+        obj[i].accType?.value &&
+        obj[i].branch?.value &&
+        getChqValidation.mutate(obj[i]);
+    } else {
+      obj[i].bugChq = false;
+    }
     setRows(obj);
     setIndex(i);
-  };
-  const handleCNoBlur = (e, i) => {
-    const obj = [...rows];
-    // getChqValidation.mutate(obj[i]);
   };
 
   const handleDate = (e, i) => {
     console.log(e, "date e");
     const obj = [...rows];
-    obj[i].date = e.target.value;
+    obj[i].date = e.target?.value;
     setRows(obj);
   };
 
@@ -444,6 +406,7 @@ const Footer = () => {
       obj[i].credit != obj[i].debit &&
       handleAddRow();
   };
+
   const handleCreditBlur = (e, i) => {
     const obj = [...rows];
     obj[i].credit = Number(e.target.value)?.toFixed(2);
@@ -459,41 +422,201 @@ const Footer = () => {
     obj[i].vNo = e.target.value;
     setRows(obj);
   };
-
-  const handleSearch = (e) => {
-    let txt = e.target.value;
-    setSearch(txt);
-    const obj = [...rows];
-    if (filter.value == "scroll") {
-      obj.map((a, j) => {
-        if (txt && txt == a.scroll) {
-          a.isFav = true;
-        } else {
-          a.isFav = false;
-        }
-      });
+  //=====================================================================
+  const handleAddRow = () => {
+    let cred = 0;
+    let deb = 0;
+    let trxx = { label: "1" };
+    let isCred = true;
+    if (totalDebit > totalCredit) {
+      cred = totalDebit - totalCredit;
+      trxx = trxOptions2[2];
+      isCred = true;
+    } else if (totalDebit < totalCredit) {
+      deb = totalCredit - totalDebit;
+      trxx = trxOptions2[5];
+      isCred = false;
     }
-    if (filter.value == "vno") {
-      obj.map((a, j) => {
-        if (txt && txt == a.vNo) {
-          a.isFav = true;
-        } else {
-          a.isFav = false;
-        }
-      });
-    }
+    let tr = trxx?.code + "   ";
+    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
-    setRows(obj);
+    let defaulVal2 = {
+      branch: defBranch,
+      accType: { label: "", value: "", info: "" },
+      accNo: "",
+      trx: trxx,
+      scroll: "0", //token
+      sdc: defSdc,
+      remark: defSdc?.label,
+      cNo: "0",
+      date: new Date().toISOString()?.substring(0, 10),
+      debit: deb?.toFixed(2),
+      credit: cred?.toFixed(2),
+      vNo: "",
+      bugChq: false,
+      isCredit: isCred,
+    };
+    if (
+      isSave &&
+      totalDebit != totalCredit &&
+      errMsg?.accNo == "" &&
+      errMsg?.cNo == ""
+    ) {
+      let obj = [...rows, defaulVal2];
+
+      setRows(obj);
+      handleTotal(obj);
+    }
   };
 
-  const handleFilter = (e, value) => {
-    setSearch("");
-    setFilter(value);
-    const obj = [...rows];
-    obj.map((a) => {
-      a.isFav = false;
+  const handleClear = (e, i) => {
+    let obj = [...rows];
+    if (rows.length > 1) {
+      obj.splice(i, 1);
+      handleTotal(obj);
+      setRows(obj);
+    }
+  };
+
+  const handleTotal = (obj) => {
+    let sumDebit = 0;
+    let sumCredit = 0;
+
+    obj?.map((a) => {
+      sumDebit += Number(a.debit);
     });
+
+    obj?.map((a) => {
+      sumCredit += Number(a.credit);
+    });
+
+    setDiff(sumDebit - sumCredit);
+    setTotalDebit(Number(sumDebit.toFixed(3)));
+    setTotalCredit(Number(sumCredit.toFixed(3)));
   };
+
+  const handleReset = () => {
+    setRows([defaulVal]);
+    setTotalCredit(0);
+    setTotalDebit(0);
+    setTrxOptions(trxOptions2);
+    setResetDialog(false);
+    setViewOnly(false);
+    setTempStore({ ...tempStore, accInfo: {} });
+  };
+
+  const handleFilterTrx = () => {
+    //to limit the trxOptions on 3,6
+    let result = trxOptions2?.filter((a) => a?.code == "3" || a?.code == "6");
+    setTrxOptions(result);
+  };
+
+  const handleGetAccInfo = (i) => {
+    let data = {
+      COMP_CD: rows[i]?.branch?.info?.COMP_CD,
+      BRANCH_CD: rows[i]?.branch?.value,
+      ACCT_TYPE: rows[i]?.accType?.value,
+      ACCT_CD: rows[i]?.accNo,
+      authState: authState,
+    };
+    if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
+      setLoading(true);
+      getAccInfo.mutate(data);
+    }
+  };
+
+  const handleSaveDialog = () => {
+    if (
+      errMsg.accNo ||
+      errMsg.cNo ||
+      !isSave ||
+      (!isArray && diff == 0) ||
+      (isArray && diff != 0)
+    ) {
+    } else {
+      setSaveDialog(true);
+    }
+  };
+  const dateArr = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEp",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
+
+  const handleScrollSave = () => {
+    setLoading(true);
+    const dateArr = [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEp",
+      "OCT",
+      "NOV",
+      "DEC",
+    ];
+
+    let str = authState.workingDate;
+    let split = str.split("/");
+
+    let today = new Date();
+    let day = today.getDate(split[0]);
+    let month = today.getMonth(split[1]);
+    let year = today.getFullYear(split[2]);
+
+    let date = day + "-" + dateArr[month] + "-" + year;
+
+    let arr = rows.map((a) => {
+      return {
+        BRANCH_CD: authState?.user?.branchCode,
+        COMP_CD: authState?.companyID,
+        ACCT_TYPE: a.accType?.value,
+        ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
+        REMARKS: a.remark,
+        CHEQUE_NO: a.cNo ? a.cNo : "0",
+        TYPE_CD: a.trx.code + "   ",
+        TRAN_DT: date,
+        VALUE_DT: date,
+        ENTERED_BRANCH_CD: a.branch?.value,
+        ENTERED_COMP_CD: a.branch?.info.COMP_CD,
+        SDC: a.sdc.value,
+        AMOUNT: a.isCredit ? a.credit : a.debit,
+        SCROLL1: a.scroll ? a.scroll : "0",
+        CURRENCY_CD: "00  ",
+        CONFIRMED: "0",
+      };
+    });
+    saveScroll.mutate(arr);
+    setSaveDialog(false);
+  };
+  const handleUpdateRows = (data) => {
+    //to apply filter from baseFooter
+    console.log(data, "databaseFooter");
+    setRows2(data);
+  };
+
+  const handleGetTRN001List = () => {
+    let data = {
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: authState?.user?.branchCode,
+    };
+    getTRN001List.mutate(data);
+    setViewOnly(true);
+  };
+
   return (
     <>
       <Card
@@ -502,46 +625,67 @@ const Footer = () => {
           borderRadius: "5px",
           padding: "8px",
           margin: "4px",
+          marginBottom: "10px",
         }}
       >
-        <TableContainer>
-          <Table aria-label="caption table" padding="none">
-            <caption style={{ fontWeight: "600" }}>
-              Total ( Debit:{totalDebit} | Credit:{totalCredit} )
-            </caption>
-            <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-              {errMsg && errMsg?.ERR_MSG}
-            </caption>
-            <TableHead>
-              <TableRow>
-                <TableCell>Branch</TableCell>
-                <TableCell>A/C Type</TableCell>
-                <TableCell>A/C No</TableCell>
-                <TableCell>TRX</TableCell>
-                <TableCell>Token</TableCell>
-                <TableCell>SDC</TableCell>
-                <TableCell>Remarks</TableCell>
-                <TableCell>Chq No</TableCell>
-                <TableCell>Chq Date</TableCell>
-                <TableCell>Debit</TableCell>
-                <TableCell>Credit</TableCell>
-                <TableCell>Vno.</TableCell>
-                <TableCell style={{ border: "0px" }}></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.length > 0 ? (
+        {loading && <LinearProgress color="secondary" />}
+        {viewOnly && <TRN001_Table />}
+
+        {!viewOnly && (
+          <TableContainer>
+            <Table aria-label="simple table" padding={"none"}>
+              <>
+                <caption>
+                  <h3>
+                    Total ( Debit:{totalDebit} | Credit:{totalCredit} )
+                  </h3>
+                </caption>
+                {errMsg?.cNo ? (
+                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
+                    {errMsg?.cNo}
+                  </caption>
+                ) : (
+                  <></>
+                )}
+                {errMsg?.accNo ? (
+                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
+                    {errMsg?.accNo}
+                  </caption>
+                ) : (
+                  <></>
+                )}
+              </>
+
+              <TableHead>
+                <TableRow id="topHead">
+                  <TableCell id="head">Branch</TableCell>
+                  <TableCell id="head">A/C Type</TableCell>
+                  <TableCell id="head">A/C No</TableCell>
+                  <TableCell id="head">TRX</TableCell>
+                  <TableCell id="head">
+                    {rows[0]?.trx?.code == "4" ? "Token" : "Scroll"}
+                  </TableCell>
+                  <TableCell id="head">SDC</TableCell>
+                  <TableCell id="head">Remarks</TableCell>
+                  <TableCell id="head">Chq No</TableCell>
+                  <TableCell id="head">Chq Date</TableCell>
+                  <TableCell id="head">Debit</TableCell>
+                  <TableCell id="head">Credit</TableCell>
+                  <TableCell id="head">Vno.</TableCell>
+                </TableRow>
+              </TableHead>
+
+              {rows &&
                 rows?.map((a, i) => {
                   return (
-                    <>
+                    <TableBody>
                       <TableRow key={i}>
-                        <TableCell
-                          sx={{ minWidth: 160 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.branch}
+                            autoHighlight
                             size="small"
+                            disabled={viewOnly ? true : false}
                             options={branchOptions}
                             onChange={(e, value) => handleBranch(e, value, i)}
                             renderInput={(params) => (
@@ -552,13 +696,12 @@ const Footer = () => {
                             )}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 160 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.accType}
+                            autoHighlight
                             size="small"
+                            disabled={viewOnly ? true : false}
                             options={accTypeOptions}
                             onChange={(e, value) => handleAccType(e, value, i)}
                             renderInput={(params) => (
@@ -569,27 +712,23 @@ const Footer = () => {
                             )}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.accNo}
-                            error={a.accNo ? false : true}
+                            disabled={viewOnly ? true : false}
+                            error={!a.accNo ? true : false}
                             size="small"
                             type="number"
                             onChange={(e) => handleAccNo(e, i)}
                             onBlur={(e) => handleAccNoBlur(e, i)}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 160 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.trx}
+                            autoHighlight
                             size="small"
-                            id="combo-box-demo"
+                            disabled={viewOnly ? true : false}
                             options={trxOptions}
                             onChange={(e, value) => handleTrx(e, value, i)}
                             renderInput={(params) => (
@@ -601,89 +740,78 @@ const Footer = () => {
                           />
                         </TableCell>
 
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.scroll}
                             type="number"
-                            error={
-                              !a.scroll && a.trx?.code == "4" ? true : false
-                            }
-                            disabled={a?.trx?.code == "4" ? false : true}
+                            disabled={viewOnly ? true : false}
                             size="small"
                             onChange={(e) => handleScroll(e, i)}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 160 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
-                            id="sdc"
+                            value={a.sdc}
+                            autoHighlight
+                            disabled={viewOnly ? true : false}
                             size="small"
                             options={sdcOptions}
-                            value={a.sdc}
                             onChange={(e, value) => handleSdc(e, value, i)}
                             renderInput={(params) => (
                               <TextField {...params} label="" />
                             )}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 80 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 80 }}>
                           <TextField
                             value={a.remark}
+                            disabled={viewOnly ? true : false}
                             size="small"
                             onChange={(e) => handleRemark(e, i)}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.cNo}
-                            error={!a.cNo || a.bugChq ? true : false}
+                            error={!a.cNo || a?.bugChq ? true : false}
                             id="txtRight"
-                            disabled={!a.isCredit ? false : true}
+                            disabled={
+                              a.isCredit ||
+                              !a.accNo ||
+                              !a.accType?.value ||
+                              viewOnly
+                                ? true
+                                : false
+                            }
                             size="small"
                             type="number"
                             onChange={(e) => handleCNo(e, i)}
-                            onBlur={(e) => handleCNoBlur(e, i)}
                           />
                         </TableCell>
 
-                        <TableCell id={a?.isFav ? "isFav" : ""}>
+                        <TableCell>
                           <TextField
                             value={a.date}
                             error={a.isCredit && !a.date ? true : false}
                             type="date"
-                            disabled={
-                              a?.trx?.code == "4" ||
-                              a?.trx?.code == "5" ||
-                              a?.trx?.code == "6"
-                                ? false
-                                : true
-                            }
+                            // disabled={a.isCredit || viewOnly ? true : false}
+                            disabled={true}
                             size="small"
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.debit}
                             error={Number(a.debit > 0) ? false : true}
                             id="txtRight"
                             size="small"
                             disabled={
-                              a?.isCredit || !a.branch || !a.trx?.code
+                              a?.isCredit ||
+                              !a.branch ||
+                              !a.trx?.code ||
+                              viewOnly
                                 ? true
                                 : false
                             }
@@ -692,17 +820,17 @@ const Footer = () => {
                             onBlur={(e) => handleDebitBlur(e, i)}
                           />
                         </TableCell>
-                        <TableCell
-                          sx={{ minWidth: 50 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.credit}
                             error={Number(a.credit > 0) ? false : true}
                             id="txtRight"
                             size="small"
                             disabled={
-                              !a?.isCredit || !a.branch || !a.trx?.code
+                              !a?.isCredit ||
+                              !a.branch ||
+                              !a.trx?.code ||
+                              viewOnly
                                 ? true
                                 : false
                             }
@@ -712,10 +840,7 @@ const Footer = () => {
                           />
                         </TableCell>
 
-                        <TableCell
-                          sx={{ minWidth: 40 }}
-                          id={a?.isFav ? "isFav" : ""}
-                        >
+                        <TableCell sx={{ minWidth: 40 }}>
                           <TextField
                             value={a.vNo}
                             id="txtRight"
@@ -724,37 +849,43 @@ const Footer = () => {
                             onChange={(e) => handleVNo(e, i)}
                           />
                         </TableCell>
-                        <TableCell style={{ border: "0px" }}>
+                        <TableCell style={{ border: "0px", width: "10px" }}>
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (
-                            <CancelIcon
+                            <Button
+                              variant="secondary"
+                              disabled={viewOnly ? true : false}
                               onClick={(e) => handleClear(e, i)}
-                              style={{ cursor: "pointer" }}
-                            />
+                              size="small"
+                            >
+                              <CancelIcon />
+                            </Button>
                           )}
                         </TableCell>
                       </TableRow>
-                    </>
+                    </TableBody>
                   );
-                })
-              ) : (
-                <>no records</>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                })}
+            </Table>
+          </TableContainer>
+        )}
+
+        {/* {viewOnly && !rows2.length > 0 && (
+          <div id="noRecord">No Record Found</div>
+        )} */}
       </Card>
-      <br /> <br />
-      {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
-        <>
-          <Button
-            variant="outlined"
-            color="secondary"
-            sx={{ margin: "8px" }}
-            onClick={() => handleAddRow()}
-          >
-            <AddIcon /> new row
-          </Button>
+      {!viewOnly && (
+        <div>
+          {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              sx={{ margin: "8px" }}
+              onClick={() => handleAddRow()}
+            >
+              <AddIcon /> new row
+            </Button>
+          )}
 
           <Button
             variant="outlined"
@@ -763,85 +894,27 @@ const Footer = () => {
           >
             <RestartAltIcon /> reset
           </Button>
-        </>
+
+          {!loading && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ margin: "8px" }}
+              onClick={() => handleSaveDialog()}
+            >
+              Save
+            </Button>
+          )}
+        </div>
       )}
-      {(isArray && diff == 0 && isSave) || (!isArray && isSave) ? (
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={{ margin: "8px" }}
-          onClick={() => setSaveDialog(true)}
-        >
-          save
-        </Button>
-      ) : (
-        <></>
-      )}
+
       <br />
-      <Grid container spacing={2}>
-        <Grid item sx={{ width: 180 }}>
-          <Autocomplete
-            value={filter}
-            size="small"
-            options={filterOpt}
-            onChange={(e, value) => handleFilter(e, value)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </Grid>
-        <Grid item>
-          <div id="searchContainer">
-            <SearchIcon style={{ margin: "5px" }} />
-            <input
-              disabled={filter?.value ? false : true}
-              placeholder="Search.."
-              id="searchField"
-              // type="number"
-              value={search}
-              onChange={(e) => handleSearch(e)}
-            />
-          </div>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary">
-            View All
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Calculator
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Query
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Delete
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            refresh
-          </Button>{" "}
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            scroll del
-          </Button>{" "}
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            other a/c
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button variant="contained" color="primary">
-            other Tx Detail
-          </Button>
-        </Grid>{" "}
-      </Grid>
+      <BaseFooter
+        handleUpdateRows={handleUpdateRows}
+        rows={rows2}
+        handleViewAll={handleGetTRN001List}
+        handleRefresh={handleReset}
+      />
       <br />
       <>
         <Dialog
@@ -868,6 +941,7 @@ const Footer = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
         <Dialog
           open={resetDialog}
           maxWidth={"lg"}
@@ -893,9 +967,19 @@ const Footer = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity={snack.code ? "success" : "error"}
+            sx={{ width: "100%" }}
+          >
+            {snack?.msg}
+          </Alert>
+        </Snackbar>
       </>
     </>
   );
 };
 
-export default Footer;
+export default Trn001_footer;

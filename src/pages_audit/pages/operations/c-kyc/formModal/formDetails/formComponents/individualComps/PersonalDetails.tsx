@@ -65,12 +65,6 @@ const PersonalDetails = ({
     setDialogOpen(false)
   }
 
-  useEffect(() => {
-    if(PDFormRef.current.handleSubmitError) {
-      // console.log("PDFormRefPDFormRef", PDFormRef.current.handleSubmitError)
-      handleCurrentFormRefctx(PDFormRef)
-    }
-  }, [])
 
   // useEffect(() => {
   //     console.log("... personal details", isCustomerData)
@@ -180,11 +174,12 @@ const PersonalDetails = ({
       }
       handleColTabChangectx(state?.colTabValuectx + 1);
       // setIsNextLoading(false)
-    } else
+    } else {
       handleStepStatusctx({
         status: "error",
         coltabvalue: state?.colTabValuectx,
       });
+    }
     setIsNextLoading(false);
     endSubmit(true);
   };
