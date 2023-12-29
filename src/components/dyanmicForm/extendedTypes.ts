@@ -423,6 +423,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     name: "ACCT_CD",
     placeholder: "Enter account number",
     required: true,
+    // maxLength: 8,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
     setValueOnDependentFieldsChange: (dependentFields) => {
@@ -448,9 +449,16 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     FormatProps: {
       // format: "###########",
-      // allowNegative: false,
+      allowNegative: false,
       allowLeadingZeros: true,
       // isNumericString: true,
+
+      isAllowed: (values) => {
+        if (values?.value?.length > 8) {
+          return false;
+        }
+        return true;
+      },
     },
   },
   accountNumberOptional: {
@@ -506,9 +514,22 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     render: {
       componentType: "select",
     },
+    name: "RPT_ACCT_TYPE",
     label: "Report Account Type",
+    schemaValidation: {
+      type: "string",
+      rules: [{ name: "required", params: ["Account Type is required"] }],
+    },
+    required: true,
     options: GeneralAPI.getReportAccountType,
     _optionsKey: "getReportAccountType",
+    GridProps: {
+      xs: 12,
+      md: 12,
+      sm: 12,
+      lg: 12,
+      xl: 12,
+    },
   },
 
   fullAccountNumber: {
@@ -529,6 +550,17 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       lg: 12,
       xl: 12,
     },
+    maxLength: 20,
+    FormatProps: {
+      allowNegative: false,
+      allowLeadingZeros: true,
+      isAllowed: (values) => {
+        if (values?.value?.length > 20) {
+          return false;
+        }
+        return true;
+      },
+    },
   },
   branchCode: {
     render: {
@@ -541,6 +573,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     name: "BRANCH_CD",
     label: "Branch Code",
+    defaultValue: "",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
     GridProps: {
@@ -550,6 +583,9 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       lg: 4,
       xl: 4,
     },
+
+    // NOTE : this props only for set default brranch and only use in branchCode component do not use this key any other place or any component
+    defaultBranchTrue: true,
   },
 
   accountType: {

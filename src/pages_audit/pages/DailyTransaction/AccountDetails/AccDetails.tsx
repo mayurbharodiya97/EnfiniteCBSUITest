@@ -37,20 +37,21 @@ const responsive = {
     items: 1,
   },
 };
-const AccDetails = () => {
+const AccDetails = ({ flag }) => {
   const { tempStore, setTempStore } = useContext(AuthContext);
 
-  console.log(tempStore, "tempStore");
   return (
     <>
       <Carousel responsive={responsive}>
         <Card
           sx={{
             width: "450px",
-            boxShadow: "0px 1px 4px -1px #999999",
+            boxShadow: flag === "DLYTRN" ? "0px 1px 4px -1px #999999" : "none",
             borderRadius: "5px",
             marginBottom: "5px",
+            // height: (flag === "TELLER" ? "49vh" : null) as string,
           }}
+          className={flag === "TELLER" ? "styleforteller" : ""}
         >
           <CardContent>
             <div
@@ -72,7 +73,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "25vh",
+                height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
               }}
             >
               <Grid container spacing={2}>
@@ -139,10 +140,12 @@ const AccDetails = () => {
         <Card
           sx={{
             width: "450px",
-            boxShadow: "0px 1px 4px -1px #999999",
+            boxShadow: flag === "DLYTRN" ? "0px 1px 4px -1px #999999" : "none",
             borderRadius: "5px",
             marginBottom: "5px",
+            // height: (flag === "TELLER" ? "49vh" : null) as string,
           }}
+          className={flag === "TELLER" ? "style-for-teller" : ""}
         >
           <CardContent>
             <div
@@ -163,7 +166,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "25vh",
+                height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
               }}
             >
               <Grid container spacing={2}>
@@ -192,10 +195,12 @@ const AccDetails = () => {
         <Card
           sx={{
             width: "450px",
-            boxShadow: "0px 1px 4px -1px #999999",
+            boxShadow: flag === "DLYTRN" ? "0px 1px 4px -1px #999999" : "none",
             borderRadius: "5px",
             marginBottom: "5px",
+            // height: (flag === "TELLER" ? "49vh" : null) as string,
           }}
+          className={flag === "TELLER" ? "style-for-teller" : ""}
         >
           <CardContent>
             <div
@@ -216,7 +221,7 @@ const AccDetails = () => {
             <div
               style={{
                 overflowY: "scroll",
-                height: "25vh",
+                height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
               }}
             >
               <Grid container spacing={2}>

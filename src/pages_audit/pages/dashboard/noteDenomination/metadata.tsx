@@ -42,7 +42,7 @@ import * as API from "./api";
 //       datetimePicker: {
 //         fullWidth: true,
 //       },
-//       autocomplete: {
+//       select: {
 //         fullWidth: true,
 //       },
 //     },
@@ -143,6 +143,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
     HideHeader: true,
     submitButtonHide: false,
     isDisplayOnly: false,
+    validationRun: "onBlur",
   },
   fields: [
     {
@@ -154,22 +155,28 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       label: "Transaction",
       autoComplete: "off",
       required: true,
-      tabToSubmit: true,
+      // tabToSubmit: true,
       isDisabled: false,
       placeholder: "Select Transaction",
       isColumnHidingDisabled: true,
-      // entertoSubmit: true,
+      entertoSubmit: true,
       type: "select",
       optiondata: [
         { label: " Cash Receipt", value: "R" },
         { label: " Cash Payment", value: "P" },
+        { label: " Single Denomination", value: "S" },
       ],
 
-      validate: (columnValue, allField, flag) => {
-        if (!Boolean(columnValue)) {
-          return "This field is required.";
-        }
-        return "";
+      onBlurHandler: (columnValue, allField, flag) => {
+        // if (!Boolean(columnValue)) {
+        //   return "This field is required.";
+        // }
+        // return "";
+        //@ts-ignore
+        // if (typeof window?._CHANGE_OPERATOR_TYPE === "function") {
+        //@ts-ignore
+        window._CHANGE_OPERATOR_TYPE(columnValue, "TRN");
+        // }
       },
     },
     {
@@ -222,7 +229,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       // gridconfig: { xs: 6, sm: 1 },
       accessor: "ACCOUNT_TYPE",
       name: "ACCOUNT_TYPE",
-      defaultValue: "CCO1",
+      defaultValue: "333 ",
       isVisible: true,
       gridconfig: { xs: 6, sm: 2 },
       label: "Account Type",
@@ -320,6 +327,10 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
           };
         }
       },
+      onBlurHandler: (columnValue, allField, flag) => {
+        //@ts-ignore
+        window._CHANGE_OPERATOR_TYPE(columnValue, "SDC");
+      },
     },
     {
       accessor: "REMARK",
@@ -330,11 +341,11 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       type: "text",
       isDisabled: false,
       gridconfig: { xs: 6, sm: 2 },
-      // dependFields: ["SDC"],
+      dependFields: ["SDC"],
       // dependFieldsonchange: (colomnValue, value, name, extraData) => {
       //   if (value) {
       //     return {
-      //       // label: "Default Remarkz",
+      //       label: "Default Remarkz",
       //       // gridconfig: { xs: 12, sm: 12 },
       //       // placeholder: "Placeholder Is Changed",
       //       value: value,
@@ -342,22 +353,22 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       //     };
       //   }
       // },
-      dependFields: ["TRN"],
-      dependFieldsonchange: (colomnValue, value, name, extraData) => {
-        if (value === "R" || value === "P") {
-          return { isVisible: true };
-        } else {
-          return {
-            isVisible: false,
-          };
-        }
-      },
+      // dependFields: ["TRN"],
+      // dependFieldsonchange: (colomnValue, value, name, extraData) => {
+      //   if (value === "R" || value === "P") {
+      //     return { isVisible: true };
+      //   } else {
+      //     return {
+      //       isVisible: false,
+      //     };
+      //   }
+      // },
     },
     {
       accessor: "RECEIPT_PAYMENT",
       name: "RECEIPT_PAYMENT",
       defaultValue: "",
-      type: "currency",
+      type: "amountfield",
       isVisible: true,
       gridconfig: { xs: 6, sm: 2 },
       defaultfocus: true,
@@ -398,6 +409,10 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
           }
           return "";
         }
+      },
+      FormatProps: {
+        decimalScale: 2,
+        thousandsGroupStyle: "thousand",
       },
     },
     {
@@ -444,7 +459,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
 export const denoViewTrnGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "QuickAccess",
+    gridLabel: "View Transactions",
     rowIdColumn: "id",
 
     defaultColumnConfig: {
@@ -476,13 +491,13 @@ export const denoViewTrnGridMetaData: GridMetaDataType = {
       isAutoSequence: true,
       alignment: "left",
       componentType: "default",
-      width: 50,
-      minWidth: 50,
-      maxWidth: 50,
+      width: 100,
+      minWidth: 100,
+      maxWidth: 100,
     },
     {
-      accessor: "AB",
-      columnName: "ScreenName",
+      accessor: "Column1",
+      columnName: "Column1",
       sequence: 1,
       alignment: "left",
       componentType: "default",
@@ -491,8 +506,8 @@ export const denoViewTrnGridMetaData: GridMetaDataType = {
       maxWidth: 350,
     },
     {
-      accessor: "CD",
-      columnName: "UserCode",
+      accessor: "Column2",
+      columnName: "Column2",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -501,8 +516,8 @@ export const denoViewTrnGridMetaData: GridMetaDataType = {
       maxWidth: 200,
     },
     {
-      accessor: "EF",
-      columnName: "SystemCode",
+      accessor: "Column3",
+      columnName: "Column3",
       sequence: 3,
       alignment: "left",
       componentType: "default",
