@@ -906,25 +906,23 @@ export const Ckyc = () => {
 
           {/* formComponentview */}
           <FormComponentView
-            key={"retrieveCustomerData"}
+            key={"retrieveCustForm"}
             finalMetaData={RetrieveDataFilterForm as FilterFormMetaType}
             onAction={(colomnValue, initialVisibleColumn) => {
-              // console.log("wlkefhwief", colomnValue, initialVisibleColumn)
-              let newObj = {};
-              let newArr = Object.keys(colomnValue).filter(
-                (key) =>
-                  colomnValue[key] != null &&
-                  colomnValue[key] != undefined &&
-                  colomnValue[key] != ""
-              );
-              newArr.map((el) => {
-                newObj[el] = colomnValue[el];
-              });
-              let data = {
-                COMP_CD: authState?.companyID ?? "",
-                SELECT_COLUMN: newObj,
-              };
-              mutation.mutate(data);
+              let newObj:any = {};
+              let newArr = Object.keys(colomnValue).filter((key) => Boolean(colomnValue[key]));
+              if(newArr && newArr.length === 0) {
+                return;
+              } else {
+                newArr.forEach(key => {
+                  newObj[key] = colomnValue[key]
+                });
+                let data = {
+                  COMP_CD: authState?.companyID ?? "",
+                  SELECT_COLUMN: newObj,
+                };
+                mutation.mutate(data);
+              }
             }}
             loading={false}
             data={{}}
