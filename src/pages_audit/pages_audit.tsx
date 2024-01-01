@@ -15,7 +15,7 @@ import AccountDetails from "./pages/STATEMENT/accountDetails";
 import { MastersMenu } from "./pages/master";
 import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
-import { DailyTrans } from "./pages/DailyTransaction";
+import { DailyTrans } from "./pages/operations/DailyTransaction";
 import CkycProvider from "./pages/operations/c-kyc/CkycContext";
 
 export const PagesAudit = (props, { columns }) => {
