@@ -570,18 +570,18 @@ export const Ckyc = () => {
       multiple: false,
       rowDoubleClick: true,
     },
-    {
-      actionName: "inactive-customer",
-      actionLabel: "Inactivate Customer",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "change-category",
-      actionLabel: "Change Category",
-      multiple: false,
-      rowDoubleClick: false,
-    },
+    // {
+    //   actionName: "inactive-customer",
+    //   actionLabel: "Inactivate Customer",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "change-category",
+    //   actionLabel: "Change Category",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
     {
       actionName: "document",
       actionLabel: "Document",
@@ -600,131 +600,71 @@ export const Ckyc = () => {
       multiple: false,
       rowDoubleClick: false,
     },
-    {
-      actionName: "insurance",
-      actionLabel: "Insurance",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "bank-details",
-      actionLabel: "Bank Details",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "credit-card",
-      actionLabel: "Credit Card",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "offences-details",
-      actionLabel: "Offences",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "asset-details",
-      actionLabel: "Asset Details",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "financial-details",
-      actionLabel: "Financial Details",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "tds-exemption",
-      actionLabel: "TDS Exemption",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "dependencies",
-      actionLabel: "Dependencies",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "controlling-person-details",
-      actionLabel: "Controlling Person",
-      multiple: false,
-      rowDoubleClick: false,
-    },
+    // {
+    //   actionName: "insurance",
+    //   actionLabel: "Insurance",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "bank-details",
+    //   actionLabel: "Bank Details",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "credit-card",
+    //   actionLabel: "Credit Card",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "offences-details",
+    //   actionLabel: "Offences",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "asset-details",
+    //   actionLabel: "Asset Details",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "financial-details",
+    //   actionLabel: "Financial Details",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "tds-exemption",
+    //   actionLabel: "TDS Exemption",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "dependencies",
+    //   actionLabel: "Dependencies",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    // {
+    //   actionName: "controlling-person-details",
+    //   actionLabel: "Controlling Person",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
   ];
 
 
 
   const setCurrentAction = useCallback(
     (data) => {
-      // console.log("jwdoijoijwdwedwe", data)
-      // // console.log("dataddaada", data)
-      // if (data.name === "view-detail") {
-      //   // refetch()
-      //   handleViewDetails()
-      //   // retrieveFormRefetch()
-      //   // handleColTabChangectx(0)
-      //   // if(retrieveFormData && Object.keys(state?.retrieveFormDataApiRes)?.length>0) {
-      //   // if(retrieveFormData) {
-      //     console.log("data?.rows", data?.rows)
-      //     handleFormModalOpenOnEditctx(data?.rows)
-      //   // }
-
-      //   navigate(data?.name, {
-      //     state: data?.rows,
-      //   })
-      // }
-      // else if (data.name === "dependencies") {
-      //   setComponentToShow("Dependencies");
-      //   setAcctOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if (data.name === "tds-exemption") {
-      //   setComponentToShow("ViewStatement");
-      //   // setAcctOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "inactive-customer") {
-      //   setComponentToShow("DeactivateCustomer");
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "insurance") {
-      //   setComponentToShow("insurance");
-      //   setInsuranceOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "bank-details") {
-      //   setComponentToShow("bankDetails");
-      //   setBankCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "credit-card") {
-      //   setComponentToShow("creditCard");
-      //   setCreditCardCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "offences-details") {
-      //   setComponentToShow("offencesDetails");
-      //   setOffencesCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "asset-details") {
-      //   setComponentToShow("assetDetails");
-      //   setAssetDTLCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "financial-details") {
-      //   setComponentToShow("financialDetails");
-      //   setFinancialDTLCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "controlling-person-details") {
-      //   setComponentToShow("controllingPersonDTL");
-      //   setContPersonCompOpen(true);
-      //   setRowsData(data?.rows);
-      // }
-      // else {
       setRowsData(data?.rows);
       navigate(data?.name, {
         state: data?.rows,
       });
-      // }
     },
-    // []
     [navigate]
   );
 
@@ -884,7 +824,6 @@ export const Ckyc = () => {
             <StyledSearchField sx={{maxWidth: "300px"}} id={"customer_id"} placeholder="Customer ID" />
           </Grid> */}
 
-          {/* formComponentview */}
           <FormComponentView
             key={"retrieveCustForm"}
             finalMetaData={RetrieveDataFilterForm as FilterFormMetaType}
@@ -918,7 +857,6 @@ export const Ckyc = () => {
               paperStyle: { boxShadow: "none" },
             }}
           ></FormComponentView>
-          {/* formComponentview */}
 
           {/* <Grid item py={2} sx={{textAlign: "right"}}>
             <Button color="secondary" variant="contained">Retrieve</Button>
