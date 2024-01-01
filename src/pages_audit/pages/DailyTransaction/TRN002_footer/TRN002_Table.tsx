@@ -5,6 +5,9 @@ import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Card } from "@mui/material";
 
 //logic
+import { useSnackbar } from "notistack";
+import { format } from "date-fns";
+
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { TRN002_TableMetaData } from "./gridMetadata";
@@ -34,32 +37,12 @@ const actions: ActionTypes[] = [
 ];
 
 export const TRN002_Table = () => {
-  // const myGridRef = useRef<any>(null);
+  const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
   const [rows, setRows] = useState([]);
   const [rows2, setRows2] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [snack, setSnack] = useState({ code: false, msg: "" });
-  const [open, setOpen] = useState(false);
-
-  const handleClose = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props,
-    ref
-  ) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
 
   useEffect(() => {
     console.log(loading, "loading Table");
@@ -99,17 +82,18 @@ export const TRN002_Table = () => {
 
   const confirmScroll = useMutation(API.confirmScroll, {
     onSuccess: (data) => {
-      setOpen(true);
-      setSnack({ code: true, msg: "Record Confirm" });
+      enqueueSnackbar("Record Confirm", {
+        variant: "success",
+      });
       handleGetTRN002List();
     },
     onError: (error) => {
       console.log(error, "error");
-      setOpen(true);
-      setSnack({
-        code: false,
-        msg: "You can not confirm your own posted transaction",
-      }); //error?.error_msg
+
+      // error?.error_msg
+      enqueueSnackbar("You can not confirm your own posted transaction", {
+        variant: "error",
+      });
     },
   });
   // function define  ======================================================================
@@ -141,8 +125,9 @@ export const TRN002_Table = () => {
       if (row.CONFIRMED == "0") {
         confirmScroll.mutate(row);
       } else {
-        setOpen(true);
-        setSnack({ code: false, msg: "Scroll Already Confirmed" });
+        enqueueSnackbar("Scroll Already Confirmed", {
+          variant: "error",
+        });
       }
     }
   }, []);
@@ -181,16 +166,6 @@ export const TRN002_Table = () => {
           setAction={setCurrentAction}
         />
       </Card>
-
-      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity={snack.code ? "success" : "error"}
-          sx={{ width: "100%" }}
-        >
-          {snack?.msg}
-        </Alert>
-      </Snackbar>
 
       <BaseFooter
         rows={rows2}

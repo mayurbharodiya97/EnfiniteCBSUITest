@@ -4,29 +4,7 @@ import {
   utilFunction,
 } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
-
-const arr = [
-  "JAN",
-  "FEB",
-  "MAR",
-  "APR",
-  "MAY",
-  "JUN",
-  "JUL",
-  "AUG",
-  "SEp",
-  "OCT",
-  "NOV",
-  "DEC",
-];
-
-let today = new Date();
-let day = today.getDate();
-let month = today.getMonth();
-let year = today.getFullYear();
-
-let date = day + "/" + arr[month] + "/" + year;
-let date2 = day + "-" + arr[month] + "-" + year;
+import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
 export const getSDCList = async (reqData) => {
   const { data, status, message, messageDetails } =
@@ -127,7 +105,7 @@ export const getAccInfo = async (reqData) => {
       BRANCH_CD: reqData.BRANCH_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
-      A_ASON_DT: date,
+      A_ASON_DT: format(new Date(), "dd/MMM/yyyy"),
     });
   if (status === "0") {
     let responseData = data;

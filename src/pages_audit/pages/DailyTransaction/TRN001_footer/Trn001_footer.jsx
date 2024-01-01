@@ -27,6 +27,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 //Logic
+import { useSnackbar } from "notistack";
+import { format } from "date-fns";
+
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
@@ -37,8 +40,32 @@ import BaseFooter from "./BaseFooter";
 import TRN001_Table from "./Table";
 
 const Trn001_footer = () => {
+  format(new Date(), "dd/MMM/yyyy");
+
+  console.log("date:", format(new Date(), "dd/MMM/yyyy"));
+  const { enqueueSnackbar } = useSnackbar();
+
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
+
+  const dateArr = [
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEp",
+    "OCT",
+    "NOV",
+    "DEC",
+  ];
+
+  let str = authState.workingDate;
+  let split = str.split("/");
+  let workingDate = split[0] + "-" + dateArr[split[1] - 1] + "-" + split[2];
 
   let defBranch = {
     label: authState?.user?.branchCode + "-" + authState?.user?.branch,
@@ -84,19 +111,6 @@ const Trn001_footer = () => {
   const [resetDialog, setResetDialog] = useState(false);
   const [viewOnly, setViewOnly] = useState(false);
   const [saveDialog, setSaveDialog] = useState(false);
-  const [snack, setSnack] = useState({});
-  const [open, setOpen] = React.useState(false);
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
-
-  const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -214,25 +228,32 @@ const Trn001_footer = () => {
     },
     onError: (error) => {
       setLoading(false);
-      setOpen(true);
-      setSnack({ code: false, msg: "Error Fetching Account Info" });
+
+      enqueueSnackbar("Error Fetching Account Info", {
+        variant: "error",
+      });
     },
   });
 
   const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
       setLoading(false);
-      if (Number(data[0]?.INSERT) > 0) {
-        setOpen(true);
-        setSnack({ code: true, msg: "Record Added" });
+      console.log(data, "data");
+      if (data[0]?.TRAN_CD) {
+        let msg = "VoucherNo: " + data[0]?.TRAN_CD;
+        enqueueSnackbar(msg, {
+          variant: "success",
+        });
         handleReset();
       }
     },
     onError: (error) => {
       console.log(error, "error");
       setLoading(false);
-      setOpen(true);
-      setSnack({ code: false, msg: error?.error_msg });
+
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
     },
   });
   const getChqValidation = useMutation(API.getChqValidation, {
@@ -537,47 +558,9 @@ const Trn001_footer = () => {
       setSaveDialog(true);
     }
   };
-  const dateArr = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEp",
-    "OCT",
-    "NOV",
-    "DEC",
-  ];
 
   const handleScrollSave = () => {
     setLoading(true);
-    const dateArr = [
-      "JAN",
-      "FEB",
-      "MAR",
-      "APR",
-      "MAY",
-      "JUN",
-      "JUL",
-      "AUG",
-      "SEp",
-      "OCT",
-      "NOV",
-      "DEC",
-    ];
-
-    let str = authState.workingDate;
-    let split = str.split("/");
-
-    let today = new Date();
-    let day = today.getDate(split[0]);
-    let month = today.getMonth(split[1]);
-    let year = today.getFullYear(split[2]);
-
-    let date = day + "-" + dateArr[month] + "-" + year;
 
     let arr = rows.map((a) => {
       return {
@@ -588,8 +571,8 @@ const Trn001_footer = () => {
         REMARKS: a.remark,
         CHEQUE_NO: a.cNo ? a.cNo : "0",
         TYPE_CD: a.trx.code + "   ",
-        TRAN_DT: date,
-        VALUE_DT: date,
+        TRAN_DT: Date(),
+        VALUE_DT: Date(),
         ENTERED_BRANCH_CD: a.branch?.value,
         ENTERED_COMP_CD: a.branch?.info.COMP_CD,
         SDC: a.sdc.value,
@@ -668,7 +651,7 @@ const Trn001_footer = () => {
                   <TableCell id="head">SDC</TableCell>
                   <TableCell id="head">Remarks</TableCell>
                   <TableCell id="head">Chq No</TableCell>
-                  <TableCell id="head">Chq Date</TableCell>
+                  {/* <TableCell id="head">Chq Date</TableCell> */}
                   <TableCell id="head">Debit</TableCell>
                   <TableCell id="head">Credit</TableCell>
                   <TableCell id="head">Vno.</TableCell>
@@ -790,7 +773,7 @@ const Trn001_footer = () => {
                           />
                         </TableCell>
 
-                        <TableCell>
+                        {/* <TableCell>
                           <TextField
                             value={a.date}
                             error={a.isCredit && !a.date ? true : false}
@@ -800,7 +783,7 @@ const Trn001_footer = () => {
                             size="small"
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.debit}
@@ -967,16 +950,6 @@ const Trn001_footer = () => {
             </Button>
           </DialogActions>
         </Dialog>
-
-        <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity={snack.code ? "success" : "error"}
-            sx={{ width: "100%" }}
-          >
-            {snack?.msg}
-          </Alert>
-        </Snackbar>
       </>
     </>
   );
