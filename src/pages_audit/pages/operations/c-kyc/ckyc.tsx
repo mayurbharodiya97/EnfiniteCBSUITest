@@ -26,7 +26,7 @@ import PersonIcon from "@mui/icons-material/Person"; // individual-person-icon
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import {
   RetrieveDataFilterForm,
-  ckyc_pending_req_meta_data,
+  // ckyc_pending_req_meta_data,
   ckyc_retrieved_meta_data,
 } from "./metadata";
 import { FormComponentView } from "components/formcomponent";
@@ -49,6 +49,8 @@ import AssetDTLComp from "./AssetDTLComp";
 import FinancialDTLComp from "./FinancialDTLComp";
 import { format } from "date-fns";
 import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";
+import { Alert } from "components/common/alert";
+import PendingCustomer from "./PendingCustomer";
 
 export const CustomTabs: any = styled(StyledTabs)(({ orientation, theme }) => ({
   border: "unset !important",
@@ -317,24 +319,10 @@ export const Ckyc = () => {
     { enabled: false }
   );
 
-  const {
-    data: PendingData,
-    isError: isPendingError,
-    isLoading: isPendingDataLoading,
-    isFetching: isPendingDataFetching,
-    refetch: PendingRefetch,
-  } = useQuery<any, any>(["getPendingData", {}], () =>
-    API.getPendingData({
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      // ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      ENTERED_DATE: "22-12-2023"
-    })
-  )
 
-  useEffect(() => {
-    PendingRefetch()
-  }, [location])
+  // useEffect(() => {
+  //   PendingRefetch()
+  // }, [location])
 
   // useEffect(() => {
   //   if(PendingData && !isPendingDataLoading) {
@@ -668,22 +656,6 @@ export const Ckyc = () => {
     },
   ];
 
-  const pendingActions: ActionTypes[] = [
-    {
-      actionName: "view-detail",
-      actionLabel: "View Detail",
-      multiple: false,
-      rowDoubleClick: true,
-    },
-    {
-      actionName: "view-all",
-      actionLabel: "View All",
-      multiple: false,
-      rowDoubleClick: false,
-      alwaysAvailable: true,
-      isNodataThenShow: true
-    },
-  ];
 
 
   const setCurrentAction = useCallback(
@@ -767,6 +739,14 @@ export const Ckyc = () => {
 
   return (
     <React.Fragment>
+      {mutation.isError && (
+        <Alert
+          severity={mutation.error?.severity ?? "error"}
+          errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+          errorDetail={mutation.error?.error_detail}
+          color="error"
+        />
+      )}
       <Typography
         sx={{
           color: (theme) => theme.palette.grey[700],
@@ -959,28 +939,7 @@ export const Ckyc = () => {
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
         {/* <Typography variant="subtitle1" gutterBottom={true}>Pending Requests</Typography> */}
-        <Typography
-          sx={{
-            color: (theme) => theme.palette.grey[700],
-            mb: (theme) => theme.spacing(2),
-          }}
-          variant="h6"
-        >
-          {t("PendingReq")}
-        </Typography>
-        <Grid item>
-          <GridWrapper
-            key={`PendingCustEntrties` + PendingData}
-            finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
-            data={PendingData ?? []}
-            setData={() => null}
-            loading={isPendingDataLoading || isPendingDataFetching}
-            actions={pendingActions}
-            setAction={setCurrentAction}
-            refetchData={() => PendingRefetch()}
-            // ref={myGridRef}
-          />
-        </Grid>
+        <PendingCustomer />
       </TabPanel>
 
       <Routes>
@@ -1141,116 +1100,7 @@ export const Ckyc = () => {
         />
       </Routes>
 
-      {componentToShow === "ViewDetail"
-        ? ""
-        : // <ViewDetail
-        //   rowsData={rowsData}
-        //   open={acctOpen}
-        //   onClose={() => setAcctOpen(false)}
-        // />
-        // : componentToShow === "Dependencies" ? (
-        //   <Dependencies
-        //     rowsData={rowsData}
-        //     open={acctOpen}
-        //     onClose={() => setAcctOpen(false)}
-        //   />
-        // )
-        componentToShow === "ViewStatement"
-        ? ""
-        : // <ViewStatement
-          //   rowsData={rowsData}
-          //   open={acctOpen}
-          //   onClose={() => setAcctOpen(false)}
-          //   screenFlag={"ACCT_INQ"}
-          // />
-          // : componentToShow === "DeactivateCustomer" ? (
-          //     <DeactivateCustomer rowdata={rowsData} />
-          // )
-          // : componentToShow === "insurance" ? (
-          //     <InsuranceComp
-          //       rowsData={rowsData}
-          //       open={insuranceOpen}
-          //       onClose={() => setInsuranceOpen(false)}
-          //     />
-          // )
-          //  : componentToShow === "bankDetails" ? (
-          //     <BankDTLComp
-          //       rowsData={rowsData}
-          //       open={bankCompOpen}
-          //       onClose={() => setBankCompOpen(false)}
-          //     />
-          // )
-          // : componentToShow === "creditCard" ? (
-          //     <CreditCardDTLComp
-          //       rowsData={rowsData}
-          //       open={creditCardCompOpen}
-          //       onClose={() => setCreditCardCompOpen(false)}
-          //     />
-          // )
-          //  : componentToShow === "offencesDetails" ? (
-          //     <OffencesDTLComp
-          //       rowsData={rowsData}
-          //       open={offencesCompOpen}
-          //       onClose={() => setOffencesCompOpen(false)}
-          //     />
-          // )
-          // : componentToShow === "assetDetails" ? (
-          //   <AssetDTLComp
-          //     rowsData={rowsData}
-          //     open={assetDTLCompOpen}
-          //     onClose={() => setAssetDTLCompOpen(false)}
-          //   />
-          // )
-          // : componentToShow === "financialDetails" ? (
-          //     <FinancialDTLComp
-          //       rowsData={rowsData}
-          //       open={financialDTLCompOpen}
-          //       onClose={() => setFinancialDTLCompOpen(false)}
-          //     />
-          // )
-          // : componentToShow === "controllingPersonDTL" ? (
-          //     <ControllingPersonComp
-          //       rowsData={rowsData}
-          //       open={contPersonCompOpen}
-          //       onClose={() => setContPersonCompOpen(false)}
-          //     />
-          // )
-          null}
 
-      {/* <FormModal 
-        // isFormModalOpen={state?.isFormModalOpenctx} 
-        // handleFormModalOpen={handleFormModalOpen} 
-        // handleFormModalClose={handleFormModalClose} 
-
-        // isSidebarExpanded={state?.isSidebarExpandedctx}
-        // setIsSidebarExpanded={setIsSidebarExpanded}
-        // handleSidebarExpansion={handleSidebarExpansion}
-
-        // colTabValue={colTabValue}
-        // setColTabValue={setColTabValue}
-        // handleColTabChange={handleColTabChange}
-
-        isLoadingData={isLoadingData}
-        setIsLoadingData={setIsLoadingData}
-        isCustomerData={isCustomerData}
-        setIsCustomerData={setIsCustomerData}
-
-        // entityType={state?.entityTypectx}
-        // setEntityType={setEntityType}
-        
-        // customerCategories={customerCategories}
-        // tabsApiRes={tabsApiRes}
-        
-        // setTabsApiRes={setTabsApiRes}
-        // categoryValue={categoryValue}
-        // setCategoryValue={setCategoryValue}
-        // constitutionValue={constitutionValue}
-        // setConstitutionValue={setConstitutionValue}
-        // accTypeValue={accTypeValue}
-        // setAccTypeValue={setAccTypeValue}
-        // refetch={refetch}
-        // retrieveFormRefetch={retrieveFormRefetch}
-      /> */}
     </React.Fragment>
   );
 };
