@@ -16,7 +16,6 @@ import { MastersMenu } from "./pages/master";
 import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import { DailyTrans } from "./pages/DailyTransaction";
-import CkycProvider from "./pages/operations/c-kyc/CkycContext";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
@@ -54,11 +53,7 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="dashboard/*" element={<Dashboard />} />
                 <Route
                   path="operation/*"
-                  element={
-                    <CkycProvider>
-                      <OperationsMenu />
-                    </CkycProvider>
-                  }
+                  element={ <OperationsMenu />}
                 />
                 <Route path="view-statement/*" element={<AccountDetails />} />
                 <Route path="grid/*" element={<MastersMenu />} />
