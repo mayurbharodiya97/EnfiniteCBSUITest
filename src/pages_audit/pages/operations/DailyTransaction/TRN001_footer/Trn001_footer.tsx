@@ -40,40 +40,14 @@ import BaseFooter from "./BaseFooter";
 import TRN001_Table from "./Table";
 
 const Trn001_footer = () => {
-  format(new Date(), "dd/MMM/yyyy");
-
-  console.log("date:", format(new Date(), "dd/MMM/yyyy"));
-  const { enqueueSnackbar } = useSnackbar();
-
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AuthContext);
-
-  const dateArr = [
-    "JAN",
-    "FEB",
-    "MAR",
-    "APR",
-    "MAY",
-    "JUN",
-    "JUL",
-    "AUG",
-    "SEp",
-    "OCT",
-    "NOV",
-    "DEC",
-  ];
-
-  let str = authState.workingDate;
-  let split = str.split("/");
-  let workingDate = split[0] + "-" + dateArr[split[1] - 1] + "-" + split[2];
-
-  let defBranch = {
+  var defBranch = {
     label: authState?.user?.branchCode + "-" + authState?.user?.branch,
     value: authState?.user?.branchCode,
     info: { COMP_CD: authState?.companyID },
   };
-
-  let defaulVal = {
+  var defaulVal = {
     branch: defBranch,
     accType: { label: "", value: "", info: "" },
     accNo: "",
@@ -88,16 +62,16 @@ const Trn001_footer = () => {
     vNo: "", //TRAN_CD
     bug: true,
     bugChq: false,
-    // bugAccNo: false,
     isCredit: true,
     viewOnly: false,
   };
 
-  const [rows, setRows] = useState([defaulVal]);
+  //states define
+  const [rows, setRows] = useState<any>([defaulVal]);
   const [rows2, setRows2] = useState([]);
   const [trxOptions, setTrxOptions] = useState([]);
-  const [trxOptions2, setTrxOptions2] = useState([]);
-  const [sdcOptions, setSdcOptions] = useState([]);
+  const [trxOptions2, setTrxOptions2] = useState<any>([]);
+  const [sdcOptions, setSdcOptions] = useState<any>([]);
   const [accTypeOptions, setAccTypeOptions] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
   const [totalDebit, setTotalDebit] = useState(0);
@@ -111,6 +85,9 @@ const Trn001_footer = () => {
   const [resetDialog, setResetDialog] = useState(false);
   const [viewOnly, setViewOnly] = useState(false);
   const [saveDialog, setSaveDialog] = useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+  format(new Date(), "dd/MMM/yyyy");
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -141,10 +118,10 @@ const Trn001_footer = () => {
       rows[i].bug = true;
     }
 
-    if (rows[i]?.isCredit && !Number(rows[i]?.credit) > 0) {
+    if (rows[i]?.isCredit && !(Number(rows[i]?.credit) > 0)) {
       rows[i].bug = true;
     }
-    if (!rows[i]?.isCredit && !Number(rows[i]?.debit) > 0) {
+    if (!rows[i]?.isCredit && !(Number(rows[i]?.debit) > 0)) {
       rows[i].bug = true;
     }
 
@@ -166,7 +143,7 @@ const Trn001_footer = () => {
     getTrxOptions.mutate(authState);
   }, []);
 
-  //api define
+  //api define ============================================================
   const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
       setBranchOptions(data);
@@ -247,11 +224,11 @@ const Trn001_footer = () => {
         handleReset();
       }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.log(error, "error");
       setLoading(false);
-
       enqueueSnackbar(error?.error_msg, {
+        // enqueueSnackbar("scroll saving error", {
         variant: "error",
       });
     },
@@ -447,7 +424,7 @@ const Trn001_footer = () => {
   const handleAddRow = () => {
     let cred = 0;
     let deb = 0;
-    let trxx = { label: "1" };
+    let trxx = { label: "1", code: "" };
     let isCred = true;
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
@@ -787,7 +764,7 @@ const Trn001_footer = () => {
                         <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.debit}
-                            error={Number(a.debit > 0) ? false : true}
+                            error={Number(a.debit) > 0 ? false : true}
                             id="txtRight"
                             size="small"
                             disabled={
@@ -806,7 +783,7 @@ const Trn001_footer = () => {
                         <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.credit}
-                            error={Number(a.credit > 0) ? false : true}
+                            error={Number(a.credit) > 0 ? false : true}
                             id="txtRight"
                             size="small"
                             disabled={
@@ -836,7 +813,7 @@ const Trn001_footer = () => {
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (
                             <Button
-                              variant="secondary"
+                              color="secondary"
                               disabled={viewOnly ? true : false}
                               onClick={(e) => handleClear(e, i)}
                               size="small"
