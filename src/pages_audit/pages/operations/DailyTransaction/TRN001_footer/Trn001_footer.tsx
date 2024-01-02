@@ -34,14 +34,16 @@ import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
+import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
+
 import "./Trn001_Footer.css";
 import BaseFooter from "./BaseFooter";
 import TRN001_Table from "./Table";
 
 const Trn001_footer = () => {
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   var defBranch = {
     label: authState?.user?.branchCode + "-" + authState?.user?.branch,
     value: authState?.user?.branchCode,
@@ -65,6 +67,10 @@ const Trn001_footer = () => {
     isCredit: true,
     viewOnly: false,
   };
+
+  useEffect(() => {
+    console.log(tempStore, "tempStore1");
+  }, [tempStore]);
 
   //states define
   const [rows, setRows] = useState<any>([defaulVal]);
@@ -228,7 +234,6 @@ const Trn001_footer = () => {
       console.log(error, "error");
       setLoading(false);
       enqueueSnackbar(error?.error_msg, {
-        // enqueueSnackbar("scroll saving error", {
         variant: "error",
       });
     },
@@ -892,7 +897,7 @@ const Trn001_footer = () => {
               Cancel
             </Button>
             <Button
-              color="success"
+              color="secondary"
               variant="contained"
               onClick={handleScrollSave}
               autoFocus
@@ -918,7 +923,7 @@ const Trn001_footer = () => {
               No
             </Button>
             <Button
-              color="warning"
+              color="secondary"
               variant="contained"
               onClick={handleReset}
               autoFocus

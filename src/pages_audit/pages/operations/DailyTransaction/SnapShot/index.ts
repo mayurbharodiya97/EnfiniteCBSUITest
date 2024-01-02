@@ -1,1 +1,1 @@
-export { Snapshot as default } from "./Snapshot";
+export { SnapShot as default } from "./SnapShot";

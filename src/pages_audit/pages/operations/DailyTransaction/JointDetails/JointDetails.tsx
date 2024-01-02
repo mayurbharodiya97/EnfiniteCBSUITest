@@ -28,6 +28,7 @@ import { InitialValuesType, SubmitFnType } from "packages/form";
 import { jointViewDetailMetaData } from "./metaData";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 const actions: ActionTypes[] = [
   {
     actionName: "scroll",
@@ -42,7 +43,7 @@ const actions: ActionTypes[] = [
 const JointDetails = () => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);

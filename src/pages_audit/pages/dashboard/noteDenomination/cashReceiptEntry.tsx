@@ -31,6 +31,7 @@ import {
   PopupRequestWrapper,
 } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 import { useStyles, StyledTableCell } from "./style";
 import { TextField } from "components/styledComponent";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
@@ -82,7 +83,7 @@ const CashReceiptEntry = () => {
   const [formData, setFormData] = useState<any>({});
   const [viewTRN, setViewTRN] = useState<any>(false);
   const [manageOperator, setManageOperator] = useState<any>(false);
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   // useEffect(() => {
   //   props?.map((item) => {
   //     if (item?.textField === "Y") {

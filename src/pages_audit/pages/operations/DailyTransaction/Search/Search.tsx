@@ -9,13 +9,14 @@ import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
 export const Search = () => {
   const { authState } = useContext(AuthContext);
 
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   console.log(tempStore, "temppp");
 

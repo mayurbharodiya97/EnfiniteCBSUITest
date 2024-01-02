@@ -10,10 +10,11 @@ import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 
 export const CheckBook = () => {
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
   const getCheckDetailsList = useMutation(API.getCheckDetailsList, {

@@ -8,13 +8,14 @@ import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
 export const Disbursement = () => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
   // api define

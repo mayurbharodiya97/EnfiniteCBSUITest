@@ -5,6 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
@@ -38,7 +39,7 @@ const responsive = {
   },
 };
 const AccDetails = ({ flag }) => {
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
 
   return (
     <>

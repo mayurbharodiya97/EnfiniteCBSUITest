@@ -5,12 +5,13 @@ import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 
 export const Subsidyy = () => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
   // api define

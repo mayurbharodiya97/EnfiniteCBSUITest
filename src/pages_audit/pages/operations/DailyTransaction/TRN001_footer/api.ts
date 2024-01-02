@@ -129,9 +129,7 @@ export const getAccInquiry = async (reqData) => {
       CUST_ID: "12",
     });
   if (status === "0") {
-    let responseData = data;
-
-    return responseData;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

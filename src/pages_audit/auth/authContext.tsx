@@ -78,7 +78,9 @@ export const AuthContext = createContext<AuthContextType>({
   branchSelect: () => true,
   getProfileImage: "",
   setProfileImage: () => false,
-  tempStore: {},
+});
+
+export const AccDetailContext = createContext<any>({
   setTempStore: () => false,
 });
 
@@ -326,11 +328,11 @@ export const AuthProvider = ({ children }) => {
         branchSelect,
         getProfileImage: profileImage,
         setProfileImage,
-        tempStore,
-        setTempStore,
       }}
     >
-      {authenticating ? <LinearProgress color="secondary" /> : children}
+      <AccDetailContext.Provider value={{ tempStore, setTempStore }}>
+        {authenticating ? <LinearProgress color="secondary" /> : children}
+      </AccDetailContext.Provider>
     </AuthContext.Provider>
   );
 };

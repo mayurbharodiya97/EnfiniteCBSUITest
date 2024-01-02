@@ -16,6 +16,7 @@ import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
 import * as API2 from "../TRN001_footer/api";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import BaseFooter from "../TRN001_footer/BaseFooter";
 import "./TRN002_Table.css";
@@ -39,7 +40,7 @@ const actions: ActionTypes[] = [
 export const TRN002_Table = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [rows2, setRows2] = useState([]);
   const [loading, setLoading] = useState(false);
