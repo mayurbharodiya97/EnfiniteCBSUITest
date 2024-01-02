@@ -1,1 +1,1 @@
-export * from "./DailyTrans";
+export * from "./DailyTransTabs";

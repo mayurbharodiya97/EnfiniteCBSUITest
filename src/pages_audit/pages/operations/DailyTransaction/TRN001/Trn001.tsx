@@ -37,11 +37,12 @@ import * as API from "./api";
 import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
 
-import "./Trn001_Footer.css";
-import BaseFooter from "./BaseFooter";
+import "./Trn001.css";
+import CommonFooter from "../CommonFooter";
 import TRN001_Table from "./Table";
+import { DailyTrans } from "../DailyTransTabs";
 
-const Trn001_footer = () => {
+const Trn001 = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   var defBranch = {
@@ -584,6 +585,8 @@ const Trn001_footer = () => {
 
   return (
     <>
+      <DailyTrans />
+
       <Card
         sx={{
           boxShadow: "0px 1px 4px -1px #999999",
@@ -874,7 +877,7 @@ const Trn001_footer = () => {
       )}
 
       <br />
-      <BaseFooter
+      <CommonFooter
         handleUpdateRows={handleUpdateRows}
         rows={rows2}
         handleViewAll={handleGetTRN001List}
@@ -937,4 +940,4 @@ const Trn001_footer = () => {
   );
 };
 
-export default Trn001_footer;
+export default Trn001;

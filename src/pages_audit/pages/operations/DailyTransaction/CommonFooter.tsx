@@ -22,12 +22,11 @@ import React, {
 } from "react";
 import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
-import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import "./Trn001_Footer.css";
+import "./TRN001/Trn001.css";
 import { useLocation } from "react-router-dom";
 
-const BaseFooter = ({
+const CommonFooter = ({
   rows,
   handleUpdateRows,
   handleViewAll,
@@ -159,4 +158,4 @@ const BaseFooter = ({
   );
 };
 
-export default BaseFooter;
+export default CommonFooter;

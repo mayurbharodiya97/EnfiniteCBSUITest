@@ -13,13 +13,15 @@ import { useMutation } from "react-query";
 import { TRN002_TableMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import * as API from "./api";
-import * as API2 from "../TRN001_footer/api";
+import * as trn2Api from "./api";
+import * as trn1Api from "../TRN001/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import BaseFooter from "../TRN001_footer/BaseFooter";
+
 import "./TRN002_Table.css";
+import { DailyTrans } from "../DailyTransTabs";
+import CommonFooter from "../CommonFooter";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -59,7 +61,7 @@ export const TRN002_Table = () => {
   }, [rows, rows2]);
 
   // api define ========================================================================
-  const getTRN002List = useMutation(API.getTRN002List, {
+  const getTRN002List = useMutation(trn2Api.getTRN002List, {
     onSuccess: (data) => {
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data.filter((a) => a.CONFIRMED == "0");
@@ -71,7 +73,7 @@ export const TRN002_Table = () => {
     },
   });
 
-  const getAccInfo = useMutation(API2.getAccInfo, {
+  const getAccInfo = useMutation(trn1Api.getAccInfo, {
     onSuccess: (data) => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
@@ -81,7 +83,7 @@ export const TRN002_Table = () => {
     },
   });
 
-  const confirmScroll = useMutation(API.confirmScroll, {
+  const confirmScroll = useMutation(trn2Api.confirmScroll, {
     onSuccess: (data) => {
       enqueueSnackbar("Record Confirm", {
         variant: "success",
@@ -146,6 +148,8 @@ export const TRN002_Table = () => {
 
   return (
     <>
+      <DailyTrans />
+
       <Card
         sx={{
           boxShadow: "0px 1px 4px -1px #999999",
@@ -161,14 +165,14 @@ export const TRN002_Table = () => {
           data={rows2}
           setData={() => null}
           // loading={getAccInfo.isLoading}
-          refetchData={() => {}}
           // ref={myGridRef}
+          refetchData={() => {}}
           actions={actions}
           setAction={setCurrentAction}
         />
       </Card>
 
-      <BaseFooter
+      <CommonFooter
         rows={rows2}
         handleUpdateRows={handleUpdateRows}
         handleViewAll={handleViewAll}
@@ -177,3 +181,4 @@ export const TRN002_Table = () => {
     </>
   );
 };
+export default TRN002_Table;

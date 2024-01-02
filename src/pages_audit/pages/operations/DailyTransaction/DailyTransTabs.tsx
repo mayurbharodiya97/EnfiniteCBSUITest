@@ -21,10 +21,7 @@ import Document from "./Document";
 import Subsidyy from "./Subsidyy";
 import Disbursement from "./Disbursement";
 import AccDetails from "./AccountDetails/AccDetails";
-import { useNavigate } from "react-router-dom";
-import Trn001_footer from "./TRN001_footer/Trn001_footer";
-import "./DailyTrans.css";
-import TRN002_Table from "./TRN002_footer/";
+import "./DailyTransTabs.css";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -144,11 +141,6 @@ export const DailyTrans = () => {
           </TabPanel>
         ))}
       </>
-      {loc.pathname.includes("teller_daily_tran_cnf_F2") ? (
-        <TRN002_Table />
-      ) : (
-        <Trn001_footer />
-      )}
     </div>
   );
 };
