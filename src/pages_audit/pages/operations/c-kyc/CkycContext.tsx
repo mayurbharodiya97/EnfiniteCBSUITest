@@ -643,9 +643,9 @@ const CkycProvider = ({children}) => {
             update_type = "full_save";
         }
         let other_data = {
-            IsNewRow: !state?.req_cd_ctx ? true : false,
-            REQ_CD: state?.req_cd_ctx ?? "",
-            COMP_CD: COMP_CD ?? "",
+            // IsNewRow: !state?.req_cd_ctx ? true : false,
+            // REQ_CD: state?.req_cd_ctx ?? "",
+            // COMP_CD: COMP_CD ?? "",
         }
         console.log("feiuqwdwqduyqewd",updated_tabs)
         let dataa = updated_tabs.map(async (TAB, i) => {
@@ -828,6 +828,7 @@ const CkycProvider = ({children}) => {
             // SAVE_FLAG: "",
             ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
             IsNewRow: !state?.req_cd_ctx ? true : false,
+            COMP_CD: COMP_CD,
             // CUSTOMER_ID:"",
             // NRI_DTL: formData["NRI_DTL"], //test-done,
             
