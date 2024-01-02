@@ -39,12 +39,12 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const TRN002_Table = () => {
+export const Trn002_Table = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const [rows, setRows] = useState([]);
-  const [rows2, setRows2] = useState([]);
+  const [rows, setRows] = useState<any>([]);
+  const [rows2, setRows2] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -173,7 +173,7 @@ export const TRN002_Table = () => {
       </Card>
 
       <CommonFooter
-        rows={rows2}
+        tableRows={rows2}
         handleUpdateRows={handleUpdateRows}
         handleViewAll={handleViewAll}
         handleRefresh={handleRefresh}

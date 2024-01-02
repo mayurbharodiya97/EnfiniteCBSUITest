@@ -17,7 +17,7 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import CkycProvider from "./pages/operations/c-kyc/CkycContext";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
-import TRN002_Table from "./pages/operations/DailyTransaction/TRN002";
+import Trn002_Table from "./pages/operations/DailyTransaction/TRN002";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
@@ -71,7 +71,7 @@ export const PagesAudit = (props, { columns }) => {
                 />
                 <Route
                   path="operation/teller_daily_tran_cnf_F2"
-                  element={<TRN002_Table />}
+                  element={<Trn002_Table />}
                 />
 
                 {/* <Route

@@ -12,6 +12,18 @@
   display: flex;
   align-items: center;
 }
+.row1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dialogFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+}
 #searchContainer {
   display: flex;
   align-items: center;

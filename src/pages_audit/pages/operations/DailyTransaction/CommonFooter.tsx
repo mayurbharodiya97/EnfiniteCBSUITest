@@ -11,6 +11,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import SearchIcon from "@mui/icons-material/Search";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import CancelIcon from "@mui/icons-material/Cancel";
+import AddIcon from "@mui/icons-material/Add";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 //logic
 import React, {
@@ -27,63 +34,77 @@ import "./TRN001/Trn001.css";
 import { useLocation } from "react-router-dom";
 
 const CommonFooter = ({
-  rows,
+  tableRows,
   handleUpdateRows,
   handleViewAll,
   handleRefresh,
 }) => {
-  let filterOpt = [
-    { label: "Scroll search", value: "scroll" },
-    { label: "Vno search", value: "vno" },
-  ];
-  const [search, setSearch] = useState("");
-  const [dialogBox, setDialogBox] = useState({
-    open: false,
-    title: "",
-    okBtnTxt: "",
-  });
-  const [filter, setFilter] = useState({ value: "", label: "" });
+  let defaulVal = {
+    column: "",
+    operator: "",
+    value: "",
+    logic: "",
+  };
+  const [rows, setRows] = useState<any>([defaulVal]);
+  const [queryDialog, setQueryDialog] = useState(false);
   const loc = useLocation();
-  const handleSearch = (e) => {
+
+  const operatorOptions = [
+    { value: "Equals", label: "Equals" },
+    { value: "Less Than", label: "Less Than" },
+    { value: "Greater Than", label: "Greater Than" },
+  ];
+  const logicOptions = [
+    { value: "AND", label: "AND" },
+    { value: "OR", label: "OR" },
+  ];
+  const columnOptions = [
+    { value: "A/C No", label: "A/C No" },
+    { value: "Branch", label: "Branch" },
+  ];
+
+  useEffect(() => {
+    console.log(rows, "rows");
+  }, [rows]);
+  const handleColumn = (e, value, i) => {
+    const obj = [...rows];
+    obj[i].column = value;
+    setRows(obj);
+  };
+  const handleOperator = (e, value, i) => {
+    const obj = [...rows];
+    obj[i].operator = value;
+    setRows(obj);
+  };
+  const handleLogic = (e, value, i) => {
+    const obj = [...rows];
+    obj[i].logic = value;
+    setRows(obj);
+  };
+  const handleValue = (e, i) => {
+    const obj = [...rows];
     let txt = e.target.value;
-    setSearch(txt);
-    const obj = [...rows];
-    if (filter.value == "scroll") {
-      console.log("inscroll");
-      obj.map((a, j) => {
-        if (txt && (txt == a?.scroll || txt == a?.SCROLL1)) {
-          a.isFav = true;
-          console.log("scroll matched");
-        } else {
-          a.isFav = false;
-        }
-      });
-    }
-    if (filter.value == "vno") {
-      obj.map((a, j) => {
-        if (txt && (txt == a?.vNo || txt == a?.TRAN_CD)) {
-          a.isFav = true;
-          console.log("vNo matched");
-        } else {
-          a.isFav = false;
-        }
-      });
-    }
-    console.log(obj, "objjjjj");
-    // setRows(obj);
-    handleUpdateRows(obj);
+    obj[i].value = txt;
+    setRows(obj);
   };
 
-  const handleFilter = (e, value) => {
-    setSearch("");
-    setFilter(value);
-    const obj = [...rows];
-    obj.map((a) => {
-      a.isFav = false;
-    });
-    handleUpdateRows(obj);
+  const handleAddRow = () => {
+    let obj = [...rows, defaulVal];
+
+    setRows(obj);
   };
 
+  const handleClear = (e, i) => {
+    let obj = [...rows];
+    if (rows.length > 1) {
+      obj.splice(i, 1);
+      setRows(obj);
+    }
+  };
+
+  const handleReset = () => {
+    setRows([defaulVal]);
+  };
   return (
     <>
       <Grid
@@ -143,7 +164,11 @@ const CommonFooter = ({
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setQueryDialog(true)}
+          >
             Other Trx
           </Button>
         </Grid>
@@ -157,8 +182,139 @@ const CommonFooter = ({
             Scroll Delete
           </Button>
         </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Query
+          </Button>
+        </Grid>
       </Grid>
       <br />
+
+      <Dialog
+        maxWidth="md"
+        open={queryDialog}
+        // onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Query</DialogTitle>
+        <DialogContent>
+          <TableContainer>
+            <Table aria-label="simple table" padding={"none"}>
+              <TableHead>
+                <TableRow id="topHead">
+                  <TableCell id="head">Branch</TableCell>
+                  <TableCell id="head">Operator</TableCell>
+                  <TableCell id="head">Value</TableCell>
+                  <TableCell id="head">Logic</TableCell>
+                </TableRow>
+              </TableHead>
+
+              {rows &&
+                rows?.map((a, i) => {
+                  return (
+                    <TableBody>
+                      <TableRow>
+                        <TableCell sx={{ minWidth: 160 }}>
+                          <Autocomplete
+                            value={a.column}
+                            autoHighlight
+                            size="small"
+                            options={columnOptions}
+                            onChange={(e, value) => handleColumn(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.column?.value ? false : true}
+                              />
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ minWidth: 160 }}>
+                          <Autocomplete
+                            value={a.operator}
+                            autoHighlight
+                            size="small"
+                            options={operatorOptions}
+                            onChange={(e, value) => handleOperator(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.operator?.value ? false : true}
+                              />
+                            )}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ minWidth: 50 }}>
+                          <TextField
+                            value={a.value}
+                            error={!a.value ? true : false}
+                            size="small"
+                            onChange={(e) => handleValue(e, i)}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ minWidth: 160 }}>
+                          <Autocomplete
+                            value={a.logic}
+                            autoHighlight
+                            size="small"
+                            options={logicOptions}
+                            onChange={(e, value) => handleLogic(e, value, i)}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                error={a.logic?.value ? false : true}
+                              />
+                            )}
+                          />
+                        </TableCell>
+
+                        <TableCell style={{ border: "0px", width: "10px" }}>
+                          <Button
+                            color="secondary"
+                            onClick={(e) => handleClear(e, i)}
+                            size="small"
+                          >
+                            <CancelIcon />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  );
+                })}
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <div className="dialogFooter">
+          {" "}
+          <div style={{ padding: "8px" }}>
+            <Button variant="contained" onClick={() => handleAddRow()}>
+              <AddIcon /> new row
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => handleReset()}
+            >
+              <RestartAltIcon /> reset
+            </Button>
+          </div>
+          <div style={{ padding: "8px" }}>
+            {" "}
+            <Button variant="contained" onClick={() => setQueryDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              color="secondary"
+              variant="contained"
+              // onClick={handleScrollSave}
+              autoFocus
+            >
+              Save
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 };

@@ -105,6 +105,7 @@ export const Trn001 = () => {
   }, [loading]);
 
   useEffect(() => {
+    //bug checker on row change
     console.log(rows, "rows");
 
     let i = 0;
@@ -155,13 +156,21 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       setBranchOptions(data);
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
   });
   const getAccTypeOptions = useMutation(API.getAccTypeList, {
     onSuccess: (data) => {
       setAccTypeOptions(data);
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
   });
 
   const getSdcOptions = useMutation(API.getSDCList, {
@@ -170,7 +179,11 @@ export const Trn001 = () => {
       const obj = [...rows];
       setRows(obj);
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
   });
 
   const getTrxOptions = useMutation(API.getTRXList, {
@@ -178,7 +191,11 @@ export const Trn001 = () => {
       setTrxOptions2(data);
       setTrxOptions(data);
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
   });
 
   const getAccInfo = useMutation(API.getAccInfo, {
@@ -212,7 +229,6 @@ export const Trn001 = () => {
     },
     onError: (error) => {
       setLoading(false);
-
       enqueueSnackbar("Error Fetching Account Info", {
         variant: "error",
       });
@@ -232,7 +248,6 @@ export const Trn001 = () => {
       }
     },
     onError: (error: any) => {
-      console.log(error, "error");
       setLoading(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
@@ -247,14 +262,22 @@ export const Trn001 = () => {
         setErrMsg({ ...errMsg, cNo: data?.ERR_MSG });
       }
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
   });
 
   const getTRN001List = useMutation(API.getTRN001List, {
     onSuccess: (data) => {
       setRows2(data);
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
   });
 
   //TABLE FNs ===============================================================
@@ -426,7 +449,7 @@ export const Trn001 = () => {
     obj[i].vNo = e.target.value;
     setRows(obj);
   };
-  //=====================================================================
+  //logic fns=====================================================================
   const handleAddRow = () => {
     let cred = 0;
     let deb = 0;
@@ -837,10 +860,6 @@ export const Trn001 = () => {
             </Table>
           </TableContainer>
         )}
-
-        {/* {viewOnly && !rows2.length > 0 && (
-          <div id="noRecord">No Record Found</div>
-        )} */}
       </Card>
       {!viewOnly && (
         <div>
@@ -879,7 +898,7 @@ export const Trn001 = () => {
       <br />
       <CommonFooter
         handleUpdateRows={handleUpdateRows}
-        rows={rows2}
+        tableRows={rows2}
         handleViewAll={handleGetTRN001List}
         handleRefresh={handleReset}
       />
