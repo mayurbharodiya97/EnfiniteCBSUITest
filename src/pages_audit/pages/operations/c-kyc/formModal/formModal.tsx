@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, TextField, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress} from '@mui/material';
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress, FormHelperText} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
-import { CustomTabs } from '../ckyc';
+import { CustomTabs } from '../Ckyc';
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import PersonalDetails from './formDetails/formComponents/individualComps/PersonalDetails';
 import KYCDetails from './formDetails/KYCDetails';
@@ -54,7 +54,7 @@ import PhotoSignatureCpy from './formDetails/formComponents/individualComps/Phot
 import { format } from 'date-fns';
 import { GradientButton } from 'components/styledComponent/button';
 import { ckyc_confirmation_form_metadata } from './formDetails/metadata/confirmation';
-// import { TextField } from 'components/styledComponent';
+import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -194,7 +194,7 @@ export default function FormModal({
   const location: any = useLocation();
   const { t } = useTranslation();
   const classes = useDialogStyles();
-  const authController = useContext(AuthContext);
+  const {authState} = useContext(AuthContext);
   const appBarClasses = useStyles();
   // const [customerCategories, setCustomerCategories] = useState([])
   const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
@@ -217,17 +217,18 @@ export default function FormModal({
   // const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
   //   ["getCustomerDetailsonEdit", { }],
   //   () => API.getCustomerDetailsonEdit({
-  //     COMP_CD: authController?.authState?.companyID ?? "",
+  //     COMP_CD: authState?.companyID ?? "",
   //     CUSTOMER_ID: location.state[0].id ?? "",
   //   }), {enabled: false}
   // )
 
+  // acct type options
   const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
     ["getPMISCData", {}],
     () => API.getPMISCData("CKYC_ACCT_TYPE")
   );
 
-
+  // get customer form details  
   const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
     onSuccess: (data) => {
       // // console.log("on successssss", data, location)
@@ -318,7 +319,7 @@ export default function FormModal({
   //       handleFormModalOpenOnEditctx(location?.state)
   //       // retrieveFormRefetch()
   //       let data = {
-  //         COMP_CD: authController?.authState?.companyID ?? "",
+  //         COMP_CD: authState?.companyID ?? "",
   //         CUSTOMER_ID: location.state[0].id ?? "",
   //       }
         
@@ -355,18 +356,18 @@ export default function FormModal({
         let data = {}
         // if(location.state.length && location.state?.[0]?.id && location.state?.[0]?.data?.REQUEST_ID) {
         //   data = {
-        //     COMP_CD: authController?.authState?.companyID ?? "",
+        //     COMP_CD: authState?.companyID ?? "",
         //     REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
         //   }  
         // } else {
           if((location.state && location.state.length>0) && (location.state[0].data.REQUEST_ID)) {
             data = {
-              COMP_CD: authController?.authState?.companyID ?? "",
+              COMP_CD: authState?.companyID ?? "",
               REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
             }
           } else if((location.state && location.state.length>0) && (location.state[0].data.CUSTOMER_ID)) {
           data = {
-            COMP_CD: authController?.authState?.companyID ?? "",
+            COMP_CD: authState?.companyID ?? "",
             CUSTOMER_ID: location.state[0].data?.CUSTOMER_ID ?? "",
           }
         }
@@ -397,7 +398,32 @@ export default function FormModal({
   //   }
   // }, [isAccTypeLoading, AccTypeOptions])
 
+  // cust categ options
+  const { 
+    data: custCategData, 
+    isError: isCustCategError, 
+    isLoading: isCustCategLoading, 
+    error: custCategError, 
+    refetch: custCategRefetch 
+  } = useQuery<any, any>(
+    [
+      "getCIFCategories",
+      state.entityTypectx,
+      // {
+      //   COMP_CD: authState?.companyID ?? "",
+      //   BRANCH_CD: authState?.user?.branchCode ?? "",
+      //   ENTITY_TYPE: state.entityTypectx
+      // }
+    ],
+    () =>
+      API.getCIFCategories({
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        ENTITY_TYPE: state?.entityTypectx,
+      })
+  );
 
+  // get tabs data
   const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
     ["getTabsDetail", {
       ENTITY_TYPE: state?.entityTypectx, 
@@ -408,7 +434,7 @@ export default function FormModal({
     () =>
       API.getTabsDetail(
       {
-        COMP_CD: authController?.authState?.companyID ?? "",
+        COMP_CD: authState?.companyID ?? "",
         ENTITY_TYPE: state?.entityTypectx,
         CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
         CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
@@ -737,10 +763,10 @@ export default function FormModal({
                 }}
                 className={clsx({
                   [appBarClasses.marquee]:
-                    authController?.authState?.companyName.length > 55,
+                    authState?.companyName.length > 55,
                 })}
               >
-                {authController?.authState?.companyName || ""}
+                {authState?.companyName || ""}
               </Box>
               <div style={{ display: "flex", gap: "8px" }}>
                 <div style={{ color: "#949597" }}>
@@ -750,13 +776,13 @@ export default function FormModal({
                     lineHeight={0}
                     fontSize={"11px"}
                   >
-                    Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
-                    {authController?.authState?.user?.branch ?? ""}
+                    Branch: {authState?.user?.branchCode ?? "001 "}-
+                    {authState?.user?.branch ?? ""}
                   </Typography>
                   <Typography variant="caption" display="inline" fontSize={"11px"}>
                     Working Date:{" "}
                     {checkDateAndDisplay(
-                      authController?.authState?.workingDate ?? ""
+                      authState?.workingDate ?? ""
                     )}
                   </Typography>
                   <Typography
@@ -767,7 +793,7 @@ export default function FormModal({
                   >
                     Last Login Date :{" "}
                     {checkDateAndDisplay(
-                      authController?.authState?.user?.lastLogin ?? "Vastrapur"
+                      authState?.user?.lastLogin ?? "Vastrapur"
                     )}
                   </Typography>
                 </div>
@@ -775,7 +801,7 @@ export default function FormModal({
             </Typography>
             <Typography fontSize={"17px"} color={"#1C1C1C"}>
               {/* Greetings....{" "} */}
-              {Greetings()} {authController.authState.user.id}
+              {Greetings()} {authState.user.id}
             </Typography>
             {/* <Typography
               className={classes.title}
@@ -963,16 +989,26 @@ export default function FormModal({
                     <TextField sx={{width: "100%"}} disabled
                       id="customer-id"
                       label="Cust. ID"
-                      size="small"
+                      // size="small"
                       value={state?.customerIDctx}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant={"standard"}
+                      color="secondary"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md>
                     <TextField sx={{width: "100%"}} disabled
                       id="req-id"
                       label="Req. ID"
-                      size="small"
-                      value={state?.req_cd_ctx}                      
+                      // size="small"
+                      value={state?.req_cd_ctx}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant={"standard"}
+                      color="secondary"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md>
@@ -982,7 +1018,8 @@ export default function FormModal({
                       id="cust-categories"
                       value={state?.categConstitutionValuectx || null}
                       inputValue={categConstitutionIPValue}
-                      options={state?.customerCategoriesctx ?? []}
+                      // options={state?.customerCategoriesctx ?? []}
+                      options={custCategData ?? []}
                       onChange={(e,value:any,r,d) => {
                         handleCategoryChangectx(e, value)
                       }}
@@ -995,20 +1032,44 @@ export default function FormModal({
                       }}
                       renderInput={(params:any) => (
                         <TextField {...params} 
-                          size="small" 
                           label="Category - Constitution"
+                          autoComplete="disabled"
+                          type="text"
+                          FormHelperTextProps={{
+                            component: "div",
+                          }}
                           InputProps={{
                             ...params.InputProps,
                             autoFocus: true,
-                            startAdornment: (
-                              <>
-                                <InputAdornment position='start'>
-                                  <IconButton><RefreshIcon fontSize='small' /></IconButton>
-                                </InputAdornment>
-                                {/* {params.InputProps.startAdornment} */}
-                              </>
-                            )
+                            endAdornment: (
+                              <React.Fragment>
+                                {isCustCategLoading ? (
+                                  <CircularProgress
+                                    color="secondary"
+                                    size={20}
+                                    sx={{ marginRight: "8px" }}
+                                    variant="indeterminate"
+                                  />
+                                ) : null}
+                                {params.InputProps.endAdornment}
+                              </React.Fragment>
+                            ),
                           }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          helperText={
+                            <div style={{ display: "flex" }}>
+                              <FormHelperText>
+                                {state?.categConstitutionValuectx 
+                                  ? null 
+                                  : "Please Enter Category"
+                                }
+                              </FormHelperText>
+                            </div>
+                          }
+                          variant={"standard"}
+                          color="secondary"
                         />
                       )}
                       // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
@@ -1022,25 +1083,9 @@ export default function FormModal({
                     size="small"
                   />} */}
 
-
-                  {false && <Select
-                    labelId="customer-account-type"
-                    id=""
-                    value={state?.accTypeValuectx}
-                    label="Acc. Type"
-                    // onChange={handleChangeAccType} sx={{width: "300px"}}
-                  >
-                    {/* <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem> */}
-                    {(AccTypeOptions && AccTypeOptions.length>0) && AccTypeOptions.map(el => {
-                      // console.log('qwewerewqdxrdsa', el)
-                      return <MenuItem value={el?.DATA_VALUE}>{el?.DISPLAY_VALUE}</MenuItem>
-                    })}
-                  </Select>}
                   <Grid item xs={12} sm={6} md>
                     <Autocomplete sx={{width: "100%"}}
-                      disablePortal
+                      // disablePortal
                       disabled={!state?.isFreshEntryctx}
                       id="acc-types"
                       options={AccTypeOptions ?? []}
@@ -1053,7 +1098,38 @@ export default function FormModal({
                         handleAccTypeVal(v?.value)
                       }}
                       // sx={{ width: 200 }}
-                      renderInput={(params:any) => <TextField {...params} size="small" label="A/C Type" />}
+                      renderInput={(params:any) => (
+                        <TextField {...params} 
+                          label="A/C Type"
+                          autoComplete="disabled"
+                          type="text"
+                          FormHelperTextProps={{
+                            component: "div",
+                          }}
+                          InputProps={{
+                            ...params.InputProps,
+                            autoFocus: true,
+                            endAdornment: (
+                              <React.Fragment>
+                                {isAccTypeLoading ? (
+                                  <CircularProgress
+                                    color="secondary"
+                                    size={20}
+                                    sx={{ marginRight: "8px" }}
+                                    variant="indeterminate"
+                                  />
+                                ) : null}
+                                {params.InputProps.endAdornment}
+                              </React.Fragment>
+                            ),
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          variant={"standard"}
+                          color="secondary"
+                        />
+                      )}
                       // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
                     />
                   </Grid>
@@ -1069,7 +1145,12 @@ export default function FormModal({
                       }}
                       // sx={{ width: {xs: 12, sm: "", md: "", lg: ""}}}
                       // value={accTypeValue}
-                      size="small"
+                      // size="small"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant={"standard"}
+                      color="secondary"
                     />
                   </Grid>
                   {!state?.isFreshEntryctx && <FormControlLabel control={<Checkbox checked={true} disabled />} label="Active" />}
