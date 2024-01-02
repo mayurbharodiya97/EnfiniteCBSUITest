@@ -742,7 +742,7 @@ export const kyc_proof_of_address_meta_data = {
           placeholder: "",
           maxLength: 50,
           validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z]+$/;
+            let regex = /^[a-zA-Z0-9 ]+$/;
             if(columnValue.value && !regex.test(columnValue.value)) {
                 return "Please Enter Character Value."
             }
