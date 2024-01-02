@@ -40,9 +40,9 @@ import { AuthContext } from "pages_audit/auth";
 import "./Trn001.css";
 import CommonFooter from "../CommonFooter";
 import TRN001_Table from "./Table";
-import { DailyTrans } from "../DailyTransTabs";
+import { DailyTransTabs } from "../DailyTransTabs";
 
-const Trn001 = () => {
+export const Trn001 = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   var defBranch = {
@@ -585,7 +585,7 @@ const Trn001 = () => {
 
   return (
     <>
-      <DailyTrans />
+      <DailyTransTabs heading="(Maker) (TRN/001)" />
 
       <Card
         sx={{
@@ -939,5 +939,3 @@ const Trn001 = () => {
     </>
   );
 };
-
-export default Trn001;

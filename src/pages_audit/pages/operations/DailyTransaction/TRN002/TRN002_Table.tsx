@@ -20,7 +20,7 @@ import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 
 import "./TRN002_Table.css";
-import { DailyTrans } from "../DailyTransTabs";
+import { DailyTransTabs } from "../DailyTransTabs";
 import CommonFooter from "../CommonFooter";
 const actions: ActionTypes[] = [
   {
@@ -148,7 +148,7 @@ export const TRN002_Table = () => {
 
   return (
     <>
-      <DailyTrans />
+      <DailyTransTabs heading=" Confirmation (F2) (TRN/002)" />
 
       <Card
         sx={{
@@ -181,4 +181,3 @@ export const TRN002_Table = () => {
     </>
   );
 };
-export default TRN002_Table;

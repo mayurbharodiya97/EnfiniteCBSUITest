@@ -131,8 +131,8 @@ const CommonFooter = ({
             onClick={() => handleRefresh()}
           >
             refresh
-          </Button>{" "}
-        </Grid>{" "}
+          </Button>
+        </Grid>
         <Grid item>
           <Button
             variant="contained"
@@ -141,17 +141,22 @@ const CommonFooter = ({
           >
             Calculator
           </Button>
-        </Grid>{" "}
-        {/* <Grid item>
-          <Button variant="contained" color="primary">
-            Delete
-          </Button>
-        </Grid>{" "}
+        </Grid>
         <Grid item>
           <Button variant="contained" color="primary">
-            scroll del
-          </Button>{" "}
-        </Grid>{" "} */}
+            Other Trx
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Positive Pay
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Scroll Delete
+          </Button>
+        </Grid>
       </Grid>
       <br />
     </>

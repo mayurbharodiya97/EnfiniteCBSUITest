@@ -16,8 +16,8 @@ import { MastersMenu } from "./pages/master";
 import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import CkycProvider from "./pages/operations/c-kyc/CkycContext";
-import Trn001 from "./pages/operations/DailyTransaction/TRN001/Trn001";
-import TRN002_Table from "./pages/operations/DailyTransaction/TRN002/TRN002_Table";
+import Trn001 from "./pages/operations/DailyTransaction/TRN001";
+import TRN002_Table from "./pages/operations/DailyTransaction/TRN002";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();

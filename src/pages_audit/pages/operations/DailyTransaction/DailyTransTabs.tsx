@@ -43,9 +43,8 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-export const DailyTrans = () => {
+export const DailyTransTabs = ({ heading }) => {
   const [tabValue, setTabValue] = React.useState(0);
-  const loc = useLocation();
 
   const navArray = [
     {
@@ -103,12 +102,7 @@ export const DailyTrans = () => {
   };
   return (
     <div style={{ padding: "8px" }}>
-      <h1>
-        Daily Transaction
-        {loc.pathname.includes("teller_daily_tran_cnf_F2")
-          ? " Confirmation (F2) (TRN/002)"
-          : " (Maker) (TRN/001)"}
-      </h1>
+      <h1>Daily Transaction {heading}</h1>
 
       <>
         <Grid item xs="auto" id="dailyTabs">
