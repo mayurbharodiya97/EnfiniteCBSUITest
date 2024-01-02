@@ -29,7 +29,7 @@ const initialState:any  = {
     tabsApiResctx: [],
     tabNameList: [],
     setTabsApiRes: () => {},
-    customerCategoriesctx: [],
+    // customerCategoriesctx: [],
     categConstitutionValuectx: null,
     categoryValuectx: null,
     constitutionValuectx: null,
@@ -88,11 +88,11 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
-        case "update_customerCategoriesctx":
-            return {
-                ...state,
-                ...action.payload
-            };
+        // case "update_customerCategoriesctx":
+        //     return {
+        //         ...state,
+        //         ...action.payload
+        //     };
         case "handleCategoryChangectx":
             return {
                 ...state,
@@ -325,14 +325,14 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleCustCategoryRes = (apiRes) => {
-        dispatch({
-            type: "update_customerCategoriesctx",
-            payload: {
-                customerCategoriesctx: apiRes
-            }
-        })           
-    }
+    // const handleCustCategoryRes = (apiRes) => {
+    //     dispatch({
+    //         type: "update_customerCategoriesctx",
+    //         payload: {
+    //             customerCategoriesctx: apiRes
+    //         }
+    //     })           
+    // }
 
     const handleCategoryChangectx = (e, value) => {
         if(value) {
@@ -846,7 +846,8 @@ const CkycProvider = ({children}) => {
         <CkycContext.Provider 
             value={{
                 state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
-                handleApiRes, handleCustCategoryRes,
+                handleApiRes, 
+                // handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
                 handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, handleReadyToSavectx, handleReadyToUpdatectx, resetCkycctx, handleUpdatectx, handleCurrentFormRefctx
             }}
