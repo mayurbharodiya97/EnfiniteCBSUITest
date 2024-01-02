@@ -71,7 +71,7 @@ const PendingCustomer = () => {
                 errorDetail={PendingError?.error_detail}
                 color="error"
             />}
-            <Typography
+            {/* <Typography
                 sx={{
                     color: (theme) => theme.palette.grey[700],
                     mb: (theme) => theme.spacing(2),
@@ -79,7 +79,7 @@ const PendingCustomer = () => {
                 variant="h6"
             >
                 {t("PendingReq")}
-            </Typography>
+            </Typography> */}
             <Grid item>
                 <GridWrapper
                     key={`PendingCustEntrties` + PendingData}
