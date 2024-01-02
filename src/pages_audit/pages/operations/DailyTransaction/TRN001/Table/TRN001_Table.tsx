@@ -25,20 +25,26 @@ export const TRN001_Table = () => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
+  const myGridRef = useRef<any>(null);
 
   useEffect(() => {
     console.log(loading, "loading Table");
   }, [loading]);
-
   useEffect(() => {
-    let data = {
-      COMP_CD: authState?.companyID,
-      BRANCH_CD: authState?.user?.branchCode,
-    };
-    getTRN001List.mutate(data);
+    console.log(rows, "rows rows");
+  }, [rows]);
+  console.log(tempStore, "queryRows");
+  useEffect(() => {
+    if (tempStore?.queryRows?.length > 0) {
+      setRows(tempStore.queryRows);
+    } else {
+      let data = {
+        COMP_CD: authState?.companyID,
+        BRANCH_CD: authState?.user?.branchCode,
+      };
+      getTRN001List.mutate(data);
+    }
   }, []);
-
-  const myGridRef = useRef<any>(null);
 
   // api define
   const getTRN001List = useMutation(API.getTRN001List, {

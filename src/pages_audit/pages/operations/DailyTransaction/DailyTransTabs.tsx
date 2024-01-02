@@ -20,7 +20,7 @@ import StopPay from "./StopPay";
 import Document from "./Document";
 import Subsidyy from "./Subsidyy";
 import Disbursement from "./Disbursement";
-import AccDetails from "./AccountDetails/AccDetails";
+import AccDetails from "./AccountDetails";
 import "./DailyTransTabs.css";
 
 interface TabPanelProps {

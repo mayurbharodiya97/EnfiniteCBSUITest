@@ -30,25 +30,37 @@ import React, {
 import { useMutation, useQuery } from "react-query";
 import { GeneralAPI } from "registry/fns/functions";
 import { AuthContext } from "pages_audit/auth";
-import "./TRN001/Trn001.css";
+import "./CommonFooter.css";
 import { useLocation } from "react-router-dom";
+import * as API from "./api";
+import { useSnackbar } from "notistack";
+import { AccDetailContext } from "pages_audit/auth";
 
-const CommonFooter = ({
+export const CommonFooter = ({
   tableRows,
   handleUpdateRows,
   handleViewAll,
   handleRefresh,
+  handleViewQueryData,
 }) => {
   let defaulVal = {
-    column: "",
-    operator: "",
+    column: { value: "ACCT_CD", label: "A/C No" },
+    operator: { value: "Equals", label: "Equals" },
     value: "",
-    logic: "",
+    logic: { value: "OR", label: "OR" },
   };
   const [rows, setRows] = useState<any>([defaulVal]);
   const [queryDialog, setQueryDialog] = useState(false);
   const loc = useLocation();
+  const { enqueueSnackbar } = useSnackbar();
+  const { authState } = useContext(AuthContext);
 
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
+
+  const columnOptions = [
+    { value: "ACCT_CD", label: "A/C No" },
+    { value: "BRANCH_CD", label: "Branch" },
+  ];
   const operatorOptions = [
     { value: "Equals", label: "Equals" },
     { value: "Less Than", label: "Less Than" },
@@ -57,10 +69,6 @@ const CommonFooter = ({
   const logicOptions = [
     { value: "AND", label: "AND" },
     { value: "OR", label: "OR" },
-  ];
-  const columnOptions = [
-    { value: "A/C No", label: "A/C No" },
-    { value: "Branch", label: "Branch" },
   ];
 
   useEffect(() => {
@@ -84,7 +92,7 @@ const CommonFooter = ({
   const handleValue = (e, i) => {
     const obj = [...rows];
     let txt = e.target.value;
-    obj[i].value = txt;
+    obj[i].value = txt.padStart(6, "0");
     setRows(obj);
   };
 
@@ -104,6 +112,30 @@ const CommonFooter = ({
 
   const handleReset = () => {
     setRows([defaulVal]);
+  };
+  const getQueryData = useMutation(API.getQueryData, {
+    onSuccess: (data) => {
+      setQueryDialog(false);
+      setTempStore({ ...tempStore, queryRows: data });
+      handleViewQueryData();
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
+  const handleSave = () => {
+    rows.map((a) => {
+      a.COMP_CD = authState?.companyID;
+    });
+    getQueryData.mutate(rows);
+  };
+
+  const handleClose = () => {
+    handleReset();
+    setQueryDialog(false);
   };
   return (
     <>
@@ -164,11 +196,7 @@ const CommonFooter = ({
           </Button>
         </Grid>
         <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setQueryDialog(true)}
-          >
+          <Button variant="contained" color="primary">
             Other Trx
           </Button>
         </Grid>
@@ -183,7 +211,11 @@ const CommonFooter = ({
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setQueryDialog(true)}
+          >
             Query
           </Button>
         </Grid>
@@ -203,7 +235,7 @@ const CommonFooter = ({
             <Table aria-label="simple table" padding={"none"}>
               <TableHead>
                 <TableRow id="topHead">
-                  <TableCell id="head">Branch</TableCell>
+                  <TableCell id="head">Column</TableCell>
                   <TableCell id="head">Operator</TableCell>
                   <TableCell id="head">Value</TableCell>
                   <TableCell id="head">Logic</TableCell>
@@ -287,11 +319,12 @@ const CommonFooter = ({
         </DialogContent>
         <div className="dialogFooter">
           {" "}
-          <div style={{ padding: "8px" }}>
+          <div>
             <Button variant="contained" onClick={() => handleAddRow()}>
               <AddIcon /> new row
             </Button>
             <Button
+              style={{ marginLeft: "8px" }}
               variant="outlined"
               color="secondary"
               onClick={() => handleReset()}
@@ -299,15 +332,16 @@ const CommonFooter = ({
               <RestartAltIcon /> reset
             </Button>
           </div>
-          <div style={{ padding: "8px" }}>
+          <div>
             {" "}
-            <Button variant="contained" onClick={() => setQueryDialog(false)}>
+            <Button variant="contained" onClick={() => handleClose()}>
               Cancel
             </Button>
             <Button
+              style={{ marginLeft: "8px" }}
               color="secondary"
               variant="contained"
-              // onClick={handleScrollSave}
+              onClick={handleSave}
               autoFocus
             >
               Save
@@ -318,5 +352,3 @@ const CommonFooter = ({
     </>
   );
 };
-
-export default CommonFooter;

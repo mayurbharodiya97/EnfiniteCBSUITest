@@ -1,1 +1,1 @@
-export * from "./DailyTransTabs";
+export { DailyTransTabs as default } from "./DailyTransTabs";

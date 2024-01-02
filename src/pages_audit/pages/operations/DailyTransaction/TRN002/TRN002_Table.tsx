@@ -21,7 +21,7 @@ import { useContext } from "react";
 
 import "./TRN002_Table.css";
 import { DailyTransTabs } from "../DailyTransTabs";
-import CommonFooter from "../CommonFooter";
+import CommonFooter from "../Common";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -146,6 +146,7 @@ export const Trn002_Table = () => {
     handleGetTRN002List();
   };
 
+  const handleViewQueryData = () => {};
   return (
     <>
       <DailyTransTabs heading=" Confirmation (F2) (TRN/002)" />
@@ -177,6 +178,7 @@ export const Trn002_Table = () => {
         handleUpdateRows={handleUpdateRows}
         handleViewAll={handleViewAll}
         handleRefresh={handleRefresh}
+        handleViewQueryData={handleViewQueryData}
       />
     </>
   );

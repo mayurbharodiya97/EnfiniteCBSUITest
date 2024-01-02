@@ -696,6 +696,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETSTOPDISPLAY",
     packageName: "",
   },
+  GETTRANDYNQUERYDATA: {
+    url: "/transactionServiceAPI/GETTRANDYNQUERYDATA",
+    packageName: "",
+  },
   GETLIMITFDBRANCHDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDBRANCHDDW",
     packageName: "",

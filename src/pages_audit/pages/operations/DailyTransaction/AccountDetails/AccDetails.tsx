@@ -38,7 +38,7 @@ const responsive = {
     items: 1,
   },
 };
-const AccDetails = ({ flag }) => {
+export const AccDetails = ({ flag }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
 
   return (
@@ -238,5 +238,3 @@ const AccDetails = ({ flag }) => {
     </>
   );
 };
-
-export default AccDetails;

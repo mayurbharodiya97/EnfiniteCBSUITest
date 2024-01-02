@@ -19,8 +19,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
 import LinearProgress from "@mui/material/LinearProgress";
 //date
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -38,7 +36,7 @@ import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
 
 import "./Trn001.css";
-import CommonFooter from "../CommonFooter";
+import CommonFooter from "../Common";
 import TRN001_Table from "./Table";
 import { DailyTransTabs } from "../DailyTransTabs";
 
@@ -529,7 +527,7 @@ export const Trn001 = () => {
     setTrxOptions(trxOptions2);
     setResetDialog(false);
     setViewOnly(false);
-    setTempStore({ ...tempStore, accInfo: {} });
+    setTempStore({ ...tempStore, accInfo: {}, queryRows: [] });
   };
 
   const handleFilterTrx = () => {
@@ -593,7 +591,8 @@ export const Trn001 = () => {
   };
   const handleUpdateRows = (data) => {
     //to apply filter from baseFooter
-    console.log(data, "databaseFooter");
+    setViewOnly(true);
+    console.log(data, "common footer");
     setRows2(data);
   };
 
@@ -605,7 +604,9 @@ export const Trn001 = () => {
     getTRN001List.mutate(data);
     setViewOnly(true);
   };
-
+  const handleViewQueryData = () => {
+    setViewOnly(true);
+  };
   return (
     <>
       <DailyTransTabs heading="(Maker) (TRN/001)" />
@@ -901,6 +902,7 @@ export const Trn001 = () => {
         tableRows={rows2}
         handleViewAll={handleGetTRN001List}
         handleRefresh={handleReset}
+        handleViewQueryData={handleViewQueryData}
       />
       <br />
       <>
