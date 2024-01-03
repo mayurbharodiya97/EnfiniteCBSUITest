@@ -293,16 +293,14 @@ export const Ckyc = () => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [isCustomerData, setIsCustomerData] = useState(true);
 
-
   useEffect(() => {
-      if (isLoadingData) {
-        setTimeout(() => {
-          setIsLoadingData(false);
-          setIsCustomerData(true);
-        }, 5000);
-      }
+    if (isLoadingData) {
+      setTimeout(() => {
+        setIsLoadingData(false);
+        setIsCustomerData(true);
+      }, 5000);
+    }
   }, [isLoadingData]);
-
 
   // const [rowsData, setRowsData] = useState<any[]>([]);
   // const [componentToShow, setComponentToShow] = useState("");
@@ -353,8 +351,8 @@ export const Ckyc = () => {
   //     categConstitutionValuectx - ${state?.categConstitutionValuectx},
   //     categoryValuectx - ${state?.categoryValuectx},
   //     constitutionValuectx - ${state?.constitutionValuectx},
-  //     isFormModalOpenctx - ${state?.isFormModalOpenctx}, 
-  //     entityTypectx - ${state?.entityTypectx}, 
+  //     isFormModalOpenctx - ${state?.isFormModalOpenctx},
+  //     entityTypectx - ${state?.entityTypectx},
   //     isFreshEntryctx - ${state?.isFreshEntryctx},
   //     customerIDctx - ${state?.customerIDctx},
   //     req_cd_ctx - ${state?.req_cd_ctx}
@@ -363,8 +361,8 @@ export const Ckyc = () => {
   //   state?.categConstitutionValuectx,
   //   state?.categoryValuectx,
   //   state?.constitutionValuectx,
-  //   state?.isFormModalOpenctx, 
-  //   state?.entityTypectx, 
+  //   state?.isFormModalOpenctx,
+  //   state?.entityTypectx,
   //   state?.isFreshEntryctx,
   //   state?.customerIDctx,
   //   state?.req_cd_ctx])
@@ -411,7 +409,6 @@ export const Ckyc = () => {
   //   console.log(colTabValue, typeof colTabValue,"...")
   //   console.log(tabValue, typeof tabValue, "... tab")
   // }, [colTabValue, tabValue])
-
 
   // insurance-data display api
   // const {data:insuranceData, isError: isInsuranceError, isLoading: isInsuranceLoading, refetch: insuranceRefetch} = useQuery<any, any>(
@@ -532,19 +529,20 @@ export const Ckyc = () => {
         <PendingCustomer />
       </TabPanel>
       <Routes>
-      <Route
-        path="new-entry/*"
-        element={
-          <FormModal
-          isLoadingData={isLoadingData}
-          setIsLoadingData={setIsLoadingData}
-          isCustomerData={isCustomerData}
-          setIsCustomerData={setIsCustomerData}
-          onClose={() => navigate(".")}
-          formmode={"new"}
-          from={"new-entry"}
-          />
-      }/>
+        <Route
+          path="new-entry/*"
+          element={
+            <FormModal
+              isLoadingData={isLoadingData}
+              setIsLoadingData={setIsLoadingData}
+              isCustomerData={isCustomerData}
+              setIsCustomerData={setIsCustomerData}
+              onClose={() => navigate(".")}
+              formmode={"new"}
+              from={"new-entry"}
+            />
+          }
+        />
       </Routes>
     </React.Fragment>
   );
