@@ -51,10 +51,12 @@ export const CommonFooter = ({
   };
   const [rows, setRows] = useState<any>([defaulVal]);
   const [queryDialog, setQueryDialog] = useState(false);
+  const [scrollDialog, setScrollDialog] = useState(false);
+  const [scrollNo, setScrollNo] = useState("");
+
   const loc = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
-
   const { tempStore, setTempStore } = useContext(AccDetailContext);
 
   const columnOptions = [
@@ -81,6 +83,22 @@ export const CommonFooter = ({
       setQueryDialog(false);
       setTempStore({ ...tempStore, queryRows: data });
       handleViewQueryData();
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+  const deleteScroll = useMutation(API.deleteScroll, {
+    onSuccess: (data: any) => {
+      console.log(data, "ddd");
+      setScrollDialog(false);
+      setScrollNo("");
+      handleRefresh();
+      enqueueSnackbar("scroll deleted", {
+        variant: "success",
+      });
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -139,6 +157,14 @@ export const CommonFooter = ({
     handleReset();
     setQueryDialog(false);
   };
+  const handleDeleteScroll = () => {
+    let data = { COMP_CD: authState.companyID, SCROLL_NO: scrollNo };
+    scrollNo && deleteScroll.mutate(data);
+  };
+  const handleScrollDialogClose = () => {
+    setScrollDialog(false);
+  };
+
   return (
     <>
       <Grid
@@ -208,7 +234,11 @@ export const CommonFooter = ({
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setScrollDialog(true)}
+          >
             Scroll Delete
           </Button>
         </Grid>
@@ -350,6 +380,40 @@ export const CommonFooter = ({
             </Button>
           </div>
         </div>
+      </Dialog>
+
+      <Dialog
+        maxWidth="md"
+        open={scrollDialog}
+        // onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Scroll Delete</DialogTitle>
+        <DialogContent>
+          <TextField
+            value={scrollNo}
+            placeholder="Enter ScrollNo"
+            id="txtRight"
+            size="small"
+            type="number"
+            onChange={(e) => setScrollNo(e.target.value)}
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setScrollDialog(false)} variant="contained">
+            Cancel
+          </Button>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleDeleteScroll}
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );
