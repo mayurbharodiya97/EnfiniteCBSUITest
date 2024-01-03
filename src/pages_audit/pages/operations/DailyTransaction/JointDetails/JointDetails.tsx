@@ -29,6 +29,8 @@ import { jointViewDetailMetaData } from "./metaData";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
+import { useSnackbar } from "notistack";
+
 const actions: ActionTypes[] = [
   {
     actionName: "scroll",
@@ -41,6 +43,7 @@ const actions: ActionTypes[] = [
   },
 ];
 const JointDetails = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
@@ -56,7 +59,11 @@ const JointDetails = () => {
       console.log(data, " joint detailssss");
       setRows(data);
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
   });
 
   useEffect(() => {

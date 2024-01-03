@@ -5,7 +5,9 @@ import {
 } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
+//List
 export const getTRN002List = async (reqData) => {
+  //view all
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRNCNFF2", {
       COMP_CD: reqData?.COMP_CD,
@@ -28,6 +30,8 @@ export const getTRN002List = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+//Operations
 export const confirmScroll = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CONFIRMDAILYTRNDATA", {
@@ -37,6 +41,23 @@ export const confirmScroll = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+// "COMP_CD": "132 ",
+// "SCROLL_NO": "186547"
+export const deleteScroll = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DELETESCROLLDATA", {
+      COMP_CD: reqData?.COMP_CD,
+      SCROLL_NO: reqData?.SCROLL_NO,
+    });
+  if (status === "0") {
+    let responseData = data;
+
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);

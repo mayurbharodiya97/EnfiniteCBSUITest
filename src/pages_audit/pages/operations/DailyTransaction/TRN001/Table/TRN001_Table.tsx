@@ -30,10 +30,13 @@ export const TRN001_Table = () => {
   useEffect(() => {
     console.log(loading, "loading Table");
   }, [loading]);
+
   useEffect(() => {
     console.log(rows, "rows rows");
   }, [rows]);
+
   console.log(tempStore, "queryRows");
+
   useEffect(() => {
     if (tempStore?.queryRows?.length > 0) {
       setRows(tempStore.queryRows);
@@ -44,9 +47,9 @@ export const TRN001_Table = () => {
       };
       getTRN001List.mutate(data);
     }
-  }, []);
+  }, [tempStore]);
 
-  // api define
+  // api define=============================================
   const getTRN001List = useMutation(API.getTRN001List, {
     onSuccess: (data) => {
       setLoading(false);

@@ -6,6 +6,8 @@ import {
 import { AuthSDK } from "registry/fns/auth";
 import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
+//lists
+
 export const getSDCList = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSDCLIST", {
@@ -96,7 +98,48 @@ export const getTRXList = async (reqData) => {
   }
 };
 
+export const getTRN001List = async (reqData) => {
+  //for table viewAll
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
+      COMP_CD: reqData?.COMP_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getAccDetails = async (reqData) => {
+  //apurva
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETACCOUNTDTL", {
+      // ACCT_CD: "000026              ",
+      // A_ASON_DT: "15/DEC/2023",
+      COMP_CD: reqData.COMP_CD,
+      BRANCH_CD: reqData.BRANCH_CD,
+      ACCT_TYPE: reqData.ACCT_TYPE,
+      ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
+      A_ASON_DT: format(new Date(), "dd/MMM/yyyy"),
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (responseData.length > 0) {
+      return responseData[0];
+    } else {
+      return responseData;
+    }
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const getAccInfo = async (reqData) => {
+  //jimit
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
       // ACCT_CD: "000026              ",
@@ -118,6 +161,8 @@ export const getAccInfo = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+//operations
 
 export const getAccInquiry = async (reqData) => {
   const { data, status, message, messageDetails } =
@@ -149,6 +194,7 @@ export const addDailyTrxScroll = async (reqData) => {
   }
 };
 
+//validations
 export const getChqValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
@@ -162,22 +208,6 @@ export const getChqValidation = async (reqData) => {
     let responseData = data;
 
     return responseData[0];
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getTRN001List = async (reqData) => {
-  //for table
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
-      COMP_CD: reqData?.COMP_CD,
-      BRANCH_CD: reqData?.BRANCH_CD,
-    });
-  if (status === "0") {
-    let responseData = data;
-
-    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

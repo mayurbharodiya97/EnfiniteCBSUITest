@@ -11,8 +11,10 @@ import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
+import { useSnackbar } from "notistack";
 
 export const SnapShot = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
@@ -24,7 +26,11 @@ export const SnapShot = () => {
       console.log(data, " getSnapShotList detailssss");
       setRows(data);
     },
-    onError: (error) => {},
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
   });
 
   useEffect(() => {
@@ -33,6 +39,7 @@ export const SnapShot = () => {
 
   return (
     <>
+      <div></div>
       <GridWrapper
         key={`snapShotGridMetaData`}
         finalMetaData={snapShotGridMetaData as GridMetaDataType}

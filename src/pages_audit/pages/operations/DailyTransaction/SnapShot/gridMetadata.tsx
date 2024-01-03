@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const snapShotGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Stop Pay",
+    gridLabel: "SnapShot",
     rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
@@ -44,36 +44,44 @@ export const snapShotGridMetaData: GridMetaDataType = {
       width: 200,
     },
     {
-      accessor: "FLAG",
-      columnName: "FLAG ",
+      accessor: "TYPE_CD",
+      columnName: "TRX ",
       sequence: 3,
 
       componentType: "default",
       width: 120,
     },
     {
-      accessor: "CHEQUE_TO",
-      columnName: "CHEQUE_TO",
+      accessor: "CHEQUE_NO",
+      columnName: "CHEQUE_NO",
       sequence: 4,
 
       componentType: "default",
       width: 120,
     },
     {
-      accessor: "ENTERED_BY",
-      columnName: "ENTERED_BY",
+      accessor: "ACCT_NM",
+      columnName: "ACCT_NM",
       sequence: 5,
 
       componentType: "default",
-      width: 120,
+      width: 200,
     },
     {
-      accessor: "CONFIRMED",
-      columnName: "CONFIRMED",
+      accessor: "ACCT_NO",
+      columnName: "ACCT_NO",
       sequence: 6,
 
       componentType: "default",
-      width: 250,
+      width: 150,
+    },
+    {
+      accessor: "AMOUNT",
+      columnName: "AMOUNT",
+      sequence: 7,
+
+      componentType: "default",
+      width: 150,
     },
   ],
 };

@@ -700,6 +700,15 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETTRANDYNQUERYDATA",
     packageName: "",
   },
+  GETACCOUNTDTL: {
+    url: "/transactionServiceAPI/GETACCOUNTDTL",
+    packageName: "",
+  },
+  DELETESCROLLDATA: {
+    url: "/transactionServiceAPI/DELETESCROLLDATA",
+    packageName: "",
+  },
+
   GETLIMITFDBRANCHDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDBRANCHDDW",
     packageName: "",

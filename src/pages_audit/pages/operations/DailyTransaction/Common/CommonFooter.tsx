@@ -74,6 +74,21 @@ export const CommonFooter = ({
   useEffect(() => {
     console.log(rows, "rows");
   }, [rows]);
+
+  //api define
+  const getQueryData = useMutation(API.getQueryData, {
+    onSuccess: (data) => {
+      setQueryDialog(false);
+      setTempStore({ ...tempStore, queryRows: data });
+      handleViewQueryData();
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
   const handleColumn = (e, value, i) => {
     const obj = [...rows];
     obj[i].column = value;
@@ -98,7 +113,6 @@ export const CommonFooter = ({
 
   const handleAddRow = () => {
     let obj = [...rows, defaulVal];
-
     setRows(obj);
   };
 
@@ -113,18 +127,6 @@ export const CommonFooter = ({
   const handleReset = () => {
     setRows([defaulVal]);
   };
-  const getQueryData = useMutation(API.getQueryData, {
-    onSuccess: (data) => {
-      setQueryDialog(false);
-      setTempStore({ ...tempStore, queryRows: data });
-      handleViewQueryData();
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
 
   const handleSave = () => {
     rows.map((a) => {

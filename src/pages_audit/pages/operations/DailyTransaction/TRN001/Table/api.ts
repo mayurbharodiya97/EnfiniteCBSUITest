@@ -5,6 +5,7 @@ import {
 } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
+//list
 export const getTRN001List = async (reqData) => {
   //for table
   const { data, status, message, messageDetails } =

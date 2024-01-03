@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const TRN001_TableMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "User's Transaction",
+    gridLabel: "",
     rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
