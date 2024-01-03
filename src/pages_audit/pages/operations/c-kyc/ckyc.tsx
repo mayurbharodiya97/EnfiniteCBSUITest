@@ -290,6 +290,20 @@ export const Ckyc = () => {
   >(null);
   const [accTypeValue, setAccTypeValue] = React.useState<null | string>("");
 
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [isCustomerData, setIsCustomerData] = useState(true);
+
+
+  useEffect(() => {
+      if (isLoadingData) {
+        setTimeout(() => {
+          setIsLoadingData(false);
+          setIsCustomerData(true);
+        }, 5000);
+      }
+  }, [isLoadingData]);
+
+
   // const [rowsData, setRowsData] = useState<any[]>([]);
   // const [componentToShow, setComponentToShow] = useState("");
   // const [acctOpen, setAcctOpen] = useState(false);
@@ -517,6 +531,21 @@ export const Ckyc = () => {
       <TabPanel value={tabValue} index={1}>
         <PendingCustomer />
       </TabPanel>
+      <Routes>
+      <Route
+        path="new-entry/*"
+        element={
+          <FormModal
+          isLoadingData={isLoadingData}
+          setIsLoadingData={setIsLoadingData}
+          isCustomerData={isCustomerData}
+          setIsCustomerData={setIsCustomerData}
+          onClose={() => navigate(".")}
+          formmode={"new"}
+          from={"new-entry"}
+          />
+      }/>
+      </Routes>
     </React.Fragment>
   );
 };

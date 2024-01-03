@@ -180,7 +180,7 @@ export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
-  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, formmode
+  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, formmode, from
   // entityType, setEntityType, 
   // customerCategories, 
   // tabsApiRes, setTabsApiRes, 
@@ -202,7 +202,7 @@ export default function FormModal({
   const [updateDialog, setUpdateDialog] = useState(false)
   const [actionDialog, setActionDialog] = useState(false)
   const [cancelDialog, setCancelDialog] = useState(false)
-  const [from, setFrom] = useState("");
+  // const [from, setFrom] = useState("");
   const [confirmAction, setConfirmAction] = useState<any>("confirm");
   const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
   const [displayMode, setDisplayMode] = useState<any>(formmode)
@@ -334,50 +334,46 @@ export default function FormModal({
 
 
   useEffect(() => {
-    // if(!location.state) {
-    //   handleFormModalClosectx()
-    //   onClose()
-    // } else {
-      if(location.pathname.includes("/view-detail")) {
-        // setDisplayMode(formmode)
-        if(location.pathname.includes("/confirm-ckyc")) {
-          setFrom("confirmation")
-          setDisplayMode("view")
-        } else if(location.state[0].data.REQUEST_ID) {
-          if(location.state[0].data.CONFIRMED && (location.state[0].data.CONFIRMED.includes("Y") || location.state[0].data.CONFIRMED.includes("R"))) {
-            setDisplayMode("view")
-          }
-        }
-        // console.log(">>>-- edit", location.state, location.state[0].id)
-        // handlecustomerIDctx(location.state[0].id)
-        handleColTabChangectx(0)
-        handleFormModalOpenOnEditctx(location?.state)
-        // retrieveFormRefetch()
-        let data = {}
-        // if(location.state.length && location.state?.[0]?.id && location.state?.[0]?.data?.REQUEST_ID) {
-        //   data = {
-        //     COMP_CD: authState?.companyID ?? "",
-        //     REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
-        //   }  
-        // } else {
-          if((location.state && location.state.length>0) && (location.state[0].data.REQUEST_ID)) {
-            data = {
-              COMP_CD: authState?.companyID ?? "",
-              REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
-            }
-          } else if((location.state && location.state.length>0) && (location.state[0].data.CUSTOMER_ID)) {
-          data = {
-            COMP_CD: authState?.companyID ?? "",
-            CUSTOMER_ID: location.state[0].data?.CUSTOMER_ID ?? "",
-          }
-        }
-        Object.keys(data).length>1 && mutation.mutate(data)
-        // mutation.mutate(data)
-      } else if(location?.pathname.includes("/new-entry") && location?.state?.entityType) {
-        // console.log(">>>-- new", location.state)
-        handleFormModalOpenctx(location?.state?.entityType)
+    // setDisplayMode(formmode)
+    if(formmode == "new") {
+      handleFormModalOpenctx(location?.state?.entityType)
+      console.log("statess new", location.state)
+    } else {
+      handleColTabChangectx(0)
+      handleFormModalOpenOnEditctx(location?.state)
+
+      let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+        COMP_CD: authState?.companyID ?? "",
       }
-    // }
+      if(formmode == "view") {
+        console.log(from,"statess view", location.state)
+        if(location.state) {
+            const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID
+            payload["REQUEST_CD"] = REQUEST_CD
+        }
+      } else if (formmode == "edit") {
+        console.log("statess edit", location.state)
+        if(from === "pending-entry") {
+          if(location.state) {
+            const confirmedFlag = location.state?.[0]?.data.CONFIRMED
+            const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID
+            payload["REQUEST_CD"] = REQUEST_CD
+            // if(confirmedFlag === "Y" || confirmedFlag === "R") {
+            if(confirmedFlag.includes("Y") || confirmedFlag.includes("R")) {
+              setDisplayMode("view")
+            }
+          }
+        } else if(from === "retrieve-entry") {
+          if(location.state) {
+            const CUSTOMER_ID = location.state?.[0]?.data.CUSTOMER_ID
+            payload["CUSTOMER_ID"] = CUSTOMER_ID
+          }
+        }
+      }
+      if(Object.keys(payload)?.length == 2) {
+        mutation.mutate(payload)
+      }
+    } 
   }, [location])
 
 
@@ -681,7 +677,7 @@ export default function FormModal({
 
   const ActionBTNs = React.useMemo(() => {
     return displayMode == "view"
-      ? (from && from == "confirmation") && <React.Fragment>
+      ? (from && from == "confirmation-entry") && <React.Fragment>
         <Button
           onClick={() => openActionDialog("confirm")}
           color="primary"
@@ -711,6 +707,50 @@ export default function FormModal({
           {t("Update")}
         </Button>
   }, [displayMode, from, state?.modifiedFormCols])
+
+  const HeaderContent = React.useMemo(() => {
+    return <React.Fragment>
+      {(!state?.isFreshEntryctx && state?.retrieveFormDataApiRes)
+      ? (
+        <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
+          // className={classes.title}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {(state?.entityTypectx === "I" && 
+          state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "P") 
+            ? "Photo/Signature yet not scanned" 
+            : state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "N"
+              ? "Photo/Signature Confirmation Pending" : null
+          }
+        </Typography>
+        )
+      :""}
+      {
+        ((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD)
+        ? <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
+            // className={classes.title}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >{`Open from Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD}`}</Typography>
+        : null
+      }
+
+
+      {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE)
+      ? (
+        <Typography sx={{whiteSpace: "nowrap", mr: "30px"}}
+          // className={classes.title}
+          color="inherit"
+          variant="subtitle2"
+          component="div"
+        >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE}`}</Typography>
+        )
+      :""}
+    </React.Fragment>
+  }, [state?.retrieveFormDataApiRes])
 
 
   return (
@@ -867,104 +907,10 @@ export default function FormModal({
                 : t("IndividualEntry")
               }
             </Typography>
-
-
-            {(!state?.isFreshEntryctx && state?.retrieveFormDataApiRes)
-            ? (
-              <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
-                // className={classes.title}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-              >
-                {/* {`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD}`} */}
-                {/* Photo/Signature Confirmation Pending */}
-                {state?.entityTypectx === "I" && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "P" 
-                  ? "Photo/Signature yet not scanned" 
-                  : state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "N"
-                    ? "Photo/Signature Confirmation Pending" : null
-                }
-              </Typography>
-              )
-            :""}
-            {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) 
-            && (state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "R" || state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "N") )
-            ? (
-              <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
-                // className={classes.title}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-              >{`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD ? state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD : ""}`}</Typography>
-              )
-            :""}
-
-
-            {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) 
-            && (state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "R" || state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "N") )
-            ? (
-              <Typography sx={{whiteSpace: "nowrap", mr: "30px"}}
-                // className={classes.title}
-                color="inherit"
-                variant="subtitle2"
-                component="div"
-              >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE ? format(new Date(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE), "dd-MM-yyyy") : ""}`}</Typography>
-              // format(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE, "dd/MM/yyyy")
-              )
-            :""}
-
-
-
-            {/* <Button
-              // onClick={handleFormModalClose}
-              color="primary"
-              size="small"
-              // disabled 
-              // variant={"contained"}
-              // disabled={mutation.isLoading}
-            >
-              {t("SaveAsDraft")}
-            </Button> */}
+            {HeaderContent}
 
             {/* for checker, view-only */}
             {ActionBTNs}
-            {/* {from=="confirmation" && <Button
-              onClick={() => openActionDialog("confirm")}
-              color="primary"
-              // disabled={mutation.isLoading}
-            >
-              {t("Confirm")}
-            </Button>}
-            {from=="confirmation" && <Button
-              onClick={() => openActionDialog("query")}
-              color="primary"
-              // disabled={mutation.isLoading}
-            >
-              {t("Raise Query")}
-            </Button>}
-            {from=="confirmation" && <Button
-              onClick={() => openActionDialog("reject")}
-              color="primary"
-              // disabled={mutation.isLoading}
-            >
-              {t("Reject")}
-            </Button>}
-            {(!state?.isFreshEntryctx && from!="confirmation" && (state?.confirmFlagctx !== "R" && state?.confirmFlagctx !== "Y")) &&<Button
-              onClick={openUpdateDialog}
-              color="primary"
-              // disabled={!state?.isReadyToUpdatectx}
-              // disabled={mutation.isLoading}
-            >
-              {t("Update")}
-            </Button>} */}
-            {/* {state?.isFreshEntryctx &&<Button
-              // onClick={handleFormModalClose}
-              color="primary"
-              // disabled={mutation.isLoading}
-              // disabled={!state?.isReadyToSavectx}
-            >
-              {t("Save")}
-            </Button>} */}
             <Button
               onClick={onCancelForm}
               color="primary"
