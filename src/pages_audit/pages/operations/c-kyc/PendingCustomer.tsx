@@ -1,21 +1,36 @@
 import { Grid, Typography } from "@mui/material";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { AuthContext } from "pages_audit/auth";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import * as API from "./api";
 import { t } from "i18next";
 import { ckyc_pending_req_meta_data } from "./metadata";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
-import { useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { Alert } from "components/common/alert";
+import FormModal from "./formModal/formModal";
+import { format } from "date-fns";
 
 const PendingCustomer = () => {
     const { authState } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [rowsData, setRowsData] = useState<any[]>([]);
+
+    const [isLoadingData, setIsLoadingData] = useState(false);
+    const [isCustomerData, setIsCustomerData] = useState(true);
+
+    useEffect(() => {
+      if (isLoadingData) {
+        setTimeout(() => {
+          setIsLoadingData(false);
+          setIsCustomerData(true);
+        }, 5000);
+      }
+    }, [isLoadingData]);    
+
 
     const {
         data: PendingData,
@@ -28,8 +43,8 @@ const PendingCustomer = () => {
         API.getPendingData({
           COMP_CD: authState?.companyID ?? "",
           REQ_FLAG: "A",
-          // ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-          ENTERED_DATE: "27-12-2023"
+          ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
+          // ENTERED_DATE: "26-12-2023"
         })
     )
 
@@ -93,6 +108,21 @@ const PendingCustomer = () => {
                     // ref={myGridRef}
                 />
             </Grid>
+            <Routes>
+                <Route
+                path="view-detail/*"
+                element={
+                    <FormModal
+                    isLoadingData={isLoadingData}
+                    setIsLoadingData={setIsLoadingData}
+                    isCustomerData={isCustomerData}
+                    setIsCustomerData={setIsCustomerData}
+                    onClose={() => navigate(".")}
+                    formmode={"edit"}
+                    from={"pending-entry"}
+                    />
+                }/>
+            </Routes>
         </Grid>
     )
 }

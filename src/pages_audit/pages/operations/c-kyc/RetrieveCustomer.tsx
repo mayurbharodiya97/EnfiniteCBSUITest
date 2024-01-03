@@ -231,19 +231,6 @@ const RetrieveCustomer = () => {
 
             <Routes>
                 <Route
-                path="new-entry/*"
-                element={
-                    <FormModal
-                    isLoadingData={isLoadingData}
-                    setIsLoadingData={setIsLoadingData}
-                    isCustomerData={isCustomerData}
-                    setIsCustomerData={setIsCustomerData}
-                    onClose={() => navigate(".")}
-                    formmode={"new"}
-                    />
-                }/>
-
-                <Route
                 path="view-detail/*"
                 element={
                     <FormModal
@@ -253,6 +240,7 @@ const RetrieveCustomer = () => {
                     setIsCustomerData={setIsCustomerData}
                     onClose={() => navigate(".")}
                     formmode={"edit"}
+                    from={"retrieve-entry"}
                     />
                 }/>
 
