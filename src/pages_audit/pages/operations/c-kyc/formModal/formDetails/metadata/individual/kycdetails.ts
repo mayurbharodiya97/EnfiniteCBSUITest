@@ -1188,7 +1188,7 @@ export const kyc_proof_of_address_meta_data = {
         render: {
             componentType: "numberFormat",
         },
-        name: "STD_2",
+        name: "STD_4",
         label: "PhoneR",
         placeholder: "",
         maxLength: 5,
@@ -1207,8 +1207,68 @@ export const kyc_proof_of_address_meta_data = {
         render: {
             componentType: "numberFormat",
         },
-        name: "CONTACT2",
+        name: "CONTACT4",
         label: "",
+        placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
+        type: "text",
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
+    },
+    {
+        render: {
+            componentType: "spacer"
+        },
+        GridProps: {
+            xs: 0.2
+        }
+    },
+    {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "STD_2",
+        label: "MobileNo",
+        required: true,
+        schemaValidation: {
+            type: "string",
+            rules: [
+            { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
+        placeholder: "",
+        maxLength: 3,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 3) {
+                return false;
+              }
+              return true;
+            },
+        },
+        type: "text",
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+    },
+    {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "CONTACT2",
+        schemaValidation: {
+            type: "string",
+            rules: [
+            { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
+        label: "",
+        required: true,
         placeholder: "",
         maxLength: 20,
         FormatProps: {
@@ -1235,54 +1295,6 @@ export const kyc_proof_of_address_meta_data = {
             componentType: "numberFormat",
         },
         name: "STD_3",
-        label: "MobileNo",
-        required: true,
-        placeholder: "",
-        maxLength: 3,
-        FormatProps: {
-            isAllowed: (values) => {
-              if (values?.value?.length > 3) {
-                return false;
-              }
-              return true;
-            },
-        },
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
-    },
-    {
-        render: {
-            componentType: "numberFormat",
-        },
-        name: "CONTACT3",
-        label: "",
-        required: true,
-        placeholder: "",
-        maxLength: 20,
-        FormatProps: {
-            isAllowed: (values) => {
-              if (values?.value?.length > 20) {
-                return false;
-              }
-              return true;
-            },
-        },
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
-    },
-    {
-        render: {
-            componentType: "spacer"
-        },
-        GridProps: {
-            xs: 0.2
-        }
-    },
-    {
-        render: {
-            componentType: "numberFormat",
-        },
-        name: "STD_4",
         label: "Fax",
         placeholder: "",
         maxLength: 5,
@@ -1301,7 +1313,7 @@ export const kyc_proof_of_address_meta_data = {
         render: {
             componentType: "numberFormat",
         },
-        name: "CONTACT4",
+        name: "CONTACT3",
         label: "",
         placeholder: "",
         maxLength: 20,
