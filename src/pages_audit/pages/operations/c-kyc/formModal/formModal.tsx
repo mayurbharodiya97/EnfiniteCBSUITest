@@ -517,7 +517,7 @@ export default function FormModal({
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy />
+        return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
@@ -578,7 +578,7 @@ export default function FormModal({
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy />
+        return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
@@ -863,7 +863,7 @@ export default function FormModal({
         <AppBar
           position="sticky"
           color="secondary"
-          style={{ marginBottom: "10px", top: "65px" }}
+          style={{ top: "65px" }}
         >
           <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
             <Button 
@@ -920,10 +920,7 @@ export default function FormModal({
             </Button>
           </Toolbar>
         </AppBar>
-        {/* <Box sx={style}> */}
-          <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
-
-            <AppBar
+        <AppBar
               position="sticky"
               // color=""
               style={{ marginBottom: "10px", top: "113px" }}
@@ -1119,6 +1116,10 @@ export default function FormModal({
                 {/* common customer fields */}
               </Toolbar>
             </AppBar>
+        {/* <Box sx={style}> */}
+          <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
+
+            
 
             <Grid container item xs="auto" sx={{
               display: state?.isFreshEntryctx ? "none" : "flex", flexDirection: "column",alignItems: "center",
