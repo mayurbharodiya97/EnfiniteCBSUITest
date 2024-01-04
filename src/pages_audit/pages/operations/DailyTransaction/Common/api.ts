@@ -6,21 +6,10 @@ import {
 import { AuthSDK } from "registry/fns/auth";
 
 export const getQueryData = async (reqData) => {
-  let arr =
-    reqData &&
-    reqData?.map((a) => {
-      return {
-        ACCT_CD: a.value,
-        OPERATOR: a.operator.value,
-        LOGICAL_VALUE: a.logic.value,
-      };
-    });
+  console.log(reqData, "reqData");
 
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETTRANDYNQUERYDATA", {
-      COMP_CD: reqData[0].COMP_CD,
-      SELECT_COLUMN: arr,
-    });
+    await AuthSDK.internalFetcher("GETTRANDYNQUERYDATA", reqData);
   if (status === "0") {
     let responseData = data;
     responseData &&

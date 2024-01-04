@@ -42,7 +42,7 @@ const actions: ActionTypes[] = [
 export const Trn002_Table = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const { tempStore, setTempStore } = useContext<any>(AccDetailContext);
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
   const [loading, setLoading] = useState(false);
@@ -52,8 +52,16 @@ export const Trn002_Table = () => {
   }, [loading]);
 
   useEffect(() => {
-    handleGetTRN002List();
-  }, []);
+    if (tempStore?.queryRows?.length > 0) {
+      setRows2(tempStore.queryRows);
+    } else {
+      handleGetTRN002List();
+    }
+  }, [tempStore]);
+
+  // useEffect(() => {
+  //   handleGetTRN002List();
+  // }, []);
 
   useEffect(() => {
     console.log(rows, "rows");

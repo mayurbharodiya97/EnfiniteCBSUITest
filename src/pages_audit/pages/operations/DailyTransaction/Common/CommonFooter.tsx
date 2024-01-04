@@ -60,13 +60,21 @@ export const CommonFooter = ({
   const { tempStore, setTempStore } = useContext(AccDetailContext);
 
   const columnOptions = [
-    { value: "ACCT_CD", label: "A/C No" },
-    { value: "BRANCH_CD", label: "Branch" },
+    { label: "A/C No", value: "ACCT_CD" },
+    { label: "Branch", value: "BRANCH_CD" },
+    { label: "Voucher", value: "TRAN_CD" },
+    { label: "Scroll", value: "SCROLL1" },
+    { label: "Remarks", value: "REMARKS" },
+    { label: "TRX", value: "TYPE_CD" },
+    { label: "SDC", value: "SDC" },
+    { label: "A/C Type", value: "ACCT_TYPE" },
   ];
   const operatorOptions = [
     { value: "Equals", label: "Equals" },
     { value: "Less Than", label: "Less Than" },
     { value: "Greater Than", label: "Greater Than" },
+    { value: "Doesnot Equal", label: "Doesnot Equal" },
+    { value: "Like", label: "Like" },
   ];
   const logicOptions = [
     { value: "AND", label: "AND" },
@@ -125,7 +133,11 @@ export const CommonFooter = ({
   const handleValue = (e, i) => {
     const obj = [...rows];
     let txt = e.target.value;
-    obj[i].value = txt.padStart(6, "0");
+    if (obj[i].column.value == "ACCT_CD") {
+      obj[i].value = txt.padStart(6, "0");
+    } else {
+      obj[i].value = txt;
+    }
     setRows(obj);
   };
 
@@ -146,11 +158,19 @@ export const CommonFooter = ({
     setRows([defaulVal]);
   };
 
-  const handleSave = () => {
-    rows.map((a) => {
-      a.COMP_CD = authState?.companyID;
+  const handleSaveQuery = () => {
+    let arr = rows.map((a) => {
+      return {
+        [a.column.value]: a.value,
+        OPERATOR: a.operator.value,
+        LOGICAL_VALUE: a.logic.value,
+      };
     });
-    getQueryData.mutate(rows);
+
+    let data = { COMP_CD: authState?.companyID, SELECT_COLUMN: arr };
+    let err = rows.some((a) => !a.logic.value);
+    console.log(err, "err");
+    !err && getQueryData.mutate(data);
   };
 
   const handleClose = () => {
@@ -161,9 +181,6 @@ export const CommonFooter = ({
     let data = { COMP_CD: authState.companyID, SCROLL_NO: scrollNo };
     scrollNo && deleteScroll.mutate(data);
   };
-  const handleScrollDialogClose = () => {
-    setScrollDialog(false);
-  };
 
   return (
     <>
@@ -172,30 +189,6 @@ export const CommonFooter = ({
         spacing={2}
         style={{ marginTop: "5px", marginBottom: "15px" }}
       >
-        {/* <Grid item sx={{ width: 180 }}>
-          <Autocomplete
-            value={filter}
-            size="small"
-            options={filterOpt}
-            onChange={(e, value) => handleFilter(e, value)}
-            renderInput={(params) => (
-              <TextField {...params} placeholder="Filter" />
-            )}
-          />
-        </Grid>
-        <Grid item>
-          <div id="searchContainer">
-            <SearchIcon style={{ margin: "5px" }} />
-            <input
-              disabled={filter?.value ? false : true}
-              placeholder="Search.."
-              id="searchField"
-              // type="number"
-              value={search}
-              onChange={(e) => handleSearch(e)}
-            />
-          </div>
-        </Grid> */}
         <Grid item>
           <Button
             variant="contained"
@@ -222,17 +215,7 @@ export const CommonFooter = ({
           >
             Calculator
           </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Other Trx
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button variant="contained" color="primary">
-            Positive Pay
-          </Button>
-        </Grid>
+        </Grid>{" "}
         <Grid item>
           <Button
             variant="contained"
@@ -249,6 +232,16 @@ export const CommonFooter = ({
             onClick={() => setQueryDialog(true)}
           >
             Query
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Other Trx
+          </Button>
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary">
+            Positive Pay
           </Button>
         </Grid>
       </Grid>
@@ -373,7 +366,7 @@ export const CommonFooter = ({
               style={{ marginLeft: "8px" }}
               color="secondary"
               variant="contained"
-              onClick={handleSave}
+              onClick={handleSaveQuery}
               autoFocus
             >
               Save
