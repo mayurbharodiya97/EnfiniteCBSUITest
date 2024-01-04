@@ -109,7 +109,7 @@ export const OtherTrxTabs = ({ heading }) => {
 
         {navArray.map((a, i) => (
           <TabPanel value={tabValue} index={i}>
-            {i == 0 && <AccDetails flag={"DLYTRN"} />}
+            {/* {i == 0 && <AccDetails flag={"DLYTRN"} />}
             {i == 1 && <JointDetailsForm />}
             {i == 2 && <TodayTransactionForm />}
             {i == 3 && <CheckBook />}
@@ -120,7 +120,7 @@ export const OtherTrxTabs = ({ heading }) => {
             {i == 8 && <Document />}
             {i == 9 && <StopPay />}
             {i == 10 && <Search />}
-            {i == 11 && <Insurance />}
+            {i == 11 && <Insurance />} */}
           </TabPanel>
         ))}
       </>

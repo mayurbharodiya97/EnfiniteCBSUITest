@@ -15,7 +15,7 @@ import "./accDetails.css";
 
 //logical
 import React, { useContext, useEffect, useState } from "react";
-
+import { format } from "date-fns";
 import { useQuery } from "react-query";
 import * as API from "./api";
 
@@ -40,7 +40,7 @@ const responsive = {
 };
 export const AccDetails = ({ flag }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
-
+  let data = tempStore?.accInfo;
   return (
     <>
       <Carousel responsive={responsive}>
@@ -73,65 +73,50 @@ export const AccDetails = ({ flag }) => {
               <Grid container spacing={2}>
                 <Grid item id="accInfo">
                   <Typography variant="button">Name</Typography>
-                  <Typography>{tempStore?.accInfo?.ACCT_NM}</Typography>
+                  <Typography>{data?.ACCT_NM}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">CUSTOMER_ID</Typography>
+                  <Typography>{data?.CUSTOMER_ID}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
                   <Typography variant="button">Account</Typography>
-                  <Typography>{tempStore?.accInfo?.ACCT_CD_NEW}</Typography>
+                  <Typography>{data?.ACCT_CD_NEW}</Typography>
                 </Grid>
-                {tempStore?.accInfo?.E_MAIL_ID && (
+                {data?.E_MAIL_ID && (
                   <Grid item id="accInfo">
                     <Typography variant="button">Email</Typography>
-                    <Typography>{tempStore?.accInfo?.E_MAIL_ID}</Typography>
+                    <Typography>{data?.E_MAIL_ID}</Typography>
                   </Grid>
                 )}
-                {tempStore?.accInfo?.CONTACT2 && (
+                {data?.CONTACT2 && (
                   <Grid item id="accInfo">
                     <Typography variant="button">Contact</Typography>
-                    <Typography>{tempStore?.accInfo?.CONTACT2}</Typography>
+                    <Typography>{data?.CONTACT2}</Typography>
                   </Grid>
                 )}
                 <Grid item xs={12}>
                   <Typography variant="button">Address</Typography>
 
                   <Typography>
-                    {tempStore?.accInfo?.ADD1}{" "}
-                    {tempStore?.accInfo?.ADD2 && tempStore?.accInfo?.ADD2}{" "}
-                    {tempStore?.accInfo?.AREA_NM}
+                    {data?.ADD1} {data?.ADD2 && data?.ADD2} {data?.AREA_NM}
                   </Typography>
                 </Grid>
 
                 <Grid item id="accInfo">
                   <Typography variant="button">Branch</Typography>
-                  <Typography>{tempStore?.accInfo?.BRANCH_CD}</Typography>
+                  <Typography>{data?.BRANCH_CD}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
                   <Typography variant="button">COMP_CD</Typography>
-                  <Typography>{tempStore?.accInfo?.COMP_CD}</Typography>
+                  <Typography>{data?.COMP_CD}</Typography>
                 </Grid>
-                {tempStore?.accInfo?.ORG_PAN && (
+                {data?.ORG_PAN && (
                   <Grid item id="accInfo">
                     <Typography variant="button">PAN_NO</Typography>
-                    <Typography>{tempStore?.accInfo?.ORG_PAN}</Typography>
+                    <Typography>{data?.ORG_PAN}</Typography>
                   </Grid>
                 )}
-                <Grid item id="accInfo">
-                  <Typography variant="button">Status</Typography>
-                  <Typography
-                    style={
-                      tempStore?.accInfo?.STATUS == "C"
-                        ? { color: "#ea3a1b" }
-                        : { color: "" }
-                    }
-                  >
-                    {tempStore?.accInfo?.STATUS == "O" && "Open"}
-                    {tempStore?.accInfo?.STATUS == "C" && "Close"}
-                    {tempStore?.accInfo?.STATUS == "U" && "Unclaimed"}
-                    {tempStore?.accInfo?.STATUS == "F" && "Freeze"}
-                    {tempStore?.accInfo?.STATUS == "I" && "Inoperative"}
-                    {tempStore?.accInfo?.STATUS == "D" && "Dormant"}
-                  </Typography>
-                </Grid>
               </Grid>
             </div>
           </CardContent>
@@ -164,28 +149,74 @@ export const AccDetails = ({ flag }) => {
             >
               <Grid container spacing={2}>
                 <Grid item id="accInfo">
-                  <Typography variant="button">CUSTOMER_ID</Typography>
-                  <Typography>{tempStore?.accInfo?.CUSTOMER_ID}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="button">SCR_ADD</Typography>
-                  <Typography>{tempStore?.accInfo?.SCR_ADD}</Typography>
+                  <Typography variant="button">Status</Typography>
+                  <Typography
+                    style={
+                      data?.STATUS == "C" ? { color: "#ea3a1b" } : { color: "" }
+                    }
+                  >
+                    {data?.STATUS == "O" && "Open"}
+                    {data?.STATUS == "C" && "Close"}
+                    {data?.STATUS == "U" && "Unclaimed"}
+                    {data?.STATUS == "F" && "Freeze"}
+                    {data?.STATUS == "I" && "Inoperative"}
+                    {data?.STATUS == "D" && "Dormant"}
+                  </Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography variant="button">TRAN_BAL</Typography>
-                  <Typography>{tempStore?.accInfo?.TRAN_BAL}</Typography>
+                  <Typography variant="button">Opening</Typography>
+                  <Typography>{data?.LAST_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">HOLD_BAL</Typography>
+                  <Typography>{data?.HOLD_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Shadow(C)</Typography>
+                  <Typography>{data?.TRAN_BAL}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
                   <Typography variant="button">OP_DATE</Typography>
                   <Typography>
-                    {tempStore?.accInfo?.OP_DATE?.substring(0, 10)}
+                    {data?.OP_DATE &&
+                      format(new Date(data?.OP_DATE), "dd/MMM/yyyy")}
+                  </Typography>
+                </Grid>{" "}
+                <Grid item id="accInfo">
+                  <Typography variant="button">Pending Amt</Typography>
+                  <Typography>{data?.PENDING_SCROLL_AMT}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Withraw Bal</Typography>
+                  <Typography>{data?.WITHDRAW_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Current(A)</Typography>
+                  <Typography>{data?.CONF_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Clearing Chq(B)</Typography>
+                  <Typography>{data?.UNCL_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">(C-B)</Typography>
+                  <Typography>
+                    {data?.TRAN_BAL &&
+                      Number(data?.TRAN_BAL) - Number(data?.UNCL_BAL)}
+                  </Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">(A-B)</Typography>
+                  <Typography>
+                    {data?.CONF_BAL &&
+                      Number(data?.CONF_BAL) - Number(data?.UNCL_BAL)}
                   </Typography>
                 </Grid>
               </Grid>
             </div>
           </CardContent>
         </Card>
-        <Card
+        {/* <Card
           sx={{
             width: "450px",
             boxShadow: flag === "DLYTRN" ? "0px 1px 4px -1px #999999" : "none",
@@ -213,26 +244,26 @@ export const AccDetails = ({ flag }) => {
               <Grid container spacing={2}>
                 <Grid item id="accInfo">
                   <Typography variant="button">CUSTOMER_ID</Typography>
-                  <Typography>{tempStore?.accInfo?.CUSTOMER_ID}</Typography>
+                  <Typography>{data?.CUSTOMER_ID}</Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <Typography variant="button">SCR_ADD</Typography>
-                  <Typography>{tempStore?.accInfo?.SCR_ADD}</Typography>
+                  <Typography>{data?.SCR_ADD}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
                   <Typography variant="button">TRAN_BAL</Typography>
-                  <Typography>{tempStore?.accInfo?.TRAN_BAL}</Typography>
+                  <Typography>{data?.TRAN_BAL}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
                   <Typography variant="button">OP_DATE</Typography>
                   <Typography>
-                    {tempStore?.accInfo?.OP_DATE?.substring(0, 10)}
+                    {data?.OP_DATE?.substring(0, 10)}
                   </Typography>
                 </Grid>
               </Grid>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </Carousel>
       <br />
     </>

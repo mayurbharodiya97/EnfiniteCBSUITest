@@ -5,7 +5,7 @@ import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
-import * as API2 from "../api";
+import * as trn1Api from "../api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
@@ -61,7 +61,7 @@ export const TRN001_Table = () => {
     },
   });
 
-  const getAccInfo = useMutation(API2.getAccInfo, {
+  const getAccInfo = useMutation(trn1Api.getAccDetails, {
     onSuccess: (data) => {
       console.log(data, "accInfo");
       setLoading(false);

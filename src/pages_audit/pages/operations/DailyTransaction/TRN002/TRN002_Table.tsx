@@ -81,7 +81,7 @@ export const Trn002_Table = () => {
     },
   });
 
-  const getAccInfo = useMutation(trn1Api.getAccInfo, {
+  const getAccInfo = useMutation(trn1Api.getAccDetails, {
     onSuccess: (data) => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });

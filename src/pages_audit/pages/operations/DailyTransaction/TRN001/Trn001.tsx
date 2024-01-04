@@ -92,7 +92,6 @@ export const Trn001 = () => {
   const [saveDialog, setSaveDialog] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
-  format(new Date(), "dd/MMM/yyyy");
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -196,7 +195,7 @@ export const Trn001 = () => {
     },
   });
 
-  const getAccInfo = useMutation(API.getAccInfo, {
+  const getAccInfo = useMutation(API.getAccDetails, {
     onSuccess: (data) => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
