@@ -7,7 +7,7 @@ import { AuthSDK } from "registry/fns/auth";
 
 export const getAPBSList = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETINSURANCEDTL", {
+    await AuthSDK.internalFetcher("GETDLYTRNAPBSTAB", {
       COMP_CD: reqData.COMP_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,

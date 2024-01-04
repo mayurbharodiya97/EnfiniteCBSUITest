@@ -7,7 +7,7 @@ import { AuthSDK } from "registry/fns/auth";
 
 export const getPMBYList = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETINSURANCEDTL", {
+    await AuthSDK.internalFetcher("GETDLYTRNPMBYTAB", {
       COMP_CD: reqData.COMP_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,

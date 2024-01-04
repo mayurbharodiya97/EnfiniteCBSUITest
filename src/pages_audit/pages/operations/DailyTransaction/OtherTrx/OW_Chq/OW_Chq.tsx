@@ -19,16 +19,16 @@ export const OW_Chq = () => {
   const [rows, setRows] = useState([]);
 
   // api define
-  const getOwList = useMutation(API.getOwList, {
+  const getOWChqList = useMutation(API.getOWChqList, {
     onSuccess: (data) => {
-      console.log(data, " getOwList detailssss");
+      console.log(data, " getOWChqList detailssss");
       setRows(data);
     },
     onError: (error) => {},
   });
-
+  console.log(tempStore, "tempStore");
   useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getOwList.mutate(tempStore.accInfo);
+    tempStore?.accInfo?.ACCT_CD && getOWChqList.mutate(tempStore.accInfo);
   }, [tempStore]);
 
   return (

@@ -709,6 +709,64 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
 
+  // other trx
+  GETDLYTRNOWCHQOBCIBCTAB: {
+    //OWChq
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNOWCHQOBCIBCTAB",
+    packageName: "",
+  },
+  GETDLYTRNTEMPODCTAB: {
+    //temp
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTEMPODCTAB",
+    packageName: "",
+  },
+  GETDLYTRNATMCARDTAB: {
+    //atm
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNATMCARDTAB",
+    packageName: "",
+  },
+  GETDLYTRNGROUPACCTINFOTAB: {
+    //group
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNGROUPACCTINFOTAB",
+    packageName: "",
+  },
+  GETDLYTRNASBATAB: {
+    //asba
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNASBATAB",
+    packageName: "",
+  },
+  GETDLYTRNPMBYTAB: {
+    //pmby
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNPMBYTAB",
+    packageName: "",
+  },
+  GETDLYTRNAPBSTAB: {
+    //APBS
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNAPBSTAB",
+    packageName: "",
+  },
+  GETDLYTRNSPINSTRUCTTAB: {
+    //instruct
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSPINSTRUCTTAB",
+    packageName: "",
+  },
+  GETDLYTRNIMPSTAB: {
+    //imps
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNIMPSTAB",
+    packageName: "",
+  },
+  GETDLYTRNACHOTWDTLTAB: {
+    //ach_ow
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACHOTWDTLTAB",
+    packageName: "",
+  },
+  GETACHIWIMGDTLTAB: {
+    //ach_iw
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACHIWIMGDTLTAB",
+    packageName: "",
+  },
+  //===
+
   GETLIMITFDBRANCHDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDBRANCHDDW",
     packageName: "",
