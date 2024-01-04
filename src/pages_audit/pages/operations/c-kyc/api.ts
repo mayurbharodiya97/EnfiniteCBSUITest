@@ -812,6 +812,19 @@ export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
+export const updatePhotoSignData = async ({COMP_CD, CUSTOMER_ID}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID,
+    });
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
 export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM}) => {
   if(CUSTOMER_ID) {
     const { data, status, message, messageDetails } =
