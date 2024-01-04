@@ -531,21 +531,21 @@ export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
 }
 
 // for getting pending entries, in grid
-export const getPendingData = async (reqObj:any) => {
-  const {COMP_CD, BRANCH_CD, ENTERED_DATE} = reqObj
+export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:string, REQ_FLAG: string}) => {
+  const {COMP_CD, REQ_FLAG, ENTERED_DATE} = reqObj
   let payload = {}
-  if(reqObj && reqObj.REQ_FLAG) {
+  if(ENTERED_DATE) {
     payload = {
       COMP_CD: COMP_CD, 
-      BRANCH_CD: BRANCH_CD, 
+      // BRANCH_CD: BRANCH_CD, 
       ENTERED_DATE: ENTERED_DATE,
-      REQ_FLAG: reqObj.REQ_FLAG
+      REQ_FLAG: REQ_FLAG
     }
   } else {
     payload = {
       COMP_CD: COMP_CD, 
-      BRANCH_CD: BRANCH_CD, 
-      ENTERED_DATE: ENTERED_DATE,
+      // BRANCH_CD: BRANCH_CD, 
+      REQ_FLAG: REQ_FLAG
     }
   }
   const { data, status, message, messageDetails } =
