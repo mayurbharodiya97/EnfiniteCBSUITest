@@ -1333,6 +1333,7 @@ export const SaveEntry = async (reqdata) => {
     IsNewRow,
     REQ_CD,
     formData,
+    COMP_CD,
   } = reqdata
 
   // console.log("aaaaaaaaa", formData)
@@ -1694,6 +1695,7 @@ export const SaveEntry = async (reqdata) => {
       SAVE_FLAG:"F",
       ENTRY_TYPE :"1",
       CUSTOMER_ID:"",
+      COMP_CD: COMP_CD,
     //  OTHER_ADDRESS: [
     //    {
     //         IsNewRow:true,
