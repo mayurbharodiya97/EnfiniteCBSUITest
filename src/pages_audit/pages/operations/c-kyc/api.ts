@@ -729,14 +729,19 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
   }
 }
 
-export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
-  // const {gridData, formMode} = formState;
-  // let selectedDoc:any[] = []
-  // if(formState.gridData && formState.gridData.length>0) {
-  //   selectedDoc = formState.gridData.map(el => {
-  //     return el.BANK_DOC_TRAN_CD && el.BANK_DOC_TRAN_CD
-  //   })
-  // } 
+export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD, formState}) => {
+  const {gridData, rowsData} = formState;
+  // console.log("qekuwhdiuwehdw", formState)
+  let selectedDoc:any[] = []
+  if(rowsData && rowsData.length>0) {
+    selectedDoc = rowsData.map(el => {
+      return el.data.BANK_DOC_TRAN_CD ?? "";
+    })
+  } else if(gridData && gridData.length>0) {
+    selectedDoc = gridData.map(el => {
+      return el.BANK_DOC_TRAN_CD ?? "";
+    })
+  }
   // console.log(gridData, "auedhniuwehdwe", formMode)
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTDOCUMENT", {
@@ -745,6 +750,11 @@ export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
     });
   if (status === "0") {
     let responseData = data;
+    if(rowsData && rowsData.length>0) {
+      responseData = responseData.filter(el => selectedDoc.includes(el.SR_CD))
+    } else if(gridData && gridData.length>0) {
+      responseData = responseData.filter(el => !selectedDoc.includes(el.SR_CD))
+    }
     // console.log("auedhniuwehdwe  qwed", data)
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DESCRIPTION, SR_CD, ...other }) => {
