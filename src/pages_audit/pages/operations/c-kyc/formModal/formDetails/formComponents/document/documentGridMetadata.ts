@@ -167,6 +167,26 @@ export const DocumentGridMetadata: GridMetaDataType = {
       // isVisible: false,
       __EDIT__: { isVisible: true },
     },
+    {
+      accessor: "DOC_IMAGE",
+      columnName: "Document Image",
+      componentType: "icondefault",
+      sequence: 10,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 400,
+      isVisible: false,
+    },
+    {
+      accessor: "DOC_OBJ",
+      columnName: "Document Image",
+      componentType: "icondefault",
+      sequence: 10,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 400,
+      isVisible: false,
+    },
     // {
 
     // }
