@@ -138,30 +138,6 @@ export const getAccDetails = async (reqData) => {
   }
 };
 
-// export const getAccInfo = async (reqData) => {
-//   //jimit
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("GETDAILYTRANMAKERDTL", {
-//       // ACCT_CD: "000026              ",
-//       // A_ASON_DT: "15/DEC/2023",
-//       COMP_CD: reqData.COMP_CD,
-//       BRANCH_CD: reqData.BRANCH_CD,
-//       ACCT_TYPE: reqData.ACCT_TYPE,
-//       ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
-//       A_ASON_DT: format(new Date(), "dd/MMM/yyyy"),
-//     });
-//   if (status === "0") {
-//     let responseData = data;
-//     if (responseData.length > 0) {
-//       return responseData[0];
-//     } else {
-//       return responseData;
-//     }
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
-
 //operations
 
 export const getAccInquiry = async (reqData) => {

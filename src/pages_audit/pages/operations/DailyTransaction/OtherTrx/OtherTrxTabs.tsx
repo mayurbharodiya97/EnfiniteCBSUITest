@@ -9,7 +9,19 @@ import { Button, Tabs } from "@mui/material";
 import React, { useState } from "react";
 import { lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import OwChq from "./OwChq";
+import ACH_IW from "./ACH_IW";
+import ACH_OW from "./ACH_OW";
+import APBS from "./APBS";
+import APY from "./APY";
+import ASBA from "./ASBA";
+import ATM from "./ATM";
+import Group from "./Group";
+import IMPS from "./IMPS";
+import Instruction from "./Instruction";
+import OW_Chq from "./OW_Chq";
+import PMBY from "./PMBY";
+import Temp from "./Temp";
+
 import "./OtherTrxTabs.css";
 
 interface TabPanelProps {
@@ -32,57 +44,57 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-export const OtherTrxTabs = ({ heading }) => {
+export const OtherTrxTabs = () => {
   const [tabValue, setTabValue] = React.useState(0);
 
   const navArray = [
     {
-      name: "Account",
-      path: "acc",
+      name: "O/W Chq/OBC/IBC",
+      path: "other1",
     },
     {
-      name: "Joint Detail",
-      path: "joint",
+      name: "Temp OD/Against",
+      path: "other2",
     },
     {
-      name: "Today Trans",
-      path: "todayTrans",
+      name: "ATM Card",
+      path: "other3",
     },
     {
-      name: "ChequeBook",
-      path: "checkBook",
+      name: "Group A/C",
+      path: "other4",
     },
     {
-      name: "Snapshot",
-      path: "snapshot",
+      name: "IMPS",
+      path: "other5",
     },
     {
-      name: "HoldCharge",
-      path: "holdCharge",
+      name: "ASBA",
+      path: "other6",
     },
     {
-      name: "Disbursement",
-      path: "disbursement",
+      name: "PMBY",
+      path: "other7",
     },
     {
-      name: "Subsidy",
-      path: "subsidy",
+      name: "APY",
+      path: "other8",
     },
     {
-      name: "Document",
-      path: "document",
+      name: "APBS",
+      path: "other9",
     },
     {
-      name: "Stop Pay",
-      path: "stopPay",
+      name: "ACH I/W",
+      path: "other10",
     },
     {
-      name: "Search",
-      path: "search",
+      name: "ACH O/W",
+      path: "other11",
     },
     {
-      name: "Insurance",
-      path: "insurance",
+      name: "Spl. Instruction",
+      path: "other12",
     },
   ];
 
@@ -91,8 +103,6 @@ export const OtherTrxTabs = ({ heading }) => {
   };
   return (
     <div style={{ padding: "8px" }}>
-      <h1>Daily Transaction {heading}</h1>
-
       <>
         <Grid item xs="auto" id="dailyTabs">
           <Tabs
@@ -109,18 +119,18 @@ export const OtherTrxTabs = ({ heading }) => {
 
         {navArray.map((a, i) => (
           <TabPanel value={tabValue} index={i}>
-            {/* {i == 0 && <AccDetails flag={"DLYTRN"} />}
-            {i == 1 && <JointDetailsForm />}
-            {i == 2 && <TodayTransactionForm />}
-            {i == 3 && <CheckBook />}
-            {i == 4 && <Snapshot />}
-            {i == 5 && <HoldCharge />}
-            {i == 6 && <Disbursement />}
-            {i == 7 && <Subsidyy />}
-            {i == 8 && <Document />}
-            {i == 9 && <StopPay />}
-            {i == 10 && <Search />}
-            {i == 11 && <Insurance />} */}
+            {i == 0 && <OW_Chq />}
+            {i == 1 && <Temp />}
+            {i == 2 && <ATM />}
+            {i == 3 && <Group />}
+            {i == 4 && <IMPS />}
+            {i == 5 && <ASBA />}
+            {i == 6 && <PMBY />}
+            {i == 7 && <APY />}
+            {i == 8 && <APBS />}
+            {i == 9 && <ACH_IW />}
+            {i == 10 && <ACH_OW />}
+            {i == 11 && <Instruction />}
           </TabPanel>
         ))}
       </>

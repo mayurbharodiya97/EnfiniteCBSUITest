@@ -176,7 +176,7 @@ export const AccDetails = ({ flag }) => {
                   <Typography>{data?.TRAN_BAL}</Typography>
                 </Grid>
                 <Grid item id="accInfo">
-                  <Typography variant="button">OP_DATE</Typography>
+                  <Typography variant="button">Op. DATE</Typography>
                   <Typography>
                     {data?.OP_DATE &&
                       format(new Date(data?.OP_DATE), "dd/MMM/yyyy")}

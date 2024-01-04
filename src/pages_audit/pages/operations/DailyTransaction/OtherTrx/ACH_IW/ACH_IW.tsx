@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { OwChqGridMetaData } from "./gridMetadata";
+import { ACH_IWGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { GridMetaDataType } from "components/dataTable/types";
@@ -12,34 +12,32 @@ import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
-export const OwChq = () => {
+export const ACH_IW = () => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
   // api define
-  const getOwList = useMutation(API.getOwList, {
+  const getACH_IWList = useMutation(API.getACH_IWList, {
     onSuccess: (data) => {
-      console.log(data, " getOwList detailssss");
+      console.log(data, " getACH_IWList detailssss");
       setRows(data);
     },
     onError: (error) => {},
   });
 
   useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getOwList.mutate(tempStore.accInfo);
+    tempStore?.accInfo?.ACCT_CD && getACH_IWList.mutate(tempStore.accInfo);
   }, [tempStore]);
 
   return (
     <>
       <GridWrapper
-        key={`OwChqGridMetaData`}
-        finalMetaData={OwChqGridMetaData as GridMetaDataType}
+        key={`ACH_IWGridMetaData`}
+        finalMetaData={ACH_IWGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
         refetchData={() => {}}
         ref={myGridRef}
       />

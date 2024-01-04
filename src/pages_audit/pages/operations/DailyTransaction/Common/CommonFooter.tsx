@@ -1,12 +1,11 @@
 //UI
-import { Button, Toolbar, AppBar, Card } from "@mui/material";
-import { styled, alpha } from "@mui/material/styles";
+import { Button, Toolbar, Card } from "@mui/material";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -20,21 +19,15 @@ import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 //logic
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useContext,
-} from "react";
-import { useMutation, useQuery } from "react-query";
-import { GeneralAPI } from "registry/fns/functions";
-import { AuthContext } from "pages_audit/auth";
-import "./CommonFooter.css";
+import React, { useEffect, useState, useContext } from "react";
+import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
-import * as API from "./api";
 import { useSnackbar } from "notistack";
+import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
+import "./CommonFooter.css";
+import * as API from "./api";
+import OtherTrxTabs from "../OtherTrx";
 
 export const CommonFooter = ({
   tableRows,
@@ -49,12 +42,13 @@ export const CommonFooter = ({
     value: "",
     logic: { value: "OR", label: "OR" },
   };
+
   const [rows, setRows] = useState<any>([defaulVal]);
   const [queryDialog, setQueryDialog] = useState(false);
   const [scrollDialog, setScrollDialog] = useState(false);
+  const [otherTrxDialog, setOtherTrxDialog] = useState(false);
   const [scrollNo, setScrollNo] = useState("");
 
-  const loc = useLocation();
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
@@ -235,7 +229,11 @@ export const CommonFooter = ({
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOtherTrxDialog(true)}
+          >
             Other Trx
           </Button>
         </Grid>
@@ -405,6 +403,25 @@ export const CommonFooter = ({
             autoFocus
           >
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        maxWidth="xl"
+        open={otherTrxDialog}
+        // onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        {/* <DialogTitle id="alert-dialog-title">Scroll Delete</DialogTitle> */}
+        <DialogContent>
+          <OtherTrxTabs />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setOtherTrxDialog(false)} variant="contained">
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

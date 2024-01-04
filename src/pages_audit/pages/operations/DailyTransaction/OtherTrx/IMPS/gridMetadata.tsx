@@ -1,8 +1,8 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-export const OwChqGridMetaData: GridMetaDataType = {
+export const IMPSGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Insurance",
+    gridLabel: "IMPS",
     rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,
