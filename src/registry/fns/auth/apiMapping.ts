@@ -572,6 +572,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
     packageName: "",
   },
+  GETUPDCUSTPHOTODATA: {
+    url: "/customerServiceAPI/GETUPDCUSTPHOTODATA",
+    packageName: "",
+  },
   CHEQUEBKDATA: {
     url: "/chequeServiceAPI/CHEQUEBKDATA",
     packageName: "",

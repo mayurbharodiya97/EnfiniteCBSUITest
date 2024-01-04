@@ -24,6 +24,7 @@ import AssetDTLComp from "./AssetDTLComp";
 import FinancialDTLComp from "./FinancialDTLComp";
 import Dependencies from "pages_audit/acct_Inquiry/dependencies";
 import ControllingPersonComp from "./ControllingPersonComp";
+import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
 
 const RetrieveCustomer = () => {
   const navigate = useNavigate();

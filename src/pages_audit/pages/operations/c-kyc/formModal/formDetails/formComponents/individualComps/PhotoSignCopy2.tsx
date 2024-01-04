@@ -848,6 +848,30 @@ export const PhotoSignUpdateDialog = ({open, onClose}) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
     const location: any = useLocation();
+    let customerData = {}
+    useEffect(() => {
+        if(location.state && location.state.length>0) {
+            let data = location.state?.[0]?.data
+            customerData = data
+        }
+    }, [])
+    // console.log("skjvciwhecfvwrefv", location)
+    const mutation: any = useMutation(API.updatePhotoSignData, {
+        onSuccess: (data) => {
+
+            // // console.log("photohistory", data)
+            // setPhotoHistory(data)
+            // let activeHistory = null
+            // activeHistory = (data && data.length>0) && data.findLast(el => el.ACT_FLAG === "Y")  
+            // setActivePhotoHist(activeHistory)
+            // // console.log("photohistory ac", activeHistory)
+        },
+        onError: (error: any) => {},
+    });
+
+    const onSave = () => {
+        
+    }
 
     // console.log("locationasdawd", location)
     return (
