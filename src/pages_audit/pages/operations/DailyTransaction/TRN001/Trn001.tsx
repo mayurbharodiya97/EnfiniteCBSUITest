@@ -236,9 +236,8 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       setLoading(false);
       console.log(data, "data");
-      if (data[0]?.TRAN_CD) {
-        let msg = "VoucherNo: " + data[0]?.TRAN_CD;
-        enqueueSnackbar(msg, {
+      if (data[0]?.INSERT > 0) {
+        enqueueSnackbar("Scroll Saved", {
           variant: "success",
         });
         handleReset();
@@ -574,8 +573,7 @@ export const Trn001 = () => {
         REMARKS: a.remark,
         CHEQUE_NO: a.cNo ? a.cNo : "0",
         TYPE_CD: a.trx.code + "   ",
-        TRAN_DT: Date(),
-        VALUE_DT: Date(),
+        VALUE_DT: format(new Date(), "dd-MMM-yyyy"),
         ENTERED_BRANCH_CD: a.branch?.value,
         ENTERED_COMP_CD: a.branch?.info.COMP_CD,
         SDC: a.sdc.value,

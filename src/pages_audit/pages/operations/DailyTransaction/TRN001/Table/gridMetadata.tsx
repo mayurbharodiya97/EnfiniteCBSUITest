@@ -22,7 +22,7 @@ export const TRN001_TableMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: false,
+    allowRowSelection: true,
     hideHeader: false,
     isCusrsorFocused: true,
   },

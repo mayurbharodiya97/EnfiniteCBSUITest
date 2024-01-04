@@ -167,6 +167,7 @@ export const Trn002_Table = () => {
       deleteScrollByVoucher.mutate(row);
     }
   }, []);
+
   const handleUpdateRows = (data) => {
     setRows2(data);
   };

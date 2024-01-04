@@ -6,6 +6,9 @@ import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as API from "./api";
 import * as trn1Api from "../api";
+import * as commonApi from "../../Common/api";
+import { useSnackbar } from "notistack";
+
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
@@ -18,9 +21,18 @@ const actions: ActionTypes[] = [
     multiple: false,
     rowDoubleClick: true,
   },
+  {
+    actionName: "Delete",
+    actionLabel: "Delete",
+    multiple: false,
+    rowDoubleClick: true,
+    // alwaysAvailable: true,
+  },
 ];
 
 export const TRN001_Table = () => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
@@ -38,6 +50,10 @@ export const TRN001_Table = () => {
   console.log(tempStore, "queryRows");
 
   useEffect(() => {
+    handleGetList();
+  }, [tempStore]);
+
+  const handleGetList = () => {
     if (tempStore?.queryRows?.length > 0) {
       setRows(tempStore.queryRows);
     } else {
@@ -47,7 +63,7 @@ export const TRN001_Table = () => {
       };
       getTRN001List.mutate(data);
     }
-  }, [tempStore]);
+  };
 
   // api define=============================================
   const getTRN001List = useMutation(API.getTRN001List, {
@@ -71,7 +87,21 @@ export const TRN001_Table = () => {
       setLoading(false);
     },
   });
-
+  const deleteScrollByVoucher = useMutation(commonApi.deleteScrollByVoucherNo, {
+    onSuccess: (data) => {
+      setLoading(false);
+      enqueueSnackbar("Scroll Deleted", {
+        variant: "success",
+      });
+      handleGetList();
+    },
+    onError: (error: any) => {
+      setLoading(false);
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
   //-----------------------------
 
   const setCurrentAction = useCallback((data) => {
@@ -86,6 +116,18 @@ export const TRN001_Table = () => {
         authState: authState,
       };
       getAccInfo.mutate(obj);
+    }
+
+    if (data.name === "Delete") {
+      console.log("deleteeee");
+      let arr = [
+        {
+          TRAN_CD: row?.TRAN_CD,
+          ENTERED_COMP_CD: row?.COMP_CD,
+          ENTERED_BRANCH_CD: row?.BRANCH_CD,
+        },
+      ];
+      deleteScrollByVoucher.mutate(arr);
     }
   }, []);
 

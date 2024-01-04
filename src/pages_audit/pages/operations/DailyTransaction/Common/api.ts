@@ -59,14 +59,10 @@ export const deleteScrollByScrollNo = async (reqData) => {
 
 export const deleteScrollByVoucherNo = async (reqData) => {
   console.log(reqData, "reqqq");
-  let obj = {
-    TRAN_CD: reqData?.TRAN_CD,
-    ENTERED_COMP_CD: reqData?.COMP_CD,
-    ENTERED_BRANCH_CD: reqData?.BRANCH_CD,
-  };
+
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
-      DETAILS_DATA: { isDeleteRow: [obj], isUpdatedRow: [], isNewRow: [] },
+      DETAILS_DATA: { isDeleteRow: reqData, isUpdatedRow: [], isNewRow: [] },
     });
   if (status === "0") {
     let responseData = data;
