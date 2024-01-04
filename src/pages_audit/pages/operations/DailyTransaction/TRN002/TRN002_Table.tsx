@@ -15,6 +15,7 @@ import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn2Api from "./api";
 import * as trn1Api from "../TRN001/api";
+import * as commonApi from "../Common/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
@@ -26,6 +27,13 @@ const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
     actionLabel: "View Detail",
+    multiple: false,
+    rowDoubleClick: true,
+    // alwaysAvailable: true,
+  },
+  {
+    actionName: "Delete",
+    actionLabel: "Delete",
     multiple: false,
     rowDoubleClick: true,
     // alwaysAvailable: true,
@@ -98,11 +106,21 @@ export const Trn002_Table = () => {
       });
       handleGetTRN002List();
     },
-    onError: (error) => {
-      console.log(error, "error");
-
-      // error?.error_msg
-      enqueueSnackbar("You can not confirm your own posted transaction", {
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+  const deleteScrollByVoucher = useMutation(commonApi.deleteScrollByVoucherNo, {
+    onSuccess: (data) => {
+      enqueueSnackbar("Scroll Deleted", {
+        variant: "success",
+      });
+      handleGetTRN002List();
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
     },
@@ -118,7 +136,8 @@ export const Trn002_Table = () => {
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-
+    console.log(data, "datadatadata");
+    console.log(row, "rowrowrow");
     if (data.name === "view-detail") {
       setLoading(true);
 
@@ -133,6 +152,7 @@ export const Trn002_Table = () => {
     }
 
     if (data.name === "view") {
+      console.log("viewwwww");
       if (row.CONFIRMED == "0") {
         confirmScroll.mutate(row);
       } else {
@@ -140,6 +160,11 @@ export const Trn002_Table = () => {
           variant: "error",
         });
       }
+    }
+
+    if (data.name === "Delete") {
+      console.log("deleteeee");
+      deleteScrollByVoucher.mutate(row);
     }
   }, []);
   const handleUpdateRows = (data) => {

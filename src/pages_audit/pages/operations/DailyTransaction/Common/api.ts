@@ -42,13 +42,31 @@ export const getQueryData = async (reqData) => {
   }
 };
 
-// "COMP_CD": "132 ",
-// "SCROLL_NO": "186547"
-export const deleteScroll = async (reqData) => {
+export const deleteScrollByScrollNo = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DELETESCROLLDATA", {
       COMP_CD: reqData?.COMP_CD,
       SCROLL_NO: reqData?.SCROLL_NO,
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const deleteScrollByVoucherNo = async (reqData) => {
+  console.log(reqData, "reqqq");
+  let obj = {
+    TRAN_CD: reqData?.TRAN_CD,
+    ENTERED_COMP_CD: reqData?.COMP_CD,
+    ENTERED_BRANCH_CD: reqData?.BRANCH_CD,
+  };
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DODAILYTRNDML", {
+      DETAILS_DATA: { isDeleteRow: [obj], isUpdatedRow: [], isNewRow: [] },
     });
   if (status === "0") {
     let responseData = data;

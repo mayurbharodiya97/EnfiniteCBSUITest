@@ -8,6 +8,7 @@ import { AuthSDK } from "registry/fns/auth";
 export const getACH_IWList = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACHIWIMGDTLTAB", {
+      BRANCH_CD: reqData.BRANCH_CD,
       COMP_CD: reqData.COMP_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,

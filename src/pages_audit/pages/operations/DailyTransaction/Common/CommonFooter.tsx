@@ -92,7 +92,7 @@ export const CommonFooter = ({
       });
     },
   });
-  const deleteScroll = useMutation(API.deleteScroll, {
+  const deleteByScrollNo = useMutation(API.deleteScrollByScrollNo, {
     onSuccess: (data: any) => {
       console.log(data, "ddd");
       setScrollDialog(false);
@@ -173,7 +173,7 @@ export const CommonFooter = ({
   };
   const handleDeleteScroll = () => {
     let data = { COMP_CD: authState.companyID, SCROLL_NO: scrollNo };
-    scrollNo && deleteScroll.mutate(data);
+    scrollNo && deleteByScrollNo.mutate(data);
   };
 
   return (
