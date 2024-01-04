@@ -4,6 +4,7 @@ import {
   utilFunction,
 } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
+import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
 export const getQueryData = async (reqData) => {
   console.log(reqData, "reqData");
@@ -58,8 +59,7 @@ export const deleteScrollByScrollNo = async (reqData) => {
 };
 
 export const deleteScrollByVoucherNo = async (reqData) => {
-  console.log(reqData, "reqqq");
-
+  console.log(reqData, "deleteScrollByVoucherNo");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
       DETAILS_DATA: { isDeleteRow: reqData, isUpdatedRow: [], isNewRow: [] },
@@ -68,6 +68,29 @@ export const deleteScrollByVoucherNo = async (reqData) => {
     let responseData = data;
 
     return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getAccDetails = async (reqData) => {
+  //apurva
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETACCOUNTDTL", {
+      // ACCT_CD: "000026              ",
+      // A_ASON_DT: "15/DEC/2023",
+      COMP_CD: reqData.COMP_CD,
+      BRANCH_CD: reqData.BRANCH_CD,
+      ACCT_TYPE: reqData.ACCT_TYPE,
+      ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
+      A_ASON_DT: format(new Date(), "dd/MMM/yyyy"),
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (responseData.length > 0) {
+      return responseData[0];
+    } else {
+      return responseData;
+    }
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

@@ -29,16 +29,16 @@ import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 
 import React, { useEffect, useState, useCallback, useContext } from "react";
-import { useMutation, useQuery } from "react-query";
-import { GeneralAPI } from "registry/fns/functions";
+import { useMutation } from "react-query";
 import * as API from "./api";
+import * as CommonApi from "../TRNCommon/api";
 import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
 
 import "./Trn001.css";
-import CommonFooter from "../Common";
+import CommonFooter from "../TRNCommon";
 import TRN001_Table from "./Table";
-import { DailyTransTabs } from "../DailyTransTabs";
+import DailyTransTabs from "../TRNHeaderTabs";
 
 export const Trn001 = () => {
   const { authState } = useContext(AuthContext);
@@ -195,7 +195,7 @@ export const Trn001 = () => {
     },
   });
 
-  const getAccInfo = useMutation(API.getAccDetails, {
+  const getAccInfo = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });

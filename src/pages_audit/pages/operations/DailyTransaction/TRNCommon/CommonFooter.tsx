@@ -27,7 +27,7 @@ import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import "./CommonFooter.css";
 import * as API from "./api";
-import OtherTrxTabs from "../OtherTrx";
+import OtherTrxTabs from "../TRNOtherTrx";
 
 export const CommonFooter = ({
   tableRows,

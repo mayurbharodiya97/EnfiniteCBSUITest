@@ -4,9 +4,8 @@ import { TRN001_TableMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import * as API from "./api";
 import * as trn1Api from "../api";
-import * as commonApi from "../../Common/api";
+import * as CommonApi from "../../TRNCommon/api";
 import { useSnackbar } from "notistack";
 
 import { AuthContext } from "pages_audit/auth";
@@ -24,8 +23,8 @@ const actions: ActionTypes[] = [
   {
     actionName: "Delete",
     actionLabel: "Delete",
-    multiple: false,
-    rowDoubleClick: true,
+    multiple: true,
+    rowDoubleClick: false,
     // alwaysAvailable: true,
   },
 ];
@@ -35,38 +34,28 @@ export const TRN001_Table = () => {
 
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const myGridRef = useRef<any>(null);
+  let objData = {
+    COMP_CD: authState?.companyID,
+    BRANCH_CD: authState?.user?.branchCode,
+  };
 
   useEffect(() => {
-    console.log(loading, "loading Table");
-  }, [loading]);
-
-  useEffect(() => {
-    console.log(rows, "rows rows");
+    console.log(rows, "trn1 table");
   }, [rows]);
 
-  console.log(tempStore, "queryRows");
-
   useEffect(() => {
-    handleGetList();
-  }, [tempStore]);
-
-  const handleGetList = () => {
     if (tempStore?.queryRows?.length > 0) {
       setRows(tempStore.queryRows);
     } else {
-      let data = {
-        COMP_CD: authState?.companyID,
-        BRANCH_CD: authState?.user?.branchCode,
-      };
-      getTRN001List.mutate(data);
+      getTRN001List.mutate(objData);
     }
-  };
+  }, [tempStore]);
 
   // api define=============================================
-  const getTRN001List = useMutation(API.getTRN001List, {
+  const getTRN001List = useMutation(trn1Api.getTRN001List, {
     onSuccess: (data) => {
       setLoading(false);
       console.log(data, "001 table list");
@@ -77,7 +66,7 @@ export const TRN001_Table = () => {
     },
   });
 
-  const getAccInfo = useMutation(trn1Api.getAccDetails, {
+  const getAccInfo = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
       console.log(data, "accInfo");
       setLoading(false);
@@ -87,13 +76,13 @@ export const TRN001_Table = () => {
       setLoading(false);
     },
   });
-  const deleteScrollByVoucher = useMutation(commonApi.deleteScrollByVoucherNo, {
+  const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
       setLoading(false);
       enqueueSnackbar("Scroll Deleted", {
         variant: "success",
       });
-      handleGetList();
+      getTRN001List.mutate(objData);
     },
     onError: (error: any) => {
       setLoading(false);
@@ -119,14 +108,13 @@ export const TRN001_Table = () => {
     }
 
     if (data.name === "Delete") {
-      console.log("deleteeee");
-      let arr = [
-        {
-          TRAN_CD: row?.TRAN_CD,
-          ENTERED_COMP_CD: row?.COMP_CD,
-          ENTERED_BRANCH_CD: row?.BRANCH_CD,
-        },
-      ];
+      let arr = rows.map((a) => {
+        return {
+          TRAN_CD: a?.TRAN_CD,
+          ENTERED_COMP_CD: a?.COMP_CD,
+          ENTERED_BRANCH_CD: a?.BRANCH_CD,
+        };
+      });
       deleteScrollByVoucher.mutate(arr);
     }
   }, []);

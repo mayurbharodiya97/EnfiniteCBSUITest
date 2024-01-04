@@ -1,1 +1,1 @@
-export { Trn002_Table as default } from "./TRN002_Table";
+export { Trn002 as default } from "./Trn002";

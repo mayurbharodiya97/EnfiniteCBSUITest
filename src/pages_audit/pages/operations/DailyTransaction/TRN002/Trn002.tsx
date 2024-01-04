@@ -14,15 +14,14 @@ import { TRN002_TableMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn2Api from "./api";
-import * as trn1Api from "../TRN001/api";
-import * as commonApi from "../Common/api";
+import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 
-import "./TRN002_Table.css";
-import { DailyTransTabs } from "../DailyTransTabs";
-import CommonFooter from "../Common";
+import "./Trn002.css";
+import DailyTransTabs from "../TRNHeaderTabs";
+import CommonFooter from "../TRNCommon";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -47,7 +46,7 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const Trn002_Table = () => {
+export const Trn002 = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext<any>(AccDetailContext);
@@ -89,7 +88,7 @@ export const Trn002_Table = () => {
     },
   });
 
-  const getAccInfo = useMutation(trn1Api.getAccDetails, {
+  const getAccInfo = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
@@ -112,7 +111,7 @@ export const Trn002_Table = () => {
       });
     },
   });
-  const deleteScrollByVoucher = useMutation(commonApi.deleteScrollByVoucherNo, {
+  const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
       enqueueSnackbar("Scroll Deleted", {
         variant: "success",
