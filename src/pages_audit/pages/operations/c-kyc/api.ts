@@ -872,7 +872,7 @@ export const TrimSpaceValidation = (columnValue, allField, flag) => {
       } else if (columnValue.value !== columnValue.value.trimEnd()) {
         return "Space after name is not allowed.";
       } else if(!regex.test(columnValue.value)) {
-          return "Please Enter Character Value.";
+          return "Please Enter Character Value without Space.";
       }                    
   }
   return "";
