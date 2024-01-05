@@ -9,7 +9,9 @@ export const getPMBYList = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNPMBYTAB", {
       BRANCH_CD: reqData.BRANCH_CD,
+      A_BRANCH_CD: reqData.BRANCH_CD,
       COMP_CD: reqData.COMP_CD,
+      A_COMP_CD: reqData.COMP_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,
     });

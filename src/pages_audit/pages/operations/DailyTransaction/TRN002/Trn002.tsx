@@ -21,7 +21,7 @@ import { useContext } from "react";
 
 import "./Trn002.css";
 import DailyTransTabs from "../TRNHeaderTabs";
-import CommonFooter from "../TRNCommon";
+import CommonFooter from "../TRNCommon/CommonFooter";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -30,13 +30,12 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
     // alwaysAvailable: true,
   },
-  {
-    actionName: "Delete",
-    actionLabel: "Delete",
-    multiple: false,
-    rowDoubleClick: true,
-    // alwaysAvailable: true,
-  },
+  // {
+  //   actionName: "Delete",
+  //   actionLabel: "Delete",
+  //   multiple: false,
+  //   rowDoubleClick: true,
+  // },
   {
     actionName: "view",
     actionLabel: "Confirm",

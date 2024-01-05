@@ -30,6 +30,7 @@ const actions: ActionTypes[] = [
 ];
 
 export const TRN001_Table = () => {
+  console.log("t1 table render");
   const { enqueueSnackbar } = useSnackbar();
 
   const { authState } = useContext(AuthContext);

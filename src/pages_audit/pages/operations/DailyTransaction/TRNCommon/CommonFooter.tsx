@@ -19,7 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 
 //logic
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, memo } from "react";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
@@ -29,7 +29,7 @@ import "./CommonFooter.css";
 import * as API from "./api";
 import OtherTrxTabs from "../TRNOtherTrx";
 
-export const CommonFooter = ({
+const CommonFooter = ({
   tableRows,
   handleUpdateRows,
   handleViewAll,
@@ -42,7 +42,7 @@ export const CommonFooter = ({
     value: "",
     logic: { value: "OR", label: "OR" },
   };
-
+  console.log("render common footer");
   const [rows, setRows] = useState<any>([defaulVal]);
   const [queryDialog, setQueryDialog] = useState(false);
   const [scrollDialog, setScrollDialog] = useState(false);
@@ -123,7 +123,11 @@ export const CommonFooter = ({
     const obj = [...rows];
     obj[i].logic = value;
     setRows(obj);
+    if (value?.value == "AND") {
+      handleAddRow();
+    }
   };
+
   const handleValue = (e, i) => {
     const obj = [...rows];
     let txt = e.target.value;
@@ -137,7 +141,9 @@ export const CommonFooter = ({
 
   const handleAddRow = () => {
     let obj = [...rows, defaulVal];
-    setRows(obj);
+    let err = rows.some((a) => !a.value);
+    console.log(err, "err");
+    !err && setRows(obj);
   };
 
   const handleClear = (e, i) => {
@@ -163,7 +169,6 @@ export const CommonFooter = ({
 
     let data = { COMP_CD: authState?.companyID, SELECT_COLUMN: arr };
     let err = rows.some((a) => !a.logic.value);
-    console.log(err, "err");
     !err && getQueryData.mutate(data);
   };
 
@@ -428,3 +433,4 @@ export const CommonFooter = ({
     </>
   );
 };
+export default memo(CommonFooter);

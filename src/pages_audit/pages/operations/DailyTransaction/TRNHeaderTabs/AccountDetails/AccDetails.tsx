@@ -65,56 +65,54 @@ export const AccDetails = ({ flag }) => {
                 height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
               }}
             >
-              {data?.ACCT_CD_NEW && (
-                <Grid container spacing={2}>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Name</Typography>
-                    <Typography>{data?.ACCT_NM}</Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">CUSTOMER_ID</Typography>
-                    <Typography>{data?.CUSTOMER_ID}</Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Account</Typography>
-                    <Typography>{data?.ACCT_CD_NEW}</Typography>
-                  </Grid>
-
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Email</Typography>
-                    <Typography>{data?.E_MAIL_ID}</Typography>
-                  </Grid>
-
-                  {data?.CONTACT2 && (
-                    <Grid item id="accInfo">
-                      <Typography variant="button">Contact</Typography>
-                      <Typography>{data?.CONTACT2}</Typography>
-                    </Grid>
-                  )}
-
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Branch Id</Typography>
-                    <Typography>{data?.BRANCH_CD}</Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Company id</Typography>
-                    <Typography>{data?.COMP_CD}</Typography>
-                  </Grid>
-                  {data?.ORG_PAN && (
-                    <Grid item id="accInfo">
-                      <Typography variant="button">PAN_NO</Typography>
-                      <Typography>{data?.ORG_PAN}</Typography>
-                    </Grid>
-                  )}
-                  <Grid item xs={12} id="accInfo">
-                    <Typography variant="button">Address</Typography>
-
-                    <Typography>
-                      {data?.ADD1} {data?.ADD2 && data?.ADD2} {data?.AREA_NM}
-                    </Typography>
-                  </Grid>
+              <Grid container spacing={2}>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Name</Typography>
+                  <Typography>{data?.ACCT_NM}</Typography>
                 </Grid>
-              )}
+                <Grid item id="accInfo">
+                  <Typography variant="button">CUSTOMER_ID</Typography>
+                  <Typography>{data?.CUSTOMER_ID}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Account</Typography>
+                  <Typography>{data?.ACCT_CD_NEW}</Typography>
+                </Grid>
+
+                <Grid item id="accInfo">
+                  <Typography variant="button">Email</Typography>
+                  <Typography>{data?.E_MAIL_ID}</Typography>
+                </Grid>
+
+                {data?.CONTACT2 && (
+                  <Grid item id="accInfo">
+                    <Typography variant="button">Contact</Typography>
+                    <Typography>{data?.CONTACT2}</Typography>
+                  </Grid>
+                )}
+
+                <Grid item id="accInfo">
+                  <Typography variant="button">Branch Id</Typography>
+                  <Typography>{data?.BRANCH_CD}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Company id</Typography>
+                  <Typography>{data?.COMP_CD}</Typography>
+                </Grid>
+                {data?.ORG_PAN && (
+                  <Grid item id="accInfo">
+                    <Typography variant="button">PAN_NO</Typography>
+                    <Typography>{data?.ORG_PAN}</Typography>
+                  </Grid>
+                )}
+                <Grid item xs={12} id="accInfo">
+                  <Typography variant="button">Address</Typography>
+
+                  <Typography>
+                    {data?.ADD1} {data?.ADD2 && data?.ADD2} {data?.AREA_NM}
+                  </Typography>
+                </Grid>
+              </Grid>
             </div>
           </CardContent>
         </Card>
@@ -144,78 +142,74 @@ export const AccDetails = ({ flag }) => {
                 height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
               }}
             >
-              {data?.ACCT_CD_NEW && (
-                <Grid container spacing={2}>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Status</Typography>
-                    <Typography
-                      style={
-                        data?.STATUS == "C"
-                          ? { color: "#ea3a1b" }
-                          : { color: "" }
-                      }
-                    >
-                      {data?.STATUS == "O" && "Open"}
-                      {data?.STATUS == "C" && "Close"}
-                      {data?.STATUS == "U" && "Unclaimed"}
-                      {data?.STATUS == "F" && "Freeze"}
-                      {data?.STATUS == "I" && "Inoperative"}
-                      {data?.STATUS == "D" && "Dormant"}
-                    </Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Op. DATE</Typography>
-                    <Typography>
-                      {data?.OP_DATE &&
-                        format(new Date(data?.OP_DATE), "dd/MMM/yyyy")}
-                    </Typography>
-                  </Grid>{" "}
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Opening</Typography>
-                    <Typography align="right">{data?.LAST_BAL}</Typography>
-                  </Grid>{" "}
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Withraw Bal</Typography>
-                    <Typography align="right">{data?.WITHDRAW_BAL}</Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">HOLD_BAL</Typography>
-                    <Typography align="right">{data?.HOLD_BAL}</Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Shadow(C)</Typography>
-                    <Typography align="right">{data?.TRAN_BAL}</Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Current(A)</Typography>
-                    <Typography align="right">{data?.CONF_BAL}</Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">(C-B)</Typography>
-                    <Typography align="right">
-                      {data?.TRAN_BAL &&
-                        Number(data?.TRAN_BAL) - Number(data?.UNCL_BAL)}
-                    </Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">(A-B)</Typography>
-                    <Typography align="right">
-                      {data?.CONF_BAL &&
-                        Number(data?.CONF_BAL) - Number(data?.UNCL_BAL)}
-                    </Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Pending Amt</Typography>
-                    <Typography align="right">
-                      {data?.PENDING_SCROLL_AMT}
-                    </Typography>
-                  </Grid>
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Clearing Chq(B)</Typography>
-                    <Typography align="right">{data?.UNCL_BAL}</Typography>
-                  </Grid>
+              <Grid container spacing={2}>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Status</Typography>
+                  <Typography
+                    style={
+                      data?.STATUS == "C" ? { color: "#ea3a1b" } : { color: "" }
+                    }
+                  >
+                    {data?.STATUS == "O" && "Open"}
+                    {data?.STATUS == "C" && "Close"}
+                    {data?.STATUS == "U" && "Unclaimed"}
+                    {data?.STATUS == "F" && "Freeze"}
+                    {data?.STATUS == "I" && "Inoperative"}
+                    {data?.STATUS == "D" && "Dormant"}
+                  </Typography>
                 </Grid>
-              )}
+                <Grid item id="accInfo">
+                  <Typography variant="button">Op. DATE</Typography>
+                  <Typography>
+                    {data?.OP_DATE &&
+                      format(new Date(data?.OP_DATE), "dd/MMM/yyyy")}
+                  </Typography>
+                </Grid>{" "}
+                <Grid item id="accInfo">
+                  <Typography variant="button">Opening</Typography>
+                  <Typography align="right">{data?.LAST_BAL}</Typography>
+                </Grid>{" "}
+                <Grid item id="accInfo">
+                  <Typography variant="button">Withraw Bal</Typography>
+                  <Typography align="right">{data?.WITHDRAW_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">HOLD_BAL</Typography>
+                  <Typography align="right">{data?.HOLD_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Shadow(C)</Typography>
+                  <Typography align="right">{data?.TRAN_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Current(A)</Typography>
+                  <Typography align="right">{data?.CONF_BAL}</Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">(C-B)</Typography>
+                  <Typography align="right">
+                    {data?.TRAN_BAL &&
+                      Number(data?.TRAN_BAL) - Number(data?.UNCL_BAL)}
+                  </Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">(A-B)</Typography>
+                  <Typography align="right">
+                    {data?.CONF_BAL &&
+                      Number(data?.CONF_BAL) - Number(data?.UNCL_BAL)}
+                  </Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Pending Amt</Typography>
+                  <Typography align="right">
+                    {data?.PENDING_SCROLL_AMT}
+                  </Typography>
+                </Grid>
+                <Grid item id="accInfo">
+                  <Typography variant="button">Clearing Chq(B)</Typography>
+                  <Typography align="right">{data?.UNCL_BAL}</Typography>
+                </Grid>
+              </Grid>
             </div>
           </CardContent>
         </Card>

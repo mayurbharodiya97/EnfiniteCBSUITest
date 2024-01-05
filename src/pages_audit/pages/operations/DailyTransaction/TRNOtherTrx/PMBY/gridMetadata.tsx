@@ -27,15 +27,22 @@ export const PMBYGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "POLICY_NO",
-      columnName: "Policy No.",
-      sequence: 2,
+      accessor: "ACCT_TYPE",
+      columnName: "Type",
+      sequence: 1,
       componentType: "default",
       width: 120,
     },
     {
-      accessor: "INSURANCE_DATE",
-      columnName: "Insurance Date",
+      accessor: "APPLICANT_NM",
+      columnName: "Applicant Name",
+      sequence: 2,
+      componentType: "default",
+      width: 220,
+    },
+    {
+      accessor: "TRAN_DT",
+      columnName: " Date",
       sequence: 3,
       componentType: "date",
       isVisible: true,
@@ -43,69 +50,39 @@ export const PMBYGridMetaData: GridMetaDataType = {
       width: 120,
     },
     {
-      accessor: "DUE_DATE",
-      columnName: "Due Date",
+      accessor: "CUSTOMER_ID",
+      columnName: "Customer ID",
       sequence: 4,
-      componentType: "date",
-      isVisible: true,
-      dateFormat: "dd/MM/yyyy",
+      componentType: "default",
       width: 120,
     },
     {
-      accessor: "INSURANCE_AMOUNT",
-      columnName: "Insurance Amount",
+      accessor: "TRAN_CD",
+      columnName: "Voucher No ",
       sequence: 5,
-
       componentType: "default",
       width: 120,
     },
     {
-      accessor: "TOT_PREMIUM_AMT",
-      columnName: "Total Premium  ",
+      accessor: "PREMIUM_AMT",
+      columnName: "Premium Amt ",
       sequence: 6,
-
       componentType: "default",
       width: 120,
     },
     {
-      accessor: "NET_PREMIUM_AMOUNT",
-      columnName: "Net Premium  ",
+      accessor: "INSURANCE_TRAN_CD",
+      columnName: "INSURANCE_TRAN_CD ",
       sequence: 7,
-
-      componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "INSURANCE_TYPE",
-      columnName: "Insurance Type",
-      sequence: 8,
-
-      componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Company",
-      sequence: 9,
-
       componentType: "default",
       width: 250,
     },
     {
-      accessor: "INS_DESCRIPTION",
-      columnName: "Description",
-      sequence: 10,
-
+      accessor: "NOMINEE_RELATION_TYPE",
+      columnName: "Relation",
+      sequence: 8,
       componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "SERVICE_CHARGE",
-      columnName: "Service Charge",
-      sequence: 11,
-
-      componentType: "default",
-      width: 120,
+      width: 220,
     },
   ],
 };

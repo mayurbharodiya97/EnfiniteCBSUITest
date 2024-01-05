@@ -1,12 +1,11 @@
 //UI
-import { Button, Toolbar, AppBar, Card } from "@mui/material";
-import { styled, alpha } from "@mui/material/styles";
+import { Button, Toolbar, AppBar, Card, Tooltip } from "@mui/material";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -28,7 +27,13 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 
-import React, { useEffect, useState, useCallback, useContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useContext,
+  useMemo,
+} from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import * as CommonApi from "../TRNCommon/api";
@@ -36,7 +41,7 @@ import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
 
 import "./Trn001.css";
-import CommonFooter from "../TRNCommon";
+import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 
@@ -74,6 +79,7 @@ export const Trn001 = () => {
   //states define
   const [rows, setRows] = useState<any>([defaulVal]);
   const [rows2, setRows2] = useState([]);
+  const [random, setRandom] = useState("");
   const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
   const [sdcOptions, setSdcOptions] = useState<any>([]);
@@ -518,7 +524,7 @@ export const Trn001 = () => {
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setRows([defaulVal]);
     setTotalCredit(0);
     setTotalDebit(0);
@@ -526,7 +532,7 @@ export const Trn001 = () => {
     setResetDialog(false);
     setViewOnly(false);
     setTempStore({ ...tempStore, accInfo: {}, queryRows: [] });
-  };
+  }, []);
 
   const handleFilterTrx = () => {
     //to limit the trxOptions on 3,6
@@ -586,24 +592,26 @@ export const Trn001 = () => {
     saveScroll.mutate(arr);
     setSaveDialog(false);
   };
-  const handleUpdateRows = (data) => {
+
+  const handleUpdateRows = useCallback((data) => {
     //to apply filter from baseFooter
     setViewOnly(true);
     console.log(data, "common footer");
     setRows2(data);
-  };
+  }, []);
 
-  const handleGetTRN001List = () => {
+  const handleGetTRN001List = useCallback(() => {
     let data = {
       COMP_CD: authState?.companyID,
       BRANCH_CD: authState?.user?.branchCode,
     };
     getTRN001List.mutate(data);
     setViewOnly(true);
-  };
-  const handleViewQueryData = () => {
+  }, []);
+
+  const handleViewQueryData = useCallback(() => {
     setViewOnly(true);
-  };
+  }, []);
   return (
     <>
       <DailyTransTabs heading="(Maker) (TRN/001)" />
@@ -669,38 +677,54 @@ export const Trn001 = () => {
                   return (
                     <TableBody>
                       <TableRow key={i}>
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.branch}
-                            autoHighlight
-                            size="small"
-                            disabled={viewOnly ? true : false}
-                            options={branchOptions}
-                            onChange={(e, value) => handleBranch(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                error={a.branch?.value ? false : true}
-                              />
-                            )}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.accType}
-                            autoHighlight
-                            size="small"
-                            disabled={viewOnly ? true : false}
-                            options={accTypeOptions}
-                            onChange={(e, value) => handleAccType(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                error={a.accType?.value ? false : true}
-                              />
-                            )}
-                          />
-                        </TableCell>
+                        <Tooltip
+                          disableInteractive={true}
+                          title={
+                            a?.branch?.label && <h3>{a?.branch?.label}</h3>
+                          }
+                        >
+                          <TableCell sx={{ minWidth: 160 }}>
+                            <Autocomplete
+                              value={a.branch}
+                              autoHighlight
+                              size="small"
+                              disabled={viewOnly ? true : false}
+                              options={branchOptions}
+                              onChange={(e, value) => handleBranch(e, value, i)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  error={a.branch?.value ? false : true}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                        </Tooltip>
+                        <Tooltip
+                          disableInteractive={true}
+                          title={
+                            a?.accType?.label && <h3>{a?.accType?.label}</h3>
+                          }
+                        >
+                          <TableCell sx={{ minWidth: 160 }}>
+                            <Autocomplete
+                              value={a.accType}
+                              autoHighlight
+                              size="small"
+                              disabled={viewOnly ? true : false}
+                              options={accTypeOptions}
+                              onChange={(e, value) =>
+                                handleAccType(e, value, i)
+                              }
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  error={a.accType?.value ? false : true}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                        </Tooltip>
                         <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.accNo}
@@ -712,6 +736,7 @@ export const Trn001 = () => {
                             onBlur={(e) => handleAccNoBlur(e, i)}
                           />
                         </TableCell>
+
                         <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.trx}
@@ -726,7 +751,7 @@ export const Trn001 = () => {
                                 error={a.trx?.value ? false : true}
                               />
                             )}
-                          />
+                          />{" "}
                         </TableCell>
 
                         <TableCell sx={{ minWidth: 50 }}>
@@ -895,8 +920,8 @@ export const Trn001 = () => {
 
       <br />
       <CommonFooter
-        handleUpdateRows={handleUpdateRows}
         tableRows={rows2}
+        handleUpdateRows={handleUpdateRows}
         handleViewAll={handleGetTRN001List}
         handleRefresh={handleReset}
         handleViewQueryData={handleViewQueryData}
