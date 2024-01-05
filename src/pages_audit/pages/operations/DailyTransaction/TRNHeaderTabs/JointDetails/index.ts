@@ -1,1 +1,1 @@
-export { JointDetailsForm as default } from "./JointDetails";
+export { JointDetails as default } from "./JointDetails";

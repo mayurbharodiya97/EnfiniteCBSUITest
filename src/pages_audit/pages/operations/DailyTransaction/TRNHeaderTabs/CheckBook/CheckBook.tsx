@@ -39,8 +39,7 @@ export const CheckBook = () => {
         finalMetaData={CheckBookGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
+        loading={getCheckDetailsList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

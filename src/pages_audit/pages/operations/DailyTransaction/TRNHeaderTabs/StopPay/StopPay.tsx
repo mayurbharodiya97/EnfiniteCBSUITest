@@ -38,8 +38,7 @@ export const StopPay = () => {
         finalMetaData={stopPayGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
+        loading={getStopPayList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

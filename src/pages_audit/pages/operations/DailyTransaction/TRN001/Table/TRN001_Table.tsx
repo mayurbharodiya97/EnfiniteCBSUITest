@@ -57,13 +57,10 @@ export const TRN001_Table = () => {
   // api define=============================================
   const getTRN001List = useMutation(trn1Api.getTRN001List, {
     onSuccess: (data) => {
-      setLoading(false);
       console.log(data, "001 table list");
       setRows(data);
     },
-    onError: (error) => {
-      setLoading(false);
-    },
+    onError: (error) => {},
   });
 
   const getAccInfo = useMutation(CommonApi.getAccDetails, {
@@ -127,7 +124,7 @@ export const TRN001_Table = () => {
         finalMetaData={TRN001_TableMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getAccInfo.isLoading}
+        loading={getTRN001List.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
         actions={actions}

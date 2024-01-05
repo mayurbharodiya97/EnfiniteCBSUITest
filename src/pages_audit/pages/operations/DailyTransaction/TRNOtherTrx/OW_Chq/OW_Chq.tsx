@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { Mutation, useMutation, useQuery } from "react-query";
 import { OwChqGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
@@ -40,6 +40,7 @@ export const OW_Chq = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getOWChqList.isLoading}
       />
     </>
   );

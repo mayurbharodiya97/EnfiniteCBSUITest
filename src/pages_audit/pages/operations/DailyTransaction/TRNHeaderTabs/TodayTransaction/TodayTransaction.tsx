@@ -10,8 +10,6 @@ import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 
-import { InitialValuesType, SubmitFnType } from "packages/form";
-
 const TodayTransaction = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
@@ -38,8 +36,7 @@ const TodayTransaction = () => {
         finalMetaData={TodayTransGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
+        loading={getTodayTransList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

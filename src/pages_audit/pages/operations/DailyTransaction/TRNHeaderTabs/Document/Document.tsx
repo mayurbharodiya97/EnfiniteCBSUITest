@@ -38,8 +38,7 @@ export const Document = () => {
         finalMetaData={DocumentGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
+        loading={getDocTemplateList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

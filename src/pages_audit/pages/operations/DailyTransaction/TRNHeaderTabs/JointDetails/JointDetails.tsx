@@ -23,9 +23,6 @@ import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider, queryClient } from "cache";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
-
-import { InitialValuesType, SubmitFnType } from "packages/form";
-import { jointViewDetailMetaData } from "./metaData";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
@@ -42,7 +39,7 @@ const actions: ActionTypes[] = [
     actionBackground: "inherit",
   },
 ];
-const JointDetails = () => {
+export const JointDetails = () => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -75,10 +72,6 @@ const JointDetails = () => {
     setOpen(true);
   }, []);
 
-  const handleSave = () => {
-    console.log("helllo");
-  };
-
   return (
     <>
       <div>
@@ -87,11 +80,11 @@ const JointDetails = () => {
           finalMetaData={JointDetailGridMetaData as GridMetaDataType}
           data={rows}
           setData={() => null}
-          // loading={getData.isLoading}
           actions={actions}
           setAction={setCurrentAction}
           refetchData={() => {}}
           ref={myGridRef}
+          loading={getJointDetails.isLoading}
         />
       </div>
 
@@ -103,7 +96,6 @@ const JointDetails = () => {
           },
         }}
         open={open}
-        // onClose={handleClose}
         maxWidth="md"
         scroll="body"
         aria-labelledby="alert-dialog-title"
@@ -133,44 +125,10 @@ const JointDetails = () => {
               padding: "10px",
             }}
           >
-            <FormWrapper
-              metaData={jointViewDetailMetaData}
-              // onSubmitHandler={onSubmitHandler}
-              onFormButtonClickHandel={handleSave}
-              // initialValues={getJointDataById?.data as InitialValuesType}
-              hideHeader={true}
-              displayMode={"new"}
-              formStyle={{
-                background: "white",
-                overflowY: "auto",
-                overflowX: "hidden",
-              }}
-            >
-              {({ isSubmitting, handleSubmit }) => (
-                <>
-                  <Button
-                    onClick={(event) => {
-                      handleSubmit(event, "Save");
-                    }}
-                    disabled={isSubmitting}
-                    //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                    color={"primary"}
-                  >
-                    Save
-                  </Button>
-                </>
-              )}
-            </FormWrapper>
+            in progress
           </div>
         </DialogContent>
       </Dialog>
     </>
-  );
-};
-export const JointDetailsForm = () => {
-  return (
-    <ClearCacheProvider>
-      <JointDetails />
-    </ClearCacheProvider>
   );
 };

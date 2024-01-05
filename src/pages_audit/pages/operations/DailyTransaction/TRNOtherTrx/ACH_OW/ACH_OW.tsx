@@ -40,6 +40,7 @@ export const ACH_OW = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getACH_OWList.isLoading}
       />
     </>
   );

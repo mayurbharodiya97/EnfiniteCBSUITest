@@ -40,8 +40,7 @@ export const Disbursement = () => {
         finalMetaData={DisbursementGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
+        loading={getDisbursementList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

@@ -45,8 +45,7 @@ export const SnapShot = () => {
         finalMetaData={snapShotGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
+        loading={getSnapShotList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

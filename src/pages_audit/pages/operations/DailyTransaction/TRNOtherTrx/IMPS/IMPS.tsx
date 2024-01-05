@@ -40,6 +40,7 @@ export const IMPS = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getIMPSList.isLoading}
       />
     </>
   );

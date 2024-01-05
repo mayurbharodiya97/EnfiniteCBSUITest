@@ -83,9 +83,7 @@ export const Trn002 = () => {
       setRows2(arr);
       setRows(data);
     },
-    onError: (error) => {
-      setLoading(false);
-    },
+    onError: (error) => {},
   });
 
   const getAccInfo = useMutation(CommonApi.getAccDetails, {
@@ -100,12 +98,14 @@ export const Trn002 = () => {
 
   const confirmScroll = useMutation(trn2Api.confirmScroll, {
     onSuccess: (data) => {
+      setLoading(false);
       enqueueSnackbar("Record Confirm", {
         variant: "success",
       });
       handleGetTRN002List();
     },
     onError: (error: any) => {
+      setLoading(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -135,11 +135,9 @@ export const Trn002 = () => {
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-    console.log(data, "datadatadata");
-    console.log(row, "rowrowrow");
-    if (data.name === "view-detail") {
-      setLoading(true);
+    setLoading(true);
 
+    if (data.name === "view-detail") {
       let obj = {
         COMP_CD: row?.COMP_CD,
         BRANCH_CD: row?.BRANCH_CD,
@@ -151,7 +149,6 @@ export const Trn002 = () => {
     }
 
     if (data.name === "view") {
-      console.log("viewwwww");
       if (row.CONFIRMED == "0") {
         confirmScroll.mutate(row);
       } else {
@@ -198,7 +195,7 @@ export const Trn002 = () => {
           finalMetaData={TRN002_TableMetaData as GridMetaDataType}
           data={rows2}
           setData={() => null}
-          // loading={getAccInfo.isLoading}
+          loading={getTRN002List.isLoading}
           // ref={myGridRef}
           refetchData={() => {}}
           actions={actions}

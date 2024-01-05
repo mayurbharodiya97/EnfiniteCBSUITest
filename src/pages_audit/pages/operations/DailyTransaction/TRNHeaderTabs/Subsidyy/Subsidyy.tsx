@@ -15,17 +15,16 @@ export const Subsidyy = () => {
   const [rows, setRows] = useState([]);
 
   // api define
-  const getDisbursementList = useMutation(API.getSubsidyList, {
+  const getSubsidyList = useMutation(API.getSubsidyList, {
     onSuccess: (data) => {
-      console.log(data, " getDisbursementList detailssss");
+      console.log(data, " getSubsidyList detailssss");
       setRows(data);
     },
     onError: (error) => {},
   });
 
   useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD &&
-      getDisbursementList.mutate(tempStore.accInfo);
+    tempStore?.accInfo?.ACCT_CD && getSubsidyList.mutate(tempStore.accInfo);
   }, [tempStore]);
 
   return (
@@ -35,8 +34,7 @@ export const Subsidyy = () => {
         finalMetaData={SubsidyGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
+        loading={getSubsidyList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

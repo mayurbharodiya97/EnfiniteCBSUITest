@@ -40,6 +40,7 @@ export const Instruction = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getInstructionList.isLoading}
       />
     </>
   );

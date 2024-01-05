@@ -40,6 +40,7 @@ export const PMBY = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getPMBYList.isLoading}
       />
     </>
   );

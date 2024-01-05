@@ -12,6 +12,11 @@ export const getInstructionList = async (reqData) => {
       COMP_CD: reqData.COMP_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,
+
+      OTH_COMP_CD: reqData.COMP_CD,
+      OTH_BRANCH_CD: reqData.BRANCH_CD,
+      OTH_ACCT_TYPE: reqData.ACCT_TYPE,
+      OTH_ACCT_CD: reqData.ACCT_CD,
     });
   if (status === "0") {
     let responseData = data;

@@ -40,6 +40,7 @@ export const ASBA = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getASBAList.isLoading}
       />
     </>
   );

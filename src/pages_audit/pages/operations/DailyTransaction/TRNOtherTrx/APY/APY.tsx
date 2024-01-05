@@ -40,6 +40,7 @@ export const APY = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getAPYList.isLoading}
       />
     </>
   );

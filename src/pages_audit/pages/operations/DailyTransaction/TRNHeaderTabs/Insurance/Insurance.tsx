@@ -38,8 +38,7 @@ export const Insurance = () => {
         finalMetaData={InsuranceGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        // loading={getData.isLoading}
-        // setAction={setCurrentAction}
+        loading={getInsuranceList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

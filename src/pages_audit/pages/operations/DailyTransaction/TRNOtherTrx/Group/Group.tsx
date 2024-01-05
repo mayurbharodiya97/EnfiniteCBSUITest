@@ -40,6 +40,7 @@ export const Group = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getGroupList.isLoading}
       />
     </>
   );

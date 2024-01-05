@@ -40,6 +40,7 @@ export const Temp = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getTempList.isLoading}
       />
     </>
   );

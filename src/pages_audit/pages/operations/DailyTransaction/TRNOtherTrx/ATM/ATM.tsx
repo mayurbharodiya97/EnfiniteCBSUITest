@@ -40,6 +40,7 @@ export const ATM = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getATMList.isLoading}
       />
     </>
   );

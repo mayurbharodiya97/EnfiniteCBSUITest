@@ -40,6 +40,7 @@ export const APBS = () => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        loading={getAPBSList.isLoading}
       />
     </>
   );
