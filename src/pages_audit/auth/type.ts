@@ -9,6 +9,7 @@ export interface AuthStateType {
   workingDate: string;
   companyID: string;
   baseCompanyID: string;
+  groupName: string;
   menulistdata: any;
   user: {
     branch: string;
@@ -44,6 +45,4 @@ export interface AuthContextType {
   branchSelect: any;
   getProfileImage: any;
   setProfileImage: any;
-  tempStore: any;
-  setTempStore: any;
 }

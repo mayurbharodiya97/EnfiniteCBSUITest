@@ -47,7 +47,7 @@ import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
 import { Button } from "reactstrap";
 import { getAcctInqStatement } from "pages_audit/acct_Inquiry/api";
-import AccDetails from "pages_audit/pages/DailyTransaction/AccountDetails/AccDetails";
+import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
 import { Alert } from "components/common/alert";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";

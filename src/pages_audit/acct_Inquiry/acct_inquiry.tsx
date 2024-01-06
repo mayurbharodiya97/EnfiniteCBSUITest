@@ -1,27 +1,19 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { Button, Grid, Dialog, CircularProgress } from "@mui/material";
+import { useCallback, useContext, useRef, useState } from "react";
+import { Dialog } from "@mui/material";
 import { AccountInquiryMetadata, AccountInquiryGridMetaData } from "./metaData";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridMetaDataType } from "components/dataTable/types";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { ViewDetail } from "./viewDetail";
 import { ViewStatement } from "./viewStatement";
-import { ViewInterest } from "./viewInterest";
 import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "packages/form";
 import { Alert } from "components/common/alert";
 import { GradientButton } from "components/styledComponent/button";
-import { queryClient } from "cache";
 import Dependencies from "./dependencies";
 
 // import { Dialog } from "@mui/material";
@@ -57,7 +49,6 @@ export const Accountinquiry = ({ open, onClose }) => {
   const [acctOpen, setAcctOpen] = useState(false);
   const [componentToShow, setComponentToShow] = useState("");
   const [showGridData, setShowGridData] = useState(false);
-  const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const formbtnRef = useRef<any>(null);
   // const { t } = useTranslation();
@@ -67,14 +58,9 @@ export const Accountinquiry = ({ open, onClose }) => {
     endSubmit?: any;
     setFieldError?: any;
   }
-  const insertFormDataFnWrapper =
-    (insertFormData) =>
-    async ({ data }: InsertFormDataFnType) => {
-      return insertFormData(data);
-    };
   const mutation: any = useMutation(API.getAccountInquiry, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
+    onSuccess: () => {},
+    onError: () => {},
   });
 
   const setCurrentAction = useCallback(
@@ -102,12 +88,7 @@ export const Accountinquiry = ({ open, onClose }) => {
     },
     [navigate]
   );
-  const onSubmitHandler: SubmitFnType = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError
-  ) => {
+  const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
     if (
       !Boolean(data?.MOBILE) &&
       !Boolean(data?.CUSTOMER) &&
@@ -173,10 +154,10 @@ export const Accountinquiry = ({ open, onClose }) => {
             // onFormButtonCicular={mutation.isLoading}
             ref={formRef}
           >
-            {({ isSubmitting, handleSubmit }) => (
+            {() => (
               <>
                 <GradientButton
-                  onClick={(event) => {
+                  onClick={() => {
                     //   isSubmitEventRef.current = event;
                     // handleSubmit(event, "Save");
                     onClose();

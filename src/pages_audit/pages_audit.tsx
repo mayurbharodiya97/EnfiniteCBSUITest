@@ -15,7 +15,8 @@ import AccountDetails from "./pages/STATEMENT/accountDetails";
 import { MastersMenu } from "./pages/master";
 import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
-import { DailyTrans } from "./pages/DailyTransaction";
+import Trn001 from "./pages/operations/DailyTransaction/TRN001";
+import Trn002 from "./pages/operations/DailyTransaction/TRN002";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
@@ -61,11 +62,11 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
                 <Route
                   path="operation/teller_daily_tran"
-                  element={<DailyTrans />}
+                  element={<Trn001 />}
                 />
                 <Route
                   path="operation/teller_daily_tran_cnf_F2"
-                  element={<DailyTrans />}
+                  element={<Trn002 />}
                 />
 
                 {/* <Route

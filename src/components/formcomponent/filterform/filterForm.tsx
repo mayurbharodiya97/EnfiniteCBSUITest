@@ -693,7 +693,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                         }
                         onClick={submitThirdAction}
                         ref={thirdButtonRef}
-                        sx={{ display: displayStyle3 }}
+                        // sx={{ display: displayStyle3 }}
                       >
                         {submitThirdButtonName}
                       </GradientButton>

@@ -39,13 +39,11 @@ export const getSlipNumber = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const clearingBankMasterConfigDML = async ({ data: formData }) => {
-  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "DOBANKDETAIL",
-    formData
-  );
+export const clearingBankMasterConfigDML = async (formData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOBANKDETAIL", formData);
   if (status === "0") {
-    return message;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

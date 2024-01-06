@@ -1,6 +1,6 @@
 import { Dialog } from "@mui/material";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
-import React, { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { PassbookStatement, PassbookStatementInq } from "./metaData";
 import { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";

@@ -68,7 +68,7 @@ export const DynamicDropdownConfigMetaData = {
       options: [
         { label: "Dynamic SQL", value: "DS" },
         { label: "Register Function", value: "RF" },
-        { label: "Defualt Option", value: "DO" },
+        { label: "Default Option", value: "DO" },
       ],
       _optionsKey: "defualt",
       defaultValue: "Dynamic SQL",

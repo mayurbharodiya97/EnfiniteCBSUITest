@@ -224,7 +224,7 @@ const AddNote = ({ closeDialog, data, defualtView, refetch }) => {
               style={{
                 // color: data?.colors || "black",
                 color: "black",
-                backgroundColor: "var(--theme-color2)",
+                // backgroundColor: "var(--theme-color2)",
               }}
               disabled={mutation.isLoading}
             >

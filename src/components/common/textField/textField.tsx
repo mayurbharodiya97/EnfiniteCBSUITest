@@ -4,7 +4,9 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
+
 import { TextField } from "components/styledComponent";
+
 import { Merge } from "../types";
 import { numWords } from "components/common/utils";
 import {
@@ -70,6 +72,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
   startsIcon,
   endsIcon,
   iconStyle,
+  runExternalFunction,
+  onFormDataChange,
   textFieldStyle,
   ...others
 }) => {
@@ -93,6 +97,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     runValidation,
     validationAPIResult,
     dependentValues,
+    setErrorAsCB,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -105,6 +110,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
+    runExternalFunction,
+    onFormDataChange,
   });
 
   const [currentColor, setCurrentColor] = useState<string>(
@@ -127,6 +134,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     },
     [handleChange]
   );
+
   const focusRef = useRef();
   useEffect(() => {
     if (isFieldFocused) {
@@ -166,8 +174,17 @@ const MyTextField: FC<MyTextFieldProps> = ({
           runValidation({ value: value }, true);
         }
       }
+      if (Boolean(error)) {
+        setErrorAsCB(error);
+      }
     }
-  }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+  }, [
+    incomingMessage,
+    handleChange,
+    runValidation,
+    whenToRunValidation,
+    setErrorAsCB,
+  ]);
 
   if (excluded) {
     return null;
@@ -205,7 +222,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   const result = (
     <>
       {/* Changes for bhavyata textfield label */}
-      <InputAdornment
+      {/* <InputAdornment
         position="start"
         sx={{
           alignItems: "baseline",
@@ -217,9 +234,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
         }}
       >
         {StartIcon ? <StartIcon /> : null}
-        {/* <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p> */}
+        <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p>
         {EndIcon ? <EndIcon /> : null}
-      </InputAdornment>
+      </InputAdornment> */}
       <TextField
         {...others}
         key={fieldKey}

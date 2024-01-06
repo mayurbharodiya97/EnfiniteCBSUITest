@@ -5,20 +5,13 @@ import {
   CtsOutwardClearingMetadata,
   SlipDetailFormMetaData,
 } from "./metaData";
-import { CtsoutwardGridMetaData } from "./gridMetadata";
-import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
-import { GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
-
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
-import { MasterDetailsForm } from "components/formcomponent";
 import {
-  Button,
-  CircularProgress,
   Toolbar,
   Typography,
   AppBar,
@@ -27,19 +20,14 @@ import {
   Tabs,
   Tab,
   Container,
+  TextField,
 } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { cloneDeep } from "lodash";
 import { makeStyles } from "@mui/styles";
-import { CreateDetailsRequestData, utilFunction } from "components/utils";
-import { GradientButton } from "components/styledComponent/button";
 import { useSnackbar } from "notistack";
 import { ClearingBankMaster } from "./clearingBankMaster";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { format } from "date-fns";
 import { useStyles } from "pages_audit/common/tabStyles";
-import { TabPanel } from "@mui/base";
 import { MetaDataType } from "components/dyanmicForm";
 import { getAccountName } from "./api";
 const useTypeStyles = makeStyles((theme: Theme) => ({
@@ -59,7 +47,6 @@ const useTypeStyles = makeStyles((theme: Theme) => ({
 const CtsOutwardClearing = ({ zoneTranType }) => {
   const { authState } = useContext(AuthContext);
   const isErrorFuncRef = useRef<any>(null);
-  const [formData, setFormData] = useState<any>({});
   const [zoneData, setZoneData] = useState<any>({});
   const formDataRef = useRef<any>({});
   const [isBankAdding, setisBankAdding] = useState<any>(false);
@@ -71,6 +58,9 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
   const [isOpenSave, setIsOpenSave] = useState(false);
   const [isOpenProcced, setIsOpenProcced] = useState(false);
   const [currentTab, setCurrentTab] = useState("slipdetail");
+  const [totalAmountSlipCheque, setTotalAmountSlipCheque] = useState(
+    Number(formDataRef.current.AMOUNT)
+  );
 
   const tabClasses = useStyles();
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
@@ -96,6 +86,7 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
       },
     ],
   });
+
   console.log("initValues", initValues);
   // const handleKeyPress = () => {
   //   let initVal = initValues.chequeDetails ?? [];
@@ -118,6 +109,33 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
   const mutation: any = useMutation("getAccountName", getAccountName, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
+  });
+  const mutationBank = useMutation(API.clearingBankMasterConfigDML, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      if (isErrorFuncRef.current == null) {
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      } else {
+        isErrorFuncRef.current?.endSubmit(
+          false,
+          errorMsg,
+          error?.error_detail ?? ""
+        );
+      }
+      onActionCancel();
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
+
+      // onClose();
+    },
   });
   const mutationOutward = useMutation(API.outwardClearingConfigDML, {
     onError: (error: any) => {
@@ -155,44 +173,58 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
     };
   }, []);
   useEffect(() => {
-    if ((result && !result?.[0].isLoading) || (formData && !formData.length)) {
+    setTotalAmountSlipCheque(formDataRef.current.AMOUNT ?? "0.00");
+  }, [formDataRef.current.AMOUNT]);
+  useEffect(() => {
+    if (
+      (result && !result?.[0].isLoading) ||
+      (formDataRef.current && formDataRef.current.length)
+    ) {
       let init = initValues.chequeDetails;
 
       init[0] = {
-        CHEQUE_DATE: new Date(result?.[0]?.data?.[0]?.DATE ?? "") ?? new Date(),
-        ECS_USER_NO: formData?.ACCT_NAME ?? "",
+        CHEQUE_DATE: new Date(result?.[0]?.data?.[0]?.DATE ?? ""),
+        ECS_USER_NO: mutationOutward.isSuccess
+          ? ""
+          : formDataRef.current?.ACCT_NAME ?? "",
+        ECS_SEQ_NO: mutationOutward.isSuccess
+          ? ""
+          : formDataRef.current?.ACCT_CD ?? "",
       };
-      if (mutationOutward.isSuccess) {
-        init[0] = {
-          CHEQUE_DATE: new Date(result?.[0]?.data?.[0]?.DATE ?? ""),
-          ECS_USER_NO: "",
-        };
-      }
       setInitValues((old) => ({
         chequeDetails: [...init],
       }));
     }
-  }, [result?.[0].isLoading, formData, formData?.ACCT_NAME]);
-  // useEffect(() => {
-  //   if ((result && !result?.[0].isLoading) || (formData && formData.length)) {
-  //     let init = initValues.chequeDetails;
+  }, [formDataRef.current, mutationOutward.isSuccess, setInitValues]);
 
-  //     init[0] = {
-  //       CHEQUE_DATE: new Date(result?.[0]?.data?.[0]?.DATE ?? ""),
-  //       ECS_USER_NO: mutationOutward.isSuccess ? "" : formData?.ACCT_NAME ?? "",
-  //     };
-  //     setInitValues((old) => ({
-  //       chequeDetails: [...init],
-  //     }));
-  //   }
-  // }, [formData, mutationOutward.isSuccess, setInitValues]);
+  const onChangeProductType = (
+    fieldKey,
+    field,
+    dependentFieldsState,
+    formState
+  ) => {
+    console.log(
+      "wkeukuhfiduwehgw",
+      fieldKey,
+      field,
+      dependentFieldsState,
+      formState
+    );
+    if (
+      fieldKey === "chequeDetails[0].BANK_CD" &&
+      field?.error === "Bank code Not Found."
+    ) {
+      setIsOpenSave(true);
+    } else {
+      setIsOpenSave(false);
+    }
+    return "";
+  };
 
   const handleChangeTab = (_, currentTab) => {
     setCurrentTab(currentTab);
   };
   const onPopupYes = (rows) => {
-    console.log("rows", rows);
-    // setisBankAdding(true);
     mutationOutward.mutate(rows);
   };
   const onActionCancel = () => {
@@ -230,19 +262,6 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
     };
     if (value === "BUTTON_CLICK") {
       setZoneData(data);
-      let initData = initValues.chequeDetails;
-      if (initData && initData.length) {
-        initData[initData.length - 1] = {
-          ...initData[initData.length - 1],
-          ECS_USER_NO: data.ACCT_NAME ?? "",
-        };
-      }
-      setInitValues((old) => {
-        return {
-          ...old,
-          chequeDetails: [...initData],
-        };
-      });
     }
   };
 
@@ -276,7 +295,6 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
     }
     if (value === "BUTTON_CLICK") {
       formDataRef.current = data;
-      setFormData(data);
     }
   };
 
@@ -289,21 +307,21 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
   ) => {
     //@ts-ignore
     endSubmit(true, "Please enter any value");
-
+    let totalAmount = 0;
+    data.chequeDetails.forEach((element) => {
+      if (
+        element.AMOUNT !== undefined &&
+        element.AMOUNT !== "" &&
+        element.AMOUNT
+      ) {
+        totalAmount += Number(element.AMOUNT);
+      }
+    });
+    // slip and cheque total minus
+    setTotalAmountSlipCheque(totalAmount - formDataRef.current.AMOUNT);
     if (value === "AMOUNT") {
-      let totalAmount = 0;
-      data.chequeDetails.forEach((element) => {
-        if (
-          element.AMOUNT !== undefined &&
-          element.AMOUNT !== "" &&
-          element.AMOUNT
-        ) {
-          totalAmount += Number(element.AMOUNT);
-        }
-      });
-      let initVal = data.chequeDetails;
-
       // Compare the totals
+      let initVal = data.chequeDetails;
       if (
         !formDataRef.current.AMOUNT ||
         formDataRef.current.AMOUNT.length === 0
@@ -358,6 +376,12 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
 
   if (CtsOutwardClearingMetadata?.fields?.[1]) {
     CtsOutwardClearingMetadata.fields[1].requestProps = zoneTranType ?? "";
+  }
+
+  if (ChequeDetailFormMetaData.fields[0]._fields[3]) {
+    ChequeDetailFormMetaData.fields[0]._fields[3].maxDate = new Date(
+      result?.[0]?.data?.[0]?.DATE ?? ""
+    );
   }
 
   const updatedMetaData = {
@@ -532,8 +556,10 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
                       "[0].AMOUNT"
                   ) {
                     ClickEventManage();
+                    ChequeDetailFormMetaData.fields[0].isRemoveButton = false;
                   }
                 }
+
                 // else if (e.key === "F11") {
                 //   e.preventDefault();
                 //   handleKeyPress();
@@ -572,9 +598,29 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
                     </AppBar>
                   </div>
                 ) : null}
-              </>
+              </>{" "}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "end",
+                }}
+              >
+                <Toolbar
+                  sx={{
+                    background: "var(--theme-color5)",
+                    fontSize: "20px",
+                    color: "white",
+                    border: "1px solid #BABABA",
+                    borderRadius: "5px",
+                    width: "25%",
+                    minHeight: "30px !important ",
+                  }}
+                >
+                  {`Total Amount: ${totalAmountSlipCheque ?? ""} `}
+                </Toolbar>
+              </div>
               <FormWrapper
-                key={`ChequeDetailFormMetaData11${formData}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
+                key={`ChequeDetailFormMetaData11${formDataRef.current}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
                 metaData={ChequeDetailFormMetaData as MetaDataType}
                 // displayMode={formMode}
                 onSubmitHandler={onSubmitHandlerCheuq}
@@ -582,11 +628,15 @@ const CtsOutwardClearing = ({ zoneTranType }) => {
                 hideHeader={true}
                 formStyle={{
                   background: "white",
+                  height: "60%",
                 }}
                 ref={myChequeRef}
-                onFormButtonClickHandel={() => {
-                  setIsOpenSave(true);
-                }}
+                onFormDataChange={onChangeProductType}
+
+                // onFormButtonClickHandel={(fieldID, dependentFields) => {
+                //   console.log("fieldID", fieldID, dependentFields);
+                //   setIsOpenSave(true);
+                // }}
               />
               <Container>
                 <Toolbar

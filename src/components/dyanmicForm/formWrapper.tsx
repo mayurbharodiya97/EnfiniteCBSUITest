@@ -55,6 +55,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
       onFormButtonCicular,
       subHeaderLable,
       subHeaderLableStyle,
+      onFormDataChange = (id) => {},
     },
     ref
   ) => {
@@ -75,8 +76,10 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     metaData = MoveSequenceToRender(metaData);
     const groupWiseFields = renderFieldsByGroup(
       metaData,
-      onFormButtonClickHandel
+      onFormButtonClickHandel,
+      onFormDataChange
     );
+
     const initValues = constructInitialValue(metaData.fields, initialValues);
     const defaultArrayFieldInitValues = constructInitialValuesForArrayFields(
       metaData.fields
