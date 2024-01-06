@@ -1857,23 +1857,37 @@ export const SaveEntry = async (reqdata) => {
   //             }
   //         ]
   //     },
+  // DOC_MST: [
+  //   {
+  //     IsNewRow: true,
+  //     COMP_CD: "132 ",
+  //     BRANCH_CD:"099 ",
+  //     ENT_COMP_CD:"132 ",
+  //     ENT_BRANCH_CD:"099 ",
+  //     ACCT_TYPE: "1",
+  //     ACCT_CD: "2",
+  //     TEMPLATE_CD: "4",
+  //     SUBMIT: "N",
+  //     VALID_UPTO: "05-OCT-23",
+  //     DOC_AMOUNT: "1234",
+  //     DOC_NO: "123456",
+  //     DOC_TYPE: "KYC",
+  //     DOC_WEIGHTAGE: "1 ",
+  //     ACTIVE: "Y",
+  //   }
+  // ],
   DOC_MST: [
     {
-      IsNewRow: true,
-      COMP_CD: "132 ",
-      BRANCH_CD:"099 ",
-      ENT_COMP_CD:"132 ",
-      ENT_BRANCH_CD:"099 ",
-      ACCT_TYPE: "1",
-      ACCT_CD: "2",
       TEMPLATE_CD: "4",
       SUBMIT: "N",
       VALID_UPTO: "05-OCT-23",
-      DOC_AMOUNT: "1234",
       DOC_NO: "123456",
       DOC_TYPE: "KYC",
-      DOC_WEIGHTAGE: "1 ",
+      DOC_IMAGE: "",
+      DOC_AMOUNT: "",
+      DOC_WEIGHTAGE: "",
       ACTIVE: "Y",
+      IsNewRow: true
     }
   ],
   
