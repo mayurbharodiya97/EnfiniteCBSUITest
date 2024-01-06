@@ -64,15 +64,32 @@ const CommonFooter = ({
     }
   }, [location]);
 
-  const columnOptions = [
+  const columnOptions1 = [
     { label: "A/C No", value: "ACCT_CD" },
     { label: "Branch", value: "BRANCH_CD" },
+    { label: "Voucher", value: "TRAN_CD" },
+    { label: "Scroll", value: "SCROLL1" },
+    { label: "Chq No", value: "CHEQUE_NO" },
+    { label: "Remarks", value: "REMARKS" },
+    { label: "TRX", value: "TYPE_CD" },
+    { label: "SDC", value: "SDC" },
+    { label: "A/C Type", value: "ACCT_TYPE" },
+  ];
+
+  const columnOptions2 = [
+    { label: "A/C No", value: "ACCT_CD" },
+    { label: "Amount", value: "AMOUNT" },
+    { label: "A/C Name", value: "ACCT_NM" },
+    { label: "Chq No", value: "CHEQUE_NO" },
+    { label: "Branch", value: "ENTERED_BRANCH_CD" },
+    { label: "CompanyID", value: "ENTERED_COMP_CD" },
     { label: "Voucher", value: "TRAN_CD" },
     { label: "Scroll", value: "SCROLL1" },
     { label: "Remarks", value: "REMARKS" },
     { label: "TRX", value: "TYPE_CD" },
     { label: "SDC", value: "SDC" },
     { label: "A/C Type", value: "ACCT_TYPE" },
+    { label: "Entered By", value: "ENTERED_BY" },
   ];
   const operatorOptions = [
     { value: "Equals", label: "Equals" },
@@ -337,7 +354,7 @@ const CommonFooter = ({
                               value={a.column}
                               autoHighlight
                               size="small"
-                              options={columnOptions}
+                              options={isTrn1 ? columnOptions1 : columnOptions2}
                               onChange={(e, value) => handleColumn(e, value, i)}
                               renderInput={(params) => (
                                 <TextField
