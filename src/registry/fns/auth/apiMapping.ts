@@ -697,8 +697,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETSTOPDISPLAY",
     packageName: "",
   },
-  GETTRANDYNQUERYDATA: {
-    url: "/transactionServiceAPI/GETTRANDYNQUERYDATA",
+  GETTRANDYNQUERYDATAF1: {
+    url: "/transactionServiceAPI/GETTRANDYNQUERYDATAF1",
     packageName: "",
   },
   GETTRANDYNQUERYDATAF2: {
@@ -711,6 +711,11 @@ export const ActionWiseAPIConfiguration = {
   },
   DELETESCROLLDATA: {
     url: "/transactionServiceAPI/DELETESCROLLDATA",
+    packageName: "",
+  },
+
+  ACCTNOVALIDATION: {
+    url: "/accountServiceAPI/ACCTNOVALIDATION",
     packageName: "",
   },
 

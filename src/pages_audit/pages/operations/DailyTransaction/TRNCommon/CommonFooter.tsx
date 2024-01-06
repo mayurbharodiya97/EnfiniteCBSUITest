@@ -1,5 +1,5 @@
 //UI
-import { Button, Toolbar, Card } from "@mui/material";
+import { Button, Toolbar, Card, Tooltip } from "@mui/material";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -31,11 +31,10 @@ import * as API from "./api";
 import OtherTrxTabs from "../TRNOtherTrx";
 
 const CommonFooter = ({
-  tableRows,
-  handleUpdateRows,
+  viewOnly,
   handleViewAll,
   handleRefresh,
-  handleViewQueryData,
+  handleUpdateRows,
 }) => {
   let defaulVal = {
     column: { value: "ACCT_CD", label: "A/C No" },
@@ -47,9 +46,9 @@ const CommonFooter = ({
   const [queryDialog, setQueryDialog] = useState(false);
   const [scrollDialog, setScrollDialog] = useState(false);
   const [otherTrxDialog, setOtherTrxDialog] = useState(false);
+
   const [scrollNo, setScrollNo] = useState("");
   const [loading, setLoading] = useState(false);
-  const [currentAction, setCurrentAction] = useState("");
   const [isTrn1, setIsTrn1] = useState(true);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -86,18 +85,20 @@ const CommonFooter = ({
     { value: "AND", label: "AND" },
     { value: "OR", label: "OR" },
   ];
+  useEffect(() => {
+    console.log(tempStore, "tempStore1");
+  }, [tempStore]);
 
   useEffect(() => {
-    console.log(rows, "rows");
+    console.log(rows, "rows common footer");
   }, [rows]);
 
   //api define
-  const getQueryData = useMutation(API.getQueryData, {
+  const getQueryDataF1 = useMutation(API.getQueryDataF1, {
     onSuccess: (data) => {
       setLoading(false);
       setQueryDialog(false);
-      setTempStore({ ...tempStore, queryRows: data });
-      handleViewQueryData();
+      handleUpdateRows(data);
     },
     onError: (error: any) => {
       setLoading(false);
@@ -110,8 +111,7 @@ const CommonFooter = ({
     onSuccess: (data) => {
       setLoading(false);
       setQueryDialog(false);
-      setTempStore({ ...tempStore, queryRows: data });
-      handleViewQueryData();
+      handleUpdateRows(data);
     },
     onError: (error: any) => {
       setLoading(false);
@@ -125,7 +125,13 @@ const CommonFooter = ({
       setLoading(false);
       setScrollDialog(false);
       setScrollNo("");
-      handleRefresh();
+
+      if (isTrn1) {
+        viewOnly && setTempStore({ ...tempStore, refresh: Math.random() });
+      } else {
+        handleRefresh();
+      }
+
       enqueueSnackbar("scroll deleted", {
         variant: "success",
       });
@@ -196,11 +202,15 @@ const CommonFooter = ({
       };
     });
 
-    let data = { COMP_CD: authState?.companyID, SELECT_COLUMN: arr };
+    let data = {
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: authState?.user?.branchCode,
+      SELECT_COLUMN: arr,
+    };
     let err = rows.some((a) => !a.logic.value);
 
     if (isTrn1) {
-      !err && getQueryData.mutate(data);
+      !err && getQueryDataF1.mutate(data);
     } else {
       !err && getQueryDataF2.mutate(data);
     }
@@ -260,26 +270,35 @@ const CommonFooter = ({
             Scroll Delete
           </Button>
         </Grid>
-        {!location.pathname?.includes("/teller_daily_tran_cnf_F2") && (
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setQueryDialog(true)}
-            >
-              Query
-            </Button>
-          </Grid>
-        )}
         <Grid item>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => setOtherTrxDialog(true)}
+            onClick={() => setQueryDialog(true)}
           >
-            Other Trx
+            Query
           </Button>
         </Grid>
+        <Grid item>
+          <Tooltip
+            disableInteractive={true}
+            title={
+              tempStore?.accInfo?.ACCT_CD ? (
+                ""
+              ) : (
+                <h3>"Please fill A/C details"</h3>
+              )
+            }
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setOtherTrxDialog(true)}
+            >
+              Other Trx
+            </Button>
+          </Tooltip>
+        </Grid>{" "}
         {/* <Grid item>
           <Button variant="contained" color="primary">
             Positive Pay
@@ -287,191 +306,197 @@ const CommonFooter = ({
         </Grid> */}
       </Grid>
       <br />
+      <>
+        <Dialog
+          maxWidth="md"
+          open={queryDialog}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Query</DialogTitle>
+          <DialogContent>
+            <TableContainer>
+              <Table aria-label="simple table" padding={"none"}>
+                <TableHead>
+                  <TableRow id="topHead">
+                    <TableCell id="head">Column</TableCell>
+                    <TableCell id="head">Operator</TableCell>
+                    <TableCell id="head">Value</TableCell>
+                    <TableCell id="head">Logic</TableCell>
+                  </TableRow>
+                </TableHead>
 
-      <Dialog
-        maxWidth="md"
-        open={queryDialog}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Query</DialogTitle>
-        <DialogContent>
-          <TableContainer>
-            <Table aria-label="simple table" padding={"none"}>
-              <TableHead>
-                <TableRow id="topHead">
-                  <TableCell id="head">Column</TableCell>
-                  <TableCell id="head">Operator</TableCell>
-                  <TableCell id="head">Value</TableCell>
-                  <TableCell id="head">Logic</TableCell>
-                </TableRow>
-              </TableHead>
+                {rows &&
+                  rows?.map((a, i) => {
+                    return (
+                      <TableBody>
+                        <TableRow>
+                          <TableCell sx={{ minWidth: 160 }}>
+                            <Autocomplete
+                              value={a.column}
+                              autoHighlight
+                              size="small"
+                              options={columnOptions}
+                              onChange={(e, value) => handleColumn(e, value, i)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  error={a.column?.value ? false : true}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ minWidth: 160 }}>
+                            <Autocomplete
+                              value={a.operator}
+                              autoHighlight
+                              size="small"
+                              options={operatorOptions}
+                              onChange={(e, value) =>
+                                handleOperator(e, value, i)
+                              }
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  error={a.operator?.value ? false : true}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ minWidth: 50 }}>
+                            <TextField
+                              value={a.value}
+                              error={!a.value ? true : false}
+                              size="small"
+                              onChange={(e) => handleValue(e, i)}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ minWidth: 160 }}>
+                            <Autocomplete
+                              value={a.logic}
+                              autoHighlight
+                              size="small"
+                              options={logicOptions}
+                              onChange={(e, value) => handleLogic(e, value, i)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  error={a.logic?.value ? false : true}
+                                />
+                              )}
+                            />
+                          </TableCell>
 
-              {rows &&
-                rows?.map((a, i) => {
-                  return (
-                    <TableBody>
-                      <TableRow>
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.column}
-                            autoHighlight
-                            size="small"
-                            options={columnOptions}
-                            onChange={(e, value) => handleColumn(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                error={a.column?.value ? false : true}
-                              />
-                            )}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.operator}
-                            autoHighlight
-                            size="small"
-                            options={operatorOptions}
-                            onChange={(e, value) => handleOperator(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                error={a.operator?.value ? false : true}
-                              />
-                            )}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 50 }}>
-                          <TextField
-                            value={a.value}
-                            error={!a.value ? true : false}
-                            size="small"
-                            onChange={(e) => handleValue(e, i)}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.logic}
-                            autoHighlight
-                            size="small"
-                            options={logicOptions}
-                            onChange={(e, value) => handleLogic(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                error={a.logic?.value ? false : true}
-                              />
-                            )}
-                          />
-                        </TableCell>
-
-                        <TableCell style={{ border: "0px", width: "10px" }}>
-                          <Button
-                            color="secondary"
-                            onClick={(e) => handleClear(e, i)}
-                            size="small"
-                          >
-                            <CancelIcon />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  );
-                })}
-            </Table>
-          </TableContainer>
-          {loading && <LinearProgress color="secondary" />}
-        </DialogContent>
-        <div className="dialogFooter">
-          {" "}
-          <div>
-            <Button variant="contained" onClick={() => handleAddRow()}>
-              <AddIcon /> new row
-            </Button>
-            <Button
-              style={{ marginLeft: "8px" }}
-              variant="outlined"
-              color="secondary"
-              onClick={() => handleReset()}
-            >
-              <RestartAltIcon /> reset
-            </Button>
-          </div>
-          <div>
+                          <TableCell style={{ border: "0px", width: "10px" }}>
+                            <Button
+                              color="secondary"
+                              onClick={(e) => handleClear(e, i)}
+                              size="small"
+                            >
+                              <CancelIcon />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    );
+                  })}
+              </Table>
+            </TableContainer>
+            {loading && <LinearProgress color="secondary" />}
+          </DialogContent>
+          <div className="dialogFooter">
             {" "}
-            <Button variant="contained" onClick={() => handleClose()}>
+            <div>
+              <Button variant="contained" onClick={() => handleAddRow()}>
+                <AddIcon /> new row
+              </Button>
+              <Button
+                style={{ marginLeft: "8px" }}
+                variant="outlined"
+                color="secondary"
+                onClick={() => handleReset()}
+              >
+                <RestartAltIcon /> reset
+              </Button>
+            </div>
+            <div>
+              {" "}
+              <Button variant="contained" onClick={() => handleClose()}>
+                Cancel
+              </Button>
+              <Button
+                style={{ marginLeft: "8px" }}
+                color="secondary"
+                variant="contained"
+                onClick={handleSaveQuery}
+                autoFocus
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+        </Dialog>
+
+        <Dialog
+          maxWidth="lg"
+          open={scrollDialog}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Scroll Delete</DialogTitle>
+          <DialogContent>
+            <div style={{ width: "300px" }}></div>
+            <TextField
+              fullWidth={true}
+              value={scrollNo}
+              placeholder="Enter ScrollNo"
+              id="txtRight"
+              size="small"
+              type="number"
+              onChange={(e) => setScrollNo(e.target.value)}
+            />
+            {loading && <LinearProgress color="secondary" />}
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={() => setScrollDialog(false)} variant="contained">
               Cancel
             </Button>
             <Button
-              style={{ marginLeft: "8px" }}
               color="secondary"
               variant="contained"
-              onClick={handleSaveQuery}
+              onClick={handleDeleteScroll}
               autoFocus
             >
-              Save
+              Delete
             </Button>
-          </div>
-        </div>
-      </Dialog>
+          </DialogActions>
+        </Dialog>
 
-      <Dialog
-        maxWidth="lg"
-        open={scrollDialog}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Scroll Delete</DialogTitle>
-        <DialogContent>
-          <div style={{ width: "300px" }}></div>
-          <TextField
-            fullWidth={true}
-            value={scrollNo}
-            placeholder="Enter ScrollNo"
-            id="txtRight"
-            size="small"
-            type="number"
-            onChange={(e) => setScrollNo(e.target.value)}
-          />
-          {loading && <LinearProgress color="secondary" />}
-        </DialogContent>
+        <Dialog
+          maxWidth="xl"
+          open={otherTrxDialog}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          {/* <DialogTitle id="alert-dialog-title">Scroll Delete</DialogTitle> */}
+          <DialogContent>
+            <OtherTrxTabs />
+          </DialogContent>
 
-        <DialogActions>
-          <Button onClick={() => setScrollDialog(false)} variant="contained">
-            Cancel
-          </Button>
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={handleDeleteScroll}
-            autoFocus
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        maxWidth="xl"
-        open={otherTrxDialog}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        {/* <DialogTitle id="alert-dialog-title">Scroll Delete</DialogTitle> */}
-        <DialogContent>
-          <OtherTrxTabs />
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => setOtherTrxDialog(false)} variant="contained">
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
+          <DialogActions>
+            <Button
+              onClick={() => setOtherTrxDialog(false)}
+              variant="contained"
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </>
   );
 };

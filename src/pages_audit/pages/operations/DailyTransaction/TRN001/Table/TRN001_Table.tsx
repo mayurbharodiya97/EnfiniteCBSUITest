@@ -29,36 +29,37 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const TRN001_Table = () => {
-  console.log("t1 table render");
+export const TRN001_Table = ({ updatedRows }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const myGridRef = useRef<any>(null);
 
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
+
   const [rows, setRows] = useState<any>([]);
   const [loading, setLoading] = useState(false);
-  const myGridRef = useRef<any>(null);
+
   let objData = {
     COMP_CD: authState?.companyID,
     BRANCH_CD: authState?.user?.branchCode,
   };
 
   useEffect(() => {
-    console.log(rows, "trn1 table");
+    console.log(rows, "trn1 table rows");
   }, [rows]);
 
   useEffect(() => {
-    if (tempStore?.queryRows?.length > 0) {
-      setRows(tempStore.queryRows);
+    if (updatedRows?.length > 0) {
+      setRows(updatedRows);
     } else {
+      console.log("trn1 refresh");
       getTRN001List.mutate(objData);
     }
-  }, [tempStore]);
+  }, [updatedRows, tempStore?.refresh]);
 
   // api define=============================================
   const getTRN001List = useMutation(trn1Api.getTRN001List, {
     onSuccess: (data) => {
-      console.log(data, "001 table list");
       setRows(data);
     },
     onError: (error) => {},
@@ -66,7 +67,6 @@ export const TRN001_Table = () => {
 
   const getAccInfo = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
-      console.log(data, "accInfo");
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
     },
@@ -77,10 +77,10 @@ export const TRN001_Table = () => {
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
       setLoading(false);
+      getTRN001List.mutate(objData);
       enqueueSnackbar("Scroll Deleted", {
         variant: "success",
       });
-      getTRN001List.mutate(objData);
     },
     onError: (error: any) => {
       setLoading(false);
@@ -93,10 +93,9 @@ export const TRN001_Table = () => {
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-
+    setLoading(true);
     console.log(row, "row");
     if (data.name === "view-detail") {
-      setLoading(true);
       let obj = {
         COMP_CD: row?.COMP_CD,
         BRANCH_CD: row?.BRANCH_CD,
@@ -108,7 +107,6 @@ export const TRN001_Table = () => {
     }
 
     if (data.name === "Delete") {
-      setLoading(true);
       let obj = {
         TRAN_CD: row?.TRAN_CD,
         ENTERED_COMP_CD: row?.COMP_CD,

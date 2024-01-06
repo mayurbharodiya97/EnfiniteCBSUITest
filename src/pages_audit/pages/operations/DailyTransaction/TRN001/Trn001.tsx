@@ -68,18 +68,14 @@ export const Trn001 = () => {
     vNo: "", //TRAN_CD
     bug: true,
     bugChq: false,
+    bugAccNo: false,
     isCredit: true,
     viewOnly: false,
   };
 
-  useEffect(() => {
-    console.log(tempStore, "tempStore1");
-  }, [tempStore]);
-
   //states define
   const [rows, setRows] = useState<any>([defaulVal]);
-  const [rows2, setRows2] = useState([]);
-  const [random, setRandom] = useState("");
+  const [updatedRows, setUpdatedRows] = useState<any>([]);
   const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
   const [sdcOptions, setSdcOptions] = useState<any>([]);
@@ -104,13 +100,8 @@ export const Trn001 = () => {
   }, []);
 
   useEffect(() => {
-    console.log(loading, "loading trn001");
-  }, [loading]);
-
-  useEffect(() => {
     //bug checker on row change
-    console.log(rows, "rows");
-
+    console.log(rows, "rows trn1");
     let i = 0;
     if (rows.length > 0) {
       i = rows.length - 1;
@@ -195,21 +186,18 @@ export const Trn001 = () => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
       if (data.STATUS == "C") {
-        console.log("c1");
         setErrMsg({
           ...errMsg,
           accNo: data.ACCT_CD_NEW + " Account Closed!",
         });
         rows[index].bug = true;
       } else if (data.STATUS == "U") {
-        console.log("c2");
         setErrMsg({
           ...errMsg,
           accNo: data.ACCT_CD_NEW + " Account Unclaimed!",
         });
         rows[index].bug = true;
       } else if (!data || data?.length == 0) {
-        console.log("c3");
         setErrMsg({
           ...errMsg,
           accNo: "No record found for given A/C type & A/C No",
@@ -230,7 +218,7 @@ export const Trn001 = () => {
   const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
       setLoading(false);
-      console.log(data, "scroll save data");
+      console.log(data, "scroll save api res");
       if (Number(data?.INSERT) > 0) {
         handleReset();
         enqueueSnackbar("Scroll Saved", {
@@ -251,6 +239,21 @@ export const Trn001 = () => {
         rows[index].bug = true;
         rows[index].bugChq = true;
         setErrMsg({ ...errMsg, cNo: data?.ERR_MSG });
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+  const getAccNoValidation = useMutation(API.getAccNoValidation, {
+    onSuccess: (data) => {
+      console.log(data, "datadata");
+      if (data?.RESTRICT_MESSAGE) {
+        enqueueSnackbar(data?.RESTRICT_MESSAGE, {
+          variant: "error",
+        });
       }
     },
     onError: (error: any) => {
@@ -293,6 +296,11 @@ export const Trn001 = () => {
     obj[i].accNo = abc;
     handleGetAccInfo(i);
     setRows(obj);
+
+    obj[i].accNo &&
+      obj[i].accType?.value &&
+      obj[i].branch?.value &&
+      getAccNoValidation.mutate(obj[i]);
   };
 
   const handleTrx = (e, value, i) => {
@@ -463,6 +471,7 @@ export const Trn001 = () => {
       credit: cred?.toFixed(2),
       vNo: "",
       bugChq: false,
+      bugAccNo: false,
       isCredit: isCred,
     };
     if (
@@ -503,22 +512,16 @@ export const Trn001 = () => {
     setTotalDebit(Number(sumDebit.toFixed(3)));
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
-
-  useEffect(() => {
-    console.log("def value changed");
-  }, [defaulVal]);
-  console.log(defaulVal, "defaulVal");
   const handleReset = () => {
-    console.log("reset woring");
     let defaultRows = { ...defaulVal };
-    console.log(defaultRows, "defaultRows");
     setRows([defaultRows]);
+    setUpdatedRows([]);
     setTotalCredit(0);
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
     setResetDialog(false);
     setViewOnly(false);
-    setTempStore({ ...tempStore, accInfo: {}, queryRows: [] });
+    setTempStore({ ...tempStore, accInfo: {} });
   };
 
   const handleFilterTrx = () => {
@@ -542,6 +545,8 @@ export const Trn001 = () => {
   };
 
   const handleSaveDialog = () => {
+    console.log(errMsg, "errMsg");
+    console.log(isSave, "isSave");
     if (
       errMsg.accNo ||
       errMsg.cNo ||
@@ -581,18 +586,13 @@ export const Trn001 = () => {
   };
 
   const handleUpdateRows = (data) => {
-    //to apply filter from baseFooter
     setViewOnly(true);
-    console.log(data, "common footer");
-    setRows2(data);
+    setUpdatedRows(data);
   };
 
-  const handleGetTRN001List = () => {
+  const handleViewAll = () => {
     setViewOnly(true);
-  };
-
-  const handleViewQueryData = () => {
-    setViewOnly(true);
+    setUpdatedRows([]);
   };
   return (
     <>
@@ -608,7 +608,7 @@ export const Trn001 = () => {
         }}
       >
         {loading && <LinearProgress color="secondary" />}
-        {viewOnly && <TRN001_Table />}
+        {viewOnly && <TRN001_Table updatedRows={updatedRows} />}
 
         {!viewOnly && (
           <TableContainer>
@@ -902,11 +902,10 @@ export const Trn001 = () => {
 
       <br />
       <CommonFooter
-        tableRows={rows2}
+        viewOnly={viewOnly}
         handleUpdateRows={handleUpdateRows}
-        handleViewAll={handleGetTRN001List}
+        handleViewAll={handleViewAll}
         handleRefresh={handleReset}
-        handleViewQueryData={handleViewQueryData}
       />
 
       <>
