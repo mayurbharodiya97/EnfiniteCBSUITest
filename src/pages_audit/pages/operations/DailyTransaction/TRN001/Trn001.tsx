@@ -48,6 +48,7 @@ import DailyTransTabs from "../TRNHeaderTabs";
 export const Trn001 = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
+  let updatedRows = [];
   var defBranch = {
     label: authState?.user?.branchCode + "-" + authState?.user?.branch,
     value: authState?.user?.branchCode,
@@ -71,10 +72,6 @@ export const Trn001 = () => {
     isCredit: true,
     viewOnly: false,
   };
-
-  useEffect(() => {
-    console.log(tempStore, "tempStore1");
-  }, [tempStore]);
 
   //states define
   const [rows, setRows] = useState<any>([defaulVal]);
@@ -104,12 +101,7 @@ export const Trn001 = () => {
   }, []);
 
   useEffect(() => {
-    console.log(loading, "loading trn001");
-  }, [loading]);
-
-  useEffect(() => {
     //bug checker on row change
-    console.log(rows, "rows");
 
     let i = 0;
     if (rows.length > 0) {
@@ -195,21 +187,18 @@ export const Trn001 = () => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
       if (data.STATUS == "C") {
-        console.log("c1");
         setErrMsg({
           ...errMsg,
           accNo: data.ACCT_CD_NEW + " Account Closed!",
         });
         rows[index].bug = true;
       } else if (data.STATUS == "U") {
-        console.log("c2");
         setErrMsg({
           ...errMsg,
           accNo: data.ACCT_CD_NEW + " Account Unclaimed!",
         });
         rows[index].bug = true;
       } else if (!data || data?.length == 0) {
-        console.log("c3");
         setErrMsg({
           ...errMsg,
           accNo: "No record found for given A/C type & A/C No",
@@ -230,7 +219,7 @@ export const Trn001 = () => {
   const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
       setLoading(false);
-      console.log(data, "scroll save data");
+      console.log(data, "scroll save api res");
       if (Number(data?.INSERT) > 0) {
         handleReset();
         enqueueSnackbar("Scroll Saved", {
@@ -503,22 +492,15 @@ export const Trn001 = () => {
     setTotalDebit(Number(sumDebit.toFixed(3)));
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
-
-  useEffect(() => {
-    console.log("def value changed");
-  }, [defaulVal]);
-  console.log(defaulVal, "defaulVal");
   const handleReset = () => {
-    console.log("reset woring");
     let defaultRows = { ...defaulVal };
-    console.log(defaultRows, "defaultRows");
     setRows([defaultRows]);
     setTotalCredit(0);
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
     setResetDialog(false);
     setViewOnly(false);
-    setTempStore({ ...tempStore, accInfo: {}, queryRows: [] });
+    setTempStore({ ...tempStore, accInfo: {} });
   };
 
   const handleFilterTrx = () => {
@@ -581,19 +563,10 @@ export const Trn001 = () => {
   };
 
   const handleUpdateRows = (data) => {
-    //to apply filter from baseFooter
     setViewOnly(true);
-    console.log(data, "common footer");
-    setRows2(data);
+    updatedRows = data;
   };
 
-  const handleGetTRN001List = () => {
-    setViewOnly(true);
-  };
-
-  const handleViewQueryData = () => {
-    setViewOnly(true);
-  };
   return (
     <>
       <DailyTransTabs heading="(Maker) (TRN/001)" />
@@ -608,7 +581,7 @@ export const Trn001 = () => {
         }}
       >
         {loading && <LinearProgress color="secondary" />}
-        {viewOnly && <TRN001_Table />}
+        {viewOnly && <TRN001_Table updatedRows={updatedRows} />}
 
         {!viewOnly && (
           <TableContainer>
@@ -902,11 +875,9 @@ export const Trn001 = () => {
 
       <br />
       <CommonFooter
-        tableRows={rows2}
         handleUpdateRows={handleUpdateRows}
-        handleViewAll={handleGetTRN001List}
+        handleViewAll={() => setViewOnly(true)}
         handleRefresh={handleReset}
-        handleViewQueryData={handleViewQueryData}
       />
 
       <>

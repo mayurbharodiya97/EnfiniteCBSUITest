@@ -30,12 +30,12 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
     // alwaysAvailable: true,
   },
-  // {
-  //   actionName: "Delete",
-  //   actionLabel: "Delete",
-  //   multiple: false,
-  //   rowDoubleClick: true,
-  // },
+  {
+    actionName: "Delete",
+    actionLabel: "Delete",
+    multiple: false,
+    rowDoubleClick: true,
+  },
   {
     actionName: "view",
     actionLabel: "Confirm",
@@ -46,28 +46,23 @@ const actions: ActionTypes[] = [
 ];
 
 export const Trn002 = () => {
-  const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext<any>(AccDetailContext);
+  const myGridRef = useRef<any>(null);
+  let updatedRows = [];
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    console.log(loading, "loading Table");
-  }, [loading]);
+  const { enqueueSnackbar } = useSnackbar();
+  let dataObj = {
+    COMP_CD: authState?.companyID,
+    BRANCH_CD: authState?.user?.branchCode,
+  };
 
   useEffect(() => {
-    if (tempStore?.queryRows?.length > 0) {
-      setRows2(tempStore.queryRows);
-    } else {
-      handleGetTRN002List();
-    }
-  }, [tempStore]);
-
-  // useEffect(() => {
-  //   handleGetTRN002List();
-  // }, []);
+    handleGetTRN002List();
+  }, []);
 
   useEffect(() => {
     console.log(rows, "rows");
@@ -112,12 +107,14 @@ export const Trn002 = () => {
   });
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
+      setLoading(false);
       enqueueSnackbar("Scroll Deleted", {
         variant: "success",
       });
       handleGetTRN002List();
     },
     onError: (error: any) => {
+      setLoading(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -125,17 +122,12 @@ export const Trn002 = () => {
   });
   // function define  ======================================================================
   const handleGetTRN002List = () => {
-    let data = {
-      COMP_CD: authState?.companyID,
-      BRANCH_CD: authState?.user?.branchCode,
-    };
-    getTRN002List.mutate(data);
+    getTRN002List.mutate(dataObj);
   };
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
     setLoading(true);
-
     if (data.name === "view-detail") {
       let obj = {
         COMP_CD: row?.COMP_CD,
@@ -151,6 +143,7 @@ export const Trn002 = () => {
       if (row.CONFIRMED == "0") {
         confirmScroll.mutate(row);
       } else {
+        setLoading(false);
         enqueueSnackbar("Scroll Already Confirmed", {
           variant: "error",
         });
@@ -158,24 +151,22 @@ export const Trn002 = () => {
     }
 
     if (data.name === "Delete") {
-      console.log("deleteeee");
-      deleteScrollByVoucher.mutate(row);
+      let obj = {
+        TRAN_CD: row?.TRAN_CD,
+        ENTERED_COMP_CD: row?.COMP_CD,
+        ENTERED_BRANCH_CD: row?.BRANCH_CD,
+      };
+      deleteScrollByVoucher.mutate(obj);
     }
   }, []);
-
-  const handleUpdateRows = (data) => {
-    setRows2(data);
-  };
 
   const handleViewAll = () => {
     let arr = [...rows];
     setRows2(arr);
   };
-  const handleRefresh = () => {
-    handleGetTRN002List();
+  const handleUpdateRows = (data) => {
+    setRows2(data);
   };
-
-  const handleViewQueryData = () => {};
   return (
     <>
       <DailyTransTabs heading=" Confirmation (F2) (TRN/002)" />
@@ -195,7 +186,7 @@ export const Trn002 = () => {
           data={rows2}
           setData={() => null}
           loading={getTRN002List.isLoading}
-          // ref={myGridRef}
+          ref={myGridRef}
           refetchData={() => {}}
           actions={actions}
           setAction={setCurrentAction}
@@ -203,11 +194,9 @@ export const Trn002 = () => {
       </Card>
 
       <CommonFooter
-        tableRows={rows2}
         handleUpdateRows={handleUpdateRows}
         handleViewAll={handleViewAll}
-        handleRefresh={handleRefresh}
-        handleViewQueryData={handleViewQueryData}
+        handleRefresh={() => handleGetTRN002List()}
       />
     </>
   );

@@ -6,11 +6,11 @@ import {
 import { AuthSDK } from "registry/fns/auth";
 import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
-export const getQueryData = async (reqData) => {
+export const getQueryDataF1 = async (reqData) => {
   console.log(reqData, "reqData");
 
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETTRANDYNQUERYDATA", reqData);
+    await AuthSDK.internalFetcher("GETTRANDYNQUERYDATAF1", reqData);
   if (status === "0") {
     let responseData = data;
     responseData &&
