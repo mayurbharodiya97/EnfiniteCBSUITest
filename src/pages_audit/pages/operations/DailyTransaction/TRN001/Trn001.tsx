@@ -48,7 +48,6 @@ import DailyTransTabs from "../TRNHeaderTabs";
 export const Trn001 = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
-  let updatedRows = [];
   var defBranch = {
     label: authState?.user?.branchCode + "-" + authState?.user?.branch,
     value: authState?.user?.branchCode,
@@ -69,14 +68,14 @@ export const Trn001 = () => {
     vNo: "", //TRAN_CD
     bug: true,
     bugChq: false,
+    bugAccNo: false,
     isCredit: true,
     viewOnly: false,
   };
 
   //states define
   const [rows, setRows] = useState<any>([defaulVal]);
-  const [rows2, setRows2] = useState([]);
-  const [random, setRandom] = useState("");
+  const [updatedRows, setUpdatedRows] = useState<any>([]);
   const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
   const [sdcOptions, setSdcOptions] = useState<any>([]);
@@ -102,7 +101,7 @@ export const Trn001 = () => {
 
   useEffect(() => {
     //bug checker on row change
-
+    console.log(rows, "rows trn1");
     let i = 0;
     if (rows.length > 0) {
       i = rows.length - 1;
@@ -248,6 +247,21 @@ export const Trn001 = () => {
       });
     },
   });
+  const getAccNoValidation = useMutation(API.getAccNoValidation, {
+    onSuccess: (data) => {
+      console.log(data, "datadata");
+      if (data?.RESTRICT_MESSAGE) {
+        enqueueSnackbar(data?.RESTRICT_MESSAGE, {
+          variant: "error",
+        });
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
 
   //TABLE FNs ===============================================================
   const handleBranch = (e, value, i) => {
@@ -282,6 +296,11 @@ export const Trn001 = () => {
     obj[i].accNo = abc;
     handleGetAccInfo(i);
     setRows(obj);
+
+    obj[i].accNo &&
+      obj[i].accType?.value &&
+      obj[i].branch?.value &&
+      getAccNoValidation.mutate(obj[i]);
   };
 
   const handleTrx = (e, value, i) => {
@@ -452,6 +471,7 @@ export const Trn001 = () => {
       credit: cred?.toFixed(2),
       vNo: "",
       bugChq: false,
+      bugAccNo: false,
       isCredit: isCred,
     };
     if (
@@ -495,6 +515,7 @@ export const Trn001 = () => {
   const handleReset = () => {
     let defaultRows = { ...defaulVal };
     setRows([defaultRows]);
+    setUpdatedRows([]);
     setTotalCredit(0);
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
@@ -524,6 +545,8 @@ export const Trn001 = () => {
   };
 
   const handleSaveDialog = () => {
+    console.log(errMsg, "errMsg");
+    console.log(isSave, "isSave");
     if (
       errMsg.accNo ||
       errMsg.cNo ||
@@ -564,9 +587,13 @@ export const Trn001 = () => {
 
   const handleUpdateRows = (data) => {
     setViewOnly(true);
-    updatedRows = data;
+    setUpdatedRows(data);
   };
 
+  const handleViewAll = () => {
+    setViewOnly(true);
+    setUpdatedRows([]);
+  };
   return (
     <>
       <DailyTransTabs heading="(Maker) (TRN/001)" />
@@ -875,8 +902,9 @@ export const Trn001 = () => {
 
       <br />
       <CommonFooter
+        viewOnly={viewOnly}
         handleUpdateRows={handleUpdateRows}
-        handleViewAll={() => setViewOnly(true)}
+        handleViewAll={handleViewAll}
         handleRefresh={handleReset}
       />
 

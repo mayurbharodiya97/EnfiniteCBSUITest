@@ -201,3 +201,22 @@ export const getChqValidation = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getAccNoValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("ACCTNOVALIDATION", {
+      COMP_CD: reqData?.branch?.info?.COMP_CD,
+      BRANCH_CD: reqData?.branch?.value,
+      ACCT_TYPE: reqData?.accType?.value,
+      ACCT_CD: reqData.accNo.padEnd(20, " "),
+
+      GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
+      SCREEN_REF: "ETRN/559",
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

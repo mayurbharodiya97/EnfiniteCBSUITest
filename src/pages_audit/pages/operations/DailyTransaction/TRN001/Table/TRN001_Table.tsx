@@ -52,9 +52,10 @@ export const TRN001_Table = ({ updatedRows }) => {
     if (updatedRows?.length > 0) {
       setRows(updatedRows);
     } else {
+      console.log("trn1 refresh");
       getTRN001List.mutate(objData);
     }
-  }, [updatedRows, tempStore]);
+  }, [updatedRows, tempStore?.refresh]);
 
   // api define=============================================
   const getTRN001List = useMutation(trn1Api.getTRN001List, {

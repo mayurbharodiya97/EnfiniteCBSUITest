@@ -30,7 +30,12 @@ import "./CommonFooter.css";
 import * as API from "./api";
 import OtherTrxTabs from "../TRNOtherTrx";
 
-const CommonFooter = ({ handleViewAll, handleRefresh, handleUpdateRows }) => {
+const CommonFooter = ({
+  viewOnly,
+  handleViewAll,
+  handleRefresh,
+  handleUpdateRows,
+}) => {
   let defaulVal = {
     column: { value: "ACCT_CD", label: "A/C No" },
     operator: { value: "Equals", label: "Equals" },
@@ -122,7 +127,7 @@ const CommonFooter = ({ handleViewAll, handleRefresh, handleUpdateRows }) => {
       setScrollNo("");
 
       if (isTrn1) {
-        setTempStore({ ...tempStore, refresh: Math.random() });
+        viewOnly && setTempStore({ ...tempStore, refresh: Math.random() });
       } else {
         handleRefresh();
       }
@@ -197,7 +202,11 @@ const CommonFooter = ({ handleViewAll, handleRefresh, handleUpdateRows }) => {
       };
     });
 
-    let data = { COMP_CD: authState?.companyID, SELECT_COLUMN: arr };
+    let data = {
+      COMP_CD: authState?.companyID,
+      BRANCH_CD: authState?.user?.branchCode,
+      SELECT_COLUMN: arr,
+    };
     let err = rows.some((a) => !a.logic.value);
 
     if (isTrn1) {

@@ -49,7 +49,7 @@ export const Trn002 = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext<any>(AccDetailContext);
   const myGridRef = useRef<any>(null);
-  let updatedRows = [];
+
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
   const [loading, setLoading] = useState(false);
@@ -194,6 +194,7 @@ export const Trn002 = () => {
       </Card>
 
       <CommonFooter
+        viewOnly={true}
         handleUpdateRows={handleUpdateRows}
         handleViewAll={handleViewAll}
         handleRefresh={() => handleGetTRN002List()}

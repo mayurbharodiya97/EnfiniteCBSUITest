@@ -714,6 +714,11 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
 
+  ACCTNOVALIDATION: {
+    url: "/accountServiceAPI/ACCTNOVALIDATION",
+    packageName: "",
+  },
+
   // other trx
   GETDLYTRNOWCHQOBCIBCTAB: {
     //OWChq
