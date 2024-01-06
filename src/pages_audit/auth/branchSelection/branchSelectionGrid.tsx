@@ -518,13 +518,8 @@ const BranchSelectionGrid = ({ selectionMode }) => {
                 {" "}
                 <div>
                   <img
-<<<<<<< HEAD
-                    src={Boolean(pictureURL?.logo) ? pictureURL?.logo : Logo}
-                    alt="CbsEnfinity"
-=======
                     src={Boolean(logos?.logo) ? logos?.logo : Logo}
-                    alt="Netbanking"
->>>>>>> origin/mayur
+                    alt="CbsEnfinity"
                     className={classes.logo}
                   />
                 </div>
