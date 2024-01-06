@@ -17,6 +17,7 @@ import DialogContent from "@mui/material/DialogContent";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import LinearProgress from "@mui/material/LinearProgress";
 
 //logic
 import React, { useEffect, useState, useContext, memo } from "react";
@@ -42,16 +43,27 @@ const CommonFooter = ({
     value: "",
     logic: { value: "OR", label: "OR" },
   };
-  console.log("render common footer");
   const [rows, setRows] = useState<any>([defaulVal]);
   const [queryDialog, setQueryDialog] = useState(false);
   const [scrollDialog, setScrollDialog] = useState(false);
   const [otherTrxDialog, setOtherTrxDialog] = useState(false);
   const [scrollNo, setScrollNo] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [currentAction, setCurrentAction] = useState("");
+  const [isTrn1, setIsTrn1] = useState(true);
 
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname.includes("/teller_daily_tran_cnf_F2")) {
+      setIsTrn1(false);
+    } else {
+      setIsTrn1(true);
+    }
+  }, [location]);
 
   const columnOptions = [
     { label: "A/C No", value: "ACCT_CD" },
@@ -82,11 +94,13 @@ const CommonFooter = ({
   //api define
   const getQueryData = useMutation(API.getQueryData, {
     onSuccess: (data) => {
+      setLoading(false);
       setQueryDialog(false);
       setTempStore({ ...tempStore, queryRows: data });
       handleViewQueryData();
     },
     onError: (error: any) => {
+      setLoading(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -94,7 +108,7 @@ const CommonFooter = ({
   });
   const deleteByScrollNo = useMutation(API.deleteScrollByScrollNo, {
     onSuccess: (data: any) => {
-      console.log(data, "ddd");
+      setLoading(false);
       setScrollDialog(false);
       setScrollNo("");
       handleRefresh();
@@ -103,6 +117,7 @@ const CommonFooter = ({
       });
     },
     onError: (error: any) => {
+      setLoading(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -123,16 +138,15 @@ const CommonFooter = ({
     const obj = [...rows];
     obj[i].logic = value;
     setRows(obj);
-    if (value?.value == "AND") {
-      handleAddRow();
-    }
   };
 
   const handleValue = (e, i) => {
     const obj = [...rows];
     let txt = e.target.value;
     if (obj[i].column.value == "ACCT_CD") {
-      obj[i].value = txt.padStart(6, "0");
+      if (txt.length <= 20) {
+        obj[i].value = txt.padStart(6, "0");
+      }
     } else {
       obj[i].value = txt;
     }
@@ -159,6 +173,7 @@ const CommonFooter = ({
   };
 
   const handleSaveQuery = () => {
+    setLoading(true);
     let arr = rows.map((a) => {
       return {
         [a.column.value]: a.value,
@@ -177,6 +192,7 @@ const CommonFooter = ({
     setQueryDialog(false);
   };
   const handleDeleteScroll = () => {
+    setLoading(true);
     let data = { COMP_CD: authState.companyID, SCROLL_NO: scrollNo };
     scrollNo && deleteByScrollNo.mutate(data);
   };
@@ -188,6 +204,16 @@ const CommonFooter = ({
         spacing={2}
         style={{ marginTop: "5px", marginBottom: "15px" }}
       >
+        {" "}
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => window.open("Calculator:///")}
+          >
+            Calculator
+          </Button>
+        </Grid>{" "}
         <Grid item>
           <Button
             variant="contained"
@@ -210,29 +236,22 @@ const CommonFooter = ({
           <Button
             variant="contained"
             color="primary"
-            onClick={() => window.open("Calculator:///")}
-          >
-            Calculator
-          </Button>
-        </Grid>{" "}
-        <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
             onClick={() => setScrollDialog(true)}
           >
             Scroll Delete
           </Button>
         </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setQueryDialog(true)}
-          >
-            Query
-          </Button>
-        </Grid>
+        {!location.pathname?.includes("/teller_daily_tran_cnf_F2") && (
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setQueryDialog(true)}
+            >
+              Query
+            </Button>
+          </Grid>
+        )}
         <Grid item>
           <Button
             variant="contained"
@@ -242,11 +261,11 @@ const CommonFooter = ({
             Other Trx
           </Button>
         </Grid>
-        <Grid item>
+        {/* <Grid item>
           <Button variant="contained" color="primary">
             Positive Pay
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
       <br />
 
@@ -344,6 +363,7 @@ const CommonFooter = ({
                 })}
             </Table>
           </TableContainer>
+          {loading && <LinearProgress color="secondary" />}
         </DialogContent>
         <div className="dialogFooter">
           {" "}
@@ -379,7 +399,7 @@ const CommonFooter = ({
       </Dialog>
 
       <Dialog
-        maxWidth="md"
+        maxWidth="lg"
         open={scrollDialog}
         // onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -387,7 +407,9 @@ const CommonFooter = ({
       >
         <DialogTitle id="alert-dialog-title">Scroll Delete</DialogTitle>
         <DialogContent>
+          <div style={{ width: "300px" }}></div>
           <TextField
+            fullWidth={true}
             value={scrollNo}
             placeholder="Enter ScrollNo"
             id="txtRight"
@@ -395,6 +417,7 @@ const CommonFooter = ({
             type="number"
             onChange={(e) => setScrollNo(e.target.value)}
           />
+          {loading && <LinearProgress color="secondary" />}
         </DialogContent>
 
         <DialogActions>

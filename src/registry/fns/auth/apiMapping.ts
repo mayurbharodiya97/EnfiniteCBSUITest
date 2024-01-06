@@ -628,6 +628,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/GETFDBRDDETAIL",
     packageName: "",
   },
+
   GETDAILYTRANMAKERDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRANMAKERDTL",
     packageName: "",
@@ -700,6 +701,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETTRANDYNQUERYDATA",
     packageName: "",
   },
+  GETTRANDYNQUERYDATAF2: {
+    url: "/transactionServiceAPI/GETTRANDYNQUERYDATAF2",
+    packageName: "",
+  },
   GETACCOUNTDTL: {
     url: "/transactionServiceAPI/GETACCOUNTDTL",
     packageName: "",
@@ -765,7 +770,6 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACHIWIMGDTLTAB",
     packageName: "",
   },
-  //===
 
   GETLIMITFDBRANCHDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDBRANCHDDW",

@@ -148,6 +148,7 @@ export const Trn001 = () => {
   }, [rows]);
 
   useEffect(() => {
+    //getting all options for autocomplete
     getBranchOptions.mutate(authState);
     getSdcOptions.mutate(authState);
     getAccTypeOptions.mutate(authState);
@@ -159,21 +160,13 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       setBranchOptions(data);
     },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
+    onError: (error: any) => {},
   });
   const getAccTypeOptions = useMutation(API.getAccTypeList, {
     onSuccess: (data) => {
       setAccTypeOptions(data);
     },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
+    onError: (error: any) => {},
   });
 
   const getSdcOptions = useMutation(API.getSDCList, {
@@ -194,11 +187,7 @@ export const Trn001 = () => {
       setTrxOptions2(data);
       setTrxOptions(data);
     },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
+    onError: (error: any) => {},
   });
 
   const getAccInfo = useMutation(CommonApi.getAccDetails, {
@@ -241,12 +230,12 @@ export const Trn001 = () => {
   const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
       setLoading(false);
-      console.log(data, "data");
-      if (data[0]?.INSERT > 0) {
+      console.log(data, "scroll save data");
+      if (Number(data?.INSERT) > 0) {
+        handleReset();
         enqueueSnackbar("Scroll Saved", {
           variant: "success",
         });
-        handleReset();
       }
     },
     onError: (error: any) => {
@@ -263,17 +252,6 @@ export const Trn001 = () => {
         rows[index].bugChq = true;
         setErrMsg({ ...errMsg, cNo: data?.ERR_MSG });
       }
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
-
-  const getTRN001List = useMutation(API.getTRN001List, {
-    onSuccess: (data) => {
-      setRows2(data);
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -300,11 +278,13 @@ export const Trn001 = () => {
 
   const handleAccNo = (e, i) => {
     setIndex(i);
-    const obj = [...rows];
     let txt = e.target.value;
-    obj[i].accNo = txt;
-    setRows(obj);
-    setErrMsg({ ...errMsg, accNo: "" });
+    if (txt.length <= 20) {
+      const obj = [...rows];
+      obj[i].accNo = txt;
+      setRows(obj);
+      setErrMsg({ ...errMsg, accNo: "" });
+    }
   };
 
   const handleAccNoBlur = (e, i) => {
@@ -524,15 +504,22 @@ export const Trn001 = () => {
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
 
-  const handleReset = useCallback(() => {
-    setRows([defaulVal]);
+  useEffect(() => {
+    console.log("def value changed");
+  }, [defaulVal]);
+  console.log(defaulVal, "defaulVal");
+  const handleReset = () => {
+    console.log("reset woring");
+    let defaultRows = { ...defaulVal };
+    console.log(defaultRows, "defaultRows");
+    setRows([defaultRows]);
     setTotalCredit(0);
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
     setResetDialog(false);
     setViewOnly(false);
     setTempStore({ ...tempStore, accInfo: {}, queryRows: [] });
-  }, []);
+  };
 
   const handleFilterTrx = () => {
     //to limit the trxOptions on 3,6
@@ -601,11 +588,6 @@ export const Trn001 = () => {
   }, []);
 
   const handleGetTRN001List = useCallback(() => {
-    let data = {
-      COMP_CD: authState?.companyID,
-      BRANCH_CD: authState?.user?.branchCode,
-    };
-    getTRN001List.mutate(data);
     setViewOnly(true);
   }, []);
 
@@ -926,7 +908,7 @@ export const Trn001 = () => {
         handleRefresh={handleReset}
         handleViewQueryData={handleViewQueryData}
       />
-      <br />
+
       <>
         <Dialog
           open={saveDialog}

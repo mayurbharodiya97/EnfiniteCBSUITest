@@ -23,7 +23,7 @@ const actions: ActionTypes[] = [
   {
     actionName: "Delete",
     actionLabel: "Delete",
-    multiple: true,
+    multiple: false,
     rowDoubleClick: false,
     // alwaysAvailable: true,
   },
@@ -92,9 +92,13 @@ export const TRN001_Table = () => {
   //-----------------------------
 
   const setCurrentAction = useCallback((data) => {
-    setLoading(true);
     let row = data.rows[0]?.data;
+    console.log(data.rows[0], "data.rows[0]");
+    console.log(data.rows, "data.rows");
+    console.log(data, "data1");
+    console.log(row, "row");
     if (data.name === "view-detail") {
+      setLoading(true);
       let obj = {
         COMP_CD: row?.COMP_CD,
         BRANCH_CD: row?.BRANCH_CD,
@@ -106,14 +110,21 @@ export const TRN001_Table = () => {
     }
 
     if (data.name === "Delete") {
-      let arr = rows.map((a) => {
-        return {
-          TRAN_CD: a?.TRAN_CD,
-          ENTERED_COMP_CD: a?.COMP_CD,
-          ENTERED_BRANCH_CD: a?.BRANCH_CD,
-        };
-      });
-      deleteScrollByVoucher.mutate(arr);
+      // let arr = rows.map((a) => {
+      //   return {
+      //     TRAN_CD: a?.TRAN_CD,
+      //     ENTERED_COMP_CD: a?.COMP_CD,
+      //     ENTERED_BRANCH_CD: a?.BRANCH_CD,
+      //   };
+      // });
+
+      let obj = {
+        TRAN_CD: row?.TRAN_CD,
+        ENTERED_COMP_CD: row?.COMP_CD,
+        ENTERED_BRANCH_CD: row?.BRANCH_CD,
+      };
+      console.log(obj, "obj");
+      // deleteScrollByVoucher.mutate(arr);
     }
   }, []);
 

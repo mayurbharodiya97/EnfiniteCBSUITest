@@ -42,6 +42,28 @@ export const getQueryData = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getQueryDataF2 = async (reqData) => {
+  console.log(reqData, "reqDataF2");
+
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETTRANDYNQUERYDATAF2", reqData);
+  if (status === "0") {
+    let responseData = data;
+
+    responseData &&
+      responseData.map((a, i) => {
+        a.index = i;
+        a.account1 = a.ACCT_TYPE + a.TYPE_NM;
+        a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
+        a.sdc1 = a.SDC + a.SDC_DESC;
+        a.date1 = a.TRAN_DT?.substring(0, 10);
+      });
+
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 export const deleteScrollByScrollNo = async (reqData) => {
   const { data, status, message, messageDetails } =
