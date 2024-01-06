@@ -106,6 +106,20 @@ const CommonFooter = ({
       });
     },
   });
+  const getQueryDataF2 = useMutation(API.getQueryDataF2, {
+    onSuccess: (data) => {
+      setLoading(false);
+      setQueryDialog(false);
+      setTempStore({ ...tempStore, queryRows: data });
+      handleViewQueryData();
+    },
+    onError: (error: any) => {
+      setLoading(false);
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
   const deleteByScrollNo = useMutation(API.deleteScrollByScrollNo, {
     onSuccess: (data: any) => {
       setLoading(false);
@@ -184,7 +198,12 @@ const CommonFooter = ({
 
     let data = { COMP_CD: authState?.companyID, SELECT_COLUMN: arr };
     let err = rows.some((a) => !a.logic.value);
-    !err && getQueryData.mutate(data);
+
+    if (isTrn1) {
+      !err && getQueryData.mutate(data);
+    } else {
+      !err && getQueryDataF2.mutate(data);
+    }
   };
 
   const handleClose = () => {

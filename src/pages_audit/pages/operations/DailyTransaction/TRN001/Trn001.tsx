@@ -580,20 +580,20 @@ export const Trn001 = () => {
     setSaveDialog(false);
   };
 
-  const handleUpdateRows = useCallback((data) => {
+  const handleUpdateRows = (data) => {
     //to apply filter from baseFooter
     setViewOnly(true);
     console.log(data, "common footer");
     setRows2(data);
-  }, []);
+  };
 
-  const handleGetTRN001List = useCallback(() => {
+  const handleGetTRN001List = () => {
     setViewOnly(true);
-  }, []);
+  };
 
-  const handleViewQueryData = useCallback(() => {
+  const handleViewQueryData = () => {
     setViewOnly(true);
-  }, []);
+  };
   return (
     <>
       <DailyTransTabs heading="(Maker) (TRN/001)" />

@@ -44,7 +44,6 @@ export const getQueryData = async (reqData) => {
 };
 export const getQueryDataF2 = async (reqData) => {
   console.log(reqData, "reqDataF2");
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETTRANDYNQUERYDATAF2", reqData);
   if (status === "0") {
@@ -84,7 +83,7 @@ export const deleteScrollByVoucherNo = async (reqData) => {
   console.log(reqData, "deleteScrollByVoucherNo");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
-      DETAILS_DATA: { isDeleteRow: reqData, isUpdatedRow: [], isNewRow: [] },
+      DETAILS_DATA: { isDeleteRow: [reqData], isUpdatedRow: [], isNewRow: [] },
     });
   if (status === "0") {
     let responseData = data;
