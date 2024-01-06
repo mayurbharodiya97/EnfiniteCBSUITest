@@ -201,12 +201,13 @@ const CkycProvider = ({children}) => {
     const handleFormModalOpenOnEditctx = (recordData, retrieveFormdata) => {
         // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData)
         // required - CATEGORY_CODE, CONSTITUTION_TYPE, CUSTOMER_TYPE
-        if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
+        // if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
+        if(recordData[0]?.data?.CATEG_NM && recordData[0]?.data?.CONSTITUTION_NAME) {
             const categConstitutionValue = {
                 value: recordData[0]?.data?.CATEGORY_CODE,
-                label: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[0],
+                label: recordData[0]?.data?.CATEG_NM,
                 CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
-                CONSTITUTION_NAME: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[1],
+                CONSTITUTION_NAME: recordData[0]?.data?.CONSTITUTION_NAME,
                 
                 
 
