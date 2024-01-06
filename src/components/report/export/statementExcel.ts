@@ -1,10 +1,7 @@
 import { format } from "date-fns/esm";
-import { AuthContext } from "pages_audit/auth";
-import { useContext, useState } from "react";
 import * as XlsxPopulate from "xlsx-populate/browser/xlsx-populate";
 export const ExcelForStatementExport = async ({
   data,
-  companyName,
   generatedBy,
   RequestingBranchCode,
   barnchDtl,
@@ -12,7 +9,6 @@ export const ExcelForStatementExport = async ({
   const wb = await XlsxPopulate.fromBlankAsync();
   const sheet = wb.sheet("Sheet1");
   let cellIndex = 1;
-  let isLength = 0;
 
   const cellB = sheet.column("B").width(40);
   const cellF = sheet.column("F").width(40);

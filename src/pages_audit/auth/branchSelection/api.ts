@@ -10,7 +10,7 @@ export const BranchSelectionGridData = async () => {
   if (status === "0") {
     const dataStatus = data;
     dataStatus.map((item) => {
-      if (item?.STATUS === "Closed") {
+      if (item?.STATUS === "C") {
         item._rowColor = "rgba(255, 79, 121, 0.1)";
       }
     });
@@ -34,11 +34,10 @@ export const GetMenuData = async ({
   IS_UPD_DEF_BRANCH,
   COMP_BASE_BRANCH_CD,
   selectionMode,
-  fulldata,
 }) => {
-  await AuthSDK.Getfingerprintdata();
-  AuthSDK.loginUserDetails(fulldata);
-  AuthSDK.setToken(fulldata.access_token);
+  // await AuthSDK.Getfingerprintdata();
+  // AuthSDK.loginUserDetails(fulldata);
+  // AuthSDK.setToken(fulldata.access_token);
   const { status, data, message, messageDetails } =
     await AuthSDK.internalFetcher("MENULIST", {
       COMP_CD: COMP_CD,

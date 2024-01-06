@@ -1,5 +1,5 @@
 import GridWrapper from "components/dataTableStatic";
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { Fragment, useCallback, useContext, useEffect } from "react";
 import { BranchSelectionGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider } from "cache";
@@ -13,28 +13,24 @@ import {
   Grid,
   Stack,
   Tooltip,
-  Typography,
   tooltipClasses,
 } from "@mui/material";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import easy_bank_core_logo from "assets/images/easy_bankcore_Logo.png";
 import bank_logo_default from "assets/images/BecomePartnerImg.svg";
 import Waving_hand from "assets/images/Waving_Hand_header.png";
 
 import { useStyles } from "pages_audit/appBar/style";
-import { utilFunction } from "components/utils";
-import { getBankimgAndProfileimg } from "pages_audit/appBar/api";
 import { styled } from "@mui/material/styles";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import Logo from "assets/images/easy_bankcore_Logo.png";
+import useLogoPics from "components/common/logoPics/logoPics";
+// import Greetings from "components/common/logoPics/greet/greetings";
 const actions: ActionTypes[] = [
   {
     actionName: "back",
@@ -63,14 +59,16 @@ const BranchSelectionGrid = ({ selectionMode }) => {
   const { authState, isBranchSelected, branchSelect, isLoggedIn, logout } =
     useContext(AuthContext);
   const navigate = useNavigate();
+  const logos = useLogoPics();
   const rowsData = useRef<any>({});
   const classes = useStyles();
-  const [pictureURL, setPictureURL] = useState<any | null>({
-    bank: "",
-    profile: "",
-    logo: "",
-  });
-  const urlObj = useRef<any>({ bank: "", profile: "", logo: "" });
+  // const [pictureURL, setPictureURL] = useState<any | null>({
+  //   bank: "",
+  //   profile: "",
+  //   logo: "",
+  // });
+
+  // const urlObj = useRef<any>({ bank: "", profile: "", logo: "" });
   const authController = useContext(AuthContext);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -85,12 +83,12 @@ const BranchSelectionGrid = ({ selectionMode }) => {
     };
   }, []);
 
-  const imagesData = useQuery<any, any>(["getBankimgAndProfileimg"], () =>
-    getBankimgAndProfileimg({
-      userID: authController?.authState?.user?.id,
-      companyID: authController?.authState?.access_token?.companyID,
-    })
-  );
+  // const imagesData = useQuery<any, any>(["getBankimgAndProfileimg"], () =>
+  //   getBankimgAndProfileimg({
+  //     userID: authController?.authState?.user?.id,
+  //     companyID: authController?.authState?.access_token?.companyID,
+  //   })
+  // );
 
   useEffect(() => {
     if (!isLoggedIn()) {
@@ -107,12 +105,12 @@ const BranchSelectionGrid = ({ selectionMode }) => {
   };
 
   const mutation = useMutation(API.GetMenuData, {
-    onSuccess: (data) => {
+    onSuccess: (data, extreData) => {
       branchSelect({
         menulistdata: data,
-        branchCode: rowsData?.current?.BRANCH_CD,
-        branch: rowsData?.current?.BRANCH_NM,
-        baseBranchCode: rowsData?.current?.BASE_BRANCH_CD,
+        branchCode: extreData?.BRANCH_CD,
+        branch: extreData?.BRANCH_NM,
+        baseBranchCode: extreData?.BASE_BRANCH_CD,
       });
     },
   });
@@ -124,18 +122,20 @@ const BranchSelectionGrid = ({ selectionMode }) => {
           enqueueSnackbar("Please Select Branch", {
             variant: "error",
           });
-        } else if (data.rows?.[0]?.data?.STATUS === "Closed") {
-          enqueueSnackbar("Please Select Open Branch.", {
-            variant: "error",
-          });
+        } else if (data.rows?.[0]?.data?.STATUS === "C") {
+          enqueueSnackbar(
+            "Branch is in Day End Status.~rPlease contact system Vendor.",
+            {
+              variant: "error",
+            }
+          );
         } else {
-          rowsData.current = data.rows?.[0]?.data;
           mutation.mutate({
             BASE_COMP_CD: data.rows?.[0]?.data?.BASE_COMP_CD ?? "",
             BASE_BRANCH_CD: data.rows?.[0]?.data?.BASE_BRANCH_CD ?? "",
             COMP_CD: data.rows?.[0]?.data?.COMP_CD ?? "",
             BRANCH_CD: data.rows?.[0]?.data?.BRANCH_CD ?? "",
-            GROUP_NAME: authState?.roleName ?? "",
+            GROUP_NAME: authState?.groupName ?? "",
             APP_TRAN_CD: "51",
             COMP_NM: data.rows?.[0]?.data?.COMP_NM ?? "",
             BRANCH_NM: data.rows?.[0]?.data?.BRANCH_NM ?? "",
@@ -145,7 +145,6 @@ const BranchSelectionGrid = ({ selectionMode }) => {
             COMP_BASE_BRANCH_CD:
               data.rows?.[0]?.data?.COMP_BASE_BRANCH_CD ?? "",
             selectionMode,
-            fulldata: authState,
           });
         }
       } else {
@@ -162,12 +161,18 @@ const BranchSelectionGrid = ({ selectionMode }) => {
   );
 
   useEffect(() => {
-    if (data?.length === 1) {
-      if (data?.[0]?.STATUS === "Closed") {
-        enqueueSnackbar("Please Select Open Branch.", {
+    var oneBranchOpen = data?.some((branch) => branch.STATUS === "O");
+    if (oneBranchOpen === false) {
+      enqueueSnackbar(
+        "Branch is in Day End Status.~rPlease contact system Vendor.",
+        {
           variant: "error",
-        });
-      } else {
+        }
+      );
+      logout();
+    }
+    if (data?.length === 1) {
+      if (data?.[0]?.STATUS === "O") {
         setCurrentAction({ name: "proceed", rows: [{ data: { ...data[0] } }] });
       }
     }
@@ -184,57 +189,53 @@ const BranchSelectionGrid = ({ selectionMode }) => {
     return <span>Good {greet},</span>;
   };
 
-  let companyNameText = /*authState?.companyName*/ "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  // useEffect(() => {
+  //   if (Boolean(imagesData.data?.[0]?.PROFILE_PHOTO)) {
+  //     let blob = utilFunction.base64toBlob(imagesData.data?.[0]?.PROFILE_PHOTO);
+  //     urlObj.current = {
+  //       ...urlObj.current,
+  //       profile:
+  //         typeof blob === "object" && Boolean(blob)
+  //           ? URL.createObjectURL(blob)
+  //           : "",
+  //     };
+  //     setPictureURL((old) => {
+  //       return { ...old, profile: urlObj.current?.profile };
+  //     });
+  //   }
+  // }, [imagesData.data?.[0]?.PROFILE_PHOTO]);
 
-  const shouldScroll = companyNameText?.length > 15;
+  // useEffect(() => {
+  //   if (Boolean(imagesData.data?.[0]?.DHLOGO)) {
+  //     let blob = utilFunction.base64toBlob(imagesData.data?.[0]?.DHLOGO);
+  //     urlObj.current = {
+  //       ...urlObj.current,
+  //       logo:
+  //         typeof blob === "object" && Boolean(blob)
+  //           ? URL.createObjectURL(blob)
+  //           : "",
+  //     };
+  //     setPictureURL((old) => {
+  //       return { ...old, logo: urlObj.current?.logo };
+  //     });
+  //   }
+  // }, [imagesData.data?.[0]?.DHLOGO]);
 
-  useEffect(() => {
-    if (Boolean(imagesData.data?.[0]?.PROFILE_PHOTO)) {
-      let blob = utilFunction.base64toBlob(imagesData.data?.[0]?.PROFILE_PHOTO);
-      urlObj.current = {
-        ...urlObj.current,
-        profile:
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "",
-      };
-      setPictureURL((old) => {
-        return { ...old, profile: urlObj.current?.profile };
-      });
-    }
-  }, [imagesData.data?.[0]?.PROFILE_PHOTO]);
-
-  useEffect(() => {
-    if (Boolean(imagesData.data?.[0]?.DHLOGO)) {
-      let blob = utilFunction.base64toBlob(imagesData.data?.[0]?.DHLOGO);
-      urlObj.current = {
-        ...urlObj.current,
-        logo:
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "",
-      };
-      setPictureURL((old) => {
-        return { ...old, logo: urlObj.current?.logo };
-      });
-    }
-  }, [imagesData.data?.[0]?.DHLOGO]);
-
-  useEffect(() => {
-    if (Boolean(imagesData.data?.[0]?.BANK_LOGO)) {
-      let blob = utilFunction.base64toBlob(imagesData.data?.[0]?.BANK_LOGO);
-      urlObj.current = {
-        ...urlObj.current,
-        bank:
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "",
-      };
-      setPictureURL((old) => {
-        return { ...old, bank: urlObj.current?.bank };
-      });
-    }
-  }, [imagesData.data?.[0]?.BANK_LOGO]);
+  // useEffect(() => {
+  //   if (Boolean(imagesData.data?.[0]?.BANK_LOGO)) {
+  //     let blob = utilFunction.base64toBlob(imagesData.data?.[0]?.BANK_LOGO);
+  //     urlObj.current = {
+  //       ...urlObj.current,
+  //       bank:
+  //         typeof blob === "object" && Boolean(blob)
+  //           ? URL.createObjectURL(blob)
+  //           : "",
+  //     };
+  //     setPictureURL((old) => {
+  //       return { ...old, bank: urlObj.current?.bank };
+  //     });
+  //   }
+  // }, [imagesData.data?.[0]?.BANK_LOGO]);
 
   const LightTooltip = styled(({ className, ...props }: any) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -246,6 +247,8 @@ const BranchSelectionGrid = ({ selectionMode }) => {
       fontSize: 13,
     },
   }));
+
+  // const greet = Greetings();
 
   return (
     <>
@@ -418,8 +421,8 @@ const BranchSelectionGrid = ({ selectionMode }) => {
                         // onClick={handleNavigate}
                         alt="Remy Sharp"
                         src={
-                          Boolean(pictureURL?.profile)
-                            ? pictureURL?.profile
+                          Boolean(logos?.profile)
+                            ? logos?.profile
                             : USER_PROFILE_DEFAULT
                         }
                       />
@@ -469,9 +472,7 @@ const BranchSelectionGrid = ({ selectionMode }) => {
                       className={classes.heading_user_img}
                       alt="Remy Sharp"
                       src={
-                        Boolean(pictureURL?.bank)
-                          ? pictureURL?.bank
-                          : bank_logo_default
+                        Boolean(logos?.bank) ? logos?.bank : bank_logo_default
                       }
                     />
                   </Box>
@@ -517,7 +518,7 @@ const BranchSelectionGrid = ({ selectionMode }) => {
                 {" "}
                 <div>
                   <img
-                    src={Boolean(pictureURL?.logo) ? pictureURL?.logo : Logo}
+                    src={Boolean(logos?.logo) ? logos?.logo : Logo}
                     alt="Netbanking"
                     className={classes.logo}
                   />

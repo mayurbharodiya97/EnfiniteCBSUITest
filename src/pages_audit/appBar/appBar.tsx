@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthContext } from "../auth";
@@ -10,14 +10,11 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Logo from "assets/images/easy_bankcore_Logo.png";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import HelpIcon from "@mui/icons-material/Help";
-import * as API from "./api";
 import { styled } from "@mui/material/styles";
-import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import {
   AppBar,
   Avatar,
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -31,9 +28,6 @@ import {
 } from "@mui/material";
 import { Notification_App } from "./notification";
 import { Quick_View } from "./quickView";
-import MySearchField from "components/common/search/search";
-import { useQuery } from "react-query";
-import { utilFunction } from "components/utils";
 import { MultiLanguages } from "pages_audit/auth/multiLanguages";
 import AccountDetails from "pages_audit/pages/STATEMENT/accountDetails";
 import { Accountinquiry } from "pages_audit/acct_Inquiry/acct_inquiry";
@@ -41,6 +35,7 @@ import { useTranslation } from "react-i18next";
 import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import { GradientButton } from "components/styledComponent/button";
 import SearchScreen from "./searchScreen";
+import useLogoPics from "components/common/logoPics/logoPics";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -49,17 +44,18 @@ export const MyAppBar = ({
 }) => {
   const authController = useContext(AuthContext);
   const navigate = useNavigate();
+  const logos = useLogoPics();
   const classes = useStyles();
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState<any>(false);
   const [acctInquiry, setAcctInquiry] = useState(false);
-  const [pictureURL, setPictureURL] = useState<any | null>({
-    bank: "",
-    profile: "",
-    logo: "",
-  });
+  // const [pictureURL, setPictureURL] = useState<any | null>({
+  //   bank: "",
+  //   profile: "",
+  //   logo: "",
+  // });
   const { t } = useTranslation();
-  const urlObj = useRef<any>({ bank: "", profile: "" });
+  // const urlObj = useRef<any>({ bank: "", profile: "" });
   const handleNavigate = () => {
     navigate("/cbsenfinity/profile");
     handleClose();
@@ -81,62 +77,64 @@ export const MyAppBar = ({
       fontSize: 13,
     },
   }));
-  const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
-    ["getBankimgAndProfileimg"],
-    () =>
-      API.getBankimgAndProfileimg({
-        userID: authController?.authState?.user?.id,
-        companyID: authController?.authState?.access_token?.companyID,
-      })
-  );
+  // const { data, isLoading, isFetching, refetch } = useQuery<any, any>(
+  //   ["getBankimgAndProfileimg"],
+  //   () =>
+  //     API.getBankimgAndProfileimg({
+  //       userID: authController?.authState?.user?.id,
+  //       companyID: authController?.authState?.access_token?.companyID,
+  //     })
+  // );
   ////
-  useEffect(() => {
-    if (Boolean(data?.[0]?.PROFILE_PHOTO)) {
-      let blob = utilFunction.base64toBlob(data?.[0]?.PROFILE_PHOTO);
-      urlObj.current = {
-        ...urlObj.current,
-        profile:
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "",
-      };
-      setPictureURL((old) => {
-        return { ...old, profile: urlObj.current?.profile };
-      });
-    }
-  }, [data?.[0]?.PROFILE_PHOTO]);
+  // useEffect(() => {
+  //   if (Boolean(data?.[0]?.PROFILE_PHOTO)) {
+  //     let blob = utilFunction.base64toBlob(data?.[0]?.PROFILE_PHOTO);
+  //     urlObj.current = {
+  //       ...urlObj.current,
+  //       profile:
+  //         typeof blob === "object" && Boolean(blob)
+  //           ? URL.createObjectURL(blob)
+  //           : "",
+  //     };
+  //     setPictureURL((old) => {
+  //       return { ...old, profile: urlObj.current?.profile };
+  //     });
+  //   }
+  // }, [data?.[0]?.PROFILE_PHOTO]);
 
-  useEffect(() => {
-    if (Boolean(data?.[0]?.DHLOGO)) {
-      let blob = utilFunction.base64toBlob(data?.[0]?.DHLOGO);
-      urlObj.current = {
-        ...urlObj.current,
-        logo:
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "",
-      };
-      setPictureURL((old) => {
-        return { ...old, logo: urlObj.current?.logo };
-      });
-    }
-  }, [data?.[0]?.DHLOGO]);
+  // useEffect(() => {
+  //   if (Boolean(data?.[0]?.DHLOGO)) {
+  //     let blob = utilFunction.base64toBlob(data?.[0]?.DHLOGO);
+  //     urlObj.current = {
+  //       ...urlObj.current,
+  //       logo:
+  //         typeof blob === "object" && Boolean(blob)
+  //           ? URL.createObjectURL(blob)
+  //           : "",
+  //     };
+  //     setPictureURL((old) => {
+  //       return { ...old, logo: urlObj.current?.logo };
+  //     });
+  //   }
+  // }, [data?.[0]?.DHLOGO]);
 
-  useEffect(() => {
-    if (Boolean(data?.[0]?.BANK_LOGO)) {
-      let blob = utilFunction.base64toBlob(data?.[0]?.BANK_LOGO);
-      urlObj.current = {
-        ...urlObj.current,
-        bank:
-          typeof blob === "object" && Boolean(blob)
-            ? URL.createObjectURL(blob)
-            : "",
-      };
-      setPictureURL((old) => {
-        return { ...old, bank: urlObj.current?.bank };
-      });
-    }
-  }, [data?.[0]?.BANK_LOGO]); ////
+  // useEffect(() => {
+  //   if (Boolean(data?.[0]?.BANK_LOGO)) {
+  //     let blob = utilFunction.base64toBlob(data?.[0]?.BANK_LOGO);
+  //     urlObj.current = {
+  //       ...urlObj.current,
+  //       bank:
+  //         typeof blob === "object" && Boolean(blob)
+  //           ? URL.createObjectURL(blob)
+  //           : "",
+  //     };
+  //     setPictureURL((old) => {
+  //       return { ...old, bank: urlObj.current?.bank };
+  //     });
+  //   }
+  // }, [data?.[0]?.BANK_LOGO]); ////
+
+  // console.log(logos, "logos120212010201");
 
   const Greetings = () => {
     let hours = new Date().getHours();
@@ -186,7 +184,7 @@ export const MyAppBar = ({
 
           <div>
             <img
-              src={Boolean(pictureURL?.logo) ? pictureURL?.logo : Logo}
+              src={Boolean(logos?.logo) ? logos?.logo : Logo}
               alt="Netbanking"
               className={classes.logo}
               onClick={(e) => {
@@ -194,7 +192,7 @@ export const MyAppBar = ({
                 navigate("./dashboard");
               }}
             />
-            <p className={classes.version01}>{data?.[0]?.VERSION}</p>
+            <p className={classes.version01}>{logos?.version}</p>
           </div>
         </Box>
         <Stack direction="row" spacing={4} mx={2}>
@@ -202,9 +200,7 @@ export const MyAppBar = ({
             <Avatar
               className={classes.heading_user_img}
               alt="Remy Sharp"
-              src={
-                Boolean(pictureURL?.bank) ? pictureURL?.bank : bank_logo_default
-              }
+              src={Boolean(logos?.bank) ? logos?.bank : bank_logo_default}
             />
           </Box>
         </Stack>
@@ -486,7 +482,7 @@ export const MyAppBar = ({
                 src={
                   Boolean(authController?.getProfileImage)
                     ? authController?.getProfileImage
-                    : pictureURL?.profile
+                    : logos?.profile
                 }
               />
             </LightTooltip>
