@@ -26,7 +26,7 @@ import PersonIcon from "@mui/icons-material/Person"; // individual-person-icon
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import {
   RetrieveDataFilterForm,
-  ckyc_pending_req_meta_data,
+  // ckyc_pending_req_meta_data,
   ckyc_retrieved_meta_data,
 } from "./metadata";
 import { FormComponentView } from "components/formcomponent";
@@ -49,6 +49,9 @@ import AssetDTLComp from "./AssetDTLComp";
 import FinancialDTLComp from "./FinancialDTLComp";
 import { format } from "date-fns";
 import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";
+import { Alert } from "components/common/alert";
+import PendingCustomer from "./PendingCustomer";
+import RetrieveCustomer from "./RetrieveCustomer";
 
 export const CustomTabs: any = styled(StyledTabs)(({ orientation, theme }) => ({
   border: "unset !important",
@@ -258,7 +261,7 @@ export const Ckyc = () => {
     handleFormModalOpenctx,
     handleFormModalClosectx,
     handleSidebarExpansionctx,
-    handleCustCategoryRes,
+    // handleCustCategoryRes,
     handleFormModalOpenOnEditctx,
     handleColTabChangectx,
     handleFormDataonRetrievectx,
@@ -269,8 +272,8 @@ export const Ckyc = () => {
   const [tabValue, setTabValue] = React.useState(0);
   const [colTabValue, setColTabValue] = React.useState<number | boolean>(0);
   const [customerCategories, setCustomerCategories] = useState([]);
-  const [isCustomerData, setIsCustomerData] = useState(true);
-  const [isLoadingData, setIsLoadingData] = useState(false);
+  // const [isCustomerData, setIsCustomerData] = useState(true);
+  // const [isLoadingData, setIsLoadingData] = useState(false);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const handleSidebarExpansion = () => {
     setIsSidebarExpanded((prevState) => !prevState);
@@ -287,130 +290,28 @@ export const Ckyc = () => {
   >(null);
   const [accTypeValue, setAccTypeValue] = React.useState<null | string>("");
 
-  const [rowsData, setRowsData] = useState<any[]>([]);
-  const [componentToShow, setComponentToShow] = useState("");
-  const [acctOpen, setAcctOpen] = useState(false);
-  const [insuranceOpen, setInsuranceOpen] = useState(true);
-  const [bankCompOpen, setBankCompOpen] = useState(true);
-  const [creditCardCompOpen, setCreditCardCompOpen] = useState(true);
-  const [offencesCompOpen, setOffencesCompOpen] = useState(true);
-  const [assetDTLCompOpen, setAssetDTLCompOpen] = useState(true);
-  const [financialDTLCompOpen, setFinancialDTLCompOpen] = useState(true);
-  const [contPersonCompOpen, setContPersonCompOpen] = useState(true);
-
-  const { data, isError, isLoading, error, refetch } = useQuery<any, any>(
-    [
-      "getCIFCategories",
-      state.entityTypectx,
-      // {
-      //   COMP_CD: authState?.companyID ?? "",
-      //   BRANCH_CD: authState?.user?.branchCode ?? "",
-      //   ENTITY_TYPE: state.entityTypectx
-      // }
-    ],
-    () =>
-      API.getCIFCategories({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        ENTITY_TYPE: state?.entityTypectx,
-      }),
-    { enabled: false }
-  );
-
-  const {
-    data: PendingData,
-    isError: isPendingError,
-    isLoading: isPendingDataLoading,
-    isFetching: isPendingDataFetching,
-    refetch: PendingRefetch,
-  } = useQuery<any, any>(["getPendingData", {}], () =>
-    API.getPendingData({
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      // ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      ENTERED_DATE: "22-12-2023"
-    })
-  )
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [isCustomerData, setIsCustomerData] = useState(true);
 
   useEffect(() => {
-    PendingRefetch()
-  }, [location])
-
-  // useEffect(() => {
-  //   if(PendingData && !isPendingDataLoading) {
-  //     console.log("dqwiojdqowhdq", PendingData)
-  //   }
-  // },[PendingData, isPendingDataLoading])
-
-  const mutation: any = useMutation(API.getRetrieveData, {
-    onSuccess: (data) => {},
-    onError: (error: any) => {},
-  });
-
-  // const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
-  //   ["getCustomerDetailsonEdit", { }],
-  //   () => API.getCustomerDetailsonEdit({
-  //     COMP_CD: authState?.companyID ?? "",
-  //     CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
-  //   }), {enabled: false}
-  // )
-
-  // const {data:inactivateCustData, isError: isinactivateCustError, isLoading: isinactivateCustLoading, refetch: inactivateCustRefetch} = useQuery<any, any>(
-  //   ["InactivateCustomer", { }],
-  //   () => API.InactivateCustomer({
-  //     COMP_CD: authState?.companyID ?? "",
-  //     CUSTOMER_ID: mutation?.data?.[0]?.CUSTOMER_ID ?? "",
-  //     // ACCT_TYPE: "143 ",
-  //     // ACCT_CD: "000039",
-  //     // AS_FROM: "C"
-  //   }), {enabled: false}
-  // )
-
-  // useEffect(() => {
-  //   if(mutation?.data?.[0]?.CUSTOMER_ID) {
-  //     handlecustomerIDctx(mutation?.data[0]?.CUSTOMER_ID)
-  //   }
-  // }, [mutation?.data])
-
-  // const handleViewDetails = async () => {
-  //   retrieveFormRefetch()
-  //   handleColTabChangectx(0)
-  //   // if(retrieveFormData) {
-  //   //   await handleFormModalOpenOnEditctx(data?.rows, retrieveFormData[0])
-  //   // }
-  // }
-
-  // useEffect(() => {
-  //   if(!isRetrieveFormLoading && retrieveFormData) {
-  //     // console.log("result data....", typeof retrieveFormData[0], retrieveFormData[0])
-  //     // let data = retrieveFormData[0]
-  //     handleFormDataonRetrievectx(retrieveFormData[0])
-
-  //     // handleFormModalOpenOnEditctx(data?.rows, retrieveFormData)
-  //   }
-  // }, [isRetrieveFormLoading, retrieveFormData, retrieveFormRefetch])
-
-  useEffect(() => {
-    if(!isLoading && data) {
-      // console.log(data, "asddsa")
-      // setCustomerCategories(data)
-      handleCustCategoryRes(data);
+    if (isLoadingData) {
+      setTimeout(() => {
+        setIsLoadingData(false);
+        setIsCustomerData(true);
+      }, 5000);
     }
-  }, [data, isLoading]);
+  }, [isLoadingData]);
 
-  // useEffect(() => {
-  //   if(!isAccTypeLoading) {
-  //     console.log(AccTypeOptions, "asddsa")
-  //     // setCustomerCategories(AccTypeOptions)
-  //   }
-  // }, [AccTypeOptions, isAccTypeLoading])
-
-  useEffect(() => {
-    // console.log('entityType changed', state?.entityTypectx)
-    if (state?.entityTypectx) {
-      refetch();
-    }
-  }, [state?.entityTypectx]);
+  // const [rowsData, setRowsData] = useState<any[]>([]);
+  // const [componentToShow, setComponentToShow] = useState("");
+  // const [acctOpen, setAcctOpen] = useState(false);
+  // const [insuranceOpen, setInsuranceOpen] = useState(true);
+  // const [bankCompOpen, setBankCompOpen] = useState(true);
+  // const [creditCardCompOpen, setCreditCardCompOpen] = useState(true);
+  // const [offencesCompOpen, setOffencesCompOpen] = useState(true);
+  // const [assetDTLCompOpen, setAssetDTLCompOpen] = useState(true);
+  // const [financialDTLCompOpen, setFinancialDTLCompOpen] = useState(true);
+  // const [contPersonCompOpen, setContPersonCompOpen] = useState(true);
 
   useEffect(() => {
     console.log(state?.retrieveFormDataApiRes, "wadqwdwq.", state?.formDatactx, "upd ->", state?.modifiedFormCols)
@@ -450,8 +351,8 @@ export const Ckyc = () => {
   //     categConstitutionValuectx - ${state?.categConstitutionValuectx},
   //     categoryValuectx - ${state?.categoryValuectx},
   //     constitutionValuectx - ${state?.constitutionValuectx},
-  //     isFormModalOpenctx - ${state?.isFormModalOpenctx}, 
-  //     entityTypectx - ${state?.entityTypectx}, 
+  //     isFormModalOpenctx - ${state?.isFormModalOpenctx},
+  //     entityTypectx - ${state?.entityTypectx},
   //     isFreshEntryctx - ${state?.isFreshEntryctx},
   //     customerIDctx - ${state?.customerIDctx},
   //     req_cd_ctx - ${state?.req_cd_ctx}
@@ -460,8 +361,8 @@ export const Ckyc = () => {
   //   state?.categConstitutionValuectx,
   //   state?.categoryValuectx,
   //   state?.constitutionValuectx,
-  //   state?.isFormModalOpenctx, 
-  //   state?.entityTypectx, 
+  //   state?.isFormModalOpenctx,
+  //   state?.entityTypectx,
   //   state?.isFreshEntryctx,
   //   state?.customerIDctx,
   //   state?.req_cd_ctx])
@@ -475,17 +376,17 @@ export const Ckyc = () => {
   //   setEntityType(type.toString())
   // }
   // };
-  const handleFormModalClose = () => {
-    handleFormModalClosectx();
-    // setIsFormModalOpen(false)
-    // setEntityType(null)
-    // setColTabValue(false)
-    // setCategoryValue(null)
-    // setConstitutionValue(null)
-    // setAccTypeValue(null)
-    // setTabsApiRes([])
-    // // setCustomerCategories([])
-  };
+  // const handleFormModalClose = () => {
+  //   handleFormModalClosectx();
+  //   // setIsFormModalOpen(false)
+  //   // setEntityType(null)
+  //   // setColTabValue(false)
+  //   // setCategoryValue(null)
+  //   // setConstitutionValue(null)
+  //   // setAccTypeValue(null)
+  //   // setTabsApiRes([])
+  //   // // setCustomerCategories([])
+  // };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -508,253 +409,6 @@ export const Ckyc = () => {
   //   console.log(colTabValue, typeof colTabValue,"...")
   //   console.log(tabValue, typeof tabValue, "... tab")
   // }, [colTabValue, tabValue])
-
-  useEffect(() => {
-    if (isLoadingData) {
-      setTimeout(() => {
-        setIsLoadingData(false);
-        setIsCustomerData(true);
-      }, 5000);
-    }
-  }, [isLoadingData]);
-
-  const controlPanel = (
-    <Box>
-      {/* <Grid container sx={{backgroundColor:"#eee", boxShadow: (theme) => theme.shadows[2],}} xs={12} sm={12} md={12} lg={12}> */}
-      {/* <Typography variant="h6">asd</Typography> */}
-      <Grid
-        container
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          backgroundColor: "var(--theme-color2)",
-          // backgroundColor:{xs:"#fff",sm: "#000", md: "#f00", lg: "#0f0", xl: "#00f"},
-          width: "100%",
-          // minWidth:
-          p: (theme) => theme.spacing(1),
-          boxShadow: (theme) => theme.shadows[3],
-          borderRadius: "10px",
-        }}
-      >
-        <Button
-          sx={{ mr: (theme) => theme.spacing(1), textTransform: "capitalize" }}
-          color="secondary"
-          variant="contained"
-          startIcon={<SaveOutlinedIcon />}
-          size="small"
-          disableElevation={true}
-        >
-          Save
-        </Button>
-        {tabValue ? <Divider orientation="vertical" flexItem={true} /> : null}
-        {tabValue ? (
-          <CustomIconButton
-            color="secondary"
-            size="small"
-            sx={{ mx: (theme) => theme.spacing(1) }}
-          >
-            <DriveFileRenameOutlineIcon fontSize="small" />
-          </CustomIconButton>
-        ) : null}
-        {tabValue ? (
-          <CustomIconButton
-            color="secondary"
-            size="small"
-            sx={{ mr: (theme) => theme.spacing(1) }}
-          >
-            <DeleteOutlinedIcon fontSize="small" />
-          </CustomIconButton>
-        ) : null}
-        {tabValue ? (
-          <CustomIconButton color="secondary" size="small" sx={{ ml: "auto" }}>
-            <CancelOutlinedIcon fontSize="small" />
-          </CustomIconButton>
-        ) : null}
-      </Grid>
-      {/* </Grid> */}
-    </Box>
-  );
-
-  const actions: ActionTypes[] = [
-    {
-      actionName: "view-detail",
-      actionLabel: "View Detail",
-      multiple: false,
-      rowDoubleClick: true,
-    },
-    {
-      actionName: "inactive-customer",
-      actionLabel: "Inactivate Customer",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "change-category",
-      actionLabel: "Change Category",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "document",
-      actionLabel: "Document",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "photo-signature",
-      actionLabel: "Photo/Signature",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "other-address",
-      actionLabel: "Other Address",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "insurance",
-      actionLabel: "Insurance",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "bank-details",
-      actionLabel: "Bank Details",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "credit-card",
-      actionLabel: "Credit Card",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "offences-details",
-      actionLabel: "Offences",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "asset-details",
-      actionLabel: "Asset Details",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "financial-details",
-      actionLabel: "Financial Details",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "tds-exemption",
-      actionLabel: "TDS Exemption",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "dependencies",
-      actionLabel: "Dependencies",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-    {
-      actionName: "controlling-person-details",
-      actionLabel: "Controlling Person",
-      multiple: false,
-      rowDoubleClick: false,
-    },
-  ];
-
-  const pendingActions: ActionTypes[] = [
-    {
-      actionName: "view-detail",
-      actionLabel: "View Detail",
-      multiple: false,
-      rowDoubleClick: true,
-    },
-    {
-      actionName: "view-all",
-      actionLabel: "View All",
-      multiple: false,
-      rowDoubleClick: false,
-      alwaysAvailable: true,
-      isNodataThenShow: true
-    },
-  ];
-
-
-  const setCurrentAction = useCallback(
-    (data) => {
-      // console.log("jwdoijoijwdwedwe", data)
-      // // console.log("dataddaada", data)
-      // if (data.name === "view-detail") {
-      //   // refetch()
-      //   handleViewDetails()
-      //   // retrieveFormRefetch()
-      //   // handleColTabChangectx(0)
-      //   // if(retrieveFormData && Object.keys(state?.retrieveFormDataApiRes)?.length>0) {
-      //   // if(retrieveFormData) {
-      //     console.log("data?.rows", data?.rows)
-      //     handleFormModalOpenOnEditctx(data?.rows)
-      //   // }
-
-      //   navigate(data?.name, {
-      //     state: data?.rows,
-      //   })
-      // }
-      // else if (data.name === "dependencies") {
-      //   setComponentToShow("Dependencies");
-      //   setAcctOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if (data.name === "tds-exemption") {
-      //   setComponentToShow("ViewStatement");
-      //   // setAcctOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "inactive-customer") {
-      //   setComponentToShow("DeactivateCustomer");
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "insurance") {
-      //   setComponentToShow("insurance");
-      //   setInsuranceOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "bank-details") {
-      //   setComponentToShow("bankDetails");
-      //   setBankCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "credit-card") {
-      //   setComponentToShow("creditCard");
-      //   setCreditCardCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "offences-details") {
-      //   setComponentToShow("offencesDetails");
-      //   setOffencesCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "asset-details") {
-      //   setComponentToShow("assetDetails");
-      //   setAssetDTLCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "financial-details") {
-      //   setComponentToShow("financialDetails");
-      //   setFinancialDTLCompOpen(true);
-      //   setRowsData(data?.rows);
-      // } else if(data.name === "controlling-person-details") {
-      //   setComponentToShow("controllingPersonDTL");
-      //   setContPersonCompOpen(true);
-      //   setRowsData(data?.rows);
-      // }
-      // else {
-      setRowsData(data?.rows);
-      navigate(data?.name, {
-        state: data?.rows,
-      });
-      // }
-    },
-    // []
-    [navigate]
-  );
 
   // insurance-data display api
   // const {data:insuranceData, isError: isInsuranceError, isLoading: isInsuranceLoading, refetch: insuranceRefetch} = useQuery<any, any>(
@@ -867,124 +521,13 @@ export const Ckyc = () => {
             </Button>
           </Tooltip>
         </Grid>
-        {false && (
-          <Grid
-            sx={{ display: tabValue !== 0 ? "none" : "block" }}
-            item
-            xs={12}
-            sm={12}
-            md="auto"
-          >
-            {controlPanel}
-          </Grid>
-        )}
       </StyledHeaderGrid>
       <TabPanel value={tabValue} index={0}>
-        {/* <Typography variant="h6">Retrieve</Typography> */}
-        {/* <Typography sx={{color: (theme) => theme.palette.grey[700]}} variant="h6" gutterBottom={true}>C-KYC Individual/Legal Entry (MST/707)</Typography>
-        <Typography sx={{color: (theme) => theme.palette.grey[500]}} variant="subtitle1" gutterBottom={true}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography> */}
-
-        <Grid
-          sx={{
-            backgroundColor: "var(--theme-color2)",
-            padding: (theme) => theme.spacing(1),
-            boxSizing: "border-box",
-            border: (theme) => `2px dashed ${theme.palette.grey[500]}`,
-            borderRadius: "20px",
-          }}
-          my={(theme) => theme.spacing(3)}
-          container
-          direction={"column"}
-        >
-          {/* <Grid item>
-            <Typography sx={{color: "var(--theme-color1)", paddingBottom: (theme) => theme.spacing(2)}} variant="h6" >Fetch Data</Typography>
-          </Grid> */}
-          {/* <Grid item container direction={"column"}>
-            <label htmlFor="customer_id" style={{color:"grey"}}>Customer ID</label>
-            <StyledSearchField sx={{maxWidth: "300px"}} id={"customer_id"} placeholder="Customer ID" />
-          </Grid> */}
-
-          {/* formComponentview */}
-          <FormComponentView
-            key={"retrieveCustomerData"}
-            finalMetaData={RetrieveDataFilterForm as FilterFormMetaType}
-            onAction={(colomnValue, initialVisibleColumn) => {
-              // console.log("wlkefhwief", colomnValue, initialVisibleColumn)
-              let newObj = {};
-              let newArr = Object.keys(colomnValue).filter(
-                (key) =>
-                  colomnValue[key] != null &&
-                  colomnValue[key] != undefined &&
-                  colomnValue[key] != ""
-              );
-              newArr.map((el) => {
-                newObj[el] = colomnValue[el];
-              });
-              let data = {
-                COMP_CD: authState?.companyID ?? "",
-                SELECT_COLUMN: newObj,
-              };
-              mutation.mutate(data);
-            }}
-            loading={false}
-            data={{}}
-            submitSecondAction={() => {}}
-            submitSecondButtonName="Save"
-            submitSecondButtonHide={true}
-            submitThirdButtonHide={true}
-            submitSecondLoading={false}
-            propStyles={{
-              titleStyle: { color: "var(--theme-color3) !important" },
-              toolbarStyles: { background: "var(--theme-color2) !important" },
-              IconButtonStyle: { variant: "secondary" },
-              paperStyle: { boxShadow: "none" },
-            }}
-          ></FormComponentView>
-          {/* formComponentview */}
-
-          {/* <Grid item py={2} sx={{textAlign: "right"}}>
-            <Button color="secondary" variant="contained">Retrieve</Button>
-          </Grid> */}
-        </Grid>
-
-        <GridWrapper
-          key={`RetrieveCustEntries` + mutation.data}
-          finalMetaData={ckyc_retrieved_meta_data as GridMetaDataType}
-          data={mutation.data ?? []}
-          setData={() => null}
-          loading={mutation.isLoading || mutation.isFetching}
-          actions={actions}
-          setAction={setCurrentAction}
-          // refetchData={() => refetch()}
-          // ref={myGridRef}
-        />
+        <RetrieveCustomer />
       </TabPanel>
       <TabPanel value={tabValue} index={1}>
-        {/* <Typography variant="subtitle1" gutterBottom={true}>Pending Requests</Typography> */}
-        <Typography
-          sx={{
-            color: (theme) => theme.palette.grey[700],
-            mb: (theme) => theme.spacing(2),
-          }}
-          variant="h6"
-        >
-          {t("PendingReq")}
-        </Typography>
-        <Grid item>
-          <GridWrapper
-            key={`PendingCustEntrties` + PendingData}
-            finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
-            data={PendingData ?? []}
-            setData={() => null}
-            loading={isPendingDataLoading || isPendingDataFetching}
-            actions={pendingActions}
-            setAction={setCurrentAction}
-            refetchData={() => PendingRefetch()}
-            // ref={myGridRef}
-          />
-        </Grid>
+        <PendingCustomer />
       </TabPanel>
-
       <Routes>
         <Route
           path="new-entry/*"
@@ -996,263 +539,11 @@ export const Ckyc = () => {
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
               formmode={"new"}
-            />
-          }
-        />
-
-        <Route
-          path="view-detail/*"
-          element={
-            <FormModal
-              isLoadingData={isLoadingData}
-              setIsLoadingData={setIsLoadingData}
-              isCustomerData={isCustomerData}
-              setIsCustomerData={setIsCustomerData}
-              onClose={() => navigate(".")}
-              formmode={"edit"}
-            />
-          }
-        />
-
-        <Route
-          path="inactive-customer/*"
-          element={
-            <DeactivateCustomer
-              rowdata={rowsData}
-              onClose={() => {
-                navigate(".");
-              }}
-            />
-          }
-        />
-
-        <Route
-          path="photo-signature/*"
-          element={
-            <PhotoSignUpdateDialog
-              open={true}
-              onClose={() => {
-                navigate(".");
-              }}
-            />
-          }
-        />
-
-        <Route
-          path="insurance/*"
-          element={
-            <InsuranceComp
-              // rowsData={rowsData}
-              open={insuranceOpen}
-              onClose={() => {
-                // setInsuranceOpen(false)
-                navigate(".");
-              }}
-            />
-          }
-        />
-        <Route
-          path="bank-details/*"
-          element={
-            <BankDTLComp
-              // rowsData={rowsData}
-              open={bankCompOpen}
-              onClose={() => {
-                navigate(".");
-              }}
-            />
-          }
-        />
-
-        <Route
-          path="credit-card/*"
-          element={
-            <CreditCardDTLComp
-              // rowsData={rowsData}
-              open={creditCardCompOpen}
-              onClose={() => {
-                navigate(".");
-              }}
-            />
-          }
-        />
-
-        <Route
-          path="offences-details/*"
-          element={
-            <OffencesDTLComp
-              // rowsData={rowsData}
-              open={offencesCompOpen}
-              onClose={() => {
-                navigate(".");
-              }}
-            />
-          }
-        />
-
-        <Route
-          path="asset-details/*"
-          element={
-            <AssetDTLComp
-              // rowsData={rowsData}
-              open={assetDTLCompOpen}
-              onClose={() => {
-                navigate(".");
-              }}
-            />
-          }
-        />
-
-        <Route
-          path="financial-details/*"
-          element={
-            <FinancialDTLComp
-              // rowsData={rowsData}
-              open={financialDTLCompOpen}
-              onClose={() => {
-                navigate(".");
-              }}
-            />
-          }
-        />
-
-        <Route
-          path="dependencies/*"
-          element={
-            <Dependencies
-              rowsData={rowsData}
-              open={contPersonCompOpen}
-              onClose={() => {
-                navigate(".");
-              }}
-            />
-          }
-        />
-
-        <Route
-          path="controlling-person-details/*"
-          element={
-            <ControllingPersonComp
-              // rowsData={rowsData}
-              open={contPersonCompOpen}
-              onClose={() => {
-                navigate(".");
-              }}
+              from={"new-entry"}
             />
           }
         />
       </Routes>
-
-      {componentToShow === "ViewDetail"
-        ? ""
-        : // <ViewDetail
-        //   rowsData={rowsData}
-        //   open={acctOpen}
-        //   onClose={() => setAcctOpen(false)}
-        // />
-        // : componentToShow === "Dependencies" ? (
-        //   <Dependencies
-        //     rowsData={rowsData}
-        //     open={acctOpen}
-        //     onClose={() => setAcctOpen(false)}
-        //   />
-        // )
-        componentToShow === "ViewStatement"
-        ? ""
-        : // <ViewStatement
-          //   rowsData={rowsData}
-          //   open={acctOpen}
-          //   onClose={() => setAcctOpen(false)}
-          //   screenFlag={"ACCT_INQ"}
-          // />
-          // : componentToShow === "DeactivateCustomer" ? (
-          //     <DeactivateCustomer rowdata={rowsData} />
-          // )
-          // : componentToShow === "insurance" ? (
-          //     <InsuranceComp
-          //       rowsData={rowsData}
-          //       open={insuranceOpen}
-          //       onClose={() => setInsuranceOpen(false)}
-          //     />
-          // )
-          //  : componentToShow === "bankDetails" ? (
-          //     <BankDTLComp
-          //       rowsData={rowsData}
-          //       open={bankCompOpen}
-          //       onClose={() => setBankCompOpen(false)}
-          //     />
-          // )
-          // : componentToShow === "creditCard" ? (
-          //     <CreditCardDTLComp
-          //       rowsData={rowsData}
-          //       open={creditCardCompOpen}
-          //       onClose={() => setCreditCardCompOpen(false)}
-          //     />
-          // )
-          //  : componentToShow === "offencesDetails" ? (
-          //     <OffencesDTLComp
-          //       rowsData={rowsData}
-          //       open={offencesCompOpen}
-          //       onClose={() => setOffencesCompOpen(false)}
-          //     />
-          // )
-          // : componentToShow === "assetDetails" ? (
-          //   <AssetDTLComp
-          //     rowsData={rowsData}
-          //     open={assetDTLCompOpen}
-          //     onClose={() => setAssetDTLCompOpen(false)}
-          //   />
-          // )
-          // : componentToShow === "financialDetails" ? (
-          //     <FinancialDTLComp
-          //       rowsData={rowsData}
-          //       open={financialDTLCompOpen}
-          //       onClose={() => setFinancialDTLCompOpen(false)}
-          //     />
-          // )
-          // : componentToShow === "controllingPersonDTL" ? (
-          //     <ControllingPersonComp
-          //       rowsData={rowsData}
-          //       open={contPersonCompOpen}
-          //       onClose={() => setContPersonCompOpen(false)}
-          //     />
-          // )
-          null}
-
-      {/* <FormModal 
-        // isFormModalOpen={state?.isFormModalOpenctx} 
-        // handleFormModalOpen={handleFormModalOpen} 
-        // handleFormModalClose={handleFormModalClose} 
-
-        // isSidebarExpanded={state?.isSidebarExpandedctx}
-        // setIsSidebarExpanded={setIsSidebarExpanded}
-        // handleSidebarExpansion={handleSidebarExpansion}
-
-        // colTabValue={colTabValue}
-        // setColTabValue={setColTabValue}
-        // handleColTabChange={handleColTabChange}
-
-        isLoadingData={isLoadingData}
-        setIsLoadingData={setIsLoadingData}
-        isCustomerData={isCustomerData}
-        setIsCustomerData={setIsCustomerData}
-
-        // entityType={state?.entityTypectx}
-        // setEntityType={setEntityType}
-        
-        // customerCategories={customerCategories}
-        // tabsApiRes={tabsApiRes}
-        
-        // setTabsApiRes={setTabsApiRes}
-        // categoryValue={categoryValue}
-        // setCategoryValue={setCategoryValue}
-        // constitutionValue={constitutionValue}
-        // setConstitutionValue={setConstitutionValue}
-        // accTypeValue={accTypeValue}
-        // setAccTypeValue={setAccTypeValue}
-        // refetch={refetch}
-        // retrieveFormRefetch={retrieveFormRefetch}
-      /> */}
     </React.Fragment>
   );
 };

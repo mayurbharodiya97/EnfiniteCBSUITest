@@ -229,7 +229,7 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
       // gridconfig: { xs: 6, sm: 1 },
       accessor: "ACCOUNT_TYPE",
       name: "ACCOUNT_TYPE",
-      defaultValue: "333 ",
+      defaultValue: "000 ",
       isVisible: true,
       gridconfig: { xs: 6, sm: 2 },
       label: "Account Type",
@@ -453,6 +453,34 @@ export const DenominationScreenMetaData: FilterFormMetaType = {
         }
       },
     },
+    {
+      accessor: "LIMIT",
+      name: "LIMIT",
+      label: "Transaction Limit",
+      placeholder: "Transaction Limit",
+      type: "amountfield",
+      defaultValue: "20000",
+      isDisabled: true,
+      gridconfig: { xs: 6, sm: 3 },
+      dependFields: ["TRN"],
+      dependFieldsonchange: (colomnValue, value, name, extraData) => {
+        if (value === "R" || value === "P") {
+          return { isVisible: true };
+        } else {
+          return {
+            isVisible: false,
+          };
+        }
+      },
+    },
+    // {
+    //   accessor: "LIMIT2",
+    //   name: "LIMIT2",
+    //   label: "Transaction Limit2",
+    //   placeholder: "Transaction Limit2",
+    //   type: "numberfield",
+    //   gridconfig: { xs: 6, sm: 6, md: 6, lg: 3, xl: 6 },
+    // },
   ],
 };
 

@@ -1,7 +1,5 @@
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTable/types";
-import { useEffect, useState } from "react";
-import { boolean } from "yup";
 
 const GridType = ({ data }) => {
   const getMetadata = (reqdata) => {

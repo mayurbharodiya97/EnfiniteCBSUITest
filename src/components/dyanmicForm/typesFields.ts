@@ -62,6 +62,7 @@ export interface FieldMetaData<T> {
   options?: any;
   _optionsKey?: string;
   defaultBranchTrue?: boolean;
+  defaultAcctTypeTrue?: boolean;
 }
 
 export type Omitted<T> = Omit<T, "fieldKey" | "enableGrid">;

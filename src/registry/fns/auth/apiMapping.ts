@@ -576,6 +576,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
     packageName: "",
   },
+  GETUPDCUSTPHOTODATA: {
+    url: "/customerServiceAPI/GETUPDCUSTPHOTODATA",
+    packageName: "",
+  },
   CHEQUEBKDATA: {
     url: "/chequeServiceAPI/CHEQUEBKDATA",
     packageName: "",
@@ -632,6 +636,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/loanServiceAPI/GETFDBRDDETAIL",
     packageName: "",
   },
+
   GETDAILYTRANMAKERDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRANMAKERDTL",
     packageName: "",
@@ -676,6 +681,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETDAILYTRNLIST",
     packageName: "",
   },
+  GETSANPSHOTDTL: {
+    url: "/transactionServiceAPI/GETSANPSHOTDTL",
+    packageName: "",
+  },
   CONFIRMDAILYTRNDATA: {
     url: "/transactionServiceAPI/CONFIRMDAILYTRNDATA",
     packageName: "",
@@ -696,6 +705,85 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETSTOPDISPLAY",
     packageName: "",
   },
+  GETTRANDYNQUERYDATAF1: {
+    url: "/transactionServiceAPI/GETTRANDYNQUERYDATAF1",
+    packageName: "",
+  },
+  GETTRANDYNQUERYDATAF2: {
+    url: "/transactionServiceAPI/GETTRANDYNQUERYDATAF2",
+    packageName: "",
+  },
+  GETACCOUNTDTL: {
+    url: "/transactionServiceAPI/GETACCOUNTDTL",
+    packageName: "",
+  },
+  DELETESCROLLDATA: {
+    url: "/transactionServiceAPI/DELETESCROLLDATA",
+    packageName: "",
+  },
+
+  ACCTNOVALIDATION: {
+    url: "/accountServiceAPI/ACCTNOVALIDATION",
+    packageName: "",
+  },
+
+  // other trx
+  GETDLYTRNOWCHQOBCIBCTAB: {
+    //OWChq
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNOWCHQOBCIBCTAB",
+    packageName: "",
+  },
+  GETDLYTRNTEMPODCTAB: {
+    //temp
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTEMPODCTAB",
+    packageName: "",
+  },
+  GETDLYTRNATMCARDTAB: {
+    //atm
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNATMCARDTAB",
+    packageName: "",
+  },
+  GETDLYTRNGROUPACCTINFOTAB: {
+    //group
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNGROUPACCTINFOTAB",
+    packageName: "",
+  },
+  GETDLYTRNASBATAB: {
+    //asba
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNASBATAB",
+    packageName: "",
+  },
+  GETDLYTRNPMBYTAB: {
+    //pmby
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNPMBYTAB",
+    packageName: "",
+  },
+  GETDLYTRNAPBSTAB: {
+    //APBS
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNAPBSTAB",
+    packageName: "",
+  },
+  GETDLYTRNSPINSTRUCTTAB: {
+    //instruct
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSPINSTRUCTTAB",
+    packageName: "",
+  },
+  GETDLYTRNIMPSTAB: {
+    //imps
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNIMPSTAB",
+    packageName: "",
+  },
+  GETDLYTRNACHOTWDTLTAB: {
+    //ach_ow
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACHOTWDTLTAB",
+    packageName: "",
+  },
+  GETACHIWIMGDTLTAB: {
+    //ach_iw
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACHIWIMGDTLTAB",
+    packageName: "",
+  },
+
   GETLIMITFDBRANCHDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDBRANCHDDW",
     packageName: "",

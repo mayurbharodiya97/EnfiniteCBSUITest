@@ -531,21 +531,21 @@ export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
 }
 
 // for getting pending entries, in grid
-export const getPendingData = async (reqObj:any) => {
-  const {COMP_CD, BRANCH_CD, ENTERED_DATE} = reqObj
+export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:string, REQ_FLAG: string}) => {
+  const {COMP_CD, REQ_FLAG, ENTERED_DATE} = reqObj
   let payload = {}
-  if(reqObj && reqObj.REQ_FLAG) {
+  if(ENTERED_DATE) {
     payload = {
       COMP_CD: COMP_CD, 
-      BRANCH_CD: BRANCH_CD, 
+      // BRANCH_CD: BRANCH_CD, 
       ENTERED_DATE: ENTERED_DATE,
-      REQ_FLAG: reqObj.REQ_FLAG
+      REQ_FLAG: REQ_FLAG
     }
   } else {
     payload = {
       COMP_CD: COMP_CD, 
-      BRANCH_CD: BRANCH_CD, 
-      ENTERED_DATE: ENTERED_DATE,
+      // BRANCH_CD: BRANCH_CD, 
+      REQ_FLAG: REQ_FLAG
     }
   }
   const { data, status, message, messageDetails } =
@@ -729,14 +729,19 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
   }
 }
 
-export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
-  // const {gridData, formMode} = formState;
-  // let selectedDoc:any[] = []
-  // if(formState.gridData && formState.gridData.length>0) {
-  //   selectedDoc = formState.gridData.map(el => {
-  //     return el.BANK_DOC_TRAN_CD && el.BANK_DOC_TRAN_CD
-  //   })
-  // } 
+export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD, formState}) => {
+  const {gridData, rowsData} = formState;
+  // console.log("qekuwhdiuwehdw", formState)
+  let selectedDoc:any[] = []
+  if(rowsData && rowsData.length>0) {
+    selectedDoc = rowsData.map(el => {
+      return el.data.BANK_DOC_TRAN_CD ?? "";
+    })
+  } else if(gridData && gridData.length>0) {
+    selectedDoc = gridData.map(el => {
+      return el.BANK_DOC_TRAN_CD ?? "";
+    })
+  }
   // console.log(gridData, "auedhniuwehdwe", formMode)
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTDOCUMENT", {
@@ -745,6 +750,11 @@ export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
     });
   if (status === "0") {
     let responseData = data;
+    if(rowsData && rowsData.length>0) {
+      responseData = responseData.filter(el => selectedDoc.includes(el.SR_CD))
+    } else if(gridData && gridData.length>0) {
+      responseData = responseData.filter(el => !selectedDoc.includes(el.SR_CD))
+    }
     // console.log("auedhniuwehdwe  qwed", data)
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DESCRIPTION, SR_CD, ...other }) => {
@@ -802,6 +812,19 @@ export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
+export const updatePhotoSignData = async ({COMP_CD, CUSTOMER_ID}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", {
+      COMP_CD: COMP_CD, 
+      CUSTOMER_ID: CUSTOMER_ID,
+    });
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
 export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM}) => {
   if(CUSTOMER_ID) {
     const { data, status, message, messageDetails } =
@@ -849,7 +872,7 @@ export const TrimSpaceValidation = (columnValue, allField, flag) => {
       } else if (columnValue.value !== columnValue.value.trimEnd()) {
         return "Space after name is not allowed.";
       } else if(!regex.test(columnValue.value)) {
-          return "Please Enter Character Value.";
+          return "Please Enter Character Value without Space.";
       }                    
   }
   return "";
@@ -1310,6 +1333,7 @@ export const SaveEntry = async (reqdata) => {
     IsNewRow,
     REQ_CD,
     formData,
+    COMP_CD,
   } = reqdata
 
   // console.log("aaaaaaaaa", formData)
@@ -1671,6 +1695,7 @@ export const SaveEntry = async (reqdata) => {
       SAVE_FLAG:"F",
       ENTRY_TYPE :"1",
       CUSTOMER_ID:"",
+      COMP_CD: COMP_CD,
     //  OTHER_ADDRESS: [
     //    {
     //         IsNewRow:true,
@@ -1832,23 +1857,37 @@ export const SaveEntry = async (reqdata) => {
   //             }
   //         ]
   //     },
+  // DOC_MST: [
+  //   {
+  //     IsNewRow: true,
+  //     COMP_CD: "132 ",
+  //     BRANCH_CD:"099 ",
+  //     ENT_COMP_CD:"132 ",
+  //     ENT_BRANCH_CD:"099 ",
+  //     ACCT_TYPE: "1",
+  //     ACCT_CD: "2",
+  //     TEMPLATE_CD: "4",
+  //     SUBMIT: "N",
+  //     VALID_UPTO: "05-OCT-23",
+  //     DOC_AMOUNT: "1234",
+  //     DOC_NO: "123456",
+  //     DOC_TYPE: "KYC",
+  //     DOC_WEIGHTAGE: "1 ",
+  //     ACTIVE: "Y",
+  //   }
+  // ],
   DOC_MST: [
     {
-      IsNewRow: true,
-      COMP_CD: "132 ",
-      BRANCH_CD:"099 ",
-      ENT_COMP_CD:"132 ",
-      ENT_BRANCH_CD:"099 ",
-      ACCT_TYPE: "1",
-      ACCT_CD: "2",
       TEMPLATE_CD: "4",
       SUBMIT: "N",
       VALID_UPTO: "05-OCT-23",
-      DOC_AMOUNT: "1234",
       DOC_NO: "123456",
       DOC_TYPE: "KYC",
-      DOC_WEIGHTAGE: "1 ",
+      DOC_IMAGE: "",
+      DOC_AMOUNT: "",
+      DOC_WEIGHTAGE: "",
       ACTIVE: "Y",
+      IsNewRow: true
     }
   ],
   

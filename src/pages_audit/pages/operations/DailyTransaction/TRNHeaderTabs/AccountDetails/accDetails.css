@@ -1,0 +1,28 @@
+#accInfo {
+  padding: 10px;
+  margin-left: 7px;
+  margin-right: 7px;
+}
+
+.styleforteller {
+  height: 49vh;
+}
+.stylefortellerofChild {
+  height: 25vh;
+}
+#accHead {
+  /* background-image: linear-gradient(to right, red, yellow); */
+  background: #e9f1ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 8px;
+}
+#head {
+  font-size: small;
+  padding: 7px;
+  text-align: center;
+  color: #1c8aff;
+}

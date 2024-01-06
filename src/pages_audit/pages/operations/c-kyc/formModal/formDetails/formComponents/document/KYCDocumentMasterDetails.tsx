@@ -15,7 +15,7 @@ import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { InitialValuesType, SubmitFnType } from "packages/form";
-import { extractMetaData } from "components/utils";
+import { extractMetaData, utilFunction } from "components/utils";
 import { MetaDataType } from "components/dyanmicForm";
 import { DocumentFormMetadata } from "./documentFormMetadata";
 import { UploadTarget } from "components/fileUpload/uploadTarget";
@@ -52,13 +52,8 @@ const KYCDocumentMasterDetails = ({
   const myRef = useRef<any>(null);
   const [isopenImgViewer, setOpenImgViewer] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [options, setOptions] = useState<any>([]);
   const [files, setFiles] = useState<any>(defaultFileData);
-  const [formMetadata, setFormMetadata] = useState<any>(DocumentFormMetadata);
-  const onFormButtonClickHandel = (id) => {
-    setOpenImgViewer(true);
-  };
-  const mysubdtlRef = useRef<any>({});
+  const fileRef = useRef<any[]>(defaultFileData);
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { state: rows }: any = useLocation();
@@ -71,99 +66,12 @@ const KYCDocumentMasterDetails = ({
   // const mutationRet: any = useMutation(
   //   updateOperatorMasterDetailsDataWrapperFn(API.getOperatorDetailGridData)
   // );
-  console.log(rowsData, "adskjhqnhweiudhqw", gridData)
   useEffect(() => {
-    console.log("renderededdd")
-  }, [])
-  useEffect(() => {
-    console.log("formModeformMode", formMode)
-  }, [formMode])
-  useEffect(() => {
-    // if(defaultmode==="new") {  
-      // let data = {
-      //   COMP_CD: authState?.companyID ?? "",
-      //   BRANCH_CD: authState?.user?.branchCode ?? "",
-      // }
-      // mutation.mutate(data)
-    // } else if(defaultmode==="edit") {
-    if(formMode==="edit") {
-      console.log("adkuuiqwuidsquwid", rowsData[0].data)
-      let docOption:any = [];
-      docOption.push(rowsData[0].data)
-      // // docOption.push(rowsData[0].data)
-      // KYCDocumentMasterMetaData.fields[2].options = () => {
-      //   return docOption
-      // }
-      // setOptions(docOption)
-    }
-  }, [formMode, gridData])
+    fileRef.current = files;
+    // console.log("filessss", files);
+  }, [files]);
 
   // API.getCustDocumentOpDtl(authState?.companyID, authState?.user?.branchCode)
-  const mutation: any = useMutation(API.getCustDocumentOpDtl, {
-    onSuccess: (data) => {
-      if (data) {
-        let selectedOptions = gridData.map(el => el.DOC_DESCRIPTION)
-        let result = data.filter(el => !selectedOptions.includes(el.DESCRIPTION))
-        console.log( DocumentFormMetadata.fields[2], "insideeeeeeee", data, selectedOptions, result)
-        // if(result && result.length>0) {
-        // }
-        // KYCDocumentMasterMetaData.fields[2].options = () => {
-        //   return result
-        // }        
-
-        // setOptions(result)
-        setOptions(data)
-
-
-        // console.log(data, "insidee oppp", data.map(el => el.DOC_DESCRIPTION))
-        // let selectedDocTypes = data.map(el => {
-        //   if(el.DOC_DESCRIPTION) {
-        //     return el.DOC_DESCRIPTION
-        //   }
-        // })
-        // let result = selectedDocTypes && data.filter(el => selectedDocTypes.includes(el?.DESCRIPTION))
-        // console.log(selectedDocTypes, "insidee oppp", data, "c", result)
-        // KYCDocumentMasterMetaData.fields[2].options = result
-      }
-    },
-    onError: (error: any) => {},
-  });
-  useEffect(() => {
-    let data = {
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-    }
-    mutation.mutate(data)
-  }, [])
-
-
-  useEffect(() => {
-    console.log(rowsData, "optionssssss", options)
-    let metadata = formMetadata
-    metadata.fields[2].options = () => {
-      return options
-    }
-    setFormMetadata(metadata)
-    // KYCDocumentMasterMetaData.fields[2].options = () => {
-    //   return options
-    // }   
-  }, [options])
-  useEffect(() => {
-    let metadata = formMetadata
-    if(options && options.length) {
-      if(rowsData && rowsData.length) {
-        console.log("optionssssss disable", rowsData)
-        metadata.fields[2].isReadOnly = true
-      } else {
-        metadata.fields[2].isReadOnly = false
-      }     
-      setFormMetadata(metadata)
-    }
-  }, [rowsData, options])
-
-  useEffect(() => {
-    console.log("options, formMetadata", options, formMetadata)
-  }, [options, formMetadata])
 
   const customTransformFileObj = (currentObj) => {
     return transformFileObject({})(currentObj);
@@ -214,23 +122,15 @@ const KYCDocumentMasterDetails = ({
   );
 
   // useEffect(() => {
-  //   // console.log(rows[0]?.data, "efwqqqedqwsw", {
-  //   //   _isNewRow: false,
-  //   //   ...(rows?.[0]?.data ?? {}),
-  //   //   // DETAILS_DATA: mutationRet.data || [],
-  //   })
-  // }, [rows])
-
-  useEffect(() => {
-    if (files && files.length > 0) {
-      console.log(
-        "fwefewqdqw",
-        files[0]?._mimeType,
-        files[0]?.blob,
-        files[0]?.name
-      );
-    }
-  }, [files]);
+  //   if (files && files.length > 0) {
+  //     console.log(
+  //       "fwefewqdqw",
+  //       files[0]?._mimeType,
+  //       files[0]?.blob,
+  //       files[0]?.name
+  //     );
+  //   }
+  // }, [files]);
 
   let metadataold = {};
   metadataold = cloneDeep(documentMasterDetailsMetaData);
@@ -239,19 +139,53 @@ const KYCDocumentMasterDetails = ({
     myRef.current?.addNewRow(true);
   };
 
-  const onSubmitHandler: SubmitFnType = (
+  const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
     endSubmit,
     setFieldError,
     actionFlag
   ) => {
-    afterFormSubmit(data,formMode)
+    if (data) {
+      // console.log(fileRef.current, "sfhweiufhwieufh", files);
+      if (fileRef.current && fileRef.current.length > 0) {
+        if (fileRef.current[0].blob) {
+          let blob = fileRef.current[0].blob;
+          let base64 = await utilFunction.convertBlobToBase64(blob);
+          if (base64) {
+            // console.log("sfhweiufhwieufh --aft", base64);
+            let newData = {
+              ...data,
+              DOC_IMAGE: base64?.[1],
+              DOC_OBJ: fileRef.current,
+            };
+            afterFormSubmit(newData, formMode);
+          }
+        }
+      } else {
+        let newData = {...data,
+          DOC_IMAGE: "",
+          DOC_OBJ: "",
+        }
+        afterFormSubmit(newData, formMode);
+      }
+    }
+    endSubmit(true);
     //@ts-ignore
     // endSubmit(true);
   };
 
-  useEffect(() => {}, [rows]);
+  useEffect(() => {
+    // rowsData?.[0]?.data
+    // console.log("sdfjwioefwef", rowsData?.[0]?.data);
+    if (rowsData && rowsData.length > 0) {
+      // if(rowsData?.[0]?.data.)
+      const docFile = rowsData?.[0]?.data?.DOC_OBJ;
+      if (docFile) {
+        setFiles(docFile);
+      }
+    }
+  }, [rowsData]);
 
   // getDocumentTypes
   const {
@@ -279,72 +213,59 @@ const KYCDocumentMasterDetails = ({
   );
 
   const formMemo = useMemo(() => {
-    return <FormWrapper
-      key={"MobileAppReviewGridMetaData"+setFormMetadata+rowsData+options+formMode}
-      // metaData={MobileAppReviewMetaData}
-      // metaData={
-      //   extractMetaData(
-      //     KYCDocumentMasterMetaData,
-      //     formMode === "add" ? "new" : "edit"
-      //   ) as MetaDataType
-      // }
-      metaData={
-        extractMetaData(
-          formMetadata,formMode
-          // formMode === "view"
-        ) as MetaDataType
-      }
-      // metadata={formMetadata}
-      initialValues={rowsData?.[0]?.data as InitialValuesType}
-      onSubmitHandler={onSubmitHandler}
-      //@ts-ignore
-      displayMode={formMode}
-      formState={gridData}
-      formStyle={{
-        background: "white",
-        // height: "30vh",
-        // overflowY: "auto",
-        // overflowX: "hidden",
-      }}
-    >
-      {({ isSubmitting, handleSubmit }) => {
-        console.log("q3qwedqwe", isSubmitting);
-        return (
-          <>
-            {/* {formMode === "view" && <Button
-              onClick={(event) => {
-                // handleSubmit(event, "Save");
-                setFormMode("edit")
-              }}
-              // disabled={isSubmitting}
-              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-              color={"primary"}
-            >
-              Edit
-            </Button>} */}
-            {(formMode === "edit" || formMode === "new") && <Button
-              onClick={(event) => {
-                handleSubmit(event, "Save");
-              }}
-              // disabled={isSubmitting}
-              //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-              color={"primary"}
-            >
-              Save
-            </Button>}
-            <Button
-              // onClick={ClosedEventCall}
-              onClick={onClose}
-              color={"primary"}
-              // disabled={isSubmitting}
-            >
-              Cancel
-            </Button>
-          </>
-        );
-      }}
-    </FormWrapper>
-  }, [setFormMetadata, rowsData, options, formMode])
+    return (
+      <FormWrapper
+        key={"MobileAppReviewGridMetaData" + rowsData + formMode}
+        // metaData={MobileAppReviewMetaData}
+        // metaData={
+        //   extractMetaData(
+        //     KYCDocumentMasterMetaData,
+        //     formMode === "add" ? "new" : "edit"
+        //   ) as MetaDataType
+        // }
+        metaData={
+          extractMetaData(
+            DocumentFormMetadata,
+            formMode
+            // formMode === "view"
+          ) as MetaDataType
+        }
+        // metadata={formMetadata}
+        initialValues={rowsData?.[0]?.data as InitialValuesType}
+        onSubmitHandler={onSubmitHandler}
+        //@ts-ignore
+        displayMode={formMode}
+        formState={{ gridData, rowsData }}
+        formStyle={{
+          background: "white",
+          // height: "30vh",
+          // overflowY: "auto",
+          // overflowX: "hidden",
+        }}
+      >
+        {({ isSubmitting, handleSubmit }) => {
+          // console.log("q3qwedqwe", isSubmitting);
+          return (
+            <>
+              {(formMode === "edit" || formMode === "new") && (
+                <Button
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  color={"primary"}
+                >
+                  Save
+                </Button>
+              )}
+              <Button onClick={onClose} color={"primary"}>
+                Cancel
+              </Button>
+            </>
+          );
+        }}
+      </FormWrapper>
+    );
+  }, [rowsData, formMode]);
 
   return (
     <Dialog
@@ -363,26 +284,18 @@ const KYCDocumentMasterDetails = ({
         paperScrollBody: classes.topPaperScrollBody,
       }}
     >
-      {(options.length >0) && formMemo}
+      {formMemo}
       <UploadTarget
         existingFiles={files}
         onDrop={validateFilesAndAddToListCB}
         disabled={loading}
       />
-      {/* <Dialog
-            open={Boolean(files)}
-            maxWidth="lg"
-            onClose={() => setFiles(null)}
-            PaperProps={{
-              style: { width: "100%", height: "100%" },
-            }}
-          >             */}
       {files && files.length > 0 && files[0]?._mimeType?.includes("pdf") ? (
         <PDFViewer
           blob={files[0]?.blob}
           fileName={files[0]?.name}
           onClose={() => {
-            setFiles(null);
+            setFiles([]);
           }}
           // onClose={() => setAction(null)}
         />
@@ -393,7 +306,7 @@ const KYCDocumentMasterDetails = ({
           blob={files[0]?.blob}
           fileName={files[0]?.name}
           onClose={() => {
-            setFiles(null);
+            setFiles([]);
           }}
           // onClose={() => setAction(null)}
         />
@@ -401,13 +314,12 @@ const KYCDocumentMasterDetails = ({
         <NoPreview
           fileName={files[0]?.name}
           onClose={() => {
-            setFiles(null);
+            setFiles([]);
           }}
           // onClose={() => setAction(null)}
           message={"No preview available for the file"}
         />
       ) : null}
-      {/* </Dialog> */}
     </Dialog>
   );
 };

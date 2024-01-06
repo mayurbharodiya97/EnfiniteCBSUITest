@@ -2,10 +2,10 @@ import GridWrapper from "components/dataTableStatic";
 import { TodaysTransactionTableGridMetaData } from "./gridMetaData";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider } from "cache";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import Scroll from "./openScroll/scroll";
 import { Alert } from "components/common/alert";
-import { Box, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {

@@ -13,7 +13,7 @@ import { t } from "i18next";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
     const { authState } = useContext(AuthContext);
-    const {state, handleColTabChangectx} = useContext(CkycContext);
+    const {state, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [rowsData, setRowsData] = useState([]);
@@ -137,7 +137,64 @@ const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, d
         [navigate]
     );
     
-    
+    const SaveUpdateBTNs = useMemo(() => {
+      if(displayMode) {
+          return displayMode == "new"
+          ? <Fragment>
+              <Button
+              sx={{ mr: 2, mb: 2 }}
+              color="secondary"
+              variant="contained"
+              disabled={isNextLoading}
+              onClick={() => {
+                handleStepStatusctx({
+                  status: "completed",
+                  coltabvalue: state?.colTabValuectx,
+                })
+                handleColTabChangectx(state?.colTabValuectx + 1)
+              }}
+              >
+              {t("Save & Next")}
+              </Button>
+          </Fragment>
+          : displayMode == "edit"
+              ? <Fragment>
+                  <Button
+                  sx={{ mr: 2, mb: 2 }}
+                  color="secondary"
+                  variant="contained"
+                  disabled={isNextLoading}
+                  onClick={() => {
+                    handleStepStatusctx({
+                      status: "completed",
+                      coltabvalue: state?.colTabValuectx,
+                    })
+                    handleColTabChangectx(state?.colTabValuectx + 1)
+                  }}
+                  >
+                  {t("Update & Next")}
+                  </Button>
+              </Fragment>
+              : displayMode == "view" && <Fragment>
+                  <Button
+                  sx={{ mr: 2, mb: 2 }}
+                  color="secondary"
+                  variant="contained"
+                  disabled={isNextLoading}
+                  onClick={(e) => {
+                    handleStepStatusctx({
+                      status: "completed",
+                      coltabvalue: state?.colTabValuectx,
+                    })
+                    handleColTabChangectx(state?.colTabValuectx + 1)
+                  }}
+                  >
+                  {t("Next")}
+                  </Button>
+              </Fragment>
+      }
+    }, [displayMode])
+
     
     return (
       <Grid container style={{position:"absolute", paddingRight: !state?.isFreshEntryctx ? "113px" : "12px"}}>
@@ -165,23 +222,7 @@ const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, d
                         handleColTabChangectx(state?.colTabValuectx-1)
                     }}
                 >{t("Previous")}</Button>
-                {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    // onClick={(e) => {
-                    //     DeclarationFormRef.current.handleSubmitError(e, "save")
-                    // }}
-                >{t("Save & Next")}</Button>}
-                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R"))) 
-                ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    // onClick={(e) => {
-                    //     DeclarationFormRef.current.handleSubmitError(e, "save")
-                    // }}
-                >{t("Update & Next")}</Button>
-                : !state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={() => handleColTabChangectx(state?.colTabValuectx+1)}
-                    // onClick={(e) => {
-                    //     DeclarationFormRef.current.handleSubmitError(e, "save")
-                    // }}
-                >{t("Next")}</Button>}
+                {SaveUpdateBTNs}
             </Grid>
 
 

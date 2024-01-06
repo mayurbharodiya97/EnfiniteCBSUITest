@@ -33,10 +33,11 @@ export const CkycConfirm = () => {
   } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
+      // BRANCH_CD: authState?.user?.branchCode ?? "",
     //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
-      REQ_FLAG: "P  ",
-      ENTERED_DATE:  format(new Date(), "dd-MM-yyyy"),
+      REQ_FLAG: "P",
+      // ENTERED_DATE:  format(new Date(), "dd-MM-yyyy"),
+      // ENTERED_DATE: "22-12-2023"
     })
   )
 
@@ -68,7 +69,7 @@ export const CkycConfirm = () => {
 
   useEffect(() => {
     PendingRefetch()
-  }, [location.pathname])
+  }, [location])
 
   return (
     <>
@@ -114,6 +115,7 @@ export const CkycConfirm = () => {
                 setIsCustomerData={setIsCustomerData}
                 onClose={() => navigate(".")}
                 formmode={"view"}
+                from={"confirmation-entry"}
               />
             }
           />

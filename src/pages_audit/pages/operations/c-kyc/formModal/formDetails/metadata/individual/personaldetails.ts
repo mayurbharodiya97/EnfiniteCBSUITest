@@ -365,12 +365,12 @@ export const personal_detail_prefix_data = {
             dividerText: "FatherName",
             name: "fatherHeaderDivider_ignoreField",
             label: "fatherHeaderDivider",
-            // dependentFields: ["FATHER_SPOUSE"],
-            // setValueOnDependentFieldsChange: (dependentFields) => {
-            //     console.log("setvalue divider", dependentFields?.FATHER_SPOUSE?.optionData[0]?.label)
-            //     let dividerText = dependentFields?.FATHER_SPOUSE?.optionData[0]?.label ? `${dependentFields?.FATHER_SPOUSE?.optionData[0]?.label} Name` : null
-            //     return dividerText;
-            // },
+            dependentFields: ["FATHER_SPOUSE"],
+            setValueOnDependentFieldsChange: (dependentFields) => {
+                console.log("setvalue divider", dependentFields?.FATHER_SPOUSE?.optionData[0]?.label)
+                let dividerText = dependentFields?.FATHER_SPOUSE?.optionData[0]?.label ? `${dependentFields?.FATHER_SPOUSE?.optionData[0]?.label} Name` : null
+                return dividerText;
+            },
         },
         {
             render: {

@@ -1,6 +1,6 @@
 import { RecoilRoot } from "recoil";
 import { QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query-devtools";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { SnackbarProvider } from "notistack";
 import { queryClient } from "cache";
 import "registry/fns/registerFnsCbsEnfinity";
@@ -28,8 +28,8 @@ export const App = () => {
               <IndexPage />
             </SnackbarProvider>
             {/* {process.env.NODE_ENV !== "production" ? (
-                <ReactQueryDevtools />
-              ) : null} */}
+              <ReactQueryDevtools />
+            ) : null} */}
           </QueryClientProvider>
         </StyledEngineProvider>
       </ThemeProvider>
