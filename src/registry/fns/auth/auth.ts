@@ -78,6 +78,7 @@ const authAPI = () => {
       if (!Boolean(timeout)) {
         timeout = 120000;
       }
+
       let response = await fetchWithTimeout(new URL(apiurl, baseURL).href, {
         method: "POST",
         headers: {

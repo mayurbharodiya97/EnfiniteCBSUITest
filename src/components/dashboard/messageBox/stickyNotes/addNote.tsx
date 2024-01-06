@@ -1,11 +1,4 @@
-import {
-  Button,
-  CircularProgress,
-  Dialog,
-  Grid,
-  Paper,
-  Tooltip,
-} from "@mui/material";
+import { CircularProgress, Dialog, Grid, Paper, Tooltip } from "@mui/material";
 import { useState, useRef, useEffect, useContext } from "react";
 import logo from "assets/images/easy_bankcore_Logo.png";
 import { GradientButton } from "components/styledComponent/button";
@@ -18,7 +11,6 @@ import * as API from "../../api";
 import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { utilFunction } from "components/utils";
-import { queryClient } from "cache";
 import { format } from "date-fns";
 function PaperComponent(props) {
   return (

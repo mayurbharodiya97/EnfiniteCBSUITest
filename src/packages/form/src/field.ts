@@ -45,8 +45,6 @@ export const useField = ({
   runPostValidationHookAlways,
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
-  runExternalFunction,
-  onFormDataChange,
 }: UseFieldHookProps) => {
   //formContext provides formName for scoping of fields, and initialValue for the field
   const formContext = useContext(FormContext);
@@ -190,10 +188,7 @@ export const useField = ({
       validate,
       postValidationSetCrossFieldValues,
       runPostValidationHookAlways,
-      authState,
-      runExternalFunction,
-      onFormDataChange,
-      fieldKey
+      authState
     );
     if (typeof wrappedValidation === "function") {
       isValidationFnRef.current = true;
@@ -467,7 +462,7 @@ export const useField = ({
             if (err instanceof Error) {
               finalResult = err.message;
             } else {
-              finalResult = err?.error_msg ?? "unkown error type check console";
+              finalResult = err.error_msg ?? "unkown error type check console";
               console.log("unknown error type", err);
             }
             if (!Boolean(touchAndValidate)) {
@@ -776,21 +771,16 @@ function wrapValidationMethod(
   validationFn?: typeof ValidateFnType,
   postValidationSetCrossFieldValuesFn?: typeof PostValidationSetCrossFieldValuesFnType,
   runPostValidationHookAlways?: boolean,
-  authState?: any,
-  runExternalFunction?: boolean,
-  onFormDataChange?: any,
-  fieldKey?: any
+  authState?: any
 ) {
   if (
     typeof schemaValidation !== "function" &&
     typeof validationFn !== "function" &&
-    typeof postValidationSetCrossFieldValuesFn !== "function" &&
-    typeof onFormDataChange !== "function"
+    typeof postValidationSetCrossFieldValuesFn !== "function"
   ) {
     return undefined;
   }
   const shouldRunAlways = Boolean(runPostValidationHookAlways);
-  console.log(">>shouldRunAlways", fieldKey, !shouldRunAlways);
   if (!shouldRunAlways) {
     const wrapperFunction = async (
       field: any,
@@ -823,30 +813,6 @@ function wrapValidationMethod(
       if (Boolean(errorMsg)) {
         return { error: errorMsg, crossFieldMessages: {}, apiResult };
       }
-      console.log(">>onFormDataChange", onFormDataChange);
-      console.log(">>runExternalFunction", runExternalFunction);
-      if (
-        typeof onFormDataChange === "function" &&
-        Boolean(runExternalFunction)
-      ) {
-        errorMsgObj = await onFormDataChange(
-          fieldKey,
-          field,
-          dependentFieldsState,
-          formState
-        );
-
-        if (typeof errorMsgObj === "object") {
-          errorMsg = errorMsgObj.error;
-          apiResult = errorMsgObj.apiResult;
-        } else {
-          errorMsg = errorMsgObj;
-        }
-        if (Boolean(errorMsg)) {
-          return { error: errorMsg, crossFieldMessages: {}, apiResult };
-        }
-      }
-
       if (typeof postValidationSetCrossFieldValuesFn === "function") {
         crossFieldMessages = await postValidationSetCrossFieldValuesFn(
           field,
@@ -862,8 +828,7 @@ function wrapValidationMethod(
           crossFieldMessages = {};
         }
       }
-
-      return { error: errorMsg, crossFieldMessages: {}, apiResult };
+      return { error: errorMsg, crossFieldMessages, apiResult };
     };
     return wrapperFunction;
   } else {
@@ -910,31 +875,7 @@ function wrapValidationMethod(
         } else {
           errorMsg = errorMsgObj;
         }
-        if (Boolean(errorMsg)) {
-          return { error: errorMsg, crossFieldMessages, apiResult };
-        }
       }
-      if (
-        typeof onFormDataChange === "function" &&
-        Boolean(runExternalFunction)
-      ) {
-        errorMsgObj = await onFormDataChange(
-          fieldKey,
-          field,
-          dependentFieldsState,
-          formState
-        );
-        if (typeof errorMsgObj === "object") {
-          errorMsg = errorMsgObj.error;
-          apiResult = errorMsgObj.apiResult;
-        } else {
-          errorMsg = errorMsgObj;
-        }
-        // if (Boolean(errorMsg)) {
-        //   return { error: errorMsg, crossFieldMessages: {}, apiResult };
-        // }
-      }
-
       return { error: errorMsg, crossFieldMessages, apiResult };
     };
     return wrapperFunctionAlways;

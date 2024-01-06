@@ -138,7 +138,7 @@ export const updateNoteDetailsData = async ({ data }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const updateTipsDetailsData = async ({ data }) => {
+export const updateTipsDetailsData = async (data) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
     "DOTIPS",
     data

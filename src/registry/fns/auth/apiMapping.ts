@@ -7,6 +7,10 @@ export const ActionWiseAPIConfiguration = {
     url: "authenticationServiceAPI/POSTLOGIN/VERIFYOTP",
     packageName: "",
   },
+  OTPRESEND: {
+    url: "enfinityCommonServiceAPI/OTPRESEND",
+    packageName: "",
+  },
   LOGOUTUSER: {
     url: "/enfinityCommonServiceAPI/LOGOUTUSER",
     packageName: "",
@@ -706,6 +710,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETLIMITNSCDTLBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITNSCDTLBTN",
+    packageName: "",
+  },
+  GETCTSCNFRETRIEV: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSCNFRETRIEV",
     packageName: "",
   },
 };

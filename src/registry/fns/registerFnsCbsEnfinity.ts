@@ -27,3 +27,5 @@ registerFn("getDynDropdownData", GeneralAPI.getDynDropdownData);
 registerFn("getDependentFieldList", GeneralAPI.getDependentFieldList);
 registerFn("getProMiscData", GeneralAPI.getProMiscData);
 registerFn("getZoneListData", GeneralAPI.getZoneListData);
+registerFn("getSlipNoData", GeneralAPI.getSlipNoData);
+registerFn("getAccountNumberData", GeneralAPI.getAccountNumberData);

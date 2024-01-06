@@ -9,7 +9,6 @@ import { Fragment, useContext, useState } from "react";
 import { QuickAccessTableGridWrapper } from "./QuickAccessTableGrid/QuickAccessTableGrid";
 import Grid from "@mui/material/Grid";
 import { TodaysTransactionTableGridWrapper } from "./Today'sTransactionGrid/TodaysTransactionTableGrid";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useEffect } from "react";
 import { queryClient } from "cache";
 import { Transactions } from "components/dashboard/transactions";
@@ -31,7 +30,6 @@ const updateAUTHDetailDataWrapperFn =
   };
 
 const Dashboard = () => {
-  const [isOpenSave, setIsOpenSave] = useState<any>(false);
   const { authState } = useContext(AuthContext);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
@@ -60,12 +58,12 @@ const Dashboard = () => {
       mutation.mutate(mutationArguments);
     }
   }, [data?.[0]?.CHART1?.ISVISIBLE, data?.[0]?.TODAY_TRN?.ISVISIBLE]);
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["getDashboardData"]);
-      queryClient.removeQueries(["TodaysTransactionTableGrid"]);
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     queryClient.removeQueries(["getDashboardData"]);
+  //     queryClient.removeQueries(["TodaysTransactionTableGrid"]);
+  //   };
+  // }, []);
 
   // const handleClick = () => {
   //   setIsOpenSave(true);

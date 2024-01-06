@@ -187,7 +187,7 @@ export const MyAppBar = ({
           <div>
             <img
               src={Boolean(pictureURL?.logo) ? pictureURL?.logo : Logo}
-              alt="Netbanking"
+              alt="CbsEnfinity"
               className={classes.logo}
               onClick={(e) => {
                 e.preventDefault();
