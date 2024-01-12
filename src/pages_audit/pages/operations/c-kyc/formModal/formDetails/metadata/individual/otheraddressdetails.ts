@@ -93,16 +93,7 @@ import * as API from "../../../../api";
                         ],
                     },
                     maxLength: 50,
-                    validate: (columnValue, allField, flag) => {
-                      let regex = /^[a-zA-Z0-9 ]*$/;
-                          // special-character not allowed
-                      if(columnValue.value) {
-                          if(!regex.test(columnValue.value)) {
-                              return "Alphanumeric Value is Allowed";
-                          }
-                      }
-                      return "";
-                    },          
+                    validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
                     placeholder: "",
                     type: "text",
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
@@ -116,16 +107,7 @@ import * as API from "../../../../api";
                     placeholder: "",
                     type: "text",
                     maxLength: 50,
-                    validate: (columnValue, allField, flag) => {
-                      let regex = /^[a-zA-Z0-9 ]*$/;
-                          // special-character not allowed
-                      if(columnValue.value) {
-                          if(!regex.test(columnValue.value)) {
-                              return "Alphanumeric Value is Allowed";
-                          }
-                      }
-                      return "";
-                    },          
+                    validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
@@ -136,16 +118,7 @@ import * as API from "../../../../api";
                     label: "Line3",
                     placeholder: "",
                     maxLength: 50,
-                    validate: (columnValue, allField, flag) => {
-                      let regex = /^[a-zA-Z0-9 ]*$/;
-                          // special-character not allowed
-                      if(columnValue.value) {
-                          if(!regex.test(columnValue.value)) {
-                              return "Alphanumeric Value is Allowed";
-                          }
-                      }
-                      return "";
-                    },          
+                    validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
                     type: "text",
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },

@@ -279,12 +279,13 @@ export const related_person_detail_data = {
                 },
                 {
                     render: {
-                        componentType: "textField",
+                        componentType: "panCardOptional",
                     },
                     name: "PAN_NO",
                     label: "PAN",
-                    placeholder: "",
+                    placeholder: "AAAAA1111A",
                     type: "text",
+                    validate: (columnValue, allField, flag) => API.validatePAN(columnValue),
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {

@@ -804,6 +804,26 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSCNFRETRIEV",
     packageName: "",
   },
+  GETEMAILSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMAILSTATUS",
+    packageName: "",
+  },
+  GETMOBILESTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETMOBILESTATUS",
+    packageName: "",
+  },
+  GETUNIQUEIDSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUNIQUEIDSTATUS",
+    packageName: "",
+  },
+  GETGSTINSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTINSTATUS",
+    packageName: "",
+  },
+  GETPANSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
