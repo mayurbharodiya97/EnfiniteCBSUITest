@@ -21,7 +21,7 @@ export const SearchBar: FC<InputProps> = (props) => {
   useEffect(() => {
     let animationTimeout;
 
-    if (placeholderLength > 21) {
+    if (placeholderLength > 18) {
       animationTimeout = setTimeout(() => {
         const animateMarquee = () => {
           //   // Move the first character to the end

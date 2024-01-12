@@ -55,6 +55,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
       onFormButtonCicular,
       subHeaderLable,
       subHeaderLableStyle,
+      setDataOnFieldChange = (action, payload) => {},
     },
     ref
   ) => {
@@ -98,6 +99,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
               formState: {
                 formCode: metaData.form.name,
                 refID: metaData.form.refID,
+                setDataOnFieldChange,
                 ...metaData.form?.formState,
                 ...formState,
               },
