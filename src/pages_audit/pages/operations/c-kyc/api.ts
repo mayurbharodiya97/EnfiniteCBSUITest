@@ -428,6 +428,130 @@ export const getParentAreaOptions = async (COMP_CD, BRANCH_CD) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+
+export const validateEmailID = async (columnValue) => {
+  const EMAIL_ID = columnValue.value
+  if(EMAIL_ID) {
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETEMAILSTATUS", {
+        EMAIL_ID: EMAIL_ID
+      });
+    if (status === "0") {
+      // const responseData = data
+      const EMAIL_ID_STATUS = data?.[0]?.EMAIL_ID_STATUS
+      if(EMAIL_ID_STATUS) {
+      // console.log("dataawdawd", EMAIL_ID_STATUS)
+        if(EMAIL_ID_STATUS === "0") {
+          return "Please Enter Valid Email ID"
+        } else return "";
+      }
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const validateMobileNo = async (columnValue, allField, flag) => {
+  // console.log("columnValue, allField, flag", columnValue, allField, flag)
+  const MOBILE_NO = columnValue.value
+  const SCREEN = "EMST/707"
+  const STD_CD = allField.STD_2.value
+  const FLAG = "Y"
+
+  if(MOBILE_NO && MOBILE_NO) {
+
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETMOBILESTATUS", {
+        // EMAIL_ID: EMAIL_ID
+        MOBILE_NO: MOBILE_NO,
+        SCREEN: SCREEN,
+        STD_CD: STD_CD,
+        FLAG: FLAG,
+      });
+    if (status === "0") {
+      // console.log("columnValue, allField, flag data", data)
+      const message = data?.[0]?.MOBILE_STATUS
+      if(message) {
+        return message;
+      } else return "";
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const validateUniqueId = async (columnValue) => {
+  // console.log("validateUniqueId", columnValue)
+  const UNIQUEID = columnValue.value
+
+  if(UNIQUEID) {
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETUNIQUEIDSTATUS", {
+        UNIQUEID: UNIQUEID
+      });
+    if (status === "0") {
+      // console.log("validateUniqueId data", data)
+      const UID_STATUS = data?.[0]?.UID_STATUS
+      if(UID_STATUS) {
+        if(UID_STATUS === "I") {
+          return "Please Enter Valid Unique ID";
+        } else if(UID_STATUS === "N") {
+          return "Unique ID should be 12 digit";
+        } else return "";
+      } else return "";
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const validateGSTIN = async (columnValue) => {
+  // console.log("validateGSTIN", columnValue)
+  const GSTIN = columnValue.value
+
+  if(GSTIN) {
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETGSTINSTATUS", {
+        GSTIN: GSTIN
+      });
+    if (status === "0") {
+      // console.log("validateGSTIN data", data)
+      const GSTIN_STATUS = data?.[0]?.GSTIN_STATUS
+      // const UID_STATUS = data?.[0]?.UID_STATUS
+      if(GSTIN_STATUS) {
+        return GSTIN_STATUS;
+      } else return "";
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const validatePAN = async (columnValue) => {
+  // console.log("validatePAN", columnValue)
+  const PAN = columnValue.value
+
+  if(PAN) {
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETPANSTATUS", {
+        PAN: PAN
+      });
+    if (status === "0") {
+      // console.log("validatePAN data", data)
+      const PAN_STATUS = data?.[0]?.PAN_STATUS
+      if(PAN_STATUS && PAN_STATUS !== "Y") {
+        return "Please Enter Valid PAN Number";
+      } else return "";
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
 // export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
 //   console.log("getSubAreaOptions called", dependentValue)
 //   // let Parent_Area = ""
@@ -812,12 +936,10 @@ export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
-export const updatePhotoSignData = async ({COMP_CD, CUSTOMER_ID}) => {
+export const updatePhotoSignData = async (reqData) => {
+  // console.log(":wedwd", reqData)
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", {
-      COMP_CD: COMP_CD, 
-      CUSTOMER_ID: CUSTOMER_ID,
-    });
+    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", reqData);
   if (status === "0") {
     return data
   } else {
@@ -1876,20 +1998,21 @@ export const SaveEntry = async (reqdata) => {
   //     ACTIVE: "Y",
   //   }
   // ],
-  DOC_MST: [
-    {
-      TEMPLATE_CD: "4",
-      SUBMIT: "N",
-      VALID_UPTO: "05-OCT-23",
-      DOC_NO: "123456",
-      DOC_TYPE: "KYC",
-      DOC_IMAGE: "",
-      DOC_AMOUNT: "",
-      DOC_WEIGHTAGE: "",
-      ACTIVE: "Y",
-      IsNewRow: true
-    }
-  ],
+  // DOC_MST: [
+  //   {
+  //     TEMPLATE_CD: "4",
+  //     SUBMIT: "N",
+  //     VALID_UPTO: "05-OCT-23",
+  //     DOC_NO: "123456",
+  //     DOC_TYPE: "KYC",
+  //     DOC_IMAGE: "",
+  //     DOC_AMOUNT: "",
+  //     DOC_WEIGHTAGE: "",
+  //     ACTIVE: "Y",
+  //     IsNewRow: true
+  //   }
+  // ],
+  DOC_MST: formData["DOC_MST"],
   
   
   // NRI_DTL: {
@@ -1921,6 +2044,17 @@ export const SaveEntry = async (reqdata) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
+}
+
+export const AlphaNumericValidate = (columnValue) => {
+  let regex = /^[a-zA-Z0-9 ]*$/;
+      // special-character not allowed
+  if(columnValue.value) {
+      if(!regex.test(columnValue.value)) {
+          return "Please Enter Alphanumeric Value";
+      }
+  }
+  return "";
 }
 
 // to show total_acct number, in deactivate customer

@@ -1,5 +1,4 @@
 import { DefaultErrorObject } from "components/utils";
-import { format, parse } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
 export const getChequebookData = async ({ otherAPIRequestPara }) => {
@@ -9,14 +8,12 @@ export const getChequebookData = async ({ otherAPIRequestPara }) => {
       // TRAN_CD: "1",
     });
   if (status === "0") {
-    let newData = data;
-    newData[0].CHEQUE_BOOK_ISSUE = "N";
-    return newData;
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getChequebookDTL = async ({ chequeDTLRequestPara }) => {
+export const getChequebookDTL = async (chequeDTLRequestPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCHEQUEBOOK", {
       ...chequeDTLRequestPara,
@@ -64,13 +61,11 @@ export const TemporaryData = () => {
       FROM_CHEQUE_NO: "21",
       JOINT_HOLDER1: "BADAL",
       JOINT_HOLDER2: "VIJAY",
-
       GST_AMT: "3.6",
       SERVICE_CHRG: "20",
       FLAG_ENABLE_DISABLE: "N",
       GST_ROUND_OFF: "5",
       TAX_RATE: "18",
-
       // CONFIRM_MSG: " FHFH KFHUIFH FJKFHJFBM FE JKFH",
       // CHEQUE_BOOK_ISSUE_MSG: "jdkjwekl lkfjklnf kljfkf sklfjosH",
       // BALANCE_MSG: " FHFH 12121 FJ3123123KFHJFBM FE JKFH",

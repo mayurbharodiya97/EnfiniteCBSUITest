@@ -575,11 +575,17 @@ export const personal_other_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "dob",
+                componentType: "datePicker",
             },
             name: "BIRTH_DT",
             label: "DateOfBirth",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // placeholder: "",
             // type: "datePicker",
             // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},

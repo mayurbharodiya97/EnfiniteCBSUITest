@@ -85,7 +85,8 @@ export const declaration_meta_data = {
             }
             return true;
             },
-          },    
+          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -122,6 +123,7 @@ export const declaration_meta_data = {
               { name: "required", params: ["ThisFieldisrequired"] },
             ],
           },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           maxLength: 20,
           FormatProps: {
             isAllowed: (values) => {
@@ -156,6 +158,7 @@ export const declaration_meta_data = {
               { name: "required", params: ["ThisFieldisrequired"] },
             ],
           },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
       },

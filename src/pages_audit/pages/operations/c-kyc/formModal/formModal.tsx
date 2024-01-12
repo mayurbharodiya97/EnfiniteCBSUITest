@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react';
 import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress, FormHelperText} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
-import { CustomTabs } from '../Ckyc';
+import { CustomTabs } from "../Ckyc";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import PersonalDetails from './formDetails/formComponents/individualComps/PersonalDetails';
 import KYCDetails from './formDetails/KYCDetails';

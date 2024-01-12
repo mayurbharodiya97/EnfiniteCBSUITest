@@ -78,16 +78,7 @@ export const nri_detail_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            validate: (columnValue, allField, flag) => {
-                let regex = /^[a-zA-Z0-9 ]*$/;
-                    // special-character not allowed
-                if(columnValue.value) {
-                    if(!regex.test(columnValue.value)) {
-                        return "Please Enter Valid Format";
-                    }
-                }
-                return "";
-            },
+            validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
