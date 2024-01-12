@@ -1,1 +1,1 @@
-export { Ckyc as default } from "./Ckycc";
+export { Ckyc as default } from "./Ckyc";
