@@ -252,7 +252,7 @@ export const ChequeBookEntryMetaData = {
       label: "From Cheque No.",
       placeholder: "From Cheque No.",
       type: "text",
-      // isReadOnly: true,
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
