@@ -255,6 +255,7 @@ export interface FormWrapperProps {
   formState?: any;
   hideHeader?: boolean;
   onFormDataChange?: any;
+  setDataOnFieldChange?: Function;
 }
 
 export interface FormProps {

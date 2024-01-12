@@ -72,6 +72,7 @@ export const ClearingBankMaster: FC<{
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
+      // endSubmit(false, errorMsg, error?.error_detail ?? "");
       if (isErrorFuncRef.current == null) {
         enqueueSnackbar(errorMsg, {
           variant: "error",
@@ -89,7 +90,6 @@ export const ClearingBankMaster: FC<{
       enqueueSnackbar(data, {
         variant: "success",
       });
-
       onClose();
     },
   });

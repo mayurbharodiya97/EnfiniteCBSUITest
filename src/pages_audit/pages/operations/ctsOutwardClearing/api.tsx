@@ -61,6 +61,26 @@ export const getRetrievalClearingData = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getOutwardClearingConfigData = async ({
+  COMP_CD,
+  BRANCH_CD,
+  TRAN_CD,
+}) => {
+  if (TRAN_CD) {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETOWCLEARINGDETAILS", {
+        TRAN_CD: TRAN_CD,
+        ENTERED_BRANCH_CD: BRANCH_CD,
+        ENTERED_COMP_CD: COMP_CD,
+      });
+
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+};
 // export const TemporaryData = () => {
 //   return [
 //     {

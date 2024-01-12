@@ -566,7 +566,7 @@ const GeneralAPISDK = () => {
         COMP_CD: reqData?.[2]?.companyID ?? "",
         BRANCH_CD: reqData?.[2]?.user?.branchCode,
         TRAN_DT: format(new Date(reqData?.[3]?.TRAN_DT?.value), "dd/MMM/yyyy"),
-        ZONE: reqData?.[0].value ?? "0   ",
+        ZONE: reqData?.[0].value ?? "",
         TRAN_TYPE: reqData?.[0]?.optionData?.[0]?.ZONE_TRAN_TYPE ?? "S",
       });
     if (status === "0") {
@@ -579,26 +579,7 @@ const GeneralAPISDK = () => {
       };
     }
   };
-  const getAccountNumberData = async (...reqData) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher(`GETACCOUNTNM`, {
-        COMP_CD: reqData?.[2]?.companyID ?? "",
-        BRANCH_CD: reqData?.[2]?.user?.branchCode,
-        ACCT_CD: reqData?.[0]?.value.padStart(6, "0").padEnd(20, " "),
-        ACCT_TYPE: reqData?.[3]?.ACCT_TYPE?.value ?? "",
-      });
-    if (status === "0") {
-      return {
-        ACCT_NAME: { value: data?.[0]?.ACCT_NAME ?? "" },
-        TRAN_BAL: { value: data?.[0]?.TRAN_BAL ?? "" },
-      };
-    } else {
-      return {
-        ACCT_NAME: { value: "" },
-        TRAN_BAL: { value: "" },
-      };
-    }
-  };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -624,7 +605,6 @@ const GeneralAPISDK = () => {
     getDependentFieldList,
     getProMiscData,
     getZoneListData,
-    getAccountNumberData,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

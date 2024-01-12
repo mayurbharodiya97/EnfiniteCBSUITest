@@ -804,6 +804,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSCNFRETRIEV",
     packageName: "",
   },
+  GETOWCLEARINGDETAILS: {
+    url: "/chequeServiceAPI/GETOWCLEARINGDETAILS",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -1,6 +1,6 @@
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { GeneralAPI } from "registry/fns/functions";
-import { clearingBankMasterConfigDML } from "./api";
+import { clearingBankMasterConfigDML, getAccountSlipJoinDetail } from "./api";
 import { format, isValid } from "date-fns";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { FilterFormMetaType } from "components/formcomponent";
@@ -114,6 +114,161 @@ export const CtsOutwardClearingMetadata = {
       fullWidth: true,
       isReadOnly: true,
       GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+    },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "CLEARING_STATUS",
+    //   label: "Entry Status",
+    //   placeholder: "",
+    //   type: "text",
+    //   fullWidth: true,
+    //   isReadOnly: true,
+
+    //   // required: true,
+    //   // maxLength: 20,
+    //   // schemaValidation: {
+    //   //   type: "string",
+    //   //   rules: [{ name: "required", params: ["Slip No. is required."] }],
+    //   // },
+    //   GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+    // },
+  ],
+};
+export const ViewCtsOutwardClearingMetadata = {
+  form: {
+    name: "CTS O/W Clearing",
+    label: "CTS O/W Clearing",
+    resetFieldOnUnmount: false,
+    validationRun: "all",
+    submitAction: "home",
+    // allowColumnHiding: true,
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "TRAN_DT",
+      // sequence: 9,
+      label: "Presentment Date",
+      placeholder: "",
+      GridProps: { xs: 6, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ZONE",
+      label: "Zone",
+      // defaultValue: "0   ",
+      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+      runValidationOnDependentFieldsChange: true,
+      skipDefaultOption: true,
+      disableCaching: true,
+      // requestProps: "ZONE_TRAN_TYPE",
+      // dependentFields: ["TRAN_DT"],
+      // postValidationSetCrossFieldValues: "getSlipNoData",
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SLIP_CD",
+      label: "Slip No.",
+      type: "text",
+      fullWidth: true,
+      isReadOnly: true,
+      GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ENTERED_BY",
+      label: "Maker",
+      placeholder: "",
+      type: "text",
+      fullWidth: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "datetimePicker",
+      },
+      name: "ENTERED_DATE",
+      label: "Maker Time",
+      placeholder: "",
+      type: "text",
+      format: "dd/MM/yyyy HH:mm:ss",
+      defaultValue: new Date(),
+      fullWidth: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "VERIFIED_BY",
+      label: "Checker",
+      placeholder: "",
+      type: "text",
+      fullWidth: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "datetimePicker",
+      },
+      name: "VERIFIED_DATE",
+      label: "Checker Time",
+      placeholder: "",
+      type: "text",
+      format: "dd/MM/yyyy HH:mm:ss",
+      // defaultValue: new Date(),
+      fullWidth: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.5 },
     },
     // {
     //   render: {
@@ -281,15 +436,46 @@ export const SlipDetailFormMetaData: any = {
               return true;
             },
           },
-
-          renderReset: false,
-          // required: true,
-          // maxLength: 6,
-
           dependentFields: ["ACCT_TYPE"],
-          validate: (currentField, value) => {
-            if (currentField?.value) {
-              return;
+          // validate: (currentField, value) => {
+          //   if (currentField?.value) {
+          //     return;
+          //   }
+          // },
+          postValidationSetCrossFieldValues: async (
+            field,
+            formState,
+            auth,
+            dependentFieldsValues
+          ) => {
+            let Apireq = {
+              COMP_CD: auth?.companyID,
+              ACCT_CD: field?.value?.padStart(6, "0").padEnd(20, " "),
+              ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+              BRANCH_CD: auth?.user?.branchCode,
+              GD_TODAY_DT: format(new Date(), "dd/MMM/yyyy"),
+              SCREEN_REF: auth?.menulistdata[4]?.children?.[6]?.user_code,
+            };
+
+            let postdata = await getAccountSlipJoinDetail(Apireq);
+            formState.setDataOnFieldChange("ACCT_CD", postdata?.[0]);
+            if (postdata?.length) {
+              return {
+                ACCT_NAME: {
+                  value: postdata?.[0]?.ACCT_NAME ?? "",
+                },
+                TRAN_BAL: { value: postdata?.[0].TRAN_BAL ?? "" },
+
+                ACCT_CD: {
+                  error: postdata?.[0]?.RESTRICT_MESSAGE ?? "Invalid Login ID.",
+                },
+              };
+              // }
+            } else {
+              return {
+                ACCT_NAME: { value: "" },
+                TRAN_BAL: { value: "" },
+              };
             }
           },
           // postValidationSetCrossFieldValues: "getAccountNumberData",
@@ -515,6 +701,7 @@ export const ChequeDetailFormMetaData: any = {
           label: "Cheque No.",
           placeholder: "Cheque No.",
           type: "text",
+          autoComplete: "off",
           isFieldFocused: true,
           FormatProps: {
             allowNegative: false,
@@ -545,19 +732,20 @@ export const ChequeDetailFormMetaData: any = {
           label: "Bank Code",
           placeholder: "Bank Code",
           type: "text",
+          autoComplete: "off",
           // dependentFields: ["BANK_NM"],
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
             isAllowed: (values) => {
-              if (values?.value?.length > 10) {
+              if (values?.value?.length > 20) {
                 return false;
               }
               return true;
             },
           },
-          runExternalFunction: true,
           disableCaching: true,
+          runPostValidationHookAlways: true,
           runValidationOnDependentFieldsChange: true,
           postValidationSetCrossFieldValues: async (
             field,
@@ -565,37 +753,36 @@ export const ChequeDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
-            let formData = {
-              COMP_CD: auth.companyID ?? "",
-              BRANCH_CD: auth.user.branchCode ?? "",
-              BANK_CD:
-                field.value && Number.isNaN(Number(field.value))
-                  ? ""
-                  : field.value.padEnd(10, " "),
-              BANK_NM:
-                field.value && Number.isNaN(Number(field.value))
-                  ? field.value
-                  : "",
-            };
-
-            if (field.value & field.value.length) {
+            if (field?.value) {
+              let formData = {
+                COMP_CD: auth.companyID ?? "",
+                BRANCH_CD: auth.user.branchCode ?? "",
+                BANK_CD:
+                  field.value && Number.isNaN(Number(field.value))
+                    ? ""
+                    : field.value.padEnd(10, " "),
+                BANK_NM:
+                  field.value && Number.isNaN(Number(field.value))
+                    ? field.value
+                    : "",
+              };
               let postdata = await clearingBankMasterConfigDML(formData);
+              if (postdata.length) {
+                return {
+                  BANK_CD: {
+                    value: postdata?.[0]?.BANK_CD,
+                    ignoreUpdate: true,
+                  },
+                  BANK_NM: { value: postdata?.[0].BANK_NM, ignoreUpdate: true },
+                };
+              }
               return {
-                BANK_CD: { value: postdata?.[0]?.BANK_CD, ignoreUpdate: true },
-                BANK_NM: { value: postdata?.[0].BANK_NM, ignoreUpdate: true },
+                BANK_CD: { value: "" },
+                BANK_NM: { value: "" },
               };
             }
-
-            return {
-              BANK_CD: { value: "" },
-              BANK_NM: { value: "" },
-            };
           },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [{ name: "required", params: ["Branch Code is required."] }],
-          // },
         },
         {
           render: {
@@ -606,8 +793,18 @@ export const ChequeDetailFormMetaData: any = {
           placeholder: "",
           type: "text",
           required: true,
+          isReadOnly: true,
           maxLength: 100,
           showMaxLength: true,
+          autoComplete: "off",
+          dependentFields: ["BANK_CD"],
+          shouldExclude: (_, dependentFieldsValues, __) => {
+            console.log("dependentFieldsValues", dependentFieldsValues);
+            if (dependentFieldsValues?.["chequeDetails.BANK_CD"]?.error) {
+              return true;
+            }
+            return false;
+          },
           GridProps: { xs: 12, sm: 3, md: 2.8, lg: 2.8, xl: 1.5 },
         },
         {
@@ -808,6 +1005,7 @@ export const ClearingBankMasterFormMetadata = {
       placeholder: "",
       type: "text",
       maxLength: 20,
+      isFieldFocused: true,
       required: true,
       GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
     },

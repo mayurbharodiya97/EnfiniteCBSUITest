@@ -54,17 +54,23 @@ export const ChequeDetailForm: FC<{
   formDataRef?: any;
   myRef?: any;
   setCurrentTab?: any;
-  defaultView?: any;
-  mutation?: any;
+  formMode?: any;
+  gridData?: any;
   slipJointDetailRef?: any;
+  retrievData?: any;
+  loading?: Boolean;
+  error?: any;
 }> = ({
   zoneData,
   formDataRef,
   setCurrentTab,
   myRef,
-  defaultView,
-  mutation,
+  formMode,
+  gridData,
   slipJointDetailRef,
+  retrievData,
+  loading,
+  error,
 }) => {
   const { authState } = useContext(AuthContext);
   const myChequeRef = useRef<any>(null);
@@ -81,10 +87,11 @@ export const ChequeDetailForm: FC<{
       },
     ],
   });
-  console.log("slipJointDetailRef", slipJointDetailRef?.current);
+
   const [totalAmountSlip, setTotalAmountSlip] = useState(
     Number(formDataRef.current.AMOUNT)
   );
+
   const mutationOutward = useMutation(API.outwardClearingConfigDML, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -105,17 +112,20 @@ export const ChequeDetailForm: FC<{
       onActionCancel();
     },
     onSuccess: (data) => {
+      console.log("data", data);
       enqueueSnackbar(data, {
         variant: "success",
       });
 
       setCurrentTab("slipdetail");
       formDataRef.current = {};
-      formDataRef.current.ACCT_NAME = [];
-      data = {};
+      formDataRef.current.ACCT_NAME = "";
+      formDataRef.current.TRAN_BAL = "";
+      gridData.ACCT_JOIN_DETAILS = [];
       onActionCancel();
     },
   });
+
   const onPopupYes = (rows) => {
     mutationOutward.mutate(rows);
   };
@@ -134,17 +144,12 @@ export const ChequeDetailForm: FC<{
   useEffect(() => {
     // if (formDataRef.current && formDataRef.current.length) {
     // Check if mutationOutward is successful
-    console.log(
-      "mutation?.data",
-      mutation?.data,
-      formDataRef.current?.ACCT_NAME
-    );
     const shouldResetValues = mutationOutward.isSuccess;
 
     let init = initValues.chequeDetails;
-    init[0] = {
-      ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
-    };
+    // init[0] = {
+    //   ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
+    // };
     // init[0] = {
     //   ECS_USER_NO:
     //     formDataRef.current?.ACCT_NAME ||
@@ -154,11 +159,13 @@ export const ChequeDetailForm: FC<{
     if (formDataRef.current) {
       init[0] = {
         ECS_USER_NO: formDataRef.current?.ACCT_NAME ?? "",
+        ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
       };
     }
     if (slipJointDetailRef?.current.length) {
       init[0] = {
         ECS_USER_NO: slipJointDetailRef?.current,
+        ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
       };
     }
     // Update the form data with the new values
@@ -182,20 +189,29 @@ export const ChequeDetailForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true, "Please enter any value");
-    let totalAmount = 0;
-    data.chequeDetails.forEach((element) => {
-      if (
-        element.AMOUNT !== undefined &&
-        element.AMOUNT !== "" &&
-        element.AMOUNT
-      ) {
-        totalAmount += Number(element.AMOUNT);
-      }
-    });
-    setTotalAmountCheque(Number(totalAmount));
-    // slip and cheque total minus
-    setTotalAmountSlip(totalAmount - formDataRef.current.AMOUNT);
+    const newData = data.chequeDetails?.map((item) => ({
+      ...item,
+      _isNewRow: formMode === "new" ? true : false,
+      PROCESSED: "N",
+      REASON: "N",
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+    }));
+
     if (value === "AMOUNT") {
+      let totalAmount = 0;
+      data.chequeDetails.forEach((element) => {
+        if (
+          element.AMOUNT !== undefined &&
+          element.AMOUNT !== "" &&
+          element.AMOUNT
+        ) {
+          totalAmount += Number(element.AMOUNT);
+        }
+      });
+      setTotalAmountCheque(Number(totalAmount));
+      // // slip and cheque total minus
+      setTotalAmountSlip(totalAmount - formDataRef.current.AMOUNT);
       // Compare the totals
       let initVal = data.chequeDetails;
       if (
@@ -205,31 +221,21 @@ export const ChequeDetailForm: FC<{
         // Do not add a new row if AMOUNT is not present or has a length of 0
         return;
       }
-      if (totalAmount === 0) {
-        return;
-      }
       if (
-        Number(totalAmount) === Number(formDataRef.current.AMOUNT) ||
+        totalAmount === 0 ||
         Number(totalAmount) > Number(formDataRef.current.AMOUNT)
       ) {
+        return;
+      }
+      if (Number(totalAmount) === Number(formDataRef.current.AMOUNT)) {
         // Totals don't match, add a new rows
-        setIsOpenProcced(true);
 
         isErrorFuncRef.current = {
           DAILY_CLEARING: {
             ...myRef.current,
           },
           DETAILS_DATA: {
-            isNewRow: [
-              {
-                ...data.chequeDetails,
-                PROCESSED: "N",
-                REASON: "N",
-                COMP_CD: authState?.companyID ?? "",
-                BRANCH_CD: authState?.user?.branchCode ?? "",
-                _isNewRow: true,
-              },
-            ],
+            isNewRow: [...newData],
             isUpdatedRow: [],
             isDeleteRow: [],
           },
@@ -237,29 +243,52 @@ export const ChequeDetailForm: FC<{
           endSubmit,
           setFieldError,
         };
-
+        setIsOpenProcced(true);
         console.log("isErrorFuncRef.current", isErrorFuncRef.current);
         // return;
+        ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true;
       } else {
+        ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true;
         initVal.push({
           ECS_SEQ_NO: "",
         });
-        setInitValues((old) => ({
-          chequeDetails: [...initVal],
-        }));
+
+        setInitValues(
+          (old) => (
+            console.log("old", old, initVal),
+            {
+              chequeDetails: [...initVal],
+            }
+          )
+        );
+
         ChequeDetailFormMetaData.fields[0].isRemoveButton = false;
       }
     }
   };
-
+  console.log(
+    ":",
+    (ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true)
+  );
   return (
     <>
       <div
         onKeyDown={(e) => {
+          let target: any = e?.target;
           if (e.key === "Enter") {
+            const charAtIndex = target.name.split("").find((char, index) => {
+              return index === 39;
+            });
             if (
-              ChequeDetailFormMetaData.fields[0]._fields[9].name === "AMOUNT"
+              (target?.name ?? "") ===
+              ChequeDetailFormMetaData.form.name +
+                "/" +
+                ChequeDetailFormMetaData.fields[0].name +
+                `[${charAtIndex}]` +
+                ".AMOUNT"
             ) {
+              ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused =
+                true;
               ClickEventManage();
             }
           }
@@ -336,19 +365,56 @@ export const ChequeDetailForm: FC<{
             {`Cheque Amount: ${totalAmountCheque ?? ""} `}
           </Toolbar>
         </div>
-        <FormWrapper
-          key={`ChequeDetailFormMetaData11${formDataRef.current}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
-          metaData={ChequeDetailFormMetaData as MetaDataType}
-          displayMode={defaultView}
-          onSubmitHandler={onSubmitHandlerCheuq}
-          initialValues={initValues}
-          hideHeader={true}
-          formStyle={{
-            background: "white",
-            // height: "65%",
-          }}
-          ref={myChequeRef}
-        />
+        {formMode === "new" ? (
+          <FormWrapper
+            key={`ChequeDetailFormMetaData11${formDataRef.current}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
+            metaData={ChequeDetailFormMetaData as MetaDataType}
+            displayMode={formMode}
+            onSubmitHandler={onSubmitHandlerCheuq}
+            initialValues={initValues}
+            hideHeader={true}
+            formStyle={{
+              background: "white",
+              // height: "65%",
+            }}
+            onFormButtonClickHandel={() => {
+              setIsOpenSave(true);
+            }}
+            ref={myChequeRef}
+          />
+        ) : formMode === "view" ? (
+          <>
+            {loading ? (
+              <LoaderPaperComponent />
+            ) : error ? (
+              <Alert
+                severity="error"
+                errorMsg={error?.error_msg ?? "Error"}
+                errorDetail={error?.error_detail ?? ""}
+                color="error"
+              />
+            ) : (
+              <FormWrapper
+                key={`ChequeDetailFormMetaData11${formDataRef.current}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
+                metaData={ChequeDetailFormMetaData as MetaDataType}
+                displayMode={formMode}
+                onSubmitHandler={onSubmitHandlerCheuq}
+                initialValues={{
+                  chequeDetails: retrievData?.CHEQUE_DETAIL ?? "",
+                }}
+                hideHeader={true}
+                formStyle={{
+                  background: "white",
+                  // height: "65%",
+                }}
+                onFormButtonClickHandel={() => {
+                  setIsOpenSave(true);
+                }}
+                ref={myChequeRef}
+              />
+            )}
+          </>
+        ) : null}
       </div>
       {isOpenSave ? (
         <PopupMessageAPIWrapper
