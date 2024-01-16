@@ -81,6 +81,7 @@ export const TRN002_TableMetaData: GridMetaDataType = {
       columnName: "Remarks",
       sequence: 7,
       componentType: "default",
+      width: 130,
     },
     {
       accessor: "date1",

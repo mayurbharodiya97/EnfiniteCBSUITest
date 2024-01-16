@@ -650,7 +650,7 @@ export const Trn001 = () => {
                   {/* <TableCell id="head">Chq Date</TableCell> */}
                   <TableCell id="head">Debit</TableCell>
                   <TableCell id="head">Credit</TableCell>
-                  <TableCell id="head">Vno.</TableCell>
+                  {/* <TableCell id="head">Vno.</TableCell> */}
                 </TableRow>
               </TableHead>
 
@@ -836,7 +836,7 @@ export const Trn001 = () => {
                           />
                         </TableCell>
 
-                        <TableCell sx={{ minWidth: 40 }}>
+                        {/* <TableCell sx={{ minWidth: 40 }}>
                           <TextField
                             value={a.vNo}
                             id="txtRight"
@@ -844,7 +844,7 @@ export const Trn001 = () => {
                             size="small"
                             onChange={(e) => handleVNo(e, i)}
                           />
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell style={{ border: "0px", width: "10px" }}>
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (
