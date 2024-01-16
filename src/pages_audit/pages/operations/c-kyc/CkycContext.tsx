@@ -645,8 +645,8 @@ const CkycProvider = ({children}) => {
         }
         let other_data = {
             // IsNewRow: !state?.req_cd_ctx ? true : false,
-            // REQ_CD: state?.req_cd_ctx ?? "",
-            // COMP_CD: COMP_CD ?? "",
+            REQ_CD: state?.req_cd_ctx ?? "",
+            COMP_CD: COMP_CD ?? "",
         }
         console.log("feiuqwdwqduyqewd",updated_tabs)
         let dataa = updated_tabs.map(async (TAB, i) => {
