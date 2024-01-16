@@ -5,7 +5,7 @@ import { format } from "date-fns/esm";
 
 const exportToPDF = (
   data,
-  companyName,
+  // companyName,
   generatedBy,
   RequestingBranchCode,
   barnchDtl

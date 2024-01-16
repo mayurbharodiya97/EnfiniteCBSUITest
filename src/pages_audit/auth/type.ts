@@ -9,6 +9,7 @@ export interface AuthStateType {
   workingDate: string;
   companyID: string;
   baseCompanyID: string;
+  groupName: string;
   menulistdata: any;
   user: {
     branch: string;

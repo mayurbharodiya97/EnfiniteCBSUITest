@@ -1,10 +1,6 @@
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
-import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
-import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
-import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
-import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import { useQuery, useMutation } from "react-query";
 import * as API from "../api";
 import { queryClient } from "cache";
@@ -12,10 +8,7 @@ import { AuthContext } from "pages_audit/auth";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { ListPopupMessageWrapper } from "./listPopupBox/listPopupBox";
 import { useTranslation } from "react-i18next";
-import AddIcon from "@mui/icons-material/Add";
-
 import StickyNotes from "./stickyNotes/stickyNotes";
-import { GradientButton } from "components/styledComponent/button";
 import { TipsWrapper } from "./tipsBox/tipsBoxWrapper";
 import {
   AlertMessageBox,
@@ -38,7 +31,6 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
   const [toggle, setToggle] = useState(false);
   const { authState } = useContext<any>(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState(false);
-
   const { t } = useTranslation();
   const refData = useRef<any>(null);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
@@ -314,7 +306,6 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
                       <ListItemData
                         key={"listItemforannounce" + _index}
                         name={item?.DESCRIPTION}
-                        disabled={false}
                         onClick={() => {
                           handleLabelClick(item);
                         }}
@@ -369,7 +360,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
     </>
   );
 };
-export const ListItemData = ({ name, disabled, selected, onClick }) => {
+export const ListItemData = ({ name, selected, onClick }) => {
   //@ts-ignore
 
   return (

@@ -9,11 +9,7 @@ import { renderValue } from "./valueRenderer";
 
 const renderByGroup =
   (renderMethod: RenderFunctionType) =>
-  (
-    metaData: MetaDataType,
-    onFormButtonClickHandel: any = (id) => {},
-    onFormDataChange: any = (id) => {}
-  ) => {
+  (metaData: MetaDataType, onFormButtonClickHandel: any = (id) => {}) => {
     const { fields, form } = metaData;
     const defaultGroup = -1;
     let groupWiseRenderer: GroupWiseRenderedFieldsType = {};
@@ -31,9 +27,7 @@ const renderByGroup =
         oneField?.render?.componentType === "arrayField"
       ) {
         oneField["onFormButtonClickHandel"] = onFormButtonClickHandel;
-        oneField["onFormDataChange"] = onFormDataChange;
       }
-
       const element = renderMethod(
         oneField,
         form?.render,

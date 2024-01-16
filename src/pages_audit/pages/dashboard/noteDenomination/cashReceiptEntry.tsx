@@ -444,9 +444,10 @@ const CashReceiptEntry = () => {
         ACCT_TYPE: thirdReferData?.columnVal?.ACCOUNT_TYPE ?? "",
         ACCT_CD: thirdReferData?.columnVal?.ACCOUNT_NUMBER ?? "",
         A_ASON_DT: format(
-          isValidDate(authState?.authState?.workingDate)
-            ? authState?.authState?.workingDate
-            : new Date(),
+          // isValidDate(authState?.authState?.workingDate)
+          //   ? authState?.authState?.workingDate
+          //   :
+          new Date(),
           "dd/MMM/yyyy"
         ),
         authState: authState ?? {},
@@ -541,9 +542,7 @@ const CashReceiptEntry = () => {
               }}
             >
               {`${DenominationScreenMetaData?.gridConfig?.title} -
-              ${authState?.authState?.user?.name} - (${
-                authState?.authState?.roleName
-              }) - ${getCurrencySymbol(dynamicAmountSymbol)} 20000`}
+              ${authState?.authState?.user?.name} - (${authState?.authState?.roleName})`}
             </Typography>
             <Box display={"flex"}>
               {/* <GradientButton sx={{ height: "2.5rem" }}>Save </GradientButton>*/}

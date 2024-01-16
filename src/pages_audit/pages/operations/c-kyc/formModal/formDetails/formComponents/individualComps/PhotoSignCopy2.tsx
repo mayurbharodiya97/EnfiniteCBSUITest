@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext, useRef, FC, CSSProperties } from "react";
+import React, { useState, useEffect, useCallback, useContext, useRef, FC, CSSProperties, useMemo, Fragment } from "react";
 import { useMutation, useQuery } from "react-query";
 import * as API from "../../../../api";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
@@ -34,6 +34,7 @@ interface PhotoSignProps {
     setDialogAction?: any; 
     dialogOpen?: boolean;
     setDialogOpen?: any;
+    displayMode?: string;
 }
 
 const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
@@ -48,7 +49,8 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
         dialogAction, 
         setDialogAction, 
         dialogOpen, 
-        setDialogOpen
+        setDialogOpen,
+        displayMode
     } = props
 
     const {state, handleFormDataonSavectx, handleColTabChangectx, handlePhotoOrSignctx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
@@ -272,7 +274,6 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
 
     // get base64 from blob and save in store state
     const setImageData = async (blob, img:string) => {
-        // console.log("kwqdiuqhiuwqgdeqweq blob", blob)
         let base64 = await utilFunction.convertBlobToBase64(blob);
         // console.log("kwqdiuqhiuwqgdeqweq base64", base64)
         if(img === "photo") {
@@ -413,6 +414,51 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
       }
 
     const actions: ActionTypes[] = []
+
+    const SaveUpdateBTNs = useMemo(() => {
+        if(componentIn && componentIn !== "kycUpdate") {
+
+        } else if(displayMode) {
+            return displayMode == "new"
+            ? <Fragment>
+                <Button
+                sx={{ mr: 2, mb: 2 }}
+                color="secondary"
+                variant="contained"
+                disabled={isNextLoading}
+                onClick={handleSavePhotoSign}
+                >
+                {t("Save & Next")}
+                </Button>
+            </Fragment>
+            : displayMode == "edit"
+                ? <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={handleSavePhotoSign}
+                    >
+                    {t("Update & Next")}
+                    </Button>
+                </Fragment>
+                : displayMode == "view" && <Fragment>
+                    <Button
+                    sx={{ mr: 2, mb: 2 }}
+                    color="secondary"
+                    variant="contained"
+                    disabled={isNextLoading}
+                    onClick={(e) => {
+                        handleColTabChangectx(state?.colTabValuectx + 1)
+                    }}
+                    >
+                    {t("Next")}
+                    </Button>
+                </Fragment>
+        }
+    }, [componentIn, displayMode])
+  
     return (
         <>
                 <Grid container>
@@ -719,57 +765,6 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                       />
                     ) : null} */}
 
-                    {componentIn !== "kycUpdate" 
-                    ? <Grid container item sx={{justifyContent: "flex-end"}}>
-                        <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                            onClick={(e) => {
-                                // handleColTabChangectx(0)
-                                handleColTabChangectx(state?.colTabValuectx-1)
-                            }}
-                        >{t("Previous")}</Button>
-                        {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                            onClick={handleSavePhotoSign}
-                        >{t("Save & Next")}</Button>}
-                        {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
-                            ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                            onClick={handleSavePhotoSign}
-                            >{t("Update & Next")}</Button>
-                            : !state?.isFreshEntryctx ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                            onClick={ () => handleColTabChangectx(state?.colTabValuectx+1)}
-                            >{t("Next")}</Button> : null
-                        }
-                    </Grid> 
-                    : null
-                    // <Grid container item sx={{justifyContent: "flex-end"}}>
-                    //     {!isHistoryGridVisible 
-                    //     ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                    //     // disabled={isNextLoading}
-                    //         onClick={(e) => {
-                    //             // handleColTabChangectx(0)
-                    //             // handleColTabChangectx(state?.colTabValuectx-1)
-                    //             setIsHistoryGridVisible(true)
-                    //         }}
-                    //     >{t("View All")}
-                    //     </Button>
-                    //     : <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                    //     // disabled={isNextLoading}
-                    //         onClick={(e) => {
-                    //             // handleColTabChangectx(0)
-                    //             // handleColTabChangectx(state?.colTabValuectx-1)
-                    //             setIsHistoryGridVisible(false)
-                    //         }}
-                    //     >{t("Close")}
-                    //     </Button>
-                    //     }
-                    //     {!isHistoryGridVisible && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                    //     // disabled={isNextLoading}
-                    //         // onClick={handleSavePhotoSign}
-                    //         onClick={() => {
-                    //             setFormMode("edit")
-                    //         }}
-                    //     >{t("Edit")}</Button>}
-                    // </Grid>
-                    }
 
                     {((componentIn && componentIn=="kycUpdate") && dialogOpen) && 
                         <Dialog open={true} maxWidth="sm"
@@ -827,6 +822,14 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                         </Dialog>
                     }
                 </Grid>
+                {!(componentIn && componentIn=="kycUpdate") && <Grid container item sx={{ justifyContent: "flex-end" }}>
+                    <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
+                        onClick={(e) => {
+                            handleColTabChangectx(state?.colTabValuectx-1)
+                        }}
+                    >{t("Previous")}</Button>
+                    {SaveUpdateBTNs}
+                </Grid>}
         </>
     );
 }
@@ -845,6 +848,30 @@ export const PhotoSignUpdateDialog = ({open, onClose}) => {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
     const location: any = useLocation();
+    let customerData = {}
+    useEffect(() => {
+        if(location.state && location.state.length>0) {
+            let data = location.state?.[0]?.data
+            customerData = data
+        }
+    }, [])
+    // console.log("skjvciwhecfvwrefv", location)
+    const mutation: any = useMutation(API.updatePhotoSignData, {
+        onSuccess: (data) => {
+
+            // // console.log("photohistory", data)
+            // setPhotoHistory(data)
+            // let activeHistory = null
+            // activeHistory = (data && data.length>0) && data.findLast(el => el.ACT_FLAG === "Y")  
+            // setActivePhotoHist(activeHistory)
+            // // console.log("photohistory ac", activeHistory)
+        },
+        onError: (error: any) => {},
+    });
+
+    const onSave = () => {
+        
+    }
 
     // console.log("locationasdawd", location)
     return (

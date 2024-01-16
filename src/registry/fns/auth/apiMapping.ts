@@ -7,6 +7,10 @@ export const ActionWiseAPIConfiguration = {
     url: "authenticationServiceAPI/POSTLOGIN/VERIFYOTP",
     packageName: "",
   },
+  OTPRESEND: {
+    url: "enfinityCommonServiceAPI/OTPRESEND",
+    packageName: "",
+  },
   LOGOUTUSER: {
     url: "/enfinityCommonServiceAPI/LOGOUTUSER",
     packageName: "",
@@ -572,6 +576,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTPHOTODTL",
     packageName: "",
   },
+  GETUPDCUSTPHOTODATA: {
+    url: "/customerServiceAPI/GETUPDCUSTPHOTODATA",
+    packageName: "",
+  },
   CHEQUEBKDATA: {
     url: "/chequeServiceAPI/CHEQUEBKDATA",
     packageName: "",
@@ -790,6 +798,30 @@ export const ActionWiseAPIConfiguration = {
   },
   GETLIMITNSCDTLBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITNSCDTLBTN",
+    packageName: "",
+  },
+  GETCTSCNFRETRIEV: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSCNFRETRIEV",
+    packageName: "",
+  },
+  GETEMAILSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMAILSTATUS",
+    packageName: "",
+  },
+  GETMOBILESTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETMOBILESTATUS",
+    packageName: "",
+  },
+  GETUNIQUEIDSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETUNIQUEIDSTATUS",
+    packageName: "",
+  },
+  GETGSTINSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETGSTINSTATUS",
+    packageName: "",
+  },
+  GETPANSTATUS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
     packageName: "",
   },
 };

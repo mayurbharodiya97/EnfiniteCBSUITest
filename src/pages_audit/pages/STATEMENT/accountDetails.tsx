@@ -1,5 +1,4 @@
 import {
-  Box,
   Collapse,
   Dialog,
   Grid,
@@ -37,7 +36,6 @@ const AccountDetails = () => {
   const [openViewStatement, setOpenViewStatement] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [openBoxes, setOpenBoxes] = useState<any>([false]);
-  const [reqPara, setReqPara] = useState<any>([]);
 
   const { authState, logout } = useContext(AuthContext);
 
@@ -75,38 +73,37 @@ const AccountDetails = () => {
     };
   }, [localStorage]);
 
-  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
-    any,
-    any
-  >(["StatementDetailsData"], () =>
-    API.StatementDetailsData({
-      COMP_CD: authState?.companyID,
-      ACCT_CD: rowsDataRef?.current?.FULL_ACCT_NO
-        ? ""
-        : rowsDataRef.current?.ACCT_CD ?? "",
-      ACCT_TYPE: rowsDataRef?.current?.FULL_ACCT_NO
-        ? ""
-        : rowsDataRef.current?.ACCT_TYPE ?? "",
-      BRANCH_CD: rowsDataRef?.current?.FULL_ACCT_NO
-        ? ""
-        : rowsDataRef.current?.BRANCH_CD ?? "",
-      FULL_ACCT_NO: rowsDataRef?.current?.FULL_ACCT_NO
-        ? rowsDataRef?.current?.FULL_ACCT_NO
-        : "",
-      FROM_DT: isValidDate(rowsDataRef.current?.STMT_FROM_DATE)
-        ? format(
-            new Date(rowsDataRef.current?.STMT_FROM_DATE),
-            "dd-MMM-yyyy"
-          ) ?? ""
-        : format(new Date(), "dd-MMM-yyyy"),
-      TO_DT: isValidDate(rowsDataRef.current?.WK_STMT_TO_DATE)
-        ? format(
-            new Date(rowsDataRef.current?.WK_STMT_TO_DATE),
-            "dd-MMM-yyyy"
-          ) ?? ""
-        : format(new Date(), "dd-MMM-yyyy"),
-      METADATA: "STMT",
-    })
+  const { data, isLoading, isFetching, error, isError } = useQuery<any, any>(
+    ["StatementDetailsData"],
+    () =>
+      API.StatementDetailsData({
+        COMP_CD: authState?.companyID,
+        ACCT_CD: rowsDataRef?.current?.FULL_ACCT_NO
+          ? ""
+          : rowsDataRef.current?.ACCT_CD ?? "",
+        ACCT_TYPE: rowsDataRef?.current?.FULL_ACCT_NO
+          ? ""
+          : rowsDataRef.current?.ACCT_TYPE ?? "",
+        BRANCH_CD: rowsDataRef?.current?.FULL_ACCT_NO
+          ? ""
+          : rowsDataRef.current?.BRANCH_CD ?? "",
+        FULL_ACCT_NO: rowsDataRef?.current?.FULL_ACCT_NO
+          ? rowsDataRef?.current?.FULL_ACCT_NO
+          : "",
+        FROM_DT: isValidDate(rowsDataRef.current?.STMT_FROM_DATE)
+          ? format(
+              new Date(rowsDataRef.current?.STMT_FROM_DATE),
+              "dd-MMM-yyyy"
+            ) ?? ""
+          : format(new Date(), "dd-MMM-yyyy"),
+        TO_DT: isValidDate(rowsDataRef.current?.WK_STMT_TO_DATE)
+          ? format(
+              new Date(rowsDataRef.current?.WK_STMT_TO_DATE),
+              "dd-MMM-yyyy"
+            ) ?? ""
+          : format(new Date(), "dd-MMM-yyyy"),
+        METADATA: "STMT",
+      })
   );
 
   var branchData = data?.find((item) => item?.TITLE === "Branch Details");
@@ -325,7 +322,7 @@ const AccountDetails = () => {
                     onClick={() =>
                       ExportToPDF(
                         data,
-                        companyName,
+                        // companyName,
                         generatedBy,
                         RequestingBranchCode,
                         barnchDtl
@@ -339,7 +336,7 @@ const AccountDetails = () => {
                     onClick={() =>
                       ExcelForStatementExport({
                         data,
-                        companyName,
+                        // companyName,
                         generatedBy,
                         RequestingBranchCode,
                         barnchDtl,

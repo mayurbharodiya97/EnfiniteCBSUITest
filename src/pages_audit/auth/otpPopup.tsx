@@ -21,15 +21,46 @@ export const OTPModel = ({
   OTPError,
   setOTPError,
   previousStep,
+  setNewRequestID = (id) => {},
+  otpresendCount = 0,
+  resendFlag,
 }) => {
   const [OTP, setOTP] = useState("");
   const [showPassword, setShowPassword] = useState(true);
   const [btnshow, setbtnshow] = useState(false);
   const inputButtonRef = useRef<any>(null);
+  const [resendotpLoading, setResendotpLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
+  // const renderButton = (buttonProps) => {
+  //   let { remainingTime, ...other } = buttonProps;
+  //   return resendotpLoading ? (
+  //     <a
+  //       remainingtime={remainingTime}
+  //       {...other}
+  //       className={clsx(
+  //         classes.resendbtnLink,
+  //         !btnshow && classes.btnvisibleoff
+  //       )}
+  //     >
+  //       {t("otp.ResendOTP")}
+  //     </a>
+  //   ) : null;
+  // };
   const renderButton = (buttonProps) => {
     let { remainingTime, ...other } = buttonProps;
-    return (
+    return resendotpLoading ? (
+      <a
+        className={clsx(
+          classes.resendbtnLink,
+          !btnshow && classes.btnvisibleoff
+        )}
+        style={{ cursor: "wait" }}
+      >
+        {/* {t("otp.ResendOTP")} {<CircularProgress size={20} color="secondary" />} */}
+        {t("otp.GetNewOTP")} {<CircularProgress size={20} color="secondary" />}
+      </a>
+    ) : (
       <a
         remainingtime={remainingTime}
         {...other}
@@ -38,7 +69,8 @@ export const OTPModel = ({
           !btnshow && classes.btnvisibleoff
         )}
       >
-        {t("otp.ResendOTP")}
+        {/* {t("otp.ResendOTP")} */}
+        {t("otp.GetNewOTP")}
       </a>
     );
   };
@@ -48,6 +80,27 @@ export const OTPModel = ({
     } else {
       setOTPError("");
       VerifyOTP(OTP);
+    }
+  };
+
+  const handleResendClick = async () => {
+    setResendotpLoading(true);
+    const { status, data, message } = await OTPResendRequest(
+      resendFlag === "FORGET_PW" || resendFlag === "FORGT_TOTP"
+        ? loginState?.requestCd
+        : loginState?.transactionID,
+      loginState?.username,
+      resendFlag,
+      loginState.auth_data?.[0]?.company_ID,
+      loginState.auth_data?.[0]?.branch_cd
+    );
+    setResendotpLoading(false);
+    if (status === "0") {
+      setNewRequestID(data?.TRAN_CD);
+      setbtnshow(false);
+      enqueueSnackbar(message, { variant: "success" });
+    } else {
+      enqueueSnackbar(message, { variant: "error" });
     }
   };
   const handleCloseEvent = () => {
@@ -63,7 +116,8 @@ export const OTPModel = ({
     }
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
-        {t("otp.ValidFor")} {remainingtime}
+        {t("otp.OtpExpired")} {remainingtime}
+        {/* {t("otp.ValidFor")} {remainingtime} */}
       </span>
     );
   };
@@ -135,7 +189,8 @@ export const OTPModel = ({
                   loginState.username.slice(1)
                 : null}
               <ResendOTP
-                onResendClick={() => setbtnshow(false)}
+                // onResendClick={() => setbtnshow(false)}
+                onResendClick={handleResendClick}
                 // onTimerComplete={() => setbtnshow(true)}
                 renderButton={renderButton}
                 renderTime={renderTime}
@@ -270,7 +325,8 @@ export const OTPModelForm = ({
         )}
         style={{ cursor: "wait" }}
       >
-        {t("otp.ResendOTP")} {<CircularProgress size={20} color="secondary" />}
+        {/* {t("otp.ResendOTP")} {<CircularProgress size={20} color="secondary" />} */}
+        {t("otp.GetNewOTP")} {<CircularProgress size={20} color="secondary" />}
       </a>
     ) : (
       <a
@@ -281,7 +337,8 @@ export const OTPModelForm = ({
           !btnshow && classes.btnvisibleoff
         )}
       >
-        {t("otp.ResendOTP")}
+        {/* {t("otp.ResendOTP")} */}
+        {t("otp.GetNewOTP")}
       </a>
     );
   };
@@ -300,7 +357,9 @@ export const OTPModelForm = ({
         ? loginState?.requestCd
         : loginState?.transactionID,
       loginState?.username,
-      resendFlag
+      resendFlag,
+      loginState.auth_data?.[0]?.companyID,
+      loginState.auth_data?.[0]?.branch_cd
     );
     setResendotpLoading(false);
     if (status === "0") {
@@ -325,7 +384,7 @@ export const OTPModelForm = ({
     }
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
-        {t("otp.ValidFor")} {remainingtime}
+        {t("otp.OtpExpired")} {remainingtime}
       </span>
     );
   };
@@ -373,7 +432,7 @@ export const OTPModelForm = ({
             otpresendCount >= 3 ||
             loginState?.auth_type === "TOTP" ? null : (
               <ResendOTP
-                onResendClick={() => setbtnshow(false)}
+                onResendClick={handleResendClick}
                 // onTimerComplete={() => setbtnshow(true)}
                 renderButton={renderButton}
                 renderTime={renderTime}

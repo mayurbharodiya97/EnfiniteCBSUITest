@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, TextField, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress} from '@mui/material';
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress, FormHelperText} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
-import { CustomTabs } from '../ckyc';
+import { CustomTabs } from "../Ckyc";
 import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import PersonalDetails from './formDetails/formComponents/individualComps/PersonalDetails';
 import KYCDetails from './formDetails/KYCDetails';
@@ -54,7 +54,7 @@ import PhotoSignatureCpy from './formDetails/formComponents/individualComps/Phot
 import { format } from 'date-fns';
 import { GradientButton } from 'components/styledComponent/button';
 import { ckyc_confirmation_form_metadata } from './formDetails/metadata/confirmation';
-// import { TextField } from 'components/styledComponent';
+import { TextField } from 'components/styledComponent';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -180,7 +180,7 @@ export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
-  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, formmode
+  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, formmode, from
   // entityType, setEntityType, 
   // customerCategories, 
   // tabsApiRes, setTabsApiRes, 
@@ -194,7 +194,7 @@ export default function FormModal({
   const location: any = useLocation();
   const { t } = useTranslation();
   const classes = useDialogStyles();
-  const authController = useContext(AuthContext);
+  const {authState} = useContext(AuthContext);
   const appBarClasses = useStyles();
   // const [customerCategories, setCustomerCategories] = useState([])
   const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
@@ -202,7 +202,7 @@ export default function FormModal({
   const [updateDialog, setUpdateDialog] = useState(false)
   const [actionDialog, setActionDialog] = useState(false)
   const [cancelDialog, setCancelDialog] = useState(false)
-  const [from, setFrom] = useState("");
+  // const [from, setFrom] = useState("");
   const [confirmAction, setConfirmAction] = useState<any>("confirm");
   const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
   const [displayMode, setDisplayMode] = useState<any>(formmode)
@@ -217,17 +217,18 @@ export default function FormModal({
   // const {data:retrieveFormData, isError: isRetrieveFormError, isLoading: isRetrieveFormLoading, refetch: retrieveFormRefetch} = useQuery<any, any>(
   //   ["getCustomerDetailsonEdit", { }],
   //   () => API.getCustomerDetailsonEdit({
-  //     COMP_CD: authController?.authState?.companyID ?? "",
+  //     COMP_CD: authState?.companyID ?? "",
   //     CUSTOMER_ID: location.state[0].id ?? "",
   //   }), {enabled: false}
   // )
 
+  // acct type options
   const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
     ["getPMISCData", {}],
     () => API.getPMISCData("CKYC_ACCT_TYPE")
   );
 
-
+  // get customer form details  
   const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
     onSuccess: (data) => {
       // // console.log("on successssss", data, location)
@@ -318,7 +319,7 @@ export default function FormModal({
   //       handleFormModalOpenOnEditctx(location?.state)
   //       // retrieveFormRefetch()
   //       let data = {
-  //         COMP_CD: authController?.authState?.companyID ?? "",
+  //         COMP_CD: authState?.companyID ?? "",
   //         CUSTOMER_ID: location.state[0].id ?? "",
   //       }
         
@@ -333,50 +334,46 @@ export default function FormModal({
 
 
   useEffect(() => {
-    // if(!location.state) {
-    //   handleFormModalClosectx()
-    //   onClose()
-    // } else {
-      if(location.pathname.includes("/view-detail")) {
-        // setDisplayMode(formmode)
-        if(location.pathname.includes("/confirm-ckyc")) {
-          setFrom("confirmation")
-          setDisplayMode("view")
-        } else if(location.state[0].data.REQUEST_ID) {
-          if(location.state[0].data.CONFIRMED && (location.state[0].data.CONFIRMED.includes("Y") || location.state[0].data.CONFIRMED.includes("R"))) {
-            setDisplayMode("view")
-          }
-        }
-        // console.log(">>>-- edit", location.state, location.state[0].id)
-        // handlecustomerIDctx(location.state[0].id)
-        handleColTabChangectx(0)
-        handleFormModalOpenOnEditctx(location?.state)
-        // retrieveFormRefetch()
-        let data = {}
-        // if(location.state.length && location.state?.[0]?.id && location.state?.[0]?.data?.REQUEST_ID) {
-        //   data = {
-        //     COMP_CD: authController?.authState?.companyID ?? "",
-        //     REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
-        //   }  
-        // } else {
-          if((location.state && location.state.length>0) && (location.state[0].data.REQUEST_ID)) {
-            data = {
-              COMP_CD: authController?.authState?.companyID ?? "",
-              REQUEST_CD: location.state?.[0].data?.REQUEST_ID,
-            }
-          } else if((location.state && location.state.length>0) && (location.state[0].data.CUSTOMER_ID)) {
-          data = {
-            COMP_CD: authController?.authState?.companyID ?? "",
-            CUSTOMER_ID: location.state[0].data?.CUSTOMER_ID ?? "",
-          }
-        }
-        Object.keys(data).length>1 && mutation.mutate(data)
-        // mutation.mutate(data)
-      } else if(location?.pathname.includes("/new-entry") && location?.state?.entityType) {
-        // console.log(">>>-- new", location.state)
-        handleFormModalOpenctx(location?.state?.entityType)
+    // setDisplayMode(formmode)
+    if(formmode == "new") {
+      handleFormModalOpenctx(location?.state?.entityType)
+      console.log("statess new", location.state)
+    } else {
+      handleColTabChangectx(0)
+      handleFormModalOpenOnEditctx(location?.state)
+
+      let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+        COMP_CD: authState?.companyID ?? "",
       }
-    // }
+      if(formmode == "view") {
+        console.log(from,"statess view", location.state)
+        if(location.state) {
+            const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID
+            payload["REQUEST_CD"] = REQUEST_CD
+        }
+      } else if (formmode == "edit") {
+        console.log("statess edit", location.state)
+        if(from === "pending-entry") {
+          if(location.state) {
+            const confirmedFlag = location.state?.[0]?.data.CONFIRMED
+            const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID
+            payload["REQUEST_CD"] = REQUEST_CD
+            // if(confirmedFlag === "Y" || confirmedFlag === "R") {
+            if(confirmedFlag.includes("Y") || confirmedFlag.includes("R")) {
+              setDisplayMode("view")
+            }
+          }
+        } else if(from === "retrieve-entry") {
+          if(location.state) {
+            const CUSTOMER_ID = location.state?.[0]?.data.CUSTOMER_ID
+            payload["CUSTOMER_ID"] = CUSTOMER_ID
+          }
+        }
+      }
+      if(Object.keys(payload)?.length == 2) {
+        mutation.mutate(payload)
+      }
+    } 
   }, [location])
 
 
@@ -397,7 +394,32 @@ export default function FormModal({
   //   }
   // }, [isAccTypeLoading, AccTypeOptions])
 
+  // cust categ options
+  const { 
+    data: custCategData, 
+    isError: isCustCategError, 
+    isLoading: isCustCategLoading, 
+    error: custCategError, 
+    refetch: custCategRefetch 
+  } = useQuery<any, any>(
+    [
+      "getCIFCategories",
+      state.entityTypectx,
+      // {
+      //   COMP_CD: authState?.companyID ?? "",
+      //   BRANCH_CD: authState?.user?.branchCode ?? "",
+      //   ENTITY_TYPE: state.entityTypectx
+      // }
+    ],
+    () =>
+      API.getCIFCategories({
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        ENTITY_TYPE: state?.entityTypectx,
+      })
+  );
 
+  // get tabs data
   const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
     ["getTabsDetail", {
       ENTITY_TYPE: state?.entityTypectx, 
@@ -408,7 +430,7 @@ export default function FormModal({
     () =>
       API.getTabsDetail(
       {
-        COMP_CD: authController?.authState?.companyID ?? "",
+        COMP_CD: authState?.companyID ?? "",
         ENTITY_TYPE: state?.entityTypectx,
         CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
         CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
@@ -495,7 +517,7 @@ export default function FormModal({
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy />
+        return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
@@ -556,7 +578,7 @@ export default function FormModal({
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy />
+        return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
@@ -655,7 +677,7 @@ export default function FormModal({
 
   const ActionBTNs = React.useMemo(() => {
     return displayMode == "view"
-      ? (from && from == "confirmation") && <React.Fragment>
+      ? (from && from == "confirmation-entry") && <React.Fragment>
         <Button
           onClick={() => openActionDialog("confirm")}
           color="primary"
@@ -685,6 +707,50 @@ export default function FormModal({
           {t("Update")}
         </Button>
   }, [displayMode, from, state?.modifiedFormCols])
+
+  const HeaderContent = React.useMemo(() => {
+    return <React.Fragment>
+      {(!state?.isFreshEntryctx && state?.retrieveFormDataApiRes)
+      ? (
+        <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
+          // className={classes.title}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {(state?.entityTypectx === "I" && 
+          state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "P") 
+            ? "Photo/Signature yet not scanned" 
+            : state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "N"
+              ? "Photo/Signature Confirmation Pending" : null
+          }
+        </Typography>
+        )
+      :""}
+      {
+        ((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD)
+        ? <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
+            // className={classes.title}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >{`Open from Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD}`}</Typography>
+        : null
+      }
+
+
+      {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE)
+      ? (
+        <Typography sx={{whiteSpace: "nowrap", mr: "30px"}}
+          // className={classes.title}
+          color="inherit"
+          variant="subtitle2"
+          component="div"
+        >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE}`}</Typography>
+        )
+      :""}
+    </React.Fragment>
+  }, [state?.retrieveFormDataApiRes])
 
 
   return (
@@ -737,10 +803,10 @@ export default function FormModal({
                 }}
                 className={clsx({
                   [appBarClasses.marquee]:
-                    authController?.authState?.companyName.length > 55,
+                    authState?.companyName.length > 55,
                 })}
               >
-                {authController?.authState?.companyName || ""}
+                {authState?.companyName || ""}
               </Box>
               <div style={{ display: "flex", gap: "8px" }}>
                 <div style={{ color: "#949597" }}>
@@ -750,13 +816,13 @@ export default function FormModal({
                     lineHeight={0}
                     fontSize={"11px"}
                   >
-                    Branch: {authController?.authState?.user?.branchCode ?? "001 "}-
-                    {authController?.authState?.user?.branch ?? ""}
+                    Branch: {authState?.user?.branchCode ?? "001 "}-
+                    {authState?.user?.branch ?? ""}
                   </Typography>
                   <Typography variant="caption" display="inline" fontSize={"11px"}>
                     Working Date:{" "}
                     {checkDateAndDisplay(
-                      authController?.authState?.workingDate ?? ""
+                      authState?.workingDate ?? ""
                     )}
                   </Typography>
                   <Typography
@@ -767,7 +833,7 @@ export default function FormModal({
                   >
                     Last Login Date :{" "}
                     {checkDateAndDisplay(
-                      authController?.authState?.user?.lastLogin ?? "Vastrapur"
+                      authState?.user?.lastLogin ?? "Vastrapur"
                     )}
                   </Typography>
                 </div>
@@ -775,7 +841,7 @@ export default function FormModal({
             </Typography>
             <Typography fontSize={"17px"} color={"#1C1C1C"}>
               {/* Greetings....{" "} */}
-              {Greetings()} {authController.authState.user.id}
+              {Greetings()} {authState.user.id}
             </Typography>
             {/* <Typography
               className={classes.title}
@@ -797,7 +863,7 @@ export default function FormModal({
         <AppBar
           position="sticky"
           color="secondary"
-          style={{ marginBottom: "10px", top: "65px" }}
+          style={{ top: "65px" }}
         >
           <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
             <Button 
@@ -841,104 +907,10 @@ export default function FormModal({
                 : t("IndividualEntry")
               }
             </Typography>
-
-
-            {(!state?.isFreshEntryctx && state?.retrieveFormDataApiRes)
-            ? (
-              <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
-                // className={classes.title}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-              >
-                {/* {`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD}`} */}
-                {/* Photo/Signature Confirmation Pending */}
-                {state?.entityTypectx === "I" && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "P" 
-                  ? "Photo/Signature yet not scanned" 
-                  : state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.IMAGE === "N"
-                    ? "Photo/Signature Confirmation Pending" : null
-                }
-              </Typography>
-              )
-            :""}
-            {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) 
-            && (state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "R" || state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "N") )
-            ? (
-              <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
-                // className={classes.title}
-                color="inherit"
-                variant="subtitle1"
-                component="div"
-              >{`Branch - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD ? state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD : ""}`}</Typography>
-              )
-            :""}
-
-
-            {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) 
-            && (state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "R" || state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.CONFIRMED == "N") )
-            ? (
-              <Typography sx={{whiteSpace: "nowrap", mr: "30px"}}
-                // className={classes.title}
-                color="inherit"
-                variant="subtitle2"
-                component="div"
-              >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE ? format(new Date(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE), "dd-MM-yyyy") : ""}`}</Typography>
-              // format(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE, "dd/MM/yyyy")
-              )
-            :""}
-
-
-
-            {/* <Button
-              // onClick={handleFormModalClose}
-              color="primary"
-              size="small"
-              // disabled 
-              // variant={"contained"}
-              // disabled={mutation.isLoading}
-            >
-              {t("SaveAsDraft")}
-            </Button> */}
+            {HeaderContent}
 
             {/* for checker, view-only */}
             {ActionBTNs}
-            {/* {from=="confirmation" && <Button
-              onClick={() => openActionDialog("confirm")}
-              color="primary"
-              // disabled={mutation.isLoading}
-            >
-              {t("Confirm")}
-            </Button>}
-            {from=="confirmation" && <Button
-              onClick={() => openActionDialog("query")}
-              color="primary"
-              // disabled={mutation.isLoading}
-            >
-              {t("Raise Query")}
-            </Button>}
-            {from=="confirmation" && <Button
-              onClick={() => openActionDialog("reject")}
-              color="primary"
-              // disabled={mutation.isLoading}
-            >
-              {t("Reject")}
-            </Button>}
-            {(!state?.isFreshEntryctx && from!="confirmation" && (state?.confirmFlagctx !== "R" && state?.confirmFlagctx !== "Y")) &&<Button
-              onClick={openUpdateDialog}
-              color="primary"
-              // disabled={!state?.isReadyToUpdatectx}
-              // disabled={mutation.isLoading}
-            >
-              {t("Update")}
-            </Button>} */}
-            {/* {state?.isFreshEntryctx &&<Button
-              // onClick={handleFormModalClose}
-              color="primary"
-              // disabled={mutation.isLoading}
-              // disabled={!state?.isReadyToSavectx}
-            >
-              {t("Save")}
-            </Button>} */}
             <Button
               onClick={onCancelForm}
               color="primary"
@@ -948,10 +920,7 @@ export default function FormModal({
             </Button>
           </Toolbar>
         </AppBar>
-        {/* <Box sx={style}> */}
-          <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
-
-            <AppBar
+        <AppBar
               position="sticky"
               // color=""
               style={{ marginBottom: "10px", top: "113px" }}
@@ -963,16 +932,26 @@ export default function FormModal({
                     <TextField sx={{width: "100%"}} disabled
                       id="customer-id"
                       label="Cust. ID"
-                      size="small"
+                      // size="small"
                       value={state?.customerIDctx}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant={"standard"}
+                      color="secondary"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md>
                     <TextField sx={{width: "100%"}} disabled
                       id="req-id"
                       label="Req. ID"
-                      size="small"
-                      value={state?.req_cd_ctx}                      
+                      // size="small"
+                      value={state?.req_cd_ctx}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant={"standard"}
+                      color="secondary"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6} md>
@@ -982,7 +961,8 @@ export default function FormModal({
                       id="cust-categories"
                       value={state?.categConstitutionValuectx || null}
                       inputValue={categConstitutionIPValue}
-                      options={state?.customerCategoriesctx ?? []}
+                      // options={state?.customerCategoriesctx ?? []}
+                      options={custCategData ?? []}
                       onChange={(e,value:any,r,d) => {
                         handleCategoryChangectx(e, value)
                       }}
@@ -995,20 +975,44 @@ export default function FormModal({
                       }}
                       renderInput={(params:any) => (
                         <TextField {...params} 
-                          size="small" 
                           label="Category - Constitution"
+                          autoComplete="disabled"
+                          type="text"
+                          FormHelperTextProps={{
+                            component: "div",
+                          }}
                           InputProps={{
                             ...params.InputProps,
                             autoFocus: true,
-                            startAdornment: (
-                              <>
-                                <InputAdornment position='start'>
-                                  <IconButton><RefreshIcon fontSize='small' /></IconButton>
-                                </InputAdornment>
-                                {/* {params.InputProps.startAdornment} */}
-                              </>
-                            )
+                            endAdornment: (
+                              <React.Fragment>
+                                {isCustCategLoading ? (
+                                  <CircularProgress
+                                    color="secondary"
+                                    size={20}
+                                    sx={{ marginRight: "8px" }}
+                                    variant="indeterminate"
+                                  />
+                                ) : null}
+                                {params.InputProps.endAdornment}
+                              </React.Fragment>
+                            ),
                           }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          helperText={
+                            <div style={{ display: "flex" }}>
+                              <FormHelperText>
+                                {state?.categConstitutionValuectx 
+                                  ? null 
+                                  : "Please Enter Category"
+                                }
+                              </FormHelperText>
+                            </div>
+                          }
+                          variant={"standard"}
+                          color="secondary"
                         />
                       )}
                       // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
@@ -1022,25 +1026,9 @@ export default function FormModal({
                     size="small"
                   />} */}
 
-
-                  {false && <Select
-                    labelId="customer-account-type"
-                    id=""
-                    value={state?.accTypeValuectx}
-                    label="Acc. Type"
-                    // onChange={handleChangeAccType} sx={{width: "300px"}}
-                  >
-                    {/* <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem> */}
-                    {(AccTypeOptions && AccTypeOptions.length>0) && AccTypeOptions.map(el => {
-                      // console.log('qwewerewqdxrdsa', el)
-                      return <MenuItem value={el?.DATA_VALUE}>{el?.DISPLAY_VALUE}</MenuItem>
-                    })}
-                  </Select>}
                   <Grid item xs={12} sm={6} md>
                     <Autocomplete sx={{width: "100%"}}
-                      disablePortal
+                      // disablePortal
                       disabled={!state?.isFreshEntryctx}
                       id="acc-types"
                       options={AccTypeOptions ?? []}
@@ -1053,7 +1041,38 @@ export default function FormModal({
                         handleAccTypeVal(v?.value)
                       }}
                       // sx={{ width: 200 }}
-                      renderInput={(params:any) => <TextField {...params} size="small" label="A/C Type" />}
+                      renderInput={(params:any) => (
+                        <TextField {...params} 
+                          label="A/C Type"
+                          autoComplete="disabled"
+                          type="text"
+                          FormHelperTextProps={{
+                            component: "div",
+                          }}
+                          InputProps={{
+                            ...params.InputProps,
+                            autoFocus: true,
+                            endAdornment: (
+                              <React.Fragment>
+                                {isAccTypeLoading ? (
+                                  <CircularProgress
+                                    color="secondary"
+                                    size={20}
+                                    sx={{ marginRight: "8px" }}
+                                    variant="indeterminate"
+                                  />
+                                ) : null}
+                                {params.InputProps.endAdornment}
+                              </React.Fragment>
+                            ),
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          variant={"standard"}
+                          color="secondary"
+                        />
+                      )}
                       // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
                     />
                   </Grid>
@@ -1069,7 +1088,12 @@ export default function FormModal({
                       }}
                       // sx={{ width: {xs: 12, sm: "", md: "", lg: ""}}}
                       // value={accTypeValue}
-                      size="small"
+                      // size="small"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant={"standard"}
+                      color="secondary"
                     />
                   </Grid>
                   {!state?.isFreshEntryctx && <FormControlLabel control={<Checkbox checked={true} disabled />} label="Active" />}
@@ -1092,6 +1116,10 @@ export default function FormModal({
                 {/* common customer fields */}
               </Toolbar>
             </AppBar>
+        {/* <Box sx={style}> */}
+          <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
+
+            
 
             <Grid container item xs="auto" sx={{
               display: state?.isFreshEntryctx ? "none" : "flex", flexDirection: "column",alignItems: "center",

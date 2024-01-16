@@ -428,6 +428,130 @@ export const getParentAreaOptions = async (COMP_CD, BRANCH_CD) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+
+export const validateEmailID = async (columnValue) => {
+  const EMAIL_ID = columnValue.value
+  if(EMAIL_ID) {
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETEMAILSTATUS", {
+        EMAIL_ID: EMAIL_ID
+      });
+    if (status === "0") {
+      // const responseData = data
+      const EMAIL_ID_STATUS = data?.[0]?.EMAIL_ID_STATUS
+      if(EMAIL_ID_STATUS) {
+      // console.log("dataawdawd", EMAIL_ID_STATUS)
+        if(EMAIL_ID_STATUS === "0") {
+          return "Please Enter Valid Email ID"
+        } else return "";
+      }
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const validateMobileNo = async (columnValue, allField, flag) => {
+  // console.log("columnValue, allField, flag", columnValue, allField, flag)
+  const MOBILE_NO = columnValue.value
+  const SCREEN = "EMST/707"
+  const STD_CD = allField.STD_2.value
+  const FLAG = "Y"
+
+  if(MOBILE_NO && MOBILE_NO) {
+
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETMOBILESTATUS", {
+        // EMAIL_ID: EMAIL_ID
+        MOBILE_NO: MOBILE_NO,
+        SCREEN: SCREEN,
+        STD_CD: STD_CD,
+        FLAG: FLAG,
+      });
+    if (status === "0") {
+      // console.log("columnValue, allField, flag data", data)
+      const message = data?.[0]?.MOBILE_STATUS
+      if(message) {
+        return message;
+      } else return "";
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const validateUniqueId = async (columnValue) => {
+  // console.log("validateUniqueId", columnValue)
+  const UNIQUEID = columnValue.value
+
+  if(UNIQUEID) {
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETUNIQUEIDSTATUS", {
+        UNIQUEID: UNIQUEID
+      });
+    if (status === "0") {
+      // console.log("validateUniqueId data", data)
+      const UID_STATUS = data?.[0]?.UID_STATUS
+      if(UID_STATUS) {
+        if(UID_STATUS === "I") {
+          return "Please Enter Valid Unique ID";
+        } else if(UID_STATUS === "N") {
+          return "Unique ID should be 12 digit";
+        } else return "";
+      } else return "";
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const validateGSTIN = async (columnValue) => {
+  // console.log("validateGSTIN", columnValue)
+  const GSTIN = columnValue.value
+
+  if(GSTIN) {
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETGSTINSTATUS", {
+        GSTIN: GSTIN
+      });
+    if (status === "0") {
+      // console.log("validateGSTIN data", data)
+      const GSTIN_STATUS = data?.[0]?.GSTIN_STATUS
+      // const UID_STATUS = data?.[0]?.UID_STATUS
+      if(GSTIN_STATUS) {
+        return GSTIN_STATUS;
+      } else return "";
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
+
+export const validatePAN = async (columnValue) => {
+  // console.log("validatePAN", columnValue)
+  const PAN = columnValue.value
+
+  if(PAN) {
+    // console.log("ewqkudiwqehid", EMAIL_ID)
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETPANSTATUS", {
+        PAN: PAN
+      });
+    if (status === "0") {
+      // console.log("validatePAN data", data)
+      const PAN_STATUS = data?.[0]?.PAN_STATUS
+      if(PAN_STATUS && PAN_STATUS !== "Y") {
+        return "Please Enter Valid PAN Number";
+      } else return "";
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  }
+}
 // export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
 //   console.log("getSubAreaOptions called", dependentValue)
 //   // let Parent_Area = ""
@@ -531,21 +655,21 @@ export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
 }
 
 // for getting pending entries, in grid
-export const getPendingData = async (reqObj:any) => {
-  const {COMP_CD, BRANCH_CD, ENTERED_DATE} = reqObj
+export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:string, REQ_FLAG: string}) => {
+  const {COMP_CD, REQ_FLAG, ENTERED_DATE} = reqObj
   let payload = {}
-  if(reqObj && reqObj.REQ_FLAG) {
+  if(ENTERED_DATE) {
     payload = {
       COMP_CD: COMP_CD, 
-      BRANCH_CD: BRANCH_CD, 
+      // BRANCH_CD: BRANCH_CD, 
       ENTERED_DATE: ENTERED_DATE,
-      REQ_FLAG: reqObj.REQ_FLAG
+      REQ_FLAG: REQ_FLAG
     }
   } else {
     payload = {
       COMP_CD: COMP_CD, 
-      BRANCH_CD: BRANCH_CD, 
-      ENTERED_DATE: ENTERED_DATE,
+      // BRANCH_CD: BRANCH_CD, 
+      REQ_FLAG: REQ_FLAG
     }
   }
   const { data, status, message, messageDetails } =
@@ -729,14 +853,19 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
   }
 }
 
-export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
-  // const {gridData, formMode} = formState;
-  // let selectedDoc:any[] = []
-  // if(formState.gridData && formState.gridData.length>0) {
-  //   selectedDoc = formState.gridData.map(el => {
-  //     return el.BANK_DOC_TRAN_CD && el.BANK_DOC_TRAN_CD
-  //   })
-  // } 
+export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD, formState}) => {
+  const {gridData, rowsData} = formState;
+  // console.log("qekuwhdiuwehdw", formState)
+  let selectedDoc:any[] = []
+  if(rowsData && rowsData.length>0) {
+    selectedDoc = rowsData.map(el => {
+      return el.data.BANK_DOC_TRAN_CD ?? "";
+    })
+  } else if(gridData && gridData.length>0) {
+    selectedDoc = gridData.map(el => {
+      return el.BANK_DOC_TRAN_CD ?? "";
+    })
+  }
   // console.log(gridData, "auedhniuwehdwe", formMode)
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETCUSTDOCUMENT", {
@@ -745,6 +874,11 @@ export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD}) => {
     });
   if (status === "0") {
     let responseData = data;
+    if(rowsData && rowsData.length>0) {
+      responseData = responseData.filter(el => selectedDoc.includes(el.SR_CD))
+    } else if(gridData && gridData.length>0) {
+      responseData = responseData.filter(el => !selectedDoc.includes(el.SR_CD))
+    }
     // console.log("auedhniuwehdwe  qwed", data)
     if (Array.isArray(responseData)) {
       responseData = responseData.map(({ DESCRIPTION, SR_CD, ...other }) => {
@@ -802,6 +936,17 @@ export const getPhotoSignHistory = async ({COMP_CD, CUSTOMER_ID}) => {
   }
 }
 
+export const updatePhotoSignData = async (reqData) => {
+  // console.log(":wedwd", reqData)
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETUPDCUSTPHOTODATA", reqData);
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
 export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM}) => {
   if(CUSTOMER_ID) {
     const { data, status, message, messageDetails } =
@@ -849,7 +994,7 @@ export const TrimSpaceValidation = (columnValue, allField, flag) => {
       } else if (columnValue.value !== columnValue.value.trimEnd()) {
         return "Space after name is not allowed.";
       } else if(!regex.test(columnValue.value)) {
-          return "Please Enter Character Value.";
+          return "Please Enter Character Value without Space.";
       }                    
   }
   return "";
@@ -1310,6 +1455,7 @@ export const SaveEntry = async (reqdata) => {
     IsNewRow,
     REQ_CD,
     formData,
+    COMP_CD,
   } = reqdata
 
   // console.log("aaaaaaaaa", formData)
@@ -1671,6 +1817,7 @@ export const SaveEntry = async (reqdata) => {
       SAVE_FLAG:"F",
       ENTRY_TYPE :"1",
       CUSTOMER_ID:"",
+      COMP_CD: COMP_CD,
     //  OTHER_ADDRESS: [
     //    {
     //         IsNewRow:true,
@@ -1832,25 +1979,40 @@ export const SaveEntry = async (reqdata) => {
   //             }
   //         ]
   //     },
-  DOC_MST: [
-    {
-      IsNewRow: true,
-      COMP_CD: "132 ",
-      BRANCH_CD:"099 ",
-      ENT_COMP_CD:"132 ",
-      ENT_BRANCH_CD:"099 ",
-      ACCT_TYPE: "1",
-      ACCT_CD: "2",
-      TEMPLATE_CD: "4",
-      SUBMIT: "N",
-      VALID_UPTO: "05-OCT-23",
-      DOC_AMOUNT: "1234",
-      DOC_NO: "123456",
-      DOC_TYPE: "KYC",
-      DOC_WEIGHTAGE: "1 ",
-      ACTIVE: "Y",
-    }
-  ],
+  // DOC_MST: [
+  //   {
+  //     IsNewRow: true,
+  //     COMP_CD: "132 ",
+  //     BRANCH_CD:"099 ",
+  //     ENT_COMP_CD:"132 ",
+  //     ENT_BRANCH_CD:"099 ",
+  //     ACCT_TYPE: "1",
+  //     ACCT_CD: "2",
+  //     TEMPLATE_CD: "4",
+  //     SUBMIT: "N",
+  //     VALID_UPTO: "05-OCT-23",
+  //     DOC_AMOUNT: "1234",
+  //     DOC_NO: "123456",
+  //     DOC_TYPE: "KYC",
+  //     DOC_WEIGHTAGE: "1 ",
+  //     ACTIVE: "Y",
+  //   }
+  // ],
+  // DOC_MST: [
+  //   {
+  //     TEMPLATE_CD: "4",
+  //     SUBMIT: "N",
+  //     VALID_UPTO: "05-OCT-23",
+  //     DOC_NO: "123456",
+  //     DOC_TYPE: "KYC",
+  //     DOC_IMAGE: "",
+  //     DOC_AMOUNT: "",
+  //     DOC_WEIGHTAGE: "",
+  //     ACTIVE: "Y",
+  //     IsNewRow: true
+  //   }
+  // ],
+  DOC_MST: formData["DOC_MST"],
   
   
   // NRI_DTL: {
@@ -1882,6 +2044,17 @@ export const SaveEntry = async (reqdata) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
+}
+
+export const AlphaNumericValidate = (columnValue) => {
+  let regex = /^[a-zA-Z0-9 ]*$/;
+      // special-character not allowed
+  if(columnValue.value) {
+      if(!regex.test(columnValue.value)) {
+          return "Please Enter Alphanumeric Value";
+      }
+  }
+  return "";
 }
 
 // to show total_acct number, in deactivate customer

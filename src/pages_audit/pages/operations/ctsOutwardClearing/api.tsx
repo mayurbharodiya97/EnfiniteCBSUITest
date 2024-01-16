@@ -21,7 +21,7 @@ export const getBussinessDate = async ({ companyID, branchID }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getAccountName = async ({ Apireq }) => {
+export const getAccountSlipJoinDetail = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCOUNTNM", { ...Apireq });
   if (status === "0") {
@@ -30,15 +30,7 @@ export const getAccountName = async ({ Apireq }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getSlipNumber = async (Apireq) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(`GETSLIPNO`, { ...Apireq });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
+
 export const clearingBankMasterConfigDML = async (formData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOBANKDETAIL", formData);
@@ -59,19 +51,29 @@ export const outwardClearingConfigDML = async (formData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const TemporaryData = () => {
-  return [
-    {
-      CHEQUE_NO: "",
-      BANK_CD: "",
-      BANK_NAME: "",
-      PAYEE_AC_NO: "",
-      CHEQUE_DATE: "",
-      DESCRIPTION: "",
-      CHQ_MICR_CD: "",
-      NAME: "",
-      AMOUNT: "",
-      id: 1,
-    },
-  ];
+
+export const getRetrievalClearingData = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher(`GETCTSCNFRETRIEV`, { ...Apireq });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };
+// export const TemporaryData = () => {
+//   return [
+//     {
+//       CHEQUE_NO: "",
+//       BANK_CD: "",
+//       BANK_NAME: "",
+//       PAYEE_AC_NO: "",
+//       CHEQUE_DATE: "",
+//       DESCRIPTION: "",
+//       CHQ_MICR_CD: "",
+//       NAME: "",
+//       AMOUNT: "",
+//       id: 1,
+//     },
+//   ];
+// };

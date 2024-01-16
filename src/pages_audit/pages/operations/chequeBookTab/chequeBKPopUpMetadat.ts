@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ChequeBKPopUpGridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Cheque Book Issued",
+    gridLabel: "ChequeBook Series Detail",
     rowIdColumn: "CHEQUE_FROM",
     defaultColumnConfig: {
       width: 150,

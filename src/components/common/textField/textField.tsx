@@ -72,8 +72,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
   startsIcon,
   endsIcon,
   iconStyle,
-  runExternalFunction,
-  onFormDataChange,
   textFieldStyle,
   ...others
 }) => {
@@ -110,8 +108,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
-    runExternalFunction,
-    onFormDataChange,
   });
 
   const [currentColor, setCurrentColor] = useState<string>(

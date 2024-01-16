@@ -4,30 +4,20 @@ import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider, queryClient } from "cache";
 import { SearchBar } from "components/derived";
 
-import React, {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Fragment, useCallback, useContext, useEffect, useState } from "react";
 import * as API from "../api";
 import { useQuery } from "react-query";
 import {
-  AppBar,
   Box,
-  Grid,
   Theme,
   Toolbar,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { makeStyles, styled } from "@mui/styles";
+import { makeStyles } from "@mui/styles";
 import { GradientButton } from "components/styledComponent/button";
 import { AuthContext } from "pages_audit/auth";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";

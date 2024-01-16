@@ -2,14 +2,12 @@ import { Dialog, Grid, Typography } from "@mui/material";
 import { scrollMetaData } from "./metaData";
 import Report from "components/report";
 import * as API from "./api";
-import { format } from "date-fns";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const Scroll = ({ open, handleCloseDialog, data }) => {
   const [scrollData, setScrollData] = useState<any>([]);
 
-  const { TRAN_DT, SCROLL1, COMP_CD, BRANCH_CD } = data?.[0]?.data;
-  const tranDate = format(new Date(TRAN_DT), "dd/MMM/yyyy EEEE");
+  const { SCROLL1, COMP_CD, BRANCH_CD } = data?.[0]?.data;
   const scroll = SCROLL1;
 
   const updatedMetaData = {

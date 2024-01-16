@@ -234,6 +234,7 @@ const transformAuthData = (data: any, access_token: any): AuthStateType => {
     companyID: data?.COMPANYID,
     baseCompanyID: data?.BASECOMPANYID,
     workingDate: data?.WORKINGDATE,
+    groupName: data?.GROUP_NAME,
     menulistdata: [],
     user: {
       branch: data?.BRANCH,
@@ -403,12 +404,20 @@ export const updatenewPassword = async (transactionId, username, password) => {
   // };
 };
 
-export const OTPResendRequest = async (transactionId, username, tran_type) => {
+export const OTPResendRequest = async (
+  transactionId,
+  username,
+  tran_type,
+  companyID,
+  branch_cd
+) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcherPreLogin("OTPRESEND", {
       USER_ID: username,
-      REQUEST_CD: transactionId,
-      TRAN_TYPE: tran_type,
+      TRAN_CD: transactionId,
+      TRN_TYPE: tran_type,
+      COMP_CD: companyID,
+      BRANCH_CD: branch_cd,
     });
   if (status === "0") {
     return {

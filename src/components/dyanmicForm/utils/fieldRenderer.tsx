@@ -91,7 +91,6 @@ export const renderField: RenderFunctionType = (
     schemaValidation,
     defaultValue,
     onFormButtonClickHandel,
-    onFormDataChange,
     ...others
   } = fieldObj;
   let Component: any = null;
@@ -221,7 +220,6 @@ export const renderField: RenderFunctionType = (
           lg: gridConfigOverrides?.lg ?? "auto",
         }}
         onFormButtonClickHandel={onFormButtonClickHandel}
-        onFormDataChange={onFormDataChange}
       />
     );
   } else {
@@ -249,7 +247,6 @@ export const renderField: RenderFunctionType = (
           lg: gridConfigOverrides?.lg ?? "auto",
         }}
         onFormButtonClickHandel={onFormButtonClickHandel}
-        onFormDataChange={onFormDataChange}
       />
     );
   }

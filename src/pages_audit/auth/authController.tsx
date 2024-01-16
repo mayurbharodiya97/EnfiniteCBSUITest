@@ -1,26 +1,18 @@
 import { useReducer, useContext, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import loginImg from "../../assets/images/login.png";
 import { useStyles } from "./style";
 import { UsernamePasswordField } from "./usernamePassword";
 import { AuthContext } from "./authContext";
-import logo from "../../assets/images/logo.jpg";
 import { OTPModel, OTPModelForm } from "./otpPopup";
 import { veirfyUsernameandPassword, verifyOTP } from "./api";
-import { useSnackbar } from "notistack";
 import { PasswordRotation } from "./pwdRotation";
 import { VerifyFinger } from "./verifyFinger";
-
 import * as API from "./api";
 import { matchFinger } from "./biometric";
 import { Grid } from "@mui/material";
 import { BankDetails } from "./bankDetails";
 import { useQuery } from "react-query";
-import { queryClient } from "cache";
-import {
-  FullScreenLoader,
-  LoaderPaperComponent,
-} from "components/common/loaderPaper";
+import { FullScreenLoader } from "components/common/loaderPaper";
 import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
 import { MultiLanguages } from "./multiLanguages";
@@ -47,6 +39,8 @@ const inititalState = {
   authType: "",
   isScanning: false,
   auth_data: [],
+  company_ID: "",
+  Branch_CD: "",
   auth_type: "O",
   otpValidFor: 60,
 };
@@ -159,6 +153,7 @@ const reducer = (state, action) => {
         authType: action?.payload?.authType,
         auth_data: action?.payload?.auth_data,
         otpValidFor: action?.payload?.otpValidFor,
+        company_ID: action?.paylod?.company_ID,
       };
     }
     case "inititatebiometricVerification": {
@@ -205,6 +200,12 @@ const reducer = (state, action) => {
         otpmodelClose: Boolean(action?.payload?.otpmodelclose),
       };
     }
+    case "OTPResendSuccess": {
+      return {
+        ...state,
+        transactionID: action?.payload?.transactionID,
+      };
+    }
     case "backToUsernameVerification": {
       return {
         ...inititalState,
@@ -223,13 +224,10 @@ export const AuthLoginController = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [loginState, dispath] = useReducer(reducer, inititalState);
-  const [open, setOpen] = useState(false);
   const [openpwdreset, setOpenPwdReset] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
   const failureCount = useRef(0);
   const [dashboardLogoURL, setDashboardLogoURL] = useState<any | null>(null);
   const urlObj = useRef<any>(null);
-  const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
   const otpResendRef = useRef(1);
 
@@ -247,9 +245,6 @@ export const AuthLoginController = () => {
     data: imageData,
     isLoading,
     isFetching,
-    isError,
-    error,
-    refetch,
   } = useQuery<any, any>(["getLoginImageData"], () =>
     API.getLoginImageData({ APP_TRAN_CD: "51" })
   );
@@ -274,11 +269,11 @@ export const AuthLoginController = () => {
     GeneralAPI.setDocumentName("Enfinity");
   }, []);
 
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["getLoginImageData"]);
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     queryClient.removeQueries(["getLoginImageData"]);
+  //   };
+  // }, []);
   const verifyUsernamePassword = async (username, password) => {
     if (Boolean(username) && Boolean(password)) {
       dispath({ type: "inititatePasswordVerification" });
@@ -303,11 +298,15 @@ export const AuthLoginController = () => {
             access_token: access_token?.access_token,
             token_type: access_token?.token_type,
             authType: data?.AUTH_TYPE,
-            auth_data: data?.AUTH_DATA,
+            auth_data: [
+              {
+                company_ID: data?.BASE_COMP_CD ?? "",
+                branch_cd: data?.BASE_BRANCH_CD,
+              },
+            ],
             otpValidFor: data?.OTP_VALID,
           },
         });
-        setOpen(true);
       } else {
         dispath({
           type: "passwordVerificationFailure",
@@ -393,7 +392,6 @@ export const AuthLoginController = () => {
     setOpenPwdReset(false);
   };
   const changeUserName = (isError = false, errorMessage = "") => {
-    console.log("changeUserName", isError, errorMessage);
     dispath({
       type: "backToUsernameVerification",
       payload: {
@@ -548,12 +546,21 @@ export const AuthLoginController = () => {
                           OTPError={loginState?.OtpuserMessage ?? ""}
                           setOTPError={(error) => {
                             dispath({
-                              type: "OTPVerificationFailed",
+                              type: "OTPVerificattionFailed",
                               payload: { error: error },
                             });
                           }}
                           open={true}
                           handleClose={() => {}}
+                          resendFlag={"LOGIN"}
+                          setNewRequestID={(newRequestID) => {
+                            dispath({
+                              type: "OTPResendSuccess",
+                              payload: { transactionID: newRequestID },
+                            });
+                            otpResendRef.current = otpResendRef.current + 1;
+                          }}
+                          otpresendCount={otpResendRef.current}
                         />
                       ) : loginState.authType === "TOTP" ? (
                         <>

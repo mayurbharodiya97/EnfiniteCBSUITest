@@ -29,7 +29,7 @@ const initialState:any  = {
     tabsApiResctx: [],
     tabNameList: [],
     setTabsApiRes: () => {},
-    customerCategoriesctx: [],
+    // customerCategoriesctx: [],
     categConstitutionValuectx: null,
     categoryValuectx: null,
     constitutionValuectx: null,
@@ -88,11 +88,11 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
-        case "update_customerCategoriesctx":
-            return {
-                ...state,
-                ...action.payload
-            };
+        // case "update_customerCategoriesctx":
+        //     return {
+        //         ...state,
+        //         ...action.payload
+        //     };
         case "handleCategoryChangectx":
             return {
                 ...state,
@@ -201,12 +201,13 @@ const CkycProvider = ({children}) => {
     const handleFormModalOpenOnEditctx = (recordData, retrieveFormdata) => {
         // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData)
         // required - CATEGORY_CODE, CONSTITUTION_TYPE, CUSTOMER_TYPE
-        if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
+        // if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
+        if(recordData[0]?.data?.CATEG_NM && recordData[0]?.data?.CONSTITUTION_NAME) {
             const categConstitutionValue = {
                 value: recordData[0]?.data?.CATEGORY_CODE,
-                label: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[0],
+                label: recordData[0]?.data?.CATEG_NM,
                 CONSTITUTION_TYPE: recordData[0]?.data?.CONSTITUTION_TYPE,
-                CONSTITUTION_NAME: recordData[0]?.data?.CATEGORY_CONSTITUTIONS.split("-")[1],
+                CONSTITUTION_NAME: recordData[0]?.data?.CONSTITUTION_NAME,
                 
                 
 
@@ -325,14 +326,14 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleCustCategoryRes = (apiRes) => {
-        dispatch({
-            type: "update_customerCategoriesctx",
-            payload: {
-                customerCategoriesctx: apiRes
-            }
-        })           
-    }
+    // const handleCustCategoryRes = (apiRes) => {
+    //     dispatch({
+    //         type: "update_customerCategoriesctx",
+    //         payload: {
+    //             customerCategoriesctx: apiRes
+    //         }
+    //     })           
+    // }
 
     const handleCategoryChangectx = (e, value) => {
         if(value) {
@@ -643,9 +644,9 @@ const CkycProvider = ({children}) => {
             update_type = "full_save";
         }
         let other_data = {
-            IsNewRow: !state?.req_cd_ctx ? true : false,
-            REQ_CD: state?.req_cd_ctx ?? "",
-            COMP_CD: COMP_CD ?? "",
+            // IsNewRow: !state?.req_cd_ctx ? true : false,
+            // REQ_CD: state?.req_cd_ctx ?? "",
+            // COMP_CD: COMP_CD ?? "",
         }
         console.log("feiuqwdwqduyqewd",updated_tabs)
         let dataa = updated_tabs.map(async (TAB, i) => {
@@ -828,6 +829,7 @@ const CkycProvider = ({children}) => {
             // SAVE_FLAG: "",
             ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
             IsNewRow: !state?.req_cd_ctx ? true : false,
+            COMP_CD: COMP_CD,
             // CUSTOMER_ID:"",
             // NRI_DTL: formData["NRI_DTL"], //test-done,
             
@@ -846,7 +848,8 @@ const CkycProvider = ({children}) => {
         <CkycContext.Provider 
             value={{
                 state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
-                handleApiRes, handleCustCategoryRes,
+                handleApiRes, 
+                // handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
                 handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, handleReadyToSavectx, handleReadyToUpdatectx, resetCkycctx, handleUpdatectx, handleCurrentFormRefctx
             }}

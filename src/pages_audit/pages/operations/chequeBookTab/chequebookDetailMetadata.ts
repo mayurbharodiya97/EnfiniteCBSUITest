@@ -1,5 +1,5 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-export const ChequebookDtlGridMetaData: GridMetaDataType = {
+export const ChequebookDtlGridMetaData = {
   gridConfig: {
     dense: true,
     gridLabel: "Cheque Book Issued",
