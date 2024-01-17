@@ -125,9 +125,11 @@ export const Trn001 = () => {
     }
 
     if (rows[i]?.isCredit && !(Number(rows[i]?.credit) > 0)) {
+      //credit true
       rows[i].bug = true;
     }
     if (!rows[i]?.isCredit && !(Number(rows[i]?.debit) > 0)) {
+      //debit true
       rows[i].bug = true;
     }
 
@@ -220,7 +222,6 @@ export const Trn001 = () => {
   const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
       setLoading(false);
-      console.log(data, "scroll save api res");
       if (Number(data?.INSERT) > 0) {
         handleReset();
         enqueueSnackbar("Scroll Saved", {
@@ -249,13 +250,24 @@ export const Trn001 = () => {
       });
     },
   });
+  useEffect(() => {
+    console.log(errMsg, "errmsg");
+  }, [errMsg]);
+
   const getAccNoValidation = useMutation(API.getAccNoValidation, {
     onSuccess: (data) => {
-      console.log(data, "datadata");
       if (data?.RESTRICT_MESSAGE) {
-        enqueueSnackbar(data?.RESTRICT_MESSAGE, {
-          variant: "error",
-        });
+        setErrMsg({ ...errMsg, accNo: data?.RESTRICT_MESSAGE });
+        const obj = [...rows];
+        obj[index].bugAccNo = true;
+        obj[index].bug = true;
+        // enqueueSnackbar(data?.RESTRICT_MESSAGE, {
+        //   variant: "error",
+        // });
+      } else {
+        const obj = [...rows];
+        obj[index].bugAccNo = false;
+        obj[index].bug = false;
       }
     },
     onError: (error: any) => {
@@ -266,7 +278,6 @@ export const Trn001 = () => {
   });
   const getTabsByParentType = useMutation(API.getTabsByParentType, {
     onSuccess: (data) => {
-      console.log(data, "datadata");
       setTabsData(data);
     },
     onError: (error: any) => {
@@ -443,11 +454,6 @@ export const Trn001 = () => {
       handleAddRow();
   };
 
-  const handleVNo = (e, i) => {
-    const obj = [...rows];
-    obj[i].vNo = e.target.value;
-    setRows(obj);
-  };
   //logic fns=====================================================================
   const handleAddRow = () => {
     let cred = 0;
@@ -555,8 +561,8 @@ export const Trn001 = () => {
   };
 
   const handleSaveDialog = () => {
-    console.log(errMsg, "errMsg");
-    console.log(isSave, "isSave");
+    // console.log(errMsg, "errMsg");
+    // console.log(isSave, "isSave");
     if (
       errMsg.accNo ||
       errMsg.cNo ||
@@ -605,9 +611,6 @@ export const Trn001 = () => {
     setUpdatedRows([]);
   };
 
-  const diagSuccess = (fn) => {
-    return fn;
-  };
   return (
     <>
       <DailyTransTabs heading="(Maker) (TRN/001)" tabsData={tabsData} />
@@ -725,7 +728,7 @@ export const Trn001 = () => {
                           <TextField
                             value={a.accNo}
                             disabled={viewOnly ? true : false}
-                            error={!a.accNo ? true : false}
+                            error={!a.accNo || a.bugAccNo ? true : false}
                             size="small"
                             type="number"
                             onChange={(e) => handleAccNo(e, i)}
@@ -851,15 +854,6 @@ export const Trn001 = () => {
                           />
                         </TableCell>
 
-                        {/* <TableCell sx={{ minWidth: 40 }}>
-                          <TextField
-                            value={a.vNo}
-                            id="txtRight"
-                            disabled={true}
-                            size="small"
-                            onChange={(e) => handleVNo(e, i)}
-                          />
-                        </TableCell> */}
                         <TableCell style={{ border: "0px", width: "10px" }}>
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (

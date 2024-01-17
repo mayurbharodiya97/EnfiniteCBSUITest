@@ -66,11 +66,6 @@ export const Trn002 = () => {
     setTempStore({ ...tempStore, accInfo: {} });
   }, []);
 
-  useEffect(() => {
-    console.log(rows, "rows");
-    console.log(rows2, "rows2");
-  }, [rows, rows2]);
-
   // api define ========================================================================
   const getTRN002List = useMutation(trn2Api.getTRN002List, {
     onSuccess: (data) => {

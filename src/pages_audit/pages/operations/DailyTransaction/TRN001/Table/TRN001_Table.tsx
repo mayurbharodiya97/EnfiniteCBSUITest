@@ -94,7 +94,7 @@ export const TRN001_Table = ({ updatedRows }) => {
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
     setLoading(true);
-    console.log(row, "row");
+    console.log(row, "row setCurrentAction");
     if (data.name === "view-detail") {
       let obj = {
         COMP_CD: row?.COMP_CD,
