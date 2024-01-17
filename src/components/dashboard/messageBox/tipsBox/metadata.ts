@@ -1,7 +1,7 @@
 export const TipsListMetadata = {
   form: {
     name: "TipsListMetadata",
-    // label: "MessageBox Description",
+    label: "Tips Description",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",

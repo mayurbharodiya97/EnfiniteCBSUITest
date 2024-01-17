@@ -104,7 +104,7 @@ export const ClearingBankMaster: FC<{
     setIsOpenSave(false);
   };
   const onPopupYes = (rows) => {
-    mutation.mutate({ data: rows });
+    mutation.mutate(rows);
   };
   const onSubmitHandler: SubmitFnType = (
     data: any,

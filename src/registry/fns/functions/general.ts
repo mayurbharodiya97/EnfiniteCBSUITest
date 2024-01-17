@@ -73,7 +73,6 @@ const GeneralAPISDK = () => {
     console.log("changed...");
   };
   const getAccountTypeList = async (...reqData) => {
-    // console.log(reqData, "reqData...");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETUSERACCTTYPE", {
         USER_NAME: reqData?.[3]?.user.id
@@ -561,63 +560,45 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  const getSDCList = async (...reqData) => {
+  const getSlipNoData = async (...reqData) => {
     const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETSDCLIST", {
-        USER_NAME: reqData?.[3]?.user.id ?? "",
-        BRANCH_CD: reqData?.[3]?.user?.branchCode,
-        COMP_CD: reqData?.[3]?.companyID,
-      });
-
-    if (status === "0") {
-      let responseData = data;
-
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ CODE, DESCRIPTION }) => {
-          return {
-            value: CODE,
-            label: CODE + "-" + DESCRIPTION,
-            CODE: CODE,
-            DESCRIPTION: DESCRIPTION,
-          };
-        });
-      }
-
-      return responseData;
-    } else {
-      throw DefaultErrorObject(message, messageDetails);
-    }
-  };
-
-  const getTRXList = async (...reqData) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher("GETTRXLIST", {
-        USER_NAME: reqData?.[3]?.user.id ?? "",
+      await AuthSDK.internalFetcher(`GETSLIPNO`, {
+        COMP_CD: reqData?.[2]?.companyID ?? "",
+        BRANCH_CD: reqData?.[2]?.user?.branchCode,
+        TRAN_DT: format(new Date(reqData?.[3]?.TRAN_DT?.value), "dd/MMM/yyyy"),
+        ZONE: reqData?.[0].value ?? "0   ",
+        TRAN_TYPE: reqData?.[0]?.optionData?.[0]?.ZONE_TRAN_TYPE ?? "S",
       });
     if (status === "0") {
-      let responseData = data;
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ CODE, DESCRIPTION }) => {
-          return {
-            value: CODE,
-            label: CODE + "-" + DESCRIPTION,
-          };
-        });
-      }
-      return responseData;
+      return {
+        SLIP_CD: { value: data?.[0]?.SLIP_NO ?? "" },
+      };
     } else {
-      throw DefaultErrorObject(message, messageDetails);
+      return {
+        SLIP_CD: { value: "" },
+      };
     }
   };
-
-  const getJointDetailsList = async (...reqData) => {
-    return [
-      { id: 1, name: "abcd", accNo: 12345 },
-      { id: 2, name: "11abcd", accNo: 123445 },
-      { id: 3, name: "aaaa", accNo: 123425 },
-    ];
+  const getAccountNumberData = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher(`GETACCOUNTNM`, {
+        COMP_CD: reqData?.[2]?.companyID ?? "",
+        BRANCH_CD: reqData?.[2]?.user?.branchCode,
+        ACCT_CD: reqData?.[0]?.value.padStart(6, "0").padEnd(20, " "),
+        ACCT_TYPE: reqData?.[3]?.ACCT_TYPE?.value ?? "",
+      });
+    if (status === "0") {
+      return {
+        ACCT_NAME: { value: data?.[0]?.ACCT_NAME ?? "" },
+        TRAN_BAL: { value: data?.[0]?.TRAN_BAL ?? "" },
+      };
+    } else {
+      return {
+        ACCT_NAME: { value: "" },
+        TRAN_BAL: { value: "" },
+      };
+    }
   };
-
   return {
     GetMiscValue,
     getValidateValue,
@@ -638,13 +619,12 @@ const GeneralAPISDK = () => {
     getKYCDocTypes,
     getTabelListData,
     getChequeLeavesList,
-    getSDCList,
-    getTRXList,
-    getJointDetailsList,
+    getSlipNoData,
     getDynDropdownData,
     getDependentFieldList,
     getProMiscData,
     getZoneListData,
+    getAccountNumberData,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

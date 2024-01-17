@@ -4,7 +4,9 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
+
 import { TextField } from "components/styledComponent";
+
 import { Merge } from "../types";
 import { numWords } from "components/common/utils";
 import {
@@ -33,6 +35,7 @@ interface MyGridExtendedProps {
   startsIcon?: any;
   endsIcon?: any;
   iconStyle?: any;
+  textFieldStyle?: any;
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -69,6 +72,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   startsIcon,
   endsIcon,
   iconStyle,
+  textFieldStyle,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -91,6 +95,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     runValidation,
     validationAPIResult,
     dependentValues,
+    setErrorAsCB,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -125,11 +130,12 @@ const MyTextField: FC<MyTextFieldProps> = ({
     },
     [handleChange]
   );
+
   const focusRef = useRef();
   useEffect(() => {
     if (isFieldFocused) {
       //@ts-ignore
-      getFocus()
+      getFocus();
     }
   }, [isFieldFocused, value]);
   const getFocus = () => {
@@ -137,7 +143,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
       //@ts-ignore
       focusRef?.current?.focus?.();
     }, 1);
-  }
+  };
 
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
@@ -155,17 +161,26 @@ const MyTextField: FC<MyTextFieldProps> = ({
       const { value, ignoreUpdate, isFieldFocused } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
-        if(isFieldFocused) {
-          getFocus()
-        }  
+        if (isFieldFocused) {
+          getFocus();
+        }
         if (ignoreUpdate) {
           //ignore Validation
         } else if (whenToRunValidation === "onBlur") {
           runValidation({ value: value }, true);
         }
       }
+      if (Boolean(error)) {
+        setErrorAsCB(error);
+      }
     }
-  }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+  }, [
+    incomingMessage,
+    handleChange,
+    runValidation,
+    whenToRunValidation,
+    setErrorAsCB,
+  ]);
 
   if (excluded) {
     return null;
@@ -203,7 +218,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   const result = (
     <>
       {/* Changes for bhavyata textfield label */}
-      <InputAdornment
+      {/* <InputAdornment
         position="start"
         sx={{
           alignItems: "baseline",
@@ -215,9 +230,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
         }}
       >
         {StartIcon ? <StartIcon /> : null}
-        {/* <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p> */}
+        <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p>
         {EndIcon ? <EndIcon /> : null}
-      </InputAdornment>
+      </InputAdornment> */}
       <TextField
         {...others}
         key={fieldKey}
@@ -251,6 +266,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
             ) : null}
           </div>
         }
+        sx={{
+          "& .MuiInputBase-root": {
+            ...textFieldStyle,
+          },
+        }}
         FormHelperTextProps={{
           //@ts-ignore
           component: "div",

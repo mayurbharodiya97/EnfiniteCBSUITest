@@ -9,6 +9,7 @@ import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import { utilFunction } from "components/utils";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 export const TipsWrapper = ({
   open,
@@ -49,6 +50,7 @@ export const TipsWrapper = ({
       closeDialog();
     },
   });
+  console.log("mutation", mainData);
   const onPopupYes = (rows) => {
     mutation.mutate(rows);
   };
@@ -71,91 +73,96 @@ export const TipsWrapper = ({
     };
 
     let oldData = {
-      IS_VIEW_NEXT: mainData?.IS_VIEW_NEXT ? "Y" : "N" ?? "",
+      IS_VIEW_NEXT: mainData?.IS_VIEW_NEXT ?? "",
     };
 
     let upd: any = utilFunction.transformDetailsData(newData, oldData ?? {});
-
-    if (upd?._UPDATEDCOLUMNS?.length > 0) {
-      isErrorFuncRef.current = {
-        data: {
-          ...newData,
-          ...upd,
-          TRAN_CD: mainData?.TRAN_CD ?? "",
-          COMP_CD: authState?.companyID ?? "",
-          BRANCH_CD: authState?.user?.branchCode ?? "",
-          SR_CD: "1",
-          _isNewRow: formView === "view" ? true : false,
-        },
-        displayData,
-        endSubmit,
-        setFieldError,
-      };
-      setIsOpenSave(true);
-    }
+    console.log("upd", upd);
+    // if (upd?._UPDATEDCOLUMNS?.length > 0) {
+    isErrorFuncRef.current = {
+      data: {
+        ...newData,
+        ...upd,
+        TRAN_CD: mainData?.TRAN_CD ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        SR_CD: "1",
+        _isNewRow: false,
+      },
+      displayData,
+      endSubmit,
+      setFieldError,
+    };
+    setIsOpenSave(true);
+    // }
   };
   return (
     <>
-      {/* {isLoading || isFetching ? (
+      {mutation.isLoading ? (
         <LoaderPaperComponent />
-      ) : ( */}
-      <Dialog
-        fullWidth
-        maxWidth="sm"
-        open={true}
-        PaperProps={{
-          style: {
-            width: "100%",
-            height: "50%",
-          },
-        }}
-        key="filepreviewDialog"
-      >
-        <FormWrapper
-          key={`TipsListMetadata`}
-          metaData={TipsListMetadata}
-          onSubmitHandler={onSubmitHandler}
-          initialValues={mainData as InitialValuesType}
-          // hideHeader={true}
-          formStyle={{
-            background: "white",
+      ) : (
+        <Dialog
+          fullWidth
+          maxWidth="sm"
+          open={true}
+          PaperProps={{
+            style: {
+              width: "100%",
+              height: "50%",
+            },
           }}
+          key="filepreviewDialog"
         >
-          {({ isSubmitting, handleSubmit }) => (
-            <>
-              <Button
-                onClick={(event) => {
-                  handleSubmit(event, "Save");
-                }}
-                disabled={isSubmitting}
-                //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                color={"primary"}
-              >
-                Save
-              </Button>
-              <Button
-                onClick={closeDialog}
-                color={"primary"}
-                disabled={isSubmitting}
-              >
-                Close
-              </Button>
-            </>
-          )}
-        </FormWrapper>
-        {isOpenSave ? (
-          <PopupMessageAPIWrapper
-            MessageTitle="Confirmation"
-            Message="Do you want to save this Request?"
-            onActionYes={(rowVal) => onPopupYes(rowVal)}
-            onActionNo={() => onActionCancel()}
-            rows={isErrorFuncRef.current?.data}
-            open={isOpenSave}
-            loading={mutation.isLoading}
-          />
-        ) : null}
-      </Dialog>
-      {/* )} */}
+          <FormWrapper
+            key={`TipsListMetadata`}
+            metaData={TipsListMetadata}
+            onSubmitHandler={onSubmitHandler}
+            initialValues={
+              {
+                ...mainData,
+                IS_VIEW_NEXT: mainData?.IS_VIEW_NEXT === "Y" ? true : false,
+              } as InitialValuesType
+            }
+            // hideHeader={true}
+            formStyle={{
+              background: "white",
+            }}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                <Button
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  disabled={isSubmitting}
+                  //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                  color={"primary"}
+                >
+                  Save
+                </Button>
+                <Button
+                  onClick={closeDialog}
+                  color={"primary"}
+                  disabled={isSubmitting}
+                >
+                  Close
+                </Button>
+              </>
+            )}
+          </FormWrapper>
+          {isOpenSave ? (
+            <PopupMessageAPIWrapper
+              MessageTitle="Confirmation"
+              Message="Do you want to save this Request?"
+              onActionYes={(rowVal) => onPopupYes(rowVal)}
+              onActionNo={() => onActionCancel()}
+              rows={isErrorFuncRef.current?.data}
+              open={isOpenSave}
+              loading={mutation.isLoading}
+            />
+          ) : null}
+        </Dialog>
+      )}
     </>
   );
 };

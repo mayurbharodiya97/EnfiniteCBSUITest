@@ -50,6 +50,7 @@ export interface FieldMetaData<T> {
     | string;
   isReadOnly?: typeof shouldExcludeFnType | CustomRuleType | Boolean | string;
   onFormButtonClickHandel?: any;
+  onFormDataChange?: any;
   postValidationSetCrossFieldValues?: any;
   acctFieldPara?: string;
   FormatProps?: any;
@@ -60,6 +61,8 @@ export interface FieldMetaData<T> {
   format?: string;
   options?: any;
   _optionsKey?: string;
+  defaultBranchTrue?: boolean;
+  defaultAcctTypeTrue?: boolean;
 }
 
 export type Omitted<T> = Omit<T, "fieldKey" | "enableGrid">;

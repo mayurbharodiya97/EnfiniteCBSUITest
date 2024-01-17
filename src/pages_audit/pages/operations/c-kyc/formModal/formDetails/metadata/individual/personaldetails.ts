@@ -365,12 +365,12 @@ export const personal_detail_prefix_data = {
             dividerText: "FatherName",
             name: "fatherHeaderDivider_ignoreField",
             label: "fatherHeaderDivider",
-            // dependentFields: ["FATHER_SPOUSE"],
-            // setValueOnDependentFieldsChange: (dependentFields) => {
-            //     console.log("setvalue divider", dependentFields?.FATHER_SPOUSE?.optionData[0]?.label)
-            //     let dividerText = dependentFields?.FATHER_SPOUSE?.optionData[0]?.label ? `${dependentFields?.FATHER_SPOUSE?.optionData[0]?.label} Name` : null
-            //     return dividerText;
-            // },
+            dependentFields: ["FATHER_SPOUSE"],
+            setValueOnDependentFieldsChange: (dependentFields) => {
+                console.log("setvalue divider", dependentFields?.FATHER_SPOUSE?.optionData[0]?.label)
+                let dividerText = dependentFields?.FATHER_SPOUSE?.optionData[0]?.label ? `${dependentFields?.FATHER_SPOUSE?.optionData[0]?.label} Name` : null
+                return dividerText;
+            },
         },
         {
             render: {
@@ -575,11 +575,17 @@ export const personal_other_detail_meta_data = {
     fields: [
         {
             render: {
-                componentType: "dob",
+                componentType: "datePicker",
             },
             name: "BIRTH_DT",
             label: "DateOfBirth",
             required: true,
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                ],
+            },
             // placeholder: "",
             // type: "datePicker",
             // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},

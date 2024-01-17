@@ -1,7 +1,5 @@
 import { DefaultErrorObject } from "components/utils";
-import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
-import { GeneralAPI } from "registry/fns/functions";
 
 export const securityDropDownListType = async (
   USER_NAME,
@@ -148,13 +146,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                   authState,
                   dependentValue
                 ) => {
-                  console.log(
-                    "<<<postValidationSe88888888888",
-                    field,
-                    __,
-                    authState,
-                    dependentValue
-                  );
                   if (field?.value) {
                     let ApiReq = {
                       // COMP_CD: authState?.companyID,
@@ -182,10 +173,37 @@ export const LimitSecurityData = async (apiReqPara) => {
                       SCREEN_REF: "ETRN/046",
                       PANEL_FLAG: "Y",
                     };
-
+                    //
                     let postData = await getFDdetailBRD(ApiReq);
-
-                    console.log("<<<postValidation2222222222222", postData);
+                    const messages = [
+                      "MESSAGE1",
+                      "MESSAGE2",
+                      "MESSAGE3",
+                      "MESSAGE4",
+                      "RESTRICTION",
+                    ]
+                      .map((key) => postData[0][key])
+                      .filter((message) => message !== "");
+                    const result = messages.join(", ");
+                    if (result) {
+                      return {
+                        MESSAGES: {
+                          value: result ?? "",
+                        },
+                      };
+                    } else {
+                      return {
+                        SECURITY_VALUE: {
+                          value: postData?.[0]?.SECURITY_VALUE,
+                        },
+                        EXPIRY_DT: {
+                          value: postData?.[0]?.EXPIRY_DT,
+                        },
+                        MESSAGES: {
+                          value: "",
+                        },
+                      };
+                    }
                   }
                 },
                 runPostValidationHookAlways: true,
@@ -223,8 +241,8 @@ export const LimitSecurityData = async (apiReqPara) => {
 
                       COMP_CD: authState?.companyID,
                       BRANCH_CD: "099 ",
-                      ACCT_TYPE: "0002",
-                      ACCT_CD: "000009",
+                      ACCT_TYPE: "0005",
+                      ACCT_CD: "000048   ",
                       FD_NO: "1000001033",
                       SECURITY_TYPE: "BFD",
                       SECURITY_CD: "12",
@@ -234,15 +252,29 @@ export const LimitSecurityData = async (apiReqPara) => {
                     };
                     let postData = await getFDdetailBFD(ApiReq);
 
-                    console.log("<<<postValidation7777777777777", postData);
-                    return {
-                      SECURITY_VALUE: {
-                        value: postData?.[0]?.SECURITY_VALUE,
-                      },
-                      EXPIRY_DT: {
-                        value: postData?.[0]?.EXPIRY_DT,
-                      },
-                    };
+                    const messages = [
+                      "MESSAGE1",
+                      "MESSAGE2",
+                      "MESSAGE3",
+                      "MESSAGE4",
+                      "RESTRICTION",
+                    ]
+                      .map((key) => postData[0][key])
+                      .filter((message) => message !== "");
+                    const result = messages.join(", ");
+                    if (result) {
+                      return {
+                        MESSAGES: {
+                          value: result ?? "",
+                        },
+                      };
+                    } else {
+                      return {
+                        MESSAGES: {
+                          value: "",
+                        },
+                      };
+                    }
                   }
                 },
                 runPostValidationHookAlways: true,
@@ -343,17 +375,17 @@ export const getFDdetailBFD = async (apiReqPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const getLimitNSCdetail = async () => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITNSCDTLBTN", {
       // ...apiReqPara,
       COMP_CD: "132 ",
       BRANCH_CD: "099 ",
-      ACCT_TYPE: "020 ",
-      ACCT_CD: "000001   ",
+      ACCT_TYPE: "301 ",
+      ACCT_CD: "000010   ",
     });
   if (status === "0") {
-    console.log("<<<datahvdjhjh", data);
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

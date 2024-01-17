@@ -1,9 +1,9 @@
 import { RecoilRoot } from "recoil";
 import { QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query-devtools";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { SnackbarProvider } from "notistack";
 import { queryClient } from "cache";
-import "registry/fns/registerFnsNetBanking";
+import "registry/fns/registerFnsCbsEnfinity";
 // import "components/tableCellComponents";
 import IndexPage from "pages_audit";
 import { theme } from "./theme";
@@ -28,8 +28,8 @@ export const App = () => {
               <IndexPage />
             </SnackbarProvider>
             {/* {process.env.NODE_ENV !== "production" ? (
-                <ReactQueryDevtools />
-              ) : null} */}
+              <ReactQueryDevtools />
+            ) : null} */}
           </QueryClientProvider>
         </StyledEngineProvider>
       </ThemeProvider>

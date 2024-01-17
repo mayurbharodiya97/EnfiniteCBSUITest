@@ -92,6 +92,8 @@ export interface UseFieldHookProps {
   runPostValidationHookAlways?: boolean;
   runValidationOnDependentFieldsChange?: boolean;
   skipValueUpdateFromCrossFieldWhenReadOnly?: boolean;
+  onFormDataChange?: any;
+  runExternalFunction?: boolean;
   __EDIT__?: any;
 }
 
@@ -101,6 +103,8 @@ export interface UseFieldArrayHookProps {
   dependentFields?: string[] | string;
   shouldExclude?: typeof shouldExcludeFnType;
   getFixedRowsCount?: typeof getFixedRowsCountFnType;
+  onFormDataChange?: any;
+  runExternalFunction?: Boolean;
 }
 
 export interface SubscritionFieldsType {

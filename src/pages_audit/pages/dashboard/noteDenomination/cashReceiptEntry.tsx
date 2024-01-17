@@ -31,6 +31,7 @@ import {
   PopupRequestWrapper,
 } from "components/custom/popupMessage";
 import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext } from "pages_audit/auth";
 import { useStyles, StyledTableCell } from "./style";
 import { TextField } from "components/styledComponent";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
@@ -47,7 +48,7 @@ import { UpdateRequestDataVisibleColumn } from "components/utils";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
 import { Button } from "reactstrap";
 import { getAcctInqStatement } from "pages_audit/acct_Inquiry/api";
-import AccDetails from "pages_audit/pages/DailyTransaction/AccountDetails/AccDetails";
+import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
 import { Alert } from "components/common/alert";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
@@ -82,7 +83,7 @@ const CashReceiptEntry = () => {
   const [formData, setFormData] = useState<any>({});
   const [viewTRN, setViewTRN] = useState<any>(false);
   const [manageOperator, setManageOperator] = useState<any>(false);
-  const { tempStore, setTempStore } = useContext(AuthContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   // useEffect(() => {
   //   props?.map((item) => {
   //     if (item?.textField === "Y") {
@@ -443,9 +444,10 @@ const CashReceiptEntry = () => {
         ACCT_TYPE: thirdReferData?.columnVal?.ACCOUNT_TYPE ?? "",
         ACCT_CD: thirdReferData?.columnVal?.ACCOUNT_NUMBER ?? "",
         A_ASON_DT: format(
-          isValidDate(authState?.authState?.workingDate)
-            ? authState?.authState?.workingDate
-            : new Date(),
+          // isValidDate(authState?.authState?.workingDate)
+          //   ? authState?.authState?.workingDate
+          //   :
+          new Date(),
           "dd/MMM/yyyy"
         ),
         authState: authState ?? {},
@@ -540,9 +542,7 @@ const CashReceiptEntry = () => {
               }}
             >
               {`${DenominationScreenMetaData?.gridConfig?.title} -
-              ${authState?.authState?.user?.name} - (${
-                authState?.authState?.roleName
-              }) - ${getCurrencySymbol(dynamicAmountSymbol)} 20000`}
+              ${authState?.authState?.user?.name} - (${authState?.authState?.roleName})`}
             </Typography>
             <Box display={"flex"}>
               {/* <GradientButton sx={{ height: "2.5rem" }}>Save </GradientButton>*/}

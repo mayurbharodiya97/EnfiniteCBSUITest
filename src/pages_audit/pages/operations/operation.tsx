@@ -6,6 +6,7 @@ import { DetailMastersData } from "../../../components/formcomponent/detailMaste
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import SingleDeno from "../dashboard/noteDenomination/singleDeno";
+import { CtsOutwardMenu } from "./ctsOutwardClearing/outwardMenu";
 
 // import { ChequebookTab } from "./chequeBookTab/chequebookTab";
 // import { Ckyc } from "./c-kyc/ckyc";
@@ -32,7 +33,14 @@ export const OperationsMenu = () => (
     <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="teller/*" element={<CashReceiptEntry />} />
-    <Route path="confirm-ckyc/*" element={<CkycConfirm />} />
+    <Route
+      path="confirm-ckyc/*"
+      element={
+        <CkycProvider>
+          <CkycConfirm />
+        </CkycProvider>
+      }
+    />
     <Route path="account-mst/*" element={<AcctMST />} />
     <Route path="single-deno/*" element={<SingleDeno />} />
     {/* <Route
@@ -58,14 +66,11 @@ export const OperationsMenu = () => (
     <Route
       path="ckyc/*"
       element={
-        // <CkycProvider>
+        <CkycProvider>
           <Ckyc />
-        // </CkycProvider>
+        </CkycProvider>
       }
     />
-    <Route
-      path="cts-outward-clearing/*"
-      element={<CtsOutwardClearing zoneTranType="S" />}
-    />
+    <Route path="cts-outward-clearing/*" element={<CtsOutwardMenu />} />
   </Routes>
 );

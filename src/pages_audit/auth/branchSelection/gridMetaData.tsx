@@ -60,7 +60,7 @@ export const BranchSelectionGridMetaData: GridMetaDataType = {
       maxWidth: 420,
     },
     {
-      accessor: "STATUS",
+      accessor: "DISP_STATUS",
       columnName: "Status",
       sequence: 3,
       alignment: "left",

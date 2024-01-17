@@ -8,7 +8,6 @@ import { SubmitFnType } from "packages/form";
 export const GetApiViewDetail = () => {
   const { state: data }: any = useLocation();
   const navigate = useNavigate();
-  console.log("<<<stst", data);
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -16,7 +15,6 @@ export const GetApiViewDetail = () => {
     setFieldError,
     value
   ) => {
-    console.log("<<<sun", data);
     navigate("/cbsenfinity/configuration/get-api-config");
     //@ts-ignore
     endSubmit(true);

@@ -188,13 +188,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
         return false;
       },
     },
-    schemaValidation: {
-      type: "string",
-      rules: [
-        { name: "typeError", params: ["ThisFieldisrequired"] },
-        { name: "required", params: ["ThisFieldisrequired"] },
-      ],
-    },
+    // schemaValidation: {
+    //   type: "string",
+    //   rules: [
+    //     { name: "typeError", params: ["ThisFieldisrequired"] },
+    //     { name: "required", params: ["ThisFieldisrequired"] },
+    //   ],
+    // },
   },
   MonthlyEmiPayCurrency: {
     render: {
@@ -441,11 +441,11 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       ],
     },
     GridProps: {
-      xs: 12,
-      md: 4,
-      sm: 4,
-      lg: 4,
-      xl: 4,
+      xs: 3,
+      md: 3,
+      sm: 3,
+      lg: 3,
+      xl: 3,
     },
     FormatProps: {
       // format: "###########",
@@ -512,7 +512,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
 
   reportAccountType: {
     render: {
-      componentType: "select",
+      componentType: "autocomplete",
     },
     name: "RPT_ACCT_TYPE",
     label: "Report Account Type",
@@ -523,12 +523,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     options: GeneralAPI.getReportAccountType,
     _optionsKey: "getReportAccountType",
+    defaultAcctTypeTrue: true,
     GridProps: {
-      xs: 12,
-      md: 12,
-      sm: 12,
-      lg: 12,
-      xl: 12,
+      xs: 3,
+      md: 3,
+      sm: 3,
+      lg: 3,
+      xl: 3,
     },
   },
 
@@ -573,15 +574,19 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     name: "BRANCH_CD",
     label: "Branch Code",
+    defaultValue: "",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
     GridProps: {
-      xs: 12,
-      md: 4,
-      sm: 4,
-      lg: 4,
-      xl: 4,
+      xs: 3,
+      md: 3,
+      sm: 3,
+      lg: 3,
+      xl: 3,
     },
+
+    // NOTE : this props only for set default brranch and only use in branchCode component do not use this key any other place or any component
+    defaultBranchTrue: true,
   },
 
   accountType: {
@@ -597,12 +602,14 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     label: "Account Type",
     options: GeneralAPI.getAccountTypeList,
     _optionsKey: "getAccountTypeList",
+    defaultAcctTypeTrue: true,
+    defaultValue: "",
     GridProps: {
-      xs: 12,
-      md: 4,
-      sm: 4,
-      lg: 4,
-      xl: 4,
+      xs: 3,
+      md: 3,
+      sm: 3,
+      lg: 3,
+      xl: 3,
     },
   },
 
@@ -679,5 +686,11 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     label: "AccountType",
     // options: GeneralAPI.getAccountTypeList,
     _optionsKey: "",
+  },
+  Remark: {
+    render: {
+      componentType: "textField",
+    },
+    maxLength: 100,
   },
 };

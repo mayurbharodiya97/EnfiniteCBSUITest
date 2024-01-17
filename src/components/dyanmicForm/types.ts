@@ -254,6 +254,7 @@ export interface FormWrapperProps {
   controlsAtBottom?: boolean;
   formState?: any;
   hideHeader?: boolean;
+  onFormDataChange?: any;
 }
 
 export interface FormProps {

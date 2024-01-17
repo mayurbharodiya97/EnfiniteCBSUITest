@@ -380,6 +380,7 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
             formFieldRegistryAtom(formContext.formName)
           );
           if (loadableFields.state === "hasValue") {
+            // console.log("contentntnttt", loadableFields.contents)
             const fields = loadableFields.contents;
             const fieldsAggrigator: FormFieldAtomType[] = [];
             let hasError = false;
@@ -470,15 +471,8 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
               hasError = false;
             }
             // if(hasError) return hasError;
-            if(hasError) {
-              onSubmit(
-                {},
-                {},
-                endSubmit,
-                setFieldErrors,
-                actionFlag,
-                hasError
-              );
+            if (hasError) {
+              onSubmit({}, {}, endSubmit, setFieldErrors, actionFlag, hasError);
             }
             if (!hasError || !isValidate) {
               if (typeof onSubmit === "function") {

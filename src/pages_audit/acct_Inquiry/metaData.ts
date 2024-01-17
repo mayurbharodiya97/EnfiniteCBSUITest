@@ -1,8 +1,5 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 import { getPassBookTemplate } from "./api";
-import { components } from "components/report";
-import { API } from "pages_audit/common";
-import { justForTestings } from "pages_audit/pages/dashboard/noteDenomination/api";
 
 export const AccountInquiryMetadata = {
   form: {
@@ -216,12 +213,42 @@ export const AccountInquiryMetadata = {
     },
     // {
     //   render: {
-    //     componentType: "reportAccType",
+    //     componentType: "accountCode",
     //   },
-    //   options: getBranchCodeList,
-    //   _optionsKey: "justForTestings",
-    //   name: "TEST",
-    //   label: "test",
+    //   // acctTypeCustomAPI: GeneralAPI.getBranchCodeList,
+    //   // branchCodeCustomAPI: GeneralAPI.getAccountTypeList,
+    //   // branchCode_optionsKey: "getAccountTypeList",
+    //   // acctType_optionsKey: "getBranchCodeList",
+    //   // options: getBranchCodeList,
+    //   // _optionsKey: "justForTestings",
+    //   // name: "TEST",
+    //   // label: "test",
+    // },
+    // {
+    //   render: {
+    //     componentType: "accountType",
+    //   },
+    //   // acctTypeCustomAPI: GeneralAPI.getBranchCodeList,
+    //   // branchCodeCustomAPI: GeneralAPI.getAccountTypeList,
+    //   // branchCode_optionsKey: "getAccountTypeList",
+    //   // acctType_optionsKey: "getBranchCodeList",
+    //   // options: getBranchCodeList,
+    //   // _optionsKey: "justForTestings",
+    //   // name: "TEST",
+    //   // label: "test",
+    // },
+    // {
+    //   render: {
+    //     componentType: "branchCode",
+    //   },
+    //   // acctTypeCustomAPI: GeneralAPI.getBranchCodeList,
+    //   // branchCodeCustomAPI: GeneralAPI.getAccountTypeList,
+    //   // branchCode_optionsKey: "getAccountTypeList",
+    //   // acctType_optionsKey: "getBranchCodeList",
+    //   // options: getBranchCodeList,
+    //   // _optionsKey: "justForTestings",
+    //   // name: "TEST",
+    //   // label: "test",
     // },
   ],
 };
@@ -307,8 +334,9 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       accessor: "WITHDRAW_BAL",
       columnName: "Withdraw Balance",
       sequence: 7,
+      color: "red",
       alignment: "left",
-      componentType: "default",
+      componentType: "currency",
       width: 140,
       minWidth: 140,
       maxWidth: 180,
@@ -330,7 +358,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "center",
       componentType: "date",
-      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      dateFormat: "dd/MM/yyyy",
       isReadOnly: true,
       width: 140,
       minWidth: 140,
@@ -353,7 +381,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
       sequence: 10,
       alignment: "left",
       componentType: "date",
-      dateFormat: "dd/MM/yyyy HH:mm:ss",
+      dateFormat: "dd/MM/yyyy",
       isReadOnly: true,
       width: 140,
       minWidth: 140,
@@ -479,6 +507,14 @@ export const PassbookStatement: any = {
       // postValidationSetCrossFieldValues: "testingFn",
       name: "ACCT_CD",
     },
+    // {
+    //   render: {
+    //     componentType: "reportAccountType",
+    //   },
+    //   // acctFieldPara: "1",
+    //   // postValidationSetCrossFieldValues: "testingFn",
+    //   name: "ACCT_CD",
+    // },
     {
       render: {
         componentType: "textField",
@@ -594,6 +630,16 @@ export const PassbookStatement: any = {
     //   // },
     //   enableNumWords: false,
     //   // StartAdornment: "BDT",
+    // },
+
+    // {
+    //   render: {
+    //     componentType: "amountField",
+    //   },
+    //   // options: getBranchCodeList,
+    //   // _optionsKey: "justForTestings",
+    //   // name: "TEST",
+    //   // label: "test",
     // },
   ],
 };

@@ -152,7 +152,8 @@ export const SelectRenderOnly: FC<MySelectProps> = ({
           loading || loadingOptions ? (
             <InputAdornment position="end">
               <CircularProgress
-                color="primary"
+                color="secondary"
+                size={24}
                 variant="indeterminate"
                 {...CircularProgressProps}
               />

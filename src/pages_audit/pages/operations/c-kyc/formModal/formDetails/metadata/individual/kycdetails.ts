@@ -86,10 +86,11 @@ export const kyc_proof_of_identity_meta_data = {
                   { name: "required", params: ["ThisFieldisrequired"] },
                   {
                     name: "pancard",
-                    params: ["Please enter valid Pan Number"],
+                    params: ["Please Enter Valid PAN Number"],
                   },
                 ],
             },
+            validate: (columnValue, allField, flag) => API.validatePAN(columnValue),
             maxLength: 10,
         },
         {
@@ -107,12 +108,10 @@ export const kyc_proof_of_identity_meta_data = {
                 type: "string",
                 rules: [
                   { name: "required", params: ["ThisFieldisrequired"] },
-                  {
-                    name: "aadhar",
-                    params: ["Please enter valid Aadhar Number"],
-                  },
                 ],
-              },
+            },
+            validate: (columnValue, allField, flag) => API.validateUniqueId(columnValue),
+            // disableCaching: true,
         },
         {
             render: {
@@ -178,6 +177,7 @@ export const kyc_proof_of_identity_meta_data = {
           placeholder: "",
           maxLength: 20,
           type: "text",
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -189,6 +189,7 @@ export const kyc_proof_of_identity_meta_data = {
           placeholder: "",
           maxLength: 20,
           type: "text",
+          validate: (columnValue, allField, flag) => API.validateGSTIN(columnValue),
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
@@ -447,16 +448,7 @@ export const kyc_proof_of_address_meta_data = {
                 { name: "required", params: ["ThisFieldisrequired"] },
               ],
           },
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
@@ -469,16 +461,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line2",
           placeholder: "",
           maxLength: 50,
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
@@ -490,16 +473,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line3",
           placeholder: "",
           maxLength: 50,
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
@@ -740,14 +714,8 @@ export const kyc_proof_of_address_meta_data = {
           name: "OTHER_POA",
           label: "OthersPoA",
           placeholder: "",
-          maxLength: 50,
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z]+$/;
-            if(columnValue.value && !regex.test(columnValue.value)) {
-                return "Please Enter Character Value."
-            }
-            return ""
-          },
+          maxLength: 80,
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
@@ -834,6 +802,15 @@ export const kyc_proof_of_address_meta_data = {
           label: "LocalAddressType",
           placeholder: "",
           type: "text",
+          dependentFields: ["SAME_AS_PER", "ADDRESS_TYPE"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            // console.log("fewiwuehfiwuefwef", dependentFields)
+            if(dependentFields.SAME_AS_PER && Boolean(dependentFields.SAME_AS_PER.value)) {
+                const ADD_TYPE = dependentFields.ADDRESS_TYPE.value
+                return ADD_TYPE;
+            }
+            return "";
+          },
           GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
           options: () => API.getPMISCData("ADDRESS_TYPE"),
           _optionsKey: "currentAddType",
@@ -852,13 +829,13 @@ export const kyc_proof_of_address_meta_data = {
               { name: "required", params: ["ThisFieldisrequired"] },
             ],
           },         
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
+          dependentFields: ["SAME_AS_PER", "ADD1"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            // console.log("fewiwuehfiwuefwef", dependentFields)
+            if(dependentFields.SAME_AS_PER && Boolean(dependentFields.SAME_AS_PER.value)) {
+                const ADD_TYPE = dependentFields.ADDRESS_TYPE.value
+                return ADD_TYPE;
             }
             return "";
           },
@@ -874,16 +851,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line2",
           placeholder: "",
           maxLength: 50,
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
@@ -895,16 +863,7 @@ export const kyc_proof_of_address_meta_data = {
           label: "Line3",
           placeholder: "",
           maxLength: 50,
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
@@ -1188,102 +1147,8 @@ export const kyc_proof_of_address_meta_data = {
         render: {
             componentType: "numberFormat",
         },
-        name: "STD_2",
-        label: "PhoneR",
-        placeholder: "",
-        maxLength: 5,
-        FormatProps: {
-            isAllowed: (values) => {
-              if (values?.value?.length > 5) {
-                return false;
-              }
-              return true;
-            },
-        },
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
-    },
-    {
-        render: {
-            componentType: "numberFormat",
-        },
-        name: "CONTACT2",
-        label: "",
-        placeholder: "",
-        maxLength: 20,
-        FormatProps: {
-            isAllowed: (values) => {
-              if (values?.value?.length > 20) {
-                return false;
-              }
-              return true;
-            },
-        },
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
-    },
-    {
-        render: {
-            componentType: "spacer"
-        },
-        GridProps: {
-            xs: 0.2
-        }
-    },
-    {
-        render: {
-            componentType: "numberFormat",
-        },
-        name: "STD_3",
-        label: "MobileNo",
-        required: true,
-        placeholder: "",
-        maxLength: 3,
-        FormatProps: {
-            isAllowed: (values) => {
-              if (values?.value?.length > 3) {
-                return false;
-              }
-              return true;
-            },
-        },
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
-    },
-    {
-        render: {
-            componentType: "numberFormat",
-        },
-        name: "CONTACT3",
-        label: "",
-        required: true,
-        placeholder: "",
-        maxLength: 20,
-        FormatProps: {
-            isAllowed: (values) => {
-              if (values?.value?.length > 20) {
-                return false;
-              }
-              return true;
-            },
-        },
-        type: "text",
-        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
-    },
-    {
-        render: {
-            componentType: "spacer"
-        },
-        GridProps: {
-            xs: 0.2
-        }
-    },
-    {
-        render: {
-            componentType: "numberFormat",
-        },
         name: "STD_4",
-        label: "Fax",
+        label: "PhoneR",
         placeholder: "",
         maxLength: 5,
         FormatProps: {
@@ -1318,6 +1183,114 @@ export const kyc_proof_of_address_meta_data = {
     },
     {
         render: {
+            componentType: "spacer"
+        },
+        GridProps: {
+            xs: 0.2
+        }
+    },
+    {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "STD_2",
+        label: "MobileNo",
+        required: true,
+        schemaValidation: {
+            type: "string",
+            rules: [
+            { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
+        placeholder: "",
+        maxLength: 3,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 3) {
+                return false;
+              }
+              return true;
+            },
+        },
+        type: "text",
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+    },
+    {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "CONTACT2",
+        schemaValidation: {
+            type: "string",
+            rules: [
+            { name: "required", params: ["ThisFieldisrequired"] },
+            ],
+        },
+        label: "",
+        required: true,
+        placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
+        dependentFields: ["STD_2"],
+        type: "text",
+        validate: (columnValue, allField, flag) => API.validateMobileNo(columnValue, allField, flag),
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
+    },
+    {
+        render: {
+            componentType: "spacer"
+        },
+        GridProps: {
+            xs: 0.2
+        }
+    },
+    {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "STD_3",
+        label: "Fax",
+        placeholder: "",
+        maxLength: 5,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 5) {
+                return false;
+              }
+              return true;
+            },
+        },
+        type: "text",
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+    },
+    {
+        render: {
+            componentType: "numberFormat",
+        },
+        name: "CONTACT3",
+        label: "",
+        placeholder: "",
+        maxLength: 20,
+        FormatProps: {
+            isAllowed: (values) => {
+              if (values?.value?.length > 20) {
+                return false;
+              }
+              return true;
+            },
+        },
+        type: "text",
+        GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
+    },
+    {
+        render: {
             componentType: "textField",
         },
         name: "E_MAIL_ID",
@@ -1331,13 +1304,7 @@ export const kyc_proof_of_address_meta_data = {
             ],
         },
         maxLength: 60,
-        validate: (columnValue, allField, flag) => {
-            let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(columnValue.value && !emailRegex.test(columnValue.value)) {
-                return "Please Enter Valid Email ID."
-            }
-            return "";
-        },
+        validate: (columnValue, allField, flag) => API.validateEmailID(columnValue),        
         type: "text",
         GridProps: {xs:12, sm:4, md: 4, lg: 2.4, xl:3},
     },
@@ -1469,16 +1436,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           maxLength: 50,
           type: "text",
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
@@ -1490,16 +1448,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           maxLength: 50,
           type: "text",
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
@@ -1511,16 +1460,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           maxLength: 50,
           type: "text",
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
         {
@@ -1830,16 +1770,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             ],
           },         
           maxLength: 50,
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           placeholder: "",
           type: "text",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
@@ -1853,16 +1784,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           type: "text",
           maxLength: 50,
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
@@ -1874,16 +1796,7 @@ export const kyc_legal_proof_of_add_meta_data = {
           placeholder: "",
           type: "text",
           maxLength: 50,
-          validate: (columnValue, allField, flag) => {
-            let regex = /^[a-zA-Z0-9 ]*$/;
-                // special-character not allowed
-            if(columnValue.value) {
-                if(!regex.test(columnValue.value)) {
-                    return "Please Enter Valid Format";
-                }
-            }
-            return "";
-          },
+          validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           GridProps: {xs:12, sm:5, md: 4, lg: 4.8, xl: 4},
       },
       {

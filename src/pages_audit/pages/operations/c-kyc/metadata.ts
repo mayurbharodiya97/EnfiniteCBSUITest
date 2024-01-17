@@ -253,15 +253,15 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 180,
     },
-    {
-      columnName: "Remarks",
-      componentType: "buttonRowCell",
-      accessor: "REMARKS",
-      sequence: 10,
-      buttonLabel: "Remarks",
-      // isVisible: false,
-      // __EDIT__: { isVisible: true },
-    },
+    // {
+    //   columnName: "Remarks",
+    //   componentType: "buttonRowCell",
+    //   accessor: "REMARKS",
+    //   sequence: 10,
+    //   buttonLabel: "Remarks",
+    //   // isVisible: false,
+    //   // __EDIT__: { isVisible: true },
+    // },
   ],
 };
 export const ckyc_pending_req_meta_data: GridMetaDataType = {
@@ -278,7 +278,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     disableSorting: false,
     hideHeader: false,
     disableGroupBy: true,
-    enablePagination: false,
+    enablePagination: true,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
