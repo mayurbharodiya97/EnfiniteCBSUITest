@@ -98,21 +98,6 @@ export const getTRXList = async (reqData) => {
   }
 };
 
-// export const getTRN001List = async (reqData) => {
-//   //for table viewAll
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
-//       COMP_CD: reqData?.COMP_CD,
-//       BRANCH_CD: reqData?.BRANCH_CD,
-//     });
-//   if (status === "0") {
-//     let responseData = data;
-
-//     return responseData;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
 export const getTRN001List = async (reqData) => {
   //for table
   const { data, status, message, messageDetails } =
@@ -184,6 +169,7 @@ export const addDailyTrxScroll = async (reqData) => {
 };
 
 //validations
+
 export const getChqValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
@@ -216,6 +202,22 @@ export const getAccNoValidation = async (reqData) => {
     let responseData = data;
 
     return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+//others
+export const getTabsByParentType = async (reqData) => {
+  console.log(reqData, "reqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
+      PARENT_TYPE: reqData,
+    });
+  if (status === "0") {
+    let responseData = data;
+    console.log(data, "res data");
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

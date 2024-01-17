@@ -24,8 +24,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 //Logic
+import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
+import { isValidDate } from "components/utils/utilFunctions/function";
 
 import React, {
   useEffect,
@@ -46,6 +48,7 @@ import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 
 export const Trn001 = () => {
+  const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   var defBranch = {
@@ -92,6 +95,7 @@ export const Trn001 = () => {
   const [resetDialog, setResetDialog] = useState(false);
   const [viewOnly, setViewOnly] = useState(false);
   const [saveDialog, setSaveDialog] = useState(false);
+  const [tabsData, setTabsData] = useState<any>([]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -209,9 +213,7 @@ export const Trn001 = () => {
     },
     onError: (error) => {
       setLoading(false);
-      enqueueSnackbar("Error Fetching Account Info", {
-        variant: "error",
-      });
+      setTempStore({ ...tempStore, accInfo: {} });
     },
   });
 
@@ -262,6 +264,17 @@ export const Trn001 = () => {
       });
     },
   });
+  const getTabsByParentType = useMutation(API.getTabsByParentType, {
+    onSuccess: (data) => {
+      console.log(data, "datadata");
+      setTabsData(data);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
 
   //TABLE FNs ===============================================================
   const handleBranch = (e, value, i) => {
@@ -277,6 +290,7 @@ export const Trn001 = () => {
     obj[i].accType = value;
     setRows(obj);
     handleGetAccInfo(i);
+    getTabsByParentType.mutate(value?.info?.PARENT_TYPE);
   };
 
   const handleAccNo = (e, i) => {
@@ -296,11 +310,6 @@ export const Trn001 = () => {
     obj[i].accNo = abc;
     handleGetAccInfo(i);
     setRows(obj);
-
-    obj[i].accNo &&
-      obj[i].accType?.value &&
-      obj[i].branch?.value &&
-      getAccNoValidation.mutate(obj[i]);
   };
 
   const handleTrx = (e, value, i) => {
@@ -541,6 +550,7 @@ export const Trn001 = () => {
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
       getAccInfo.mutate(data);
+      getAccNoValidation.mutate(rows[i]);
     }
   };
 
@@ -594,9 +604,13 @@ export const Trn001 = () => {
     setViewOnly(true);
     setUpdatedRows([]);
   };
+
+  const diagSuccess = (fn) => {
+    return fn;
+  };
   return (
     <>
-      <DailyTransTabs heading="(Maker) (TRN/001)" />
+      <DailyTransTabs heading="(Maker) (TRN/001)" tabsData={tabsData} />
 
       <Card
         sx={{
@@ -637,19 +651,19 @@ export const Trn001 = () => {
 
               <TableHead>
                 <TableRow id="topHead">
-                  <TableCell id="head">Branch</TableCell>
-                  <TableCell id="head">A/C Type</TableCell>
-                  <TableCell id="head">A/C No</TableCell>
-                  <TableCell id="head">TRX</TableCell>
+                  <TableCell id="head">{t("Branch")}</TableCell>
+                  <TableCell id="head">{t("AcctType")}</TableCell>
+                  <TableCell id="head">{t("ACNo")}</TableCell>
+                  <TableCell id="head">{t("Trx")}</TableCell>
                   <TableCell id="head">
-                    {rows[0]?.trx?.code == "4" ? "Token" : "Scroll"}
+                    {rows[0]?.trx?.code == "4" ? "Token" : t("Scroll")}
                   </TableCell>
-                  <TableCell id="head">SDC</TableCell>
-                  <TableCell id="head">Remarks</TableCell>
-                  <TableCell id="head">Chq No</TableCell>
+                  <TableCell id="head">{t("SDC")}</TableCell>
+                  <TableCell id="head">{t("Remarks")}</TableCell>
+                  <TableCell id="head">{t("Chequeno")} </TableCell>
                   {/* <TableCell id="head">Chq Date</TableCell> */}
-                  <TableCell id="head">Debit</TableCell>
-                  <TableCell id="head">Credit</TableCell>
+                  <TableCell id="head">{t("DebitAmount")}</TableCell>
+                  <TableCell id="head">{t("CreditAmount")}</TableCell>
                   {/* <TableCell id="head">Vno.</TableCell> */}
                 </TableRow>
               </TableHead>
@@ -797,6 +811,7 @@ export const Trn001 = () => {
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
                         </TableCell> */}
+
                         <TableCell sx={{ minWidth: 50 }}>
                           <TextField
                             value={a.debit}
@@ -894,7 +909,7 @@ export const Trn001 = () => {
               sx={{ margin: "8px" }}
               onClick={() => handleSaveDialog()}
             >
-              Save
+              {t("Save")}
             </Button>
           )}
         </div>

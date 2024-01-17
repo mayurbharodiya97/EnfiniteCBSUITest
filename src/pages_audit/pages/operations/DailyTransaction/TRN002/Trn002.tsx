@@ -52,6 +52,7 @@ export const Trn002 = () => {
 
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
+  const [tabsData, setTabsData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -62,6 +63,7 @@ export const Trn002 = () => {
 
   useEffect(() => {
     handleGetTRN002List();
+    setTempStore({ ...tempStore, accInfo: {} });
   }, []);
 
   useEffect(() => {
@@ -169,7 +171,10 @@ export const Trn002 = () => {
   };
   return (
     <>
-      <DailyTransTabs heading=" Confirmation (F2) (TRN/002)" />
+      <DailyTransTabs
+        heading=" Confirmation (F2) (TRN/002)"
+        tabsData={tabsData}
+      />
 
       <Card
         sx={{

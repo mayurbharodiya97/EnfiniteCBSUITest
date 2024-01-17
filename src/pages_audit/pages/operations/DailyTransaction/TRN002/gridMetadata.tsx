@@ -64,7 +64,7 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     },
     {
       accessor: "SCROLL1",
-      columnName: "Scroll/Token",
+      columnName: "Scroll",
       sequence: 5,
       componentType: "default",
       width: 100,
