@@ -59,31 +59,32 @@ export const Trn001 = () => {
     value: authState?.user?.branchCode,
     info: { COMP_CD: authState?.companyID },
   };
-  var defaulVal = {
+  var defTableValue = {
     branch: defBranch,
     accType: { label: "", value: "", info: "" },
     accNo: "",
-    bugAccNo: false,
-    bugMsgAccNo: "",
+
     trx: { label: "", value: "", code: "" }, //TYPE_CD
     scroll: "0", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: "0",
-    bugMsgcNo: "",
-    bugChq: false,
+
     date: new Date().toISOString()?.substring(0, 10),
     debit: "0.00",
     credit: "0.00",
-    vNo: "", //TRAN_CD
     bug: true,
+    bugAccNo: false,
+    bugCNo: false,
+    bugMsgAccNo: "",
+    bugMsgCNo: "",
     isCredit: true,
     viewOnly: false,
   };
 
   let defErrMsg = { cNo: "", accNo: "" };
   //states define
-  const [rows, setRows] = useState<any>([defaulVal]);
+  const [rows, setRows] = useState<any>([defTableValue]);
   const [updatedRows, setUpdatedRows] = useState<any>([]);
   const [trxOptions, setTrxOptions] = useState<any>([]);
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
@@ -144,7 +145,7 @@ export const Trn001 = () => {
     if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
       rows[i].bug = true;
     }
-    if (!rows[i]?.isCredit && rows[i].bugChq) {
+    if (!rows[i]?.isCredit && rows[i].bugCNo) {
       rows[i].bug = true;
     }
 
@@ -226,9 +227,20 @@ export const Trn001 = () => {
   const getChqValidation = useMutation(API.getChqValidation, {
     onSuccess: (data) => {
       if (data.ERR_CODE == "-1") {
-        rows[index].bug = true;
-        rows[index].bugChq = true;
-        setErrMsg({ ...errMsg, cNo: data?.ERR_MSG });
+        enqueueSnackbar(data?.ERR_MSG, {
+          variant: "error",
+        });
+        const obj = [...rows];
+        obj[index].bug = true;
+        obj[index].bugCNo = true;
+        obj[index].bugMsgCNo = data?.ERR_MSG;
+        setRows(obj);
+      } else {
+        const obj = [...rows];
+        obj[index].bug = false;
+        obj[index].bugCNo = false;
+        obj[index].bugMsgCNo = "";
+        setRows(obj);
       }
     },
     onError: (error: any) => {
@@ -244,24 +256,19 @@ export const Trn001 = () => {
   const getAccNoValidation = useMutation(API.getAccNoValidation, {
     onSuccess: (data) => {
       if (data?.RESTRICT_MESSAGE) {
-        setErrMsg({ ...errMsg, accNo: data?.RESTRICT_MESSAGE });
+        enqueueSnackbar(data?.RESTRICT_MESSAGE, {
+          variant: "error",
+        });
         const obj = [...rows];
-        obj[index].bugAccNo = true;
         obj[index].bug = true;
+        obj[index].bugAccNo = true;
         obj[index].bugMsgAccNo = data?.RESTRICT_MESSAGE;
-
         setRows(obj);
-        // enqueueSnackbar(data?.RESTRICT_MESSAGE, {
-        //   variant: "error",
-        // });
       } else {
-        setErrMsg({ ...errMsg, accNo: "" });
-
         const obj = [...rows];
-        obj[index].bugAccNo = false;
         obj[index].bug = false;
+        obj[index].bugAccNo = false;
         obj[index].bugMsgAccNo = "";
-
         setRows(obj);
       }
     },
@@ -331,7 +338,7 @@ export const Trn001 = () => {
     obj[i].credit = "0.00";
     obj[i].debit = "0.00";
     obj[i].cNo = "0";
-    obj[i].bugChq = false;
+    obj[i].bugCNo = false;
     obj[i].scroll = "0";
     obj[i].sdc = defSdc;
     obj[i].remark = defSdc?.label;
@@ -379,14 +386,14 @@ export const Trn001 = () => {
     let txt = e.target.value;
     obj[i].cNo = txt;
     if (Number(txt) > 0) {
-      obj[i].bugChq = true;
+      obj[i].bugCNo = true;
       txt &&
         obj[i].accNo &&
         obj[i].accType?.value &&
         obj[i].branch?.value &&
         getChqValidation.mutate(obj[i]);
     } else {
-      obj[i].bugChq = false;
+      obj[i].bugCNo = false;
     }
     setRows(obj);
     setIndex(i);
@@ -458,7 +465,7 @@ export const Trn001 = () => {
     let isCred = true;
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
-      trxx = trxOptions2[1];
+      trxx = trxOptions2[1]; //wrt index
       isCred = true;
     } else if (totalDebit < totalCredit) {
       deb = totalCredit - totalDebit;
@@ -468,7 +475,7 @@ export const Trn001 = () => {
     let tr = trxx?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
-    let defaulVal2 = {
+    let defTableValue2 = {
       branch: defBranch,
       accType: { label: "", value: "", info: "" },
       accNo: "",
@@ -480,9 +487,12 @@ export const Trn001 = () => {
       date: new Date().toISOString()?.substring(0, 10),
       debit: deb?.toFixed(2),
       credit: cred?.toFixed(2),
-      vNo: "",
-      bugChq: false,
+
       bugAccNo: false,
+      bugCNo: false,
+      bugMsgAccNo: "",
+      bugMsgCNo: "",
+
       isCredit: isCred,
     };
     if (
@@ -491,7 +501,7 @@ export const Trn001 = () => {
       errMsg?.accNo == "" &&
       errMsg?.cNo == ""
     ) {
-      let obj = [...rows, defaulVal2];
+      let obj = [...rows, defTableValue2];
 
       setRows(obj);
       handleTotal(obj);
@@ -526,7 +536,7 @@ export const Trn001 = () => {
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
   const handleReset = () => {
-    let defaultRows = { ...defaulVal };
+    let defaultRows = { ...defTableValue };
     setRows([defaultRows]);
     setUpdatedRows([]);
     setTotalCredit(0);
@@ -562,17 +572,36 @@ export const Trn001 = () => {
   const handleSaveDialog = () => {
     console.log(errMsg, "errMsg");
     console.log(isSave, "isSave");
+    let isErrCNo = rows.some((a) => a.bugCNo);
+    let isErrAccNo = rows.some((a) => a.bugAccNo);
+
     if (isArray && diff != 0) {
-      enqueueSnackbar("Cr. Db. amount not matched", {
+      enqueueSnackbar("Cr. Db. Amount not matched", {
         variant: "error",
       });
     }
+    if (!isArray && diff == 0) {
+      enqueueSnackbar("Amount cant be Zero", {
+        variant: "error",
+      });
+    }
+    if (isErrCNo) {
+      enqueueSnackbar("Please Check Error in ChqNo", {
+        variant: "error",
+      });
+    }
+    if (isErrAccNo) {
+      enqueueSnackbar("Please Check Error in A/C No.", {
+        variant: "error",
+      });
+    }
+
     if (
-      errMsg.accNo ||
-      errMsg.cNo ||
       !isSave ||
       (!isArray && diff == 0) ||
-      (isArray && diff != 0)
+      (isArray && diff != 0) ||
+      isErrAccNo ||
+      isErrCNo
     ) {
     } else {
       setSaveDialog(true);
@@ -668,7 +697,6 @@ export const Trn001 = () => {
                   {/* <TableCell id="head">Chq Date</TableCell> */}
                   <TableCell id="head">{t("DebitAmount")}</TableCell>
                   <TableCell id="head">{t("CreditAmount")}</TableCell>
-                  {/* <TableCell id="head">Vno.</TableCell> */}
                 </TableRow>
               </TableHead>
 
@@ -788,25 +816,29 @@ export const Trn001 = () => {
                             onChange={(e) => handleRemark(e, i)}
                           />
                         </TableCell>
-
-                        <TableCell sx={{ minWidth: 50 }}>
-                          <TextField
-                            value={a.cNo}
-                            error={!a.cNo || a?.bugChq ? true : false}
-                            id="txtRight"
-                            disabled={
-                              a.isCredit ||
-                              !a.accNo ||
-                              !a.accType?.value ||
-                              viewOnly
-                                ? true
-                                : false
-                            }
-                            size="small"
-                            type="number"
-                            onChange={(e) => handleCNo(e, i)}
-                          />
-                        </TableCell>
+                        <Tooltip
+                          disableInteractive={true}
+                          title={a?.bugMsgCNo && <h3>{a?.bugMsgCNo}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 50 }}>
+                            <TextField
+                              value={a.cNo}
+                              error={!a.cNo || a?.bugCNo ? true : false}
+                              id="txtRight"
+                              disabled={
+                                a.isCredit ||
+                                !a.accNo ||
+                                !a.accType?.value ||
+                                viewOnly
+                                  ? true
+                                  : false
+                              }
+                              size="small"
+                              type="number"
+                              onChange={(e) => handleCNo(e, i)}
+                            />
+                          </TableCell>
+                        </Tooltip>
 
                         {/* <TableCell>
                           <TextField
@@ -908,7 +940,8 @@ export const Trn001 = () => {
               sx={{ margin: "8px" }}
               onClick={() => handleSaveDialog()}
             >
-              {t("Save")}
+              Post
+              {/* {t("Save")} */}
             </Button>
           )}
         </div>

@@ -98,6 +98,7 @@ export const TRN002_TableMetaData: GridMetaDataType = {
       sequence: 9,
       componentType: "default",
       width: 100,
+      alignment: "right",
     },
 
     {

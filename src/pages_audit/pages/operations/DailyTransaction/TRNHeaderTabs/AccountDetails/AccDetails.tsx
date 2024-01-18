@@ -151,7 +151,7 @@ export const AccDetails = ({ flag }) => {
               }}
             >
               <Grid container spacing={2}>
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">Status</Typography>
                   <Typography
                     style={
@@ -166,56 +166,54 @@ export const AccDetails = ({ flag }) => {
                     {data?.STATUS == "D" && "Dormant"}
                   </Typography>
                 </Grid>
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">Op. DATE</Typography>
                   <Typography>
                     {data?.OP_DATE &&
                       format(new Date(data?.OP_DATE), "dd/MMM/yyyy")}
                   </Typography>
                 </Grid>{" "}
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">Opening</Typography>
-                  <Typography align="right">{data?.LAST_BAL}</Typography>
+                  <Typography>{data?.LAST_BAL}</Typography>
                 </Grid>{" "}
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">Withraw Bal</Typography>
-                  <Typography align="right">{data?.WITHDRAW_BAL}</Typography>
+                  <Typography>{data?.WITHDRAW_BAL}</Typography>
                 </Grid>
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">HOLD_BAL</Typography>
-                  <Typography align="right">{data?.HOLD_BAL}</Typography>
+                  <Typography>{data?.HOLD_BAL}</Typography>
                 </Grid>
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">Shadow(C)</Typography>
-                  <Typography align="right">{data?.TRAN_BAL}</Typography>
+                  <Typography>{data?.TRAN_BAL}</Typography>
                 </Grid>
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">Current(A)</Typography>
-                  <Typography align="right">{data?.CONF_BAL}</Typography>
+                  <Typography>{data?.CONF_BAL}</Typography>
                 </Grid>
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">(C-B)</Typography>
-                  <Typography align="right">
+                  <Typography>
                     {data?.TRAN_BAL &&
                       Number(data?.TRAN_BAL) - Number(data?.UNCL_BAL)}
                   </Typography>
                 </Grid>
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">(A-B)</Typography>
-                  <Typography align="right">
+                  <Typography>
                     {data?.CONF_BAL &&
                       Number(data?.CONF_BAL) - Number(data?.UNCL_BAL)}
                   </Typography>
                 </Grid>
-                <Grid item id="accInfo">
+                <Grid item id="accInfo" xs={3}>
                   <Typography variant="button">Pending Amt</Typography>
-                  <Typography align="right">
-                    {data?.PENDING_SCROLL_AMT}
-                  </Typography>
+                  <Typography>{data?.PENDING_SCROLL_AMT}</Typography>
                 </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Clearing Chq(B)</Typography>
-                  <Typography align="right">{data?.UNCL_BAL}</Typography>
+                <Grid item id="accInfo" xs={3}>
+                  <Typography variant="button">ClearingChq(B)</Typography>
+                  <Typography>{data?.UNCL_BAL}</Typography>
                 </Grid>
               </Grid>
             </div>

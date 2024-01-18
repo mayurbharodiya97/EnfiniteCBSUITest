@@ -90,14 +90,16 @@ export const TRN001_TableMetaData: GridMetaDataType = {
       accessor: "debit1",
       columnName: "Debit",
       sequence: 10,
-      componentType: "default",
+      componentType: "currency",
+      color: "red",
       width: 80,
     },
     {
       accessor: "credit1",
       columnName: "Credit",
       sequence: 11,
-      componentType: "default",
+      componentType: "currency",
+      color: "green",
       width: 80,
     },
     {

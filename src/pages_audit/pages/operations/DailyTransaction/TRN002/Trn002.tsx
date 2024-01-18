@@ -57,7 +57,6 @@ export const Trn002 = () => {
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
   const [tabsData, setTabsData] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
   const [dataRow, setDataRow] = useState<any>({});
 
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
@@ -87,12 +86,9 @@ export const Trn002 = () => {
 
   const getAccInfo = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
-      setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
     },
-    onError: (error) => {
-      setLoading(false);
-    },
+    onError: (error) => {},
   });
 
   const confirmScroll = useMutation(trn2Api.confirmScroll, {
@@ -134,7 +130,6 @@ export const Trn002 = () => {
     let row = data.rows[0]?.data;
     setDataRow(row);
     if (data.name === "view-detail") {
-      setLoading(true);
       let obj = {
         COMP_CD: row?.COMP_CD,
         BRANCH_CD: row?.BRANCH_CD,
@@ -196,13 +191,12 @@ export const Trn002 = () => {
           margin: "4px",
         }}
       >
-        {loading && <LinearProgress color="secondary" />}
         <GridWrapper
           key={`TRN002_TableMetaData`}
           finalMetaData={TRN002_TableMetaData as GridMetaDataType}
           data={rows2}
           setData={() => null}
-          loading={getTRN002List.isLoading}
+          loading={getTRN002List.isLoading || getAccInfo.isLoading}
           ref={myGridRef}
           refetchData={() => {}}
           actions={actions}
