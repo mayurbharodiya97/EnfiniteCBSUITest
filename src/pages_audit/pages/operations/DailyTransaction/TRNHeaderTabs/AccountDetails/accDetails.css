@@ -11,8 +11,9 @@
   height: 25vh;
 }
 #accHead {
-  /* background-image: linear-gradient(to right, red, yellow); */
-  background: #e9f1ff;
+  background-image: linear-gradient(71.66deg, #4285f4 -2.97%, #885df5 111.3%);
+  /* background: #e9f1ff; */
+  /* background: #4263c7; */
   display: flex;
   justify-content: space-between;
   align-items: center;

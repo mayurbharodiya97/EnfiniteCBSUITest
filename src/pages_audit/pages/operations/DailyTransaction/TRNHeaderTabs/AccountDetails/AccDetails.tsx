@@ -51,7 +51,11 @@ export const AccDetails = ({ flag }) => {
         >
           <CardContent>
             <div id="accHead">
-              <Typography variant="h5" component="div">
+              <Typography
+                variant="h5"
+                component="div"
+                style={{ color: "white" }}
+              >
                 Personal Information
               </Typography>
               <div>
@@ -129,7 +133,11 @@ export const AccDetails = ({ flag }) => {
         >
           <CardContent>
             <div id="accHead">
-              <Typography variant="h5" component="div">
+              <Typography
+                variant="h5"
+                component="div"
+                style={{ color: "white" }}
+              >
                 Balance Details
               </Typography>
               <div>

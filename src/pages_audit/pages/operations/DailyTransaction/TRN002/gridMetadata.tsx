@@ -29,8 +29,8 @@ export const TRN002_TableMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "CONFIRMED",
-      columnName: "IsConfirmed",
+      accessor: "status",
+      columnName: "STATUS",
       sequence: 0,
       componentType: "default",
       width: 80,

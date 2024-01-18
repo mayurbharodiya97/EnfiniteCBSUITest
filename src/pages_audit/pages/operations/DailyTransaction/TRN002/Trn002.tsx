@@ -18,6 +18,10 @@ import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
+import {
+  PopupMessageAPIWrapper,
+  PopupRequestWrapper,
+} from "components/custom/popupMessage";
 
 import "./Trn002.css";
 import DailyTransTabs from "../TRNHeaderTabs";
@@ -54,6 +58,10 @@ export const Trn002 = () => {
   const [rows2, setRows2] = useState<any>([]);
   const [tabsData, setTabsData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
+  const [dataRow, setDataRow] = useState<any>({});
+
+  const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
+  const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
 
   const { enqueueSnackbar } = useSnackbar();
   let dataObj = {
@@ -89,14 +97,14 @@ export const Trn002 = () => {
 
   const confirmScroll = useMutation(trn2Api.confirmScroll, {
     onSuccess: (data) => {
-      setLoading(false);
+      setConfirmDialog(false);
       enqueueSnackbar("Record Confirm", {
         variant: "success",
       });
       handleGetTRN002List();
     },
     onError: (error: any) => {
-      setLoading(false);
+      setConfirmDialog(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -104,14 +112,14 @@ export const Trn002 = () => {
   });
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
-      setLoading(false);
+      setDeleteDialog(false);
       enqueueSnackbar("Scroll Deleted", {
         variant: "success",
       });
       handleGetTRN002List();
     },
     onError: (error: any) => {
-      setLoading(false);
+      setDeleteDialog(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -124,8 +132,9 @@ export const Trn002 = () => {
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-    setLoading(true);
+    setDataRow(row);
     if (data.name === "view-detail") {
+      setLoading(true);
       let obj = {
         COMP_CD: row?.COMP_CD,
         BRANCH_CD: row?.BRANCH_CD,
@@ -138,9 +147,8 @@ export const Trn002 = () => {
 
     if (data.name === "view") {
       if (row.CONFIRMED == "0") {
-        confirmScroll.mutate(row);
+        setConfirmDialog(true);
       } else {
-        setLoading(false);
         enqueueSnackbar("Scroll Already Confirmed", {
           variant: "error",
         });
@@ -148,12 +156,7 @@ export const Trn002 = () => {
     }
 
     if (data.name === "Delete") {
-      let obj = {
-        TRAN_CD: row?.TRAN_CD,
-        ENTERED_COMP_CD: row?.COMP_CD,
-        ENTERED_BRANCH_CD: row?.BRANCH_CD,
-      };
-      deleteScrollByVoucher.mutate(obj);
+      setDeleteDialog(true);
     }
   }, []);
 
@@ -164,6 +167,20 @@ export const Trn002 = () => {
   const handleUpdateRows = (data) => {
     setRows2(data);
   };
+
+  const handleDelete = () => {
+    let obj = {
+      TRAN_CD: dataRow?.TRAN_CD,
+      ENTERED_COMP_CD: dataRow?.COMP_CD,
+      ENTERED_BRANCH_CD: dataRow?.BRANCH_CD,
+    };
+    deleteScrollByVoucher.mutate(obj);
+  };
+
+  const handleConfirm = () => {
+    confirmScroll.mutate(dataRow);
+  };
+
   return (
     <>
       <DailyTransTabs
@@ -199,6 +216,29 @@ export const Trn002 = () => {
         handleViewAll={handleViewAll}
         handleRefresh={() => handleGetTRN002List()}
       />
+
+      {Boolean(deleteDialog) ? (
+        <PopupMessageAPIWrapper
+          MessageTitle="Scroll Delete"
+          Message="Do you wish to Delete this scroll?"
+          onActionYes={() => handleDelete()}
+          onActionNo={() => setDeleteDialog(false)}
+          rows={[]}
+          open={deleteDialog}
+          loading={deleteScrollByVoucher.isLoading}
+        />
+      ) : null}
+      {Boolean(confirmDialog) ? (
+        <PopupMessageAPIWrapper
+          MessageTitle="Scroll Confirm"
+          Message="Do you wish to Confirm this scroll?"
+          onActionYes={() => handleConfirm()}
+          onActionNo={() => setConfirmDialog(false)}
+          rows={[]}
+          open={confirmDialog}
+          loading={confirmScroll.isLoading}
+        />
+      ) : null}
     </>
   );
 };

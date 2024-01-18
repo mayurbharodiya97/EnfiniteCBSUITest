@@ -81,11 +81,11 @@ export const Trn001 = () => {
     viewOnly: false,
   };
 
-  let defErrMsg = { cNo: "", accNo: "" };
+  let defErrMsg = { cNo: "", accNo: "", other: "" };
   //states define
   const [rows, setRows] = useState<any>([defaulVal]);
   const [updatedRows, setUpdatedRows] = useState<any>([]);
-  const [trxOptions, setTrxOptions] = useState<any>([]);
+  const [trxOptions, setTrxOptions] = useState([]);
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
   const [sdcOptions, setSdcOptions] = useState<any>([]);
   const [accTypeOptions, setAccTypeOptions] = useState([]);
@@ -336,8 +336,7 @@ export const Trn001 = () => {
     obj[i].sdc = defSdc;
     obj[i].remark = defSdc?.label;
 
-    if (value?.code == "1" || value?.code == "3") {
-      //value?.code == "2" ||
+    if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
       obj[i].isCredit = true;
     } else {
       obj[i].isCredit = false;
@@ -458,11 +457,11 @@ export const Trn001 = () => {
     let isCred = true;
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
-      trxx = trxOptions2[1];
+      trxx = trxOptions2[2];
       isCred = true;
     } else if (totalDebit < totalCredit) {
       deb = totalCredit - totalDebit;
-      trxx = trxOptions2[3];
+      trxx = trxOptions2[5];
       isCred = false;
     }
     let tr = trxx?.code + "   ";
@@ -563,10 +562,9 @@ export const Trn001 = () => {
     console.log(errMsg, "errMsg");
     console.log(isSave, "isSave");
     if (isArray && diff != 0) {
-      enqueueSnackbar("Cr. Db. amount not matched", {
-        variant: "error",
-      });
+      setErrMsg({ ...errMsg, other: "Cr. Db. amount not matched" });
     }
+
     if (
       errMsg.accNo ||
       errMsg.cNo ||
@@ -647,6 +645,13 @@ export const Trn001 = () => {
                 {errMsg?.accNo ? (
                   <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
                     {errMsg?.accNo}
+                  </caption>
+                ) : (
+                  <></>
+                )}
+                {errMsg?.other ? (
+                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
+                    {errMsg?.other}
                   </caption>
                 ) : (
                   <></>

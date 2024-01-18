@@ -23,6 +23,7 @@ export const getTRN002List = async (reqData) => {
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
         a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.status = a.CONFIRMED == "0" ? "Pending" : "Confirmed";
       });
 
     return responseData;

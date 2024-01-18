@@ -12,7 +12,10 @@ import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import LinearProgress from "@mui/material/LinearProgress";
-
+import {
+  PopupMessageAPIWrapper,
+  PopupRequestWrapper,
+} from "components/custom/popupMessage";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -37,7 +40,9 @@ export const TRN001_Table = ({ updatedRows }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
 
   const [rows, setRows] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [dataRow, setDataRow] = useState<any>({});
+  const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
 
   let objData = {
     COMP_CD: authState?.companyID,
@@ -76,14 +81,14 @@ export const TRN001_Table = ({ updatedRows }) => {
   });
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
-      setLoading(false);
+      setDeleteDialog(false);
       getTRN001List.mutate(objData);
       enqueueSnackbar("Scroll Deleted", {
         variant: "success",
       });
     },
     onError: (error: any) => {
-      setLoading(false);
+      setDeleteDialog(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -93,9 +98,11 @@ export const TRN001_Table = ({ updatedRows }) => {
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-    setLoading(true);
+    setDataRow(row);
+
     console.log(row, "row setCurrentAction");
     if (data.name === "view-detail") {
+      setLoading(true);
       let obj = {
         COMP_CD: row?.COMP_CD,
         BRANCH_CD: row?.BRANCH_CD,
@@ -107,14 +114,18 @@ export const TRN001_Table = ({ updatedRows }) => {
     }
 
     if (data.name === "Delete") {
-      let obj = {
-        TRAN_CD: row?.TRAN_CD,
-        ENTERED_COMP_CD: row?.COMP_CD,
-        ENTERED_BRANCH_CD: row?.BRANCH_CD,
-      };
-      deleteScrollByVoucher.mutate(obj);
+      setDeleteDialog(true);
     }
   }, []);
+
+  const handleDelete = () => {
+    let obj = {
+      TRAN_CD: dataRow?.TRAN_CD,
+      ENTERED_COMP_CD: dataRow?.COMP_CD,
+      ENTERED_BRANCH_CD: dataRow?.BRANCH_CD,
+    };
+    deleteScrollByVoucher.mutate(obj);
+  };
 
   return (
     <>
@@ -130,6 +141,18 @@ export const TRN001_Table = ({ updatedRows }) => {
         actions={actions}
         setAction={setCurrentAction}
       />
+
+      {Boolean(deleteDialog) ? (
+        <PopupMessageAPIWrapper
+          MessageTitle="Scroll Delete"
+          Message="Do you wish to Delete this scroll?"
+          onActionYes={() => handleDelete()}
+          onActionNo={() => setDeleteDialog(false)}
+          rows={[]}
+          open={deleteDialog}
+          loading={deleteScrollByVoucher.isLoading}
+        />
+      ) : null}
     </>
   );
 };
