@@ -109,11 +109,13 @@ export const getTRN001List = async (reqData) => {
     let responseData = data;
     responseData &&
       responseData.map((a, i) => {
+        let modDate = format(new Date(a?.ENTERED_DATE), "dd/MMM/yyyy");
         a.index = i;
         a.account1 = a.ACCT_TYPE + a.TYPE_NM;
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
-        a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.date1 = modDate + "" + a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
+        a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
         if (
           a.TYPE_CD.includes("1") ||
           a.TYPE_CD.includes("2") ||

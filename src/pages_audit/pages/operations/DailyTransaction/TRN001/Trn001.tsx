@@ -1,5 +1,7 @@
 //UI
-import { Button, Toolbar, AppBar, Card, Tooltip } from "@mui/material";
+import { Button, Toolbar, AppBar, Card } from "@mui/material";
+import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
@@ -51,6 +53,16 @@ import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 import AccDetails from "../TRNHeaderTabs/AccountDetails";
 
+const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: "#ea3a1b",
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}));
 export const Trn001 = () => {
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
@@ -386,20 +398,25 @@ export const Trn001 = () => {
     const obj = [...rows];
     let txt = e.target.value;
     obj[i].cNo = txt;
-    if (Number(txt) > 0) {
-      obj[i].bugCNo = true;
-      txt &&
+    setIndex(i);
+    setRows(obj);
+  };
+
+  const handleCNoBlur = (e, i) => {
+    const obj = [...rows];
+
+    if (Number(obj[i].cNo) > 0) {
+      obj[i].cNo &&
         obj[i].accNo &&
         obj[i].accType?.value &&
         obj[i].branch?.value &&
         getChqValidation.mutate(obj[i]);
     } else {
       obj[i].bugCNo = false;
+      obj[i].bugMsgCNo = "";
     }
     setRows(obj);
-    setIndex(i);
   };
-
   const handleDate = (e, i) => {
     console.log(e, "date e");
     const obj = [...rows];
@@ -581,7 +598,7 @@ export const Trn001 = () => {
         variant: "error",
       });
     }
-    if (!isArray && diff == 0) {
+    if ((!isArray && diff == 0) || (isArray && rows.length == 1)) {
       enqueueSnackbar("Amount cant be Zero", {
         variant: "error",
       });
@@ -754,7 +771,7 @@ export const Trn001 = () => {
                             />
                           </TableCell>
                         </Tooltip>
-                        <Tooltip
+                        <ErrTooltip
                           disableInteractive={true}
                           title={a?.bugMsgAccNo && <h3>{a?.bugMsgAccNo}</h3>}
                         >
@@ -769,7 +786,7 @@ export const Trn001 = () => {
                               onBlur={(e) => handleAccNoBlur(e, i)}
                             />
                           </TableCell>
-                        </Tooltip>
+                        </ErrTooltip>
                         <TableCell sx={{ minWidth: 160 }}>
                           <Autocomplete
                             value={a.trx}
@@ -817,29 +834,30 @@ export const Trn001 = () => {
                             onChange={(e) => handleRemark(e, i)}
                           />
                         </TableCell>
-                        <Tooltip
+                        <ErrTooltip
                           disableInteractive={true}
                           title={a?.bugMsgCNo && <h3>{a?.bugMsgCNo}</h3>}
                         >
-                          <TableCell sx={{ minWidth: 50 }}>
+                          <TableCell
+                            sx={{
+                              minWidth: 50,
+                              display: "flex",
+                              alignItems: "end",
+                            }}
+                          >
                             <TextField
                               value={a.cNo}
                               error={!a.cNo || a?.bugCNo ? true : false}
                               id="txtRight"
-                              disabled={
-                                a.isCredit ||
-                                !a.accNo ||
-                                !a.accType?.value ||
-                                viewOnly
-                                  ? true
-                                  : false
-                              }
+                              disabled={a.isCredit || viewOnly ? true : false}
                               size="small"
                               type="number"
                               onChange={(e) => handleCNo(e, i)}
+                              onBlur={(e) => handleCNoBlur(e, i)}
+                              // helperText={a?.bugMsgCNo ? a?.bugMsgCNo : ""}
                             />
                           </TableCell>
-                        </Tooltip>
+                        </ErrTooltip>
 
                         {/* <TableCell>
                           <TextField
@@ -852,46 +870,64 @@ export const Trn001 = () => {
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
                         </TableCell> */}
-
-                        <TableCell sx={{ minWidth: 50 }}>
-                          <TextField
-                            value={a.debit}
-                            error={Number(a.debit) > 0 ? false : true}
-                            id="txtRight"
-                            size="small"
-                            disabled={
-                              a?.isCredit ||
-                              !a.branch ||
-                              !a.trx?.code ||
-                              viewOnly
-                                ? true
-                                : false
-                            }
-                            type="number"
-                            onChange={(e) => handleDebit(e, i)}
-                            onBlur={(e) => handleDebitBlur(e, i)}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 50 }}>
-                          <TextField
-                            value={a.credit}
-                            error={Number(a.credit) > 0 ? false : true}
-                            id="txtRight"
-                            size="small"
-                            disabled={
-                              !a?.isCredit ||
-                              !a.branch ||
-                              !a.trx?.code ||
-                              viewOnly
-                                ? true
-                                : false
-                            }
-                            type="number"
-                            onChange={(e) => handleCredit(e, i)}
-                            onBlur={(e) => handleCreditBlur(e, i)}
-                          />
-                        </TableCell>
-
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={
+                            Number(a.debit) <= 0 &&
+                            !a?.isCredit &&
+                            a.branch &&
+                            a.trx?.code && <h3>Amount can't be zero</h3>
+                          }
+                        >
+                          <TableCell sx={{ minWidth: 50 }}>
+                            <TextField
+                              value={a.debit}
+                              error={Number(a.debit) > 0 ? false : true}
+                              id="txtRight"
+                              size="small"
+                              disabled={
+                                a?.isCredit ||
+                                !a.branch ||
+                                !a.trx?.code ||
+                                viewOnly
+                                  ? true
+                                  : false
+                              }
+                              type="number"
+                              onChange={(e) => handleDebit(e, i)}
+                              onBlur={(e) => handleDebitBlur(e, i)}
+                            />
+                          </TableCell>
+                        </ErrTooltip>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={
+                            Number(a.credit) <= 0 &&
+                            a?.isCredit &&
+                            a.branch &&
+                            a.trx?.code && <h3>Amount can't be zero</h3>
+                          }
+                        >
+                          <TableCell sx={{ minWidth: 50 }}>
+                            <TextField
+                              value={a.credit}
+                              error={Number(a.credit) > 0 ? false : true}
+                              id="txtRight"
+                              size="small"
+                              disabled={
+                                !a?.isCredit ||
+                                !a.branch ||
+                                !a.trx?.code ||
+                                viewOnly
+                                  ? true
+                                  : false
+                              }
+                              type="number"
+                              onChange={(e) => handleCredit(e, i)}
+                              onBlur={(e) => handleCreditBlur(e, i)}
+                            />
+                          </TableCell>
+                        </ErrTooltip>
                         <TableCell style={{ border: "0px", width: "10px" }}>
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (

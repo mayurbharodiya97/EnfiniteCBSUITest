@@ -85,10 +85,12 @@ export const AccDetails = ({ flag }) => {
                   <Typography>{data?.CUSTOMER_ID}</Typography>
                 </Grid>
 
-                <Grid item id="cardGridItem">
-                  <Typography id="cardLabel">Email</Typography>
-                  <Typography>{data?.E_MAIL_ID}</Typography>
-                </Grid>
+                {data?.E_MAIL_ID && (
+                  <Grid item id="cardGridItem">
+                    <Typography id="cardLabel">Email</Typography>
+                    <Typography>{data?.E_MAIL_ID}</Typography>
+                  </Grid>
+                )}
 
                 {data?.CONTACT2 && (
                   <Grid item id="cardGridItem">
@@ -150,9 +152,7 @@ export const AccDetails = ({ flag }) => {
                 >
                   <Typography id="cardLabel">Status</Typography>
                   <Typography
-                    style={
-                      data?.STATUS == "C" ? { color: "#ea3a1b" } : { color: "" }
-                    }
+                    style={data?.STATUS == "C" ? { color: "#ea3a1b" } : {}}
                   >
                     {data?.STATUS == "O" && "Open"}
                     {data?.STATUS == "C" && "Close"}
@@ -187,7 +187,13 @@ export const AccDetails = ({ flag }) => {
                   xs={dynamicCard.length < 3 ? 2 : 3}
                 >
                   <Typography id="cardLabel">Withraw Bal</Typography>
-                  <Typography>{data?.WITHDRAW_BAL}</Typography>
+                  <Typography
+                    style={
+                      Number(data?.WITHDRAW_BAL) < 0 ? { color: "#ea3a1b" } : {}
+                    }
+                  >
+                    {data?.WITHDRAW_BAL}
+                  </Typography>
                 </Grid>
                 <Grid
                   item

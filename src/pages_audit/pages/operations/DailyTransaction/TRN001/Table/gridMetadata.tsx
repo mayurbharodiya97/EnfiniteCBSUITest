@@ -58,7 +58,7 @@ export const TRN001_TableMetaData: GridMetaDataType = {
     },
     {
       accessor: "SCROLL1",
-      columnName: "Scroll",
+      columnName: "Scroll/Token",
       sequence: 6,
       componentType: "default",
       width: 50,
@@ -78,13 +78,20 @@ export const TRN001_TableMetaData: GridMetaDataType = {
       width: 130,
     },
     {
-      accessor: "date1",
+      accessor: "ENTERED_DATE",
       columnName: "Date",
       sequence: 9,
-      width: 80,
+      width: 70,
       componentType: "date",
       isVisible: true,
       dateFormat: "dd/MM/yyyy",
+    },
+    {
+      accessor: "time",
+      columnName: "Time",
+      sequence: 9,
+      width: 50,
+      componentType: "default",
     },
     {
       accessor: "debit1",
