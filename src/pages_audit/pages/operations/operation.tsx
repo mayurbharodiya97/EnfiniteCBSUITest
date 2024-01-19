@@ -6,7 +6,6 @@ import { DetailMastersData } from "../../../components/formcomponent/detailMaste
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import SingleDeno from "../dashboard/noteDenomination/singleDeno";
-import { CtsOutwardMenu } from "./ctsOutwardClearing/outwardMenu";
 
 // import { ChequebookTab } from "./chequeBookTab/chequebookTab";
 // import { Ckyc } from "./c-kyc/ckyc";
@@ -71,6 +70,12 @@ export const OperationsMenu = () => (
         </CkycProvider>
       }
     />
-    <Route path="cts-outward-clearing/*" element={<CtsOutwardMenu />} />
+    <Route
+      path="cts-outward-clearing/*"
+      element={<CtsOutwardClearing zoneTranType="S" />}
+    >
+      {/* <Route index element={<CtsOutwardClearing zoneTranType="S" />} /> */}
+      {/* <Route path="retrieve" element={<RetrieveClearing zoneTranType="S" />} /> */}
+    </Route>
   </Routes>
 );

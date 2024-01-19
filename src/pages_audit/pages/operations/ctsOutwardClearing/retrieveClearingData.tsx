@@ -61,13 +61,10 @@ const actions: ActionTypes[] = [
   },
 ];
 export const RetrieveClearing: FC<{
-  formDataRef?: any;
-  myRef?: any;
-  setCurrentTab?: any;
   onClose?: any;
-  isOpen?: any;
+  setFormMode;
   zoneTranType?: any;
-}> = ({ formDataRef, setCurrentTab, myRef, onClose, isOpen, zoneTranType }) => {
+}> = ({ onClose, setFormMode, zoneTranType }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
@@ -75,18 +72,13 @@ export const RetrieveClearing: FC<{
   const headerClasses = useTypeStyles();
   const setCurrentAction = useCallback(
     (data) => {
-      if (data?.name == "view-details") {
-        navigate(data?.name, {
-          state: { rows: data?.rows, formMode: "view" },
-        });
-      } else {
-        navigate(data?.name, {
-          state: data?.rows,
-        });
-      }
+      navigate("/cbsenfinity/operation/cts-outward-clearing", {
+        state: { rows: data?.rows, formMode: "view" },
+      });
     },
     [navigate]
   );
+
   const mutation: any = useMutation(
     "getRetrievalClearingData",
     API.getRetrievalClearingData,
@@ -138,113 +130,92 @@ export const RetrieveClearing: FC<{
   }
   return (
     <>
-      {/* <AppBar position="relative" color="secondary">
-        <Toolbar variant="dense">
-          <Typography
-            className={headerClasses.title}
-            color="inherit"
-            variant={"h6"}
-            component="div"
+      <>
+        <Dialog
+          open={true}
+          PaperProps={{
+            style: {
+              overflow: "hidden",
+              // width: "60%",
+              // minHeight: "35vh",
+              // height: "42vh",
+            },
+          }}
+          maxWidth="lg"
+        >
+          <FormWrapper
+            key={`retrieveFormMetadataConfig`}
+            metaData={RetrieveFormConfigMetaData as unknown as MetaDataType}
+            initialValues={{}}
+            onSubmitHandler={onSubmitHandler}
+            formStyle={{
+              background: "white",
+            }}
+            onFormButtonClickHandel={() => {
+              let event: any = { preventDefault: () => {} };
+              // if (mutation?.isLoading) {
+              formRef?.current?.handleSubmit(event, "RETRIEVE");
+              // }
+            }}
+            ref={formRef}
           >
-            Retrieve CTS O/W Clearing Data
-          </Typography>
-          <GradientButton
-            onClick={() =>
-              navigate("/cbsenfinity/operation/cts-outward-clearing", {
-                replace: true,
-              })
-            }
-          >
-            Close
-          </GradientButton>
-        </Toolbar>
-      </AppBar> */}
-
-      <FormWrapper
-        key={`retrieveFormMetadataConfig`}
-        metaData={RetrieveFormConfigMetaData as unknown as MetaDataType}
-        initialValues={{}}
-        onSubmitHandler={onSubmitHandler}
-        // displayMode={formMode}
-        // hideHeader={true}
-        formStyle={{
-          background: "white",
-        }}
-        onFormButtonClickHandel={() => {
-          let event: any = { preventDefault: () => {} };
-          // if (mutation?.isLoading) {
-          formRef?.current?.handleSubmit(event, "RETRIEVE");
-          // }
-        }}
-        ref={formRef}
-      >
-        {({ isSubmitting, handleSubmit }) => (
-          <>
-            <GradientButton
-              onClick={() =>
-                navigate("/cbsenfinity/operation/cts-outward-clearing", {
-                  replace: true,
-                })
-              }
-            >
-              Close
-            </GradientButton>
-            {/* <GradientButton
-                onClick={() => {
-                  setFormMode("view");
-                }}
-                color={"primary"}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </GradientButton> */}
-          </>
-        )}
-      </FormWrapper>
-      <Fragment>
-        {mutation.isError && (
-          <Alert
-            severity="error"
-            errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
-            errorDetail={mutation.error?.error_detail}
-            color="error"
-          />
-        )}
-        {/* {mutation?.data ? ( */}
-        <GridWrapper
-          key={"RetrieveGridMetaData"}
-          finalMetaData={RetrieveGridMetaData}
-          data={mutation?.data ?? []}
-          setData={() => null}
-          loading={mutation.isLoading || mutation.isFetching}
-          actions={actions}
-          setAction={setCurrentAction}
-          // refetchData={() => refetch()}
-          // ref={myGridRef}
-          // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
-        />
-        {/* ) : null} */}
-      </Fragment>
-      <Routes>
-        <Route
-          path="view-details/*"
-          element={
-            <CtsOutwardClearingForm
-              zoneTranType={undefined} // isDataChangedRef={isDataChangedRef}
-              // closeDialog={ClosedEventCall}
-              // defaultView={"view"}
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                <GradientButton
+                  onClick={() => {
+                    onClose();
+                    setFormMode("new");
+                  }}
+                >
+                  Close
+                </GradientButton>
+              </>
+            )}
+          </FormWrapper>
+          <Fragment>
+            {mutation.isError && (
+              <Alert
+                severity="error"
+                errorMsg={
+                  mutation.error?.error_msg ?? "Something went to wrong.."
+                }
+                errorDetail={mutation.error?.error_detail}
+                color="error"
+              />
+            )}
+            {/* {mutation?.data ? ( */}
+            <GridWrapper
+              key={"RetrieveGridMetaData"}
+              finalMetaData={RetrieveGridMetaData}
+              data={mutation?.data ?? []}
+              setData={() => null}
+              loading={mutation.isLoading || mutation.isFetching}
+              actions={actions}
+              setAction={setCurrentAction}
+              // refetchData={() => refetch()}
+              // ref={myGridRef}
+              // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
             />
-          }
-        />
-      </Routes>
+            {/* ) : null} */}
+          </Fragment>
+        </Dialog>
+      </>
     </>
   );
 };
 
-export const RetrieveClearingForm = ({ zoneTranType }) => {
+export const RetrieveClearingForm = ({
+  zoneTranType,
+  onClose,
+  setFormMode,
+}) => {
   return (
     <ClearCacheProvider>
-      <RetrieveClearing zoneTranType={zoneTranType} />
+      <RetrieveClearing
+        zoneTranType={zoneTranType}
+        onClose={onClose}
+        setFormMode={setFormMode}
+      />
     </ClearCacheProvider>
   );
 };
