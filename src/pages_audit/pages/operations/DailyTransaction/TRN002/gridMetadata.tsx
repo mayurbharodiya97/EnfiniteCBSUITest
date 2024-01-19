@@ -26,7 +26,6 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     // hideHeader: true,
     isCusrsorFocused: true,
   },
-  filters: [],
   columns: [
     {
       accessor: "status",

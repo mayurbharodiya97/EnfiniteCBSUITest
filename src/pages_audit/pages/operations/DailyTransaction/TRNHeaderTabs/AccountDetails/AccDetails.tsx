@@ -1,11 +1,13 @@
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+
+import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Typography } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
+
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 //logical
@@ -15,42 +17,41 @@ import { AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useState } from "react";
 import { format } from "date-fns";
 
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-};
 export const AccDetails = ({ flag }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
+  let arr = [{}, {}];
+  const [dynamicCard, setDynamicCard] = useState(arr);
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 4,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: dynamicCard.length < 3 ? 2 : 3,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
   let data = tempStore?.accInfo;
   return (
     <>
-      <Carousel responsive={responsive}>
-        <Card
-          sx={{
-            width: "450px",
-            boxShadow: flag === "DLYTRN" ? "0px 1px 4px -1px #999999" : "none",
-            borderRadius: "5px",
-            marginBottom: "5px",
-            // height: (flag === "TELLER" ? "49vh" : null) as string,
-          }}
-          className={flag === "TELLER" ? "styleforteller" : ""}
-        >
+      <Carousel
+        responsive={responsive}
+        containerClass="carousel-container"
+        // removeArrowOnDeviceType={["tablet", "mobile"]}
+        // dotListClass="custom-dot-list-style"
+        // itemClass="carousel-item-padding-40-px"
+      >
+        <Card id={dynamicCard.length < 3 ? "cardContainer2" : "cardContainer"}>
           <CardContent>
-            <div id="accHead">
+            <div id="cardHeading">
               <Typography
                 variant="h5"
                 component="div"
@@ -66,51 +67,51 @@ export const AccDetails = ({ flag }) => {
             <div
               style={{
                 overflowY: "scroll",
-                height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
+                height: (flag === "DLYTRN" ? "26vh" : "28vh") as string,
               }}
             >
-              <Grid container spacing={2}>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Name</Typography>
+              <Grid container spacing={2} style={{ marginTop: "0px" }}>
+                <Grid item id="cardGridItem">
+                  <Typography id="cardLabel">Name</Typography>
                   <Typography>{data?.ACCT_NM}</Typography>
                 </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">CUSTOMER_ID</Typography>
+                <Grid item id="cardGridItem">
+                  <Typography id="cardLabel">CustomerId</Typography>
                   <Typography>{data?.CUSTOMER_ID}</Typography>
                 </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Account</Typography>
+                <Grid item id="cardGridItem">
+                  <Typography id="cardLabel">Account</Typography>
                   <Typography>{data?.ACCT_CD_NEW}</Typography>
                 </Grid>
 
-                <Grid item id="accInfo">
-                  <Typography variant="button">Email</Typography>
+                <Grid item id="cardGridItem">
+                  <Typography id="cardLabel">Email</Typography>
                   <Typography>{data?.E_MAIL_ID}</Typography>
                 </Grid>
 
                 {data?.CONTACT2 && (
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Contact</Typography>
+                  <Grid item id="cardGridItem">
+                    <Typography id="cardLabel">Contact</Typography>
                     <Typography>{data?.CONTACT2}</Typography>
                   </Grid>
                 )}
 
-                <Grid item id="accInfo">
-                  <Typography variant="button">Branch Id</Typography>
+                <Grid item id="cardGridItem">
+                  <Typography id="cardLabel">Branch Id</Typography>
                   <Typography>{data?.BRANCH_CD}</Typography>
                 </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Company id</Typography>
+                <Grid item id="cardGridItem">
+                  <Typography id="cardLabel">Company id</Typography>
                   <Typography>{data?.COMP_CD}</Typography>
                 </Grid>
                 {data?.ORG_PAN && (
-                  <Grid item id="accInfo">
-                    <Typography variant="button">PAN_NO</Typography>
+                  <Grid item id="cardGridItem">
+                    <Typography id="cardLabel">PAN No.</Typography>
                     <Typography>{data?.ORG_PAN}</Typography>
                   </Grid>
                 )}
-                <Grid item xs={12} id="accInfo">
-                  <Typography variant="button">Address</Typography>
+                <Grid item xs={12} id="cardGridItem">
+                  <Typography id="cardLabel">Address</Typography>
 
                   <Typography>
                     {data?.ADD1} {data?.ADD2 && data?.ADD2} {data?.AREA_NM}
@@ -120,19 +121,9 @@ export const AccDetails = ({ flag }) => {
             </div>
           </CardContent>
         </Card>
-
-        <Card
-          sx={{
-            width: "450px",
-            boxShadow: flag === "DLYTRN" ? "0px 1px 4px -1px #999999" : "none",
-            borderRadius: "5px",
-            marginBottom: "5px",
-            // height: (flag === "TELLER" ? "49vh" : null) as string,
-          }}
-          className={flag === "TELLER" ? "style-for-teller" : ""}
-        >
+        <Card id={dynamicCard.length < 3 ? "cardContainer2" : "cardContainer"}>
           <CardContent>
-            <div id="accHead">
+            <div id="cardHeading">
               <Typography
                 variant="h5"
                 component="div"
@@ -147,12 +138,16 @@ export const AccDetails = ({ flag }) => {
             <div
               style={{
                 overflowY: "scroll",
-                height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
+                height: (flag === "DLYTRN" ? "26vh" : "28vh") as string,
               }}
             >
-              <Grid container spacing={2}>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">Status</Typography>
+              <Grid container spacing={2} style={{ marginTop: "0px" }}>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">Status</Typography>
                   <Typography
                     style={
                       data?.STATUS == "C" ? { color: "#ea3a1b" } : { color: "" }
@@ -166,53 +161,93 @@ export const AccDetails = ({ flag }) => {
                     {data?.STATUS == "D" && "Dormant"}
                   </Typography>
                 </Grid>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">Op. DATE</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">Op. Date</Typography>
                   <Typography>
                     {data?.OP_DATE &&
                       format(new Date(data?.OP_DATE), "dd/MMM/yyyy")}
                   </Typography>
                 </Grid>{" "}
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">Opening</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">Opening</Typography>
                   <Typography>{data?.LAST_BAL}</Typography>
                 </Grid>{" "}
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">Withraw Bal</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">Withraw Bal</Typography>
                   <Typography>{data?.WITHDRAW_BAL}</Typography>
                 </Grid>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">HOLD_BAL</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">Hold Bal</Typography>
                   <Typography>{data?.HOLD_BAL}</Typography>
                 </Grid>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">Shadow(C)</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">Shadow(C)</Typography>
                   <Typography>{data?.TRAN_BAL}</Typography>
                 </Grid>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">Current(A)</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">Current(A)</Typography>
                   <Typography>{data?.CONF_BAL}</Typography>
                 </Grid>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">(C-B)</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">(C-B)</Typography>
                   <Typography>
                     {data?.TRAN_BAL &&
                       Number(data?.TRAN_BAL) - Number(data?.UNCL_BAL)}
                   </Typography>
                 </Grid>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">(A-B)</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">(A-B)</Typography>
                   <Typography>
                     {data?.CONF_BAL &&
                       Number(data?.CONF_BAL) - Number(data?.UNCL_BAL)}
                   </Typography>
                 </Grid>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">Pending Amt</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">Pending Amt</Typography>
                   <Typography>{data?.PENDING_SCROLL_AMT}</Typography>
                 </Grid>
-                <Grid item id="accInfo" xs={3}>
-                  <Typography variant="button">ClearingChq(B)</Typography>
+                <Grid
+                  item
+                  id="cardGridItem"
+                  xs={dynamicCard.length < 3 ? 2 : 3}
+                >
+                  <Typography id="cardLabel">ClearingChq(B)</Typography>
                   <Typography>{data?.UNCL_BAL}</Typography>
                 </Grid>
               </Grid>

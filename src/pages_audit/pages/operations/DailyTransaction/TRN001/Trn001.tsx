@@ -49,6 +49,7 @@ import "./Trn001.css";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
+import AccDetails from "../TRNHeaderTabs/AccountDetails";
 
 export const Trn001 = () => {
   const { t } = useTranslation();
