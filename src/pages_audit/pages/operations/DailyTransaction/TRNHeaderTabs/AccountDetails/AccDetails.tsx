@@ -40,6 +40,7 @@ export const AccDetails = ({ flag }) => {
     },
   };
   let data = tempStore?.accInfo;
+
   return (
     <>
       <Carousel
@@ -76,12 +77,12 @@ export const AccDetails = ({ flag }) => {
                   <Typography>{data?.ACCT_NM}</Typography>
                 </Grid>
                 <Grid item id="cardGridItem">
-                  <Typography id="cardLabel">CustomerId</Typography>
-                  <Typography>{data?.CUSTOMER_ID}</Typography>
-                </Grid>
-                <Grid item id="cardGridItem">
                   <Typography id="cardLabel">Account</Typography>
                   <Typography>{data?.ACCT_CD_NEW}</Typography>
+                </Grid>
+                <Grid item id="cardGridItem">
+                  <Typography id="cardLabel">CustomerId</Typography>
+                  <Typography>{data?.CUSTOMER_ID}</Typography>
                 </Grid>
 
                 <Grid item id="cardGridItem">
