@@ -86,7 +86,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     NRIDTLFormRef.current.handleSubmitError(e, "save")
                 }}
                 >
-                {t("Save & Next")}
+                {t("Next")}
+                {/* {t("Save & Next")} */}
                 </Button>
             </Fragment>
             : displayMode == "edit"
