@@ -44,14 +44,17 @@ export const ckyc_confirmation_form_metadata = {
         },
     },
     fields: [
-        {
-            render: {
-                componentType: "textarea",
-            },
-            name: "REMARKS",
-            label: "Remarks",
-            maxLength: 100,
-            GridProps: {xs:12, sm:8, md: 6, lg: 2.4, xl:2},
-        }
+      {
+        render: {
+          componentType: "textField",
+        },
+        name: "REMARKS",
+        multiline: true,
+        label: "Remarks",
+        maxLength: 300,
+        GridProps: {
+          xl: 12,
+        },
+      },
     ]
 }
