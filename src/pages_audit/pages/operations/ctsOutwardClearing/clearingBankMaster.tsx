@@ -67,32 +67,51 @@ export const ClearingBankMaster: FC<{
   //   () => API.getFormFieldPropsData({ ...reqDataRef.current })
   // );
   const mutation = useMutation(API.clearingBankMasterConfigDML, {
-    onError: (error: any) => {
+    onError: (error: any, { endSubmit }) => {
       let errorMsg = "Unknown Error occured";
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      // endSubmit(false, errorMsg, error?.error_detail ?? "");
-      if (isErrorFuncRef.current == null) {
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-      } else {
-        isErrorFuncRef.current?.endSubmit(
-          false,
-          errorMsg,
-          error?.error_detail ?? ""
-        );
-      }
+      endSubmit(false, errorMsg, error?.error_detail ?? "");
+      enqueueSnackbar(errorMsg, { variant: "error" });
       onActionCancel();
     },
     onSuccess: (data) => {
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
+      // enqueueSnackbar(data, {
+      //   variant: "success",
+      // });
+      enqueueSnackbar("Data insert successfully", { variant: "success" });
       onClose();
     },
   });
+
+  // const mutation = useMutation(API.clearingBankMasterConfigDML, {
+  //   onError: (error: any) => {
+  //     let errorMsg = "Unknown Error occured";
+  //     if (typeof error === "object") {
+  //       errorMsg = error?.error_msg ?? errorMsg;
+  //     }
+  //     // endSubmit(false, errorMsg, error?.error_detail ?? "");
+  //     if (isErrorFuncRef.current == null) {
+  //       enqueueSnackbar(errorMsg, {
+  //         variant: "error",
+  //       });
+  //     } else {
+  //       isErrorFuncRef.current?.endSubmit(
+  //         false,
+  //         errorMsg,
+  //         error?.error_detail ?? ""
+  //       );
+  //     }
+  //     onActionCancel();
+  //   },
+  //   onSuccess: (data) => {
+  //     enqueueSnackbar(data, {
+  //       variant: "success",
+  //     });
+  //     onClose();
+  //   },
+  // });
 
   useEffect(() => {
     return () => {

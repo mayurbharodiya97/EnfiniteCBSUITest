@@ -323,7 +323,7 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
         return "";
       },
       sequence: 6,
-      width: 80,
+      width: 100,
       maxWidth: 150,
       minWidth: 100,
     },
@@ -340,7 +340,7 @@ export const DynamicFormConfigGridMetaDataView: GridMetaDataType = {
         return "";
       },
       sequence: 7,
-      width: 80,
+      width: 110,
       maxWidth: 150,
       minWidth: 100,
     },
@@ -557,7 +557,7 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
         return "";
       },
       sequence: 7,
-      width: 80,
+      width: 100,
       maxWidth: 150,
       minWidth: 100,
     },
@@ -574,7 +574,7 @@ export const DynamicFormConfigGridMetaDataEdit: GridMetaDataType = {
       //   return "";
       // },
       sequence: 8,
-      width: 80,
+      width: 110,
       maxWidth: 150,
       minWidth: 100,
     },
@@ -803,7 +803,7 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
         return "";
       },
       sequence: 6,
-      width: 80,
+      width: 100,
       maxWidth: 150,
       minWidth: 100,
     },
@@ -820,7 +820,7 @@ export const DynamicFormConfigGridMetaDataAdd: GridMetaDataType = {
         return "";
       },
       sequence: 7,
-      width: 70,
+      width: 110,
       maxWidth: 150,
       minWidth: 100,
     },

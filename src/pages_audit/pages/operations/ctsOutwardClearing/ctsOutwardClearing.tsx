@@ -1,6 +1,7 @@
 import { FC, Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQueries, useQuery } from "react-query";
 import {
+  ChequeDetailFormMetaData,
   CtsOutwardClearingMetadata,
   ViewCtsOutwardClearingMetadata,
 } from "./metaData";
@@ -10,34 +11,21 @@ import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { useContext } from "react";
 import { SubmitFnType } from "packages/form";
-import { Theme, Tabs, Tab } from "@mui/material";
+import { Theme, Tabs, Tab, AppBar } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { makeStyles } from "@mui/styles";
 import { ChequeDetailForm } from "./chequeDetail";
-import { SlipDetailForm } from "./slipDetailForm";
 import { GradientButton } from "components/styledComponent/button";
 import { RetrieveClearingForm } from "./retrieveClearingData";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { extractMetaData } from "components/utils";
 import { MetaDataType } from "components/dyanmicForm";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import {
+  PopupMessageAPIWrapper,
+  PopupRequestWrapper,
+} from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
-
-const useTypeStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color5)",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--theme-color2)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-  refreshiconhover: {},
-}));
 
 const CtsOutwardClearing: FC<{
   zoneTranType: any;
@@ -46,16 +34,25 @@ const CtsOutwardClearing: FC<{
 }> = ({ zoneTranType, defaultView, tranCD }) => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
-  const formDataRef = useRef<any>({});
   const myRef = useRef<any>(null);
-  const slipJointDetailRef = useRef<any>({});
-  const [zoneData, setZoneData] = useState<any>({});
   const [gridData, setGridData] = useState<any>();
-  const [currentTab, setCurrentTab] = useState("slipdetail");
+  const [formData, setFormData] = useState<any>();
+  const [message, setMessage] = useState<any>();
+  const [isOpenSave, setIsOpenSave] = useState(false);
   const [isDelete, SetDelete] = useState(false);
+  const [isOpenProcced, setIsOpenProcced] = useState(false);
   const [formMode, setFormMode] = useState(defaultView);
   const location = useLocation();
   const navigate = useNavigate();
+  const isErrorFuncRef = useRef<any>(null);
+  const [initValues, setInitValues] = useState<any>({
+    chequeDetails: [
+      {
+        ECS_SEQ_NO: "",
+        // isRemoveButton: true,
+      },
+    ],
+  });
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
@@ -78,6 +75,52 @@ const CtsOutwardClearing: FC<{
         }),
     },
   ]);
+  const mutationOutward = useMutation(API.outwardClearingConfigDML, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      if (isErrorFuncRef.current == null) {
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      } else {
+        isErrorFuncRef.current?.endSubmit(
+          false,
+          errorMsg,
+          error?.error_detail ?? ""
+        );
+      }
+      // onActionCancel();
+    },
+    onSuccess: (data) => {
+      setFormData(() => ({}));
+      setInitValues(() => ({
+        chequeDetails: [],
+      }));
+      myRef.current.data = {};
+      setGridData(() => ({}));
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
+
+      setFormMode("new");
+      setIsOpenProcced(false);
+      // onActionCancel();
+    },
+  });
+  const onSubmitHandler: SubmitFnType = async (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    value,
+    event
+  ) => {
+    //@ts-ignore
+    endSubmit(true);
+  };
   const deleteMutation = useMutation(API.outwardClearingConfigDML, {
     onError: (error: any) => {},
     onSuccess: (data) => {
@@ -85,11 +128,9 @@ const CtsOutwardClearing: FC<{
       enqueueSnackbar("Records successfully deleted", {
         variant: "success",
       });
-      // closeDialog();
+
       SetDelete(false);
       setFormMode("new");
-      // result[0]?.refetch();
-      // refetch();
     },
   });
 
@@ -122,195 +163,188 @@ const CtsOutwardClearing: FC<{
     };
   }, []);
 
-  const handleChangeTab = (_, currentTab) => {
-    setCurrentTab(currentTab);
-  };
-
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    value,
-    event
-  ) => {
-    //@ts-ignore
-    endSubmit(true);
-    data = {
-      ...data,
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTERED_COMP_CD: authState?.companyID ?? "",
-      ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
-      _isNewRow: true,
-      REQUEST_CD: "",
-      TRAN_TYPE: zoneTranType ?? "",
-      endSubmit,
-      setFieldError,
-    };
-    setZoneData(data);
-  };
-
   if (CtsOutwardClearingMetadata?.fields?.[1]) {
     CtsOutwardClearingMetadata.fields[1].requestProps = zoneTranType ?? "";
   }
+  const updatedMetaData = {
+    ...CtsOutwardClearingMetadata,
+    fields: CtsOutwardClearingMetadata.fields?.map((field) => {
+      if (field.name === "BRANCH_CD") {
+        return {
+          ...field,
+          defaultValue: authState?.user?.branchCode ?? "",
+        };
+      }
+      return field;
+    }),
+  };
 
   return (
     <>
-      {formMode === "new" ? (
-        <>
-          <FormWrapper
-            key={"CtsoutwardForm" + formMode}
-            // metaData={CtsOutwardClearingMetadata}
-            metaData={
-              extractMetaData(
-                CtsOutwardClearingMetadata,
-                formMode
-              ) as MetaDataType
+      <div
+        onKeyDown={(e) => {
+          if (e.key === "Tab") {
+            let target: any = e?.target;
+            if (
+              (target?.name ?? "") ===
+              updatedMetaData.form.name + "/AMOUNT"
+            ) {
+              myRef?.current?.getFieldData().then((res) => {
+                setFormData(res);
+              });
+              ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused =
+                true;
             }
-            initialValues={{
-              ...zoneData,
-              TRAN_DT: new Date(result?.[0]?.data?.[0]?.DATE ?? new Date()),
-              ENTERED_BY: authState?.user?.name ?? "",
-            }}
-            ref={myRef}
-            onSubmitHandler={onSubmitHandler}
-            // hideHeader={true}
-            //@ts-ignore
-            displayMode={formMode}
-            formStyle={{
-              background: "white",
-              width: "100%",
-              padding: "10px",
-            }}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                <GradientButton
-                  onClick={() => {
-                    navigate(location.pathname + "/retrieve");
-                    setFormMode("view");
-                  }}
-                >
-                  Retrieve
-                </GradientButton>
-              </>
-            )}
-          </FormWrapper>
-        </>
-      ) : formMode === "view" ? (
-        <>
-          {isLoading || isFetching ? (
-            <LoaderPaperComponent />
-          ) : isError ? (
-            <Alert
-              severity="error"
-              errorMsg={error?.error_msg ?? "Error"}
-              errorDetail={error?.error_detail ?? ""}
-              color="error"
-            />
-          ) : (
+          }
+        }}
+      >
+        {formMode === "new" ? (
+          <>
             <FormWrapper
-              key={"CtsoutwardForm" + formMode}
+              key={"CtsoutwardForm" + formMode + mutationOutward.isSuccess}
               // metaData={CtsOutwardClearingMetadata}
               metaData={
-                extractMetaData(
-                  ViewCtsOutwardClearingMetadata,
-                  formMode
-                ) as MetaDataType
+                extractMetaData(updatedMetaData, formMode) as MetaDataType
               }
-              initialValues={data?.[0] ?? ""}
+              initialValues={
+                mutationOutward.isSuccess
+                  ? {}
+                  : {
+                      ...formData,
+                      TRAN_DT: new Date(
+                        result?.[0]?.data?.[0]?.DATE ?? new Date()
+                      ),
+                      ENTERED_BY: authState?.user?.name ?? "",
+                    }
+              }
+              // initialValues={{
+              //   ...formData,
+              //   TRAN_DT: new Date(result?.[0]?.data?.[0]?.DATE ?? new Date()),
+              //   ENTERED_BY: authState?.user?.name ?? "",
+              // }}
               ref={myRef}
               onSubmitHandler={onSubmitHandler}
+              setDataOnFieldChange={(action, paylod) => {
+                if (paylod?.ACCT_JOIN_DETAILS) {
+                  setGridData(paylod);
+                }
+                let accountMessage = paylod.RESTRICT_MESSAGE || paylod.MESSAGE1;
+                setMessage(accountMessage);
+                setIsOpenSave(true);
+              }}
               // hideHeader={true}
               //@ts-ignore
               displayMode={formMode}
               formStyle={{
                 background: "white",
                 width: "100%",
-                padding: "10px",
+                padding: "05px",
               }}
             >
               {({ isSubmitting, handleSubmit }) => (
                 <>
-                  <>
-                    <GradientButton
-                      onClick={() => {
-                        navigate(location.pathname + "/retrieve");
-                      }}
-                    >
-                      Retrieve
-                    </GradientButton>
-                  </>
-                  <>
-                    <GradientButton
-                      onClick={() => {
-                        setFormMode("new");
-                      }}
-                    >
-                      new
-                    </GradientButton>
-                  </>
-                  <>
-                    <GradientButton
-                      onClick={() => {
-                        SetDelete(true);
-                      }}
-                    >
-                      Delete
-                    </GradientButton>
-                  </>
+                  <GradientButton
+                    onClick={() => {
+                      navigate(location.pathname + "/retrieve");
+                      setFormMode("view");
+                    }}
+                  >
+                    Retrieve
+                  </GradientButton>
                 </>
               )}
             </FormWrapper>
-          )}
-        </>
-      ) : null}
-
-      <div style={{ padding: "08px" }}>
-        <Tabs
-          textColor="secondary"
-          indicatorColor="secondary"
-          aria-label="secondary tabs example"
-          value={currentTab}
-          onChange={handleChangeTab}
-        >
-          <Tab label="Slip Detail" value="slipdetail" id="0" />
-          <Tab label="Cheque Detail" value="chequedetail" id="1" />
-        </Tabs>
-
-        {currentTab === "slipdetail" ? (
-          <>
-            <SlipDetailForm
-              formDataRef={formDataRef}
-              setCurrentTab={setCurrentTab}
-              myRef={myRef}
-              formMode={formMode}
-              result={result?.[0]?.data}
-              slipJointDetailRef={slipJointDetailRef}
-              setGridData={setGridData}
-              gridData={gridData}
-              retrievData={data?.[0]}
-              loading={isLoading || isFetching}
-              error={isError}
-            />
           </>
-        ) : currentTab === "chequedetail" ? (
+        ) : formMode === "view" ? (
           <>
-            <ChequeDetailForm
-              zoneData={zoneData}
-              formDataRef={formDataRef}
-              setCurrentTab={setCurrentTab}
-              myRef={myRef}
-              formMode={formMode}
-              slipJointDetailRef={slipJointDetailRef}
-              gridData={gridData}
-              retrievData={data?.[0]}
-              loading={isLoading || isFetching}
-              error={isError}
-            />
+            {isLoading || isFetching ? (
+              <LoaderPaperComponent />
+            ) : isError ? (
+              <Alert
+                severity="error"
+                errorMsg={error?.error_msg ?? "Error"}
+                errorDetail={error?.error_detail ?? ""}
+                color="error"
+              />
+            ) : (
+              <FormWrapper
+                key={"CtsoutwardForm" + formMode}
+                // metaData={CtsOutwardClearingMetadata}
+                metaData={
+                  extractMetaData(
+                    ViewCtsOutwardClearingMetadata,
+                    formMode
+                  ) as MetaDataType
+                }
+                initialValues={{
+                  ...(data?.[0]?.SLIP_DETAIL || {}),
+                  ...(data?.[0] || {}),
+                }}
+                ref={myRef}
+                // onSubmitHandler={onSubmitHandler}
+                // hideHeader={true}
+                //@ts-ignore
+                displayMode={formMode}
+                formStyle={{
+                  background: "white",
+                  width: "100%",
+                  padding: "05px",
+                }}
+              >
+                {({ isSubmitting, handleSubmit }) => (
+                  <>
+                    <>
+                      <GradientButton
+                        onClick={() => {
+                          navigate(location.pathname + "/retrieve");
+                        }}
+                      >
+                        Retrieve
+                      </GradientButton>
+                    </>
+                    <>
+                      <GradientButton
+                        onClick={() => {
+                          setFormMode("new");
+                        }}
+                      >
+                        new
+                      </GradientButton>
+                    </>
+                    <>
+                      <GradientButton
+                        onClick={() => {
+                          SetDelete(true);
+                        }}
+                      >
+                        Delete
+                      </GradientButton>
+                    </>
+                  </>
+                )}
+              </FormWrapper>
+            )}
           </>
         ) : null}
+
+        <>
+          <ChequeDetailForm
+            formData={formData}
+            setFormData={setFormData}
+            myRef={myRef}
+            formMode={formMode}
+            gridData={gridData}
+            retrievData={data?.[0]}
+            loading={isLoading || isFetching}
+            error={isError}
+            zoneTranType={zoneTranType}
+            mutationOutward={mutationOutward}
+            setIsOpenProcced={setIsOpenProcced}
+            isOpenProcced={isOpenProcced}
+            initValues={initValues}
+            setInitValues={setInitValues}
+          />
+        </>
       </div>
       <Routes>
         <Route
@@ -324,6 +358,16 @@ const CtsOutwardClearing: FC<{
           }
         />
       </Routes>
+      {isOpenSave ? (
+        <PopupRequestWrapper
+          MessageTitle="Account Description"
+          Message={message}
+          onClickButton={(rows, buttonName) => setIsOpenSave(false)}
+          buttonNames={["Ok"]}
+          rows={[]}
+          open={isOpenSave}
+        />
+      ) : null}
       {isDelete ? (
         <PopupMessageAPIWrapper
           MessageTitle="Confirmation"

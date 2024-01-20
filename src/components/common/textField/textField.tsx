@@ -158,11 +158,16 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value, ignoreUpdate, isFieldFocused } = incomingMessage;
+      const { value, ignoreUpdate, isFieldFocused, error } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (isFieldFocused) {
           getFocus();
+        }
+        if (error) {
+          if (whenToRunValidation === "onBlur") {
+            runValidation({ value: value }, true);
+          }
         }
         if (ignoreUpdate) {
           //ignore Validation

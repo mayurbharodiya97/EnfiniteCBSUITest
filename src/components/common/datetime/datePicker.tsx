@@ -28,7 +28,7 @@ const useStyles: any = makeStyles({
     lineHeight: "1.4375em",
     fontWeight: "600",
     transform: "translate(0, 1.5px) scale(1)",
-    marginBottom: "8px",
+    marginBottom: "3px",
     maxWidth: "calc(133% - 32px)",
   },
 });

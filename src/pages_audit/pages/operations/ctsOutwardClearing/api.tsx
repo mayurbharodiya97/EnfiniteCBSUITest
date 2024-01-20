@@ -36,9 +36,10 @@ export const clearingBankMasterConfigDML = async (formData) => {
     await AuthSDK.internalFetcher("DOBANKDETAIL", formData);
   if (status === "0") {
     return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
+  } 
+  // else {
+  //   throw DefaultErrorObject(message, messageDetails);
+  // }
 };
 export const outwardClearingConfigDML = async (formData) => {
   const { status, message, messageDetails } = await AuthSDK.internalFetcher(
