@@ -102,9 +102,7 @@ export interface FormMetaDataType {
     name: string;
     label: string;
   };
-  apiKey?: any;
   formStyle?: any;
-  hideHeader?: any;
 }
 
 export interface ComponentTypeProps {
@@ -255,6 +253,7 @@ export interface FormWrapperProps {
   formState?: any;
   hideHeader?: boolean;
   onFormDataChange?: any;
+  setDataOnFieldChange?: Function;
 }
 
 export interface FormProps {

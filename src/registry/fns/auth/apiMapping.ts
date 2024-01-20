@@ -726,11 +726,20 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/ACCTNOVALIDATION",
     packageName: "",
   },
+  GETDLYTRNTABFIELDDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTABFIELDDISP",
+    packageName: "",
+  },
 
   // other trx
   GETDLYTRNOWCHQOBCIBCTAB: {
     //OWChq
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNOWCHQOBCIBCTAB",
+    packageName: "",
+  },
+  GETDLYTRNAPYTAB: {
+    //APY
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNAPYTAB",
     packageName: "",
   },
   GETDLYTRNTEMPODCTAB: {
@@ -804,6 +813,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSCNFRETRIEV",
     packageName: "",
   },
+  GETOWCLEARINGDETAILS: {
+    url: "/chequeServiceAPI/GETOWCLEARINGDETAILS",
+    packageName: "",
+  },
   GETEMAILSTATUS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETEMAILSTATUS",
     packageName: "",
@@ -822,6 +835,38 @@ export const ActionWiseAPIConfiguration = {
   },
   GETPANSTATUS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
+    packageName: "",
+  },
+  GETLIMITGRIDDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITGRIDDATADISP",
+    packageName: "",
+  },
+  GETFDDTLS: {
+    url: "/loanServiceAPI/GETFDDTLS",
+    packageName: "",
+  },
+  DOLIMITENTRYDML: {
+    url: "loanServiceAPI/DOLIMITENTRYDML",
+    packageName: "",
+  },
+  GETSTKACCTTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKACCTTYPEDDW",
+    packageName: "",
+  },
+  GETSTKSECURITYDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSECURITYDDW",
+    packageName: "",
+  },
+  GETSTKSCRIPTDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSCRIPTDDW",
+    packageName: "",
+  },
+  GETSTKSECFIELDDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSECFIELDDISP",
+    packageName: "",
+  },
+  GETSTKUPVEWBTNDOCDTLDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKUPVEWBTNDOCDTLDISP",
     packageName: "",
   },
 };

@@ -48,22 +48,6 @@ export const LienEntry = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    let ApiKey: any = LienEntryMetadata?.form?.apiKey;
-    let apiID: any = LienEntryMetadata?.form?.apiID;
-    let response = {};
-    for (const key in ApiKey) {
-      if (ApiKey.hasOwnProperty(key)) {
-        const mappedKey = ApiKey[key];
-        response[key] = data[mappedKey];
-      }
-    }
-    let otherAPIRequestPara = {
-      COMP_CD: authState?.companyID,
-      ...response,
-      ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
-      SR_CD: "1",
-    };
-    mutation.mutate({ apiID, otherAPIRequestPara });
   };
   return (
     <>

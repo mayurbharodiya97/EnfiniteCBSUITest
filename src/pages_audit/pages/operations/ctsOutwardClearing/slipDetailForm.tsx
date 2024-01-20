@@ -10,7 +10,11 @@ import { useMutation } from "react-query";
 import * as API from "./api";
 import { ClearCacheContext } from "cache";
 import { useSnackbar } from "notistack";
-import { SlipDetailFormMetaData, SlipJoinDetailGridMetaData } from "./metaData";
+import {
+  SlipDetailFormMetaData,
+  SlipJoinDetailGridMetaData,
+  ChequeDetailFormMetaData,
+} from "./metaData";
 import { makeStyles } from "@mui/styles";
 import { Theme } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
@@ -20,47 +24,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import GridWrapper from "components/dataTableStatic";
 import { format } from "date-fns";
 import { ActionTypes } from "components/dataTable";
-interface accountSlipJoinDetailDataType {
-  ACCT_TYPE: any;
-  ACCT_CD: any;
-  GD_TODAY_DT: any;
-  SCREEN_REF: any;
-  COMP_CD: any;
-  BRANCH_CD: any;
-  endSubmit?: any;
-  setFieldError?: any;
-}
+import { PopupRequestWrapper } from "components/custom/popupMessage";
+import { extractMetaData } from "components/utils";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
 
-const accountSlipJoinDetailDataWrapperFn =
-  (accountSlipJoinDetailDataType) =>
-  async ({
-    ACCT_TYPE,
-    COMP_CD,
-    BRANCH_CD,
-    ACCT_CD,
-    GD_TODAY_DT,
-    SCREEN_REF,
-  }: accountSlipJoinDetailDataType) => {
-    return accountSlipJoinDetailDataType({
-      ACCT_TYPE,
-      COMP_CD,
-      BRANCH_CD,
-      ACCT_CD,
-      GD_TODAY_DT,
-      SCREEN_REF,
-    });
-  };
-// interface accountSlipJoinDetailDataType {
-//   data: object;
-//   displayData?: object;
-//   endSubmit?: any;
-//   setFieldError?: any;
-// }
-// const accountSlipJoinDetailDataWrapperFn =
-//   (updateMasterData) =>
-//   async ({ data }: accountSlipJoinDetailDataType) => {
-//     return updateMasterData(data);
-//   };
 export const useDialogStyles = makeStyles((theme: Theme) => ({
   topScrollPaper: {
     alignItems: "center",
@@ -87,23 +55,33 @@ export const SlipDetailForm: FC<{
   formDataRef?: any;
   myRef?: any;
   setCurrentTab?: any;
-  defaultView?: any;
+  formMode?: any;
   result?: any;
-  mutation?: any;
   slipJointDetailRef?: any;
+  setGridData?: any;
+  gridData?: any;
+  retrievData?: any;
+  loading?: any;
+  error?: any;
 }> = ({
   formDataRef,
   setCurrentTab,
   myRef,
-  defaultView,
+  formMode,
   result,
-  mutation,
   slipJointDetailRef,
+  setGridData,
+  gridData,
+  retrievData,
+  loading,
+  error,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const mySlipRef = useRef<any>(null);
-  const navigate = useNavigate();
+  const [message, setMessage] = useState<any>();
+  const [isOpenSave, setIsOpenSave] = useState<any>(false);
+
   const setCurrentAction = useCallback(
     (data) => {
       slipJointDetailRef.current = data?.rows?.[0]?.data?.REF_PERSON_NAME;
@@ -111,13 +89,7 @@ export const SlipDetailForm: FC<{
     },
     [slipJointDetailRef]
   );
-  // useEffect(() => {
-  //   const gridData = {
-  //     ...formDataRef.current,
-  //     ACCT_NAME: mutation?.data?.[0].ACCT_NAME,
-  //     TRAN_BAL: mutation?.data?.[0].TRAN_BAL,
-  //   };
-  // }, [mutation?.data]);
+
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
     mySlipRef?.current?.handleSubmit(event, "BUTTON_CLICK");
@@ -143,29 +115,6 @@ export const SlipDetailForm: FC<{
       COMP_CD: authState?.companyID ?? "",
       _isNewRow: true,
     };
-    let Apireq = {
-      COMP_CD: authState?.companyID,
-      ACCT_CD: data?.ACCT_CD.padStart(6, "0").padEnd(20, " "),
-      ACCT_TYPE: data?.ACCT_TYPE,
-      BRANCH_CD: authState?.user?.branchCode,
-      GD_TODAY_DT: format(new Date(), "dd/MMM/yyyy"),
-      SCREEN_REF: authState?.menulistdata[4]?.children?.[6]?.user_code,
-    };
-
-    if (value === "AC_NAME") {
-      mutation.mutate(Apireq, {
-        onSuccess: (data) => {
-          console.log("Mutation successful. Data:", data);
-          if (Array.isArray(data) && data.length) {
-            endSubmit(true, "");
-            setFieldErrors({
-              ACCT_CD: data?.[0]?.RESTRICT_MESSAGE || data?.[0]?.MESSAGE1 || "",
-            });
-            return;
-          }
-        },
-      });
-    }
 
     if (value === "BUTTON_CLICK") {
       formDataRef.current = data;
@@ -190,6 +139,7 @@ export const SlipDetailForm: FC<{
       return field;
     }),
   };
+
   return (
     <>
       <div
@@ -199,98 +149,107 @@ export const SlipDetailForm: FC<{
             if (
               (target?.name ?? "") ===
               updatedMetaData.form.name + "/AMOUNT"
-              // +
-              //   updatedMetaData.fields[0].name +
-              //   "[0].AMOUNT"
             ) {
               ClickEventManage();
-
               setCurrentTab("chequedetail");
-            }
-          }
-          if (e.key === "Tab") {
-            let target: any = e?.target;
-            if (
-              (target?.name ?? "") ===
-              updatedMetaData.form.name + "/ACCT_CD"
-              // +
-              //   updatedMetaData.fields[0].name +
-              //   "[0].AMOUNT"
-            ) {
-              ClickEventManage();
+              ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused =
+                true;
             }
           }
         }}
       >
-        <FormWrapper
-          key={
-            `${Date.now()}-SlipDetailFormMetaData`
-            //   + mutation?.data?.length &&
-            // Boolean(mutation?.isSuccess)
-            //   ? mutation?.data
-            //   : ""
-          }
-          metaData={updatedMetaData as MetaDataType}
-          // displayMode={formMode}
-          onSubmitHandler={onSubmitHandlerSlip}
-          initialValues={
-            {
-              ...formDataRef.current,
-              ACCT_NAME: mutation?.data?.[0].ACCT_NAME,
-              TRAN_BAL: mutation?.data?.[0].TRAN_BAL,
+        {formMode === "new" ? (
+          <FormWrapper
+            key={`SlipDetailFormMetaData-` + formMode}
+            // metaData={updatedMetaData as MetaDataType}
+            metaData={
+              extractMetaData(updatedMetaData, formMode) as MetaDataType
             }
-            // mutationOutward.isSuccess
-            //   ? {}
-            //   : {
-            //       ...formDataRef.current,
-            //       ACCT_NAME: mutation?.data?.[0].ACCT_NAME,
-            //       TRAN_BAL: mutation?.data?.[0].TRAN_BAL,
-            //     }
-          }
-          // initialValues={formDataRef.current ?? {}}
-          hideHeader={true}
-          displayMode={defaultView}
-          formStyle={{
-            background: "white",
-          }}
-          ref={mySlipRef}
-        />
-      </div>
-
-      <div
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            let target: any = e?.target;
-            //   if (
-            //     (target?.name ?? "") ===
-            //     updatedMetaData.form.name + "/AMOUNT"
-            //     // +
-            //     //   updatedMetaData.fields[0].name +
-            //     //   "[0].AMOUNT"
-            //   ) {
-            //     ClickEventManage();
-
-            //     setCurrentTab("chequedetail");
-            //   }
-          }
-        }}
-      >
-        {mutation?.data?.[0]?.ACCT_JOIN_DETAILS &&
-        mutation?.data?.[0]?.ACCT_JOIN_DETAILS.length ? (
-          <GridWrapper
-            key={"SlipJoinDetailGridMetaData" + mutation?.data}
-            finalMetaData={SlipJoinDetailGridMetaData}
-            data={mutation?.data?.[0]?.ACCT_JOIN_DETAILS ?? []}
-            setData={() => null}
-            // loading={isLoading || isFetching}
-            actions={actions}
-            setAction={setCurrentAction}
-            // refetchData={() => refetch()}
-            // ref={myGridRef}
-            // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
+            onSubmitHandler={onSubmitHandlerSlip}
+            initialValues={formDataRef.current ?? {}}
+            // initialValues={formDataRef.current ?? {}}
+            hideHeader={true}
+            displayMode={formMode}
+            formStyle={{
+              background: "white",
+            }}
+            ref={mySlipRef}
+            setDataOnFieldChange={(action, paylod) => {
+              if (paylod?.ACCT_JOIN_DETAILS) {
+                setGridData(paylod);
+              }
+              let accountMessage = paylod.RESTRICT_MESSAGE || paylod.MESSAGE1;
+              setMessage(accountMessage);
+              setIsOpenSave(true);
+            }}
           />
+        ) : formMode === "view" ? (
+          <>
+            {loading ? (
+              <LoaderPaperComponent />
+            ) : error ? (
+              <Alert
+                severity="error"
+                errorMsg={error?.error_msg ?? "Error"}
+                errorDetail={error?.error_detail ?? ""}
+                color="error"
+              />
+            ) : (
+              <FormWrapper
+                key={`SlipDetailFormMetaData-` + formMode}
+                metaData={
+                  extractMetaData(updatedMetaData, formMode) as MetaDataType
+                }
+                // metaData={updatedMetaData as MetaDataType}
+                onSubmitHandler={onSubmitHandlerSlip}
+                initialValues={retrievData?.SLIP_DETAIL ?? {}}
+                // initialValues={formDataRef.current ?? {}}
+                hideHeader={true}
+                displayMode={formMode}
+                formStyle={{
+                  background: "white",
+                }}
+                ref={mySlipRef}
+                setDataOnFieldChange={(action, paylod) => {
+                  if (paylod?.ACCT_JOIN_DETAILS) {
+                    setGridData(paylod);
+                  }
+                  let accountMessage =
+                    paylod.RESTRICT_MESSAGE || paylod.MESSAGE1;
+                  setMessage(accountMessage);
+                  setIsOpenSave(true);
+                }}
+              />
+            )}
+          </>
         ) : null}
       </div>
+
+      {gridData?.ACCT_JOIN_DETAILS && gridData?.ACCT_JOIN_DETAILS.length ? (
+        <GridWrapper
+          key={"SlipJoinDetailGridMetaData" + gridData}
+          finalMetaData={SlipJoinDetailGridMetaData}
+          data={gridData?.ACCT_JOIN_DETAILS ?? []}
+          setData={() => null}
+          // loading={isLoading || isFetching}
+          actions={actions}
+          setAction={setCurrentAction}
+          // refetchData={() => refetch()}
+          // ref={myGridRef}
+          // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
+        />
+      ) : null}
+
+      {isOpenSave ? (
+        <PopupRequestWrapper
+          MessageTitle="Account Description"
+          Message={message}
+          onClickButton={(rows, buttonName) => setIsOpenSave(false)}
+          buttonNames={["Ok"]}
+          rows={[]}
+          open={isOpenSave}
+        />
+      ) : null}
     </>
   );
 };
