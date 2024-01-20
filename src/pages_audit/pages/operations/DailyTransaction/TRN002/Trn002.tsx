@@ -61,6 +61,7 @@ export const Trn002 = () => {
   const [dataRow, setDataRow] = useState<any>({});
   const [credit, setCredit] = useState<number>(0);
   const [debit, setDebit] = useState<number>(0);
+  const [confirmed, setConfirmed] = useState<number>(0);
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
 
@@ -85,7 +86,8 @@ export const Trn002 = () => {
 
       let crSum = 0;
       let drSum = 0;
-      data.map((a) => {
+      let conf = 0;
+      let abc = arr.map((a) => {
         if (
           a.TYPE_CD.includes("1") ||
           a.TYPE_CD.includes("2") ||
@@ -103,6 +105,7 @@ export const Trn002 = () => {
       });
       setCredit(crSum);
       setDebit(drSum);
+      setConfirmed(data.length - arr.length);
     },
     onError: (error) => {},
   });
@@ -181,6 +184,27 @@ export const Trn002 = () => {
   const handleViewAll = () => {
     let arr = [...rows];
     setRows2(arr);
+
+    let crSum = 0;
+    let drSum = 0;
+    arr.map((a) => {
+      if (
+        a.TYPE_CD.includes("1") ||
+        a.TYPE_CD.includes("2") ||
+        a.TYPE_CD.includes("3")
+      ) {
+        crSum = crSum + Number(a?.AMOUNT);
+      }
+      if (
+        a.TYPE_CD.includes("4") ||
+        a.TYPE_CD.includes("5") ||
+        a.TYPE_CD.includes("6")
+      ) {
+        drSum = drSum + Number(a?.AMOUNT);
+      }
+    });
+    setCredit(crSum);
+    setDebit(drSum);
   };
   const handleUpdateRows = (data) => {
     setRows2(data);
@@ -241,7 +265,10 @@ export const Trn002 = () => {
           }}
         >
           <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Total Records : {rows ? rows.length : 0}
+            Total Records : {rows2 ? rows2.length : 0}
+          </Typography>
+          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+            Confirmed Records : {confirmed}
           </Typography>
           <Typography
             sx={{ fontWeight: "bold" }}
