@@ -122,7 +122,7 @@ export const getTRN001List = async (reqData) => {
           a.TYPE_CD.includes("3")
         ) {
           a.credit1 = Number(a.AMOUNT).toFixed(2);
-          a.debit1 = "0.00";
+          a.debit1 = "-";
         }
         if (
           a.TYPE_CD.includes("4") ||
@@ -130,7 +130,7 @@ export const getTRN001List = async (reqData) => {
           a.TYPE_CD.includes("6")
         ) {
           a.debit1 = Number(a.AMOUNT).toFixed(2);
-          a.credit1 = "0.00";
+          a.credit1 = "-";
         }
       });
     return responseData;
@@ -198,7 +198,7 @@ export const getAccNoValidation = async (reqData) => {
       ACCT_CD: reqData.accNo.padEnd(20, " "),
 
       GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
-      SCREEN_REF: "ETRN/559",
+      SCREEN_REF: "ETRN/001", //depending on screen code
     });
   if (status === "0") {
     let responseData = data;

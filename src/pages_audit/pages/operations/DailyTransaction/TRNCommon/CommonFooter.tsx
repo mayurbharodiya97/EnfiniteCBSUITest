@@ -57,7 +57,7 @@ const CommonFooter = ({
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname.includes("/teller_daily_tran_cnf_F2")) {
+    if (location.pathname.includes("/cnf_daily_tran_F2")) {
       setIsTrn1(false);
     } else {
       setIsTrn1(true);

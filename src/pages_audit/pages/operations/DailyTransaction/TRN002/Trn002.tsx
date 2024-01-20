@@ -22,6 +22,7 @@ import {
   PopupMessageAPIWrapper,
   PopupRequestWrapper,
 } from "components/custom/popupMessage";
+import { Grid, Typography } from "@mui/material";
 
 import "./Trn002.css";
 import DailyTransTabs from "../TRNHeaderTabs";
@@ -36,7 +37,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "Delete",
-    actionLabel: "Delete",
+    actionLabel: "Nullify",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -58,7 +59,8 @@ export const Trn002 = () => {
   const [rows2, setRows2] = useState<any>([]);
   const [tabsData, setTabsData] = useState<any>([]);
   const [dataRow, setDataRow] = useState<any>({});
-
+  const [credit, setCredit] = useState<number>(0);
+  const [debit, setDebit] = useState<number>(0);
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
 
@@ -80,6 +82,27 @@ export const Trn002 = () => {
       let arr = data.filter((a) => a.CONFIRMED == "0");
       setRows2(arr);
       setRows(data);
+
+      let crSum = 0;
+      let drSum = 0;
+      data.map((a) => {
+        if (
+          a.TYPE_CD.includes("1") ||
+          a.TYPE_CD.includes("2") ||
+          a.TYPE_CD.includes("3")
+        ) {
+          crSum = crSum + Number(a?.AMOUNT);
+        }
+        if (
+          a.TYPE_CD.includes("4") ||
+          a.TYPE_CD.includes("5") ||
+          a.TYPE_CD.includes("6")
+        ) {
+          drSum = drSum + Number(a?.AMOUNT);
+        }
+      });
+      setCredit(crSum);
+      setDebit(drSum);
     },
     onError: (error) => {},
   });
@@ -202,6 +225,39 @@ export const Trn002 = () => {
           actions={actions}
           setAction={setCurrentAction}
         />
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          sx={{
+            height: "23px",
+            width: "60%",
+            float: "right",
+            position: "relative",
+            top: "-2.67rem",
+            display: "flex",
+            gap: "4rem",
+            alignItems: "center",
+          }}
+        >
+          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+            Total Records : {rows ? rows.length : 0}
+          </Typography>
+          <Typography
+            sx={{ fontWeight: "bold" }}
+            variant="subtitle1"
+            // style={{ color: "green" }}
+          >
+            Credit Sum : ₹ {credit}
+          </Typography>
+          <Typography
+            sx={{ fontWeight: "bold" }}
+            variant="subtitle1"
+            // style={{ color: "tomato" }}
+          >
+            Debit Sum : ₹ {debit}
+          </Typography>
+        </Grid>
       </Card>
 
       <CommonFooter

@@ -7,6 +7,7 @@ import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn1Api from "../api";
 import * as CommonApi from "../../TRNCommon/api";
 import { useSnackbar } from "notistack";
+import { Grid, Typography } from "@mui/material";
 
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
@@ -16,6 +17,9 @@ import {
   PopupMessageAPIWrapper,
   PopupRequestWrapper,
 } from "components/custom/popupMessage";
+
+import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -25,7 +29,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "Delete",
-    actionLabel: "Delete",
+    actionLabel: "Nullify",
     multiple: false,
     rowDoubleClick: false,
     // alwaysAvailable: true,
@@ -40,8 +44,11 @@ export const TRN001_Table = ({ updatedRows }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
 
   const [rows, setRows] = useState<any>([]);
+  const [credit, setCredit] = useState<number>(0);
+  const [debit, setDebit] = useState<number>(0);
   const [dataRow, setDataRow] = useState<any>({});
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
+  const [scrollDialog, setScrollDialog] = useState<boolean>(false);
 
   let objData = {
     COMP_CD: authState?.companyID,
@@ -64,6 +71,26 @@ export const TRN001_Table = ({ updatedRows }) => {
   // api define=============================================
   const getTRN001List = useMutation(trn1Api.getTRN001List, {
     onSuccess: (data) => {
+      let crSum = 0;
+      let drSum = 0;
+      data.map((a) => {
+        if (
+          a.TYPE_CD.includes("1") ||
+          a.TYPE_CD.includes("2") ||
+          a.TYPE_CD.includes("3")
+        ) {
+          crSum = crSum + Number(a?.AMOUNT);
+        }
+        if (
+          a.TYPE_CD.includes("4") ||
+          a.TYPE_CD.includes("5") ||
+          a.TYPE_CD.includes("6")
+        ) {
+          drSum = drSum + Number(a?.AMOUNT);
+        }
+      });
+      setCredit(crSum);
+      setDebit(drSum);
       setRows(data);
     },
     onError: (error) => {},
@@ -106,11 +133,17 @@ export const TRN001_Table = ({ updatedRows }) => {
         authState: authState,
       };
       getAccInfo.mutate(obj);
+
+      // setScrollDialog(true);
     }
 
     if (data.name === "Delete") {
       setDeleteDialog(true);
     }
+
+    // if (row?.TYPE_CD === "3   " || row?.TYPE_CD === "6   ") {
+    //   setScrollDialog(true);
+    // }
   }, []);
 
   const handleDelete = () => {
@@ -121,7 +154,9 @@ export const TRN001_Table = ({ updatedRows }) => {
     };
     deleteScrollByVoucher.mutate(obj);
   };
-
+  const handleCloseDialog = () => {
+    setScrollDialog(false);
+  };
   return (
     <>
       <GridWrapper
@@ -135,7 +170,39 @@ export const TRN001_Table = ({ updatedRows }) => {
         actions={actions}
         setAction={setCurrentAction}
       />
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        sx={{
+          height: "23px",
+          width: "60%",
+          float: "right",
+          position: "relative",
+          top: "-2.67rem",
+          display: "flex",
+          gap: "4rem",
+          alignItems: "center",
+        }}
+      >
+        <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+          Total Records : {rows ? rows.length : 0}
+        </Typography>
+        <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+          Credit Sum : ₹ {credit}
+        </Typography>
+        <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+          Debit Sum : ₹ {debit}
+        </Typography>
+      </Grid>
 
+      {scrollDialog && (
+        <Scroll
+          data={dataRow}
+          open={scrollDialog}
+          handleCloseDialog={handleCloseDialog}
+        />
+      )}
       {Boolean(deleteDialog) ? (
         <PopupMessageAPIWrapper
           MessageTitle="Scroll Delete"

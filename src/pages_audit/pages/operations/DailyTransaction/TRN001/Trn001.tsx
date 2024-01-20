@@ -78,7 +78,7 @@ export const Trn001 = () => {
     accNo: "",
 
     trx: { label: "", value: "", code: "" }, //TYPE_CD
-    scroll: "0", //token
+    scroll: "", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: "0",
@@ -352,7 +352,7 @@ export const Trn001 = () => {
     obj[i].debit = "0.00";
     obj[i].cNo = "0";
     obj[i].bugCNo = false;
-    obj[i].scroll = "0";
+    obj[i].scroll = "";
     obj[i].sdc = defSdc;
     obj[i].remark = defSdc?.label;
 
@@ -498,7 +498,7 @@ export const Trn001 = () => {
       accType: { label: "", value: "", info: "" },
       accNo: "",
       trx: trxx,
-      scroll: "0", //token
+      scroll: "", //token
       sdc: defSdc,
       remark: defSdc?.label,
       cNo: "0",
@@ -580,6 +580,8 @@ export const Trn001 = () => {
       ACCT_CD: rows[i]?.accNo,
       authState: authState,
     };
+    // let abc = authState.menulistdata.find((a) => a.label == "Operation");
+
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
       getAccInfo.mutate(data);
@@ -712,7 +714,7 @@ export const Trn001 = () => {
                   <TableCell id="head">{t("SDC")}</TableCell>
                   <TableCell id="head">{t("Remarks")}</TableCell>
                   <TableCell id="head">{t("Chequeno")} </TableCell>
-                  {/* <TableCell id="head">Chq Date</TableCell> */}
+                  <TableCell id="head">Cheque Date</TableCell>
                   <TableCell id="head">{t("DebitAmount")}</TableCell>
                   <TableCell id="head">{t("CreditAmount")}</TableCell>
                 </TableRow>
@@ -734,7 +736,6 @@ export const Trn001 = () => {
                               value={a.branch}
                               autoHighlight
                               size="small"
-                              disabled={viewOnly ? true : false}
                               options={branchOptions}
                               onChange={(e, value) => handleBranch(e, value, i)}
                               renderInput={(params) => (
@@ -757,7 +758,6 @@ export const Trn001 = () => {
                               value={a.accType}
                               autoHighlight
                               size="small"
-                              disabled={viewOnly ? true : false}
                               options={accTypeOptions}
                               onChange={(e, value) =>
                                 handleAccType(e, value, i)
@@ -778,7 +778,6 @@ export const Trn001 = () => {
                           <TableCell sx={{ minWidth: 50 }}>
                             <TextField
                               value={a.accNo}
-                              disabled={viewOnly ? true : false}
                               error={!a.accNo || a.bugAccNo ? true : false}
                               size="small"
                               type="number"
@@ -792,7 +791,6 @@ export const Trn001 = () => {
                             value={a.trx}
                             autoHighlight
                             size="small"
-                            disabled={viewOnly ? true : false}
                             options={trxOptions}
                             onChange={(e, value) => handleTrx(e, value, i)}
                             renderInput={(params) => (
@@ -808,7 +806,13 @@ export const Trn001 = () => {
                           <TextField
                             value={a.scroll}
                             type="number"
-                            disabled={viewOnly ? true : false}
+                            disabled={
+                              a.trx?.code == "3" ||
+                              a.trx?.code == "6" ||
+                              !a.trx?.code
+                                ? true
+                                : false
+                            }
                             size="small"
                             onChange={(e) => handleScroll(e, i)}
                           />
@@ -817,7 +821,6 @@ export const Trn001 = () => {
                           <Autocomplete
                             value={a.sdc}
                             autoHighlight
-                            disabled={viewOnly ? true : false}
                             size="small"
                             options={sdcOptions}
                             onChange={(e, value) => handleSdc(e, value, i)}
@@ -829,7 +832,6 @@ export const Trn001 = () => {
                         <TableCell sx={{ minWidth: 80 }}>
                           <TextField
                             value={a.remark}
-                            disabled={viewOnly ? true : false}
                             size="small"
                             onChange={(e) => handleRemark(e, i)}
                           />
@@ -849,7 +851,7 @@ export const Trn001 = () => {
                               value={a.cNo}
                               error={!a.cNo || a?.bugCNo ? true : false}
                               id="txtRight"
-                              disabled={a.isCredit || viewOnly ? true : false}
+                              disabled={a.isCredit ? true : false}
                               size="small"
                               type="number"
                               onChange={(e) => handleCNo(e, i)}
@@ -859,17 +861,20 @@ export const Trn001 = () => {
                           </TableCell>
                         </ErrTooltip>
 
-                        {/* <TableCell>
+                        <TableCell>
                           <TextField
                             value={a.date}
                             error={a.isCredit && !a.date ? true : false}
                             type="date"
-                            // disabled={a.isCredit || viewOnly ? true : false}
-                            disabled={true}
+                            disabled={
+                              a.trx?.code == "4" || a.trx?.code == "6"
+                                ? false
+                                : true
+                            }
                             size="small"
                             onChange={(e) => handleDate(e, i)}
                           />{" "}
-                        </TableCell> */}
+                        </TableCell>
                         <ErrTooltip
                           disableInteractive={true}
                           title={
@@ -933,7 +938,6 @@ export const Trn001 = () => {
                             rows[i].trx?.code == "6") && (
                             <Button
                               color="secondary"
-                              disabled={viewOnly ? true : false}
                               onClick={(e) => handleClear(e, i)}
                               size="small"
                             >
