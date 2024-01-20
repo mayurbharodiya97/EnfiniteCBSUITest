@@ -57,7 +57,7 @@ const CommonFooter = ({
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname.includes("/teller_daily_tran_cnf_F2")) {
+    if (location.pathname.includes("/cnf_daily_tran_F2")) {
       setIsTrn1(false);
     } else {
       setIsTrn1(true);
@@ -83,7 +83,6 @@ const CommonFooter = ({
     { label: "Chq No", value: "CHEQUE_NO" },
     { label: "Branch", value: "ENTERED_BRANCH_CD" },
     { label: "CompanyID", value: "ENTERED_COMP_CD" },
-    { label: "Voucher", value: "TRAN_CD" },
     { label: "Scroll", value: "SCROLL1" },
     { label: "Remarks", value: "REMARKS" },
     { label: "TRX", value: "TYPE_CD" },

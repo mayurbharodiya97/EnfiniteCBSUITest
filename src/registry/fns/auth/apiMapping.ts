@@ -726,11 +726,20 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/ACCTNOVALIDATION",
     packageName: "",
   },
+  GETDLYTRNTABFIELDDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTABFIELDDISP",
+    packageName: "",
+  },
 
   // other trx
   GETDLYTRNOWCHQOBCIBCTAB: {
     //OWChq
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNOWCHQOBCIBCTAB",
+    packageName: "",
+  },
+  GETDLYTRNAPYTAB: {
+    //APY
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNAPYTAB",
     packageName: "",
   },
   GETDLYTRNTEMPODCTAB: {

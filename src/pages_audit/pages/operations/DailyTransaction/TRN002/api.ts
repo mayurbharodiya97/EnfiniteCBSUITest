@@ -22,7 +22,15 @@ export const getTRN002List = async (reqData) => {
         a.account1 = a.ACCT_TYPE + a.TYPE_NM;
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
-        a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
+        a.status = a.CONFIRMED == "0" ? "Pending" : "Confirmed";
+
+        // if (a?.CONFIRMED === "0") {
+        //   a._rowColor = "rgb(152 59 70 / 61%)";
+        // }
+        if (a?.CONFIRMED === "Y") {
+          a._rowColor = "rgb(9 132 3 / 51%)";
+        }
       });
 
     return responseData;
