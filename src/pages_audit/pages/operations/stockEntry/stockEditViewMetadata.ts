@@ -1,38 +1,51 @@
-import React from "react";
-import { GeneralAPI } from "registry/fns/functions";
-
-export const StopPayEntryMetadata = {
+export const stockViewEditFormMetaData = {
   form: {
-    name: "PRIORITY",
-    label: "Stop Payment Entry",
+    name: "stockViewEditFormMetaData",
+    label: "Stock Detail",
     resetFieldOnUnmount: false,
-    validationRun: "onChange",
+    validationRun: "onBlur",
+    submitAction: "home",
+    hideHeader: true,
+    formStyle: {
+      background: "white",
+      height: "calc(100vh - 390px)",
+      overflowY: "auto",
+      overflowX: "hidden",
+    },
     render: {
       ordering: "auto",
+      // ordering: "sequence",
       renderType: "simple",
       gridConfig: {
         item: {
           xs: 12,
-          sm: 3,
-          md: 3,
+          sm: 4,
+          md: 4,
         },
         container: {
           direction: "row",
-          spacing: 2,
+          spacing: 1,
+          height: "35vh",
         },
       },
     },
     componentProps: {
-      datePicker: {
+      textField: {
         fullWidth: true,
       },
       select: {
         fullWidth: true,
       },
-      textField: {
+      datePicker: {
         fullWidth: true,
       },
       numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
         fullWidth: true,
       },
     },
@@ -40,27 +53,18 @@ export const StopPayEntryMetadata = {
   fields: [
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "branchCode",
       },
       name: "BRANCH_CD",
       label: "Branch",
       placeholder: "Branch",
       type: "text",
-      isFieldFocused: true,
-      required: true,
-      // maxLength: 16,
-      options: GeneralAPI.getBranchCodeList,
-      _optionsKey: "getBranchCodeList",
       GridProps: {
         xs: 12,
         md: 3,
         sm: 3,
         lg: 3,
         xl: 3,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Branch Code is required."] }],
       },
     },
     {
@@ -70,20 +74,13 @@ export const StopPayEntryMetadata = {
       name: "ACCT_TYPE",
       label: "Account Type",
       placeholder: "EnterAccountType",
-      type: "text",
-      required: true,
-      options: GeneralAPI.getAccountTypeList,
-      _optionsKey: "getAccountTypeList",
+
       GridProps: {
         xs: 12,
         md: 3,
         sm: 3,
         lg: 3,
         xl: 3,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account Type is required."] }],
       },
     },
     {
@@ -94,14 +91,6 @@ export const StopPayEntryMetadata = {
       label: "Account Number",
       placeholder: "EnterAcNo",
       type: "text",
-      // fullWidth: true,
-      required: true,
-      // maxLength: 20,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account no. is required."] }],
-      },
-      // padEnds: 20,/
       GridProps: {
         xs: 12,
         md: 2,
@@ -109,19 +98,15 @@ export const StopPayEntryMetadata = {
         lg: 3,
         xl: 3,
       },
-      // dependentFields: ["BRANCH_CD", "ACCT_TYPE", "FROM_CHEQU"],
     },
     {
       render: {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      // sequence: 1,
       label: "Account Name",
       placeholder: "Account Name",
       type: "text",
-      // required: true,
-      // maxLength: 16,
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -148,23 +133,31 @@ export const StopPayEntryMetadata = {
         xl: 2.4,
       },
     },
-
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_MST_LIMIT",
+      label: "Account Limit Amount",
+      placeholder: "Account Limit Entry",
+      type: "text",
+      // defaultValue: "2",
+      // enableDefaultOption: true,
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
     {
       render: {
         componentType: "autocomplete",
       },
-      name: "FLAG",
-      label: "Flag",
-      defaultValue: "S",
-      options: () => {
-        return [
-          { value: "S", label: "Stop Payment" },
-          { value: "D", label: "Surrender Cheque" },
-          { value: "P", label: "PDC" },
-        ];
-      },
-      _optionsKey: "PAYABLE_AT_PAR",
-      type: "text",
+      name: "SECURITY_CD",
+      label: "Security",
+
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -178,79 +171,56 @@ export const StopPayEntryMetadata = {
       render: {
         componentType: "datePicker",
       },
-      name: "TRAN_DT",
+      name: "NNNNNNN",
       // sequence: 9,
-      label: "Intimate Date",
+      label: "Statement Date",
       GridProps: {
         xs: 12,
         md: 2.4,
         sm: 2.4,
         lg: 2.4,
         xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CHEQUE_FROM",
-      label: "Cheque From",
-      type: "text",
-      placeholder: "Stock Description",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "CHEQUE_TO",
-      label: "Cheque To",
-      type: "text",
-      placeholder: "Stock Description",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REASON_CD",
-      label: "Reason",
-      // options: () => {
-      //   return [
-      //     { value: "", label: " " },
-      //     { value: "", label: " " },
-      //     { value: "", label: "" },
-      //   ];
-      // },
-      // _optionsKey: "PAYAE_AT_PAR",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
       },
     },
     {
       render: {
         componentType: "datePicker",
       },
-      name: "CHEQUE_DT",
+      name: "HHHHHHHHHHH",
       // sequence: 9,
-      label: "Cheque Date",
+      label: "STMT Valid Till Date",
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "SCRIPT_CD",
+      label: "Script",
+      placeholder: "Script ",
+
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "NO_OF_SHARE",
+      label: "No. of Share",
+      type: "text",
+      placeholder: "No. of Share",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -264,26 +234,9 @@ export const StopPayEntryMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "CHEQUE_AMOUNT",
-      label: "Cheque Amount",
-      type: "text",
-      placeholder: "Cheque Amount",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "AMOUNT",
-      label: "Charge Amount",
-      placeholder: "Charge Amount",
-
+      name: "STOCK_VALUE",
+      label: "Stock Value",
+      placeholder: "Stock Value",
       type: "text",
       GridProps: {
         xs: 12,
@@ -297,16 +250,48 @@ export const StopPayEntryMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "INFAVOUR_OF",
-      label: "Infavour",
+      name: "WWWWWWWWW",
+      label: "Net Value",
       type: "text",
-      placeholder: "Infavour",
+      placeholder: "Net Value",
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MARGIN",
+      label: "Margin",
+      type: "text",
+      placeholder: "Margin",
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "STOCK_DESC",
+      label: "Stock Decription",
+      type: "text",
+      placeholder: "Stock Description",
+      GridProps: {
+        xs: 12,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
       },
     },
     {
@@ -319,20 +304,35 @@ export const StopPayEntryMetadata = {
       placeholder: "Remarks",
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DRAWING_POWER",
+      label: "Drawing Power",
+      type: "text",
+      placeholder: "Drawing Power",
+      GridProps: {
+        xs: 12,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
       },
     },
 
     {
       render: {
-        componentType: "textField",
+        componentType: "datePicker",
       },
-      name: "SERVICE_TAX",
-      label: "GST",
-      placeholder: "GST",
+      name: "RECEIVED_DT",
+      label: "Received Date",
       type: "text",
       GridProps: {
         xs: 12,

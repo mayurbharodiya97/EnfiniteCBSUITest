@@ -1,49 +1,49 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  LinearProgress,
-  Tab,
-  Tabs,
-} from "@mui/material";
-import React, { useContext, useRef, useState } from "react";
+import { Box, Button, Container, Grid, Tab, Tabs } from "@mui/material";
+import React, { useCallback, useContext, useRef, useState } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { useMutation } from "react-query";
-import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "components/utils";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { Alert } from "components/common/alert";
 import { StockGridMetaData } from "./stockGridMetadata";
 import { StockEntryMetaData } from "./stockEntryMetadata";
+import { useMutation } from "react-query";
+import { stockGridData, viewUploadDOC } from "./api";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
+import { StockEditViewWrapper } from "./stockEditViewWrapper";
 
 export const StockEntry = () => {
+  const detailActions: ActionTypes[] = [
+    {
+      actionName: "view-details",
+      actionLabel: "Edit Detail",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+  ];
+
   const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
+  const initialValuesRef = useRef<any>(null);
+  const navigate = useNavigate();
+  const [gridDetailData, setGridDetailData] = useState<any>();
+  const [visibleTab, setVisibleTab] = useState<any>(false);
   const { authState } = useContext(AuthContext);
 
-  const mutation: any = useMutation(GetdetailData, {
-    onSuccess: (data) => {},
+  const stockEntryGridData: any = useMutation("stockGridData", stockGridData, {
+    onSuccess: (data) => {
+      setGridDetailData(data);
+    },
+    onError: (error: any) => {},
+  });
+  const viewUploadDOCment: any = useMutation("stockGridData", viewUploadDOC, {
+    onSuccess: (data) => {
+      console.log("<<<jdfwjflfjklfk", data);
+    },
     onError: (error: any) => {},
   });
 
-  // const saveChequeData: any = useMutation(saveChequebookData, {
-  //   onSuccess: (data) => {},
-  //   onError: (error: any) => {},
-  // });
-
-  const ClickEventManage = () => {
-    let event: any = { preventDefault: () => {} };
-    myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-  };
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -53,36 +53,58 @@ export const StockEntry = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    let ApiKey: any = StockEntryMetaData?.form?.apiKey;
-    let apiID: any = StockEntryMetaData?.form?.apiID;
-    let response = {};
-    for (const key in ApiKey) {
-      if (ApiKey.hasOwnProperty(key)) {
-        const mappedKey = ApiKey[key];
-        response[key] = data[mappedKey];
-      }
-    }
-    let otherAPIRequestPara = {
-      COMP_CD: authState?.companyID,
-      ...response,
-      ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
-    };
-    mutation.mutate({ apiID, otherAPIRequestPara });
+    viewUploadDOCment.mutate();
   };
+
+  const setCurrentAction = useCallback(
+    (data) => {
+      navigate(data?.name, {
+        state: data?.rows,
+      });
+    },
+    [navigate]
+  );
+
+  const ClosedEventCall = useCallback(() => {
+    navigate(".");
+  }, [navigate]);
 
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
           value={value}
-          onChange={handleChange}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+
+            if (newValue === "tab2") {
+              myMasterRef?.current?.getFieldData().then((res) => {
+                initialValuesRef.current = res;
+                if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
+                  StockGridMetaData.gridConfig.gridLabel = `Stock-Entry Detail \u00A0\u00A0 ${(
+                    authState?.companyID +
+                    res?.BRANCH_CD +
+                    res?.ACCT_TYPE +
+                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+
+                  const DTLRequestPara = {
+                    COMP_CD: authState?.companyID,
+                    ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+                    ACCT_TYPE: res?.ACCT_TYPE,
+                    BRANCH_CD: res?.BRANCH_CD,
+                  };
+                  stockEntryGridData.mutate(DTLRequestPara);
+                }
+              });
+            }
+          }}
           textColor="secondary"
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
           <Tab value="tab1" label="Stock Entry" />
-          <Tab value="tab2" label="Stock Detail" />
-          {/* <Tab value="tab3" label="Processed Cheque(s) Detail" /> */}
+          {visibleTab && <Tab value="tab2" label="Stock Detail" />}
         </Tabs>
       </Box>
 
@@ -96,68 +118,21 @@ export const StockEntry = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {/* {mutation?.isError ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={mutation?.error?.error_msg ?? "Unknow Error"}
-                  errorDetail={mutation?.error?.error_detail ?? ""}
-                  color="error"
-                />
-              </AppBar>
-            </div>
-          ) : mutation?.data?.length < 1 && Boolean(mutation?.isSuccess) ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  errorMsg="No data found"
-                  errorDetail="No any data found"
-                  severity="error"
-                />
-              </AppBar>
-            </div>
-          ) : null} */}
           {value === "tab1" ? (
-            <div
-              onKeyDown={(e) => {
-                if (e.key === "Tab") {
-                  let target: any = e?.target;
-                  if (
-                    (target?.name ?? "") ===
-                    StockEntryMetaData.form.name + "/ACCT_CD"
-                  ) {
-                    ClickEventManage();
-                  }
-                }
-              }}
-            >
-              {mutation.isLoading || mutation.isFetching ? (
-                <LinearProgress color="secondary" />
-              ) : (
-                <LinearProgressBarSpacer />
-              )}
+            <>
               <FormWrapper
-                key={
-                  "stockEntry" + mutation?.data?.length &&
-                  Boolean(mutation?.isSuccess)
-                    ? mutation?.data
-                    : ""
-                }
+                key={"stockEntry"}
                 metaData={StockEntryMetaData ?? []}
-                initialValues={[]}
+                initialValues={initialValuesRef.current ?? []}
                 onSubmitHandler={onSubmitHandler}
-                // displayMode={"view"}
-                // hideDisplayModeInTitle={true}
-                loading={mutation.isLoading}
-                // formStyle={{
-                //   background: "white",
-                //   // height: "40vh",
-                //   overflowY: "auto",
-                //   overflowX: "hidden",
-                // }}
+                // loading={mutation.isLoading}
                 hideHeader={false}
                 ref={myMasterRef}
+                setDataOnFieldChange={(action, payload) => {
+                  if (action === "VISIBLE_TAB") {
+                    setVisibleTab(payload?.VISIBLE_TAB);
+                  }
+                }}
               >
                 {({ isSubmitting, handleSubmit }) => (
                   <>
@@ -174,18 +149,18 @@ export const StockEntry = () => {
                   </>
                 )}
               </FormWrapper>
-            </div>
+            </>
           ) : value === "tab2" ? (
             <>
               <GridWrapper
-                key={`personalizeQuickView`}
+                key={`stockGridData` + stockEntryGridData.isSuccess}
                 finalMetaData={StockGridMetaData as GridMetaDataType}
-                data={mutation.data ?? []}
+                data={gridDetailData ?? []}
                 setData={() => {}}
-                // loading={saveQuickData.isLoading}
-                // actions={Quickactions}
+                loading={stockEntryGridData.isLoading}
+                actions={detailActions}
                 // controlsAtBottom={true}
-                // setAction={setQuickAction}
+                setAction={setCurrentAction}
                 // headerToolbarStyle={{
                 //   background: "var(--theme-color2)",
                 //   color: "black",
@@ -193,21 +168,19 @@ export const StockEntry = () => {
                 // refetchData={() => {}}
                 // ref={myGridQuickRef}
               />
+
+              <Routes>
+                <Route
+                  path="view-details/*"
+                  element={
+                    <StockEditViewWrapper ClosedEventCall={ClosedEventCall} />
+                  }
+                />
+              </Routes>
             </>
           ) : null}
         </Grid>
       </Container>
     </>
   );
-};
-export const GetdetailData = async ({ apiID, otherAPIRequestPara }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(apiID, {
-      ...otherAPIRequestPara,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
 };

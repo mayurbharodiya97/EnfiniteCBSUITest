@@ -1,12 +1,13 @@
 import { GeneralAPI } from "registry/fns/functions";
-import { GetdetailData } from "./stockEntry";
+import * as API from "./api";
+import { getLimitEntryData } from "../limit-entry/api";
 
 export const StockEntryMetaData = {
   form: {
     name: "PRIORITY",
     label: "Stock Entry",
     resetFieldOnUnmount: false,
-    validationRun: "onChange",
+    validationRun: "onBlur",
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -36,17 +37,11 @@ export const StockEntryMetaData = {
         fullWidth: true,
       },
     },
-    apiKey: {
-      BRANCH_CD: "BRANCH_CD",
-      ACCT_TYPE: "ACCT_TYPE",
-      ACCT_CD: "ACCT_CD",
-    },
-    apiID: "GETSTOCKDATA",
   },
   fields: [
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "branchCode",
       },
       name: "BRANCH_CD",
       label: "Branch",
@@ -55,8 +50,6 @@ export const StockEntryMetaData = {
       isFieldFocused: true,
       required: true,
       // maxLength: 16,
-      options: GeneralAPI.getBranchCodeList,
-      _optionsKey: "getBranchCodeList",
       GridProps: {
         xs: 12,
         md: 3,
@@ -78,8 +71,15 @@ export const StockEntryMetaData = {
       placeholder: "EnterAccountType",
       type: "text",
       required: true,
-      options: GeneralAPI.getAccountTypeList,
-      _optionsKey: "getAccountTypeList",
+      options: (dependentValue, formState, _, authState) => {
+        let ApiReq = {
+          USER_NAME: authState?.user?.id,
+          BRANCH_CD: authState?.user?.branchCode,
+          COMP_CD: authState?.companyID,
+        };
+        return API.stockAcctTypeList(ApiReq);
+      },
+      _optionsKey: "securityDropDownListType",
       GridProps: {
         xs: 12,
         md: 3,
@@ -107,7 +107,54 @@ export const StockEntryMetaData = {
         type: "string",
         rules: [{ name: "required", params: ["Account no. is required."] }],
       },
-      // padEnds: 20,/
+      dependentFields: ["ACCT_TYPE", "SECURITY_CD"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (field?.value) {
+          let otherAPIRequestPara = {
+            COMP_CD: authState?.companyID,
+            ACCT_CD: field.value.padStart(6, "0").padEnd(20, " "),
+            ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+            BRANCH_CD: authState?.user?.branchCode,
+          };
+          let postData = await getLimitEntryData(otherAPIRequestPara);
+
+          if (postData.length) {
+            formState.setDataOnFieldChange("VISIBLE_TAB", {
+              VISIBLE_TAB: true,
+            });
+            return {
+              ACCT_NM: {
+                value: postData?.[0]?.ACCT_NM,
+              },
+              TRAN_BAL: {
+                value: postData?.[0]?.TRAN_BAL,
+              },
+            };
+          } else {
+            formState.setDataOnFieldChange("VISIBLE_TAB", {
+              VISIBLE_TAB: false,
+            });
+            return {
+              ACCT_CD: { value: "", isFieldFocused: true },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+            };
+          }
+        } else if (!field?.value) {
+          formState.setDataOnFieldChange("VISIBLE_TAB", { VISIBLE_TAB: false });
+          return {
+            ACCT_NM: { value: "" },
+            TRAN_BAL: { value: "" },
+          };
+        }
+        return {};
+      },
+      runPostValidationHookAlways: true,
       GridProps: {
         xs: 12,
         md: 2,
@@ -154,36 +201,11 @@ export const StockEntryMetaData = {
         xl: 2.4,
       },
     },
-
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "PAYABLE_AT_PAR",
-      label: "Security",
-      placeholder: "Security",
-      options: () => {
-        return [
-          { value: "Yes", label: "Yes" },
-          { value: "No", label: "No" },
-        ];
-      },
-      _optionsKey: "PAYABLE_AT_PAR",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-
     {
       render: {
         componentType: "textField",
       },
-      name: "CHEQUE_TOTAL",
+      name: "ACCT_MST_LIMIT",
       label: "Account Limit Amount",
       placeholder: "Account Limit Entry",
       type: "text",
@@ -197,12 +219,48 @@ export const StockEntryMetaData = {
         xl: 2.4,
       },
     },
+    {
+      render: {
+        componentType: "autocomplete",
+      },
+      name: "SECURITY_CD",
+      label: "Security",
+      disableCaching: true,
+      _optionsKey: "securityListDD",
+      dependentFields: ["ACCT_TYPE", "ACCT_CD"],
+      placeholder: "Security",
+      options: (dependentValue, formState, _, authState, other) => {
+        if (
+          dependentValue?.ACCT_TYPE?.value &&
+          dependentValue?.ACCT_CD?.value
+        ) {
+          let apiReq = {
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+            ACCT_CD: dependentValue?.ACCT_CD?.value
+              .padStart(6, "0")
+              .padEnd(20, " "),
+          };
+          return API.securityListDD(apiReq);
+        }
+        return [];
+      },
+      type: "text",
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
 
     {
       render: {
         componentType: "datePicker",
       },
-      name: "REQUISITION_DT",
+      name: "NNNNNNN",
       // sequence: 9,
       label: "Statement Date",
       GridProps: {
@@ -217,7 +275,7 @@ export const StockEntryMetaData = {
       render: {
         componentType: "datePicker",
       },
-      name: "REQUISION_DT",
+      name: "HHHHHHHHHHH",
       // sequence: 9,
       label: "STMT Valid Till Date",
       GridProps: {
@@ -230,25 +288,60 @@ export const StockEntryMetaData = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "autocomplete",
       },
-      name: "AS",
-      label: "Stock Decription",
+      name: "SCRIPT_CD",
+      label: "Script",
+      placeholder: "Script ",
+      disableCaching: true,
+      _optionsKey: "scriptListDD",
+      dependentFields: ["ACCT_TYPE", "ACCT_CD"],
+      options: (dependentValue, formState, _, authState, other) => {
+        // if (
+        //   dependentValue?.ACCT_TYPE?.value &&
+        //   dependentValue?.ACCT_CD?.value
+        // ) {
+        let apiReq = {
+          COMP_CD: authState?.companyID,
+          BRANCH_CD: authState?.user?.branchCode,
+          // ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+          // ACCT_CD: dependentValue?.ACCT_CD?.value,
+        };
+        return API.scriptListDD(apiReq);
+        // }
+        // return [];
+      },
       type: "text",
-      placeholder: "Stock Description",
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
       },
     },
     {
       render: {
         componentType: "textField",
       },
-      name: "MACHINE_NM",
+      name: "NO_OF_SHARE",
+      label: "No. of Share",
+      type: "text",
+      placeholder: "No. of Share",
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "STOCK_VALUE",
       label: "Stock Value",
       placeholder: "Stock Value",
       type: "text",
@@ -264,7 +357,7 @@ export const StockEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "MACINE_NMA",
+      name: "WWWWWWWWW",
       label: "Net Value",
       type: "text",
       placeholder: "Net Value",
@@ -280,7 +373,7 @@ export const StockEntryMetaData = {
       render: {
         componentType: "textField",
       },
-      name: "MACHINEA",
+      name: "MARGIN",
       label: "Margin",
       type: "text",
       placeholder: "Margin",
@@ -292,37 +385,52 @@ export const StockEntryMetaData = {
         xl: 2.4,
       },
     },
-
     {
       render: {
         componentType: "textField",
       },
-      name: "ASDZXCCD",
-      label: "Remarks",
+      name: "STOCK_DESC",
+      label: "Stock Decription",
       type: "text",
-      placeholder: "Remarks",
+      placeholder: "Stock Description",
       GridProps: {
         xs: 12,
-        md: 4.8,
-        sm: 4.8,
-        lg: 4.8,
-        xl: 4.8,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
       },
     },
     {
       render: {
         componentType: "textField",
       },
-      name: "ASDZX",
+      name: "REMARKS",
+      label: "Remarks",
+      type: "text",
+      placeholder: "Remarks",
+      GridProps: {
+        xs: 12,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
+      },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DRAWING_POWER",
       label: "Drawing Power",
       type: "text",
       placeholder: "Drawing Power",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 3.2,
+        sm: 3.2,
+        lg: 3.2,
+        xl: 3.2,
       },
     },
 
@@ -330,7 +438,7 @@ export const StockEntryMetaData = {
       render: {
         componentType: "datePicker",
       },
-      name: "ASDZXCCDAQQ",
+      name: "RECEIVED_DT",
       label: "Received Date",
       type: "text",
       GridProps: {

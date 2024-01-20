@@ -828,6 +828,38 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
     packageName: "",
   },
+  GETLIMITGRIDDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITGRIDDATADISP",
+    packageName: "",
+  },
+  GETFDDTLS: {
+    url: "/loanServiceAPI/GETFDDTLS",
+    packageName: "",
+  },
+  DOLIMITENTRYDML: {
+    url: "loanServiceAPI/DOLIMITENTRYDML",
+    packageName: "",
+  },
+  GETSTKACCTTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKACCTTYPEDDW",
+    packageName: "",
+  },
+  GETSTKSECURITYDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSECURITYDDW",
+    packageName: "",
+  },
+  GETSTKSCRIPTDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSCRIPTDDW",
+    packageName: "",
+  },
+  GETSTKSECFIELDDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSECFIELDDISP",
+    packageName: "",
+  },
+  GETSTKUPVEWBTNDOCDTLDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKUPVEWBTNDOCDTLDISP",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
