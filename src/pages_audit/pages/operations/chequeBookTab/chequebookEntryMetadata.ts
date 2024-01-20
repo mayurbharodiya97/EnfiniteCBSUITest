@@ -228,7 +228,7 @@ export const ChequeBookEntryMetaData = {
       FormatProps: {
         allowNegative: true,
       },
-      isReadOnly: true,
+      // isReadOnly: true,
       // enableDefaultOption: true,
 
       validate: (currentField, value) => {
@@ -252,7 +252,7 @@ export const ChequeBookEntryMetaData = {
       label: "From Cheque No.",
       placeholder: "From Cheque No.",
       type: "text",
-      isReadOnly: true,
+      // isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -277,7 +277,11 @@ export const ChequeBookEntryMetaData = {
         lg: 2.4,
         xl: 2.4,
       },
-
+      validate: (currentField, value) => {
+        if (currentField?.value) {
+          return;
+        }
+      },
       dependentFields: [
         "CHEQUE_FROM",
         "BRANCH_CD",

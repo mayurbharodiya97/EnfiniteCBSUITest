@@ -52,20 +52,14 @@ export const PagesAudit = (props, { columns }) => {
                 /> */}
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
-                <Route
-                  path="operation/*"
-                  element={ <OperationsMenu />}
-                />
+                <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
                 <Route path="grid/*" element={<MastersMenu />} />
                 <Route path="configuration/*" element={<Configuration />} />
                 <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+                <Route path="operation/daily_tran_F1" element={<Trn001 />} />
                 <Route
-                  path="operation/teller_daily_tran"
-                  element={<Trn001 />}
-                />
-                <Route
-                  path="operation/teller_daily_tran_cnf_F2"
+                  path="operation/cnf_daily_tran_F2"
                   element={<Trn002 />}
                 />
 

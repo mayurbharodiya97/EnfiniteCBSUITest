@@ -32,13 +32,10 @@ export const securityDropDownListType = async (
   }
 };
 
-export const getSecurityListData = async (companyID, branchCode, ACCT_TYPE) => {
+export const getSecurityListData = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITSECUMSTPARENT", {
-      // ...newObj,
-      A_PARENT_TYPE: ACCT_TYPE,
-      BRANCH_CD: branchCode,
-      COMP_CD: companyID,
+      ...apiReq,
     });
   if (status === "0") {
     let responseData = data;
@@ -142,7 +139,7 @@ export const LimitSecurityData = async (apiReqPara) => {
                 ],
                 postValidationSetCrossFieldValues: async (
                   field,
-                  __,
+                  formState,
                   authState,
                   dependentValue
                 ) => {
@@ -159,13 +156,13 @@ export const LimitSecurityData = async (apiReqPara) => {
                       // SCREEN_REF: "ETRN/046",
                       // PANEL_FLAG: "Y",
 
-                      ACCT_TYPE: "0002",
-                      ACCT_CD: "000009",
-                      SECURITY_CD: "12",
-                      // ACCT_TYPE: "305 ",
-                      // ACCT_CD: "000648              ",
+                      // ACCT_TYPE: "0002",
+                      // ACCT_CD: "000009",
+                      // SECURITY_CD: "12",
+                      ACCT_TYPE: "305 ",
+                      ACCT_CD: "000648              ",
                       // FD_NO: "7694",
-                      // SECURITY_CD: "19",
+                      SECURITY_CD: "19",
                       BRANCH_CD: "099 ",
                       COMP_CD: "132 ",
                       SECURITY_TYPE: "BRD",
@@ -175,22 +172,15 @@ export const LimitSecurityData = async (apiReqPara) => {
                     };
                     //
                     let postData = await getFDdetailBRD(ApiReq);
-                    const messages = [
-                      "MESSAGE1",
-                      "MESSAGE2",
-                      "MESSAGE3",
-                      "MESSAGE4",
-                      "RESTRICTION",
-                    ]
+
+                    const result = ["MESSAGE1", "RESTRICTION"]
                       .map((key) => postData[0][key])
-                      .filter((message) => message !== "");
-                    const result = messages.join(", ");
+                      .filter((message) => message !== "")
+                      .join(", ");
+
                     if (result) {
-                      return {
-                        MESSAGES: {
-                          value: result ?? "",
-                        },
-                      };
+                      formState.setDataOnFieldChange("MESSAGES", result);
+                      return {};
                     } else {
                       return {
                         SECURITY_VALUE: {
@@ -198,9 +188,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                         },
                         EXPIRY_DT: {
                           value: postData?.[0]?.EXPIRY_DT,
-                        },
-                        MESSAGES: {
-                          value: "",
                         },
                       };
                     }
@@ -222,7 +209,7 @@ export const LimitSecurityData = async (apiReqPara) => {
                 ],
                 postValidationSetCrossFieldValues: async (
                   field,
-                  __,
+                  formState,
                   authState,
                   dependentValue
                 ) => {
@@ -250,30 +237,16 @@ export const LimitSecurityData = async (apiReqPara) => {
                       GD_DATE: "19-DEC-2023",
                       TRAN_DT: "19-DEC-2023",
                     };
+
                     let postData = await getFDdetailBFD(ApiReq);
 
-                    const messages = [
-                      "MESSAGE1",
-                      "MESSAGE2",
-                      "MESSAGE3",
-                      "MESSAGE4",
-                      "RESTRICTION",
-                    ]
+                    const result = ["MESSAGE1", "RESTRICTION"]
                       .map((key) => postData[0][key])
-                      .filter((message) => message !== "");
-                    const result = messages.join(", ");
+                      .filter((message) => message !== "")
+                      .join(", ");
                     if (result) {
-                      return {
-                        MESSAGES: {
-                          value: result ?? "",
-                        },
-                      };
-                    } else {
-                      return {
-                        MESSAGES: {
-                          value: "",
-                        },
-                      };
+                      formState.setDataOnFieldChange("MESSAGES", result);
+                      return {};
                     }
                   }
                 },
@@ -376,14 +349,31 @@ export const getFDdetailBFD = async (apiReqPara) => {
   }
 };
 
-export const getLimitNSCdetail = async () => {
+export const getLimitNSCdetail = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITNSCDTLBTN", {
-      // ...apiReqPara,
-      COMP_CD: "132 ",
-      BRANCH_CD: "099 ",
-      ACCT_TYPE: "301 ",
-      ACCT_CD: "000010   ",
+      ...apiReqPara,
+      // COMP_CD: "132 ",
+      // BRANCH_CD: "099 ",
+      // ACCT_TYPE: "202 ",
+      // ACCT_CD: "000001   ",
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getLimitFDdetail = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDDTLS", {
+      ...apiReqPara,
+      // COMP_CD: "132 ",
+      // BRANCH_CD: "099 ",
+      // ACCT_TYPE: "1100",
+      // ACCT_CD: "000004",
+      // LOGIN_COMP_CD: "132 ",
+      // FLAG: "C",
     });
   if (status === "0") {
     return data;
@@ -392,16 +382,62 @@ export const getLimitNSCdetail = async () => {
   }
 };
 
-export const getLimitDTL = async (otherAPIRequestPara) => {
+export const getLimitDTL = async (chequeDTLRequestPara) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETLIMITENTRY", {
-      ...otherAPIRequestPara,
+    await AuthSDK.internalFetcher("GETLIMITGRIDDATADISP", {
+      ...chequeDTLRequestPara,
       // TRAN_CD: "1",
     });
   if (status === "0") {
-    let newData = data;
-    newData[0].CHEQUE_BOOK_ISSUE = "N";
-    return newData;
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const saveLimitEntryData = async (apiReq) => {
+  console.log("<<<apiReq", apiReq);
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOLIMITENTRYDML", {
+      ...apiReq,
+      // _isNewRow: true,
+      // COMP_CD: "132 ",
+      // BRANCH_CD: "099 ",
+      // ACCT_TYPE: "003 ",
+      // ACCT_CD: "124004              ",
+      // TRAN_DT: "20-OCT-2023",
+      // EXPIRY_DT: "20-OCT-2023",
+      // SECURITY: "4",
+      // SECURITY_VALUE: "48728",
+      // LIMIT_AMOUNT: "1000000",
+      // DRAWING_POWER: "38900",
+      // REMARKS: "",
+      // INT_RATE: "17",
+      // FD_TYPE: "241 ",
+      // FD_ACCT_CD: "000002              ",
+      // FD_NO: "12",
+      // PENAL_RATE: "10",
+      // ENTERED_COMP_CD: "132 ",
+      // ENTERED_BRANCH_CD: "099 ",
+      // FD_COMP_CD: "132 ",
+      // FD_BRANCH_CD: "099 ",
+      // SECURITY_CD: "1717",
+      // ENTRY_DT: "11-OCT-2023",
+      // DOCKET_NO: "PO001",
+      // SEC_INT_AMT: "99",
+      // SEC_INT_MARGIN: "5455",
+      // INT_AMT: "265",
+      // SEC_AMT: "555",
+      // MARGIN: "22",
+      // RESOLUTION_NO: "52652",
+      // RESOLUTION_DATE: "11-OCT-2023",
+      // CHARGE_AMT: "4654",
+      // UPD_FLAG: "Y",
+      // EXPIRED_FLAG: "A",
+      // AD_HOC_LIMIT_FLG: "N",
+      // SHORT_LMT_FLAG: "N",
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

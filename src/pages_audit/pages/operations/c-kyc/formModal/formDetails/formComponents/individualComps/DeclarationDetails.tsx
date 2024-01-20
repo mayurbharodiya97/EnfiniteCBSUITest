@@ -10,6 +10,7 @@ import * as API from "../../../../api";
 import { useMutation, useQuery } from 'react-query';
 import { AuthContext } from 'pages_audit/auth';
 import _ from 'lodash';
+import { Alert } from 'components/common/alert';
 // import { format } from 'date-fns';
 
 const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
@@ -201,6 +202,14 @@ const myGridRef = useRef<any>(null);
     
     return (
         <Grid container rowGap={3}>
+          {mutation.isError && (
+            <Alert
+              severity={mutation.error?.severity ?? "error"}
+              errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+              errorDetail={mutation.error?.error_detail}
+              color="error"
+            />
+          )}
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>             */}
             <Grid container>
                 {/* <Grid item xs='auto'>

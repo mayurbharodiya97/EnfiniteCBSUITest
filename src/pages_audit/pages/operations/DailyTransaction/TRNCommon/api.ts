@@ -19,14 +19,15 @@ export const getQueryDataF1 = async (reqData) => {
         a.account1 = a.ACCT_TYPE + a.TYPE_NM;
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
-        a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
+
         if (
           a.TYPE_CD.includes("1") ||
           a.TYPE_CD.includes("2") ||
           a.TYPE_CD.includes("3")
         ) {
           a.credit1 = Number(a.AMOUNT).toFixed(2);
-          a.debit1 = "0.00";
+          a.debit1 = "-";
         }
         if (
           a.TYPE_CD.includes("4") ||
@@ -34,7 +35,7 @@ export const getQueryDataF1 = async (reqData) => {
           a.TYPE_CD.includes("6")
         ) {
           a.debit1 = Number(a.AMOUNT).toFixed(2);
-          a.credit1 = "0.00";
+          a.credit1 = "-";
         }
       });
     return responseData;
@@ -55,7 +56,7 @@ export const getQueryDataF2 = async (reqData) => {
         a.account1 = a.ACCT_TYPE + a.TYPE_NM;
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
-        a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
       });
 
     return responseData;

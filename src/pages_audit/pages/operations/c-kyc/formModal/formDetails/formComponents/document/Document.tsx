@@ -154,7 +154,8 @@ const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, d
                 handleColTabChangectx(state?.colTabValuectx + 1)
               }}
               >
-              {t("Save & Next")}
+              {t("Next")}
+              {/* {t("Save & Next")} */}
               </Button>
           </Fragment>
           : displayMode == "edit"

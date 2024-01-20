@@ -204,7 +204,8 @@ const KYCDetails = ({
             KyCPoIFormRef.current.handleSubmitError(e, "save");
           }}
         >
-          {t("Save & Next")}
+          {t("Next")}
+          {/* {t("Save & Next")} */}
         </Button>
       </Fragment>
       : displayMode == "edit"

@@ -98,21 +98,6 @@ export const getTRXList = async (reqData) => {
   }
 };
 
-// export const getTRN001List = async (reqData) => {
-//   //for table viewAll
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
-//       COMP_CD: reqData?.COMP_CD,
-//       BRANCH_CD: reqData?.BRANCH_CD,
-//     });
-//   if (status === "0") {
-//     let responseData = data;
-
-//     return responseData;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
 export const getTRN001List = async (reqData) => {
   //for table
   const { data, status, message, messageDetails } =
@@ -124,18 +109,20 @@ export const getTRN001List = async (reqData) => {
     let responseData = data;
     responseData &&
       responseData.map((a, i) => {
+        let modDate = format(new Date(a?.ENTERED_DATE), "dd/MMM/yyyy");
         a.index = i;
         a.account1 = a.ACCT_TYPE + a.TYPE_NM;
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
-        a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.date1 = modDate + "" + a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
+        a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
         if (
           a.TYPE_CD.includes("1") ||
           a.TYPE_CD.includes("2") ||
           a.TYPE_CD.includes("3")
         ) {
           a.credit1 = Number(a.AMOUNT).toFixed(2);
-          a.debit1 = "0.00";
+          a.debit1 = "-";
         }
         if (
           a.TYPE_CD.includes("4") ||
@@ -143,7 +130,7 @@ export const getTRN001List = async (reqData) => {
           a.TYPE_CD.includes("6")
         ) {
           a.debit1 = Number(a.AMOUNT).toFixed(2);
-          a.credit1 = "0.00";
+          a.credit1 = "-";
         }
       });
     return responseData;
@@ -184,6 +171,7 @@ export const addDailyTrxScroll = async (reqData) => {
 };
 
 //validations
+
 export const getChqValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
@@ -210,12 +198,28 @@ export const getAccNoValidation = async (reqData) => {
       ACCT_CD: reqData.accNo.padEnd(20, " "),
 
       GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
-      SCREEN_REF: "ETRN/559",
+      SCREEN_REF: "ETRN/001", //depending on screen code
     });
   if (status === "0") {
     let responseData = data;
 
     return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+//others
+export const getTabsByParentType = async (reqData) => {
+  console.log(reqData, "reqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
+      PARENT_TYPE: reqData,
+    });
+  if (status === "0") {
+    let responseData = data;
+    console.log(data, "res data");
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

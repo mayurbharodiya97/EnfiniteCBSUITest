@@ -18,6 +18,11 @@ import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
+import {
+  PopupMessageAPIWrapper,
+  PopupRequestWrapper,
+} from "components/custom/popupMessage";
+import { Grid, Typography } from "@mui/material";
 
 import "./Trn002.css";
 import DailyTransTabs from "../TRNHeaderTabs";
@@ -32,7 +37,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "Delete",
-    actionLabel: "Delete",
+    actionLabel: "Nullify",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -52,7 +57,13 @@ export const Trn002 = () => {
 
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
+  const [tabsData, setTabsData] = useState<any>([]);
+  const [dataRow, setDataRow] = useState<any>({});
+  const [credit, setCredit] = useState<number>(0);
+  const [debit, setDebit] = useState<number>(0);
+  const [confirmed, setConfirmed] = useState<number>(0);
+  const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
+  const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
 
   const { enqueueSnackbar } = useSnackbar();
   let dataObj = {
@@ -62,12 +73,8 @@ export const Trn002 = () => {
 
   useEffect(() => {
     handleGetTRN002List();
+    setTempStore({ ...tempStore, accInfo: {} });
   }, []);
-
-  useEffect(() => {
-    console.log(rows, "rows");
-    console.log(rows2, "rows2");
-  }, [rows, rows2]);
 
   // api define ========================================================================
   const getTRN002List = useMutation(trn2Api.getTRN002List, {
@@ -76,30 +83,50 @@ export const Trn002 = () => {
       let arr = data.filter((a) => a.CONFIRMED == "0");
       setRows2(arr);
       setRows(data);
+
+      let crSum = 0;
+      let drSum = 0;
+      let conf = 0;
+      let abc = arr.map((a) => {
+        if (
+          a.TYPE_CD.includes("1") ||
+          a.TYPE_CD.includes("2") ||
+          a.TYPE_CD.includes("3")
+        ) {
+          crSum = crSum + Number(a?.AMOUNT);
+        }
+        if (
+          a.TYPE_CD.includes("4") ||
+          a.TYPE_CD.includes("5") ||
+          a.TYPE_CD.includes("6")
+        ) {
+          drSum = drSum + Number(a?.AMOUNT);
+        }
+      });
+      setCredit(crSum);
+      setDebit(drSum);
+      setConfirmed(data.length - arr.length);
     },
     onError: (error) => {},
   });
 
   const getAccInfo = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
-      setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
     },
-    onError: (error) => {
-      setLoading(false);
-    },
+    onError: (error) => {},
   });
 
   const confirmScroll = useMutation(trn2Api.confirmScroll, {
     onSuccess: (data) => {
-      setLoading(false);
+      setConfirmDialog(false);
       enqueueSnackbar("Record Confirm", {
         variant: "success",
       });
       handleGetTRN002List();
     },
     onError: (error: any) => {
-      setLoading(false);
+      setConfirmDialog(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -107,14 +134,14 @@ export const Trn002 = () => {
   });
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
-      setLoading(false);
+      setDeleteDialog(false);
       enqueueSnackbar("Scroll Deleted", {
         variant: "success",
       });
       handleGetTRN002List();
     },
     onError: (error: any) => {
-      setLoading(false);
+      setDeleteDialog(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -127,7 +154,7 @@ export const Trn002 = () => {
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-    setLoading(true);
+    setDataRow(row);
     if (data.name === "view-detail") {
       let obj = {
         COMP_CD: row?.COMP_CD,
@@ -141,9 +168,8 @@ export const Trn002 = () => {
 
     if (data.name === "view") {
       if (row.CONFIRMED == "0") {
-        confirmScroll.mutate(row);
+        setConfirmDialog(true);
       } else {
-        setLoading(false);
         enqueueSnackbar("Scroll Already Confirmed", {
           variant: "error",
         });
@@ -151,25 +177,58 @@ export const Trn002 = () => {
     }
 
     if (data.name === "Delete") {
-      let obj = {
-        TRAN_CD: row?.TRAN_CD,
-        ENTERED_COMP_CD: row?.COMP_CD,
-        ENTERED_BRANCH_CD: row?.BRANCH_CD,
-      };
-      deleteScrollByVoucher.mutate(obj);
+      setDeleteDialog(true);
     }
   }, []);
 
   const handleViewAll = () => {
     let arr = [...rows];
     setRows2(arr);
+
+    let crSum = 0;
+    let drSum = 0;
+    arr.map((a) => {
+      if (
+        a.TYPE_CD.includes("1") ||
+        a.TYPE_CD.includes("2") ||
+        a.TYPE_CD.includes("3")
+      ) {
+        crSum = crSum + Number(a?.AMOUNT);
+      }
+      if (
+        a.TYPE_CD.includes("4") ||
+        a.TYPE_CD.includes("5") ||
+        a.TYPE_CD.includes("6")
+      ) {
+        drSum = drSum + Number(a?.AMOUNT);
+      }
+    });
+    setCredit(crSum);
+    setDebit(drSum);
   };
   const handleUpdateRows = (data) => {
     setRows2(data);
   };
+
+  const handleDelete = () => {
+    let obj = {
+      TRAN_CD: dataRow?.TRAN_CD,
+      ENTERED_COMP_CD: dataRow?.COMP_CD,
+      ENTERED_BRANCH_CD: dataRow?.BRANCH_CD,
+    };
+    deleteScrollByVoucher.mutate(obj);
+  };
+
+  const handleConfirm = () => {
+    confirmScroll.mutate(dataRow);
+  };
+
   return (
     <>
-      <DailyTransTabs heading=" Confirmation (F2) (TRN/002)" />
+      <DailyTransTabs
+        heading=" Confirmation (F2) (TRN/002)"
+        tabsData={tabsData}
+      />
 
       <Card
         sx={{
@@ -179,18 +238,53 @@ export const Trn002 = () => {
           margin: "4px",
         }}
       >
-        {loading && <LinearProgress color="secondary" />}
         <GridWrapper
           key={`TRN002_TableMetaData`}
           finalMetaData={TRN002_TableMetaData as GridMetaDataType}
           data={rows2}
           setData={() => null}
-          loading={getTRN002List.isLoading}
+          loading={getTRN002List.isLoading || getAccInfo.isLoading}
           ref={myGridRef}
           refetchData={() => {}}
           actions={actions}
           setAction={setCurrentAction}
         />
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          sx={{
+            height: "23px",
+            width: "60%",
+            float: "right",
+            position: "relative",
+            top: "-2.67rem",
+            display: "flex",
+            gap: "4rem",
+            alignItems: "center",
+          }}
+        >
+          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+            Total Records : {rows2 ? rows2.length : 0}
+          </Typography>
+          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
+            Confirmed Records : {confirmed}
+          </Typography>
+          <Typography
+            sx={{ fontWeight: "bold" }}
+            variant="subtitle1"
+            // style={{ color: "green" }}
+          >
+            Credit Sum : ₹ {credit}
+          </Typography>
+          <Typography
+            sx={{ fontWeight: "bold" }}
+            variant="subtitle1"
+            // style={{ color: "tomato" }}
+          >
+            Debit Sum : ₹ {debit}
+          </Typography>
+        </Grid>
       </Card>
 
       <CommonFooter
@@ -199,6 +293,29 @@ export const Trn002 = () => {
         handleViewAll={handleViewAll}
         handleRefresh={() => handleGetTRN002List()}
       />
+
+      {Boolean(deleteDialog) ? (
+        <PopupMessageAPIWrapper
+          MessageTitle="Scroll Delete"
+          Message="Do you wish to Delete this scroll?"
+          onActionYes={() => handleDelete()}
+          onActionNo={() => setDeleteDialog(false)}
+          rows={[]}
+          open={deleteDialog}
+          loading={deleteScrollByVoucher.isLoading}
+        />
+      ) : null}
+      {Boolean(confirmDialog) ? (
+        <PopupMessageAPIWrapper
+          MessageTitle="Scroll Confirm"
+          Message="Do you wish to Confirm this scroll?"
+          onActionYes={() => handleConfirm()}
+          onActionNo={() => setConfirmDialog(false)}
+          rows={[]}
+          open={confirmDialog}
+          loading={confirmScroll.isLoading}
+        />
+      ) : null}
     </>
   );
 };

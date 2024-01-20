@@ -428,7 +428,8 @@ const PhotoSignatureCpy: FC<PhotoSignProps> = (props) => {
                 disabled={isNextLoading}
                 onClick={handleSavePhotoSign}
                 >
-                {t("Save & Next")}
+                {t("Next")}
+                {/* {t("Save & Next")} */}
                 </Button>
             </Fragment>
             : displayMode == "edit"
