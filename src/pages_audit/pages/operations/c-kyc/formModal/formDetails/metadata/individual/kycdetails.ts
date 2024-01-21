@@ -229,15 +229,18 @@ export const kyc_proof_of_identity_meta_data = {
             name: "PASSPORT_AUTHORITY_CD",
             label: "Autho",
             placeholder: "",
-            required: true,          
-            schemaValidation: {
-                type: "string",
-                rules: [
-                    { name: "required", params: ["ThisFieldisrequired"] },
-                ],
-            },
+            dependentFields: ['PASSPORT_NO'],
             options: () => API.getPMISCData("Authority"),
             _optionsKey: "passportAuthority",
+            validate: (columnValue, allField, flag) => {
+                if(!Boolean(columnValue.value)) {
+                    const passport = allField.PASSPORT_NO.value;
+                    if(Boolean(passport)) {
+                        return "This field is required"
+                    }
+                }
+            },
+            runValidationOnDependentFieldsChange: true,
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -248,14 +251,17 @@ export const kyc_proof_of_identity_meta_data = {
           name: "PASSPORT_ISSUE_DT",
           label: "IssueDate",
           maxDate: new Date(),
-          required: true,          
-          schemaValidation: {
-              type: "string",
-              rules: [
-                { name: "required", params: ["ThisFieldisrequired"] },
-              ],
-          },
-        //   required: true,
+          dependentFields: ['PASSPORT_NO'],
+          validate: (columnValue, allField, flag) => {
+            if(!Boolean(columnValue.value)) {
+                const passport = allField.PASSPORT_NO.value;
+                if(Boolean(passport)) {
+                    return "This field is required"
+                }
+            }
+        },
+        runValidationOnDependentFieldsChange: true,
+    //   required: true,
           // placeholder: "",
           // type: "datePicker",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -267,13 +273,16 @@ export const kyc_proof_of_identity_meta_data = {
           name: "PASSPORT_EXPIRY_DT",
           label: "ExpiryDate",
           minDate: new Date(),
-          required: true,          
-          schemaValidation: {
-              type: "string",
-              rules: [
-                { name: "required", params: ["ThisFieldisrequired"] },
-              ],
-          },
+          dependentFields: ['PASSPORT_NO'],
+          validate: (columnValue, allField, flag) => {
+           if(!Boolean(columnValue.value)) {
+                const passport = allField.PASSPORT_NO.value;
+                if(Boolean(passport)) {
+                    return "This field is required"
+                }
+            }
+        },
+        runValidationOnDependentFieldsChange: true,
         //   required: true,
           // placeholder: "",
           // type: "datePicker",
@@ -298,14 +307,7 @@ export const kyc_proof_of_identity_meta_data = {
             name: "DRIVING_LICENSE_NO",
             label: "No",
             placeholder: "",
-            required: true,          
             maxLength: 20,
-            schemaValidation: {
-                type: "string",
-                rules: [
-                    { name: "required", params: ["ThisFieldisrequired"] },
-                ],
-            },
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -315,15 +317,18 @@ export const kyc_proof_of_identity_meta_data = {
             },
             name: "DRIVING_LICENSE_AUTHORITY_CD",
             label: "Autho",
-            required: true,          
-            schemaValidation: {
-                type: "string",
-                rules: [
-                    { name: "required", params: ["ThisFieldisrequired"] },
-                ],
-            },
             options: () => API.getPMISCData("Authority"),
             _optionsKey: "drivingLicenseAuthority",
+            dependentFields: ['DRIVING_LICENSE_NO'],
+            validate: (columnValue, allField, flag) => {
+                if(!Boolean(columnValue.value)) {
+                    const passport = allField.DRIVING_LICENSE_NO.value;
+                    if(Boolean(passport)) {
+                        return "This field is required"
+                    }
+                }
+            },
+            runValidationOnDependentFieldsChange: true,
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -335,13 +340,16 @@ export const kyc_proof_of_identity_meta_data = {
           name: "DRIVING_LICENSE_ISSUE_DT",
           label: "IssueDate",
           maxDate: new Date(),
-          required: true,          
-          schemaValidation: {
-              type: "string",
-              rules: [
-                { name: "required", params: ["ThisFieldisrequired"] },
-              ],
-          },
+          dependentFields: ['DRIVING_LICENSE_NO'],
+          validate: (columnValue, allField, flag) => {
+            if(!Boolean(columnValue.value)) {
+                const passport = allField.DRIVING_LICENSE_NO.value;
+                if(Boolean(passport)) {
+                    return "This field is required"
+                }
+            }
+        },
+        runValidationOnDependentFieldsChange: true,
         //   required: true,
           // placeholder: "",
           // type: "datePicker",
@@ -354,13 +362,16 @@ export const kyc_proof_of_identity_meta_data = {
           name: "DRIVING_LICENSE_EXPIRY_DT",
           label: "ExpiryDate",
           minDate: new Date(),
-          required: true,          
-          schemaValidation: {
-              type: "string",
-              rules: [
-                { name: "required", params: ["ThisFieldisrequired"] },
-              ],
-          },
+          dependentFields: ['DRIVING_LICENSE_NO'],
+          validate: (columnValue, allField, flag) => {
+            if(!Boolean(columnValue.value)) {
+                const passport = allField.DRIVING_LICENSE_NO.value;
+                if(Boolean(passport)) {
+                    return "This field is required"
+                }
+            }
+        },
+        runValidationOnDependentFieldsChange: true,
         //   required: true,
           // placeholder: "",
           // type: "datePicker",
