@@ -856,7 +856,14 @@ export const Trn001 = () => {
                               value={a.cNo}
                               error={!a.cNo || a?.bugCNo ? true : false}
                               id="txtRight"
-                              disabled={a.isCredit ? true : false}
+                              disabled={
+                                a.isCredit ||
+                                !a.branch ||
+                                !a?.accType?.value ||
+                                !a.accNo
+                                  ? true
+                                  : false
+                              }
                               size="small"
                               type="number"
                               onChange={(e) => handleCNo(e, i)}
