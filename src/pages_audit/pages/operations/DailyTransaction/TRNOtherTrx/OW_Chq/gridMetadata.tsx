@@ -27,6 +27,13 @@ export const OwChqGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
+      accessor: "sr",
+      columnName: "Sr",
+      sequence: 0,
+      componentType: "default",
+      width: 80,
+    },
+    {
       accessor: "TRAN_DT",
       columnName: "Tran Date",
       sequence: 1,

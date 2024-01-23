@@ -9,6 +9,7 @@ export const getStockList = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNSTOCKTAB", {
       COMP_CD: reqData.COMP_CD,
+      BRANCH_CD: reqData.BRANCH_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,
     });
