@@ -592,10 +592,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRXLIST",
     packageName: "",
   },
-  GETJOINTDETILSLIST: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
-    packageName: "",
-  },
+
   GETBUSINESSDATE: {
     url: "/chequeServiceAPI/GETBUSINESSDATE",
     packageName: "",
@@ -655,6 +652,14 @@ export const ActionWiseAPIConfiguration = {
   },
   GETJOINTACCTDTL: {
     url: "/transactionServiceAPI/GETJOINTACCTDTL",
+    packageName: "",
+  },
+  GETDLYTRNLIMITTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNLIMITTAB",
+    packageName: "",
+  },
+  GETDLYTRNSTOCKTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSTOCKTAB",
     packageName: "",
   },
   GETTODAYTRAN: {

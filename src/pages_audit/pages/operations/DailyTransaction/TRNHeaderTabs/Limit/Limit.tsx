@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import { stopPayGridMetaData } from "./gridMetadata";
+import { LimitGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { GridMetaDataType } from "components/dataTable/types";
@@ -12,33 +12,32 @@ import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
-export const StopPay = () => {
+export const Limit = () => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
-  // api define
-  const getStopPayList = useMutation(API.getStopPayList, {
+  const getLimitList = useMutation(API.getLimitList, {
     onSuccess: (data) => {
-      console.log(data, " getStopPayList detailssss");
+      console.log(data, " getLimitList");
       setRows(data);
     },
     onError: (error) => {},
   });
 
   useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getStopPayList.mutate(tempStore.accInfo);
+    tempStore?.accInfo?.ACCT_CD && getLimitList.mutate(tempStore.accInfo);
   }, [tempStore]);
 
   return (
     <>
       <GridWrapper
-        key={`stopPayGridMetaData`}
-        finalMetaData={stopPayGridMetaData as GridMetaDataType}
+        key={`LimitGridMetaData`}
+        finalMetaData={LimitGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        loading={getStopPayList.isLoading}
+        loading={getLimitList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

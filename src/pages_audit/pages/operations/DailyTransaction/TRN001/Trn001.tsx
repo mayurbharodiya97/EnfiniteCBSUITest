@@ -214,24 +214,36 @@ export const Trn001 = () => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: {} });
     },
   });
 
-  const saveScroll = useMutation(API.addDailyTrxScroll, {
+  const getAccNoValidation = useMutation(API.getAccNoValidation, {
     onSuccess: (data) => {
-      if (Number(data?.INSERT) > 0) {
-        handleReset();
-        setSaveDialog(false);
-        enqueueSnackbar("Scroll Saved", {
-          variant: "success",
+      console.log(data, "dattt");
+      if (data?.RESTRICT_MESSAGE) {
+        enqueueSnackbar(data?.RESTRICT_MESSAGE, {
+          variant: "error",
         });
+        const obj = [...rows];
+        obj[index].bug = true;
+        obj[index].bugAccNo = true;
+        obj[index].bugMsgAccNo = data?.RESTRICT_MESSAGE;
+        setRows(obj);
+      } else {
+        const obj = [...rows];
+        obj[index].bug = false;
+        obj[index].bugAccNo = false;
+        obj[index].bugMsgAccNo = "";
+        setRows(obj);
       }
     },
     onError: (error: any) => {
-      setSaveDialog(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
@@ -262,35 +274,28 @@ export const Trn001 = () => {
       });
     },
   });
-  useEffect(() => {
-    console.log(errMsg, "errmsg");
-  }, [errMsg]);
-
-  const getAccNoValidation = useMutation(API.getAccNoValidation, {
+  const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
-      if (data?.RESTRICT_MESSAGE) {
-        enqueueSnackbar(data?.RESTRICT_MESSAGE, {
-          variant: "error",
+      if (Number(data?.INSERT) > 0) {
+        handleReset();
+        setSaveDialog(false);
+        enqueueSnackbar("Scroll Saved", {
+          variant: "success",
         });
-        const obj = [...rows];
-        obj[index].bug = true;
-        obj[index].bugAccNo = true;
-        obj[index].bugMsgAccNo = data?.RESTRICT_MESSAGE;
-        setRows(obj);
-      } else {
-        const obj = [...rows];
-        obj[index].bug = false;
-        obj[index].bugAccNo = false;
-        obj[index].bugMsgAccNo = "";
-        setRows(obj);
       }
     },
     onError: (error: any) => {
+      setSaveDialog(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
     },
   });
+
+  useEffect(() => {
+    console.log(errMsg, "errmsg");
+  }, [errMsg]);
+
   const getTabsByParentType = useMutation(API.getTabsByParentType, {
     onSuccess: (data) => {
       setTabsData(data);
