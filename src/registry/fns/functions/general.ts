@@ -192,19 +192,19 @@ const GeneralAPISDK = () => {
             WK_STMT_TO_DATE: {
               value: isValidDate(new Date()) ? new Date() : new Date(),
             },
-            ACCT_CD: {
-              value: data?.[0]?.ACCT_CD,
-              ignoreUpdate: true,
-            },
+            // ACCT_CD: {
+            //   value: data?.[0]?.ACCT_CD,
+            //   ignoreUpdate: true,
+            // },
           };
         } else {
           return {
             ACCT_NM: { value: "" },
             STMT_FROM_DATE: { value: "" },
             WK_STMT_TO_DATE: { value: "" },
-            ACCT_CD: {
-              value: "",
-            },
+            // ACCT_CD: {
+            //   value: "",
+            // },
           };
         }
       }
@@ -213,9 +213,9 @@ const GeneralAPISDK = () => {
         ACCT_NM: { value: "" },
         STMT_FROM_DATE: { value: "" },
         WK_STMT_TO_DATE: { value: "" },
-        ACCT_CD: {
-          value: "",
-        },
+        // ACCT_CD: {
+        //   value: "",
+        // },
       };
     }
   };

@@ -244,7 +244,11 @@ export const ArrayField2: FC<ArrayField2Props> = ({
           title={label}
           action={
             !Boolean(fixedRows) ? (
-              <IconButton onClick={addNewRow} disabled={isSubmitting}>
+              <IconButton
+                style={{ padding: "5px 10px 0px 10px" }}
+                onClick={addNewRow}
+                disabled={isSubmitting}
+              >
                 <AddCircleOutlineIcon />
               </IconButton>
             ) : null

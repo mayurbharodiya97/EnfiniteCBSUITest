@@ -17,6 +17,7 @@ const StockEntry = lazy(() => import("./stockEntry"));
 const StoppaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const Ckyc = lazy(() => import("./c-kyc"));
+const FixDepositForm = lazy(() => import("./fixDeposit"));
 const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
 );
@@ -73,9 +74,7 @@ export const OperationsMenu = () => (
     <Route
       path="cts-outward-clearing/*"
       element={<CtsOutwardClearing zoneTranType="S" />}
-    >
-      {/* <Route index element={<CtsOutwardClearing zoneTranType="S" />} /> */}
-      {/* <Route path="retrieve" element={<RetrieveClearing zoneTranType="S" />} /> */}
-    </Route>
+    />
+    <Route path="fix-deposit/*" element={<FixDepositForm />} />
   </Routes>
 );

@@ -164,90 +164,51 @@ export const extendFieldTypes = (
       const getBranchVal: string = authState?.user?.branchCode;
       item.defaultValue = getBranchVal;
     }
-    // console.log(item, "item........");
-    // if (item?.defaultAcctTypeTrue) {
-    // }
-    // if (item.render.componentType === "reportAccType") {
-    //   const reportAcctTypes: any = extendedTypes["reportAccountType"];
+    if (item.render.componentType === "reportAccType") {
+      const reportAcctTypes: any = extendedTypes["reportAccountType"];
 
-    //   if (item["options"]) {
-    //     extendedTypes["reportAccountType"]["options"] = item["options"];
-    //   }
-    //   if (item["_optionsKey"]) {
-    //     extendedTypes["reportAccountType"]["_optionsKey"] = item["_optionsKey"];
-    //   }
-
-    //   // Check if the '_optionsKey' property is present in the 'item' object
-    //   // if (item._optionsKey) {
-    //   //   reportAccType._optionsKey = item._optionsKey;
-    //   // }
-
-    //   if (typeof reportAcctTypes === "object") {
-    //     newMetaDataFieldsCustom.push(reportAcctTypes);
-    //   }
-    // }
-    if (item.render.componentType === "_accountNumber") {
-      //this is works only use render : {componentType:"_accountNumber"} in form wrapper
-      //for call dynamic api for account number field
-      // if (item["postValidationSetCrossFieldValues"]) {
-      //   extendedTypes["accountCode"]["postValidationSetCrossFieldValues"] =
-      //     item["postValidationSetCrossFieldValues"];
-      //   extendedTypes["fullAccountNumber"][
-      //     "postValidationSetCrossFieldValues"
-      //   ] = item["postValidationSetCrossFieldValues"];
-      // }
-      // //for call dynamic api for account type field
-      // if (item["acctTypeCustomAPI"]) {
-      //   extendedTypes["accountType"]["options"] = item["acctTypeCustomAPI"];
-      // }
-      // if (item["acctType_optionsKey"]) {
-      //   extendedTypes["accountType"]["_optionsKey"] =
-      //     item["acctType_optionsKey"];
-      // }
-
-      // //for call dynamic api for branch code. field
-
-      // if (item["branchCodeCustomAPI"]) {
-      //   extendedTypes["branchCode"]["options"] = item["branchCodeCustomAPI"];
-      // }
-      // if (item["branchCode_optionsKey"]) {
-      //   extendedTypes["branchCode"]["_optionsKey"] =
-      //     item["branchCode_optionsKey"];
-      // }
-
-      // console.log(extendedTypes["accountType"], 'extendedTypes["accountType"]');
-      // console.log(extendedTypes["branchCode"], 'extendedTypes["branchCode"]');
-
-      function updateExtendedTypesField(fieldName, apiField, optionsKeyField) {
-        if (item[apiField]) {
-          extendedTypes[fieldName]["options"] = item[apiField];
-        }
-        if (optionsKeyField && item[optionsKeyField]) {
-          extendedTypes[fieldName]["_optionsKey"] = item[optionsKeyField];
-        }
+      if (item["options"]) {
+        extendedTypes["reportAccountType"]["options"] = item["options"];
+      }
+      if (item["_optionsKey"]) {
+        extendedTypes["reportAccountType"]["_optionsKey"] = item["_optionsKey"];
       }
 
-      // Usage
-      updateExtendedTypesField(
-        "accountCode",
-        "postValidationSetCrossFieldValues",
-        ""
-      );
-      updateExtendedTypesField(
-        "fullAccountNumber",
-        "postValidationSetCrossFieldValues",
-        ""
-      );
-      updateExtendedTypesField(
-        "accountType",
-        "acctTypeCustomAPI",
-        "acctType_optionsKey"
-      );
-      updateExtendedTypesField(
-        "branchCode",
-        "branchCodeCustomAPI",
-        "branchCode_optionsKey"
-      );
+      // Check if the '_optionsKey' property is present in the 'item' object
+      // if (item._optionsKey) {
+      //   reportAccType._optionsKey = item._optionsKey;
+      // }
+
+      if (typeof reportAcctTypes === "object") {
+        newMetaDataFieldsCustom.push(reportAcctTypes);
+      }
+    } else if (item.render.componentType === "_accountNumber") {
+      if (item["postValidationSetCrossFieldValues"]) {
+        extendedTypes["accountCode"]["postValidationSetCrossFieldValues"] =
+          item["postValidationSetCrossFieldValues"];
+        extendedTypes["fullAccountNumber"][
+          "postValidationSetCrossFieldValues"
+        ] = item["postValidationSetCrossFieldValues"];
+      }
+
+      //for call dynamic api for account type field
+      if (item["acctTypeCustomAPI"]) {
+        extendedTypes["accountType"]["options"] = item["acctTypeCustomAPI"];
+      }
+      if (item["acctType_optionsKey"]) {
+        extendedTypes["accountType"]["_optionsKey"] =
+          item["acctType_optionsKey"];
+      }
+
+      //for call dynamic api for branch code. field
+
+      if (item["branchCodeCustomAPI"]) {
+        extendedTypes["branchCode"]["options"] = item["branchCodeCustomAPI"];
+      }
+      if (item["branchCode_optionsKey"]) {
+        extendedTypes["branchCode"]["_optionsKey"] =
+          item["branchCode_optionsKey"];
+      }
 
       if (item?.acctFieldPara === "1") {
         const fullAccountNumber = extendedTypes["fullAccountNumber"];

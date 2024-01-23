@@ -627,7 +627,7 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CUSTOMER_ID",
-      columnName: "Customer Id",
+      columnName: "Customer ID",
       sequence: 8,
       alignment: "center",
       componentType: "default",
