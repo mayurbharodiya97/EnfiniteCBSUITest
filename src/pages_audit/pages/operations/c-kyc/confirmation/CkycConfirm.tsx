@@ -11,6 +11,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import FormModal from "../formModal/formModal";
 import { Typography } from "@mui/material";
 import { t } from "i18next";
+import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/individualComps/PhotoSignConfirmDialog";
 
 
 export const CkycConfirm = () => {
@@ -57,10 +58,16 @@ export const CkycConfirm = () => {
   ];
   const setCurrentAction = useCallback(
     (data) => {
-      setRowsData(data?.rows);
-      navigate(data?.name, {
-        state: data?.rows,
-      });
+      if(data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
+        navigate("photo-signature", {
+          state: data?.rows,
+        })
+      } else {
+        setRowsData(data?.rows);
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
       // }
     },
     // []
@@ -116,6 +123,18 @@ export const CkycConfirm = () => {
                 onClose={() => navigate(".")}
                 formmode={"view"}
                 from={"confirmation-entry"}
+              />
+            }
+          />
+
+          <Route
+            path="photo-signature/*"
+            element={
+              <PhotoSignConfirmDialog
+                open={true}
+                onClose={() => {
+                  navigate(".");
+                }}
               />
             }
           />
