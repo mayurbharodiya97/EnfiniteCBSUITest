@@ -76,19 +76,44 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 }));
 
 export const FixDepositForm = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [stepData, setStepData] = useState({ step: 0, fdType: "E" });
   const [completed, setCompleted] = useState<{
     [k: number]: boolean;
   }>({});
-  const [steps, setSteps] = useState(["FD Parameters"]);
+  const [steps, setSteps] = useState([
+    "FD Parameters",
+    "Fixed Deposit Detail(s)",
+    "Transfer A/C Detail(s)",
+  ]);
   const fdParameterRef: any = useRef(null);
 
+  const setDataOnFieldChange = (action, payload) => {
+    if (action === "FD_TYPE") {
+      if (payload?.value === "F") {
+        setSteps([
+          "FD Parameters",
+          "Account Opening",
+          "Fixed Deposit Detail(s)",
+          "Transfer A/C Detail(s)",
+        ]);
+      } else if (payload?.value === "E") {
+        setSteps([
+          "FD Parameters",
+          "Fixed Deposit Detail(s)",
+          "Transfer A/C Detail(s)",
+        ]);
+      }
+    }
+  };
   function RenderStepForm(step) {
     switch (step) {
       case 0:
         return (
           <DetailForm
             onSubmitHandler={paraOnSubmitHandler}
+            setDataOnFieldChange={(action, payload) =>
+              setDataOnFieldChange(action, payload)
+            }
             ref={fdParameterRef}
           />
         );
@@ -129,7 +154,7 @@ export const FixDepositForm = () => {
   };
 
   const isLastStep = () => {
-    return activeStep === totalSteps() - 1;
+    return stepData?.step === totalSteps() - 1;
   };
 
   const allStepsCompleted = () => {
@@ -142,16 +167,12 @@ export const FixDepositForm = () => {
         ? // It's the last step, but not all steps have been completed,
           // find the first step that has been completed
           steps.findIndex((step, i) => !(i in completed))
-        : activeStep + 1;
-    setActiveStep(newActiveStep);
+        : stepData?.step + 1;
+    setStepData((old) => ({ ...old, step: newActiveStep }));
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleStep = (step: number) => () => {
-    setActiveStep(step);
+    setStepData((old) => ({ ...old, step: old?.step - 1 }));
   };
 
   const paraOnSubmitHandler: SubmitFnType = (
@@ -164,26 +185,18 @@ export const FixDepositForm = () => {
     // @ts-ignore
     endSubmit(true);
     console.log(">>data", data);
-    if (data?.FD_TYPE === "E") {
-      setSteps((old) => [...old, "Fixed Deposit Detail(s)"]);
-    }
 
     const newCompleted = completed;
-    newCompleted[activeStep] = true;
+    newCompleted[stepData?.step] = true;
     setCompleted(newCompleted);
     handleNext();
   };
   const handleComplete = (e) => {
-    console.log(">>activeStep", activeStep);
+    console.log(">>activeStep", stepData?.step);
     console.log(">>fdParameterRef", fdParameterRef);
-    if (activeStep === 0) {
+    if (stepData?.step === 0) {
       fdParameterRef.current?.handleSubmit(e);
     }
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-    setCompleted({});
   };
 
   return (
@@ -210,7 +223,7 @@ export const FixDepositForm = () => {
       <Stack sx={{ width: "100%" }} spacing={4}>
         <Stepper
           alternativeLabel
-          activeStep={activeStep}
+          activeStep={stepData?.step}
           connector={<ColorlibConnector />}
         >
           {steps.map((label, index) => (
@@ -228,21 +241,21 @@ export const FixDepositForm = () => {
             </Step>
           ))}
         </Stepper>
-        <div style={{ marginTop: "0px" }}>{RenderStepForm(activeStep)}</div>
+        <div style={{ marginTop: "0px" }}>{RenderStepForm(stepData?.step)}</div>
         <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
           <Box sx={{ flex: "1 1 auto" }} />
-          {activeStep === 0 ? null : (
+          {stepData?.step === 0 ? null : (
             <GradientButton onClick={handleBack}>Back</GradientButton>
           )}
           {
-            activeStep !== steps.length && (
+            stepData?.step !== steps.length && (
               // (completed[activeStep] ? (
               //   <Typography variant="caption" sx={{ display: "inline-block" }}>
               //     Step {activeStep + 1} already completed
               //   </Typography>
               // ) : (
               <>
-                {activeStep === 0 || activeStep === 1 ? (
+                {stepData?.step === 0 || stepData?.step === 1 ? (
                   <GradientButton onClick={handleComplete}>Next</GradientButton>
                 ) : (
                   <GradientButton onClick={handleComplete}>

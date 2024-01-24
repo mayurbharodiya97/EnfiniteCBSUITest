@@ -1,7 +1,8 @@
 import { GeneralAPI } from "registry/fns/functions";
-export const FixDepositFormMetadata = {
+import { getFDAccountsDetail } from "./api";
+export const FixDepositParaFormMetadata = {
   form: {
-    name: "fixDeposit",
+    name: "fixDepositParameter",
     label: "Fix Deposit Entry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -50,8 +51,8 @@ export const FixDepositFormMetadata = {
       name: "FD_TYPE",
       label: "FD Operation",
       options: [
-        { label: "Fresh", value: "F" },
-        { label: "Existing", value: "E" },
+        { label: "Fresh FD Account", value: "F" },
+        { label: "Existing FD Account", value: "E" },
         { label: "FD Payment", value: "P" },
         { label: "FD Payment Instruction", value: "I" },
       ],
@@ -63,6 +64,10 @@ export const FixDepositFormMetadata = {
           { name: "required", params: ["FD Type is required."] },
           { name: "FD_TYPE", params: ["Please select FD Type"] },
         ],
+      },
+      fieldValidationRun: "all",
+      postValidationSetCrossFieldValues: async (field, formState) => {
+        formState.setDataOnFieldChange("FD_TYPE", field);
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
     },
@@ -85,6 +90,10 @@ export const FixDepositFormMetadata = {
           { name: "required", params: ["Mode is required."] },
           { name: "MODE", params: ["Please select Mode"] },
         ],
+      },
+      fieldValidationRun: "all",
+      postValidationSetCrossFieldValues: async (field, formState) => {
+        formState.setDataOnFieldChange("MODE", field);
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
     },
@@ -118,16 +127,216 @@ export const FixDepositFormMetadata = {
           },
         ],
       },
+      postValidationSetCrossFieldValues: async (field, formState, auth) => {
+        formState.setDataOnFieldChange("CUSTOMER_ID_FEFORE");
+        let Apireq = {
+          COMP_CD: auth?.companyID ?? "",
+          USER_NAME: auth?.user?.id ?? "",
+          CUSTOMER_ID: field?.value ?? "",
+        };
+
+        let fdAccounts = await getFDAccountsDetail(Apireq);
+        formState.setDataOnFieldChange("CUSTOMER_ID", {
+          ...field,
+          FD_ACCTS: fdAccounts,
+        });
+        if (fdAccounts?.length) {
+          return {
+            CUSTOMER_NAME: {
+              value: fdAccounts?.[0]?.CUSTOMER_NAME ?? "",
+            },
+            FDACCTS: {
+              value: fdAccounts,
+            },
+          };
+          // }
+        } else {
+          return {
+            CUSTOMER_ID: {
+              error: "FD Accounts not found for this Customer ID.",
+            },
+            CUSTOMER_NAME: { value: "" },
+          };
+        }
+      },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
     },
     {
       render: {
         componentType: "textField",
       },
-      name: "CUSTOMER_NM",
+      name: "CUSTOMER_NAME",
       label: "Customer Name",
       isReadOnly: true,
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3.5 },
+    },
+  ],
+};
+
+export const FixDepositAccountsFormMetadata = {
+  form: {
+    name: "fixDepositAccounts",
+    label: "Fix Deposit Entry",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "arrayField",
+      },
+      name: "FDACCTS",
+      removeRowFn: "deleteFormArrayFieldData",
+      GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
+      _fields: [
+        // {
+        //   render: {
+        //     componentType: "_accountNumber",
+        //   },
+        //   branchCodeMetadata: {
+        //     GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+        //   },
+        //   accountTypeMetadata: {
+        //     GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+        //   },
+        //   accountCodeMetadata: {
+        //     name: "ACCT_CD",
+        //     GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+        //   },
+        // },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "BRANCH_CD",
+          label: "Branch Code",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_TYPE",
+          label: "Account Type",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_CD",
+          label: "Account Number",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_NM",
+          label: "Account Name",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "FD_AMT",
+          label: "New FD Amount",
+          placeholder: "",
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "numberFormat",
+          },
+          name: "NO_OF_FD",
+          label: "No. of FD",
+          defaultValue: 1,
+          FormatProps: {
+            allowNegative: false,
+            isAllowed: (values) => {
+              if (values?.value?.length > 5) {
+                return false;
+              }
+              if (parseInt(values?.value) > 100) {
+                return false;
+              }
+              return true;
+            },
+          },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "TOTAL_AMT",
+          label: "Total FD Amount",
+          placeholder: "",
+          isReadOnly: true,
+          dependentFields: ["FD_AMT", "NO_OF_FD"],
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            console.log(">>dependentFields", dependentFields);
+            const fdAmount = Number(dependentFields["FDACCTS.FD_AMT"]?.value);
+            const numberOfFD = Number(
+              dependentFields["FDACCTS.NO_OF_FD"]?.value
+            );
+
+            const total = fdAmount * numberOfFD;
+            return total.toFixed(2);
+          },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+      ],
     },
   ],
 };

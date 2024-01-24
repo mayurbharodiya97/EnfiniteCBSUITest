@@ -73,6 +73,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   endsIcon,
   iconStyle,
   textFieldStyle,
+  fieldValidationRun,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -101,7 +102,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
     fieldKey: fieldID,
     dependentFields,
     validate,
-    validationRun,
+    validationRun: Boolean(fieldValidationRun)
+      ? fieldValidationRun
+      : validationRun,
     runPostValidationHookAlways,
     postValidationSetCrossFieldValues,
     isReadOnly,
@@ -158,7 +161,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value, ignoreUpdate, isFieldFocused } = incomingMessage;
+      const { value, error, ignoreUpdate, isFieldFocused } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (isFieldFocused) {

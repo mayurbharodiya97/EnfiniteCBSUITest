@@ -828,6 +828,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
     packageName: "",
   },
+  GETCUSTFDDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTFDDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

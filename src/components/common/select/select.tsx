@@ -79,6 +79,7 @@ const MySelect: FC<MySelectAllProps> = ({
   defaultOptionLabel,
   enableDefaultOption,
   requestProps,
+  fieldValidationRun,
   ...others
 }) => {
   const {
@@ -107,7 +108,9 @@ const MySelect: FC<MySelectAllProps> = ({
     fieldKey: fieldID,
     dependentFields,
     validate,
-    validationRun,
+    validationRun: Boolean(fieldValidationRun)
+      ? fieldValidationRun
+      : validationRun,
     runPostValidationHookAlways,
     postValidationSetCrossFieldValues,
     isReadOnly,

@@ -141,109 +141,82 @@ export const extendFieldTypes = (
   let newMetaDataFieldsCustom: any = [];
   const paravalue: string = dynamicAccountNumberField;
 
-  const processExtendedType = (key: string) => {
-    const field = extendedTypes[key];
-
+  const processExtendedType = (key: string, metadata?: any) => {
+    const field = metadata || extendedTypes[key];
     if (typeof field === "object") {
-      field["label"] = lanTranslate(field["label"]);
-      field["placeholder"] = lanTranslate(field["placeholder"]);
-      if (key === "branchCode") {
-        // Set the default value for branchCode
-        field["defaultValue"] = authState?.user?.branchCode;
-      } else if (key === "accountType") {
-        // Set autofocus on the accountType field
-        field["autoFocus"] = true;
-        field["defaultValue"] = "000 ";
-      }
+      // field["label"] = lanTranslate(field["label"]);
+      // field["placeholder"] = lanTranslate(field["placeholder"]);
+      // if (key === "branchCode") {
+      //   // Set the default value for branchCode
+      //   field["defaultValue"] = authState?.user?.branchCode;
+      // } else if (key === "accountType") {
+      //   // Set autofocus on the accountType field
+      //   field["autoFocus"] = true;
+      //   field["defaultValue"] = "000 ";
+      // }
       newMetaDataFieldsCustom.push(field);
+      console.log(field, "field120");
     }
   };
 
   newMetaDataFields?.forEach((item) => {
-    if (item?.defaultBranchTrue) {
-      const getBranchVal: string = authState?.user?.branchCode;
-      item.defaultValue = getBranchVal;
-    }
-    if (item.render.componentType === "reportAccType") {
-      const reportAcctTypes: any = extendedTypes["reportAccountType"];
+    // if (item?.defaultBranchTrue) {
+    //   const getBranchVal: string = authState?.user?.branchCode;
+    //   item.defaultValue = getBranchVal;
+    // }
 
-      if (item["options"]) {
-        extendedTypes["reportAccountType"]["options"] = item["options"];
+    if (item.render.componentType === "_accountNumber") {
+      let finalParameter;
+      if (paravalue) {
+        finalParameter = paravalue;
       }
-      if (item["_optionsKey"]) {
-        extendedTypes["reportAccountType"]["_optionsKey"] = item["_optionsKey"];
+      if (item?.acctFieldPara) {
+        finalParameter = item?.acctFieldPara;
       }
-
-      // Check if the '_optionsKey' property is present in the 'item' object
-      // if (item._optionsKey) {
-      //   reportAccType._optionsKey = item._optionsKey;
-      // }
-
-      if (typeof reportAcctTypes === "object") {
-        newMetaDataFieldsCustom.push(reportAcctTypes);
-      }
-    } else if (item.render.componentType === "_accountNumber") {
-      if (item["postValidationSetCrossFieldValues"]) {
-        extendedTypes["accountCode"]["postValidationSetCrossFieldValues"] =
-          item["postValidationSetCrossFieldValues"];
-        extendedTypes["fullAccountNumber"][
-          "postValidationSetCrossFieldValues"
-        ] = item["postValidationSetCrossFieldValues"];
+      if (!paravalue && !item?.acctFieldPara) {
+        finalParameter = "2";
       }
 
-      //for call dynamic api for account type field
-      if (item["acctTypeCustomAPI"]) {
-        extendedTypes["accountType"]["options"] = item["acctTypeCustomAPI"];
-      }
-      if (item["acctType_optionsKey"]) {
-        extendedTypes["accountType"]["_optionsKey"] =
-          item["acctType_optionsKey"];
-      }
+      console.log(finalParameter, "finalParameter120");
 
-      //for call dynamic api for branch code. field
-
-      if (item["branchCodeCustomAPI"]) {
-        extendedTypes["branchCode"]["options"] = item["branchCodeCustomAPI"];
-      }
-      if (item["branchCode_optionsKey"]) {
-        extendedTypes["branchCode"]["_optionsKey"] =
-          item["branchCode_optionsKey"];
-      }
-
-      if (item?.acctFieldPara === "1") {
-        const fullAccountNumber = extendedTypes["fullAccountNumber"];
-        if (typeof fullAccountNumber === "object") {
-          newMetaDataFieldsCustom.push(fullAccountNumber);
+      const setExtendedTypeProps = (type) => {
+        if (Boolean(item?.[`${type}Metadata`])) {
+          const mergedObj = {
+            ...extendedTypes[type],
+            ...item[`${type}Metadata`],
+          };
+          processExtendedType(type, mergedObj);
+        } else {
+          processExtendedType(type, extendedTypes?.[type]);
         }
-      } else if (item?.acctFieldPara === "2") {
+      };
+
+      if (finalParameter === "1") {
+        // const fullAccountNumber = extendedTypes["fullAccountNumber"];
+
+        setExtendedTypeProps("fullAccountNumber");
+
+        // if (item["postValidationSetCrossFieldValues"]) {
+        //   extendedTypes["fullAccountNumber"][
+        //     "postValidationSetCrossFieldValues"
+        //   ] = item["postValidationSetCrossFieldValues"];
+        // }
+        // if (item["AcctNumberGridProps"]) {
+        //   extendedTypes["fullAccountNumber"]["GridProps"] =
+        //     item["AcctNumberGridProps"];
+        // }
+        // if (typeof fullAccountNumber === "object") {
+        //   newMetaDataFieldsCustom.push(fullAccountNumber);
+        // }
+      } else if (finalParameter === "2") {
         ["branchCode", "accountType", "accountCode"].forEach(
-          processExtendedType
-        );
-      } else if (paravalue === "1") {
-        const fullAccountNumber = extendedTypes["fullAccountNumber"];
-        if (typeof fullAccountNumber === "object") {
-          newMetaDataFieldsCustom.push(fullAccountNumber);
-        }
-      } else if (paravalue === "2") {
-        ["branchCode", "accountType", "accountCode"].forEach(
-          processExtendedType
+          setExtendedTypeProps
         );
       } else {
         ["branchCode", "accountType", "accountCode"].forEach(
           processExtendedType
         );
       }
-      // } else if (item.render.componentType === "currency") {
-      //   const currency: any = extendedTypes["currency"];
-      //   if (typeof currency === "object") {
-      //     newMetaDataFieldsCustom.push(currency);
-      //   }
-      //   if (currency?.FormatProps) {
-      //     currency.FormatProps = {
-      //       ...currency?.FormatProps,
-      //       prefix: item?.customPrefix ? item?.customPrefix : dynamicAmountSymbol,
-      //     };
-      // }
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
     }

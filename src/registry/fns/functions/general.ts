@@ -158,11 +158,30 @@ const GeneralAPISDK = () => {
     dependentFieldValue,
     reqFlag
   ) => {
+    Object.keys(dependentFieldValue).forEach((key) => {
+      const dynamicPrefix = key.split(".")[0] + ".";
+      const newKey = key.replace(new RegExp("^" + dynamicPrefix), "");
+
+      dependentFieldValue[newKey] = { ...dependentFieldValue[key] };
+      dependentFieldValue[newKey].fieldKey = dependentFieldValue[
+        newKey
+      ].fieldKey.replace(new RegExp("^" + dynamicPrefix), "");
+      dependentFieldValue[newKey].name = dependentFieldValue[
+        newKey
+      ].name.replace(new RegExp("^" + dynamicPrefix), "");
+    });
+
     let paddedAcctcode = (currentField?.value).padStart(
       dependentFieldValue?.ACCT_TYPE?.optionData?.[0]?.PADDING_NUMBER,
       0
     );
-    if (currentField?.value) {
+    if (
+      Boolean(
+        currentField?.value &&
+          dependentFieldValue?.BRANCH_CD?.value &&
+          dependentFieldValue?.ACCT_TYPE?.value
+      )
+    ) {
       const { status, data } = await AuthSDK.internalFetcher("GETACCTDATA", {
         COMP_CD: authState?.companyID,
         BRANCH_CD:
@@ -192,34 +211,21 @@ const GeneralAPISDK = () => {
             WK_STMT_TO_DATE: {
               value: isValidDate(new Date()) ? new Date() : new Date(),
             },
-            // ACCT_CD: {
-            //   value: data?.[0]?.ACCT_CD,
-            //   ignoreUpdate: true,
-            // },
-          };
-        } else {
-          return {
-            ACCT_NM: { value: "" },
-            STMT_FROM_DATE: { value: "" },
-            WK_STMT_TO_DATE: { value: "" },
-            // ACCT_CD: {
-            //   value: "",
-            // },
+            ACCT_CD: {
+              value: data?.[0]?.ACCT_CD,
+              ignoreUpdate: true,
+            },
+            BALANCE: {
+              value: data?.[0]?.WIDTH_BAL,
+              label: "ertert",
+            },
           };
         }
       }
-    } else {
-      return {
-        ACCT_NM: { value: "" },
-        STMT_FROM_DATE: { value: "" },
-        WK_STMT_TO_DATE: { value: "" },
-        // ACCT_CD: {
-        //   value: "",
-        // },
-      };
     }
   };
   const getBranchCodeList = async (...reqData) => {
+    console.log(reqData, "reqData120");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETBRACCESSLST", {
         USER_NAME: reqData?.[3]?.user.id
@@ -566,7 +572,7 @@ const GeneralAPISDK = () => {
         COMP_CD: reqData?.[2]?.companyID ?? "",
         BRANCH_CD: reqData?.[2]?.user?.branchCode,
         TRAN_DT: format(new Date(reqData?.[3]?.TRAN_DT?.value), "dd/MMM/yyyy"),
-        ZONE: reqData?.[0].value ?? "",
+        ZONE: reqData?.[0].value ?? "0   ",
         TRAN_TYPE: reqData?.[0]?.optionData?.[0]?.ZONE_TRAN_TYPE ?? "S",
       });
     if (status === "0") {
@@ -578,6 +584,32 @@ const GeneralAPISDK = () => {
         SLIP_CD: { value: "" },
       };
     }
+  };
+  const getAccountNumberData = async (...reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher(`GETACCOUNTNM`, {
+        COMP_CD: reqData?.[2]?.companyID ?? "",
+        BRANCH_CD: reqData?.[2]?.user?.branchCode,
+        ACCT_CD: reqData?.[0]?.value.padStart(6, "0").padEnd(20, " "),
+        ACCT_TYPE: reqData?.[3]?.ACCT_TYPE?.value ?? "",
+      });
+    if (status === "0") {
+      return {
+        ACCT_NAME: { value: data?.[0]?.ACCT_NAME ?? "" },
+        TRAN_BAL: { value: data?.[0]?.TRAN_BAL ?? "" },
+      };
+    } else {
+      return {
+        ACCT_NAME: { value: "" },
+        TRAN_BAL: { value: "" },
+      };
+    }
+  };
+
+  const testingFn = async (...reqData) => {
+    console.log(
+      "{}{}{{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}-------------------------"
+    );
   };
 
   return {
@@ -605,6 +637,8 @@ const GeneralAPISDK = () => {
     getDependentFieldList,
     getProMiscData,
     getZoneListData,
+    getAccountNumberData,
+    testingFn,
   };
 };
 export const GeneralAPI = GeneralAPISDK();
