@@ -82,15 +82,17 @@ export const Trn001 = () => {
     sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: "0",
-
-    date: new Date().toISOString()?.substring(0, 10),
+    // date: new Date().toISOString()?.substring(0, 10),
+    date: new Date(),
     debit: "0.00",
     credit: "0.00",
     bug: true,
     bugAccNo: false,
     bugCNo: false,
+    bugDate: false,
     bugMsgAccNo: "",
     bugMsgCNo: "",
+    bugMsgDate: "",
     isCredit: true,
     viewOnly: false,
   };
@@ -360,6 +362,7 @@ export const Trn001 = () => {
     obj[i].scroll = "";
     obj[i].sdc = defSdc;
     obj[i].remark = defSdc?.label;
+    obj[i].date = new Date();
 
     if (value?.code == "1" || value?.code == "3") {
       //value?.code == "2" ||
@@ -425,7 +428,20 @@ export const Trn001 = () => {
   const handleDate = (e, i) => {
     console.log(e, "date e");
     const obj = [...rows];
-    obj[i].date = e.target?.value;
+    obj[i].date = e;
+
+    setRows(obj);
+  };
+  const handleDateErr = (e, i) => {
+    console.log(e, "date err");
+    const obj = [...rows];
+    if (e) {
+      obj[i].bugMsgDate = "Invalid Date: " + e;
+      obj[i].bugDate = true;
+    } else {
+      obj[i].bugMsgDate = "";
+      obj[i].bugDate = false;
+    }
     setRows(obj);
   };
 
@@ -510,11 +526,12 @@ export const Trn001 = () => {
       date: new Date().toISOString()?.substring(0, 10),
       debit: deb?.toFixed(2),
       credit: cred?.toFixed(2),
-
       bugAccNo: false,
       bugCNo: false,
+      bugDate: false,
       bugMsgAccNo: "",
       bugMsgCNo: "",
+      bugMsgDate: "",
 
       isCredit: isCred,
     };
@@ -599,6 +616,7 @@ export const Trn001 = () => {
     console.log(isSave, "isSave");
     let isErrCNo = rows.some((a) => a.bugCNo);
     let isErrAccNo = rows.some((a) => a.bugAccNo);
+    let isErrDate = rows.some((a) => a.bugDate);
 
     if (isArray && diff != 0) {
       enqueueSnackbar("Cr. Db. Amount not matched", {
@@ -617,6 +635,11 @@ export const Trn001 = () => {
     }
     if (isErrAccNo) {
       enqueueSnackbar("Please Check Error in A/C No.", {
+        variant: "error",
+      });
+    }
+    if (isErrDate) {
+      enqueueSnackbar("Please Check Error in Date", {
         variant: "error",
       });
     }
@@ -872,21 +895,26 @@ export const Trn001 = () => {
                             />
                           </TableCell>
                         </ErrTooltip>
-
-                        <TableCell>
-                          <TextField
-                            value={a.date}
-                            error={a.isCredit && !a.date ? true : false}
-                            type="date"
-                            disabled={
-                              a.trx?.code == "4" || a.trx?.code == "6"
-                                ? false
-                                : true
-                            }
-                            size="small"
-                            onChange={(e) => handleDate(e, i)}
-                          />{" "}
-                        </TableCell>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={a?.bugMsgDate && <h3>{a?.bugMsgDate}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 80 }}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                              <DatePicker
+                                format="dd/MM/yyyy"
+                                disabled={
+                                  a.trx?.code == "4" || a.trx?.code == "6"
+                                    ? false
+                                    : true
+                                }
+                                value={a.date}
+                                onChange={(e) => handleDate(e, i)}
+                                onError={(e) => handleDateErr(e, i)}
+                              />
+                            </LocalizationProvider>
+                          </TableCell>
+                        </ErrTooltip>
                         <ErrTooltip
                           disableInteractive={true}
                           title={
