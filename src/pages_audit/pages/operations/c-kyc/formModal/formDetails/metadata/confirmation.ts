@@ -55,6 +55,12 @@ export const ckyc_confirmation_form_metadata = {
         GridProps: {
           xl: 12,
         },
+        validate: (columnValue, allField, flag) => {
+            const {confirmed} = flag
+            if(Boolean(confirmed) && confirmed === "M") {
+                return "This field is required"
+            } else return "";
+        },
       },
     ]
 }
