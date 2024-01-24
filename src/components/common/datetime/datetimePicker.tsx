@@ -7,6 +7,7 @@ import { Grid, GridProps, InputLabel } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DateTimePickerProps } from "@mui/lab/DateTimePicker";
 import { utilFunction } from "components/utils";
+import {TextField} from "components/styledComponent/textfield";
 
 const useStyles: any = makeStyles({
   root: {
@@ -18,15 +19,15 @@ const useStyles: any = makeStyles({
     },
   },
 
-  labelStyle: {
-    color: "rgba(0, 0, 0, 0.6)",
-    fontSize: "0.875rem",
-    lineHeight: "1.4375em",
-    fontWeight: "600",
-    transform: "translate(0, 1.5px) scale(1)",
-    marginBottom: "8px",
-    maxWidth: "calc(133% - 32px)",
-  },
+  // labelStyle: {
+  //   color: "rgba(0, 0, 0, 0.6)",
+  //   fontSize: "0.875rem",
+  //   lineHeight: "1.4375em",
+  //   fontWeight: "600",
+  //   transform: "translate(0, 1.5px) scale(1)",
+  //   marginBottom: "8px",
+  //   maxWidth: "calc(133% - 32px)",
+  // },
 });
 
 type KeyboardDateTimePickerPropsSubset = Omit<
@@ -134,13 +135,14 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
   }
   const result = (
     <>
-      <InputLabel className={classes.labelStyle}>{label}</InputLabel>
+      {/* <InputLabel className={classes.labelStyle}>{label}</InputLabel> */}
       <KeyboardDateTimePicker
         {...others}
         key={fieldKey}
         className={classes.root}
         id={fieldKey}
         name={name}
+        label={label}
         inputRef={focusRef}
         closeOnSelect={true}
         // orientation={"portrait"}
@@ -155,12 +157,18 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore
         onChange={handleChange}
+        slots={{
+          textField:TextField
+        }}
         slotProps={{
           textField: {
             fullWidth: true,
             error: !isSubmitting && isError,
             helperText: !isSubmitting && isError ? error : null,
             onBlur: handleBlur,
+            InputLabelProps: {
+              shrink: true,
+            },
           },
         }}
         onBlur={handleBlur}
@@ -173,7 +181,6 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
         disabled={isSubmitting}
         autoOk={true}
         readOnly={readOnly}
-        InputLabelProps={{ shrink: true }}
         InputProps={{
           readOnly: readOnly,
           ...InputProps,
