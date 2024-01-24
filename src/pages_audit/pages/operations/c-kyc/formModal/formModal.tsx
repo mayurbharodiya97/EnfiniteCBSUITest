@@ -979,6 +979,7 @@ export default function FormModal({
                           label="Category - Constitution"
                           autoComplete="disabled"
                           type="text"
+                          required={true}
                           FormHelperTextProps={{
                             component: "div",
                           }}
@@ -1002,16 +1003,6 @@ export default function FormModal({
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          helperText={
-                            <div style={{ display: "flex" }}>
-                              <FormHelperText>
-                                {state?.categConstitutionValuectx 
-                                  ? null 
-                                  : "Please Enter Category"
-                                }
-                              </FormHelperText>
-                            </div>
-                          }
                           variant={"standard"}
                           color="secondary"
                         />
