@@ -38,7 +38,8 @@ const authAPI = () => {
   const setDisplayLanguage = (code) => {
     displayLanguage = code;
   };
-  const loginUserDetails = ({ role, user: { id, branchCode } }) => {
+  const loginUserDetails = (payload) => {
+    const { role, user: { id, branchCode }, workingDate } = payload
     loginuserDetailsData = {
       USERNAME: id,
       USERROLE: role,
@@ -46,6 +47,7 @@ const authAPI = () => {
       MACHINE_NAME: "Auto",
       BRANCH_CD: branchCode,
       THROUGH_CHANNEL: "E_CBS",
+      WORKING_DT: workingDate ?? "",
     };
   };
   const setToken = (argaccessToken) => {
