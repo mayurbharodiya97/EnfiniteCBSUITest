@@ -53,6 +53,7 @@ export const company_info_meta_data = {
             name: "COMMENCEMENT_DT",
             label: "Commencement Date",
             placeholder: "",
+            isFieldFocused: true,
             format: "dd/MM/yyyy",
             maxDate: new Date(),
             type: "text",

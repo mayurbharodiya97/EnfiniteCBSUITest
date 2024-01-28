@@ -52,6 +52,7 @@ export const attestation_detail_meta_data = {
             options: () => API.getPMISCData("CKYC_RCVDOCTYPE"),
             _optionsKey: "ckycDocTypes",
             required: true,
+            isFieldFocused: true,
             schemaValidation: {
               type: "string",
               rules: [

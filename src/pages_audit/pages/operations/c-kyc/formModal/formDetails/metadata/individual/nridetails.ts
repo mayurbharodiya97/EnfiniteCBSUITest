@@ -53,6 +53,7 @@ export const nri_detail_meta_data = {
             maxLength: 50,
             type: "text",
             required: true,
+            isFieldFocused: true,
             schemaValidation: {
                 type: "string",
                 rules: [

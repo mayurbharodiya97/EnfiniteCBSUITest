@@ -58,7 +58,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 2,
             },
             name: "PREFIX_CD",
@@ -68,6 +68,7 @@ export const personal_detail_prefix_data = {
             _optionsKey: "PDPrefix",
             type: "text",
             required: true,
+            isFieldFocused: true,
             // GridProps: {xs:12, sm:2.5, md: 2.5, lg: 1.5, xl: 1 },
             GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
             schemaValidation: {
@@ -83,6 +84,7 @@ export const personal_detail_prefix_data = {
                 dependentFieldsValues
               ) => {
                 if(field.value) {
+                    console.log("wefuuwiefwef", field?.optionData)
                     return {
                         // MOTHER_LAST_NM: {value: "", isFieldFocused:true},
                         GENDER: {value: field?.optionData[0]?.SET_GENDER ?? "" },
@@ -603,8 +605,8 @@ export const personal_other_detail_meta_data = {
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             dependentFields: ["BIRTH_DT"],
             setValueOnDependentFieldsChange: (dependentFields) => {
-                if(dependentFields?.BIRTH_DT?.value) {
-                    let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
+                let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
+                if(Boolean(age)) {
                     return age;
                 } else return ""
             },
@@ -621,7 +623,7 @@ export const personal_other_detail_meta_data = {
             setValueOnDependentFieldsChange: (dependentFields) => {
                 if(dependentFields?.BIRTH_DT?.value) {
                     let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
-                    return (age && age> 18) ? "J" : "M";
+                    return (Boolean(age) && age> 18) ? "J" : "M";
                 } else return ""
             },
             name: "LF_NO",

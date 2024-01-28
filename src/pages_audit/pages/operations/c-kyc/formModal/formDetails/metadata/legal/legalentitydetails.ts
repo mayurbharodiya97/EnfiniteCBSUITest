@@ -53,6 +53,7 @@ export const entity_detail_legal_meta_data = {
             name: "SURNAME",
             label: "Entity Name",
             required: true,
+            isFieldFocused: true,
             schemaValidation: {
                 type: "string",
                 rules: [
