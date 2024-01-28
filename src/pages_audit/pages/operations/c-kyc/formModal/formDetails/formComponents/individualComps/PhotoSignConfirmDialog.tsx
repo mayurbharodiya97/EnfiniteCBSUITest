@@ -11,6 +11,7 @@ import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { AuthContext } from "pages_audit/auth";
 import {
   Button,
+  Chip,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -30,6 +31,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
 import _ from "lodash";
 import { Alert } from "components/common/alert";
+import { ActionDialog } from "../../../dialog/ActionDialog";
 
 interface PhotoSignProps {
   open: boolean;
@@ -42,6 +44,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   const {
     state,
     handlePhotoOrSignctx,
+    handleReqCDctx
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
   const classes = useStyles();
@@ -59,7 +62,8 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   const signFileURL = useRef<any | null>(null);
   const signFilesdata = useRef<any | null>("");
   const { t } = useTranslation();
-  const location: any = useLocation();
+  const {state: locationState} = useLocation();
+  console.log("fwefwedfweqwe", locationState)
 
   const [activePhotoHist, setActivePhotoHist] = useState<any>(null);
   const formMode = "view"
@@ -68,42 +72,47 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
 
   const [customerData, setCustomerData] = useState<any>({});
-  // const [custData, setCustData] = useState<any>({});
-
-  // useEffect(() => {
-  //   if (location.state && location.state.length > 0) {
-  //     setCustData(location.state?.[0]?.data);
-  //   }
-  // }, [location]);
+  const [confirmAction, setConfirmAction] = useState<any>("confirm");
+  const [actionDialog, setActionDialog] = useState(false)
 
   // useEffect(() => {
   //   console.log("photoBase64ctx, signBase64ctx", Boolean(state?.photoBase64ctx), Boolean(state?.signBase64ctx))
   // }, [state?.photoBase64ctx, state?.signBase64ctx])
 
-  // let customerData = {};
   useEffect(() => {
-    if (location.state && location.state.length > 0) {
-      // console.log("locationdata", location.state)
-      let data = location.state?.[0]?.data;
+    if (Boolean(locationState && locationState.length>0)) {
+      // console.log("locationdata", locationState)
+      let data = locationState[0]?.data;
       setCustomerData(data);
     }
-  }, [location]);
-  //   console.log("skjvciwhecfvwrefv", location);
+  }, [locationState]);
 
   // to get photo/sign history, on edit
-  const {
-    data: PhotoHistoryData,
-    isError: isPhotoHistoryError,
-    isLoading: isPhotoHistoryLoading,
-    isFetching: isPhotoHistoryFetching,
-    refetch: photoHistoryRefetch,
-    error: photoHistoryError,
-  } = useQuery<any, any>(["getPhotoSignHistory", {}], () =>
-    API.getPhotoSignHistory({
-      COMP_CD: authState?.companyID ?? "",
-      CUSTOMER_ID: location?.state?.[0]?.data.CUSTOMER_ID,
-    })
-  );
+  const photoHistMutation: any = useMutation(API.getPhotoSignHistory, {
+    onSuccess: (data) => {
+      console.log(data, "photoHistt")
+      // if(data && data.length>0) {
+        let activeHistory = null;
+        activeHistory =
+        data &&
+        data.length > 0 &&
+        data.findLast((el) => el.ACT_FLAG === "Y");
+          setActivePhotoHist(activeHistory);  
+      // }
+    },
+    onError: (error: any) => {},
+  });
+
+  useEffect(() => {
+    if(customerData && Boolean(customerData?.CUSTOMER_ID)) {
+      const payload = {
+        COMP_CD: authState?.companyID ?? "",
+        CUSTOMER_ID: customerData?.CUSTOMER_ID ?? "",
+      }
+      photoHistMutation.mutate(payload)
+    }
+  }, [customerData])
+
 
   const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
     onSuccess: (data) => {
@@ -115,7 +124,6 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
 
           handlePhotoOrSignctx(null, CUST_PHOTO, "photo")
           handlePhotoOrSignctx(null, CUST_SIGN, "sign")
-          // console.log("asdqwdq", PhotoHistoryData, activePhotoHist)
           setPhotoImageURL(CUST_PHOTO, "photo");
           setPhotoImageURL(CUST_SIGN, "sign");
           photoFilesdata.current = CUST_PHOTO;
@@ -132,19 +140,6 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
     }
   }, [])
 
-  useEffect(() => {
-    if (!isPhotoHistoryLoading && PhotoHistoryData) {
-      // console.log("photohistory", data)
-      //   setPhotoHistory(PhotoHistoryData);
-      let activeHistory = null;
-      activeHistory =
-        PhotoHistoryData &&
-        PhotoHistoryData.length > 0 &&
-        PhotoHistoryData.findLast((el) => el.ACT_FLAG === "Y");
-        setActivePhotoHist(activeHistory);
-      // console.log("photohistory ac", activeHistory)
-    }
-  }, [PhotoHistoryData, isPhotoHistoryLoading]);
 
   // set photo, sign url from history api active record, on edit
   useEffect(() => {
@@ -155,13 +150,14 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
         if (activePhotoHist) {
           handlePhotoOrSignctx(null, activePhotoHist.CUST_PHOTO, "photo")
           handlePhotoOrSignctx(null, activePhotoHist.CUST_SIGN, "sign")
-          // console.log("asdqwdq", PhotoHistoryData, activePhotoHist)
           setPhotoImageURL(activePhotoHist.CUST_PHOTO, "photo");
           setPhotoImageURL(activePhotoHist.CUST_SIGN, "sign");
           photoFilesdata.current = activePhotoHist.CUST_PHOTO;
           signFilesdata.current = activePhotoHist.CUST_SIGN;
         }
       } else if(customerData && Boolean(customerData.REQUEST_ID)) {
+        let req_cd = parseInt(customerData.REQUEST_ID) ?? ""
+        handleReqCDctx(req_cd)
         let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
           COMP_CD: authState?.companyID ?? "",
         }
@@ -169,14 +165,13 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
         mutation.mutate(payload)
       }
     // }
-  }, [activePhotoHist]);
+  }, [customerData, activePhotoHist]);
 
   const updateMutation: any = useMutation(API.updatePhotoSignData, {
     onSuccess: (data, payload) => {
       handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_PHOTO, "photo")
       handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_SIGN, "sign")
 
-      // photoHistoryRefetch()
       // console.log(payload, "datatdastdastdasd", data);
       setIsSaveDisabled(true)
     },
@@ -296,8 +291,65 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   //     );
   //   }
   // }, [activePhotoHist]);
+  const onCloseActionDialog = () => {
+    setActionDialog(false)
+  }
+
+  const openActionDialog = (state:string) => {
+    setActionDialog(true)
+    setConfirmAction(state)
+  }
+
+  const ActionBTNs = React.useMemo(() => {
+      return <React.Fragment>
+        {!isHistoryGridVisible && (
+          <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(true)}>
+            View History
+          </Button>
+        )}
+        {isHistoryGridVisible && (
+          <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(false)}>
+            Close History
+          </Button>
+        )}
+        <Button
+          onClick={() => openActionDialog("confirm")}
+          color="primary"
+          // disabled={mutation.isLoading}
+        >
+          {t("Confirm")}
+        </Button>
+        <Button
+          onClick={() => openActionDialog("query")}
+          color="primary"
+          sx={{textWrap: "nowrap"}}
+          // disabled={mutation.isLoading}
+        >
+          {t("Raise Query")}
+        </Button>
+        <Button
+          onClick={() => openActionDialog("reject")}
+          color="primary"
+          // disabled={mutation.isLoading}
+        >
+          {t("Reject")}
+        </Button>
+        <Button
+          onClick={() => {
+            handlePhotoOrSignctx(null, null, "photo")
+            handlePhotoOrSignctx(null, null, "sign")          
+            onClose();
+          }}
+        >
+          Close
+        </Button>
+      </React.Fragment>
+  }, [])
+
+
 
   return (
+    <React.Fragment>
     <Dialog
       open={open}
       maxWidth="lg"
@@ -329,20 +381,34 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
         }}
         id="responsive-dialog-title"
       >
-        <Typography variant="h6">{`Photo & Signature - ${location?.state?.[0]?.data?.CUSTOMER_NAME} - ${location?.state?.[0]?.id}`}</Typography>
+        <Grid container>
+          <Typography variant="h6">
+            {`Photo & Signature - ${customerData?.CUSTOMER_NAME}${customerData?.CUSTOMER_ID ? ` [Cust. ID : ${customerData?.CUSTOMER_ID}] ` : null}`}
+          </Typography>
+          <Typography component="span" variant="h6" color="primary">
+            <Chip
+              style={{ color: "white", marginLeft: "8px" }}
+              variant="outlined"
+              color="primary"
+              size="small"
+              label={`view mode`}
+            />
+          </Typography>
+        </Grid>
         <div style={{ display: "flex", alignItems: "center" }}>
-          {!isHistoryGridVisible && (
-            <Button onClick={() => setIsHistoryGridVisible(true)}>
+          {/* {!isHistoryGridVisible && (
+            <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(true)}>
               View History
             </Button>
           )}
           {isHistoryGridVisible && (
-            <Button onClick={() => setIsHistoryGridVisible(false)}>
+            <Button sx={{textWrap: "nowrap"}} onClick={() => setIsHistoryGridVisible(false)}>
               Close History
             </Button>
-          )}
+          )} */}
+          {ActionBTNs}
 
-          {formMode === "view" && (
+          {/* {formMode === "view" && (
             <Button
               onClick={() => {
                 handlePhotoOrSignctx(null, null, "photo")
@@ -352,30 +418,12 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
             >
               Close
             </Button>
-          )}
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              maxWidth: "150px",
-              maxHeight: "50px",
-              border: "1px solid #ddd",
-              padding: "5px 10px",
-              borderRadius: "20px",
-              fontSize: "10px",
-              fontWeight: "normal",
-              userSelect: "none",
-            }}
-          >
-            View Mode
-          </div>
+          )} */}
         </div>
       </DialogTitle>
       <DialogContent sx={{px: "0"}}>
         <>
-          {((updateMutation.isLoading || isPhotoHistoryLoading) || mutation.isLoading) ? <LinearProgress color="secondary" /> : null}
+          {((updateMutation.isLoading || photoHistMutation.isLoading) || mutation.isLoading) ? <LinearProgress color="secondary" /> : null}
           {updateMutation.isError ? (
             <Alert
               severity={updateMutation.error?.severity ?? "error"}
@@ -390,11 +438,11 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
               errorDetail={updateMutation.error?.error_detail}
               color="error"
             />
-          ) : isPhotoHistoryError && (
+          ) : photoHistMutation.isError && (
             <Alert
-              severity={photoHistoryError?.severity ?? "error"}
-              errorMsg={photoHistoryError?.error_msg ?? "Something went to wrong.."}
-              errorDetail={photoHistoryError?.error_detail}
+              severity={photoHistMutation.error?.severity ?? "error"}
+              errorMsg={photoHistMutation.error?.error_msg ?? "Something went to wrong.."}
+              errorDetail={photoHistMutation.error?.error_detail}
               color="error"
             />
           )}
@@ -509,13 +557,13 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
                 </div>
             </Grid>
 
-            {PhotoHistoryData && isHistoryGridVisible && (
+            {photoHistMutation.data && isHistoryGridVisible && (
               <GridWrapper
                 key={`AssetDTLGrid`}
                 finalMetaData={PhotoHistoryMetadata as GridMetaDataType}
-                data={PhotoHistoryData ?? []}
+                data={photoHistMutation.data ?? []}
                 setData={() => null}
-                loading={isPhotoHistoryLoading || isPhotoHistoryFetching}
+                loading={photoHistMutation.isLoading || photoHistMutation.isFetching}
                 // actions={actions}
                 // setAction={setCurrentAction}
                 // refetchData={() => assetDTLRefetch()}
@@ -526,6 +574,15 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
         </>
       </DialogContent>
     </Dialog>
+
+    {actionDialog && <ActionDialog 
+        open={actionDialog} 
+        onClose={onCloseActionDialog} 
+        closeForm = {onClose}
+        action= {confirmAction}
+    />}
+
+    </React.Fragment>
   );
 };
 
