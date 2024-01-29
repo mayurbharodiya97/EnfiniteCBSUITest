@@ -76,7 +76,7 @@ export const DocumentGridMetadata: GridMetaDataType = {
       maxWidth: 400,
     },
     {
-      accessor: "DOCUMENT_NO",
+      accessor: "DOC_NO",
       columnName: "Document No.",
       sequence: 5,
       alignment: "left",
@@ -118,7 +118,8 @@ export const DocumentGridMetadata: GridMetaDataType = {
     //   sequence: 7,
     // },
     {
-      accessor: "VALID_TILL_DATE",
+      accessor: "VALID_UPTO",
+      // accessor: "VALID_TILL_DATE",
       columnName: "Valid till Date",
       sequence: 6,
       alignment: "left",

@@ -10,7 +10,6 @@ import { Button, Dialog } from "@mui/material";
 import { MasterDetailsForm } from "components/formcomponent";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
 import { cloneDeep } from "lodash";
-import { documentMasterDetailsMetaData } from "../../metadata/documentMasterDetailsMetaData";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
@@ -132,8 +131,6 @@ const KYCDocumentMasterDetails = ({
   //   }
   // }, [files]);
 
-  let metadataold = {};
-  metadataold = cloneDeep(documentMasterDetailsMetaData);
 
   const AddNewRow = () => {
     myRef.current?.addNewRow(true);
