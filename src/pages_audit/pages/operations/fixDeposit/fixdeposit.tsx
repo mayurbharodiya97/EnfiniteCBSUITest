@@ -11,7 +11,7 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useContext, useRef, useState } from "react";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
@@ -23,6 +23,7 @@ import { DetailForm } from "./fdParameters";
 import { FixDepositDetailForm } from "./fixDepositDetail";
 import { TransferAcctDetailForm } from "./trnAccountDetail";
 import { SubmitFnType } from "packages/form";
+import { FixDepositContext } from "./fixDepositContext";
 
 const ColorlibStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
@@ -76,27 +77,34 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 }));
 
 export const FixDepositForm = () => {
-  const [stepData, setStepData] = useState({ step: 0, fdType: "E" });
-  const [completed, setCompleted] = useState<{
-    [k: number]: boolean;
-  }>({});
+  // const [stepData, setStepData] = useState({ step: 0, fdType: "E" });
+  // const [activeStep, setActiveStep] = useState(0);
+  const {
+    fdState,
+    setActiveStep,
+    updateFDAccountsFormData,
+    updateFDParaDataOnChange,
+  } = useContext(FixDepositContext);
+  const submitEventRef = useRef(null);
+
   const [steps, setSteps] = useState([
     "FD Parameters",
     "Fixed Deposit Detail(s)",
     "Transfer A/C Detail(s)",
   ]);
-  const fdParameterRef: any = useRef(null);
+  const fdParameterformRef: any = useRef(null);
 
   const setDataOnFieldChange = (action, payload) => {
+    updateFDParaDataOnChange({ [action]: payload });
     if (action === "FD_TYPE") {
-      if (payload?.value === "F") {
+      if (payload === "F") {
         setSteps([
           "FD Parameters",
           "Account Opening",
           "Fixed Deposit Detail(s)",
           "Transfer A/C Detail(s)",
         ]);
-      } else if (payload?.value === "E") {
+      } else {
         setSteps([
           "FD Parameters",
           "Fixed Deposit Detail(s)",
@@ -105,26 +113,6 @@ export const FixDepositForm = () => {
       }
     }
   };
-  function RenderStepForm(step) {
-    switch (step) {
-      case 0:
-        return (
-          <DetailForm
-            onSubmitHandler={paraOnSubmitHandler}
-            setDataOnFieldChange={(action, payload) =>
-              setDataOnFieldChange(action, payload)
-            }
-            ref={fdParameterRef}
-          />
-        );
-      case 1:
-        return <FixDepositDetailForm />;
-      case 2:
-        return <TransferAcctDetailForm />;
-      default:
-        return <div>Not Found</div>;
-    }
-  }
 
   function ColorlibStepIcon(props: StepIconProps) {
     const { active, completed, className } = props;
@@ -145,34 +133,13 @@ export const FixDepositForm = () => {
     );
   }
 
-  const totalSteps = () => {
-    return steps.length;
-  };
-
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
-
-  const isLastStep = () => {
-    return stepData?.step === totalSteps() - 1;
-  };
-
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
-
   const handleNext = () => {
-    const newActiveStep =
-      isLastStep() && !allStepsCompleted()
-        ? // It's the last step, but not all steps have been completed,
-          // find the first step that has been completed
-          steps.findIndex((step, i) => !(i in completed))
-        : stepData?.step + 1;
-    setStepData((old) => ({ ...old, step: newActiveStep }));
+    console.log(">>handleNext", fdState.activeStep);
+    setActiveStep(fdState.activeStep + 1);
   };
 
   const handleBack = () => {
-    setStepData((old) => ({ ...old, step: old?.step - 1 }));
+    setActiveStep(fdState.activeStep - 1);
   };
 
   const paraOnSubmitHandler: SubmitFnType = (
@@ -182,20 +149,15 @@ export const FixDepositForm = () => {
     setFieldError,
     actionFlag
   ) => {
-    // @ts-ignore
-    endSubmit(true);
-    console.log(">>data", data);
-
-    const newCompleted = completed;
-    newCompleted[stepData?.step] = true;
-    setCompleted(newCompleted);
+    updateFDAccountsFormData(data);
+    console.log(">>submit2");
     handleNext();
   };
+
   const handleComplete = (e) => {
-    console.log(">>activeStep", stepData?.step);
-    console.log(">>fdParameterRef", fdParameterRef);
-    if (stepData?.step === 0) {
-      fdParameterRef.current?.handleSubmit(e);
+    submitEventRef.current = e;
+    if (fdState.activeStep === 0) {
+      fdParameterformRef.current?.handleSubmit(e);
     }
   };
 
@@ -223,7 +185,7 @@ export const FixDepositForm = () => {
       <Stack sx={{ width: "100%" }} spacing={4}>
         <Stepper
           alternativeLabel
-          activeStep={stepData?.step}
+          activeStep={fdState.activeStep}
           connector={<ColorlibConnector />}
         >
           {steps.map((label, index) => (
@@ -241,21 +203,39 @@ export const FixDepositForm = () => {
             </Step>
           ))}
         </Stepper>
-        <div style={{ marginTop: "0px" }}>{RenderStepForm(stepData?.step)}</div>
+        <div style={{ marginTop: "0px" }}>
+          {/* {RenderStepForm(fdState.activeStep)} */}
+          {fdState.activeStep === 0 ? (
+            <DetailForm
+              onSubmitHandler={paraOnSubmitHandler}
+              setDataOnFieldChange={(action, payload) =>
+                setDataOnFieldChange(action, payload)
+              }
+              submitEventRef={submitEventRef}
+              ref={fdParameterformRef}
+            />
+          ) : fdState.activeStep === 1 ? (
+            <FixDepositDetailForm />
+          ) : fdState.activeStep === 2 ? (
+            <TransferAcctDetailForm />
+          ) : (
+            <></>
+          )}
+        </div>
         <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
           <Box sx={{ flex: "1 1 auto" }} />
-          {stepData?.step === 0 ? null : (
+          {fdState.activeStep === 0 ? null : (
             <GradientButton onClick={handleBack}>Back</GradientButton>
           )}
           {
-            stepData?.step !== steps.length && (
+            fdState.activeStep !== steps.length && (
               // (completed[activeStep] ? (
               //   <Typography variant="caption" sx={{ display: "inline-block" }}>
               //     Step {activeStep + 1} already completed
               //   </Typography>
               // ) : (
               <>
-                {stepData?.step === 0 || stepData?.step === 1 ? (
+                {fdState.activeStep !== steps.length - 1 ? (
                   <GradientButton onClick={handleComplete}>Next</GradientButton>
                 ) : (
                   <GradientButton onClick={handleComplete}>

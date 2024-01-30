@@ -111,6 +111,11 @@ export const useStyles = makeStyles((theme: any) => ({
     width: "100%",
     margin: "8px 0 16px -8px",
   },
+  arrayRowCountFixedRows: {
+    display: "flex",
+    width: "100%",
+    margin: "2px 0 0px -8px",
+  },
   newArrayRowCardContent: {
     paddingLeft: "32px",
     "& .MuiInputBase-root": {

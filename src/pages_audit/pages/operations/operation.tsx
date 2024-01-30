@@ -6,6 +6,7 @@ import { DetailMastersData } from "../../../components/formcomponent/detailMaste
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import SingleDeno from "../dashboard/noteDenomination/singleDeno";
+import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 
 // import { ChequebookTab } from "./chequeBookTab/chequebookTab";
 // import { Ckyc } from "./c-kyc/ckyc";
@@ -75,6 +76,13 @@ export const OperationsMenu = () => (
       path="cts-outward-clearing/*"
       element={<CtsOutwardClearing zoneTranType="S" />}
     />
-    <Route path="fix-deposit/*" element={<FixDepositForm />} />
+    <Route
+      path="fix-deposit/*"
+      element={
+        <FixDepositProvider>
+          <FixDepositForm />
+        </FixDepositProvider>
+      }
+    />
   </Routes>
 );

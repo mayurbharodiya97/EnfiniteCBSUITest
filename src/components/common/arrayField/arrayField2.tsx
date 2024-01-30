@@ -407,7 +407,12 @@ export const ArrayFieldRow = ({
   return (
     <Fragment key={row.fieldIndexKey}>
       {Boolean(isDisplayCount) ? (
-        <Typography gutterBottom className={classes.arrayRowCount}>
+        <Typography
+          gutterBottom
+          className={
+            fixedRows ? classes.arrayRowCountFixedRows : classes.arrayRowCount
+          }
+        >
           {rowIndex + 1} of {totalRows}
         </Typography>
       ) : null}
@@ -421,8 +426,7 @@ export const ArrayFieldRow = ({
         className={finalClass}
       >
         {oneRow}
-        {(typeof removeFn === "function" && !Boolean(fixedRows)) ||
-        !Boolean(isRemoveButton) ? (
+        {typeof removeFn === "function" && !Boolean(fixedRows) ? (
           <IconButton
             onClick={dialogOpen}
             className={classes.arrayRowRemoveBtn}

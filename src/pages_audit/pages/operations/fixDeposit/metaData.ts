@@ -65,9 +65,14 @@ export const FixDepositParaFormMetadata = {
           { name: "FD_TYPE", params: ["Please select FD Type"] },
         ],
       },
-      fieldValidationRun: "all",
+      // fieldValidationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
-        formState.setDataOnFieldChange("FD_TYPE", field);
+        console.log(">>field qwodj.1", field);
+        formState.setDataOnFieldChange("FD_TYPE", field?.value);
+        // return {
+        //   CUSTOMER_ID: { value: "" },
+        //   CUSTOMER_NAME: { value: "" },
+        // };
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
     },
@@ -91,9 +96,9 @@ export const FixDepositParaFormMetadata = {
           { name: "MODE", params: ["Please select Mode"] },
         ],
       },
-      fieldValidationRun: "all",
+      // fieldValidationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
-        formState.setDataOnFieldChange("MODE", field);
+        formState.setDataOnFieldChange("MODE qwodj.2", field?.value);
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
     },
@@ -127,36 +132,49 @@ export const FixDepositParaFormMetadata = {
           },
         ],
       },
-      postValidationSetCrossFieldValues: async (field, formState, auth) => {
-        formState.setDataOnFieldChange("CUSTOMER_ID_FEFORE");
-        let Apireq = {
-          COMP_CD: auth?.companyID ?? "",
-          USER_NAME: auth?.user?.id ?? "",
-          CUSTOMER_ID: field?.value ?? "",
-        };
+      dependentFields: ["FD_TYPE", "MODE"],
+      // setValueOnDependentFieldsChange: (...arg) => {
+      //   console.log(">>arg", arg);
+      //   return "";
+      // },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        auth,
+        dependentField
+      ) => {
+        console.log(">>dependentField qwodj.3", dependentField);
+        if (dependentField?.FD_TYPE?.value === "E") {
+          formState.setDataOnFieldChange("CUSTOMER_ID_FEFORE");
+          let Apireq = {
+            COMP_CD: auth?.companyID ?? "",
+            USER_NAME: auth?.user?.id ?? "",
+            CUSTOMER_ID: field?.value ?? "",
+          };
 
-        let fdAccounts = await getFDAccountsDetail(Apireq);
-        formState.setDataOnFieldChange("CUSTOMER_ID", {
-          ...field,
-          FD_ACCTS: fdAccounts,
-        });
-        if (fdAccounts?.length) {
-          return {
-            CUSTOMER_NAME: {
-              value: fdAccounts?.[0]?.CUSTOMER_NAME ?? "",
-            },
-            FDACCTS: {
-              value: fdAccounts,
-            },
-          };
-          // }
-        } else {
-          return {
-            CUSTOMER_ID: {
-              error: "FD Accounts not found for this Customer ID.",
-            },
-            CUSTOMER_NAME: { value: "" },
-          };
+          let fdAccounts = await getFDAccountsDetail(Apireq);
+          formState.setDataOnFieldChange("CUSTOMER_ID", {
+            ...field,
+            FD_ACCTS: fdAccounts,
+          });
+          if (fdAccounts?.length) {
+            return {
+              CUSTOMER_NAME: {
+                value: fdAccounts?.[0]?.CUSTOMER_NAME ?? "",
+              },
+              FDACCTS: {
+                value: fdAccounts,
+              },
+            };
+            // }
+          } else {
+            return {
+              CUSTOMER_ID: {
+                error: "FD Accounts not found for this Customer ID.",
+              },
+              CUSTOMER_NAME: { value: "" },
+            };
+          }
         }
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
@@ -223,6 +241,8 @@ export const FixDepositAccountsFormMetadata = {
       },
       name: "FDACCTS",
       removeRowFn: "deleteFormArrayFieldData",
+      fixedRows: true,
+      isCustomStyle: true,
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         // {
@@ -298,6 +318,7 @@ export const FixDepositAccountsFormMetadata = {
           render: {
             componentType: "numberFormat",
           },
+          className: "textInputFromRight",
           name: "NO_OF_FD",
           label: "No. of FD",
           defaultValue: 1,
@@ -325,7 +346,6 @@ export const FixDepositAccountsFormMetadata = {
           isReadOnly: true,
           dependentFields: ["FD_AMT", "NO_OF_FD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            console.log(">>dependentFields", dependentFields);
             const fdAmount = Number(dependentFields["FDACCTS.FD_AMT"]?.value);
             const numberOfFD = Number(
               dependentFields["FDACCTS.NO_OF_FD"]?.value
@@ -335,6 +355,65 @@ export const FixDepositAccountsFormMetadata = {
             return total.toFixed(2);
           },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "_accountNumber",
+          },
+          branchCodeMetadata: {
+            name: "CR_BRANCH_CD",
+            label: "Credit Branch",
+            required: false,
+            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          },
+          accountTypeMetadata: {
+            name: "CR_ACCT_TYPE",
+            label: "Credit A/c Type",
+            required: false,
+            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          },
+          accountCodeMetadata: {
+            name: "CR_ACCT_CD",
+            label: "Credit A/c No.",
+            required: false,
+            dependentFields: ["CR_BRANCH_CD", "CR_ACCT_TYPE"],
+            postValidationSetCrossFieldValues: () => {
+              console.log(">>accountCode");
+            },
+            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "CR_ACCT_NM",
+          label: "Credit Account Name",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "MATURE_INST",
+          label: "Mature Instruction",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "NOMINEE_NM",
+          label: "Nominee",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
         },
       ],
     },
@@ -391,29 +470,42 @@ export const FixDepositDetailFormMetadata = {
       },
       name: "FDDTL",
       removeRowFn: "deleteFormArrayFieldData",
+      fixedRows: true,
+      isCustomStyle: true,
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
           render: {
-            componentType: "select",
+            componentType: "textField",
           },
-          name: "FD_ACCT_CD",
-          Label: "FD Account",
-          options: [
-            { label: "000002", value: "000002" },
-            { label: "000005", value: "000005" },
-          ],
-          postValidationSetCrossFieldValues: (
-            currentField,
-            formState,
-            authState,
-            dependentFieldValue,
-            reqFlag
-          ) => {
-            console.log(">>currentField", currentField);
-            console.log(">>dependentFieldValue", dependentFieldValue);
+          name: "BRANCH_CD",
+          label: "Branch Code",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
+          name: "ACCT_TYPE",
+          label: "Account Type",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "ACCT_CD",
+          label: "Account Number",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
         },
         {
           render: {
@@ -649,16 +741,28 @@ export const FixDepositDetailFormMetadata = {
           render: {
             componentType: "_accountNumber",
           },
-          name: ["CR_BRANCH_CD", "CR_ACCT_TYPE", "CR_ACCT_NO"],
-          label: ["CR Branch", "CR Acct. Type", "CR Acct. No."],
-          postValidationSetCrossFieldValues: (
-            currentField,
-            formState,
-            authState,
-            dependentFieldValue,
-            reqFlag
-          ) => {},
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
+          branchCodeMetadata: {
+            name: "CR_BRANCH_CD",
+            label: "Credit Branch",
+            required: false,
+            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          },
+          accountTypeMetadata: {
+            name: "CR_ACCT_TYPE",
+            label: "Credit A/c Type",
+            required: false,
+            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          },
+          accountCodeMetadata: {
+            name: "CR_ACCT_CD",
+            label: "Credit A/c No.",
+            required: false,
+            dependentFields: ["CR_BRANCH_CD", "CR_ACCT_TYPE"],
+            postValidationSetCrossFieldValues: () => {
+              console.log(">>accountCode");
+            },
+            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          },
         },
         {
           render: {
@@ -769,10 +873,7 @@ export const TransferAcctDetailFormMetadata = {
             authState,
             dependentFieldValue,
             reqFlag
-          ) => {
-            console.log(">>currentField", currentField);
-            console.log(">>dependentFieldValue", dependentFieldValue);
-          },
+          ) => {},
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
         },
         {
