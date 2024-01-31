@@ -726,6 +726,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DELETESCROLLDATA",
     packageName: "",
   },
+  DAILYTRNCARDDTL: {
+    url: "/transactionServiceAPI/DAILYTRNCARDDTL ",
+    packageName: "",
+  },
 
   ACCTNOVALIDATION: {
     url: "/accountServiceAPI/ACCTNOVALIDATION",

@@ -224,3 +224,20 @@ export const getTabsByParentType = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getCarousalCards = async (reqData) => {
+  console.log(reqData, "reqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DAILYTRNCARDDTL", {
+      PARENT_TYPE: reqData?.accType?.info?.PARENT_TYPE ?? "",
+      COMP_CD: reqData?.branch?.info?.COMP_CD,
+      ACCT_TYPE: reqData?.accType?.value,
+      ACCT_CD: reqData.accNo.padEnd(20, " "),
+    });
+  if (status === "0") {
+    let responseData = data;
+    console.log(data, "res data");
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

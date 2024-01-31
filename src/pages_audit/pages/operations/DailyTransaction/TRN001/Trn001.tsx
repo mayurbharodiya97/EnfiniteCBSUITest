@@ -1,8 +1,7 @@
 //UI
-import { Button, Toolbar, AppBar, Card } from "@mui/material";
+import { Button, Card } from "@mui/material";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import { Box, Grid, IconButton, Typography } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
@@ -11,13 +10,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import CancelIcon from "@mui/icons-material/Cancel";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -51,7 +44,6 @@ import "./Trn001.css";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
-import AccDetails from "../TRNHeaderTabs/AccountDetails";
 
 const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -211,7 +203,20 @@ export const Trn001 = () => {
     onError: (error: any) => {},
   });
 
-  const getAccInfo = useMutation(CommonApi.getAccDetails, {
+  // const getAccInfo = useMutation(CommonApi.getAccDetails, {
+  //   onSuccess: (data) => {
+  //     setLoading(false);
+  //     setTempStore({ ...tempStore, accInfo: data });
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //     setLoading(false);
+  //     setTempStore({ ...tempStore, accInfo: {} });
+  //   },
+  // });
+  const getCarousalCards = useMutation(API.getCarousalCards, {
     onSuccess: (data) => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
@@ -412,7 +417,6 @@ export const Trn001 = () => {
 
   const handleCNoBlur = (e, i) => {
     const obj = [...rows];
-
     if (Number(obj[i].cNo) > 0) {
       obj[i].cNo &&
         obj[i].accNo &&
@@ -425,18 +429,19 @@ export const Trn001 = () => {
     }
     setRows(obj);
   };
+
   const handleDate = (e, i) => {
     console.log(e, "date e");
     const obj = [...rows];
     obj[i].date = e;
-
     setRows(obj);
   };
+
   const handleDateErr = (e, i) => {
     console.log(e, "date err");
     const obj = [...rows];
     if (e) {
-      obj[i].bugMsgDate = "Invalid Date: " + e;
+      obj[i].bugMsgDate = "Invalid Date ";
       obj[i].bugDate = true;
     } else {
       obj[i].bugMsgDate = "";
@@ -523,7 +528,7 @@ export const Trn001 = () => {
       sdc: defSdc,
       remark: defSdc?.label,
       cNo: "0",
-      date: new Date().toISOString()?.substring(0, 10),
+      date: new Date(),
       debit: deb?.toFixed(2),
       credit: cred?.toFixed(2),
       bugAccNo: false,
@@ -606,8 +611,9 @@ export const Trn001 = () => {
 
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
-      getAccInfo.mutate(data);
+      // getAccInfo.mutate(data);
       rows[i]?.accNo && getAccNoValidation.mutate(rows[i]);
+      rows[i]?.accNo && getCarousalCards.mutate(rows[i]);
     }
   };
 
@@ -721,6 +727,7 @@ export const Trn001 = () => {
                 ) : (
                   <></>
                 )}
+
                 {errMsg?.accNo ? (
                   <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
                     {errMsg?.accNo}
