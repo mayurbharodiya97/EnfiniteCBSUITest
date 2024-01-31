@@ -95,7 +95,6 @@ export interface UseFieldHookProps {
   onFormDataChange?: any;
   runExternalFunction?: boolean;
   __EDIT__?: any;
-  fieldValidationRun?: ValidationRunType;
 }
 
 export interface UseFieldArrayHookProps {

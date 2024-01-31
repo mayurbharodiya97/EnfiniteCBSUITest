@@ -65,14 +65,15 @@ export const FixDepositParaFormMetadata = {
           { name: "FD_TYPE", params: ["Please select FD Type"] },
         ],
       },
-      // fieldValidationRun: "all",
+      validationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
-        console.log(">>field qwodj.1", field);
+        console.log(">>FD_TYPE", formState);
+        if (formState?.isSubmitting) return {};
         formState.setDataOnFieldChange("FD_TYPE", field?.value);
-        // return {
-        //   CUSTOMER_ID: { value: "" },
-        //   CUSTOMER_NAME: { value: "" },
-        // };
+        return {
+          CUSTOMER_ID: { value: "" },
+          CUSTOMER_NAME: { value: "" },
+        };
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
     },
@@ -96,9 +97,14 @@ export const FixDepositParaFormMetadata = {
           { name: "MODE", params: ["Please select Mode"] },
         ],
       },
-      // fieldValidationRun: "all",
+      validationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
-        formState.setDataOnFieldChange("MODE qwodj.2", field?.value);
+        if (formState?.isSubmitting) return {};
+        formState.setDataOnFieldChange("MODE", field?.value);
+        return {
+          CUSTOMER_ID: { value: "" },
+          CUSTOMER_NAME: { value: "" },
+        };
       },
       GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
     },
@@ -144,6 +150,7 @@ export const FixDepositParaFormMetadata = {
         dependentField
       ) => {
         console.log(">>dependentField qwodj.3", dependentField);
+        if (formState?.isSubmitting) return {};
         if (dependentField?.FD_TYPE?.value === "E") {
           formState.setDataOnFieldChange("CUSTOMER_ID_FEFORE");
           let Apireq = {
@@ -527,16 +534,6 @@ export const FixDepositDetailFormMetadata = {
             },
             isValidation: "no",
           },
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [
-          //     { name: "required", params: ["CustomerIDisrequired"] },
-          //     {
-          //       name: "max",
-          //       params: [12, "CustomerIDShouldNotBeLessThan12Digits"],
-          //     },
-          //   ],
-          // },
           GridProps: { xs: 12, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
         },
         {
@@ -546,11 +543,26 @@ export const FixDepositDetailFormMetadata = {
           name: "TRSF_AMT",
           label: "Transfer Amount",
           placeholder: "",
-          // isFieldFocused: true,
-          // autoComplete: false,
           type: "text",
-          // isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "CASH_AMT",
+          label: "Cash",
+          type: "text",
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "MATURITY_AMT",
+          label: "Maturity Amount",
+          type: "text",
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
         {
           render: {
@@ -562,20 +574,7 @@ export const FixDepositDetailFormMetadata = {
           fullWidth: true,
           isReadOnly: true,
 
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "TOTAL",
-          label: "Total",
-          placeholder: "",
-          // isFieldFocused: true,
-          // autoComplete: false,
-          type: "text",
-          // isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 3, xl: 1.5 },
         },
         {
           render: {
@@ -591,7 +590,7 @@ export const FixDepositDetailFormMetadata = {
           maxDate: new Date(),
           maxLength: 6,
           defaultfocus: true,
-          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
         {
           render: {
@@ -613,7 +612,7 @@ export const FixDepositDetailFormMetadata = {
               { name: "PERIOD_CD", params: ["Please select Period/Tenor"] },
             ],
           },
-          GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
         {
           render: {
@@ -640,32 +639,7 @@ export const FixDepositDetailFormMetadata = {
             type: "string",
             rules: [{ name: "required", params: ["Tenor is Required."] }],
           },
-          GridProps: { xs: 12, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "MATURITY_AMT",
-          label: "Maturity Amount",
-          placeholder: "",
-          // isFieldFocused: true,
-          // autoComplete: false,
-          type: "text",
-          // isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "datePicker",
-          },
-          name: "MATURITY_DT",
-          label: "Maturity Date",
-          placeholder: "",
-          format: "dd/MM/yyyy",
-          isReadOnly: true,
-          fullWidth: true,
-          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 1, lg: 1, xl: 1.5 },
         },
         {
           render: {
@@ -682,7 +656,37 @@ export const FixDepositDetailFormMetadata = {
               { name: "required", params: ["Interest Rate is Required."] },
             ],
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 1, lg: 1, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "MONTHLY_INT",
+          label: "Month Interest",
+          isReadOnly: true,
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "TOTAL",
+          label: "Total",
+          type: "text",
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "datePicker",
+          },
+          name: "MATURITY_DT",
+          label: "Maturity Date",
+          placeholder: "",
+          format: "dd/MM/yyyy",
+          isReadOnly: true,
+          fullWidth: true,
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
           render: {
@@ -705,7 +709,7 @@ export const FixDepositDetailFormMetadata = {
               { name: "TERM_CD", params: ["Please select Interest Term"] },
             ],
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
           render: {
@@ -714,7 +718,7 @@ export const FixDepositDetailFormMetadata = {
           name: "CATEG_NM",
           label: "Category",
           isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2.5 },
+          GridProps: { xs: 2.5, sm: 2, md: 2, lg: 2, xl: 2.5 },
         },
         {
           render: {
@@ -726,16 +730,17 @@ export const FixDepositDetailFormMetadata = {
           format: "dd/MM/yyyy",
           isReadOnly: true,
           fullWidth: true,
-          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
         {
           render: {
-            componentType: "amountField",
+            componentType: "textField",
           },
-          name: "MONTHLY_INT",
-          label: "Month Interest",
-          isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+          name: "MATURE_INST",
+          label: "Mature Instruction",
+          type: "text",
+          fullWidth: true,
+          GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
         },
         {
           render: {
@@ -774,16 +779,6 @@ export const FixDepositDetailFormMetadata = {
           fullWidth: true,
           isReadOnly: true,
 
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "textField",
-          },
-          name: "MATURE_INST",
-          label: "Mature Instruction",
-          type: "text",
-          fullWidth: true,
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
         },
         {

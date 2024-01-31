@@ -3,6 +3,7 @@ export interface FDStateType {
   fdParaFormData: object;
   isOpendfdAcctForm: boolean;
   fdAcctFormData: object;
+  fdDetailFormData: object;
 }
 
 export interface ActionType {

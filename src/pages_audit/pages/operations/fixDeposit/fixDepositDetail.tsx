@@ -1,9 +1,24 @@
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { Fragment } from "react";
+import { Fragment, forwardRef, useContext } from "react";
 import { FixDepositDetailFormMetadata } from "./metaData";
-import { InitialValuesType } from "packages/form";
+import { InitialValuesType, SubmitFnType } from "packages/form";
+import { FixDepositContext } from "./fixDepositContext";
 
-export const FixDepositDetailForm = () => {
+export const FixDepositDetailForm = forwardRef<any, any>(({}, ref) => {
+  const { fdState, updateFDDetailsFormData, setActiveStep } =
+    useContext(FixDepositContext);
+
+  const onSubmitHandler: SubmitFnType = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag
+  ) => {
+    endSubmit(true);
+    updateFDDetailsFormData(data);
+    setActiveStep(fdState.activeStep + 1);
+  };
   return (
     <Fragment>
       <FormWrapper
@@ -19,7 +34,7 @@ export const FixDepositDetailForm = () => {
             ],
           } as InitialValuesType
         }
-        onSubmitHandler={() => {}}
+        onSubmitHandler={onSubmitHandler}
         hideHeader={true}
         formStyle={{
           background: "white",
@@ -33,4 +48,4 @@ export const FixDepositDetailForm = () => {
       />
     </Fragment>
   );
-};
+});

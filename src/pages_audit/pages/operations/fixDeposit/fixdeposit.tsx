@@ -133,15 +133,6 @@ export const FixDepositForm = () => {
     );
   }
 
-  const handleNext = () => {
-    console.log(">>handleNext", fdState.activeStep);
-    setActiveStep(fdState.activeStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep(fdState.activeStep - 1);
-  };
-
   const paraOnSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -151,27 +142,19 @@ export const FixDepositForm = () => {
   ) => {
     updateFDAccountsFormData(data);
     console.log(">>submit2");
-    handleNext();
+    setActiveStep(fdState.activeStep + 1);
   };
 
   const handleComplete = (e) => {
     submitEventRef.current = e;
     if (fdState.activeStep === 0) {
       fdParameterformRef.current?.handleSubmit(e);
+    } else if (fdState.activeStep === 0) {
     }
   };
 
   return (
     <Fragment>
-      {/* <Typography
-        sx={{
-          color: (theme) => theme.palette.grey[700],
-          mb: (theme) => theme.spacing(0.5),
-        }}
-        variant="h6"
-      >
-        {"Fix Deposit Entry (EMST/401)"}
-      </Typography> */}
       <AppBar position="relative" style={{ marginBottom: "10px" }}>
         <Toolbar
           variant="dense"
@@ -225,7 +208,11 @@ export const FixDepositForm = () => {
         <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
           <Box sx={{ flex: "1 1 auto" }} />
           {fdState.activeStep === 0 ? null : (
-            <GradientButton onClick={handleBack}>Back</GradientButton>
+            <GradientButton
+              onClick={() => setActiveStep(fdState.activeStep - 1)}
+            >
+              Back
+            </GradientButton>
           )}
           {
             fdState.activeStep !== steps.length && (

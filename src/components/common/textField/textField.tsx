@@ -73,7 +73,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
   endsIcon,
   iconStyle,
   textFieldStyle,
-  fieldValidationRun,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -102,9 +101,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     fieldKey: fieldID,
     dependentFields,
     validate,
-    validationRun: Boolean(fieldValidationRun)
-      ? fieldValidationRun
-      : validationRun,
+    validationRun,
     runPostValidationHookAlways,
     postValidationSetCrossFieldValues,
     isReadOnly,

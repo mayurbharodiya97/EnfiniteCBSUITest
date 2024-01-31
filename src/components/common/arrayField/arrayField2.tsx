@@ -422,7 +422,7 @@ export const ArrayFieldRow = ({
         xs={12}
         md={12}
         sm={12}
-        spacing={2}
+        spacing={1}
         className={finalClass}
       >
         {oneRow}

@@ -296,7 +296,8 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
     set: <T>(
       recoilVal: RecoilState<T>,
       valOrUpdater: T | ((currVal: T) => T)
-    ) => void
+    ) => void,
+    isSubmitting = false
   ): Promise<FormFieldAtomType | null> => {
     const loadableFieldState = snapshot.getLoadable(formFieldAtom(field));
     if (loadableFieldState.state === "hasValue") {
@@ -319,11 +320,10 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
             fieldState.dependentFields
           );
           result = await Promise.resolve(
-            customValidator(
-              fieldState,
-              dependentFieldsState,
-              formContext.formState
-            )
+            customValidator(fieldState, dependentFieldsState, {
+              ...formContext.formState,
+              isSubmitting,
+            })
           );
         } catch (e: any) {
           result = { error: e.message, apiResult: null };
@@ -385,7 +385,7 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
             const fieldsAggrigator: FormFieldAtomType[] = [];
             let hasError = false;
             for (const field of fields) {
-              let result = await runValidation(field, snapshot, set);
+              let result = await runValidation(field, snapshot, set, true);
               if (result === null) {
                 continue;
               }

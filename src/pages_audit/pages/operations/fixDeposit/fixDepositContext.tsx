@@ -2,20 +2,18 @@ import { createContext, useReducer, useState } from "react";
 import { FDContextType, FDStateType, ActionType } from "./type";
 
 const inititalState: FDStateType = {
-  activeStep: 0,
+  activeStep: 1,
   fdParaFormData: { FD_TYPE: "E", MODE: "3" },
   isOpendfdAcctForm: false,
   fdAcctFormData: {},
+  fdDetailFormData: {},
 };
 
 const fdReducer = (state: FDStateType, action: ActionType): FDStateType => {
   // console.log(">>state", state?.fdParaFormData);
   // console.log(">>action", action);
   switch (action.type) {
-    case "updateActiveStep":
-    case "updateFDParaFormData":
-    case "updateIsOpendfdAcct":
-    case "updateFDAcctFormData":
+    case "commonType":
       return {
         ...state,
         ...action.payload,
@@ -38,7 +36,7 @@ export const FixDepositProvider = ({ children }) => {
 
   const setActiveStep = (value) => {
     dispatch({
-      type: "updateActiveStep",
+      type: "commonType",
       payload: {
         activeStep: value,
       },
@@ -47,7 +45,7 @@ export const FixDepositProvider = ({ children }) => {
 
   const updateFDParaFormData = (data) => {
     dispatch({
-      type: "updateFDParaFormData",
+      type: "commonType",
       payload: {
         fdParaFormData: { ...data },
       },
@@ -65,7 +63,7 @@ export const FixDepositProvider = ({ children }) => {
 
   const setIsOpendfdAcctForm = (value) => {
     dispatch({
-      type: "updateIsOpendfdAcct",
+      type: "commonType",
       payload: {
         isOpendfdAcctForm: value,
       },
@@ -74,9 +72,18 @@ export const FixDepositProvider = ({ children }) => {
 
   const updateFDAccountsFormData = (data) => {
     dispatch({
-      type: "updateFDAcctFormData",
+      type: "commonType",
       payload: {
         fdAcctFormData: data,
+      },
+    });
+  };
+
+  const updateFDDetailsFormData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        fdDetailFormData: data,
       },
     });
   };
@@ -90,6 +97,7 @@ export const FixDepositProvider = ({ children }) => {
         updateFDParaDataOnChange,
         setIsOpendfdAcctForm,
         updateFDAccountsFormData,
+        updateFDDetailsFormData,
       }}
     >
       {children}
