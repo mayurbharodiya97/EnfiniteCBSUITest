@@ -611,7 +611,30 @@ const GeneralAPISDK = () => {
       "{}{}{{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}-------------------------"
     );
   };
-
+  const getMatureInstDetail = async (...ReqData) => {
+    if (!Boolean(ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value)) return [];
+    if (!Boolean(ReqData?.[2]?.["FDACCTS.ACCT_TYPE"]?.value)) return [];
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETMATUREINSTDTL", {
+        COMP_CD: ReqData?.[3]?.companyID ?? "",
+        BRANCH_CD: ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value ?? "",
+        ACCT_TYPE: ReqData?.[2]?.["FDACCTS.ACCT_TYPE"]?.value ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ MATURE_INST, DESCRIPTION }) => {
+          return {
+            value: MATURE_INST,
+            label: DESCRIPTION,
+          };
+        });
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -639,6 +662,7 @@ const GeneralAPISDK = () => {
     getZoneListData,
     getAccountNumberData,
     testingFn,
+    getMatureInstDetail,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

@@ -832,6 +832,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTFDDTL",
     packageName: "",
   },
+  GETMATUREINSTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETMATUREINSTDTL",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

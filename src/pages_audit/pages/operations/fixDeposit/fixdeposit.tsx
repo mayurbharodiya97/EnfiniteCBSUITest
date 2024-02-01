@@ -93,6 +93,7 @@ export const FixDepositForm = () => {
     "Transfer A/C Detail(s)",
   ]);
   const fdParameterformRef: any = useRef(null);
+  const fdDetailsformRef: any = useRef(null);
 
   const setDataOnFieldChange = (action, payload) => {
     updateFDParaDataOnChange({ [action]: payload });
@@ -149,7 +150,11 @@ export const FixDepositForm = () => {
     submitEventRef.current = e;
     if (fdState.activeStep === 0) {
       fdParameterformRef.current?.handleSubmit(e);
-    } else if (fdState.activeStep === 0) {
+    } else if (
+      fdState.activeStep === 1 &&
+      fdState?.fdParaFormData?.FD_TYPE === "E"
+    ) {
+      fdDetailsformRef.current?.handleSubmit(e);
     }
   };
 
@@ -198,41 +203,53 @@ export const FixDepositForm = () => {
               ref={fdParameterformRef}
             />
           ) : fdState.activeStep === 1 ? (
-            <FixDepositDetailForm />
+            <FixDepositDetailForm ref={fdDetailsformRef} />
           ) : fdState.activeStep === 2 ? (
             <TransferAcctDetailForm />
           ) : (
             <></>
           )}
         </div>
-        <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            pt: 2,
+            marginTop: "0px !important",
+            position: "relative",
+          }}
+        >
           <Box sx={{ flex: "1 1 auto" }} />
-          {fdState.activeStep === 0 ? null : (
-            <GradientButton
-              onClick={() => setActiveStep(fdState.activeStep - 1)}
-            >
-              Back
-            </GradientButton>
-          )}
-          {
-            fdState.activeStep !== steps.length && (
-              // (completed[activeStep] ? (
-              //   <Typography variant="caption" sx={{ display: "inline-block" }}>
-              //     Step {activeStep + 1} already completed
-              //   </Typography>
-              // ) : (
-              <>
-                {fdState.activeStep !== steps.length - 1 ? (
-                  <GradientButton onClick={handleComplete}>Next</GradientButton>
-                ) : (
-                  <GradientButton onClick={handleComplete}>
-                    Finish
-                  </GradientButton>
-                )}
-              </>
-            )
-            // ))
-          }
+          <div style={{ position: "fixed", bottom: 0, right: 0 }}>
+            {fdState.activeStep === 0 ? null : (
+              <GradientButton
+                onClick={() => setActiveStep(fdState.activeStep - 1)}
+              >
+                Back
+              </GradientButton>
+            )}
+            {
+              fdState.activeStep !== steps.length && (
+                // (completed[activeStep] ? (
+                //   <Typography variant="caption" sx={{ display: "inline-block" }}>
+                //     Step {activeStep + 1} already completed
+                //   </Typography>
+                // ) : (
+                <>
+                  {fdState.activeStep !== steps.length - 1 ? (
+                    <GradientButton onClick={handleComplete}>
+                      Next
+                    </GradientButton>
+                  ) : (
+                    <GradientButton onClick={handleComplete}>
+                      Finish
+                    </GradientButton>
+                  )}
+                </>
+              )
+              // ))
+            }
+          </div>
         </Box>
       </Stack>
     </Fragment>

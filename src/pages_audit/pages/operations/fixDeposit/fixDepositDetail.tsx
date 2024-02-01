@@ -45,6 +45,7 @@ export const FixDepositDetailForm = forwardRef<any, any>(({}, ref) => {
           border: "1px solid var(--theme-color4)",
           borderRadius: "10px",
         }}
+        ref={ref}
       />
     </Fragment>
   );

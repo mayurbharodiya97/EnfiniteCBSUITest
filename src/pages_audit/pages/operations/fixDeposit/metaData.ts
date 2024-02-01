@@ -1,5 +1,5 @@
-import { GeneralAPI } from "registry/fns/functions";
-import { getFDAccountsDetail } from "./api";
+import * as API from "./api";
+
 export const FixDepositParaFormMetadata = {
   form: {
     name: "fixDepositParameter",
@@ -159,7 +159,7 @@ export const FixDepositParaFormMetadata = {
             CUSTOMER_ID: field?.value ?? "",
           };
 
-          let fdAccounts = await getFDAccountsDetail(Apireq);
+          let fdAccounts = await API.getFDAccountsDetail(Apireq);
           formState.setDataOnFieldChange("CUSTOMER_ID", {
             ...field,
             FD_ACCTS: fdAccounts,
@@ -345,7 +345,7 @@ export const FixDepositAccountsFormMetadata = {
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "amountField",
           },
           name: "TOTAL_AMT",
           label: "Total FD Amount",
@@ -404,11 +404,14 @@ export const FixDepositAccountsFormMetadata = {
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "select",
           },
           name: "MATURE_INST",
           label: "Mature Instruction",
           type: "text",
+          dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
+          disableCaching: true,
+          options: "getMatureInstDetail",
           fullWidth: true,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
         },
@@ -486,7 +489,7 @@ export const FixDepositDetailFormMetadata = {
             componentType: "textField",
           },
           name: "BRANCH_CD",
-          label: "Branch Code",
+          label: "Branch",
           type: "text",
           fullWidth: true,
           isReadOnly: true,
@@ -538,44 +541,25 @@ export const FixDepositDetailFormMetadata = {
         },
         {
           render: {
-            componentType: "amountField",
-          },
-          name: "TRSF_AMT",
-          label: "Transfer Amount",
-          placeholder: "",
-          type: "text",
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "CASH_AMT",
-          label: "Cash",
-          type: "text",
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "MATURITY_AMT",
-          label: "Maturity Amount",
-          type: "text",
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        },
-        {
-          render: {
             componentType: "textField",
           },
           name: "ACCT_NAME",
-          label: "AC Name",
+          label: "Account Name",
           type: "text",
           fullWidth: true,
           isReadOnly: true,
 
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 3, xl: 1.5 },
+          GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
         },
+        // {
+        //   render: {
+        //     componentType: "amountField",
+        //   },
+        //   name: "CASH_AMT",
+        //   label: "Cash",
+        //   type: "text",
+        //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        // },
         {
           render: {
             componentType: "datePicker",
@@ -590,7 +574,7 @@ export const FixDepositDetailFormMetadata = {
           maxDate: new Date(),
           maxLength: 6,
           defaultfocus: true,
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.5, md: 1.8, lg: 1.8, xl: 1.5 },
         },
         {
           render: {
@@ -612,7 +596,7 @@ export const FixDepositDetailFormMetadata = {
               { name: "PERIOD_CD", params: ["Please select Period/Tenor"] },
             ],
           },
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1 },
         },
         {
           render: {
@@ -639,7 +623,7 @@ export const FixDepositDetailFormMetadata = {
             type: "string",
             rules: [{ name: "required", params: ["Tenor is Required."] }],
           },
-          GridProps: { xs: 12, sm: 2, md: 1, lg: 1, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
           render: {
@@ -656,36 +640,6 @@ export const FixDepositDetailFormMetadata = {
               { name: "required", params: ["Interest Rate is Required."] },
             ],
           },
-          GridProps: { xs: 12, sm: 2, md: 1, lg: 1, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "MONTHLY_INT",
-          label: "Month Interest",
-          isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "TOTAL",
-          label: "Total",
-          type: "text",
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "datePicker",
-          },
-          name: "MATURITY_DT",
-          label: "Maturity Date",
-          placeholder: "",
-          format: "dd/MM/yyyy",
-          isReadOnly: true,
-          fullWidth: true,
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
@@ -713,23 +667,111 @@ export const FixDepositDetailFormMetadata = {
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "amountField",
           },
-          name: "CATEG_NM",
-          label: "Category",
+          name: "MONTHLY_INT",
+          label: "Month Interest",
           isReadOnly: true,
-          GridProps: { xs: 2.5, sm: 2, md: 2, lg: 2, xl: 2.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "MATURITY_AMT",
+          label: "Maturity Amount",
+          type: "text",
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        // {
+        //   render: {
+        //     componentType: "amountField",
+        //   },
+        //   name: "TOTAL",
+        //   label: "Total",
+        //   type: "text",
+        //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        // },
         {
           render: {
             componentType: "datePicker",
           },
-          name: "BIRTH_DT",
-          label: "Birth Date",
+          name: "MATURITY_DT",
+          label: "Maturity Date",
           placeholder: "",
           format: "dd/MM/yyyy",
           isReadOnly: true,
           fullWidth: true,
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+        },
+        // {
+        //   render: {
+        //     componentType: "textField",
+        //   },
+        //   name: "CATEG_NM",
+        //   label: "Category",
+        //   isReadOnly: true,
+        //   GridProps: { xs: 2.5, sm: 2, md: 2, lg: 2, xl: 2.5 },
+        // },
+        // {
+        //   render: {
+        //     componentType: "datePicker",
+        //   },
+        //   name: "BIRTH_DT",
+        //   label: "Birth Date",
+        //   placeholder: "",
+        //   format: "dd/MM/yyyy",
+        //   isReadOnly: true,
+        //   fullWidth: true,
+        //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        // },
+        {
+          render: {
+            componentType: "_accountNumber",
+          },
+          branchCodeMetadata: {
+            name: "CR_BRANCH_CD",
+            label: "Credit A/c Branch",
+            required: false,
+            GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          },
+          accountTypeMetadata: {
+            name: "CR_ACCT_TYPE",
+            label: "Credit A/c Type",
+            required: false,
+            GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          },
+          accountCodeMetadata: {
+            name: "CR_ACCT_CD",
+            label: "Credit A/c No.",
+            required: false,
+            dependentFields: ["CR_BRANCH_CD", "CR_ACCT_TYPE"],
+            postValidationSetCrossFieldValues: () => {
+              console.log(">>accountCode");
+            },
+            GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          },
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "CR_ACCT_NM",
+          label: "Credit A/c Name",
+          type: "text",
+          fullWidth: true,
+          isReadOnly: true,
+
+          GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "TRSF_AMT",
+          label: "Transfer Amount",
+          placeholder: "",
+          type: "text",
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
         {
@@ -740,46 +782,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Mature Instruction",
           type: "text",
           fullWidth: true,
-          GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "_accountNumber",
-          },
-          branchCodeMetadata: {
-            name: "CR_BRANCH_CD",
-            label: "Credit Branch",
-            required: false,
-            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
-          },
-          accountTypeMetadata: {
-            name: "CR_ACCT_TYPE",
-            label: "Credit A/c Type",
-            required: false,
-            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
-          },
-          accountCodeMetadata: {
-            name: "CR_ACCT_CD",
-            label: "Credit A/c No.",
-            required: false,
-            dependentFields: ["CR_BRANCH_CD", "CR_ACCT_TYPE"],
-            postValidationSetCrossFieldValues: () => {
-              console.log(">>accountCode");
-            },
-            GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
-          },
-        },
-        {
-          render: {
-            componentType: "textField",
-          },
-          name: "CR_ACCT_NM",
-          label: "AC Name",
-          type: "text",
-          fullWidth: true,
-          isReadOnly: true,
-
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3.5 },
         },
         {
           render: {
@@ -789,7 +792,7 @@ export const FixDepositDetailFormMetadata = {
           label: "FD Remark",
           type: "text",
           fullWidth: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
         },
         {
           render: {
@@ -799,7 +802,7 @@ export const FixDepositDetailFormMetadata = {
           label: "Nominee Name",
           type: "text",
           fullWidth: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
         },
       ],
     },
