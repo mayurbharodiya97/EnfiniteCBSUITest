@@ -243,7 +243,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         error={!isSubmitting && isError}
         helperText={
           <div style={{ display: "flex" }}>
-            <FormHelperText>
+            <FormHelperText style={{ whiteSpace: "pre-line" }}>
               {!isSubmitting && isError
                 ? myError
                 : Boolean(validationAPIResult)

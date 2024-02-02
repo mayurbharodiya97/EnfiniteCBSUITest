@@ -219,8 +219,8 @@ export const FixDepositForm = () => {
             position: "relative",
           }}
         >
-          <Box sx={{ flex: "1 1 auto" }} />
-          <div style={{ position: "fixed", bottom: 0, right: 0 }}>
+          {/* <Box sx={{ flex: "1 1 auto" }} /> */}
+          <div style={{ position: "fixed", bottom: 0, right: "10px" }}>
             {fdState.activeStep === 0 ? null : (
               <GradientButton
                 onClick={() => setActiveStep(fdState.activeStep - 1)}

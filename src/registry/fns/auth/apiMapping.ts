@@ -828,8 +828,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
     packageName: "",
   },
-  GETCUSTFDDTL: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCUSTFDDTL",
+  GETCUSTOMERFDACCOUNTS: {
+    url: "/enfinityFDServiceAPI/GETCUSTOMERFDACCOUNTS",
     packageName: "",
   },
   GETMATUREINSTDTL: {

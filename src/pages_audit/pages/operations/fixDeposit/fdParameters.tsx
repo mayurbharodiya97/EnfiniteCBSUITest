@@ -10,7 +10,7 @@ import {
 import {
   FixDepositParaFormMetadata,
   FixDepositAccountsFormMetadata,
-} from "./metaData";
+} from "./metaData/fdParaMetaData";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
 

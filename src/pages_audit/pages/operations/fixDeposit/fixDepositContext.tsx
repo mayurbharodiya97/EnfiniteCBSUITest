@@ -2,7 +2,7 @@ import { createContext, useReducer, useState } from "react";
 import { FDContextType, FDStateType, ActionType } from "./type";
 
 const inititalState: FDStateType = {
-  activeStep: 1,
+  activeStep: 0,
   fdParaFormData: { FD_TYPE: "E", MODE: "3" },
   isOpendfdAcctForm: false,
   fdAcctFormData: {},

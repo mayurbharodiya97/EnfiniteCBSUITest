@@ -1,6 +1,6 @@
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment } from "react";
-import { TransferAcctDetailFormMetadata } from "./metaData";
+import { TransferAcctDetailFormMetadata } from "./metaData/transferAcctMetaData";
 import { InitialValuesType } from "packages/form";
 
 export const TransferAcctDetailForm = () => {

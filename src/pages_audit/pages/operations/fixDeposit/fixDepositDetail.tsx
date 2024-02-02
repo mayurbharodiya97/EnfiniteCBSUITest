@@ -1,6 +1,6 @@
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, forwardRef, useContext } from "react";
-import { FixDepositDetailFormMetadata } from "./metaData";
+import { FixDepositDetailFormMetadata } from "./metaData/fdDetailMetaData";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
 
