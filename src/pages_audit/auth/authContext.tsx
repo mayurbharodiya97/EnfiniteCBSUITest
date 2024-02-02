@@ -83,11 +83,13 @@ export const AuthContext = createContext<AuthContextType>({
 
 export const AccDetailContext = createContext<any>({
   setTempStore: () => false,
+  setCardStore: () => false,
 });
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, inititalState);
   const [tempStore, setTempStore]: any = useState({});
+  const [cardStore, setCardStore]: any = useState({});
   const [authenticating, setAuthenticating] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -331,7 +333,9 @@ export const AuthProvider = ({ children }) => {
         setProfileImage,
       }}
     >
-      <AccDetailContext.Provider value={{ tempStore, setTempStore }}>
+      <AccDetailContext.Provider
+        value={{ tempStore, setTempStore, cardStore, setCardStore }}
+      >
         {authenticating ? <LinearProgress color="secondary" /> : children}
       </AccDetailContext.Provider>
     </AuthContext.Provider>
