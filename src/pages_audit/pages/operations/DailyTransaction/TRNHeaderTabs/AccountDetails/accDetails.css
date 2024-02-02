@@ -1,11 +1,5 @@
 #cardContainer {
-  width: 27vw;
-  box-shadow: 0px 1px 5px -1px #999999;
-  border-radius: 5px;
-  margin: 5px;
-}
-#cardContainer2 {
-  width: 90%;
+  width: 99%;
   box-shadow: 0px 1px 5px -1px #999999;
   border-radius: 5px;
   margin-bottom: 5px;

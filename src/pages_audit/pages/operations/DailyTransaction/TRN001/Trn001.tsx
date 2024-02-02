@@ -59,6 +59,7 @@ export const Trn001 = () => {
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
   var defBranch = {
     label: authState?.user?.branchCode + "-" + authState?.user?.branch,
     value: authState?.user?.branchCode,
@@ -115,6 +116,7 @@ export const Trn001 = () => {
 
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
+    setCardStore({ ...cardStore, cardsInfo: {} });
   }, []);
   useEffect(() => {
     console.log(index, "index");
@@ -203,20 +205,20 @@ export const Trn001 = () => {
     onError: (error: any) => {},
   });
 
-  // const getAccInfo = useMutation(CommonApi.getAccDetails, {
-  //   onSuccess: (data) => {
-  //     setLoading(false);
-  //     setTempStore({ ...tempStore, accInfo: data });
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error?.error_msg, {
-  //       variant: "error",
-  //     });
-  //     setLoading(false);
-  //     setTempStore({ ...tempStore, accInfo: {} });
-  //   },
-  // });
-  const getCarousalCards = useMutation(API.getCarousalCards, {
+  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
+    onSuccess: (data) => {
+      setLoading(false);
+      setCardStore({ ...cardStore, cardsInfo: data });
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+      setLoading(false);
+      setCardStore({ ...cardStore, cardsInfo: [] });
+    },
+  });
+  const getAccDetails = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
       setLoading(false);
       setTempStore({ ...tempStore, accInfo: data });
@@ -590,6 +592,8 @@ export const Trn001 = () => {
     setResetDialog(false);
     setViewOnly(false);
     setTempStore({ ...tempStore, accInfo: {} });
+    setCardStore({ ...cardStore, cardsInfo: {} });
+    setTabsData([]);
     setErrMsg(defErrMsg);
   };
 
@@ -602,18 +606,19 @@ export const Trn001 = () => {
   const handleGetAccInfo = (i) => {
     let data = {
       COMP_CD: rows[i]?.branch?.info?.COMP_CD,
-      BRANCH_CD: rows[i]?.branch?.value,
       ACCT_TYPE: rows[i]?.accType?.value,
-      ACCT_CD: rows[i]?.accNo,
+      ACCT_CD: rows[i]?.accNo?.padEnd(20, " "),
+      PARENT_TYPE: rows[i]?.accType?.info?.PARENT_TYPE ?? "",
+
+      BRANCH_CD: rows[i]?.branch?.value,
       authState: authState,
     };
-    // let abc = authState.menulistdata.find((a) => a.label == "Operation");
 
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
-      // getAccInfo.mutate(data);
-      rows[i]?.accNo && getAccNoValidation.mutate(rows[i]);
-      rows[i]?.accNo && getCarousalCards.mutate(rows[i]);
+      rows[i]?.accNo && getAccNoValidation.mutate(data);
+      rows[i]?.accNo && getCarousalCards.mutate(data);
+      rows[i]?.accNo && getAccDetails.mutate(data);
     }
   };
 
@@ -751,7 +756,7 @@ export const Trn001 = () => {
                   <TableCell id="head">{t("Chequeno")} </TableCell>
                   <TableCell id="head">Cheque Date</TableCell>
                   <TableCell id="head">{t("DebitAmount")}</TableCell>
-                  <TableCell id="head">{t("CreditAmount")}</TableCell>
+                  <TableCell id="head">{t("CreditAmount")}</TableCell>{" "}
                 </TableRow>
               </TableHead>
 
@@ -766,7 +771,7 @@ export const Trn001 = () => {
                             a?.branch?.label && <h3>{a?.branch?.label}</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 160 }}>
+                          <TableCell sx={{ minWidth: 120 }}>
                             <Autocomplete
                               value={a.branch}
                               autoHighlight
@@ -788,7 +793,7 @@ export const Trn001 = () => {
                             a?.accType?.label && <h3>{a?.accType?.label}</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 160 }}>
+                          <TableCell sx={{ minWidth: 120 }}>
                             <Autocomplete
                               value={a.accType}
                               autoHighlight
@@ -810,7 +815,7 @@ export const Trn001 = () => {
                           disableInteractive={true}
                           title={a?.bugMsgAccNo && <h3>{a?.bugMsgAccNo}</h3>}
                         >
-                          <TableCell sx={{ minWidth: 50 }}>
+                          <TableCell sx={{ minWidth: 120 }}>
                             <TextField
                               value={a.accNo}
                               error={!a.accNo || a.bugAccNo ? true : false}
@@ -821,23 +826,27 @@ export const Trn001 = () => {
                             />
                           </TableCell>
                         </ErrTooltip>
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.trx}
-                            autoHighlight
-                            size="small"
-                            options={trxOptions}
-                            onChange={(e, value) => handleTrx(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                error={a.trx?.value ? false : true}
-                              />
-                            )}
-                          />{" "}
-                        </TableCell>
-
-                        <TableCell sx={{ minWidth: 50 }}>
+                        <Tooltip
+                          disableInteractive={true}
+                          title={a?.trx?.label && <h3>{a?.trx?.label}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 70 }}>
+                            <Autocomplete
+                              value={a.trx}
+                              autoHighlight
+                              size="small"
+                              options={trxOptions}
+                              onChange={(e, value) => handleTrx(e, value, i)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  error={a.trx?.value ? false : true}
+                                />
+                              )}
+                            />{" "}
+                          </TableCell>
+                        </Tooltip>
+                        <TableCell sx={{ minWidth: 60 }}>
                           <TextField
                             value={a.scroll}
                             type="number"
@@ -852,19 +861,24 @@ export const Trn001 = () => {
                             onChange={(e) => handleScroll(e, i)}
                           />
                         </TableCell>
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.sdc}
-                            autoHighlight
-                            size="small"
-                            options={sdcOptions}
-                            onChange={(e, value) => handleSdc(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField {...params} label="" />
-                            )}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 80 }}>
+                        <Tooltip
+                          disableInteractive={true}
+                          title={a?.sdc?.label && <h3>{a?.sdc?.label}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 70 }}>
+                            <Autocomplete
+                              value={a.sdc}
+                              autoHighlight
+                              size="small"
+                              options={sdcOptions}
+                              onChange={(e, value) => handleSdc(e, value, i)}
+                              renderInput={(params) => (
+                                <TextField {...params} label="" />
+                              )}
+                            />
+                          </TableCell>
+                        </Tooltip>
+                        <TableCell sx={{ minWidth: 130 }}>
                           <TextField
                             value={a.remark}
                             size="small"
@@ -906,7 +920,7 @@ export const Trn001 = () => {
                           disableInteractive={true}
                           title={a?.bugMsgDate && <h3>{a?.bugMsgDate}</h3>}
                         >
-                          <TableCell sx={{ minWidth: 80 }}>
+                          <TableCell sx={{ minWidth: 140 }}>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                               <DatePicker
                                 format="dd/MM/yyyy"
@@ -931,7 +945,7 @@ export const Trn001 = () => {
                             a.trx?.code && <h3>Amount can't be zero</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 50 }}>
+                          <TableCell sx={{ minWidth: 100 }}>
                             <TextField
                               value={a.debit}
                               error={Number(a.debit) > 0 ? false : true}
@@ -960,7 +974,7 @@ export const Trn001 = () => {
                             a.trx?.code && <h3>Amount can't be zero</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 50 }}>
+                          <TableCell sx={{ minWidth: 100 }}>
                             <TextField
                               value={a.credit}
                               error={Number(a.credit) > 0 ? false : true}
@@ -980,7 +994,12 @@ export const Trn001 = () => {
                             />
                           </TableCell>
                         </ErrTooltip>
-                        <TableCell style={{ border: "0px", width: "10px" }}>
+
+                        <TableCell
+                          style={{ border: "0px" }}
+                          // width: "10px"
+                          sx={{ minWidth: 20 }}
+                        >
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (
                             <Button

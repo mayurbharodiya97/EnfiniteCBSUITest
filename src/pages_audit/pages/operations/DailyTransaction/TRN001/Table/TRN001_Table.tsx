@@ -29,7 +29,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "Delete",
-    actionLabel: "Nullify",
+    actionLabel: "Remove",
     multiple: false,
     rowDoubleClick: false,
     // alwaysAvailable: true,
@@ -42,6 +42,7 @@ export const TRN001_Table = ({ updatedRows }) => {
 
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
 
   const [rows, setRows] = useState<any>([]);
   const [credit, setCredit] = useState<number>(0);
@@ -96,12 +97,19 @@ export const TRN001_Table = ({ updatedRows }) => {
     onError: (error) => {},
   });
 
-  const getAccInfo = useMutation(CommonApi.getAccDetails, {
+  const getAccDetails = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
       setTempStore({ ...tempStore, accInfo: data });
     },
     onError: (error) => {},
   });
+  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
+    onSuccess: (data) => {
+      setCardStore({ ...cardStore, cardsInfo: data });
+    },
+    onError: (error) => {},
+  });
+
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
       setDeleteDialog(false);
@@ -127,12 +135,16 @@ export const TRN001_Table = ({ updatedRows }) => {
     if (data.name === "view-detail") {
       let obj = {
         COMP_CD: row?.COMP_CD,
-        BRANCH_CD: row?.BRANCH_CD,
         ACCT_TYPE: row?.ACCT_TYPE,
         ACCT_CD: row?.ACCT_CD,
+        PARENT_TYPE: row?.PARENT_TYPE ?? "",
+
+        BRANCH_CD: row?.BRANCH_CD,
         authState: authState,
       };
-      getAccInfo.mutate(obj);
+
+      getAccDetails.mutate(obj);
+      getCarousalCards.mutate(obj);
 
       // setScrollDialog(true);
     }
@@ -164,7 +176,11 @@ export const TRN001_Table = ({ updatedRows }) => {
         finalMetaData={TRN001_TableMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        loading={getTRN001List.isLoading || getAccInfo.isLoading}
+        loading={
+          getTRN001List.isLoading ||
+          getAccDetails.isLoading ||
+          getCarousalCards.isLoading
+        }
         refetchData={() => {}}
         ref={myGridRef}
         actions={actions}

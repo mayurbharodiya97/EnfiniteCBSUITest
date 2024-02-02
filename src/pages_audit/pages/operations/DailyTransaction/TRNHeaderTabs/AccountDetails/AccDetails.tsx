@@ -18,14 +18,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { format } from "date-fns";
 
 export const AccDetails = ({ flag }) => {
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
   const [cardName, setCardName] = useState<any>([]);
-  let accInfo = tempStore?.accInfo ?? [];
+  let cardsInfo = cardStore?.cardsInfo ?? [];
 
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
-      items: 4,
+      items: 2,
     },
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -42,17 +42,17 @@ export const AccDetails = ({ flag }) => {
   };
 
   useEffect(() => {
-    let arr2 = accInfo?.length > 0 && accInfo?.map((a) => a.CARD_NAME);
+    let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
     let arr3 = arr2 && arr2?.filter((a, i) => arr2.indexOf(a) == i);
-    console.log(arr3, "arr3");
     setCardName(arr3);
-  }, [tempStore]);
+  }, [cardStore]);
 
   useEffect(() => {
     console.log(cardName, "cardName");
-  }, [cardName]);
+    console.log(cardStore, "cardStore");
+  }, [cardName, cardStore]);
 
-  console.log(accInfo?.length, "accInfo?.length");
+  console.log(cardsInfo?.length, "cardsInfo?.length");
   return (
     <>
       {cardName?.length > 0 ? (
@@ -61,7 +61,8 @@ export const AccDetails = ({ flag }) => {
             cardName?.map((a, i) => {
               return (
                 <Card
-                  id={cardName?.length < 3 ? "cardContainer2" : "cardContainer"}
+                  // id={cardName?.length < 3 ? "cardContainer2" : "cardContainer"}
+                  id="cardContainer"
                 >
                   <CardContent>
                     <div id="cardHeading">
@@ -84,11 +85,11 @@ export const AccDetails = ({ flag }) => {
                       }}
                     >
                       <Grid container spacing={2} style={{ marginTop: "0px" }}>
-                        {accInfo?.length > 0 &&
-                          accInfo?.map((b, j) => {
+                        {cardsInfo?.length > 0 &&
+                          cardsInfo?.map((b, i2) => {
                             if (a == b?.CARD_NAME) {
                               return (
-                                <Grid item id="cardGridItem">
+                                <Grid item id="cardGridItem" key={i2}>
                                   <Typography id="cardLabel">
                                     {b?.COL_LABEL}
                                   </Typography>
@@ -113,7 +114,7 @@ export const AccDetails = ({ flag }) => {
             justifyContent: "center",
           }}
         >
-          <div style={{ paddingTop: "10%" }}>No Records Found</div>
+          <div style={{ paddingTop: "10%" }}></div>
         </Card>
         // <></>
       )}

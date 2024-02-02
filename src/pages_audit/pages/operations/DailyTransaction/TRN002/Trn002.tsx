@@ -37,7 +37,7 @@ const actions: ActionTypes[] = [
   },
   {
     actionName: "Delete",
-    actionLabel: "Nullify",
+    actionLabel: "Remove",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -53,6 +53,7 @@ const actions: ActionTypes[] = [
 export const Trn002 = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext<any>(AccDetailContext);
+  const { cardStore, setCardStore } = useContext<any>(AccDetailContext);
   const myGridRef = useRef<any>(null);
 
   const [rows, setRows] = useState<any>([]);
@@ -110,9 +111,15 @@ export const Trn002 = () => {
     onError: (error) => {},
   });
 
-  const getAccInfo = useMutation(CommonApi.getAccDetails, {
+  const getAccDetails = useMutation(CommonApi.getAccDetails, {
     onSuccess: (data) => {
       setTempStore({ ...tempStore, accInfo: data });
+    },
+    onError: (error) => {},
+  });
+  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
+    onSuccess: (data) => {
+      setCardStore({ ...cardStore, cardsInfo: data });
     },
     onError: (error) => {},
   });
@@ -158,12 +165,15 @@ export const Trn002 = () => {
     if (data.name === "view-detail") {
       let obj = {
         COMP_CD: row?.COMP_CD,
-        BRANCH_CD: row?.BRANCH_CD,
         ACCT_TYPE: row?.ACCT_TYPE,
         ACCT_CD: row?.ACCT_CD,
+        PARENT_TYPE: row?.PARENT_TYPE ?? "",
+
+        BRANCH_CD: row?.BRANCH_CD,
         authState: authState,
       };
-      getAccInfo.mutate(obj);
+      getAccDetails.mutate(obj);
+      getCarousalCards.mutate(obj);
     }
 
     if (data.name === "view") {
@@ -243,7 +253,11 @@ export const Trn002 = () => {
           finalMetaData={TRN002_TableMetaData as GridMetaDataType}
           data={rows2}
           setData={() => null}
-          loading={getTRN002List.isLoading || getAccInfo.isLoading}
+          loading={
+            getTRN002List.isLoading ||
+            getAccDetails.isLoading ||
+            getCarousalCards.isLoading
+          }
           ref={myGridRef}
           refetchData={() => {}}
           actions={actions}

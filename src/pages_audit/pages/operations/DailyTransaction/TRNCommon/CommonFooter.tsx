@@ -286,7 +286,7 @@ const CommonFooter = ({
             Scroll Delete
           </Button>
         </Grid>
-        <Grid item>
+        {/* <Grid item>
           <Button
             variant="contained"
             color="primary"
@@ -294,7 +294,7 @@ const CommonFooter = ({
           >
             Query
           </Button>
-        </Grid>
+        </Grid> */}
         <Grid item>
           <Tooltip
             disableInteractive={true}

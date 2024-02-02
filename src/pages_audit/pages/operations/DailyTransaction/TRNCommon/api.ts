@@ -95,16 +95,13 @@ export const deleteScrollByVoucherNo = async (reqData) => {
   }
 };
 export const getAccDetails = async (reqData) => {
-  //apurva
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCOUNTDTL", {
-      // ACCT_CD: "000026              ",
-      // A_ASON_DT: "15/DEC/2023",
       COMP_CD: reqData.COMP_CD,
       BRANCH_CD: reqData.BRANCH_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
-      A_ASON_DT: format(new Date(), "dd/MMM/yyyy"),
+      A_ASON_DT: format(new Date(), "dd/MMM/yyyy"), //"15/DEC/2023"
     });
   if (status === "0") {
     let responseData = data;
@@ -113,6 +110,22 @@ export const getAccDetails = async (reqData) => {
     } else {
       return responseData;
     }
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getCarousalCards = async (reqData) => {
+  console.log(reqData, "reqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DAILYTRNCARDDTL", {
+      PARENT_TYPE: reqData?.PARENT_TYPE,
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
