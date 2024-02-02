@@ -75,6 +75,8 @@ export const Trn002 = () => {
   useEffect(() => {
     handleGetTRN002List();
     setTempStore({ ...tempStore, accInfo: {} });
+    setCardStore({ ...cardStore, cardsInfo: {} });
+    setTabsData([]);
   }, []);
 
   // api define ========================================================================
@@ -174,6 +176,7 @@ export const Trn002 = () => {
       };
       getAccDetails.mutate(obj);
       getCarousalCards.mutate(obj);
+      getTabsByParentType.mutate(row?.PARENT_TYPE ?? "");
     }
 
     if (data.name === "view") {
@@ -219,6 +222,17 @@ export const Trn002 = () => {
   const handleUpdateRows = (data) => {
     setRows2(data);
   };
+
+  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
+    onSuccess: (data) => {
+      setTabsData(data);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
 
   const handleDelete = () => {
     let obj = {
@@ -289,14 +303,14 @@ export const Trn002 = () => {
             variant="subtitle1"
             // style={{ color: "green" }}
           >
-            Credit Sum : ₹ {credit}
+            Credit : ₹ {credit}
           </Typography>
           <Typography
             sx={{ fontWeight: "bold" }}
             variant="subtitle1"
             // style={{ color: "tomato" }}
           >
-            Debit Sum : ₹ {debit}
+            Debit : ₹ {debit}
           </Typography>
         </Grid>
       </Card>
@@ -310,8 +324,8 @@ export const Trn002 = () => {
 
       {Boolean(deleteDialog) ? (
         <PopupMessageAPIWrapper
-          MessageTitle="Scroll Delete"
-          Message="Do you wish to Delete this scroll?"
+          MessageTitle="Transaction Delete"
+          Message="Do you wish to Delete this Transaction?"
           onActionYes={() => handleDelete()}
           onActionNo={() => setDeleteDialog(false)}
           rows={[]}
@@ -321,8 +335,8 @@ export const Trn002 = () => {
       ) : null}
       {Boolean(confirmDialog) ? (
         <PopupMessageAPIWrapper
-          MessageTitle="Scroll Confirm"
-          Message="Do you wish to Confirm this scroll?"
+          MessageTitle="Transaction Confirm"
+          Message="Do you wish to Confirm this Transaction?"
           onActionYes={() => handleConfirm()}
           onActionNo={() => setConfirmDialog(false)}
           rows={[]}

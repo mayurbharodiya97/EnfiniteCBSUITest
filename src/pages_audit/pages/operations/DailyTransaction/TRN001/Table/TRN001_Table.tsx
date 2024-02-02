@@ -36,7 +36,7 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const TRN001_Table = ({ updatedRows }) => {
+export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
 
@@ -52,6 +52,7 @@ export const TRN001_Table = ({ updatedRows }) => {
   const [scrollDialog, setScrollDialog] = useState<boolean>(false);
 
   let objData = {
+    USER_NAME: authState?.user?.id,
     COMP_CD: authState?.companyID,
     BRANCH_CD: authState?.user?.branchCode,
   };
@@ -125,6 +126,7 @@ export const TRN001_Table = ({ updatedRows }) => {
       });
     },
   });
+
   //-----------------------------
 
   const setCurrentAction = useCallback((data) => {
@@ -145,8 +147,7 @@ export const TRN001_Table = ({ updatedRows }) => {
 
       getAccDetails.mutate(obj);
       getCarousalCards.mutate(obj);
-
-      // setScrollDialog(true);
+      handleGetHeaderTabs(row?.PARENT_TYPE ?? "");
     }
 
     if (data.name === "Delete") {
@@ -205,10 +206,10 @@ export const TRN001_Table = ({ updatedRows }) => {
           Total Records : {rows ? rows.length : 0}
         </Typography>
         <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-          Credit Sum : ₹ {credit}
+          Credit : ₹ {credit}
         </Typography>
         <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-          Debit Sum : ₹ {debit}
+          Debit : ₹ {debit}
         </Typography>
       </Grid>
 

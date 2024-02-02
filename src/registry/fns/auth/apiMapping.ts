@@ -683,7 +683,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETDAILYTRNLIST: {
-    url: "/transactionServiceAPI/GETDAILYTRNLIST",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNLIST",
     packageName: "",
   },
   GETSANPSHOTDTL: {

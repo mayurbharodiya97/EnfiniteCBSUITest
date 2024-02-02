@@ -104,6 +104,7 @@ export const getTRN001List = async (reqData) => {
     await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
       COMP_CD: reqData?.COMP_CD,
       BRANCH_CD: reqData?.BRANCH_CD,
+      USER_NAME: reqData?.USER_NAME ?? "",
     });
   if (status === "0") {
     let responseData = data;
@@ -210,17 +211,3 @@ export const getAccNoValidation = async (reqData) => {
 };
 
 //others
-export const getTabsByParentType = async (reqData) => {
-  console.log(reqData, "reqData");
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
-      PARENT_TYPE: reqData,
-    });
-  if (status === "0") {
-    let responseData = data;
-    console.log(data, "res data");
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};

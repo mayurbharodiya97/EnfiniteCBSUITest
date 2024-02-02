@@ -118,7 +118,6 @@ export const AccDetails = ({ flag }) => {
         </Card>
         // <></>
       )}
-      <br />
     </>
   );
 };

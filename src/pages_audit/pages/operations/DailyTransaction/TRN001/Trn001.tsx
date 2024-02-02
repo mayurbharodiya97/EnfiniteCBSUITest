@@ -231,7 +231,16 @@ export const Trn001 = () => {
       setTempStore({ ...tempStore, accInfo: {} });
     },
   });
-
+  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
+    onSuccess: (data) => {
+      setTabsData(data);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
   const getAccNoValidation = useMutation(API.getAccNoValidation, {
     onSuccess: (data) => {
       console.log(data, "dattt");
@@ -305,17 +314,6 @@ export const Trn001 = () => {
     console.log(errMsg, "errmsg");
   }, [errMsg]);
 
-  const getTabsByParentType = useMutation(API.getTabsByParentType, {
-    onSuccess: (data) => {
-      setTabsData(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
-
   //TABLE FNs ===============================================================
   const handleBranch = (e, value, i) => {
     const obj = [...rows];
@@ -330,10 +328,12 @@ export const Trn001 = () => {
     obj[i].accType = value;
     setRows(obj);
     handleGetAccInfo(i);
-    value?.info?.PARENT_TYPE &&
-      getTabsByParentType.mutate(value?.info?.PARENT_TYPE);
+    value?.info?.PARENT_TYPE && handleGetHeaderTabs(value?.info?.PARENT_TYPE);
   };
 
+  const handleGetHeaderTabs = (data) => {
+    getTabsByParentType.mutate(data);
+  };
   const handleAccNo = (e, i) => {
     setIndex(i);
     let txt = e.target.value;
@@ -371,8 +371,7 @@ export const Trn001 = () => {
     obj[i].remark = defSdc?.label;
     obj[i].date = new Date();
 
-    if (value?.code == "1" || value?.code == "3") {
-      //value?.code == "2" ||
+    if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
       obj[i].isCredit = true;
     } else {
       obj[i].isCredit = false;
@@ -511,11 +510,11 @@ export const Trn001 = () => {
     let isCred = true;
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
-      trxx = trxOptions2[1]; //wrt index
+      trxx = trxOptions2[2]; //wrt index
       isCred = true;
     } else if (totalDebit < totalCredit) {
       deb = totalCredit - totalDebit;
-      trxx = trxOptions2[3];
+      trxx = trxOptions2[5];
       isCred = false;
     }
     let tr = trxx?.code + "   ";
@@ -714,7 +713,12 @@ export const Trn001 = () => {
         }}
       >
         {loading && <LinearProgress color="secondary" />}
-        {viewOnly && <TRN001_Table updatedRows={updatedRows} />}
+        {viewOnly && (
+          <TRN001_Table
+            updatedRows={updatedRows}
+            handleGetHeaderTabs={handleGetHeaderTabs}
+          />
+        )}
 
         {!viewOnly && (
           <TableContainer>

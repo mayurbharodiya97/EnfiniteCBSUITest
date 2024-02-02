@@ -56,7 +56,7 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
   };
   return (
     <div style={{ padding: "8px" }}>
-      <h1>Daily Transaction {heading}</h1>
+      <h2>Daily Transaction {heading}</h2>
 
       <>
         <Grid item xs="auto" id="dailyTabs">
