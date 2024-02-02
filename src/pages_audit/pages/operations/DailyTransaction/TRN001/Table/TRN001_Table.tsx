@@ -98,12 +98,6 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
     onError: (error) => {},
   });
 
-  const getAccDetails = useMutation(CommonApi.getAccDetails, {
-    onSuccess: (data) => {
-      setTempStore({ ...tempStore, accInfo: data });
-    },
-    onError: (error) => {},
-  });
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setCardStore({ ...cardStore, cardsInfo: data });
@@ -145,7 +139,7 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
         authState: authState,
       };
 
-      getAccDetails.mutate(obj);
+      setTempStore({ ...tempStore, accInfo: obj });
       getCarousalCards.mutate(obj);
       handleGetHeaderTabs(row?.PARENT_TYPE ?? "");
     }
@@ -177,11 +171,7 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
         finalMetaData={TRN001_TableMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        loading={
-          getTRN001List.isLoading ||
-          getAccDetails.isLoading ||
-          getCarousalCards.isLoading
-        }
+        loading={getTRN001List.isLoading || getCarousalCards.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
         actions={actions}
@@ -193,7 +183,8 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
         sm={12}
         sx={{
           height: "23px",
-          width: "60%",
+          // width: "60%",
+          right: "30px",
           float: "right",
           position: "relative",
           top: "-2.67rem",
@@ -206,10 +197,10 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
           Total Records : {rows ? rows.length : 0}
         </Typography>
         <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-          Credit : ₹ {credit}
+          Debit : ₹ {debit}
         </Typography>
         <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-          Debit : ₹ {debit}
+          Credit : ₹ {credit}
         </Typography>
       </Grid>
 

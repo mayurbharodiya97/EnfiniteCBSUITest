@@ -218,19 +218,7 @@ export const Trn001 = () => {
       setCardStore({ ...cardStore, cardsInfo: [] });
     },
   });
-  const getAccDetails = useMutation(CommonApi.getAccDetails, {
-    onSuccess: (data) => {
-      setLoading(false);
-      setTempStore({ ...tempStore, accInfo: data });
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-      setLoading(false);
-      setTempStore({ ...tempStore, accInfo: {} });
-    },
-  });
+
   const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
     onSuccess: (data) => {
       setTabsData(data);
@@ -617,7 +605,7 @@ export const Trn001 = () => {
       setLoading(true);
       rows[i]?.accNo && getAccNoValidation.mutate(data);
       rows[i]?.accNo && getCarousalCards.mutate(data);
-      rows[i]?.accNo && getAccDetails.mutate(data);
+      setTempStore({ ...tempStore, accInfo: data });
     }
   };
 
@@ -821,6 +809,7 @@ export const Trn001 = () => {
                         >
                           <TableCell sx={{ minWidth: 120 }}>
                             <TextField
+                              id="txtRight"
                               value={a.accNo}
                               error={!a.accNo || a.bugAccNo ? true : false}
                               size="small"
@@ -869,7 +858,7 @@ export const Trn001 = () => {
                           disableInteractive={true}
                           title={a?.sdc?.label && <h3>{a?.sdc?.label}</h3>}
                         >
-                          <TableCell sx={{ minWidth: 70 }}>
+                          <TableCell sx={{ minWidth: 60 }}>
                             <Autocomplete
                               value={a.sdc}
                               autoHighlight
@@ -896,8 +885,6 @@ export const Trn001 = () => {
                           <TableCell
                             sx={{
                               minWidth: 50,
-                              display: "flex",
-                              alignItems: "end",
                             }}
                           >
                             <TextField

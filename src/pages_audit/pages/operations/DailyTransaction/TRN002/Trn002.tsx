@@ -113,12 +113,6 @@ export const Trn002 = () => {
     onError: (error) => {},
   });
 
-  const getAccDetails = useMutation(CommonApi.getAccDetails, {
-    onSuccess: (data) => {
-      setTempStore({ ...tempStore, accInfo: data });
-    },
-    onError: (error) => {},
-  });
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setCardStore({ ...cardStore, cardsInfo: data });
@@ -174,7 +168,7 @@ export const Trn002 = () => {
         BRANCH_CD: row?.BRANCH_CD,
         authState: authState,
       };
-      getAccDetails.mutate(obj);
+      setTempStore({ ...tempStore, accInfo: obj });
       getCarousalCards.mutate(obj);
       getTabsByParentType.mutate(row?.PARENT_TYPE ?? "");
     }
@@ -267,11 +261,7 @@ export const Trn002 = () => {
           finalMetaData={TRN002_TableMetaData as GridMetaDataType}
           data={rows2}
           setData={() => null}
-          loading={
-            getTRN002List.isLoading ||
-            getAccDetails.isLoading ||
-            getCarousalCards.isLoading
-          }
+          loading={getTRN002List.isLoading || getCarousalCards.isLoading}
           ref={myGridRef}
           refetchData={() => {}}
           actions={actions}
@@ -283,7 +273,8 @@ export const Trn002 = () => {
           sm={12}
           sx={{
             height: "23px",
-            width: "60%",
+            // width: "60%",
+            right: "30px",
             float: "right",
             position: "relative",
             top: "-2.67rem",
