@@ -27,30 +27,45 @@ export const APYGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "TRAN_CD",
-      columnName: "VoucherNo ",
+      accessor: "sr",
+      columnName: "Sr ",
       sequence: 1,
+      componentType: "default",
+      width: 100,
+    },
+    {
+      accessor: "ACCT_TYPE",
+      columnName: "Type",
+      sequence: 2,
       componentType: "default",
       width: 120,
     },
     {
       accessor: "ACCT_NM",
-      columnName: "ACCT_NM ",
-      sequence: 2,
+      columnName: "Subscriber Name ",
+      sequence: 3,
       componentType: "default",
       width: 220,
     },
     {
       accessor: "CUSTOMER_ID",
       columnName: "CUSTOMER_ID ",
-      sequence: 3,
+      sequence: 4,
+      componentType: "default",
+      width: 120,
+    },
+
+    {
+      accessor: "1",
+      columnName: "Registration No.",
+      sequence: 5,
       componentType: "default",
       width: 120,
     },
     {
       accessor: "TRAN_DT",
-      columnName: "TRAN_Date",
-      sequence: 4,
+      columnName: "Registration Date",
+      sequence: 6,
       componentType: "date",
       isVisible: true,
       dateFormat: "dd/MM/yyyy",
@@ -58,28 +73,21 @@ export const APYGridMetaData: GridMetaDataType = {
     },
 
     {
+      accessor: "22",
+      columnName: "Last Premium Date",
+      sequence: 7,
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
+      width: 180,
+    },
+
+    {
       accessor: "NOMINEE_NM",
       columnName: "NOMINEE_NM",
-      sequence: 6,
-
-      componentType: "default",
-      width: 220,
-    },
-    {
-      accessor: "APY_TRAN_CD",
-      columnName: "APY_TRAN_CD",
-      sequence: 7,
-
-      componentType: "default",
-      width: 220,
-    },
-    {
-      accessor: "SELF_JOINT",
-      columnName: " SELF_JOINT  ",
       sequence: 8,
-
       componentType: "default",
-      width: 120,
+      width: 220,
     },
   ],
 };

@@ -52,6 +52,7 @@ export const RemarksAPIWrapper = ({
           {TitleText}
         </DialogTitle>
         <DialogContent>
+          <br />
           <TextField
             autoFocus={true}
             label={"Remarks"}

@@ -27,9 +27,16 @@ export const stopPayGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "TRAN_DT",
-      columnName: "Date",
+      accessor: "sr",
+      columnName: "Sr ",
       sequence: 1,
+      componentType: "default",
+      width: 100,
+    },
+    {
+      accessor: "TRAN_DT",
+      columnName: "Intimate Date",
+      sequence: 2,
       componentType: "date",
       isVisible: true,
       dateFormat: "dd/MM/yyyy",
@@ -37,43 +44,42 @@ export const stopPayGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "REMARKS",
-      columnName: "REMARKS ",
-      sequence: 2,
+      columnName: "Chq From ",
+      accessor: "CHEQUE_FROM",
+      sequence: 3,
       componentType: "default",
       width: 200,
     },
     {
+      columnName: "Chq To ",
+      accessor: "CHEQUE_TO",
+      sequence: 4,
+      componentType: "default",
+      width: 200,
+    },
+    {
+      columnName: "Chq Date ",
+      accessor: "chqdate",
+      sequence: 5,
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
+      width: 120,
+    },
+    {
+      accessor: "REMARKS",
+      columnName: "Remarks ",
+      sequence: 6,
+      componentType: "default",
+      width: 120,
+    },
+
+    {
       accessor: "FLAG",
       columnName: "FLAG ",
-      sequence: 3,
-
+      sequence: 7,
       componentType: "default",
       width: 120,
-    },
-    {
-      accessor: "CHEQUE_TO",
-      columnName: "CHEQUE_TO",
-      sequence: 4,
-
-      componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "ENTERED_BY",
-      columnName: "ENTERED_BY",
-      sequence: 5,
-
-      componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "CONFIRMED",
-      columnName: "CONFIRMED",
-      sequence: 6,
-
-      componentType: "default",
-      width: 250,
     },
   ],
 };
