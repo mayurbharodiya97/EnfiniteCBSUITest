@@ -148,7 +148,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
       let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues)
+        transformDependentFieldsState(dependentValues),
+        { isSubmitting }
       );
       if (result !== undefined && result !== null) {
         handleChange(result);
@@ -158,11 +159,16 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value, ignoreUpdate, isFieldFocused } = incomingMessage;
+      const { value, ignoreUpdate, isFieldFocused, error } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (isFieldFocused) {
           getFocus();
+        }
+        if (error) {
+          if (whenToRunValidation === "onBlur") {
+            runValidation({ value: value }, true);
+          }
         }
         if (ignoreUpdate) {
           //ignore Validation

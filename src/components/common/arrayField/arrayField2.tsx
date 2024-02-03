@@ -261,7 +261,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
             xs={12}
             md={12}
             sm={12}
-            style={{ paddingTop: "10px" }}
+            style={{ marginTop: "02px" }}
           >
             {rows}
             {rows.length <= 0 ? (
@@ -413,7 +413,7 @@ export const ArrayFieldRow = ({
         xs={12}
         md={12}
         sm={12}
-        spacing={2}
+        spacing={1}
         className={finalClass}
       >
         {oneRow}

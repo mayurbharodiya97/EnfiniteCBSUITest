@@ -321,6 +321,9 @@ const MySelect: FC<MySelectAllProps> = ({
       }}
       inputRef={focusRef}
       InputProps={{
+        style: {
+          background: Boolean(readOnly) ? "#e7e5e563" : "",
+        },
         endAdornment:
           validationRunning || loadingOptions ? (
             <InputAdornment position="end">

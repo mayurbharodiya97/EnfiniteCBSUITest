@@ -303,7 +303,7 @@ export const DynamicGridConfigMetaData = {
       },
       {
         render: {
-          componentType: "textField",
+          componentType: "autocomplete",
         },
         name: "USER_ACC_INS",
         label: "Add For User",
@@ -312,6 +312,15 @@ export const DynamicGridConfigMetaData = {
         // defaultValue: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
         maxLength: 5,
+        options: [
+          { label: "1", value: "1" },
+          { label: "2", value: "2" },
+          { label: "3", value: "3" },
+          { label: "4", value: "4" },
+          { label: "5", value: "5" },
+          { label: "-2", value: "-2" },
+        ],
+        _optionsKey: "GetUserLevel",
         schemaValidation: {
           type: "string",
           rules: [{ name: "required", params: ["Add For User is required."] }],
@@ -319,13 +328,22 @@ export const DynamicGridConfigMetaData = {
       },
       {
         render: {
-          componentType: "textField",
+          componentType: "autocomplete",
         },
         name: "USER_ACC_UPD",
         label: "View-Detail for User",
         // defaultValue: true,
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
         maxLength: 5,
+        options: [
+          { label: "1", value: "1" },
+          { label: "2", value: "2" },
+          { label: "3", value: "3" },
+          { label: "4", value: "4" },
+          { label: "5", value: "5" },
+          { label: "-2", value: "-2" },
+        ],
+        _optionsKey: "GetUserLevel",
         schemaValidation: {
           type: "string",
           rules: [
@@ -335,11 +353,20 @@ export const DynamicGridConfigMetaData = {
       },
       {
         render: {
-          componentType: "textField",
+          componentType: "autocomplete",
         },
         name: "USER_ACC_DEL",
         label: "Delete for User",
         // defaultValue: true,
+        options: [
+          { label: "1", value: "1" },
+          { label: "2", value: "2" },
+          { label: "3", value: "3" },
+          { label: "4", value: "4" },
+          { label: "5", value: "5" },
+          { label: "-2", value: "-2" },
+        ],
+        _optionsKey: "GetUserLevel",
         GridProps: { xs: 12, sm: 3, md: 3, lg: 1.2, xl: 1.5 },
         maxLength: 5,
         schemaValidation: {

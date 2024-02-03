@@ -5,3 +5,4 @@ export * from "./dateCell";
 export * from "./numberCell";
 export * from "./numberFooterCell";
 export * from "./timeCell";
+export * from "./dateTimeCell";

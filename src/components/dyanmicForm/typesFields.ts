@@ -63,6 +63,10 @@ export interface FieldMetaData<T> {
   _optionsKey?: string;
   defaultBranchTrue?: boolean;
   defaultAcctTypeTrue?: boolean;
+  branchCodeMetadata?: any;
+  accountTypeMetadata?: any;
+  accountCodeMetadata?: any;
+  fullAccountNumberMetadata?: any;
 }
 
 export type Omitted<T> = Omit<T, "fieldKey" | "enableGrid">;

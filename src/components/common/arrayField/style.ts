@@ -36,7 +36,8 @@ export const useStyles = makeStyles((theme: any) => ({
   arrayScreenRowContainer: {
     position: "relative",
     boxShadow: theme.shadows[3],
-    marginBottom: theme.spacing(3.5),
+    marginBottom: "10px",
+    // marginBottom: theme.spacing(3.5),
   },
   newArrayRowContainer: {
     position: "relative",

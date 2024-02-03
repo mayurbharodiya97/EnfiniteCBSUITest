@@ -1,7 +1,14 @@
 import { Transition } from "pages_audit/common";
 import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { FC, useEffect, useRef, useState, useContext } from "react";
+import {
+  FC,
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
@@ -10,12 +17,13 @@ import { useSnackbar } from "notistack";
 import {
   CreateDetailsRequestData,
   ProcessDetailsData,
+  extractMetaData,
   utilFunction,
 } from "components/utils";
 import {
   ChequeDetailFormMetaData,
   CtsOutwardClearingMetadata,
-  SlipDetailFormMetaData,
+  SlipJoinDetailGridMetaData,
 } from "./metaData";
 import { makeStyles } from "@mui/styles";
 import {
@@ -33,6 +41,10 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { ClearingBankMaster } from "./clearingBankMaster";
+import { Box } from "@mui/system";
+import { GradientButton } from "components/styledComponent/button";
+import { ActionTypes } from "components/dataTable";
+import { useNavigate } from "react-router-dom";
 
 export const useDialogStyles = makeStyles((theme: Theme) => ({
   topScrollPaper: {
@@ -48,82 +60,87 @@ export const useDialogStyles = makeStyles((theme: Theme) => ({
     fontSize: "1.5rem",
   },
 }));
-
+const actions: ActionTypes[] = [
+  {
+    actionName: "view-details",
+    actionLabel: "Edit Detail",
+    multiple: undefined,
+    rowDoubleClick: true,
+  },
+  {
+    actionName: "close",
+    actionLabel: "cancel",
+    multiple: undefined,
+    rowDoubleClick: false,
+    alwaysAvailable: true,
+  },
+];
 export const ChequeDetailForm: FC<{
-  zoneData?: any;
-  formDataRef?: any;
+  formData?: any;
+  isOpenProcced?: any;
+  setIsOpenProcced?: any;
   myRef?: any;
-  setCurrentTab?: any;
   formMode?: any;
   gridData?: any;
-  slipJointDetailRef?: any;
   retrievData?: any;
   loading?: Boolean;
+  setFormData?: any;
   error?: any;
+  setFormMode?: any;
+  zoneTranType?: any;
+  mutationOutward?: any;
+  initValues?: any;
+  setInitValues?: any;
 }> = ({
-  zoneData,
-  formDataRef,
-  setCurrentTab,
+  formData,
+  setIsOpenProcced,
+  isOpenProcced,
   myRef,
   formMode,
   gridData,
-  slipJointDetailRef,
   retrievData,
   loading,
   error,
+  initValues,
+  zoneTranType,
+  mutationOutward,
+  setInitValues,
 }) => {
   const { authState } = useContext(AuthContext);
   const myChequeRef = useRef<any>(null);
+  const isDataChangedRef = useRef(false);
   const [isBankAdding, setisBankAdding] = useState<any>(false);
   const [isOpenSave, setIsOpenSave] = useState(false);
-  const [isOpenProcced, setIsOpenProcced] = useState(false);
+  const [isOpenJointDetail, setIsOpenJointDetail] = useState(false);
+  const [isSlipJointDetail, setIsSlipJointDetail] = useState("");
   const isErrorFuncRef = useRef<any>(null);
   const { enqueueSnackbar } = useSnackbar();
   const [totalAmountCheque, setTotalAmountCheque] = useState<any>();
-  const [initValues, setInitValues] = useState<any>({
-    chequeDetails: [
-      {
-        ECS_SEQ_NO: "",
-      },
-    ],
-  });
+  const navigate = useNavigate();
 
-  const [totalAmountSlip, setTotalAmountSlip] = useState(
-    Number(formDataRef.current.AMOUNT)
-  );
-
-  const mutationOutward = useMutation(API.outwardClearingConfigDML, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      if (isErrorFuncRef.current == null) {
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
+  const setCurrentAction = useCallback(
+    (data) => {
+      if (data.name === "view-details") {
+        setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME);
+        setIsOpenJointDetail(false);
       } else {
-        isErrorFuncRef.current?.endSubmit(
-          false,
-          errorMsg,
-          error?.error_detail ?? ""
-        );
+        setIsOpenJointDetail(false);
       }
-      onActionCancel();
     },
-    onSuccess: (data) => {
-      console.log("data", data);
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-
-      setCurrentTab("slipdetail");
-      formDataRef.current = {};
-      formDataRef.current.ACCT_NAME = "";
-      formDataRef.current.TRAN_BAL = "";
-      gridData.ACCT_JOIN_DETAILS = [];
-      onActionCancel();
-    },
+    [navigate]
+  );
+  const [totalAmountSlip, setTotalAmountSlip] = useState(
+    Number(formData?.AMOUNT)
+  );
+  let cheueTotalAmount = 0;
+  retrievData?.CHEQUE_DETAIL.forEach((element) => {
+    if (
+      element.AMOUNT !== undefined &&
+      element.AMOUNT !== "" &&
+      element.AMOUNT
+    ) {
+      cheueTotalAmount += Number(element.AMOUNT);
+    }
   });
 
   const onPopupYes = (rows) => {
@@ -135,37 +152,29 @@ export const ChequeDetailForm: FC<{
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
     myChequeRef?.current?.handleSubmit(event, "AMOUNT");
+    myRef?.current?.handleSubmit(event, "AMOUNT");
   };
-  useEffect(() => {
-    setTotalAmountSlip(formDataRef.current.AMOUNT ?? "0.00");
-    myRef.current = zoneData;
-  }, [formDataRef.current.AMOUNT, zoneData]);
+  // useEffect(() => {
+  //   setTotalAmountSlip(formDataRef.current.AMOUNT ?? "0.00");
+  //   myRef.current = zoneData;
+  // }, [formDataRef.current.AMOUNT, zoneData]);
 
   useEffect(() => {
-    // if (formDataRef.current && formDataRef.current.length) {
-    // Check if mutationOutward is successful
-    const shouldResetValues = mutationOutward.isSuccess;
-
     let init = initValues.chequeDetails;
-    // init[0] = {
-    //   ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
-    // };
-    // init[0] = {
-    //   ECS_USER_NO:
-    //     formDataRef.current?.ACCT_NAME ||
-    //     (slipJointDetailRef?.current.length ? slipJointDetailRef.current : ""),
-    // };
-
-    if (formDataRef.current) {
+    if (formData) {
       init[0] = {
-        ECS_USER_NO: formDataRef.current?.ACCT_NAME ?? "",
-        ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
+        ECS_USER_NO: formData?.ACCT_NAME ?? "",
+        ECS_SEQ_NO: formData?.ACCT_CD ?? "",
+        isRemoveButton: true,
       };
+      // if (ChequeDetailFormMetaData.fields[0]) {
+      //   ChequeDetailFormMetaData.fields[0].isRemoveButton = true;
+      // }
     }
-    if (slipJointDetailRef?.current.length) {
+    if (isSlipJointDetail?.length) {
       init[0] = {
-        ECS_USER_NO: slipJointDetailRef?.current,
-        ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
+        ECS_USER_NO: isSlipJointDetail ?? "",
+        ECS_SEQ_NO: formData?.ACCT_CD ?? "",
       };
     }
     // Update the form data with the new values
@@ -174,11 +183,7 @@ export const ChequeDetailForm: FC<{
       chequeDetails: [...init],
     }));
     // }
-  }, [
-    formDataRef.current,
-    mutationOutward.isSuccess,
-    slipJointDetailRef?.current,
-  ]);
+  }, [isSlipJointDetail, formData, mutationOutward.isSuccess]);
 
   const onSubmitHandlerCheuq: SubmitFnType = async (
     data: any,
@@ -188,7 +193,7 @@ export const ChequeDetailForm: FC<{
     value
   ) => {
     //@ts-ignore
-    endSubmit(true, "Please enter any value");
+    endSubmit(true);
     const newData = data.chequeDetails?.map((item) => ({
       ...item,
       _isNewRow: formMode === "new" ? true : false,
@@ -209,67 +214,76 @@ export const ChequeDetailForm: FC<{
           totalAmount += Number(element.AMOUNT);
         }
       });
+
       setTotalAmountCheque(Number(totalAmount));
       // // slip and cheque total minus
-      setTotalAmountSlip(totalAmount - formDataRef.current.AMOUNT);
+      setTotalAmountSlip(totalAmount - formData.AMOUNT);
       // Compare the totals
       let initVal = data.chequeDetails;
-      if (
-        !formDataRef.current.AMOUNT ||
-        formDataRef.current.AMOUNT.length === 0
-      ) {
+      if (!formData.AMOUNT || formData.AMOUNT.length === 0) {
         // Do not add a new row if AMOUNT is not present or has a length of 0
         return;
       }
-      if (
-        totalAmount === 0 ||
-        Number(totalAmount) > Number(formDataRef.current.AMOUNT)
-      ) {
+      if (totalAmount === 0 || Number(totalAmount) > Number(formData.AMOUNT)) {
         return;
       }
-      if (Number(totalAmount) === Number(formDataRef.current.AMOUNT)) {
+      if (Number(totalAmount) === Number(formData.AMOUNT)) {
         // Totals don't match, add a new rows
 
         isErrorFuncRef.current = {
           DAILY_CLEARING: {
-            ...myRef.current,
+            ...formData,
+            COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? "",
+            ENTERED_COMP_CD: authState?.companyID ?? "",
+            ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
+            _isNewRow: true,
+            REQUEST_CD: "",
+            TRAN_TYPE: zoneTranType ?? "",
           },
           DETAILS_DATA: {
             isNewRow: [...newData],
             isUpdatedRow: [],
             isDeleteRow: [],
           },
-          ...formDataRef.current,
+          ...formData,
+          PROCESSED: "N",
+          SKIP_ENTRY: "N",
+          COMP_CD: authState?.companyID ?? "",
+          _isNewRow: true,
           endSubmit,
           setFieldError,
         };
+
         setIsOpenProcced(true);
         console.log("isErrorFuncRef.current", isErrorFuncRef.current);
         // return;
-        ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true;
+        // ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true;
       } else {
         ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true;
         initVal.push({
           ECS_SEQ_NO: "",
         });
 
-        setInitValues(
-          (old) => (
-            console.log("old", old, initVal),
-            {
-              chequeDetails: [...initVal],
-            }
-          )
-        );
-
         ChequeDetailFormMetaData.fields[0].isRemoveButton = false;
+        setInitValues((old) => ({
+          chequeDetails: [...initVal],
+        }));
       }
     }
   };
-  console.log(
-    ":",
-    (ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true)
-  );
+  // if (ChequeDetailFormMetaData.form.label) {
+  //   ChequeDetailFormMetaData.form.label = `Cheque Detail ${
+  //     formMode === "new"
+  //       ? `Slip Amount: ${totalAmountSlip ?? ""} Cheque Amount: ${
+  //           totalAmountCheque ?? "0.00"
+  //         }`
+  //       : `Slip Amount: ${
+  //           retrievData?.SLIP_DETAIL?.AMOUNT ?? ""
+  //         } Cheque Amount: ${cheueTotalAmount ?? "0.00"}`
+  //   }`;
+  // }
+
   return (
     <>
       <div
@@ -287,8 +301,8 @@ export const ChequeDetailForm: FC<{
                 `[${charAtIndex}]` +
                 ".AMOUNT"
             ) {
-              ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused =
-                true;
+              // ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused =
+              //   true;
               ClickEventManage();
             }
           }
@@ -299,89 +313,51 @@ export const ChequeDetailForm: FC<{
           // }
         }}
       >
-        <>
-          {mutationOutward?.isError || mutationOutward?.isError ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={
-                    mutationOutward?.error?.error_msg ??
-                    mutationOutward?.error?.error_msg ??
-                    "Unknow Error"
-                  }
-                  errorDetail={
-                    mutationOutward?.error?.error_detail ??
-                    mutationOutward?.error?.error_detail ??
-                    ""
-                  }
-                  color="error"
-                />
-              </AppBar>
-            </div>
-          ) : mutationOutward?.data?.length < 1 &&
-            Boolean(mutationOutward?.isSuccess) ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  errorMsg="No data found"
-                  errorDetail="No any data found"
-                  severity="error"
-                />
-              </AppBar>
-            </div>
-          ) : null}
-        </>{" "}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "end",
-          }}
-        >
-          <Toolbar
-            sx={{
-              background: "var(--theme-color5)",
-              fontSize: "16px",
-              color: "white",
-              border: "1px solid #BABABA",
-              borderRadius: "5px",
-              width: "25%",
-              minHeight: "30px !important ",
-            }}
-          >
-            {`Slip Amount: ${totalAmountSlip ?? ""} `}
-          </Toolbar>
-          <Toolbar
-            sx={{
-              background: "var(--theme-color5)",
-              fontSize: "16px",
-              color: "white",
-              border: "1px solid #BABABA",
-              borderRadius: "5px",
-              width: "25%",
-              minHeight: "30px !important ",
-            }}
-          >
-            {`Cheque Amount: ${totalAmountCheque ?? ""} `}
-          </Toolbar>
-        </div>
         {formMode === "new" ? (
           <FormWrapper
-            key={`ChequeDetailFormMetaData11${formDataRef.current}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
-            metaData={ChequeDetailFormMetaData as MetaDataType}
+            key={`ChequeDetailFormMetaData11${formMode}${formData}${isSlipJointDetail}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
+            // metaData={ChequeDetailFormMetaData as MetaDataType}
+            metaData={
+              extractMetaData(
+                ChequeDetailFormMetaData,
+                formMode
+              ) as MetaDataType
+            }
             displayMode={formMode}
             onSubmitHandler={onSubmitHandlerCheuq}
             initialValues={initValues}
-            hideHeader={true}
+            // hideHeader={true}
             formStyle={{
               background: "white",
-              // height: "65%",
+              height: "65%",
+            }}
+            setDataOnFieldChange={(action, paylod) => {
+              if (action === "MESSAGE") {
+                if (paylod) {
+                  setIsOpenSave(true);
+                }
+              }
             }}
             onFormButtonClickHandel={() => {
               setIsOpenSave(true);
             }}
             ref={myChequeRef}
-          />
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                {gridData?.ACCT_JOIN_DETAILS &&
+                gridData?.ACCT_JOIN_DETAILS.length ? (
+                  <GradientButton
+                    onClick={() => {
+                      setIsOpenJointDetail(true);
+                    }}
+                  >
+                    Joint Detail
+                  </GradientButton>
+                ) : null}
+              </>
+            )}
+          </FormWrapper>
         ) : formMode === "view" ? (
           <>
             {loading ? (
@@ -395,14 +371,20 @@ export const ChequeDetailForm: FC<{
               />
             ) : (
               <FormWrapper
-                key={`ChequeDetailFormMetaData11${formDataRef.current}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
-                metaData={ChequeDetailFormMetaData as MetaDataType}
+                key={`ChequeDetailFormMetaData11${formMode}${formData}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
+                // metaData={ChequeDetailFormMetaData as MetaDataType}
+                metaData={
+                  extractMetaData(
+                    ChequeDetailFormMetaData,
+                    formMode
+                  ) as MetaDataType
+                }
                 displayMode={formMode}
                 onSubmitHandler={onSubmitHandlerCheuq}
                 initialValues={{
                   chequeDetails: retrievData?.CHEQUE_DETAIL ?? "",
                 }}
-                hideHeader={true}
+                // hideHeader={true}
                 formStyle={{
                   background: "white",
                   // height: "65%",
@@ -411,11 +393,57 @@ export const ChequeDetailForm: FC<{
                   setIsOpenSave(true);
                 }}
                 ref={myChequeRef}
-              />
+              >
+                {({ isSubmitting, handleSubmit }) => (
+                  <>
+                    {gridData?.ACCT_JOIN_DETAILS &&
+                    gridData?.ACCT_JOIN_DETAILS.length ? (
+                      <GradientButton
+                        onClick={() => {
+                          setIsOpenJointDetail(true);
+                        }}
+                      >
+                        Joint Detail
+                      </GradientButton>
+                    ) : null}
+                  </>
+                )}
+              </FormWrapper>
             )}
           </>
         ) : null}
       </div>
+      {isOpenJointDetail ? (
+        <Dialog
+          open={true}
+          //@ts-ignore
+          TransitionComponent={Transition}
+          PaperProps={{
+            style: {
+              width: "60%",
+            },
+          }}
+          maxWidth="lg"
+          // classes={{
+          //   scrollPaper: classes.topScrollPaper,
+          //   paperScrollBody: classes.topPaperScrollBody,
+          // }}
+        >
+          <GridWrapper
+            key={"SlipJoinDetailGridMetaData" + gridData}
+            finalMetaData={SlipJoinDetailGridMetaData}
+            data={gridData?.ACCT_JOIN_DETAILS ?? []}
+            setData={() => null}
+            // loading={isLoading || isFetching}
+            actions={actions}
+            setAction={setCurrentAction}
+            // refetchData={() => refetch()}
+            // ref={myGridRef}
+            // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
+          />
+        </Dialog>
+      ) : null}
+
       {isOpenSave ? (
         <PopupMessageAPIWrapper
           MessageTitle="Confirmation"

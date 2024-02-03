@@ -1328,7 +1328,7 @@ export const ActionDialog = ({open, onClose, closeForm, action
               autoFocus
               onClick={onClose}
           >
-              Cancel
+              CANCEL
           </GradientButton>
       </DialogActions> 
   </Dialog>

@@ -877,6 +877,10 @@ export const ActionWiseAPIConfiguration = {
     url: "loanServiceAPI/GETACCTNOVALIDATEDATA",
     packageName: "",
   },
+  GETCASHDENO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHDENO",
+    packageName: "",
+  },
   VALIDDELETECHQDATA: {
     url: "chequeServiceAPI/VALIDDELETECHQDATA",
     packageName: "",

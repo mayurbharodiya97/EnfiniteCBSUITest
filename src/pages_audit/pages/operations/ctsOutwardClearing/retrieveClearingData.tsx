@@ -14,7 +14,7 @@ import { useSnackbar } from "notistack";
 import {
   RetrieveFormConfigMetaData,
   RetrieveGridMetaData,
-  SlipDetailFormMetaData,
+  // SlipDetailFormMetaData,
   SlipJoinDetailGridMetaData,
 } from "./metaData";
 import { makeStyles } from "@mui/styles";
@@ -27,7 +27,7 @@ import GridWrapper from "components/dataTableStatic";
 // import { getRetrievalClearingData, getSlipJoinDetail } from "./api";
 import { MyFullScreenAppBar } from "pages_audit/appBar/fullScreenAppbar";
 import { Toolbar, Typography, AppBar } from "@mui/material";
-import { SlipDetailForm } from "./slipDetailForm";
+// import { SlipDetailForm } from "./slipDetailForm";
 import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
 import { Alert } from "components/common/alert";

@@ -1,9 +1,8 @@
+import { format } from "date-fns";
 import { CellWrapper } from "./cellWrapper";
-import { format as formatter } from "date-fns";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import { useContext } from "react";
-
-export const DateCell = (props) => {
+export const DateTimeRowCellRenderer = (props) => {
   const customParameter = useContext(CustomPropertiesConfigurationContext);
 
   const {
@@ -16,17 +15,22 @@ export const DateCell = (props) => {
   } = customParameter;
   const {
     value,
-    column: { format },
+    column: { dateFormat },
   } = props;
-  let result = "-";
-  let date = new Date(value);
-  //@ts-ignore
-  if (!isNaN(date)) {
-    result = formatter(
-      new Date(value),
-      (Boolean(format) ? format : commonDateFormat) || "dd/MM/yyyy"
-    );
-  }
 
+  if (!Boolean(value)) {
+    return <CellWrapper {...props} />;
+  }
+  const date = new Date(value);
+  let result;
+  try {
+    result = format(
+      date,
+      (Boolean(dateFormat) ? dateFormat : commonDateTimeFormat) ||
+        "dd/MM/yyyy hh:mm aaa"
+    );
+  } catch (e) {
+    result = "-";
+  }
   return <CellWrapper {...props}>{result}</CellWrapper>;
 };
