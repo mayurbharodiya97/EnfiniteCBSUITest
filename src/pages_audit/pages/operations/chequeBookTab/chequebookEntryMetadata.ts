@@ -1,6 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 // import { TemporaryData, chequebookCharge } from "./api";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import * as API from "./api";
 
 export const ChequeBookEntryMetaData = {
@@ -173,6 +173,16 @@ export const ChequeBookEntryMetaData = {
               AUTO_CHQBK_FLAG: {
                 value: postData?.[0]?.AUTO_CHQBK_FLAG ?? "",
               },
+              AUTO_CHQBK_PRINT_FLAG: {
+                value: postData?.[0]?.CHEQUEBOOK_PRINT ?? "",
+              },
+              REQUISITION_DT: {
+                value:
+                  format(
+                    parse(authState?.workingDate, "dd/MM/yyyy", new Date()),
+                    "dd-MMM-yyyy"
+                  ).toUpperCase() ?? "",
+              },
               SR_CD: {
                 value: postData?.[0]?.SR_CD ?? "",
               },
@@ -228,7 +238,7 @@ export const ChequeBookEntryMetaData = {
       FormatProps: {
         allowNegative: true,
       },
-      // isReadOnly: true,
+      isReadOnly: true,
       // enableDefaultOption: true,
 
       validate: (currentField, value) => {
@@ -252,7 +262,7 @@ export const ChequeBookEntryMetaData = {
       label: "From Cheque No.",
       placeholder: "From Cheque No.",
       type: "text",
-      // isReadOnly: true,
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -319,7 +329,10 @@ export const ChequeBookEntryMetaData = {
             NO_OF_LEAVES: field.value,
             ENT_COMP: auth.companyID,
             ENT_BRANCH: dependentFieldsValues.BRANCH_CD.value,
-            SYS_DATE: format(new Date(), "dd-MMM-yyyy"),
+            SYS_DATE: format(
+              parse(auth?.workingDate, "dd/MM/yyyy", new Date()),
+              "dd-MMM-yyyy"
+            ).toUpperCase(),
           };
           let postdata = await API.chequebookCharge(Apireq);
 
@@ -547,7 +560,6 @@ export const ChequeBookEntryMetaData = {
       // sequence: 9,
       label: "Requisition Date",
       isReadOnly: true,
-      defaultValue: new Date(),
       maxDate: new Date(),
       placeholder: "",
       GridProps: {
@@ -612,8 +624,8 @@ export const ChequeBookEntryMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 3,
         sm: 3,
+        md: 3,
         lg: 3,
         xl: 3,
       },
@@ -631,6 +643,8 @@ export const ChequeBookEntryMetaData = {
       },
       name: "TOOLBAR_DTL",
       label: "",
+
+      isReadOnly: true,
       textFieldStyle: {
         background: "var(--theme-color5)",
         minHeight: "40px !important",
@@ -691,6 +705,12 @@ export const ChequeBookEntryMetaData = {
         componentType: "hidden",
       },
       name: "NEW_LEAF_ARR",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "AUTO_CHQBK_PRINT_FLAG",
     },
   ],
 };

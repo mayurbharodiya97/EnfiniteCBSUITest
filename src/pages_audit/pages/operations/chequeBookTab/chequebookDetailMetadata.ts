@@ -110,6 +110,16 @@ export const ChequebookDtlGridMetaData = {
       maxWidth: 200,
     },
     {
+      accessor: "CONFIRMED",
+      columnName: "Confirmed",
+      sequence: 8,
+      alignment: "center",
+      componentType: "default",
+      width: 120,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+    {
       accessor: "REMARKS",
       columnName: "Remarks",
       sequence: 9,
@@ -157,6 +167,17 @@ export const ChequebookDtlGridMetaData = {
       maxWidth: 200,
     },
     {
+      accessor: "TRAN_CD",
+      columnName: "Tran-CD",
+      sequence: 10,
+      alignment: "left",
+      componentType: "default",
+      width: 150,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+
+    {
       accessor: "AUTO_CHQBK_FLAG",
       columnName: "Auto Issue",
       sequence: 10,
@@ -175,6 +196,16 @@ export const ChequebookDtlGridMetaData = {
       width: 150,
       minWidth: 100,
       maxWidth: 400,
+    },
+    {
+      accessor: "DELETE",
+      columnName: "Delete",
+      sequence: 11,
+      alignment: "left",
+      componentType: "buttonRowCell",
+      width: 150,
+      minWidth: 100,
+      maxWidth: 200,
     },
   ],
 };

@@ -35,10 +35,17 @@ import {
 } from "./api";
 import { queryClient } from "cache";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
-import { FD_gridMetaData, NSC_FormMetaData } from "./limit_NSC_FD_Metadata";
+import {
+  FD_gridMetaData,
+  NSC_FormMetaData,
+  NSC_gridMetaData,
+} from "./limit_NSC_FD_Metadata";
 import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { NSCFormDetail } from "./nscDetail";
+import { ForceExpire } from "./forceExpire";
 
 export const LimitEntry = () => {
   const fdAction: ActionTypes[] = [
@@ -50,6 +57,37 @@ export const LimitEntry = () => {
       alwaysAvailable: true,
     },
   ];
+  const nscAction: ActionTypes[] = [
+    {
+      actionName: "view-detail",
+      actionLabel: "View Detail",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+    {
+      actionName: "close",
+      actionLabel: "Close",
+      multiple: undefined,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+    },
+  ];
+  const forceExpireActions: ActionTypes[] = [
+    {
+      actionName: "forceExpire",
+      actionLabel: "Force Expire",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+  ];
+  // const setCurrentAction = useCallback(
+  //   (data) => {
+  //     navigate(data?.name, {
+  //       state: data?.rows,
+  //     });
+  //   },
+  //   [navigate]
+  // );
 
   const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
@@ -62,6 +100,7 @@ export const LimitEntry = () => {
   const [gridDetailData, setGridDetailData] = useState<any>();
   let [messageArray, setmessageArray] = useState<any>([]);
   let [fdPopupMessage, setFdPopupMessage] = useState<any>(false);
+  const navigate = useNavigate();
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
@@ -80,7 +119,6 @@ export const LimitEntry = () => {
       onError: (error: any) => {},
     }
   );
-
   const getLimitDetail: any = useMutation("getLimitDTL", getLimitDTL, {
     onSuccess: (data) => {
       setGridDetailData(data);
@@ -89,13 +127,22 @@ export const LimitEntry = () => {
   });
 
   const nscDetail: any = useMutation("getLimitNSCdetail", getLimitNSCdetail, {
-    onSuccess: (data) => {},
+    onSuccess: (data) => {
+      setGridDetailData(data);
+    },
     onError: (error: any) => {},
   });
 
   const fdDetail: any = useMutation("getLimitFDdetail", getLimitFDdetail, {
     onSuccess: (data) => {
-      setGridDetailData(data);
+      if (data?.[0]?.MESSAGE) {
+        setIsOpenSave(true);
+        setmessageArray(data?.[0]?.MESSAGE);
+        setFdPopupMessage(false);
+      } else {
+        setDetailForm("fddetail");
+        setGridDetailData(data);
+      }
     },
     onError: (error: any) => {
       setDetailForm("");
@@ -110,13 +157,12 @@ export const LimitEntry = () => {
   });
 
   const saveLimitData: any = useMutation(
-    "saveChequebookData",
+    "saveLimitEntryData",
     saveLimitEntryData,
     {
       onSuccess: (data) => {},
     }
   );
-  console.log("<<<saveLimitData", saveLimitData);
 
   useEffect(() => {
     return () => {
@@ -124,6 +170,7 @@ export const LimitEntry = () => {
       queryClient.removeQueries(["securityLimitData"]);
       queryClient.removeQueries(["getLimitNSCdetail"]);
       queryClient.removeQueries(["getLimitFDdetail"]);
+      queryClient.removeQueries(["saveLimitEntryData"]);
     };
   }, []);
 
@@ -141,13 +188,21 @@ export const LimitEntry = () => {
     saveLimitData.mutate(data);
   };
 
-  const setFDAction = useCallback(
+  const setCurrentAction = useCallback(
     (data) => {
-      if (data?.name === "close") {
+      if (data?.name === "view-detail") {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      } else if (data?.name === "close") {
         setDetailForm("");
+      } else if (data?.name === "forceExpire") {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
       }
     },
-    [setDetailForm]
+    [setDetailForm, navigate]
   );
 
   const popupOnclick = (rows, buttonName) => {
@@ -177,7 +232,6 @@ export const LimitEntry = () => {
       handleButtonClick("L");
     } else if (buttonName === "No") {
       handleButtonClick("C");
-      setDetailForm("fddetail");
     }
   };
 
@@ -192,12 +246,12 @@ export const LimitEntry = () => {
               myMasterRef?.current?.getFieldData().then((res) => {
                 initialValuesRef.current = res;
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  limitEntryGridMetaData.gridConfig.gridLabel = `Limit-Entry Detail \u00A0\u00A0\u00A0\u00A0 ${
+                  limitEntryGridMetaData.gridConfig.gridLabel = `Limit-Entry Detail \u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +
-                    res?.ACCT_CD
-                  }    \u00A0\u00A0\u00A0\u00A0  ${res?.ACCT_NM}`;
+                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
                   const limitDTLRequestPara = {
                     COMP_CD: authState?.companyID,
@@ -264,21 +318,25 @@ export const LimitEntry = () => {
                   if (action === "SECURITY_CODE") {
                     securityLimitData.mutate({
                       COMP_CD: authState?.companyID,
-                      SECURITY_CD: payload,
+                      SECURITY_CD: payload?.SECURITY_CD,
                       BRANCH_CD: authState?.user?.branchCode,
+                      WORKING_DATE: authState?.workingDate,
+                      LIMIT_MARGIN: payload?.LIMIT_MARGIN,
                     });
                   }
 
                   if (action === "MESSAGES") {
-                    if (payload) {
-                      messageArray = payload.split(", ").map((msg, i) => {
-                        return <p>{`(${i + 1})  ${msg}`}</p>;
-                      });
+                    if (payload?.MESSAGES) {
+                      messageArray = payload?.MESSAGES.split(", ").map(
+                        (msg, i) => {
+                          return <p>{`(${i + 1})  ${msg}`}</p>;
+                        }
+                      );
                     }
                     setmessageArray([messageArray]);
                     setIsOpenSave(() => true);
-                  }
-                  if (action === "NSC_FD_BTN") {
+                    setNscFDbtn(payload?.NSC_FD_BTN);
+                  } else if (action === "NSC_FD_BTN") {
                     setNscFDbtn(payload?.NSC_FD_BTN);
                   }
                 }}
@@ -319,13 +377,18 @@ export const LimitEntry = () => {
                                     res?.BRANCH_CD
                                   ) {
                                     const NSC_DTLRequestPara = {
-                                      COMP_CD: authState?.companyID,
-                                      ACCT_CD: res?.ACCT_CD?.padStart(
-                                        6,
-                                        "0"
-                                      )?.padEnd(20, " "),
-                                      ACCT_TYPE: res?.ACCT_TYPE,
-                                      BRANCH_CD: res?.BRANCH_CD,
+                                      // COMP_CD: authState?.companyID,
+                                      // ACCT_CD: res?.ACCT_CD?.padStart(
+                                      //   6,
+                                      //   "0"
+                                      // )?.padEnd(20, " "),
+                                      // ACCT_TYPE: res?.ACCT_TYPE,
+                                      // BRANCH_CD: res?.BRANCH_CD,
+
+                                      COMP_CD: "132 ",
+                                      BRANCH_CD: "099 ",
+                                      ACCT_TYPE: "301 ",
+                                      ACCT_CD: "000010              ",
                                     };
                                     nscDetail.mutate(NSC_DTLRequestPara);
                                   }
@@ -358,10 +421,23 @@ export const LimitEntry = () => {
                 key={`limitEntryGridMetaData` + getLimitDetail.isSuccess}
                 finalMetaData={limitEntryGridMetaData as GridMetaDataType}
                 data={gridDetailData ?? []}
+                loading={getLimitDetail?.isLoading}
                 setData={() => {}}
+                actions={forceExpireActions}
+                // controlsAtBottom={true}
+                setAction={setCurrentAction}
+                onClickActionEvent={(index, id, data) => {
+                  console.log("<<<delete", index, id, data);
+                }}
               />
             </>
           ) : null}
+          <Routes>
+            <Route
+              path="forceExpire/*"
+              element={<ForceExpire navigate={navigate} />}
+            />
+          </Routes>
         </Grid>
       </Container>
 
@@ -385,7 +461,7 @@ export const LimitEntry = () => {
                 setData={() => {}}
                 loading={fdDetail.isLoading}
                 actions={fdAction}
-                setAction={setFDAction}
+                setAction={setCurrentAction}
                 // headerToolbarStyle={{
                 //   background: "var(--theme-color2)",
                 //   color: "black",
@@ -398,26 +474,29 @@ export const LimitEntry = () => {
       ) : detailForm === "nscdetail" ? (
         <Dialog
           open={true}
+          fullWidth={true}
           PaperProps={{
             style: {
-              maxWidth: "950px",
+              maxWidth: "1150px",
             },
           }}
         >
-          <FormWrapper
-            key={"nscdetailForm"}
-            metaData={NSC_FormMetaData}
-            initialValues={[]}
-          >
-            {({ isSubmitting, handleSubmit }) => {
-              console.log("isSubmitting, handleSubmit", isSubmitting);
-              return (
-                <Button color="primary" onClick={() => setDetailForm("")}>
-                  close
-                </Button>
-              );
-            }}
-          </FormWrapper>
+          <GridWrapper
+            key={`nscGridData`}
+            finalMetaData={NSC_gridMetaData as GridMetaDataType}
+            data={gridDetailData ?? []}
+            setData={() => {}}
+            loading={nscDetail.isLoading}
+            actions={nscAction}
+            setAction={setCurrentAction}
+          />
+
+          <Routes>
+            <Route
+              path="view-detail/*"
+              element={<NSCFormDetail navigate={navigate} />}
+            />
+          </Routes>
         </Dialog>
       ) : null}
 

@@ -278,7 +278,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
         //@ts-ignore
         InputProps={{
           style: {
-            background: Boolean(readOnly) ? "#e7e5e563" : "",
+            background: textFieldStyle
+              ? ""
+              : Boolean(readOnly)
+              ? "#e7e5e563"
+              : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
                   color: currentColor,

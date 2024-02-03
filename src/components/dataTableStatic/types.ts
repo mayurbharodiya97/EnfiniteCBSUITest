@@ -48,6 +48,7 @@ export interface GridColumnType {
   isCurrencyCode?: boolean;
   symbolPosi?: any;
   shouldExclude?: any;
+  isVisibleInNew?: Boolean;
 }
 
 export interface GridConfigType {
