@@ -263,12 +263,14 @@ const CommonFooter = ({
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleViewAll()}
+            onClick={() => {
+              viewOnly && isTrn1 ? handleRefresh() : handleViewAll();
+            }}
           >
-            View All
+            {viewOnly && isTrn1 ? "Go Back" : "View All"}
           </Button>
         </Grid>
-        <Grid item>
+        {/* <Grid item>
           <Button
             variant="contained"
             color="primary"
@@ -276,7 +278,7 @@ const CommonFooter = ({
           >
             refresh
           </Button>
-        </Grid>
+        </Grid> */}
         <Grid item>
           <Button
             variant="contained"
@@ -286,7 +288,7 @@ const CommonFooter = ({
             Scroll Delete
           </Button>
         </Grid>
-        <Grid item>
+        {/* <Grid item>
           <Button
             variant="contained"
             color="primary"
@@ -294,7 +296,7 @@ const CommonFooter = ({
           >
             Query
           </Button>
-        </Grid>
+        </Grid> */}
         <Grid item>
           <Tooltip
             disableInteractive={true}
@@ -309,7 +311,11 @@ const CommonFooter = ({
             <Button
               variant="contained"
               color="primary"
-              onClick={() => setOtherTrxDialog(true)}
+              onClick={() => {
+                tempStore?.accInfo?.ACCT_CD
+                  ? setOtherTrxDialog(true)
+                  : console.log("");
+              }}
             >
               Other Trx
             </Button>

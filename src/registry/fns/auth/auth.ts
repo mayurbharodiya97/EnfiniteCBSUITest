@@ -50,7 +50,7 @@ const authAPI = () => {
       MACHINE_NAME: "Auto",
       BRANCH_CD: branchCode,
       THROUGH_CHANNEL: "E_CBS",
-      WORKING_DT: workingDate ?? "",
+      WORKING_DT: workingDate,
     };
   };
   const setToken = (argaccessToken) => {

@@ -14,7 +14,10 @@ export const getSearchList = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
-
+    responseData.map((a, i) => {
+      a.index = i;
+      a.sr = i + 1;
+    });
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);

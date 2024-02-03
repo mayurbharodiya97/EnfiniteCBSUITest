@@ -23,6 +23,8 @@ import Disbursement from "./Disbursement";
 import AccDetails from "./AccountDetails";
 import "./DailyTransTabs.css";
 import { AccDetailContext } from "pages_audit/auth";
+import Limit from "./Limit";
+import Stock from "./Stock";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -54,7 +56,7 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
   };
   return (
     <div style={{ padding: "8px" }}>
-      <h1>Daily Transaction {heading}</h1>
+      <h2>Daily Transaction {heading}</h2>
 
       <>
         <Grid item xs="auto" id="dailyTabs">
@@ -87,11 +89,11 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
                 {a.TAB_NAME.includes("Documents") && <Document />}
                 {a.TAB_NAME.includes("Stop Payment") && <StopPay />}
                 {a.TAB_NAME.includes("Insurance") && <Insurance />}
-                {a.TAB_NAME.includes("Disbursement Details") && (
-                  <Disbursement />
-                )}
+                {a.TAB_NAME.includes("Disbursement") && <Disbursement />}
                 {a.TAB_NAME.includes("Subsidy") && <Subsidyy />}
                 {a.TAB_NAME.includes("Search") && <Search />}
+                {a.TAB_NAME.includes("Limits") && <Limit />}
+                {a.TAB_NAME.includes("Stock") && <Stock />}
               </>
             </TabPanel>
           ))

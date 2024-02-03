@@ -104,6 +104,7 @@ export const getTRN001List = async (reqData) => {
     await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
       COMP_CD: reqData?.COMP_CD,
       BRANCH_CD: reqData?.BRANCH_CD,
+      USER_NAME: reqData?.USER_NAME ?? "",
     });
   if (status === "0") {
     let responseData = data;
@@ -163,8 +164,8 @@ export const addDailyTrxScroll = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
-
-    return responseData[0];
+    console.log(data, "data");
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -192,10 +193,10 @@ export const getChqValidation = async (reqData) => {
 export const getAccNoValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("ACCTNOVALIDATION", {
-      COMP_CD: reqData?.branch?.info?.COMP_CD,
-      BRANCH_CD: reqData?.branch?.value,
-      ACCT_TYPE: reqData?.accType?.value,
-      ACCT_CD: reqData.accNo.padEnd(20, " "),
+      BRANCH_CD: reqData?.BRANCH_CD,
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
 
       GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
       SCREEN_REF: "ETRN/001", //depending on screen code
@@ -210,17 +211,3 @@ export const getAccNoValidation = async (reqData) => {
 };
 
 //others
-export const getTabsByParentType = async (reqData) => {
-  console.log(reqData, "reqData");
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
-      PARENT_TYPE: reqData,
-    });
-  if (status === "0") {
-    let responseData = data;
-    console.log(data, "res data");
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};

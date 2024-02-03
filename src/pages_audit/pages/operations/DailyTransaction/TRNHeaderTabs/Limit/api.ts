@@ -5,11 +5,11 @@ import {
 } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getASBAList = async (reqData) => {
+export const getLimitList = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDLYTRNASBATAB", {
-      BRANCH_CD: reqData.BRANCH_CD,
+    await AuthSDK.internalFetcher("GETDLYTRNLIMITTAB", {
       COMP_CD: reqData.COMP_CD,
+      BRANCH_CD: reqData.BRANCH_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,
     });

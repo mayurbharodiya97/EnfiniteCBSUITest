@@ -27,6 +27,13 @@ export const InsuranceGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
+      accessor: "sr",
+      columnName: "Sr",
+      sequence: 1,
+      componentType: "default",
+      width: 120,
+    },
+    {
       accessor: "POLICY_NO",
       columnName: "Policy No.",
       sequence: 2,
@@ -55,7 +62,6 @@ export const InsuranceGridMetaData: GridMetaDataType = {
       accessor: "INSURANCE_AMOUNT",
       columnName: "Insurance Amount",
       sequence: 5,
-
       componentType: "default",
       width: 120,
     },
@@ -63,23 +69,20 @@ export const InsuranceGridMetaData: GridMetaDataType = {
       accessor: "TOT_PREMIUM_AMT",
       columnName: "Total Premium  ",
       sequence: 6,
-
       componentType: "default",
       width: 120,
     },
-    {
-      accessor: "NET_PREMIUM_AMOUNT",
-      columnName: "Net Premium  ",
-      sequence: 7,
-
-      componentType: "default",
-      width: 120,
-    },
+    // {
+    //   accessor: "NET_PREMIUM_AMOUNT",
+    //   columnName: "Net Premium  ",
+    //   sequence: 7,
+    //   componentType: "default",
+    //   width: 120,
+    // },
     {
       accessor: "INSURANCE_TYPE",
       columnName: "Insurance Type",
       sequence: 8,
-
       componentType: "default",
       width: 120,
     },
@@ -87,7 +90,6 @@ export const InsuranceGridMetaData: GridMetaDataType = {
       accessor: "DESCRIPTION",
       columnName: "Company",
       sequence: 9,
-
       componentType: "default",
       width: 250,
     },
@@ -95,15 +97,6 @@ export const InsuranceGridMetaData: GridMetaDataType = {
       accessor: "INS_DESCRIPTION",
       columnName: "Description",
       sequence: 10,
-
-      componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "SERVICE_CHARGE",
-      columnName: "Service Charge",
-      sequence: 11,
-
       componentType: "default",
       width: 120,
     },
