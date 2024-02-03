@@ -869,6 +869,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKUPVEWBTNDOCDTLDISP",
     packageName: "",
   },
+  GETCASHDENO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHDENO",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

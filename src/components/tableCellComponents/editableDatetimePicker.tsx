@@ -1,5 +1,5 @@
 import FormHelperText from "@mui/material/FormHelperText";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
 import { CellWrapper } from "./cellWrapper";
 import {
   ThemeProvider,
@@ -16,6 +16,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { theme2 } from "app/audit/theme";
 import { KeyboardDateTimePicker } from "components/styledComponent/datetime";
 import { makeStyles } from "@mui/styles";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 const useStyles = makeStyles({
   root: {
     "& .MuiInputBase-root.MuiOutlinedInput-root input": {
@@ -30,6 +31,17 @@ const useStyles = makeStyles({
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
 export const EditableDatetimePicker = (props) => {
   const classes = useStyles();
+  const customParameter = useContext(CustomPropertiesConfigurationContext);
+
+  const {
+    dynamicAccountNumberField,
+    dynamicAmountSymbol,
+    dynamicAmountGroupStyle,
+    decimalCount,
+    commonDateFormat,
+    commonDateTimeFormat,
+  } = customParameter;
+
   const {
     value: initialValue,
     rows,
@@ -95,7 +107,10 @@ export const EditableDatetimePicker = (props) => {
       <ThemeProvider theme={themeObj}>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <KeyboardDateTimePicker
-            format={dateFormat || "dd/MM/yyyy HH:mm:ss"}
+            format={
+              (Boolean(dateFormat) ? dateFormat : commonDateTimeFormat) ||
+              "dd/MM/yyyy HH:mm:ss"
+            }
             onChange={onChange}
             value={new Date(value)}
             disabled={loadingcall || loading}

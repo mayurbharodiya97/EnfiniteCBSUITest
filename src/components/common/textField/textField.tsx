@@ -148,7 +148,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
       let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues)
+        transformDependentFieldsState(dependentValues),
+        { isSubmitting }
       );
       if (result !== undefined && result !== null) {
         handleChange(result);
