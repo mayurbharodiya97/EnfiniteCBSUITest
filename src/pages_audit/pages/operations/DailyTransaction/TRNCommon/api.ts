@@ -70,6 +70,17 @@ export const deleteScrollByScrollNo = async (reqData) => {
     await AuthSDK.internalFetcher("DELETESCROLLDATA", {
       COMP_CD: reqData?.COMP_CD,
       SCROLL_NO: reqData?.SCROLL_NO,
+
+      // BRANCH_CD: "099 ",
+      // ACCT_TYPE: "0011",
+      // ACCT_CD: "000001              ",
+      // TRAN_AMOUNT: "7000",
+      // ENT_COMP_CD: "132 ",
+      // ENT_BRANCH_CD: "099 ",
+      // ACTIVITY_TYPE: "DAILY TRANSACTION",
+      // TRANSACTION_DATE: "01-FEB-24",
+      // CONFIRM_FLAG: "N",
+      // USER_DEF_REMARKS: "SUCCESSFULLY DELETE",
     });
   if (status === "0") {
     let responseData = data;

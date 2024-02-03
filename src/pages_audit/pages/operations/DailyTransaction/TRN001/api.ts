@@ -164,8 +164,8 @@ export const addDailyTrxScroll = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
-
-    return responseData[0];
+    console.log(data, "data");
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

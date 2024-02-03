@@ -74,9 +74,12 @@ export const Trn002 = () => {
 
   useEffect(() => {
     handleGetTRN002List();
-    setTempStore({ ...tempStore, accInfo: {} });
-    setCardStore({ ...cardStore, cardsInfo: {} });
-    setTabsData([]);
+    //cleanUp fn
+    return () => {
+      setTempStore({ ...tempStore, accInfo: {} });
+      setCardStore({ ...cardStore, cardsInfo: {} });
+      setTabsData([]);
+    };
   }, []);
 
   // api define ========================================================================
@@ -316,7 +319,11 @@ export const Trn002 = () => {
       {Boolean(deleteDialog) ? (
         <PopupMessageAPIWrapper
           MessageTitle="Transaction Delete"
-          Message="Do you wish to Delete this Transaction?"
+          Message={
+            "Do you wish to Delete this Transaction - Voucher No. " +
+            dataRow?.TRAN_CD +
+            " ?"
+          }
           onActionYes={() => handleDelete()}
           onActionNo={() => setDeleteDialog(false)}
           rows={[]}
@@ -327,7 +334,11 @@ export const Trn002 = () => {
       {Boolean(confirmDialog) ? (
         <PopupMessageAPIWrapper
           MessageTitle="Transaction Confirm"
-          Message="Do you wish to Confirm this Transaction?"
+          Message={
+            "Do you wish to Confirm this Transaction - Voucher No. " +
+            dataRow?.TRAN_CD +
+            " ?"
+          }
           onActionYes={() => handleConfirm()}
           onActionNo={() => setConfirmDialog(false)}
           rows={[]}

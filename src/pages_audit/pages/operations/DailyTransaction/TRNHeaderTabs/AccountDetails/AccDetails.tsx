@@ -67,7 +67,7 @@ export const AccDetails = ({ flag }) => {
                   <CardContent>
                     <div id="cardHeading">
                       <Typography
-                        variant="h5"
+                        variant="h6"
                         component="div"
                         style={{ color: "white" }}
                       >

@@ -125,6 +125,7 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
+    console.log(row, "rowwww");
     setDataRow(row);
 
     console.log(row, "row setCurrentAction");
@@ -154,10 +155,21 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
   }, []);
 
   const handleDelete = () => {
+    console.log(dataRow, "dataRow");
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
       ENTERED_BRANCH_CD: dataRow?.BRANCH_CD,
+
+      COMP_CD: dataRow?.COMP_CD,
+      BRANCH_CD: dataRow?.BRANCH_CD,
+      ACCT_TYPE: dataRow?.ACCT_TYPE,
+      ACCT_CD: dataRow?.ACCT_CD,
+      TRAN_AMOUNT: dataRow?.AMOUNT,
+      ACTIVITY_TYPE: "DAILY TRANSACTION",
+      TRANSACTION_DATE: dataRow?.TRAN_DT,
+      CONFIRM_FLAG: "N",
+      USER_DEF_REMARKS: "SUCCESSFULLY DELETE",
     };
     deleteScrollByVoucher.mutate(obj);
   };
@@ -214,7 +226,11 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
       {Boolean(deleteDialog) ? (
         <PopupMessageAPIWrapper
           MessageTitle="Scroll Delete"
-          Message="Do you wish to Delete this scroll?"
+          Message={
+            "Do you want to Delete the transaction - VoucherNo." +
+            dataRow?.TRAN_CD +
+            " ?"
+          }
           onActionYes={() => handleDelete()}
           onActionNo={() => setDeleteDialog(false)}
           rows={[]}

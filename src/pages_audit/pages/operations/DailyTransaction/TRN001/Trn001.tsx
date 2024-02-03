@@ -115,8 +115,12 @@ export const Trn001 = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    setTempStore({ ...tempStore, accInfo: {} });
-    setCardStore({ ...cardStore, cardsInfo: {} });
+    //cleanUp fn
+    return () => {
+      setTempStore({ ...tempStore, accInfo: {} });
+      setCardStore({ ...cardStore, cardsInfo: {} });
+      setTabsData([]);
+    };
   }, []);
   useEffect(() => {
     console.log(index, "index");
@@ -282,11 +286,18 @@ export const Trn001 = () => {
   });
   const saveScroll = useMutation(API.addDailyTrxScroll, {
     onSuccess: (data) => {
-      if (Number(data?.INSERT) > 0) {
+      let isSuccess = data.some((a) => a?.TRAN_CD);
+      if (isSuccess) {
         handleReset();
         setSaveDialog(false);
-        enqueueSnackbar("Scroll Saved", {
-          variant: "success",
+        data.map((a) => {
+          return enqueueSnackbar("Scroll Saved Voucher No." + a?.TRAN_CD, {
+            variant: "success",
+          });
+        });
+      } else {
+        enqueueSnackbar("Some error occured in scroll saving", {
+          variant: "error",
         });
       }
     },
@@ -785,7 +796,7 @@ export const Trn001 = () => {
                             a?.accType?.label && <h3>{a?.accType?.label}</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 120 }}>
+                          <TableCell sx={{ minWidth: 130 }}>
                             <Autocomplete
                               value={a.accType}
                               autoHighlight
