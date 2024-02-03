@@ -1,32 +1,13 @@
-import { Transition } from "pages_audit/common";
-import { Alert } from "components/common/alert";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { FC, useEffect, useRef, useState, useContext } from "react";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { queryClient, ClearCacheContext } from "cache";
 import { useSnackbar } from "notistack";
-import {
-  CreateDetailsRequestData,
-  ProcessDetailsData,
-  utilFunction,
-} from "components/utils";
-
 import { makeStyles } from "@mui/styles";
-import {
-  AppBar,
-  Grid,
-  Toolbar,
-  Typography,
-  Theme,
-  Dialog,
-  Button,
-  CircularProgress,
-} from "@mui/material";
+import { Theme, Dialog, Button } from "@mui/material";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { ClearingBankMasterFormMetadata } from "./metaData";
 
@@ -48,24 +29,13 @@ export const useDialogStyles = makeStyles((theme: Theme) => ({
 export const ClearingBankMaster: FC<{
   isOpen?: any;
   onClose?: any;
+  // setBankDetail?: any;
 }> = ({ isOpen, onClose }) => {
   const isErrorFuncRef = useRef<any>(null);
   const [isOpenSave, setIsOpenSave] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
-  const { getEntries } = useContext(ClearCacheContext);
 
-  // const {
-  //   data: PropsData,
-  //   isLoading,
-  //   isFetching,
-  //   isError,
-  //   error,
-  //   refetch,
-  // } = useQuery<any, any>(
-  //   ["getFormFieldPropsData", { ...reqDataRef.current }],
-  //   () => API.getFormFieldPropsData({ ...reqDataRef.current })
-  // );
   const mutation = useMutation(API.clearingBankMasterConfigDML, {
     onError: (error: any, { endSubmit }) => {
       let errorMsg = "Unknown Error occured";
@@ -80,6 +50,8 @@ export const ClearingBankMaster: FC<{
       // enqueueSnackbar(data, {
       //   variant: "success",
       // });
+      // setBankDetail(data);
+      console.log("data", data);
       enqueueSnackbar("Data insert successfully", { variant: "success" });
       onClose();
     },
@@ -166,7 +138,7 @@ export const ClearingBankMaster: FC<{
             height: "100%",
           },
         }}
-        key="actionsFormDialog"
+        key="ClearingBankMasterDialog"
       >
         <FormWrapper
           key={"ClearingBankMasterFormMetadata"}

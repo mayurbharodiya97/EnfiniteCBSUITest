@@ -579,42 +579,6 @@ const GeneralAPISDK = () => {
       };
     }
   };
-  const getBankCodeData = async (currentField, _, auth) => {
-    if (currentField?.value) {
-      const { status, data, message, messageDetails } =
-        await AuthSDK.internalFetcher("DOBANKDETAIL", {
-          COMP_CD: auth.companyID ?? "",
-          BRANCH_CD: auth.user.branchCode ?? "",
-          BANK_CD:
-            currentField.value && Number.isNaN(Number(currentField.value))
-              ? ""
-              : currentField.value.padEnd(10, " "),
-        });
-      if (status === "0") {
-        if (data?.length > 0) {
-          return {
-            // BANK_CD: { value: data?.[0]?.BANK_CD },
-            BANK_NM: { value: data?.[0]?.BANK_NM },
-          };
-        } else {
-          return {
-            BANK_CD: { value: "" },
-            BANK_NM: { value: "" },
-          };
-        }
-      } else {
-        return {
-          BANK_CD: {
-            error: message ?? "",
-            isFieldFocused: true,
-          },
-          BANK_NAME: { isFieldFocused: true },
-          ECS_SEQ_NO: { isFieldFocused: false },
-          BANK_NM: { value: "" },
-        };
-      }
-    }
-  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -640,7 +604,6 @@ const GeneralAPISDK = () => {
     getDependentFieldList,
     getProMiscData,
     getZoneListData,
-    getBankCodeData,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

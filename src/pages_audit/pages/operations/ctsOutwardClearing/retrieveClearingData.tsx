@@ -14,7 +14,6 @@ import { useSnackbar } from "notistack";
 import {
   RetrieveFormConfigMetaData,
   RetrieveGridMetaData,
-  // SlipDetailFormMetaData,
   SlipJoinDetailGridMetaData,
 } from "./metaData";
 import { makeStyles } from "@mui/styles";
@@ -25,16 +24,11 @@ import { AuthContext } from "pages_audit/auth";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import GridWrapper from "components/dataTableStatic";
 // import { getRetrievalClearingData, getSlipJoinDetail } from "./api";
-import { MyFullScreenAppBar } from "pages_audit/appBar/fullScreenAppbar";
-import { Toolbar, Typography, AppBar } from "@mui/material";
+
 // import { SlipDetailForm } from "./slipDetailForm";
 import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
 import { Alert } from "components/common/alert";
-import {
-  FilterFormMetaType,
-  FormComponentView,
-} from "components/formcomponent";
 import { RetrieveDataFilterForm } from "../c-kyc/metadata";
 import { ActionTypes } from "components/dataTable";
 import { CtsOutwardClearingForm } from "./ctsOutwardClearing";
@@ -64,17 +58,20 @@ export const RetrieveClearing: FC<{
   onClose?: any;
   setFormMode;
   zoneTranType?: any;
-}> = ({ onClose, setFormMode, zoneTranType }) => {
-  const { enqueueSnackbar } = useSnackbar();
+  tranDate?: any;
+}> = ({ onClose, setFormMode, zoneTranType, tranDate }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
   const navigate = useNavigate();
-  const headerClasses = useTypeStyles();
+  const location = useLocation();
+
   const setCurrentAction = useCallback(
     (data) => {
-      navigate("/cbsenfinity/operation/cts-outward-clearing", {
+      navigate(location.pathname, {
         state: { rows: data?.rows, formMode: "view" },
       });
+      setFormMode("view");
+      onClose();
     },
     [navigate]
   );
@@ -111,12 +108,9 @@ export const RetrieveClearing: FC<{
           "dd/MMM/yyyy"
         );
       }
-      // data["ZONE"] = data["ZONE"].trim();
+      data["BANK_CD"] = data["BANK_CD"].padEnd(10, " ");
       data = {
         ...data,
-        // AMOUNT: "0",
-        // SLIP_CD: "0",
-        // CHEQUE_NO: "0",
         TRAN_TYPE: zoneTranType,
         CONFIRMED: "0",
       };
@@ -136,17 +130,17 @@ export const RetrieveClearing: FC<{
           PaperProps={{
             style: {
               overflow: "hidden",
-              // width: "60%",
-              // minHeight: "35vh",
-              // height: "42vh",
             },
           }}
-          maxWidth="lg"
+          maxWidth="xl"
         >
           <FormWrapper
             key={`retrieveFormMetadataConfig`}
             metaData={RetrieveFormConfigMetaData as unknown as MetaDataType}
-            initialValues={{}}
+            initialValues={{
+              FROM_TRAN_DT: new Date(tranDate?.[0]?.DATE ?? new Date()),
+              TO_TRAN_DT: new Date(tranDate?.[0]?.DATE ?? new Date()),
+            }}
             onSubmitHandler={onSubmitHandler}
             formStyle={{
               background: "white",
@@ -164,7 +158,6 @@ export const RetrieveClearing: FC<{
                 <GradientButton
                   onClick={() => {
                     onClose();
-                    setFormMode("new");
                   }}
                 >
                   Close
@@ -192,9 +185,6 @@ export const RetrieveClearing: FC<{
               loading={mutation.isLoading || mutation.isFetching}
               actions={actions}
               setAction={setCurrentAction}
-              // refetchData={() => refetch()}
-              // ref={myGridRef}
-              // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
             />
             {/* ) : null} */}
           </Fragment>
@@ -208,6 +198,7 @@ export const RetrieveClearingForm = ({
   zoneTranType,
   onClose,
   setFormMode,
+  tranDate,
 }) => {
   return (
     <ClearCacheProvider>
@@ -215,6 +206,7 @@ export const RetrieveClearingForm = ({
         zoneTranType={zoneTranType}
         onClose={onClose}
         setFormMode={setFormMode}
+        tranDate={tranDate}
       />
     </ClearCacheProvider>
   );

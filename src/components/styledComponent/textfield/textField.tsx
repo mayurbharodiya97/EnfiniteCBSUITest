@@ -34,7 +34,7 @@ const StyledTextField = withStyles({
 
     "& .MuiInputBase-root": {
       border: "1px solid #BABABA",
-      marginTop: "21px",
+      marginTop: "26px",
       borderRadius: 5,
       backgroundColor: "#fff",
       paddingTop: "0",

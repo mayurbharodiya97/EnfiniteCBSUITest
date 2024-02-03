@@ -23,6 +23,7 @@ interface MyButtonExtendedProps {
   FormHelperTextProps?: FormHelperTextProps;
   GridProps?: GridProps;
   enableGrid: boolean;
+  iconStyle?: any;
 }
 type MyButtonMixedProps = Merge<ButtonProps, extendedFiledProps>;
 export type MyFormButtonAllProps = Merge<
@@ -60,6 +61,7 @@ export const FormButton = ({
   startsIcon,
   endsIcon,
   rotateIcon,
+  iconStyle,
   ...others
 }) => {
   const {
@@ -157,6 +159,11 @@ export const FormButton = ({
         endicon={endsIcon}
         rotateIcon={rotateIcon}
         inputRef={focusRef}
+        sx={{
+          "& svg": {
+            ...iconStyle,
+          },
+        }}
       >
         {label}
       </GradientButton>

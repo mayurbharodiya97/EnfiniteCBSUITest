@@ -10,6 +10,7 @@ import { Button, Grid, GridProps, InputLabel } from "@mui/material";
 import { DatePickerProps } from "@mui/lab/DatePicker";
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { utilFunction } from "components/utils";
+import { TextField } from "components/styledComponent";
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 const useStyles: any = makeStyles({
@@ -28,7 +29,7 @@ const useStyles: any = makeStyles({
     lineHeight: "1.4375em",
     fontWeight: "600",
     transform: "translate(0, 1.5px) scale(1)",
-    marginBottom: "3px",
+    marginBottom: "8px",
     maxWidth: "calc(133% - 32px)",
   },
 });
@@ -147,12 +148,13 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   const result = (
     // <ThemeProvider theme={themeObj}>
     <>
-      <InputLabel className={classes.labelStyle}>{label}</InputLabel>
+      {/* <InputLabel className={classes.labelStyle}>{label}</InputLabel> */}
       <KeyboardDatePicker
         {...others}
         key={fieldKey}
         className={classes.root}
         id={fieldKey}
+        label={label}
         name={name}
         value={
           value === ""
@@ -166,12 +168,16 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         //@ts-ignore
         onChange={handleChange}
         sx={{ background: Boolean(readOnly) ? "#e7e5e563" : "" }}
+        slots={{
+          textField: TextField,
+        }}
         slotProps={{
           textField: {
             fullWidth: true,
             error: !isSubmitting && isError,
             helperText: !isSubmitting && isError ? error : null,
             onBlur: handleBlur,
+            InputLabelProps: { shrink: true },
           },
         }}
         tabIndex={readOnly ? -1 : undefined}

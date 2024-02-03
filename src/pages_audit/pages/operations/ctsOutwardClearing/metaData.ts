@@ -1,6 +1,10 @@
 import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
 import { GeneralAPI } from "registry/fns/functions";
-import { clearingBankMasterConfigDML, getAccountSlipJoinDetail } from "./api";
+import {
+  clearingBankMasterConfigDML,
+  getAccountSlipJoinDetail,
+  getSlipNoData,
+} from "./api";
 import { format, isValid } from "date-fns";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { FilterFormMetaType } from "components/formcomponent";
@@ -70,12 +74,9 @@ export const CtsOutwardClearingMetadata = {
       GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
       runValidationOnDependentFieldsChange: true,
       skipDefaultOption: true,
-      // options: () => {
-      //   return GeneralAPI.getZoneListData;
-      // },
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
-      // disableCaching: true,
+      disableCaching: true,
       requestProps: "ZONE_TRAN_TYPE",
       dependentFields: ["TRAN_DT"],
       postValidationSetCrossFieldValues: "getSlipNoData",
@@ -180,7 +181,7 @@ export const CtsOutwardClearingMetadata = {
 
           let postdata = await getAccountSlipJoinDetail(Apireq);
           formState.setDataOnFieldChange("ACCT_CD", postdata?.[0]);
-          console.log(postdata?.[0]?.RESTRICT_MESSAGE);
+          // console.log(postdata?.[0]?.RESTRICT_MESSAGE);
           // if (postdata?.[0]?.RESTRICT_MESSAGE) {
           // return {
           //   ACCT_CD: { value: "", isFieldFocused: true },
@@ -203,16 +204,12 @@ export const CtsOutwardClearingMetadata = {
           } else {
             return {
               ACCT_CD: { value: "", isFieldFocused: true },
-              AMOUNT: { isFieldFocused: false },
               ACCT_NAME: { value: "" },
               TRAN_BAL: { value: "" },
             };
           }
         }
       },
-      runPostValidationHookAlways: true,
-
-      // postValidationSetCrossFieldValues: "getAccountNumberData",
 
       GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 1.5 },
     },
@@ -233,7 +230,7 @@ export const CtsOutwardClearingMetadata = {
         componentType: "amountField",
       },
       name: "TRAN_BAL",
-      label: "Trn.Balance",
+      label: "Shadow.Balance",
       placeholder: "",
       type: "text",
       isReadOnly: true,
@@ -244,12 +241,23 @@ export const CtsOutwardClearingMetadata = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "Amount",
+      label: "Slip Amount",
       placeholder: "",
-      // isFieldFocused: true,
-      // autoComplete: false,
+      // validationRun: "all",
       type: "text",
-      // isReadOnly: true,
+      postValidationSetCrossFieldValues: async (
+        currentFieldState,
+        formState,
+        auth,
+        dependentFieldState
+      ) => {
+        if (currentFieldState?.value) {
+          formState.setDataOnFieldChange(
+            "AMOUNT",
+            currentFieldState?.value ?? "0"
+          );
+        }
+      },
       GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 1.5 },
     },
     {
@@ -445,43 +453,43 @@ export const ViewCtsOutwardClearingMetadata = {
         rules: [{ name: "required", params: ["Account no. is required."] }],
       },
       dependentFields: ["ACCT_TYPE"],
-      // validate: (currentField, value) => {
-      //   if (currentField?.value) {
-      //     return;
+      // // validate: (currentField, value) => {
+      // //   if (currentField?.value) {
+      // //     return;
+      // //   }
+      // // },
+      // postValidationSetCrossFieldValues: async (
+      //   field,
+      //   formState,
+      //   auth,
+      //   dependentFieldsValues
+      // ) => {
+      //   let Apireq = {
+      //     COMP_CD: auth?.companyID,
+      //     ACCT_CD: field?.value?.padStart(6, "0").padEnd(20, " "),
+      //     ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+      //     BRANCH_CD: auth?.user?.branchCode,
+      //     GD_TODAY_DT: format(new Date(), "dd/MMM/yyyy"),
+      //     SCREEN_REF: auth?.menulistdata[4]?.children?.[6]?.user_code,
+      //   };
+
+      //   let postdata = await getAccountSlipJoinDetail(Apireq);
+      //   formState.setDataOnFieldChange("ACCT_CD", postdata?.[0]);
+      //   if (postdata?.length) {
+      //     return {
+      //       ACCT_NAME: {
+      //         value: postdata?.[0]?.ACCT_NAME ?? "",
+      //       },
+      //       TRAN_BAL: { value: postdata?.[0].TRAN_BAL ?? "" },
+      //     };
+      //     // }
+      //   } else {
+      //     return {
+      //       ACCT_NAME: { value: "" },
+      //       TRAN_BAL: { value: "" },
+      //     };
       //   }
       // },
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFieldsValues
-      ) => {
-        let Apireq = {
-          COMP_CD: auth?.companyID,
-          ACCT_CD: field?.value?.padStart(6, "0").padEnd(20, " "),
-          ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-          BRANCH_CD: auth?.user?.branchCode,
-          GD_TODAY_DT: format(new Date(), "dd/MMM/yyyy"),
-          SCREEN_REF: auth?.menulistdata[4]?.children?.[6]?.user_code,
-        };
-
-        let postdata = await getAccountSlipJoinDetail(Apireq);
-        formState.setDataOnFieldChange("ACCT_CD", postdata?.[0]);
-        if (postdata?.length) {
-          return {
-            ACCT_NAME: {
-              value: postdata?.[0]?.ACCT_NAME ?? "",
-            },
-            TRAN_BAL: { value: postdata?.[0].TRAN_BAL ?? "" },
-          };
-          // }
-        } else {
-          return {
-            ACCT_NAME: { value: "" },
-            TRAN_BAL: { value: "" },
-          };
-        }
-      },
       // postValidationSetCrossFieldValues: "getAccountNumberData",
 
       GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 1.5 },
@@ -490,7 +498,7 @@ export const ViewCtsOutwardClearingMetadata = {
       render: {
         componentType: "textField",
       },
-      name: "ACCT_NAME",
+      name: "ACCT_NM",
       label: "AC Name",
       type: "text",
       fullWidth: true,
@@ -514,7 +522,7 @@ export const ViewCtsOutwardClearingMetadata = {
         componentType: "amountField",
       },
       name: "AMOUNT",
-      label: "Amount",
+      label: "slip Amount",
       placeholder: "",
       // isFieldFocused: true,
       // autoComplete: false,
@@ -524,7 +532,7 @@ export const ViewCtsOutwardClearingMetadata = {
     },
     {
       render: {
-        componentType: "hidden",
+        componentType: "textField",
       },
       name: "ENTERED_BY",
       label: "Maker",
@@ -536,7 +544,7 @@ export const ViewCtsOutwardClearingMetadata = {
     },
     {
       render: {
-        componentType: "hidden",
+        componentType: "textField",
       },
       name: "ENTERED_DATE",
       label: "Maker Time",
@@ -609,10 +617,10 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
     allowColumnReordering: true,
     disableSorting: false,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     disableGlobalFilter: true,
     hideFooter: false,
-    hideHeader: false,
+    hideHeader: true,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
@@ -637,8 +645,8 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       isAutoSequence: true,
     },
     {
-      accessor: "J_TYPE",
-      columnName: "Joint Name Information Type",
+      accessor: "J_TYPE_NM",
+      columnName: "Joint Type",
       sequence: 4,
       alignment: "center",
       componentType: "default",
@@ -653,9 +661,9 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       sequence: 5,
       alignment: "center",
       componentType: "default",
-      width: 120,
-      minWidth: 150,
-      maxWidth: 200,
+      width: 300,
+      minWidth: 300,
+      maxWidth: 350,
     },
     {
       accessor: "DESIGNATION_NM",
@@ -663,9 +671,9 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       sequence: 6,
       alignment: "center",
       componentType: "default",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 400,
+      width: 200,
+      minWidth: 200,
+      maxWidth: 300,
     },
 
     {
@@ -678,16 +686,16 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       minWidth: 120,
       maxWidth: 250,
     },
-    {
-      accessor: "REF_ACCT_TYPE",
-      columnName: "Reference Account",
-      sequence: 8,
-      alignment: "center",
-      componentType: "default",
-      width: 120,
-      minWidth: 100,
-      maxWidth: 200,
-    },
+    // {
+    //   accessor: "REF_ACCT_TYPE",
+    //   columnName: "Reference Account",
+    //   sequence: 8,
+    //   alignment: "center",
+    //   componentType: "default",
+    //   width: 120,
+    //   minWidth: 100,
+    //   maxWidth: 200,
+    // },
     {
       accessor: "MOBILE_NO",
       columnName: "Contact No.",
@@ -710,7 +718,6 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
     },
   ],
 };
-
 export const ChequeDetailFormMetaData: any = {
   form: {
     refID: 1667,
@@ -756,15 +763,129 @@ export const ChequeDetailFormMetaData: any = {
   fields: [
     {
       render: {
+        componentType: "spacer",
+      },
+
+      GridProps: {
+        xs: 0,
+        md: 1,
+        sm: 4.7,
+        lg: 4.7,
+        xl: 4.7,
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "SLIP_AMOUNT",
+      label: "Total Slip Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+
+      // isReadOnly: true,
+      GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "FINALAMOUNT",
+      label: "Total Cheque Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      dependentFields: ["chequeDetails"],
+
+      postValidationSetCrossFieldValues: async (
+        currentFieldState,
+        formState,
+        auth,
+        dependentFieldState
+      ) => {
+        let accumulatedTakeoverLoanAmount = (
+          Array.isArray(dependentFieldState?.["chequeDetails"])
+            ? dependentFieldState?.["chequeDetails"]
+            : []
+        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+        formState.setDataOnFieldChange(
+          "FINALAMOUNT",
+          accumulatedTakeoverLoanAmount
+        );
+        if (
+          Number(currentFieldState.value) ===
+          Number(accumulatedTakeoverLoanAmount)
+        ) {
+          return {};
+        }
+
+        return {
+          FINALAMOUNT: {
+            value: accumulatedTakeoverLoanAmount ?? "0",
+          },
+        };
+      },
+      // shouldExclude(fieldData) {
+      //   if (fieldData?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
+      // isReadOnly: true,
+      GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
+    },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TOTAL_AMOUNT",
+      label: "Total Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      dependentFields: ["SLIP_AMOUNT", "FINALAMOUNT"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        let value =
+          Number(dependentFields?.SLIP_AMOUNT?.value) -
+          Number(dependentFields?.FINALAMOUNT?.value);
+
+        return value ?? "0";
+      },
+      // isReadOnly: true,
+      GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "ADDNEWROW",
+      label: "Add Row",
+      endsIcon: "AddCircleOutlineRounded",
+      rotateIcon: "scale(2)",
+      placeholder: "",
+      type: "text",
+      iconStyle: {
+        fontSize: "25px !important",
+
+        // GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
+      },
+      GridProps: { xs: 1.2, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+    },
+    {
+      render: {
         componentType: "arrayField",
       },
       // isCustomStyle: true,
+      displayCountName: "Cheque Detail",
       fixedRows: true,
       isScreenStyle: true,
       isRemoveButton: true,
       name: "chequeDetails",
-      removeRowFn: "deleteFormArrayFieldData",
-      arrayFieldIDName: "",
+      // removeRowFn: "",
+      arrayFieldIDName: "CHEQUE",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -775,6 +896,7 @@ export const ChequeDetailFormMetaData: any = {
           label: "Cheque No.",
           placeholder: "Cheque No.",
           type: "text",
+          required: true,
           autoComplete: "off",
           isFieldFocused: true,
           defaultfocus: true,
@@ -792,12 +914,10 @@ export const ChequeDetailFormMetaData: any = {
             },
           },
           GridProps: { xs: 6, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
-          // schemaValidation: 1.5
-          //   type: "string",
-          //   rules: [
-          //     { name: "required", params: ["Company Code is required."] },
-          //   ],
-          // },
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Cheque No. is required."] }],
+          },
         },
         {
           render: {
@@ -807,6 +927,7 @@ export const ChequeDetailFormMetaData: any = {
           label: "Bank Code",
           placeholder: "Bank Code",
           type: "text",
+          required: true,
           autoComplete: "off",
           FormatProps: {
             allowNegative: false,
@@ -818,15 +939,19 @@ export const ChequeDetailFormMetaData: any = {
               return true;
             },
           },
-          // postValidationSetCrossFieldValues: "getBankCodeData",
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Bank Code is required."] }],
+          },
+          // disableCaching: true,
+          // runValidationOnDependentFieldsChange: true,
           postValidationSetCrossFieldValues: async (
             field,
             formState,
             auth,
             dependentFieldsValues
           ) => {
-            console.log("else postdata", field);
-            if (field?.value) {
+            if (field.value) {
               let formData = {
                 COMP_CD: auth.companyID ?? "",
                 BRANCH_CD: auth.user.branchCode ?? "",
@@ -834,36 +959,32 @@ export const ChequeDetailFormMetaData: any = {
                   field.value && Number.isNaN(Number(field.value))
                     ? ""
                     : field.value.padEnd(10, " "),
-                BANK_NM:
-                  field.value && Number.isNaN(Number(field.value))
-                    ? field.value
-                    : "",
               };
+
               let postData = await clearingBankMasterConfigDML(formData);
-              console.log("postdata", postData);
-              if (postData?.ERROR_MSSAGE && postData) {
-                formState.setDataOnFieldChange(
-                  "MESSAGE",
-                  postData?.ERROR_MSSAGE
-                );
+
+              if (postData?.length && postData) {
+                formState.setDataOnFieldChange("MESSAGE", postData);
+
                 return {
-                  BANK_CD: { value: "", isFieldFocused: true },
-                  BANK_NM: { value: "" },
-                };
-              } else {
-                return {
+                  BANK_CD: { error: postData?.[0]?.ERROR_MSSAGE ?? "" },
                   BANK_NM: {
                     value: postData?.[0]?.BANK_NM ?? "",
                   },
                 };
+              } else {
+                return {
+                  BANK_CD: { value: "", isFieldFocused: true },
+                  BANK_NM: { value: "" },
+                };
               }
             } else if (!field?.value) {
               return {
-                BANK_CD: { value: "" },
                 BANK_NM: { value: "" },
               };
             }
           },
+
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
         {
@@ -881,35 +1002,14 @@ export const ChequeDetailFormMetaData: any = {
           autoComplete: "off",
           dependentFields: ["BANK_CD"],
           shouldExclude: (_, dependentFieldsValues, __) => {
-            if (dependentFieldsValues?.["chequeDetails.BANK_CD"]?.error) {
+            if (!dependentFieldsValues?.["chequeDetails.BANK_CD"]?.value) {
               return true;
             }
             return false;
           },
-          GridProps: { xs: 12, sm: 3, md: 2.8, lg: 2.8, xl: 1.5 },
+          GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.8, xl: 2.5 },
         },
-        // {
-        //   render: {
-        //     componentType: "formbutton",
-        //   },
-        //   name: "BANK_NAME",
-        //   label: "...",
-        //   placeholder: "",
-        //   type: "text",
-        //   dependentFields: ["BANK_CD"],
-        //   shouldExclude: (_, dependentFieldsValues, __) => {
-        //     if (dependentFieldsValues?.["chequeDetails.BANK_CD"]?.error) {
-        //       return false;
-        //     }
-        //     return true;
-        //   },
-        //   GridProps: {
-        //     xs: 6,
-        //     md: 0.5,
-        //     sm: 0.5,
-        //   },
-        //   // GridProps: { sm: 1, md: 0.2, lg: 0.2, xl: 0.5 },
-        // },
+
         {
           render: {
             componentType: "numberFormat",
@@ -921,7 +1021,7 @@ export const ChequeDetailFormMetaData: any = {
             allowNegative: false,
             allowLeadingZeros: true,
             isAllowed: (values) => {
-              if (values?.value?.length > 17) {
+              if (values?.value?.length > 6) {
                 return false;
               }
               return true;
@@ -930,19 +1030,15 @@ export const ChequeDetailFormMetaData: any = {
           placeholder: "",
           type: "text",
           required: true,
-
-          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Payee A/C No. is required."] },
+            ],
+          },
+          GridProps: { xs: 12, sm: 2, md: 1.9, lg: 1.9, xl: 1.5 },
         },
-        // {
-        //   render: {
-        //     componentType: "datePicker",
-        //   },
-        //   name: "CHEQUE_DATE",
-        //   // sequence: 9,
-        //   label: "Cheque Date",
-        //   placeholder: "",
-        //   GridProps: { xs: 12, sm: 3, md: 3, lg: 2.2, xl: 1.5 },
-        // },
+
         {
           render: {
             componentType: "datePicker",
@@ -955,13 +1051,13 @@ export const ChequeDetailFormMetaData: any = {
           type: "text",
           fullWidth: true,
           maxDate: new Date(),
-          // required: true,
+          required: true,
           maxLength: 6,
 
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [{ name: "required", params: ["ACNo is required."] }],
-          // },
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Cheque Date is required."] }],
+          },
           GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
         },
         {
@@ -973,12 +1069,12 @@ export const ChequeDetailFormMetaData: any = {
           // placeholder: "EnterAcNo",
           type: "text",
           fullWidth: true,
-          // required: true,
+          required: true,
           // maxLength: 20,
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [{ name: "required", params: ["Branch Code is required."] }],
-          // },
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Description is required."] }],
+          },
           GridProps: { xs: 12, sm: 3, md: 3, lg: 4, xl: 1.5 },
         },
         {
@@ -987,11 +1083,10 @@ export const ChequeDetailFormMetaData: any = {
           },
           name: "CHQ_MICR_CD",
           label: "CHQ Micr",
-          placeholder: "EnterAcNo",
           type: "text",
           fullWidth: true,
           defaultValue: "10",
-          // required: true,
+          required: true,
           // maxLength: 6,
           FormatProps: {
             allowNegative: false,
@@ -1006,7 +1101,7 @@ export const ChequeDetailFormMetaData: any = {
           dependentFields: ["ACCT_TYPE"],
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["ACNo is required."] }],
+            rules: [{ name: "required", params: ["CHQ Micr is required."] }],
           },
           GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
         },
@@ -1018,8 +1113,13 @@ export const ChequeDetailFormMetaData: any = {
           label: "Pay Name",
           placeholder: "",
           type: "text",
+          required: true,
           autoComplete: "off",
-          // isReadOnly: true,
+          // isReadOnly: true,\
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Pay Name is required."] }],
+          },
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
         },
         {
@@ -1027,17 +1127,36 @@ export const ChequeDetailFormMetaData: any = {
             componentType: "amountField",
           },
           name: "AMOUNT",
-          label: "Amount",
+          label: "Cheque Amount",
           placeholder: "",
           isFieldFocused: true,
+          required: true,
           type: "text",
-          // isReadOnly: true,
+          validationRun: "onChange",
+          validate: (currentField, value) => {
+            if (currentField?.value) {
+              return;
+            }
+          },
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Cheque Amount is required."] },
+            ],
+          },
+
+          postValidationSetCrossFieldValues: async (...arr) => {
+            return {
+              FINALAMOUNT: { value: arr[0].value },
+            };
+          },
           GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
         },
       ],
     },
   ],
 };
+
 export const ClearingBankMasterFormMetadata = {
   form: {
     name: "ClearingBankMasterForm",
@@ -1093,6 +1212,10 @@ export const ClearingBankMasterFormMetadata = {
       maxLength: 20,
       isFieldFocused: true,
       required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["RBI Code is required."] }],
+      },
       GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
     },
     {
@@ -1109,6 +1232,10 @@ export const ClearingBankMasterFormMetadata = {
       setValueOnDependentFieldsChange: (dependentFields) => {
         return dependentFields?.RBI_CD?.value ?? "";
       },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Code is required."] }],
+      },
       GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
     },
     {
@@ -1122,6 +1249,10 @@ export const ClearingBankMasterFormMetadata = {
       required: true,
       maxLength: 100,
       showMaxLength: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Bank Name is required."] }],
+      },
       GridProps: { xs: 12, sm: 3, md: 4, lg: 4, xl: 1.5 },
     },
     {
@@ -1164,7 +1295,7 @@ export const RetrieveFormConfigMetaData = {
         },
         container: {
           direction: "row",
-          spacing: 2,
+          spacing: 1,
         },
       },
     },
@@ -1197,10 +1328,10 @@ export const RetrieveFormConfigMetaData = {
       name: "FROM_TRAN_DT",
       label: "From Date",
       placeholder: "",
-      defaultValue: new Date(),
+      // defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
-      GridProps: { xs: 12, sm: 1.8, md: 1.7, lg: 1.7, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["From Date is required."] }],
@@ -1222,7 +1353,7 @@ export const RetrieveFormConfigMetaData = {
       name: "TO_TRAN_DT",
       label: "To Date",
       placeholder: "",
-      defaultValue: new Date(),
+      // defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
       schemaValidation: {
@@ -1246,7 +1377,7 @@ export const RetrieveFormConfigMetaData = {
       },
       dependentFields: ["FROM_TRAN_DT"],
       runValidationOnDependentFieldsChange: true,
-      GridProps: { xs: 12, sm: 1.8, md: 1.6, lg: 1.6, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
     },
     {
       render: {
@@ -1256,7 +1387,7 @@ export const RetrieveFormConfigMetaData = {
       label: "Zone",
       placeholder: "Props Value",
       defaultValue: "0   ",
-      GridProps: { xs: 12, sm: 2, md: 1.7, lg: 1.7, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
       runValidationOnDependentFieldsChange: true,
       skipDefaultOption: true,
       options: "getZoneListData",
@@ -1272,9 +1403,14 @@ export const RetrieveFormConfigMetaData = {
       label: "Slip No.",
       // placeholder: "Form name",
       // type: "text",
-      GridProps: { xs: 12, sm: 1.9, md: 1.9, lg: 1.9, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.5 },
       // maxLength: 50,
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Slip No. is required."] }],
+      // },
     },
+
     {
       render: {
         componentType: "numberFormat",
@@ -1287,14 +1423,27 @@ export const RetrieveFormConfigMetaData = {
         allowNegative: false,
         allowLeadingZeros: true,
         isAllowed: (values) => {
-          if (values?.value?.length > 17) {
+          if (values?.value?.length > 6) {
             return false;
           }
           return true;
         },
       },
-      GridProps: { xs: 12, sm: 1.9, md: 1.9, lg: 1.9, xl: 1.5 },
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Slip No. is required."] }],
+      // },
+      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.5 },
       // maxLength: 50,
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "BANK_CD",
+      label: "Bank Code",
+
+      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.7, xl: 1.5 },
     },
     {
       render: {
@@ -1304,7 +1453,7 @@ export const RetrieveFormConfigMetaData = {
       label: "Cheque Amount",
       // placeholder: "Submit Action",
       type: "text",
-      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.5 },
       // maxLength: 10,
     },
 
@@ -1318,12 +1467,7 @@ export const RetrieveFormConfigMetaData = {
       rotateIcon: "scale(1.5)",
       placeholder: "",
       type: "text",
-      // GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
-      GridProps: {
-        xs: 12,
-        md: 1,
-        sm: 1,
-      },
+      GridProps: { xs: 1.2, sm: 1.2, md: 1.2, lg: 1, xl: 1 },
     },
   ],
 };
@@ -1351,7 +1495,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     isCusrsorFocused: true,
     hiddenFlag: "_hidden",
   },
@@ -1381,7 +1525,7 @@ export const RetrieveGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_NO",
-      columnName: "Cheuqe No.",
+      columnName: "Cheque No.",
       sequence: 3,
       alignment: "left",
       componentType: "default",
