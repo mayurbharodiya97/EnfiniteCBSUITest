@@ -33,3 +33,9 @@
   text-align: center;
   color: #1c8aff;
 }
+
+@media (max-width: 500px) {
+  #media12 {
+    color: red !important;
+  }
+}

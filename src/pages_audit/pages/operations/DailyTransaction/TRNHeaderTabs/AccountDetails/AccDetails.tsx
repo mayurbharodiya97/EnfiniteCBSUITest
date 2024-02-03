@@ -14,11 +14,13 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import "./accDetails.css";
 import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 
 export const AccDetails = ({ flag }) => {
   const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const windowWidth = useRef(window.innerWidth);
+
   const [cardName, setCardName] = useState<any>([]);
   let cardsInfo = cardStore?.cardsInfo ?? [];
 
@@ -53,10 +55,14 @@ export const AccDetails = ({ flag }) => {
   }, [cardName, cardStore]);
 
   console.log(cardsInfo?.length, "cardsInfo?.length");
+
+  useEffect(() => {
+    console.log("width: ", windowWidth.current);
+  }, [windowWidth]);
   return (
     <>
       {cardName?.length > 0 ? (
-        <Carousel responsive={responsive} containerClass="carousel-container">
+        <Carousel responsive={responsive}>
           {cardName?.length > 0 &&
             cardName?.map((a, i) => {
               return (
@@ -81,7 +87,7 @@ export const AccDetails = ({ flag }) => {
                     <div
                       style={{
                         overflowY: "scroll",
-                        height: (flag === "DLYTRN" ? "26vh" : "28vh") as string,
+                        height: (flag === "DLYTRN" ? "26vh" : "29vh") as string,
                       }}
                     >
                       <Grid container spacing={2} style={{ marginTop: "0px" }}>

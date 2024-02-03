@@ -236,6 +236,16 @@ export const Trn002 = () => {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
       ENTERED_BRANCH_CD: dataRow?.BRANCH_CD,
+
+      COMP_CD: dataRow?.COMP_CD,
+      BRANCH_CD: dataRow?.BRANCH_CD,
+      ACCT_TYPE: dataRow?.ACCT_TYPE,
+      ACCT_CD: dataRow?.ACCT_CD,
+      TRAN_AMOUNT: dataRow?.AMOUNT,
+      ACTIVITY_TYPE: "DAILY TRANSACTION",
+      TRAN_DT: dataRow?.TRAN_DT,
+      CONFIRM_FLAG: "N",
+      USER_DEF_REMARKS: "SUCCESSFULLY DELETE",
     };
     deleteScrollByVoucher.mutate(obj);
   };

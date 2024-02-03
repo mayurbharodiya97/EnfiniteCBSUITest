@@ -19,6 +19,7 @@ import {
 } from "components/custom/popupMessage";
 
 import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 
 const actions: ActionTypes[] = [
   {
@@ -154,7 +155,8 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
     // }
   }, []);
 
-  const handleDelete = () => {
+  const handleDelete = (input) => {
+    console.log(input, "input");
     console.log(dataRow, "dataRow");
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
@@ -167,15 +169,24 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
       ACCT_CD: dataRow?.ACCT_CD,
       TRAN_AMOUNT: dataRow?.AMOUNT,
       ACTIVITY_TYPE: "DAILY TRANSACTION",
-      TRANSACTION_DATE: dataRow?.TRAN_DT,
+      TRAN_DT: dataRow?.TRAN_DT,
       CONFIRM_FLAG: "N",
-      USER_DEF_REMARKS: "SUCCESSFULLY DELETE",
+      USER_DEF_REMARKS: input,
     };
-    deleteScrollByVoucher.mutate(obj);
+
+    input.length > 5
+      ? deleteScrollByVoucher.mutate(obj)
+      : enqueueSnackbar("Kindly Enter Remarks of at least 5 Characters", {
+          variant: "error",
+        });
   };
   const handleCloseDialog = () => {
     setScrollDialog(false);
   };
+
+  useEffect(() => {
+    console.log(dataRow, "dataRow");
+  }, [dataRow]);
   return (
     <>
       <GridWrapper
@@ -223,7 +234,7 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
           handleCloseDialog={handleCloseDialog}
         />
       )}
-      {Boolean(deleteDialog) ? (
+      {/* {Boolean(deleteDialog) ? (
         <PopupMessageAPIWrapper
           MessageTitle="Scroll Delete"
           Message={
@@ -236,6 +247,23 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
           rows={[]}
           open={deleteDialog}
           loading={deleteScrollByVoucher.isLoading}
+        />
+      ) : null} */}
+      {Boolean(deleteDialog) ? (
+        <RemarksAPIWrapper
+          TitleText={
+            "Do you want to Delete the transaction - VoucherNo." +
+            dataRow?.TRAN_CD +
+            " ?"
+          }
+          onActionYes={(input) => handleDelete(input)}
+          onActionNo={() => setDeleteDialog(false)}
+          isLoading={deleteScrollByVoucher.isLoading}
+          isEntertoSubmit={true}
+          AcceptbuttonLabelText="Ok"
+          CanceltbuttonLabelText="Cancel"
+          open={deleteDialog}
+          rows={dataRow}
         />
       ) : null}
     </>
