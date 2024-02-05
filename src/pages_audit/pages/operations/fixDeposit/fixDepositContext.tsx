@@ -2,16 +2,14 @@ import { createContext, useReducer, useState } from "react";
 import { FDContextType, FDStateType, ActionType } from "./type";
 
 const inititalState: FDStateType = {
-  activeStep: 0,
-  fdParaFormData: { FD_TYPE: "E", MODE: "3" },
+  activeStep: 2,
+  fdParaFormData: { FD_TYPE: "E", TRAN_MODE: "3" },
   isOpendfdAcctForm: false,
   fdAcctFormData: {},
   fdDetailFormData: {},
 };
 
 const fdReducer = (state: FDStateType, action: ActionType): FDStateType => {
-  // console.log(">>state", state?.fdParaFormData);
-  // console.log(">>action", action);
   switch (action.type) {
     case "commonType":
       return {

@@ -65,7 +65,13 @@ const authAPI = () => {
   const setDisplayLanguage = (code) => {
     displayLanguage = code;
   };
-  const loginUserDetails = ({ role, user: { id, branchCode } }) => {
+  const loginUserDetails = ({
+    role,
+    workingDate,
+    companyID,
+    baseCompanyID,
+    user: { id, branchCode, baseBranchCode },
+  }) => {
     loginuserDetailsData = {
       USERNAME: id,
       USERROLE: role,
@@ -73,6 +79,10 @@ const authAPI = () => {
       MACHINE_NAME: GetMachineName(),
       BRANCH_CD: branchCode,
       THROUGH_CHANNEL: "E_CBS",
+      WORKING_DATE: workingDate,
+      BASE_BRANCH_CD: baseBranchCode,
+      COMP_CD: companyID,
+      BASE_COMP_CD: baseCompanyID,
     };
   };
   const setToken = (argaccessToken) => {

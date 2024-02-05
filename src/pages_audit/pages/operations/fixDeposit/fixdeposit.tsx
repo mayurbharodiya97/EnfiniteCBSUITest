@@ -2,6 +2,7 @@ import {
   AppBar,
   Box,
   Button,
+  CircularProgress,
   Stack,
   Step,
   StepIconProps,
@@ -24,6 +25,9 @@ import { FixDepositDetailForm } from "./fixDepositDetail";
 import { TransferAcctDetailForm } from "./trnAccountDetail";
 import { SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
+import { useSnackbar } from "notistack";
+import { useMutation } from "react-query";
+import * as API from "./api";
 
 const ColorlibStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
@@ -77,13 +81,13 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 }));
 
 export const FixDepositForm = () => {
-  // const [stepData, setStepData] = useState({ step: 0, fdType: "E" });
-  // const [activeStep, setActiveStep] = useState(0);
+  const { enqueueSnackbar } = useSnackbar();
   const {
     fdState,
     setActiveStep,
     updateFDAccountsFormData,
     updateFDParaDataOnChange,
+    updateFDDetailsFormData,
   } = useContext(FixDepositContext);
   const submitEventRef = useRef(null);
 
@@ -95,6 +99,25 @@ export const FixDepositForm = () => {
   const fdParameterformRef: any = useRef(null);
   const fdDetailsformRef: any = useRef(null);
 
+  const validFDAccounts = useMutation(API.valiateFDAccounts, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
+    onSuccess: (data) => {
+      console.log(">>onSuccess", data);
+      updateFDDetailsFormData({ FDDTL: data?.[0]?.FD_ACCOUNTS });
+      // enqueueSnackbar(data, {
+      //   variant: "success",
+      // });
+      setActiveStep(fdState.activeStep + 1);
+    },
+  });
   const setDataOnFieldChange = (action, payload) => {
     updateFDParaDataOnChange({ [action]: payload });
     if (action === "FD_TYPE") {
@@ -141,9 +164,34 @@ export const FixDepositForm = () => {
     setFieldError,
     actionFlag
   ) => {
-    updateFDAccountsFormData(data);
-    console.log(">>submit2");
-    setActiveStep(fdState.activeStep + 1);
+    endSubmit(true);
+    // Filter FDACCTS where FD amount is greater than zero
+    let filteredFDACCTS = data.FDACCTS.filter(
+      (acct) =>
+        Boolean(acct.ACCT_CD) &&
+        parseFloat(acct.FD_AMOUNT) > 0 &&
+        parseInt(acct.FD_UNIT) > 0
+    );
+    if (Array.isArray(filteredFDACCTS) && filteredFDACCTS?.length > 0) {
+      updateFDAccountsFormData(data);
+      filteredFDACCTS = filteredFDACCTS.map((obj) => {
+        delete obj.ACCOUNT_LIST;
+        return obj;
+      });
+      console.log(">>fdState?.fdParaFormData", fdState?.fdParaFormData);
+      validFDAccounts.mutate({
+        CUSTOMER_ID: fdState?.fdParaFormData?.CUSTOMER_ID ?? "",
+        TRAN_MODE: fdState?.fdParaFormData?.TRAN_MODE ?? "",
+        FD_ACCOUNTS: filteredFDACCTS,
+      });
+    } else {
+      enqueueSnackbar(
+        "At least one row is required with the Account Number and New FD Amount.",
+        {
+          variant: "error",
+        }
+      );
+    }
   };
 
   const handleComplete = (e) => {
@@ -154,6 +202,7 @@ export const FixDepositForm = () => {
       fdState.activeStep === 1 &&
       fdState?.fdParaFormData?.FD_TYPE === "E"
     ) {
+      setActiveStep(fdState.activeStep + 1);
       fdDetailsformRef.current?.handleSubmit(e);
     }
   };
@@ -237,7 +286,15 @@ export const FixDepositForm = () => {
                 // ) : (
                 <>
                   {fdState.activeStep !== steps.length - 1 ? (
-                    <GradientButton onClick={handleComplete}>
+                    <GradientButton
+                      onClick={handleComplete}
+                      endIcon={
+                        validFDAccounts?.isLoading ? (
+                          <CircularProgress size={20} />
+                        ) : null
+                      }
+                      disabled={validFDAccounts?.isLoading}
+                    >
                       Next
                     </GradientButton>
                   ) : (

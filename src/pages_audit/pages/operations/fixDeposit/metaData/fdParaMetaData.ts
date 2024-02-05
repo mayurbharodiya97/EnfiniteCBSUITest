@@ -80,7 +80,7 @@ export const FixDepositParaFormMetadata = {
       render: {
         componentType: "select",
       },
-      name: "MODE",
+      name: "TRAN_MODE",
       label: "Mode",
       options: [
         { label: "Clearing", value: "2" },
@@ -93,13 +93,13 @@ export const FixDepositParaFormMetadata = {
         type: "string",
         rules: [
           { name: "required", params: ["Mode is required."] },
-          { name: "MODE", params: ["Please select Mode"] },
+          { name: "TRAN_MODE", params: ["Please select Mode"] },
         ],
       },
       validationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
         if (formState?.isSubmitting) return {};
-        formState.setDataOnFieldChange("MODE", field?.value);
+        formState.setDataOnFieldChange("TRAN_MODE", field?.value);
         return {
           CUSTOMER_ID: { value: "" },
           CUSTOMER_NAME: { value: "" },
@@ -137,11 +137,7 @@ export const FixDepositParaFormMetadata = {
           },
         ],
       },
-      dependentFields: ["FD_TYPE", "MODE"],
-      // setValueOnDependentFieldsChange: (...arg) => {
-      //   console.log(">>arg", arg);
-      //   return "";
-      // },
+      dependentFields: ["FD_TYPE", "TRAN_MODE"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -288,7 +284,7 @@ export const FixDepositAccountsFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1.5 },
         },
         {
           render: {
@@ -299,18 +295,30 @@ export const FixDepositAccountsFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1.5 },
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "autocomplete",
           },
           name: "ACCT_CD",
           label: "Account Number",
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-          GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
+          dependentFields: ["ACCOUNT_LIST"],
+          disableCaching: true,
+          options: (...arg) => {
+            let accountList = arg?.[2]?.["FDACCTS.ACCOUNT_LIST"]?.value ?? "";
+            accountList = accountList.split(",");
+            accountList = accountList.filter((item) => Boolean(item.trim()));
+            const acctCode = accountList.map((item) => ({
+              value: item,
+              label: item.trim(),
+            }));
+            return acctCode;
+          },
+          GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
         },
         {
           render: {
@@ -321,44 +329,41 @@ export const FixDepositAccountsFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-
           GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
         },
         {
           render: {
             componentType: "amountField",
           },
-          name: "FD_AMT",
+          name: "FD_AMOUNT",
           label: "New FD Amount",
           placeholder: "",
-          dependentFields: ["CONFIRMED", "USER_TYPE_ALLOWED"],
+          dependentFields: ["USER_TYPE_ALLOWED"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
-              dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
               dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                "Y"
+              "Y"
             ) {
               return false;
             } else {
               return true;
             }
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
           render: {
             componentType: "numberFormat",
           },
           className: "textInputFromRight",
-          name: "NO_OF_FD",
+          name: "FD_UNIT",
           label: "No. of FD",
           defaultValue: 1,
-          dependentFields: ["CONFIRMED", "USER_TYPE_ALLOWED"],
+          dependentFields: ["USER_TYPE_ALLOWED"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
-              dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
               dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                "Y"
+              "Y"
             ) {
               return false;
             } else {
@@ -377,7 +382,7 @@ export const FixDepositAccountsFormMetadata = {
               return true;
             },
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 1, xl: 1.5 },
         },
         {
           render: {
@@ -387,17 +392,11 @@ export const FixDepositAccountsFormMetadata = {
           label: "Total FD Amount",
           placeholder: "",
           isReadOnly: true,
-          dependentFields: [
-            "FD_AMT",
-            "NO_OF_FD",
-            "CONFIRMED",
-            "USER_TYPE_ALLOWED",
-          ],
+          dependentFields: ["FD_AMT", "NO_OF_FD", "USER_TYPE_ALLOWED"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
-              dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
               dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                "Y"
+              "Y"
             ) {
               return false;
             } else {
@@ -422,12 +421,11 @@ export const FixDepositAccountsFormMetadata = {
           branchCodeMetadata: {
             name: "CR_BRANCH_CD",
             label: "Credit Branch",
-            dependentFields: ["CONFIRMED", "USER_TYPE_ALLOWED"],
+            dependentFields: ["USER_TYPE_ALLOWED"],
             shouldExclude(fieldData, dependentFieldsValues, formState) {
               if (
-                dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
                 dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                  "Y"
+                "Y"
               ) {
                 return false;
               } else {
@@ -441,12 +439,11 @@ export const FixDepositAccountsFormMetadata = {
             name: "CR_ACCT_TYPE",
             label: "Credit A/c Type",
             required: false,
-            dependentFields: ["CONFIRMED", "USER_TYPE_ALLOWED"],
+            dependentFields: ["USER_TYPE_ALLOWED"],
             shouldExclude(fieldData, dependentFieldsValues, formState) {
               if (
-                dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
                 dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                  "Y"
+                "Y"
               ) {
                 return false;
               } else {
@@ -462,14 +459,12 @@ export const FixDepositAccountsFormMetadata = {
             dependentFields: [
               "CR_BRANCH_CD",
               "CR_ACCT_TYPE",
-              "CONFIRMED",
               "USER_TYPE_ALLOWED",
             ],
             shouldExclude(fieldData, dependentFieldsValues, formState) {
               if (
-                dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
                 dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                  "Y"
+                "Y"
               ) {
                 return false;
               } else {
@@ -491,12 +486,11 @@ export const FixDepositAccountsFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-          dependentFields: ["CONFIRMED", "USER_TYPE_ALLOWED"],
+          dependentFields: ["USER_TYPE_ALLOWED"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
-              dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
               dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                "Y"
+              "Y"
             ) {
               return false;
             } else {
@@ -512,17 +506,11 @@ export const FixDepositAccountsFormMetadata = {
           name: "MATURE_INST",
           label: "Mature Instruction",
           type: "text",
-          dependentFields: [
-            "BRANCH_CD",
-            "ACCT_TYPE",
-            "CONFIRMED",
-            "USER_TYPE_ALLOWED",
-          ],
+          dependentFields: ["BRANCH_CD", "ACCT_TYPE", "USER_TYPE_ALLOWED"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
-              dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
               dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                "Y"
+              "Y"
             ) {
               return false;
             } else {
@@ -541,12 +529,11 @@ export const FixDepositAccountsFormMetadata = {
           name: "NOMINEE_NM",
           label: "Nominee",
           type: "text",
-          dependentFields: ["CONFIRMED", "USER_TYPE_ALLOWED"],
+          dependentFields: ["USER_TYPE_ALLOWED"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
-              dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y" &&
               dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
-                "Y"
+              "Y"
             ) {
               return false;
             } else {
@@ -562,36 +549,79 @@ export const FixDepositAccountsFormMetadata = {
           },
           name: "USER_TYPE_ALLOWED",
         },
+        // {
+        //   render: {
+        //     componentType: "hidden",
+        //   },
+        //   name: "CONFIRMED",
+        //   label: "CONFIRMED",
+        // },
+        // {
+        //   render: {
+        //     componentType: "hidden",
+        //   },
+        //   name: "LAST_ENTERED_BY",
+        //   label: "LAST_ENTERED_BY",
+        // },
         {
           render: {
             componentType: "hidden",
           },
-          name: "CONFIRMED",
-          label: "CONFIRMED",
+          name: "COMP_CD",
+          label: "COMP_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "ACCOUNT_LIST",
+          label: "ACCOUNT_LIST",
         },
         {
           render: {
             componentType: "typography",
           },
-          name: "CONFIRMEDMSG",
-          label: "Account is not Confirmed.",
-          dependentFields: ["CONFIRMED"],
-          shouldExclude(fieldData, dependentFieldsValues, formState) {
-            console.log(
-              ">>CONFIRMED",
-              dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value
-            );
-            // if (dependentFieldsValues?.["FDACCTS.CONFIRMED"]?.value === "Y") {
-            //   return true;
-            // } else {
-            //   return false;
+          name: "VALIDATEMSG",
+          label: "",
+          defaultValue: "Account is not Confirmed.",
+          dependentFields: ["USER_TYPE_ALLOWED"],
+          TypographyProps: {
+            style: {
+              color: "red",
+              whiteSpace: "pre-line",
+              fontSize: "1rem",
+              // position: "absolute",
+              // bottom: 0,
+            },
+          },
+          setValueOnDependentFieldsChange: (dependentFields) => {
+            // if (dependentFields["FDACCTS.CONFIRMED"]?.value !== "Y") {
+            //   return (
+            //     "Account is not Confirmed. \n\rLast Modified User: " +
+            //     (dependentFields["FDACCTS.LAST_ENTERED_BY"]?.value ?? "") +
+            //     ", Last Modified Branch: " +
+            //     (dependentFields["FDACCTS.LAST_ENTERED_BRANCH_CD"]?.value ?? "")
+            //   );
             // }
-            return false;
+            if (dependentFields["FDACCTS.USER_TYPE_ALLOWED"]?.value !== "Y") {
+              return "You do have not access to this Account Type.";
+            }
+          },
+          shouldExclude(fieldData, dependentFieldsValues, formState) {
+            if (
+              dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
+              "Y"
+            ) {
+              return true;
+            } else {
+              return false;
+            }
           },
           GridProps: {
             xs: 4,
             md: 4,
             sm: 4,
+            style: { alignSelf: "center" },
           },
         },
       ],

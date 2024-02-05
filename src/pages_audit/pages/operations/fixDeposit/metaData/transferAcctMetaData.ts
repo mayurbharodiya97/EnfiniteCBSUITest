@@ -54,14 +54,15 @@ export const TransferAcctDetailFormMetadata = {
           render: {
             componentType: "_accountNumber",
           },
-          postValidationSetCrossFieldValues: (
-            currentField,
-            formState,
-            authState,
-            dependentFieldValue,
-            reqFlag
-          ) => {},
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
+          branchCodeMetadata: {
+            GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
+          },
+          accountTypeMetadata: {
+            GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
+          },
+          accountCodeMetadata: {
+            GridProps: { xs: 12, sm: 2, md: 2, lg: 3, xl: 1.5 },
+          },
         },
         {
           render: {
@@ -73,7 +74,7 @@ export const TransferAcctDetailFormMetadata = {
           fullWidth: true,
           isReadOnly: true,
 
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 4, xl: 1.5 },
         },
         {
           render: {
@@ -84,7 +85,7 @@ export const TransferAcctDetailFormMetadata = {
           placeholder: "",
           type: "text",
           isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 1.5, lg: 2, xl: 1.5 },
         },
         {
           render: {
@@ -106,7 +107,7 @@ export const TransferAcctDetailFormMetadata = {
               return true;
             },
           },
-          GridProps: { xs: 6, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 6, sm: 2, md: 1.5, lg: 2, xl: 1.5 },
         },
         {
           render: {
@@ -122,7 +123,7 @@ export const TransferAcctDetailFormMetadata = {
           maxDate: new Date(),
           maxLength: 6,
           defaultfocus: true,
-          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 1.8, lg: 2, xl: 1.5 },
         },
         {
           render: {
@@ -135,7 +136,7 @@ export const TransferAcctDetailFormMetadata = {
           // autoComplete: false,
           type: "text",
           // isReadOnly: true,
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
       ],
     },

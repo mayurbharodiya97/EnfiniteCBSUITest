@@ -49,7 +49,7 @@ export const FixDepositDetailFormMetadata = {
       name: "FDDTL",
       removeRowFn: "deleteFormArrayFieldData",
       fixedRows: true,
-      isCustomStyle: true,
+      // isCustomStyle: true,
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -61,6 +61,14 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Branch is required."] },
+              { name: "BRANCH_CD", params: ["Branch is required."] },
+            ],
+          },
           GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
         },
         {
@@ -72,6 +80,14 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Account Type is required."] },
+              { name: "ACCT_TYPE", params: ["Account Type is required."] },
+            ],
+          },
           GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
         },
         {
@@ -83,6 +99,14 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Account Number is required."] },
+              { name: "ACCT_CD", params: ["Account Number is required."] },
+            ],
+          },
           GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
         },
         {
@@ -111,7 +135,7 @@ export const FixDepositDetailFormMetadata = {
           render: {
             componentType: "textField",
           },
-          name: "ACCT_NAME",
+          name: "ACCT_NM",
           label: "Account Name",
           type: "text",
           fullWidth: true,
@@ -142,6 +166,14 @@ export const FixDepositDetailFormMetadata = {
           maxDate: new Date(),
           maxLength: 6,
           defaultfocus: true,
+          required: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["AsOn Date is required."] },
+              { name: "TRAN_DT", params: ["AsOn Date is required."] },
+            ],
+          },
           GridProps: { xs: 12, sm: 1.5, md: 1.8, lg: 1.8, xl: 1.5 },
         },
         {

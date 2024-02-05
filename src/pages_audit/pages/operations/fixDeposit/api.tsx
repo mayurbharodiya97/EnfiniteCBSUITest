@@ -10,3 +10,13 @@ export const getFDAccountsDetail = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const valiateFDAccounts = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEFDACCOUNTS", { ...Apireq });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

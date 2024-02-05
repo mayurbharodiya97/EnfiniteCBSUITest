@@ -225,7 +225,6 @@ const GeneralAPISDK = () => {
     }
   };
   const getBranchCodeList = async (...reqData) => {
-    console.log(reqData, "reqData120");
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETBRACCESSLST", {
         USER_NAME: reqData?.[3]?.user.id

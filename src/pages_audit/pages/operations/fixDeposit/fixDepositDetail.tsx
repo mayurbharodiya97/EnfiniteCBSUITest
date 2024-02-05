@@ -19,21 +19,14 @@ export const FixDepositDetailForm = forwardRef<any, any>(({}, ref) => {
     updateFDDetailsFormData(data);
     setActiveStep(fdState.activeStep + 1);
   };
+  console.log(">>fdState", fdState?.fdDetailFormDa);
   return (
     <Fragment>
       <FormWrapper
         key={"FixDepositDetail"}
         // metaData={MobileAppReviewMetaData}
         metaData={FixDepositDetailFormMetadata as MetaDataType}
-        initialValues={
-          {
-            FDDTL: [
-              {
-                FD_NO: "",
-              },
-            ],
-          } as InitialValuesType
-        }
+        initialValues={fdState?.fdDetailFormData as InitialValuesType}
         onSubmitHandler={onSubmitHandler}
         hideHeader={true}
         formStyle={{

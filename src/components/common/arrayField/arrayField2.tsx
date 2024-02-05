@@ -28,6 +28,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   GridProps,
   IconButton,
@@ -399,6 +400,8 @@ export const ArrayFieldRow = ({
     } else {
       finalClass = classes.newSecondArrayRowContainer;
     }
+  } else if (Boolean(fixedRows)) {
+    finalClass = classes.newSecondArrayRowContainer;
   } else if (Boolean(isScreenStyle)) {
     finalClass = classes.arrayScreenRowContainer;
   } else {
@@ -410,7 +413,11 @@ export const ArrayFieldRow = ({
         <Typography
           gutterBottom
           className={
-            fixedRows ? classes.arrayRowCountFixedRows : classes.arrayRowCount
+            isCustomStyle
+              ? classes.arrayRowCountCustomStyle
+              : fixedRows
+              ? classes.arrayRowCountFixedRows
+              : classes.arrayRowCount
           }
         >
           {rowIndex + 1} of {totalRows}
@@ -436,6 +443,9 @@ export const ArrayFieldRow = ({
           </IconButton>
         ) : null}
       </Grid>
+      {fixedRows && rowIndex + 1 < totalRows ? (
+        <Divider sx={{ backgroundColor: "black", width: "100%" }} />
+      ) : null}
       <Dialog
         open={isDialogOpen}
         aria-labelledby="alert-dialog-title"

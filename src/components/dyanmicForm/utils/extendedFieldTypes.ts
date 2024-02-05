@@ -155,7 +155,6 @@ export const extendFieldTypes = (
       //   field["defaultValue"] = "000 ";
       // }
       newMetaDataFieldsCustom.push(field);
-      console.log(field, "field120");
     }
   };
 
@@ -176,8 +175,6 @@ export const extendFieldTypes = (
       if (!paravalue && !item?.acctFieldPara) {
         finalParameter = "2";
       }
-
-      console.log(finalParameter, "finalParameter120");
 
       const setExtendedTypeProps = (type) => {
         if (Boolean(item?.[`${type}Metadata`])) {

@@ -69,18 +69,16 @@ export const DetailForm = forwardRef<any, any>(
           }}
           ref={ref}
           setDataOnFieldChange={(action, payload) => {
-            console.log(">>setDataOnFieldChange", action, payload);
             if (action === "CUSTOMER_ID_FEFORE") {
               setIsOpendfdAcctForm(false);
               updateFDAccountsFormData([]);
             } else if (action === "CUSTOMER_ID") {
-              console.log(">>payload", payload);
               if (
                 Boolean(payload?.value) &&
                 Array.isArray(payload?.FD_ACCTS) &&
                 payload?.FD_ACCTS?.length > 0
               ) {
-                console.log(">>>>>>>>>jkhh");
+                updateFDParaDataOnChange({ [action]: payload?.value ?? "" });
                 setIsOpendfdAcctForm(true);
                 updateFDAccountsFormData({ FDACCTS: payload?.FD_ACCTS });
               } else {

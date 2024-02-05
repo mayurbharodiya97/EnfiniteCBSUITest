@@ -402,6 +402,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       decimalScale: 2,
       fixedDecimalScale: true,
       autoComplete: "off",
+      placeholder: "0.00",
       isAllowed: (values) => {
         if (values?.value?.length > 14) {
           return false;
@@ -426,9 +427,9 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     // maxLength: 8,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
-    setValueOnDependentFieldsChange: (dependentFields) => {
-      return "";
-    },
+    // setValueOnDependentFieldsChange: (dependentFields) => {
+    //   return "";
+    // },
 
     schemaValidation: {
       type: "string",
