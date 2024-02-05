@@ -68,7 +68,6 @@ export const personal_detail_prefix_data = {
             _optionsKey: "PDPrefix",
             type: "text",
             required: true,
-            isFieldFocused: true,
             // GridProps: {xs:12, sm:2.5, md: 2.5, lg: 1.5, xl: 1 },
             GridProps: {xs:12, sm:4, md: 1, lg: 1, xl:1},
             schemaValidation: {
@@ -613,7 +612,7 @@ export const personal_other_detail_meta_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: [
                 {label: "Minor", value: "M"},
