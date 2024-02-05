@@ -150,7 +150,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
       let result = setValueOnDependentFieldsChange(
         transformDependentFieldsState(dependentValues)
       );
-      if (result !== undefined && result !== null) {
+      if (Boolean(result)) {
         handleChange(result);
       }
     }
