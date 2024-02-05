@@ -512,7 +512,7 @@ export default function FormModal({
 
       case "KYC Document Upload":
         return <Document
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} from={from}
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
         // return <KYCDocUpload />
@@ -574,7 +574,7 @@ export default function FormModal({
 
       case "KYC Document Upload":
         return <Document
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} from={from}
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
         // return <KYCDocUpload />
   
@@ -747,7 +747,7 @@ export default function FormModal({
           color="inherit"
           variant="subtitle2"
           component="div"
-        >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE}`}</Typography>
+        >{`Opening Date - ${format(new Date(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE), "dd/MM/yyyy")}`}</Typography>
         )
       :""}
     </React.Fragment>
