@@ -37,7 +37,12 @@ const actions: ActionTypes[] = [
   },
 ];
 
-export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
+export const TRN001_Table = ({
+  updatedRows,
+  handleGetHeaderTabs,
+  searchScrollNo,
+  handleFilteredRows,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
 
@@ -46,6 +51,7 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
   const { cardStore, setCardStore } = useContext(AccDetailContext);
 
   const [rows, setRows] = useState<any>([]);
+  const [rows2, setRows2] = useState<any>([]);
   const [credit, setCredit] = useState<number>(0);
   const [debit, setDebit] = useState<number>(0);
   const [dataRow, setDataRow] = useState<any>({});
@@ -56,6 +62,25 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
     USER_NAME: authState?.user?.id,
     COMP_CD: authState?.companyID,
     BRANCH_CD: authState?.user?.branchCode,
+  };
+
+  useEffect(() => {
+    rows2 && handleFilterByScroll();
+  }, [searchScrollNo]);
+  const handleFilterByScroll = () => {
+    let result = rows2?.filter((item) => item?.SCROLL1 === searchScrollNo);
+    if (result?.length > 0) {
+      setRows(result);
+    } else if (!searchScrollNo) {
+      result = [];
+      setRows(rows2);
+    } else {
+      result = [];
+      setRows([]);
+    }
+
+    handleFilteredRows(result);
+    console.log(result, "resssssult");
   };
 
   useEffect(() => {
@@ -95,6 +120,11 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
       setCredit(crSum);
       setDebit(drSum);
       setRows(data);
+      setRows2(data);
+
+      setTempStore({ ...tempStore, accInfo: data[0] });
+      getCarousalCards.mutate(data[0]);
+      handleGetHeaderTabs(data[0]?.PARENT_TYPE ?? "");
     },
     onError: (error) => {},
   });
@@ -187,6 +217,11 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
   useEffect(() => {
     console.log(dataRow, "dataRow");
   }, [dataRow]);
+  useEffect(() => {
+    console.log(rows, "rows");
+    console.log(rows2, "rows2");
+  }, [rows, rows2]);
+
   return (
     <>
       <GridWrapper
@@ -195,7 +230,7 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
         data={rows}
         setData={() => null}
         loading={getTRN001List.isLoading || getCarousalCards.isLoading}
-        refetchData={() => {}}
+        refetchData={() => getTRN001List.mutate(objData)}
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
@@ -234,21 +269,7 @@ export const TRN001_Table = ({ updatedRows, handleGetHeaderTabs }) => {
           handleCloseDialog={handleCloseDialog}
         />
       )}
-      {/* {Boolean(deleteDialog) ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Scroll Delete"
-          Message={
-            "Do you want to Delete the transaction - VoucherNo." +
-            dataRow?.TRAN_CD +
-            " ?"
-          }
-          onActionYes={() => handleDelete()}
-          onActionNo={() => setDeleteDialog(false)}
-          rows={[]}
-          open={deleteDialog}
-          loading={deleteScrollByVoucher.isLoading}
-        />
-      ) : null} */}
+
       {Boolean(deleteDialog) ? (
         <RemarksAPIWrapper
           TitleText={

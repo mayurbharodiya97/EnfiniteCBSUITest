@@ -27,6 +27,7 @@ import { Grid, Typography } from "@mui/material";
 import "./Trn002.css";
 import DailyTransTabs from "../TRNHeaderTabs";
 import CommonFooter from "../TRNCommon/CommonFooter";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -58,6 +59,7 @@ export const Trn002 = () => {
 
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
+  const [filteredRows, setFilteredRows] = useState<any>([]);
   const [tabsData, setTabsData] = useState<any>([]);
   const [dataRow, setDataRow] = useState<any>({});
   const [credit, setCredit] = useState<number>(0);
@@ -74,12 +76,7 @@ export const Trn002 = () => {
 
   useEffect(() => {
     handleGetTRN002List();
-    //cleanUp fn
-    return () => {
-      setTempStore({ ...tempStore, accInfo: {} });
-      setCardStore({ ...cardStore, cardsInfo: {} });
-      setTabsData([]);
-    };
+    setTabsData([]);
   }, []);
 
   // api define ========================================================================
@@ -89,6 +86,9 @@ export const Trn002 = () => {
       let arr = data.filter((a) => a.CONFIRMED == "0");
       setRows2(arr);
       setRows(data);
+      setTempStore({ ...tempStore, accInfo: arr[0] });
+      getCarousalCards.mutate(arr[0]);
+      getTabsByParentType.mutate(arr[0]?.PARENT_TYPE ?? "");
 
       let crSum = 0;
       let drSum = 0;
@@ -141,7 +141,7 @@ export const Trn002 = () => {
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
       setDeleteDialog(false);
-      enqueueSnackbar("Scroll Deleted", {
+      enqueueSnackbar("Transaction Deleted", {
         variant: "success",
       });
       handleGetTRN002List();
@@ -231,7 +231,7 @@ export const Trn002 = () => {
     },
   });
 
-  const handleDelete = () => {
+  const handleDelete = (input) => {
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
@@ -245,15 +245,20 @@ export const Trn002 = () => {
       ACTIVITY_TYPE: "DAILY TRANSACTION",
       TRAN_DT: dataRow?.TRAN_DT,
       CONFIRM_FLAG: "N",
-      USER_DEF_REMARKS: "SUCCESSFULLY DELETE",
+      USER_DEF_REMARKS: input,
     };
-    deleteScrollByVoucher.mutate(obj);
+    input.length > 5
+      ? deleteScrollByVoucher.mutate(obj)
+      : enqueueSnackbar("Kindly Enter Remarks of at least 5 Characters", {
+          variant: "error",
+        });
   };
 
   const handleConfirm = () => {
     confirmScroll.mutate(dataRow);
   };
 
+  const handleFilterByScroll = () => {};
   return (
     <>
       <DailyTransTabs
@@ -276,7 +281,7 @@ export const Trn002 = () => {
           setData={() => null}
           loading={getTRN002List.isLoading || getCarousalCards.isLoading}
           ref={myGridRef}
-          refetchData={() => {}}
+          refetchData={() => handleGetTRN002List()}
           actions={actions}
           setAction={setCurrentAction}
         />
@@ -321,26 +326,31 @@ export const Trn002 = () => {
 
       <CommonFooter
         viewOnly={true}
+        filteredRows={filteredRows}
         handleUpdateRows={handleUpdateRows}
+        handleFilterByScroll={handleFilterByScroll}
         handleViewAll={handleViewAll}
         handleRefresh={() => handleGetTRN002List()}
       />
 
       {Boolean(deleteDialog) ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Transaction Delete"
-          Message={
-            "Do you wish to Delete this Transaction - Voucher No. " +
+        <RemarksAPIWrapper
+          TitleText={
+            "Do you want to Delete the transaction - VoucherNo." +
             dataRow?.TRAN_CD +
             " ?"
           }
-          onActionYes={() => handleDelete()}
+          onActionYes={(input) => handleDelete(input)}
           onActionNo={() => setDeleteDialog(false)}
-          rows={[]}
+          isLoading={deleteScrollByVoucher.isLoading}
+          isEntertoSubmit={true}
+          AcceptbuttonLabelText="Ok"
+          CanceltbuttonLabelText="Cancel"
           open={deleteDialog}
-          loading={deleteScrollByVoucher.isLoading}
+          rows={dataRow}
         />
       ) : null}
+
       {Boolean(confirmDialog) ? (
         <PopupMessageAPIWrapper
           MessageTitle="Transaction Confirm"

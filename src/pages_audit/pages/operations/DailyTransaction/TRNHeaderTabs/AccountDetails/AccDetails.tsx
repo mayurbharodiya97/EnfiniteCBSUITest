@@ -17,31 +17,29 @@ import { AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 
+const cardDimensions = {
+  superLargeDesktop: {
+    breakpoint: { max: 4000, min: 3000 },
+    items: 2,
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+  },
+};
+
 export const AccDetails = ({ flag }) => {
   const { cardStore, setCardStore } = useContext(AccDetailContext);
-  const windowWidth = useRef(window.innerWidth);
-
   const [cardName, setCardName] = useState<any>([]);
   let cardsInfo = cardStore?.cardsInfo ?? [];
-
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 2,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: cardName?.length < 3 ? 2 : 3,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
 
   useEffect(() => {
     let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
@@ -54,22 +52,14 @@ export const AccDetails = ({ flag }) => {
     console.log(cardStore, "cardStore");
   }, [cardName, cardStore]);
 
-  console.log(cardsInfo?.length, "cardsInfo?.length");
-
-  useEffect(() => {
-    console.log("width: ", windowWidth.current);
-  }, [windowWidth]);
   return (
     <>
       {cardName?.length > 0 ? (
-        <Carousel responsive={responsive}>
+        <Carousel responsive={cardDimensions}>
           {cardName?.length > 0 &&
             cardName?.map((a, i) => {
               return (
-                <Card
-                  // id={cardName?.length < 3 ? "cardContainer2" : "cardContainer"}
-                  id="cardContainer"
-                >
+                <Card id="cardContainer">
                   <CardContent>
                     <div id="cardHeading">
                       <Typography
@@ -83,13 +73,13 @@ export const AccDetails = ({ flag }) => {
                         <AccountCircleIcon fontSize="medium" />
                       </div>
                     </div>
-
                     <div
                       style={{
                         overflowY: "scroll",
                         height: (flag === "DLYTRN" ? "26vh" : "29vh") as string,
                       }}
                     >
+                      {" "}
                       <Grid container spacing={2} style={{ marginTop: "0px" }}>
                         {cardsInfo?.length > 0 &&
                           cardsInfo?.map((b, i2) => {
@@ -99,13 +89,22 @@ export const AccDetails = ({ flag }) => {
                                   <Typography id="cardLabel">
                                     {b?.COL_LABEL}
                                   </Typography>
-                                  <Typography>{b?.COL_VALUE}</Typography>
+                                  <Typography
+                                    style={
+                                      b.COL_LABEL != "PAN" &&
+                                      b.COL_VALUE.includes("-")
+                                        ? { color: "tomato" }
+                                        : {}
+                                    }
+                                  >
+                                    {b?.COL_VALUE}
+                                  </Typography>
                                 </Grid>
                               );
                             }
                           })}
                       </Grid>
-                    </div>
+                    </div>{" "}
                   </CardContent>
                 </Card>
               );
@@ -122,7 +121,6 @@ export const AccDetails = ({ flag }) => {
         >
           <div style={{ paddingTop: "10%" }}></div>
         </Card>
-        // <></>
       )}
     </>
   );

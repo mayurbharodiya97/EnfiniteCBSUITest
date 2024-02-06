@@ -111,16 +111,15 @@ export const Trn001 = () => {
   const [viewOnly, setViewOnly] = useState(false);
   const [saveDialog, setSaveDialog] = useState<boolean>(false);
   const [tabsData, setTabsData] = useState<any>([]);
+  const [searchScrollNo, setSearchScrollNo] = useState<any>("");
+  const [filteredRows, setFilteredRows] = useState<any>("");
 
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    //cleanUp fn
-    return () => {
-      setTempStore({ ...tempStore, accInfo: {} });
-      setCardStore({ ...cardStore, cardsInfo: {} });
-      setTabsData([]);
-    };
+    setTempStore({ ...tempStore, accInfo: {} });
+    setCardStore({ ...cardStore, cardsInfo: {} });
+    setTabsData([]);
   }, []);
   useEffect(() => {
     console.log(index, "index");
@@ -236,14 +235,19 @@ export const Trn001 = () => {
   const getAccNoValidation = useMutation(API.getAccNoValidation, {
     onSuccess: (data) => {
       console.log(data, "dattt");
-      if (data?.RESTRICT_MESSAGE) {
-        enqueueSnackbar(data?.RESTRICT_MESSAGE, {
+
+      data?.MESSAGE1 &&
+        enqueueSnackbar(data?.MESSAGE1, {
+          variant: "success",
+        });
+      if (data?.RESTRICTION) {
+        enqueueSnackbar(data?.RESTRICTION, {
           variant: "error",
         });
         const obj = [...rows];
         obj[index].bug = true;
         obj[index].bugAccNo = true;
-        obj[index].bugMsgAccNo = data?.RESTRICT_MESSAGE;
+        obj[index].bugMsgAccNo = data?.RESTRICTION;
         setRows(obj);
       } else {
         const obj = [...rows];
@@ -689,6 +693,7 @@ export const Trn001 = () => {
   };
 
   const handleUpdateRows = (data) => {
+    console.log(data, "updData");
     setViewOnly(true);
     setUpdatedRows(data);
   };
@@ -698,6 +703,15 @@ export const Trn001 = () => {
     setUpdatedRows([]);
   };
 
+  const handleFilterByScroll = (scrollNo) => {
+    console.log(scrollNo, "scrollNo");
+    setSearchScrollNo(scrollNo);
+  };
+
+  const handleFilteredRows = (rows) => {
+    //sending back to commonfooter
+    setFilteredRows(rows);
+  };
   return (
     <>
       <DailyTransTabs heading="(Maker) (TRN/001)" tabsData={tabsData} />
@@ -714,8 +728,10 @@ export const Trn001 = () => {
         {loading && <LinearProgress color="secondary" />}
         {viewOnly && (
           <TRN001_Table
+            searchScrollNo={searchScrollNo}
             updatedRows={updatedRows}
             handleGetHeaderTabs={handleGetHeaderTabs}
+            handleFilteredRows={handleFilteredRows}
           />
         )}
 
@@ -820,7 +836,6 @@ export const Trn001 = () => {
                         >
                           <TableCell sx={{ minWidth: 120 }}>
                             <TextField
-                              id="txtRight"
                               value={a.accNo}
                               error={!a.accNo || a.bugAccNo ? true : false}
                               size="small"
@@ -1059,7 +1074,9 @@ export const Trn001 = () => {
       <br />
       <CommonFooter
         viewOnly={viewOnly}
+        filteredRows={filteredRows}
         handleUpdateRows={handleUpdateRows}
+        handleFilterByScroll={handleFilterByScroll}
         handleViewAll={handleViewAll}
         handleRefresh={handleReset}
       />

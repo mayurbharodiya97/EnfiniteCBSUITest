@@ -54,6 +54,7 @@ export const RemarksAPIWrapper = ({
         <DialogContent>
           <br />
           <TextField
+            color="secondary"
             autoFocus={true}
             label={"Remarks"}
             placeholder="Enter Remarks"
