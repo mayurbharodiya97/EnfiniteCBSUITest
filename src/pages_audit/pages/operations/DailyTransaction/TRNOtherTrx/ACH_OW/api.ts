@@ -22,6 +22,7 @@ export const getACH_OWList = async (reqData) => {
     let responseData = data;
     responseData.map((a, i) => {
       a.index = i;
+      a.sr = i + 1;
     });
     return responseData;
   } else {

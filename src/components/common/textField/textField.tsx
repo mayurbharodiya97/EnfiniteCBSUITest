@@ -148,7 +148,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
       let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues)
+        transformDependentFieldsState(dependentValues),
+        { isSubmitting }
       );
       if (result !== undefined && result !== null) {
         handleChange(result);
@@ -163,6 +164,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
         handleChange(value);
         if (isFieldFocused) {
           getFocus();
+        }
+        if (error) {
+          if (whenToRunValidation === "onBlur") {
+            runValidation({ value: value }, true);
+          }
         }
         if (ignoreUpdate) {
           //ignore Validation
@@ -278,7 +284,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
         //@ts-ignore
         InputProps={{
           style: {
-            background: Boolean(readOnly) ? "#e7e5e563" : "",
+            background: textFieldStyle
+              ? ""
+              : Boolean(readOnly)
+              ? "#e7e5e563"
+              : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
                   color: currentColor,

@@ -175,13 +175,14 @@ const GeneralAPISDK = () => {
       dependentFieldValue?.ACCT_TYPE?.optionData?.[0]?.PADDING_NUMBER,
       0
     );
-    if (
-      Boolean(
-        currentField?.value &&
-          dependentFieldValue?.BRANCH_CD?.value &&
-          dependentFieldValue?.ACCT_TYPE?.value
-      )
-    ) {
+
+    const condition = Boolean(reqFlag === "ACCT_CD")
+      ? currentField?.value &&
+        dependentFieldValue?.BRANCH_CD?.value &&
+        dependentFieldValue?.ACCT_TYPE?.value
+      : currentField?.value;
+
+    if (Boolean(condition)) {
       const { status, data } = await AuthSDK.internalFetcher("GETACCTDATA", {
         COMP_CD: authState?.companyID,
         BRANCH_CD:
@@ -217,7 +218,6 @@ const GeneralAPISDK = () => {
             },
             BALANCE: {
               value: data?.[0]?.WIDTH_BAL,
-              label: "ertert",
             },
           };
         }
@@ -545,7 +545,7 @@ const GeneralAPISDK = () => {
       await AuthSDK.internalFetcher(`GETCLGZONELIST`, {
         ZONE_TRAN_TYPE: reqData?.[4] ?? "",
         COMP_CD: reqData?.[3]?.companyID ?? "",
-        BRANCH_CD: reqData?.[3]?.user?.branchCode,
+        BRANCH_CD: reqData?.[3]?.user?.branchCode ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -583,32 +583,6 @@ const GeneralAPISDK = () => {
         SLIP_CD: { value: "" },
       };
     }
-  };
-  const getAccountNumberData = async (...reqData) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher(`GETACCOUNTNM`, {
-        COMP_CD: reqData?.[2]?.companyID ?? "",
-        BRANCH_CD: reqData?.[2]?.user?.branchCode,
-        ACCT_CD: reqData?.[0]?.value.padStart(6, "0").padEnd(20, " "),
-        ACCT_TYPE: reqData?.[3]?.ACCT_TYPE?.value ?? "",
-      });
-    if (status === "0") {
-      return {
-        ACCT_NAME: { value: data?.[0]?.ACCT_NAME ?? "" },
-        TRAN_BAL: { value: data?.[0]?.TRAN_BAL ?? "" },
-      };
-    } else {
-      return {
-        ACCT_NAME: { value: "" },
-        TRAN_BAL: { value: "" },
-      };
-    }
-  };
-
-  const testingFn = async (...reqData) => {
-    console.log(
-      "{}{}{{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}-------------------------"
-    );
   };
   const getMatureInstDetail = async (...ReqData) => {
     if (!Boolean(ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value)) return [];
@@ -659,8 +633,6 @@ const GeneralAPISDK = () => {
     getDependentFieldList,
     getProMiscData,
     getZoneListData,
-    getAccountNumberData,
-    testingFn,
     getMatureInstDetail,
   };
 };

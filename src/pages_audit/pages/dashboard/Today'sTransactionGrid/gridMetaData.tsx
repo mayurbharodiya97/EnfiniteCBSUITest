@@ -76,7 +76,7 @@ export const TodaysTransactionTableGridMetaData: GridMetaDataType = {
       sequence: 5,
       alignment: "left",
       componentType: "date",
-      dateFormat: "dd/MM/yyyy",
+      // dateFormat: "dd/MM/yyyy",
       width: 90,
       minWidth: 60,
       maxWidth: 260,

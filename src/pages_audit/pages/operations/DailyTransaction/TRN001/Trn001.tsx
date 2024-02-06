@@ -1,6 +1,7 @@
 //UI
-import { Button, Toolbar, AppBar, Card, Tooltip } from "@mui/material";
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { Button, Card } from "@mui/material";
+import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
@@ -9,13 +10,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import CancelIcon from "@mui/icons-material/Cancel";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -24,8 +19,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 //Logic
+import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
+import { isValidDate } from "components/utils/utilFunctions/function";
 
 import React, {
   useEffect,
@@ -39,44 +36,65 @@ import * as API from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
-
+import {
+  PopupMessageAPIWrapper,
+  PopupRequestWrapper,
+} from "components/custom/popupMessage";
 import "./Trn001.css";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 
+const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: "#ea3a1b",
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}));
 export const Trn001 = () => {
+  const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
   var defBranch = {
     label: authState?.user?.branchCode + "-" + authState?.user?.branch,
     value: authState?.user?.branchCode,
     info: { COMP_CD: authState?.companyID },
   };
-  var defaulVal = {
+  var defTableValue = {
     branch: defBranch,
     accType: { label: "", value: "", info: "" },
     accNo: "",
+
     trx: { label: "", value: "", code: "" }, //TYPE_CD
-    scroll: "0", //token
+    scroll: "", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: "0",
-    date: new Date().toISOString()?.substring(0, 10),
+    // date: new Date().toISOString()?.substring(0, 10),
+    date: new Date(),
     debit: "0.00",
     credit: "0.00",
-    vNo: "", //TRAN_CD
     bug: true,
-    bugChq: false,
     bugAccNo: false,
+    bugCNo: false,
+    bugDate: false,
+    bugMsgAccNo: "",
+    bugMsgCNo: "",
+    bugMsgDate: "",
     isCredit: true,
     viewOnly: false,
   };
 
+  let defErrMsg = { cNo: "", accNo: "" };
   //states define
-  const [rows, setRows] = useState<any>([defaulVal]);
+  const [rows, setRows] = useState<any>([defTableValue]);
   const [updatedRows, setUpdatedRows] = useState<any>([]);
-  const [trxOptions, setTrxOptions] = useState([]);
+  const [trxOptions, setTrxOptions] = useState<any>([]);
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
   const [sdcOptions, setSdcOptions] = useState<any>([]);
   const [accTypeOptions, setAccTypeOptions] = useState([]);
@@ -86,19 +104,27 @@ export const Trn001 = () => {
   const [isSave, setIsSave] = useState(false);
   const [diff, setDiff] = useState(0);
   const [isArray, setIsArray] = useState(false);
-  const [errMsg, setErrMsg] = useState({ cNo: "", accNo: "" });
+  const [errMsg, setErrMsg] = useState(defErrMsg);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [resetDialog, setResetDialog] = useState(false);
   const [viewOnly, setViewOnly] = useState(false);
-  const [saveDialog, setSaveDialog] = useState(false);
+  const [saveDialog, setSaveDialog] = useState<boolean>(false);
+  const [tabsData, setTabsData] = useState<any>([]);
 
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    setTempStore({ ...tempStore, accInfo: {} });
+    //cleanUp fn
+    return () => {
+      setTempStore({ ...tempStore, accInfo: {} });
+      setCardStore({ ...cardStore, cardsInfo: {} });
+      setTabsData([]);
+    };
   }, []);
-
+  useEffect(() => {
+    console.log(index, "index");
+  }, [index]);
   useEffect(() => {
     //bug checker on row change
     console.log(rows, "rows trn1");
@@ -121,16 +147,18 @@ export const Trn001 = () => {
     }
 
     if (rows[i]?.isCredit && !(Number(rows[i]?.credit) > 0)) {
+      //credit true
       rows[i].bug = true;
     }
     if (!rows[i]?.isCredit && !(Number(rows[i]?.debit) > 0)) {
+      //debit true
       rows[i].bug = true;
     }
 
     if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
       rows[i].bug = true;
     }
-    if (!rows[i]?.isCredit && rows[i].bugChq) {
+    if (!rows[i]?.isCredit && rows[i].bugCNo) {
       rows[i].bug = true;
     }
 
@@ -181,65 +209,23 @@ export const Trn001 = () => {
     onError: (error: any) => {},
   });
 
-  const getAccInfo = useMutation(CommonApi.getAccDetails, {
+  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setLoading(false);
-      setTempStore({ ...tempStore, accInfo: data });
-      if (data.STATUS == "C") {
-        setErrMsg({
-          ...errMsg,
-          accNo: data.ACCT_CD_NEW + " Account Closed!",
-        });
-        rows[index].bug = true;
-      } else if (data.STATUS == "U") {
-        setErrMsg({
-          ...errMsg,
-          accNo: data.ACCT_CD_NEW + " Account Unclaimed!",
-        });
-        rows[index].bug = true;
-      } else if (!data || data?.length == 0) {
-        setErrMsg({
-          ...errMsg,
-          accNo: "No record found for given A/C type & A/C No",
-        });
-        rows[index].bug = true;
-      } else {
-        setErrMsg({ ...errMsg, accNo: "" });
-      }
-    },
-    onError: (error) => {
-      setLoading(false);
-      enqueueSnackbar("Error Fetching Account Info", {
-        variant: "error",
-      });
-    },
-  });
-
-  const saveScroll = useMutation(API.addDailyTrxScroll, {
-    onSuccess: (data) => {
-      setLoading(false);
-      console.log(data, "scroll save api res");
-      if (Number(data?.INSERT) > 0) {
-        handleReset();
-        enqueueSnackbar("Scroll Saved", {
-          variant: "success",
-        });
-      }
+      setCardStore({ ...cardStore, cardsInfo: data });
     },
     onError: (error: any) => {
-      setLoading(false);
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
+      setLoading(false);
+      setCardStore({ ...cardStore, cardsInfo: [] });
     },
   });
-  const getChqValidation = useMutation(API.getChqValidation, {
+
+  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
     onSuccess: (data) => {
-      if (data.ERR_CODE == "-1") {
-        rows[index].bug = true;
-        rows[index].bugChq = true;
-        setErrMsg({ ...errMsg, cNo: data?.ERR_MSG });
-      }
+      setTabsData(data);
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -249,11 +235,22 @@ export const Trn001 = () => {
   });
   const getAccNoValidation = useMutation(API.getAccNoValidation, {
     onSuccess: (data) => {
-      console.log(data, "datadata");
+      console.log(data, "dattt");
       if (data?.RESTRICT_MESSAGE) {
         enqueueSnackbar(data?.RESTRICT_MESSAGE, {
           variant: "error",
         });
+        const obj = [...rows];
+        obj[index].bug = true;
+        obj[index].bugAccNo = true;
+        obj[index].bugMsgAccNo = data?.RESTRICT_MESSAGE;
+        setRows(obj);
+      } else {
+        const obj = [...rows];
+        obj[index].bug = false;
+        obj[index].bugAccNo = false;
+        obj[index].bugMsgAccNo = "";
+        setRows(obj);
       }
     },
     onError: (error: any) => {
@@ -262,6 +259,59 @@ export const Trn001 = () => {
       });
     },
   });
+  const getChqValidation = useMutation(API.getChqValidation, {
+    onSuccess: (data) => {
+      if (data.ERR_CODE == "-1") {
+        enqueueSnackbar(data?.ERR_MSG, {
+          variant: "error",
+        });
+        const obj = [...rows];
+        obj[index].bug = true;
+        obj[index].bugCNo = true;
+        obj[index].bugMsgCNo = data?.ERR_MSG;
+        setRows(obj);
+      } else {
+        const obj = [...rows];
+        obj[index].bug = false;
+        obj[index].bugCNo = false;
+        obj[index].bugMsgCNo = "";
+        setRows(obj);
+      }
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+  const saveScroll = useMutation(API.addDailyTrxScroll, {
+    onSuccess: (data) => {
+      let isSuccess = data.some((a) => a?.TRAN_CD);
+      if (isSuccess) {
+        handleReset();
+        setSaveDialog(false);
+        data.map((a) => {
+          return enqueueSnackbar("Scroll Saved Voucher No." + a?.TRAN_CD, {
+            variant: "success",
+          });
+        });
+      } else {
+        enqueueSnackbar("Some error occured in scroll saving", {
+          variant: "error",
+        });
+      }
+    },
+    onError: (error: any) => {
+      setSaveDialog(false);
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
+  useEffect(() => {
+    console.log(errMsg, "errmsg");
+  }, [errMsg]);
 
   //TABLE FNs ===============================================================
   const handleBranch = (e, value, i) => {
@@ -277,8 +327,12 @@ export const Trn001 = () => {
     obj[i].accType = value;
     setRows(obj);
     handleGetAccInfo(i);
+    value?.info?.PARENT_TYPE && handleGetHeaderTabs(value?.info?.PARENT_TYPE);
   };
 
+  const handleGetHeaderTabs = (data) => {
+    getTabsByParentType.mutate(data);
+  };
   const handleAccNo = (e, i) => {
     setIndex(i);
     let txt = e.target.value;
@@ -286,7 +340,6 @@ export const Trn001 = () => {
       const obj = [...rows];
       obj[i].accNo = txt;
       setRows(obj);
-      setErrMsg({ ...errMsg, accNo: "" });
     }
   };
 
@@ -296,11 +349,6 @@ export const Trn001 = () => {
     obj[i].accNo = abc;
     handleGetAccInfo(i);
     setRows(obj);
-
-    obj[i].accNo &&
-      obj[i].accType?.value &&
-      obj[i].branch?.value &&
-      getAccNoValidation.mutate(obj[i]);
   };
 
   const handleTrx = (e, value, i) => {
@@ -316,10 +364,11 @@ export const Trn001 = () => {
     obj[i].credit = "0.00";
     obj[i].debit = "0.00";
     obj[i].cNo = "0";
-    obj[i].bugChq = false;
-    obj[i].scroll = "0";
+    obj[i].bugCNo = false;
+    obj[i].scroll = "";
     obj[i].sdc = defSdc;
     obj[i].remark = defSdc?.label;
+    obj[i].date = new Date();
 
     if (value?.code == "1" || value?.code == "2" || value?.code == "3") {
       obj[i].isCredit = true;
@@ -362,24 +411,42 @@ export const Trn001 = () => {
     const obj = [...rows];
     let txt = e.target.value;
     obj[i].cNo = txt;
-    if (Number(txt) > 0) {
-      obj[i].bugChq = true;
-      txt &&
+    setIndex(i);
+    setRows(obj);
+  };
+
+  const handleCNoBlur = (e, i) => {
+    const obj = [...rows];
+    if (Number(obj[i].cNo) > 0) {
+      obj[i].cNo &&
         obj[i].accNo &&
         obj[i].accType?.value &&
         obj[i].branch?.value &&
         getChqValidation.mutate(obj[i]);
     } else {
-      obj[i].bugChq = false;
+      obj[i].bugCNo = false;
+      obj[i].bugMsgCNo = "";
     }
     setRows(obj);
-    setIndex(i);
   };
 
   const handleDate = (e, i) => {
     console.log(e, "date e");
     const obj = [...rows];
-    obj[i].date = e.target?.value;
+    obj[i].date = e;
+    setRows(obj);
+  };
+
+  const handleDateErr = (e, i) => {
+    console.log(e, "date err");
+    const obj = [...rows];
+    if (e) {
+      obj[i].bugMsgDate = "Invalid Date ";
+      obj[i].bugDate = true;
+    } else {
+      obj[i].bugMsgDate = "";
+      obj[i].bugDate = false;
+    }
     setRows(obj);
   };
 
@@ -434,11 +501,6 @@ export const Trn001 = () => {
       handleAddRow();
   };
 
-  const handleVNo = (e, i) => {
-    const obj = [...rows];
-    obj[i].vNo = e.target.value;
-    setRows(obj);
-  };
   //logic fns=====================================================================
   const handleAddRow = () => {
     let cred = 0;
@@ -447,7 +509,7 @@ export const Trn001 = () => {
     let isCred = true;
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
-      trxx = trxOptions2[2];
+      trxx = trxOptions2[2]; //wrt index
       isCred = true;
     } else if (totalDebit < totalCredit) {
       deb = totalCredit - totalDebit;
@@ -457,21 +519,25 @@ export const Trn001 = () => {
     let tr = trxx?.code + "   ";
     let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
-    let defaulVal2 = {
+    let defTableValue2 = {
       branch: defBranch,
       accType: { label: "", value: "", info: "" },
       accNo: "",
       trx: trxx,
-      scroll: "0", //token
+      scroll: "", //token
       sdc: defSdc,
       remark: defSdc?.label,
       cNo: "0",
-      date: new Date().toISOString()?.substring(0, 10),
+      date: new Date(),
       debit: deb?.toFixed(2),
       credit: cred?.toFixed(2),
-      vNo: "",
-      bugChq: false,
       bugAccNo: false,
+      bugCNo: false,
+      bugDate: false,
+      bugMsgAccNo: "",
+      bugMsgCNo: "",
+      bugMsgDate: "",
+
       isCredit: isCred,
     };
     if (
@@ -480,7 +546,7 @@ export const Trn001 = () => {
       errMsg?.accNo == "" &&
       errMsg?.cNo == ""
     ) {
-      let obj = [...rows, defaulVal2];
+      let obj = [...rows, defTableValue2];
 
       setRows(obj);
       handleTotal(obj);
@@ -488,12 +554,14 @@ export const Trn001 = () => {
   };
 
   const handleClear = (e, i) => {
+    setIndex(i);
     let obj = [...rows];
     if (rows.length > 1) {
       obj.splice(i, 1);
       handleTotal(obj);
       setRows(obj);
     }
+    setErrMsg(defErrMsg);
   };
 
   const handleTotal = (obj) => {
@@ -513,7 +581,7 @@ export const Trn001 = () => {
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
   const handleReset = () => {
-    let defaultRows = { ...defaulVal };
+    let defaultRows = { ...defTableValue };
     setRows([defaultRows]);
     setUpdatedRows([]);
     setTotalCredit(0);
@@ -522,6 +590,9 @@ export const Trn001 = () => {
     setResetDialog(false);
     setViewOnly(false);
     setTempStore({ ...tempStore, accInfo: {} });
+    setCardStore({ ...cardStore, cardsInfo: {} });
+    setTabsData([]);
+    setErrMsg(defErrMsg);
   };
 
   const handleFilterTrx = () => {
@@ -533,26 +604,61 @@ export const Trn001 = () => {
   const handleGetAccInfo = (i) => {
     let data = {
       COMP_CD: rows[i]?.branch?.info?.COMP_CD,
-      BRANCH_CD: rows[i]?.branch?.value,
       ACCT_TYPE: rows[i]?.accType?.value,
-      ACCT_CD: rows[i]?.accNo,
+      ACCT_CD: rows[i]?.accNo?.padEnd(20, " "),
+      PARENT_TYPE: rows[i]?.accType?.info?.PARENT_TYPE ?? "",
+
+      BRANCH_CD: rows[i]?.branch?.value,
       authState: authState,
     };
+
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
-      getAccInfo.mutate(data);
+      rows[i]?.accNo && getAccNoValidation.mutate(data);
+      rows[i]?.accNo && getCarousalCards.mutate(data);
+      setTempStore({ ...tempStore, accInfo: data });
     }
   };
 
   const handleSaveDialog = () => {
     console.log(errMsg, "errMsg");
     console.log(isSave, "isSave");
+    let isErrCNo = rows.some((a) => a.bugCNo);
+    let isErrAccNo = rows.some((a) => a.bugAccNo);
+    let isErrDate = rows.some((a) => a.bugDate);
+
+    if (isArray && diff != 0) {
+      enqueueSnackbar("Cr. Db. Amount not matched", {
+        variant: "error",
+      });
+    }
+    if ((!isArray && diff == 0) || (isArray && rows.length == 1)) {
+      enqueueSnackbar("Amount cant be Zero", {
+        variant: "error",
+      });
+    }
+    if (isErrCNo) {
+      enqueueSnackbar("Please Check Error in ChqNo", {
+        variant: "error",
+      });
+    }
+    if (isErrAccNo) {
+      enqueueSnackbar("Please Check Error in A/C No.", {
+        variant: "error",
+      });
+    }
+    if (isErrDate) {
+      enqueueSnackbar("Please Check Error in Date", {
+        variant: "error",
+      });
+    }
+
     if (
-      errMsg.accNo ||
-      errMsg.cNo ||
       !isSave ||
       (!isArray && diff == 0) ||
-      (isArray && diff != 0)
+      (isArray && diff != 0) ||
+      isErrAccNo ||
+      isErrCNo
     ) {
     } else {
       setSaveDialog(true);
@@ -560,8 +666,6 @@ export const Trn001 = () => {
   };
 
   const handleScrollSave = () => {
-    setLoading(true);
-
     let arr = rows.map((a) => {
       return {
         BRANCH_CD: authState?.user?.branchCode,
@@ -582,7 +686,6 @@ export const Trn001 = () => {
       };
     });
     saveScroll.mutate(arr);
-    setSaveDialog(false);
   };
 
   const handleUpdateRows = (data) => {
@@ -594,9 +697,10 @@ export const Trn001 = () => {
     setViewOnly(true);
     setUpdatedRows([]);
   };
+
   return (
     <>
-      <DailyTransTabs heading="(Maker) (TRN/001)" />
+      <DailyTransTabs heading="(Maker) (TRN/001)" tabsData={tabsData} />
 
       <Card
         sx={{
@@ -608,7 +712,12 @@ export const Trn001 = () => {
         }}
       >
         {loading && <LinearProgress color="secondary" />}
-        {viewOnly && <TRN001_Table updatedRows={updatedRows} />}
+        {viewOnly && (
+          <TRN001_Table
+            updatedRows={updatedRows}
+            handleGetHeaderTabs={handleGetHeaderTabs}
+          />
+        )}
 
         {!viewOnly && (
           <TableContainer>
@@ -626,6 +735,7 @@ export const Trn001 = () => {
                 ) : (
                   <></>
                 )}
+
                 {errMsg?.accNo ? (
                   <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
                     {errMsg?.accNo}
@@ -637,20 +747,19 @@ export const Trn001 = () => {
 
               <TableHead>
                 <TableRow id="topHead">
-                  <TableCell id="head">Branch</TableCell>
-                  <TableCell id="head">A/C Type</TableCell>
-                  <TableCell id="head">A/C No</TableCell>
-                  <TableCell id="head">TRX</TableCell>
+                  <TableCell id="head">{t("Branch")}</TableCell>
+                  <TableCell id="head">{t("AcctType")}</TableCell>
+                  <TableCell id="head">{t("ACNo")}</TableCell>
+                  <TableCell id="head">{t("Trx")}</TableCell>
                   <TableCell id="head">
-                    {rows[0]?.trx?.code == "4" ? "Token" : "Scroll"}
+                    {rows[0]?.trx?.code == "4" ? "Token" : t("Scroll")}
                   </TableCell>
-                  <TableCell id="head">SDC</TableCell>
-                  <TableCell id="head">Remarks</TableCell>
-                  <TableCell id="head">Chq No</TableCell>
-                  {/* <TableCell id="head">Chq Date</TableCell> */}
-                  <TableCell id="head">Debit</TableCell>
-                  <TableCell id="head">Credit</TableCell>
-                  <TableCell id="head">Vno.</TableCell>
+                  <TableCell id="head">{t("SDC")}</TableCell>
+                  <TableCell id="head">{t("Remarks")}</TableCell>
+                  <TableCell id="head">{t("Chequeno")} </TableCell>
+                  <TableCell id="head">Cheque Date</TableCell>
+                  <TableCell id="head">{t("DebitAmount")}</TableCell>
+                  <TableCell id="head">{t("CreditAmount")}</TableCell>{" "}
                 </TableRow>
               </TableHead>
 
@@ -665,12 +774,11 @@ export const Trn001 = () => {
                             a?.branch?.label && <h3>{a?.branch?.label}</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 160 }}>
+                          <TableCell sx={{ minWidth: 120 }}>
                             <Autocomplete
                               value={a.branch}
                               autoHighlight
                               size="small"
-                              disabled={viewOnly ? true : false}
                               options={branchOptions}
                               onChange={(e, value) => handleBranch(e, value, i)}
                               renderInput={(params) => (
@@ -688,12 +796,11 @@ export const Trn001 = () => {
                             a?.accType?.label && <h3>{a?.accType?.label}</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 160 }}>
+                          <TableCell sx={{ minWidth: 130 }}>
                             <Autocomplete
                               value={a.accType}
                               autoHighlight
                               size="small"
-                              disabled={viewOnly ? true : false}
                               options={accTypeOptions}
                               onChange={(e, value) =>
                                 handleAccType(e, value, i)
@@ -707,150 +814,198 @@ export const Trn001 = () => {
                             />
                           </TableCell>
                         </Tooltip>
-                        <TableCell sx={{ minWidth: 50 }}>
-                          <TextField
-                            value={a.accNo}
-                            disabled={viewOnly ? true : false}
-                            error={!a.accNo ? true : false}
-                            size="small"
-                            type="number"
-                            onChange={(e) => handleAccNo(e, i)}
-                            onBlur={(e) => handleAccNoBlur(e, i)}
-                          />
-                        </TableCell>
-
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.trx}
-                            autoHighlight
-                            size="small"
-                            disabled={viewOnly ? true : false}
-                            options={trxOptions}
-                            onChange={(e, value) => handleTrx(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                error={a.trx?.value ? false : true}
-                              />
-                            )}
-                          />{" "}
-                        </TableCell>
-
-                        <TableCell sx={{ minWidth: 50 }}>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={a?.bugMsgAccNo && <h3>{a?.bugMsgAccNo}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 120 }}>
+                            <TextField
+                              id="txtRight"
+                              value={a.accNo}
+                              error={!a.accNo || a.bugAccNo ? true : false}
+                              size="small"
+                              type="number"
+                              onChange={(e) => handleAccNo(e, i)}
+                              onBlur={(e) => handleAccNoBlur(e, i)}
+                            />
+                          </TableCell>
+                        </ErrTooltip>
+                        <Tooltip
+                          disableInteractive={true}
+                          title={a?.trx?.label && <h3>{a?.trx?.label}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 70 }}>
+                            <Autocomplete
+                              value={a.trx}
+                              autoHighlight
+                              size="small"
+                              options={trxOptions}
+                              onChange={(e, value) => handleTrx(e, value, i)}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  error={a.trx?.value ? false : true}
+                                />
+                              )}
+                            />{" "}
+                          </TableCell>
+                        </Tooltip>
+                        <TableCell sx={{ minWidth: 60 }}>
                           <TextField
                             value={a.scroll}
                             type="number"
-                            disabled={viewOnly ? true : false}
+                            disabled={
+                              a.trx?.code == "3" ||
+                              a.trx?.code == "6" ||
+                              !a.trx?.code
+                                ? true
+                                : false
+                            }
                             size="small"
                             onChange={(e) => handleScroll(e, i)}
                           />
                         </TableCell>
-                        <TableCell sx={{ minWidth: 160 }}>
-                          <Autocomplete
-                            value={a.sdc}
-                            autoHighlight
-                            disabled={viewOnly ? true : false}
-                            size="small"
-                            options={sdcOptions}
-                            onChange={(e, value) => handleSdc(e, value, i)}
-                            renderInput={(params) => (
-                              <TextField {...params} label="" />
-                            )}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 80 }}>
+                        <Tooltip
+                          disableInteractive={true}
+                          title={a?.sdc?.label && <h3>{a?.sdc?.label}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 60 }}>
+                            <Autocomplete
+                              value={a.sdc}
+                              autoHighlight
+                              size="small"
+                              options={sdcOptions}
+                              onChange={(e, value) => handleSdc(e, value, i)}
+                              renderInput={(params) => (
+                                <TextField {...params} label="" />
+                              )}
+                            />
+                          </TableCell>
+                        </Tooltip>
+                        <TableCell sx={{ minWidth: 130 }}>
                           <TextField
                             value={a.remark}
-                            disabled={viewOnly ? true : false}
                             size="small"
                             onChange={(e) => handleRemark(e, i)}
                           />
                         </TableCell>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={a?.bugMsgCNo && <h3>{a?.bugMsgCNo}</h3>}
+                        >
+                          <TableCell
+                            sx={{
+                              minWidth: 50,
+                            }}
+                          >
+                            <TextField
+                              value={a.cNo}
+                              error={!a.cNo || a?.bugCNo ? true : false}
+                              id="txtRight"
+                              disabled={
+                                a.isCredit ||
+                                !a.branch ||
+                                !a?.accType?.value ||
+                                !a.accNo
+                                  ? true
+                                  : false
+                              }
+                              size="small"
+                              type="number"
+                              onChange={(e) => handleCNo(e, i)}
+                              onBlur={(e) => handleCNoBlur(e, i)}
+                              // helperText={a?.bugMsgCNo ? a?.bugMsgCNo : ""}
+                            />
+                          </TableCell>
+                        </ErrTooltip>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={a?.bugMsgDate && <h3>{a?.bugMsgDate}</h3>}
+                        >
+                          <TableCell sx={{ minWidth: 140 }}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                              <DatePicker
+                                format="dd/MM/yyyy"
+                                disabled={
+                                  a.trx?.code == "4" || a.trx?.code == "6"
+                                    ? false
+                                    : true
+                                }
+                                value={a.date}
+                                onChange={(e) => handleDate(e, i)}
+                                onError={(e) => handleDateErr(e, i)}
+                              />
+                            </LocalizationProvider>
+                          </TableCell>
+                        </ErrTooltip>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={
+                            Number(a.debit) <= 0 &&
+                            !a?.isCredit &&
+                            a.branch &&
+                            a.trx?.code && <h3>Amount can't be zero</h3>
+                          }
+                        >
+                          <TableCell sx={{ minWidth: 100 }}>
+                            <TextField
+                              value={a.debit}
+                              error={Number(a.debit) > 0 ? false : true}
+                              id="txtRight"
+                              size="small"
+                              disabled={
+                                a?.isCredit ||
+                                !a.branch ||
+                                !a.trx?.code ||
+                                viewOnly
+                                  ? true
+                                  : false
+                              }
+                              type="number"
+                              onChange={(e) => handleDebit(e, i)}
+                              onBlur={(e) => handleDebitBlur(e, i)}
+                            />
+                          </TableCell>
+                        </ErrTooltip>
+                        <ErrTooltip
+                          disableInteractive={true}
+                          title={
+                            Number(a.credit) <= 0 &&
+                            a?.isCredit &&
+                            a.branch &&
+                            a.trx?.code && <h3>Amount can't be zero</h3>
+                          }
+                        >
+                          <TableCell sx={{ minWidth: 100 }}>
+                            <TextField
+                              value={a.credit}
+                              error={Number(a.credit) > 0 ? false : true}
+                              id="txtRight"
+                              size="small"
+                              disabled={
+                                !a?.isCredit ||
+                                !a.branch ||
+                                !a.trx?.code ||
+                                viewOnly
+                                  ? true
+                                  : false
+                              }
+                              type="number"
+                              onChange={(e) => handleCredit(e, i)}
+                              onBlur={(e) => handleCreditBlur(e, i)}
+                            />
+                          </TableCell>
+                        </ErrTooltip>
 
-                        <TableCell sx={{ minWidth: 50 }}>
-                          <TextField
-                            value={a.cNo}
-                            error={!a.cNo || a?.bugChq ? true : false}
-                            id="txtRight"
-                            disabled={
-                              a.isCredit ||
-                              !a.accNo ||
-                              !a.accType?.value ||
-                              viewOnly
-                                ? true
-                                : false
-                            }
-                            size="small"
-                            type="number"
-                            onChange={(e) => handleCNo(e, i)}
-                          />
-                        </TableCell>
-
-                        {/* <TableCell>
-                          <TextField
-                            value={a.date}
-                            error={a.isCredit && !a.date ? true : false}
-                            type="date"
-                            // disabled={a.isCredit || viewOnly ? true : false}
-                            disabled={true}
-                            size="small"
-                            onChange={(e) => handleDate(e, i)}
-                          />{" "}
-                        </TableCell> */}
-                        <TableCell sx={{ minWidth: 50 }}>
-                          <TextField
-                            value={a.debit}
-                            error={Number(a.debit) > 0 ? false : true}
-                            id="txtRight"
-                            size="small"
-                            disabled={
-                              a?.isCredit ||
-                              !a.branch ||
-                              !a.trx?.code ||
-                              viewOnly
-                                ? true
-                                : false
-                            }
-                            type="number"
-                            onChange={(e) => handleDebit(e, i)}
-                            onBlur={(e) => handleDebitBlur(e, i)}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ minWidth: 50 }}>
-                          <TextField
-                            value={a.credit}
-                            error={Number(a.credit) > 0 ? false : true}
-                            id="txtRight"
-                            size="small"
-                            disabled={
-                              !a?.isCredit ||
-                              !a.branch ||
-                              !a.trx?.code ||
-                              viewOnly
-                                ? true
-                                : false
-                            }
-                            type="number"
-                            onChange={(e) => handleCredit(e, i)}
-                            onBlur={(e) => handleCreditBlur(e, i)}
-                          />
-                        </TableCell>
-
-                        <TableCell sx={{ minWidth: 40 }}>
-                          <TextField
-                            value={a.vNo}
-                            id="txtRight"
-                            disabled={true}
-                            size="small"
-                            onChange={(e) => handleVNo(e, i)}
-                          />
-                        </TableCell>
-                        <TableCell style={{ border: "0px", width: "10px" }}>
+                        <TableCell
+                          style={{ border: "0px" }}
+                          // width: "10px"
+                          sx={{ minWidth: 20 }}
+                        >
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (
                             <Button
                               color="secondary"
-                              disabled={viewOnly ? true : false}
                               onClick={(e) => handleClear(e, i)}
                               size="small"
                             >
@@ -894,7 +1049,8 @@ export const Trn001 = () => {
               sx={{ margin: "8px" }}
               onClick={() => handleSaveDialog()}
             >
-              Save
+              Post
+              {/* {t("Save")} */}
             </Button>
           )}
         </div>
@@ -909,56 +1065,29 @@ export const Trn001 = () => {
       />
 
       <>
-        <Dialog
-          open={saveDialog}
-          // onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            Do you wish to save this scroll?
-          </DialogTitle>
+        {Boolean(resetDialog) ? (
+          <PopupMessageAPIWrapper
+            MessageTitle="Reset Table"
+            Message="Do you wish to reset ?"
+            onActionYes={() => handleReset()}
+            onActionNo={() => setResetDialog(false)}
+            rows={[]}
+            open={resetDialog}
+            // loading={getData.isLoading}
+          />
+        ) : null}
 
-          <DialogActions>
-            <Button variant="contained" onClick={() => setSaveDialog(false)}>
-              Cancel
-            </Button>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={handleScrollSave}
-              autoFocus
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Dialog
-          open={resetDialog}
-          maxWidth={"lg"}
-          // onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            Do you wish to reset ?
-          </DialogTitle>
-
-          <DialogActions>
-            <Button onClick={() => setResetDialog(false)} variant="contained">
-              No
-            </Button>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={handleReset}
-              autoFocus
-            >
-              Yes
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {Boolean(saveDialog) ? (
+          <PopupMessageAPIWrapper
+            MessageTitle="Scroll Save"
+            Message="Do you wish to save this scroll?"
+            onActionYes={() => handleScrollSave()}
+            onActionNo={() => setSaveDialog(false)}
+            rows={[]}
+            open={saveDialog}
+            loading={saveScroll.isLoading}
+          />
+        ) : null}
       </>
     </>
   );

@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Button, Tabs } from "@mui/material";
 
 //logic
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import JointDetailsForm from "./JointDetails";
@@ -22,6 +22,9 @@ import Subsidyy from "./Subsidyy";
 import Disbursement from "./Disbursement";
 import AccDetails from "./AccountDetails";
 import "./DailyTransTabs.css";
+import { AccDetailContext } from "pages_audit/auth";
+import Limit from "./Limit";
+import Stock from "./Stock";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -43,66 +46,17 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-export const DailyTransTabs = ({ heading }) => {
+export const DailyTransTabs = ({ heading, tabsData }) => {
   const [tabValue, setTabValue] = React.useState(0);
-
-  const navArray = [
-    {
-      name: "Account",
-      path: "acc",
-    },
-    {
-      name: "Joint Detail",
-      path: "joint",
-    },
-    {
-      name: "Today Trans",
-      path: "todayTrans",
-    },
-    {
-      name: "ChequeBook",
-      path: "checkBook",
-    },
-    {
-      name: "Snapshot",
-      path: "snapshot",
-    },
-    {
-      name: "HoldCharge",
-      path: "holdCharge",
-    },
-    {
-      name: "Disbursement",
-      path: "disbursement",
-    },
-    {
-      name: "Subsidy",
-      path: "subsidy",
-    },
-    {
-      name: "Document",
-      path: "document",
-    },
-    {
-      name: "Stop Pay",
-      path: "stopPay",
-    },
-    {
-      name: "Search",
-      path: "search",
-    },
-    {
-      name: "Insurance",
-      path: "insurance",
-    },
-  ];
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const navArray = tabsData ? tabsData : [];
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
   return (
     <div style={{ padding: "8px" }}>
-      <h1>Daily Transaction {heading}</h1>
+      <h2>Daily Transaction {heading}</h2>
 
       <>
         <Grid item xs="auto" id="dailyTabs">
@@ -112,28 +66,42 @@ export const DailyTransTabs = ({ heading }) => {
             onChange={handleTabChange}
             aria-label="ant example"
           >
-            {navArray.map((a, i) => (
-              <Tab label={a.name} />
-            ))}
+            {navArray.length > 0 ? (
+              navArray?.map((a, i) => <Tab label={a.TAB_DISPL_NAME} />)
+            ) : (
+              <Tab label="Account" />
+            )}
           </Tabs>
         </Grid>
 
-        {navArray.map((a, i) => (
-          <TabPanel value={tabValue} index={i}>
-            {i == 0 && <AccDetails flag={"DLYTRN"} />}
-            {i == 1 && <JointDetailsForm />}
-            {i == 2 && <TodayTransactionForm />}
-            {i == 3 && <CheckBook />}
-            {i == 4 && <Snapshot />}
-            {i == 5 && <HoldCharge />}
-            {i == 6 && <Disbursement />}
-            {i == 7 && <Subsidyy />}
-            {i == 8 && <Document />}
-            {i == 9 && <StopPay />}
-            {i == 10 && <Search />}
-            {i == 11 && <Insurance />}
+        {navArray.length > 0 ? (
+          navArray?.map((a, i) => (
+            <TabPanel value={tabValue} index={Number(a.DISPL_ORDER) - 1}>
+              <>
+                {a.TAB_NAME.includes("Account") && (
+                  <AccDetails flag={"DLYTRN"} />
+                )}
+                {a.TAB_NAME.includes("Joint") && <JointDetailsForm />}
+                {a.TAB_NAME.includes("Today's") && <TodayTransactionForm />}
+                {a.TAB_NAME.includes("Cheques") && <CheckBook />}
+                {a.TAB_NAME.includes("Snapshot") && <Snapshot />}
+                {a.TAB_NAME.includes("Hold Charges") && <HoldCharge />}
+                {a.TAB_NAME.includes("Documents") && <Document />}
+                {a.TAB_NAME.includes("Stop Payment") && <StopPay />}
+                {a.TAB_NAME.includes("Insurance") && <Insurance />}
+                {a.TAB_NAME.includes("Disbursement") && <Disbursement />}
+                {a.TAB_NAME.includes("Subsidy") && <Subsidyy />}
+                {a.TAB_NAME.includes("Search") && <Search />}
+                {a.TAB_NAME.includes("Limits") && <Limit />}
+                {a.TAB_NAME.includes("Stock") && <Stock />}
+              </>
+            </TabPanel>
+          ))
+        ) : (
+          <TabPanel value={tabValue} index={0}>
+            <AccDetails flag={"DLYTRN"} />
           </TabPanel>
-        ))}
+        )}
       </>
     </div>
   );

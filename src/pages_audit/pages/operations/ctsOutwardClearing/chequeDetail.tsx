@@ -1,186 +1,126 @@
-import { Transition } from "pages_audit/common";
 import { Alert } from "components/common/alert";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { FC, useEffect, useRef, useState, useContext } from "react";
-import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
-import { useMutation, useQuery } from "react-query";
+import {
+  FC,
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
 import * as API from "./api";
-import { queryClient, ClearCacheContext } from "cache";
 import { useSnackbar } from "notistack";
+import { extractMetaData } from "components/utils";
+import { ChequeDetailFormMetaData } from "./metaData";
 import {
-  CreateDetailsRequestData,
-  ProcessDetailsData,
-  utilFunction,
-} from "components/utils";
-import {
-  ChequeDetailFormMetaData,
-  CtsOutwardClearingMetadata,
-  SlipDetailFormMetaData,
-} from "./metaData";
-import { makeStyles } from "@mui/styles";
-import {
-  AppBar,
-  Grid,
-  Toolbar,
-  Typography,
-  Theme,
-  Dialog,
-  Button,
-  CircularProgress,
-} from "@mui/material";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+  PopupMessageAPIWrapper,
+  PopupRequestWrapper,
+} from "components/custom/popupMessage";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { InitialValuesType, SubmitFnType } from "packages/form";
+import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
 import { ClearingBankMaster } from "./clearingBankMaster";
-
-export const useDialogStyles = makeStyles((theme: Theme) => ({
-  topScrollPaper: {
-    alignItems: "center",
-  },
-  topPaperScrollBody: {
-    verticalAlign: "top",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-}));
-
+import { GradientButton } from "components/styledComponent/button";
+import { IconButton } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 export const ChequeDetailForm: FC<{
-  zoneData?: any;
-  formDataRef?: any;
+  formData?: any;
+  isOpenProcced?: any;
+  setIsOpenProcced?: any;
   myRef?: any;
-  setCurrentTab?: any;
   formMode?: any;
-  gridData?: any;
-  slipJointDetailRef?: any;
+  totalAmountSlip?: any;
   retrievData?: any;
   loading?: Boolean;
+  setFormData?: any;
   error?: any;
+  setTotalAmountCheque?: any;
+  zoneTranType?: any;
+  mutationOutward?: any;
+  initValues?: any;
+  setInitValues?: any;
+  isSlipJointDetail?: any;
+  gridData?: any;
+  setBankData?: any;
+  bankData?: any;
 }> = ({
-  zoneData,
-  formDataRef,
-  setCurrentTab,
+  formData,
+  setIsOpenProcced,
+  isOpenProcced,
   myRef,
   formMode,
-  gridData,
-  slipJointDetailRef,
+  totalAmountSlip,
   retrievData,
   loading,
   error,
+  setFormData,
+  initValues,
+  zoneTranType,
+  mutationOutward,
+  setInitValues,
+  gridData,
+  isSlipJointDetail,
+  setBankData,
+  bankData,
 }) => {
   const { authState } = useContext(AuthContext);
   const myChequeRef = useRef<any>(null);
   const [isBankAdding, setisBankAdding] = useState<any>(false);
   const [isOpenSave, setIsOpenSave] = useState(false);
-  const [isOpenProcced, setIsOpenProcced] = useState(false);
+  const [isAmountMessage, setIsAmountMessage] = useState(false);
+  const [isAddCheque, setIsAddCheque] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
-  const { enqueueSnackbar } = useSnackbar();
-  const [totalAmountCheque, setTotalAmountCheque] = useState<any>();
-  const [initValues, setInitValues] = useState<any>({
-    chequeDetails: [
-      {
-        ECS_SEQ_NO: "",
-      },
-    ],
+  const [totalAmountCheque, setTotalAmountCheque] = useState<any>("0");
+
+  console.log("totalAmountSlip", totalAmountSlip);
+  // const [bankDetail, setBankDetail] = useState({});
+  let cheueTotalAmount = 0;
+  retrievData?.CHEQUE_DETAIL?.forEach((element) => {
+    if (
+      element.AMOUNT !== undefined &&
+      element.AMOUNT !== "" &&
+      element.AMOUNT
+    ) {
+      cheueTotalAmount += Number(element.AMOUNT);
+    }
   });
-
-  const [totalAmountSlip, setTotalAmountSlip] = useState(
-    Number(formDataRef.current.AMOUNT)
-  );
-
-  const mutationOutward = useMutation(API.outwardClearingConfigDML, {
-    onError: (error: any) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      if (isErrorFuncRef.current == null) {
-        enqueueSnackbar(errorMsg, {
-          variant: "error",
-        });
-      } else {
-        isErrorFuncRef.current?.endSubmit(
-          false,
-          errorMsg,
-          error?.error_detail ?? ""
-        );
-      }
-      onActionCancel();
-    },
-    onSuccess: (data) => {
-      console.log("data", data);
-      enqueueSnackbar(data, {
-        variant: "success",
-      });
-
-      setCurrentTab("slipdetail");
-      formDataRef.current = {};
-      formDataRef.current.ACCT_NAME = "";
-      formDataRef.current.TRAN_BAL = "";
-      gridData.ACCT_JOIN_DETAILS = [];
-      onActionCancel();
-    },
-  });
-
+  // console.log("bankDetail", bankDetail);
   const onPopupYes = (rows) => {
     mutationOutward.mutate(rows);
+
+    // setFormMode("new");
   };
-  const onActionCancel = () => {
-    setIsOpenProcced(false);
-  };
+
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
-    myChequeRef?.current?.handleSubmit(event, "AMOUNT");
+    myChequeRef?.current?.handleSubmit(event, "AMOUN");
+    myRef?.current?.handleSubmit(event, "AMOUNT");
   };
+  // useEffect(() => {
+  //   setTotalAmountSlip(formData?.AMOUNT ?? "0.00");
+  // }, [formData?.AMOUNT]);
   useEffect(() => {
-    setTotalAmountSlip(formDataRef.current.AMOUNT ?? "0.00");
-    myRef.current = zoneData;
-  }, [formDataRef.current.AMOUNT, zoneData]);
-
-  useEffect(() => {
-    // if (formDataRef.current && formDataRef.current.length) {
-    // Check if mutationOutward is successful
-    const shouldResetValues = mutationOutward.isSuccess;
-
     let init = initValues.chequeDetails;
-    // init[0] = {
-    //   ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
-    // };
-    // init[0] = {
-    //   ECS_USER_NO:
-    //     formDataRef.current?.ACCT_NAME ||
-    //     (slipJointDetailRef?.current.length ? slipJointDetailRef.current : ""),
-    // };
+    if (gridData) {
+      init = init.map((item, index) => ({
+        ...item,
+        ECS_USER_NO: gridData?.ACCT_NAME ?? item.ECS_USER_NO,
+        // ECS_SEQ_NO: gridData?.ACCT_NUMBER ?? item.ECS_SEQ_NO,
+      }));
+    }
 
-    if (formDataRef.current) {
-      init[0] = {
-        ECS_USER_NO: formDataRef.current?.ACCT_NAME ?? "",
-        ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
-      };
+    if (isSlipJointDetail?.length) {
+      init.map((item, index) => {
+        return (item.ECS_USER_NO = isSlipJointDetail ?? "");
+      });
     }
-    if (slipJointDetailRef?.current.length) {
-      init[0] = {
-        ECS_USER_NO: slipJointDetailRef?.current,
-        ECS_SEQ_NO: formDataRef.current?.ACCT_CD ?? "",
-      };
-    }
-    // Update the form data with the new values
     setInitValues((old) => ({
       ...old,
       chequeDetails: [...init],
     }));
-    // }
-  }, [
-    formDataRef.current,
-    mutationOutward.isSuccess,
-    slipJointDetailRef?.current,
-  ]);
+  }, [gridData, setInitValues, isSlipJointDetail]);
 
-  const onSubmitHandlerCheuq: SubmitFnType = async (
+  const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
     endSubmit,
@@ -188,7 +128,8 @@ export const ChequeDetailForm: FC<{
     value
   ) => {
     //@ts-ignore
-    endSubmit(true, "Please enter any value");
+    endSubmit(true);
+
     const newData = data.chequeDetails?.map((item) => ({
       ...item,
       _isNewRow: formMode === "new" ? true : false,
@@ -198,187 +139,201 @@ export const ChequeDetailForm: FC<{
       BRANCH_CD: authState?.user?.branchCode ?? "",
     }));
 
-    if (value === "AMOUNT") {
-      let totalAmount = 0;
-      data.chequeDetails.forEach((element) => {
-        if (
-          element.AMOUNT !== undefined &&
-          element.AMOUNT !== "" &&
-          element.AMOUNT
-        ) {
-          totalAmount += Number(element.AMOUNT);
-        }
-      });
-      setTotalAmountCheque(Number(totalAmount));
-      // // slip and cheque total minus
-      setTotalAmountSlip(totalAmount - formDataRef.current.AMOUNT);
-      // Compare the totals
-      let initVal = data.chequeDetails;
+    // if (value === "AMOUNT") {
+    let totalAmount = 0;
+    data.chequeDetails?.forEach((element) => {
       if (
-        !formDataRef.current.AMOUNT ||
-        formDataRef.current.AMOUNT.length === 0
+        element.AMOUNT !== undefined &&
+        element.AMOUNT !== "" &&
+        element.AMOUNT
       ) {
-        // Do not add a new row if AMOUNT is not present or has a length of 0
-        return;
+        totalAmount += Number(element?.AMOUNT);
       }
-      if (
-        totalAmount === 0 ||
-        Number(totalAmount) > Number(formDataRef.current.AMOUNT)
-      ) {
-        return;
-      }
-      if (Number(totalAmount) === Number(formDataRef.current.AMOUNT)) {
-        // Totals don't match, add a new rows
+    });
+    // console.log("totalAmount", totalAmount, formData?.AMOUNT);
+    // setTotalAmountCheque(Number(totalAmount));
+    // // // slip and cheque total minus
+    // setTotalAmountSlip(totalAmount - formData?.AMOUNT);
+    // // Compare the totals
+    let initVal = data.chequeDetails;
+    if (!totalAmountSlip || totalAmountSlip?.length === 0) {
+      // Do not add a new row if AMOUNT is not present or has a length of 0
+      return;
+    }
+    if (Number(totalAmount) > Number(totalAmountSlip)) {
+      setIsAmountMessage(true);
 
-        isErrorFuncRef.current = {
-          DAILY_CLEARING: {
-            ...myRef.current,
+      return;
+    }
+    console.log("final", Number(totalAmount) === Number(totalAmountSlip));
+    if (Number(totalAmount) === Number(totalAmountSlip)) {
+      // Totals don't match, add a new rows
+      setIsAddCheque(false);
+      setIsOpenProcced(true);
+      isErrorFuncRef.current = {
+        DAILY_CLEARING: {
+          ...formData,
+          COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? "",
+          ENTERED_COMP_CD: authState?.companyID ?? "",
+          ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
+          _isNewRow: true,
+          REQUEST_CD: "",
+          TRAN_TYPE: zoneTranType ?? "",
+        },
+        DETAILS_DATA: {
+          isNewRow: [...newData],
+          isUpdatedRow: [],
+          isDeleteRow: [],
+        },
+        ...formData,
+        PROCESSED: "N",
+        SKIP_ENTRY: "N",
+        COMP_CD: authState?.companyID ?? "",
+        _isNewRow: true,
+        endSubmit,
+      };
+
+      console.log("isErrorFuncRef.current", isErrorFuncRef.current);
+      // return;
+      //
+    } else if (initVal && initVal.length > 0) {
+      // const handleYesAction = (rowVal) => {
+      setIsAddCheque(false);
+      console.log("initVal if", initVal);
+      const lastRow = initVal[initVal.length - 1];
+      const newRow = {
+        ...lastRow,
+        CHEQUE_NO: "",
+        AMOUNT: "",
+      };
+
+      initVal.unshift(newRow);
+
+      setInitValues((old) => ({
+        chequeDetails: [...initVal],
+      }));
+      // };
+      ChequeDetailFormMetaData.fields[5].isRemoveButton = false;
+      // ChequeDetailFormMetaData.fields[2]._fields[0].isFieldFocused = true;
+    } else {
+      console.log("initVal else", initVal);
+      setInitValues(() => ({
+        chequeDetails: [
+          {
+            CHEQUE_DATE: new Date(),
+            ECS_USER_NO: gridData?.ACCT_NAME ?? "",
+            // other properties of the new row
           },
-          DETAILS_DATA: {
-            isNewRow: [...newData],
-            isUpdatedRow: [],
-            isDeleteRow: [],
-          },
-          ...formDataRef.current,
-          endSubmit,
-          setFieldError,
-        };
-        setIsOpenProcced(true);
-        console.log("isErrorFuncRef.current", isErrorFuncRef.current);
-        // return;
-        ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true;
-      } else {
-        ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true;
-        initVal.push({
-          ECS_SEQ_NO: "",
-        });
-
-        setInitValues(
-          (old) => (
-            console.log("old", old, initVal),
-            {
-              chequeDetails: [...initVal],
-            }
-          )
-        );
-
-        ChequeDetailFormMetaData.fields[0].isRemoveButton = false;
-      }
+        ],
+      }));
+      // ChequeDetailFormMetaData.fields[2]._fields[0].isFieldFocused = true;
     }
   };
   console.log(
-    ":",
-    (ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused = true)
+    "ChequeDetailFormMetaData.fields[0]",
+    ChequeDetailFormMetaData.fields[3]
   );
+
   return (
     <>
       <div
         onKeyDown={(e) => {
           let target: any = e?.target;
-          if (e.key === "Enter") {
-            const charAtIndex = target.name.split("").find((char, index) => {
-              return index === 39;
-            });
+          const charAtIndex = target.name.split("").find((char, index) => {
+            return index === 39;
+          });
+          if (e.key === "Enter" || e.key === "Tab") {
             if (
               (target?.name ?? "") ===
               ChequeDetailFormMetaData.form.name +
                 "/" +
-                ChequeDetailFormMetaData.fields[0].name +
+                ChequeDetailFormMetaData.fields[5].name +
                 `[${charAtIndex}]` +
                 ".AMOUNT"
             ) {
-              ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused =
-                true;
+              // ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused =
+              //   true;
+              // setIsAddCheque(true);
               ClickEventManage();
             }
           }
-
-          // else if (e.key === "F11") {
-          //   e.preventDefault();
-          //   handleKeyPress();
-          // }
         }}
       >
-        <>
-          {mutationOutward?.isError || mutationOutward?.isError ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={
-                    mutationOutward?.error?.error_msg ??
-                    mutationOutward?.error?.error_msg ??
-                    "Unknow Error"
-                  }
-                  errorDetail={
-                    mutationOutward?.error?.error_detail ??
-                    mutationOutward?.error?.error_detail ??
-                    ""
-                  }
-                  color="error"
-                />
-              </AppBar>
-            </div>
-          ) : mutationOutward?.data?.length < 1 &&
-            Boolean(mutationOutward?.isSuccess) ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  errorMsg="No data found"
-                  errorDetail="No any data found"
-                  severity="error"
-                />
-              </AppBar>
-            </div>
-          ) : null}
-        </>{" "}
-        <div
+        {" "}
+        {/* <GradientButton onClick={() => {}}>Add New Row</GradientButton> */}
+        {/* <GradientButton
+          tabIndex={-1}
+          onClick={(event) => {
+            myChequeRef?.current?.handleSubmit(event);
+          }}
           style={{
+            marginLeft: "auto",
             display: "flex",
-            justifyContent: "end",
+            minWidth: "50px",
+            marginTop: "10px ",
+            marginRight: "12px",
           }}
         >
-          <Toolbar
-            sx={{
-              background: "var(--theme-color5)",
-              fontSize: "16px",
-              color: "white",
-              border: "1px solid #BABABA",
-              borderRadius: "5px",
-              width: "25%",
-              minHeight: "30px !important ",
-            }}
-          >
-            {`Slip Amount: ${totalAmountSlip ?? ""} `}
-          </Toolbar>
-          <Toolbar
-            sx={{
-              background: "var(--theme-color5)",
-              fontSize: "16px",
-              color: "white",
-              border: "1px solid #BABABA",
-              borderRadius: "5px",
-              width: "25%",
-              minHeight: "30px !important ",
-            }}
-          >
-            {`Cheque Amount: ${totalAmountCheque ?? ""} `}
-          </Toolbar>
-        </div>
+          Add New Row
+          <AddCircleOutlineIcon style={{ fontSize: "25px" }} />
+        </GradientButton> */}
         {formMode === "new" ? (
           <FormWrapper
-            key={`ChequeDetailFormMetaData11${formDataRef.current}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
-            metaData={ChequeDetailFormMetaData as MetaDataType}
+            key={`ChequeDetailFormMetaData${formMode}${JSON.stringify(
+              gridData
+            )}${isSlipJointDetail}${totalAmountSlip} ${JSON.stringify(
+              initValues.chequeDetails
+            )}`}
+            // metaData={ChequeDetailFormMetaData as MetaDataType}
+            metaData={
+              extractMetaData(
+                ChequeDetailFormMetaData,
+                formMode
+              ) as MetaDataType
+            }
             displayMode={formMode}
-            onSubmitHandler={onSubmitHandlerCheuq}
-            initialValues={initValues}
+            onSubmitHandler={onSubmitHandler}
+            initialValues={
+              mutationOutward.isSuccess
+                ? { chequeDetails: [initValues] }
+                : { ...initValues, SLIP_AMOUNT: totalAmountSlip }
+            }
+            // initialValues={initValues}
             hideHeader={true}
-            formStyle={{
-              background: "white",
-              // height: "65%",
+            formStyle={
+              {
+                // background: "white",
+                // height: "65%",
+              }
+            }
+            containerstyle={{ padding: "0px !important" }}
+            setDataOnFieldChange={(action, paylod) => {
+              if (action === "MESSAGE") {
+                if (paylod?.[0]?.ERROR_MSSAGE) {
+                  setIsOpenSave(true);
+                }
+                // if (paylod?.[0]) {
+                //   setBankData(paylod?.[0]);
+                // }
+              }
+              if (action === "TOTAL") {
+                console.log("payload", paylod);
+              }
+              if (action === "FINALAMOUNT") {
+                // Assuming payload is an array of numbers
+                // const totalSum = paylod.reduce(
+                //   (accumulator, currentValue) => accumulator + currentValue,
+                //   0
+                // );
+
+                setTotalAmountCheque(paylod);
+                console.log("<<payload:", paylod);
+              }
             }}
             onFormButtonClickHandel={() => {
-              setIsOpenSave(true);
+              let event: any = { preventDefault: () => {} };
+              myChequeRef?.current?.handleSubmit(event);
             }}
             ref={myChequeRef}
           />
@@ -395,18 +350,27 @@ export const ChequeDetailForm: FC<{
               />
             ) : (
               <FormWrapper
-                key={`ChequeDetailFormMetaData11${formDataRef.current}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
-                metaData={ChequeDetailFormMetaData as MetaDataType}
+                key={`ChequeDetailFormMetaData11${formMode}${formData}${initValues}${initValues.chequeDetails.length}${setInitValues}`}
+                // metaData={ChequeDetailFormMetaData as MetaDataType}
+                metaData={
+                  extractMetaData(
+                    ChequeDetailFormMetaData,
+                    formMode
+                  ) as MetaDataType
+                }
                 displayMode={formMode}
-                onSubmitHandler={onSubmitHandlerCheuq}
+                onSubmitHandler={onSubmitHandler}
                 initialValues={{
+                  SLIP_AMT: "20000.00",
                   chequeDetails: retrievData?.CHEQUE_DETAIL ?? "",
                 }}
-                hideHeader={true}
-                formStyle={{
-                  background: "white",
-                  // height: "65%",
-                }}
+                // hideHeader={true}
+                formStyle={
+                  {
+                    // background: "white",
+                    // height: "65%",
+                  }
+                }
                 onFormButtonClickHandel={() => {
                   setIsOpenSave(true);
                 }}
@@ -434,6 +398,7 @@ export const ChequeDetailForm: FC<{
             setisBankAdding(false);
             setIsOpenSave(false);
           }}
+          // setBankDetail={setBankDetail}
         />
       ) : null}
       {isOpenProcced ? (
@@ -441,10 +406,31 @@ export const ChequeDetailForm: FC<{
           MessageTitle="Confirmation"
           Message=" Procced ?"
           onActionYes={(rowVal) => onPopupYes(rowVal)}
-          onActionNo={() => onActionCancel()}
+          onActionNo={() => setIsOpenProcced(false)}
           rows={isErrorFuncRef.current}
           open={isOpenProcced}
           loading={mutationOutward.isLoading}
+        />
+      ) : null}
+      {isAddCheque ? (
+        <PopupMessageAPIWrapper
+          MessageTitle="Add Another Cheque "
+          Message="Are You Sure to Add Another Cheque ?"
+          onActionYes={(rowVal) => ClickEventManage()}
+          onActionNo={() => setIsAddCheque(false)}
+          rows={[]}
+          open={isAddCheque}
+          // loading={mutationOutward.isLoading}
+        />
+      ) : null}
+      {isAmountMessage ? (
+        <PopupRequestWrapper
+          MessageTitle="Amount Description"
+          Message={"Please Check Amount"}
+          onClickButton={(rows, buttonName) => setIsAmountMessage(false)}
+          buttonNames={["Ok"]}
+          rows={[]}
+          open={isAmountMessage}
         />
       ) : null}
     </>

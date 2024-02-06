@@ -146,6 +146,69 @@ export const DashboardBox = ({
                 ) : null} */}
               <SvgIcons height={37} width={37} />
               {/* </Avatar> */}
+              <div
+                // className="rotating"
+                style={{
+                  flex: "auto",
+                  textAlign: "right",
+                  marginTop: "10px",
+                }}
+              >
+                {result.isError || result.isLoading || result.isFetching ? (
+                  <>
+                    {result.isError ? (
+                      <>
+                        <Tooltip title={"Error"}>
+                          <span>
+                            <FontAwesomeIcon
+                              icon={["fas", "circle-exclamation"]}
+                              color={"red"}
+                              style={{ cursor: "pointer" }}
+                              onClick={showErrorData}
+                            />
+                          </span>
+                        </Tooltip>
+                        <Tooltip title={"Refetch"}>
+                          <span>
+                            <FontAwesomeIcon
+                              icon={["fas", "rotate-right"]}
+                              color={"var(--theme-color1)"}
+                              style={{ cursor: "pointer", marginLeft: "3px" }}
+                              onClick={() => {
+                                result.refetch();
+                              }}
+                            />
+                          </span>
+                        </Tooltip>
+                      </>
+                    ) : (
+                      <Tooltip title={"Feching..."}>
+                        <span>
+                          <FontAwesomeIcon
+                            icon={["fas", "spinner"]}
+                            className={"rotating"}
+                          />
+                        </span>
+                      </Tooltip>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Tooltip title={"Refresh"}>
+                      <span>
+                        <FontAwesomeIcon
+                          icon={["fas", "rotate-right"]}
+                          color={"var(--theme-color1)"}
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            result.refetch();
+                          }}
+                        />
+                      </span>
+                    </Tooltip>
+                  </>
+                )}
+              </div>
             </Grid>
           </Grid>
         </CardContent>

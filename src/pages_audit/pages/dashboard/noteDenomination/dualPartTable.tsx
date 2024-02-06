@@ -35,8 +35,8 @@ const DualPartTable = () => {
   const { dynamicAmountSymbol, currencyFormat, decimalCount } = customParameter;
 
   const { data, isLoading } = useQuery<any, any>(
-    ["CashReceiptEntrysData"],
-    () => API.CashReceiptEntrysData({ a: "a", b: "b" })
+    ["CashReceiptEntrysData"]
+    // () => API.CashReceiptEntrysData({ a: "a", b: "b" })
   );
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import { Grid, GridProps, InputLabel } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { DateTimePickerProps } from "@mui/lab/DateTimePicker";
 import { utilFunction } from "components/utils";
+import { TextField } from "components/styledComponent";
 
 const useStyles: any = makeStyles({
   root: {
@@ -134,10 +135,11 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
   }
   const result = (
     <>
-      <InputLabel className={classes.labelStyle}>{label}</InputLabel>
+      {/* <InputLabel className={classes.labelStyle}>{label}</InputLabel> */}
       <KeyboardDateTimePicker
         {...others}
         key={fieldKey}
+        label={label}
         className={classes.root}
         id={fieldKey}
         name={name}
@@ -155,12 +157,16 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore
         onChange={handleChange}
+        slots={{
+          textField: TextField,
+        }}
         slotProps={{
           textField: {
             fullWidth: true,
             error: !isSubmitting && isError,
             helperText: !isSubmitting && isError ? error : null,
             onBlur: handleBlur,
+            InputLabelProps: { shrink: true },
           },
         }}
         onBlur={handleBlur}

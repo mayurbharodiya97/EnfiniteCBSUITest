@@ -13,7 +13,7 @@ export const APYGridMetaData: GridMetaDataType = {
     disableSorting: false,
     disableGroupBy: true,
     enablePagination: true,
-    hideFooter: true,
+    hideFooter: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
@@ -27,85 +27,67 @@ export const APYGridMetaData: GridMetaDataType = {
   filters: [],
   columns: [
     {
-      accessor: "POLICY_NO",
-      columnName: "Policy No.",
+      accessor: "sr",
+      columnName: "Sr ",
+      sequence: 1,
+      componentType: "default",
+      width: 100,
+    },
+    {
+      accessor: "ACCT_TYPE",
+      columnName: "Type",
       sequence: 2,
       componentType: "default",
       width: 120,
     },
     {
-      accessor: "INSURANCE_DATE",
-      columnName: "Insurance Date",
+      accessor: "ACCT_NM",
+      columnName: "Subscriber Name ",
       sequence: 3,
-      componentType: "date",
-      isVisible: true,
-      dateFormat: "dd/MM/yyyy",
-      width: 120,
+      componentType: "default",
+      width: 220,
     },
     {
-      accessor: "DUE_DATE",
-      columnName: "Due Date",
+      accessor: "CUSTOMER_ID",
+      columnName: "CUSTOMER_ID ",
       sequence: 4,
+      componentType: "default",
+      width: 120,
+    },
+
+    {
+      accessor: "1",
+      columnName: "Registration No.",
+      sequence: 5,
+      componentType: "default",
+      width: 120,
+    },
+    {
+      accessor: "TRAN_DT",
+      columnName: "Registration Date",
+      sequence: 6,
       componentType: "date",
       isVisible: true,
       dateFormat: "dd/MM/yyyy",
       width: 120,
     },
-    {
-      accessor: "INSURANCE_AMOUNT",
-      columnName: "Insurance Amount",
-      sequence: 5,
 
-      componentType: "default",
-      width: 120,
-    },
     {
-      accessor: "TOT_PREMIUM_AMT",
-      columnName: "Total Premium  ",
-      sequence: 6,
-
-      componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "NET_PREMIUM_AMOUNT",
-      columnName: "Net Premium  ",
+      accessor: "22",
+      columnName: "Last Premium Date",
       sequence: 7,
-
-      componentType: "default",
-      width: 120,
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
+      width: 180,
     },
+
     {
-      accessor: "INSURANCE_TYPE",
-      columnName: "Insurance Type",
+      accessor: "NOMINEE_NM",
+      columnName: "NOMINEE_NM",
       sequence: 8,
-
       componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Company",
-      sequence: 9,
-
-      componentType: "default",
-      width: 250,
-    },
-    {
-      accessor: "INS_DESCRIPTION",
-      columnName: "Description",
-      sequence: 10,
-
-      componentType: "default",
-      width: 120,
-    },
-    {
-      accessor: "SERVICE_CHARGE",
-      columnName: "Service Charge",
-      sequence: 11,
-
-      componentType: "default",
-      width: 120,
+      width: 220,
     },
   ],
 };

@@ -98,44 +98,32 @@ export const getTRXList = async (reqData) => {
   }
 };
 
-// export const getTRN001List = async (reqData) => {
-//   //for table viewAll
-//   const { data, status, message, messageDetails } =
-//     await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
-//       COMP_CD: reqData?.COMP_CD,
-//       BRANCH_CD: reqData?.BRANCH_CD,
-//     });
-//   if (status === "0") {
-//     let responseData = data;
-
-//     return responseData;
-//   } else {
-//     throw DefaultErrorObject(message, messageDetails);
-//   }
-// };
 export const getTRN001List = async (reqData) => {
   //for table
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDAILYTRNLIST", {
       COMP_CD: reqData?.COMP_CD,
       BRANCH_CD: reqData?.BRANCH_CD,
+      USER_NAME: reqData?.USER_NAME ?? "",
     });
   if (status === "0") {
     let responseData = data;
     responseData &&
       responseData.map((a, i) => {
+        let modDate = format(new Date(a?.ENTERED_DATE), "dd/MMM/yyyy");
         a.index = i;
         a.account1 = a.ACCT_TYPE + a.TYPE_NM;
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
-        a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.date1 = modDate + "" + a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
+        a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
         if (
           a.TYPE_CD.includes("1") ||
           a.TYPE_CD.includes("2") ||
           a.TYPE_CD.includes("3")
         ) {
           a.credit1 = Number(a.AMOUNT).toFixed(2);
-          a.debit1 = "0.00";
+          a.debit1 = "-";
         }
         if (
           a.TYPE_CD.includes("4") ||
@@ -143,7 +131,7 @@ export const getTRN001List = async (reqData) => {
           a.TYPE_CD.includes("6")
         ) {
           a.debit1 = Number(a.AMOUNT).toFixed(2);
-          a.credit1 = "0.00";
+          a.credit1 = "-";
         }
       });
     return responseData;
@@ -176,14 +164,15 @@ export const addDailyTrxScroll = async (reqData) => {
     });
   if (status === "0") {
     let responseData = data;
-
-    return responseData[0];
+    console.log(data, "data");
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
 
 //validations
+
 export const getChqValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
@@ -204,13 +193,13 @@ export const getChqValidation = async (reqData) => {
 export const getAccNoValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("ACCTNOVALIDATION", {
-      COMP_CD: reqData?.branch?.info?.COMP_CD,
-      BRANCH_CD: reqData?.branch?.value,
-      ACCT_TYPE: reqData?.accType?.value,
-      ACCT_CD: reqData.accNo.padEnd(20, " "),
+      BRANCH_CD: reqData?.BRANCH_CD,
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
 
       GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
-      SCREEN_REF: "ETRN/559",
+      SCREEN_REF: "ETRN/001", //depending on screen code
     });
   if (status === "0") {
     let responseData = data;
@@ -220,3 +209,5 @@ export const getAccNoValidation = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+//others

@@ -18,6 +18,7 @@ export const getATMList = async (reqData) => {
     let responseData = data;
     responseData.map((a, i) => {
       a.index = i;
+      a.sr = i + 1;
     });
     return responseData;
   } else {

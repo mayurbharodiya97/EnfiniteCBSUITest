@@ -126,7 +126,8 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                     PDFormRef.current.handleSubmitError(e, "save")
                 }}
                 >
-                {t("Save & Next")}
+                {t("Next")}
+                {/* {t("Save & Next")} */}
                 </Button>
             </Fragment>
             : displayMode == "edit"

@@ -231,7 +231,8 @@ const myGridRef = useRef<any>(null);
                     RelPersonFormRef.current.handleSubmitError(e, "save")
                 }}
                 >
-                {t("Save & Next")}
+                {t("Next")}
+                {/* {t("Save & Next")} */}
                 </Button>
             </Fragment>
             : displayMode == "edit"

@@ -1,220 +1,129 @@
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+
+import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Typography } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import Grid from "@mui/material/Grid";
 import { styled } from "@mui/material/styles";
+
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 //logical
 import "./accDetails.css";
 import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-};
 export const AccDetails = ({ flag }) => {
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  let data = tempStore?.accInfo;
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const windowWidth = useRef(window.innerWidth);
+
+  const [cardName, setCardName] = useState<any>([]);
+  let cardsInfo = cardStore?.cardsInfo ?? [];
+
+  const responsive = {
+    superLargeDesktop: {
+      breakpoint: { max: 4000, min: 3000 },
+      items: 2,
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: cardName?.length < 3 ? 2 : 3,
+    },
+    tablet: {
+      breakpoint: { max: 1024, min: 464 },
+      items: 2,
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+    },
+  };
+
+  useEffect(() => {
+    let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
+    let arr3 = arr2 && arr2?.filter((a, i) => arr2.indexOf(a) == i);
+    setCardName(arr3);
+  }, [cardStore]);
+
+  useEffect(() => {
+    console.log(cardName, "cardName");
+    console.log(cardStore, "cardStore");
+  }, [cardName, cardStore]);
+
+  console.log(cardsInfo?.length, "cardsInfo?.length");
+
+  useEffect(() => {
+    console.log("width: ", windowWidth.current);
+  }, [windowWidth]);
   return (
     <>
-      <Carousel responsive={responsive}>
+      {cardName?.length > 0 ? (
+        <Carousel responsive={responsive}>
+          {cardName?.length > 0 &&
+            cardName?.map((a, i) => {
+              return (
+                <Card
+                  // id={cardName?.length < 3 ? "cardContainer2" : "cardContainer"}
+                  id="cardContainer"
+                >
+                  <CardContent>
+                    <div id="cardHeading">
+                      <Typography
+                        variant="h6"
+                        component="div"
+                        style={{ color: "white" }}
+                      >
+                        {a}
+                      </Typography>
+                      <div>
+                        <AccountCircleIcon fontSize="medium" />
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        overflowY: "scroll",
+                        height: (flag === "DLYTRN" ? "26vh" : "29vh") as string,
+                      }}
+                    >
+                      <Grid container spacing={2} style={{ marginTop: "0px" }}>
+                        {cardsInfo?.length > 0 &&
+                          cardsInfo?.map((b, i2) => {
+                            if (a == b?.CARD_NAME) {
+                              return (
+                                <Grid item id="cardGridItem" key={i2}>
+                                  <Typography id="cardLabel">
+                                    {b?.COL_LABEL}
+                                  </Typography>
+                                  <Typography>{b?.COL_VALUE}</Typography>
+                                </Grid>
+                              );
+                            }
+                          })}
+                      </Grid>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+        </Carousel>
+      ) : (
         <Card
-          sx={{
-            width: "450px",
-            boxShadow: flag === "DLYTRN" ? "0px 1px 4px -1px #999999" : "none",
-            borderRadius: "5px",
-            marginBottom: "5px",
-            // height: (flag === "TELLER" ? "49vh" : null) as string,
+          style={{
+            width: "100%",
+            height: "38vh",
+            display: "flex",
+            justifyContent: "center",
           }}
-          className={flag === "TELLER" ? "styleforteller" : ""}
         >
-          <CardContent>
-            <div id="accHead">
-              <Typography variant="h5" component="div">
-                Personal Information
-              </Typography>
-              <div>
-                <AccountCircleIcon fontSize="medium" />
-              </div>
-            </div>
-
-            <div
-              style={{
-                overflowY: "scroll",
-                height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
-              }}
-            >
-              <Grid container spacing={2}>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Name</Typography>
-                  <Typography>{data?.ACCT_NM}</Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">CUSTOMER_ID</Typography>
-                  <Typography>{data?.CUSTOMER_ID}</Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Account</Typography>
-                  <Typography>{data?.ACCT_CD_NEW}</Typography>
-                </Grid>
-
-                <Grid item id="accInfo">
-                  <Typography variant="button">Email</Typography>
-                  <Typography>{data?.E_MAIL_ID}</Typography>
-                </Grid>
-
-                {data?.CONTACT2 && (
-                  <Grid item id="accInfo">
-                    <Typography variant="button">Contact</Typography>
-                    <Typography>{data?.CONTACT2}</Typography>
-                  </Grid>
-                )}
-
-                <Grid item id="accInfo">
-                  <Typography variant="button">Branch Id</Typography>
-                  <Typography>{data?.BRANCH_CD}</Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Company id</Typography>
-                  <Typography>{data?.COMP_CD}</Typography>
-                </Grid>
-                {data?.ORG_PAN && (
-                  <Grid item id="accInfo">
-                    <Typography variant="button">PAN_NO</Typography>
-                    <Typography>{data?.ORG_PAN}</Typography>
-                  </Grid>
-                )}
-                <Grid item xs={12} id="accInfo">
-                  <Typography variant="button">Address</Typography>
-
-                  <Typography>
-                    {data?.ADD1} {data?.ADD2 && data?.ADD2} {data?.AREA_NM}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </div>
-          </CardContent>
+          <div style={{ paddingTop: "10%" }}></div>
         </Card>
-
-        <Card
-          sx={{
-            width: "450px",
-            boxShadow: flag === "DLYTRN" ? "0px 1px 4px -1px #999999" : "none",
-            borderRadius: "5px",
-            marginBottom: "5px",
-            // height: (flag === "TELLER" ? "49vh" : null) as string,
-          }}
-          className={flag === "TELLER" ? "style-for-teller" : ""}
-        >
-          <CardContent>
-            <div id="accHead">
-              <Typography variant="h5" component="div">
-                Balance Details
-              </Typography>
-              <div>
-                <AccountBalanceWalletIcon fontSize="medium" />
-              </div>
-            </div>
-            <div
-              style={{
-                overflowY: "scroll",
-                height: (flag === "DLYTRN" ? "26vh" : "36vh") as string,
-              }}
-            >
-              <Grid container spacing={2}>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Status</Typography>
-                  <Typography
-                    style={
-                      data?.STATUS == "C" ? { color: "#ea3a1b" } : { color: "" }
-                    }
-                  >
-                    {data?.STATUS == "O" && "Open"}
-                    {data?.STATUS == "C" && "Close"}
-                    {data?.STATUS == "U" && "Unclaimed"}
-                    {data?.STATUS == "F" && "Freeze"}
-                    {data?.STATUS == "I" && "Inoperative"}
-                    {data?.STATUS == "D" && "Dormant"}
-                  </Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Op. DATE</Typography>
-                  <Typography>
-                    {data?.OP_DATE &&
-                      format(new Date(data?.OP_DATE), "dd/MMM/yyyy")}
-                  </Typography>
-                </Grid>{" "}
-                <Grid item id="accInfo">
-                  <Typography variant="button">Opening</Typography>
-                  <Typography align="right">{data?.LAST_BAL}</Typography>
-                </Grid>{" "}
-                <Grid item id="accInfo">
-                  <Typography variant="button">Withraw Bal</Typography>
-                  <Typography align="right">{data?.WITHDRAW_BAL}</Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">HOLD_BAL</Typography>
-                  <Typography align="right">{data?.HOLD_BAL}</Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Shadow(C)</Typography>
-                  <Typography align="right">{data?.TRAN_BAL}</Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Current(A)</Typography>
-                  <Typography align="right">{data?.CONF_BAL}</Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">(C-B)</Typography>
-                  <Typography align="right">
-                    {data?.TRAN_BAL &&
-                      Number(data?.TRAN_BAL) - Number(data?.UNCL_BAL)}
-                  </Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">(A-B)</Typography>
-                  <Typography align="right">
-                    {data?.CONF_BAL &&
-                      Number(data?.CONF_BAL) - Number(data?.UNCL_BAL)}
-                  </Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Pending Amt</Typography>
-                  <Typography align="right">
-                    {data?.PENDING_SCROLL_AMT}
-                  </Typography>
-                </Grid>
-                <Grid item id="accInfo">
-                  <Typography variant="button">Clearing Chq(B)</Typography>
-                  <Typography align="right">{data?.UNCL_BAL}</Typography>
-                </Grid>
-              </Grid>
-            </div>
-          </CardContent>
-        </Card>
-      </Carousel>
-      <br />
+        // <></>
+      )}
     </>
   );
 };

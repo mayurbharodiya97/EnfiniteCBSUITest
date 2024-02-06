@@ -834,8 +834,8 @@ export const kyc_proof_of_address_meta_data = {
           setValueOnDependentFieldsChange: (dependentFields) => {
             // console.log("fewiwuehfiwuefwef", dependentFields)
             if(dependentFields.SAME_AS_PER && Boolean(dependentFields.SAME_AS_PER.value)) {
-                const ADD_TYPE = dependentFields.ADDRESS_TYPE.value
-                return ADD_TYPE;
+                const add1 = dependentFields.ADD1.value
+                return add1;
             }
             return "";
           },

@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { Merge } from "../types";
 import {
   transformDependentFieldsState,
@@ -23,6 +23,7 @@ interface MyButtonExtendedProps {
   FormHelperTextProps?: FormHelperTextProps;
   GridProps?: GridProps;
   enableGrid: boolean;
+  iconStyle?: any;
 }
 type MyButtonMixedProps = Merge<ButtonProps, extendedFiledProps>;
 export type MyFormButtonAllProps = Merge<
@@ -60,6 +61,7 @@ export const FormButton = ({
   startsIcon,
   endsIcon,
   rotateIcon,
+  iconStyle,
   ...others
 }) => {
   const {
@@ -93,6 +95,19 @@ export const FormButton = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
+  const focusRef = useRef();
+  useEffect(() => {
+    if (isFieldFocused) {
+      //@ts-ignore
+      getFocus();
+    }
+  }, [isFieldFocused, value]);
+  const getFocus = () => {
+    setTimeout(() => {
+      //@ts-ignore
+      focusRef?.current?.focus?.();
+    }, 1);
+  };
 
   const ClickEventCall = (e) => {
     if (typeof onFormButtonClickHandel === "function") {
@@ -117,10 +132,13 @@ export const FormButton = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value } = incomingMessage;
+      const { value, isFieldFocused } = incomingMessage;
 
       if (Boolean(value) || value === "") {
         handleChange(value);
+        if (isFieldFocused) {
+          getFocus();
+        }
         if (whenToRunValidation === "onBlur") {
           runValidation({ value: value }, true);
         }
@@ -140,6 +158,12 @@ export const FormButton = ({
         starticon={startsIcon}
         endicon={endsIcon}
         rotateIcon={rotateIcon}
+        inputRef={focusRef}
+        sx={{
+          "& svg": {
+            ...iconStyle,
+          },
+        }}
       >
         {label}
       </GradientButton>

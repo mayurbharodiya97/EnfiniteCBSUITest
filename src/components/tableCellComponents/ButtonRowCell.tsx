@@ -8,12 +8,12 @@ export const ButtonRowCell = (props) => {
       index,
       original: { _isNewRow },
     },
-    column: { id, buttonLabel, columnName, isVisible },
+    column: { id, buttonLabel, columnName, isVisible, isVisibleInNew },
     updateGridData,
     onButtonActionHandel,
   } = props;
   const is_Visible = useMemo(
-    () => (Boolean(_isNewRow) ? false : isVisible),
+    () => (Boolean(_isNewRow) ? isVisibleInNew : isVisible),
     [isVisible, _isNewRow]
   );
   const handleClick = (e) => {

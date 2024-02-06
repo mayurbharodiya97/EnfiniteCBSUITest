@@ -397,7 +397,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       thousandSeparator: true,
       // prefix: "₹",
       thousandsGroupStyle: "lakh",
-      allowNegative: false,
+      allowNegative: true,
       allowLeadingZeros: false,
       decimalScale: 2,
       fixedDecimalScale: true,
@@ -430,7 +430,6 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     // setValueOnDependentFieldsChange: (dependentFields) => {
     //   return "";
     // },
-
     schemaValidation: {
       type: "string",
       rules: [

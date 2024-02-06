@@ -36,12 +36,6 @@ export const StopPayEntryMetadata = {
         fullWidth: true,
       },
     },
-    apiKey: {
-      BRANCH_CD: "BRANCH_CD",
-      ACCT_TYPE: "ACCT_TYPE",
-      ACCT_CD: "ACCT_CD",
-    },
-    apiID: "GETSTOPPAYDATA",
   },
   fields: [
     {

@@ -48,21 +48,6 @@ export const StoppaymentEntry = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    let ApiKey: any = StopPayEntryMetadata?.form?.apiKey;
-    let apiID: any = StopPayEntryMetadata?.form?.apiID;
-    let response = {};
-    for (const key in ApiKey) {
-      if (ApiKey.hasOwnProperty(key)) {
-        const mappedKey = ApiKey[key];
-        response[key] = data[mappedKey];
-      }
-    }
-    let otherAPIRequestPara = {
-      COMP_CD: authState?.companyID,
-      ...response,
-      ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
-    };
-    mutation.mutate({ apiID, otherAPIRequestPara });
   };
   return (
     <>

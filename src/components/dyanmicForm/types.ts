@@ -102,9 +102,7 @@ export interface FormMetaDataType {
     name: string;
     label: string;
   };
-  apiKey?: any;
   formStyle?: any;
-  hideHeader?: any;
 }
 
 export interface ComponentTypeProps {

@@ -12,7 +12,6 @@ import Dashboard from "./pages/dashboard/dashboard";
 import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 import { OperationsMenu } from "./pages/operations";
 import AccountDetails from "./pages/STATEMENT/accountDetails";
-import { MastersMenu } from "./pages/master";
 import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
@@ -24,6 +23,17 @@ export const PagesAudit = (props, { columns }) => {
   const handleDrawerOpen = () => setDrawerState(true);
   const handleDrawerClose = () => setDrawerState(false);
   const isValidURL = props?.isValidURL ?? true;
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/cbsenfinity/dashboard") {
+      handleDrawerOpen();
+    } else if (location.pathname) {
+      handleDrawerClose();
+    } else {
+      handleDrawerOpen();
+    }
+  }, [location.pathname]);
 
   return (
     <Fragment>
@@ -44,7 +54,7 @@ export const PagesAudit = (props, { columns }) => {
         </Drawer>
         <Content>
           <Routes>
-            {isValidURL || true ? (
+            {isValidURL ? (
               <>
                 {/* <Route
                   path="all-screens/*"
@@ -52,20 +62,13 @@ export const PagesAudit = (props, { columns }) => {
                 /> */}
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
-                <Route
-                  path="operation/*"
-                  element={ <OperationsMenu />}
-                />
+                <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
-                <Route path="grid/*" element={<MastersMenu />} />
                 <Route path="configuration/*" element={<Configuration />} />
                 <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+                <Route path="operation/daily_tran_F1" element={<Trn001 />} />
                 <Route
-                  path="operation/teller_daily_tran"
-                  element={<Trn001 />}
-                />
-                <Route
-                  path="operation/teller_daily_tran_cnf_F2"
+                  path="operation/cnf_daily_tran_F2"
                   element={<Trn002 />}
                 />
 
