@@ -858,6 +858,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/VALIDATEFDACCOUNTS",
     packageName: "",
   },
+  VALIDATEACCOUNT: {
+    url: "/enfinityFDServiceAPI/VALIDATEACCOUNT",
+    packageName: "",
+  },
   GETLIMITGRIDDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITGRIDDATADISP",
     packageName: "",

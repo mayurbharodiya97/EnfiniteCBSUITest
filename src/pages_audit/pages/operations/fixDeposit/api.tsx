@@ -11,6 +11,29 @@ export const getFDAccountsDetail = async (Apireq) => {
   }
 };
 
+export const validateAccountAndGetDetail = async (
+  companyCode,
+  branchCode,
+  accountType,
+  accountCode,
+  screenReference
+) => {
+  if (!Boolean(companyCode)) return { status: "-1" };
+  if (!Boolean(branchCode)) return { status: "-1" };
+  if (!Boolean(accountType)) return { status: "-1" };
+  if (!Boolean(accountCode)) return { status: "-1" };
+  if (!Boolean(screenReference)) return { status: "-1" };
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEACCOUNT", {
+      COMP_CD: companyCode,
+      BRANCH_CD: branchCode,
+      ACCT_TYPE: accountType,
+      ACCT_CD: accountCode,
+      SCREEN_REF: screenReference,
+    });
+  return { data, status, message, messageDetails };
+};
+
 export const valiateFDAccounts = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("VALIDATEFDACCOUNTS", { ...Apireq });

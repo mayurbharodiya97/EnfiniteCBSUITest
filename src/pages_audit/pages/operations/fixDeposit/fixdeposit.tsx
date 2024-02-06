@@ -16,6 +16,7 @@ import { Fragment, useContext, useRef, useState } from "react";
 import SettingsIcon from "@mui/icons-material/Settings";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import VideoLabelIcon from "@mui/icons-material/VideoLabel";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import StepConnector, {
   stepConnectorClasses,
 } from "@mui/material/StepConnector";
@@ -110,12 +111,11 @@ export const FixDepositForm = () => {
       });
     },
     onSuccess: (data) => {
-      console.log(">>onSuccess", data);
-      updateFDDetailsFormData({ FDDTL: data?.[0]?.FD_ACCOUNTS });
-      // enqueueSnackbar(data, {
-      //   variant: "success",
-      // });
-      setActiveStep(fdState.activeStep + 1);
+      if (data?.[0]?.RESTRICT === "Y") {
+      } else {
+        updateFDDetailsFormData({ FDDTL: data?.[0]?.FD_ACCOUNTS });
+        setActiveStep(fdState.activeStep + 1);
+      }
     },
   });
   const setDataOnFieldChange = (action, payload) => {
@@ -140,10 +140,12 @@ export const FixDepositForm = () => {
 
   function ColorlibStepIcon(props: StepIconProps) {
     const { active, completed, className } = props;
-
+    const fdType = fdState?.fdParaFormData?.FD_TYPE;
+    console.log(">>fdType", fdType);
+    // Object mapping step numbers to corresponding icons
     const icons: { [index: string]: React.ReactElement } = {
       1: <SettingsIcon />,
-      2: <GroupAddIcon />,
+      2: fdType === "F" ? <PersonAddIcon /> : <GroupAddIcon />,
       3: <VideoLabelIcon />,
     };
 

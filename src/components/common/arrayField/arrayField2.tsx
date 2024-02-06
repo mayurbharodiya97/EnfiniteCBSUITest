@@ -465,7 +465,9 @@ export const ArrayFieldRow = ({
         ) : null}
       </Grid>
       {fixedRows && rowIndex + 1 < totalRows ? (
-        <Divider sx={{ backgroundColor: "black", width: "100%" }} />
+        <Divider
+          sx={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%" }}
+        />
       ) : null}
       <Dialog
         open={isDialogOpen}

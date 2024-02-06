@@ -13,6 +13,8 @@ import {
 } from "./metaData/fdParaMetaData";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
+import { MessageBoxWrapper } from "components/custom/messageBox";
+import { AuthContext } from "pages_audit/auth";
 
 export const DetailForm = forwardRef<any, any>(
   ({ onSubmitHandler, setDataOnFieldChange, submitEventRef }, ref) => {
@@ -23,6 +25,8 @@ export const DetailForm = forwardRef<any, any>(
       setIsOpendfdAcctForm,
       updateFDAccountsFormData,
     } = useContext(FixDepositContext);
+
+    const { MessageBox } = useContext(AuthContext);
 
     const fdAccountRef: any = useRef(null);
 
@@ -118,6 +122,7 @@ export const DetailForm = forwardRef<any, any>(
                   "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
               }}
               ref={fdAccountRef}
+              formState={{ MessageBox: MessageBox }}
             />
           )}
       </Fragment>

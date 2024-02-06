@@ -605,7 +605,6 @@ const GeneralAPISDK = () => {
       }
       return responseData;
     } else {
-      throw DefaultErrorObject(message, messageDetails);
     }
   };
   return {
