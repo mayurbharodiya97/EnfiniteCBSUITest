@@ -228,11 +228,6 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>             */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Address {`(6/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -240,8 +235,8 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
-                <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("OtherAddress")}</Typography>
+                <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
+                    <Typography sx={{color:"var(--theme-color3)", pl: 2, pt: "6px"}} variant={"h6"}>{t("OtherAddress")}</Typography>
                 </Grid>
 
                 {/* <Divider sx={{mt: 1, color: "var(--theme-color3)"}} textAlign={"left"}>Current/Permanent/Overseas Address</Divider> */}

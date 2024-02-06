@@ -330,11 +330,6 @@ const PersonalDetails = ({
       rowGap={3}
       // sx={{backgroundColor: "#eee"}}
     >
-      <Grid container>
-        {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Personal Details {`(1/8)`}</Typography>
-                </Grid> */}
-      </Grid>
       {isCustomerData ? (
         <Grid
           sx={{
@@ -354,8 +349,7 @@ const PersonalDetails = ({
             sx={{ alignItems: "center", justifyContent: "space-between" }}
           >
             <Typography
-              sx={{ color: "var(--theme-color3)" }}
-              gutterBottom={true}
+              sx={{ color: "var(--theme-color3)", pl: 2 }}
               variant={"h6"}
             >
               {t("PersonalDetails")}
@@ -433,8 +427,7 @@ const PersonalDetails = ({
             sx={{ alignItems: "center", justifyContent: "space-between" }}
           >
             <Typography
-              sx={{ color: "var(--theme-color3)" }}
-              gutterBottom={true}
+              sx={{ color: "var(--theme-color3)", pl: 2 }}
               variant={"h6"}
             >
               {t("OtherPersonalDetails")}

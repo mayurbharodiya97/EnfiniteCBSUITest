@@ -223,11 +223,6 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography> */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -236,10 +231,10 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid item container direction={"row"} style={{justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("AttestationDetails")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)",  pl: 2, pt: "6px"}} variant={"h6"}>{t("AttestationDetails")}</Typography>
                     {/* <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("AttestationDetails")}</Typography> */}
-                    {!state?.isFreshEntryctx && <Button sx={{mr:2}} 
-                    color="secondary" variant="contained" 
+                    {!state?.isFreshEntryctx && <Button sx={{mr:2, mt: "6px"}} 
+                    color="secondary" variant="contained" size="small"
                     onClick={() => {
                         // historyDataRefetch()
                         if(!isHistoryDataLoading && historyData) {

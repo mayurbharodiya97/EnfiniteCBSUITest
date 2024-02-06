@@ -151,11 +151,6 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography> */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -164,7 +159,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("OtherDetails")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)", pl: 2}} variant={"h6"}>{t("OtherDetails")}</Typography>
                     <IconButton onClick={handleOtherDetailsExpand}>
                         {!isOtherDetailsExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>

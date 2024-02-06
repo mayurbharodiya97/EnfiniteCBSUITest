@@ -198,11 +198,6 @@ const myGridRef = useRef<any>(null);
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>             */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -211,7 +206,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("ControllingPersonDTL")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)", pl: 2}} variant={"h6"}>{t("ControllingPersonDTL")}</Typography>
                     <IconButton onClick={handleFormExpand}>
                         {!isFormExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                     </IconButton>

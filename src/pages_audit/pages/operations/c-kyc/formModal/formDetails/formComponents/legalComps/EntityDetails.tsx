@@ -168,11 +168,6 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Personal Details {`(1/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -181,7 +176,7 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("EntityDetails")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)", pl: 2}} variant={"h6"}>{t("EntityDetails")}</Typography>
                     <IconButton onClick={handlePDExpand}>
                         {!isPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>

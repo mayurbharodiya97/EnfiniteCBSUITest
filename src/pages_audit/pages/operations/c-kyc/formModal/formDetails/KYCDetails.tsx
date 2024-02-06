@@ -251,11 +251,6 @@ const KYCDetails = ({
     >
       {/* <Typography variant={"h6"}>Personal Details</Typography> */}
       {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography> */}
-      <Grid container>
-        {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography>
-                </Grid> */}
-      </Grid>
       {isCustomerData ? (
         <Grid
           sx={{
@@ -276,7 +271,7 @@ const KYCDetails = ({
               item
               sx={{ alignItems: "center", justifyContent: "space-between" }}
             >
-              <Typography sx={{ color: "var(--theme-color3)" }} variant={"h6"}>
+              <Typography sx={{ color: "var(--theme-color3)",  pl: 2 }} variant={"h6"}>
                 {state?.entityTypectx === "I"  ? t("ProofOfIdentity") : "Company Info"}
               </Typography>
               <IconButton onClick={handlePoIExpand}>
@@ -327,7 +322,7 @@ const KYCDetails = ({
             item
             sx={{ alignItems: "center", justifyContent: "space-between" }}
           >
-            <Typography sx={{ color: "var(--theme-color3)" }} variant={"h6"}>
+            <Typography sx={{ color: "var(--theme-color3)", pl: 2 }} variant={"h6"}>
               {t("ProofOfAddress")}
             </Typography>
             <IconButton onClick={handlePoAExpand}>
