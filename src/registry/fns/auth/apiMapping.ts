@@ -731,6 +731,11 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNDOCUMENTTAB",
     packageName: "",
   },
+  //docView
+  GETDLYTRNDOCVIEWBTN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNDOCVIEWBTN",
+    packageName: "",
+  },
   //insurance
   GETDLYTRNINSURANCETAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNINSURANCETAB",
@@ -739,6 +744,16 @@ export const ActionWiseAPIConfiguration = {
   //chqBook
   GETDLYTRNCHEQUETAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNCHEQUETAB",
+    packageName: "",
+  },
+  //chqBtn1
+  GETDLYTRNTODAYCLEARBTN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTODAYCLEARBTN",
+    packageName: "",
+  },
+  //chqBtn2
+  GETDLYTRNCHQRTNBTN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNCHQRTNBTN",
     packageName: "",
   },
   //snapshot

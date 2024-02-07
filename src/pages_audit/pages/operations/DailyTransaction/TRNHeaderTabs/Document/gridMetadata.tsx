@@ -22,7 +22,8 @@ export const DocumentGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: false,
+    allowRowSelection: true,
+    isCusrsorFocused: true,
   },
   filters: [],
   columns: [

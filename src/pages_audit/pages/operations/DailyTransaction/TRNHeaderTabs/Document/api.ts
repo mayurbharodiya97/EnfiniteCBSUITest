@@ -24,3 +24,16 @@ export const getDocTemplateList = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getDocView = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDLYTRNDOCVIEWBTN", {
+      TRAN_CD: reqData?.TRAN_CD,
+      SR_CD: reqData?.SR_CD,
+      LINE_CD: reqData?.LINE_CD ?? "",
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

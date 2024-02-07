@@ -59,7 +59,10 @@ export const Trn002 = () => {
 
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
+  const [refRows, setRefRows] = useState<any>([]);
   const [filteredRows, setFilteredRows] = useState<any>([]);
+  const [searchScrollNo, setSearchScrollNo] = useState<any>("");
+
   const [tabsData, setTabsData] = useState<any>([]);
   const [dataRow, setDataRow] = useState<any>({});
   const [credit, setCredit] = useState<number>(0);
@@ -74,6 +77,27 @@ export const Trn002 = () => {
     BRANCH_CD: authState?.user?.branchCode,
   };
 
+  // useEffect(() => {
+  //   refRows && handleFilterByScroll(searchScrollNo);
+  // }, [searchScrollNo]);
+
+  const handleFilterByScroll = (txt) => {
+    setSearchScrollNo(txt);
+    let result = refRows?.filter((item) => item?.SCROLL1 === txt);
+    if (result?.length > 0) {
+      setRows2(result);
+    } else if (!searchScrollNo) {
+      result = [];
+      setRows2(refRows);
+    } else {
+      result = [];
+      setRows2([]);
+    }
+
+    setFilteredRows(result);
+    console.log(result, "resssssult");
+  };
+
   useEffect(() => {
     handleGetTRN002List();
     setTabsData([]);
@@ -82,6 +106,7 @@ export const Trn002 = () => {
   // api define ========================================================================
   const getTRN002List = useMutation(trn2Api.getTRN002List, {
     onSuccess: (data) => {
+      setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data.filter((a) => a.CONFIRMED == "0");
       setRows2(arr);
@@ -92,8 +117,7 @@ export const Trn002 = () => {
 
       let crSum = 0;
       let drSum = 0;
-      let conf = 0;
-      let abc = arr.map((a) => {
+      arr.map((a) => {
         if (
           a.TYPE_CD.includes("1") ||
           a.TYPE_CD.includes("2") ||
@@ -153,10 +177,17 @@ export const Trn002 = () => {
       });
     },
   });
+  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
+    onSuccess: (data) => {
+      setTabsData(data);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
   // function define  ======================================================================
-  const handleGetTRN002List = () => {
-    getTRN002List.mutate(dataObj);
-  };
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
@@ -190,6 +221,9 @@ export const Trn002 = () => {
       setDeleteDialog(true);
     }
   }, []);
+  const handleGetTRN002List = () => {
+    getTRN002List.mutate(dataObj);
+  };
 
   const handleViewAll = () => {
     let arr = [...rows];
@@ -220,18 +254,7 @@ export const Trn002 = () => {
     setRows2(data);
   };
 
-  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-    onSuccess: (data) => {
-      setTabsData(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
-
-  const handleDelete = (input) => {
+  const handleDeleteByVoucher = (input) => {
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
@@ -258,7 +281,6 @@ export const Trn002 = () => {
     confirmScroll.mutate(dataRow);
   };
 
-  const handleFilterByScroll = () => {};
   return (
     <>
       <DailyTransTabs
@@ -332,40 +354,41 @@ export const Trn002 = () => {
         handleViewAll={handleViewAll}
         handleRefresh={() => handleGetTRN002List()}
       />
+      <>
+        {Boolean(deleteDialog) ? (
+          <RemarksAPIWrapper
+            TitleText={
+              "Do you want to Delete the transaction - VoucherNo." +
+              dataRow?.TRAN_CD +
+              " ?"
+            }
+            onActionYes={(input) => handleDeleteByVoucher(input)}
+            onActionNo={() => setDeleteDialog(false)}
+            isLoading={deleteScrollByVoucher.isLoading}
+            isEntertoSubmit={true}
+            AcceptbuttonLabelText="Ok"
+            CanceltbuttonLabelText="Cancel"
+            open={deleteDialog}
+            rows={dataRow}
+          />
+        ) : null}
 
-      {Boolean(deleteDialog) ? (
-        <RemarksAPIWrapper
-          TitleText={
-            "Do you want to Delete the transaction - VoucherNo." +
-            dataRow?.TRAN_CD +
-            " ?"
-          }
-          onActionYes={(input) => handleDelete(input)}
-          onActionNo={() => setDeleteDialog(false)}
-          isLoading={deleteScrollByVoucher.isLoading}
-          isEntertoSubmit={true}
-          AcceptbuttonLabelText="Ok"
-          CanceltbuttonLabelText="Cancel"
-          open={deleteDialog}
-          rows={dataRow}
-        />
-      ) : null}
-
-      {Boolean(confirmDialog) ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Transaction Confirm"
-          Message={
-            "Do you wish to Confirm this Transaction - Voucher No. " +
-            dataRow?.TRAN_CD +
-            " ?"
-          }
-          onActionYes={() => handleConfirm()}
-          onActionNo={() => setConfirmDialog(false)}
-          rows={[]}
-          open={confirmDialog}
-          loading={confirmScroll.isLoading}
-        />
-      ) : null}
+        {Boolean(confirmDialog) ? (
+          <PopupMessageAPIWrapper
+            MessageTitle="Transaction Confirm"
+            Message={
+              "Do you wish to Confirm this Transaction - Voucher No. " +
+              dataRow?.TRAN_CD +
+              " ?"
+            }
+            onActionYes={() => handleConfirm()}
+            onActionNo={() => setConfirmDialog(false)}
+            rows={[]}
+            open={confirmDialog}
+            loading={confirmScroll.isLoading}
+          />
+        ) : null}
+      </>
     </>
   );
 };

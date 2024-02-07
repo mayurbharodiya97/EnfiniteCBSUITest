@@ -105,12 +105,9 @@ const CommonFooter = ({
       handleSetRemarks();
       if (data?.message) {
         enqueueSnackbar(data?.message, {
-          variant: "error",
+          variant: "success",
         });
       }
-      // enqueueSnackbar("scroll deleted", {
-      //   variant: "success",
-      // });
 
       if (isTrn1) {
         viewOnly && setTempStore({ ...tempStore, refresh: Math.random() });
@@ -159,12 +156,12 @@ const CommonFooter = ({
     }
 
     if (remarks?.length < 5) {
-      return enqueueSnackbar("Kindly enter Remarks of atleast 5 ", {
+      return enqueueSnackbar("Kindly enter Remarks of atleast 5 Characters", {
         variant: "error",
       });
     }
 
-    console.log(data, "reqdata");
+    console.log(data, "reqdata delscroll");
     scrollNo && remarks?.length > 4 && deleteByScrollNo.mutate(data);
   };
 
