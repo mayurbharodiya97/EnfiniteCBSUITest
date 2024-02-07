@@ -7,10 +7,11 @@ import { AuthSDK } from "registry/fns/auth";
 
 export const getCheckDetailsList = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCHEQUEDTL", {
-      COMP_CD: reqData.COMP_CD,
-      ACCT_TYPE: reqData.ACCT_TYPE,
-      ACCT_CD: reqData.ACCT_CD,
+    await AuthSDK.internalFetcher("GETDLYTRNCHEQUETAB", {
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
     });
   if (status === "0") {
     let responseData = data;

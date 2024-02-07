@@ -67,21 +67,6 @@ export const TRN001_Table = ({
   useEffect(() => {
     rows2 && handleFilterByScroll();
   }, [searchScrollNo]);
-  const handleFilterByScroll = () => {
-    let result = rows2?.filter((item) => item?.SCROLL1 === searchScrollNo);
-    if (result?.length > 0) {
-      setRows(result);
-    } else if (!searchScrollNo) {
-      result = [];
-      setRows(rows2);
-    } else {
-      result = [];
-      setRows([]);
-    }
-
-    handleFilteredRows(result);
-    console.log(result, "resssssult");
-  };
 
   useEffect(() => {
     console.log(rows, "trn1 table rows");
@@ -133,7 +118,9 @@ export const TRN001_Table = ({
     onSuccess: (data) => {
       setCardStore({ ...cardStore, cardsInfo: data });
     },
-    onError: (error) => {},
+    onError: (error) => {
+      setCardStore({ ...cardStore, cardsInfo: [] });
+    },
   });
 
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
@@ -152,8 +139,7 @@ export const TRN001_Table = ({
     },
   });
 
-  //-----------------------------
-
+  // fn define-----------------------------
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
     console.log(row, "rowwww");
@@ -179,11 +165,22 @@ export const TRN001_Table = ({
     if (data.name === "Delete") {
       setDeleteDialog(true);
     }
-
-    // if (row?.TYPE_CD === "3   " || row?.TYPE_CD === "6   ") {
-    //   setScrollDialog(true);
-    // }
   }, []);
+  const handleFilterByScroll = () => {
+    let result = rows2?.filter((item) => item?.SCROLL1 === searchScrollNo);
+    if (result?.length > 0) {
+      setRows(result);
+    } else if (!searchScrollNo) {
+      result = [];
+      setRows(rows2);
+    } else {
+      result = [];
+      setRows([]);
+    }
+
+    handleFilteredRows(result);
+    console.log(result, "resssssult");
+  };
 
   const handleDelete = (input) => {
     console.log(input, "input");
@@ -214,6 +211,7 @@ export const TRN001_Table = ({
     setScrollDialog(false);
   };
 
+  //console-----------------------
   useEffect(() => {
     console.log(dataRow, "dataRow");
   }, [dataRow]);

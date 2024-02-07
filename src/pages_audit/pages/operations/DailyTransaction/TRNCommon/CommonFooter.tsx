@@ -100,17 +100,23 @@ const CommonFooter = ({
     onSuccess: (data: any) => {
       setLoading(false);
       setScrollDeleteDialog(false);
+      setScrollDeleteDialog2(false);
       setScrollNo("");
       handleSetRemarks();
+      if (data?.message) {
+        enqueueSnackbar(data?.message, {
+          variant: "error",
+        });
+      }
+      // enqueueSnackbar("scroll deleted", {
+      //   variant: "success",
+      // });
+
       if (isTrn1) {
         viewOnly && setTempStore({ ...tempStore, refresh: Math.random() });
       } else {
         handleRefresh();
       }
-
-      enqueueSnackbar("scroll deleted", {
-        variant: "success",
-      });
     },
     onError: (error: any) => {
       setLoading(false);
@@ -143,7 +149,7 @@ const CommonFooter = ({
       ENTERED_COMP_CD: filteredRows[0]?.COMP_CD,
       ENTERED_BRANCH_CD: filteredRows[0]?.BRANCH_CD,
       ACTIVITY_TYPE: "DAILY TRANSACTION",
-      TRANSACTION_DATE: authState?.workingDate,
+      TRAN_DT: filteredRows[0]?.TRAN_DT,
       CONFIRM_FLAG: filteredRows[0]?.CONFIRMED,
     };
     if (!scrollNo) {
@@ -326,7 +332,7 @@ const CommonFooter = ({
               })}
 
             <TextField
-              style={{ minWidth: "300px" }}
+              style={{ minWidth: "400px" }}
               fullWidth={true}
               value={remarks}
               placeholder="Enter Remarks"

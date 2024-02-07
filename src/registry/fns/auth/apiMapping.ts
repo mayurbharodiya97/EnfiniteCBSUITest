@@ -686,20 +686,16 @@ export const ActionWiseAPIConfiguration = {
   },
 
   // =======header tabs
-  GETJOINTACCTDTL: {
-    url: "/transactionServiceAPI/GETJOINTACCTDTL",
+  GETDLYTRNJOINTTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNJOINTTAB",
     packageName: "",
   },
   //todayTrans
-  GETTODAYTRAN: {
-    url: "/transactionServiceAPI/GETTODAYTRAN",
+  GETDLYTRNTODAYTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTODAYTAB",
     packageName: "",
   },
-  //chqBook
-  GETCHEQUEDTL: {
-    url: "/transactionServiceAPI/GETCHEQUEDTL",
-    packageName: "",
-  },
+
   //holdCharge
   GETDLYTRNHOLDCHRGF1: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNHOLDCHRGF1",
@@ -726,13 +722,23 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   //stopPay
-  GETSTOPDISPLAY: {
-    url: "/transactionServiceAPI/GETSTOPDISPLAY",
+  GETDLYTRNSTOPTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSTOPTAB",
     packageName: "",
   },
   //docs
-  GETDOCTEMPLTEDTL: {
-    url: "/transactionServiceAPI/GETDOCTEMPLTEDTL",
+  GETDLYTRNDOCUMENTTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNDOCUMENTTAB",
+    packageName: "",
+  },
+  //insurance
+  GETDLYTRNINSURANCETAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNINSURANCETAB",
+    packageName: "",
+  },
+  //chqBook
+  GETDLYTRNCHEQUETAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNCHEQUETAB",
     packageName: "",
   },
   //snapshot
@@ -745,11 +751,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETSEARCHDTL",
     packageName: "",
   },
-  //insurance
-  GETINSURANCEDTL: {
-    url: "/transactionServiceAPI/GETINSURANCEDTL",
-    packageName: "",
-  },
+
   // =======Other trx
   //OWChq
   GETDLYTRNOWCHQOBCIBCTAB: {

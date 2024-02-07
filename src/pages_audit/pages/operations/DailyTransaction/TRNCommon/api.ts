@@ -10,9 +10,12 @@ export const deleteScrollByScrollNo = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DELETESCROLLDATA", reqData);
   if (status === "0") {
-    let responseData = data;
-
-    return responseData;
+    let obj = {
+      response: data,
+      message,
+      messageDetails,
+    };
+    return obj;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

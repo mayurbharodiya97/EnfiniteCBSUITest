@@ -197,7 +197,6 @@ export const getAccNoValidation = async (reqData) => {
       COMP_CD: reqData?.COMP_CD,
       ACCT_TYPE: reqData?.ACCT_TYPE,
       ACCT_CD: reqData?.ACCT_CD,
-
       GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
       SCREEN_REF: "ETRN/001", //depending on screen code
     });
