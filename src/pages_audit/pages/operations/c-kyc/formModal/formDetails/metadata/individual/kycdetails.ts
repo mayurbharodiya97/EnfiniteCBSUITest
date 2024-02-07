@@ -1511,7 +1511,14 @@ export const kyc_proof_of_address_meta_data = {
             ],
         },
         maxLength: 60,
-        validate: (columnValue, allField, flag) => API.validateEmailID(columnValue),        
+        // validate: (columnValue, allField, flag) => API.validateEmailID(columnValue),
+        validate: (columnValue, allField, flag) => {
+            let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+                return "Please enter valid Email ID"
+            }
+            return "";
+        },
         type: "text",
         txtTransform: "lowercase",
         GridProps: {xs:12, sm:4, md: 4, lg: 2.4, xl:3},
@@ -2426,7 +2433,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         validate: (columnValue, allField, flag) => {
             let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if(columnValue.value && !emailRegex.test(columnValue.value)) {
-                return "Please Enter Valid Email ID."
+                return "Please enter valid Email ID"
             }
             return "";
         },
@@ -2451,7 +2458,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         validate: (columnValue, allField, flag) => {
             let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             if(columnValue.value && !emailRegex.test(columnValue.value)) {
-                return "Please Enter Valid Email ID."
+                return "Please enter valid Email ID"
             }
             return "";
         },

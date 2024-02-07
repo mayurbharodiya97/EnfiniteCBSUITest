@@ -469,7 +469,7 @@ import * as API from "../../../../api";
                     validate: (columnValue, allField, flag) => {
                         let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                         if(columnValue.value && !emailRegex.test(columnValue.value)) {
-                            return "Please Enter Valid Email ID."
+                            return "Please enter valid Email ID"
                         }
                         return "";
                     },            
