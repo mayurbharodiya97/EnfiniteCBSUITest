@@ -161,7 +161,8 @@ const myGridRef = useRef<any>(null);
                     formRef.current.handleSubmitError(e, "save")
                 }}
                 >
-                {t("Save & Next")}
+                {t("Next")}
+                {/* {t("Save & Next")} */}
                 </Button>
             </Fragment>
             : displayMode == "edit"

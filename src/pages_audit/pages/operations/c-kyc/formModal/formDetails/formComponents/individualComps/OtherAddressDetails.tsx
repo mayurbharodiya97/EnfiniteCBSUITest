@@ -191,7 +191,8 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     OtherAddDTLFormRef.current.handleSubmitError(e, "save")
                 }}
                 >
-                {t("Save & Next")}
+                {t("Next")}
+                {/* {t("Save & Next")} */}
                 </Button>
             </Fragment>
             : displayMode == "edit"

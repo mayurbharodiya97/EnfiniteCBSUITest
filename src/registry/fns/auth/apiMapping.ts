@@ -592,10 +592,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRXLIST",
     packageName: "",
   },
-  GETJOINTDETILSLIST: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
-    packageName: "",
-  },
+
   GETBUSINESSDATE: {
     url: "/chequeServiceAPI/GETBUSINESSDATE",
     packageName: "",
@@ -657,6 +654,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETJOINTACCTDTL",
     packageName: "",
   },
+  GETDLYTRNLIMITTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNLIMITTAB",
+    packageName: "",
+  },
+  GETDLYTRNSTOCKTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSTOCKTAB",
+    packageName: "",
+  },
   GETTODAYTRAN: {
     url: "/transactionServiceAPI/GETTODAYTRAN",
     packageName: "",
@@ -678,7 +683,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETDAILYTRNLIST: {
-    url: "/transactionServiceAPI/GETDAILYTRNLIST",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNLIST",
     packageName: "",
   },
   GETSANPSHOTDTL: {
@@ -721,9 +726,17 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DELETESCROLLDATA",
     packageName: "",
   },
+  DAILYTRNCARDDTL: {
+    url: "/transactionServiceAPI/DAILYTRNCARDDTL ",
+    packageName: "",
+  },
 
   ACCTNOVALIDATION: {
     url: "/accountServiceAPI/ACCTNOVALIDATION",
+    packageName: "",
+  },
+  GETDLYTRNTABFIELDDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTABFIELDDISP",
     packageName: "",
   },
 
@@ -731,6 +744,11 @@ export const ActionWiseAPIConfiguration = {
   GETDLYTRNOWCHQOBCIBCTAB: {
     //OWChq
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNOWCHQOBCIBCTAB",
+    packageName: "",
+  },
+  GETDLYTRNAPYTAB: {
+    //APY
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNAPYTAB",
     packageName: "",
   },
   GETDLYTRNTEMPODCTAB: {
@@ -826,6 +844,54 @@ export const ActionWiseAPIConfiguration = {
   },
   GETPANSTATUS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
+    packageName: "",
+  },
+  GETLIMITGRIDDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITGRIDDATADISP",
+    packageName: "",
+  },
+  GETFDDTLS: {
+    url: "/loanServiceAPI/GETFDDTLS",
+    packageName: "",
+  },
+  DOLIMITENTRYDML: {
+    url: "loanServiceAPI/DOLIMITENTRYDML",
+    packageName: "",
+  },
+  GETSTKACCTTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKACCTTYPEDDW",
+    packageName: "",
+  },
+  GETSTKSECURITYDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSECURITYDDW",
+    packageName: "",
+  },
+  GETSTKSCRIPTDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSCRIPTDDW",
+    packageName: "",
+  },
+  GETSTKSECFIELDDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKSECFIELDDISP",
+    packageName: "",
+  },
+  GETSTKUPVEWBTNDOCDTLDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKUPVEWBTNDOCDTLDISP",
+    packageName: "",
+  },
+  GETEXPIRYDATE: {
+    url: "accountServiceAPI/GETEXPIRYDATE",
+    packageName: "",
+  },
+  GETACCTNOVALIDATEDATA: {
+    url: "loanServiceAPI/GETACCTNOVALIDATEDATA",
+    packageName: "",
+  },
+  GETCASHDENO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHDENO",
+    packageName: "",
+  },
+  VALIDDELETECHQDATA: {
+    url: "chequeServiceAPI/VALIDDELETECHQDATA",
     packageName: "",
   },
 };

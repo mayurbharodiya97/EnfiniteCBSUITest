@@ -5,10 +5,15 @@ import {
   CircularProgress,
   Container,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
   LinearProgress,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from "@mui/material";
 import React, {
@@ -28,13 +33,17 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { Alert } from "components/common/alert";
-import { getChequebookDTL, saveChequebookData } from "./api";
+import {
+  getChequebookDTL,
+  saveChequebookData,
+  validateDeleteData,
+} from "./api";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { ChequeBKPopUpGridData } from "./chequeBKPopUpMetadat";
 import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
 import { queryClient } from "cache";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 
 export const ChequebookTab = () => {
   const ChequeBKPopUpAction: ActionTypes[] = [
@@ -60,10 +69,11 @@ export const ChequebookTab = () => {
   const [popupError, setPopupError] = useState<any>(false);
   const [isTabVisible, setIsTabVisible] = useState<any>(false);
   let [messageArray, setmessageArray] = useState<any>([]);
-  let [chequeBookData, setChequeBookData] = useState<any>([]);
-  let [gridDetailData, setGridDetailData] = useState<any>();
-  let [initData, setInitData] = useState<any>({});
+  const [chequeBookData, setChequeBookData] = useState<any>([]);
+  const [gridDetailData, setGridDetailData] = useState<any>();
+  const [initData, setInitData] = useState<any>({});
 
+  console.log("<<<wefuefgefgej", chequeBookData);
   const getChequeDetail: any = useMutation(
     "getChequebookDTL",
     getChequebookDTL,
@@ -80,17 +90,27 @@ export const ChequebookTab = () => {
     saveChequebookData,
     {
       onSuccess: (data) => {
-        // setInitData({});
+        setInitData({});
         setIsTabVisible(false);
         enqueueSnackbar("Data insert successfully", { variant: "success" });
       },
     }
   );
 
+  const validateDelete: any = useMutation(
+    "validateDeleteData",
+    validateDeleteData,
+    {
+      onSuccess: (data) => {},
+    }
+  );
+  console.log("<<<validateDelete", validateDelete);
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getChequebookDTL"]);
       queryClient.removeQueries(["saveChequebookData"]);
+      queryClient.removeQueries(["validateDeleteData"]);
     };
   }, []);
 
@@ -103,7 +123,7 @@ export const ChequebookTab = () => {
   ) => {
     // @ts-ignore
     endSubmit(true);
-
+    console.log("<<sun<<   ", data);
     if (value === "Save") {
       let otherAPIRequestPara2 = {
         ...data,
@@ -113,14 +133,26 @@ export const ChequebookTab = () => {
         CHEQUE_TO: Number(data?.CHEQUE_TO),
         CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
         LEAF_ARR: Number(data?.LEAF_ARR),
-        TRAN_DT: format(new Date(), "dd-MMM-yyyy"),
+        TRAN_DT: format(
+          parse(authState?.workingDate, "dd/MM/yyyy", new Date()),
+          "dd-MMM-yyyy"
+        ).toUpperCase(),
         ENTERED_BRANCH_CD: data?.BRANCH_CD,
         ENTERED_COMP_CD: authState?.companyID,
+        ACCT_CD: data?.ACCT_CD?.padStart(6, "0").padEnd(20, " "),
       };
       let newArray: any = [];
-      if (otherAPIRequestPara2.SERVICE_TAX > otherAPIRequestPara2.ACCT_BAL) {
+
+      if (!otherAPIRequestPara2?.LEAF_ARR) {
         setFieldError({
-          ACCT_BAL: "Your account balance is less than the service-charge",
+          LEAF_ARR: "please select No. of cheque",
+        });
+      } else if (
+        Number(otherAPIRequestPara2.SERVICE_TAX) >
+        Number(otherAPIRequestPara2.ACCT_BAL)
+      ) {
+        setFieldError({
+          ACCT_BAL: "balance is less than service-charge",
         });
       } else if (
         otherAPIRequestPara2.CHEQUE_TOTAL > 1 &&
@@ -164,12 +196,13 @@ export const ChequebookTab = () => {
     (data) => {
       if (data?.name === "save") {
         if (
-          chequeBookData?.[0]?.CHEQUE_TOTAL * chequeBookData?.[0]?.SERVICE_TAX >
-          chequeBookData?.[0]?.ACCT_BAL
+          chequeBookData?.[0]?.CHEQUE_TOTAL *
+            Number(chequeBookData?.[0]?.SERVICE_TAX) >
+          Number(chequeBookData?.[0]?.ACCT_BAL)
         ) {
           setPopupError(true);
         } else {
-          chequeBookData = {
+          let chequeBookDatas = {
             isNewRow: true,
             BRANCH_CD: authState.user.branchCode,
             COMP_CD: authState.companyID,
@@ -179,7 +212,7 @@ export const ChequebookTab = () => {
               isUpdatedRow: [],
             },
           };
-          saveChequeData.mutate(chequeBookData);
+          saveChequeData.mutate(chequeBookDatas);
           setChequeBookData([]);
         }
       } else {
@@ -282,9 +315,9 @@ export const ChequebookTab = () => {
               )}
 
               <FormWrapper
-                key={"chequebooksEntry" + saveChequeData.isSuccess}
+                key={"chequebooksEntry" + saveChequeData.isSuccess + initData}
                 metaData={ChequeBookEntryMetaData as MetaDataType}
-                initialValues={initData}
+                initialValues={saveChequeData.isSuccess ? {} : initData ?? {}}
                 onSubmitHandler={onSubmitHandler}
                 // loading={true}
                 ref={myMasterRef}
@@ -337,6 +370,23 @@ export const ChequebookTab = () => {
                 data={gridDetailData ?? []}
                 setData={setGridDetailData}
                 loading={getChequeDetail.isLoading}
+                onClickActionEvent={(index, id, data) => {
+                  console.log("<<<deletech", index, id, data);
+
+                  let apireq = {
+                    BRANCH_CD: "099 ",
+                    COMP_CD: "132 ",
+                    ACCT_TYPE: "001 ",
+                    ACCT_CD: "009154              ",
+                    CHEQUE_FROM: "58",
+                    CHEQUE_TO: "62",
+                    AUTO_CHQBK_FLAG: "Y",
+                    AUTO_CHQBK_PRINT_FLAG: "Y",
+                    SR_CD: "1",
+                    CONFIRMED: "Y",
+                  };
+                  validateDelete.mutate(apireq);
+                }}
               />
             </>
           ) : null}
@@ -414,6 +464,32 @@ export const ChequebookTab = () => {
           />
         </div>
       )}
+
+      {/* {isOpenSave && (
+        <Dialog
+          // fullScreen={fullScreen}
+          open={true}
+          // onClose={handleClose}
+        >
+          <DialogTitle>{"Use Google's location service?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              <TextField
+                id="standard-size-normal"
+                fullWidth
+                label="Remarks"
+                margin="dense"
+                color="warning"
+                variant="standard"
+              />
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus>Disagree</Button>
+            <Button autoFocus>Agree</Button>
+          </DialogActions>
+        </Dialog>
+      )} */}
     </>
   );
 };

@@ -8,42 +8,89 @@ import {
   Tab,
   Tabs,
 } from "@mui/material";
-import React, { useContext, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { useMutation } from "react-query";
-import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "components/utils";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { Alert } from "components/common/alert";
 import { StockGridMetaData } from "./stockGridMetadata";
 import { StockEntryMetaData } from "./stockEntryMetadata";
+import { useMutation } from "react-query";
+import { crudDocument, securityFieldDTL, stockGridData } from "./api";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { ActionTypes } from "components/dataTable";
+import { StockEditViewWrapper } from "./stockEditViewWrapper";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
+import { queryClient } from "cache";
+import { CreateDetailsRequestData } from "components/utils";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { Alert } from "components/common/alert";
 
 export const StockEntry = () => {
+  const detailActions: ActionTypes[] = [
+    {
+      actionName: "view-details",
+      actionLabel: "Edit Detail",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+  ];
+
   const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
+  const initialValuesRef = useRef<any>(null);
+  const navigate = useNavigate();
+  const [gridDetailData, setGridDetailData] = useState<any>();
+  const [visibleTab, setVisibleTab] = useState<any>(false);
   const { authState } = useContext(AuthContext);
+  const [isOpenSave, setIsOpenSave] = useState<any>(false);
+  let [messageArray, setmessageArray] = useState<any>([]);
 
-  const mutation: any = useMutation(GetdetailData, {
+  const [newFormMTdata, setNewFormMTdata] = useState<any>(StockEntryMetaData);
+
+  const securityStoclDTL: any = useMutation(
+    "securityLimitData",
+    securityFieldDTL,
+    {
+      onSuccess: (data) => {
+        let newData;
+        if (data.length > 0) {
+          let newMetadata: any = [...StockEntryMetaData.fields, ...data];
+          newData = { ...newFormMTdata, fields: newMetadata };
+        } else {
+          newData = { ...StockEntryMetaData };
+        }
+        setNewFormMTdata(newData);
+      },
+      onError: (error: any) => {},
+    }
+  );
+
+  const stockEntryGridData: any = useMutation("stockGridData", stockGridData, {
+    onSuccess: (data) => {
+      setGridDetailData(data);
+    },
+    onError: (error: any) => {},
+  });
+
+  const crudDocuments: any = useMutation("uploadDocument", crudDocument, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
 
-  // const saveChequeData: any = useMutation(saveChequebookData, {
-  //   onSuccess: (data) => {},
-  //   onError: (error: any) => {},
-  // });
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["stockGridData"]);
+    };
+  }, []);
 
-  const ClickEventManage = () => {
-    let event: any = { preventDefault: () => {} };
-    myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-  };
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -53,36 +100,63 @@ export const StockEntry = () => {
   ) => {
     //@ts-ignore
     endSubmit(true);
-    let ApiKey: any = StockEntryMetaData?.form?.apiKey;
-    let apiID: any = StockEntryMetaData?.form?.apiID;
-    let response = {};
-    for (const key in ApiKey) {
-      if (ApiKey.hasOwnProperty(key)) {
-        const mappedKey = ApiKey[key];
-        response[key] = data[mappedKey];
-      }
-    }
-    let otherAPIRequestPara = {
-      COMP_CD: authState?.companyID,
-      ...response,
-      ACCT_CD: data?.ACCT_CD.padEnd(20, " "),
-    };
-    mutation.mutate({ apiID, otherAPIRequestPara });
   };
+
+  const setCurrentAction = useCallback(
+    (data) => {
+      navigate(data?.name, {
+        state: data?.rows,
+      });
+    },
+    [navigate]
+  );
+
+  const ClosedEventCall = useCallback(() => {
+    navigate(".");
+  }, [navigate]);
 
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
           value={value}
-          onChange={handleChange}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+
+            if (newValue === "tab2") {
+              myMasterRef?.current?.getFieldData().then((res) => {
+                initialValuesRef.current = res;
+                // if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
+                // StockGridMetaData.gridConfig.gridLabel = `Stock-Entry Detail \u00A0\u00A0 ${(
+                //   authState?.companyID +
+                //   res?.BRANCH_CD +
+                //   res?.ACCT_TYPE +
+                //   res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                // ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+
+                const DTLRequestPara = {
+                  // COMP_CD: authState?.companyID,
+                  // ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+                  // ACCT_TYPE: res?.ACCT_TYPE,
+                  // BRANCH_CD: res?.BRANCH_CD,
+                  COMP_CD: authState?.companyID,
+                  ACCT_CD: "000073              ",
+                  ACCT_TYPE: "301 ",
+                  BRANCH_CD: "099 ",
+                };
+                stockEntryGridData.mutate(DTLRequestPara);
+                // }
+              });
+            }
+          }}
           textColor="secondary"
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
           <Tab value="tab1" label="Stock Entry" />
+          {/* {visibleTab &&
+          } */}
           <Tab value="tab2" label="Stock Detail" />
-          {/* <Tab value="tab3" label="Processed Cheque(s) Detail" /> */}
         </Tabs>
       </Box>
 
@@ -96,68 +170,55 @@ export const StockEntry = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {/* {mutation?.isError ? (
+          {securityStoclDTL?.isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
-                  errorMsg={mutation?.error?.error_msg ?? "Unknow Error"}
-                  errorDetail={mutation?.error?.error_detail ?? ""}
+                  errorMsg={
+                    securityStoclDTL?.error?.error_msg ?? "Unknow Error"
+                  }
+                  errorDetail={securityStoclDTL?.error?.error_detail ?? ""}
                   color="error"
                 />
               </AppBar>
             </div>
-          ) : mutation?.data?.length < 1 && Boolean(mutation?.isSuccess) ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  errorMsg="No data found"
-                  errorDetail="No any data found"
-                  severity="error"
-                />
-              </AppBar>
-            </div>
-          ) : null} */}
+          ) : null}
           {value === "tab1" ? (
-            <div
-              onKeyDown={(e) => {
-                if (e.key === "Tab") {
-                  let target: any = e?.target;
-                  if (
-                    (target?.name ?? "") ===
-                    StockEntryMetaData.form.name + "/ACCT_CD"
-                  ) {
-                    ClickEventManage();
-                  }
-                }
-              }}
-            >
-              {mutation.isLoading || mutation.isFetching ? (
+            <>
+              {securityStoclDTL.isLoading || securityStoclDTL.isFetching ? (
                 <LinearProgress color="secondary" />
               ) : (
                 <LinearProgressBarSpacer />
               )}
               <FormWrapper
-                key={
-                  "stockEntry" + mutation?.data?.length &&
-                  Boolean(mutation?.isSuccess)
-                    ? mutation?.data
-                    : ""
-                }
-                metaData={StockEntryMetaData ?? []}
-                initialValues={[]}
+                key={"stockEntry" + setNewFormMTdata}
+                metaData={newFormMTdata ?? []}
+                initialValues={initialValuesRef.current ?? []}
                 onSubmitHandler={onSubmitHandler}
-                // displayMode={"view"}
-                // hideDisplayModeInTitle={true}
-                loading={mutation.isLoading}
-                // formStyle={{
-                //   background: "white",
-                //   // height: "40vh",
-                //   overflowY: "auto",
-                //   overflowX: "hidden",
-                // }}
                 hideHeader={false}
                 ref={myMasterRef}
+                setDataOnFieldChange={(action, payload) => {
+                  if (action === "MESSAGES") {
+                    if (payload?.MESSAGES) {
+                      const messageArray = payload?.MESSAGES.split(", ").map(
+                        (msg, i) => <p key={i}>{`(${i + 1})  ${msg}`}</p>
+                      );
+                      setmessageArray([messageArray]);
+                      setIsOpenSave(true);
+                      setVisibleTab(payload?.VISIBLE_TAB);
+                    }
+                  } else if (action === "VISIBLE_TAB") {
+                    setVisibleTab(payload?.VISIBLE_TAB);
+                  }
+                  if (action === "SECURITY_CODE") {
+                    securityStoclDTL.mutate({
+                      COMP_CD: authState?.companyID,
+                      SECURITY_CD: payload,
+                      BRANCH_CD: authState?.user?.branchCode,
+                    });
+                  }
+                }}
               >
                 {({ isSubmitting, handleSubmit }) => (
                   <>
@@ -174,18 +235,38 @@ export const StockEntry = () => {
                   </>
                 )}
               </FormWrapper>
-            </div>
+            </>
           ) : value === "tab2" ? (
             <>
               <GridWrapper
-                key={`personalizeQuickView`}
+                key={`stockGridData` + stockEntryGridData.isSuccess}
                 finalMetaData={StockGridMetaData as GridMetaDataType}
-                data={mutation.data ?? []}
+                data={gridDetailData ?? []}
                 setData={() => {}}
-                // loading={saveQuickData.isLoading}
-                // actions={Quickactions}
+                loading={stockEntryGridData.isLoading}
+                actions={detailActions}
                 // controlsAtBottom={true}
-                // setAction={setQuickAction}
+                setAction={setCurrentAction}
+                onClickActionEvent={(index, id, data) => {
+                  console.log("<<<action", index, id, data);
+                  let result: any = [data];
+                  // let finalResult = result.filter(
+                  //   (one) => !Boolean(one?._hidden)
+                  // );
+                  let newData = result.map((item) => {
+                    const newItem = {
+                      ...item,
+                      _hidden: true,
+                    };
+                    return newItem;
+                  });
+                  newData = CreateDetailsRequestData(newData);
+                  console.log("<<<CreateDetailsRequestData", newData);
+                  let ApiReq = {
+                    DETAILS_DATA: newData,
+                  };
+                  crudDocuments.mutate(ApiReq);
+                }}
                 // headerToolbarStyle={{
                 //   background: "var(--theme-color2)",
                 //   color: "black",
@@ -193,21 +274,42 @@ export const StockEntry = () => {
                 // refetchData={() => {}}
                 // ref={myGridQuickRef}
               />
+
+              <Routes>
+                <Route
+                  path="view-details/*"
+                  element={
+                    <StockEditViewWrapper ClosedEventCall={ClosedEventCall} />
+                  }
+                />
+              </Routes>
             </>
           ) : null}
         </Grid>
       </Container>
+
+      {isOpenSave && messageArray?.length > 0 && (
+        <div
+          onKeyPress={(e) => {
+            if (e.key === "Enter") {
+              setIsOpenSave(false);
+              setmessageArray([]);
+            }
+          }}
+        >
+          <PopupRequestWrapper
+            MessageTitle={"Account Description"}
+            Message={messageArray ? messageArray : "something is wrong "}
+            onClickButton={(rows, buttonName) => {
+              setIsOpenSave(false);
+              setmessageArray([]);
+            }}
+            buttonNames={["Ok"]}
+            rows={[]}
+            open={isOpenSave}
+          />
+        </div>
+      )}
     </>
   );
-};
-export const GetdetailData = async ({ apiID, otherAPIRequestPara }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(apiID, {
-      ...otherAPIRequestPara,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
 };

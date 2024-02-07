@@ -13,6 +13,7 @@ import { TableActionType, RenderActionType } from "./types";
 import { filterAction } from "./utils";
 import { makeStyles } from "@mui/styles";
 import { GradientButton } from "components/styledComponent/button";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -103,6 +104,7 @@ export const RenderActions: FC<RenderActionType> = ({
   style = {},
   submitButtonRef,
 }) => {
+  const { t } = useTranslation();
   if (Array.isArray(actions) && actions.length > 0) {
     return actions.map((one) => (
       <Tooltip title={one.tooltip ?? one.actionLabel} key={one.actionName}>
@@ -131,7 +133,7 @@ export const RenderActions: FC<RenderActionType> = ({
           }}
           ref={one.onEnterSubmit ? submitButtonRef : null}
         >
-          {one.actionLabel}
+          {t(one.actionLabel)}
         </GradientButton>
       </Tooltip>
     ));
@@ -151,6 +153,7 @@ export const ActionContextMenu: FC<TableActionType> = ({
   handleClose,
   authState,
 }) => {
+  const { t } = useTranslation();
   const selectedRows = selectedFlatRows.map((one) => {
     return {
       data: one.original,
@@ -185,7 +188,7 @@ export const ActionContextMenu: FC<TableActionType> = ({
           handleClose();
         }}
       >
-        {one.actionLabel}
+        {t(one.actionLabel)}
       </MenuItem>
     ));
   } else if (
@@ -205,7 +208,7 @@ export const ActionContextMenu: FC<TableActionType> = ({
           handleClose();
         }}
       >
-        {one.actionLabel}
+        {t(one.actionLabel)}
       </MenuItem>
     ));
   }

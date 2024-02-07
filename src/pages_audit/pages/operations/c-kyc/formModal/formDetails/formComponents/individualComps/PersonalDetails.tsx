@@ -215,7 +215,8 @@ const PersonalDetails = ({
             isNextLoading ? <CircularProgress size={20} /> : null
           }
         >
-          {t("Save & Next")}
+          {t("Next")}
+          {/* {t("Save & Next")} */}
         </Button>
       </Fragment>
       : displayMode == "edit"

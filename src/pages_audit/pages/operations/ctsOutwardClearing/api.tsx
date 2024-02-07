@@ -81,6 +81,34 @@ export const getOutwardClearingConfigData = async ({
     }
   }
 };
+export const getSlipNoData = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETSLIPNO", { ...Apireq });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+// export const getSlipNoData = async (...reqData) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher(`GETSLIPNO`, {
+//       COMP_CD: reqData?.[2]?.companyID ?? "",
+//       BRANCH_CD: reqData?.[2]?.user?.branchCode,
+//       TRAN_DT: format(new Date(reqData?.[3]?.TRAN_DT?.value), "dd/MMM/yyyy"),
+//       ZONE: reqData?.[0].value ?? "",
+//       TRAN_TYPE: reqData?.[0]?.optionData?.[0]?.ZONE_TRAN_TYPE ?? "S",
+//     });
+//   if (status === "0") {
+//     return {
+//       SLIP_CD: { value: data?.[0]?.SLIP_NO ?? "" },
+//     };
+//   } else {
+//     return {
+//       SLIP_CD: { value: "" },
+//     };
+//   }
+// };
 // export const TemporaryData = () => {
 //   return [
 //     {

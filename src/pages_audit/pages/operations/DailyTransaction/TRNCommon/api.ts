@@ -19,14 +19,15 @@ export const getQueryDataF1 = async (reqData) => {
         a.account1 = a.ACCT_TYPE + a.TYPE_NM;
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
-        a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
+
         if (
           a.TYPE_CD.includes("1") ||
           a.TYPE_CD.includes("2") ||
           a.TYPE_CD.includes("3")
         ) {
           a.credit1 = Number(a.AMOUNT).toFixed(2);
-          a.debit1 = "0.00";
+          a.debit1 = "-";
         }
         if (
           a.TYPE_CD.includes("4") ||
@@ -34,7 +35,7 @@ export const getQueryDataF1 = async (reqData) => {
           a.TYPE_CD.includes("6")
         ) {
           a.debit1 = Number(a.AMOUNT).toFixed(2);
-          a.credit1 = "0.00";
+          a.credit1 = "-";
         }
       });
     return responseData;
@@ -55,7 +56,7 @@ export const getQueryDataF2 = async (reqData) => {
         a.account1 = a.ACCT_TYPE + a.TYPE_NM;
         a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
         a.sdc1 = a.SDC + a.SDC_DESC;
-        a.date1 = a.TRAN_DT?.substring(0, 10);
+        a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
       });
 
     return responseData;
@@ -69,6 +70,17 @@ export const deleteScrollByScrollNo = async (reqData) => {
     await AuthSDK.internalFetcher("DELETESCROLLDATA", {
       COMP_CD: reqData?.COMP_CD,
       SCROLL_NO: reqData?.SCROLL_NO,
+
+      // BRANCH_CD: "099 ",
+      // ACCT_TYPE: "0011",
+      // ACCT_CD: "000001              ",
+      // TRAN_AMOUNT: "7000",
+      // ENT_COMP_CD: "132 ",
+      // ENT_BRANCH_CD: "099 ",
+      // ACTIVITY_TYPE: "DAILY TRANSACTION",
+      // TRANSACTION_DATE: "01-FEB-24",
+      // CONFIRM_FLAG: "N",
+      // USER_DEF_REMARKS: "SUCCESSFULLY DELETE",
     });
   if (status === "0") {
     let responseData = data;
@@ -94,16 +106,13 @@ export const deleteScrollByVoucherNo = async (reqData) => {
   }
 };
 export const getAccDetails = async (reqData) => {
-  //apurva
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCOUNTDTL", {
-      // ACCT_CD: "000026              ",
-      // A_ASON_DT: "15/DEC/2023",
       COMP_CD: reqData.COMP_CD,
       BRANCH_CD: reqData.BRANCH_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
-      A_ASON_DT: format(new Date(), "dd/MMM/yyyy"),
+      A_ASON_DT: format(new Date(), "dd/MMM/yyyy"), //"15/DEC/2023"
     });
   if (status === "0") {
     let responseData = data;
@@ -112,6 +121,37 @@ export const getAccDetails = async (reqData) => {
     } else {
       return responseData;
     }
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getCarousalCards = async (reqData) => {
+  console.log(reqData, "reqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DAILYTRNCARDDTL", {
+      PARENT_TYPE: reqData?.PARENT_TYPE,
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getTabsByParentType = async (reqData) => {
+  console.log(reqData, "reqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
+      PARENT_TYPE: reqData,
+    });
+  if (status === "0") {
+    let responseData = data;
+    console.log(data, "res data");
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
