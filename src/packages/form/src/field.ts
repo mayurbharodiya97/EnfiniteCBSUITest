@@ -45,6 +45,7 @@ export const useField = ({
   runPostValidationHookAlways,
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
+  txtTransform,
 }: UseFieldHookProps) => {
   //formContext provides formName for scoping of fields, and initialValue for the field
   const formContext = useContext(FormContext);
@@ -658,6 +659,14 @@ export const useField = ({
                 displayValue
               )
             : displayValue;
+        }
+        if (typeof val === "string" && Boolean(txtTransform)) {
+          val =
+            txtTransform === "uppercase"
+              ? val.toUpperCase()
+              : txtTransform === "lowercase"
+              ? val.toLowerCase()
+              : val;
         }
         setValue(val, displayVal);
         if (
