@@ -6,3 +6,4 @@ export * from "./numberCell";
 export * from "./numberFooterCell";
 export * from "./timeCell";
 export * from "./dateTimeCell";
+export * from "../../tableCellComponents/ButtonRowCell";
