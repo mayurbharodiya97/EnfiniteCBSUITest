@@ -132,6 +132,7 @@ export const other_details_meta_data = {
             },
             placeholder: "",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:4},
         },
 
@@ -308,6 +309,7 @@ export const other_details_meta_data = {
             label: "IDMark",
             placeholder: "",
             type: "text",
+            txtTransform: "uppercase",
             maxLength: 100,
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:4},
         },
@@ -382,7 +384,7 @@ export const other_details_meta_data = {
         },
         {
             render: {
-                componentType: "textField",
+                componentType: "numberFormat",
             },
             name: "CIBIL_SCORE",
             label: "CIBILScore",
@@ -456,6 +458,7 @@ export const other_details_meta_data = {
             label: "CompanyName",
             placeholder: "",
             type: "text",
+            txtTransform: "uppercase",
             maxLength: 100,
             GridProps: {xs:12, sm:8, md: 6, lg: 4.8, xl:6},
         },
@@ -476,6 +479,7 @@ export const other_details_meta_data = {
                 },
             },
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:12, md: 12, lg: 6, xl:6},
         },
         {
@@ -486,6 +490,7 @@ export const other_details_meta_data = {
             label: "CompanyAdd",    
             placeholder: "",
             type: "text",
+            txtTransform: "uppercase",
             maxLength: 100,
             GridProps: {xs:12, sm:12, md:12, lg:6, xl:6},
         },
@@ -532,6 +537,7 @@ export const other_details_meta_data = {
             label: "Specialization",
             placeholder: "",
             type: "text",
+            txtTransform: "uppercase",
             maxLength: 100,
             GridProps: {xs:12, sm:8, md: 6, lg: 4.8, xl:6},
         },

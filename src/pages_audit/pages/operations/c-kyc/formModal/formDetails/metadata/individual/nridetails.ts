@@ -52,6 +52,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             maxLength: 50,
             type: "text",
+            txtTransform: "uppercase",
             required: true,
             isFieldFocused: true,
             schemaValidation: {
@@ -72,6 +73,7 @@ export const nri_detail_meta_data = {
             placeholder: "",
             maxLength: 50,
             type: "text",
+            txtTransform: "uppercase",
             required: true,
             schemaValidation: {
                 type: "string",

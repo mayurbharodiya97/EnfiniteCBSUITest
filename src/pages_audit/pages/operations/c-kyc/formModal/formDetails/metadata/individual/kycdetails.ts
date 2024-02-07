@@ -78,6 +78,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "PanNo",
             placeholder: "AAAAA1111A",
             type: "text",
+            txtTransform: "uppercase",
             required: true,
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             schemaValidation: {
@@ -122,6 +123,7 @@ export const kyc_proof_of_identity_meta_data = {
             placeholder: "",
             maxLength: 20,
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -148,6 +150,7 @@ export const kyc_proof_of_identity_meta_data = {
           maxLength: 20,
           placeholder: "",
           type: "text",
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -158,6 +161,7 @@ export const kyc_proof_of_identity_meta_data = {
           label: "OtherPoI",
           placeholder: "",
           type: "text",
+          txtTransform: "uppercase",
           maxLength: 50,
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
           validate: (columnValue, allField, flag) => {
@@ -177,6 +181,7 @@ export const kyc_proof_of_identity_meta_data = {
           placeholder: "",
           maxLength: 20,
           type: "text",
+          txtTransform: "uppercase",
           validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -189,7 +194,7 @@ export const kyc_proof_of_identity_meta_data = {
           placeholder: "",
           maxLength: 20,
           type: "text",
-          validate: (columnValue, allField, flag) => API.validateGSTIN(columnValue),
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
@@ -213,13 +218,7 @@ export const kyc_proof_of_identity_meta_data = {
             placeholder: "",
             maxLength: 20,
             type: "text",
-            required: true,          
-            schemaValidation: {
-                type: "string",
-                rules: [
-                    { name: "required", params: ["ThisFieldisrequired"] },
-                ],
-            },
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -309,6 +308,7 @@ export const kyc_proof_of_identity_meta_data = {
             placeholder: "",
             maxLength: 20,
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -462,6 +462,7 @@ export const kyc_proof_of_address_meta_data = {
           validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           placeholder: "",
           type: "text",
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
@@ -474,6 +475,7 @@ export const kyc_proof_of_address_meta_data = {
           maxLength: 50,
           validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
       {
@@ -486,6 +488,7 @@ export const kyc_proof_of_address_meta_data = {
           maxLength: 50,
           validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
         },
         {
@@ -755,6 +758,7 @@ export const kyc_proof_of_address_meta_data = {
           maxLength: 80,
           validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           type: "text",
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
 
@@ -884,6 +888,7 @@ export const kyc_proof_of_address_meta_data = {
           },
           placeholder: "",
           type: "text",
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
@@ -912,6 +917,7 @@ export const kyc_proof_of_address_meta_data = {
             return false;
           },
           type: "text",
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
@@ -940,6 +946,7 @@ export const kyc_proof_of_address_meta_data = {
             return false;
           },
           type: "text",
+          txtTransform: "uppercase",
           GridProps: {xs:12, sm:5, md: 4, lg: 3.6, xl: 4},
       },
       {
@@ -1506,6 +1513,7 @@ export const kyc_proof_of_address_meta_data = {
         maxLength: 60,
         validate: (columnValue, allField, flag) => API.validateEmailID(columnValue),        
         type: "text",
+        txtTransform: "lowercase",
         GridProps: {xs:12, sm:4, md: 4, lg: 2.4, xl:3},
     },
 
@@ -2423,6 +2431,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             return "";
         },
         type: "text",
+        txtTransform: "lowercase",
         GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:3},
     },
     {
@@ -2448,6 +2457,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         },
         placeholder: "",
         type: "text",
+        txtTransform: "lowercase",
         GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:3},
     },
 

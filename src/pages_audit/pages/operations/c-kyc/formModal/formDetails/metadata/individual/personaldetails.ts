@@ -116,6 +116,7 @@ export const personal_detail_prefix_data = {
             label: "FirstName",
             // placeholder: "First Name",
             type: "text",
+            txtTransform: "uppercase",
             maxLength: 50,
             // GridProps: {xs:4, sm:2},
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -139,6 +140,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "Middle Name",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
         },
@@ -152,6 +154,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "Last Name",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
         },
@@ -277,6 +280,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "First Name",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // schemaValidation: {
@@ -297,6 +301,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "Middle Name",
             type: "text",
+            txtTransform: "uppercase",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -310,6 +315,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "Last Name",
             type: "text",
+            txtTransform: "uppercase",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -408,6 +414,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "First Name",
             type: "text",
+            txtTransform: "uppercase",
             required: true,
             schemaValidation: {
                 type: "string",
@@ -430,6 +437,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Middle Name",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -443,6 +451,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Last Name",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
@@ -499,6 +508,7 @@ export const personal_detail_prefix_data = {
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // placeholder: "First Name",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             // dependentFields: ["DAILY_AMT"],
         },
@@ -513,6 +523,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Middle Name",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -526,6 +537,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Last Name",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         }
 

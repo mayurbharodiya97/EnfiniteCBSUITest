@@ -118,7 +118,6 @@ export const related_person_detail_data = {
                     },
                     name: "REF_CUST_ID",
                     label: "RefCustID",
-                    placeholder: "First Name",
                     maxLength: 12,
                     FormatProps: {
                         isAllowed: (values) => {
@@ -177,6 +176,7 @@ export const related_person_detail_data = {
                         return "";
                     },
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                     // dependentFields: ["DAILY_AMT"],
                 },
@@ -203,6 +203,7 @@ export const related_person_detail_data = {
                         return "";
                     },
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -228,6 +229,7 @@ export const related_person_detail_data = {
                         return "";
                     },
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -285,7 +287,7 @@ export const related_person_detail_data = {
                     label: "PAN",
                     placeholder: "AAAAA1111A",
                     type: "text",
-                    validate: (columnValue, allField, flag) => API.validatePAN(columnValue),
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -296,6 +298,7 @@ export const related_person_detail_data = {
                     label: "DrivingLicNo",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                     // dependentFields: ["DAILY_AMT"],
                 },
@@ -319,6 +322,7 @@ export const related_person_detail_data = {
                     label: "VoterId",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -329,6 +333,7 @@ export const related_person_detail_data = {
                     label: "PassportNo",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -361,6 +366,7 @@ export const related_person_detail_data = {
                     label: "NREGAJobCard",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -371,6 +377,7 @@ export const related_person_detail_data = {
                     label: "OtherDoc",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -381,6 +388,7 @@ export const related_person_detail_data = {
                     label: "OtherDocNo",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
         
@@ -477,6 +485,7 @@ export const related_person_detail_data = {
                     label: "EmpName",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -487,6 +496,7 @@ export const related_person_detail_data = {
                     label: "EmpDesig",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -497,6 +507,7 @@ export const related_person_detail_data = {
                     label: "IPVBranch",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -507,6 +518,7 @@ export const related_person_detail_data = {
                     label: "OrgName",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -527,6 +539,7 @@ export const related_person_detail_data = {
                     label: "DecPlace",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {

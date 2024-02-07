@@ -96,6 +96,7 @@ import * as API from "../../../../api";
                     validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
@@ -106,6 +107,7 @@ import * as API from "../../../../api";
                     label: "Line2",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "uppercase",
                     maxLength: 50,
                     validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
@@ -120,6 +122,7 @@ import * as API from "../../../../api";
                     maxLength: 50,
                     validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
                     type: "text",
+                    txtTransform: "uppercase",
                     GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
                 },
                 {
@@ -461,6 +464,7 @@ import * as API from "../../../../api";
                     label: "EmailId",
                     placeholder: "",
                     type: "text",
+                    txtTransform: "lowercase",
                     maxLength: 60,
                     validate: (columnValue, allField, flag) => {
                         let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

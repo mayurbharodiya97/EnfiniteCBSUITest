@@ -64,6 +64,7 @@ export const entity_detail_legal_meta_data = {
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // placeholder: "Prefix",
             type: "text",
+            txtTransform: "uppercase",
             // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             GridProps: {md:4.5, lg:3.6, xl:3},
         },
@@ -190,6 +191,7 @@ export const entity_detail_legal_meta_data = {
             placeholder: "",
             maxLength: 20,
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -313,6 +315,7 @@ export const entity_detail_legal_meta_data = {
             },
             name: "LEI_NO",
             label: "LEI NO.",
+            txtTransform: "uppercase",
             maxLength: 24,
             FormatProps: {
                 isAllowed: (values) => {
@@ -352,6 +355,7 @@ export const entity_detail_legal_meta_data = {
             },
             name: "PARENT_COMP_NM",
             label: "Parent Company Name",            
+            txtTransform: "uppercase",
             maxLength: 100,
             placeholder: "",
             dependentFields: ["PARENT_COMPANY"],
@@ -363,7 +367,8 @@ export const entity_detail_legal_meta_data = {
                 }
             },
             type: "text",
-            GridProps: {xs:12, sm:5, md: 4, lg: 2.4, xl:2},
+            // GridProps: {xs:12, sm:5, md: 4, lg: 2.4, xl:2},
+            GridProps: {xs:12, sm:5, md: 5, lg: 5, xl: 4},
         },        		
     ]
 }
