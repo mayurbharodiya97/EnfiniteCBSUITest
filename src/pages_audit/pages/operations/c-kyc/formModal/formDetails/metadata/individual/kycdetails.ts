@@ -542,7 +542,7 @@ export const kyc_proof_of_address_meta_data = {
         },
         setValueOnDependentFieldsChange: (dependentFields) => {
             const pincode = dependentFields.PIN_CODE.value
-            // console.log("siudbcsiudbcisbdc setvalue", pincode)
+            console.log("siudbcsiudbcisbdc setvalue", pincode)
             if(Boolean(pincode)) {
                 if(pincode.length<6) {
                     return "";
@@ -594,12 +594,12 @@ export const kyc_proof_of_address_meta_data = {
           type: "text",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-              const area_cd = dependentFields.AREA_CD.value
-            //   console.log("siudbcsiudbcisbdc setvalue", area_cd)
-            if(!Boolean(area_cd)) {
-                return "";
-            }
-          },  
+            const optionData = dependentFields.AREA_CD.optionData
+            console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+            if(optionData && optionData.length>0) {
+                return optionData[0].CITY_NM;
+            } else return "";
+          },
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
@@ -609,12 +609,12 @@ export const kyc_proof_of_address_meta_data = {
         name: "CITY_CD",
         dependentFields: ["AREA_CD"],
         setValueOnDependentFieldsChange: (dependentFields) => {
-            const area_cd = dependentFields.AREA_CD.value
-            // console.log("siudbcsiudbcisbdc setvalue", area_cd)
-            if(!Boolean(area_cd)) {
-                return "";
-            }
-        },  
+            const optionData = dependentFields.AREA_CD.optionData
+            console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+            if(optionData && optionData.length>0) {
+                return optionData[0].CITY_CD;
+            } else return "";
+        },
       },
       {
           render: {
@@ -627,12 +627,12 @@ export const kyc_proof_of_address_meta_data = {
           type: "text",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const area_cd = dependentFields.AREA_CD.value
-            // console.log("siudbcsiudbcisbdc setvalue", area_cd)
-            if(!Boolean(area_cd)) {
-                return "";
-            }
-          },  
+            const optionData = dependentFields.AREA_CD.optionData
+            console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+            if(optionData && optionData.length>0) {
+                return optionData[0].DISTRICT_NM;
+            } else return "";
+          },
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
@@ -643,12 +643,12 @@ export const kyc_proof_of_address_meta_data = {
         label: "hidden district",
         dependentFields: ["AREA_CD"],
         setValueOnDependentFieldsChange: (dependentFields) => {
-            const area_cd = dependentFields.AREA_CD.value
-            // console.log("siudbcsiudbcisbdc setvalue", area_cd)
-            if(!Boolean(area_cd)) {
-                return "";
-            }
-        },  
+            const optionData = dependentFields.AREA_CD.optionData
+            console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+            if(optionData && optionData.length>0) {
+                return optionData[0].DISTRICT_CD;
+            } else return "";
+        },
       },
       {
           render: {
@@ -661,12 +661,12 @@ export const kyc_proof_of_address_meta_data = {
           type: "text",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const area_cd = dependentFields.AREA_CD.value
-            // console.log("siudbcsiudbcisbdc setvalue", area_cd)
-            if(!Boolean(area_cd)) {
-                return "";
-            }
-          },  
+            const optionData = dependentFields.AREA_CD.optionData
+            console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+            if(optionData && optionData.length>0) {
+                return optionData[0].STATE_NM;
+            } else return "";
+          },
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
@@ -680,12 +680,12 @@ export const kyc_proof_of_address_meta_data = {
           type: "text",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const area_cd = dependentFields.AREA_CD.value
-            // console.log("siudbcsiudbcisbdc setvalue", area_cd)
-            if(!Boolean(area_cd)) {
-                return "";
-            }
-          },  
+            const optionData = dependentFields.AREA_CD.optionData
+            console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+            if(optionData && optionData.length>0) {
+                return optionData[0].COUNTRY_NM;
+            } else return "";
+          },
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
@@ -699,12 +699,12 @@ export const kyc_proof_of_address_meta_data = {
           type: "text",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const area_cd = dependentFields.AREA_CD.value
-            // console.log("siudbcsiudbcisbdc setvalue", area_cd)
-            if(!Boolean(area_cd)) {
-                return "";
-            }
-          },  
+            const optionData = dependentFields.AREA_CD.optionData
+            console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+            if(optionData && optionData.length>0) {
+                return optionData[0].STATE_CD;
+            } else return "";
+          },
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
@@ -718,12 +718,12 @@ export const kyc_proof_of_address_meta_data = {
           type: "text",
           dependentFields: ["AREA_CD"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const area_cd = dependentFields.AREA_CD.value
-            // console.log("siudbcsiudbcisbdc setvalue", area_cd)
-            if(!Boolean(area_cd)) {
-                return "";
-            }
-          },  
+            const optionData = dependentFields.AREA_CD.optionData
+            console.log(dependentFields.AREA_CD, "siudbcsiudbcisbdc setvalue")
+            if(optionData && optionData.length>0) {
+                return optionData[0].COUNTRY_CD;
+            } else return "";
+          },
           GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
       },
       {
@@ -1090,13 +1090,13 @@ export const kyc_proof_of_address_meta_data = {
           setValueOnDependentFieldsChange: (dependentFields) => {
             const sameAsPer = dependentFields.SAME_AS_PER.value;
             const cityNM = dependentFields.CITY_ignoreField.value;
-            const areaCd = dependentFields.LOC_AREA_CD2.value;
+            const optionData = dependentFields.LOC_AREA_CD2.optionData
             // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityNM)
             if(Boolean(sameAsPer)) {
                 return cityNM;
-            } else if(!Boolean(areaCd)) {
-                return "";
-            }
+            } else if(optionData && optionData.length>0) {
+                return optionData[0].CITY_NM;
+            } else return "";
           },
           placeholder: "",
           type: "text",
@@ -1111,13 +1111,13 @@ export const kyc_proof_of_address_meta_data = {
           setValueOnDependentFieldsChange: (dependentFields) => {
             const sameAsPer = dependentFields.SAME_AS_PER.value;
             const cityCD = dependentFields.CITY_CD.value;
-            const areaCd = dependentFields.LOC_AREA_CD2.value;
-            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityCD)
+            const optionData = dependentFields.LOC_AREA_CD2.optionData
+            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityNM)
             if(Boolean(sameAsPer)) {
                 return cityCD;
-            } else if(!Boolean(areaCd)) {
-                return "";
-            }
+            } else if(optionData && optionData.length>0) {
+                return optionData[0].CITY_CD;
+            } else return "";
           },
       },
       {
@@ -1131,13 +1131,13 @@ export const kyc_proof_of_address_meta_data = {
           setValueOnDependentFieldsChange: (dependentFields) => {
             const sameAsPer = dependentFields.SAME_AS_PER.value;
             const districtNM = dependentFields.DISTRICT_ignoreField.value;
-            const areaCd = dependentFields.LOC_AREA_CD2.value;
-            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, districtNM)
+            const optionData = dependentFields.LOC_AREA_CD2.optionData
+            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityNM)
             if(Boolean(sameAsPer)) {
                 return districtNM;
-            } else if(!Boolean(areaCd)) {
-                return "";
-            }
+            } else if(optionData && optionData.length>0) {
+                return optionData[0].DISTRICT_NM;
+            } else return "";
           },
           isReadOnly: true,
           type: "text",
@@ -1153,14 +1153,14 @@ export const kyc_proof_of_address_meta_data = {
         setValueOnDependentFieldsChange: (dependentFields) => {
             const sameAsPer = dependentFields.SAME_AS_PER.value;
             const districtCD = dependentFields.DISTRICT_CD.value;
-            const areaCd = dependentFields.LOC_AREA_CD2.value;
-            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, districtCD)
+            const optionData = dependentFields.LOC_AREA_CD2.optionData
+            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityNM)
             if(Boolean(sameAsPer)) {
                 return districtCD;
-            } else if(!Boolean(areaCd)) {
-                return "";
-            }
-        },
+            } else if(optionData && optionData.length>0) {
+                return optionData[0].DISTRICT_CD;
+            } else return "";
+          }
       },
 
       {
@@ -1175,13 +1175,13 @@ export const kyc_proof_of_address_meta_data = {
           setValueOnDependentFieldsChange: (dependentFields) => {
             const sameAsPer = dependentFields.SAME_AS_PER.value;
             const state = dependentFields.STATE.value;
-            const areaCd = dependentFields.LOC_AREA_CD2.value;
-            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, state)
+            const optionData = dependentFields.LOC_AREA_CD2.optionData
+            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityNM)
             if(Boolean(sameAsPer)) {
                 return state;
-            } else if(!Boolean(areaCd)) {
-                return "";
-            }
+            } else if(optionData && optionData.length>0) {
+                return optionData[0].STATE_NM;
+            } else return "";
           },
           type: "text",
           GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
@@ -1197,13 +1197,13 @@ export const kyc_proof_of_address_meta_data = {
           setValueOnDependentFieldsChange: (dependentFields) => {
             const sameAsPer = dependentFields.SAME_AS_PER.value;
             const country = dependentFields.COUNTRY.value;
-            const areaCd = dependentFields.LOC_AREA_CD2.value;
-            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, country)
+            const optionData = dependentFields.LOC_AREA_CD2.optionData
+            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityNM)
             if(Boolean(sameAsPer)) {
                 return country;
-            } else if(!Boolean(areaCd)) {
-                return "";
-            }
+            } else if(optionData && optionData.length>0) {
+                return optionData[0].COUNTRY_NM;
+            } else return "";
           },
           placeholder: "",
           type: "text",
@@ -1221,13 +1221,13 @@ export const kyc_proof_of_address_meta_data = {
           setValueOnDependentFieldsChange: (dependentFields) => {
             const sameAsPer = dependentFields.SAME_AS_PER.value;
             const stateCD = dependentFields.STATE_CD.value;
-            const areaCd = dependentFields.LOC_AREA_CD2.value;
-            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, stateCD)
+            const optionData = dependentFields.LOC_AREA_CD2.optionData
+            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityNM)
             if(Boolean(sameAsPer)) {
                 return stateCD;
-            } else if(!Boolean(areaCd)) {
-                return "";
-            }
+            } else if(optionData && optionData.length>0) {
+                return optionData[0].STATE_CD;
+            } else return "";
           },
           type: "text",
           GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
@@ -1244,13 +1244,13 @@ export const kyc_proof_of_address_meta_data = {
           setValueOnDependentFieldsChange: (dependentFields) => {
             const sameAsPer = dependentFields.SAME_AS_PER.value;
             const countryCD = dependentFields.COUNTRY_CD.value;
-            const areaCd = dependentFields.LOC_AREA_CD2.value;
-            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, countryCD)
+            const optionData = dependentFields.LOC_AREA_CD2.optionData
+            // console.log("siudbcsiudbcisbdc setvalue", sameAsPer, cityNM)
             if(Boolean(sameAsPer)) {
                 return countryCD;
-            } else if(!Boolean(areaCd)) {
-                return "";
-            }
+            } else if(optionData && optionData.length>0) {
+                return optionData[0].COUNTRY_CD;
+            } else return "";
           },
           type: "text",
           GridProps: {xs:12, sm:4, md: 2, lg: 2.4, xl:2},
