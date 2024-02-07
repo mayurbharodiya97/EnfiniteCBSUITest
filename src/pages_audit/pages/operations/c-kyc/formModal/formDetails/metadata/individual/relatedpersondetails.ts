@@ -2,7 +2,7 @@ import * as API from "../../../../api";
 
 export const related_person_detail_data = {
     form: {
-        name: "related_person_details_form",
+        name: "rel_person_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 

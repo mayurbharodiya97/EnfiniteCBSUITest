@@ -2,7 +2,7 @@ import * as API from "../../../../api";
 
 export const entity_detail_legal_meta_data = {
     form: {
-        name: "personal_detail_prefix_details_form",
+        name: "personal_legal_detail_prefix_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 

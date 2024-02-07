@@ -795,7 +795,7 @@ export const personal_other_detail_meta_data = {
 // controlling person  - individual details - view
 export const personal_individual_detail_metadata = {
     form: {
-        name: "personal_detail_prefix_details_form",
+        name: "personal_detail_controlling_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
