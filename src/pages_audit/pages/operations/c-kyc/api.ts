@@ -900,13 +900,13 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DOC_DESCRIPTION, BANK_DOC_TRAN_CD, ...other }) => {
+      responseData = responseData.map(({ DOC_DESCRIPTION, TEMPLATE_CD, ...other }) => {
           return {
             ...other,
             DOC_DESCRIPTION:DOC_DESCRIPTION,
-            BANK_DOC_TRAN_CD: BANK_DOC_TRAN_CD,
+            TEMPLATE_CD: TEMPLATE_CD,
             label: DOC_DESCRIPTION,
-            value: BANK_DOC_TRAN_CD,
+            value: TEMPLATE_CD,
           };
         }
       );
@@ -923,11 +923,11 @@ export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD, formState}) => {
   let selectedDoc:any[] = []
   if(rowsData && rowsData.length>0) {
     selectedDoc = rowsData.map(el => {
-      return el.data.BANK_DOC_TRAN_CD ?? "";
+      return el.data.TEMPLATE_CD ?? "";
     })
   } else if(gridData && gridData.length>0) {
     selectedDoc = gridData.map(el => {
-      return el.BANK_DOC_TRAN_CD ?? "";
+      return el.TEMPLATE_CD ?? "";
     })
   }
   // console.log(gridData, "auedhniuwehdwe", formMode)
