@@ -353,7 +353,10 @@ export const forceExpireMetaData = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "Remarks",
-      isReadOnly: true,
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["This Field is required."] }],
+      },
       GridProps: {
         xs: 12,
         md: 3,
@@ -395,6 +398,39 @@ export const forceExpireMetaData = {
         lg: 3,
         xl: 3,
       },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "FORCE_EXP_DT",
+      label: "Forced Expired Date",
+      placeholder: "Forced Expired Date",
+      schemaValidation: {
+        type: "string",
+        rules: [
+          { name: "required", params: ["Force Expired Date is required."] },
+        ],
+      },
+      GridProps: {
+        xs: 12,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
+      },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "EXPIRED_FLAG",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "FORCE_EXP_VERIFIED_BY",
     },
   ],
 };

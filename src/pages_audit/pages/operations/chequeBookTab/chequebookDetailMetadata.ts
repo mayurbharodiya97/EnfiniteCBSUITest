@@ -166,16 +166,6 @@ export const ChequebookDtlGridMetaData = {
       minWidth: 100,
       maxWidth: 200,
     },
-    {
-      accessor: "TRAN_CD",
-      columnName: "Tran-CD",
-      sequence: 10,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 200,
-    },
 
     {
       accessor: "AUTO_CHQBK_FLAG",
@@ -186,16 +176,6 @@ export const ChequebookDtlGridMetaData = {
       width: 100,
       minWidth: 70,
       maxWidth: 200,
-    },
-    {
-      accessor: "email",
-      columnName: "E-Mail ID",
-      sequence: 21,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 400,
     },
     {
       accessor: "DELETE",

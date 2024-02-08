@@ -273,9 +273,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
           </div>
         }
         sx={{
-          "& .MuiInputBase-root": {
-            ...textFieldStyle,
-          },
+          ...textFieldStyle,
         }}
         FormHelperTextProps={{
           //@ts-ignore
