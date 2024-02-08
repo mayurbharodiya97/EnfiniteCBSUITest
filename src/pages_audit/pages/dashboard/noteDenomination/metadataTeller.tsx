@@ -83,11 +83,11 @@ export const TellerScreenMetadata: any = {
       defaultValue: "R",
       _optionsKey: "defaultOption",
       GridProps: {
-        xs: 2,
+        xs: 6,
+        sm: 3,
         md: 2,
-        sm: 2,
         lg: 2,
-        xl: 3,
+        xl: 2,
       },
       AlwaysRunPostValidationSetCrossFieldValues: {
         alwaysRun: true,
@@ -124,11 +124,11 @@ export const TellerScreenMetadata: any = {
           }
         },
         GridProps: {
-          xs: 1,
-          sm: 1,
-          md: 1,
+          xs: 6,
+          sm: 3,
+          md: 1.5,
           lg: 1.5,
-          xl: 4,
+          xl: 1.5,
         },
       },
       accountTypeMetadata: {
@@ -154,11 +154,11 @@ export const TellerScreenMetadata: any = {
           }
         },
         GridProps: {
-          xs: 1,
-          sm: 1,
-          md: 1,
+          xs: 6,
+          sm: 3,
+          md: 1.5,
           lg: 1.5,
-          xl: 4,
+          xl: 1.5,
         },
       },
       accountCodeMetadata: {
@@ -169,11 +169,11 @@ export const TellerScreenMetadata: any = {
         //   }
         // },
         GridProps: {
-          xs: 2,
-          sm: 2,
+          xs: 6,
+          sm: 3,
           md: 2,
           lg: 2,
-          xl: 4,
+          xl: 2,
         },
         postValidationSetCrossFieldValues: async (
           field,
@@ -248,11 +248,11 @@ export const TellerScreenMetadata: any = {
       options: API.getSDCList,
       _optionsKey: "getSDCList",
       GridProps: {
-        xs: 1,
+        xs: 6,
         md: 1,
-        sm: 1,
+        sm: 4,
         lg: 1,
-        xl: 3,
+        xl: 1,
       },
       dependentFields: ["TRN"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -276,10 +276,10 @@ export const TellerScreenMetadata: any = {
       placeholder: "Enter Remark",
       GridProps: {
         xs: 6,
-        md: 6,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 4,
+        lg: 2,
+        xl: 2,
       },
       dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE", "SDC"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -309,10 +309,10 @@ export const TellerScreenMetadata: any = {
       placeholder: "Enter Receipt",
       GridProps: {
         xs: 6,
-        md: 6,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 4,
+        lg: 2,
+        xl: 2,
       },
       dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
@@ -342,8 +342,8 @@ export const TellerScreenMetadata: any = {
       placeholder: "Enter Payment",
       GridProps: {
         xs: 6,
-        md: 6,
-        sm: 3,
+        md: 3,
+        sm: 4,
         lg: 3,
         xl: 3,
       },
