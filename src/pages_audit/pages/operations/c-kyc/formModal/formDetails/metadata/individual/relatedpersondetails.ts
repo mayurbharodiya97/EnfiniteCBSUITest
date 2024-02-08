@@ -288,6 +288,7 @@ export const related_person_detail_data = {
                     placeholder: "AAAAA1111A",
                     type: "text",
                     txtTransform: "uppercase",
+                    validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -299,6 +300,7 @@ export const related_person_detail_data = {
                     placeholder: "",
                     type: "text",
                     txtTransform: "uppercase",
+                    validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {DRIVING_LICENSE_NO: columnValue.value}),
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                     // dependentFields: ["DAILY_AMT"],
                 },
@@ -323,6 +325,7 @@ export const related_person_detail_data = {
                     placeholder: "",
                     type: "text",
                     txtTransform: "uppercase",
+                    validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {ELECTION_CARD_NO: columnValue.value}),
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -334,6 +337,7 @@ export const related_person_detail_data = {
                     placeholder: "",
                     type: "text",
                     txtTransform: "uppercase",
+                    validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {PASSPORT_NO: columnValue.value}),
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {
@@ -356,6 +360,7 @@ export const related_person_detail_data = {
                     label: "UniqueId",
                     placeholder: "",
                     type: "text",
+                    validate: (columnValue, allField, flag) => API.validateUniqueId(columnValue, allField, flag),
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                 },
                 {

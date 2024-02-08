@@ -52,6 +52,7 @@ export const kyc_proof_of_identity_meta_data = {
             placeholder: "",
             defaultValue: "N",
             type: "text",
+            isFieldFocused: true, 
             // GridProps: {xs: 4, sm:3},
             // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
