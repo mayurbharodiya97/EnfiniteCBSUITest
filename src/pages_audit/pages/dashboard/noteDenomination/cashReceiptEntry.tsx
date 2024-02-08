@@ -638,7 +638,7 @@ const CashReceiptEntry = () => {
             onClose={closeAccountDTL}
             // style={{ height: "40vh" }}
           >
-            <AccDetails flag={"TELLER"} />
+            <AccDetails />
           </Dialog>
         ) : null}
 

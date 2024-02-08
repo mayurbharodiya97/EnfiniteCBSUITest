@@ -45,6 +45,7 @@ export const useField = ({
   runPostValidationHookAlways,
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
+  AlwaysRunPostValidationSetCrossFieldValues,
 }: UseFieldHookProps) => {
   //formContext provides formName for scoping of fields, and initialValue for the field
   const formContext = useContext(FormContext);
@@ -733,7 +734,11 @@ export const useField = ({
         (whenToRunValidation.current === "onBlur" ||
           whenToRunValidation.current === "all")
       ) {
-        runValidation({ touched: true });
+        runValidation(
+          { touched: true },
+          AlwaysRunPostValidationSetCrossFieldValues?.alwaysRun,
+          AlwaysRunPostValidationSetCrossFieldValues?.touchAndValidate
+        );
       }
     }
   }, [setTouched, runValidation, formContext.validationRun]);

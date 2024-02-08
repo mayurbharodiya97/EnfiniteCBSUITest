@@ -208,7 +208,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     },
     [setOptions, myGetOptionLabel, myGetOptionValue]
   );
-
+  const handleBlurInterceptor = useCallback(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+    handleBlur();
+  }, [handleBlur, getExtraOptionData, handleOptionValueExtraData, value]);
   // const [lastUpdatedTime, setLastUpdatedTime] = useState(new Date().getTime());
   // const initDoneRef = useRef(false);
   //const defaultValueRef = useRef<any>(null);
@@ -230,6 +234,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     false
   );
 
+  useEffect(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+  }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
@@ -327,7 +335,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
           const extraOptionData = getExtraOptionData(value);
           handleOptionValueExtraData(extraOptionData);
         }}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
+        onBlur={handleBlurInterceptor}
         disabled={isSubmitting}
         filterOptions={
           Boolean(CreateFilterOptionsConfig) &&
@@ -378,7 +387,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   <Fragment>
                     {validationRunning || loadingOptions ? (
                       <CircularProgress
-                        color="primary"
+                        size={25}
+                        color="secondary"
                         variant="indeterminate"
                         {...CircularProgressProps}
                       />

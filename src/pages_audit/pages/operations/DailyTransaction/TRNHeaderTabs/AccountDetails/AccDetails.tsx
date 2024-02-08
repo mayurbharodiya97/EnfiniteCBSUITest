@@ -17,7 +17,7 @@ import { AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 
-export const AccDetails = ({ flag }) => {
+export const AccDetails = () => {
   const { cardStore, setCardStore } = useContext(AccDetailContext);
   const windowWidth = useRef(window.innerWidth);
 
@@ -87,7 +87,7 @@ export const AccDetails = ({ flag }) => {
                     <div
                       style={{
                         overflowY: "scroll",
-                        height: (flag === "DLYTRN" ? "26vh" : "29vh") as string,
+                        height: "26vh" as string,
                       }}
                     >
                       <Grid container spacing={2} style={{ marginTop: "0px" }}>

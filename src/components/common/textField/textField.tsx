@@ -36,6 +36,10 @@ interface MyGridExtendedProps {
   endsIcon?: any;
   iconStyle?: any;
   textFieldStyle?: any;
+  AlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -73,6 +77,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   endsIcon,
   iconStyle,
   textFieldStyle,
+  AlwaysRunPostValidationSetCrossFieldValues,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -108,6 +113,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
+    AlwaysRunPostValidationSetCrossFieldValues,
   });
 
   const [currentColor, setCurrentColor] = useState<string>(
