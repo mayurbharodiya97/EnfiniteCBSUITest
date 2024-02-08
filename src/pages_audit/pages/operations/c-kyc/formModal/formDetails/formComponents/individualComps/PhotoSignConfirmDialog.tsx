@@ -424,9 +424,9 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
             />
           ) : mutation.isError ? (
             <Alert
-              severity={updateMutation.error?.severity ?? "error"}
-              errorMsg={updateMutation.error?.error_msg ?? "Something went to wrong.."}
-              errorDetail={updateMutation.error?.error_detail}
+              severity={mutation.error?.severity ?? "error"}
+              errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+              errorDetail={mutation.error?.error_detail}
               color="error"
             />
           ) : photoHistMutation.isError && (
