@@ -112,6 +112,7 @@ export const Trn001 = () => {
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [resetDialog, setResetDialog] = useState(false);
+  const [scrollResDialog, setScrollResDialog] = useState([]);
   const [viewOnly, setViewOnly] = useState(false);
   const [saveDialog, setSaveDialog] = useState<boolean>(false);
   const [tabsData, setTabsData] = useState<any>([]);

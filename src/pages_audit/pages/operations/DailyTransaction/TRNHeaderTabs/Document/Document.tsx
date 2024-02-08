@@ -61,6 +61,7 @@ export const Document = () => {
   const getDocView = useMutation(API.getDocView, {
     onSuccess: (data) => {
       console.log(data, " getDocView");
+      imgBase = data[0]?.DOC_IMAGE;
       handleImgProcess();
     },
     onError: (error) => {
@@ -112,7 +113,7 @@ export const Document = () => {
       <Dialog
         maxWidth="xl"
         open={detailViewDialog}
-        onClose={() => setDetailViewDialog(false)}
+        // onClose={() => setDetailViewDialog(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >

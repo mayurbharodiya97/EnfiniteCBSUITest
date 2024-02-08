@@ -52,7 +52,9 @@ export const DocumentGridMetaData: GridMetaDataType = {
       columnName: "Valid Upto",
       accessor: "VALID_UPTO",
       sequence: 4,
-      componentType: "default",
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
       width: 120,
     },
     {
