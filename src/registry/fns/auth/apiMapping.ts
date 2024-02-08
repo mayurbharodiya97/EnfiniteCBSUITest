@@ -869,6 +869,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKUPVEWBTNDOCDTLDISP",
     packageName: "",
   },
+  CHECKCUSTDUPLICATEDATA: {
+    url: "/customerServiceAPI/CHECKCUSTDUPLICATEDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

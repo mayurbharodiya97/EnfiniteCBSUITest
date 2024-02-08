@@ -452,15 +452,14 @@ export const validateEmailID = async (columnValue) => {
   }
 }
 
-export const validateMobileNo = async (columnValue, allField, flag) => {
-  // console.log("columnValue, allField, flag", columnValue, allField, flag)
+export const validateMobileNo = async (columnValue, allField, formState) => {
+  // console.log("columnValue, allField, flag", columnValue, allField, formState)
   const MOBILE_NO = columnValue.value
   const SCREEN = "EMST/707"
   const STD_CD = allField.STD_2.value
   const FLAG = "Y"
 
-  if(MOBILE_NO && MOBILE_NO) {
-
+  if(MOBILE_NO) {
     // console.log("ewqkudiwqehid", EMAIL_ID)
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETMOBILESTATUS", {
@@ -475,14 +474,22 @@ export const validateMobileNo = async (columnValue, allField, flag) => {
       const message = data?.[0]?.MOBILE_STATUS
       if(message) {
         return message;
-      } else return "";
+      } else {
+        const fieldValue = {CONTACT2: MOBILE_NO}
+        const result = await DuplicationValidate(columnValue, allField, formState, fieldValue)
+        if(result) {
+          // formState.setDataOnFieldChange("CONTACT2", result)
+          // return "Contact already exist";
+          return result;
+        } else return "";
+      };
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
   }
 }
 
-export const validateUniqueId = async (columnValue) => {
+export const validateUniqueId = async (columnValue, allField?, formState?) => {
   // console.log("validateUniqueId", columnValue)
   const UNIQUEID = columnValue.value
 
@@ -495,12 +502,21 @@ export const validateUniqueId = async (columnValue) => {
     if (status === "0") {
       // console.log("validateUniqueId data", data)
       const UID_STATUS = data?.[0]?.UID_STATUS
+      // console.log("wekjfhiweufhw",UID_STATUS)
       if(UID_STATUS) {
         if(UID_STATUS === "I") {
           return "Please Enter Valid Unique ID";
         } else if(UID_STATUS === "N") {
           return "Unique ID should be 12 digit";
-        } else return "";
+        } else {
+          const fieldValue = {UNIQUE_ID: UNIQUEID}
+          const result = await DuplicationValidate(columnValue, allField, formState, fieldValue)
+          if(result) {
+            // formState.setDataOnFieldChange("UNIQUEID", result)
+            // return "Unique ID already exist";
+            return result;
+          } else return "";
+        };
       } else return "";
     } else {
       throw DefaultErrorObject(message, messageDetails);
@@ -508,7 +524,8 @@ export const validateUniqueId = async (columnValue) => {
   }
 }
 
-export const validateGSTIN = async (columnValue) => {
+
+export const validateGSTIN = async (columnValue, allField, flag) => {
   // console.log("validateGSTIN", columnValue)
   const GSTIN = columnValue.value
 
@@ -531,8 +548,8 @@ export const validateGSTIN = async (columnValue) => {
   }
 }
 
-export const validatePAN = async (columnValue) => {
-  // console.log("validatePAN", columnValue)
+export const validatePAN = async (columnValue, allField?, formState?) => {
+  // console.log(columnValue, "validatePAN", allField, formState)
   const PAN = columnValue.value
 
   if(PAN) {
@@ -546,9 +563,48 @@ export const validatePAN = async (columnValue) => {
       const PAN_STATUS = data?.[0]?.PAN_STATUS
       if(PAN_STATUS && PAN_STATUS !== "Y") {
         return "Please Enter Valid PAN Number";
-      } else return "";
+      } else {
+        const fieldValue = {PAN_NO: PAN}
+        const result = await DuplicationValidate(columnValue, allField, formState, fieldValue)
+        if(result) {
+          // formState.setDataOnFieldChange("PAN_NO", result)
+          // return "PAN already exist";
+          return result;
+        } else return "";
+      };
     } else {
       throw DefaultErrorObject(message, messageDetails);
+    }
+  } 
+}
+
+export const DuplicationValidate = async (columnValue, allField, formState, fieldValue?) => {
+  const {COMP_CD, CUSTOMER_ID, REQ_FLAG} = formState
+  // console.log("waefdwdqwedqwd ..")
+// export const DuplicationValidate = async (field, formState, authState, dependentFieldsValues, fieldObj) => {
+  if(fieldValue) {
+    let keys = Object.keys(fieldValue)
+    if(keys.length === 1 && (Boolean(fieldValue[keys[0]]))) {
+      const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("CHECKCUSTDUPLICATEDATA", {
+        COMP_CD: COMP_CD, 
+        CUSTOMER_ID: CUSTOMER_ID,
+        REQ_FLAG: REQ_FLAG,
+        ...fieldValue
+      });
+      if (status === "0") {
+        // console.log("waefdwdqwedqwd data success..", data)
+        return "";
+      } else {
+        // console.log("waefdwdqwedqwd e ..", data)
+        const ALLOW_RES = data[0].ALLOW_RES
+        const MESSAGE = data[0].RES_MESSAGE
+        // console.log("poiiuoiujoi", keys[0], Boolean(MESSAGE))
+        formState.setDataOnFieldChange(keys[0], MESSAGE)
+        // return MESSAGE
+        return "Entered value already exist"
+        // throw DefaultErrorObject(message, messageDetails);
+      }
     }
   }
 }
