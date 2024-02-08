@@ -1,7 +1,7 @@
 import * as API from "../../../../api";
   export const other_details_legal_meta_data = {
     form: {
-        name: "other_details_annual_income_details_form",
+        name: "legal_other_details_annual_income_details_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 
