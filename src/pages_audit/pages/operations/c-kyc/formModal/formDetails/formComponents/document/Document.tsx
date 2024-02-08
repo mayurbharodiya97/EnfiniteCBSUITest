@@ -71,7 +71,7 @@ const Document = ({
   });
 
   useEffect(() => {
-    console.log(state?.formDatactx["DOC_MST"], "wadqwdwq. doc", state?.retrieveFormDataApiRes["DOC_MST"])
+    // console.log(state?.formDatactx["DOC_MST"], "wadqwdwq. doc", state?.retrieveFormDataApiRes["DOC_MST"])
     if(state?.isFreshEntryctx && !(Boolean(state?.formDatactx["DOC_MST"]) || Boolean(state?.retrieveFormDataApiRes["DOC_MST"]))) {
       let payload = {
         COMP_CD: authState?.companyID ?? "",
@@ -84,10 +84,10 @@ const Document = ({
   }, [])
 
   const afterFormSubmit = (formData, submitFormMode) => {
-    console.log(formData, "wadqwdwq. doc afterFormSubmit", submitFormMode)
+    // console.log(formData, "wadqwdwq. doc afterFormSubmit", submitFormMode)
     if (submitFormMode === "new") {
       setData((old) => {
-        console.log(formData, "wadqwdwq. doc afterFormSubmit new",old)
+        // console.log(formData, "wadqwdwq. doc afterFormSubmit new",old)
         if (!Array.isArray(old)) {
           return [
             {
@@ -109,7 +109,7 @@ const Document = ({
       });
     } else {
       setData((old) => {
-        console.log(formData, "wadqwdwq. doc afterFormSubmit old",old)
+        // console.log(formData, "wadqwdwq. doc afterFormSubmit old",old)
         return old.map((item) => {
           if (item.SR_CD === formData.SR_CD) {
             let { SR_CD, ...other } = formData;
@@ -170,12 +170,12 @@ const Document = ({
   );
 
     const onSave = () => {
-      console.log("wadqwdwq. doc save", data)
+      // console.log("wadqwdwq. doc save", data)
       if(data && data.length>0) {
         let newDocData: any[] = [];
 
         newDocData = data.map((doc) => {
-          console.log("wadqwdwq. doc save newdoc", doc);
+          // console.log("wadqwdwq. doc save newdoc", doc);
           const { TEMPLATE_CD, SUBMIT, VALID_UPTO, DOC_NO, DOC_IMAGE, DOC_DESCRIPTION, SR_CD, DOC_WEIGHTAGE } = doc;
           let newObj = {
             IsNewRow: true,
@@ -195,7 +195,7 @@ const Document = ({
             SR_CD: SR_CD ?? ""
             // ACTIVE : "Y",
           };
-          console.log("wadqwdwq. doc save newdoc --after", newObj);
+          // console.log("wadqwdwq. doc save newdoc --after", newObj);
           return newObj;
         });
   
@@ -226,7 +226,7 @@ const Document = ({
       // console.log("qweqweqweo", data, data.OTHER_ADDRESS)     
       if(data) {
           // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-          console.log("wadqwdwq. doc update data", data);
+          // console.log("wadqwdwq. doc update data", data);
           let newData = state?.formDatactx
           const commonData = {
               IsNewRow: true,
@@ -243,10 +243,10 @@ const Document = ({
               let filteredCols:any[]=["VALID_UPTO", "DOC_IMAGE", "SUBMIT", "TEMPLATE_CD", "DOC_NO", "DOC_DESCRIPTION", "SR_CD", "TRAN_CD"]
 
               let newFormatOtherAdd = data.map((formRow, i) => {
-                console.log("wadqwdwq. doc update formRow", formRow)
+                // console.log("wadqwdwq. doc update formRow", formRow)
                 return {...data[i], ...commonData, SUBMIT: Boolean(formRow?.SUBMIT) ? "Y" : "N"};
               })
-              console.log("new", newFormatOtherAdd, "wadqwdwq. doc update old", data)
+              // console.log("new", newFormatOtherAdd, "wadqwdwq. doc update old", data)
   
               newData["DOC_MST"] = [...newFormatOtherAdd]
               handleFormDataonSavectx(newData)
