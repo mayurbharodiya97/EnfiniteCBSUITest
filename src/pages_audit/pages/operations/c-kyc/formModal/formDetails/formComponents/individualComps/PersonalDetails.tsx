@@ -23,6 +23,7 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../../../../api"
 import { useMutation } from "react-query";
 import { SearchListdialog } from "../legalComps/EntityDetails";
+import { GradientButton } from "components/styledComponent/button";
 const PersonalDetails = ({
   isCustomerData,
   setIsCustomerData,
@@ -202,10 +203,8 @@ const PersonalDetails = ({
     if(displayMode) {
     return displayMode == "new"
       ? <Fragment>
-        <Button
+        <GradientButton
           sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
           disabled={isNextLoading}
           onClick={(e) => {
             NextBtnRef.current = e;
@@ -217,14 +216,12 @@ const PersonalDetails = ({
         >
           {t("Next")}
           {/* {t("Save & Next")} */}
-        </Button>
+        </GradientButton>
       </Fragment>
       : displayMode == "edit"
           ? <Fragment>
-            <Button
+            <GradientButton
               sx={{ mr: 2, mb: 2 }}
-              color="secondary"
-              variant="contained"
               disabled={isNextLoading}
               onClick={(e) => {
                 NextBtnRef.current = e;
@@ -232,20 +229,18 @@ const PersonalDetails = ({
               }}
             >
               {t("Update & Next")}
-            </Button>
+            </GradientButton>
           </Fragment>
           : displayMode == "view" && <Fragment>
-              <Button
+              <GradientButton
               sx={{ mr: 2, mb: 2 }}
-              color="secondary"
-              variant="contained"
               disabled={isNextLoading}
               onClick={(e) => {
                 handleColTabChangectx(state?.colTabValuectx + 1)
               }}
             >
               {t("Next")}
-            </Button>
+            </GradientButton>
           </Fragment>
     }
 
