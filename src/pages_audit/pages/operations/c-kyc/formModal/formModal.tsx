@@ -136,11 +136,11 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 1 }}>
+        <Grid item xs sx={{ p: 1 }}>
           {/* <Typography> */}
               {children}
           {/* </Typography> */}
-        </Box>
+        </Grid>
       )}
     </div>
   );
@@ -864,22 +864,15 @@ export default function FormModal({
         <AppBar
           position="sticky"
           color="secondary"
-          style={{ top: "65px" }}
+          style={{ top: "65px", background: "var(--theme-color5)" }}
         >
           <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
-            <Button 
-              color="secondary" 
-              variant="contained" 
+            <GradientButton 
               onClick={handleSidebarExpansionctx} 
               sx={{ border: "1px solid var(--theme-color2)",
-              // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%", 
-              // mb: "5px", ml: {xs: "2px", sm: "8px"}, alignSelf: "start",
               mx: "10px",
-              // backgroundColor: (theme) => theme.palette.grey[400],
-              minHeight:{xs: "40px", md: "30px"}, 
-              height:{xs: "40px", md: "30px"}, 
-              minWidth: {xs: "40px", md: "30px"}, 
-              width: {xs: "40px", md: "30px"}, 
+              height: "30px",
+              minWidth: "30px !important",
               display: state?.isFreshEntryctx ? "none" : "flex", 
               alignItems:"center", 
               justifyContent: "center",
@@ -893,9 +886,9 @@ export default function FormModal({
               {/* <IconButton color="secondary" onClick={handleSidebarExpansion}
                 sx={{backgroundColor: "#ddd",ml: "20px", mb: "2px", alignSelf: "start"}} 
               > */}
-                {!state?.isSidebarExpandedctx ? <MenuOutlinedIcon /> : <CancelIcon />}
+                {!state?.isSidebarExpandedctx ? <MenuOutlinedIcon sx={{color:"var(--theme-color2)"}} /> : <CancelIcon sx={{color:"var(--theme-color2)"}} />}
               {/* </IconButton> */}
-            </Button>
+            </GradientButton>
             <Typography
               className={classes.title}
               color="inherit"
@@ -1161,7 +1154,7 @@ export default function FormModal({
               </CustomTabs>}
             </Grid>
             <Grid sx={{
-                "& .MuiBox-root": {
+                "& .MuiGrid-root": {
                   padding: "0px",
                 }
               }} item xs>

@@ -52,6 +52,7 @@ import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/in
 import { Alert } from "components/common/alert";
 import PendingCustomer from "./PendingCustomer";
 import RetrieveCustomer from "./RetrieveCustomer";
+import { GradientButton } from "components/styledComponent/button";
 
 export const CustomTabs: any = styled(StyledTabs)(({ orientation, theme }) => ({
   border: "unset !important",
@@ -452,9 +453,7 @@ export const Ckyc = () => {
         </Grid> */}
         <Grid container item xs="auto" columnGap={1}>
           <Tooltip title={t("IndividualCustTooltip")}>
-            <Button
-              color="secondary"
-              variant="contained"
+            <GradientButton
               onClick={() => {
                 // handleFormModalOpenctx("I")
                 navigate("new-entry", {
@@ -467,10 +466,8 @@ export const Ckyc = () => {
               }}
               sx={{
                 // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
-                minHeight: { xs: "40px", md: "30px" },
-                height: { xs: "40px", md: "30px" },
-                minWidth: { xs: "40px", md: "30px" },
-                width: { xs: "40px", md: "30px" },
+                height: "30px",
+                minWidth: "30px !important",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -481,14 +478,12 @@ export const Ckyc = () => {
               }}
             >
               {/* <IconButton sx={{border: (theme) => `1px solid ${theme.palette.secondary.main}`}} color="secondary"> */}
-              <PersonIcon fontSize="medium" />
+              <PersonIcon fontSize="medium" sx={{color:"var(--theme-color2)"}} />
               {/* </IconButton> */}
-            </Button>
+            </GradientButton>
           </Tooltip>
           <Tooltip title={t("LegalCustTooltip")}>
-            <Button
-              color="secondary"
-              variant="contained"
+            <GradientButton
               onClick={() => {
                 // handleFormModalOpenctx("C")
                 navigate("new-entry", {
@@ -501,10 +496,8 @@ export const Ckyc = () => {
               }}
               sx={{
                 // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%",
-                minHeight: { xs: "40px", md: "30px" },
-                height: { xs: "40px", md: "30px" },
-                minWidth: { xs: "40px", md: "30px" },
-                width: { xs: "40px", md: "30px" },
+                height: "30px",
+                minWidth: "30px !important",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -516,9 +509,9 @@ export const Ckyc = () => {
             >
               {/* <IconButton sx={{border: (theme) => `1px solid ${theme.palette.secondary.main}`}} color="secondary"> */}
               {/* <AddCircleOutlineIcon fontSize="medium" /> */}
-              <CorporateFareIcon fontSize="medium" />
+              <CorporateFareIcon fontSize="medium" sx={{color:"var(--theme-color2)"}} />
               {/* </IconButton> */}
-            </Button>
+            </GradientButton>
           </Tooltip>
         </Grid>
       </StyledHeaderGrid>
