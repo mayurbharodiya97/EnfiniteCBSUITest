@@ -525,7 +525,7 @@ const CkycProvider = ({children}) => {
         let retrieveApiRes = data
         // console.log("daatadtatad", data)
         let payload = {
-            retrieveFormDataApiRes: {...retrieveApiRes},
+            // retrieveFormDataApiRes: {...retrieveApiRes},
             accTypeValuectx: data?.["PERSONAL_DETAIL"]?.ACCT_TYPE ?? "", //ACCT_TYPE
         }
         // PHOTO_MST - getting photo sign on retrieve form data to populate images
@@ -561,6 +561,21 @@ const CkycProvider = ({children}) => {
             retrieveApiRes = {...retrieveApiRes, OTHER_DTL: {...retrieveApiRes.OTHER_DTL, resData}}
             // payload.retrieveFormDataApiRes.OTHER_DTL = {...resData}
         }
+        // OTHER-DTL, Y-> true, N -> false
+        if(retrieveApiRes && retrieveApiRes.DOC_MST) {
+            let resData = retrieveApiRes.DOC_MST
+            if(resData.length>0) {
+                resData = resData.map(doc => {
+                    let newDoc = doc
+                    newDoc["SUBMIT"] = doc.SUBMIT === "Y" ? true : false
+                    console.log("wekjfhiuwefwef", doc, doc.SUBMIT === "Y" ? true : false)
+                    return newDoc
+                })
+            }
+
+            retrieveApiRes = {...retrieveApiRes, DOC_MST: resData}
+        }
+        payload["retrieveFormDataApiRes"] = {...retrieveApiRes}
         dispatch({
             type: "update_retrieveFormData",
             payload: payload

@@ -283,7 +283,7 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     defaultPageSize: 10,
     containerHeight: {
       min: "42vh",
-      max: "55vh",
+      max: "50vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
