@@ -370,7 +370,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "OPENIND_DT",
+      accessor: "OP_DATE",
       columnName: "Opening Date",
       sequence: 8,
       alignment: "center",
