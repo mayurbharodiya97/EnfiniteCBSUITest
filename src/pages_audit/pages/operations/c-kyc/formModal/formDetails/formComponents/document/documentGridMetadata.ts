@@ -146,26 +146,46 @@ export const DocumentGridMetadata: GridMetaDataType = {
     //   maxWidth: 200,
     //   __EDIT__: { isVisible: true },
     // },
+    // {
+    //   columnName: "",
+    //   componentType: "deleteRowCell",
+    //   // accessor: "_hidden",
+    //   accessor: "_hidden",
+    //   buttonLabel: "Submit",
+    //   shouldExclude:(initialValue,original,prevRows,nextRows)=>{
+    //     if(original?.IS_MANDATORY==='Y'){
+    //       return true;
+    //     }
+    //     return false;
+    //   },
+    //   sequence: 9,
+    //   width: 100,
+    //   minWidth: 80,
+    //   maxWidth: 400,
+    //   // shouldExclude: () => {
+
+    //   // },
+    //   // isVisible: false,
+    //   __EDIT__: { isVisible: true },
+    // },
     {
-      columnName: "",
-      componentType: "deleteRowCell",
-      // accessor: "_hidden",
-      accessor: "_hidden",
-      buttonLabel: "Submit",
-      shouldExclude:(initialValue,original,prevRows,nextRows)=>{
-        if(original?.IS_MANDATORY==='Y'){
-          return true;
-        }
-        return false;
-      },
+      accessor: "DEL_BTN",
+      componentType: "buttonRowCell",
+      columnName: "Delete",
       sequence: 9,
+      shouldExclude:(initialValue,original,prevRows,nextRows)=>{
+        // console.log("originalasesesdwed", original)
+        if(!Boolean(original?.IS_MANDATORY)) {
+          return false;
+        }
+        if(original?.IS_MANDATORY !=='Y'){
+          return false;
+        }
+        return true;
+      },
       width: 100,
       minWidth: 80,
       maxWidth: 400,
-      // shouldExclude: () => {
-
-      // },
-      // isVisible: false,
       __EDIT__: { isVisible: true },
     },
     {
@@ -188,71 +208,5 @@ export const DocumentGridMetadata: GridMetaDataType = {
       maxWidth: 400,
       isVisible: false,
     },
-    // {
-
-    // }
-    // {
-    //   accessor: "ENTERED_DATE",
-    //   columnName: "Entered Date",
-    //   sequence: 8,
-    //   alignment: "left",
-    //   componentType: "date",
-    //   dateFormat: "dd/MM/yyyy",
-    //   defaultValue: new Date(),
-    //   placeholder: "",
-    //   width: 250,
-    //   minWidth: 250,
-    //   maxWidth: 400,
-    // },
-    // {
-    //   columnName: "",
-    //   componentType: "buttonRowCell",
-    //   accessor: "UPLOAD_FILE",
-    //   sequence: 11,
-    //   buttonLabel: "Upload",
-    //   width: 250,
-    //   minWidth: 250,
-    //   maxWidth: 400,
-    //   isVisible: false,
-    //   __EDIT__: { isVisible: true },
-    // },
-    // {
-    //   columnName: "Action",
-    //   componentType: "deleteRowCell",
-    //   accessor: "_hidden",
-    //   sequence: 12,
-    //   width: 250,
-    //   minWidth: 250,
-    //   maxWidth: 400,
-    //   isVisible: false,
-    //   __EDIT__: { isVisible: true },
-    // },
-    
-    // {
-    //   accessor: "BTN",
-    //   columnName: "Action",
-    //   componentType: "buttonRowCell",
-    //   sequence: 9,
-    //   buttonLabel: "Upload",
-    //   isVisible: true,
-    //   width: 140,
-    //   minWidth: 140,
-    //   maxWidth: 200,
-    //   __EDIT__: { isVisible: true },
-    // },
-    // {
-    //   columnName: "",
-    //   componentType: "deleteRowCell",
-    //   accessor: "SPECIAL_AMOUNT",
-    //   sequence: 10,
-    //   buttonLabel: "Special Amount",
-    //   isVisible: true,
-    //   width: 140,
-    //   minWidth: 140,
-    //   maxWidth: 200,
-    //   // __EDIT__: { isVisible: true },
-    //   // __VIEW__: { isVisible: true },
-    //   // __NEW__: { isVisible: true },
-    // },
   ],
 };

@@ -46,10 +46,10 @@ export const DocumentFormMetadata = {
     },
   },
   fields: [
-    {
-      render: { componentType: "hidden" },
-      name: "TRAN_CD",
-    },
+    // {
+    //   render: { componentType: "hidden" },
+    //   name: "TRAN_CD",
+    // },
     {
       render: { componentType: "hidden" },
       name: "SR_CD",
@@ -119,7 +119,7 @@ export const DocumentFormMetadata = {
     {
       render: { componentType: "datePicker" },
       // name: "VALID_TILL_DT",
-      name: "VALID_TILL_DATE",
+      name: "VALID_UPTO",
       label: "Valid Till Date",
       required: true,
       dependentFields: ["VALID_UPTO_HRS"],
@@ -152,17 +152,6 @@ export const DocumentFormMetadata = {
           //   return "From Date is required.";
           // }
         }
-      },
-    },
-    {
-      render: { componentType: "hidden" },
-      name: "ENTERED_DT",
-      label: "Entered Date",
-      // required: true,   
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
       },
     },
     {
