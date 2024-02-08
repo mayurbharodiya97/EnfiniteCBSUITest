@@ -12,6 +12,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { Alert } from "components/common/alert";
 import FormModal from "./formModal/formModal";
 import { format } from "date-fns";
+import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
 
 const PendingCustomer = () => {
   const { authState } = useContext(AuthContext);
@@ -21,7 +22,7 @@ const PendingCustomer = () => {
 
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [isCustomerData, setIsCustomerData] = useState(true);
-
+  const [formMode, setFormMode] = useState("new");
   useEffect(() => {
     if (isLoadingData) {
       setTimeout(() => {
@@ -66,13 +67,43 @@ const PendingCustomer = () => {
 
   const setCurrentAction = useCallback(
     (data) => {
-      setRowsData(data?.rows);
-      navigate(data?.name, {
-        state: data?.rows,
-      });
+      // console.log(authState, "wekjkbfiweifw", data)
+      const confirmed = data?.rows?.[0]?.data?.CONFIRMED ?? "";
+      const maker = data?.rows?.[0]?.data?.MAKER ?? "";
+      const loggedinUser = authState?.user?.id;
+      if(Boolean(confirmed)) {
+        if(confirmed.includes("P")) {
+          if(maker === loggedinUser) {
+            setFormMode("edit")
+          } else {
+            setFormMode("view")
+          }
+        } else if(confirmed.includes("M")) {
+          setFormMode("edit")
+        } else {
+          setFormMode("view")
+        }
+      }
+      // console.log("kwfeiwehifdhweihfwef pending", data, data.rows?.[0]?.data?.UPD_TAB_NAME)
+      if(data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
+        navigate("photo-signature", {
+          state: data?.rows,
+        })  
+      } else {
+        setRowsData(data?.rows);
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
     },
     [navigate]
   );
+
+  ckyc_pending_req_meta_data.gridConfig.gridLabel = "Customer Searching";
+  ckyc_pending_req_meta_data.gridConfig["containerHeight"] = {
+    min: "42vh",
+    max: "calc(100vh - 300px)",
+  }
 
   return (
     <Grid>
@@ -116,8 +147,20 @@ const PendingCustomer = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
-              formmode={"edit"}
+              formmode={formMode ?? "edit"}
               from={"pending-entry"}
+            />
+          }
+        />
+        <Route
+          path="photo-signature/*"
+          element={
+            <PhotoSignatureCpyDialog
+              open={true}
+              onClose={() => {
+                navigate(".");
+              }}
+              viewMode={formMode ?? "edit"}
             />
           }
         />

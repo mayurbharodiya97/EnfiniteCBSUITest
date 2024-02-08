@@ -52,6 +52,7 @@ import { Alert } from "components/common/alert";
 interface PhotoSignProps {
   open: boolean;
   onClose: any;
+  viewMode: string;
   //   componentIn?: string;
   //   formMode?: string;
   //   setFormMode?: any;
@@ -66,7 +67,7 @@ interface PhotoSignProps {
 }
 
 const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
-  const { open, onClose } = props;
+  const { open, onClose, viewMode } = props;
 
   const {
     state,
@@ -235,14 +236,9 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
       setDialogAction(null)
       setIsSaveDisabled(true)
       setFormMode("view")
-
-  
-      // // console.log("photohistory", data)
-      // setPhotoHistory(data)
-      // let activeHistory = null
-      // activeHistory = (data && data.length>0) && data.findLast(el => el.ACT_FLAG === "Y")
-      // setActivePhotoHist(activeHistory)
-      // // console.log("photohistory ac", activeHistory)
+      enqueueSnackbar("Data Saved Successfully!", {
+        variant: "success",
+      })
     },
     onError: (error: any) => {
       console.log("datatdastdastdasd error", error);
@@ -489,7 +485,7 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
             </Button>
           )}
 
-          {formMode === "view" && (
+          {(formMode === "view" && viewMode === "edit") && (
             <Button onClick={() => setFormMode("edit")}>Edit</Button>
           )}
           {formMode === "edit" && (

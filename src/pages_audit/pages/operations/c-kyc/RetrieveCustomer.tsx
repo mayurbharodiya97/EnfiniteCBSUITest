@@ -33,6 +33,7 @@ const RetrieveCustomer = () => {
 
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [isCustomerData, setIsCustomerData] = useState(true);
+  const [formMode, setFormMode] = useState("new");
 
   useEffect(() => {
     if (isLoadingData) {
@@ -138,6 +139,25 @@ const RetrieveCustomer = () => {
 
   const setCurrentAction = useCallback(
     (data) => {
+      // console.log(authState, "wekjkbfiweifw", data)
+      const confirmed = data?.rows?.[0]?.data?.CONFIRMED ?? "";
+      const maker = data?.rows?.[0]?.data?.MAKER ?? "";
+      const loggedinUser = authState?.user?.id;
+      if(Boolean(confirmed)) {
+        if(confirmed.includes("P")) {
+          if(maker === loggedinUser) {
+            setFormMode("edit")
+          } else {
+            setFormMode("view")
+          }
+        } else if(confirmed.includes("M")) {
+          setFormMode("edit")
+        } else {
+          setFormMode("view")
+        }
+      }
+
+
       setRowsData(data?.rows);
       navigate(data?.name, {
         state: data?.rows,
@@ -244,7 +264,7 @@ const RetrieveCustomer = () => {
               isCustomerData={isCustomerData}
               setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
-              formmode={"edit"}
+              formmode={formMode ?? "edit"}
               from={"retrieve-entry"}
             />
           }
@@ -265,11 +285,12 @@ const RetrieveCustomer = () => {
         <Route
           path="photo-signature/*"
           element={
-            <PhotoSignUpdateDialog
+            <PhotoSignatureCpyDialog
               open={true}
               onClose={() => {
                 navigate(".");
               }}
+              viewMode={formMode ?? "edit"}
             />
           }
         />
