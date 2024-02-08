@@ -26,10 +26,9 @@ export const getDocTemplateList = async (reqData) => {
 };
 export const getDocView = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDLYTRNDOCVIEWBTN", {
+    await AuthSDK.internalFetcher("GETDOCUMENTIMG", {
       TRAN_CD: reqData?.TRAN_CD,
       SR_CD: reqData?.SR_CD,
-      LINE_CD: reqData?.LINE_CD ?? "",
     });
   if (status === "0") {
     return data;

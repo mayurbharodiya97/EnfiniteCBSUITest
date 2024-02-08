@@ -303,18 +303,23 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       let isSuccess = data.some((a) => a?.TRAN_CD);
       if (isSuccess) {
-        handleReset();
         setSaveDialog(false);
         data.map((a) => {
-          return enqueueSnackbar(
-            (isArray ? "Scroll " : "Transaction ") +
-              "Saved | Voucher No. " +
-              a?.TRAN_CD,
-            {
-              variant: "success",
-            }
-          );
+          let msg = "";
+          if (isArray) {
+            msg =
+              "Scroll Saved | Voucher No. " +
+              a?.TRAN_CD +
+              " | Scroll No. " +
+              a?.SCROLL1;
+          } else {
+            msg = "Transaction Saved | Voucher No. " + a?.TRAN_CD;
+          }
+          return enqueueSnackbar(msg, {
+            variant: "success",
+          });
         });
+        handleReset();
       } else {
         enqueueSnackbar("Some error occured in scroll saving", {
           variant: "error",

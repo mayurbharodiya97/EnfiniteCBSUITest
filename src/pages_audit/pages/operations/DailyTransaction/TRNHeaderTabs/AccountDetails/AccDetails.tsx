@@ -76,17 +76,29 @@ export const AccDetails = ({ flag }) => {
                     <div
                       style={{
                         overflowY: "scroll",
-                        height: (flag === "DLYTRN" ? "26vh" : "29vh") as string,
+                        height: (flag === "DLYTRN" ? "29vh" : "29vh") as string,
                       }}
                     >
                       {" "}
-                      <Grid container spacing={2} style={{ marginTop: "0px" }}>
+                      <Grid
+                        container
+                        spacing={0.5}
+                        style={{ marginTop: "0px" }}
+                      >
                         {cardsInfo?.length > 0 &&
                           cardsInfo?.map((b, i2) => {
                             if (a == b?.CARD_NAME) {
                               return (
                                 <Grid item id="cardGridItem" key={i2}>
-                                  <Typography id="cardLabel">
+                                  <Typography
+                                    id="cardLabel"
+                                    className={
+                                      Number(b?.COL_VALUE) ||
+                                      b?.COL_VALUE == "0"
+                                        ? "rightEnd"
+                                        : ""
+                                    }
+                                  >
                                     {b?.COL_LABEL}
                                   </Typography>
                                   <Typography
@@ -95,6 +107,12 @@ export const AccDetails = ({ flag }) => {
                                       b.COL_VALUE.includes("-")
                                         ? { color: "tomato" }
                                         : {}
+                                    }
+                                    className={
+                                      Number(b?.COL_VALUE) ||
+                                      b?.COL_VALUE == "0"
+                                        ? "rightEnd"
+                                        : ""
                                     }
                                   >
                                     {b?.COL_VALUE}

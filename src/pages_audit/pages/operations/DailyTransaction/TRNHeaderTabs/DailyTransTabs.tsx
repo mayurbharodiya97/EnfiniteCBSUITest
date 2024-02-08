@@ -55,7 +55,7 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
     setTabValue(newValue);
   };
   return (
-    <div style={{ padding: "8px" }}>
+    <div style={{ paddingLeft: "8px", paddingRight: "8px" }}>
       <h2>Daily Transaction {heading}</h2>
 
       <>

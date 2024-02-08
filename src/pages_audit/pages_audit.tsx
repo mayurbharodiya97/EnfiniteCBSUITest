@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect, useContext } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { AppBar } from "./appBar";
 import { Drawer } from "./drawer";
@@ -17,13 +17,27 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
+import { AccDetailContext } from "./auth";
 
 export const PagesAudit = (props, { columns }) => {
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const isValidURL = props?.isValidURL ?? true;
   const classes = useStyles();
   const [drawerOpen, setDrawerState] = useState(true);
-  const handleDrawerOpen = () => setDrawerState(true);
-  const handleDrawerClose = () => setDrawerState(false);
-  const isValidURL = props?.isValidURL ?? true;
+
+  const handleDrawerOpen = () => {
+    setDrawerState(true);
+    handleCardStateUpdate();
+  };
+  const handleDrawerClose = () => {
+    setDrawerState(false);
+    handleCardStateUpdate();
+  };
+
+  const handleCardStateUpdate = () => {
+    let obj = { random: Math.random() };
+    setCardStore({ ...cardStore, obj });
+  };
 
   return (
     <Fragment>

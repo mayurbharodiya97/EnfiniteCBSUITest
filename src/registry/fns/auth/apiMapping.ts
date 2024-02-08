@@ -732,8 +732,8 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   //docView
-  GETDLYTRNDOCVIEWBTN: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNDOCVIEWBTN",
+  GETDOCUMENTIMG: {
+    url: "/transactionServiceAPI/GETDOCUMENTIMG",
     packageName: "",
   },
   //insurance

@@ -7,9 +7,7 @@
 }
 
 #cardGridItem {
-  padding: 10px;
-  margin-left: 7px;
-  margin-right: 7px;
+  margin: 3px;
 }
 
 #cardLabel {
@@ -23,8 +21,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
-  padding: 5px;
+  margin-bottom: 5px;
+  margin-top: 0px !important;
+  padding-left: 5px;
+  padding-right: 5px;
   border-radius: 5px;
 }
 #head {
@@ -38,4 +38,17 @@
   #media12 {
     color: red !important;
   }
+}
+
+.rightEnd {
+  text-align: end !important;
+}
+.errRed {
+  color: tomato;
+}
+.css-46bh2p-MuiCardContent-root {
+  padding: 7px;
+}
+.css-46bh2p-MuiCardContent-root:last-child {
+  padding-bottom: 7px;
 }
