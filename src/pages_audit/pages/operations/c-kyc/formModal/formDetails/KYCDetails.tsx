@@ -7,6 +7,10 @@ import {
   Collapse,
   IconButton,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
@@ -23,6 +27,8 @@ import { useTranslation } from "react-i18next";
 import { CkycContext } from "../../CkycContext";
 import { company_info_meta_data } from "./metadata/legal/legalcompanyinfo";
 import _ from "lodash";
+import { AuthContext } from "pages_audit/auth";
+import { GradientButton } from "components/styledComponent/button";
 
 const KYCDetails = ({
   isCustomerData,
@@ -42,8 +48,10 @@ const KYCDetails = ({
     handleStepStatusctx,
     handleModifiedColsctx
   } = useContext(CkycContext);
+  const { authState } = useContext(AuthContext);
   const [isPoIExpanded, setIsPoIExpanded] = useState(true);
   const [isPoAExpanded, setIsPoAExpanded] = useState(true);
+  const [errMsg, setErrMsg] = useState<any>("");
   const [isNextLoading, setIsNextLoading] = useState(false);
   const KyCPoIFormRef = useRef<any>("");
   const KyCPoAFormRef = useRef<any>("");
@@ -194,26 +202,23 @@ const KYCDetails = ({
     if(displayMode) {
     return displayMode == "new"
       ? <Fragment>
-        <Button
-          sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
-          disabled={isNextLoading}
-          onClick={(e) => {
-            NextBtnRef.current = e;
-            KyCPoIFormRef.current.handleSubmitError(e, "save");
-          }}
-        >
-          {t("Next")}
-          {/* {t("Save & Next")} */}
-        </Button>
-      </Fragment>
+          <GradientButton
+            sx={{ mr: 2, mb: 2 }}
+            disabled={isNextLoading}
+            // endicon={"East"}
+            onClick={(e) => {
+              NextBtnRef.current = e;
+              KyCPoIFormRef.current.handleSubmitError(e, "save");
+            }}
+            >
+            {t("Next")}
+            {/* {t("Save & Next")} */}
+          </GradientButton>
+        </Fragment>      
       : displayMode == "edit"
           ? <Fragment>
-            <Button
+            <GradientButton
               sx={{ mr: 2, mb: 2 }}
-              color="secondary"
-              variant="contained"
               disabled={isNextLoading}
               onClick={(e) => {
                 NextBtnRef.current = e;
@@ -221,20 +226,18 @@ const KYCDetails = ({
               }}
             >
               {t("Update & Next")}
-            </Button>
+            </GradientButton>
           </Fragment>
           : displayMode == "view" && <Fragment>
-              <Button
+              <GradientButton
               sx={{ mr: 2, mb: 2 }}
-              color="secondary"
-              variant="contained"
               disabled={isNextLoading}
               onClick={(e) => {
                 handleColTabChangectx(state?.colTabValuectx + 1)
               }}
             >
               {t("Next")}
-            </Button>
+            </GradientButton >
           </Fragment>
     }
   }, [displayMode])
@@ -402,17 +405,16 @@ const KYCDetails = ({
       ) : null}
 
       <Grid container item sx={{ justifyContent: "flex-end" }}>
-        <Button
+        <GradientButton
           sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
           disabled={isNextLoading}
           onClick={(e) => {
             handleColTabChangectx(0);
           }}
+          // starticon={"West"}
         >
           {t("Previous")}
-        </Button>
+        </GradientButton>
         {/* {state?.isFreshEntryctx && <Button
           sx={{ mr: 2, mb: 2 }}
           color="secondary"
