@@ -730,9 +730,17 @@ export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:stri
   }
   const { data, status, message, messageDetails } =
   await AuthSDK.internalFetcher("GETPENDINGCUSTLIST", payload);
-  if (status === "0") {
-    return data
-  } else {
+  if (status === "0") { const dataStatus = data;
+    dataStatus.map((item) => {
+      if (item?.CONFIRMED === "Y  ") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+      }
+      if (item?.CONFIRMED === "R  ") {
+        item._rowColor = "rgb(152 59 70 / 61%)";
+      }
+    });
+    return dataStatus
+   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
