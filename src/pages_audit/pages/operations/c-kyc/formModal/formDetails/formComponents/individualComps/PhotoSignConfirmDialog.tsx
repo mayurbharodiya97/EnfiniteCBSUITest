@@ -385,15 +385,6 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
           <Typography variant="h6">
             {`Photo & Signature - ${customerData?.CUSTOMER_NAME}${customerData?.CUSTOMER_ID ? ` [Cust. ID : ${customerData?.CUSTOMER_ID}] ` : null}`}
           </Typography>
-          <Typography component="span" variant="h6" color="primary">
-            <Chip
-              style={{ color: "white", marginLeft: "8px" }}
-              variant="outlined"
-              color="primary"
-              size="small"
-              label={`view mode`}
-            />
-          </Typography>
         </Grid>
         <div style={{ display: "flex", alignItems: "center" }}>
           {/* {!isHistoryGridVisible && (

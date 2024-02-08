@@ -146,15 +146,6 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
 
   const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
     onSuccess: (data) => {
-      // handlePhotoOrSignctx(null, activePhotoHist.CUST_PHOTO, "photo")
-      // handlePhotoOrSignctx(null, activePhotoHist.CUST_SIGN, "sign")
-      // // console.log("asdqwdq", PhotoHistoryData, activePhotoHist)
-      // setPhotoImageURL(activePhotoHist.CUST_PHOTO, "photo");
-      // setPhotoImageURL(activePhotoHist.CUST_SIGN, "sign");
-      // photoFilesdata.current = activePhotoHist.CUST_PHOTO;
-      // signFilesdata.current = activePhotoHist.CUST_SIGN;
-
-
       console.log(data, "getcustdtmtgltdngk")
       if(data && data.length>0) {
         if(data?.[0]?.PHOTO_MST) {
@@ -170,13 +161,6 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
           signFilesdata.current = CUST_SIGN;  
         }
       }
-      // // console.log("on successssss", data, location)
-      // handleFormDataonRetrievectx(data[0])
-      // let acctTypevalue = data[0]?.PERSONAL_DETAIL.ACCT_TYPE
-      // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-      // setAcctTypeState(acctType[0])
-      // // handleColTabChangectx(0)
-      // // handleFormModalOpenOnEditctx(location?.state)
     },
     onError: (error: any) => {},
   });
@@ -197,17 +181,12 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
         PhotoHistoryData.length > 0 &&
         PhotoHistoryData.findLast((el) => el.ACT_FLAG === "Y");
         setActivePhotoHist(activeHistory);
-      // console.log("photohistory ac", activeHistory)
     }
   }, [PhotoHistoryData, isPhotoHistoryLoading]);
-
-  // set photo, sign url from history api active record, on edit
   useEffect(() => {
-    // if (activePhotoHist) {
-      console.log(!Boolean(customerData.REQUEST_ID), "asdasdasd1", customerData)
-      if(customerData && !Boolean(customerData.REQUEST_ID)) {
-        console.log("asdasdasd2", activePhotoHist)
-        if (activePhotoHist) {
+    if(Boolean(activePhotoHist && Object.keys(activePhotoHist))) {
+      if(location.state?.[0]?.data && !Boolean(location.state?.[0]?.data.REQUEST_ID)) {
+        if(activePhotoHist) {
           handlePhotoOrSignctx(null, activePhotoHist.CUST_PHOTO, "photo")
           handlePhotoOrSignctx(null, activePhotoHist.CUST_SIGN, "sign")
           // console.log("asdqwdq", PhotoHistoryData, activePhotoHist)
@@ -216,15 +195,21 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
           photoFilesdata.current = activePhotoHist.CUST_PHOTO;
           signFilesdata.current = activePhotoHist.CUST_SIGN;
         }
-      } else if(customerData && Boolean(customerData.REQUEST_ID)) {
-        let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-          COMP_CD: authState?.companyID ?? "",
-        }
-        payload["REQUEST_CD"] = customerData.REQUEST_ID;
-        mutation.mutate(payload)
       }
-    // }
-  }, [activePhotoHist]);
+    }
+  }, [activePhotoHist])
+
+  // set photo, sign url from history api active record, on edit
+  useEffect(() => {
+    // console.log(!Boolean(location.state?.[0]?.data.REQUEST_ID), "asdasdasd1", location.state?.[0]?.data)
+    if(location.state?.[0]?.data && Boolean(location.state?.[0]?.data.REQUEST_ID)) {
+      let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+        COMP_CD: authState?.companyID ?? "",
+      }
+      payload["REQUEST_CD"] = location.state?.[0]?.data.REQUEST_ID;
+      mutation.mutate(payload)
+    }
+  }, []);
 
   const updateMutation: any = useMutation(API.updatePhotoSignData, {
     onSuccess: (data, payload) => {
@@ -277,8 +262,8 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
       CUST_PHOTO: photoFilesdata.current,
       CUST_SIGN: signFilesdata.current,
     });
-    const data = {
-      ENTRY_TYPE: "1",
+    let data = {
+      // ENTRY_TYPE: "1",
       COMP_CD: authState?.companyID ?? "",
       CUSTOMER_ID: activePhotoHist?.CUSTOMER_ID ?? "",
       REQ_FLAG: "E",
@@ -291,6 +276,27 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
         ...upd,
       },
     };
+    if(Boolean(location.state?.[0]?.data.REQUEST_ID)) {
+      const {SR_CD, COMP_CD} = mutation.data[0].PHOTO_MST
+      data = {
+        // ENTRY_TYPE: "1",
+        COMP_CD: authState?.companyID ?? "",
+        CUSTOMER_ID: activePhotoHist?.CUSTOMER_ID ?? "",
+        REQ_FLAG: "E",
+        PHOTO_DTL: {
+          // ...activePhotoHist,
+          isNewRow: false,
+          SR_CD: SR_CD,
+          COMP_CD: COMP_CD,
+          REQ_CD: location.state?.[0]?.data.REQUEST_ID,
+
+          CUST_PHOTO: photoFilesdata.current ?? "",
+          CUST_SIGN: signFilesdata.current ?? "",
+          // ...custData,
+          ...upd,
+        },
+      }
+    }
     if (upd) {
       updateMutation.mutate(data);
     }
