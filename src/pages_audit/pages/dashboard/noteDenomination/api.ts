@@ -10,14 +10,14 @@ import { AuthSDK } from "registry/fns/auth";
 //     });
 
 //   return [
-//     // {
-//     //   NOTE: "2000",
-//     //   NOTE_CNT: 0,
-//     //   AMOUNT: "0",
-//     //   AVAIL_NOTE: "04",
-//     //   TOTAL_AMNT: "8000",
-//     //   ID: 1,
-//     // },
+//     {
+//       NOTE: "2000",
+//       NOTE_CNT: 0,
+//       AMOUNT: "0",
+//       AVAIL_NOTE: "04",
+//       TOTAL_AMNT: "8000",
+//       ID: 1,
+//     },
 //     {
 //       NOTE: "500",
 //       PYNOTE: "500",
@@ -81,43 +81,44 @@ import { AuthSDK } from "registry/fns/auth";
 //       TOTAL_AMNT: "300",
 //       ID: 8,
 //     },
+
+//     {
+//       NOTE: "2",
+//       NOTE_CNT: 0,
+//       AMOUNT: "0",
+//       AVAIL_NOTE: "8",
+//       TOTAL_AMNT: "16",
+//       ID: 9,
+//     },
+//     {
+//       NOTE: "1",
+//       NOTE_CNT: 0,
+//       AMOUNT: "0",
+//       AVAIL_NOTE: "100",
+//       TOTAL_AMNT: "120",
+//       ID: 10,
+//     },
+//     {
+//       NOTE: "10000",
+//       NOTE_CNT: 0,
+//       AMOUNT: "0",
+//       AVAIL_NOTE: "10",
+//       TOTAL_AMNT: "100000",
+//       ID: 11,
+//     },
+//     // if (status === "0") {
+//     //   return data.map((items) => {
+//     //     return {
+//     //       NOTE: items.NOTE,
+//     //       NOTE_CNT: 0ems.NOTE_CNT,0//       AMOUNT: items.AMOUNT,
+//     //       AVAIL_NOTE: items.AVAIL_NOTE,
+//     //       TOTAL_AMNT: items.TOTAL_AMNT,
+//     //     };
+//     //   });
+//     // } else {
+//     //   throw DefaultErrorObject("you have occur error");
+//     // }
 //   ];
-//   // {
-//   //   NOTE: "2",
-//   //   NOTE_CNT: 0,
-//   //   AMOUNT: "0",
-//   //   AVAIL_NOTE: "8",
-//   //   TOTAL_AMNT: "16",
-//   //   ID: 9,
-//   // },
-//   // {
-//   //   NOTE: "1",
-//   //   NOTE_CNT: 0,
-//   //   AMOUNT: "0",
-//   //   AVAIL_NOTE: "100",
-//   //   TOTAL_AMNT: "120",
-//   //   ID: 10,
-//   // },
-//   // {
-//   //   NOTE: "10000",
-//   //   NOTE_CNT: 0,
-//   //   AMOUNT: "0",
-//   //   AVAIL_NOTE: "10",
-//   //   TOTAL_AMNT: "100000",
-//   //   ID: 11,
-//   // },
-//   // if (status === "0") {
-//   //   return data.map((items) => {
-//   //     return {
-//   //       NOTE: items.NOTE,
-//   //       NOTE_CNT: 0ems.NOTE_CNT,0//       AMOUNT: items.AMOUNT,
-//   //       AVAIL_NOTE: items.AVAIL_NOTE,
-//   //       TOTAL_AMNT: items.TOTAL_AMNT,
-//   //     };
-//   //   });
-//   // } else {
-//   //   throw DefaultErrorObject("you have occur error");
-//   // }
 // };
 
 export const CashReceiptEntrysData = async ({
@@ -159,7 +160,7 @@ export const getSDCList = async (...authDTL) => {
             ...other,
             CODE: CODE,
             DISLAY_STANDARD: DISLAY_STANDARD,
-            value: DESCRIPTION,
+            value: CODE,
             label: DISLAY_STANDARD,
           };
         }
@@ -210,6 +211,36 @@ export const getAccInfoTeller = async (reqData) => {
   if (status === "0") {
     let responseData = data;
     return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+// export const cashReportData = async (otherAPIRequestPara) => {
+//   // console.log(COMP_CD, "COMP_CD,", BRANCH_CD, "BRANCH_CD,");
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher("GETTODAYTRANDATA", otherAPIRequestPara);
+//   if (status === "0") {
+//     const dataStatus = data;
+//     dataStatus.map((item) => {
+//       if (item?.CONFIRM === "Y") {
+//         item._rowColor = "rgb(9 132 3 / 51%)";
+//       }
+//       if (item?.CONFIRM === "0") {
+//         item._rowColor = "rgb(152 59 70 / 61%)";
+//       }
+//     });
+//     return dataStatus;
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// };
+
+export const cashReportData = async (reportID, filter, otherAPIRequestPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETTODAYTRANDATA", otherAPIRequestPara);
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

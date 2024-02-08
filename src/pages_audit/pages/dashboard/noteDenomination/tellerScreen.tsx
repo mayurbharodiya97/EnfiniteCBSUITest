@@ -12,8 +12,9 @@ import { InitialValuesType, SubmitFnType } from "packages/form";
 import { GradientButton } from "components/styledComponent/button";
 import TellerDenoTable from "./tellerDenoTable";
 import { useMutation, useQuery } from "react-query";
-import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import * as API from "./api";
+import * as cardAPI from "../../operations/DailyTransaction/TRN001/api";
 import DenoTable from "./denoTable";
 import {
   PopupMessageAPIWrapper,
@@ -21,13 +22,18 @@ import {
 } from "components/custom/popupMessage";
 import SingleDeno from "./singleDeno";
 import Grow from "@mui/material/Grow";
-import { Dialog } from "@mui/material";
-import { denoViewTrnGridMetaData } from "./metadataTeller";
+import { Box, Dialog } from "@mui/material";
+import { cashReportMetaData } from "./metadataTeller";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { format, parse } from "date-fns";
 import { isValidDate } from "components/utils/utilFunctions/function";
-
+import Report from "components/report";
+import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
+import { enqueueSnackbar } from "notistack";
+import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
+import { GeneralAPI } from "registry/fns/functions";
+// import { getCarousalCards } from "pages_audit/pages/operations/DailyTransaction/TRN001/Trn001";
 const inititalState = {
   inputVal: {},
   displayTable: false,
@@ -41,13 +47,15 @@ const inititalState = {
   columnTotal: {},
   remainExcess: "",
   confirmation: false,
+  openAcctDtl: false,
+  acctValidMsg: false,
+  acctValidBox: false,
   displayError: [],
   displayTotal: [],
   totalInputAmount: "",
   retData: {},
   openDeno: false,
   isDisableField: false,
-  openAccountDTL: false,
   referData: "",
   secondReferData: "",
   thirdReferData: "",
@@ -68,6 +76,9 @@ const SET_VIEWACCTDETAILS_VAL = "SET_VIEWACCTDETAILS_VAL";
 const SET_TOTAL_VAL = "SET_TOTAL_VAL";
 const SET_REMAINEXCESS_VAL = "SET_REMAINEXCESS_VAL";
 const SET_CONFIRMATION_VAL = "SET_CONFIRMATION_VAL";
+const SET_OPENACCTDTL_VAL = "SET_OPENACCTDTL_VAL";
+const SET_ACCTVALIDMSG_VAL = "SET_ACCTVALIDMSG_VAL";
+const SET_ACCTVALIDMSGBOX_VAL = "SET_ACCTVALIDMSGBOX_VAL";
 
 const dataReducer = (state, action) => {
   switch (action.type) {
@@ -95,6 +106,12 @@ const dataReducer = (state, action) => {
       return { ...state, remainExcess: action.payload };
     case SET_CONFIRMATION_VAL:
       return { ...state, confirmation: action.payload };
+    case SET_OPENACCTDTL_VAL:
+      return { ...state, openAcctDtl: action.payload };
+    case SET_ACCTVALIDMSG_VAL:
+      return { ...state, acctValidMsg: action.payload };
+    case SET_ACCTVALIDMSGBOX_VAL:
+      return { ...state, acctValidBox: action.payload };
     default:
       return state;
   }
@@ -103,9 +120,10 @@ const dataReducer = (state, action) => {
 const TellerScreen = () => {
   const formRef: any = useRef(null);
   const endSubmitRef: any = useRef(null);
+  const textFieldRef: any = useRef(null);
   const [state, dispatch] = useReducer(dataReducer, inititalState);
   const { authState }: any = useContext(AuthContext);
-
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -257,6 +275,10 @@ const TellerScreen = () => {
     }
   }, []);
 
+  const handleCloseDialog = () => {
+    dispatch({ type: SET_VIEWACCTDETAILS_VAL, payload: false });
+  };
+
   const handleonBlur = (event, index) => {
     const dataForTotal = {
       inputVal: state?.inputVal || "0",
@@ -300,6 +322,38 @@ const TellerScreen = () => {
     }
   }, [state?.remainExcess]);
 
+  const onCloseTable = (newVal) => {
+    dispatch({ type: SET_DISP_TABLE, payload: newVal });
+    if (Boolean(endSubmitRef.current?.endSubmit)) {
+      endSubmitRef.current?.endSubmit(true);
+    }
+  };
+
+  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
+    onSuccess: (data) => {
+      setCardStore({ ...cardStore, cardsInfo: data });
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+      setCardStore({ ...cardStore, cardsInfo: [] });
+    },
+  });
+
+  const getAccNoValidations = useMutation(GeneralAPI.getAccNoValidation, {
+    onSuccess: (data) => {
+      console.log(data, "data12012011111111");
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
+  let finalScreenRef = "";
+
   return (
     <>
       <FormWrapper
@@ -312,7 +366,12 @@ const TellerScreen = () => {
         }}
         controlsAtBottom={false}
         onFormButtonClickHandel={(id) => {}}
-        setDataOnFieldChange={(action, data) => {
+        setDataOnFieldChange={(
+          action,
+          data,
+          dependentFieldValues?: any,
+          postData?: any
+        ) => {
           if (action === "RECEIPT" || action === "PAYMENT") {
             if (Boolean(data?.value)) {
               dispatch({ type: SET_OPEN_DENO, payload: true });
@@ -323,6 +382,56 @@ const TellerScreen = () => {
             Boolean(data?.value) && data?.value === "S"
               ? dispatch({ type: SET_SINGLEDENO_SHOW, payload: true })
               : dispatch({ type: SET_SINGLEDENO_SHOW, payload: false });
+            console.log(data, "yesTRNcalled");
+
+            finalScreenRef = Boolean(action === "TRN")
+              ? Boolean(data?.value === "R")
+                ? "ETRN/039"
+                : Boolean(data?.value === "P")
+                ? "ETRN/040"
+                : ""
+              : "";
+
+            console.log(finalScreenRef, "finalScreenRef");
+          } else if (action === "ACCT_CD") {
+            if (Boolean(data)) {
+              dispatch({ type: SET_OPENACCTDTL_VAL, payload: true });
+            }
+            if (postData.RESTRICTION || postData.MESSAGE1) {
+              let acctValidateMsg = postData.RESTRICTION || postData.MESSAGE1;
+              dispatch({
+                type: SET_ACCTVALIDMSG_VAL,
+                payload: acctValidateMsg,
+              });
+              dispatch({
+                type: SET_ACCTVALIDMSGBOX_VAL,
+                payload: true,
+              });
+            }
+            if (
+              Boolean(
+                data &&
+                  dependentFieldValues?.BRANCH_CD?.value &&
+                  dependentFieldValues?.ACCT_TYPE?.value
+              )
+            ) {
+              if (!Boolean(postData.RESTRICTION)) {
+                getCarousalCards.mutate({
+                  COMP_CD: authState?.companyID,
+                  ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
+                  ACCT_CD: data,
+                  PARENT_TYPE:
+                    dependentFieldValues?.ACCT_TYPE?.optionData?.[0]
+                      ?.PARENT_TYPE ?? "",
+                });
+              }
+            }
+          } else if (
+            action === "TRN" ||
+            action === "BRANCH_CD" ||
+            action === "ACCT_TYPE"
+          ) {
+            dispatch({ type: SET_OPENACCTDTL_VAL, payload: false });
           }
         }}
         ref={formRef}
@@ -336,8 +445,6 @@ const TellerScreen = () => {
                 dispatch({ type: SET_VIEWACCTDETAILS_VAL, payload: true });
               }}
               color={"primary"}
-              endicon={"CheckCircleOutline"}
-              rotateIcon="scale(1.4)"
               disabled={false}
             >
               View Trn
@@ -353,8 +460,6 @@ const TellerScreen = () => {
                   dispatch({ type: SET_DISP_TABLE, payload: false });
                 }}
                 color={"primary"}
-                endicon={"CheckCircleOutline"}
-                rotateIcon="scale(1.4)"
               >
                 Reset
               </GradientButton>
@@ -362,46 +467,68 @@ const TellerScreen = () => {
           </>
         )}
       </FormWrapper>
-      {Boolean(state?.openDeno) ? (
-        <PopupMessageAPIWrapper
-          MessageTitle="Denomination confirmation"
-          Message="Are you sure to open denomination"
-          onActionYes={() => {
-            const formattedDate = format(
-              parse(authState?.workingDate, "dd/MM/yyyy", new Date()),
-              "dd-MMM-yyyy"
-            ).toUpperCase();
-            getData.mutate({
-              COMP_CD: authState?.companyID,
-              BRANCH_CD: authState?.user?.branchCode,
-              USER_NAME: authState?.user?.id,
-              // TRAN_DT: "03/FEB/2024",
-              TRAN_DT: formattedDate,
-            });
-          }}
-          onActionNo={() => {
-            dispatch({ type: SET_OPEN_DENO, payload: false });
-            if (Boolean(endSubmitRef.current?.endSubmit)) {
-              endSubmitRef.current?.endSubmit(true);
+      {Boolean(state?.openAcctDtl) ? <AccDetails /> : null}
+
+      {Boolean(state?.openDeno) ||
+      Boolean(state?.confirmation) ||
+      Boolean(state?.acctValidBox) ? (
+        <PopupRequestWrapper
+          MessageTitle={
+            Boolean(state?.openDeno)
+              ? "Denomination confirmation"
+              : Boolean(state?.confirmation)
+              ? "Confirmation"
+              : "Account Description"
+          }
+          Message={
+            Boolean(state?.openDeno)
+              ? "Are you sure to open denomination"
+              : Boolean(state?.confirmation)
+              ? "All Transaction are Completed Want to Proceed"
+              : state?.acctValidMsg
+          }
+          onClickButton={(rows, buttonNames) => {
+            if (Boolean(buttonNames === "Yes")) {
+              if (Boolean(state?.openDeno)) {
+                const formattedDate = format(
+                  parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                  "dd-MMM-yyyy"
+                ).toUpperCase();
+                getData.mutate({
+                  COMP_CD: authState?.companyID,
+                  BRANCH_CD: authState?.user?.branchCode,
+                  USER_NAME: authState?.user?.id,
+                  // TRAN_DT: "03/FEB/2024",
+                  TRAN_DT: formattedDate,
+                });
+              } else {
+                console.log("form Submitted");
+              }
+            } else if (Boolean(buttonNames === "No")) {
+              if (Boolean(state?.openDeno)) {
+                dispatch({ type: SET_OPEN_DENO, payload: false });
+                if (Boolean(endSubmitRef.current?.endSubmit)) {
+                  endSubmitRef.current?.endSubmit(true);
+                }
+              } else {
+                textFieldRef.current.blur();
+                dispatch({ type: SET_CONFIRMATION_VAL, payload: false });
+              }
+            } else if (buttonNames === "Ok") {
+              dispatch({ type: SET_ACCTVALIDMSGBOX_VAL, payload: false });
             }
           }}
+          buttonNames={
+            Boolean(state?.openDeno) || Boolean(state?.confirmation)
+              ? ["Yes", "No"]
+              : ["Ok"]
+          }
           rows={[]}
-          open={state?.openDeno}
-          loading={getData.isLoading}
-        />
-      ) : null}{" "}
-      {Boolean(state?.confirmation) ? (
-        <PopupRequestWrapper
-          MessageTitle={"Confirmation"}
-          Message={"All Transaction are Completed Want to Proceed"}
-          onClickButton={(rows, buttonNames) => {
-            buttonNames === "Yes"
-              ? console.log("form Submitted")
-              : dispatch({ type: SET_CONFIRMATION_VAL, payload: false });
-          }}
-          buttonNames={["Yes", "No"]}
-          rows={[]}
-          open={state?.confirmation}
+          open={
+            Boolean(state?.openDeno) ||
+            Boolean(state?.confirmation) ||
+            Boolean(state?.acctValidBox)
+          }
         />
       ) : null}
       <TellerDenoTable
@@ -419,22 +546,38 @@ const TellerScreen = () => {
         balanceTotal={state?.columnTotal?.balance}
         remainExcessBal={state?.remainExcess}
         finalLable={state?.remainExcess >= 0 ? "Remaining " : "Excess "}
+        onCloseTable={onCloseTable}
+        textFieldRef={textFieldRef}
       />
       {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null}
       {state?.viewAcctDetails ? (
-        <Dialog open={state?.viewAcctDetails} maxWidth={"md"}>
-          <GridWrapper
-            key={`denoViewTrnGrid`}
-            finalMetaData={denoViewTrnGridMetaData as GridMetaDataType}
-            data={[]}
-            setData={() => null}
-            actions={actions}
-            setAction={setCurrentAction}
-            headerToolbarStyle={{
-              backgroundColor: "var(theme-color5)",
+        <Dialog open={state?.viewAcctDetails} maxWidth={"xl"}>
+          <Report
+            reportID={"transactionServiceAPI/GETTODAYTRANDATA"}
+            reportName={"GETTODAYTRANDATA"}
+            dataFetcher={API.cashReportData}
+            metaData={cashReportMetaData}
+            disableFilters
+            maxHeight={window.innerHeight - 250}
+            title={cashReportMetaData?.title}
+            options={{
+              disableGroupBy: cashReportMetaData?.disableGroupBy,
             }}
-            loading={false}
-            // refetchData={() => refetch()}
+            hideFooter={cashReportMetaData?.hideFooter}
+            hideAmountIn={cashReportMetaData?.hideAmountIn}
+            retrievalType={cashReportMetaData?.retrievalType}
+            initialState={{
+              groupBy: cashReportMetaData?.groupBy ?? [],
+            }}
+            onClose={handleCloseDialog}
+            otherAPIRequestPara={{
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: authState?.user?.branchCode,
+            }}
+            // dataTransformer={(data) => {
+            //   setScrollData(data);
+            //   return data;
+            // }}
           />
         </Dialog>
       ) : null}

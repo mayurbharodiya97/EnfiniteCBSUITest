@@ -894,6 +894,10 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/VALIDDELETECHQDATA",
     packageName: "",
   },
+  GETTODAYTRANDATA: {
+    url: "/transactionServiceAPI/GETTODAYTRANDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

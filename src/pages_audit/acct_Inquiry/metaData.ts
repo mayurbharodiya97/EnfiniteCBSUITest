@@ -273,7 +273,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Search Criteria Data",
-    rowIdColumn: "WITHDRAW_BAL",
+    rowIdColumn: "ACCT_CD",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
       width: 150,
@@ -787,8 +787,8 @@ export const PassbookStatementInq = {
         xs: 12,
         md: 11,
         sm: 11,
-        lg:11,
-        xl:11,
+        lg: 11,
+        xl: 11,
       },
     },
     {
