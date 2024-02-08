@@ -61,6 +61,7 @@ const KYCDetails = ({
     proof_of_identity: {},
     proof_of_address: {},
   });
+  const [openDialog, setOpenDialog] = useState(false);
 
   const [gridData, setGridData] = useState<any>([
     {
@@ -294,6 +295,21 @@ const KYCDetails = ({
                 metaData={POIMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
+                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                setDataOnFieldChange={(action, payload) => {
+                  // console.log("wekjukfhwiuefadw", action)
+                  // const result = payload;
+                  if(Boolean(payload) && (
+                    action === "PAN_NO" || 
+                    action === "UNIQUE_ID" || 
+                    action === "ELECTION_CARD_NO" ||
+                    action === "PASSPORT_NO" || 
+                    action === "DRIVING_LICENSE_NO")) {
+                    console.log("weiufiwuef", payload)
+                    setErrMsg(payload)
+                    setOpenDialog(true)
+                  }
+                }}
               />
             </Grid>
           </Collapse>
@@ -344,6 +360,14 @@ const KYCDetails = ({
                 metaData={POAMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
+                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                setDataOnFieldChange={(action, payload) => {
+                  if(Boolean(payload) && action === "CONTACT2") {
+                    // console.log("weiufiwuef", payload)
+                    setErrMsg(payload)
+                    setOpenDialog(true)
+                  }
+                }}
               />
             </Grid>
           </Collapse>
@@ -443,6 +467,46 @@ const KYCDetails = ({
         </Button>} */}
         {SaveUpdateBTNs}
       </Grid>
+      <Dialog
+        open={openDialog}
+        maxWidth={"sm"}
+        PaperProps={{
+          style: {
+            minWidth: "40%",
+            width: "40%",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            background: "var(--theme-color3)",
+            color: "var(--theme-color2)",
+            letterSpacing: "1.3px",
+            boxShadow:
+              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+            fontWeight: 500,
+            borderRadius: "inherit",
+            minWidth: "450px",
+            py: 1,
+          }}
+          id="responsive-dialog-title"
+        >
+          ALERT - VALUE ALREADY EXISTS
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: "var(--theme-color3)", pl: 2, whiteSpace: "pre-wrap" }} variant={"h6"}>
+            {errMsg}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <GradientButton autoFocus onClick={() => {
+              setOpenDialog(false)
+              setErrMsg("")
+            }}>
+            CANCEL
+          </GradientButton>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
