@@ -117,7 +117,9 @@ export const Trn001 = () => {
   const [tabsData, setTabsData] = useState<any>([]);
   const [searchScrollNo, setSearchScrollNo] = useState<any>("");
   const [filteredRows, setFilteredRows] = useState<any>("");
-
+  let scrollSaveHeading =
+    "Do you wish to save this " + (isArray ? "Scroll?" : "Transaction?");
+  console.log(scrollSaveHeading, "scrollSaveHeading");
   //useEffects
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -304,9 +306,14 @@ export const Trn001 = () => {
         handleReset();
         setSaveDialog(false);
         data.map((a) => {
-          return enqueueSnackbar("Scroll Saved | Voucher No. " + a?.TRAN_CD, {
-            variant: "success",
-          });
+          return enqueueSnackbar(
+            (isArray ? "Scroll " : "Transaction ") +
+              "Saved | Voucher No. " +
+              a?.TRAN_CD,
+            {
+              variant: "success",
+            }
+          );
         });
       } else {
         enqueueSnackbar("Some error occured in scroll saving", {
@@ -850,6 +857,7 @@ export const Trn001 = () => {
                           <TableCell sx={{ minWidth: 120 }}>
                             <TextField
                               value={a.accNo}
+                              id="txtRight"
                               fullWidth={true}
                               error={!a.accNo || a.bugAccNo ? true : false}
                               size="small"
@@ -1117,7 +1125,7 @@ export const Trn001 = () => {
 
         {Boolean(saveDialog) ? (
           <PopupMessageAPIWrapper
-            MessageTitle="Do you wish to save this scroll?"
+            MessageTitle={scrollSaveHeading}
             Message=""
             onActionYes={() => handleScrollSave()}
             onActionNo={() => setSaveDialog(false)}

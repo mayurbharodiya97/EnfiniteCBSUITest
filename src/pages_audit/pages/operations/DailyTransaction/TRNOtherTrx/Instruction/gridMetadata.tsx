@@ -81,7 +81,7 @@ export const InstructionGridMetaData: GridMetaDataType = {
       accessor: "AMOUNT",
       columnName: "Amount",
       sequence: 7,
-      componentType: "default",
+      componentType: "currency",
       width: 120,
     },
 

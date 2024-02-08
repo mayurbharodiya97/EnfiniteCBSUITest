@@ -61,7 +61,6 @@ export const Trn002 = () => {
   const [rows2, setRows2] = useState<any>([]);
   const [refRows, setRefRows] = useState<any>([]);
   const [filteredRows, setFilteredRows] = useState<any>([]);
-  const [searchScrollNo, setSearchScrollNo] = useState<any>("");
 
   const [tabsData, setTabsData] = useState<any>([]);
   const [dataRow, setDataRow] = useState<any>({});
@@ -82,20 +81,28 @@ export const Trn002 = () => {
   // }, [searchScrollNo]);
 
   const handleFilterByScroll = (txt) => {
-    setSearchScrollNo(txt);
+    console.log("handleFilterByScroll called");
+    console.log(txt, "txt");
+    let arr = refRows?.filter((a) => a?.CONFIRMED == "0");
     let result = refRows?.filter((item) => item?.SCROLL1 === txt);
+    console.log(result, "resssssult");
     if (result?.length > 0) {
+      console.log("case1");
       setRows2(result);
-    } else if (!searchScrollNo) {
+      handleUpdateSum(result);
+    } else if (!txt) {
+      console.log("case2");
       result = [];
-      setRows2(refRows);
+      setRows2(arr);
+      handleUpdateSum(arr);
     } else {
+      console.log("case3");
       result = [];
       setRows2([]);
+      handleUpdateSum(result);
     }
 
     setFilteredRows(result);
-    console.log(result, "resssssult");
   };
 
   useEffect(() => {
@@ -108,33 +115,13 @@ export const Trn002 = () => {
     onSuccess: (data) => {
       setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
-      let arr = data.filter((a) => a.CONFIRMED == "0");
+      let arr = data?.filter((a) => a.CONFIRMED == "0");
       setRows2(arr);
       setRows(data);
       setTempStore({ ...tempStore, accInfo: arr[0] });
       getCarousalCards.mutate(arr[0]);
       getTabsByParentType.mutate(arr[0]?.PARENT_TYPE ?? "");
-
-      let crSum = 0;
-      let drSum = 0;
-      arr.map((a) => {
-        if (
-          a.TYPE_CD.includes("1") ||
-          a.TYPE_CD.includes("2") ||
-          a.TYPE_CD.includes("3")
-        ) {
-          crSum = crSum + Number(a?.AMOUNT);
-        }
-        if (
-          a.TYPE_CD.includes("4") ||
-          a.TYPE_CD.includes("5") ||
-          a.TYPE_CD.includes("6")
-        ) {
-          drSum = drSum + Number(a?.AMOUNT);
-        }
-      });
-      setCredit(crSum);
-      setDebit(drSum);
+      handleUpdateSum(arr);
       setConfirmed(data.length - arr.length);
     },
     onError: (error) => {},
@@ -228,10 +215,14 @@ export const Trn002 = () => {
   const handleViewAll = () => {
     let arr = [...rows];
     setRows2(arr);
+    handleUpdateSum(arr);
+  };
 
+  const handleUpdateSum = (arr) => {
+    console.log("handle sum");
     let crSum = 0;
     let drSum = 0;
-    arr.map((a) => {
+    arr?.map((a) => {
       if (
         a.TYPE_CD.includes("1") ||
         a.TYPE_CD.includes("2") ||
@@ -247,6 +238,7 @@ export const Trn002 = () => {
         drSum = drSum + Number(a?.AMOUNT);
       }
     });
+    console.log(drSum, "drsum");
     setCredit(crSum);
     setDebit(drSum);
   };
@@ -375,12 +367,12 @@ export const Trn002 = () => {
 
         {Boolean(confirmDialog) ? (
           <PopupMessageAPIWrapper
-            MessageTitle="Transaction Confirm"
-            Message={
+            MessageTitle={
               "Do you wish to Confirm this Transaction - Voucher No. " +
               dataRow?.TRAN_CD +
               " ?"
             }
+            Message=""
             onActionYes={() => handleConfirm()}
             onActionNo={() => setConfirmDialog(false)}
             rows={[]}

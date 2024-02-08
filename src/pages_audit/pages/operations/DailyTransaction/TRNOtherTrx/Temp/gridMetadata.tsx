@@ -65,7 +65,7 @@ export const TempGridMetaData: GridMetaDataType = {
       columnName: "Amount Upto",
       accessor: "6",
       sequence: 6,
-      componentType: "default",
+      componentType: "currency",
       width: 80,
     },
     {

@@ -62,14 +62,14 @@ export const InsuranceGridMetaData: GridMetaDataType = {
       accessor: "INSURANCE_AMOUNT",
       columnName: "Insurance Amount",
       sequence: 5,
-      componentType: "default",
+      componentType: "currency",
       width: 120,
     },
     {
       accessor: "TOT_PREMIUM_AMT",
       columnName: "Total Premium  ",
       sequence: 6,
-      componentType: "default",
+      componentType: "currency",
       width: 120,
     },
     // {

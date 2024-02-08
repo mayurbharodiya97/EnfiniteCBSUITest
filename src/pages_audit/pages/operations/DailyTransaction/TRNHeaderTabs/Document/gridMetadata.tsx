@@ -73,8 +73,8 @@ export const DocumentGridMetaData: GridMetaDataType = {
       columnName: "Document Amount",
       accessor: "DOC_AMOUNT",
       sequence: 7,
-      componentType: "default",
-      width: 120,
+      componentType: "currency",
+      width: 160,
     },
   ],
 };

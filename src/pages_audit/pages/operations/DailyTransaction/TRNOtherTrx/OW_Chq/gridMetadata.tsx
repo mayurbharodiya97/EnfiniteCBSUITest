@@ -74,7 +74,7 @@ export const OwChqGridMetaData: GridMetaDataType = {
       accessor: "AMOUNT",
       columnName: "AMOUNT",
       sequence: 6,
-      componentType: "default",
+      componentType: "currency",
       width: 120,
     },
     {
