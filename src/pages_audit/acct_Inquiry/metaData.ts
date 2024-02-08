@@ -68,10 +68,10 @@ export const AccountInquiryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
       },
       FormatProps: {
         isAllowed: (values) => {
@@ -105,10 +105,10 @@ export const AccountInquiryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
       },
       FormatProps: {
         isAllowed: (values) => {
@@ -140,10 +140,10 @@ export const AccountInquiryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
       },
       validate: (columnValue, allField, flag) => {
         if (columnValue.value.length <= 0) {
@@ -176,10 +176,10 @@ export const AccountInquiryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
       },
       validate: (columnValue, allField, flag) => {
         let regex = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
@@ -194,7 +194,22 @@ export const AccountInquiryMetadata = {
         return "";
       },
     },
-
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "NAME",
+      label: "Account Name",
+      placeholder: "Enter Name",
+      type: "text",
+      GridProps: {
+        xs: 12,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
+      },
+    },
     {
       render: {
         componentType: "formbutton",
@@ -207,8 +222,10 @@ export const AccountInquiryMetadata = {
       type: "text",
       GridProps: {
         xs: 12,
+        sm: 3,
         md: 1,
-        sm: 1,
+        lg: 1,
+        xl: 1,
       },
     },
     // {
