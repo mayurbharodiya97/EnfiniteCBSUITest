@@ -341,17 +341,6 @@ const TellerScreen = () => {
     },
   });
 
-  const getAccNoValidations = useMutation(GeneralAPI.getAccNoValidation, {
-    onSuccess: (data) => {
-      console.log(data, "data12012011111111");
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
-
   let finalScreenRef = "";
 
   return (
@@ -382,7 +371,6 @@ const TellerScreen = () => {
             Boolean(data?.value) && data?.value === "S"
               ? dispatch({ type: SET_SINGLEDENO_SHOW, payload: true })
               : dispatch({ type: SET_SINGLEDENO_SHOW, payload: false });
-            console.log(data, "yesTRNcalled");
 
             finalScreenRef = Boolean(action === "TRN")
               ? Boolean(data?.value === "R")
@@ -391,8 +379,6 @@ const TellerScreen = () => {
                 ? "ETRN/040"
                 : ""
               : "";
-
-            console.log(finalScreenRef, "finalScreenRef");
           } else if (action === "ACCT_CD") {
             if (Boolean(data)) {
               dispatch({ type: SET_OPENACCTDTL_VAL, payload: true });
