@@ -659,9 +659,9 @@ const CkycProvider = ({children}) => {
             update_type = "full_save";
         }
         let other_data = {
-            // IsNewRow: !state?.req_cd_ctx ? true : false,
-            REQ_CD: state?.req_cd_ctx ?? "",
-            COMP_CD: COMP_CD ?? "",
+            IsNewRow: !state?.req_cd_ctx ? true : false,
+            // REQ_CD: state?.req_cd_ctx ?? "",
+            // COMP_CD: COMP_CD ?? "",
         }
         console.log("feiuqwdwqduyqewd",updated_tabs)
         let dataa = updated_tabs.map(async (TAB, i) => {
@@ -672,21 +672,27 @@ const CkycProvider = ({children}) => {
                 console.log(_.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? []), "oldddddd new", state?.formDatactx[TAB], state?.modifiedFormCols[TAB])
 
                 let upd;
-                if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL") {
+
+                if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "DOC_MST") {
                     let oldRow:any[] = []
                     let newRow:any[] = []
                     // if(state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) {
                         oldRow = (state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) && state?.retrieveFormDataApiRes[TAB].map((formRow, i) => {
                             let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                            if(TAB == "DOC_MST") {
+                                filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N"
+                                // filteredRow = filteredRow.map(doc => ({...doc, SUBMIT: Boolean(doc.SUBMIT) ? "Y" : "N"}))
+                            }
+                            console.log("wadqwdwq. asdasdawdawqqqqqq filteredrow", filteredRow)
                             return filteredRow;
                         })
-                        console.log(oldRow, "asdasdawdawqqqqqq", state?.retrieveFormDataApiRes[TAB])
+                        console.log(oldRow, "wadqwdwq. asdasdawdawqqqqqq", state?.retrieveFormDataApiRes[TAB])
 
                         newRow = (state?.formDatactx[TAB] && state?.formDatactx[TAB].length>0) && state?.formDatactx[TAB].map((formRow, i) => {
                             let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
                             return filteredRow;
                         })
-                        console.log(newRow, "asdasdawdawqqqqqq new", state?.formDatactx[TAB])
+                        console.log(newRow, "wadqwdwq. asdasdawdawqqqqqq new", state?.formDatactx[TAB])
                         console.log("feiuqwdwqduyqewd", TAB)
                         upd = utilFunction.transformDetailDataForDML(
                             oldRow ?? [],
@@ -694,7 +700,7 @@ const CkycProvider = ({children}) => {
                             ["SR_CD"]
                         );
                         if(upd) {
-                            console.log("feiuqwdwqduyqewd", upd)
+                            console.log("wadqwdwq. asdasdawdawqqqqqq", upd)
                         }
                     // }
 
@@ -738,7 +744,7 @@ const CkycProvider = ({children}) => {
                     upd = utilFunction.transformDetailsData(newFormData, oldFormData);
                 }
                 if(Object.keys(updated_tab_format).includes(TAB)) {
-                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL") {
+                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "DOC_MST") {
                         updated_tab_format[TAB] = [{
                             ...updated_tab_format.TAB,
                             ...upd,
@@ -754,7 +760,7 @@ const CkycProvider = ({children}) => {
                         }
                     }
                 } else {
-                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL") {
+                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "DOC_MST") {
                         updated_tab_format[TAB] = [{
                             ...upd,
                             ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
@@ -842,7 +848,8 @@ const CkycProvider = ({children}) => {
                                 ? "F" 
                                 : "",
             // SAVE_FLAG: "",
-            ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
+            ENTRY_TYPE : "",
+            // ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
             IsNewRow: !state?.req_cd_ctx ? true : false,
             COMP_CD: COMP_CD,
             // CUSTOMER_ID:"",
