@@ -8,6 +8,7 @@ import { CkycContext } from '../../../../CkycContext';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from "pages_audit/auth";
 import _ from 'lodash';
+import { other_details_legal_meta_data } from '../../metadata/legal/legalotherdetails';
 
 
 const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
@@ -23,6 +24,10 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
     const handleOtherDetailsExpand = () => {
         setIsOtherDetailsExpanded(!isOtherDetailsExpanded)
     }
+    const otherDtlMetadata = state?.entityTypectx === "I" 
+    ? other_details_meta_data 
+    : other_details_legal_meta_data
+
 
     const OtherDTLSubmitHandler = (
         data: any,
@@ -170,7 +175,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                         ref={OtherDTLFormRef}
                         onSubmitHandler={OtherDTLSubmitHandler}
                         key={"other-details-form-kyc"+initialVal}
-                        metaData={other_details_meta_data as MetaDataType}
+                        metaData={otherDtlMetadata as MetaDataType}
                         displayMode={displayMode}
                         // initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
                         initialValues={initialVal}
