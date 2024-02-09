@@ -72,18 +72,6 @@ const getOptionLabel = (freeSolo: any) => (option: OptionsProps) =>
 const getOptionValue = (freeSolo: any) => (option: OptionsProps) =>
   Boolean(freeSolo) ? option : option?.value ?? "";
 
-const useStyles = makeStyles((theme) => ({
-  listbox: {
-    width: "300px", // Adjust the width as needed
-  },
-}));
-
-const styles = (theme) => ({
-  paper: {
-    width: "300px",
-  },
-});
-
 const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   name: fieldName,
   validate,
@@ -150,7 +138,6 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
-  const classes = useStyles();
   const focusRef = useRef();
   const optionsMapperRef = useRef(new Map());
   /* eslint-disable  react-hooks/exhaustive-deps */
@@ -465,4 +452,4 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   }
 };
 
-export default withStyles(styles)(MyAutocomplete);
+export default MyAutocomplete;

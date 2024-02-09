@@ -12,7 +12,6 @@ import Dashboard from "./pages/dashboard/dashboard";
 import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 import { OperationsMenu } from "./pages/operations";
 import AccountDetails from "./pages/STATEMENT/accountDetails";
-import { MastersMenu } from "./pages/master";
 import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
@@ -20,10 +19,11 @@ import Trn002 from "./pages/operations/DailyTransaction/TRN002";
 import { AccDetailContext } from "./auth";
 
 export const PagesAudit = (props, { columns }) => {
-  const { cardStore, setCardStore } = useContext(AccDetailContext);
-  const isValidURL = props?.isValidURL ?? true;
-  const classes = useStyles();
+  const location = useLocation();
   const [drawerOpen, setDrawerState] = useState(true);
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const classes = useStyles();
+  const isValidURL = props?.isValidURL ?? true;
 
   const handleDrawerOpen = () => {
     setDrawerState(true);
@@ -33,11 +33,20 @@ export const PagesAudit = (props, { columns }) => {
     setDrawerState(false);
     handleCardStateUpdate();
   };
-
   const handleCardStateUpdate = () => {
     let obj = { random: Math.random() };
     setCardStore({ ...cardStore, obj });
   };
+
+  useEffect(() => {
+    if (location.pathname === "/cbsenfinity/dashboard") {
+      handleDrawerOpen();
+    } else if (location.pathname) {
+      handleDrawerClose();
+    } else {
+      handleDrawerOpen();
+    }
+  }, [location.pathname]);
 
   return (
     <Fragment>
@@ -58,7 +67,7 @@ export const PagesAudit = (props, { columns }) => {
         </Drawer>
         <Content>
           <Routes>
-            {isValidURL || true ? (
+            {isValidURL ? (
               <>
                 {/* <Route
                   path="all-screens/*"
@@ -68,7 +77,6 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="dashboard/*" element={<Dashboard />} />
                 <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
-                <Route path="grid/*" element={<MastersMenu />} />
                 <Route path="configuration/*" element={<Configuration />} />
                 <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
                 <Route path="operation/daily_tran_F1" element={<Trn001 />} />

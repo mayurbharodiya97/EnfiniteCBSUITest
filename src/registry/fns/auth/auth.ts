@@ -40,8 +40,8 @@ const authAPI = () => {
   };
   const loginUserDetails = ({
     role,
-    workingDate,
     user: { id, branchCode },
+    workingDate,
   }) => {
     loginuserDetailsData = {
       USERNAME: id,

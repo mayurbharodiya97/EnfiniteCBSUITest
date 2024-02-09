@@ -55,6 +55,7 @@ export interface ArrayField2Props {
   disagreeButtonName: any;
   agreeButtonName: any;
   errorTitle: string;
+  displayCountName: string;
   isScreenStyle?: any;
   runExternalFunction?: Boolean;
   isRemoveButton?: Boolean;
@@ -89,6 +90,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   disagreeButtonName,
   agreeButtonName,
   errorTitle,
+  displayCountName,
   isScreenStyle,
   isRemoveButton,
 }) => {
@@ -216,6 +218,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         disagreeButtonName={disagreeButtonName}
         agreeButtonName={agreeButtonName}
         errorTitle={errorTitle}
+        displayCountName={displayCountName}
         isScreenStyle={isScreenStyle}
         isRemoveButton={isRemoveButton}
       />
@@ -261,7 +264,7 @@ export const ArrayField2: FC<ArrayField2Props> = ({
             xs={12}
             md={12}
             sm={12}
-            style={{ paddingTop: "10px" }}
+            style={{ marginTop: "02px" }}
           >
             {rows}
             {rows.length <= 0 ? (
@@ -323,6 +326,7 @@ export const ArrayFieldRow = ({
   disagreeButtonName,
   agreeButtonName,
   errorTitle,
+  displayCountName,
   isScreenStyle,
   isRemoveButton,
 }) => {
@@ -403,9 +407,17 @@ export const ArrayFieldRow = ({
   return (
     <Fragment key={row.fieldIndexKey}>
       {Boolean(isDisplayCount) ? (
-        <Typography gutterBottom className={classes.arrayRowCount}>
-          {rowIndex + 1} of {totalRows}
-        </Typography>
+        <>
+          {displayCountName ? (
+            <Typography gutterBottom className={classes.arrayScreenRowCount}>
+              {`${displayCountName} ${rowIndex + 1} of ${totalRows}`}
+            </Typography>
+          ) : (
+            <Typography gutterBottom className={classes.arrayRowCount}>
+              {`${rowIndex + 1} of ${totalRows}`}
+            </Typography>
+          )}
+        </>
       ) : null}
       <Grid
         container
@@ -413,7 +425,7 @@ export const ArrayFieldRow = ({
         xs={12}
         md={12}
         sm={12}
-        spacing={2}
+        spacing={1}
         className={finalClass}
       >
         {oneRow}

@@ -2,8 +2,7 @@ import { CellWrapper } from "./cellWrapper";
 import { format as formatter } from "date-fns";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import { useContext } from "react";
-
-export const DateCell = (props) => {
+export const DateTimeCell = (props) => {
   const customParameter = useContext(CustomPropertiesConfigurationContext);
 
   const {
@@ -16,15 +15,15 @@ export const DateCell = (props) => {
   } = customParameter;
   const {
     value,
-    column: { format },
+    column: { format = "dd/MM/yyyy HH:mm:ss" },
   } = props;
-  let result = "-";
+  let result = "00/00/0000 00:00:00";
   let date = new Date(value);
   //@ts-ignore
   if (!isNaN(date)) {
     result = formatter(
       new Date(value),
-      (Boolean(format) ? format : commonDateFormat) || "dd/MM/yyyy"
+      (Boolean(format) ? format : commonDateTimeFormat) || "dd/MM/yyyy HH:mm:ss"
     );
   }
 

@@ -256,7 +256,7 @@ const DynamicFormMetadataConfig: FC<{
         !(fieldRowData && fieldRowData.length > 0) ||
         !(girdData && girdData.length > 0)) &&
       !populateClicked ? (
-        <div style={{ minHeight: "50px" }}>
+        <div style={{ minHeight: "100px" }}>
           <LoaderPaperComponent />
         </div>
       ) : formMode !== "add" && isError ? (

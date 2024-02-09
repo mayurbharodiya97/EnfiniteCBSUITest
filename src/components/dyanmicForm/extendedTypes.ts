@@ -397,7 +397,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       thousandSeparator: true,
       // prefix: "₹",
       thousandsGroupStyle: "lakh",
-      allowNegative: false,
+      allowNegative: true,
       allowLeadingZeros: false,
       decimalScale: 2,
       fixedDecimalScale: true,
@@ -426,10 +426,9 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     // maxLength: 8,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
-    setValueOnDependentFieldsChange: (dependentFields) => {
-      return "";
-    },
-
+    // setValueOnDependentFieldsChange: (dependentFields) => {
+    //   return "";
+    // },
     schemaValidation: {
       type: "string",
       rules: [

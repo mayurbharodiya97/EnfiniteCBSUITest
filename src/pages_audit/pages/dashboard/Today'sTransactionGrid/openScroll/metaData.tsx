@@ -69,8 +69,9 @@ export const scrollMetaData = {
     {
       columnName: "Entry Time",
       accessor: "TIME",
-      Cell: components.TimeCell,
+      Cell: components.DateTimeCell,
       width: 120,
+      format: "HH:mm:ss",
     },
     {
       columnName: "Maker",

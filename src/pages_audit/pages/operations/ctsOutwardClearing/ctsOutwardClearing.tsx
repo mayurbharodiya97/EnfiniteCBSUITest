@@ -1,7 +1,17 @@
-import { FC, Fragment, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FC,
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useMutation, useQueries, useQuery } from "react-query";
 import {
+  ChequeDetailFormMetaData,
   CtsOutwardClearingMetadata,
+  SlipJoinDetailGridMetaData,
   ViewCtsOutwardClearingMetadata,
 } from "./metaData";
 import { Alert } from "components/common/alert";
@@ -10,35 +20,50 @@ import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { useContext } from "react";
 import { SubmitFnType } from "packages/form";
-import { Theme, Tabs, Tab } from "@mui/material";
+import {
+  Theme,
+  Tabs,
+  Tab,
+  AppBar,
+  Collapse,
+  IconButton,
+  Typography,
+  Grid,
+  Toolbar,
+} from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { makeStyles } from "@mui/styles";
 import { ChequeDetailForm } from "./chequeDetail";
-import { SlipDetailForm } from "./slipDetailForm";
 import { GradientButton } from "components/styledComponent/button";
 import { RetrieveClearingForm } from "./retrieveClearingData";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { extractMetaData } from "components/utils";
 import { MetaDataType } from "components/dyanmicForm";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import {
+  PopupMessageAPIWrapper,
+  PopupRequestWrapper,
+} from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
-
-const useTypeStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color5)",
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
+const actions: ActionTypes[] = [
+  {
+    actionName: "view-details",
+    actionLabel: "Edit Detail",
+    multiple: undefined,
+    rowDoubleClick: true,
   },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--theme-color2)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
+  {
+    actionName: "close",
+    actionLabel: "cancel",
+    multiple: undefined,
+    rowDoubleClick: false,
+    alwaysAvailable: true,
   },
-  refreshiconhover: {},
-}));
-
+];
 const CtsOutwardClearing: FC<{
   zoneTranType: any;
   defaultView?: any;
@@ -46,17 +71,37 @@ const CtsOutwardClearing: FC<{
 }> = ({ zoneTranType, defaultView, tranCD }) => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
-  const formDataRef = useRef<any>({});
   const myRef = useRef<any>(null);
-  const slipJointDetailRef = useRef<any>({});
-  const [zoneData, setZoneData] = useState<any>({});
   const [gridData, setGridData] = useState<any>();
-  const [currentTab, setCurrentTab] = useState("slipdetail");
+  const formDataRef = useRef<any>({});
+  const [formData, setFormData] = useState<any>({});
+  const [message, setMessage] = useState<any>();
+  const [isOpenMessage, setIsOpenMessage] = useState(false);
+  const [isOpenRetrieve, setIsOpenRetrieve] = useState(false);
   const [isDelete, SetDelete] = useState(false);
+  const [isOpenProcced, setIsOpenProcced] = useState(false);
   const [formMode, setFormMode] = useState(defaultView);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const isErrorFuncRef = useRef<any>(null);
+  const [isSlipJointDetail, setIsSlipJointDetail] = useState("");
+  const isSlipTotal = useRef<any>("0");
+  const [initValues, setInitValues] = useState<any>({
+    chequeDetails: [
+      {
+        ECS_USER_NO: "",
+        // isRemoveButton: true,
+      },
+    ],
+  });
 
+  const [isPDExpanded, setIsPDExpanded] = useState(true);
+  const handlePDExpand = () => {
+    setIsPDExpanded(!isPDExpanded);
+  };
+  const setCurrentAction = useCallback((data) => {
+    if (data.name === "view-details") {
+      setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "");
+    }
+  }, []);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -78,6 +123,37 @@ const CtsOutwardClearing: FC<{
         }),
     },
   ]);
+  const mutationOutward = useMutation(API.outwardClearingConfigDML, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      if (isErrorFuncRef.current == null) {
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
+      } else {
+        isErrorFuncRef.current?.endSubmit(
+          false,
+          errorMsg,
+          error?.error_detail ?? ""
+        );
+      }
+      setIsOpenProcced(false);
+    },
+    onSuccess: (data) => {
+      enqueueSnackbar(data, {
+        variant: "success",
+      });
+
+      setGridData({});
+      setInitValues(() => ({
+        chequeDetails: [],
+      }));
+      setIsOpenProcced(false);
+    },
+  });
   const deleteMutation = useMutation(API.outwardClearingConfigDML, {
     onError: (error: any) => {},
     onSuccess: (data) => {
@@ -85,11 +161,9 @@ const CtsOutwardClearing: FC<{
       enqueueSnackbar("Records successfully deleted", {
         variant: "success",
       });
-      // closeDialog();
+
       SetDelete(false);
       setFormMode("new");
-      // result[0]?.refetch();
-      // refetch();
     },
   });
 
@@ -122,74 +196,105 @@ const CtsOutwardClearing: FC<{
     };
   }, []);
 
-  const handleChangeTab = (_, currentTab) => {
-    setCurrentTab(currentTab);
-  };
-
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    value,
-    event
-  ) => {
-    //@ts-ignore
-    endSubmit(true);
-    data = {
-      ...data,
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      ENTERED_COMP_CD: authState?.companyID ?? "",
-      ENTERED_BRANCH_CD: authState?.user?.branchCode ?? "",
-      _isNewRow: true,
-      REQUEST_CD: "",
-      TRAN_TYPE: zoneTranType ?? "",
-      endSubmit,
-      setFieldError,
-    };
-    setZoneData(data);
-  };
-
   if (CtsOutwardClearingMetadata?.fields?.[1]) {
     CtsOutwardClearingMetadata.fields[1].requestProps = zoneTranType ?? "";
   }
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && (event.key === "R" || event.key === "r")) {
+        event.preventDefault();
+        setIsOpenRetrieve(true);
+      }
+
+      if (formMode === "view") {
+        if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
+          event.preventDefault();
+          SetDelete(true);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [formMode]);
 
   return (
     <>
       {formMode === "new" ? (
         <>
           <FormWrapper
-            key={"CtsoutwardForm" + formMode}
-            // metaData={CtsOutwardClearingMetadata}
+            key={
+              "CtsoutwardForm" +
+              formMode +
+              result?.[0]?.data?.[0]?.DATE +
+              mutationOutward.isSuccess
+            }
             metaData={
               extractMetaData(
                 CtsOutwardClearingMetadata,
                 formMode
               ) as MetaDataType
             }
-            initialValues={{
-              ...zoneData,
-              TRAN_DT: new Date(result?.[0]?.data?.[0]?.DATE ?? new Date()),
-              ENTERED_BY: authState?.user?.name ?? "",
-            }}
+            initialValues={
+              mutationOutward.isSuccess
+                ? {
+                    TRAN_DT: new Date(
+                      result?.[0]?.data?.[0]?.DATE ?? new Date()
+                    ),
+                  }
+                : {
+                    TRAN_DT: new Date(
+                      result?.[0]?.data?.[0]?.DATE ?? new Date()
+                    ),
+                  }
+            }
             ref={myRef}
-            onSubmitHandler={onSubmitHandler}
-            // hideHeader={true}
+            onSubmitHandler={async (data: any, displayData, endSubmit) => {
+              //@ts-ignore
+              endSubmit(true);
+            }}
+            setDataOnFieldChange={(action, payload) => {
+              if (action === "MESSAGE1") {
+                setMessage(payload?.MESSAGE || payload?.[0]?.RESTRICT_MESSAGE);
+                setIsOpenMessage(true);
+                setGridData(payload?.DATA);
+              }
+              if (action === "CLEAR_DATA") {
+                setGridData([]);
+                setInitValues(() => ({
+                  chequeDetails: [
+                    {
+                      ECS_USER_NO: "",
+                    },
+                  ],
+                }));
+                setIsSlipJointDetail("");
+              }
+
+              if (action === "AMOUNT") {
+                isSlipTotal.current = payload;
+                let event: any = { preventDefault: () => {} };
+                myRef?.current?.handleSubmit(event);
+                myRef?.current?.getFieldData().then((res) => {
+                  formDataRef.current = res;
+                });
+              }
+            }}
             //@ts-ignore
             displayMode={formMode}
             formStyle={{
               background: "white",
               width: "100%",
-              padding: "10px",
+              padding: "05px",
             }}
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
                 <GradientButton
                   onClick={() => {
-                    navigate(location.pathname + "/retrieve");
-                    setFormMode("view");
+                    setIsOpenRetrieve(true);
                   }}
                 >
                   Retrieve
@@ -212,23 +317,22 @@ const CtsOutwardClearing: FC<{
           ) : (
             <FormWrapper
               key={"CtsoutwardForm" + formMode}
-              // metaData={CtsOutwardClearingMetadata}
               metaData={
                 extractMetaData(
                   ViewCtsOutwardClearingMetadata,
                   formMode
                 ) as MetaDataType
               }
-              initialValues={data?.[0] ?? ""}
+              initialValues={{
+                ...(data?.[0]?.SLIP_DETAIL || {}),
+                ...(data?.[0] || {}),
+              }}
               ref={myRef}
-              onSubmitHandler={onSubmitHandler}
-              // hideHeader={true}
-              //@ts-ignore
               displayMode={formMode}
               formStyle={{
                 background: "white",
                 width: "100%",
-                padding: "10px",
+                padding: "05px",
               }}
             >
               {({ isSubmitting, handleSubmit }) => (
@@ -236,7 +340,7 @@ const CtsOutwardClearing: FC<{
                   <>
                     <GradientButton
                       onClick={() => {
-                        navigate(location.pathname + "/retrieve");
+                        setIsOpenRetrieve(true);
                       }}
                     >
                       Retrieve
@@ -266,68 +370,168 @@ const CtsOutwardClearing: FC<{
           )}
         </>
       ) : null}
-
-      <div style={{ padding: "08px" }}>
-        <Tabs
-          textColor="secondary"
-          indicatorColor="secondary"
-          aria-label="secondary tabs example"
-          value={currentTab}
-          onChange={handleChangeTab}
-        >
-          <Tab label="Slip Detail" value="slipdetail" id="0" />
-          <Tab label="Cheque Detail" value="chequedetail" id="1" />
-        </Tabs>
-
-        {currentTab === "slipdetail" ? (
-          <>
-            <SlipDetailForm
-              formDataRef={formDataRef}
-              setCurrentTab={setCurrentTab}
-              myRef={myRef}
-              formMode={formMode}
-              result={result?.[0]?.data}
-              slipJointDetailRef={slipJointDetailRef}
-              setGridData={setGridData}
-              gridData={gridData}
-              retrievData={data?.[0]}
-              loading={isLoading || isFetching}
-              error={isError}
-            />
-          </>
-        ) : currentTab === "chequedetail" ? (
-          <>
-            <ChequeDetailForm
-              zoneData={zoneData}
-              formDataRef={formDataRef}
-              setCurrentTab={setCurrentTab}
-              myRef={myRef}
-              formMode={formMode}
-              slipJointDetailRef={slipJointDetailRef}
-              gridData={gridData}
-              retrievData={data?.[0]}
-              loading={isLoading || isFetching}
-              error={isError}
-            />
-          </>
+      <>
+        {formMode === "new" ? (
+          <Grid
+            sx={{
+              backgroundColor: "var(--theme-color2)",
+              // padding: (theme) => theme.spacing(1),
+              margin: "0px 0px 0px 10px",
+              padding: gridData?.ACCT_JOIN_DETAILS
+                ? isPDExpanded
+                  ? "10px"
+                  : "0px"
+                : "0px",
+              // padding: !isPDExpanded ? "6px" : "2px",
+              // padding: "10px",
+              border: "1px solid rgba(0,0,0,0.12)",
+              borderRadius: "20px",
+            }}
+            container
+            item
+            xs={11.8}
+            direction={"column"}
+          >
+            <Grid
+              container
+              item
+              sx={{ alignItems: "center", justifyContent: "space-between" }}
+            >
+              <Typography
+                sx={{
+                  color: "var(--theme-color3)",
+                  marginLeft: "15px",
+                  marginTop: "6px",
+                }}
+                gutterBottom={true}
+                variant={"h6"}
+              >
+                Joint - Details
+              </Typography>
+              {/* <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                    margin: "0 auto ",
+                    marginRight: "10px",
+                    width: "45%",
+                  }}
+                >
+                  <Toolbar
+                    sx={{
+                      background: "var(--theme-color5)",
+                      fontSize: "16px",
+                      color: "white",
+                      border: "1px solid #BABABA",
+                      borderRadius: "5px",
+                      width: "50%",
+                      minHeight: "30px !important ",
+                    }}
+                  >
+                    {`Slip Amount: ${totalAmountSlip ?? ""} `}
+                  </Toolbar>
+                  <Toolbar
+                    sx={{
+                      background: "var(--theme-color5)",
+                      fontSize: "16px",
+                      color: "white",
+                      border: "1px solid #BABABA",
+                      borderRadius: "5px",
+                      width: "50%",
+                      minHeight: "30px !important ",
+                    }}
+                  >
+                    {`Cheque Amount: ${totalAmountCheque ?? "0.00"} `}
+                  </Toolbar>
+                  <Toolbar
+                    sx={{
+                      background: "var(--theme-color5)",
+                      fontSize: "16px",
+                      color: "white",
+                      border: "1px solid #BABABA",
+                      borderRadius: "5px",
+                      width: "50%",
+                      minHeight: "30px !important ",
+                    }}
+                  >
+                    {totalAmountCheque !== undefined &&
+                      totalAmountSlip !== undefined && (
+                        <span style={{ marginLeft: "10px" }}>
+                          {`Cheque Difference: ${(
+                            totalAmountSlip - totalAmountCheque
+                          ).toFixed(2)}`}
+                        </span>
+                      )}
+                  </Toolbar>
+                </div> */}
+              <IconButton onClick={handlePDExpand}>
+                {!isPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </IconButton>
+            </Grid>
+            <Collapse in={isPDExpanded}>
+              <Grid item>
+                {gridData?.ACCT_JOIN_DETAILS &&
+                gridData?.ACCT_JOIN_DETAILS.length ? (
+                  <GridWrapper
+                    key={"SlipJoinDetailGridMetaData" + gridData + setGridData}
+                    finalMetaData={SlipJoinDetailGridMetaData}
+                    data={gridData?.ACCT_JOIN_DETAILS ?? []}
+                    setData={() => null}
+                    // loading={isLoading || isFetching}
+                    actions={actions}
+                    setAction={setCurrentAction}
+                    // refetchData={() => refetch()}
+                    // ref={myGridRef}
+                    // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
+                  />
+                ) : null}
+              </Grid>
+            </Collapse>
+          </Grid>
         ) : null}
-      </div>
-      <Routes>
-        <Route
-          path="retrieve/*"
-          element={
-            <RetrieveClearingForm
-              zoneTranType={zoneTranType}
-              onClose={() => navigate(".")}
-              setFormMode={setFormMode}
-            />
-          }
+      </>
+      <>
+        <ChequeDetailForm
+          myRef={myRef}
+          formMode={formMode}
+          retrievData={data?.[0]}
+          loading={isLoading || isFetching}
+          error={isError}
+          zoneTranType={zoneTranType}
+          mutationOutward={mutationOutward}
+          setIsOpenProcced={setIsOpenProcced}
+          isOpenProcced={isOpenProcced}
+          initValues={initValues}
+          gridData={gridData}
+          setInitValues={setInitValues}
+          isSlipJointDetail={isSlipJointDetail}
+          isSlipTotal={isSlipTotal.current}
+          formData={formDataRef.current}
         />
-      </Routes>
+      </>
+
+      {isOpenRetrieve ? (
+        <RetrieveClearingForm
+          zoneTranType={zoneTranType}
+          onClose={() => setIsOpenRetrieve(false)}
+          setFormMode={setFormMode}
+          tranDate={result?.[0]?.data}
+        />
+      ) : null}
+      {isOpenMessage && (
+        <PopupRequestWrapper
+          MessageTitle="Account Description"
+          Message={message}
+          onClickButton={(rows, buttonName) => setIsOpenMessage(false)}
+          buttonNames={["Ok"]}
+          rows={[]}
+          open={isOpenMessage}
+        />
+      )}
       {isDelete ? (
         <PopupMessageAPIWrapper
           MessageTitle="Confirmation"
-          Message="Are you sure to delete selected row?"
+          Message="Do You Want to delete this row?"
           onActionYes={(rows) => onAcceptDelete(rows)}
           onActionNo={() => SetDelete(false)}
           rows={{}}
@@ -340,11 +544,12 @@ const CtsOutwardClearing: FC<{
 };
 export const CtsOutwardClearingForm = ({ zoneTranType }) => {
   const { state: rows }: any = useLocation();
+
   return (
     <ClearCacheProvider>
       <CtsOutwardClearing
         zoneTranType={zoneTranType}
-        defaultView={"new" ?? rows?.formMode}
+        defaultView={"new" ? "new" : rows?.formMode}
         tranCD={rows?.rows?.[0]?.data?.TRAN_CD ?? ""}
       />
     </ClearCacheProvider>

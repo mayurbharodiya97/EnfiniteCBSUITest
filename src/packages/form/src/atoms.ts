@@ -9,6 +9,7 @@ import {
   DependentValuesType,
   SubscritionFieldsType,
 } from "./types";
+import { setIn } from "./util";
 
 export const atomKeys = {
   formAtom: "formAtom",
@@ -277,6 +278,37 @@ export const formArrayFieldUnregisterSelector = selectorFamily<string, string>({
   },
 });
 
+// export const subscribeToFormFieldsSelector = selectorFamily<
+//   DependentValuesType,
+//   SubscritionFieldsType
+// >({
+//   key: atomKeys.subscribeToFormFieldsSelector,
+//   get:
+//     (subscriptionFields) =>
+//     ({ get }) => {
+//       if (typeof subscriptionFields !== "object") {
+//         return {};
+//       }
+//       let fields = subscriptionFields.fields;
+//       if (fields === undefined) {
+//         fields = [];
+//       }
+//       if (typeof fields === "string") {
+//         fields = [fields];
+//       }
+//       let fieldValues: DependentValuesType = {};
+//       for (let field of fields) {
+//         if (typeof field === "string" && Boolean(field)) {
+//           let fieldState = get(
+//             formFieldAtom(`${subscriptionFields.formName}/${field}`)
+//           );
+//           fieldValues[field] = fieldState;
+//         }
+//       }
+//       return fieldValues;
+//     },
+// });
+
 export const subscribeToFormFieldsSelector = selectorFamily<
   DependentValuesType,
   SubscritionFieldsType
@@ -295,6 +327,62 @@ export const subscribeToFormFieldsSelector = selectorFamily<
       if (typeof fields === "string") {
         fields = [fields];
       }
+      // Add missing feature for arrayField's dependentFieldState.
+      let formFieldRegistryState = get(
+        formFieldRegistryAtom(`${subscriptionFields.formName}`)
+      );
+      // takeoverLoans[0].rate => rate
+      // formName+takeoverLoans[0].rate doesn't exist but formName+rate exist
+      // then strip the takeoverLoans[0]. part from the key
+      let formArrayFieldRegistryState = get(
+        formArrayFieldRegistryAtom(`${subscriptionFields.formName}`)
+      );
+      let fieldInsideArrayFieldButDoesNotexist = fields.filter(
+        (field) =>
+          field.split(".").length > 1 &&
+          !get(formFieldRegistryAtom(`${subscriptionFields.formName}`)).filter(
+            (fieldKey) => fieldKey.split("/")[1].includes(field)
+          ).length
+      );
+      // Remove non-existing array field keys
+
+      // To get outer field value inside the array field.
+      // find the fields that doesn't exist inside array field
+      fields = fields.concat(
+        fieldInsideArrayFieldButDoesNotexist.map(
+          (fieldKey) => fieldKey.split(".")[1]
+        )
+      );
+      let fieldsHaveArrayField = formArrayFieldRegistryState.filter(
+        (allArrayFieldKey) => {
+          return (
+            Array.isArray(fields) &&
+            fields.filter((field) => allArrayFieldKey.includes(field)).length
+          );
+        }
+      );
+      let dependentArrayFields = formFieldRegistryState.filter(
+        (formField) =>
+          fieldsHaveArrayField.filter((field) => formField.includes(field))
+            .length
+      );
+      let arrayFields = dependentArrayFields.map((key) =>
+        key.replace(`${subscriptionFields.formName}/`, "")
+      );
+      const arrayFieldsAggrigator: FormFieldAtomType[] = [];
+      for (const field of arrayFields) {
+        arrayFieldsAggrigator.push(
+          get(formFieldAtom(`${subscriptionFields.formName}/${field}`))
+        );
+      }
+      let resultValueObj = {};
+      for (const field of arrayFieldsAggrigator) {
+        resultValueObj = setIn(
+          resultValueObj,
+          field.name.replace(`${subscriptionFields.formName}/`, ""),
+          field
+        );
+      }
       let fieldValues: DependentValuesType = {};
       for (let field of fields) {
         if (typeof field === "string" && Boolean(field)) {
@@ -304,6 +392,7 @@ export const subscribeToFormFieldsSelector = selectorFamily<
           fieldValues[field] = fieldState;
         }
       }
+      fieldValues = { ...fieldValues, ...resultValueObj };
       return fieldValues;
     },
 });

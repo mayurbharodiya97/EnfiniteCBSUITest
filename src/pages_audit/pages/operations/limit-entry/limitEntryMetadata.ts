@@ -1,5 +1,6 @@
 import { errorSelector } from "recoil";
 import * as API from "./api";
+import { format } from "date-fns";
 
 export const limitEntryMetaData = {
   form: {
@@ -121,6 +122,17 @@ export const limitEntryMetaData = {
       },
       _optionsKey: "securityDropDownListType",
       dependentFields: ["BRANCH_CD", "SECURITY_CD"],
+
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (field?.value) {
+          return { ACCT_CD: { value: "" } };
+        }
+      },
       GridProps: {
         xs: 12,
         md: 3,
@@ -155,40 +167,61 @@ export const limitEntryMetaData = {
         authState,
         dependentValue
       ) => {
+        console.log("<<<ppppppppp");
         if (field?.value) {
           let otherAPIRequestPara = {
             COMP_CD: authState?.companyID,
             ACCT_CD: field.value.padStart(6, "0").padEnd(20, " "),
             ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
             BRANCH_CD: authState?.user?.branchCode,
+            GD_TODAY_DT: "17-Jan-2024",
+            SCREEN_REF: "EMST/046",
           };
           let postData = await API.getLimitEntryData(otherAPIRequestPara);
-
-          if (postData.length) {
-            formState.setDataOnFieldChange("NSC_FD_BTN", {
+          console.log("<<<postdata", postData);
+          if (postData?.[0]?.MESSAGE1) {
+            formState.setDataOnFieldChange("MESSAGES", {
+              MESSAGES: postData?.[0]?.MESSAGE1,
               NSC_FD_BTN: true,
             });
             return {
               ACCT_NM: {
-                value: postData?.[0]?.ACCT_NM,
+                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
               },
               TRAN_BAL: {
-                value: postData?.[0]?.TRAN_BAL,
+                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
               },
               SANCTIONED_AMT: {
-                value: postData?.[0]?.SANCTIONED_AMT,
+                value: postData?.[0]?.ACCOUNT_DATA?.SANCTIONED_AMT,
               },
               BRANCH_CD: {
-                value: postData?.[0]?.BRANCH_CD,
+                value: postData?.[0]?.ACCOUNT_DATA?.BRANCH_CD,
               },
             };
-          } else {
-            formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: false });
+          } else if (postData?.[0]?.RESTRICTION) {
+            formState.setDataOnFieldChange("MESSAGES", {
+              MESSAGES: postData?.[0]?.RESTRICTION,
+              NSC_FD_BTN: true,
+            });
+
             return {
               ACCT_CD: { value: "", isFieldFocused: true },
               ACCT_NM: { value: "" },
               TRAN_BAL: { value: "" },
               SANCTIONED_AMT: { value: "" },
+            };
+          } else {
+            formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: true });
+            return {
+              ACCT_NM: {
+                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
+              },
+              TRAN_BAL: {
+                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
+              },
+              SANCTIONED_AMT: {
+                value: postData?.[0]?.ACCOUNT_DATA?.SANCTIONED_AMT,
+              },
             };
           }
         } else if (!field?.value) {
@@ -202,6 +235,13 @@ export const limitEntryMetaData = {
         return {};
       },
       runPostValidationHookAlways: true,
+      // setValueOnDependentFieldsChange: (dependentFields, others) => {
+      //   console.log("<<<OTH", dependentFields, others);
+      //   if (!others.isSubmitting) {
+      //     return "";
+      //   }
+      // },
+
       GridProps: {
         xs: 12,
         md: 3,
@@ -250,7 +290,7 @@ export const limitEntryMetaData = {
         componentType: "amountField",
       },
       name: "SANCTIONED_AMT",
-      label: "San. Limit",
+      label: "Sanctioned Limit",
       placeholder: "San. limit",
       isReadOnly: true,
       type: "text",
@@ -297,7 +337,7 @@ export const limitEntryMetaData = {
       type: "text",
       disableCaching: true,
       _optionsKey: "getSecurityListData",
-      dependentFields: ["ACCT_TYPE"],
+      dependentFields: ["ACCT_TYPE", "SECURITY_CD"],
       options: (dependentValue, formState, _, authState, other) => {
         if (dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
           let apiReq = {
@@ -319,7 +359,11 @@ export const limitEntryMetaData = {
         dependentValue
       ) => {
         if (field?.value) {
-          formState.setDataOnFieldChange("SECURITY_CODE", field?.value);
+          formState.setDataOnFieldChange("SECURITY_CODE", {
+            SECURITY_CD: field?.value,
+            LIMIT_MARGIN:
+              dependentValue?.SECURITY_CD?.optionData?.[0]?.LIMIT_MARGIN,
+          });
         }
         return {};
       },
@@ -332,13 +376,5 @@ export const limitEntryMetaData = {
         xl: 3.5,
       },
     },
-    // {
-    //   render: {
-    //     componentType: "hidden",
-    //   },
-    //   name: "MESSAGES",
-    //   label: "",
-    //   isReadOnly: true,
-    // },
   ],
 };

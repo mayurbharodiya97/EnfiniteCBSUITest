@@ -5,10 +5,15 @@ import {
   CircularProgress,
   Container,
   Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
   LinearProgress,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from "@mui/material";
 import React, {
@@ -28,13 +33,17 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation } from "react-query";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { Alert } from "components/common/alert";
-import { getChequebookDTL, saveChequebookData } from "./api";
+import {
+  getChequebookDTL,
+  saveChequebookData,
+  validateDeleteData,
+} from "./api";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { ChequeBKPopUpGridData } from "./chequeBKPopUpMetadat";
 import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
 import { queryClient } from "cache";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 
 export const ChequebookTab = () => {
   const ChequeBKPopUpAction: ActionTypes[] = [
@@ -81,17 +90,27 @@ export const ChequebookTab = () => {
     saveChequebookData,
     {
       onSuccess: (data) => {
-        // setInitData({});
+        setInitData({});
         setIsTabVisible(false);
         enqueueSnackbar("Data insert successfully", { variant: "success" });
       },
     }
   );
 
+  const validateDelete: any = useMutation(
+    "validateDeleteData",
+    validateDeleteData,
+    {
+      onSuccess: (data) => {},
+    }
+  );
+  console.log("<<<validateDelete", validateDelete);
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getChequebookDTL"]);
       queryClient.removeQueries(["saveChequebookData"]);
+      queryClient.removeQueries(["validateDeleteData"]);
     };
   }, []);
 
@@ -114,7 +133,10 @@ export const ChequebookTab = () => {
         CHEQUE_TO: Number(data?.CHEQUE_TO),
         CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
         LEAF_ARR: Number(data?.LEAF_ARR),
-        TRAN_DT: format(new Date(), "dd-MMM-yyyy"),
+        TRAN_DT: format(
+          parse(authState?.workingDate, "dd/MM/yyyy", new Date()),
+          "dd-MMM-yyyy"
+        ).toUpperCase(),
         ENTERED_BRANCH_CD: data?.BRANCH_CD,
         ENTERED_COMP_CD: authState?.companyID,
         ACCT_CD: data?.ACCT_CD?.padStart(6, "0").padEnd(20, " "),
@@ -293,9 +315,9 @@ export const ChequebookTab = () => {
               )}
 
               <FormWrapper
-                key={"chequebooksEntry" + saveChequeData.isSuccess}
+                key={"chequebooksEntry" + saveChequeData.isSuccess + initData}
                 metaData={ChequeBookEntryMetaData as MetaDataType}
-                initialValues={initData}
+                initialValues={saveChequeData.isSuccess ? {} : initData ?? {}}
                 onSubmitHandler={onSubmitHandler}
                 // loading={true}
                 ref={myMasterRef}
@@ -348,6 +370,23 @@ export const ChequebookTab = () => {
                 data={gridDetailData ?? []}
                 setData={setGridDetailData}
                 loading={getChequeDetail.isLoading}
+                onClickActionEvent={(index, id, data) => {
+                  console.log("<<<deletech", index, id, data);
+
+                  let apireq = {
+                    BRANCH_CD: "099 ",
+                    COMP_CD: "132 ",
+                    ACCT_TYPE: "001 ",
+                    ACCT_CD: "009154              ",
+                    CHEQUE_FROM: "58",
+                    CHEQUE_TO: "62",
+                    AUTO_CHQBK_FLAG: "Y",
+                    AUTO_CHQBK_PRINT_FLAG: "Y",
+                    SR_CD: "1",
+                    CONFIRMED: "Y",
+                  };
+                  validateDelete.mutate(apireq);
+                }}
               />
             </>
           ) : null}
@@ -425,6 +464,32 @@ export const ChequebookTab = () => {
           />
         </div>
       )}
+
+      {/* {isOpenSave && (
+        <Dialog
+          // fullScreen={fullScreen}
+          open={true}
+          // onClose={handleClose}
+        >
+          <DialogTitle>{"Use Google's location service?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              <TextField
+                id="standard-size-normal"
+                fullWidth
+                label="Remarks"
+                margin="dense"
+                color="warning"
+                variant="standard"
+              />
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus>Disagree</Button>
+            <Button autoFocus>Agree</Button>
+          </DialogActions>
+        </Dialog>
+      )} */}
     </>
   );
 };

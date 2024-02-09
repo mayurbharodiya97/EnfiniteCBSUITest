@@ -16,8 +16,8 @@ const customParameters: CustomProperties = {
   dynamicAmountGroupStyle: "lakh", //this prop for formWrapper
   currencyFormat: "en-IN", //this prop for gridWrapper only
   decimalCount: 2, //this prop for gridWrapper ,report and formWrapper
-  commonDateFormat: "dd/MM/yyyy", //this prop for only datePicker component type in formWrapper
-  commonDateTimeFormat: "dd/MM/yyyy hh:mm:ss aa", //this prop for only datetimePicker component type in formWrapper
+  commonDateFormat: "dd/MM/yyyy", //this prop for gridWrapper ,report and formWrapper
+  commonDateTimeFormat: "dd/MM/yyyy hh:mm:ss aa", //this prop for gridWrapper ,report and formWrapper
 };
 
 export const CustomPropertiesConfigurationContext =
