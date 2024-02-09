@@ -339,13 +339,18 @@ export const FixDepositAccountsFormMetadata = {
                 accountCode,
                 "FD_ACT"
               );
-              console.log(">>apiResponse", apiResponse);
               if (apiResponse?.status === "0") {
                 if (Boolean(apiResponse?.message)) {
-                  console.log(">>arg?.[1]", arg);
-                  arg?.[1]?.MessageBox("Information", apiResponse?.message);
-                } else {
+                  arg?.[1]?.MessageBox(
+                    "Information",
+                    apiResponse?.message.startsWith("\n")
+                      ? apiResponse?.message?.slice(1)
+                      : apiResponse?.message
+                  );
                 }
+                return {
+                  ACCT_NM: { value: apiResponse?.data?.[0]?.ACCT_NM ?? "" },
+                };
               } else {
                 return {
                   ACCT_CD: { value: "", error: apiResponse?.message ?? "" },
@@ -515,8 +520,9 @@ export const FixDepositAccountsFormMetadata = {
           accountCodeMetadata: {
             name: "CR_ACCT_CD",
             label: "Credit A/c No.",
-            required: false,
+            // required: false,
             dependentFields: [
+              "COMP_CD",
               "CR_BRANCH_CD",
               "CR_ACCT_TYPE",
               "USER_TYPE_ALLOWED",
@@ -533,8 +539,59 @@ export const FixDepositAccountsFormMetadata = {
                 return true;
               }
             },
-            postValidationSetCrossFieldValues: () => {
-              console.log(">>accountCode");
+            required: true,
+            type: "text",
+            validation: (value, data) => {
+              console.log(">>value", value);
+              if (!Boolean(value)) {
+                return "";
+              }
+              return "";
+            },
+            postValidationSetCrossFieldValues: async (...arg) => {
+              const companyCode = arg?.[3]?.["FDACCTS.COMP_CD"]?.value ?? "";
+              const branchCode =
+                arg?.[3]?.["FDACCTS.CR_BRANCH_CD"]?.value ?? "";
+              const accountType =
+                arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.value ?? "";
+              const accountCode = arg?.[0]?.value ?? "";
+              if (
+                Boolean(companyCode) &&
+                Boolean(branchCode) &&
+                Boolean(accountType) &&
+                accountCode
+              ) {
+                const apiResponse = await API.validateAccountAndGetDetail(
+                  companyCode,
+                  branchCode,
+                  accountType,
+                  accountCode,
+                  "FD_CR_ACT"
+                );
+                if (apiResponse?.status === "0") {
+                  if (Boolean(apiResponse?.message)) {
+                    arg?.[1]?.MessageBox(
+                      "Information",
+                      apiResponse?.message.startsWith("\n")
+                        ? apiResponse?.message?.slice(1)
+                        : apiResponse?.message
+                    );
+                  }
+                  return {
+                    CR_ACCT_NM: {
+                      value: apiResponse?.data?.[0]?.ACCT_NM ?? "",
+                    },
+                  };
+                } else {
+                  return {
+                    CR_ACCT_CD: {
+                      value: "",
+                      error: apiResponse?.message ?? "",
+                    },
+                    CR_ACCT_NM: { value: "" },
+                  };
+                }
+              }
             },
             GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
           },
@@ -610,6 +667,12 @@ export const FixDepositAccountsFormMetadata = {
               return true;
             }
           },
+          schemaValidation: {
+            type: "string",
+            rules: [
+              { name: "required", params: ["Interest Rate is Required."] },
+            ],
+          },
           fullWidth: true,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
         },
@@ -658,7 +721,6 @@ export const FixDepositAccountsFormMetadata = {
             },
           },
           setValueOnDependentFieldsChange: (dependentFields) => {
-            console.log(">>dependentFields", dependentFields);
             if (dependentFields["FDACCTS.USER_TYPE_ALLOWED"]?.value !== "Y") {
               return "You do have not access to this Account Type.";
             } else if (dependentFields["FDACCTS.LEAN_FLAG"]?.value === "Y") {

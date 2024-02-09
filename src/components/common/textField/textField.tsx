@@ -308,7 +308,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
               />
             </InputAdornment>
           ) : Boolean(EndAdornment) ? (
-            EndAdornment
+            <InputAdornment position="end" className="withBorder">
+              {EndAdornment}
+            </InputAdornment>
           ) : null,
           startAdornment: Boolean(StartAdornment) ? (
             <InputAdornment position="start">{StartAdornment}</InputAdornment>

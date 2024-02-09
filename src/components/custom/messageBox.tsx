@@ -30,12 +30,8 @@ export const MessageBoxWrapper = ({
         <DialogTitle className={classes.dialogTitleClass}>
           {MessageTitle}
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText
-            style={{ color: "black", marginTop: "8px", marginBottom: "6px" }}
-          >
-            {Message}
-          </DialogContentText>
+        <DialogContent className={classes.dialogContent}>
+          <DialogContentText>{Message}</DialogContentText>
         </DialogContent>
         <DialogActions className={classes.verifybutton}>
           {buttonNames.map((buttonName, index) => {

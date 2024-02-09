@@ -29,6 +29,7 @@ import { FixDepositContext } from "./fixDepositContext";
 import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
+import { cloneDeep } from "lodash";
 
 const ColorlibStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
@@ -168,7 +169,7 @@ export const FixDepositForm = () => {
   ) => {
     endSubmit(true);
     // Filter FDACCTS where FD amount is greater than zero
-    let filteredFDACCTS = data.FDACCTS.filter(
+    let filteredFDACCTS = cloneDeep(data).FDACCTS.filter(
       (acct) =>
         Boolean(acct.ACCT_CD) &&
         parseFloat(acct.FD_AMOUNT) > 0 &&

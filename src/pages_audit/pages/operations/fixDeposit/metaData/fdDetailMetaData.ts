@@ -368,7 +368,7 @@ export const FixDepositDetailFormMetadata = {
           render: {
             componentType: "amountField",
           },
-          name: "TRSF_AMT",
+          name: "FD_AMOUNT",
           label: "Transfer Amount",
           placeholder: "",
           type: "text",
