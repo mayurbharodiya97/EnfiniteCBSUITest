@@ -96,6 +96,10 @@ export interface UseFieldHookProps {
   runExternalFunction?: boolean;
   __EDIT__?: any;
   txtTransform?: "uppercase" | "lowercase";
+  AlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 export interface UseFieldArrayHookProps {

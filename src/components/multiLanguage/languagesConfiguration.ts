@@ -14,7 +14,7 @@ i18n.use(initReactI18next).init({
     sp: {
       translation: sp_language_data,
     },
-    french: {
+    fr: {
       translation: fr_language_data,
     },
     guj: {

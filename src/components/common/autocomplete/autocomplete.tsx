@@ -72,18 +72,6 @@ const getOptionLabel = (freeSolo: any) => (option: OptionsProps) =>
 const getOptionValue = (freeSolo: any) => (option: OptionsProps) =>
   Boolean(freeSolo) ? option : option?.value ?? "";
 
-const useStyles = makeStyles((theme) => ({
-  listbox: {
-    width: "300px", // Adjust the width as needed
-  },
-}));
-
-const styles = (theme) => ({
-  paper: {
-    width: "300px",
-  },
-});
-
 const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   name: fieldName,
   validate,
@@ -150,7 +138,6 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
-  const classes = useStyles();
   const focusRef = useRef();
   const optionsMapperRef = useRef(new Map());
   /* eslint-disable  react-hooks/exhaustive-deps */
@@ -221,7 +208,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     },
     [setOptions, myGetOptionLabel, myGetOptionValue]
   );
-
+  const handleBlurInterceptor = useCallback(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+    handleBlur();
+  }, [handleBlur, getExtraOptionData, handleOptionValueExtraData, value]);
   // const [lastUpdatedTime, setLastUpdatedTime] = useState(new Date().getTime());
   // const initDoneRef = useRef(false);
   //const defaultValueRef = useRef<any>(null);
@@ -243,6 +234,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     false
   );
 
+  useEffect(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+  }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
@@ -340,7 +335,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
           const extraOptionData = getExtraOptionData(value);
           handleOptionValueExtraData(extraOptionData);
         }}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
+        onBlur={handleBlurInterceptor}
         disabled={isSubmitting}
         filterOptions={
           Boolean(CreateFilterOptionsConfig) &&
@@ -391,7 +387,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   <Fragment>
                     {validationRunning || loadingOptions ? (
                       <CircularProgress
-                        color="primary"
+                        size={25}
+                        color="secondary"
                         variant="indeterminate"
                         {...CircularProgressProps}
                       />
@@ -465,4 +462,4 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   }
 };
 
-export default withStyles(styles)(MyAutocomplete);
+export default MyAutocomplete;

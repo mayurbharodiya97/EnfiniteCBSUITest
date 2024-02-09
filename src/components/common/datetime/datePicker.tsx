@@ -10,7 +10,7 @@ import { Button, Grid, GridProps, InputLabel } from "@mui/material";
 import { DatePickerProps } from "@mui/lab/DatePicker";
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { utilFunction } from "components/utils";
-import {TextField} from "components/styledComponent/textfield";
+import { TextField } from "components/styledComponent";
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 const useStyles: any = makeStyles({
@@ -154,6 +154,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         key={fieldKey}
         className={classes.root}
         id={fieldKey}
+        label={label}
         name={name}
         label={label}
         value={
@@ -169,7 +170,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         onChange={handleChange}
         sx={{ background: Boolean(readOnly) ? "#e7e5e563" : "" }}
         slots={{
-          textField:TextField
+          textField: TextField,
         }}
         slotProps={{
           textField: {
@@ -177,9 +178,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
             error: !isSubmitting && isError,
             helperText: !isSubmitting && isError ? error : null,
             onBlur: handleBlur,
-            InputLabelProps: {
-              shrink: true,
-            },
+            InputLabelProps: { shrink: true },
           },
         }}
         tabIndex={readOnly ? -1 : undefined}

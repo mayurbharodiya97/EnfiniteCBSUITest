@@ -68,10 +68,10 @@ export const AccountInquiryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
       },
       FormatProps: {
         isAllowed: (values) => {
@@ -105,10 +105,10 @@ export const AccountInquiryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
       },
       FormatProps: {
         isAllowed: (values) => {
@@ -140,10 +140,10 @@ export const AccountInquiryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
       },
       validate: (columnValue, allField, flag) => {
         if (columnValue.value.length <= 0) {
@@ -176,10 +176,10 @@ export const AccountInquiryMetadata = {
       },
       GridProps: {
         xs: 12,
-        md: 2.5,
-        sm: 2.5,
-        lg: 2.5,
-        xl: 2.5,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
       },
       validate: (columnValue, allField, flag) => {
         let regex = /^([A-Z]){5}([0-9]){4}([A-Z]){1}?$/;
@@ -194,7 +194,22 @@ export const AccountInquiryMetadata = {
         return "";
       },
     },
-
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "NAME",
+      label: "Account Name",
+      placeholder: "Enter Name",
+      type: "text",
+      GridProps: {
+        xs: 12,
+        sm: 6,
+        md: 3,
+        lg: 2,
+        xl: 2,
+      },
+    },
     {
       render: {
         componentType: "formbutton",
@@ -207,8 +222,10 @@ export const AccountInquiryMetadata = {
       type: "text",
       GridProps: {
         xs: 12,
+        sm: 3,
         md: 1,
-        sm: 1,
+        lg: 1,
+        xl: 1,
       },
     },
     // {
@@ -256,7 +273,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Search Criteria Data",
-    rowIdColumn: "WITHDRAW_BAL",
+    rowIdColumn: "ACCT_CD",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
       width: 150,
@@ -353,7 +370,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "OPENIND_DT",
+      accessor: "OP_DATE",
       columnName: "Opening Date",
       sequence: 8,
       alignment: "center",
@@ -770,8 +787,8 @@ export const PassbookStatementInq = {
         xs: 12,
         md: 11,
         sm: 11,
-        lg:11,
-        xl:11,
+        lg: 11,
+        xl: 11,
       },
     },
     {

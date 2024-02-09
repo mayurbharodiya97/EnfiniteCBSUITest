@@ -23,6 +23,23 @@ export const getSnapShotList = async (reqData) => {
     let responseData = data;
     responseData.map((a, i) => {
       a.index = i;
+      a.sr = i + 1;
+      if (
+        a.TYPE_CD.includes("1") ||
+        a.TYPE_CD.includes("2") ||
+        a.TYPE_CD.includes("3")
+      ) {
+        a.credit1 = Number(a.AMOUNT).toFixed(2);
+        a.debit1 = "-";
+      }
+      if (
+        a.TYPE_CD.includes("4") ||
+        a.TYPE_CD.includes("5") ||
+        a.TYPE_CD.includes("6")
+      ) {
+        a.debit1 = Number(a.AMOUNT).toFixed(2);
+        a.credit1 = "-";
+      }
     });
     return responseData;
   } else {

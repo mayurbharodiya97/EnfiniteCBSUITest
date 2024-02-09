@@ -53,6 +53,8 @@ export const FilterComponent = ({
   filterData,
   retrievalType,
   isOpenRetrievalDefault,
+  setShowFilters,
+  setAllFilters
 }) => {
   const [open, setOpen] = useState(isOpenRetrievalDefault);
   // const { filterState, dispatch } = useFilterState(filterReducer);
@@ -64,6 +66,8 @@ export const FilterComponent = ({
 
   const handleOpen = () => {
     setOpen(true);
+    setShowFilters(false);
+    setAllFilters([]);
   };
 
   // const handleFilterChange = () => {

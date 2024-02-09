@@ -120,29 +120,52 @@ export const StockEntryMetaData = {
             ACCT_CD: field.value.padStart(6, "0").padEnd(20, " "),
             ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
             BRANCH_CD: authState?.user?.branchCode,
+            GD_TODAY_DT: "17-Jan-2024",
+            SCREEN_REF: "EMST/046",
           };
           let postData = await getLimitEntryData(otherAPIRequestPara);
 
-          if (postData.length) {
+          if (postData?.[0]?.MESSAGE1) {
+            formState.setDataOnFieldChange("MESSAGES", {
+              MESSAGES: postData?.[0]?.MESSAGE1,
+              VISIBLE_TAB: true,
+            });
+            return {
+              ACCT_NM: {
+                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
+              },
+              TRAN_BAL: {
+                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
+              },
+              ACCT_MST_LIMIT: {
+                value: postData?.[0]?.ACCOUNT_DATA?.LIMIT_AMOUNT,
+              },
+            };
+          } else if (postData?.[0]?.RESTRICTION) {
+            formState.setDataOnFieldChange("MESSAGES", {
+              MESSAGES: postData?.[0]?.RESTRICTION,
+              VISIBLE_TAB: false,
+            });
+
+            return {
+              ACCT_CD: { value: "", isFieldFocused: true },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+            };
+          } else {
             formState.setDataOnFieldChange("VISIBLE_TAB", {
               VISIBLE_TAB: true,
             });
             return {
               ACCT_NM: {
-                value: postData?.[0]?.ACCT_NM,
+                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
               },
               TRAN_BAL: {
-                value: postData?.[0]?.TRAN_BAL,
+                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
               },
-            };
-          } else {
-            formState.setDataOnFieldChange("VISIBLE_TAB", {
-              VISIBLE_TAB: false,
-            });
-            return {
-              ACCT_CD: { value: "", isFieldFocused: true },
-              ACCT_NM: { value: "" },
-              TRAN_BAL: { value: "" },
+              ACCT_MST_LIMIT: {
+                value: postData?.[0]?.ACCOUNT_DATA?.LIMIT_AMOUNT,
+              },
             };
           }
         } else if (!field?.value) {
@@ -152,6 +175,7 @@ export const StockEntryMetaData = {
             TRAN_BAL: { value: "" },
           };
         }
+
         return {};
       },
       runPostValidationHookAlways: true,
@@ -187,36 +211,38 @@ export const StockEntryMetaData = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
       name: "TRAN_BAL",
       label: "Balance",
       placeholder: "Balance",
       type: "text",
+      isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
       name: "ACCT_MST_LIMIT",
       label: "Account Limit Amount",
-      placeholder: "Account Limit Entry",
+      placeholder: "Account Limit AMT",
       type: "text",
+      isReadOnly: true,
       // defaultValue: "2",
       // enableDefaultOption: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -227,7 +253,7 @@ export const StockEntryMetaData = {
       label: "Security",
       disableCaching: true,
       _optionsKey: "securityListDD",
-      dependentFields: ["ACCT_TYPE", "ACCT_CD"],
+      dependentFields: ["ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
       placeholder: "Security",
       options: (dependentValue, formState, _, authState, other) => {
         if (
@@ -246,208 +272,33 @@ export const StockEntryMetaData = {
         }
         return [];
       },
+
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (field?.value) {
+          formState.setDataOnFieldChange("SECURITY_CODE", field?.value);
+        }
+        return {};
+      },
       type: "text",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
 
     {
       render: {
-        componentType: "datePicker",
+        componentType: "hidden",
       },
-      name: "NNNNNNN",
-      // sequence: 9,
-      label: "Statement Date",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "datePicker",
-      },
-      name: "HHHHHHHHHHH",
-      // sequence: 9,
-      label: "STMT Valid Till Date",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "SCRIPT_CD",
-      label: "Script",
-      placeholder: "Script ",
-      disableCaching: true,
-      _optionsKey: "scriptListDD",
-      dependentFields: ["ACCT_TYPE", "ACCT_CD"],
-      options: (dependentValue, formState, _, authState, other) => {
-        // if (
-        //   dependentValue?.ACCT_TYPE?.value &&
-        //   dependentValue?.ACCT_CD?.value
-        // ) {
-        let apiReq = {
-          COMP_CD: authState?.companyID,
-          BRANCH_CD: authState?.user?.branchCode,
-          // ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
-          // ACCT_CD: dependentValue?.ACCT_CD?.value,
-        };
-        return API.scriptListDD(apiReq);
-        // }
-        // return [];
-      },
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "NO_OF_SHARE",
-      label: "No. of Share",
-      type: "text",
-      placeholder: "No. of Share",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "STOCK_VALUE",
-      label: "Stock Value",
-      placeholder: "Stock Value",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "WWWWWWWWW",
-      label: "Net Value",
-      type: "text",
-      placeholder: "Net Value",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "MARGIN",
-      label: "Margin",
-      type: "text",
-      placeholder: "Margin",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "STOCK_DESC",
-      label: "Stock Decription",
-      type: "text",
-      placeholder: "Stock Description",
-      GridProps: {
-        xs: 12,
-        md: 3.2,
-        sm: 3.2,
-        lg: 3.2,
-        xl: 3.2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "REMARKS",
-      label: "Remarks",
-      type: "text",
-      placeholder: "Remarks",
-      GridProps: {
-        xs: 12,
-        md: 3.2,
-        sm: 3.2,
-        lg: 3.2,
-        xl: 3.2,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "DRAWING_POWER",
-      label: "Drawing Power",
-      type: "text",
-      placeholder: "Drawing Power",
-      GridProps: {
-        xs: 12,
-        md: 3.2,
-        sm: 3.2,
-        lg: 3.2,
-        xl: 3.2,
-      },
-    },
-
-    {
-      render: {
-        componentType: "datePicker",
-      },
-      name: "RECEIVED_DT",
-      label: "Received Date",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
+      name: "STMT_DT_FLAG",
     },
   ],
 };

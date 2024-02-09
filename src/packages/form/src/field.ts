@@ -46,6 +46,7 @@ export const useField = ({
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
   txtTransform,
+  AlwaysRunPostValidationSetCrossFieldValues,
 }: UseFieldHookProps) => {
   //formContext provides formName for scoping of fields, and initialValue for the field
   const formContext = useContext(FormContext);
@@ -345,11 +346,20 @@ export const useField = ({
           fields = fieldsLoadable.contents;
         }
         for (const field of Object.entries(fieldsObj)) {
+          // Enhancement for ArrayField: Set value for formField that exist outside the array.
+          let _key = key;
           if (
-            fields.indexOf(`${formContext.formName}/${key}${field[0]}`) >= 0
+            fields.indexOf(`${formContext.formName}/${key}${field[0]}`) ===
+              -1 &&
+            fields.indexOf(`${formContext.formName}/${field[0]}`) >= 0
+          ) {
+            _key = "";
+          }
+          if (
+            fields.indexOf(`${formContext.formName}/${_key}${field[0]}`) >= 0
           ) {
             let result = snapshot.getLoadable(
-              formFieldAtom(`${formContext.formName}/${key}${field[0]}`)
+              formFieldAtom(`${formContext.formName}/${_key}${field[0]}`)
             );
             //we can skip update from cross field if the field is readOnly to prevent value overridden
             if (result.state === "hasValue") {
@@ -361,8 +371,9 @@ export const useField = ({
                 continue;
               }
             }
+            // Updates the formField state.
             set(
-              formFieldAtom(`${formContext.formName}/${key}${field[0]}`),
+              formFieldAtom(`${formContext.formName}/${_key}${field[0]}`),
               (old) => ({
                 ...old,
                 incomingMessage: { ...old.incomingMessage, ...field[1] },
@@ -373,6 +384,47 @@ export const useField = ({
       },
     [formContext.formName]
   );
+
+  // const passCrossFieldMessage = useRecoilCallback(
+  //   ({ snapshot, set }) =>
+  //     (fieldsObj: InitialValuesType) => {
+  //       const key = getFieldKeyForArray(fieldKey);
+  //       const fieldsLoadable = snapshot.getLoadable(
+  //         formFieldRegistryAtom(formContext.formName)
+  //       );
+  //       let fields: FormFieldRegistryAtomType = [];
+  //       if (fieldsLoadable.state === "hasValue") {
+  //         fields = fieldsLoadable.contents;
+  //       }
+  //       for (const field of Object.entries(fieldsObj)) {
+  //         if (
+  //           fields.indexOf(`${formContext.formName}/${key}${field[0]}`) >= 0
+  //         ) {
+  //           let result = snapshot.getLoadable(
+  //             formFieldAtom(`${formContext.formName}/${key}${field[0]}`)
+  //           );
+  //           //we can skip update from cross field if the field is readOnly to prevent value overridden
+  //           if (result.state === "hasValue") {
+  //             let field = result.contents;
+  //             if (
+  //               field.readOnly &&
+  //               field.skipValueUpdateFromCrossFieldWhenReadOnly
+  //             ) {
+  //               continue;
+  //             }
+  //           }
+  //           set(
+  //             formFieldAtom(`${formContext.formName}/${key}${field[0]}`),
+  //             (old) => ({
+  //               ...old,
+  //               incomingMessage: { ...old.incomingMessage, ...field[1] },
+  //             })
+  //           );
+  //         }
+  //       }
+  //     },
+  //   [formContext.formName]
+  // );
 
   /**
    * Start of field Validation Logic
@@ -691,7 +743,11 @@ export const useField = ({
         (whenToRunValidation.current === "onBlur" ||
           whenToRunValidation.current === "all")
       ) {
-        runValidation({ touched: true });
+        runValidation(
+          { touched: true },
+          AlwaysRunPostValidationSetCrossFieldValues?.alwaysRun,
+          AlwaysRunPostValidationSetCrossFieldValues?.touchAndValidate
+        );
       }
     }
   }, [setTouched, runValidation, formContext.validationRun]);

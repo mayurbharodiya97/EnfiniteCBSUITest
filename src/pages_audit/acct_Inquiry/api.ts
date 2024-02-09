@@ -9,6 +9,7 @@ export const getAccountInquiry = async (inputdata) => {
       MOB_NO: inputdata?.MOBILE,
       PAN_NO: inputdata?.PAN,
       CUST_ID: inputdata?.CUSTOMER,
+      ACCT_NM: inputdata?.NAME,
     });
   if (status === "0") {
     const dataStatus = data;

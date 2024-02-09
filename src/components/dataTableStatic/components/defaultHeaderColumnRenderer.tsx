@@ -70,6 +70,7 @@ export const DefaultHeaderColumnRenderer = ({
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             paddingRight: "10px",
+            paddingLeft: "10px",
           }}
         >
           {column.columnName}

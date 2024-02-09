@@ -34,7 +34,7 @@ export const StopPay = () => {
   return (
     <>
       <GridWrapper
-        key={`InsuranceGridMetaData`}
+        key={`stopPayGridMetaData`}
         finalMetaData={stopPayGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}

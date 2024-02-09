@@ -51,25 +51,44 @@ export const chequebookCharge = async (Apireq) => {
   }
 };
 
-export const TemporaryData = () => {
-  return [
-    {
-      CHEQUE_BOOK_ISSUE: "Y",
-      PERSONALIZE_CHEQUE_BOOK: "Y",
-      ACCT_NM: "MAYUR SHAH",
-      BALANCE: "763647836",
-      FROM_CHEQUE_NO: "21",
-      JOINT_HOLDER1: "BADAL",
-      JOINT_HOLDER2: "VIJAY",
-      GST_AMT: "3.6",
-      SERVICE_CHRG: "20",
-      FLAG_ENABLE_DISABLE: "N",
-      GST_ROUND_OFF: "5",
-      TAX_RATE: "18",
-      // CONFIRM_MSG: " FHFH KFHUIFH FJKFHJFBM FE JKFH",
-      // CHEQUE_BOOK_ISSUE_MSG: "jdkjwekl lkfjklnf kljfkf sklfjosH",
-      // BALANCE_MSG: " FHFH 12121 FJ3123123KFHJFBM FE JKFH",
-      // SERVICE_TAX_MSG: "",
-    },
-  ];
+export const validateDeleteData = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDDELETECHQDATA", {
+      ...Apireq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const chequeGridDTL = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCHQVIEWDETAILS", {
+      ...Apireq,
+    });
+  if (status === "0") {
+    return data.map((item) => {
+      return {
+        ...item,
+        FLAG:
+          item.FLAG === "P"
+            ? "Processed"
+            : item.FLAG === "T"
+            ? "Stop Payment "
+            : item.FLAG === "R"
+            ? "Cheque Return "
+            : item.FLAG === "S"
+            ? "Surrender "
+            : item.FLAG === "N"
+            ? "Not Processed"
+            : item.FLAG === "D"
+            ? "PDC"
+            : item.FLAG,
+      };
+    });
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
 };

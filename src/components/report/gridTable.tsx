@@ -1,4 +1,4 @@
-import { Fragment, useState, useCallback, FC } from "react";
+import { Fragment, useState, useCallback, FC, useContext } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -34,7 +34,8 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-
+import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
+import { t } from "i18next";
 interface GridTableType {
   columns: any;
   defaultColumn: any;
@@ -43,6 +44,7 @@ interface GridTableType {
   initialState?: any;
   filterTypes?: any;
   title?: any;
+  onDoubleClickAction?:any;
   options?: any;
   loading: boolean;
   hideFooter?: boolean;
@@ -112,6 +114,7 @@ export const GridTable: FC<GridTableType> = ({
   initialState = {},
   filterTypes,
   title,
+  onDoubleClickAction,
   options,
   loading = false,
   hideFooter = false,
@@ -125,6 +128,7 @@ export const GridTable: FC<GridTableType> = ({
   isOpenRetrievalDefault,
 }) => {
   const [showFilters, setShowFilters] = useState(false);
+  const [isOpenExport, setOpenExport] = useState(false);
   const handleFilterChange = useCallback(() => {
     setShowFilters((old) => !old);
   }, [setShowFilters]);
@@ -175,7 +179,19 @@ export const GridTable: FC<GridTableType> = ({
         };
       }
       return (
-        <TableRow {...row.getRowProps({ style })} component="div">
+        <TableRow {...row.getRowProps({ style })} component="div"  
+          onDoubleClick={() => {
+            if(typeof onDoubleClickAction === "undefined") return
+            onDoubleClickAction({
+              rows: [
+                {
+                  data: row?.original,
+                  id: row?.id,
+                },
+              ],
+            })
+            }
+            }>
           {row.cells.map((cell, index) => {
             return cell.isAggregated
               ? cell.render("Aggregated")
@@ -186,9 +202,8 @@ export const GridTable: FC<GridTableType> = ({
     },
     [prepareRow, rows]
   );
-
   return (
-    <Fragment>
+    <>
       <Paper
         style={{
           width: "100%",
@@ -212,6 +227,8 @@ export const GridTable: FC<GridTableType> = ({
             filterData={queryFilters}
             retrievalType={retrievalType}
             isOpenRetrievalDefault={isOpenRetrievalDefault}
+            setShowFilters={setShowFilters}
+            setAllFilters={setAllFilters}
           />
           {showFilters && filters.length > 0 && (
             <Button
@@ -253,10 +270,20 @@ export const GridTable: FC<GridTableType> = ({
             style={{ color: "var(--theme-color2)" }}
             label="Expand Rows"
           />
-          <FormControlLabel
+          {
+            rows.length ? (
+              <FormControlLabel
             control={
-              <Tooltip title="Download">
-                <IconButton
+              <Tooltip title="Show export options">
+                <Button
+                  onClick={() => {
+                    setOpenExport(true);
+                  }}
+                  style={{ marginTop: "0px", color: "white" }}
+                >
+                  Export <GetAppIcon />
+                </Button>
+                {/* <IconButton
                   onClick={() =>
                     createNewWorkbook({
                       data: data,
@@ -268,12 +295,15 @@ export const GridTable: FC<GridTableType> = ({
                   color="primary"
                 >
                   <GetAppIcon />
-                </IconButton>
+                </IconButton> */}
               </Tooltip>
             }
             style={{ color: "var(--theme-color2)" }}
             label=""
           />
+            ): null
+          }
+          
           {typeof onClose === "function" ? (
             <Tooltip title="Close">
               <IconButton
@@ -362,6 +392,19 @@ export const GridTable: FC<GridTableType> = ({
           </Table>
         </TableContainer>
       </Paper>
-    </Fragment>
+      {isOpenExport ? (
+        <ReportExportScreen
+          globalFilter={globalFilter}
+          filters={filters}
+          queryFilters={queryFilters}
+          title={t(title.trim())}
+          rows={rows}
+          columns={columns}
+          onClose={() => {
+            setOpenExport(false);
+          }}
+        />
+      ) : null}
+    </>
   );
 };

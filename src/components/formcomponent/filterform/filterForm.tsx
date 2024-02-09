@@ -85,18 +85,11 @@ export const FilterFormComponents = forwardRef<any, any>(
       propStyles,
       displayStyle1,
       displayStyle2,
-      submitThirdAction,
-      submitThirdButtonHide = false,
-      submitThirdButtonName = "click",
-      submitThirdLoading = false,
-      displayStyle3,
     },
     ref
   ) => {
     const classes = useStyles();
     const inputButtonRef = useRef<any>(null);
-    const secondButtonRef = useRef<any>(null);
-    const thirdButtonRef = useRef<any>(null);
     const [ErrorData, setErrorData] = useState({});
     const [colomnValue, setColomnValue] = useState<any>(initialDataValue);
     const [fields, setFields] = useState(oldfielddata);
@@ -133,7 +126,6 @@ export const FilterFormComponents = forwardRef<any, any>(
       });
       return dependData;
     }, [oldfielddata]);
-    //console.log(dependField, dependFieldFunc);
     const handleChange = (event: any, extraData: any = "") => {
       const name = event.target.name;
       const value = event.target.value;
@@ -145,7 +137,6 @@ export const FilterFormComponents = forwardRef<any, any>(
         }));
       }
       if (Boolean(dependField[name])) {
-        //console.log(extraData);
         dependField[name].forEach((item) => {
           if (typeof dependFieldFunc[item] === "function") {
             let returnvallue = dependFieldFunc[item](
@@ -239,7 +230,6 @@ export const FilterFormComponents = forwardRef<any, any>(
         };
       });
     }, [fields, initialVisibleColumn]);
-    //console.log(fields, visibleColumns);
     const ValidateColumnValue = (
       fields,
       colomnValue,
@@ -271,7 +261,6 @@ export const FilterFormComponents = forwardRef<any, any>(
                 arg1
               );
             }
-            //console.log(element.name, typeof element?.validate, errorMessage);
             isValidForm = Boolean(errorMessage) ? false : isValidForm;
             errorData = {
               ...errorData,
@@ -291,7 +280,6 @@ export const FilterFormComponents = forwardRef<any, any>(
           };
         }
       });
-      // console.log(errorData);
       setErrorData(errorData);
       return isValidForm;
     };
@@ -616,18 +604,17 @@ export const FilterFormComponents = forwardRef<any, any>(
                           }
                           onKeyDown={(e) => {
                             if (
-                              ((e.key === "Tab" || e.key === "Enter") &&
-                                column?.entertoSubmit) ??
+                              (e.key === "Enter" && column?.entertoSubmit) ??
                               false
                             ) {
                               inputButtonRef?.current?.click?.();
                             }
-                            if (
-                              (e.key === "Tab" && column?.tabToSubmit) ??
-                              false
-                            ) {
-                              secondButtonRef?.current?.click?.();
-                            }
+                            // if (
+                            //   (e.key === "Tab" && column?.tabToSubmit) ??
+                            //   false
+                            // ) {
+                            //   secondButtonRef?.current?.click?.();
+                            // }
                           }}
                         />
                       )}
@@ -666,7 +653,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                     >
                       <GradientButton
                         disabled={loading || submitSecondLoading}
-                        ref={secondButtonRef}
+                        // ref={secondButtonRef}
                         endIcon={
                           submitSecondLoading ? (
                             <CircularProgress size={20} />
@@ -678,7 +665,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                       </GradientButton>
                     </Grid>
                   )}
-                  {submitThirdButtonHide ? null : (
+                  {/* {submitThirdButtonHide ? null : (
                     <Grid
                       key={`gird${submitThirdButtonName}`}
                       item
@@ -698,7 +685,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                         {submitThirdButtonName}
                       </GradientButton>
                     </Grid>
-                  )}
+                  )} */}
                 </Grid>
               )}
             </Grid>

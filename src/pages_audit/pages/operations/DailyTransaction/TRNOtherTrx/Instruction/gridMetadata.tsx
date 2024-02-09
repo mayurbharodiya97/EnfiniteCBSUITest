@@ -34,20 +34,20 @@ export const InstructionGridMetaData: GridMetaDataType = {
       width: 130,
     },
     {
+      accessor: "ACCT_NM",
+      columnName: "Main A/C Name",
+      sequence: 2,
+      componentType: "default",
+      width: 200,
+    },
+    {
       accessor: "OTH_AC_NO",
       columnName: "Other A/C",
-      sequence: 2,
+      sequence: 3,
       componentType: "default",
       width: 130,
     },
 
-    {
-      accessor: "ACCT_NM",
-      columnName: "A/C Name",
-      sequence: 3,
-      componentType: "default",
-      width: 200,
-    },
     {
       accessor: "OTH_ACCT_NM",
       columnName: "Other A/C Name",
@@ -55,7 +55,13 @@ export const InstructionGridMetaData: GridMetaDataType = {
       componentType: "default",
       width: 200,
     },
-
+    {
+      accessor: "5",
+      columnName: "Instruction",
+      sequence: 5,
+      componentType: "default",
+      width: 120,
+    },
     {
       accessor: "REMARKS",
       columnName: "Remarks",

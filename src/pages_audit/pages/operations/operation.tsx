@@ -4,6 +4,7 @@ import CkycProvider from "./c-kyc/CkycContext";
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import SingleDeno from "../dashboard/noteDenomination/singleDeno";
+// import TellerScreen from "../dashboard/noteDenomination/tellerScreen";
 
 // import { Ckyc } from "./c-kyc/ckyc";
 
@@ -17,6 +18,9 @@ const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
 );
 const CtsOutwardClearing = lazy(() => import("./ctsOutwardClearing"));
+const TellerScreen = lazy(
+  () => import("../dashboard/noteDenomination/tellerScreen")
+);
 
 export const OperationsMenu = () => (
   <Routes>
@@ -25,7 +29,7 @@ export const OperationsMenu = () => (
     <Route path="stock-entry/*" element={<StockEntry />} />
     <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
-    <Route path="teller/*" element={<CashReceiptEntry />} />
+    <Route path="teller/*" element={<TellerScreen />} />
     <Route
       path="confirm-ckyc/*"
       element={

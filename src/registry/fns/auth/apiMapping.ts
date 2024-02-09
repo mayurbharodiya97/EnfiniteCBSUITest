@@ -592,10 +592,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRXLIST",
     packageName: "",
   },
-  GETJOINTDETILSLIST: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETJOINTDETILSLIST",
-    packageName: "",
-  },
+
   GETBUSINESSDATE: {
     url: "/chequeServiceAPI/GETBUSINESSDATE",
     packageName: "",
@@ -657,6 +654,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/GETJOINTACCTDTL",
     packageName: "",
   },
+  GETDLYTRNLIMITTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNLIMITTAB",
+    packageName: "",
+  },
+  GETDLYTRNSTOCKTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSTOCKTAB",
+    packageName: "",
+  },
   GETTODAYTRAN: {
     url: "/transactionServiceAPI/GETTODAYTRAN",
     packageName: "",
@@ -678,7 +683,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   GETDAILYTRNLIST: {
-    url: "/transactionServiceAPI/GETDAILYTRNLIST",
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNLIST",
     packageName: "",
   },
   GETSANPSHOTDTL: {
@@ -719,6 +724,10 @@ export const ActionWiseAPIConfiguration = {
   },
   DELETESCROLLDATA: {
     url: "/transactionServiceAPI/DELETESCROLLDATA",
+    packageName: "",
+  },
+  DAILYTRNCARDDTL: {
+    url: "/transactionServiceAPI/DAILYTRNCARDDTL ",
     packageName: "",
   },
 
@@ -871,6 +880,30 @@ export const ActionWiseAPIConfiguration = {
   },
   CHECKCUSTDUPLICATEDATA: {
     url: "/customerServiceAPI/CHECKCUSTDUPLICATEDATA",
+    packageName: "",
+  },
+  GETEXPIRYDATE: {
+    url: "accountServiceAPI/GETEXPIRYDATE",
+    packageName: "",
+  },
+  GETACCTNOVALIDATEDATA: {
+    url: "loanServiceAPI/GETACCTNOVALIDATEDATA",
+    packageName: "",
+  },
+  GETCASHDENO: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCASHDENO",
+    packageName: "",
+  },
+  VALIDDELETECHQDATA: {
+    url: "chequeServiceAPI/VALIDDELETECHQDATA",
+    packageName: "",
+  },
+  GETTODAYTRANDATA: {
+    url: "/transactionServiceAPI/GETTODAYTRANDATA",
+    packageName: "",
+  },
+  GETCHQVIEWDETAILS: {
+    url: "chequeServiceAPI/GETCHQVIEWDETAILS",
     packageName: "",
   },
 };

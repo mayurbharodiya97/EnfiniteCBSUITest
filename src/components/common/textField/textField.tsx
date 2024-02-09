@@ -36,6 +36,10 @@ interface MyGridExtendedProps {
   endsIcon?: any;
   iconStyle?: any;
   textFieldStyle?: any;
+  AlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -74,6 +78,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   iconStyle,
   textFieldStyle,
   txtTransform,
+  AlwaysRunPostValidationSetCrossFieldValues,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -110,6 +115,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
     txtTransform,
+    AlwaysRunPostValidationSetCrossFieldValues,
   });
 
   const [currentColor, setCurrentColor] = useState<string>(
@@ -150,7 +156,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
       let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues)
+        transformDependentFieldsState(dependentValues),
+        { isSubmitting }
       );
       if (result !== undefined && result !== null) {
         handleChange(result);
@@ -160,11 +167,16 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value, ignoreUpdate, isFieldFocused } = incomingMessage;
+      const { value, ignoreUpdate, isFieldFocused, error } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (isFieldFocused) {
           getFocus();
+        }
+        if (error) {
+          if (whenToRunValidation === "onBlur") {
+            runValidation({ value: value }, true);
+          }
         }
         if (ignoreUpdate) {
           //ignore Validation
@@ -269,9 +281,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
           </div>
         }
         sx={{
-          "& .MuiInputBase-root": {
-            ...textFieldStyle,
-          },
+          ...textFieldStyle,
         }}
         FormHelperTextProps={{
           //@ts-ignore
@@ -280,7 +290,11 @@ const MyTextField: FC<MyTextFieldProps> = ({
         //@ts-ignore
         InputProps={{
           style: {
-            background: Boolean(readOnly) ? "#e7e5e563" : "",
+            background: textFieldStyle
+              ? ""
+              : Boolean(readOnly)
+              ? "#e7e5e563"
+              : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
                   color: currentColor,

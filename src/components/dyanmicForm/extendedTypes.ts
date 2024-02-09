@@ -397,7 +397,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       thousandSeparator: true,
       // prefix: "₹",
       thousandsGroupStyle: "lakh",
-      allowNegative: false,
+      allowNegative: true,
       allowLeadingZeros: false,
       decimalScale: 2,
       fixedDecimalScale: true,
@@ -423,13 +423,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     name: "ACCT_CD",
     placeholder: "Enter account number",
     required: true,
+    autoComplete: "off",
     // maxLength: 8,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
-    setValueOnDependentFieldsChange: (dependentFields) => {
-      return "";
-    },
-
+    // setValueOnDependentFieldsChange: (dependentFields) => {
+    //   return "";
+    // },
     schemaValidation: {
       type: "string",
       rules: [
@@ -574,6 +574,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     name: "BRANCH_CD",
     label: "Branch Code",
+    placeholder: "Select branch code",
     defaultValue: "",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
@@ -584,7 +585,6 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       lg: 3,
       xl: 3,
     },
-
     // NOTE : this props only for set default brranch and only use in branchCode component do not use this key any other place or any component
     defaultBranchTrue: true,
   },
@@ -600,6 +600,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     name: "ACCT_TYPE",
     label: "Account Type",
+    placeholder: "Select account type",
     options: GeneralAPI.getAccountTypeList,
     _optionsKey: "getAccountTypeList",
     defaultAcctTypeTrue: true,

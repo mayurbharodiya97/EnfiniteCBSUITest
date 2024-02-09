@@ -158,11 +158,31 @@ const GeneralAPISDK = () => {
     dependentFieldValue,
     reqFlag
   ) => {
+    Object.keys(dependentFieldValue).forEach((key) => {
+      const dynamicPrefix = key.split(".")[0] + ".";
+      const newKey = key.replace(new RegExp("^" + dynamicPrefix), "");
+
+      dependentFieldValue[newKey] = { ...dependentFieldValue[key] };
+      dependentFieldValue[newKey].fieldKey = dependentFieldValue[
+        newKey
+      ].fieldKey.replace(new RegExp("^" + dynamicPrefix), "");
+      dependentFieldValue[newKey].name = dependentFieldValue[
+        newKey
+      ].name.replace(new RegExp("^" + dynamicPrefix), "");
+    });
+
     let paddedAcctcode = (currentField?.value).padStart(
       dependentFieldValue?.ACCT_TYPE?.optionData?.[0]?.PADDING_NUMBER,
       0
     );
-    if (currentField?.value) {
+
+    const condition = Boolean(reqFlag === "ACCT_CD")
+      ? currentField?.value &&
+        dependentFieldValue?.BRANCH_CD?.value &&
+        dependentFieldValue?.ACCT_TYPE?.value
+      : currentField?.value;
+
+    if (Boolean(condition)) {
       const { status, data } = await AuthSDK.internalFetcher("GETACCTDATA", {
         COMP_CD: authState?.companyID,
         BRANCH_CD:
@@ -196,27 +216,12 @@ const GeneralAPISDK = () => {
               value: data?.[0]?.ACCT_CD,
               ignoreUpdate: true,
             },
-          };
-        } else {
-          return {
-            ACCT_NM: { value: "" },
-            STMT_FROM_DATE: { value: "" },
-            WK_STMT_TO_DATE: { value: "" },
-            ACCT_CD: {
-              value: "",
+            BALANCE: {
+              value: data?.[0]?.WIDTH_BAL,
             },
           };
         }
       }
-    } else {
-      return {
-        ACCT_NM: { value: "" },
-        STMT_FROM_DATE: { value: "" },
-        WK_STMT_TO_DATE: { value: "" },
-        ACCT_CD: {
-          value: "",
-        },
-      };
     }
   };
   const getBranchCodeList = async (...reqData) => {
@@ -540,7 +545,7 @@ const GeneralAPISDK = () => {
       await AuthSDK.internalFetcher(`GETCLGZONELIST`, {
         ZONE_TRAN_TYPE: reqData?.[4] ?? "",
         COMP_CD: reqData?.[3]?.companyID ?? "",
-        BRANCH_CD: reqData?.[3]?.user?.branchCode,
+        BRANCH_CD: reqData?.[3]?.user?.branchCode ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -580,6 +585,25 @@ const GeneralAPISDK = () => {
     }
   };
 
+  const getAccNoValidation = async (reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("ACCTNOVALIDATION", {
+        BRANCH_CD: reqData?.BRANCH_CD,
+        COMP_CD: reqData?.COMP_CD,
+        ACCT_TYPE: reqData?.ACCT_TYPE,
+        ACCT_CD: reqData?.ACCT_CD,
+
+        GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
+        SCREEN_REF: reqData?.SCREEN_REF, //depending on screen code
+      });
+    if (status === "0") {
+      let responseData = data;
+
+      return responseData[0];
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -605,6 +629,7 @@ const GeneralAPISDK = () => {
     getDependentFieldList,
     getProMiscData,
     getZoneListData,
+    getAccNoValidation,
   };
 };
 export const GeneralAPI = GeneralAPISDK();
