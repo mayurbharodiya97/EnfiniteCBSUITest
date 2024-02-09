@@ -1119,8 +1119,8 @@ export const Trn001 = () => {
       <>
         {Boolean(resetDialog) ? (
           <PopupMessageAPIWrapper
-            MessageTitle="Do you wish to reset?"
-            Message=""
+            MessageTitle="Table Reset"
+            Message="Do you wish to reset?"
             onActionYes={() => handleReset()}
             onActionNo={() => setResetDialog(false)}
             rows={[]}
@@ -1131,8 +1131,8 @@ export const Trn001 = () => {
 
         {Boolean(saveDialog) ? (
           <PopupMessageAPIWrapper
-            MessageTitle={scrollSaveHeading}
-            Message=""
+            MessageTitle={isArray ? "Scroll Save" : "Transaction Save"}
+            Message={scrollSaveHeading}
             onActionYes={() => handleScrollSave()}
             onActionNo={() => setSaveDialog(false)}
             rows={[]}

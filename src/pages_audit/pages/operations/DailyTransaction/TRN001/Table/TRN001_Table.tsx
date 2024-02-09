@@ -17,9 +17,21 @@ import {
   PopupMessageAPIWrapper,
   PopupRequestWrapper,
 } from "components/custom/popupMessage";
-
+import {
+  Button,
+  Toolbar,
+  Card,
+  Tooltip,
+  CircularProgress,
+} from "@mui/material";
 import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import { useLocation } from "react-router-dom";
 
 const actions: ActionTypes[] = [
   {
@@ -45,7 +57,7 @@ export const TRN001_Table = ({
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
-
+  const location = useLocation();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const { cardStore, setCardStore } = useContext(AccDetailContext);
@@ -54,6 +66,7 @@ export const TRN001_Table = ({
   const [rows2, setRows2] = useState<any>([]);
   const [credit, setCredit] = useState<number>(0);
   const [debit, setDebit] = useState<number>(0);
+  const [remarks, setRemarks] = useState<any>("");
   const [dataRow, setDataRow] = useState<any>({});
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [scrollDialog, setScrollDialog] = useState<boolean>(false);
@@ -63,7 +76,9 @@ export const TRN001_Table = ({
     COMP_CD: authState?.companyID,
     BRANCH_CD: authState?.user?.branchCode,
   };
-
+  useEffect(() => {
+    handleSetRemarks();
+  }, [location]);
   useEffect(() => {
     rows2 && handleFilterByScroll();
   }, [searchScrollNo]);
@@ -125,11 +140,13 @@ export const TRN001_Table = ({
 
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (data) => {
+      console.log(data, "data");
       setDeleteDialog(false);
       getTRN001List.mutate(objData);
       enqueueSnackbar("Scroll Deleted", {
         variant: "success",
       });
+      handleSetRemarks();
     },
     onError: (error: any) => {
       setDeleteDialog(false);
@@ -166,6 +183,15 @@ export const TRN001_Table = ({
       setDeleteDialog(true);
     }
   }, []);
+  const handleSetRemarks = () => {
+    let msg = "WRONG ENTRY FROM DAILY TRAN";
+    if (location.pathname.includes("/cnf_daily_tran_F2")) {
+      setRemarks(msg + " CONFIRMATION (F2) (TRN/002)");
+    } else {
+      setRemarks(msg + " MAKER (TRN/001)");
+    }
+  };
+
   const handleFilterByScroll = () => {
     let result = rows2?.filter((item) => item?.SCROLL1 === searchScrollNo);
     if (result?.length > 0) {
@@ -182,8 +208,7 @@ export const TRN001_Table = ({
     console.log(result, "resssssult");
   };
 
-  const handleDelete = (input) => {
-    console.log(input, "input");
+  const handleDelete = () => {
     console.log(dataRow, "dataRow");
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
@@ -198,10 +223,10 @@ export const TRN001_Table = ({
       ACTIVITY_TYPE: "DAILY TRANSACTION",
       TRAN_DT: dataRow?.TRAN_DT,
       CONFIRM_FLAG: "N",
-      USER_DEF_REMARKS: input,
+      USER_DEF_REMARKS: remarks,
     };
 
-    input.length > 5
+    remarks?.length > 5
       ? deleteScrollByVoucher.mutate(obj)
       : enqueueSnackbar("Kindly Enter Remarks of at least 5 Characters", {
           variant: "error",
@@ -268,7 +293,62 @@ export const TRN001_Table = ({
         />
       )}
 
-      {Boolean(deleteDialog) ? (
+      <Dialog
+        maxWidth="sm"
+        open={deleteDialog}
+        // onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle className="title">
+          {"Do you want to Delete the transaction - VoucherNo." +
+            dataRow?.TRAN_CD +
+            " ?"}
+        </DialogTitle>
+        <DialogContent>
+          <br />
+
+          <TextField
+            style={{ minWidth: "400px" }}
+            fullWidth={true}
+            value={remarks}
+            placeholder="Enter Remarks"
+            onChange={(e) => setRemarks(e.target.value)}
+            label="Remarks"
+            variant="outlined"
+            color="secondary"
+          />
+          <br />
+        </DialogContent>
+
+        <DialogActions className="dialogFooter">
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleDelete}
+            autoFocus
+          >
+            Yes{" "}
+            {!deleteScrollByVoucher?.isLoading ? (
+              ""
+            ) : (
+              <CircularProgress size={20} />
+            )}
+          </Button>{" "}
+          <Button
+            onClick={() => {
+              setDeleteDialog(false);
+              handleSetRemarks();
+            }}
+            variant="contained"
+            color="secondary"
+          >
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* {Boolean(deleteDialog) ? (
         <RemarksAPIWrapper
           TitleText={
             "Do you want to Delete the transaction - VoucherNo." +
@@ -284,7 +364,7 @@ export const TRN001_Table = ({
           open={deleteDialog}
           rows={dataRow}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 };
