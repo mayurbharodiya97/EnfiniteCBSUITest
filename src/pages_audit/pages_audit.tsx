@@ -34,6 +34,7 @@ export const PagesAudit = (props, { columns }) => {
     handleCardStateUpdate();
   };
   const handleCardStateUpdate = () => {
+    //to update the state once | carousal responsiveness
     let obj = { random: Math.random() };
     setCardStore({ ...cardStore, obj });
   };

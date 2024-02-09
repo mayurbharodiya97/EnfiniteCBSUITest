@@ -14,6 +14,11 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LinearProgress from "@mui/material/LinearProgress";
+
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
 //date
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -65,11 +70,8 @@ export const Trn001 = () => {
   const { cardStore, setCardStore } = useContext(AccDetailContext);
 
   //variables
-  var defBranch = {
-    label: authState?.user?.branchCode + "-" + authState?.user?.branch,
-    value: authState?.user?.branchCode,
-    info: { COMP_CD: authState?.companyID },
-  };
+  const [defBranch, setDefBranch] = useState<any>({});
+
   let defErrMsg = { cNo: "", accNo: "" };
   var defTableValue = {
     branch: defBranch,
@@ -102,7 +104,7 @@ export const Trn001 = () => {
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
   const [sdcOptions, setSdcOptions] = useState<any>([]);
   const [accTypeOptions, setAccTypeOptions] = useState([]);
-  const [branchOptions, setBranchOptions] = useState([]);
+  const [branchOptions, setBranchOptions] = useState<any>([]);
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [isSave, setIsSave] = useState(false);
@@ -118,9 +120,26 @@ export const Trn001 = () => {
   const [tabsData, setTabsData] = useState<any>([]);
   const [searchScrollNo, setSearchScrollNo] = useState<any>("");
   const [filteredRows, setFilteredRows] = useState<any>("");
+  const [scrollSaveRes, setScrollSaveRes] = useState<any>([]);
+  const [scrollSaveDialog, setScrollSaveDialog] = useState<any>(false);
+
   let scrollSaveHeading =
     "Do you wish to save this " + (isArray ? "Scroll?" : "Transaction?");
   console.log(scrollSaveHeading, "scrollSaveHeading");
+
+  const handleSetDefaultBranch = (data) => {
+    let obj = [...rows];
+    data &&
+      data?.map((a) => {
+        if (a.value == authState?.user?.branchCode) {
+          console.log(a, "aaaa");
+          setDefBranch(a);
+          obj[0].branch = a;
+          setRows(obj);
+        }
+      });
+  };
+
   //useEffects
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
@@ -189,6 +208,7 @@ export const Trn001 = () => {
   const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
       setBranchOptions(data);
+      handleSetDefaultBranch(data);
     },
     onError: (error: any) => {},
   });
@@ -250,7 +270,7 @@ export const Trn001 = () => {
 
       data?.MESSAGE1 &&
         enqueueSnackbar(data?.MESSAGE1, {
-          variant: "success",
+          variant: "info",
         });
       if (data?.RESTRICTION) {
         enqueueSnackbar(data?.RESTRICTION, {
@@ -300,26 +320,25 @@ export const Trn001 = () => {
       });
     },
   });
-  const saveScroll = useMutation(API.addDailyTrxScroll, {
-    onSuccess: (data) => {
-      let isSuccess = data.some((a) => a?.TRAN_CD);
+  const saveScroll = useMutation(API.saveScroll, {
+    onSuccess: (res) => {
+      setScrollSaveRes(res.data);
+      console.log(res, "savescrollres");
+      let isSuccess = res?.data?.some((a) => a?.TRAN_CD);
       if (isSuccess) {
         setSaveDialog(false);
-        data.map((a) => {
-          let msg = "";
-          if (isArray) {
-            msg =
-              "Scroll Saved | Voucher No. " +
-              a?.TRAN_CD +
-              " | Scroll No. " +
-              a?.SCROLL1;
-          } else {
-            msg = "Transaction Saved | Voucher No. " + a?.TRAN_CD;
-          }
-          return enqueueSnackbar(msg, {
-            variant: "success",
-          });
+        setScrollSaveDialog(true);
+
+        let msg = "";
+        if (isArray) {
+          msg = "Scroll Saved Successfully";
+        } else {
+          msg = "Transaction Saved Successfully";
+        }
+        enqueueSnackbar(msg, {
+          variant: "success",
         });
+
         handleReset();
       } else {
         enqueueSnackbar("Some error occured in scroll saving", {
@@ -694,19 +713,20 @@ export const Trn001 = () => {
   const handleScrollSave = () => {
     let arr = rows.map((a) => {
       return {
-        BRANCH_CD: authState?.user?.branchCode,
-        COMP_CD: authState?.companyID,
-        ACCT_TYPE: a.accType?.value,
-        ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
-        REMARKS: a.remark,
-        CHEQUE_NO: a.cNo ? a.cNo : "0",
-        TYPE_CD: a.trx.code + "   ",
-        VALUE_DT: format(new Date(), "dd-MMM-yyyy"),
         ENTERED_BRANCH_CD: a.branch?.value,
         ENTERED_COMP_CD: a.branch?.info.COMP_CD,
-        SDC: a.sdc.value,
-        AMOUNT: a.isCredit ? a.credit : a.debit,
+        ACCT_TYPE: a.accType?.value,
+        ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
+        TYPE_CD: a.trx.code + "   ",
         SCROLL1: a.scroll ? a.scroll : "0",
+        SDC: a.sdc.value,
+        REMARKS: a.remark,
+        CHEQUE_NO: a.cNo ? a.cNo : "0",
+        VALUE_DT: format(new Date(), "dd-MMM-yyyy"),
+        AMOUNT: a.isCredit ? a.credit : a.debit,
+
+        BRANCH_CD: authState?.user?.branchCode,
+        COMP_CD: authState?.companyID,
         CURRENCY_CD: "00  ",
         CONFIRMED: "0",
       };
@@ -736,6 +756,7 @@ export const Trn001 = () => {
     //sending back to commonfooter
     setFilteredRows(rows);
   };
+
   return (
     <>
       <DailyTransTabs heading="(Maker) (TRN/001)" tabsData={tabsData} />
@@ -811,7 +832,9 @@ export const Trn001 = () => {
                         <Tooltip
                           disableInteractive={true}
                           title={
-                            a?.branch?.label && <h3>{a?.branch?.label}</h3>
+                            a?.branch?.label && (
+                              <h3>{a?.branch?.info?.BRANCH_NM}</h3>
+                            )
                           }
                         >
                           <TableCell sx={{ minWidth: 120 }}>
@@ -917,7 +940,11 @@ export const Trn001 = () => {
                         </TableCell>
                         <Tooltip
                           disableInteractive={true}
-                          title={a?.sdc?.label && <h3>{a?.sdc?.label}</h3>}
+                          title={
+                            a?.sdc?.label && (
+                              <h3>{a?.sdc?.info?.DESCRIPTION}</h3>
+                            )
+                          }
                         >
                           <TableCell sx={{ minWidth: 60 }}>
                             <Autocomplete
@@ -1136,7 +1163,7 @@ export const Trn001 = () => {
 
         {Boolean(saveDialog) ? (
           <PopupMessageAPIWrapper
-            MessageTitle={isArray ? "Scroll Save" : "Transaction Save"}
+            MessageTitle="Save Confirmation"
             Message={scrollSaveHeading}
             onActionYes={() => handleScrollSave()}
             onActionNo={() => setSaveDialog(false)}
@@ -1146,6 +1173,46 @@ export const Trn001 = () => {
           />
         ) : null}
       </>
+
+      <Dialog
+        maxWidth="sm"
+        open={scrollSaveDialog}
+        // onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle className="title">
+          {isArray ? "Scroll" : "Transaction"} Saved
+        </DialogTitle>
+        <DialogContent>
+          <br />
+          {isArray && (
+            <h4 style={{ minWidth: "250px", textAlign: "center" }}>
+              Scroll No. {scrollSaveRes[0]?.SCROLL1}
+            </h4>
+          )}
+          <h4 style={{ textAlign: "center" }}>
+            Voucher No.{" "}
+            {scrollSaveRes &&
+              scrollSaveRes?.map((a) => {
+                return <span>{a?.TRAN_CD}, </span>;
+              })}
+          </h4>
+        </DialogContent>
+
+        <DialogActions className="dialogFooter">
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={() => {
+              setScrollSaveDialog(false);
+              setScrollSaveRes([]);
+            }}
+          >
+            Ok
+          </Button>{" "}
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

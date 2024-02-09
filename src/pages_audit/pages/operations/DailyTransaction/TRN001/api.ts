@@ -157,15 +157,18 @@ export const getAccInquiry = async (reqData) => {
   }
 };
 
-export const addDailyTrxScroll = async (reqData) => {
+export const saveScroll = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
       DETAILS_DATA: { isDeleteRow: [], isUpdatedRow: [], isNewRow: reqData },
     });
   if (status === "0") {
-    let responseData = data;
-    console.log(data, "data");
-    return responseData;
+    let obj = {
+      data,
+      status,
+      messageDetails,
+    };
+    return obj;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

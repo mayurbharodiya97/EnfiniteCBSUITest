@@ -83,7 +83,11 @@ export const AccDetails = ({ flag }) => {
                       <Grid
                         container
                         spacing={0.5}
-                        style={{ marginTop: "0px" }}
+                        style={{
+                          marginTop: "0px",
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
                       >
                         {cardsInfo?.length > 0 &&
                           cardsInfo?.map((b, i2) => {
@@ -93,8 +97,7 @@ export const AccDetails = ({ flag }) => {
                                   <Typography
                                     id="cardLabel"
                                     className={
-                                      Number(b?.COL_VALUE) ||
-                                      b?.COL_VALUE == "0"
+                                      b?.COMPONENT_TYPE == "amountField"
                                         ? "rightEnd"
                                         : ""
                                     }
@@ -103,14 +106,13 @@ export const AccDetails = ({ flag }) => {
                                   </Typography>
                                   <Typography
                                     style={
-                                      b.COL_LABEL != "PAN" &&
+                                      b?.COMPONENT_TYPE == "amountField" &&
                                       b.COL_VALUE.includes("-")
                                         ? { color: "tomato" }
                                         : {}
                                     }
                                     className={
-                                      Number(b?.COL_VALUE) ||
-                                      b?.COL_VALUE == "0"
+                                      b?.COMPONENT_TYPE == "amountField"
                                         ? "rightEnd"
                                         : ""
                                     }

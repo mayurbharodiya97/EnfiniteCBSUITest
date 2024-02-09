@@ -139,11 +139,11 @@ export const TRN001_Table = ({
   });
 
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
-    onSuccess: (data) => {
-      console.log(data, "data");
+    onSuccess: (res) => {
+      console.log(res, "res");
       setDeleteDialog(false);
       getTRN001List.mutate(objData);
-      enqueueSnackbar("Scroll Deleted", {
+      enqueueSnackbar(res?.messageDetails, {
         variant: "success",
       });
       handleSetRemarks();

@@ -29,9 +29,11 @@ export const getDocView = async (reqData) => {
     await AuthSDK.internalFetcher("GETDOCUMENTIMG", {
       TRAN_CD: reqData?.TRAN_CD,
       SR_CD: reqData?.SR_CD,
+      // TRAN_CD: "189081",
+      // SR_CD: "1",
     });
   if (status === "0") {
-    return data;
+    return data[0];
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

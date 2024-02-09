@@ -21,6 +21,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { utilFunction } from "components/utils";
+import { enqueueSnackbar } from "notistack";
 
 const actions: ActionTypes[] = [
   {
@@ -59,14 +60,19 @@ export const Document = () => {
     onError: (error) => {},
   });
   const getDocView = useMutation(API.getDocView, {
-    onSuccess: (data) => {
-      console.log(data, " getDocView");
-      imgBase = data[0]?.DOC_IMAGE;
-      handleImgProcess();
+    onSuccess: (res) => {
+      console.log(res, " getDocView");
+
+      if (res?.ERROR_MSG) {
+        enqueueSnackbar(res?.ERROR_MSG, {
+          variant: "error",
+        });
+      } else {
+        imgBase = res?.DOC_IMAGE;
+        handleImgProcess();
+      }
     },
-    onError: (error) => {
-      handleImgProcess();
-    },
+    onError: (error) => {},
   });
 
   // fns====================

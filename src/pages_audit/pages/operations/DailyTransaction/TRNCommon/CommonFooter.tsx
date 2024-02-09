@@ -367,7 +367,10 @@ const CommonFooter = ({
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          {/* <DialogTitle id="alert-dialog-title">Scroll Delete</DialogTitle> */}
+          <DialogTitle id="alert-dialog-title" className="title">
+            A/C Type: {tempStore?.accInfo?.ACCT_TYPE} A/C No.{" "}
+            {tempStore?.accInfo?.ACCT_CD}{" "}
+          </DialogTitle>
           <DialogContent>
             <OtherTrxTabs />
           </DialogContent>
