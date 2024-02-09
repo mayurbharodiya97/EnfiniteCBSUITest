@@ -38,13 +38,14 @@ const GradientButtonCustom = withStyles({
 })(Button);
 
 const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
-  const { starticon, endicon, rotateIcon, color, ...other } = props;
+  const { starticon, endicon, rotateIcon, tabIndex, color, ...other } = props;
   const FormContextData = useContext(FormContext);
   let FormButtonCicular =
     FormContextData?.onFormButtonCicular?.onFormButtonCicular;
 
   let StartIcon = Icons[starticon] || null;
   let EndIcon = Icons[endicon] || null;
+
   return (
     <GradientButtonCustom
       sx={{
@@ -59,6 +60,7 @@ const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
           },
         },
       }}
+      tabindex={tabIndex}
       startIcon={StartIcon ? <StartIcon /> : null}
       endIcon={
         FormButtonCicular ? (
