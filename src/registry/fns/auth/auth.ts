@@ -39,15 +39,18 @@ const authAPI = () => {
     displayLanguage = code;
   };
   const loginUserDetails = (payload) => {
-    const { role, user: { id, branchCode }, workingDate } = payload
+    const { role, user: { id, branchCode, baseBranchCode }, baseCompanyID, companyID, workingDate } = payload
     loginuserDetailsData = {
       USERNAME: id,
       USERROLE: role,
       BROWSER_FINGERPRINT: browserFingerPrint,
       MACHINE_NAME: "Auto",
       BRANCH_CD: branchCode,
+      BASE_BRANCH_CD: baseBranchCode,
+      COMP_CD: companyID,
+      BASE_COMP_CD: baseCompanyID,
       THROUGH_CHANNEL: "E_CBS",
-      WORKING_DT: workingDate ?? "",
+      WORKING_DATE: workingDate ?? "",
     };
   };
   const setToken = (argaccessToken) => {
