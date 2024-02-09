@@ -124,7 +124,7 @@ export const Trn001 = () => {
   //useEffects
   useEffect(() => {
     setTempStore({ ...tempStore, accInfo: {} });
-    setCardStore({ ...cardStore, cardsInfo: {} });
+    setCardStore({ ...cardStore, cardsInfo: [] });
     setTabsData([]);
   }, []);
   useEffect(() => {
@@ -611,7 +611,7 @@ export const Trn001 = () => {
     setResetDialog(false);
     setViewOnly(false);
     setTempStore({ ...tempStore, accInfo: {} });
-    setCardStore({ ...cardStore, cardsInfo: {} });
+    setCardStore({ ...cardStore, cardsInfo: [] });
     setTabsData([]);
     setErrMsg(defErrMsg);
   };
@@ -834,7 +834,9 @@ export const Trn001 = () => {
                         <Tooltip
                           disableInteractive={true}
                           title={
-                            a?.accType?.label && <h3>{a?.accType?.label}</h3>
+                            a?.accType?.label && (
+                              <h3>{a?.accType?.info?.TYPE_NM}</h3>
+                            )
                           }
                         >
                           <TableCell sx={{ minWidth: 130 }}>
@@ -863,7 +865,6 @@ export const Trn001 = () => {
                           <TableCell sx={{ minWidth: 120 }}>
                             <TextField
                               value={a.accNo}
-                              id="txtRight"
                               fullWidth={true}
                               error={!a.accNo || a.bugAccNo ? true : false}
                               size="small"
@@ -875,7 +876,11 @@ export const Trn001 = () => {
                         </ErrTooltip>
                         <Tooltip
                           disableInteractive={true}
-                          title={a?.trx?.label && <h3>{a?.trx?.label}</h3>}
+                          title={
+                            a?.trx?.label && (
+                              <h3>{a?.trx?.info?.DESCRIPTION}</h3>
+                            )
+                          }
                         >
                           <TableCell sx={{ minWidth: 50 }}>
                             <Autocomplete

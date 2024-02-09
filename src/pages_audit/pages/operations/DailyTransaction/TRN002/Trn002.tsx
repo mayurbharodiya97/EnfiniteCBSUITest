@@ -116,10 +116,14 @@ export const Trn002 = () => {
       setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data?.filter((a) => a.CONFIRMED == "0");
+      console.log(arr, "arr");
       setRows2(arr);
       setRows(data);
       setTempStore({ ...tempStore, accInfo: arr[0] });
-      getCarousalCards.mutate(arr[0]);
+      arr?.length > 0
+        ? getCarousalCards.mutate(arr[0])
+        : setCardStore({ ...cardStore, cardsInfo: [] });
+
       getTabsByParentType.mutate(arr[0]?.PARENT_TYPE ?? "");
       handleUpdateSum(arr);
       setConfirmed(data.length - arr.length);
@@ -131,7 +135,9 @@ export const Trn002 = () => {
     onSuccess: (data) => {
       setCardStore({ ...cardStore, cardsInfo: data });
     },
-    onError: (error) => {},
+    onError: (error) => {
+      setCardStore({ ...cardStore, cardsInfo: [] });
+    },
   });
 
   const confirmScroll = useMutation(trn2Api.confirmScroll, {
