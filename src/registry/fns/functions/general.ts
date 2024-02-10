@@ -540,12 +540,12 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  const getZoneListData = async (...reqData) => {
+  const getZoneListData = async (_, formState, __, auth) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher(`GETCLGZONELIST`, {
-        ZONE_TRAN_TYPE: reqData?.[4] ?? "",
-        COMP_CD: reqData?.[3]?.companyID ?? "",
-        BRANCH_CD: reqData?.[3]?.user?.branchCode ?? "",
+        ZONE_TRAN_TYPE: formState?.ZONE_TRAN_TYPE ?? "",
+        COMP_CD: auth?.companyID ?? "",
+        BRANCH_CD: auth?.user?.branchCode ?? "",
       });
     if (status === "0") {
       let responseData = data;
