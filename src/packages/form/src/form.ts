@@ -89,6 +89,7 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
               value: defaultValue,
               error: "",
               validationRunning: false,
+              incomingMessage: null,
             }));
           }
           //Inititalize ArrayField

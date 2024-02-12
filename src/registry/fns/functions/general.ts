@@ -565,23 +565,28 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  const getSlipNoData = async (...reqData) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher(`GETSLIPNO`, {
-        COMP_CD: reqData?.[2]?.companyID ?? "",
-        BRANCH_CD: reqData?.[2]?.user?.branchCode,
-        TRAN_DT: format(new Date(reqData?.[3]?.TRAN_DT?.value), "dd/MMM/yyyy"),
-        ZONE: reqData?.[0].value ?? "0   ",
-        TRAN_TYPE: reqData?.[0]?.optionData?.[0]?.ZONE_TRAN_TYPE ?? "S",
-      });
+  const getSlipNoData = async (dependentFields) => {
+    if (
+      !Boolean(dependentFields?.TRAN_DT?.value) ||
+      !Boolean(dependentFields?.TRAN_DT?.value) ||
+      !Boolean(dependentFields?.TRAN_DT?.value)
+    ) {
+      return "";
+    }
+    const { data, status } = await AuthSDK.internalFetcher(`GETSLIPNO`, {
+      // COMP_CD: reqData?.[2]?.companyID ?? "",
+      // BRANCH_CD: reqData?.[2]?.user?.branchCode,
+      // TRAN_DT: format(new Date(reqData?.[3]?.TRAN_DT?.value), "dd/MMM/yyyy"),
+      // ZONE: reqData?.[0].value ?? "0   ",
+      // TRAN_TYPE: reqData?.[0]?.optionData?.[0]?.ZONE_TRAN_TYPE ?? "S",
+      TRAN_DT: format(new Date(dependentFields?.TRAN_DT?.value), "dd/MMM/yyyy"),
+      ZONE: dependentFields?.ZONE?.value ?? "0   ",
+      TRAN_TYPE: dependentFields?.ZONE_TRAN_TYPE ?? "S",
+    });
     if (status === "0") {
-      return {
-        SLIP_CD: { value: data?.[0]?.SLIP_NO ?? "" },
-      };
+      return data?.[0]?.SLIP_NO ?? "";
     } else {
-      return {
-        SLIP_CD: { value: "" },
-      };
+      return "";
     }
   };
   const getMatureInstDetail = async (...ReqData) => {

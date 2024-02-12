@@ -84,17 +84,7 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     );
     const yupValidationSchema = constructYupSchema(metaData.fields);
     const formName = metaData.form.name ?? "NO_NAME";
-    console.log(
-      ">>state",
-      {
-        formCode: metaData.form.name,
-        refID: metaData.form.refID,
-        setDataOnFieldChange,
-        ...metaData.form?.formState,
-        ...formState,
-      },
-      formState
-    );
+
     return (
       <>
         {/* {console.log("LocalizationProvider", AdapterDateFns)} */}
@@ -178,6 +168,7 @@ const ChildFormWrapper = forwardRef<any, any>(
       serverSentErrorDetail,
       isSubmitting,
       getFieldData,
+      handleReset,
       ...formState
     } = useForm({
       onSubmit: submitFn,
@@ -191,6 +182,7 @@ const ChildFormWrapper = forwardRef<any, any>(
       handleSubmitError: handleSubmitError,
       formDisplayLabel: formDisplayLabel,
       getFieldData: getFieldData,
+      handleFormReset: handleReset,
     }));
 
     return formRenderType === "stepper" ? (

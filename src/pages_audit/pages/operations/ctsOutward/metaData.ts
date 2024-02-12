@@ -1,3 +1,4 @@
+import { utilFunction } from "components/utils";
 import { clearingBankMasterConfigDML, getAccountSlipJoinDetail } from "./api";
 import { GridMetaDataType } from "components/dataTableStatic";
 
@@ -64,14 +65,14 @@ export const CTSOutwardClearingFormMetaData = {
       placeholder: "Props Value",
       defaultValue: "0   ",
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
-      runValidationOnDependentFieldsChange: true,
+      // runValidationOnDependentFieldsChange: true,
       skipDefaultOption: true,
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
       requestProps: "ZONE_TRAN_TYPE",
       dependentFields: ["TRAN_DT"],
-      postValidationSetCrossFieldValues: "getSlipNoData",
+      // postValidationSetCrossFieldValues: "getSlipNoData",
     },
     {
       render: {
@@ -82,6 +83,8 @@ export const CTSOutwardClearingFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
+      dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
+      setValueOnDependentFieldsChange: "getSlipNoData",
       GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
@@ -89,13 +92,28 @@ export const CTSOutwardClearingFormMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
+        defaultValue: "099 ",
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
+        postValidationSetCrossFieldValues: () => {
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NAME: { value: "" },
+            TRAN_BAL: { value: "" },
+          };
+        },
       },
       accountTypeMetadata: {
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
         isFieldFocused: true,
         defaultfocus: true,
         defaultValue: "",
+        postValidationSetCrossFieldValues: () => {
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NAME: { value: "" },
+            TRAN_BAL: { value: "" },
+          };
+        },
       },
       accountCodeMetadata: {
         fullWidth: true,
@@ -114,6 +132,7 @@ export const CTSOutwardClearingFormMetaData = {
           auth,
           dependentFieldsValues
         ) => {
+          console.log(">>dependentFieldsValues", dependentFieldsValues);
           if (
             field.value &&
             dependentFieldsValues?.["ACCT_TYPE"]?.value &&
@@ -121,7 +140,10 @@ export const CTSOutwardClearingFormMetaData = {
           ) {
             let Apireq = {
               COMP_CD: auth?.companyID,
-              ACCT_CD: field?.value?.padStart(6, "0").padEnd(20, " "),
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                field?.value,
+                dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+              ),
               ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
               GD_TODAY_DT: auth?.workingDate,
@@ -131,10 +153,6 @@ export const CTSOutwardClearingFormMetaData = {
             let postData = await getAccountSlipJoinDetail(Apireq);
 
             if (postData?.[0]?.MESSAGE1) {
-              formState.setDataOnFieldChange(
-                "ACCT_CD_VALID",
-                postData?.[0]?.ACCT_JOIN_DETAILS
-              );
               formState?.MessageBox("Information", postData?.[0]?.MESSAGE1);
             } else if (postData?.[0]?.RESTRICT_MESSAGE) {
               formState?.MessageBox(
@@ -148,6 +166,7 @@ export const CTSOutwardClearingFormMetaData = {
                 TRAN_BAL: { value: "" },
               };
             }
+            formState.setDataOnFieldChange("ACCT_CD_VALID", postData?.[0]);
             return {
               ACCT_CD: {
                 value: postData?.[0]?.ACCT_NUMBER ?? "",
@@ -242,6 +261,12 @@ export const CTSOutwardClearingFormMetaData = {
       isReadOnly: true,
       GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
     },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ZONE_TRAN_TYPE",
+    },
   ],
 };
 
@@ -249,7 +274,8 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Joint Detail",
-    rowIdColumn: "SR_CD",
+    rowIdColumn: "GRID_SR_NO",
+    // rowIdColumn: "J_TYPE",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,

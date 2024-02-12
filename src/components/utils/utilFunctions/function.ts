@@ -237,7 +237,7 @@ const areObjectsEqual = (obj1, obj2, keys) => {
 
 const getChangedColumns = (obj1, obj2, keys) => {
   return keys.filter((key) => {
-    if(obj1[key] !== obj2[key]) {
+    if (obj1[key] !== obj2[key]) {
       if (
         (typeof obj2[key] === "object" ||
           typeof obj1[key] === "object" ||
@@ -310,4 +310,9 @@ export const transformDetailDataForDML = (input1, input2, keysToCompare) => {
     }
   }
   return output;
+};
+export const getPadAccountNumber = (accountNo, optionData) => {
+  return accountNo
+    ?.padStart(optionData?.PADDING_NUMBER ?? 6, "0")
+    .padEnd(20, " ");
 };

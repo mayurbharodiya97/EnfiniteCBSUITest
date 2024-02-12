@@ -49,10 +49,11 @@ const CtsOutwardClearingForm: FC<{
   const [isOpenPopupMsg, setOpenPopupMsg] = useState(false);
   const [isOpenAddBankForm, setOpenAddBankForm] = useState(false);
   const [isOpenProceedMsg, setOpenProceedMsg] = useState(false);
+  const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
   const [gridData, setGridData] = useState([]);
   const [chequeDetailData, setChequeDetailData] = useState<any>({
     chequeDetails: [{ ECS_USER_NO: "" }],
-    SLIP_AMOUNT: "",
+    SLIP_AMOUNT: "0",
   });
   const myFormRef: any = useRef(null);
   const myChequeFormRef: any = useRef(null);
@@ -61,17 +62,20 @@ const CtsOutwardClearingForm: FC<{
 
   const setCurrentAction = useCallback((data) => {
     if (data.name === "view-details") {
-      setChequeDetailData((old) => ({
-        ...old,
-        chequeDetails: [
-          ...old.chequeDetails.map((item) => {
-            return {
-              ...item,
-              ECS_USER_NO: data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "",
-            };
-          }),
-        ],
-      }));
+      setChequeDetailData((old) => {
+        return {
+          ...old,
+          chequeDetails: [
+            ...old.chequeDetails.map((item) => {
+              return {
+                ...item,
+                ECS_USER_NO: data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "",
+              };
+            }),
+          ],
+        };
+      });
+      setChequeDtlRefresh((old) => old + 1);
       // setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "");
     }
   }, []);
@@ -104,9 +108,11 @@ const CtsOutwardClearingForm: FC<{
       setGridData([]);
       setChequeDetailData({
         chequeDetails: [{ ECS_USER_NO: "" }],
-        SLIP_AMOUNT: "",
+        SLIP_AMOUNT: "0",
       });
-      slipFormDataRef?.current?.removeFormInstance();
+      setChequeDtlRefresh(0);
+      myFormRef?.current?.handleFormReset({ preventDefault: () => {} });
+      myChequeFormRef?.current?.handleFormReset({ preventDefault: () => {} });
     },
   });
 
@@ -119,7 +125,13 @@ const CtsOutwardClearingForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
-    if (parseFloat(data?.TOTAL_AMOUNT) === 0) {
+    console.log(">>data", data);
+    if (
+      !Boolean(data?.SLIP_AMOUNT) ||
+      parseFloat(data?.SLIP_AMOUNT ?? 0) <= 0
+    ) {
+      MessageBox("Validation Failed", "Please Enter Slip Amount");
+    } else if (parseFloat(data?.TOTAL_AMOUNT) === 0) {
       const newData = data.chequeDetails?.map((item) => ({
         ...item,
         _isNewRow: formMode === "new" ? true : false,
@@ -152,6 +164,25 @@ const CtsOutwardClearingForm: FC<{
         endSubmit,
       };
       setOpenProceedMsg(true);
+    } else if (
+      parseFloat(data?.TOTAL_AMOUNT) > 0 &&
+      Array.isArray(chequeDetailData?.chequeDetails) &&
+      chequeDetailData?.chequeDetails?.length > 0 &&
+      data?.chequeDetails?.length > 0
+    ) {
+      const lastRow = data?.chequeDetails[data?.chequeDetails?.length - 1];
+      setChequeDetailData((old) => ({
+        ...old,
+        chequeDetails: [
+          {
+            ...lastRow,
+            AMOUNT: "",
+            CHEQUE_NO: "",
+          },
+          ...data.chequeDetails,
+        ],
+      }));
+      setChequeDtlRefresh((old) => old + 1);
     } else if (parseFloat(data?.TOTAL_AMOUNT) > 0) {
       setChequeDetailData((old) => ({
         ...old,
@@ -164,11 +195,11 @@ const CtsOutwardClearingForm: FC<{
           ...data.chequeDetails,
         ],
       }));
+      setChequeDtlRefresh((old) => old + 1);
     } else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
       MessageBox("Validation Failed", "Please Check Amount");
     }
   };
-
   return (
     <Fragment>
       {isLoading ? (
@@ -208,20 +239,44 @@ const CtsOutwardClearingForm: FC<{
               ) as MetaDataType
             }
             initialValues={
-              { TRAN_DT: data?.[0]?.DATE ?? "" } as InitialValuesType
+              {
+                TRAN_DT: data?.[0]?.DATE ?? "",
+                ZONE_TRAN_TYPE: zoneTranType,
+              } as InitialValuesType
             }
-            onSubmitHandler={async (data: any, displayData, endSubmit) => {
+            onSubmitHandler={async (
+              data: any,
+              displayData,
+              endSubmit,
+              setFieldError,
+              action
+            ) => {
               //@ts-ignore
               endSubmit(true);
               slipFormDataRef.current = data;
-              setChequeDetailData((old) => {
-                return { ...old, SLIP_AMOUNT: data?.AMOUNT };
-              });
+              if (action === "CHEQUEDTL") {
+                let event: any = { preventDefault: () => {} };
+                myChequeFormRef?.current?.handleSubmit(event, "FINAL");
+              }
             }}
             setDataOnFieldChange={(action, payload) => {
               if (action === "ACCT_CD_VALID") {
                 setJointDtlExpand(true);
-                setGridData(payload);
+                setGridData(payload?.ACCT_JOIN_DETAILS);
+                setChequeDetailData((old) => {
+                  return {
+                    ...old,
+                    chequeDetails: [
+                      ...old.chequeDetails.map((item) => {
+                        return {
+                          ...item,
+                          ECS_USER_NO: payload?.ACCT_NAME ?? "",
+                        };
+                      }),
+                    ],
+                  };
+                });
+                setChequeDtlRefresh((old) => old + 1);
               } else if (action === "ACCT_CD_BLANK") {
                 setGridData([]);
                 setChequeDetailData(() => ({
@@ -230,10 +285,16 @@ const CtsOutwardClearingForm: FC<{
                       ECS_USER_NO: "",
                     },
                   ],
-                  SLIP_AMOUNT: "",
+                  SLIP_AMOUNT: "0",
                 }));
+                setChequeDtlRefresh((old) => old + 1);
                 // setIsSlipJointDetail("");
               } else if (action === "AMOUNT") {
+                setChequeDetailData((old) => ({
+                  ...old,
+                  SLIP_AMOUNT: payload,
+                }));
+                setChequeDtlRefresh((old) => old + 1);
                 let event: any = { preventDefault: () => {} };
                 myFormRef?.current?.handleSubmit(event);
               }
@@ -302,7 +363,7 @@ const CtsOutwardClearingForm: FC<{
               </Grid>
               <Collapse in={isJointDtlExpand}>
                 <Grid item>
-                  {gridData && gridData.length ? (
+                  {gridData && gridData?.length > 0 ? (
                     <GridWrapper
                       key={
                         "JoinDetailGridMetaData" + mutationOutward?.isSuccess
@@ -339,19 +400,13 @@ const CtsOutwardClearingForm: FC<{
                 ) {
                   // setIsAddCheque(true);
                   let event: any = { preventDefault: () => {} };
-                  myChequeFormRef?.current?.handleSubmit(event, "AMOUNT");
+                  myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
                 }
               }
             }}
           >
             <FormWrapper
-              key={
-                `ChequeDetails` +
-                (chequeDetailData?.SLIP_AMOUNT ?? "") +
-                (chequeDetailData?.ECS_USER_NO ?? "") +
-                chequeDetailData?.chequeDetails?.length +
-                mutationOutward?.isSuccess
-              }
+              key={`ChequeDetails` + chequeDtlRefresh}
               metaData={
                 extractMetaData(
                   ChequeDetailFormMetaData,

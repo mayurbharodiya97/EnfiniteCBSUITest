@@ -454,7 +454,8 @@ export const ArrayFieldRow = ({
         className={finalClass}
       >
         {oneRow}
-        {typeof removeFn === "function" && !Boolean(fixedRows) ? (
+        {(typeof removeFn === "function" && !Boolean(fixedRows)) ||
+        Boolean(isRemoveButton) ? (
           <IconButton
             onClick={dialogOpen}
             className={classes.arrayRowRemoveBtn}

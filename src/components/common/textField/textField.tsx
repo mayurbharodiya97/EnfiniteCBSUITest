@@ -146,19 +146,39 @@ const MyTextField: FC<MyTextFieldProps> = ({
   };
 
   useEffect(() => {
-    if (typeof setValueOnDependentFieldsChange === "function") {
-      let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues),
-        { isSubmitting }
-      );
-      if (result !== undefined && result !== null) {
-        handleChange(result);
+    // if (typeof setValueOnDependentFieldsChange === "function") {
+    //   let result = setValueOnDependentFieldsChange(
+    //     transformDependentFieldsState(dependentValues),
+    //     { isSubmitting }
+    //   );
+
+    //   if (result !== undefined && result !== null) {
+    //     handleChange(result);
+    //   }
+    // }
+    const handleDependentFieldsChange = async () => {
+      if (typeof setValueOnDependentFieldsChange === "function") {
+        try {
+          let result = await setValueOnDependentFieldsChange(
+            transformDependentFieldsState(dependentValues),
+            { isSubmitting }
+          );
+
+          if (result !== undefined && result !== null) {
+            handleChange(result);
+          }
+        } catch (error) {
+          // Handle any errors that occur during the promise execution
+          console.error("An error occurred:", error);
+        }
       }
-    }
+    };
+    handleDependentFieldsChange();
   }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
+      console.log(">>incomingMessage", incomingMessage);
       const { value, error, ignoreUpdate, isFieldFocused } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
