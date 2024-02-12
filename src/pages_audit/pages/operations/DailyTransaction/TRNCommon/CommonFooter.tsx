@@ -54,9 +54,7 @@ const CommonFooter = ({
     filteredRows = [];
   }
   const [rows, setRows] = useState<any>([defaulVal]);
-  const [queryDialog, setQueryDialog] = useState(false);
   const [scrollDeleteDialog, setScrollDeleteDialog] = useState(false);
-  const [scrollDeleteDialog2, setScrollDeleteDialog2] = useState(false);
   const [otherTrxDialog, setOtherTrxDialog] = useState(false);
 
   const [scrollNo, setScrollNo] = useState("");
@@ -100,11 +98,10 @@ const CommonFooter = ({
     onSuccess: (data: any) => {
       setLoading(false);
       setScrollDeleteDialog(false);
-      setScrollDeleteDialog2(false);
       setScrollNo("");
       handleSetRemarks();
-      if (data?.message) {
-        enqueueSnackbar(data?.message, {
+      if (data?.messageDetails) {
+        enqueueSnackbar(data?.messageDetails, {
           variant: "success",
         });
       }
@@ -123,14 +120,7 @@ const CommonFooter = ({
     },
   });
 
-  const handleDeleteScroll1 = () => {
-    if (filteredRows?.length > 0) {
-      setScrollDeleteDialog(false);
-      setScrollDeleteDialog2(true);
-    }
-  };
-
-  const handleDeleteScroll2 = () => {
+  const handleDeleteScroll = () => {
     setLoading(true);
 
     let data = {
@@ -168,16 +158,10 @@ const CommonFooter = ({
   const handleScroll = (txt) => {
     txt.toString();
     setScrollNo(txt);
-    handleFilterByScroll(txt);
+    txt && handleFilterByScroll(txt);
   };
 
-  const handleCancelDeleteScroll1 = () => {
-    setScrollDeleteDialog(false);
-    setScrollNo("");
-    handleScroll("");
-  };
-  const handleCancelDeleteScroll2 = () => {
-    setScrollDeleteDialog2(false);
+  const handleCancelDeleteScroll = () => {
     setScrollDeleteDialog(false);
     setScrollNo("");
     handleScroll("");
@@ -280,6 +264,84 @@ const CommonFooter = ({
               color="secondary"
             />
             <br />
+            <br />
+            {filteredRows &&
+              filteredRows?.map((a) => {
+                if (a?.CONFIRMED === "Y") {
+                  return (
+                    <>
+                      <p>
+                        Scroll No.{a?.SCROLL1} is confirmed. Are you sure you
+                        wish to Delete it ?
+                      </p>{" "}
+                      <br />
+                    </>
+                  );
+                }
+              })}{" "}
+            <br />
+            <TextField
+              style={{ minWidth: "400px" }}
+              fullWidth={true}
+              value={remarks}
+              placeholder="Enter Remarks"
+              onChange={(e) => setRemarks(e.target.value)}
+              label="Remarks"
+              variant="outlined"
+              color="secondary"
+            />
+          </DialogContent>
+
+          <DialogActions className="dialogFooter">
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={handleDeleteScroll}
+              autoFocus
+            >
+              Ok {!loading ? "" : <CircularProgress size={20} />}
+            </Button>
+            <Button
+              onClick={() => handleCancelDeleteScroll()}
+              variant="contained"
+              color="secondary"
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* <Dialog
+          maxWidth="lg"
+          open={scrollDeleteDialog}
+          // onClose={handleClose}
+          // aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          PaperComponent={PaperComponent}
+          aria-labelledby="draggable-dialog-title"
+        >
+          <DialogTitle
+            className="title"
+            style={{ cursor: "move" }}
+            id="draggable-dialog-title"
+          >
+            Scroll Delete
+          </DialogTitle>
+          <DialogContent>
+            <br />
+            <TextField
+              style={{ minWidth: "300px" }}
+              fullWidth={true}
+              value={scrollNo}
+              placeholder="Enter ScrollNo"
+              type="number"
+              onChange={(e) => handleScroll(e.target.value)}
+              onBlur={(e) => handleScroll(e.target.value)}
+              label="Scroll No."
+              variant="outlined"
+              color="secondary"
+            />
+            <br />
           </DialogContent>
 
           <DialogActions className="dialogFooter">
@@ -299,9 +361,9 @@ const CommonFooter = ({
               Cancel
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
 
-        <Dialog
+        {/* <Dialog
           maxWidth="sm"
           open={scrollDeleteDialog2}
           // onClose={handleClose}
@@ -345,7 +407,7 @@ const CommonFooter = ({
             <Button
               color="secondary"
               variant="contained"
-              onClick={handleDeleteScroll2}
+              onClick={handleDeleteScroll}
               autoFocus
             >
               Yes {!loading ? "" : <CircularProgress size={20} />}
@@ -358,7 +420,7 @@ const CommonFooter = ({
               No
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
 
         <Dialog
           maxWidth="xl"

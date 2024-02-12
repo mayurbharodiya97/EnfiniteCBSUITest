@@ -2,7 +2,7 @@
 import LinearProgress from "@mui/material/LinearProgress";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import { Button, Card } from "@mui/material";
+import { Button, Card, CircularProgress } from "@mui/material";
 
 //logic
 import { useSnackbar } from "notistack";
@@ -28,6 +28,13 @@ import "./Trn002.css";
 import DailyTransTabs from "../TRNHeaderTabs";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import { useLocation } from "react-router-dom";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -52,6 +59,8 @@ const actions: ActionTypes[] = [
 ];
 
 export const Trn002 = () => {
+  const location = useLocation();
+
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext<any>(AccDetailContext);
   const { cardStore, setCardStore } = useContext<any>(AccDetailContext);
@@ -69,6 +78,7 @@ export const Trn002 = () => {
   const [confirmed, setConfirmed] = useState<number>(0);
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
+  const [remarks, setRemarks] = useState<any>("");
 
   const { enqueueSnackbar } = useSnackbar();
   let dataObj = {
@@ -80,6 +90,17 @@ export const Trn002 = () => {
   //   refRows && handleFilterByScroll(searchScrollNo);
   // }, [searchScrollNo]);
 
+  useEffect(() => {
+    handleSetRemarks();
+  }, [location]);
+  const handleSetRemarks = () => {
+    let msg = "WRONG ENTRY FROM DAILY TRAN";
+    if (location.pathname.includes("/cnf_daily_tran_F2")) {
+      setRemarks(msg + " CONFIRMATION (F2) (TRN/002)");
+    } else {
+      setRemarks(msg + " MAKER (TRN/001)");
+    }
+  };
   const handleFilterByScroll = (txt) => {
     console.log("handleFilterByScroll called");
     console.log(txt, "txt");
@@ -252,7 +273,7 @@ export const Trn002 = () => {
     setRows2(data);
   };
 
-  const handleDeleteByVoucher = (input) => {
+  const handleDeleteByVoucher = () => {
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
@@ -266,9 +287,9 @@ export const Trn002 = () => {
       ACTIVITY_TYPE: "DAILY TRANSACTION",
       TRAN_DT: dataRow?.TRAN_DT,
       CONFIRM_FLAG: "N",
-      USER_DEF_REMARKS: input,
+      USER_DEF_REMARKS: remarks,
     };
-    input.length > 5
+    remarks.length > 5
       ? deleteScrollByVoucher.mutate(obj)
       : enqueueSnackbar("Kindly Enter Remarks of at least 5 Characters", {
           variant: "error",
@@ -352,8 +373,65 @@ export const Trn002 = () => {
         handleViewAll={handleViewAll}
         handleRefresh={() => handleGetTRN002List()}
       />
+
       <>
-        {Boolean(deleteDialog) ? (
+        <Dialog
+          maxWidth="sm"
+          open={deleteDialog}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle className="title">Delete Confirmation</DialogTitle>
+          <DialogContent>
+            {"Do you want to Delete the transaction - VoucherNo." +
+              dataRow?.TRAN_CD +
+              " ?"}
+            <br />
+            <br />
+            <TextField
+              style={{ minWidth: "400px" }}
+              fullWidth={true}
+              value={remarks}
+              placeholder="Enter Remarks"
+              onChange={(e) => setRemarks(e.target.value)}
+              label="Remarks"
+              variant="outlined"
+              color="secondary"
+            />
+            <br />
+          </DialogContent>
+
+          <DialogActions className="dialogFooter">
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={handleDeleteByVoucher}
+              autoFocus
+            >
+              Yes{" "}
+              {!deleteScrollByVoucher?.isLoading ? (
+                ""
+              ) : (
+                <CircularProgress size={20} />
+              )}
+            </Button>{" "}
+            <Button
+              onClick={() => {
+                setDeleteDialog(false);
+                handleSetRemarks();
+              }}
+              variant="contained"
+              color="secondary"
+            >
+              No
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
+
+      <>
+        {/* {Boolean(deleteDialog) ? (
           <RemarksAPIWrapper
             TitleText={
               "Do you want to Delete the transaction - VoucherNo." +
@@ -369,16 +447,16 @@ export const Trn002 = () => {
             open={deleteDialog}
             rows={dataRow}
           />
-        ) : null}
+        ) : null} */}
 
         {Boolean(confirmDialog) ? (
           <PopupMessageAPIWrapper
-            MessageTitle={
+            MessageTitle="Transaction Confirmation"
+            Message={
               "Do you wish to Confirm this Transaction - Voucher No. " +
               dataRow?.TRAN_CD +
               " ?"
             }
-            Message=""
             onActionYes={() => handleConfirm()}
             onActionNo={() => setConfirmDialog(false)}
             rows={[]}

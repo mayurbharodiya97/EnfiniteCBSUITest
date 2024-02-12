@@ -79,7 +79,6 @@ export const AccDetails = ({ flag }) => {
                         height: (flag === "DLYTRN" ? "29vh" : "29vh") as string,
                       }}
                     >
-                      {" "}
                       <Grid
                         container
                         spacing={0.5}

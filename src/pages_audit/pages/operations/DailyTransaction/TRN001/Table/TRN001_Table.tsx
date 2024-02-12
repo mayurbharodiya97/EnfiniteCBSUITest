@@ -12,7 +12,6 @@ import { Grid, Typography } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import LinearProgress from "@mui/material/LinearProgress";
 import {
   PopupMessageAPIWrapper,
   PopupRequestWrapper,
@@ -300,14 +299,13 @@ export const TRN001_Table = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle className="title">
+        <DialogTitle className="title">Delete Confirmation</DialogTitle>
+        <DialogContent>
           {"Do you want to Delete the transaction - VoucherNo." +
             dataRow?.TRAN_CD +
             " ?"}
-        </DialogTitle>
-        <DialogContent>
           <br />
-
+          <br />
           <TextField
             style={{ minWidth: "400px" }}
             fullWidth={true}

@@ -24,3 +24,41 @@ export const getCheckDetailsList = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+// GETDLYTRNTODAYCLEARBTN
+// GETDLYTRNCHQRTNBTN
+
+export const getTodayClearing = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDLYTRNTODAYCLEARBTN", {
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getReturnHistory = async (reqData) => {
+  console.log(reqData, "reqData");
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDLYTRNCHQRTNBTN", {
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
+
+      FROM_ACCT_CD: reqData?.ACCT_CD,
+      TO_ACCT_CD: reqData?.ACCT_CD,
+      FROM_DATE: reqData?.authState?.workingDate,
+      TO_DATE: reqData?.authState?.workingDate,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

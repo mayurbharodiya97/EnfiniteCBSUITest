@@ -122,6 +122,8 @@ export const Trn001 = () => {
   const [filteredRows, setFilteredRows] = useState<any>("");
   const [scrollSaveRes, setScrollSaveRes] = useState<any>([]);
   const [scrollSaveDialog, setScrollSaveDialog] = useState<any>(false);
+  const [accValidDialog, setAccValidDialog] = useState<any>(false);
+  const [accValidMsg, setAccValidMsg] = useState<any>("");
 
   let scrollSaveHeading =
     "Do you wish to save this " + (isArray ? "Scroll?" : "Transaction?");
@@ -268,19 +270,21 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       console.log(data, "dattt");
 
-      data?.MESSAGE1 &&
-        enqueueSnackbar(data?.MESSAGE1, {
-          variant: "info",
-        });
+      if (data?.MESSAGE1) {
+        setAccValidMsg(data?.MESSAGE1);
+        let abc = accValidMsg?.split("\n");
+        console.log(abc, "abc");
+        setAccValidDialog(true);
+      }
+
       if (data?.RESTRICTION) {
-        enqueueSnackbar(data?.RESTRICTION, {
-          variant: "error",
-        });
         const obj = [...rows];
         obj[index].bug = true;
         obj[index].bugAccNo = true;
         obj[index].bugMsgAccNo = data?.RESTRICTION;
         setRows(obj);
+        setAccValidMsg(data?.RESTRICTION);
+        setAccValidDialog(true);
       } else {
         const obj = [...rows];
         obj[index].bug = false;
@@ -1207,6 +1211,41 @@ export const Trn001 = () => {
             onClick={() => {
               setScrollSaveDialog(false);
               setScrollSaveRes([]);
+            }}
+          >
+            Ok
+          </Button>{" "}
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        maxWidth="sm"
+        open={accValidDialog}
+        // onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle className="title">A/C Info</DialogTitle>
+        <DialogContent>
+          <br />
+
+          {accValidMsg?.split("\r" || "\n")?.map((a, i) => {
+            console.log(a, "aaaaaaaa");
+            return (
+              <>
+                <div style={{ minWidth: "300px" }}>{a}</div>
+                <br />
+              </>
+            );
+          })}
+        </DialogContent>
+
+        <DialogActions className="dialogFooter">
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={() => {
+              setAccValidDialog(false);
+              setAccValidMsg("");
             }}
           >
             Ok

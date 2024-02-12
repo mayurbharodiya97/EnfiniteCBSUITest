@@ -11,7 +11,8 @@ export const deleteScrollByScrollNo = async (reqData) => {
     await AuthSDK.internalFetcher("DELETESCROLLDATA", reqData);
   if (status === "0") {
     let obj = {
-      response: data,
+      data,
+      status,
       message,
       messageDetails,
     };
@@ -31,6 +32,7 @@ export const deleteScrollByVoucherNo = async (reqData) => {
     let obj = {
       data,
       status,
+      message,
       messageDetails,
     };
     return obj;
