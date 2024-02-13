@@ -146,20 +146,40 @@ const MyTextField: FC<MyTextFieldProps> = ({
   };
 
   useEffect(() => {
-    if (typeof setValueOnDependentFieldsChange === "function") {
-      let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues),
-        { isSubmitting }
-      );
-      if (result !== undefined && result !== null) {
-        handleChange(result);
+    // if (typeof setValueOnDependentFieldsChange === "function") {
+    //   let result = setValueOnDependentFieldsChange(
+    //     transformDependentFieldsState(dependentValues),
+    //     { isSubmitting }
+    //   );
+
+    //   if (result !== undefined && result !== null) {
+    //     handleChange(result);
+    //   }
+    // }
+    const handleDependentFieldsChange = async () => {
+      if (typeof setValueOnDependentFieldsChange === "function") {
+        try {
+          let result = await setValueOnDependentFieldsChange(
+            transformDependentFieldsState(dependentValues),
+            { isSubmitting }
+          );
+
+          if (result !== undefined && result !== null) {
+            handleChange(result);
+          }
+        } catch (error) {
+          // Handle any errors that occur during the promise execution
+          console.error("An error occurred:", error);
+        }
       }
-    }
+    };
+    handleDependentFieldsChange();
   }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value, ignoreUpdate, isFieldFocused, error } = incomingMessage;
+      console.log(">>incomingMessage", incomingMessage);
+      const { value, error, ignoreUpdate, isFieldFocused } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (isFieldFocused) {
@@ -249,7 +269,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         error={!isSubmitting && isError}
         helperText={
           <div style={{ display: "flex" }}>
-            <FormHelperText>
+            <FormHelperText style={{ whiteSpace: "pre-line" }}>
               {!isSubmitting && isError
                 ? myError
                 : Boolean(validationAPIResult)
@@ -308,7 +328,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
               />
             </InputAdornment>
           ) : Boolean(EndAdornment) ? (
-            EndAdornment
+            <InputAdornment position="end" className="withBorder">
+              {EndAdornment}
+            </InputAdornment>
           ) : null,
           startAdornment: Boolean(StartAdornment) ? (
             <InputAdornment position="start">{StartAdornment}</InputAdornment>

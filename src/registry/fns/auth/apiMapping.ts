@@ -846,6 +846,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
     packageName: "",
   },
+  GETCUSTOMERFDACCOUNTS: {
+    url: "/enfinityFDServiceAPI/GETCUSTOMERFDACCOUNTS",
+    packageName: "",
+  },
+  GETMATUREINSTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETMATUREINSTDTL",
+    packageName: "",
+  },
+  VALIDATEFDACCOUNTS: {
+    url: "/enfinityFDServiceAPI/VALIDATEFDACCOUNTS",
+    packageName: "",
+  },
+  VALIDATEACCOUNT: {
+    url: "/enfinityFDServiceAPI/VALIDATEACCOUNT",
+    packageName: "",
+  },
   GETLIMITGRIDDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITGRIDDATADISP",
     packageName: "",

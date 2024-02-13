@@ -83,7 +83,7 @@ export const SimpleFormWrapper = ({
         subHeaderLableStyle={subHeaderLableStyle}
       />
     )}
-    <div style={{ ...formStyle, paddingTop: "10px" }}>
+    <div style={{ paddingTop: "10px", ...formStyle }}>
       <SimpleForm
         key={`${formName}-simple`}
         fields={fields}

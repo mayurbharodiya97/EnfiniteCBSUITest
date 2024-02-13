@@ -4,9 +4,7 @@ import CkycProvider from "./c-kyc/CkycContext";
 import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import SingleDeno from "../dashboard/noteDenomination/singleDeno";
-// import TellerScreen from "../dashboard/noteDenomination/tellerScreen";
-
-// import { Ckyc } from "./c-kyc/ckyc";
+import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -14,10 +12,11 @@ const StockEntry = lazy(() => import("./stockEntry"));
 const StoppaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const Ckyc = lazy(() => import("./c-kyc"));
+const FixDepositForm = lazy(() => import("./fixDeposit"));
 const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
 );
-const CtsOutwardClearing = lazy(() => import("./ctsOutwardClearing"));
+const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
 const InwardClearing = lazy(() => import("./inwardClearing"));
 const TellerScreen = lazy(
   () => import("../dashboard/noteDenomination/tellerScreen")
@@ -52,8 +51,15 @@ export const OperationsMenu = () => (
     />
     <Route
       path="cts-outward-clearing/*"
-      element={<CtsOutwardClearing zoneTranType="S" />}
+      element={<CtsOutwardClearingFormWrapper zoneTranType="S" />}
     />
-    <Route path="inward-clearing-process/*" element={<InwardClearing />} />
+    <Route
+      path="fix-deposit/*"
+      element={
+        <FixDepositProvider>
+          <FixDepositForm />
+        </FixDepositProvider>
+      }
+    />
   </Routes>
 );

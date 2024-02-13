@@ -79,6 +79,15 @@ export const AuthContext = createContext<AuthContextType>({
   branchSelect: () => true,
   getProfileImage: "",
   setProfileImage: () => false,
+  MessageBox: () => false,
+  closeMessageBox: () => false,
+  message: {
+    isOpen: false,
+    messageTitle: "",
+    message: "",
+    icon: "",
+    buttonNames: "",
+  },
 });
 
 export const AccDetailContext = createContext<any>({
@@ -90,6 +99,7 @@ export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, inititalState);
   const [tempStore, setTempStore]: any = useState({});
   const [cardStore, setCardStore]: any = useState({});
+  const [message, setMessageBox]: any = useState({});
   const [authenticating, setAuthenticating] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -320,6 +330,29 @@ export const AuthProvider = ({ children }) => {
     let fingerprint = await AuthSDK.Getfingerprintdata();
     return String(CRC32C.str((str || "") + fingerprint));
   };
+  const MessageBox = (
+    messageTitle: String,
+    message: String,
+    icon: "INFO" | "ERROR" | "WARNING" = "INFO",
+    buttonNames: [String] = ["OK"]
+  ) => {
+    setMessageBox({
+      isOpen: true,
+      messageTitle,
+      message,
+      icon,
+      buttonNames: buttonNames ?? ["OK"],
+    });
+  };
+  const closeMessageBox = () => {
+    setMessageBox({
+      isOpen: false,
+      messageTitle: "",
+      message: "",
+      icon: "",
+      buttonNames: ["OK"],
+    });
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -331,6 +364,9 @@ export const AuthProvider = ({ children }) => {
         branchSelect,
         getProfileImage: profileImage,
         setProfileImage,
+        MessageBox,
+        closeMessageBox,
+        message,
       }}
     >
       <AccDetailContext.Provider

@@ -88,7 +88,7 @@ export const UserProfileMetaData = {
       type: "text",
       label: "CustomerId",
       isReadOnly: true,
-      placeholder: "Customer Id",
+      placeholder: "Customer ID",
       GridProps: { xs: 12, md: 3, sm: 3 },
     },
 

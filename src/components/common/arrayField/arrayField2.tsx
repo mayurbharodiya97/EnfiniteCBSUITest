@@ -28,6 +28,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   GridProps,
   IconButton,
@@ -247,7 +248,11 @@ export const ArrayField2: FC<ArrayField2Props> = ({
           title={label}
           action={
             !Boolean(fixedRows) ? (
-              <IconButton onClick={addNewRow} disabled={isSubmitting}>
+              <IconButton
+                style={{ padding: "5px 10px 0px 10px" }}
+                onClick={addNewRow}
+                disabled={isSubmitting}
+              >
                 <AddCircleOutlineIcon />
               </IconButton>
             ) : null
@@ -399,6 +404,8 @@ export const ArrayFieldRow = ({
     } else {
       finalClass = classes.newSecondArrayRowContainer;
     }
+  } else if (Boolean(fixedRows)) {
+    finalClass = classes.newSecondArrayRowContainer;
   } else if (Boolean(isScreenStyle)) {
     finalClass = classes.arrayScreenRowContainer;
   } else {
@@ -409,11 +416,29 @@ export const ArrayFieldRow = ({
       {Boolean(isDisplayCount) ? (
         <>
           {displayCountName ? (
-            <Typography gutterBottom className={classes.arrayScreenRowCount}>
+            <Typography
+              gutterBottom
+              className={
+                isCustomStyle
+                  ? classes.arrayRowCountCustomStyle
+                  : fixedRows
+                  ? classes.arrayRowCountFixedRows
+                  : classes.arrayRowCount
+              }
+            >
               {`${displayCountName} ${rowIndex + 1} of ${totalRows}`}
             </Typography>
           ) : (
-            <Typography gutterBottom className={classes.arrayRowCount}>
+            <Typography
+              gutterBottom
+              className={
+                isCustomStyle
+                  ? classes.arrayRowCountCustomStyle
+                  : fixedRows
+                  ? classes.arrayRowCountFixedRows
+                  : classes.arrayRowCount
+              }
+            >
               {`${rowIndex + 1} of ${totalRows}`}
             </Typography>
           )}
@@ -430,7 +455,7 @@ export const ArrayFieldRow = ({
       >
         {oneRow}
         {(typeof removeFn === "function" && !Boolean(fixedRows)) ||
-        !Boolean(isRemoveButton) ? (
+        Boolean(isRemoveButton) ? (
           <IconButton
             onClick={dialogOpen}
             className={classes.arrayRowRemoveBtn}
@@ -440,6 +465,11 @@ export const ArrayFieldRow = ({
           </IconButton>
         ) : null}
       </Grid>
+      {fixedRows && rowIndex + 1 < totalRows ? (
+        <Divider
+          sx={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%" }}
+        />
+      ) : null}
       <Dialog
         open={isDialogOpen}
         aria-labelledby="alert-dialog-title"
