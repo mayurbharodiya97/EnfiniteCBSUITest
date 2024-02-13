@@ -6,7 +6,7 @@ import {
   Tooltip,
   CircularProgress,
 } from "@mui/material";
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -40,20 +40,13 @@ const CommonFooter = ({
   viewOnly,
   handleViewAll,
   handleRefresh,
-  handleUpdateRows,
   handleFilterByScroll,
   filteredRows,
 }) => {
-  let defaulVal = {
-    column: { value: "ACCT_CD", label: "A/C No" },
-    operator: { value: "Equals", label: "Equals" },
-    value: "",
-    logic: { value: "OR", label: "OR" },
-  };
   if (!filteredRows) {
     filteredRows = [];
   }
-  const [rows, setRows] = useState<any>([defaulVal]);
+
   const [scrollDeleteDialog, setScrollDeleteDialog] = useState(false);
   const [otherTrxDialog, setOtherTrxDialog] = useState(false);
 
@@ -66,8 +59,6 @@ const CommonFooter = ({
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const location = useLocation();
-
-  console.log(filteredRows, "filteredRows");
 
   const handleSetRemarks = () => {
     let msg = "WRONG ENTRY FROM DAILY TRAN";
@@ -85,12 +76,8 @@ const CommonFooter = ({
   }, [location]);
 
   useEffect(() => {
-    console.log(tempStore, "tempStore1");
+    console.log(tempStore, "tempStoreCommon");
   }, [tempStore]);
-
-  useEffect(() => {
-    console.log(rows, "rows common footer");
-  }, [rows]);
 
   //api define
 
@@ -121,8 +108,7 @@ const CommonFooter = ({
   });
 
   const handleDeleteScroll = () => {
-    setLoading(true);
-
+    console.log(filteredRows, "filteredRows");
     let data = {
       COMP_CD: authState.companyID,
       BRANCH_CD: authState?.user?.branchCode,
@@ -150,15 +136,26 @@ const CommonFooter = ({
         variant: "error",
       });
     }
+    if (!data?.ACCT_CD) {
+      return enqueueSnackbar("No records found", {
+        variant: "error",
+      });
+    }
 
-    console.log(data, "reqdata delscroll");
-    scrollNo && remarks?.length > 4 && deleteByScrollNo.mutate(data);
+    if (data?.ACCT_CD && scrollNo && remarks?.length > 4) {
+      setLoading(true);
+      deleteByScrollNo.mutate(data);
+    }
   };
 
   const handleScroll = (txt) => {
     txt.toString();
+    console.log("txt", txt);
+    if (!txt) {
+      txt = "";
+    }
     setScrollNo(txt);
-    txt && handleFilterByScroll(txt);
+    handleFilterByScroll(txt);
   };
 
   const handleCancelDeleteScroll = () => {
@@ -236,8 +233,6 @@ const CommonFooter = ({
         <Dialog
           maxWidth="lg"
           open={scrollDeleteDialog}
-          // onClose={handleClose}
-          // aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
           PaperComponent={PaperComponent}
           aria-labelledby="draggable-dialog-title"
@@ -299,7 +294,8 @@ const CommonFooter = ({
               onClick={handleDeleteScroll}
               autoFocus
             >
-              Ok {!loading ? "" : <CircularProgress size={20} />}
+              <span style={{ marginLeft: "5px" }}>Ok</span>
+              {!loading ? "" : <CircularProgress size={20} />}
             </Button>
             <Button
               onClick={() => handleCancelDeleteScroll()}
@@ -310,117 +306,6 @@ const CommonFooter = ({
             </Button>
           </DialogActions>
         </Dialog>
-
-        {/* <Dialog
-          maxWidth="lg"
-          open={scrollDeleteDialog}
-          // onClose={handleClose}
-          // aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          PaperComponent={PaperComponent}
-          aria-labelledby="draggable-dialog-title"
-        >
-          <DialogTitle
-            className="title"
-            style={{ cursor: "move" }}
-            id="draggable-dialog-title"
-          >
-            Scroll Delete
-          </DialogTitle>
-          <DialogContent>
-            <br />
-            <TextField
-              style={{ minWidth: "300px" }}
-              fullWidth={true}
-              value={scrollNo}
-              placeholder="Enter ScrollNo"
-              type="number"
-              onChange={(e) => handleScroll(e.target.value)}
-              onBlur={(e) => handleScroll(e.target.value)}
-              label="Scroll No."
-              variant="outlined"
-              color="secondary"
-            />
-            <br />
-          </DialogContent>
-
-          <DialogActions className="dialogFooter">
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={handleDeleteScroll1}
-              autoFocus
-            >
-              {!loading ? "Delete" : <CircularProgress size={20} />}
-            </Button>{" "}
-            <Button
-              onClick={() => handleCancelDeleteScroll1()}
-              variant="contained"
-              color="secondary"
-            >
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog> */}
-
-        {/* <Dialog
-          maxWidth="sm"
-          open={scrollDeleteDialog2}
-          // onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle className="title">
-            {"Do you want to Delete the Scroll : " + scrollNo + "?"}
-          </DialogTitle>
-          <DialogContent>
-            <br />
-            {filteredRows &&
-              filteredRows?.map((a) => {
-                if (a?.CONFIRMED === "Y") {
-                  return (
-                    <>
-                      <Typography variant="h6">
-                        Scroll No.{a?.SCROLL1} is confirmed. Are you sure you
-                        wish to Delete it ?
-                      </Typography>{" "}
-                      <br /> <br />
-                    </>
-                  );
-                }
-              })}
-
-            <TextField
-              style={{ minWidth: "400px" }}
-              fullWidth={true}
-              value={remarks}
-              placeholder="Enter Remarks"
-              onChange={(e) => setRemarks(e.target.value)}
-              label="Remarks"
-              variant="outlined"
-              color="secondary"
-            />
-            <br />
-          </DialogContent>
-
-          <DialogActions className="dialogFooter">
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={handleDeleteScroll}
-              autoFocus
-            >
-              Yes {!loading ? "" : <CircularProgress size={20} />}
-            </Button>{" "}
-            <Button
-              onClick={() => handleCancelDeleteScroll2()}
-              variant="contained"
-              color="secondary"
-            >
-              No
-            </Button>
-          </DialogActions>
-        </Dialog> */}
 
         <Dialog
           maxWidth="xl"

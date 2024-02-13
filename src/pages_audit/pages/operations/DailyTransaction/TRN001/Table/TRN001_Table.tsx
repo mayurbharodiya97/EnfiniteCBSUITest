@@ -49,7 +49,6 @@ const actions: ActionTypes[] = [
 ];
 
 export const TRN001_Table = ({
-  updatedRows,
   handleGetHeaderTabs,
   searchScrollNo,
   handleFilteredRows,
@@ -83,17 +82,8 @@ export const TRN001_Table = ({
   }, [searchScrollNo]);
 
   useEffect(() => {
-    console.log(rows, "trn1 table rows");
-  }, [rows]);
-
-  useEffect(() => {
-    if (updatedRows?.length > 0) {
-      setRows(updatedRows);
-    } else {
-      console.log("trn1 refresh");
-      getTRN001List.mutate(objData);
-    }
-  }, [updatedRows, tempStore?.refresh]);
+    getTRN001List.mutate(objData);
+  }, [tempStore?.refresh]);
 
   // api define=============================================
   const getTRN001List = useMutation(trn1Api.getTRN001List, {
@@ -139,7 +129,6 @@ export const TRN001_Table = ({
 
   const deleteScrollByVoucher = useMutation(CommonApi.deleteScrollByVoucherNo, {
     onSuccess: (res) => {
-      console.log(res, "res");
       setDeleteDialog(false);
       getTRN001List.mutate(objData);
       enqueueSnackbar(res?.messageDetails, {
@@ -158,10 +147,8 @@ export const TRN001_Table = ({
   // fn define-----------------------------
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-    console.log(row, "rowwww");
     setDataRow(row);
 
-    console.log(row, "row setCurrentAction");
     if (data.name === "view-detail") {
       let obj = {
         COMP_CD: row?.COMP_CD,
@@ -192,23 +179,25 @@ export const TRN001_Table = ({
   };
 
   const handleFilterByScroll = () => {
+    console.log(searchScrollNo, "searchScrollNo");
     let result = rows2?.filter((item) => item?.SCROLL1 === searchScrollNo);
     if (result?.length > 0) {
       setRows(result);
+      console.log("case1");
     } else if (!searchScrollNo) {
       result = [];
       setRows(rows2);
+      console.log("case3");
     } else {
       result = [];
       setRows([]);
+      console.log("case3");
     }
-
+    console.log(result, "result");
     handleFilteredRows(result);
-    console.log(result, "resssssult");
   };
 
   const handleDelete = () => {
-    console.log(dataRow, "dataRow");
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
@@ -235,15 +224,6 @@ export const TRN001_Table = ({
     setScrollDialog(false);
   };
 
-  //console-----------------------
-  useEffect(() => {
-    console.log(dataRow, "dataRow");
-  }, [dataRow]);
-  useEffect(() => {
-    console.log(rows, "rows");
-    console.log(rows2, "rows2");
-  }, [rows, rows2]);
-
   return (
     <>
       <GridWrapper
@@ -262,7 +242,7 @@ export const TRN001_Table = ({
         xs={12}
         sm={12}
         sx={{
-          height: "23px",
+          // height: "23px",
           // width: "60%",
           right: "30px",
           float: "right",

@@ -1,7 +1,4 @@
 //UI
-import LinearProgress from "@mui/material/LinearProgress";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Button, Card, CircularProgress } from "@mui/material";
 
 //logic
@@ -18,16 +15,12 @@ import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import {
-  PopupMessageAPIWrapper,
-  PopupRequestWrapper,
-} from "components/custom/popupMessage";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { Grid, Typography } from "@mui/material";
 
 import "./Trn002.css";
 import DailyTransTabs from "../TRNHeaderTabs";
 import CommonFooter from "../TRNCommon/CommonFooter";
-import { RemarksAPIWrapper } from "components/custom/Remarks";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -102,11 +95,8 @@ export const Trn002 = () => {
     }
   };
   const handleFilterByScroll = (txt) => {
-    console.log("handleFilterByScroll called");
-    console.log(txt, "txt");
     let arr = refRows?.filter((a) => a?.CONFIRMED == "0");
     let result = refRows?.filter((item) => item?.SCROLL1 === txt);
-    console.log(result, "resssssult");
     if (result?.length > 0) {
       console.log("case1");
       setRows2(result);
@@ -137,7 +127,6 @@ export const Trn002 = () => {
       setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data?.filter((a) => a.CONFIRMED == "0");
-      console.log(arr, "arr");
       setRows2(arr);
       setRows(data);
       setTempStore({ ...tempStore, accInfo: arr[0] });
@@ -246,7 +235,6 @@ export const Trn002 = () => {
   };
 
   const handleUpdateSum = (arr) => {
-    console.log("handle sum");
     let crSum = 0;
     let drSum = 0;
     arr?.map((a) => {
@@ -265,12 +253,8 @@ export const Trn002 = () => {
         drSum = drSum + Number(a?.AMOUNT);
       }
     });
-    console.log(drSum, "drsum");
     setCredit(crSum);
     setDebit(drSum);
-  };
-  const handleUpdateRows = (data) => {
-    setRows2(data);
   };
 
   const handleDeleteByVoucher = () => {
@@ -368,7 +352,6 @@ export const Trn002 = () => {
       <CommonFooter
         viewOnly={true}
         filteredRows={filteredRows}
-        handleUpdateRows={handleUpdateRows}
         handleFilterByScroll={handleFilterByScroll}
         handleViewAll={handleViewAll}
         handleRefresh={() => handleGetTRN002List()}

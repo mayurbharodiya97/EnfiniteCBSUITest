@@ -41,10 +41,7 @@ import * as API from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
-import {
-  PopupMessageAPIWrapper,
-  PopupRequestWrapper,
-} from "components/custom/popupMessage";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import "./Trn001.css";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
@@ -99,7 +96,6 @@ export const Trn001 = () => {
 
   //states define
   const [rows, setRows] = useState<any>([defTableValue]);
-  const [updatedRows, setUpdatedRows] = useState<any>([]);
   const [trxOptions, setTrxOptions] = useState<any>([]);
   const [trxOptions2, setTrxOptions2] = useState<any>([]);
   const [sdcOptions, setSdcOptions] = useState<any>([]);
@@ -127,14 +123,12 @@ export const Trn001 = () => {
 
   let scrollSaveHeading =
     "Do you wish to save this " + (isArray ? "Scroll?" : "Transaction?");
-  console.log(scrollSaveHeading, "scrollSaveHeading");
 
   const handleSetDefaultBranch = (data) => {
     let obj = [...rows];
     data &&
       data?.map((a) => {
         if (a.value == authState?.user?.branchCode) {
-          console.log(a, "aaaa");
           setDefBranch(a);
           obj[0].branch = a;
           setRows(obj);
@@ -153,7 +147,7 @@ export const Trn001 = () => {
   }, [index]);
   useEffect(() => {
     //bug checker on row change
-    console.log(rows, "rows trn1");
+    console.log("rows trn1", rows);
     let i = 0;
     if (rows.length > 0) {
       i = rows.length - 1;
@@ -199,13 +193,7 @@ export const Trn001 = () => {
     getAccTypeOptions.mutate(authState);
     getTrxOptions.mutate(authState);
   }, []);
-  useEffect(() => {
-    console.log(errMsg, "errmsg");
-  }, [errMsg]);
 
-  useEffect(() => {
-    console.log("scroll rows", rows);
-  }, [rows]);
   //api define ============================================================
   const getBranchOptions = useMutation(API.getBranchList, {
     onSuccess: (data) => {
@@ -268,12 +256,9 @@ export const Trn001 = () => {
   });
   const getAccNoValidation = useMutation(API.getAccNoValidation, {
     onSuccess: (data) => {
-      console.log(data, "dattt");
-
       if (data?.MESSAGE1) {
         setAccValidMsg(data?.MESSAGE1);
-        let abc = accValidMsg?.split("\n");
-        console.log(abc, "abc");
+        let abc = accValidMsg?.split("\n")[2];
         setAccValidDialog(true);
       }
 
@@ -396,13 +381,16 @@ export const Trn001 = () => {
 
   const handleTrx = (e, value, i) => {
     const obj = [...rows];
-    let tr = value?.code + "   ";
-    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
 
+    let defSdc = sdcOptions.find((a) => a?.value?.trim().includes(value?.code));
     obj?.length == 1 &&
       (value?.code == "3" || value?.code == "6") &&
       handleFilterTrx();
 
+    if (rows.length == 1 && value?.code == "3") {
+      let abc = trxOptions.find((a) => a.code == "6");
+      value = abc;
+    }
     obj[i].trx = value;
     obj[i].credit = "0.00";
     obj[i].debit = "0.00";
@@ -481,7 +469,6 @@ export const Trn001 = () => {
   };
 
   const handleDateErr = (e, i) => {
-    console.log(e, "date err");
     const obj = [...rows];
     if (e) {
       obj[i].bugMsgDate = "Invalid Date ";
@@ -549,19 +536,22 @@ export const Trn001 = () => {
   const handleAddRow = () => {
     let cred = 0;
     let deb = 0;
-    let trxx = { label: "1", code: "" };
+    let trxx: any = {};
     let isCred = true;
+    let trx3 = trxOptions2.find((a) => a.code == "3");
+    let trx6 = trxOptions2.find((a) => a.code == "6");
+
     if (totalDebit > totalCredit) {
       cred = totalDebit - totalCredit;
-      trxx = trxOptions2[2]; //wrt index hardcoded
+      trxx = trx3;
       isCred = true;
     } else if (totalDebit < totalCredit) {
       deb = totalCredit - totalDebit;
-      trxx = trxOptions2[5];
+      trxx = trx6;
       isCred = false;
     }
-    let tr = trxx?.code + "   ";
-    let defSdc = sdcOptions.find((a) => a?.value?.includes(tr));
+
+    let defSdc = sdcOptions.find((a) => a?.value?.trim()?.includes(trxx?.code));
 
     let defTableValue2 = {
       branch: defBranch,
@@ -627,7 +617,6 @@ export const Trn001 = () => {
   const handleReset = () => {
     let defaultRows = { ...defTableValue };
     setRows([defaultRows]);
-    setUpdatedRows([]);
     setTotalCredit(0);
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
@@ -722,11 +711,11 @@ export const Trn001 = () => {
         ACCT_TYPE: a.accType?.value,
         ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
         TYPE_CD: a.trx.code + "   ",
-        SCROLL1: a.scroll ? a.scroll : "0",
+        SCROLL1: a.scroll ?? "0",
         SDC: a.sdc.value,
         REMARKS: a.remark,
         CHEQUE_NO: a.cNo ? a.cNo : "0",
-        VALUE_DT: format(new Date(), "dd-MMM-yyyy"),
+        VALUE_DT: format(a.date, "dd-MMM-yyyy"),
         AMOUNT: a.isCredit ? a.credit : a.debit,
 
         BRANCH_CD: authState?.user?.branchCode,
@@ -738,21 +727,14 @@ export const Trn001 = () => {
     saveScroll.mutate(arr);
   };
 
-  const handleUpdateRows = (data) => {
-    console.log(data, "updData");
-    setViewOnly(true);
-    setUpdatedRows(data);
-  };
   const handleGetHeaderTabs = (data) => {
     getTabsByParentType.mutate(data);
   };
   const handleViewAll = () => {
     setViewOnly(true);
-    setUpdatedRows([]);
   };
 
   const handleFilterByScroll = (scrollNo) => {
-    console.log(scrollNo, "scrollNo");
     setSearchScrollNo(scrollNo);
   };
 
@@ -778,7 +760,6 @@ export const Trn001 = () => {
         {viewOnly && (
           <TRN001_Table
             searchScrollNo={searchScrollNo}
-            updatedRows={updatedRows}
             handleGetHeaderTabs={handleGetHeaderTabs}
             handleFilteredRows={handleFilteredRows}
           />
@@ -1010,11 +991,7 @@ export const Trn001 = () => {
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                               <DatePicker
                                 format="dd/MM/yyyy"
-                                disabled={
-                                  a.trx?.code == "4" || a.trx?.code == "6"
-                                    ? false
-                                    : true
-                                }
+                                disabled={a.isCredit ? true : false}
                                 value={a.date}
                                 onChange={(e) => handleDate(e, i)}
                                 onError={(e) => handleDateErr(e, i)}
@@ -1109,6 +1086,18 @@ export const Trn001 = () => {
       </Card>
       {!viewOnly && (
         <div>
+          {!loading && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ margin: "8px" }}
+              onClick={() => handleSaveDialog()}
+            >
+              Post
+              {/* {t("Save")} */}
+            </Button>
+          )}
+
           {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
             <Button
               variant="outlined"
@@ -1127,18 +1116,6 @@ export const Trn001 = () => {
           >
             <RestartAltIcon /> reset
           </Button>
-
-          {!loading && (
-            <Button
-              variant="contained"
-              color="secondary"
-              sx={{ margin: "8px" }}
-              onClick={() => handleSaveDialog()}
-            >
-              Post
-              {/* {t("Save")} */}
-            </Button>
-          )}
         </div>
       )}
 
@@ -1146,7 +1123,6 @@ export const Trn001 = () => {
       <CommonFooter
         viewOnly={viewOnly}
         filteredRows={filteredRows}
-        handleUpdateRows={handleUpdateRows}
         handleFilterByScroll={handleFilterByScroll}
         handleViewAll={handleViewAll}
         handleRefresh={handleReset}
@@ -1164,7 +1140,6 @@ export const Trn001 = () => {
             // loading={getData.isLoading}
           />
         ) : null}
-
         {Boolean(saveDialog) ? (
           <PopupMessageAPIWrapper
             MessageTitle="Save Confirmation"
@@ -1176,82 +1151,80 @@ export const Trn001 = () => {
             loading={saveScroll.isLoading}
           />
         ) : null}
-      </>
-
-      <Dialog
-        maxWidth="sm"
-        open={scrollSaveDialog}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle className="title">
-          {isArray ? "Scroll" : "Transaction"} Saved
-        </DialogTitle>
-        <DialogContent>
-          <br />
-          {isArray && (
-            <h4 style={{ minWidth: "250px", textAlign: "center" }}>
-              Scroll No. {scrollSaveRes[0]?.SCROLL1}
+        <Dialog
+          maxWidth="sm"
+          open={scrollSaveDialog}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle className="title">
+            {isArray ? "Scroll" : "Transaction"} Saved
+          </DialogTitle>
+          <DialogContent>
+            <br />
+            {isArray && (
+              <h4 style={{ minWidth: "250px", textAlign: "center" }}>
+                Scroll No. {scrollSaveRes[0]?.SCROLL1}
+              </h4>
+            )}
+            <h4 style={{ textAlign: "center" }}>
+              Voucher No.{" "}
+              {scrollSaveRes &&
+                scrollSaveRes?.map((a) => {
+                  return <span>{a?.TRAN_CD}, </span>;
+                })}
             </h4>
-          )}
-          <h4 style={{ textAlign: "center" }}>
-            Voucher No.{" "}
-            {scrollSaveRes &&
-              scrollSaveRes?.map((a) => {
-                return <span>{a?.TRAN_CD}, </span>;
-              })}
-          </h4>
-        </DialogContent>
+          </DialogContent>
 
-        <DialogActions className="dialogFooter">
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={() => {
-              setScrollSaveDialog(false);
-              setScrollSaveRes([]);
-            }}
-          >
-            Ok
-          </Button>{" "}
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        maxWidth="sm"
-        open={accValidDialog}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle className="title">A/C Info</DialogTitle>
-        <DialogContent>
-          <br />
+          <DialogActions className="dialogFooter">
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => {
+                setScrollSaveDialog(false);
+                setScrollSaveRes([]);
+              }}
+            >
+              Ok
+            </Button>{" "}
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          maxWidth="sm"
+          open={accValidDialog}
+          // onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle className="title">A/C Info</DialogTitle>
+          <DialogContent>
+            <br />
 
-          {accValidMsg?.split("\r" || "\n")?.map((a, i) => {
-            console.log(a, "aaaaaaaa");
-            return (
-              <>
-                <div style={{ minWidth: "300px" }}>{a}</div>
-                <br />
-              </>
-            );
-          })}
-        </DialogContent>
+            {accValidMsg?.split("\r")?.map((a, i) => {
+              return (
+                <>
+                  <div style={{ minWidth: "300px" }}>{a}</div>
+                  <br />
+                </>
+              );
+            })}
+          </DialogContent>
 
-        <DialogActions className="dialogFooter">
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={() => {
-              setAccValidDialog(false);
-              setAccValidMsg("");
-            }}
-          >
-            Ok
-          </Button>{" "}
-        </DialogActions>
-      </Dialog>
+          <DialogActions className="dialogFooter">
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => {
+                setAccValidDialog(false);
+                setAccValidMsg("");
+              }}
+            >
+              Ok
+            </Button>{" "}
+          </DialogActions>
+        </Dialog>{" "}
+      </>
     </>
   );
 };
