@@ -2,14 +2,14 @@ import { CommonFetcherPreLoginResponse, CommonFetcherResponse } from "../type";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { GetAPIURLFromAction } from "./apiMapping";
 import { utilFunction } from "components/utils/utilFunctions";
-import platform from "platform";
+// import { platform } from "platform";
 
 const authAPI = () => {
   let baseURL: URL | null = null;
   let PackageName: string = "";
   let loginuserDetailsData: any = {};
   let browserFingerPrint = "";
-  let machineName = "";
+  // let machineName = "";
   let accessToken: any | null = null;
   let displayLanguage = "en";
   const inititateAPI = (APIURL: string, PACKAGE_NAME: string) => {
@@ -38,30 +38,30 @@ const authAPI = () => {
     browserFingerPrint = fingerprintdata;
     return fingerprintdata;
   };
-  const GetMachineName = () => {
-    if (!Boolean(machineName)) {
-      // Get browser information
-      const browserInfo = platform.name + " " + platform.version;
+  // const GetMachineName = () => {
+  //   if (!Boolean(machineName)) {
+  //     // Get browser information
+  //     const browserInfo = platform.name + " " + platform.version;
 
-      // Get operating system information
-      const osInfo = platform.os.family + " " + platform.os.version;
+  //     // Get operating system information
+  //     const osInfo = platform.os.family + " " + platform.os.version;
 
-      // Get device information
-      const deviceInfo = platform.product;
+  //     // Get device information
+  //     const deviceInfo = platform.product;
 
-      let machineInfo =
-        (Boolean(browserInfo) ? browserInfo + "-" : "") +
-        (Boolean(osInfo) ? osInfo + "-" : "") +
-        (Boolean(deviceInfo) ? deviceInfo : "");
-      machineInfo = machineInfo.substring(0, 25);
-      machineInfo = machineInfo.endsWith("-")
-        ? machineInfo.substring(0, machineInfo?.length - 1)
-        : machineInfo;
-      machineName = machineInfo;
-      return machineInfo;
-    }
-    return machineName;
-  };
+  //     let machineInfo =
+  //       (Boolean(browserInfo) ? browserInfo + "-" : "") +
+  //       (Boolean(osInfo) ? osInfo + "-" : "") +
+  //       (Boolean(deviceInfo) ? deviceInfo : "");
+  //     machineInfo = machineInfo.substring(0, 25);
+  //     machineInfo = machineInfo.endsWith("-")
+  //       ? machineInfo.substring(0, machineInfo?.length - 1)
+  //       : machineInfo;
+  //     machineName = machineInfo;
+  //     return machineInfo;
+  //   }
+  //   return machineName;
+  // };
   const setDisplayLanguage = (code) => {
     displayLanguage = code;
   };
@@ -76,7 +76,7 @@ const authAPI = () => {
       USERNAME: id,
       USERROLE: role,
       BROWSER_FINGERPRINT: browserFingerPrint,
-      MACHINE_NAME: GetMachineName(),
+      MACHINE_NAME: "",
       BRANCH_CD: branchCode,
       THROUGH_CHANNEL: "E_CBS",
       WORKING_DATE: workingDate,
