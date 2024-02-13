@@ -18,6 +18,7 @@ const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
 );
 const CtsOutwardClearing = lazy(() => import("./ctsOutwardClearing"));
+const InwardClearing = lazy(() => import("./inwardClearing"));
 const TellerScreen = lazy(
   () => import("../dashboard/noteDenomination/tellerScreen")
 );
@@ -52,9 +53,7 @@ export const OperationsMenu = () => (
     <Route
       path="cts-outward-clearing/*"
       element={<CtsOutwardClearing zoneTranType="S" />}
-    >
-      {/* <Route index element={<CtsOutwardClearing zoneTranType="S" />} /> */}
-      {/* <Route path="retrieve" element={<RetrieveClearing zoneTranType="S" />} /> */}
-    </Route>
+    />
+    <Route path="inward-clearing-process/*" element={<InwardClearing />} />
   </Routes>
 );
