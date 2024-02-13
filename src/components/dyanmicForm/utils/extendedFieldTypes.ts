@@ -159,10 +159,11 @@ export const extendFieldTypes = (
   };
 
   newMetaDataFields?.forEach((item) => {
-    if (item?.defaultBranchTrue) {
-      const getBranchVal: string = authState?.user?.branchCode;
-      item.defaultValue = getBranchVal;
-    }
+    // if (item?.defaultBranchTrue) {
+    //   const getBranchVal: string = authState?.user?.branchCode;
+    //   item.defaultValue = getBranchVal;
+    // }
+
     if (item.render.componentType === "_accountNumber") {
       let finalParameter;
       if (paravalue) {

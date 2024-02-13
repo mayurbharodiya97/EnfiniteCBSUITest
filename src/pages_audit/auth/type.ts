@@ -45,4 +45,7 @@ export interface AuthContextType {
   branchSelect: any;
   getProfileImage: any;
   setProfileImage: any;
+  MessageBox: any;
+  closeMessageBox: any;
+  message: any;
 }

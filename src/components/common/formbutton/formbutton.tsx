@@ -24,6 +24,7 @@ interface MyButtonExtendedProps {
   GridProps?: GridProps;
   enableGrid: boolean;
   iconStyle?: any;
+  tabIndex?: any;
 }
 type MyButtonMixedProps = Merge<ButtonProps, extendedFiledProps>;
 export type MyFormButtonAllProps = Merge<
@@ -62,6 +63,7 @@ export const FormButton = ({
   endsIcon,
   rotateIcon,
   iconStyle,
+  tabIndex,
   ...others
 }) => {
   const {
@@ -159,6 +161,7 @@ export const FormButton = ({
         endicon={endsIcon}
         rotateIcon={rotateIcon}
         inputRef={focusRef}
+        tabindex={tabIndex}
         sx={{
           "& svg": {
             ...iconStyle,

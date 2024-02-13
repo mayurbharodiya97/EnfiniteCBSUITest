@@ -393,6 +393,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                         "typography" ? (
                         <MyTypography
                           name={column.name}
+                          fieldKey={column.name}
                           label={column?.label ?? ""}
                           TypographyProps={{ color: "secondary" }}
                         />

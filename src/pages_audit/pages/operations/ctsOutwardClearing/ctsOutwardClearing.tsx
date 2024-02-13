@@ -73,20 +73,21 @@ const CtsOutwardClearing: FC<{
   const { enqueueSnackbar } = useSnackbar();
   const myRef = useRef<any>(null);
   const [gridData, setGridData] = useState<any>();
-  const [formData, setFormData] = useState<any>();
+  const formDataRef = useRef<any>({});
+  const [formData, setFormData] = useState<any>({});
   const [message, setMessage] = useState<any>();
-  const [isOpenSave, setIsOpenSave] = useState(false);
+  const [isOpenMessage, setIsOpenMessage] = useState(false);
   const [isOpenRetrieve, setIsOpenRetrieve] = useState(false);
   const [isDelete, SetDelete] = useState(false);
   const [isOpenProcced, setIsOpenProcced] = useState(false);
   const [formMode, setFormMode] = useState(defaultView);
   const isErrorFuncRef = useRef<any>(null);
   const [isSlipJointDetail, setIsSlipJointDetail] = useState("");
-  const [totalAmountSlip, setTotalAmountSlip] = useState("0");
+  const isSlipTotal = useRef<any>("0");
   const [initValues, setInitValues] = useState<any>({
     chequeDetails: [
       {
-        CHEQUE_DATE: new Date(),
+        ECS_USER_NO: "",
         // isRemoveButton: true,
       },
     ],
@@ -98,13 +99,13 @@ const CtsOutwardClearing: FC<{
   };
   const setCurrentAction = useCallback((data) => {
     if (data.name === "view-details") {
-      setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME);
+      setIsSlipJointDetail(data?.rows?.[0]?.data?.REF_PERSON_NAME ?? "");
     }
   }, []);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getOutwardClearingConfigData", tranCD, formMode], () =>
+  >(["getOutwardClearingConfigData", tranCD], () =>
     API.getOutwardClearingConfigData({
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
@@ -145,7 +146,7 @@ const CtsOutwardClearing: FC<{
       enqueueSnackbar(data, {
         variant: "success",
       });
-      setFormData({});
+
       setGridData({});
       setInitValues(() => ({
         chequeDetails: [],
@@ -153,20 +154,6 @@ const CtsOutwardClearing: FC<{
       setIsOpenProcced(false);
     },
   });
-  const onSubmitHandler: SubmitFnType = async (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    value,
-    event
-  ) => {
-    //@ts-ignore
-    endSubmit(true);
-    // setFieldError({
-    //   AMOUNT: "Please enter a correct ROWID_COLUMN",
-    // });
-  };
   const deleteMutation = useMutation(API.outwardClearingConfigDML, {
     onError: (error: any) => {},
     onSuccess: (data) => {
@@ -205,25 +192,14 @@ const CtsOutwardClearing: FC<{
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getBussinessDate"]);
-      queryClient.removeQueries(["getOutwardClearingConfigData", formMode]);
+      queryClient.removeQueries(["getOutwardClearingConfigData"]);
     };
   }, []);
 
   if (CtsOutwardClearingMetadata?.fields?.[1]) {
     CtsOutwardClearingMetadata.fields[1].requestProps = zoneTranType ?? "";
   }
-  const updatedMetaData = {
-    ...CtsOutwardClearingMetadata,
-    fields: CtsOutwardClearingMetadata.fields?.map((field) => {
-      if (field.name === "BRANCH_CD") {
-        return {
-          ...field,
-          defaultValue: authState?.user?.branchCode ?? "",
-        };
-      }
-      return field;
-    }),
-  };
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && (event.key === "R" || event.key === "r")) {
@@ -237,107 +213,121 @@ const CtsOutwardClearing: FC<{
           SetDelete(true);
         }
       }
-      // if (event.key === "N" && event.ctrlKey) {
-      //   console.log("Ctrl + N pressed");
-      //   event.preventDefault();
-      //   // setFormMode("new");
-      // }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [formMode]);
-  useEffect(() => {
-    // Open the PopupRequestWrapper when message is set
-    if (message && message.length > 0) {
-      console.log("message.length", message.length, message);
-      setIsOpenSave(true);
-    }
-  }, [message, message?.length]);
-
-  let cheueTotalAmount = 0;
-  data?.[0]?.CHEQUE_DETAIL?.forEach((element) => {
-    if (
-      element.AMOUNT !== undefined &&
-      element.AMOUNT !== "" &&
-      element.AMOUNT
-    ) {
-      cheueTotalAmount += Number(element.AMOUNT);
-    }
-  });
 
   return (
     <>
-      <div
-        onKeyDown={(e) => {
-          if (e.key === "Tab") {
-            let target: any = e?.target;
-            if (
-              (target?.name ?? "") ===
-              updatedMetaData.form.name + "/AMOUNT"
-            ) {
-              myRef?.current?.getFieldData().then((res) => {
-                setFormData(res);
-              });
-              CtsOutwardClearingMetadata.fields[4].isFieldFocused = false;
-              // // ChequeDetailFormMetaData.fields[0]._fields[0].isFieldFocused =
-              // true;
+      {formMode === "new" ? (
+        <>
+          <FormWrapper
+            key={
+              "CtsoutwardForm" +
+              formMode +
+              result?.[0]?.data?.[0]?.DATE +
+              mutationOutward.isSuccess
             }
-          }
-        }}
-      >
-        {formMode === "new" ? (
-          <>
-            <FormWrapper
-              key={
-                "CtsoutwardForm" +
-                formMode +
-                mutationOutward.isSuccess +
-                formData +
-                result?.[0]?.data
-              }
-              // metaData={CtsOutwardClearingMetadata}
-              metaData={
-                extractMetaData(updatedMetaData, formMode) as MetaDataType
-              }
-              initialValues={
-                mutationOutward.isSuccess
-                  ? {
-                      TRAN_DT: new Date(
-                        result?.[0]?.data?.[0]?.DATE ?? new Date()
-                      ),
-                    }
-                  : {
-                      ...formData,
-                      TRAN_DT: new Date(
-                        result?.[0]?.data?.[0]?.DATE ?? new Date()
-                      ),
-                    }
-              }
-              ref={myRef}
-              onSubmitHandler={onSubmitHandler}
-              setDataOnFieldChange={(action, paylod) => {
-                if (
-                  paylod?.ACCT_JOIN_DETAILS &&
-                  paylod?.ACCT_JOIN_DETAILS.length
-                ) {
-                  setGridData(paylod);
-                  // setIsPDExpanded(true);
-                }
-                if (paylod.RESTRICT_MESSAGE || paylod.MESSAGE1) {
-                  let accountMessage =
-                    paylod.RESTRICT_MESSAGE || paylod.MESSAGE1;
-                  setMessage(accountMessage);
-                  // setIsOpenSave(true);
-                }
-                if (action === "AMOUNT") {
-                  setTotalAmountSlip(paylod);
-                  console.log("payload", paylod);
-                }
-              }}
-              // hideHeader={true}
+            metaData={
+              extractMetaData(
+                CtsOutwardClearingMetadata,
+                formMode
+              ) as MetaDataType
+            }
+            initialValues={
+              mutationOutward.isSuccess
+                ? {
+                    TRAN_DT: new Date(
+                      result?.[0]?.data?.[0]?.DATE ?? new Date()
+                    ),
+                  }
+                : {
+                    TRAN_DT: new Date(
+                      result?.[0]?.data?.[0]?.DATE ?? new Date()
+                    ),
+                  }
+            }
+            ref={myRef}
+            onSubmitHandler={async (data: any, displayData, endSubmit) => {
               //@ts-ignore
+              endSubmit(true);
+            }}
+            setDataOnFieldChange={(action, payload) => {
+              if (action === "MESSAGE1") {
+                setMessage(payload?.MESSAGE || payload?.[0]?.RESTRICT_MESSAGE);
+                setIsOpenMessage(true);
+                setGridData(payload?.DATA);
+              }
+              if (action === "CLEAR_DATA") {
+                setGridData([]);
+                setInitValues(() => ({
+                  chequeDetails: [
+                    {
+                      ECS_USER_NO: "",
+                    },
+                  ],
+                }));
+                setIsSlipJointDetail("");
+              }
+
+              if (action === "AMOUNT") {
+                isSlipTotal.current = payload;
+                let event: any = { preventDefault: () => {} };
+                myRef?.current?.handleSubmit(event);
+                myRef?.current?.getFieldData().then((res) => {
+                  formDataRef.current = res;
+                });
+              }
+            }}
+            //@ts-ignore
+            displayMode={formMode}
+            formStyle={{
+              background: "white",
+              width: "100%",
+              padding: "05px",
+            }}
+          >
+            {({ isSubmitting, handleSubmit }) => (
+              <>
+                <GradientButton
+                  onClick={() => {
+                    setIsOpenRetrieve(true);
+                  }}
+                >
+                  Retrieve
+                </GradientButton>
+              </>
+            )}
+          </FormWrapper>
+        </>
+      ) : formMode === "view" ? (
+        <>
+          {isLoading || isFetching ? (
+            <LoaderPaperComponent />
+          ) : isError ? (
+            <Alert
+              severity="error"
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+              color="error"
+            />
+          ) : (
+            <FormWrapper
+              key={"CtsoutwardForm" + formMode}
+              metaData={
+                extractMetaData(
+                  ViewCtsOutwardClearingMetadata,
+                  formMode
+                ) as MetaDataType
+              }
+              initialValues={{
+                ...(data?.[0]?.SLIP_DETAIL || {}),
+                ...(data?.[0] || {}),
+              }}
+              ref={myRef}
               displayMode={formMode}
               formStyle={{
                 background: "white",
@@ -347,134 +337,78 @@ const CtsOutwardClearing: FC<{
             >
               {({ isSubmitting, handleSubmit }) => (
                 <>
-                  <GradientButton
-                    onClick={() => {
-                      setIsOpenRetrieve(true);
-                    }}
-                    // onClick={() => {
-                    //   navigate(location.pathname + "/retrieve");
-                    //   setFormMode("view");
-                    // }}
-                  >
-                    Retrieve
-                  </GradientButton>
+                  <>
+                    <GradientButton
+                      onClick={() => {
+                        setIsOpenRetrieve(true);
+                      }}
+                    >
+                      Retrieve
+                    </GradientButton>
+                  </>
+                  <>
+                    <GradientButton
+                      onClick={() => {
+                        setFormMode("new");
+                      }}
+                    >
+                      new
+                    </GradientButton>
+                  </>
+                  <>
+                    <GradientButton
+                      onClick={() => {
+                        SetDelete(true);
+                      }}
+                    >
+                      Delete
+                    </GradientButton>
+                  </>
                 </>
               )}
             </FormWrapper>
-          </>
-        ) : formMode === "view" ? (
-          <>
-            {isLoading || isFetching ? (
-              <LoaderPaperComponent />
-            ) : isError ? (
-              <Alert
-                severity="error"
-                errorMsg={error?.error_msg ?? "Error"}
-                errorDetail={error?.error_detail ?? ""}
-                color="error"
-              />
-            ) : (
-              <FormWrapper
-                key={"CtsoutwardForm" + formMode}
-                // metaData={CtsOutwardClearingMetadata}
-                metaData={
-                  extractMetaData(
-                    ViewCtsOutwardClearingMetadata,
-                    formMode
-                  ) as MetaDataType
-                }
-                initialValues={{
-                  ...(data?.[0]?.SLIP_DETAIL || {}),
-                  ...(data?.[0] || {}),
-                }}
-                ref={myRef}
-                // onSubmitHandler={onSubmitHandler}
-                // hideHeader={true}
-                //@ts-ignore
-                displayMode={formMode}
-                formStyle={{
-                  background: "white",
-                  width: "100%",
-                  padding: "05px",
-                }}
-              >
-                {({ isSubmitting, handleSubmit }) => (
-                  <>
-                    <>
-                      <GradientButton
-                        // onClick={() => {
-                        //   navigate(location.pathname + "/retrieve");
-                        // }}
-                        onClick={() => {
-                          setIsOpenRetrieve(true);
-                        }}
-                      >
-                        Retrieve
-                      </GradientButton>
-                    </>
-                    <>
-                      <GradientButton
-                        onClick={() => {
-                          setFormMode("new");
-                        }}
-                      >
-                        new
-                      </GradientButton>
-                    </>
-                    <>
-                      <GradientButton
-                        onClick={() => {
-                          SetDelete(true);
-                        }}
-                      >
-                        Delete
-                      </GradientButton>
-                    </>
-                  </>
-                )}
-              </FormWrapper>
-            )}
-          </>
-        ) : null}
-        <>
-          {formMode === "new" ? (
+          )}
+        </>
+      ) : null}
+      <>
+        {formMode === "new" ? (
+          <Grid
+            sx={{
+              backgroundColor: "var(--theme-color2)",
+              // padding: (theme) => theme.spacing(1),
+              margin: "0px 0px 0px 10px",
+              padding: gridData?.ACCT_JOIN_DETAILS
+                ? isPDExpanded
+                  ? "10px"
+                  : "0px"
+                : "0px",
+              // padding: !isPDExpanded ? "6px" : "2px",
+              // padding: "10px",
+              border: "1px solid rgba(0,0,0,0.12)",
+              borderRadius: "20px",
+            }}
+            container
+            item
+            xs={11.8}
+            direction={"column"}
+          >
             <Grid
-              sx={{
-                backgroundColor: "var(--theme-color2)",
-                // padding: (theme) => theme.spacing(1),
-                margin: "0px 0px 0px 10px",
-                padding: gridData?.ACCT_JOIN_DETAILS
-                  ? isPDExpanded
-                    ? "10px"
-                    : "0px"
-                  : "0px",
-                // padding: !isPDExpanded ? "6px" : "2px",
-                // padding: "10px",
-                border: "1px solid rgba(0,0,0,0.12)",
-                borderRadius: "20px",
-              }}
               container
               item
-              xs={11.8}
-              direction={"column"}
+              sx={{ alignItems: "center", justifyContent: "space-between" }}
             >
-              <Grid
-                container
-                item
-                sx={{ alignItems: "center", justifyContent: "space-between" }}
+              <Typography
+                sx={{
+                  color: "var(--theme-color3)",
+                  marginLeft: "15px",
+                  marginTop: "6px",
+                }}
+                gutterBottom={true}
+                variant={"h6"}
               >
-                <Typography
-                  sx={{
-                    color: "var(--theme-color3)",
-                    marginLeft: "15px",
-                    marginTop: "6px",
-                  }}
-                  gutterBottom={true}
-                  variant={"h6"}
-                >
-                  Joint - Details
-                </Typography>
-                {/* <div
+                Joint - Details
+              </Typography>
+              {/* <div
                   style={{
                     display: "flex",
                     justifyContent: "end",
@@ -530,53 +464,51 @@ const CtsOutwardClearing: FC<{
                       )}
                   </Toolbar>
                 </div> */}
-                <IconButton onClick={handlePDExpand}>
-                  {!isPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                </IconButton>
-              </Grid>
-              <Collapse in={isPDExpanded}>
-                <Grid item>
-                  {gridData?.ACCT_JOIN_DETAILS &&
-                  gridData?.ACCT_JOIN_DETAILS.length ? (
-                    <GridWrapper
-                      key={"SlipJoinDetailGridMetaData" + gridData}
-                      finalMetaData={SlipJoinDetailGridMetaData}
-                      data={gridData?.ACCT_JOIN_DETAILS ?? []}
-                      setData={() => null}
-                      // loading={isLoading || isFetching}
-                      actions={actions}
-                      setAction={setCurrentAction}
-                      // refetchData={() => refetch()}
-                      // ref={myGridRef}
-                      // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
-                    />
-                  ) : null}
-                </Grid>
-              </Collapse>
+              <IconButton onClick={handlePDExpand}>
+                {!isPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </IconButton>
             </Grid>
-          ) : null}
-        </>
-        <>
-          <ChequeDetailForm
-            formData={formData}
-            setFormData={setFormData}
-            myRef={myRef}
-            formMode={formMode}
-            retrievData={data?.[0]}
-            loading={isLoading || isFetching}
-            error={isError}
-            zoneTranType={zoneTranType}
-            mutationOutward={mutationOutward}
-            setIsOpenProcced={setIsOpenProcced}
-            isOpenProcced={isOpenProcced}
-            initValues={initValues}
-            gridData={gridData}
-            setInitValues={setInitValues}
-            isSlipJointDetail={isSlipJointDetail}
-            totalAmountSlip={totalAmountSlip}
-          />
-        </>
-      </div>
+            <Collapse in={isPDExpanded}>
+              <Grid item>
+                {gridData?.ACCT_JOIN_DETAILS &&
+                gridData?.ACCT_JOIN_DETAILS.length ? (
+                  <GridWrapper
+                    key={"SlipJoinDetailGridMetaData" + gridData + setGridData}
+                    finalMetaData={SlipJoinDetailGridMetaData}
+                    data={gridData?.ACCT_JOIN_DETAILS ?? []}
+                    setData={() => null}
+                    // loading={isLoading || isFetching}
+                    actions={actions}
+                    setAction={setCurrentAction}
+                    // refetchData={() => refetch()}
+                    // ref={myGridRef}
+                    // defaultSortOrder={[{ id: "TRAN_CD", desc: false }]}
+                  />
+                ) : null}
+              </Grid>
+            </Collapse>
+          </Grid>
+        ) : null}
+      </>
+      <>
+        <ChequeDetailForm
+          myRef={myRef}
+          formMode={formMode}
+          retrievData={data?.[0]}
+          loading={isLoading || isFetching}
+          error={isError}
+          zoneTranType={zoneTranType}
+          mutationOutward={mutationOutward}
+          setIsOpenProcced={setIsOpenProcced}
+          isOpenProcced={isOpenProcced}
+          initValues={initValues}
+          gridData={gridData}
+          setInitValues={setInitValues}
+          isSlipJointDetail={isSlipJointDetail}
+          isSlipTotal={isSlipTotal.current}
+          formData={formDataRef.current}
+        />
+      </>
 
       {isOpenRetrieve ? (
         <RetrieveClearingForm
@@ -586,16 +518,16 @@ const CtsOutwardClearing: FC<{
           tranDate={result?.[0]?.data}
         />
       ) : null}
-      {isOpenSave ? (
+      {isOpenMessage && (
         <PopupRequestWrapper
           MessageTitle="Account Description"
           Message={message}
-          onClickButton={(rows, buttonName) => setIsOpenSave(false)}
+          onClickButton={(rows, buttonName) => setIsOpenMessage(false)}
           buttonNames={["Ok"]}
           rows={[]}
-          open={isOpenSave}
+          open={isOpenMessage}
         />
-      ) : null}
+      )}
       {isDelete ? (
         <PopupMessageAPIWrapper
           MessageTitle="Confirmation"

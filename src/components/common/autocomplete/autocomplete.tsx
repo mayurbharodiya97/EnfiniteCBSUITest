@@ -397,10 +397,12 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                         size={25}
                         color="secondary"
                         variant="indeterminate"
+                        size={20}
                         {...CircularProgressProps}
                       />
-                    ) : null}
-                    {params.InputProps.endAdornment}
+                    ) : (
+                      params.InputProps.endAdornment
+                    )}
                   </Fragment>
                 ),
               }}
