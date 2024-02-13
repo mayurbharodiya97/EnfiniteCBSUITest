@@ -53,6 +53,7 @@ export const OperationsMenu = () => (
       path="cts-outward-clearing/*"
       element={<CtsOutwardClearingFormWrapper zoneTranType="S" />}
     />
+    <Route path="inward-clearing-process/*" element={<InwardClearing />} />
     <Route
       path="fix-deposit/*"
       element={
