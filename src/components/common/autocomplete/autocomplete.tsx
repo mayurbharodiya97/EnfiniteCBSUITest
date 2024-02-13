@@ -394,7 +394,6 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   <Fragment>
                     {validationRunning || loadingOptions ? (
                       <CircularProgress
-                        size={25}
                         color="secondary"
                         variant="indeterminate"
                         size={20}
