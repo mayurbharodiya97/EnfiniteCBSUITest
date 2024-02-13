@@ -28,13 +28,6 @@ export const TRN002_TableMetaData: GridMetaDataType = {
   },
   columns: [
     {
-      accessor: "status",
-      columnName: "Status",
-      sequence: 0,
-      componentType: "default",
-      width: 80,
-    },
-    {
       accessor: "TRAN_CD",
       columnName: "Voucher No",
       sequence: 1,

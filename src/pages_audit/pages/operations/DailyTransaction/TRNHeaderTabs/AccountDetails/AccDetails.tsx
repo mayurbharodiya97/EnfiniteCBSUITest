@@ -47,11 +47,6 @@ export const AccDetails = ({ flag }) => {
     setCardName(arr3);
   }, [cardStore]);
 
-  useEffect(() => {
-    console.log(cardName, "cardName");
-    console.log(cardStore, "cardStore");
-  }, [cardName, cardStore]);
-
   return (
     <>
       {cardName?.length > 0 ? (
