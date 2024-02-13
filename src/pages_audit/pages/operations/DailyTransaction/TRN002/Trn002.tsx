@@ -1,12 +1,31 @@
 //UI
-import { Button, Card, CircularProgress } from "@mui/material";
+import {
+  Button,
+  Card,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import "./Trn002.css";
 
 //logic
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+} from "react";
+import { useLocation } from "react-router-dom";
+import { useMutation } from "react-query";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useMutation } from "react-query";
 import { TRN002_TableMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
@@ -14,19 +33,9 @@ import * as trn2Api from "./api";
 import * as CommonApi from "../TRNCommon/api";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
-import { useContext } from "react";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { Grid, Typography } from "@mui/material";
-
-import "./Trn002.css";
 import DailyTransTabs from "../TRNHeaderTabs";
 import CommonFooter from "../TRNCommon/CommonFooter";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import { useLocation } from "react-router-dom";
 
 const actions: ActionTypes[] = [
   {
@@ -79,13 +88,10 @@ export const Trn002 = () => {
     BRANCH_CD: authState?.user?.branchCode,
   };
 
-  // useEffect(() => {
-  //   refRows && handleFilterByScroll(searchScrollNo);
-  // }, [searchScrollNo]);
-
   useEffect(() => {
     handleSetRemarks();
   }, [location]);
+
   const handleSetRemarks = () => {
     let msg = "WRONG ENTRY FROM DAILY TRAN";
     if (location.pathname.includes("/cnf_daily_tran_F2")) {

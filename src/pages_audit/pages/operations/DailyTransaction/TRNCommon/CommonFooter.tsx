@@ -1,11 +1,5 @@
 //UI
-import {
-  Button,
-  Toolbar,
-  Card,
-  Tooltip,
-  CircularProgress,
-} from "@mui/material";
+import { Button, Tooltip, CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -14,17 +8,18 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 
 //logic
+import "./CommonFooter.css";
 import React, { useEffect, useState, useContext, memo } from "react";
 import { useMutation } from "react-query";
 import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { AuthContext } from "pages_audit/auth";
-import { AccDetailContext } from "pages_audit/auth";
-import "./CommonFooter.css";
+import { AuthContext, AccDetailContext } from "pages_audit/auth";
 import * as API from "./api";
 import OtherTrxTabs from "../TRNOtherTrx";
 import Paper, { PaperProps } from "@mui/material/Paper";
 import Draggable from "react-draggable";
+import LienDetail from "../TRNOtherTrx/Lien_Detail";
+import SIDetail from "../TRNOtherTrx/SI_Detail";
 
 function PaperComponent(props: PaperProps) {
   return (
@@ -60,17 +55,6 @@ const CommonFooter = ({
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const location = useLocation();
 
-  const handleSetRemarks = () => {
-    let msg = "WRONG ENTRY FROM DAILY TRAN";
-    if (location.pathname.includes("/cnf_daily_tran_F2")) {
-      setRemarks(msg + " CONFIRMATION (F2) (TRN/002)");
-      setIsTrn1(false);
-    } else {
-      setRemarks(msg + " MAKER (TRN/001)");
-
-      setIsTrn1(true);
-    }
-  };
   useEffect(() => {
     handleSetRemarks();
   }, [location]);
@@ -107,6 +91,18 @@ const CommonFooter = ({
     },
   });
 
+  //fns define
+  const handleSetRemarks = () => {
+    let msg = "WRONG ENTRY FROM DAILY TRAN";
+    if (location.pathname.includes("/cnf_daily_tran_F2")) {
+      setRemarks(msg + " CONFIRMATION (F2) (TRN/002)");
+      setIsTrn1(false);
+    } else {
+      setRemarks(msg + " MAKER (TRN/001)");
+
+      setIsTrn1(true);
+    }
+  };
   const handleDeleteScroll = () => {
     console.log(filteredRows, "filteredRows");
     let data = {
@@ -203,17 +199,8 @@ const CommonFooter = ({
             </Button>
           </Grid>
         )}
-        <Grid item>
-          <Tooltip
-            disableInteractive={true}
-            title={
-              tempStore?.accInfo?.ACCT_CD ? (
-                ""
-              ) : (
-                <h3>"Please fill A/C details"</h3>
-              )
-            }
-          >
+        {viewOnly && (
+          <Grid item>
             <Button
               variant="contained"
               color="primary"
@@ -223,10 +210,10 @@ const CommonFooter = ({
                   : console.log("");
               }}
             >
-              Other Trx
+              Other Trn./Lien/SI Detail
             </Button>
-          </Tooltip>
-        </Grid>{" "}
+          </Grid>
+        )}
       </Grid>
       <br />
       <>
@@ -294,8 +281,12 @@ const CommonFooter = ({
               onClick={handleDeleteScroll}
               autoFocus
             >
-              <span style={{ marginLeft: "5px" }}>Ok</span>
-              {!loading ? "" : <CircularProgress size={20} />}
+              Ok
+              {!loading ? (
+                ""
+              ) : (
+                <CircularProgress size={20} sx={{ marginLeft: "10px" }} />
+              )}
             </Button>
             <Button
               onClick={() => handleCancelDeleteScroll()}
@@ -315,11 +306,12 @@ const CommonFooter = ({
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title" className="title">
-            A/C Type: {tempStore?.accInfo?.ACCT_TYPE} A/C No.{" "}
-            {tempStore?.accInfo?.ACCT_CD}{" "}
+            Other Transaction Details for A/C No. {tempStore?.accInfo?.ACCT_CD}{" "}
           </DialogTitle>
-          <DialogContent>
+          <DialogContent style={{ padding: "0px" }}>
             <OtherTrxTabs />
+            <LienDetail />
+            <SIDetail />
           </DialogContent>
 
           <DialogActions>

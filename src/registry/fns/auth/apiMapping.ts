@@ -829,6 +829,16 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACHIWIMGDTLTAB",
     packageName: "",
   },
+  // lien
+  GETDLYTRNACCTLIENTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACCTLIENTAB",
+    packageName: "",
+  },
+  // SI detail
+  GETDLYTRNSIDTLTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSIDTLTAB",
+    packageName: "",
+  },
   //==============
   //not used
   GETTRANDYNQUERYDATAF1: {

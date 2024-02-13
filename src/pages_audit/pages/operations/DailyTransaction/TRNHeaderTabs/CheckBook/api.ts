@@ -24,8 +24,6 @@ export const getCheckDetailsList = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-// GETDLYTRNTODAYCLEARBTN
-// GETDLYTRNCHQRTNBTN
 
 export const getTodayClearing = async (reqData) => {
   const { data, status, message, messageDetails } =

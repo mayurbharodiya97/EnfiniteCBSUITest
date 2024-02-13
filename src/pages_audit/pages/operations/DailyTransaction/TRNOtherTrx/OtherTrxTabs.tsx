@@ -102,7 +102,7 @@ export const OtherTrxTabs = () => {
     setTabValue(newValue);
   };
   return (
-    <div style={{ padding: "8px" }}>
+    <div>
       <>
         <Grid item xs="auto" id="dailyTabs">
           <Tabs
