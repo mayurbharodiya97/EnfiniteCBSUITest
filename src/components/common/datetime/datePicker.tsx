@@ -167,7 +167,13 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore
         onChange={handleChange}
-        sx={{ background: Boolean(readOnly) ? "#e7e5e563" : "" }}
+        sx={{
+          "& .MuiInputBase-root": {
+            background: Boolean(readOnly)
+              ? "var(--theme-color7) !important"
+              : "",
+          },
+        }}
         slots={{
           textField: TextField,
         }}

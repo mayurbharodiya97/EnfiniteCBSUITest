@@ -1,16 +1,39 @@
-import { Button, CircularProgress, Dialog } from "@mui/material";
+import { AppBar, Button, CircularProgress, Dialog } from "@mui/material";
 import React, { useContext } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { forceExpireMetaData } from "./forceExpireFormMetadata";
 import { AuthContext } from "pages_audit/auth";
+import { Alert } from "components/common/alert";
+import { crudLimitEntryData } from "./api";
+import { useMutation } from "react-query";
+import { enqueueSnackbar } from "notistack";
 
-export const ForceExpire = ({ navigate, forceExpire }) => {
+export const ForceExpire = ({ navigate, getLimitDetail }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
 
-  console.log("<<<row2222s", rows);
+  console.log("<<<row2222s", authState?.workingDate);
+
+  const forceExpire: any = useMutation(
+    "crudLimitEntryData",
+    crudLimitEntryData,
+    {
+      onSuccess: (data, variables) => {
+        console.log("<<<FONCE", data, variables);
+
+        navigate(".");
+        enqueueSnackbar("Force-Expired successfully", { variant: "success" });
+        getLimitDetail.mutate({
+          COMP_CD: authState?.companyID,
+          ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
+          ACCT_CD: rows?.[0]?.data?.ACCT_CD,
+          BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+        });
+      },
+    }
+  );
 
   const onSubmitHandler = (
     data: any,
@@ -25,11 +48,10 @@ export const ForceExpire = ({ navigate, forceExpire }) => {
       _isNewRow: false,
       _isDeleteRow: false,
       COMP_CD: authState?.companyID,
-      TRAN_CD: data?.TRAN_CD,
       BRANCH_CD: data?.BRANCH_CD,
+      TRAN_CD: data?.TRAN_CD,
       REMARKS: data?.REMARKS,
-      // FORCE_EXP_DT: data?.FORCE_EXP_DT,
-      FORCE_EXP_DT: "28/FEB/2024",
+      FORCE_EXP_DT: data?.FORCE_EXP_DT,
       _UPDATEDCOLUMNS: [
         "REMARKS",
         "FORCE_EXP_VERIFIED_BY",
@@ -37,10 +59,9 @@ export const ForceExpire = ({ navigate, forceExpire }) => {
         "FORCE_EXP_DT",
       ],
       _OLDROWVALUE: {
-        REMARKS: "AAAAAAAAAA",
+        REMARKS: rows?.[0]?.data?.REMARKS,
         FORCE_EXP_VERIFIED_BY: "",
-        // EXPIRED_FLAG: data?.EXPIRED_FLAG,
-        EXPIRED_FLAG: "A",
+        EXPIRED_FLAG: data?.EXPIRED_FLAG,
         FORCE_EXP_DT: "",
       },
     };
@@ -60,6 +81,18 @@ export const ForceExpire = ({ navigate, forceExpire }) => {
       }}
     >
       <>
+        {forceExpire?.isError ? (
+          <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+            <AppBar position="relative" color="primary">
+              <Alert
+                severity="error"
+                errorMsg={forceExpire?.error?.error_msg ?? "Unknow Error"}
+                errorDetail={forceExpire?.error?.error_detail ?? ""}
+                color="error"
+              />
+            </AppBar>
+          </div>
+        ) : null}
         <FormWrapper
           key={"nscdetailForm"}
           metaData={forceExpireMetaData}
@@ -71,16 +104,20 @@ export const ForceExpire = ({ navigate, forceExpire }) => {
             console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
-                <Button
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  // disabled={isSubmitting}
-                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                  color={"primary"}
-                >
-                  Save
-                </Button>
+                {rows?.[0]?.data?.EXPIRED_FLAG === "A" && (
+                  <Button
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    // disabled={isSubmitting}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
+                    color={"primary"}
+                  >
+                    Save
+                  </Button>
+                )}
                 <Button color="primary" onClick={() => navigate(".")}>
                   close
                 </Button>

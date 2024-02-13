@@ -119,6 +119,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     fieldKey,
     name,
     dependentValues,
+    readOnly,
     excluded,
     incomingMessage,
     whenToRunValidation,
@@ -337,7 +338,9 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         }}
         // onBlur={handleBlur}
         onBlur={handleBlurInterceptor}
-        disabled={isSubmitting}
+        //change by parag  , disabled
+        // disabled={isSubmitting}
+        disabled={readOnly}
         filterOptions={
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"
@@ -382,6 +385,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               required={required}
               helperText={!isSubmitting && isError ? error : null}
               InputProps={{
+                style: {
+                  background: Boolean(readOnly) ? "var(--theme-color7)" : "",
+                },
+
                 ...params.InputProps,
                 endAdornment: (
                   <Fragment>

@@ -29,7 +29,7 @@ export const en_language_data = {
     ResendOTP: "Resend OTP",
     GetNewOTP: "Get New OTP",
     ValidFor: "Valid for",
-    OtpExpired: "OTP Expired",
+    OtpExpired: "OTP Expired in",
     Hello: " Hello",
     Back: "Back",
     VerifyOTP: "Verify OTP",

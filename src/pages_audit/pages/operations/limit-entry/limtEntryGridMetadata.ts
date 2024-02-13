@@ -13,7 +13,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     disableSorting: false,
     disableGroupBy: true,
     enablePagination: true,
-    hideFooter: true,
+    hideFooter: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {

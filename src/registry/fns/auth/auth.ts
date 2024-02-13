@@ -2,6 +2,7 @@ import { CommonFetcherPreLoginResponse, CommonFetcherResponse } from "../type";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { GetAPIURLFromAction } from "./apiMapping";
 import { utilFunction } from "components/utils/utilFunctions";
+import { format } from "date-fns";
 const authAPI = () => {
   let baseURL: URL | null = null;
   let PackageName: string = "";
@@ -40,7 +41,9 @@ const authAPI = () => {
   };
   const loginUserDetails = ({
     role,
-    user: { id, branchCode },
+    user: { id, branchCode, baseBranchCode },
+    baseCompanyID,
+    companyID,
     workingDate,
   }) => {
     loginuserDetailsData = {
@@ -50,7 +53,12 @@ const authAPI = () => {
       MACHINE_NAME: "Auto",
       BRANCH_CD: branchCode,
       THROUGH_CHANNEL: "E_CBS",
-      WORKING_DT: workingDate,
+      // WORKING_DT: workingDate,
+      WORKING_DATE: workingDate ?? "",
+      // WORKING_DT: format(new Date(workingDate), "dd/MM/yyyy") ?? "",
+      BASE_BRANCH_CD: baseBranchCode,
+      COMP_CD: companyID,
+      BASE_COMP_CD: baseCompanyID,
     };
   };
   const setToken = (argaccessToken) => {

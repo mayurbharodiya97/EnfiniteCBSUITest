@@ -353,6 +353,14 @@ export const forceExpireMetaData = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "Remarks",
+      dependentFields: ["EXPIRED_FLAG"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.EXPIRED_FLAG?.value === "A") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["This Field is required."] }],
@@ -368,7 +376,7 @@ export const forceExpireMetaData = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "datePicker",
       },
       name: "RESOLUTION_DATE",
       label: "Resolution DT",
@@ -406,6 +414,14 @@ export const forceExpireMetaData = {
       name: "FORCE_EXP_DT",
       label: "Forced Expired Date",
       placeholder: "Forced Expired Date",
+      dependentFields: ["EXPIRED_FLAG"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.EXPIRED_FLAG?.value === "A") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       schemaValidation: {
         type: "string",
         rules: [

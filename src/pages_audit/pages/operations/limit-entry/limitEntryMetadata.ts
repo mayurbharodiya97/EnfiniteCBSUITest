@@ -389,6 +389,7 @@ export const limitEntryMetaData = {
       },
       _optionsKey: "getSecurityListData",
       dependentFields: [
+        "ACCT_CD",
         "ACCT_TYPE",
         "SECURITY_CD",
         "HIDDEN_CHARGE_AMT",
@@ -396,6 +397,16 @@ export const limitEntryMetaData = {
         "HIDDEN_GST_ROUND",
         "HIDDEN_TAX_RATE",
       ],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (
+          !dependentFieldsValues?.ACCT_CD?.value ||
+          dependentFieldsValues?.ACCT_CD?.error
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
       options: (dependentValue, formState, _, authState, other) => {
         if (dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
           let apiReq = {

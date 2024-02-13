@@ -128,6 +128,7 @@ export const ChequeBookEntryMetaData = {
           };
           let postData = await API.getChequebookData({ otherAPIRequestPara });
 
+          console.log("<<<ifi", authState);
           const result = [
             "ACCT_ALLOW_MSG",
             "BRN_ALLOW_MSG",
@@ -141,7 +142,6 @@ export const ChequeBookEntryMetaData = {
             .join(", ");
 
           if (result) {
-            console.log("<<<ifi", field?.value);
             formState.setDataOnFieldChange("MESSAGE", result);
             return {
               ACCT_CD: { value: "", isFieldFocused: true },
@@ -181,13 +181,9 @@ export const ChequeBookEntryMetaData = {
               JOINT_NAME_2: {
                 value: postData?.[0]?.JOINT_NAME_2 ?? "",
               },
-              REQUISITION_DT: {
-                value:
-                  format(
-                    parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
-                    "dd-MMM-yyyy"
-                  ).toUpperCase() ?? "",
-              },
+              // REQUISITION_DT: {
+              //   value: authState?.WORKING_DATE,
+              // },
               SR_CD: {
                 value: postData?.[0]?.SR_CD ?? "",
               },
@@ -245,19 +241,23 @@ export const ChequeBookEntryMetaData = {
       FormatProps: {
         allowNegative: true,
       },
-      textFieldStyle: {
-        "& .MuiInputLabel-formControl": {
-          right: "0",
-          left: "auto",
-        },
-      },
+      // textFieldStyle: {
+      //   "& .MuiInputLabel-formControl": {
+      //     right: "0",
+      //     left: "auto",
+      //   },
+      // },
       isReadOnly: true,
       // enableDefaultOption: true,
-
-      validate: (currentField, value) => {
-        if (currentField?.value) {
-          return;
+      dependentFields: ["SERVICE_TAX", "CHEQUE_TOTAL"],
+      runValidationOnDependentFieldsChange: true,
+      validate: (currentField, dependentFields, formState) => {
+        if (
+          Number(dependentFields.SERVICE_TAX.value) > Number(currentField.value)
+        ) {
+          return "balance is less than service-charge";
         }
+        return "";
       },
       GridProps: {
         xs: 12,
@@ -278,11 +278,12 @@ export const ChequeBookEntryMetaData = {
       textFieldStyle: {
         "& .MuiInputBase-input": {
           textAlign: "right",
+          background: "var(--theme-color7)",
         },
-        "& .MuiInputLabel-formControl": {
-          right: "0",
-          left: "auto",
-        },
+        // "& .MuiInputLabel-formControl": {
+        //   right: "0",
+        //   left: "auto",
+        // },
       },
       isReadOnly: true,
       GridProps: {
@@ -305,10 +306,10 @@ export const ChequeBookEntryMetaData = {
         "& .MuiInputBase-input": {
           textAlign: "right",
         },
-        "& .MuiInputLabel-formControl": {
-          right: "0",
-          left: "auto",
-        },
+        // "& .MuiInputLabel-formControl": {
+        //   right: "0",
+        //   left: "auto",
+        // },
       },
       isFieldFocused: false,
       GridProps: {
@@ -318,11 +319,14 @@ export const ChequeBookEntryMetaData = {
         lg: 2.4,
         xl: 2.4,
       },
-      validate: (currentField, value) => {
-        if (currentField?.value) {
-          return;
-        }
-      },
+      // validate: (currentField, value, formState, newbal) => {
+      //   if (value?.ACCT_CD?.error) {
+      //     return "";
+      //   } else if (!currentField?.value) {
+      //     return "No. of cheque is required.";
+      //   }
+      //   return "";
+      // },
       dependentFields: [
         "CHEQUE_FROM",
         "BRANCH_CD",
@@ -361,10 +365,11 @@ export const ChequeBookEntryMetaData = {
             NO_OF_LEAVES: field.value,
             ENT_COMP: auth.companyID,
             ENT_BRANCH: dependentFieldsValues.BRANCH_CD.value,
-            SYS_DATE: format(
-              parse(auth?.workingDate, "dd/MMM/yyyy", new Date()),
-              "dd-MMM-yyyy"
-            ).toUpperCase(),
+            SYS_DATE: "12-Feb-2023",
+            // SYS_DATE: format(
+            //   parse(auth?.workingDate, "dd/MM/yyyy", new Date()),
+            //   "dd-MM-yyyy"
+            // ).toUpperCase(),
           };
           let postdata = await API.chequebookCharge(Apireq);
 
@@ -379,8 +384,11 @@ export const ChequeBookEntryMetaData = {
               value: postdata?.[0]?.TAX_RATE ?? "",
             },
             SERVICE_TAX: {
-              value: postdata?.[0]?.SERVICE_CHRG,
+              value: Number(postdata?.[0]?.SERVICE_CHRG).toFixed(2),
               isFieldFocused: true,
+            },
+            NEW_SERVICE_TAX: {
+              value: Number(postdata?.[0]?.SERVICE_CHRG).toFixed(2),
             },
             AMOUNT: {
               value: postdata[0]?.GST_AMT ?? "",
@@ -409,11 +417,12 @@ export const ChequeBookEntryMetaData = {
       textFieldStyle: {
         "& .MuiInputBase-input": {
           textAlign: "right",
+          background: "var(--theme-color-7)",
         },
-        "& .MuiInputLabel-formControl": {
-          right: "0",
-          left: "auto",
-        },
+        // "& .MuiInputLabel-formControl": {
+        //   right: "0",
+        //   left: "auto",
+        // },
       },
       GridProps: {
         xs: 12,
@@ -437,10 +446,10 @@ export const ChequeBookEntryMetaData = {
         "& .MuiInputBase-input": {
           textAlign: "right",
         },
-        "& .MuiInputLabel-formControl": {
-          right: "0",
-          left: "auto",
-        },
+        // "& .MuiInputLabel-formControl": {
+        //   right: "0",
+        //   left: "auto",
+        // },
       },
       placeholder: "Enter no of Cheque book",
       type: "text",
@@ -453,18 +462,29 @@ export const ChequeBookEntryMetaData = {
           return true;
         },
       },
+      dependentFields: ["NEW_SERVICE_TAX", "ACCT_BAL"],
       postValidationSetCrossFieldValues: async (
         field,
         formState,
         authState,
-        dependentValue
+        dependentFields
       ) => {
-        if (field?.value > 1) {
+        if (
+          field?.value > 1 &&
+          Number(dependentFields.NEW_SERVICE_TAX.value) * Number(field.value) <=
+            Number(dependentFields?.ACCT_BAL?.value)
+        ) {
           formState.setDataOnFieldChange("CHEQUE_TOTAL", {
             CHEQUE_TOTAL: true,
           });
         }
-        return {};
+        return {
+          SERVICE_TAX: {
+            value:
+              Number(dependentFields.NEW_SERVICE_TAX.value) *
+              Number(field.value),
+          },
+        };
       },
       GridProps: {
         xs: 12,
@@ -483,12 +503,12 @@ export const ChequeBookEntryMetaData = {
       label: "Service Charge",
       placeholder: "Service Charge",
       type: "text",
-      textFieldStyle: {
-        "& .MuiInputLabel-formControl": {
-          right: "0",
-          left: "auto",
-        },
-      },
+      // textFieldStyle: {
+      //   "& .MuiInputLabel-formControl": {
+      //     right: "0",
+      //     left: "auto",
+      //   },
+      // },
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -519,22 +539,24 @@ export const ChequeBookEntryMetaData = {
                       (parseInt(field?.value) *
                         parseInt(dependentFieldsValues?.GST?.value)) /
                         100
-                    ) ?? ""
+                    ).toFixed(2) ?? ""
                   : dependentFieldsValues?.ROUND_OFF_FLAG?.value === "2"
                   ? Math.ceil(
                       (parseInt(field?.value) *
                         parseInt(dependentFieldsValues?.GST?.value)) /
                         100
-                    ) ?? ""
+                    ).toFixed(2) ?? ""
                   : dependentFieldsValues?.ROUND_OFF_FLAG?.value === "1"
                   ? Math.round(
                       (parseInt(field?.value) *
                         parseInt(dependentFieldsValues?.GST?.value)) /
                         100
-                    ) ?? ""
-                  : (parseInt(field?.value) *
-                      parseInt(dependentFieldsValues?.GST?.value)) /
-                      100 ?? "",
+                    ).toFixed(2) ?? ""
+                  : (
+                      (parseInt(field?.value) *
+                        parseInt(dependentFieldsValues?.GST?.value)) /
+                      100
+                    ).toFixed(2) ?? "",
             },
           };
         }
@@ -549,12 +571,12 @@ export const ChequeBookEntryMetaData = {
       label: "GST-Amount",
       placeholder: "GST-AMOUNT",
       type: "text",
-      textFieldStyle: {
-        "& .MuiInputLabel-formControl": {
-          right: "0",
-          left: "auto",
-        },
-      },
+      // textFieldStyle: {
+      //   "& .MuiInputLabel-formControl": {
+      //     right: "0",
+      //     left: "auto",
+      //   },
+      // },
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -639,15 +661,6 @@ export const ChequeBookEntryMetaData = {
       name: "REMARKS",
       // sequence: 10,
       label: "Remark",
-      // textFieldStyle: {
-      //   "& .MuiInputBase-input": {
-      //     textAlign: "right",
-      //   },
-      //   "& .MuiInputLabel-formControl": {
-      //     right: "0",
-      //     left: "auto",
-      //   },
-      // },
       placeholder: "Enter remark",
       GridProps: {
         xs: 12,
@@ -667,7 +680,6 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       shouldExclude(fieldData) {
         if (fieldData?.value) {
-          console.log("<<<fiel", fieldData);
           return false;
         } else {
           return true;
@@ -704,7 +716,12 @@ export const ChequeBookEntryMetaData = {
         xl: 4,
       },
     },
-
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "NEW_SERVICE_TAX",
+    },
     {
       render: {
         componentType: "hidden",

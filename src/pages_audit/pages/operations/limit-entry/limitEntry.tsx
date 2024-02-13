@@ -154,7 +154,7 @@ export const LimitEntry = () => {
     "crudLimitEntryData",
     crudLimitEntryData,
     {
-      onSuccess: (data) => {
+      onSuccess: (data, variables) => {
         setNewFormMTdata({ ...limitEntryMetaData });
         enqueueSnackbar("Data insert successfully", { variant: "success" });
       },
@@ -460,7 +460,10 @@ export const LimitEntry = () => {
             <Route
               path="forceExpire/*"
               element={
-                <ForceExpire navigate={navigate} forceExpire={crudLimitData} />
+                <ForceExpire
+                  navigate={navigate}
+                  getLimitDetail={getLimitDetail}
+                />
               }
             />
           </Routes>

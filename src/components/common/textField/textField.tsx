@@ -291,7 +291,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
             background: textFieldStyle
               ? ""
               : Boolean(readOnly)
-              ? "#e7e5e563"
+              ? "var(--theme-color7)"
               : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
