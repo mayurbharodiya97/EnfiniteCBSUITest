@@ -653,6 +653,21 @@ const CkycProvider = ({children}) => {
           console.log("evalSave out catch", err.message)
         })    
     }
+
+
+    const handleUpdatectx = async ({COMP_CD, event}) => {
+        // console.log("handleUpdatectx in", Boolean(event), state?.currentFormRefctx)
+
+
+
+
+
+
+
+
+
+
+
         let update_type = "";
         let updated_tabs = Object.keys(state?.modifiedFormCols ?? {})
         // let updated_tab_format:any = {}
