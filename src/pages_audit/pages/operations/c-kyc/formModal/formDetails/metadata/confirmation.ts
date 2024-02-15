@@ -57,7 +57,7 @@ export const ckyc_confirmation_form_metadata = {
         },
         validate: (columnValue, allField, flag) => {
             const {confirmed} = flag
-            if(Boolean(confirmed) && confirmed === "M") {
+            if(!Boolean(columnValue.value) && confirmed === "M") {
                 return "This field is required"
             } else return "";
         },
