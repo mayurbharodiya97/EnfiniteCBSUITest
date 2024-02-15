@@ -9,6 +9,7 @@ import { CkycContext } from '../../../../CkycContext';
 import { AuthContext } from "pages_audit/auth";
 import { utilFunction } from 'components/utils';
 import _ from 'lodash';
+import TabNavigate from '../TabNavigate';
 
 const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -16,9 +17,14 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     const { authState } = useContext(AuthContext);
     const [isNextLoading, setIsNextLoading] = useState(false)
     const { t } = useTranslation();
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
     const OtherAddDTLFormRef = useRef<any>("");
     const myGridRef = useRef<any>(null);
+    useEffect(() => {
+        let refs = [OtherAddDTLFormRef]
+        handleCurrentFormRefctx(refs)
+    }, [])
+
     const OtherAddDTLSubmitHandler = (
         data: any,
         displayData,
@@ -177,53 +183,11 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+    const handleSave = (e) => {
+        const refs = [OtherAddDTLFormRef.current.handleSubmitError(e, "save", false)]
+        handleSavectx(e, refs)
+    }
 
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-            return displayMode == "new"
-            ? <Fragment>
-                <Button
-                sx={{ mr: 2, mb: 2 }}
-                color="secondary"
-                variant="contained"
-                disabled={isNextLoading}
-                onClick={(e) => {
-                    OtherAddDTLFormRef.current.handleSubmitError(e, "save")
-                }}
-                >
-                {t("Next")}
-                {/* {t("Save & Next")} */}
-                </Button>
-            </Fragment>
-            : displayMode == "edit"
-                ? <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        OtherAddDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                    >
-                    {t("Update & Next")}
-                    </Button>
-                </Fragment>
-                : displayMode == "view" && <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        handleColTabChangectx(state?.colTabValuectx + 1)
-                    }}
-                    >
-                    {t("Next")}
-                    </Button>
-                </Fragment>
-        }
-    }, [displayMode])
 
     return (
         <Grid container rowGap={3}>
@@ -254,36 +218,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     />
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(4)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        OtherAddDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save & Next")}</Button>}
-                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
-                ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        OtherAddDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Update & Next")}</Button>
-                : !state?.isFreshEntryctx ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        handleColTabChangectx(state?.colTabValuectx+1)
-                    }}
-                >{t("Next")}</Button> : null
-                } */}
-            </Grid>
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
         </Grid>        
     )
 }

@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { AuthContext } from "pages_audit/auth";
 import _ from 'lodash';
 import { other_details_legal_meta_data } from '../../metadata/legal/legalotherdetails';
+import TabNavigate from '../TabNavigate';
 
 
 const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
@@ -16,7 +17,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
   //  const [isLoading, setIsLoading] = useState(false)
     const { authState } = useContext(AuthContext);
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
     const { t } = useTranslation();
     const OtherDTLFormRef = useRef<any>("")
     const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(true)
@@ -28,6 +29,11 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
     ? other_details_meta_data 
     : other_details_legal_meta_data
 
+    useEffect(() => {
+        let refs = [OtherDTLFormRef]
+        handleCurrentFormRefctx(refs)
+    }, [])
+    
 
     const OtherDTLSubmitHandler = (
         data: any,
@@ -107,52 +113,11 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-            return displayMode == "new"
-            ? <Fragment>
-                <Button
-                sx={{ mr: 2, mb: 2 }}
-                color="secondary"
-                variant="contained"
-                disabled={isNextLoading}
-                onClick={(e) => {
-                    OtherDTLFormRef.current.handleSubmitError(e, "save")
-                }}
-                >
-                {t("Next")}
-                {/* {t("Save & Next")} */}
-                </Button>
-            </Fragment>
-            : displayMode == "edit"
-                ? <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        OtherDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                    >
-                    {t("Update & Next")}
-                    </Button>
-                </Fragment>
-                : displayMode == "view" && <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        handleColTabChangectx(state?.colTabValuectx + 1)
-                    }}
-                    >
-                    {t("Next")}
-                    </Button>
-                </Fragment>
-        }
-    }, [displayMode])
+    const handleSave = (e) => {
+        const refs = [OtherDTLFormRef.current.handleSubmitError(e, "save", false)]
+        handleSavectx(e, refs)
+    }
+
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Other Details {`(5/8)`}</Typography> */}
@@ -185,16 +150,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                 </Grid>
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(3)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-            </Grid>
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
         </Grid>        
     )
 }

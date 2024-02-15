@@ -10,6 +10,7 @@ import { useMutation, useQuery } from "react-query"
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import _ from "lodash"
 import { GradientButton } from "components/styledComponent/button"
+import TabNavigate from "../TabNavigate"
 
 const actions = [
     {
@@ -27,7 +28,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     const [updateDialog, setUpdateDialog] = useState(false)
     const [isUpdated, setIsUpdated] = useState(false)
     const [saveSuccessDialog, setSaveSuccessDialog] = useState<boolean>(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleUpdatectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleUpdatectx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const { t } = useTranslation();
     const AttestationDTLFormRef = useRef<any>("");  
@@ -42,6 +43,12 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     const onCloseSaveSuccessDialog = () => {
         setSaveSuccessDialog(false)
     }    
+
+    useEffect(() => {
+        let refs = [AttestationDTLFormRef]
+        handleCurrentFormRefctx(refs)
+    }, [])
+
 
     // attest.history
     const { data:historyData, isError:isHistoryDataError, isLoading: isHistoryDataLoading, error, refetch: historyDataRefetch } = useQuery<any, any>(
@@ -170,40 +177,10 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     : null;
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes, attestData])
 
-
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-            return displayMode == "new"
-            ? <Fragment>
-                <Button
-                sx={{ mr: 2, mb: 2 }}
-                color="secondary"
-                variant="contained"
-                disabled={isNextLoading}
-                onClick={(e) => {
-                    AttestationDTLFormRef.current.handleSubmitError(e, "save")
-                }}
-                >
-                {t("Save")}
-                </Button>
-            </Fragment>
-            : displayMode == "edit"
-                ? <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        AttestationDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                    >
-                    {t("Update")}
-                    </Button>
-                </Fragment>
-                : displayMode == "view" && null;
-        }
-    }, [displayMode])
+    const handleSave = (e) => {
+        const refs = [AttestationDTLFormRef.current.handleSubmitError(e, "save", false)]
+        handleSavectx(e, refs)
+    }
 
     // useEffect(() => {
     //     if(!isAttestDataLoading && attestData) {
@@ -261,29 +238,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     </Grid>                    
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(6)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        AttestationDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save")}</Button>}
-                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
-                && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        AttestationDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Update")}</Button>} */}
-            </Grid>
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
             {historyDialog && <AttestHistory 
                 open={historyDialog} 
                 onClose={onCloseSearchDialog} 

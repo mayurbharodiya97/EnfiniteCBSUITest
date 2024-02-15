@@ -29,6 +29,7 @@ import { company_info_meta_data } from "./metadata/legal/legalcompanyinfo";
 import _ from "lodash";
 import { AuthContext } from "pages_audit/auth";
 import { GradientButton } from "components/styledComponent/button";
+import TabNavigate from "./formComponents/TabNavigate";
 
 const KYCDetails = ({
   isCustomerData,
@@ -46,7 +47,9 @@ const KYCDetails = ({
     handleFormDataonSavectx,
     handleColTabChangectx,
     handleStepStatusctx,
-    handleModifiedColsctx
+    handleModifiedColsctx,
+    handleCurrentFormRefctx,
+    handleSavectx
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
   const [isPoIExpanded, setIsPoIExpanded] = useState(true);
@@ -62,6 +65,7 @@ const KYCDetails = ({
     proof_of_address: {},
   });
   const [openDialog, setOpenDialog] = useState(false);
+  const [formStatus, setFormStatus] = useState<any[]>([])
 
   const [gridData, setGridData] = useState<any>([
     {
@@ -88,6 +92,11 @@ const KYCDetails = ({
   const handlePoAExpand = () => {
     setIsPoAExpanded(!isPoAExpanded);
   };
+
+  useEffect(() => {
+    let refs = [KyCPoIFormRef, KyCPoAFormRef]
+    handleCurrentFormRefctx(refs)
+  }, [])
 
   const POIMetadata = state?.entityTypectx === "I" 
     ? kyc_proof_of_identity_meta_data 
@@ -122,14 +131,15 @@ const KYCDetails = ({
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
       // if(state?.isFreshEntryctx) {
-        handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-        KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+        setFormStatus(old => [...old, Promise.resolve(1)])
+        // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
+        // KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
     } else {
-      handleStepStatusctx({
-        status: "error",
-        coltabvalue: state?.colTabValuectx,
-      });
+      // handleStepStatusctx({
+      //   status: "error",
+      //   coltabvalue: state?.colTabValuectx,
+      // });
     }
     setIsNextLoading(false);
     endSubmit(true)
@@ -170,18 +180,19 @@ const KYCDetails = ({
         handleModifiedColsctx(tabModifiedCols)        
       } 
       // else {
-        handleColTabChangectx(2);
-        handleStepStatusctx({
-          status: "completed",
-          coltabvalue: state?.colTabValuectx,
-        });
+        // handleColTabChangectx(2);
+        // handleStepStatusctx({
+        //   status: "completed",
+        //   coltabvalue: state?.colTabValuectx,
+        // });
+        setFormStatus(old => [...old, Promise.resolve(1)])
       // }
       // setIsNextLoading(false)
     } else {
-      handleStepStatusctx({
-        status: "error",
-        coltabvalue: state?.colTabValuectx,
-      });
+      // handleStepStatusctx({
+      //   status: "error",
+      //   coltabvalue: state?.colTabValuectx,
+      // });
     }
     endSubmit(true);
     setIsNextLoading(false);
@@ -197,51 +208,39 @@ const KYCDetails = ({
       : {};
   }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
 
-
-
-  const SaveUpdateBTNs = useMemo(() => {
-    if(displayMode) {
-    return displayMode == "new"
-      ? <Fragment>
-          <GradientButton
-            sx={{ mr: 2, mb: 2 }}
-            disabled={isNextLoading}
-            // endicon={"East"}
-            onClick={(e) => {
-              NextBtnRef.current = e;
-              KyCPoIFormRef.current.handleSubmitError(e, "save");
-            }}
-            >
-            {t("Next")}
-            {/* {t("Save & Next")} */}
-          </GradientButton>
-        </Fragment>      
-      : displayMode == "edit"
-          ? <Fragment>
-            <GradientButton
-              sx={{ mr: 2, mb: 2 }}
-              disabled={isNextLoading}
-              onClick={(e) => {
-                NextBtnRef.current = e;
-                KyCPoIFormRef.current.handleSubmitError(e, "save");
-              }}
-            >
-              {t("Update & Next")}
-            </GradientButton>
-          </Fragment>
-          : displayMode == "view" && <Fragment>
-              <GradientButton
-              sx={{ mr: 2, mb: 2 }}
-              disabled={isNextLoading}
-              onClick={(e) => {
-                handleColTabChangectx(state?.colTabValuectx + 1)
-              }}
-            >
-              {t("Next")}
-            </GradientButton >
-          </Fragment>
+  useEffect(() => {
+    // console.log("evalSave formStatuse", formStatus)
+    if(formStatus.length === 2) {
+      // console.log("evalSave if pro length",formStatus.length)
+      Promise.all(formStatus)
+      .then(res => {
+        // console.log("evalSave in success ",res)
+        handleStepStatusctx({
+          status: "completed",
+          coltabvalue: state?.colTabValuectx,
+        });
+        handleColTabChangectx(state?.colTabValuectx + 1);
+      })
+      .catch(err => {
+        console.log("evalSave in catch", err.message)
+      })
+    } else {
+      // console.log("evalSave pro length else",formStatus.length)
+      if(formStatus.length>0) {
+        handleStepStatusctx({
+          status: "error",
+          coltabvalue: state?.colTabValuectx,
+        })
+      }
     }
-  }, [displayMode])
+    setFormStatus([])
+  }, [formStatus.length])
+
+  const handleSave = (e) => {
+    const refs = [KyCPoIFormRef.current.handleSubmitError(e, "save", false), KyCPoAFormRef.current.handleSubmitError(e, "save", false)]
+    handleSavectx(e, refs)
+  } 
+
 
 
   //    useEffect(() => {
@@ -427,46 +426,8 @@ const KYCDetails = ({
           width="100%"
         ></Skeleton>
       ) : null}
+      <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
 
-      <Grid container item sx={{ justifyContent: "flex-end" }}>
-        <GradientButton
-          sx={{ mr: 2, mb: 2 }}
-          disabled={isNextLoading}
-          onClick={(e) => {
-            handleColTabChangectx(0);
-          }}
-          // starticon={"West"}
-        >
-          {t("Previous")}
-        </GradientButton>
-        {/* {state?.isFreshEntryctx && <Button
-          sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
-          disabled={isNextLoading}
-          onClick={(e) => {
-            NextBtnRef.current = e;
-            KyCPoIFormRef.current.handleSubmitError(e, "save");
-          }}
-        >
-          {t("Save & Next")}
-        </Button>}
-
-        {!state?.isFreshEntryctx && <Button
-          sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
-          disabled={isNextLoading}
-          onClick={(e) => {
-            // Promise.all([KyCPoIFormRef.current.handleSubmitError(e, "save"), KyCPoAFormRef.current.handleSubmitError(e, "save")])
-            NextBtnRef.current = e;
-            KyCPoIFormRef.current.handleSubmitError(e, "save");
-          }}
-        >
-          {t("Update & Next")}
-        </Button>} */}
-        {SaveUpdateBTNs}
-      </Grid>
       <Dialog
         open={openDialog}
         maxWidth={"sm"}

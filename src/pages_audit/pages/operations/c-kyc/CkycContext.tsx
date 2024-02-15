@@ -59,7 +59,7 @@ const initialState:any  = {
     steps: {
         0: {status: ""}
     },
-    currentFormRefctx: () => {},
+    currentFormRefctx: [],
     modifiedFormCols: {},
     updateFormDatactx: {},
     modifiedFormFormat: {}
@@ -306,7 +306,7 @@ const CkycProvider = ({children}) => {
                 isReadyToSavectx: false,
                 isReadyToUpdatectx: false,
                 modifiedFormFormat: {},                
-                currentFormRefctx: () => {},            
+                currentFormRefctx: [],
             }
         })
     }
@@ -591,11 +591,11 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleCurrentFormRefctx = (fun:any) => {
+    const handleCurrentFormRefctx = (refs:any[]) => {
         dispatch({
             type: "set_currentFormRef",
             payload: {
-                currentFormRefctx: fun
+                currentFormRefctx: refs
             }
         })
     }
@@ -644,7 +644,15 @@ const CkycProvider = ({children}) => {
         // })
     }
 
-    const handleUpdatectx = async ({COMP_CD}) => {
+    const handleSavectx = (e, refs) => {
+        // ref(e, "save")
+        Promise.all([refs])
+        .then((response) => {
+          console.log("evalSave in success ", response)
+        }).catch(err => {
+          console.log("evalSave out catch", err.message)
+        })    
+    }
         let update_type = "";
         let updated_tabs = Object.keys(state?.modifiedFormCols ?? {})
         // let updated_tab_format:any = {}
@@ -873,7 +881,7 @@ const CkycProvider = ({children}) => {
                 handleApiRes, 
                 // handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
-                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, handleReadyToSavectx, handleReadyToUpdatectx, resetCkycctx, handleUpdatectx, handleCurrentFormRefctx
+                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, handleReadyToSavectx, handleReadyToUpdatectx, resetCkycctx, handleSavectx, handleUpdatectx, handleCurrentFormRefctx
             }}
         >
             {children}

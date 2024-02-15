@@ -14,6 +14,7 @@ import { useMutation, useQuery } from 'react-query';
 import * as API from "../../../../api";
 import { ckyc_retrieved_meta_data } from 'pages_audit/pages/operations/c-kyc/metadata';
 import _ from 'lodash';
+import TabNavigate from '../TabNavigate';
 // import { format } from 'date-fns';
 
 const actions = [
@@ -32,7 +33,7 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -54,6 +55,11 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
   const onCloseSearchDialog = () => {
     setDialogOpen(false)
   }
+
+  useEffect(() => {
+    let refs = [PDFormRef]
+    handleCurrentFormRefctx(refs)
+  }, [])
 
     // useEffect(() => {
     //     console.log("... personal details", isCustomerData)
@@ -112,54 +118,10 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-            return displayMode == "new"
-            ? <Fragment>
-                <Button
-                sx={{ mr: 2, mb: 2 }}
-                color="secondary"
-                variant="contained"
-                disabled={isNextLoading}
-                onClick={(e) => {
-                    NextBtnRef.current = e
-                    PDFormRef.current.handleSubmitError(e, "save")
-                }}
-                >
-                {t("Next")}
-                {/* {t("Save & Next")} */}
-                </Button>
-            </Fragment>
-            : displayMode == "edit"
-                ? <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        NextBtnRef.current = e
-                        PDFormRef.current.handleSubmitError(e, "save")
-                    }}
-                    >
-                    {t("Update & Next")}
-                    </Button>
-                </Fragment>
-                : displayMode == "view" && <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        handleColTabChangectx(state?.colTabValuectx + 1)
-                    }}
-                    >
-                    {t("Next")}
-                    </Button>
-                </Fragment>
-        }
-    }, [displayMode])
+    const handleSave = (e) => {
+        const refs = [PDFormRef.current.handleSubmitError(e, "save", false)]
+        handleSavectx(e, refs)
+    }
 
     // useEffect(() => {
     //     console.log("state?.isFreshEntryctx",state?.isFreshEntryctx)
@@ -226,17 +188,7 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 
-
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                {/* <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        NextBtnRef.current = e
-                        PDFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save & Next")}</Button> */}
-                {SaveUpdateBTNs}
-            </Grid>
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />            
 
             {dialogOpen && <SearchListdialog 
                 open={dialogOpen} 
