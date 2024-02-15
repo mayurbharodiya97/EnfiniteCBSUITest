@@ -143,15 +143,13 @@ export const TellerScreenMetadata: any = {
           reqFlag
         ) => {
           formState.setDataOnFieldChange("ACCT_TYPE", currentField);
-          if (currentField?.value) {
-            return {
-              ACCT_CD: { value: "" },
-              RECEIPT: { value: "" },
-              PAYMENT: { value: "" },
-              ACCT_NM: { value: "" },
-              BALANCE: { value: "" },
-            };
-          }
+          return {
+            ACCT_CD: { value: "" },
+            RECEIPT: { value: "" },
+            PAYMENT: { value: "" },
+            ACCT_NM: { value: "" },
+            BALANCE: { value: "" },
+          };
         },
         GridProps: {
           xs: 6,
@@ -168,6 +166,7 @@ export const TellerScreenMetadata: any = {
         //     return "";
         //   }
         // },
+        autoComplete: "off",
         GridProps: {
           xs: 6,
           sm: 3,
@@ -192,35 +191,31 @@ export const TellerScreenMetadata: any = {
             ACCT_CD: paddedAcctcode,
             SCREEN_REF: "ETRN/039",
           };
-          let postData;
+          // let postData;
           if (
-            Boolean(
-              field?.value &&
-                dependentFieldValues?.BRANCH_CD?.value &&
-                dependentFieldValues?.ACCT_TYPE?.value
-            )
+            Boolean(paddedAcctcode) &&
+            Boolean(dependentFieldValues?.BRANCH_CD?.value) &&
+            Boolean(dependentFieldValues?.ACCT_TYPE?.value)
           ) {
-            postData = await GeneralAPI.getAccNoValidation(reqParameters);
+            let postData = await GeneralAPI.getAccNoValidation(reqParameters);
+            formState.setDataOnFieldChange(
+              "ACCT_CD",
+              paddedAcctcode,
+              dependentFieldValues,
+              postData
+            );
+
+            if (Boolean(postData.RESTRICTION)) {
+              return {
+                ACCT_CD: { value: "" },
+                ACCT_TYPE: { value: "" },
+                BRANCH_CD: { value: "" },
+              };
+            }
+            return {
+              ACCT_CD: { value: paddedAcctcode ?? "", ignoreUpdate: true },
+            };
           }
-          console.log(postData, "postMassage");
-          formState.setDataOnFieldChange(
-            "ACCT_CD",
-            paddedAcctcode,
-            dependentFieldValues,
-            postData
-          );
-          return {
-            ACCT_CD: { value: paddedAcctcode ?? "", ignoreUpdate: true },
-          };
-        },
-      },
-      fullAccountNumberMetadata: {
-        GridProps: {
-          xs: 9,
-          md: 9,
-          sm: 9,
-          lg: 9,
-          xl: 9,
         },
       },
       // acctFieldPara: "1",
@@ -314,7 +309,7 @@ export const TellerScreenMetadata: any = {
         lg: 2,
         xl: 2,
       },
-      dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE"],
+      dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.TRN?.value === "R") {
           return false;
@@ -322,8 +317,13 @@ export const TellerScreenMetadata: any = {
           return true;
         }
       },
-      postValidationSetCrossFieldValues: (field, formState, ...oters) => {
-        formState.setDataOnFieldChange("RECEIPT", field);
+      postValidationSetCrossFieldValues: (
+        field,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        formState.setDataOnFieldChange("RECEIPT", field, dependentFieldsValues);
       },
       AlwaysRunPostValidationSetCrossFieldValues: {
         alwaysRun: true,
@@ -347,7 +347,7 @@ export const TellerScreenMetadata: any = {
         lg: 3,
         xl: 3,
       },
-      dependentFields: ["TRN"],
+      dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE", "ACCT_CD"],
       shouldExclude(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.TRN?.value === "P") {
           return false;
@@ -355,8 +355,13 @@ export const TellerScreenMetadata: any = {
           return true;
         }
       },
-      postValidationSetCrossFieldValues: (field, formState, ...oters) => {
-        formState.setDataOnFieldChange("PAYMENT", field);
+      postValidationSetCrossFieldValues: (
+        field,
+        formState,
+        authState,
+        dependentFieldsValues
+      ) => {
+        formState.setDataOnFieldChange("PAYMENT", field, dependentFieldsValues);
       },
       // setValueOnDependentFieldsChange: (dependentFields) => {
       //   return "";

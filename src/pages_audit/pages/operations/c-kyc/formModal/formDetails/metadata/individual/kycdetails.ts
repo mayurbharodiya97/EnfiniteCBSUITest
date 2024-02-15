@@ -877,9 +877,9 @@ export const kyc_proof_of_address_meta_data = {
           validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
           dependentFields: ["SAME_AS_PER", "ADD1"],
           setValueOnDependentFieldsChange: (dependentFields) => {
-            const sameAsPer = dependentFields.SAME_AS_PER.value;
-            const add1 = dependentFields.ADD1.value
-            if(Boolean(sameAsPer)) {
+            // console.log("fewiwuehfiwuefwef", dependentFields)
+            if(dependentFields.SAME_AS_PER && Boolean(dependentFields.SAME_AS_PER.value)) {
+                const add1 = dependentFields.ADD1.value
                 return add1;
             }
             return null;

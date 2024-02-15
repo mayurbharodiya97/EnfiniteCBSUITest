@@ -39,7 +39,13 @@ const authAPI = () => {
     displayLanguage = code;
   };
   const loginUserDetails = (payload) => {
-    const { role, user: { id, branchCode, baseBranchCode }, baseCompanyID, companyID, workingDate } = payload
+    const {
+      role,
+      user: { id, branchCode, baseBranchCode },
+      baseCompanyID,
+      companyID,
+      workingDate,
+    } = payload;
     loginuserDetailsData = {
       USERNAME: id,
       USERROLE: role,

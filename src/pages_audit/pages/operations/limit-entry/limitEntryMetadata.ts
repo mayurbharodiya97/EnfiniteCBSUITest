@@ -1,4 +1,5 @@
 import * as API from "./api";
+import { format } from "date-fns";
 
 export const limitEntryMetaData = {
   form: {
@@ -186,16 +187,16 @@ export const limitEntryMetaData = {
             });
             return {
               ACCT_NM: {
-                value: postData?.[0]?.ACCT_NM,
+                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
               },
               TRAN_BAL: {
-                value: postData?.[0]?.TRAN_BAL,
+                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
               },
               SANCTIONED_AMT: {
-                value: postData?.[0]?.SANCTIONED_AMT,
+                value: postData?.[0]?.ACCOUNT_DATA?.SANCTIONED_AMT,
               },
               BRANCH_CD: {
-                value: postData?.[0]?.BRANCH_CD,
+                value: postData?.[0]?.ACCOUNT_DATA?.BRANCH_CD,
               },
               HIDDEN_CHARGE_AMT: {
                 value: postData?.[0]?.CHARGE_AMT,

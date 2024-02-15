@@ -71,7 +71,7 @@ export const PopupRequestWrapper = ({
   buttonNames = ["Yes", "No"],
   rows,
   open = false,
-  loading = false,
+  loading = {},
 }) => {
   //const { state: rowsdata }: any = useLocation();
   const classes = useStyles();
@@ -97,7 +97,10 @@ export const PopupRequestWrapper = ({
             return (
               <Tooltip title={buttonName}>
                 <GradientButton
-                  endIcon={loading ? <CircularProgress size={20} /> : null}
+                  // endIcon={loading ? <CircularProgress size={20} /> : null}
+                  endIcon={
+                    loading[buttonName] ? <CircularProgress size={20} /> : null
+                  }
                   onClick={() => onClickButton(rows, buttonName)}
                 >
                   {buttonName}

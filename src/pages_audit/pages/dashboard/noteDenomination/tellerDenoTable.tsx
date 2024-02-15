@@ -28,6 +28,7 @@ const TellerDenoTable = ({
   displayTable,
   data,
   handleChange,
+  displayError,
   inputValue,
   amount,
   availNotes,
@@ -41,6 +42,8 @@ const TellerDenoTable = ({
   finalLable,
   onCloseTable,
   textFieldRef,
+  openAcctDtl,
+  handleonFocus,
 }) => {
   const fieldRef: any = useRef([]);
   const classes = useStyles();
@@ -49,7 +52,7 @@ const TellerDenoTable = ({
 
   return (
     // <Slide direction="left" in={displayTable} mountOnEnterx unmountOnExit>
-    <Dialog open={displayTable} maxWidth={"xl"}>
+    <Dialog open={displayTable && openAcctDtl} maxWidth={"xl"}>
       <Box
         sx={{
           height: "8vh",
@@ -171,9 +174,11 @@ const TellerDenoTable = ({
                             // onKeyDown={(event) => {
                             //   handleKeyPress(event, index);
                             // }}
+                            onFocus={(event) => handleonFocus(event, index)}
                             inputRef={textFieldRef}
                             onBlur={(event) => handleonBlur(event, index)}
-                            // helperText={"HELLO MY FRIENDS"}
+                            helperText={displayError[index] || ""}
+                            error={Boolean(displayError[index])}
                             type={"text"}
                             InputProps={{
                               style: { textAlign: "left" },
@@ -184,9 +189,8 @@ const TellerDenoTable = ({
                             // ref={(input) => {
                             //   fieldRef.current[index] = input;
                             // }}
-                            onFocus={(even) => {
-                              even.target.select();
-                            }}
+
+                            // onFocus={() => handleonFocus(index)}
                           />
                         </StyledTableCell>
                         <StyledTableCell align="right" className="cellBordered">

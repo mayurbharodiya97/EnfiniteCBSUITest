@@ -137,6 +137,15 @@ export const ChequebookTab = () => {
     }
   );
 
+  const validateDelete: any = useMutation(
+    "validateDeleteData",
+    validateDeleteData,
+    {
+      onSuccess: (data) => {},
+    }
+  );
+  console.log("<<<validateDelete", validateDelete);
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["getChequebookDTL"]);
