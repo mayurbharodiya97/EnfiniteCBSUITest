@@ -174,20 +174,24 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     render: {
       componentType: "numberFormat",
     },
+    className: "textInputFromRight",
+    placeholder: "0",
     FormatProps: {
-      suffix: "%",
+      allowNegative: false,
+      allowLeadingZeros: true,
       decimalScale: 2,
-      fixedDecimalScale: true,
-      allowNegative: true,
-      allowEmptyFormatting: true,
       isAllowed: (values) => {
-        //@ts-ignore
-        if (values.floatValue <= 100) {
-          return true;
+        if (values?.value?.length > 6) {
+          return false;
         }
-        return false;
+        if (parseFloat(values?.value) > 100) {
+          return false;
+        }
+        return true;
       },
     },
+    maxLength: 6,
+    EndAdornment: "%",
     // schemaValidation: {
     //   type: "string",
     //   rules: [
@@ -402,6 +406,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       decimalScale: 2,
       fixedDecimalScale: true,
       autoComplete: "off",
+      placeholder: "0.00",
       isAllowed: (values) => {
         if (values?.value?.length > 14) {
           return false;

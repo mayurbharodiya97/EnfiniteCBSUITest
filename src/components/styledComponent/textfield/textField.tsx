@@ -89,6 +89,15 @@ const StyledTextField = withStyles({
       margin: "6px 0px !important",
     },
 
+    "& .withBorder.MuiInputAdornment-positionEnd": {
+      //borderRight: "1px solid #BABABA !important",
+      borderLeft: "2px dashed #BABABA",
+      height: "23px",
+      maxHeight: "36px",
+      padding: "0 0.6rem 0 0.6rem",
+      margin: "6px 0px !important",
+    },
+
     "& .MuiSelect-selectMenu": {
       minHeight: "22px",
       lineHeight: "22px",

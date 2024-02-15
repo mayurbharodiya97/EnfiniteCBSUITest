@@ -22,16 +22,16 @@ const GradientButtonCustom = withStyles({
     "&:focus": {
       backgroundColor: "var(--theme-color3) !important",
       boxShadow:
-        "#3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset",
+        "var(--theme-color3) 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--theme-color3) 0 -3px 0 inset",
     },
     "&:hover": {
-      backgroundColor: "var(--theme-color3) !important",
+      backgroundColor: "var(--theme-color3) ",
       boxShadow:
-        "rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset",
+        "rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--theme-color3) 0 -3px 0 inset",
     },
     "&:active": {
       backgroundColor: "var(--theme-color3) !important",
-      boxShadow: "#3c4fe0 0 3px 7px inset",
+      boxShadow: "var(--theme-color3) 0 3px 7px inset",
       transform: "translateY(2px)",
     },
   },
@@ -52,7 +52,7 @@ const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
         color: color ? color : "#fff !important",
         "&:hover": {
           // background: "#4462bbbd",
-          backgroundColor: "var(--theme-color3) !important",
+          backgroundColor: "var(--theme-color3) ",
           boxShadow: "none",
           "& .MuiSvgIcon-root": {
             transform: rotateIcon,
