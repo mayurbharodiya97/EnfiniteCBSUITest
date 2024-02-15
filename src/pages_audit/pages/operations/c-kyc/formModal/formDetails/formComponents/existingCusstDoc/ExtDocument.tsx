@@ -13,7 +13,7 @@ import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
 import { useMutation, useQuery } from "react-query";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { DocumentGridMetadata } from "./documentGridMetadata";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ExtDocumentForm from "./ExtDocumentForm";
 import { utilFunction } from "components/utils";
 import {
@@ -45,11 +45,14 @@ const ExtDocument = ({
     handleStepStatusctx,
     handleFormDataonSavectx,
     handleModifiedColsctx,
+    handleFormDataonRetrievectx,
+    handleFormModalClosectx,
   } = useContext(CkycContext);
   const navigate = useNavigate();
   const [openForm, setOpenForm] = useState(false);
   const [rowsData, setRowsData] = useState([]);
   const [data, setData] = useState<any>([]);
+  const dataRef = useRef<any>([])
   const [formMode, setFormMode] = useState<any>("");
   const [isNextLoading, setIsNextLoading] = useState(false);
   const isDataChangedRef = useRef(false);
@@ -61,7 +64,9 @@ const ExtDocument = ({
     }
     navigate(".");
   };
+  const location: any = useLocation();
   const myGridRef = useRef<any>(null);
+  let oldGridData:any = [];
 
   // useEffect(() => {
   //   console.log('rowsData change', rowsData)
@@ -79,6 +84,10 @@ const ExtDocument = ({
   useEffect(() => {
     setData(initValues);
   }, [initValues]);
+
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data])
 
   const mutation: any = useMutation(API.getKYCDocumentGridData, {
     onSuccess: (data) => {
@@ -154,6 +163,13 @@ const ExtDocument = ({
       multiple: false,
       rowDoubleClick: true,
     },
+    {
+      actionName: "update",
+      actionLabel: "Update",
+      multiple: undefined,
+      rowDoubleClick: false,
+      alwaysAvailable: true,
+    },
     // {
     //   actionName: "delete",
     //   actionLabel: "Delete",
@@ -171,7 +187,7 @@ const ExtDocument = ({
       actionName: "close",
       actionLabel: "Close",
       multiple: undefined,
-      rowDoubleClick: false,
+      rowDoubleClick: true,
       alwaysAvailable: true,
     },
   ];
@@ -191,8 +207,11 @@ const ExtDocument = ({
         setFormMode("edit");
         setRowsData(data?.rows);
         setOpenForm(true);
-      } else if(data.name === "close") {
-        onClose()
+      } else if (data.name === "update") {      
+        onUpdate()
+      } else if (data.name === "close") {
+        handleFormModalClosectx()
+        onClose();
       }
       // navigate(data?.name, {
       //   state: data?.rows,
@@ -200,193 +219,6 @@ const ExtDocument = ({
     },
     [navigate]
   );
-
-  const onSave = () => {
-    // console.log("wadqwdwq. doc save", data)
-    if (data && data.length > 0) {
-      let newDocData: any[] = [];
-
-      newDocData = data.map((doc) => {
-        // console.log("wadqwdwq. doc save newdoc", doc);
-        const {
-          TEMPLATE_CD,
-          SUBMIT,
-          VALID_UPTO,
-          DOC_NO,
-          DOC_IMAGE,
-          DOC_DESCRIPTION,
-          SR_CD,
-          DOC_WEIGHTAGE,
-        } = doc;
-        let newObj = {
-          IsNewRow: true,
-          TEMPLATE_CD: TEMPLATE_CD,
-          // SUBMIT: Boolean(SUBMIT) ? "Y" : "N",
-          SUBMIT: SUBMIT === true ? "Y" : "N",
-          VALID_UPTO: VALID_UPTO ?? "",
-          // VALID_UPTO: VALID_UPTO
-          //   ? format(new Date(doc?.VALID_UPTO ?? ""), "dd-MMM-yyyy")
-          //   : format(new Date(addMonths(new Date(), 9999)), "dd-MMM-yyyy"),
-          DOC_NO: DOC_NO ?? "",
-          DOC_DESCRIPTION: DOC_DESCRIPTION,
-          DOC_IMAGE: DOC_IMAGE ?? "",
-          DOC_TYPE: "KYC",
-          DOC_AMOUNT: "",
-          DOC_WEIGHTAGE: DOC_WEIGHTAGE ?? "",
-          SR_CD: SR_CD ?? "",
-          // ACTIVE : "Y",
-        };
-        // console.log("wadqwdwq. doc save newdoc --after", newObj);
-        return newObj;
-      });
-
-      let newData = state?.formDatactx;
-      newData["DOC_MST"] = [...newDocData];
-      handleFormDataonSavectx(newData);
-      handleStepStatusctx({
-        status: "completed",
-        coltabvalue: state?.colTabValuectx,
-      });
-      handleColTabChangectx(state?.colTabValuectx + 1);
-    } else {
-      let newData = state?.formDatactx;
-      newData["DOC_MST"] = [];
-      handleFormDataonSavectx(newData);
-      handleStepStatusctx({
-        status: "completed",
-        coltabvalue: state?.colTabValuectx,
-      });
-      handleColTabChangectx(state?.colTabValuectx + 1);
-    }
-  };
-
-  const onUpdate = () => {
-    setIsNextLoading(true);
-    // console.log("qweqweqweo", data, data.OTHER_ADDRESS)
-    if (data) {
-      // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
-      // console.log("wadqwdwq. doc update data", data);
-      let newData = state?.formDatactx;
-      const commonData = {
-        IsNewRow: true,
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        REQ_FLAG: "F",
-        // REQ_CD: state?.req_cd_ctx,
-        // SR_CD: "3",
-        CONFIRMED: "N",
-        ENT_COMP_CD: authState?.companyID ?? "",
-        ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
-      };
-      if (data && data.length > 0) {
-        let filteredCols: any[] = [
-          "VALID_UPTO",
-          "DOC_IMAGE",
-          "SUBMIT",
-          "TEMPLATE_CD",
-          "DOC_NO",
-          "DOC_DESCRIPTION",
-          "SR_CD",
-          "TRAN_CD",
-        ];
-
-        let newFormatOtherAdd = data.map((formRow, i) => {
-          // console.log("wadqwdwq. doc update formRow", formRow)
-          return {
-            ...data[i],
-            ...commonData,
-            SUBMIT: Boolean(formRow?.SUBMIT) ? "Y" : "N",
-          };
-        });
-        // console.log("new", newFormatOtherAdd, "wadqwdwq. doc update old", data)
-
-        newData["DOC_MST"] = [...newFormatOtherAdd];
-        handleFormDataonSavectx(newData);
-
-        if (!state?.isFreshEntryctx) {
-          let tabModifiedCols: any = state?.modifiedFormCols;
-          tabModifiedCols = {
-            ...tabModifiedCols,
-            DOC_MST: [...filteredCols],
-          };
-          handleModifiedColsctx(tabModifiedCols);
-        }
-      } else {
-        newData["DOC_MST"] = [];
-        handleFormDataonSavectx(newData);
-        if (!state?.isFreshEntryctx) {
-          let tabModifiedCols: any = state?.modifiedFormCols;
-          tabModifiedCols = {
-            ...tabModifiedCols,
-            DOC_MST: [],
-          };
-          handleModifiedColsctx(tabModifiedCols);
-        }
-      }
-
-      // newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...newFormatOtherAdd}
-      handleStepStatusctx({
-        status: "completed",
-        coltabvalue: state?.colTabValuectx,
-      });
-      handleColTabChangectx(state?.colTabValuectx + 1);
-    }
-    //  else {
-    //     handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
-    // }
-    setIsNextLoading(false);
-  };
-
-  const SaveUpdateBTNs = useMemo(() => {
-    if (viewMode) {
-      return viewMode == "new" ? (
-        <Fragment>
-          <Button
-            sx={{ mr: 2, mb: 2 }}
-            color="secondary"
-            variant="contained"
-            disabled={isNextLoading}
-            onClick={onSave}
-          >
-            {t("Next")}
-            {/* {t("Save & Next")} */}
-          </Button>
-        </Fragment>
-      ) : viewMode == "edit" ? (
-        <Fragment>
-          <Button
-            sx={{ mr: 2, mb: 2 }}
-            color="secondary"
-            variant="contained"
-            disabled={isNextLoading}
-            onClick={onUpdate}
-          >
-            {t("Update & Next")}
-          </Button>
-        </Fragment>
-      ) : (
-        viewMode == "view" && (
-          <Fragment>
-            <Button
-              sx={{ mr: 2, mb: 2 }}
-              color="secondary"
-              variant="contained"
-              disabled={isNextLoading}
-              onClick={(e) => {
-                handleStepStatusctx({
-                  status: "completed",
-                  coltabvalue: state?.colTabValuectx,
-                });
-                handleColTabChangectx(state?.colTabValuectx + 1);
-              }}
-            >
-              {t("Next")}
-            </Button>
-          </Fragment>
-        )
-      );
-    }
-  }, [viewMode, data]);
 
   const ActionBTNs = React.useMemo(() => {
     return (
@@ -404,20 +236,97 @@ const ExtDocument = ({
     );
   }, []);
 
+  const onUpdate = () => {
+    setIsNextLoading(true)
+    const data = dataRef.current
+    // console.log("kdawiudiqwdqwd", data)
+    if(data) {
+      let updated_tab_format:any = {};
+      let other_data = {
+        IsNewRow: !state?.req_cd_ctx ? true : false,
+        // REQ_CD: state?.req_cd_ctx ?? "",
+        // COMP_CD: COMP_CD ?? "",
+      }
+      let filteredKeys:any[]=["VALID_UPTO", "DOC_IMAGE", "SUBMIT", "TEMPLATE_CD", "DOC_NO", "DOC_DESCRIPTION", "SR_CD", "TRAN_CD"];
+      let oldRow:any[] = []
+      let newRow:any[] = []
+      let upd;
 
+      // console.log(oldRow, "sahdoihqaodiqwdq0", newRow, oldGridData)
 
+      oldRow = (oldGridData && oldGridData.length>0) && oldGridData.map((formRow, i) => {
+        // console.log("sahdoihqaodiqwdq oldin formRow", formRow)
+        // let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols["DOC_MST"] ?? [])
+        let filteredRow = _.pick(formRow ?? {}, filteredKeys)
+        // console.log("sahdoihqaodiqwdq oldin filteredRow", filteredRow)
+        // if("DOC_MST" == "DOC_MST") {
+            filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N"
+            // filteredRow = filteredRow.map(doc => ({...doc, SUBMIT: Boolean(doc.SUBMIT) ? "Y" : "N"}))
+        // }
+        // console.log("sahdoihqaodiqwdq oldin filteredRow --after", filteredRow)
+        return filteredRow;
+      })
 
+      // console.log(oldRow, "sahdoihqaodiqwdq1", newRow)
 
+      // newRow = (state?.formDatactx["DOC_MST"] && state?.formDatactx["DOC_MST"].length>0) && state?.formDatactx["DOC_MST"].map((formRow, i) => {
+      //   let filteredRow = _.pick(formRow ?? {}, filteredKeys)
+      //   return filteredRow;
+      // })
+      newRow = (data && data.length>0) && data.map((formRow, i) => {
+        let filteredRow = _.pick(formRow ?? {}, filteredKeys)
+        filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N";
+        return filteredRow;
+      })
+      // console.log(oldRow, "sahdoihqaodiqwdq2", newRow)
 
+      upd = utilFunction.transformDetailDataForDML(
+        oldRow ?? [],
+        newRow ?? [],
+        ["SR_CD"]
+      );
+      // console.log("sahdoihqaodiqwdq3", upd)
+        // not getting doc_image, doc_description in old data after comparison
+      // updated_tab_format["DOC_MST"] = [{
+      //   ...updated_tab_format.TAB,
+      //   ...upd,
+      //   ...(_.pick(data, upd._UPDATEDCOLUMNS)),
+      //   ...other_data
+      // }]
+      // console.log("sahdoihqaodiqwdq", updated_tab_format)
+    }
 
+    // let newData = state?.formDatactx
 
+  }
 
+  const retrieveData: any = useMutation(API.getCustomerDetailsonEdit, {
+    onSuccess: (data) => {
+      if(Array.isArray(data) && data.length>0) {
+        // console.log("wefduhweiufhwef", data);
+        oldGridData = data[0]?.DOC_MST ?? []
+        handleFormDataonRetrievectx(data[0])
+      }
+    },
+    onError: (error: any) => {},
+  });
 
-
-
-
-
-  
+  useEffect(() => {
+    // console.log(!Boolean(location.state?.[0]?.data.REQUEST_ID), "asdasdasd1", location.state?.[0]?.data)
+    if(location.state?.[0]?.data) {
+      let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+        COMP_CD: authState?.companyID ?? "",
+      }
+      if(Boolean(location.state?.[0]?.data.REQUEST_ID)) {
+        payload["REQUEST_CD"] = location.state?.[0]?.data.REQUEST_ID;
+      } else {
+        payload["CUSTOMER_ID"] = location.state?.[0]?.data.CUSTOMER_ID;
+      }
+      if(Object.keys(payload)?.length == 2) {
+        retrieveData.mutate(payload)
+      }
+    }
+  }, []);
 
   return (
     <Dialog
