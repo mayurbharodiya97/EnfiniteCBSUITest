@@ -63,5 +63,6 @@
 }
 
 .dialogBtn {
-  background: var(--theme-color3);
+  background: var(--theme-color1);
+  color: var(--theme-color4);
 }

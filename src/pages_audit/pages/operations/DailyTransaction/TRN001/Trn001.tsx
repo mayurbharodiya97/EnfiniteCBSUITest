@@ -1089,6 +1089,7 @@ export const Trn001 = () => {
         <div>
           {!loading && (
             <Button
+              className="dialogBtn"
               variant="contained"
               color="secondary"
               sx={{ margin: "8px" }}
@@ -1101,7 +1102,8 @@ export const Trn001 = () => {
 
           {(rows[0]?.trx?.code == "3" || rows[0]?.trx?.code == "6") && (
             <Button
-              variant="outlined"
+              className="dialogBtn"
+              variant="contained"
               color="secondary"
               sx={{ margin: "8px" }}
               onClick={() => handleAddRow()}
@@ -1111,7 +1113,8 @@ export const Trn001 = () => {
           )}
 
           <Button
-            variant="outlined"
+            className="dialogBtn"
+            variant="contained"
             color="secondary"
             onClick={() => setResetDialog(true)}
           >
