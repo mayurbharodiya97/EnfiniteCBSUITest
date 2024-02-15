@@ -1,4 +1,10 @@
-import { AppBar, Button, CircularProgress, Dialog } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  CircularProgress,
+  Dialog,
+  LinearProgress,
+} from "@mui/material";
 import React, { useContext } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
@@ -9,13 +15,18 @@ import { Alert } from "components/common/alert";
 import { crudLimitEntryData } from "./api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
 export const ForceExpire = ({ navigate, getLimitDetail }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
 
-  console.log("<<<row2222s", authState?.workingDate);
+  let newIntialData = {
+    ...rows?.[0]?.data,
+    FORCE_EXP_DT: authState?.workingDate,
+  };
 
+  console.log("<<<newIntialData", newIntialData, authState?.workingDate);
   const forceExpire: any = useMutation(
     "crudLimitEntryData",
     crudLimitEntryData,
@@ -45,13 +56,9 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
     console.log("<<<savehandle", data);
 
     let apiReq = {
+      ...data,
       _isNewRow: false,
       _isDeleteRow: false,
-      COMP_CD: authState?.companyID,
-      BRANCH_CD: data?.BRANCH_CD,
-      TRAN_CD: data?.TRAN_CD,
-      REMARKS: data?.REMARKS,
-      FORCE_EXP_DT: data?.FORCE_EXP_DT,
       _UPDATEDCOLUMNS: [
         "REMARKS",
         "FORCE_EXP_VERIFIED_BY",
@@ -92,11 +99,13 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
               />
             </AppBar>
           </div>
+        ) : forceExpire.isLoading ? (
+          <LinearProgress color="secondary" />
         ) : null}
         <FormWrapper
           key={"nscdetailForm"}
           metaData={forceExpireMetaData}
-          initialValues={rows?.[0]?.data ?? []}
+          initialValues={newIntialData ?? []}
           onSubmitHandler={onSubmitHandler}
           loading={forceExpire.isLoading}
         >

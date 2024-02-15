@@ -79,7 +79,7 @@ const authAPI = () => {
       BRANCH_CD: branchCode,
       THROUGH_CHANNEL: "E_CBS",
       WORKING_DATE: workingDate ?? "",
-      // WORKING_DT: format(new Date(workingDate), "dd/MM/yyyy") ?? "",
+      // WORKING_DT: workingDate ?? "",
       BASE_BRANCH_CD: baseBranchCode,
       COMP_CD: companyID,
       BASE_COMP_CD: baseCompanyID,

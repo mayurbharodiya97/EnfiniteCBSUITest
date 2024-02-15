@@ -47,6 +47,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { NSCFormDetail } from "./nscDetail";
 import { ForceExpire } from "./forceExpire";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const LimitEntry = () => {
   const fdAction: ActionTypes[] = [
@@ -93,6 +94,8 @@ export const LimitEntry = () => {
   let [messageArray, setmessageArray] = useState<any>([]);
   let [fdPopupMessage, setFdPopupMessage] = useState<any>(false);
   const navigate = useNavigate();
+
+  const { MessageBox } = usePopupContext();
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
@@ -333,6 +336,7 @@ export const LimitEntry = () => {
                 loading={securityLimitData.isLoading}
                 hideHeader={false}
                 ref={myMasterRef}
+                formState={{ MessageBox: MessageBox }}
                 setDataOnFieldChange={(action, payload) => {
                   if (action === "SECURITY_CODE") {
                     securityLimitData.mutate({
@@ -348,18 +352,20 @@ export const LimitEntry = () => {
                     });
                   }
 
-                  if (action === "MESSAGES") {
-                    if (payload?.MESSAGES) {
-                      messageArray = payload?.MESSAGES.split(", ").map(
-                        (msg, i) => {
-                          return <p>{`(${i + 1})  ${msg}`}</p>;
-                        }
-                      );
-                    }
-                    setmessageArray([messageArray]);
-                    setIsOpenSave(() => true);
-                    setNscFDbtn(payload?.NSC_FD_BTN);
-                  } else if (action === "NSC_FD_BTN") {
+                  // if (action === "MESSAGES") {
+                  //   if (payload?.MESSAGES) {
+                  //     messageArray = payload?.MESSAGES.split(", ").map(
+                  //       (msg, i) => {
+                  //         return <p>{`(${i + 1})  ${msg}`}</p>;
+                  //       }
+                  //     );
+                  //   }
+                  //   setmessageArray([messageArray]);
+                  //   setIsOpenSave(() => true);
+                  //   setNscFDbtn(payload?.NSC_FD_BTN);
+                  // } else
+
+                  if (action === "NSC_FD_BTN") {
                     setNscFDbtn(payload?.NSC_FD_BTN);
                   }
                 }}

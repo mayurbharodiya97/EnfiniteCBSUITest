@@ -91,7 +91,9 @@ export const LimitSecurityData = async (apiReqPara) => {
       FIELD_NAME: "PANEL_FLAG",
     };
     const newData = [...data, newObject];
+    
     let transformedSecurityData: any[] = [];
+
     if (Array.isArray(newData)) {
       transformedSecurityData = await Promise.all(
         newData

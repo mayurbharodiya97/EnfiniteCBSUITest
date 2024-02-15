@@ -20,7 +20,12 @@ export const getChequebookDTL = async (chequeDTLRequestPara) => {
       // TRAN_CD: "1",
     });
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

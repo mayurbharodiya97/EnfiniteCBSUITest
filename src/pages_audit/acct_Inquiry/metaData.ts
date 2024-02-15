@@ -598,7 +598,6 @@ export const PassbookStatement: any = {
       dependentFields: ["STMT_FROM_DATE"],
       runValidationOnDependentFieldsChange: true,
       // },
-
       // validate: (value, data, others) => {
       //   if (!Boolean(value)) {
       //     return "This field is required.";

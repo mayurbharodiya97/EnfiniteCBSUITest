@@ -8,7 +8,9 @@ export const attachAlignmentProps = (columns: GridColumnType[]) => {
         case "right":
           return {
             ...others,
-            TableCellProps: { align: "right", sx: { paddingRight: "0px" } },
+
+            cellHeaderAlinment: "0px !important",
+            TableCellProps: { align: "right" },
           };
         case "center":
           return {
@@ -21,7 +23,10 @@ export const attachAlignmentProps = (columns: GridColumnType[]) => {
         case "left":
           return {
             ...others,
-            TableCellProps: { align: "left", sx: { paddingLeft: "0px" } },
+            cellHeaderAlinment: "0px !important",
+            TableCellProps: {
+              align: "left",
+            },
           };
         default:
           return others;
