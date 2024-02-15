@@ -294,14 +294,14 @@ export const Ckyc = () => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [isCustomerData, setIsCustomerData] = useState(true);
 
-  useEffect(() => {
-    if (isLoadingData) {
-      setTimeout(() => {
-        setIsLoadingData(false);
-        setIsCustomerData(true);
-      }, 5000);
-    }
-  }, [isLoadingData]);
+  // useEffect(() => {
+  //   if (isLoadingData) {
+  //     setTimeout(() => {
+  //       setIsLoadingData(false);
+  //       setIsCustomerData(true);
+  //     }, 5000);
+  //   }
+  // }, [isLoadingData]);
 
   // const [rowsData, setRowsData] = useState<any[]>([]);
   // const [componentToShow, setComponentToShow] = useState("");
@@ -313,7 +313,9 @@ export const Ckyc = () => {
   // const [assetDTLCompOpen, setAssetDTLCompOpen] = useState(true);
   // const [financialDTLCompOpen, setFinancialDTLCompOpen] = useState(true);
   // const [contPersonCompOpen, setContPersonCompOpen] = useState(true);
-
+  // useEffect(() => {
+  //   console.log("skefjwefwe", state?.currentFormRefctx)
+  // }, [state?.currentFormRefctx])
   useEffect(() => {
     console.log(state?.retrieveFormDataApiRes, "wadqwdwq.", state?.formDatactx, "upd ->", state?.modifiedFormCols)
   }, [state?.retrieveFormDataApiRes, state?.formDatactx, state?.modifiedFormCols])
