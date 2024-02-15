@@ -835,9 +835,34 @@ export const getEduQualiOptions = async (COMP_CD, BRANCH_CD) => {
   }
 }
 
+// export const getRelationshipManagerOptions = async (COMP_CD) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher("RELATIONSHIPMANAGER", {
+//       COMP_CD: COMP_CD, 
+//     });
+//   if (status === "0") {
+//     let responseData = data;
+//     if (Array.isArray(responseData)) {
+//       responseData = responseData.map(({ FULLNAME, EMP_ID, ...other }) => {
+//           return {
+//             ...other,
+//             FULLNAME:FULLNAME,
+//             EMP_ID: EMP_ID,
+//             label: FULLNAME,
+//             value: EMP_ID,
+//           };
+//         }
+//       );
+//     }
+//     return responseData
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// }
+
 export const getRelationshipManagerOptions = async (COMP_CD) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("RELATIONSHIPMANAGER", {
+    await AuthSDK.internalFetcher("GETCKYCNRITABRMDDW", {
       COMP_CD: COMP_CD, 
     });
   if (status === "0") {

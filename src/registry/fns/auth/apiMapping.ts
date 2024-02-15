@@ -235,6 +235,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/RELATIONSHIPMANAGER",
     packageName: "",
   },
+  GETCKYCNRITABRMDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCKYCNRITABRMDDW",
+    packageName: "",
+  },
   GETCUSTOMERLIST: {
     url: "/customerServiceAPI/GETCUSTOMERLIST",
     packageName: "",
