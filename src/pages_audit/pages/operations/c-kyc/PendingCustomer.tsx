@@ -23,14 +23,14 @@ const PendingCustomer = () => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [isCustomerData, setIsCustomerData] = useState(true);
   const [formMode, setFormMode] = useState("new");
-  useEffect(() => {
-    if (isLoadingData) {
-      setTimeout(() => {
-        setIsLoadingData(false);
-        setIsCustomerData(true);
-      }, 5000);
-    }
-  }, [isLoadingData]);
+  // useEffect(() => {
+  //   if (isLoadingData) {
+  //     setTimeout(() => {
+  //       setIsLoadingData(false);
+  //       setIsCustomerData(true);
+  //     }, 5000);
+  //   }
+  // }, [isLoadingData]);
 
   const {
     data: PendingData,
