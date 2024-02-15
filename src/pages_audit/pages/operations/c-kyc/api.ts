@@ -718,7 +718,7 @@ export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:stri
     payload = {
       COMP_CD: COMP_CD, 
       // BRANCH_CD: BRANCH_CD, 
-      ENTERED_DATE: ENTERED_DATE,
+      // ENTERED_DATE: ENTERED_DATE,
       REQ_FLAG: REQ_FLAG
     }
   } else {
@@ -732,10 +732,10 @@ export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:stri
   await AuthSDK.internalFetcher("GETPENDINGCUSTLIST", payload);
   if (status === "0") { const dataStatus = data;
     dataStatus.map((item) => {
-      if (item?.CONFIRMED === "Y  ") {
+      if (item?.CONFIRMED === "Y") {
         item._rowColor = "rgb(9 132 3 / 51%)";
       }
-      if (item?.CONFIRMED === "R  ") {
+      if (item?.CONFIRMED === "R") {
         item._rowColor = "rgb(152 59 70 / 61%)";
       }
     });
