@@ -156,7 +156,6 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         id={fieldKey}
         label={label}
         name={name}
-        label={label}
         value={
           value === ""
             ? null

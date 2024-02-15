@@ -143,7 +143,6 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
         className={classes.root}
         id={fieldKey}
         name={name}
-        label={label}
         inputRef={focusRef}
         closeOnSelect={true}
         // orientation={"portrait"}
