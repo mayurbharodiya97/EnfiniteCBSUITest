@@ -349,29 +349,13 @@ export default function FormModal({
       let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
         COMP_CD: authState?.companyID ?? "",
       }
-      if(formmode == "view") {
-        console.log(from,"statess view", location.state)
-        if(location.state) {
-            const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID
-            payload["REQUEST_CD"] = REQUEST_CD
-        }
-      } else if (formmode == "edit") {
-        console.log("statess edit", location.state)
-        if(from === "pending-entry") {
-          if(location.state) {
-            const confirmedFlag = location.state?.[0]?.data.CONFIRMED
-            const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID
-            payload["REQUEST_CD"] = REQUEST_CD
-            // if(confirmedFlag === "Y" || confirmedFlag === "R") {
-            if(confirmedFlag.includes("Y") || confirmedFlag.includes("R")) {
-              setDisplayMode("view")
-            }
-          }
-        } else if(from === "retrieve-entry") {
-          if(location.state) {
-            const CUSTOMER_ID = location.state?.[0]?.data.CUSTOMER_ID
-            payload["CUSTOMER_ID"] = CUSTOMER_ID
-          }
+      if(Array.isArray(location.state) && location.state.length>0) {
+        const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
+        const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
+        if(Boolean(reqCD)) {
+          payload["REQUEST_CD"] = reqCD;
+        } else if(Boolean(custID)) {
+          payload["CUSTOMER_ID"] = custID;
         }
       }
       if(Object.keys(payload)?.length == 2) {

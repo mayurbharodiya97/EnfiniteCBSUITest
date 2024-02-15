@@ -25,6 +25,7 @@ import FinancialDTLComp from "./FinancialDTLComp";
 import Dependencies from "pages_audit/acct_Inquiry/dependencies";
 import ControllingPersonComp from "./ControllingPersonComp";
 import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
+import ExtDocument from "./formModal/formDetails/formComponents/existingCusstDoc/ExtDocument";
 
 const RetrieveCustomer = () => {
   const navigate = useNavigate();
@@ -151,6 +152,8 @@ const RetrieveCustomer = () => {
             setFormMode("view")
           }
         } else if(confirmed.includes("M")) {
+          setFormMode("edit")
+        } else if(confirmed.includes("Y")) {
           setFormMode("edit")
         } else {
           setFormMode("view")
@@ -286,6 +289,19 @@ const RetrieveCustomer = () => {
           path="photo-signature/*"
           element={
             <PhotoSignatureCpyDialog
+              open={true}
+              onClose={() => {
+                navigate(".");
+              }}
+              viewMode={formMode ?? "edit"}
+            />
+          }
+        />
+
+        <Route
+          path="document/*"
+          element={
+            <ExtDocument
               open={true}
               onClose={() => {
                 navigate(".");
