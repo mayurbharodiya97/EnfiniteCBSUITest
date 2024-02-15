@@ -12,7 +12,7 @@ import RelatedPersonDetails from './formDetails/formComponents/individualComps/R
 import OtherDetails from './formDetails/formComponents/individualComps/OtherDetails';
 import OtherAddressDetails from './formDetails/formComponents/individualComps/OtherAddressDetails';
 import NRIDetails from './formDetails/formComponents/individualComps/NRIDetails';
-import AttestationDetails, { UpdateDialog } from './formDetails/formComponents/individualComps/AttestationDetails';
+import AttestationDetails from './formDetails/formComponents/individualComps/AttestationDetails';
 
 // import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
 // import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
@@ -56,6 +56,9 @@ import { GradientButton } from 'components/styledComponent/button';
 import { ckyc_confirmation_form_metadata } from './formDetails/metadata/confirmation';
 import { TextField } from 'components/styledComponent';
 import { ActionDialog } from './dialog/ActionDialog';
+import { CloseFormDialog } from './dialog/CloseFormDialog';
+import { PreventUpdateDialog } from './dialog/PreventUpdateDialog';
+import { ConfirmUpdateDialog } from './dialog/ConfirmUpdateDialog';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -1171,7 +1174,7 @@ export default function FormModal({
           </Grid>
         {/* </Box> */}
 
-        {updateDialog && <UpdateDialog 
+        {updateDialog && <ConfirmUpdateDialog 
             open={updateDialog} 
             onClose={onCloseUpdateDialog} 
             mutationFormDTL={mutation}
@@ -1184,13 +1187,13 @@ export default function FormModal({
             action= {confirmAction}
         />}
 
-        {cancelDialog && <CancelDialolg 
+        {cancelDialog && <CloseFormDialog 
             open={cancelDialog} 
             onClose={onCloseCancelDialog} 
             closeForm = {onClose}
         />}
 
-        {alertOnUpdate && <PreventModificationAlert 
+        {alertOnUpdate && <PreventUpdateDialog 
             open={alertOnUpdate} 
             onClose={onClosePreventUpdateDialog} 
         />}
@@ -1209,110 +1212,3 @@ const Greetings = () => {
 
   return <span>Good {greet},</span>;
 };
-
-export const CancelDialolg = ({open, onClose, closeForm}) => {
-  const {state, handleUpdatectx, handleFormModalClosectx} = useContext(CkycContext);
-
-  return <Dialog open={open} maxWidth="sm"
-      PaperProps={{
-          style: {
-              minWidth: "40%",
-              width: "40%",
-          }
-      }}
-  >
-      <DialogTitle
-          sx={{
-              background: "var(--theme-color3)",
-              color: "var(--theme-color2)",
-              letterSpacing: "1.3px",
-              margin: "10px",
-              boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-              fontWeight: 500,
-              borderRadius: "inherit",
-              minWidth: "450px",
-              py: 1,
-          }}
-          id="responsive-dialog-title"
-      >
-          CONFIRM
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText
-          sx={{ fontSize: "19px", display: "flex" }}
-        >
-          Your Changes will be Lost.
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-          <GradientButton
-              autoFocus
-              onClick={() => {
-                handleFormModalClosectx()
-                closeForm()
-              }}
-          >OK</GradientButton>
-          <GradientButton
-              autoFocus
-              onClick={onClose}
-          >
-              Cancel
-          </GradientButton>
-      </DialogActions> 
-  </Dialog>
-}
-
-export const PreventModificationAlert = ({open, onClose}) => {
-  return <Dialog open={open} maxWidth="sm"
-  PaperProps={{
-      style: {
-          minWidth: "40%",
-          width: "40%",
-      }
-  }}>
-      <DialogTitle
-          sx={{
-              background: "var(--theme-color3)",
-              color: "var(--theme-color2)",
-              letterSpacing: "1.3px",
-              margin: "10px",
-              boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-              fontWeight: 500,
-              borderRadius: "inherit",
-              minWidth: "450px",
-              py: 1,
-          }}
-          id="responsive-dialog-title"
-      >
-          Update Required
-          {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
-          {/* {"Updating..."} */}
-      </DialogTitle>
-      <DialogContent>
-      <DialogContentText
-          sx={{ fontSize: "19px", display: "flex" }}
-      >
-          <p>You have not made any changes yet.</p>
-          {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
-          {/* <HelpIcon color="secondary" fontSize="large" /> */}
-      </DialogContentText>
-      <DialogContentText
-          sx={{ fontSize: "19px", display: "flex" }}
-      >
-          <p>Please kindly make any changes and update.</p>
-          {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
-          {/* <HelpIcon color="secondary" fontSize="large" /> */}
-      </DialogContentText>
-      <DialogActions>
-        <GradientButton
-            autoFocus
-            onClick={onClose}
-        >
-            Close
-        </GradientButton>
-      </DialogActions>      
-  </DialogContent>  
-  </Dialog>
-}

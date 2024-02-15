@@ -10,6 +10,8 @@ import { useMutation, useQuery } from "react-query"
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import _ from "lodash"
 import { GradientButton } from "components/styledComponent/button"
+import { ConfirmUpdateDialog } from "../../../dialog/ConfirmUpdateDialog"
+import { CustomerSaveDialog } from "../../../dialog/CustomerSave"
 import TabNavigate from "../TabNavigate"
 
 const actions = [
@@ -246,7 +248,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 isLoading={isHistoryDataLoading} 
             />}
 
-            {updateDialog && <UpdateDialog 
+            {updateDialog && <ConfirmUpdateDialog 
                 open={updateDialog} 
                 onClose={onCloseUpdateDialog} 
                 mutationFormDTL={retrieveonupdate}
@@ -256,7 +258,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 // mt={updateMutation}
             />}
 
-            {saveSuccessDialog && <SaveSuccessDialog 
+            {saveSuccessDialog && <CustomerSaveDialog 
                 open={saveSuccessDialog} 
                 onClose={onCloseSaveSuccessDialog} 
                 onFormClose={onFormClose}
@@ -301,177 +303,6 @@ const AttestHistory = ({open, onClose, isLoading, data}) => {
             />
         </Dialog>
     )
-}
-
-export const UpdateDialog = ({open, onClose, mutationFormDTL,
-    // isLoading, setIsLoading, data, mt
-}) => {
-    const [shouldUpdate, setShouldUpdate] = useState(false)
-    const { authState } = useContext(AuthContext);
-    const {state, handleUpdatectx, handleFormDataonSavectx, handleModifiedColsctx} = useContext(CkycContext);
-
-
-    const mutation: any = useMutation(handleUpdatectx, {
-        onSuccess: (data:any) => {
-            // setIsUpdated(true)
-            // console.log("data on save", data)
-            handleModifiedColsctx({})
-            handleFormDataonSavectx({})
-
-            // calling this api for getting updated formdata from updated req_cd
-            let reqPayload = {
-                COMP_CD: authState?.companyID ?? "",
-                REQUEST_CD: data[0].REQ_CD ?? "",
-            }
-            mutationFormDTL.mutate(reqPayload)
-            // if(data?.[0]?.REQ_CD) {
-            //     // handleReqCDctx(data?.[0]?.REQ_CD)
-            //     // handleColTabChangectx(state?.colTabValuectx+1)
-            // }
-        },
-        onError: (error: any) => {
-            handleModifiedColsctx({})
-            handleFormDataonSavectx({})
-            // console.log("data on error", error)
-            // setIsUpdated(true)
-        },
-    });
-
-    // useEffect(() => {
-    //         if(mutationFormDTL.isSuccess && mutationFormDTL.data) {
-    //         // on success of form data retrieve            
-    //     }
-    // }, [mutationFormDTL.data, mutationFormDTL.isSuccess])
-
-
-    return <Dialog open={open} maxWidth="sm"
-        PaperProps={{
-            style: {
-                minWidth: "40%",
-                width: "40%",
-            }
-        }}
-    >
-        <DialogTitle
-            sx={{
-                background: "var(--theme-color3)",
-                color: "var(--theme-color2)",
-                letterSpacing: "1.3px",
-                margin: "10px",
-                boxShadow:
-                "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-                fontWeight: 500,
-                borderRadius: "inherit",
-                minWidth: "450px",
-                py: 1,
-            }}
-            id="responsive-dialog-title"
-        >
-            Confirmation
-            {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
-            {/* {"Updating..."} */}
-        </DialogTitle>
-        <DialogContent>
-            <DialogContentText
-                sx={{ fontSize: "19px", display: "flex" }}
-            >
-                {
-                !shouldUpdate 
-                    ? "Are you sure you want to apply changes and update ?"
-                    : mutation.isLoading
-                        ? "Updating..."
-                        : mutation.data 
-                            ? "Your Changes applied successfully.."
-                            : mutation.error && <>
-                                {mutation.error.error_msg}
-                                {mutation.error.error_detail}
-                            </>
-                }
-                {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
-                {/* <HelpIcon color="secondary" fontSize="large" /> */}
-            </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-            {!shouldUpdate && <GradientButton
-                autoFocus
-                onClick={() => {
-                    setShouldUpdate(true)
-                    mutation.mutate({
-                        COMP_CD: authState?.companyID ?? "",
-                    })
-                }}
-            >
-                Yes
-            </GradientButton>}
-            {!shouldUpdate && <GradientButton
-                autoFocus
-                onClick={onClose}
-            >
-                No
-            </GradientButton>}
-            {shouldUpdate && <GradientButton
-                autoFocus
-                disabled={mutation.isLoading}
-                onClick={onClose}
-                endIcon={
-                    mutation.isLoading ? <CircularProgress size={20} /> : null
-                }
-            >
-                OK
-            </GradientButton>}
-        </DialogActions>
-    </Dialog>
-}
-export const SaveSuccessDialog = ({open, onClose, onFormClose}) => {
-    const {state, handleFormModalClosectx} = useContext(CkycContext);
-    return <Dialog open={open} maxWidth="sm"
-        PaperProps={{
-            style: {
-                minWidth: "40%",
-                width: "40%",
-            }
-        }}
-    >
-        <DialogTitle
-            sx={{
-                background: "var(--theme-color3)",
-                color: "var(--theme-color2)",
-                letterSpacing: "1.3px",
-                margin: "10px",
-                boxShadow:
-                "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-                fontWeight: 500,
-                borderRadius: "inherit",
-                minWidth: "450px",
-                py: 1,
-            }}
-            id="responsive-dialog-title"
-        >
-            Customer Saved!
-            {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
-            {/* {"Updating..."} */}
-        </DialogTitle>
-        <DialogContent>
-            <DialogContentText
-                sx={{ fontSize: "19px", display: "flex" }}
-            >
-                Customer Saved SuccessFully!
-                {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
-                {/* <HelpIcon color="secondary" fontSize="large" /> */}
-            </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-            <GradientButton
-                autoFocus
-                onClick={() => {
-                    handleFormModalClosectx()
-                    onFormClose()
-                }}
-            >
-                OK
-            </GradientButton>
-        </DialogActions>
-    </Dialog>
 }
 
 export default AttestationDetails
