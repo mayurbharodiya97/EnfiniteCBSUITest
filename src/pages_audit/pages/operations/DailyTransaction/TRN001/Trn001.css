@@ -52,3 +52,16 @@
 .css-12960u7-MuiInputBase-root-MuiOutlinedInput-root {
   height: 37px;
 }
+
+.dialogTitle {
+  background: var(--theme-color5);
+  color: var(--theme-color4);
+  height: 40px;
+  align-items: center;
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.dialogBtn {
+  background: var(--theme-color3);
+}

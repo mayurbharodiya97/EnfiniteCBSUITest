@@ -169,6 +169,7 @@ export const TRN001_Table = ({
       setDeleteDialog(true);
     }
   }, []);
+
   const handleSetRemarks = () => {
     let msg = "WRONG ENTRY FROM DAILY TRAN";
     if (location.pathname.includes("/cnf_daily_tran_F2")) {
@@ -220,6 +221,7 @@ export const TRN001_Table = ({
           variant: "error",
         });
   };
+
   const handleCloseDialog = () => {
     setScrollDialog(false);
   };
@@ -279,7 +281,7 @@ export const TRN001_Table = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle className="title">Delete Confirmation</DialogTitle>
+        <DialogTitle className="dialogTitle">Delete Confirmation</DialogTitle>
         <DialogContent>
           {"Do you want to Delete the transaction - VoucherNo." +
             dataRow?.TRAN_CD +
@@ -301,6 +303,7 @@ export const TRN001_Table = ({
 
         <DialogActions className="dialogFooter">
           <Button
+            className="dialogBtn"
             color="secondary"
             variant="contained"
             onClick={handleDelete}
@@ -314,6 +317,7 @@ export const TRN001_Table = ({
             )}
           </Button>{" "}
           <Button
+            className="dialogBtn"
             onClick={() => {
               setDeleteDialog(false);
               handleSetRemarks();

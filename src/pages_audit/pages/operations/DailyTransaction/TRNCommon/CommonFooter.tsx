@@ -225,8 +225,10 @@ const CommonFooter = ({
           aria-labelledby="draggable-dialog-title"
         >
           <DialogTitle
-            className="title"
-            style={{ cursor: "move" }}
+            className="dialogTitle"
+            style={{
+              cursor: "move",
+            }}
             id="draggable-dialog-title"
           >
             Scroll Delete
@@ -276,6 +278,7 @@ const CommonFooter = ({
 
           <DialogActions className="dialogFooter">
             <Button
+              className="dialogBtn"
               color="secondary"
               variant="contained"
               onClick={handleDeleteScroll}
@@ -289,6 +292,7 @@ const CommonFooter = ({
               )}
             </Button>
             <Button
+              className="dialogBtn"
               onClick={() => handleCancelDeleteScroll()}
               variant="contained"
               color="secondary"
@@ -305,7 +309,7 @@ const CommonFooter = ({
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title" className="title">
+          <DialogTitle id="alert-dialog-title" className="dialogTitle">
             Other Transaction Details for A/C No. {tempStore?.accInfo?.ACCT_CD}{" "}
           </DialogTitle>
           <DialogContent style={{ padding: "0px" }}>
@@ -316,8 +320,10 @@ const CommonFooter = ({
 
           <DialogActions>
             <Button
+              className="dialogBtn"
               onClick={() => setOtherTrxDialog(false)}
               variant="contained"
+              color="secondary"
             >
               Cancel
             </Button>

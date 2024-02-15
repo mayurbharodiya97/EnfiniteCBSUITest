@@ -581,7 +581,6 @@ export const Trn001 = () => {
       errMsg?.cNo == ""
     ) {
       let obj = [...rows, defTableValue2];
-
       setRows(obj);
       handleTotal(obj);
     }
@@ -614,6 +613,7 @@ export const Trn001 = () => {
     setTotalDebit(Number(sumDebit.toFixed(3)));
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
+
   const handleReset = () => {
     let defaultRows = { ...defTableValue };
     setRows([defaultRows]);
@@ -653,7 +653,7 @@ export const Trn001 = () => {
     }
   };
 
-  const handleSaveDialog = () => {
+  const handleScrollSave1 = () => {
     console.log(errMsg, "errMsg");
     console.log(isSave, "isSave");
     let isErrCNo = rows.some((a) => a.bugCNo);
@@ -703,7 +703,7 @@ export const Trn001 = () => {
     }
   };
 
-  const handleScrollSave = () => {
+  const handleScrollSave2 = () => {
     let arr = rows.map((a) => {
       return {
         ENTERED_BRANCH_CD: a.branch?.value,
@@ -730,6 +730,7 @@ export const Trn001 = () => {
   const handleGetHeaderTabs = (data) => {
     getTabsByParentType.mutate(data);
   };
+
   const handleViewAll = () => {
     setViewOnly(true);
   };
@@ -1091,7 +1092,7 @@ export const Trn001 = () => {
               variant="contained"
               color="secondary"
               sx={{ margin: "8px" }}
-              onClick={() => handleSaveDialog()}
+              onClick={() => handleScrollSave1()}
             >
               Post
               {/* {t("Save")} */}
@@ -1144,7 +1145,7 @@ export const Trn001 = () => {
           <PopupMessageAPIWrapper
             MessageTitle="Save Confirmation"
             Message={scrollSaveHeading}
-            onActionYes={() => handleScrollSave()}
+            onActionYes={() => handleScrollSave2()}
             onActionNo={() => setSaveDialog(false)}
             rows={[]}
             open={saveDialog}
@@ -1158,7 +1159,12 @@ export const Trn001 = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle className="title">
+          <DialogTitle
+            className="dialogTitle"
+            style={{
+              cursor: "move",
+            }}
+          >
             {isArray ? "Scroll" : "Transaction"} Saved
           </DialogTitle>
           <DialogContent>
@@ -1179,6 +1185,7 @@ export const Trn001 = () => {
 
           <DialogActions className="dialogFooter">
             <Button
+              className="dialogBtn"
               color="secondary"
               variant="contained"
               onClick={() => {
@@ -1197,7 +1204,7 @@ export const Trn001 = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle className="title">A/C Info</DialogTitle>
+          <DialogTitle className="dialogTitle">A/C Info</DialogTitle>
           <DialogContent>
             <br />
 
@@ -1213,6 +1220,7 @@ export const Trn001 = () => {
 
           <DialogActions className="dialogFooter">
             <Button
+              className="dialogBtn"
               color="secondary"
               variant="contained"
               onClick={() => {

@@ -371,7 +371,7 @@ export const Trn002 = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle className="title">Delete Confirmation</DialogTitle>
+          <DialogTitle className="dialogTitle">Delete Confirmation</DialogTitle>
           <DialogContent>
             {"Do you want to Delete the transaction - VoucherNo." +
               dataRow?.TRAN_CD +
@@ -393,6 +393,7 @@ export const Trn002 = () => {
 
           <DialogActions className="dialogFooter">
             <Button
+              className="dialogBtn"
               color="secondary"
               variant="contained"
               onClick={handleDeleteByVoucher}
@@ -406,6 +407,7 @@ export const Trn002 = () => {
               )}
             </Button>{" "}
             <Button
+              className="dialogBtn"
               onClick={() => {
                 setDeleteDialog(false);
                 handleSetRemarks();
