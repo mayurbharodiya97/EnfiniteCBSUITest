@@ -76,6 +76,7 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
     handlePhotoOrSignctx,
     handleStepStatusctx,
     handleModifiedColsctx,
+    handleFormModalClosectx,
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
   const classes = useStyles();
@@ -521,6 +522,7 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
           {formMode === "view" && (
             <Button
               onClick={() => {
+                handleFormModalClosectx()
                 handlePhotoOrSignctx(null, null, "photo")
                 handlePhotoOrSignctx(null, null, "sign")          
                 setDialogAction(null);

@@ -44,7 +44,8 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   const {
     state,
     handlePhotoOrSignctx,
-    handleReqCDctx
+    handleReqCDctx,
+    handleFormModalClosectx
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
   const classes = useStyles();
@@ -336,6 +337,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
         </Button>
         <Button
           onClick={() => {
+            handleFormModalClosectx()
             handlePhotoOrSignctx(null, null, "photo")
             handlePhotoOrSignctx(null, null, "sign")          
             onClose();
