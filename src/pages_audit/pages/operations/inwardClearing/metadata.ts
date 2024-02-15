@@ -48,10 +48,37 @@ export const InwardClearingRetrievalMetadata = {
       render: {
         componentType: "radio",
       },
+      name: "A_FLAG",
+      label: "",
+      RadioGroupProps: { row: true },
+      defaultValue: "A",
+      options: [
+        {
+          label: "Only Error",
+          value: "E",
+        },
+        { label: "All", value: "A" },
+        { label: "Confirmation Pending", value: "P" },
+        { label: "Draft/Banker Cheques", value: "D" },
+        { label: "Share Dividend Warrant", value: "S" },
+      ],
+
+      GridProps: {
+        xs: 12,
+        sm: 12,
+        md: 12,
+        lg: 12,
+        xl: 12,
+      },
+    },
+    {
+      render: {
+        componentType: "radio",
+      },
       name: "A_RETRIEVE",
       label: "",
       RadioGroupProps: { row: true },
-      defaultValue: "E",
+      defaultValue: "A",
       options: [
         {
           label: "Ent.Branch",
@@ -61,33 +88,9 @@ export const InwardClearingRetrievalMetadata = {
       ],
 
       GridProps: {
-        xs: 12,
-        md: 6,
+        xs: 6,
         sm: 6,
-        lg: 6,
-        xl: 6,
-      },
-    },
-    {
-      render: {
-        componentType: "radio",
-      },
-      name: "A_FLAG",
-      label: "",
-      RadioGroupProps: { row: true },
-      defaultValue: "N",
-      options: [
-        {
-          label: "Only Error",
-          value: "N",
-        },
-        { label: "All", value: "Y" },
-      ],
-
-      GridProps: {
-        xs: 12,
         md: 6,
-        sm: 6,
         lg: 6,
         xl: 6,
       },

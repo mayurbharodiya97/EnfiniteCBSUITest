@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
 import {
   Box,
@@ -21,9 +21,23 @@ import { useStyles } from "pages_audit/auth/style";
 import SearchIcon from "@mui/icons-material/Search";
 import { TextField } from "components/styledComponent";
 import { SubmitFnType } from "packages/form";
-
+import { Alert } from "components/common/alert";
+import { queryClient } from "cache";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { InwardCleaingGridMetaData } from "./gridMetadata";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { ActionTypes } from "components/dataTable";
+const actions: ActionTypes[] = [
+  {
+    actionName: "retrieve",
+    actionLabel: "Retrieve",
+    multiple: undefined,
+    rowDoubleClick: false,
+    alwaysAvailable: true,
+  },
+];
 export const InwardClearing = () => {
-  const [open, setOpen] = useState(true);
+  const [isOpenRetrieve, setIsOpenRetrieve] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
   const actionClasses = useStyles();
   const { authState } = useContext(AuthContext);
@@ -42,17 +56,35 @@ export const InwardClearing = () => {
 
   const getInwardClearingData: any = useMutation(API.getInwardClearingData, {
     onSuccess: (data) => {
-      // isDataChangedRef.current = true;
       refetch();
     },
     onError: (error: any) => {},
   });
+
+  const setCurrentAction = useCallback((data) => {
+    if (data?.name === "retrieve") {
+      setIsOpenRetrieve(true);
+    }
+    // else {
+    //   navigate(data?.name, {
+    //     state: data?.rows,
+    //   });
+    // }
+  }, []);
   useEffect(() => {
     if (!isLoading && !isFetching) {
+      const filteredData = data.filter(
+        (item) => item?.value === authState?.user?.branchCode
+      );
       setFilteredData(data);
+      setSelectedRows(filteredData.map((item) => item?.value));
     }
   }, [isLoading, isFetching]);
-
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["BranchSelectionGridData"]);
+    };
+  }, []);
   const handleRowClick = (event: any, name: string, label: string) => {
     setSelectAll(false);
     if (event.ctrlKey) {
@@ -92,26 +124,25 @@ export const InwardClearing = () => {
         ...data,
         BRANCH_CD: selectedRowsRef.current,
         COMP_CD: authState?.companyID ?? "",
-        TRAN_DT: "13/FEB/2024",
-        // TRAN_DT: new Date() ?? authState?.workingDate,
+        TRAN_DT: authState?.workingDate,
       },
       endSubmit,
     });
-    setOpen(false);
+    setIsOpenRetrieve(false);
   };
   return (
     <>
       <Dialog
-        open={open}
+        open={isOpenRetrieve}
         //@ts-ignore
         PaperProps={{
           style: {
-            width: "100%",
+            width: "55%",
             // minHeight: "36vh",
             // height: "36vh",
           },
         }}
-        maxWidth="sm"
+        maxWidth="md"
       >
         <>
           <FormWrapper
@@ -147,6 +178,16 @@ export const InwardClearing = () => {
           <>
             {isLoading || isFetching ? (
               <LoaderPaperComponent />
+            ) : isError ? (
+              <>
+                <div style={{ width: "100%", paddingTop: "10px" }}>
+                  <Alert
+                    severity={error?.severity ?? "error"}
+                    errorMsg={error?.error_msg ?? "Error"}
+                    errorDetail={error?.error_detail ?? ""}
+                  />
+                </div>
+              </>
             ) : (
               <Grid item xs={12} sm={12} md={12} style={{ padding: "10px" }}>
                 <Box
@@ -174,41 +215,22 @@ export const InwardClearing = () => {
                         fontFamily: "Roboto, Helvetica",
                         background: "var(--theme-color1)",
                         color: "#fff",
-                        display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        display: "grid",
+                        gridTemplateColumns: "0.62fr 0.7fr 2fr 1fr",
+                        gap: "0 18px",
                         zIndex: 9,
                       }}
                     >
                       <>
-                        <span>Bank</span>
-                        <span
-                          style={{
-                            marginLeft: "18px",
-                          }}
-                        >
-                          Branch
-                        </span>
-                        <span
-                          style={{
-                            display: "flex",
-                            flex: 0.5,
-                            marginLeft: "12px",
-                          }}
-                        >
-                          Branch Name
-                        </span>
-                        <span
-                          style={{
-                            marginRight: "72px",
-                          }}
-                        >
-                          Status
-                        </span>
+                        <div>Bank</div>
+                        <div>Branch</div>
+                        <div>Branch Name</div>
+                        <div style={{ marginLeft: "24px" }}>Status</div>
                       </>
                     </Box>
                     <List style={{ paddingTop: "0px", paddingBottom: "0px" }}>
-                      {filteredData?.sort()?.map((item) => (
+                      {filteredData?.map((item) => (
                         <ListItemData
                           key={item?.value}
                           name={item?.label}
@@ -224,7 +246,7 @@ export const InwardClearing = () => {
                           onDoubleClick={(event) => {
                             selectedRowsRef.current = selectedRows;
                             myRef?.current?.handleSubmit(event, "save");
-                            setOpen(false);
+                            setIsOpenRetrieve(false);
                           }}
                         />
                       ))}
@@ -265,16 +287,16 @@ export const InwardClearing = () => {
                   ) : null
                 }
                 onClick={(event) => {
+                  console.log("selectedRows", selectedRows);
                   if (
-                    selectedRows.length === 0 ||
-                    selectedRowsData.length === 0
+                    (!selectedRows && selectedRows?.length > 0) ||
+                    (!selectedRowsData && selectedRowsData?.length > 0)
                   ) {
-                    // setIsOpenSave(true);
                     enqueueSnackbar("Please select at least one row.", {
                       variant: "error",
                     });
                   } else {
-                    setOpen(false);
+                    setIsOpenRetrieve(false);
                     myRef?.current?.handleSubmit(event, "save");
                     selectedRowsRef.current = selectedRows;
                   }
@@ -286,7 +308,7 @@ export const InwardClearing = () => {
               <GradientButton
                 // disabled={result.isLoading || isLocalLoding}
                 onClick={() => {
-                  setOpen(false);
+                  setIsOpenRetrieve(false);
                 }}
               >
                 Close
@@ -295,6 +317,19 @@ export const InwardClearing = () => {
           </DialogActions>
         </>
       </Dialog>
+      <>
+        <GridWrapper
+          key={"inwardCleringGrid"}
+          finalMetaData={InwardCleaingGridMetaData as GridMetaDataType}
+          data={getInwardClearingData?.data ?? []}
+          setData={() => null}
+          loading={getInwardClearingData.isLoading || isFetching}
+          actions={actions}
+          setAction={setCurrentAction}
+          refetchData={{}}
+          // ref={myGridRef}
+        />
+      </>
     </>
   );
 };
@@ -312,9 +347,9 @@ export const ListItemData = ({
       <ListItem
         button
         style={{
-          color: "var(--theme-color2)",
+          color: selected ? "white" : "black",
           fontSize: "14px",
-          backgroundColor: selected ? "var(--theme-color5)" : "transparent",
+          backgroundColor: selected ? "var(--theme-color3)" : "transparent",
           border: "0.5px solid #F3F6F9",
         }}
         onClick={onClick}
@@ -324,7 +359,7 @@ export const ListItemData = ({
           <span
             style={{
               textAlign: "left",
-              flex: index === 2 ? 1 : 0.5,
+              flex: index === 2 ? 1.5 : 0.5,
               padding: ".35rem 0",
               fontWeight: 400,
               fontFamily: "Roboto, Helvetica",
