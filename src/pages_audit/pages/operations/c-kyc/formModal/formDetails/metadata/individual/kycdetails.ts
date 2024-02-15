@@ -92,7 +92,7 @@ export const kyc_proof_of_identity_meta_data = {
                   },
                 ],
             },
-            validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
+            // validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
             maxLength: 10,
         },
         {
@@ -112,7 +112,7 @@ export const kyc_proof_of_identity_meta_data = {
                   { name: "required", params: ["ThisFieldisrequired"] },
                 ],
             },
-            validate: (columnValue, allField, flag) => API.validateUniqueId(columnValue, allField, flag),
+            // validate: (columnValue, allField, flag) => API.validateUniqueId(columnValue, allField, flag),
             // disableCaching: true,
         },
         {
@@ -125,7 +125,7 @@ export const kyc_proof_of_identity_meta_data = {
             maxLength: 20,
             type: "text",
             txtTransform: "uppercase",
-            validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {ELECTION_CARD_NO: columnValue.value}),
+            // validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {ELECTION_CARD_NO: columnValue.value}),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -197,7 +197,7 @@ export const kyc_proof_of_identity_meta_data = {
           maxLength: 20,
           type: "text",
           txtTransform: "uppercase",
-          validate: (columnValue, allField, flag) => API.validateGSTIN(columnValue, allField, flag),
+        //   validate: (columnValue, allField, flag) => API.validateGSTIN(columnValue, allField, flag),
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
@@ -222,7 +222,7 @@ export const kyc_proof_of_identity_meta_data = {
             maxLength: 20,
             type: "text",
             txtTransform: "uppercase",
-            validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {PASSPORT_NO: columnValue.value}),
+            // validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {PASSPORT_NO: columnValue.value}),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -311,7 +311,7 @@ export const kyc_proof_of_identity_meta_data = {
             label: "No",
             placeholder: "",
             maxLength: 20,
-            validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {DRIVING_LICENSE_NO: columnValue.value}),
+            // validate: (columnValue, allField, flag) => API.DuplicationValidate(columnValue, allField, flag, {DRIVING_LICENSE_NO: columnValue.value}),
             type: "text",
             txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -1347,14 +1347,14 @@ export const kyc_proof_of_address_meta_data = {
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
-    {
-        render: {
-            componentType: "spacer"
-        },
-        GridProps: {
-            xs: 0.2
-        }
-    },
+    // {
+    //     render: {
+    //         componentType: "spacer"
+    //     },
+    //     GridProps: {
+    //         xs: 0.2
+    //     }
+    // },
     {
         render: {
             componentType: "numberFormat",
@@ -1393,14 +1393,14 @@ export const kyc_proof_of_address_meta_data = {
         type: "text",
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
-    {
-        render: {
-            componentType: "spacer"
-        },
-        GridProps: {
-            xs: 0.2
-        }
-    },
+    // {
+    //     render: {
+    //         componentType: "spacer"
+    //     },
+    //     GridProps: {
+    //         xs: 0.2
+    //     }
+    // },
     {
         render: {
             componentType: "numberFormat",
@@ -1452,17 +1452,17 @@ export const kyc_proof_of_address_meta_data = {
         },
         dependentFields: ["STD_2"],
         type: "text",
-        validate: (columnValue, allField, flag) => API.validateMobileNo(columnValue, allField, flag),
+        // validate: (columnValue, allField, flag) => API.validateMobileNo(columnValue, allField, flag),
         GridProps: {xs:12, sm:4, md: 2, lg: 2, xl:2},
     },
-    {
-        render: {
-            componentType: "spacer"
-        },
-        GridProps: {
-            xs: 0.2
-        }
-    },
+    // {
+    //     render: {
+    //         componentType: "spacer"
+    //     },
+    //     GridProps: {
+    //         xs: 0.2
+    //     }
+    // },
     {
         render: {
             componentType: "numberFormat",
