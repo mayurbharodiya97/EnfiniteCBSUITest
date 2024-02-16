@@ -63,30 +63,22 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   const signFileURL = useRef<any | null>(null);
   const signFilesdata = useRef<any | null>("");
   const { t } = useTranslation();
-  const {state: locationState} = useLocation();
-  console.log("fwefwedfweqwe", locationState)
-
+  const location: any = useLocation();
   const [activePhotoHist, setActivePhotoHist] = useState<any>(null);
   const formMode = "view"
   const [isHistoryGridVisible, setIsHistoryGridVisible] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [isSaveDisabled, setIsSaveDisabled] = useState<boolean>(true);
 
   const [customerData, setCustomerData] = useState<any>({});
   const [confirmAction, setConfirmAction] = useState<any>("confirm");
   const [actionDialog, setActionDialog] = useState(false)
+  const CUST_NM = location.state?.[0]?.data.CUSTOMER_NAME ?? "";
+  const CUST_ID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
 
   // useEffect(() => {
   //   console.log("photoBase64ctx, signBase64ctx", Boolean(state?.photoBase64ctx), Boolean(state?.signBase64ctx))
   // }, [state?.photoBase64ctx, state?.signBase64ctx])
-
-  useEffect(() => {
-    if (Boolean(locationState && locationState.length>0)) {
-      // console.log("locationdata", locationState)
-      let data = locationState[0]?.data;
-      setCustomerData(data);
-    }
-  }, [locationState]);
 
   // to get photo/sign history, on edit
   const photoHistMutation: any = useMutation(API.getPhotoSignHistory, {
@@ -103,17 +95,6 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
     },
     onError: (error: any) => {},
   });
-
-  useEffect(() => {
-    if(customerData && Boolean(customerData?.CUSTOMER_ID)) {
-      const payload = {
-        COMP_CD: authState?.companyID ?? "",
-        CUSTOMER_ID: customerData?.CUSTOMER_ID ?? "",
-      }
-      photoHistMutation.mutate(payload)
-    }
-  }, [customerData])
-
 
   const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
     onSuccess: (data) => {
@@ -142,44 +123,31 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
   }, [])
 
 
-  // set photo, sign url from history api active record, on edit
+  // set photo, sign url from retrieve api, history api for hisotry grid
   useEffect(() => {
-    // if (activePhotoHist) {
-      // console.log(!Boolean(customerData.REQUEST_ID), "asdasdasd1", customerData)
-      if(customerData && !Boolean(customerData.REQUEST_ID)) {
-        // console.log("asdasdasd2", activePhotoHist)
-        if (activePhotoHist) {
-          handlePhotoOrSignctx(null, activePhotoHist.CUST_PHOTO, "photo")
-          handlePhotoOrSignctx(null, activePhotoHist.CUST_SIGN, "sign")
-          setPhotoImageURL(activePhotoHist.CUST_PHOTO, "photo");
-          setPhotoImageURL(activePhotoHist.CUST_SIGN, "sign");
-          photoFilesdata.current = activePhotoHist.CUST_PHOTO;
-          signFilesdata.current = activePhotoHist.CUST_SIGN;
-        }
-      } else if(customerData && Boolean(customerData.REQUEST_ID)) {
-        let req_cd = parseInt(customerData.REQUEST_ID) ?? ""
-        handleReqCDctx(req_cd)
-        let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-          COMP_CD: authState?.companyID ?? "",
-        }
-        payload["REQUEST_CD"] = customerData.REQUEST_ID;
-        mutation.mutate(payload)
+    let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+      COMP_CD: authState?.companyID ?? "",
+    }
+    const photoPayload = {
+      COMP_CD: authState?.companyID ?? "",
+    }
+    if(Array.isArray(location.state) && location.state.length>0) {
+      const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
+      const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
+      if(Boolean(reqCD)) {
+        payload["REQUEST_CD"] = reqCD;
       }
-    // }
-  }, [customerData, activePhotoHist]);
-
-  const updateMutation: any = useMutation(API.updatePhotoSignData, {
-    onSuccess: (data, payload) => {
-      handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_PHOTO, "photo")
-      handlePhotoOrSignctx(null, payload.PHOTO_DTL.CUST_SIGN, "sign")
-
-      // console.log(payload, "datatdastdastdasd", data);
-      setIsSaveDisabled(true)
-    },
-    onError: (error: any) => {
-      // console.log("datatdastdastdasd error", error);
-    },
-  });
+      if(Boolean(custID)) {
+        payload["CUSTOMER_ID"] = custID;
+        photoPayload["CUSTOMER_ID"] = custID;
+      }
+    }
+    
+    if(Object.keys(payload)?.length > 1) {
+      photoHistMutation.mutate(photoPayload)
+      mutation.mutate(payload)
+    }
+}, [])
 
   // useEffect(() => {
   //   console.log("dialogAction, isSaveDisabled, formMode", dialogAction, isSaveDisabled, formMode)
@@ -346,7 +314,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
           Close
         </Button>
       </React.Fragment>
-  }, [])
+  }, [isHistoryGridVisible])
 
 
 
@@ -385,7 +353,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
       >
         <Grid container>
           <Typography variant="h6">
-            {`Photo & Signature - ${customerData?.CUSTOMER_NAME}${customerData?.CUSTOMER_ID ? ` [Cust. ID : ${customerData?.CUSTOMER_ID}] ` : null}`}
+            {`Photo & Signature - ${CUST_NM} ${CUST_ID ? ` [Cust. ID : ${CUST_ID}] ` : null}`}
           </Typography>
         </Grid>
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -416,15 +384,8 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
       </DialogTitle>
       <DialogContent sx={{px: "0"}}>
         <>
-          {((updateMutation.isLoading || photoHistMutation.isLoading) || mutation.isLoading) ? <LinearProgress color="secondary" /> : null}
-          {updateMutation.isError ? (
-            <Alert
-              severity={updateMutation.error?.severity ?? "error"}
-              errorMsg={updateMutation.error?.error_msg ?? "Something went to wrong.."}
-              errorDetail={updateMutation.error?.error_detail}
-              color="error"
-            />
-          ) : mutation.isError ? (
+          {mutation.isLoading ? <LinearProgress color="secondary" /> : null}
+          {mutation.isError ? (
             <Alert
               severity={mutation.error?.severity ?? "error"}
               errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
@@ -550,7 +511,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
                 </div>
             </Grid>
 
-            {photoHistMutation.data && isHistoryGridVisible && (
+            {isHistoryGridVisible && (
               <GridWrapper
                 key={`AssetDTLGrid`}
                 finalMetaData={PhotoHistoryMetadata as GridMetaDataType}

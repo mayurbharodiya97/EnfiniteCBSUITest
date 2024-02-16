@@ -354,15 +354,16 @@ export default function FormModal({
         const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
         if(Boolean(reqCD)) {
           payload["REQUEST_CD"] = reqCD;
-        } else if(Boolean(custID)) {
+        }
+        if(Boolean(custID)) {
           payload["CUSTOMER_ID"] = custID;
         }
       }
-      if(Object.keys(payload)?.length == 2) {
+      if(Object.keys(payload)?.length > 1) {
         mutation.mutate(payload)
       }
     } 
-  }, [location])
+  }, [])
 
 
 
