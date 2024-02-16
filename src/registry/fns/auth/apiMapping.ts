@@ -652,11 +652,7 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   ACCTNOVALIDATION: {
-    url: "/accountServiceAPI/ACCTNOVALIDATION",
-    packageName: "",
-  },
-  CHEQUENOVALIDATION: {
-    url: "/chequeServiceAPI/CHEQUENOVALIDATION",
+    url: "/enfinityCommonServiceAPI/ACCTNOVALIDATION",
     packageName: "",
   },
   //f1 list

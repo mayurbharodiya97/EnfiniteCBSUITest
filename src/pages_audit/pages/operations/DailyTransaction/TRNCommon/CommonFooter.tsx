@@ -49,11 +49,17 @@ const CommonFooter = ({
   const [remarks, setRemarks] = useState("");
   const [loading, setLoading] = useState(false);
   const [isTrn1, setIsTrn1] = useState(true);
+  const [isConfirmedRec, setIsConfirmedRec] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const location = useLocation();
+
+  useEffect(() => {
+    let abc = filteredRows && filteredRows?.some((a) => a?.CONFIRMED === "Y");
+    setIsConfirmedRec(abc);
+  }, [filteredRows]);
 
   useEffect(() => {
     handleSetRemarks();
@@ -246,23 +252,16 @@ const CommonFooter = ({
               label="Scroll No."
               variant="outlined"
               color="secondary"
+              helperText={
+                isConfirmedRec && (
+                  <h3>
+                    Scroll No. {scrollNo} is confirmed. Are you sure you wish to
+                    Delete it ?
+                  </h3>
+                )
+              }
             />
             <br />
-            <br />
-            {filteredRows &&
-              filteredRows?.map((a) => {
-                if (a?.CONFIRMED === "Y") {
-                  return (
-                    <>
-                      <p>
-                        Scroll No.{a?.SCROLL1} is confirmed. Are you sure you
-                        wish to Delete it ?
-                      </p>{" "}
-                      <br />
-                    </>
-                  );
-                }
-              })}{" "}
             <br />
             <TextField
               style={{ minWidth: "400px" }}

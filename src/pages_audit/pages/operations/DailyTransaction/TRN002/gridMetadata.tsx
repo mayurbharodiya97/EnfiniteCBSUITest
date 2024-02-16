@@ -12,10 +12,10 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     allowColumnReordering: true,
     disableSorting: false,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     hideFooter: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
+    // pageSizes: [10, 20, 30],
+    // defaultPageSize: 10,
     containerHeight: {
       min: "26vh",
       max: "30vh",
@@ -23,7 +23,6 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: true,
-    // hideHeader: true,
     isCusrsorFocused: true,
   },
   columns: [

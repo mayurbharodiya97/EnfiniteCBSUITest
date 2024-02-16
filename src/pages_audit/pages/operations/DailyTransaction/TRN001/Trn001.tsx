@@ -87,7 +87,7 @@ export const Trn001 = () => {
     bugAccNo: false,
     bugCNo: false,
     bugDate: false,
-    bugMsgAccNo: "A/C No. Empty",
+    bugMsgAccNo: "",
     bugMsgCNo: "",
     bugMsgDate: "",
     isCredit: true,
@@ -375,8 +375,10 @@ export const Trn001 = () => {
       let abc = obj[i]?.accNo?.padStart(6, "0");
       obj[i].accNo = abc;
       handleGetAccInfo(i);
-      setRows(obj);
+    } else {
+      obj[i].bugMsgAccNo = "A/C No. Empty";
     }
+    setRows(obj);
   };
 
   const handleTrx = (e, value, i) => {
@@ -426,7 +428,7 @@ export const Trn001 = () => {
   const handleSdc = (e, value, i) => {
     const obj = [...rows];
     obj[i].sdc = value;
-    obj[i].remark = value.label;
+    obj[i].remark = value?.label;
 
     setRows(obj);
   };
@@ -455,6 +457,7 @@ export const Trn001 = () => {
         obj[i].branch?.value &&
         getChqValidation.mutate(obj[i]);
     } else {
+      obj[i].bug = false;
       obj[i].bugCNo = false;
       obj[i].bugMsgCNo = "";
     }
@@ -568,7 +571,7 @@ export const Trn001 = () => {
       bugAccNo: true,
       bugCNo: false,
       bugDate: false,
-      bugMsgAccNo: "A/C No. Empty",
+      bugMsgAccNo: "",
       bugMsgCNo: "",
       bugMsgDate: "",
 
@@ -823,7 +826,7 @@ export const Trn001 = () => {
                             )
                           }
                         >
-                          <TableCell sx={{ minWidth: 120 }}>
+                          <TableCell>
                             <Autocomplete
                               value={a.branch}
                               fullWidth={true}
@@ -831,9 +834,12 @@ export const Trn001 = () => {
                               size="small"
                               options={branchOptions}
                               onChange={(e, value) => handleBranch(e, value, i)}
+                              popupIcon={<></>}
+                              clearIcon={<></>}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
+                                  style={{ width: "120px" }}
                                   error={a.branch?.value ? false : true}
                                 />
                               )}
@@ -848,18 +854,21 @@ export const Trn001 = () => {
                             )
                           }
                         >
-                          <TableCell sx={{ minWidth: 130 }}>
+                          <TableCell>
                             <Autocomplete
                               value={a.accType}
                               fullWidth={true}
                               autoHighlight
                               size="small"
                               options={accTypeOptions}
+                              popupIcon={<></>}
+                              clearIcon={<></>}
                               onChange={(e, value) =>
                                 handleAccType(e, value, i)
                               }
                               renderInput={(params) => (
                                 <TextField
+                                  style={{ width: "130px" }}
                                   {...params}
                                   error={a.accType?.value ? false : true}
                                 />
@@ -891,7 +900,7 @@ export const Trn001 = () => {
                             )
                           }
                         >
-                          <TableCell sx={{ minWidth: 50 }}>
+                          <TableCell>
                             <Autocomplete
                               value={a.trx}
                               fullWidth={true}
@@ -899,9 +908,12 @@ export const Trn001 = () => {
                               size="small"
                               options={trxOptions}
                               onChange={(e, value) => handleTrx(e, value, i)}
+                              popupIcon={<></>}
+                              clearIcon={<></>}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
+                                  style={{ width: "75px" }}
                                   error={a.trx?.value ? false : true}
                                 />
                               )}
@@ -932,7 +944,7 @@ export const Trn001 = () => {
                             )
                           }
                         >
-                          <TableCell sx={{ minWidth: 60 }}>
+                          <TableCell>
                             <Autocomplete
                               value={a.sdc}
                               fullWidth={true}
@@ -940,8 +952,14 @@ export const Trn001 = () => {
                               size="small"
                               options={sdcOptions}
                               onChange={(e, value) => handleSdc(e, value, i)}
+                              popupIcon={<></>}
+                              clearIcon={<></>}
                               renderInput={(params) => (
-                                <TextField {...params} label="" />
+                                <TextField
+                                  sx={{ width: 100 }}
+                                  {...params}
+                                  label=""
+                                />
                               )}
                             />
                           </TableCell>
@@ -960,7 +978,7 @@ export const Trn001 = () => {
                         >
                           <TableCell
                             sx={{
-                              minWidth: 50,
+                              minWidth: 90,
                             }}
                           >
                             <TextField
@@ -1009,7 +1027,7 @@ export const Trn001 = () => {
                             a.trx?.code && <h3>Amount can't be zero</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 80 }}>
+                          <TableCell sx={{ minWidth: 120 }}>
                             <TextField
                               value={a.debit}
                               fullWidth={true}
@@ -1039,7 +1057,7 @@ export const Trn001 = () => {
                             a.trx?.code && <h3>Amount can't be zero</h3>
                           }
                         >
-                          <TableCell sx={{ minWidth: 80 }}>
+                          <TableCell sx={{ minWidth: 120 }}>
                             <TextField
                               value={a.credit}
                               fullWidth={true}
@@ -1061,20 +1079,23 @@ export const Trn001 = () => {
                           </TableCell>
                         </ErrTooltip>
 
-                        <TableCell
-                          style={{ border: "0px" }}
-                          // width: "10px"
-                          sx={{ minWidth: 20 }}
-                        >
+                        <TableCell style={{ border: "0px" }}>
                           {(rows[i].trx?.code == "3" ||
                             rows[i].trx?.code == "6") && (
-                            <Button
-                              color="secondary"
+                            <button
+                              className="clearBtn"
                               onClick={(e) => handleClear(e, i)}
-                              size="small"
                             >
                               <CancelIcon />
-                            </Button>
+                            </button>
+                            // <Button
+                            //   color="secondary"
+                            //   onClick={(e) => handleClear(e, i)}
+                            //   size="small"
+                            //   sx={{ width: 20, padding: "0px" }}
+                            // >
+                            //   <CancelIcon onClick={(e) => handleClear(e, i)} />
+                            // </Button>
                           )}
                         </TableCell>
                       </TableRow>

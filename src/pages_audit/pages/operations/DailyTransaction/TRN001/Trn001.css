@@ -66,3 +66,24 @@
   background: var(--theme-color1);
   color: var(--theme-color4);
 }
+.clearBtn {
+  cursor: pointer;
+  border: 0;
+  background: white;
+  padding: 2px;
+}
+.clearBtn :hover {
+  color: rgb(17, 104, 255);
+}
+
+/* .MuiAutocomplete-hasPopupIcon.css-f34qqq-MuiAutocomplete-root
+  .MuiOutlinedInput-root,
+.MuiAutocomplete-hasClearIcon.css-f34qqq-MuiAutocomplete-root
+  .MuiOutlinedInput-root {
+  padding-right: 8px;
+}
+
+.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-f34qqq-MuiAutocomplete-root
+  .MuiOutlinedInput-root {
+  padding-right: 8px;
+} */

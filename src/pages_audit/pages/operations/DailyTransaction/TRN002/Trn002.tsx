@@ -333,9 +333,6 @@ export const Trn002 = () => {
           }}
         >
           <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-            Total Records : {rows2 ? rows2.length : 0}
-          </Typography>
-          <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
             Confirmed Records : {confirmed}
           </Typography>
           <Typography
