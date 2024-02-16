@@ -14,8 +14,17 @@ import {
   unstable_createMuiStrictModeTheme,
 } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { WorkerContextProvider } from "pages_audit/pages/reports/context/exportWorkerContext";
+import { CustomSnackbarContent } from "components/customNotification/customNotistack";
+import { PopupContextProvider } from "components/custom/popupContext";
 
 const themeObj = unstable_createMuiStrictModeTheme(theme);
+
+declare module "notistack" {
+  interface VariantOverrides {
+    customSnackbar: true;
+  }
+}
 
 export const App = () => {
   return (
@@ -24,12 +33,20 @@ export const App = () => {
         <StyledEngineProvider injectFirst>
           <CssBaseline />
           <QueryClientProvider client={queryClient}>
-            <SnackbarProvider maxSnack={3} autoHideDuration={5000}>
-              <IndexPage />
-            </SnackbarProvider>
-            {/* {process.env.NODE_ENV !== "production" ? (
-              <ReactQueryDevtools />
-            ) : null} */}
+            <PopupContextProvider>
+              <WorkerContextProvider>
+                <SnackbarProvider
+                  maxSnack={3}
+                  autoHideDuration={5000}
+                  Components={{ customSnackbar: CustomSnackbarContent }}
+                >
+                  <IndexPage />
+                </SnackbarProvider>
+              </WorkerContextProvider>
+              {/* {process.env.NODE_ENV !== "production" ? (
+                <ReactQueryDevtools />
+              ) : null} */}
+            </PopupContextProvider>
           </QueryClientProvider>
         </StyledEngineProvider>
       </ThemeProvider>

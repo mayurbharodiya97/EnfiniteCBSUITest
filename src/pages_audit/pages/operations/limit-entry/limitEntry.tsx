@@ -2,6 +2,7 @@ import {
   AppBar,
   Box,
   Button,
+  CircularProgress,
   Container,
   Dialog,
   Grid,
@@ -31,7 +32,7 @@ import {
   getLimitDTL,
   getLimitFDdetail,
   getLimitNSCdetail,
-  saveLimitEntryData,
+  crudLimitEntryData,
 } from "./api";
 import { queryClient } from "cache";
 import { PopupRequestWrapper } from "components/custom/popupMessage";
@@ -46,6 +47,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { NSCFormDetail } from "./nscDetail";
 import { ForceExpire } from "./forceExpire";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const LimitEntry = () => {
   const fdAction: ActionTypes[] = [
@@ -80,15 +82,6 @@ export const LimitEntry = () => {
       rowDoubleClick: true,
     },
   ];
-  // const setCurrentAction = useCallback(
-  //   (data) => {
-  //     navigate(data?.name, {
-  //       state: data?.rows,
-  //     });
-  //   },
-  //   [navigate]
-  // );
-
   const [value, setValue] = useState("tab1");
   const myMasterRef = useRef<any>(null);
   const initialValuesRef = useRef<any>(null);
@@ -101,6 +94,8 @@ export const LimitEntry = () => {
   let [messageArray, setmessageArray] = useState<any>([]);
   let [fdPopupMessage, setFdPopupMessage] = useState<any>(false);
   const navigate = useNavigate();
+
+  const { MessageBox } = usePopupContext();
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
@@ -119,6 +114,8 @@ export const LimitEntry = () => {
       onError: (error: any) => {},
     }
   );
+
+  console.log("<<<securityLimitData", securityLimitData);
   const getLimitDetail: any = useMutation("getLimitDTL", getLimitDTL, {
     onSuccess: (data) => {
       setGridDetailData(data);
@@ -156,11 +153,14 @@ export const LimitEntry = () => {
     },
   });
 
-  const saveLimitData: any = useMutation(
-    "saveLimitEntryData",
-    saveLimitEntryData,
+  const crudLimitData: any = useMutation(
+    "crudLimitEntryData",
+    crudLimitEntryData,
     {
-      onSuccess: (data) => {},
+      onSuccess: (data, variables) => {
+        setNewFormMTdata({ ...limitEntryMetaData });
+        enqueueSnackbar("Data insert successfully", { variant: "success" });
+      },
     }
   );
 
@@ -170,7 +170,7 @@ export const LimitEntry = () => {
       queryClient.removeQueries(["securityLimitData"]);
       queryClient.removeQueries(["getLimitNSCdetail"]);
       queryClient.removeQueries(["getLimitFDdetail"]);
-      queryClient.removeQueries(["saveLimitEntryData"]);
+      queryClient.removeQueries(["crudLimitEntryData"]);
     };
   }, []);
 
@@ -181,11 +181,19 @@ export const LimitEntry = () => {
     setFieldError,
     value
   ) => {
+    console.log("<<<savehandle", data);
+
+    let apiReq = {
+      ...data,
+      _isNewRow: true,
+      COMP_CD: authState?.companyID,
+      ENTERED_COMP_CD: authState?.companyID,
+      FD_COMP_CD: authState?.companyID,
+      ENTERED_BRANCH_CD: authState?.user?.branchCode,
+    };
+    crudLimitData.mutate(apiReq);
     //@ts-ignore
     endSubmit(true);
-
-    console.log("<<<savehandle", data);
-    saveLimitData.mutate(data);
   };
 
   const setCurrentAction = useCallback(
@@ -284,15 +292,21 @@ export const LimitEntry = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {securityLimitData?.isError ? (
+          {securityLimitData?.isError || crudLimitData?.isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
                   errorMsg={
-                    securityLimitData?.error?.error_msg ?? "Unknow Error"
+                    securityLimitData?.error?.error_msg ??
+                    crudLimitData?.error?.error_msg ??
+                    "Unknow Error"
                   }
-                  errorDetail={securityLimitData?.error?.error_detail ?? ""}
+                  errorDetail={
+                    securityLimitData?.error?.error_detail ??
+                    crudLimitData?.error?.error_detail ??
+                    ""
+                  }
                   color="error"
                 />
               </AppBar>
@@ -300,20 +314,29 @@ export const LimitEntry = () => {
           ) : null}
           {value === "tab1" ? (
             <>
-              {securityLimitData.isLoading || securityLimitData.isFetching ? (
+              {securityLimitData.isLoading ||
+              securityLimitData.isFetching ||
+              crudLimitData?.isLoading ||
+              crudLimitData.isFetching ? (
                 <LinearProgress color="secondary" />
               ) : (
                 <LinearProgressBarSpacer />
               )}
 
               <FormWrapper
-                key={"limitEntryForm" + newFormMTdata + setNewFormMTdata}
+                key={
+                  "limitEntryForm" +
+                  newFormMTdata +
+                  setNewFormMTdata +
+                  crudLimitData?.isSuccess
+                }
                 metaData={newFormMTdata}
                 initialValues={initialValuesRef.current ?? {}}
                 onSubmitHandler={onSubmitHandler}
                 loading={securityLimitData.isLoading}
                 hideHeader={false}
                 ref={myMasterRef}
+                formState={{ MessageBox: MessageBox }}
                 setDataOnFieldChange={(action, payload) => {
                   if (action === "SECURITY_CODE") {
                     securityLimitData.mutate({
@@ -322,21 +345,27 @@ export const LimitEntry = () => {
                       BRANCH_CD: authState?.user?.branchCode,
                       WORKING_DATE: authState?.workingDate,
                       LIMIT_MARGIN: payload?.LIMIT_MARGIN,
+                      HDN_CHARGE_AMT: payload?.HDN_CHARGE_AMT,
+                      HDN_GST_AMT: payload?.HDN_GST_AMT,
+                      HDN_GST_ROUND: payload?.HDN_GST_ROUND,
+                      HDN_TAX_RATE: payload?.HDN_TAX_RATE,
                     });
                   }
 
-                  if (action === "MESSAGES") {
-                    if (payload?.MESSAGES) {
-                      messageArray = payload?.MESSAGES.split(", ").map(
-                        (msg, i) => {
-                          return <p>{`(${i + 1})  ${msg}`}</p>;
-                        }
-                      );
-                    }
-                    setmessageArray([messageArray]);
-                    setIsOpenSave(() => true);
-                    setNscFDbtn(payload?.NSC_FD_BTN);
-                  } else if (action === "NSC_FD_BTN") {
+                  // if (action === "MESSAGES") {
+                  //   if (payload?.MESSAGES) {
+                  //     messageArray = payload?.MESSAGES.split(", ").map(
+                  //       (msg, i) => {
+                  //         return <p>{`(${i + 1})  ${msg}`}</p>;
+                  //       }
+                  //     );
+                  //   }
+                  //   setmessageArray([messageArray]);
+                  //   setIsOpenSave(() => true);
+                  //   setNscFDbtn(payload?.NSC_FD_BTN);
+                  // } else
+
+                  if (action === "NSC_FD_BTN") {
                     setNscFDbtn(payload?.NSC_FD_BTN);
                   }
                 }}
@@ -377,18 +406,18 @@ export const LimitEntry = () => {
                                     res?.BRANCH_CD
                                   ) {
                                     const NSC_DTLRequestPara = {
-                                      // COMP_CD: authState?.companyID,
-                                      // ACCT_CD: res?.ACCT_CD?.padStart(
-                                      //   6,
-                                      //   "0"
-                                      // )?.padEnd(20, " "),
-                                      // ACCT_TYPE: res?.ACCT_TYPE,
-                                      // BRANCH_CD: res?.BRANCH_CD,
+                                      COMP_CD: authState?.companyID,
+                                      ACCT_CD: res?.ACCT_CD?.padStart(
+                                        6,
+                                        "0"
+                                      )?.padEnd(20, " "),
+                                      ACCT_TYPE: res?.ACCT_TYPE,
+                                      BRANCH_CD: res?.BRANCH_CD,
 
-                                      COMP_CD: "132 ",
-                                      BRANCH_CD: "099 ",
-                                      ACCT_TYPE: "301 ",
-                                      ACCT_CD: "000010              ",
+                                      // COMP_CD: "132 ",
+                                      // BRANCH_CD: "099 ",
+                                      // ACCT_TYPE: "301 ",
+                                      // ACCT_CD: "000010              ",
                                     };
                                     nscDetail.mutate(NSC_DTLRequestPara);
                                   }
@@ -404,8 +433,10 @@ export const LimitEntry = () => {
                         onClick={(event) => {
                           handleSubmit(event, "Save");
                         }}
-                        disabled={isSubmitting}
-                        //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                        // disabled={isSubmitting}
+                        endIcon={
+                          isSubmitting ? <CircularProgress size={20} /> : null
+                        }
                         color={"primary"}
                       >
                         Save
@@ -424,7 +455,6 @@ export const LimitEntry = () => {
                 loading={getLimitDetail?.isLoading}
                 setData={() => {}}
                 actions={forceExpireActions}
-                // controlsAtBottom={true}
                 setAction={setCurrentAction}
                 onClickActionEvent={(index, id, data) => {
                   console.log("<<<delete", index, id, data);
@@ -435,7 +465,12 @@ export const LimitEntry = () => {
           <Routes>
             <Route
               path="forceExpire/*"
-              element={<ForceExpire navigate={navigate} />}
+              element={
+                <ForceExpire
+                  navigate={navigate}
+                  getLimitDetail={getLimitDetail}
+                />
+              }
             />
           </Routes>
         </Grid>
@@ -462,11 +497,6 @@ export const LimitEntry = () => {
                 loading={fdDetail.isLoading}
                 actions={fdAction}
                 setAction={setCurrentAction}
-                // headerToolbarStyle={{
-                //   background: "var(--theme-color2)",
-                //   color: "black",
-                // }}
-                // refetchData={() => {}}
               />
             </Dialog>
           )}

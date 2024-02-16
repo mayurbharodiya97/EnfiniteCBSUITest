@@ -9,7 +9,7 @@ import { PasswordRotation } from "./pwdRotation";
 import { VerifyFinger } from "./verifyFinger";
 import * as API from "./api";
 import { matchFinger } from "./biometric";
-import { Grid } from "@mui/material";
+import { Grid, Tooltip } from "@mui/material";
 import { BankDetails } from "./bankDetails";
 import { useQuery } from "react-query";
 import { FullScreenLoader } from "components/common/loaderPaper";
@@ -501,10 +501,12 @@ export const AuthLoginController = () => {
                 alignItems="center"
                 padding={"25px"}
               >
-                <img
-                  src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
-                  alt="Logo"
-                />
+                <Tooltip describeChild title="Enfinity-CBS-UI-V1.0.17">
+                  <img
+                    src={Boolean(dashboardLogoURL) ? dashboardLogoURL : ""}
+                    alt="Logo"
+                  />
+                </Tooltip>
               </Grid>
               <Grid
                 container

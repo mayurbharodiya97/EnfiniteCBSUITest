@@ -27,18 +27,6 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
   },
   filters: [],
   columns: [
-    // {
-    //   accessor: "AS",
-    //   columnName: "Sr.No.",
-    //   sequence: 1,
-    //   alignment: "center",
-    //   componentType: "default",
-    //   width: 70,
-    //   minWidth: 70,
-    //   maxWidth: 200,
-    //   isAutoSequence: true,
-    // },
-
     {
       accessor: "CHEQUE_FROM",
       columnName: "From Chq. No.",
@@ -82,8 +70,8 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
       maxWidth: 250,
     },
     {
-      accessor: "GST",
-      columnName: "GST",
+      accessor: "AMOUNT",
+      columnName: "GST-Amount",
       sequence: 8,
       alignment: "center",
       componentType: "default",

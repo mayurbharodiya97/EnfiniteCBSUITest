@@ -19,15 +19,15 @@ const useStyles: any = makeStyles({
     },
   },
 
-  labelStyle: {
-    color: "rgba(0, 0, 0, 0.6)",
-    fontSize: "0.875rem",
-    lineHeight: "1.4375em",
-    fontWeight: "600",
-    transform: "translate(0, 1.5px) scale(1)",
-    marginBottom: "8px",
-    maxWidth: "calc(133% - 32px)",
-  },
+  // labelStyle: {
+  //   color: "rgba(0, 0, 0, 0.6)",
+  //   fontSize: "0.875rem",
+  //   lineHeight: "1.4375em",
+  //   fontWeight: "600",
+  //   transform: "translate(0, 1.5px) scale(1)",
+  //   marginBottom: "8px",
+  //   maxWidth: "calc(133% - 32px)",
+  // },
 });
 
 type KeyboardDateTimePickerPropsSubset = Omit<
@@ -179,7 +179,6 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
         disabled={isSubmitting}
         autoOk={true}
         readOnly={readOnly}
-        InputLabelProps={{ shrink: true }}
         InputProps={{
           readOnly: readOnly,
           ...InputProps,

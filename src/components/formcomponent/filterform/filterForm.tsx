@@ -532,7 +532,7 @@ export const FilterFormComponents = forwardRef<any, any>(
                           InputProps={{
                             style: {
                               background: Boolean(column?.isDisabled)
-                                ? "#e7e5e563"
+                                ? "var(--theme-color7)"
                                 : "",
                             },
                           }}

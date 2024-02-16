@@ -3,7 +3,7 @@ export const PhotoHistoryMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Photo & Signature History",
-    rowIdColumn: "SR_NO",
+    rowIdColumn: "SR_CD",
     defaultColumnConfig: {
       width: 100,
       maxWidth: 100,
