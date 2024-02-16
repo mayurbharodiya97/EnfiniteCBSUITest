@@ -198,7 +198,7 @@ export const CTSOutwardClearingFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2 },
+      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
     },
     {
       render: {
@@ -257,7 +257,6 @@ export const CTSOutwardClearingFormMetaData = {
       placeholder: "",
       type: "text",
       format: "dd/MM/yyyy HH:mm:ss",
-      defaultValue: new Date(),
       __VIEW__: { render: { componentType: "datetimePicker" } },
       fullWidth: true,
       isReadOnly: true,
@@ -552,10 +551,7 @@ export const ChequeDetailFormMetaData: any = {
         ) {
           return {};
         }
-        console.log(
-          "accumulatedTakeoverLoanAmount",
-          accumulatedTakeoverLoanAmount
-        );
+
         if (accumulatedTakeoverLoanAmount) {
           return {
             FINALAMOUNT: {
@@ -607,6 +603,17 @@ export const ChequeDetailFormMetaData: any = {
         componentType: "hidden",
       },
       name: "TRAN_DT",
+      label: "Cheque Date",
+      placeholder: "",
+      format: "dd/MM/yyyy",
+
+      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "RANGE_DT",
       label: "Cheque Date",
       placeholder: "",
       format: "dd/MM/yyyy",
@@ -795,14 +802,7 @@ export const ChequeDetailFormMetaData: any = {
           },
           GridProps: { xs: 12, sm: 2, md: 1.9, lg: 1.9, xl: 1.5 },
         },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "RANGE_DT",
-          label: "",
-          GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
-        },
+
         {
           render: {
             componentType: "datePicker",
@@ -816,13 +816,18 @@ export const ChequeDetailFormMetaData: any = {
           fullWidth: true,
           dependentFields: ["TRAN_DT", "RANGE_DT"],
           validate: (currentField, dependentField) => {
-            console.log(
-              "currentField",
-              currentField,
-              dependentField,
-              dependentField?.TRAN_DT?.value
-            );
+            const currentDate = new Date(currentField?.value);
+            const rangeDate = new Date(dependentField?.RANGE_DT?.value);
+            const transDate = new Date(dependentField?.TRAN_DT?.value);
+
+            if (currentDate < rangeDate || currentDate > transDate) {
+              return `Date should be between ${rangeDate.toLocaleDateString(
+                "en-IN"
+              )} - ${transDate.toLocaleDateString("en-IN")}`;
+            }
+            return "";
           },
+
           required: true,
           maxLength: 6,
 
@@ -1108,7 +1113,6 @@ export const RetrieveFormConfigMetaData = {
       name: "FROM_TRAN_DT",
       label: "From Date",
       placeholder: "",
-      // defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
@@ -1133,7 +1137,6 @@ export const RetrieveFormConfigMetaData = {
       name: "TO_TRAN_DT",
       label: "To Date",
       placeholder: "",
-      // defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
       schemaValidation: {

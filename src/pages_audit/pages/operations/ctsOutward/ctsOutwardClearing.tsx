@@ -180,9 +180,11 @@ const CtsOutwardClearingForm: FC<{
       const newData = data.chequeDetails?.map((item) => ({
         ...item,
         _isNewRow: formMode === "new" ? true : false,
+        BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
         PROCESSED: "N",
         REASON: "N",
       }));
+
       finalReqDataRef.current = {
         DAILY_CLEARING: {
           ...slipFormDataRef?.current,
@@ -201,6 +203,7 @@ const CtsOutwardClearingForm: FC<{
         _isNewRow: true,
         endSubmit,
       };
+
       setOpenProceedMsg(true);
     } else if (
       parseFloat(data?.TOTAL_AMOUNT) > 0 &&
@@ -294,7 +297,7 @@ const CtsOutwardClearingForm: FC<{
             initialValues={
               formMode === "new"
                 ? {
-                    TRAN_DT: data?.[0]?.DATE ?? "",
+                    TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
                     ZONE_TRAN_TYPE: zoneTranType,
                   }
                 : ({
@@ -479,7 +482,7 @@ const CtsOutwardClearingForm: FC<{
                   (target?.name ?? "") ===
                   ChequeDetailFormMetaData.form.name +
                     "/" +
-                    ChequeDetailFormMetaData.fields[5].name +
+                    ChequeDetailFormMetaData.fields[7].name +
                     `[${charAtIndex}]` +
                     ".AMOUNT"
                 ) {
@@ -504,7 +507,8 @@ const CtsOutwardClearingForm: FC<{
                 formMode === "new"
                   ? {
                       ...chequeDetailData,
-                      TRAN_DT: data?.[0]?.DATE ?? "",
+                      TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
+                      RANGE_DT: data?.[0]?.RANGE_DATE ?? "",
                     }
                   : {
                       chequeDetails:
@@ -565,7 +569,7 @@ const CtsOutwardClearingForm: FC<{
                   setFormMode("view");
                 }
               }}
-              tranDate={data?.[0]?.DATE ?? ""}
+              tranDate={data?.[0]?.TRAN_DATE ?? ""}
             />
           ) : null}
           {isOpenProceedMsg ? (

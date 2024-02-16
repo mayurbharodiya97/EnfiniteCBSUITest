@@ -164,7 +164,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "WIDTH_BAL",
-      columnName: "Width.Bal.",
+      columnName: "Widthdraw.Bal.",
       sequence: 14,
       alignment: "left",
       componentType: "default",

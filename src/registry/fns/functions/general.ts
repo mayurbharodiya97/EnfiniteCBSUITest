@@ -574,14 +574,9 @@ const GeneralAPISDK = () => {
       return "";
     }
     const { data, status } = await AuthSDK.internalFetcher(`GETSLIPNO`, {
-      // COMP_CD: reqData?.[2]?.companyID ?? "",
-      // BRANCH_CD: reqData?.[2]?.user?.branchCode,
-      // TRAN_DT: format(new Date(reqData?.[3]?.TRAN_DT?.value), "dd/MMM/yyyy"),
-      // ZONE: reqData?.[0].value ?? "0   ",
-      // TRAN_TYPE: reqData?.[0]?.optionData?.[0]?.ZONE_TRAN_TYPE ?? "S",
       TRAN_DT: format(new Date(dependentFields?.TRAN_DT?.value), "dd/MMM/yyyy"),
       ZONE: dependentFields?.ZONE?.value ?? "0   ",
-      TRAN_TYPE: dependentFields?.ZONE_TRAN_TYPE ?? "S",
+      TRAN_TYPE: dependentFields?.ZONE_TRAN_TYPE?.value ?? "S",
     });
     if (status === "0") {
       return data?.[0]?.SLIP_NO ?? "";
