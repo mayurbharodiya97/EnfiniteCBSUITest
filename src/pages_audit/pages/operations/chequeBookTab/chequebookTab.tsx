@@ -111,7 +111,7 @@ export const ChequebookTab = () => {
           getChequeDetail.mutate({
             ...deleteDataRef.current,
           });
-          enqueueSnackbar("Record Delete successfully", { variant: "warning" });
+          enqueueSnackbar("Record Delete successfully", { variant: "success" });
         } else if (variables?.DETAILS_DATA?.isNewRow.length) {
           setInitData({});
           setIsTabVisible(false);
@@ -182,9 +182,6 @@ export const ChequebookTab = () => {
       CHEQUE_TO: Number(data?.CHEQUE_TO),
       CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
       LEAF_ARR: Number(data?.LEAF_ARR),
-      TRAN_DT: authState?.workingDate,
-      ENTERED_BRANCH_CD: data?.BRANCH_CD,
-      ENTERED_COMP_CD: authState?.companyID,
     };
     let newArray: any = [];
 
@@ -301,33 +298,29 @@ export const ChequebookTab = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {crudChequeData?.isError || validateDelete?.isError ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={
-                    crudChequeData?.error?.error_msg ??
-                    validateDelete?.error?.error_msg ??
-                    "Unknow Error"
-                  }
-                  errorDetail={
-                    crudChequeData?.error?.error_detail ??
-                    validateDelete?.error?.error_detail ??
-                    ""
-                  }
-                  color="error"
-                />
-              </AppBar>
-            </div>
-          ) : null}
           {value === "chequebookEntry" ? (
             <>
               {crudChequeData.isLoading ? (
                 <LinearProgress color="secondary" />
+              ) : crudChequeData?.isError ? (
+                <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+                  <AppBar position="relative" color="primary">
+                    <Alert
+                      severity="error"
+                      errorMsg={
+                        crudChequeData?.error?.error_msg ?? "Unknow Error"
+                      }
+                      errorDetail={crudChequeData?.error?.error_detail ?? ""}
+                      color="error"
+                    />
+                  </AppBar>
+                </div>
+              ) : null}
+              {/* {crudChequeData.isLoading ? (
+                <LinearProgress color="secondary" />
               ) : (
                 <LinearProgressBarSpacer />
-              )}
+              )} */}
 
               <FormWrapper
                 key={"chequebooksEntry" + crudChequeData.isSuccess + initData}

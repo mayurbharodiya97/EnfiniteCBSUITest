@@ -331,7 +331,7 @@ export const ChequeBookEntryMetaData = {
         //   left: "auto",
         // },
       },
-      isReadOnly: true,
+      // isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 2.4,
