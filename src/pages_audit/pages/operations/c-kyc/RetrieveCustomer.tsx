@@ -8,7 +8,7 @@ import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
@@ -26,6 +26,7 @@ import Dependencies from "pages_audit/acct_Inquiry/dependencies";
 import ControllingPersonComp from "./ControllingPersonComp";
 import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
 import ExtDocument from "./formModal/formDetails/formComponents/existingCusstDoc/ExtDocument";
+import _ from "lodash";
 
 const RetrieveCustomer = () => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ const RetrieveCustomer = () => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [isCustomerData, setIsCustomerData] = useState(true);
   const [formMode, setFormMode] = useState("new");
+  const retrievePayloadRef = useRef<any>(null);
 
   // useEffect(() => {
   //   if (isLoadingData) {
@@ -174,6 +176,15 @@ const RetrieveCustomer = () => {
     onError: (error: any) => {},
   });
 
+  const onFormSubmit = (newObj) => {
+    let data = {
+      COMP_CD: authState?.companyID ?? "",
+      SELECT_COLUMN: newObj,
+    };
+    retrievePayloadRef.current = newObj
+    mutation.mutate(data);  
+  }
+
   return (
     <Grid>
       {mutation.isError && (
@@ -218,19 +229,19 @@ const RetrieveCustomer = () => {
               newArr.forEach((key) => {
                 newObj[key] = colomnValue[key];
               });
-              let data = {
-                COMP_CD: authState?.companyID ?? "",
-                SELECT_COLUMN: newObj,
-              };
-              mutation.mutate(data);
+              if(Boolean(retrievePayloadRef.current)) {
+                if(!_.isEqual(retrievePayloadRef.current, newObj)) {
+                  onFormSubmit(newObj)
+                }
+              } else {
+                onFormSubmit(newObj)
+              }
             }
           }}
           loading={false}
           data={{}}
           submitSecondAction={() => {}}
-          submitSecondButtonName="Save"
           submitSecondButtonHide={true}
-          submitThirdButtonHide={true}
           submitSecondLoading={false}
           propStyles={{
             titleStyle: { color: "var(--theme-color3) !important" },
