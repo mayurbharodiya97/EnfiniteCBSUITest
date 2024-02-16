@@ -7,6 +7,10 @@ import {
   Collapse,
   IconButton,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
@@ -23,6 +27,9 @@ import { useTranslation } from "react-i18next";
 import { CkycContext } from "../../CkycContext";
 import { company_info_meta_data } from "./metadata/legal/legalcompanyinfo";
 import _ from "lodash";
+import { AuthContext } from "pages_audit/auth";
+import { GradientButton } from "components/styledComponent/button";
+import TabNavigate from "./formComponents/TabNavigate";
 
 const KYCDetails = ({
   isCustomerData,
@@ -40,10 +47,14 @@ const KYCDetails = ({
     handleFormDataonSavectx,
     handleColTabChangectx,
     handleStepStatusctx,
-    handleModifiedColsctx
+    handleModifiedColsctx,
+    handleCurrentFormRefctx,
+    handleSavectx
   } = useContext(CkycContext);
+  const { authState } = useContext(AuthContext);
   const [isPoIExpanded, setIsPoIExpanded] = useState(true);
   const [isPoAExpanded, setIsPoAExpanded] = useState(true);
+  const [errMsg, setErrMsg] = useState<any>("");
   const [isNextLoading, setIsNextLoading] = useState(false);
   const KyCPoIFormRef = useRef<any>("");
   const KyCPoAFormRef = useRef<any>("");
@@ -53,6 +64,8 @@ const KYCDetails = ({
     proof_of_identity: {},
     proof_of_address: {},
   });
+  const [openDialog, setOpenDialog] = useState(false);
+  const [formStatus, setFormStatus] = useState<any[]>([])
 
   const [gridData, setGridData] = useState<any>([
     {
@@ -79,6 +92,11 @@ const KYCDetails = ({
   const handlePoAExpand = () => {
     setIsPoAExpanded(!isPoAExpanded);
   };
+
+  useEffect(() => {
+    let refs = [KyCPoIFormRef, KyCPoAFormRef]
+    handleCurrentFormRefctx(refs)
+  }, [])
 
   const POIMetadata = state?.entityTypectx === "I" 
     ? kyc_proof_of_identity_meta_data 
@@ -113,14 +131,15 @@ const KYCDetails = ({
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
       // if(state?.isFreshEntryctx) {
-        handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
-        KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+        setFormStatus(old => [...old, Promise.resolve(1)])
+        // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
+        // KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
     } else {
-      handleStepStatusctx({
-        status: "error",
-        coltabvalue: state?.colTabValuectx,
-      });
+      // handleStepStatusctx({
+      //   status: "error",
+      //   coltabvalue: state?.colTabValuectx,
+      // });
     }
     setIsNextLoading(false);
     endSubmit(true)
@@ -161,18 +180,19 @@ const KYCDetails = ({
         handleModifiedColsctx(tabModifiedCols)        
       } 
       // else {
-        handleColTabChangectx(2);
-        handleStepStatusctx({
-          status: "completed",
-          coltabvalue: state?.colTabValuectx,
-        });
+        // handleColTabChangectx(2);
+        // handleStepStatusctx({
+        //   status: "completed",
+        //   coltabvalue: state?.colTabValuectx,
+        // });
+        setFormStatus(old => [...old, Promise.resolve(1)])
       // }
       // setIsNextLoading(false)
     } else {
-      handleStepStatusctx({
-        status: "error",
-        coltabvalue: state?.colTabValuectx,
-      });
+      // handleStepStatusctx({
+      //   status: "error",
+      //   coltabvalue: state?.colTabValuectx,
+      // });
     }
     endSubmit(true);
     setIsNextLoading(false);
@@ -188,56 +208,39 @@ const KYCDetails = ({
       : {};
   }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
 
-
-
-  const SaveUpdateBTNs = useMemo(() => {
-    if(displayMode) {
-    return displayMode == "new"
-      ? <Fragment>
-        <Button
-          sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
-          disabled={isNextLoading}
-          onClick={(e) => {
-            NextBtnRef.current = e;
-            KyCPoIFormRef.current.handleSubmitError(e, "save");
-          }}
-        >
-          {t("Next")}
-          {/* {t("Save & Next")} */}
-        </Button>
-      </Fragment>
-      : displayMode == "edit"
-          ? <Fragment>
-            <Button
-              sx={{ mr: 2, mb: 2 }}
-              color="secondary"
-              variant="contained"
-              disabled={isNextLoading}
-              onClick={(e) => {
-                NextBtnRef.current = e;
-                KyCPoIFormRef.current.handleSubmitError(e, "save");
-              }}
-            >
-              {t("Update & Next")}
-            </Button>
-          </Fragment>
-          : displayMode == "view" && <Fragment>
-              <Button
-              sx={{ mr: 2, mb: 2 }}
-              color="secondary"
-              variant="contained"
-              disabled={isNextLoading}
-              onClick={(e) => {
-                handleColTabChangectx(state?.colTabValuectx + 1)
-              }}
-            >
-              {t("Next")}
-            </Button>
-          </Fragment>
+  useEffect(() => {
+    // console.log("evalSave formStatuse", formStatus)
+    if(formStatus.length === 2) {
+      // console.log("evalSave if pro length",formStatus.length)
+      Promise.all(formStatus)
+      .then(res => {
+        // console.log("evalSave in success ",res)
+        handleStepStatusctx({
+          status: "completed",
+          coltabvalue: state?.colTabValuectx,
+        });
+        handleColTabChangectx(state?.colTabValuectx + 1);
+      })
+      .catch(err => {
+        console.log("evalSave in catch", err.message)
+      })
+    } else {
+      // console.log("evalSave pro length else",formStatus.length)
+      if(formStatus.length>0) {
+        handleStepStatusctx({
+          status: "error",
+          coltabvalue: state?.colTabValuectx,
+        })
+      }
     }
-  }, [displayMode])
+    setFormStatus([])
+  }, [formStatus.length])
+
+  const handleSave = (e) => {
+    const refs = [KyCPoIFormRef.current.handleSubmitError(e, "save", false), KyCPoAFormRef.current.handleSubmitError(e, "save", false)]
+    handleSavectx(e, refs)
+  } 
+
 
 
   //    useEffect(() => {
@@ -251,11 +254,6 @@ const KYCDetails = ({
     >
       {/* <Typography variant={"h6"}>Personal Details</Typography> */}
       {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography> */}
-      <Grid container>
-        {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography>
-                </Grid> */}
-      </Grid>
       {isCustomerData ? (
         <Grid
           sx={{
@@ -276,7 +274,7 @@ const KYCDetails = ({
               item
               sx={{ alignItems: "center", justifyContent: "space-between" }}
             >
-              <Typography sx={{ color: "var(--theme-color3)" }} variant={"h6"}>
+              <Typography sx={{ color: "var(--theme-color3)",  pl: 2 }} variant={"h6"}>
                 {state?.entityTypectx === "I"  ? t("ProofOfIdentity") : "Company Info"}
               </Typography>
               <IconButton onClick={handlePoIExpand}>
@@ -296,6 +294,21 @@ const KYCDetails = ({
                 metaData={POIMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
+                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                setDataOnFieldChange={(action, payload) => {
+                  // console.log("wekjukfhwiuefadw", action)
+                  // const result = payload;
+                  if(Boolean(payload) && (
+                    action === "PAN_NO" || 
+                    action === "UNIQUE_ID" || 
+                    action === "ELECTION_CARD_NO" ||
+                    action === "PASSPORT_NO" || 
+                    action === "DRIVING_LICENSE_NO")) {
+                    console.log("weiufiwuef", payload)
+                    setErrMsg(payload)
+                    setOpenDialog(true)
+                  }
+                }}
               />
             </Grid>
           </Collapse>
@@ -327,7 +340,7 @@ const KYCDetails = ({
             item
             sx={{ alignItems: "center", justifyContent: "space-between" }}
           >
-            <Typography sx={{ color: "var(--theme-color3)" }} variant={"h6"}>
+            <Typography sx={{ color: "var(--theme-color3)", pl: 2 }} variant={"h6"}>
               {t("ProofOfAddress")}
             </Typography>
             <IconButton onClick={handlePoAExpand}>
@@ -346,6 +359,14 @@ const KYCDetails = ({
                 metaData={POAMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
+                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                setDataOnFieldChange={(action, payload) => {
+                  if(Boolean(payload) && action === "CONTACT2") {
+                    // console.log("weiufiwuef", payload)
+                    setErrMsg(payload)
+                    setOpenDialog(true)
+                  }
+                }}
               />
             </Grid>
           </Collapse>
@@ -405,47 +426,48 @@ const KYCDetails = ({
           width="100%"
         ></Skeleton>
       ) : null}
+      <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
 
-      <Grid container item sx={{ justifyContent: "flex-end" }}>
-        <Button
-          sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
-          disabled={isNextLoading}
-          onClick={(e) => {
-            handleColTabChangectx(0);
+      <Dialog
+        open={openDialog}
+        maxWidth={"sm"}
+        PaperProps={{
+          style: {
+            minWidth: "40%",
+            width: "40%",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            background: "var(--theme-color3)",
+            color: "var(--theme-color2)",
+            letterSpacing: "1.3px",
+            boxShadow:
+              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
+            fontWeight: 500,
+            borderRadius: "inherit",
+            minWidth: "450px",
+            py: 1,
           }}
+          id="responsive-dialog-title"
         >
-          {t("Previous")}
-        </Button>
-        {/* {state?.isFreshEntryctx && <Button
-          sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
-          disabled={isNextLoading}
-          onClick={(e) => {
-            NextBtnRef.current = e;
-            KyCPoIFormRef.current.handleSubmitError(e, "save");
-          }}
-        >
-          {t("Save & Next")}
-        </Button>}
-
-        {!state?.isFreshEntryctx && <Button
-          sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
-          disabled={isNextLoading}
-          onClick={(e) => {
-            // Promise.all([KyCPoIFormRef.current.handleSubmitError(e, "save"), KyCPoAFormRef.current.handleSubmitError(e, "save")])
-            NextBtnRef.current = e;
-            KyCPoIFormRef.current.handleSubmitError(e, "save");
-          }}
-        >
-          {t("Update & Next")}
-        </Button>} */}
-        {SaveUpdateBTNs}
-      </Grid>
+          ALERT - VALUE ALREADY EXISTS
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: "var(--theme-color3)", pl: 2, whiteSpace: "pre-wrap" }} variant={"h6"}>
+            {errMsg}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <GradientButton autoFocus onClick={() => {
+              setOpenDialog(false)
+              setErrMsg("")
+            }}>
+            CANCEL
+          </GradientButton>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };

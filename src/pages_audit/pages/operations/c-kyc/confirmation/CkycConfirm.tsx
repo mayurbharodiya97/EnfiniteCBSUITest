@@ -9,12 +9,15 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import FormModal from "../formModal/formModal";
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { t } from "i18next";
+import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/individualComps/PhotoSignConfirmDialog";
+import { useSnackbar } from "notistack";
 
 
 export const CkycConfirm = () => {
   const { authState } = useContext(AuthContext);
+  const { enqueueSnackbar } = useSnackbar();
   const [rowsData, setRowsData] = useState<any[]>([]);
   const navigate = useNavigate();
   const location: any = useLocation();
@@ -57,13 +60,30 @@ export const CkycConfirm = () => {
   ];
   const setCurrentAction = useCallback(
     (data) => {
-      setRowsData(data?.rows);
-      navigate(data?.name, {
-        state: data?.rows,
-      });
-      // }
+      // console.log("weohhfdwef", data)
+      const maker = data.rows?.[0]?.data?.MAKER
+      const loggedinUser = authState?.user?.id;
+      if(maker === loggedinUser) {
+        enqueueSnackbar("You can not confirm your own posted transaction", {
+          variant: "error",
+        })
+      } else {
+        if(data.rows?.[0]?.data?.UPD_TAB_NAME === "EXISTING_PHOTO_MODIFY") {
+          navigate("photo-signature", {
+            state: data?.rows,
+          })
+        } else if(data.rows?.[0]?.data?.UPD_TAB_NAME === "FRESH_MODIFY") {
+          navigate("view-detail", {
+            state: data?.rows,
+          })
+        } else {
+          setRowsData(data?.rows);
+          navigate(data?.name, {
+            state: data?.rows,
+          });
+        }
+      }
     },
-    // []
     [navigate]
   );
 
@@ -71,8 +91,14 @@ export const CkycConfirm = () => {
     PendingRefetch()
   }, [location])
 
+    ckyc_pending_req_meta_data.gridConfig.gridLabel = "Confirmation Pending Request";
+    ckyc_pending_req_meta_data.gridConfig["containerHeight"] = {
+      min: "42vh",
+      max: "65vh",
+    }
+
   return (
-    <>
+    <Grid sx={{mx:"10px"}}>
         {/* <Typography
           sx={{
             color: (theme) => theme.palette.grey[700],
@@ -82,16 +108,6 @@ export const CkycConfirm = () => {
         >
           {t("Confirmation Pending")}
         </Typography> */}
-        <Typography
-          sx={{
-            color: (theme) => theme.palette.grey[700],
-            mb: (theme) => theme.spacing(2),
-          }}
-          variant="h6"
-        >
-          {t("Confirmation Pending Request")}
-          {/* {t("PendingReq")} */}
-        </Typography>
         <GridWrapper
           key={`ckycConfirmation`+PendingData}
           finalMetaData={ckyc_pending_req_meta_data as GridMetaDataType}
@@ -119,7 +135,19 @@ export const CkycConfirm = () => {
               />
             }
           />
+
+          <Route
+            path="photo-signature/*"
+            element={
+              <PhotoSignConfirmDialog
+                open={true}
+                onClose={() => {
+                  navigate(".");
+                }}
+              />
+            }
+          />
         </Routes>
-    </>
+    </Grid>
   );
 };

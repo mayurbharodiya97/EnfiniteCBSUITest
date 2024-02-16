@@ -20,7 +20,12 @@ export const getChequebookDTL = async (chequeDTLRequestPara) => {
       // TRAN_CD: "1",
     });
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -58,6 +63,36 @@ export const validateDeleteData = async (Apireq) => {
     });
   if (status === "0") {
     return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const chequeGridDTL = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCHQVIEWDETAILS", {
+      ...Apireq,
+    });
+  if (status === "0") {
+    return data.map((item) => {
+      return {
+        ...item,
+        FLAG:
+          item.FLAG === "P"
+            ? "Processed"
+            : item.FLAG === "T"
+            ? "Stop Payment "
+            : item.FLAG === "R"
+            ? "Cheque Return "
+            : item.FLAG === "S"
+            ? "Surrender "
+            : item.FLAG === "N"
+            ? "Not Processed"
+            : item.FLAG === "D"
+            ? "PDC"
+            : item.FLAG,
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

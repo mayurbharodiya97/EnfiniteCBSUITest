@@ -2,7 +2,7 @@ import React, { Fragment, useCallback, useContext, useEffect, useMemo, useRef, u
 import * as API from "../../../../api";
 import { AuthContext } from "pages_audit/auth";
 import { CkycContext } from "pages_audit/pages/operations/c-kyc/CkycContext";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { GridMetaDataType } from "components/dataTableStatic";
 import {DocumentGridMetadata} from "./documentGridMetadata"
 import { useNavigate } from "react-router-dom";
@@ -11,236 +11,387 @@ import { utilFunction } from "components/utils";
 import { Button, Grid } from "@mui/material";
 import { t } from "i18next";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-const Document = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
-    const { authState } = useContext(AuthContext);
-    const {state, handleColTabChangectx, handleStepStatusctx} = useContext(CkycContext);
-    const navigate = useNavigate();
-    const [open, setOpen] = useState(false);
-    const [rowsData, setRowsData] = useState([]);
-    const [data, setData] = useState<any>([]);
-    const [formMode, setFormMode] = useState<any>("");
-    const [isNextLoading, setIsNextLoading] = useState(false)
-    const isDataChangedRef = useRef(false);
-    const handleDialogClose = () => {
-      if (isDataChangedRef.current === true) {
-        // isDataChangedRef.current = true;
-        // refetch();
-        isDataChangedRef.current = false;
+import { addMonths, format } from "date-fns";
+import _ from "lodash";
+const Document = ({
+  isCustomerData,
+  setIsCustomerData,
+  isLoading,
+  setIsLoading,
+  displayMode,
+  from,
+}) => {
+  const { authState } = useContext(AuthContext);
+  const {
+    state,
+    handleColTabChangectx,
+    handleStepStatusctx,
+    handleFormDataonSavectx,
+    handleModifiedColsctx,
+  } = useContext(CkycContext);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [rowsData, setRowsData] = useState([]);
+  const [data, setData] = useState<any>([]);
+  const [formMode, setFormMode] = useState<any>("");
+  const [isNextLoading, setIsNextLoading] = useState(false);
+  const isDataChangedRef = useRef(false);
+  const handleDialogClose = () => {
+    if (isDataChangedRef.current === true) {
+      // isDataChangedRef.current = true;
+      // refetch();
+      isDataChangedRef.current = false;
+    }
+    navigate(".");
+  };
+  const myGridRef = useRef<any>(null);
+
+  // useEffect(() => {
+  //   console.log('rowsData change', rowsData)
+  // }, [rowsData])
+
+  const initValues = useMemo(() => {
+    return state?.isFreshEntryctx
+      ? state?.formDatactx["DOC_MST"]
+        ? state?.formDatactx["DOC_MST"]
+        : []
+      : state?.retrieveFormDataApiRes
+      ? state?.retrieveFormDataApiRes["DOC_MST"]
+      : [];
+  }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
+  useEffect(() => {
+    setData(initValues);
+  }, [initValues]);
+
+  const mutation: any = useMutation(API.getKYCDocumentGridData, {
+    onSuccess: (data) => {
+      setData(data);
+    },
+    onError: (error: any) => {},
+  });
+
+  useEffect(() => {
+    // console.log(state?.formDatactx["DOC_MST"], "wadqwdwq. doc", state?.retrieveFormDataApiRes["DOC_MST"])
+    if(state?.isFreshEntryctx && !(Boolean(state?.formDatactx["DOC_MST"]) || Boolean(state?.retrieveFormDataApiRes["DOC_MST"]))) {
+      let payload = {
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+        CUST_TYPE: state?.entityTypectx,
+        CONSTITUTION_TYPE: state?.constitutionValuectx ?? "",  
       }
-      navigate(".");
-    };
-    const myGridRef = useRef<any>(null);
+      mutation.mutate(payload)
+    }
+  }, [])
 
-    // useEffect(() => {
-    //   console.log('rowsData change', rowsData)
-    // }, [rowsData])
-
-    const { data:DocGridData, isError, isLoading:isDocGridLoading, error, refetch } = useQuery<any, any>(
-        ["getKYCDocumentGridData"],
-        () => API.getKYCDocumentGridData({
-            COMP_CD: authState?.companyID ?? "", 
-            BRANCH_CD: authState?.user?.branchCode ?? "", 
-            CUST_TYPE: state?.entityTypectx, 
-            CONSTITUTION_TYPE: state?.constitutionValuectx ?? ""
-        })
-    );
-
-    useEffect(() => {
-        // console.log("existingDataexistingData", myGridRef.current)
-      // myGridRef.current.setGridData
-      if(!isDocGridLoading && DocGridData) {
-        setData(DocGridData)
-        // setTimeout(() => {
-        //   setData([])
-          // console.log("aqwsqwsq", myGridRef.current?.cleanData?.())
-        // }, 5000);
-      }
-    }, [DocGridData, isDocGridLoading])
-
-    const afterFormSubmit = (formData,submitFormMode) => {
-      if(submitFormMode==='new'){
-        setData((old) => {
-          if(!Array.isArray(old)) {
-            return [
-              {
-                ...formData, SR_CD: 1
-              }
-            ]
-          } else {
-            let srCount = utilFunction.GetMaxCdForDetails(old, "SR_CD");
-            const myNewRowObj = {
+  const afterFormSubmit = (formData, submitFormMode) => {
+    // console.log(formData, "wadqwdwq. doc afterFormSubmit", submitFormMode)
+    if (submitFormMode === "new") {
+      setData((old) => {
+        // console.log(formData, "wadqwdwq. doc afterFormSubmit new",old)
+        if (!Array.isArray(old)) {
+          return [
+            {
               ...formData,
-              SR_CD: String(srCount),
-              _isNewRow: true,
-            };
-            return [...old, myNewRowObj];
+              SR_CD: 1,
+              IsNewRow: true
+            },
+          ];
+        } else {
+          let srCount = utilFunction.GetMaxCdForDetails(old, "SR_CD");
+          const myNewRowObj = {
+            ...formData,
+            SR_CD: String(srCount),
+            // _isNewRow: true,
+            IsNewRow: true,
+          };
+          return [...old, myNewRowObj];
+        }
+      });
+    } else {
+      setData((old) => {
+        // console.log(formData, "wadqwdwq. doc afterFormSubmit old",old)
+        return old.map((item) => {
+          if (item.SR_CD === formData.SR_CD) {
+            let { SR_CD, ...other } = formData;
+            return { ...item, ...other };
+          } else {
+            return item;
           }
-        })
-      }else{
-        setData((old) => {
-          return old.map(item=>{
-            if(item.SR_CD === formData.SR_CD){
-              let {SR_CD,...other} = formData;
-              return {...item,...other};
-            }else{
-              return item;
-            }
-          });
-        }) 
-      }
-      
-      setOpen(false)
+        });
+      });
     }
 
-    const actions = [
-        {
-          actionName: "view-details",
-          actionLabel: "View Details",
-          multiple: false,
-          rowDoubleClick: true,
-        },
-        {
-          actionName: "delete",
-          actionLabel: "Delete",
-          multiple: false,
-          rowDoubleClick: false,
-        },
-        {
-          actionName: "add",
-          actionLabel: "Add",
-          multiple: undefined,
-          rowDoubleClick: true,
-          alwaysAvailable: true,
-        },
-    ];
+    setOpen(false);
+  };
 
-    const setCurrentAction = useCallback(
-        (data) => {
-          if(data.name === "add") {
-            setOpen(true)
-            setFormMode("new")
-            setRowsData(data?.rows);
-          } else if(data.name === "delete") {
-            setOpen(true)
-            // setComponentToShow("Delete")
-            setRowsData(data?.rows);
-          } else if(data.name === "view-details") {
-            // setComponentToShow("view-details")
-            setFormMode("edit")
-            setRowsData(data?.rows);
-            setOpen(true)
+  const actions = [
+    {
+      actionName: "view-details",
+      actionLabel: "View Details",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+    // {
+    //   actionName: "delete",
+    //   actionLabel: "Delete",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
+    {
+      actionName: "add",
+      actionLabel: "Add",
+      multiple: undefined,
+      rowDoubleClick: true,
+      alwaysAvailable: true,
+    },
+  ];
+
+  const setCurrentAction = useCallback(
+    (data) => {
+      if (data.name === "add") {
+        setOpen(true);
+        setFormMode("new");
+        setRowsData(data?.rows);
+      } else if (data.name === "delete") {
+        setOpen(true);
+        // setComponentToShow("Delete")
+        setRowsData(data?.rows);
+      } else if (data.name === "view-details") {
+        // setComponentToShow("view-details")
+        setFormMode("edit");
+        setRowsData(data?.rows);
+        setOpen(true);
+      }
+      // navigate(data?.name, {
+      //   state: data?.rows,
+      // });
+    },
+    [navigate]
+  );
+
+    const onSave = () => {
+      // console.log("wadqwdwq. doc save", data)
+      if(data && data.length>0) {
+        let newDocData: any[] = [];
+
+        newDocData = data.map((doc) => {
+          // console.log("wadqwdwq. doc save newdoc", doc);
+          const { TEMPLATE_CD, SUBMIT, VALID_UPTO, DOC_NO, DOC_IMAGE, DOC_DESCRIPTION, SR_CD, DOC_WEIGHTAGE } = doc;
+          let newObj = {
+            IsNewRow: true,
+            TEMPLATE_CD: TEMPLATE_CD,
+            // SUBMIT: Boolean(SUBMIT) ? "Y" : "N",
+            SUBMIT: SUBMIT === true ? "Y" : "N",
+            VALID_UPTO: VALID_UPTO ?? "",
+            // VALID_UPTO: VALID_UPTO
+            //   ? format(new Date(doc?.VALID_UPTO ?? ""), "dd-MMM-yyyy")
+            //   : format(new Date(addMonths(new Date(), 9999)), "dd-MMM-yyyy"),
+            DOC_NO: DOC_NO ?? "",
+            DOC_DESCRIPTION: DOC_DESCRIPTION,
+            DOC_IMAGE: DOC_IMAGE ?? "",
+            DOC_TYPE: "KYC",
+            DOC_AMOUNT: "",
+            DOC_WEIGHTAGE: DOC_WEIGHTAGE ?? "",
+            SR_CD: SR_CD ?? ""
+            // ACTIVE : "Y",
+          };
+          // console.log("wadqwdwq. doc save newdoc --after", newObj);
+          return newObj;
+        });
+  
+        let newData = state?.formDatactx;
+        newData["DOC_MST"] = [...newDocData];
+        handleFormDataonSavectx(newData);
+        handleStepStatusctx({
+          status: "completed",
+          coltabvalue: state?.colTabValuectx,
+        });
+        handleColTabChangectx(state?.colTabValuectx + 1);
+      } else {
+        let newData = state?.formDatactx;
+        newData["DOC_MST"] = [];
+        handleFormDataonSavectx(newData);
+        handleStepStatusctx({
+          status: "completed",
+          coltabvalue: state?.colTabValuectx,
+        });
+        handleColTabChangectx(state?.colTabValuectx + 1);
+      }
+    }
+
+
+    const onUpdate = () => {
+      
+      setIsNextLoading(true)
+      // console.log("qweqweqweo", data, data.OTHER_ADDRESS)     
+      if(data) {
+          // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
+          // console.log("wadqwdwq. doc update data", data);
+          let newData = state?.formDatactx
+          const commonData = {
+              IsNewRow: true,
+              COMP_CD: authState?.companyID ?? "",
+              BRANCH_CD: authState?.user?.branchCode ?? "",
+              REQ_FLAG: "F",
+              // REQ_CD: state?.req_cd_ctx,
+              // SR_CD: "3",
+              CONFIRMED: "N",
+              ENT_COMP_CD: authState?.companyID ?? "",
+              ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
           }
-          // navigate(data?.name, {
-          //   state: data?.rows,
-          // });
-        },
-        [navigate]
-    );
-    
-    const SaveUpdateBTNs = useMemo(() => {
-      if(displayMode) {
-          return displayMode == "new"
-          ? <Fragment>
-              <Button
+          if(data && data.length>0) {
+              let filteredCols:any[]=["VALID_UPTO", "DOC_IMAGE", "SUBMIT", "TEMPLATE_CD", "DOC_NO", "DOC_DESCRIPTION", "SR_CD", "TRAN_CD"]
+
+              let newFormatOtherAdd = data.map((formRow, i) => {
+                // console.log("wadqwdwq. doc update formRow", formRow)
+                return {...data[i], ...commonData, SUBMIT: Boolean(formRow?.SUBMIT) ? "Y" : "N"};
+              })
+              // console.log("new", newFormatOtherAdd, "wadqwdwq. doc update old", data)
+  
+              newData["DOC_MST"] = [...newFormatOtherAdd]
+              handleFormDataonSavectx(newData)
+  
+  
+  
+              if(!state?.isFreshEntryctx) {
+                  let tabModifiedCols:any = state?.modifiedFormCols
+                  tabModifiedCols = {
+                      ...tabModifiedCols,
+                      DOC_MST: [...filteredCols]
+                  }
+                  handleModifiedColsctx(tabModifiedCols)
+              }
+          } else {
+              newData["DOC_MST"] = []
+              handleFormDataonSavectx(newData)
+              if(!state?.isFreshEntryctx) {
+                  let tabModifiedCols:any = state?.modifiedFormCols
+                  tabModifiedCols = {
+                    ...tabModifiedCols,
+                    DOC_MST: []
+                  }
+                  handleModifiedColsctx(tabModifiedCols)
+              }
+          }
+
+          // newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...newFormatOtherAdd}
+          handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+          handleColTabChangectx(state?.colTabValuectx+1)
+      }
+      //  else {
+      //     handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+      // }
+      setIsNextLoading(false)  
+    }
+
+
+  const SaveUpdateBTNs = useMemo(() => {
+    if (displayMode) {
+      return displayMode == "new" ? (
+        <Fragment>
+          <Button
+            sx={{ mr: 2, mb: 2 }}
+            color="secondary"
+            variant="contained"
+            disabled={isNextLoading}
+            onClick={onSave}
+          >
+            {t("Next")}
+            {/* {t("Save & Next")} */}
+          </Button>
+        </Fragment>
+      ) : displayMode == "edit" ? (
+        <Fragment>
+          <Button
+            sx={{ mr: 2, mb: 2 }}
+            color="secondary"
+            variant="contained"
+            disabled={isNextLoading}
+            onClick={onUpdate}
+          >
+            {t("Update & Next")}
+          </Button>
+        </Fragment>
+      ) : (
+        displayMode == "view" && (
+          <Fragment>
+            <Button
               sx={{ mr: 2, mb: 2 }}
               color="secondary"
               variant="contained"
               disabled={isNextLoading}
-              onClick={() => {
+              onClick={(e) => {
                 handleStepStatusctx({
                   status: "completed",
                   coltabvalue: state?.colTabValuectx,
-                })
-                handleColTabChangectx(state?.colTabValuectx + 1)
+                });
+                handleColTabChangectx(state?.colTabValuectx + 1);
               }}
-              >
+            >
               {t("Next")}
-              {/* {t("Save & Next")} */}
-              </Button>
+            </Button>
           </Fragment>
-          : displayMode == "edit"
-              ? <Fragment>
-                  <Button
-                  sx={{ mr: 2, mb: 2 }}
-                  color="secondary"
-                  variant="contained"
-                  disabled={isNextLoading}
-                  onClick={() => {
-                    handleStepStatusctx({
-                      status: "completed",
-                      coltabvalue: state?.colTabValuectx,
-                    })
-                    handleColTabChangectx(state?.colTabValuectx + 1)
-                  }}
-                  >
-                  {t("Update & Next")}
-                  </Button>
-              </Fragment>
-              : displayMode == "view" && <Fragment>
-                  <Button
-                  sx={{ mr: 2, mb: 2 }}
-                  color="secondary"
-                  variant="contained"
-                  disabled={isNextLoading}
-                  onClick={(e) => {
-                    handleStepStatusctx({
-                      status: "completed",
-                      coltabvalue: state?.colTabValuectx,
-                    })
-                    handleColTabChangectx(state?.colTabValuectx + 1)
-                  }}
-                  >
-                  {t("Next")}
-                  </Button>
-              </Fragment>
-      }
-    }, [displayMode])
+        )
+      );
+    }
+  }, [displayMode, data]);
 
-    
-    return (
-      <Grid container style={{position:"absolute", paddingRight: !state?.isFreshEntryctx ? "113px" : "12px"}}>
-            <GridWrapper
-                key={`operatorMasterGrid` + data}
-                finalMetaData={DocumentGridMetadata as GridMetaDataType}
-                data={data ?? []}
-                setData={setData}
-                loading={isDocGridLoading}
-                actions={actions}
-                setAction={setCurrentAction}
-                // refetchData={() => refetch()}
-                ref={myGridRef}
-                // onClickActionEvent= {(index, id, data) => {
-                //   // console.log("qjwkdjbiqwudqd", index, id, data)
+  return (
+    <Grid
+      container
+      style={{
+        position: "absolute",
+        paddingRight: !state?.isFreshEntryctx ? "113px" : "12px",
+      }}
+    >
+      <GridWrapper
+        key={`operatorMasterGrid` + data + setData}
+        finalMetaData={DocumentGridMetadata as GridMetaDataType}
+        data={data ?? []}
+        setData={setData}
+        loading={mutation.isLoading}
+        actions={actions}
+        setAction={setCurrentAction}
+        // refetchData={() => refetch()}
+        ref={myGridRef}
+        onClickActionEvent= {(index, id, currentData) => {
+          // console.log(data, "qjwkdjbiqwudqd", index, id, currentData)
+          let newData:any[] = []
+          newData = data.length>0 && data.filter(row => row.SR_CD !== currentData.SR_CD)
+          setData([...newData])
+        }}
+      />
 
-                //   // DELETE_BTN
-                // }}
-            />
+      <Grid container item sx={{ justifyContent: "flex-end" }}>
+        <Button
+          sx={{ mr: 2, mb: 2 }}
+          color="secondary"
+          variant="contained"
+          disabled={isNextLoading}
+          onClick={(e) => {
+            // handleColTabChangectx(1)
+            handleColTabChangectx(state?.colTabValuectx - 1);
+          }}
+        >
+          {t("Previous")}
+        </Button>
+        {SaveUpdateBTNs}
+      </Grid>
 
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(1)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-            </Grid>
-
-
-            {open
-              ? <KYCDocumentMasterDetails
-                  isDataChangedRef={isDataChangedRef}
-                  ClosedEventCall={handleDialogClose}
-                  formMode={formMode}
-                  afterFormSubmit={afterFormSubmit}
-                  open={open}
-                  onClose={() => setOpen(false)}
-                  gridData={data}
-                  rowsData={rowsData}
-                />
-              :null}
+      {open ? (
+        <KYCDocumentMasterDetails
+          isDataChangedRef={isDataChangedRef}
+          ClosedEventCall={handleDialogClose}
+          formMode={formMode}
+          afterFormSubmit={afterFormSubmit}
+          open={open}
+          onClose={() => setOpen(false)}
+          gridData={data}
+          rowsData={rowsData}
+        />
+      ) : null}
     </Grid>
-    )
-}
+  );
+};
 
-export default Document
+export default Document;

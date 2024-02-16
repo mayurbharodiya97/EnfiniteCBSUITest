@@ -29,3 +29,4 @@ registerFn("getProMiscData", GeneralAPI.getProMiscData);
 registerFn("getZoneListData", GeneralAPI.getZoneListData);
 registerFn("getSlipNoData", GeneralAPI.getSlipNoData);
 registerFn("getMatureInstDetail", GeneralAPI.getMatureInstDetail);
+registerFn("getAccNoValidation", GeneralAPI.getAccNoValidation);

@@ -11,6 +11,7 @@ import { useMutation, useQuery } from 'react-query';
 import { AuthContext } from 'pages_audit/auth';
 import _ from 'lodash';
 import { Alert } from 'components/common/alert';
+import TabNavigate from '../TabNavigate';
 // import { format } from 'date-fns';
 
 const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
@@ -18,7 +19,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
   //  const [isLoading, setIsLoading] = useState(false)
   const { authState } = useContext(AuthContext);
   const { t } = useTranslation();
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleReqCDctx, handleModifiedColsctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleReqCDctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext)
   const DeclarationFormRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [currentTabFormData, setCurrentTabFormData] = useState({declaration_details: {}})
@@ -39,6 +40,12 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
 //       }  
 //     ), {enabled: false}
 //   );
+
+  useEffect(() => {
+    let refs = [DeclarationFormRef]
+    handleCurrentFormRefctx(refs)
+  }, [])
+
 
   const mutation: any = useMutation(API.SaveAsDraft, {
     onSuccess: (data) => {
@@ -102,7 +109,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         //     IsNewRow: state?.isFreshEntryctx,
         //     PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL
         // })
-        if(state?.req_cd_ctx || !state?.isFreshEntryctx) {
+        if(!state?.isFreshEntryctx) {
             let tabModifiedCols:any = state?.modifiedFormCols
             let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
             tabModifiedCols = {
@@ -110,10 +117,11 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 PERSONAL_DETAIL: [...updatedCols]
             }
             handleModifiedColsctx(tabModifiedCols)
-            handleColTabChangectx(state?.colTabValuectx+1)
-        } else {
-            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-            let data = {
+            // handleColTabChangectx(state?.colTabValuectx+1)
+        }
+        //  else {
+            // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            let payload = {
                 CUSTOMER_TYPE: state?.entityTypectx,
                 CATEGORY_CD: state?.categoryValuectx,
                 ACCT_TYPE: state?.accTypeValuectx,
@@ -123,21 +131,26 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
                 COMP_CD: authState?.companyID ?? "",
             }
-            mutation.mutate(data)
+            mutation.mutate(payload)
             // refetch()
-        }
+        // }
         // handleColTabChangectx(state?.colTabValuectx+1)
         // if(saveDraftData) {
         //     console.log("saveDraftData", saveDraftData)
         //     handleColTabChangectx(state?.colTabValuectx+1)
         // }
     } else {
-        handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+        // handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
     }
     endSubmit(true)
     // handleColTabChangectx(state?.colTabValuectx+1)
     setIsNextLoading(false)
    }
+  const handleSave = (e) => {
+    const refs = [DeclarationFormRef.current.handleSubmitError(e, "save", false)]
+    handleSavectx(e, refs)
+  } 
+
   const [isDeclarationExpanded, setIsDeclarationExpanded] = useState(true)
   const handleDeclarationExpand = () => {
     setIsDeclarationExpanded(!isDeclarationExpanded)
@@ -154,51 +167,6 @@ const myGridRef = useRef<any>(null);
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-        return displayMode == "new"
-          ? <Fragment>
-            <Button
-              sx={{ mr: 2, mb: 2 }}
-              color="secondary"
-              variant="contained"
-              disabled={isNextLoading}
-              onClick={(e) => {
-                DeclarationFormRef.current.handleSubmitError(e, "save")
-              }}
-            >
-              {t("Save & Next")}
-            </Button>
-          </Fragment>
-          : displayMode == "edit"
-              ? <Fragment>
-                <Button
-                  sx={{ mr: 2, mb: 2 }}
-                  color="secondary"
-                  variant="contained"
-                  disabled={isNextLoading}
-                  onClick={(e) => {
-                    DeclarationFormRef.current.handleSubmitError(e, "save")
-                  }}
-                >
-                  {t("Update & Next")}
-                </Button>
-              </Fragment>
-              : displayMode == "view" && <Fragment>
-                  <Button
-                  sx={{ mr: 2, mb: 2 }}
-                  color="secondary"
-                  variant="contained"
-                  disabled={isNextLoading}
-                  onClick={(e) => {
-                    handleColTabChangectx(state?.colTabValuectx + 1)
-                  }}
-                >
-                  {t("Next")}
-                </Button>
-              </Fragment>
-        }
-    }, [displayMode])
     
     return (
         <Grid container rowGap={3}>
@@ -211,11 +179,6 @@ const myGridRef = useRef<any>(null);
             />
           )}
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>             */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -224,7 +187,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("DeclarationDetails")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)", pl: 2}} variant={"h6"}>{t("DeclarationDetails")}</Typography>
                     <IconButton onClick={handleDeclarationExpand}>
                         {!isDeclarationExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
@@ -248,25 +211,7 @@ const myGridRef = useRef<any>(null);
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
 
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(1)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        DeclarationFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save & Next")}</Button>}
-                {!state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        DeclarationFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Update & Next")}</Button>} */}
-            </Grid>
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
         </Grid>        
     )
 }

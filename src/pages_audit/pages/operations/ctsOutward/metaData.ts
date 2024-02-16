@@ -499,14 +499,17 @@ export const ChequeDetailFormMetaData: any = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
-      textFieldStyle: {
-        background: "var(--theme-color5)",
-        minHeight: "40px !important",
-        fontSize: "15px",
-        color: "white",
-        boxShadow:
-          " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      },
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   "& .MuiInputBase-input": {
+      //     background: "var(--theme-color5)",
+      //     minHeight: "26px !important",
+      //     fontSize: "15px",
+      //     color: "white",
+      //     boxShadow:
+      //       " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      //   },
+      // },
       __VIEW__: { render: { componentType: "hidden" } },
 
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
@@ -522,14 +525,14 @@ export const ChequeDetailFormMetaData: any = {
       type: "text",
 
       defaultValue: "0",
-      textFieldStyle: {
-        background: "var(--theme-color5)",
-        minHeight: "40px !important",
-        fontSize: "15px",
-        color: "white",
-        boxShadow:
-          " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      },
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   minHeight: "40px !important",
+      //   fontSize: "15px",
+      //   color: "white",
+      //   boxShadow:
+      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      // },
       __VIEW__: { render: { componentType: "hidden" } },
       dependentFields: ["chequeDetails"],
 
@@ -587,14 +590,14 @@ export const ChequeDetailFormMetaData: any = {
 
         return value ?? "0";
       },
-      textFieldStyle: {
-        background: "var(--theme-color5)",
-        minHeight: "40px !important",
-        fontSize: "15px",
-        color: "white",
-        boxShadow:
-          " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      },
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   minHeight: "40px !important",
+      //   fontSize: "15px",
+      //   color: "white",
+      //   boxShadow:
+      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      // },
       __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
     },
@@ -1033,6 +1036,7 @@ export const AddNewBankMasterFormMetadata = {
       placeholder: "",
       type: "text",
       required: true,
+      txtTransform: "uppercase",
       maxLength: 100,
       showMaxLength: true,
       schemaValidation: {

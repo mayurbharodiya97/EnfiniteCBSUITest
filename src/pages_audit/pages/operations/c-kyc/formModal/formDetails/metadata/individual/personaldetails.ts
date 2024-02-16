@@ -58,7 +58,7 @@ export const personal_detail_prefix_data = {
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
                 sequence: 2,
             },
             name: "PREFIX_CD",
@@ -83,6 +83,7 @@ export const personal_detail_prefix_data = {
                 dependentFieldsValues
               ) => {
                 if(field.value) {
+                    console.log("wefuuwiefwef", field?.optionData)
                     return {
                         // MOTHER_LAST_NM: {value: "", isFieldFocused:true},
                         GENDER: {value: field?.optionData[0]?.SET_GENDER ?? "" },
@@ -115,6 +116,7 @@ export const personal_detail_prefix_data = {
             label: "FirstName",
             // placeholder: "First Name",
             type: "text",
+            txtTransform: "uppercase",
             maxLength: 50,
             // GridProps: {xs:4, sm:2},
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
@@ -138,6 +140,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "Middle Name",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
         },
@@ -151,6 +154,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "Last Name",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
         },
@@ -276,6 +280,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "First Name",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // schemaValidation: {
@@ -296,6 +301,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "Middle Name",
             type: "text",
+            txtTransform: "uppercase",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -309,6 +315,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "Last Name",
             type: "text",
+            txtTransform: "uppercase",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
@@ -407,6 +414,7 @@ export const personal_detail_prefix_data = {
             maxLength: 50,
             // placeholder: "First Name",
             type: "text",
+            txtTransform: "uppercase",
             required: true,
             schemaValidation: {
                 type: "string",
@@ -429,6 +437,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Middle Name",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -442,6 +451,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Last Name",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
@@ -498,6 +508,7 @@ export const personal_detail_prefix_data = {
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             // placeholder: "First Name",
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             // dependentFields: ["DAILY_AMT"],
         },
@@ -512,6 +523,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Middle Name",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
         {
@@ -525,6 +537,7 @@ export const personal_detail_prefix_data = {
             // placeholder: "Last Name",
             validate: (columnValue, allField, flag) => API.TrimSpaceValidation(columnValue, allField, flag),
             type: "text",
+            txtTransform: "uppercase",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         }
 
@@ -603,15 +616,15 @@ export const personal_other_detail_meta_data = {
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             dependentFields: ["BIRTH_DT"],
             setValueOnDependentFieldsChange: (dependentFields) => {
-                if(dependentFields?.BIRTH_DT?.value) {
-                    let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
+                let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
+                if(Boolean(age)) {
                     return age;
                 } else return ""
             },
         },
         {
             render: {
-                componentType: "select",
+                componentType: "autocomplete",
             },
             options: [
                 {label: "Minor", value: "M"},
@@ -621,7 +634,7 @@ export const personal_other_detail_meta_data = {
             setValueOnDependentFieldsChange: (dependentFields) => {
                 if(dependentFields?.BIRTH_DT?.value) {
                     let age = differenceInYears(new Date(), dependentFields?.BIRTH_DT?.value)
-                    return (age && age> 18) ? "J" : "M";
+                    return (Boolean(age) && age> 18) ? "J" : "M";
                 } else return ""
             },
             name: "LF_NO",
@@ -782,7 +795,7 @@ export const personal_other_detail_meta_data = {
 // controlling person  - individual details - view
 export const personal_individual_detail_metadata = {
     form: {
-        name: "personal_detail_prefix_details_form",
+        name: "personal_detail_controlling_form",
         label: "", 
         resetFieldOnUnmount: false,
         validationRun: "onBlur", 

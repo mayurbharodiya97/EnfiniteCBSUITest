@@ -95,6 +95,11 @@ export interface UseFieldHookProps {
   onFormDataChange?: any;
   runExternalFunction?: boolean;
   __EDIT__?: any;
+  txtTransform?: "uppercase" | "lowercase";
+  AlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 export interface UseFieldArrayHookProps {
