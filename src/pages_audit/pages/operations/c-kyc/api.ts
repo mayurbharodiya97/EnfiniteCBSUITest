@@ -95,23 +95,24 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
 };
 
 export const getCustomerDetailsonEdit = async (reqData) => {
+  // console.log("iuehfiwuehfwef", reqData)
   // COMP_CD, CUSTOMER_ID?, REQUEST_CD?}
-  const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
-  let payload = {}
-  // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
-  if(CUSTOMER_ID) {
-    payload = {
-      COMP_CD: COMP_CD,
-      CUSTOMER_ID: CUSTOMER_ID
-    }
-  } else {
-    payload = {
-      COMP_CD: COMP_CD,
-      REQUEST_CD: REQUEST_CD
-    }
-  }
+  // const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
+  // let payload = {}
+  // // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
+  // if(CUSTOMER_ID) {
+  //   payload = {
+  //     COMP_CD: COMP_CD,
+  //     CUSTOMER_ID: CUSTOMER_ID
+  //   }
+  // } else {
+  //   payload = {
+  //     COMP_CD: COMP_CD,
+  //     REQUEST_CD: REQUEST_CD
+  //   }
+  // }
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", payload);
+    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", reqData);
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
