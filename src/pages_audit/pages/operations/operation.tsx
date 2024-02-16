@@ -30,6 +30,7 @@ export const OperationsMenu = () => (
     <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="teller/*" element={<TellerScreen />} />
+    {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}
     <Route
       path="confirm-ckyc/*"
       element={

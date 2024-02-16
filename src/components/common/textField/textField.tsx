@@ -77,6 +77,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   endsIcon,
   iconStyle,
   textFieldStyle,
+  txtTransform,
   AlwaysRunPostValidationSetCrossFieldValues,
   ...others
 }) => {
@@ -113,6 +114,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
+    txtTransform,
     AlwaysRunPostValidationSetCrossFieldValues,
   });
 

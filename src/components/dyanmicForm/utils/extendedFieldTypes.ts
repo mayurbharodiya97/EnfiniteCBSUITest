@@ -151,7 +151,7 @@ export const extendFieldTypes = (
         field["defaultValue"] = authState?.user?.branchCode;
       } else if (key === "accountType") {
         // Set autofocus on the accountType field
-        field["autoFocus"] = true;
+        // field["autoFocus"] = true;
         // field["defaultValue"] = "0003";
       }
       newMetaDataFieldsCustom.push(field);

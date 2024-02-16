@@ -235,6 +235,31 @@ export const limitEntryMetaData = {
     },
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_CHARGE_AMT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_GST_AMT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_GST_ROUND",
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_TAX_RATE",
+    },
+    {
+      render: {
         componentType: "textField",
       },
       name: "ACCT_NM",

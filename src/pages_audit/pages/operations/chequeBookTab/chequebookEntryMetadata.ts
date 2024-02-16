@@ -382,6 +382,7 @@ export const ChequeBookEntryMetaData = {
         "NEW_LEAF_ARR",
       ],
       disableCaching: true,
+
       options: async (dependentValue, formState, _, authState) => {
         let newDD = dependentValue?.NEW_LEAF_ARR?.value;
         if (newDD) {
@@ -698,6 +699,15 @@ export const ChequeBookEntryMetaData = {
       },
       name: "REMARKS",
       label: "Remark",
+      // textFieldStyle: {
+      //   "& .MuiInputBase-input": {
+      //     textAlign: "right",
+      //   },
+      //   "& .MuiInputLabel-formControl": {
+      //     right: "0",
+      //     left: "auto",
+      //   },
+      // },
       placeholder: "Enter remark",
       GridProps: {
         xs: 12,
@@ -717,6 +727,7 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       shouldExclude(fieldData) {
         if (fieldData?.value) {
+          console.log("<<<fiel", fieldData);
           return false;
         } else {
           return true;

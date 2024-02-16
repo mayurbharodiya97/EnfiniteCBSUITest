@@ -16,7 +16,7 @@ import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { extractMetaData, utilFunction } from "components/utils";
 import { MetaDataType } from "components/dyanmicForm";
-import { DocumentFormMetadata } from "./documentFormMetadata";
+import { ExtDocumentFormMetadata } from "./extDocumentFormMetadata";
 import { UploadTarget } from "components/fileUpload/uploadTarget";
 import { FileObjectType } from "components/fileUpload/type";
 import {
@@ -33,7 +33,7 @@ import { AuthContext } from "pages_audit/auth";
 import * as API from "../../../../api";
 import { CkycContext } from "../../../../CkycContext";
  
-const KYCDocumentMasterDetails = ({
+const ExtDocumentForm = ({
   ClosedEventCall,
   isDataChangedRef,
   formMode, 
@@ -224,7 +224,7 @@ const KYCDocumentMasterDetails = ({
         // }
         metaData={
           extractMetaData(
-            DocumentFormMetadata,
+            ExtDocumentFormMetadata,
             formMode
             // formMode === "view"
           ) as MetaDataType
@@ -323,4 +323,4 @@ const KYCDocumentMasterDetails = ({
   );
 };
 
-export default KYCDocumentMasterDetails;
+export default ExtDocumentForm;

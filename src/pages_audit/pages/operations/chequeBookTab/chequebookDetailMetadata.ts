@@ -176,7 +176,7 @@ export const ChequebookDtlGridMetaData = {
       columnName: "Remarks",
       sequence: 9,
       alignment: "left",
-      componentType: "default",
+      componentType: "buttonRowCell",
       width: 150,
       minWidth: 100,
       maxWidth: 200,

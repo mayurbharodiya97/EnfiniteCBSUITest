@@ -235,6 +235,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/RELATIONSHIPMANAGER",
     packageName: "",
   },
+  GETCKYCNRITABRMDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCKYCNRITABRMDDW",
+    packageName: "",
+  },
   GETCUSTOMERLIST: {
     url: "/customerServiceAPI/GETCUSTOMERLIST",
     packageName: "",
@@ -892,6 +896,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETSTKUPVEWBTNDOCDTLDISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKUPVEWBTNDOCDTLDISP",
+    packageName: "",
+  },
+  CHECKCUSTDUPLICATEDATA: {
+    url: "/customerServiceAPI/CHECKCUSTDUPLICATEDATA",
     packageName: "",
   },
   GETEXPIRYDATE: {

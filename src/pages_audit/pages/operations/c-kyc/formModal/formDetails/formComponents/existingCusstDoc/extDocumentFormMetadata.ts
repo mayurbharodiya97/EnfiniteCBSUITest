@@ -1,7 +1,7 @@
 import { addMonths, format, isAfter } from "date-fns";
 import * as API from "../../../../api";
 
-export const DocumentFormMetadata = {
+export const ExtDocumentFormMetadata = {
   form: {
     name: "EditDocuments",
     label: "Documents",

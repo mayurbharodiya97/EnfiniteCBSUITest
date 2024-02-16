@@ -210,7 +210,7 @@ const MySelect: FC<MySelectAllProps> = ({
       let result = setValueOnDependentFieldsChange(
         transformDependentFieldsState(dependentValues)
       );
-      if (result !== undefined || result !== null) {
+      if (result !== undefined && result !== null) {
         handleChangeInterceptor(result);
       }
     }

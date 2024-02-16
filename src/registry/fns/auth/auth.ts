@@ -77,12 +77,12 @@ const authAPI = () => {
       BROWSER_FINGERPRINT: browserFingerPrint,
       MACHINE_NAME: "",
       BRANCH_CD: branchCode,
-      THROUGH_CHANNEL: "E_CBS",
-      WORKING_DATE: workingDate ?? "",
-      // WORKING_DT: workingDate ?? "",
       BASE_BRANCH_CD: baseBranchCode,
       COMP_CD: companyID,
       BASE_COMP_CD: baseCompanyID,
+      THROUGH_CHANNEL: "E_CBS",
+      WORKING_DATE: workingDate ?? "",
+      // WORKING_DT: workingDate ?? "",
     };
   };
   const setToken = (argaccessToken) => {
