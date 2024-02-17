@@ -40,10 +40,16 @@ export const CustomTabs: any = styled(StyledTabs)(({ orientation, theme }) => ({
   //   right: "auto !important",
   // },
   "& .MuiButtonBase-root.Mui-selected": {
-    color: "var(--theme-color1)"
+    color: "var(--theme-color1)",
+    "& .toggle_icon_container": {
+      color: "#fff"
+    }
   },
   "& .MuiButtonBase-root.MuiTab-root:not(.Mui-selected):hover": {
     color: "var(--theme-color3)",
+    "& .toggle_icon_container": {
+      color: "#fff"
+    }
   },
   "& .MuiTabs-flexContainerVertical": {
     [theme.breakpoints.up("sm")]: {
@@ -92,10 +98,13 @@ export const CustomTabs: any = styled(StyledTabs)(({ orientation, theme }) => ({
     },
   },
   "& .MuiButtonBase-root.MuiTab-root:hover .toggle_icon_container": {
-    backgroundColor: "#07288e3b",
+    // backgroundColor: "#07288e3b",
+    backgroundColor: "var(--theme-color3)",
+    transition: "background-color 0.5s ease-in-out",
   },
   "& .MuiButtonBase-root.MuiTab-root.Mui-selected .toggle_icon_container": {
-    backgroundColor: "#07288e82",
+    // backgroundColor: "#07288e82",
+    backgroundColor: "var(--theme-color1)",
     // animation: `boxanima 1000ms ${theme.transitions.easing.easeInOut}`,
     // animationIterationCount: "infinite",
     // animationDirection: "alternate",
