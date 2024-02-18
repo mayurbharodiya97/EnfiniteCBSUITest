@@ -1052,8 +1052,7 @@ export default function FormModal({
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Attestation"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Attestation"} subtext={"KYC verifcation"} />} /></Tooltip>
               </CustomTabs> */}
 
-              {/* temp ui disabled */}
-              {true && <CustomTabs 
+              <CustomTabs 
                 sx={{height:"calc(100% - 10px)", minWidth: "76px"}}  
                 textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" 
                 value={state?.colTabValuectx} 
@@ -1076,7 +1075,7 @@ export default function FormModal({
                     )
                   }) 
                 }
-              </CustomTabs>}
+              </CustomTabs>
             </Grid>
             <Grid sx={{
                 "& .MuiGrid-root": {
