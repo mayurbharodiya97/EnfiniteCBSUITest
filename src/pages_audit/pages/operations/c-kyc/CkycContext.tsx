@@ -54,8 +54,6 @@ const initialState:any  = {
 
     confirmFlagctx: null,
     update_casectx: null,
-    isReadyToSavectx: false,
-    isReadyToUpdatectx: false,
     steps: {
         0: {status: ""}
     },
@@ -129,16 +127,6 @@ const Reducer = (state, action) => {
                 ...action.payload
             };
         case "update_stepStatus":
-            return {
-                ...state,
-                ...action.payload
-            };
-        case "handle_isreadytosave":
-            return {
-                ...state,
-                ...action.payload
-            };
-        case "handle_isreadytoupdate":
             return {
                 ...state,
                 ...action.payload
@@ -303,8 +291,6 @@ const CkycProvider = ({children}) => {
                 updateFormDatactx: {},
                 confirmFlagctx: "", 
                 update_casectx: "", 
-                isReadyToSavectx: false,
-                isReadyToUpdatectx: false,
                 modifiedFormFormat: {},                
                 currentFormRefctx: [],
             }
@@ -456,24 +442,6 @@ const CkycProvider = ({children}) => {
         //         }
         //     }
         // })
-    }
-
-    const handleReadyToSavectx = (value:boolean) => {
-        dispatch({
-            type: "handle_isreadytosave",
-            payload: {
-                isReadyToSavectx: value
-            }
-        })
-    }
-
-    const handleReadyToUpdatectx = (value:boolean) => {
-        dispatch({
-            type: "handle_isreadytoupdate",
-            payload: {
-                isReadyToUpdatectx: value
-            }
-        })
     }
 
     const handleFormDataonSavectx = (data) => {
@@ -896,7 +864,7 @@ const CkycProvider = ({children}) => {
                 handleApiRes, 
                 // handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
-                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, handleReadyToSavectx, handleReadyToUpdatectx, resetCkycctx, handleSavectx, handleUpdatectx, handleCurrentFormRefctx
+                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, resetCkycctx, handleSavectx, handleUpdatectx, handleCurrentFormRefctx
             }}
         >
             {children}

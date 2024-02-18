@@ -178,7 +178,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, handleReadyToSavectx, handleReadyToUpdatectx } = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx } = useContext(CkycContext);
   // const { state: data }: any = useLocation();
   const location: any = useLocation();
   const { t } = useTranslation();
@@ -241,47 +241,6 @@ export default function FormModal({
       }
     }
   }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])
-
-  useEffect(() => {
-    // state?.tabsApiResctx
-    if(state?.tabsApiResctx && state?.tabsApiResctx.length>0) {
-      let totalStepCount = state?.tabsApiResctx.length
-      let attemptedSteps:any = Object.values(state?.steps ?? {})
-      // console.log("stepssss", state?.steps, attemptedSteps)
-      if(attemptedSteps.length == totalStepCount) {
-        let readyToSave = true;
-        for (let index = 0; index < attemptedSteps.length; index++) {
-          // const element = array[index];
-          // for(let i)
-          if(attemptedSteps[index].steps != "completed") {
-            readyToSave = false
-            // handleReadyToSavectx(false)
-            break;
-          }
-        }
-        handleReadyToSavectx(readyToSave)
-      } else {
-        let readyToUpdate = true;
-        for (let index = 0; index < attemptedSteps.length; index++) {
-          // const element = array[index];
-          // for(let i)
-          if(attemptedSteps[index].steps != "completed") {
-            readyToUpdate = false
-            // handleReadyToSavectx(false)
-            break;
-          }
-        }
-        handleReadyToUpdatectx(readyToUpdate)
-      }
-      // console.log("state?.steps, state?.tabsApiResctx", state?.steps, state?.tabsApiResctx)
-      // attemptedSteps.map((el:any) => {
-      //   if(el.status && el.status != "completed") {
-      //     handleReadyToSavectx(false)
-      //   }
-      // })
-    }
-  }, [state?.steps, state?.tabsApiResctx])
-
 
   // useEffect(() => {
   //   // if(!location.state) {
