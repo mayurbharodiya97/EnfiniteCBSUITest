@@ -198,7 +198,7 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleFormModalOpenOnEditctx = (recordData, retrieveFormdata) => {
+    const handleFormModalOpenOnEditctx = (recordData) => {
         // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData)
         // required - CATEGORY_CODE, CONSTITUTION_TYPE, CUSTOMER_TYPE
         // if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {

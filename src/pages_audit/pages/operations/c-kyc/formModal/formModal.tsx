@@ -164,21 +164,6 @@ export const useDialogStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  // width: 400,
-  width: "95vw",
-  bgcolor: 'background.paper',
-  border: '1px solid #000',
-  boxShadow: 24,
-  p: 4,
-
-  height: "95vh",
-  overflow: "auto",
-};
 
 export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
@@ -242,23 +227,10 @@ export default function FormModal({
       // setAcctTypeState(acctType[0])
       // // handleColTabChangectx(0)
       // // handleFormModalOpenOnEditctx(location?.state)
+      handleFormDataonRetrievectx(data[0])
     },
     onError: (error: any) => {},
   });
-
-
-  useEffect(() => {
-    if(!mutation.isLoading && mutation.data) {
-      // console.log("mutation.data, mutation.isLoading", mutation, mutation.data, mutation.isLoading)
-              // console.log("on successssss", data, location)
-            handleFormDataonRetrievectx(mutation.data[0])
-            // let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
-            // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-            // setAcctTypeState(acctType[0])
-              // handleColTabChangectx(0)
-              // handleFormModalOpenOnEditctx(location?.state)
-    }    
-  }, [mutation.data, mutation.isLoading])
 
   useEffect(() => {
     if(!mutation.isLoading && mutation.data) {
@@ -338,31 +310,38 @@ export default function FormModal({
 
 
   useEffect(() => {
+    console.log(formmode,"asddsaasddsa", location?.state)
     // setDisplayMode(formmode)
-    if(formmode == "new") {
-      handleFormModalOpenctx(location?.state?.entityType)
-      console.log("statess new", location.state)
+    if(Boolean(location.state)) {
+      if(formmode == "new") {
+        handleFormModalOpenctx(location?.state?.entityType)
+        console.log("statess new", location.state)
+      } else {
+        handleColTabChangectx(0)
+        handleFormModalOpenOnEditctx(location?.state)
+  
+        let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+          COMP_CD: authState?.companyID ?? "",
+        }
+        if(Array.isArray(location.state) && location.state.length>0) {
+          const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
+          const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
+          if(Boolean(reqCD)) {
+            payload["REQUEST_CD"] = reqCD;
+          }
+          if(Boolean(custID)) {
+            payload["CUSTOMER_ID"] = custID;
+          }
+        }
+        if(Object.keys(payload)?.length > 1) {
+          mutation.mutate(payload)
+        }
+      } 
     } else {
-      handleColTabChangectx(0)
-      handleFormModalOpenOnEditctx(location?.state)
-
-      let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-        COMP_CD: authState?.companyID ?? "",
-      }
-      if(Array.isArray(location.state) && location.state.length>0) {
-        const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-        const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-        if(Boolean(reqCD)) {
-          payload["REQUEST_CD"] = reqCD;
-        }
-        if(Boolean(custID)) {
-          payload["CUSTOMER_ID"] = custID;
-        }
-      }
-      if(Object.keys(payload)?.length > 1) {
-        mutation.mutate(payload)
-      }
-    } 
+      handleFormModalClosectx()
+      onClose()
+    }
+    
   }, [])
 
 
@@ -1089,7 +1068,6 @@ export default function FormModal({
                 {/* common customer fields */}
               </Toolbar>
             </AppBar>
-        {/* <Box sx={style}> */}
           <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
 
             
@@ -1157,7 +1135,6 @@ export default function FormModal({
               }
             </Grid>
           </Grid>
-        {/* </Box> */}
 
         {updateDialog && <ConfirmUpdateDialog 
             open={updateDialog} 
