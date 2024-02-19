@@ -1,3 +1,5 @@
+import { GeneralAPI } from "registry/fns/functions";
+
 export const FixDepositDetailFormMetadata = {
   form: {
     name: "fixDepositDetail",
@@ -141,17 +143,8 @@ export const FixDepositDetailFormMetadata = {
           fullWidth: true,
           isReadOnly: true,
 
-          GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
+          GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
         },
-        // {
-        //   render: {
-        //     componentType: "amountField",
-        //   },
-        //   name: "CASH_AMT",
-        //   label: "Cash",
-        //   type: "text",
-        //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        // },
         {
           render: {
             componentType: "datePicker",
@@ -167,6 +160,28 @@ export const FixDepositDetailFormMetadata = {
           maxLength: 6,
           defaultfocus: true,
           required: true,
+          dependentFields: [
+            "COMP_CD",
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
+            "CATEG_CD",
+            "PERIOD_NO",
+            "PERIOD_CD",
+            "FD_AMOUNT",
+          ],
+          postValidationSetCrossFieldValues: async (
+            currField,
+            formState,
+            auth,
+            dependentFields
+          ) => {
+            let postData = await GeneralAPI.getFDInterest(
+              currField,
+              dependentFields
+            );
+            return postData;
+          },
           schemaValidation: {
             type: "string",
             rules: [
@@ -174,7 +189,7 @@ export const FixDepositDetailFormMetadata = {
               { name: "TRAN_DT", params: ["AsOn Date is required."] },
             ],
           },
-          GridProps: { xs: 12, sm: 1.5, md: 1.8, lg: 1.8, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
         {
           render: {
@@ -189,6 +204,28 @@ export const FixDepositDetailFormMetadata = {
           ],
           defaultValue: "D",
           required: true,
+          dependentFields: [
+            "COMP_CD",
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
+            "CATEG_CD",
+            "TRAN_DT",
+            "PERIOD_NO",
+            "FD_AMOUNT",
+          ],
+          postValidationSetCrossFieldValues: async (
+            currField,
+            formState,
+            auth,
+            dependentFields
+          ) => {
+            let postData = await GeneralAPI.getFDInterest(
+              currField,
+              dependentFields
+            );
+            return postData;
+          },
           schemaValidation: {
             type: "string",
             rules: [
@@ -196,7 +233,7 @@ export const FixDepositDetailFormMetadata = {
               { name: "PERIOD_CD", params: ["Please select Period/Tenor"] },
             ],
           },
-          GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1 },
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1 },
         },
         {
           render: {
@@ -219,11 +256,34 @@ export const FixDepositDetailFormMetadata = {
             isValidation: "no",
           },
           required: true,
-          schemaValidation: {
-            type: "string",
-            rules: [{ name: "required", params: ["Tenor is Required."] }],
+          dependentFields: [
+            "COMP_CD",
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
+            "CATEG_CD",
+            "TRAN_DT",
+            "PERIOD_CD",
+            "FD_AMOUNT",
+          ],
+          postValidationSetCrossFieldValues: async (
+            currField,
+            formState,
+            auth,
+            dependentFields
+          ) => {
+            let postData = await GeneralAPI.getFDInterest(
+              currField,
+              dependentFields
+            );
+            console.log(">>postData", postData);
+            return postData;
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+          // schemaValidation: {
+          //   type: "string",
+          //   rules: [{ name: "required", params: ["Tenor is Required."] }],
+          // },
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
           render: {
@@ -234,13 +294,22 @@ export const FixDepositDetailFormMetadata = {
           placeholder: "",
           required: true,
           type: "text",
+          postValidationSetCrossFieldValues: async (currField) => {
+            if (Boolean(currField?.value) && currField?.value > 0) {
+              return {
+                GETFDMATUREAMOUNT: {
+                  value: new Date().getTime(),
+                },
+              };
+            }
+          },
           schemaValidation: {
             type: "string",
             rules: [
               { name: "required", params: ["Interest Rate is Required."] },
             ],
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
           render: {
@@ -256,6 +325,15 @@ export const FixDepositDetailFormMetadata = {
           ],
           defaultValue: "D",
           required: true,
+          postValidationSetCrossFieldValues: async (currField) => {
+            if (Boolean(currField?.value)) {
+              return {
+                GETFDMATUREAMOUNT: {
+                  value: new Date().getTime(),
+                },
+              };
+            }
+          },
           schemaValidation: {
             type: "string",
             rules: [
@@ -263,7 +341,7 @@ export const FixDepositDetailFormMetadata = {
               { name: "TERM_CD", params: ["Please select Interest Term"] },
             ],
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
           render: {
@@ -283,15 +361,6 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
-        // {
-        //   render: {
-        //     componentType: "amountField",
-        //   },
-        //   name: "TOTAL",
-        //   label: "Total",
-        //   type: "text",
-        //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        // },
         {
           render: {
             componentType: "datePicker",
@@ -304,27 +373,6 @@ export const FixDepositDetailFormMetadata = {
           fullWidth: true,
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
-        // {
-        //   render: {
-        //     componentType: "textField",
-        //   },
-        //   name: "CATEG_NM",
-        //   label: "Category",
-        //   isReadOnly: true,
-        //   GridProps: { xs: 2.5, sm: 2, md: 2, lg: 2, xl: 2.5 },
-        // },
-        // {
-        //   render: {
-        //     componentType: "datePicker",
-        //   },
-        //   name: "BIRTH_DT",
-        //   label: "Birth Date",
-        //   placeholder: "",
-        //   format: "dd/MM/yyyy",
-        //   isReadOnly: true,
-        //   fullWidth: true,
-        //   GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        // },
         {
           render: {
             componentType: "_accountNumber",
@@ -376,11 +424,14 @@ export const FixDepositDetailFormMetadata = {
         },
         {
           render: {
-            componentType: "textField",
+            componentType: "select",
           },
           name: "MATURE_INST",
           label: "Mature Instruction",
           type: "text",
+          dependentFields: ["BRANCH_CD", "ACCT_TYPE"],
+          disableCaching: true,
+          options: "getMatureInstDetail",
           fullWidth: true,
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3.5 },
         },
@@ -398,11 +449,36 @@ export const FixDepositDetailFormMetadata = {
           render: {
             componentType: "textField",
           },
-          name: "nominee_nm",
+          name: "NOMINEE_NM",
           label: "Nominee Name",
           type: "text",
           fullWidth: true,
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "COMP_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "CATEG_CD",
+        },
+        {
+          render: {
+            componentType: "textField",
+          },
+          name: "GETFDMATUREAMOUNT",
+          validationRun: "all",
+          shouldExclude() {
+            return true;
+          },
+          postValidationSetCrossFieldValues: async (currField) => {
+            console.log(">>GETFDMATUREAMOUNT");
+          },
         },
       ],
     },

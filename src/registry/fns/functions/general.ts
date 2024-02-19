@@ -612,6 +612,73 @@ const GeneralAPISDK = () => {
     } else {
     }
   };
+
+  const getFDInterest = async (currField, dependentFields) => {
+    let currFieldName = currField?.name?.split(".");
+    let fieldName = currFieldName[currFieldName.length - 1];
+    let tranDate =
+      fieldName === "TRAN_DT"
+        ? currField?.value
+        : dependentFields?.["FDDTL.TRAN_DT"]?.value;
+    let fdAmount =
+      fieldName === "FD_AMOUNT"
+        ? currField?.value
+        : dependentFields?.["FDDTL.FD_AMOUNT"]?.value;
+    let periodCode =
+      fieldName === "PERIOD_CD"
+        ? currField?.value
+        : dependentFields?.["FDDTL.PERIOD_CD"]?.value;
+    let periodNo =
+      fieldName === "PERIOD_NO"
+        ? currField?.value
+        : dependentFields?.["FDDTL.PERIOD_NO"]?.value;
+    if (
+      !Boolean(tranDate) ||
+      !Boolean(fdAmount) ||
+      !Boolean(periodCode) ||
+      !Boolean(periodNo)
+    )
+      return {};
+    const { data, status, message } = await AuthSDK.internalFetcher(
+      "GETFDINTEREST",
+      {
+        COMP_CD: dependentFields?.["FDDTL.COMP_CD"]?.value ?? "",
+        BRANCH_CD: dependentFields?.["FDDTL.BRANCH_CD"]?.value ?? "",
+        ACCT_TYPE: dependentFields?.["FDDTL.ACCT_TYPE"]?.value ?? "",
+        ACCT_CD: dependentFields?.["FDDTL.ACCT_CD"]?.value ?? "",
+        CATEG_CD: dependentFields?.["FDDTL.CATEG_CD"]?.value ?? "",
+        // CATEG_CD: "",
+        TRAN_DT: format(tranDate, "dd/MM/yyyy"),
+        FD_AMOUNT: fdAmount,
+        PERIOD_CD: periodCode,
+        PERIOD_NO: periodNo,
+      }
+    );
+    if (status === "0") {
+      return {
+        INT_RATE: {
+          value: data?.[0]?.INT_RATE ?? "",
+        },
+        MATURITY_DT: {
+          value: data?.[0]?.MATURITY_DT ?? "",
+        },
+      };
+    } else {
+      return {
+        [fieldName]: {
+          value: "",
+          error: message ?? "",
+          ignoreUpdate: true,
+        },
+        INT_RATE: {
+          value: "",
+        },
+        MATURITY_DT: {
+          value: "",
+        },
+      };
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -638,6 +705,7 @@ const GeneralAPISDK = () => {
     getProMiscData,
     getZoneListData,
     getMatureInstDetail,
+    getFDInterest,
   };
 };
 export const GeneralAPI = GeneralAPISDK();
