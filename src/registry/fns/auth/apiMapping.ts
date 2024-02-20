@@ -870,6 +870,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/GETFDINTEREST",
     packageName: "",
   },
+  GETFDMATUREAMOUNT: {
+    url: "/enfinityFDServiceAPI/GETFDMATUREAMOUNT",
+    packageName: "",
+  },
   GETLIMITGRIDDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITGRIDDATADISP",
     packageName: "",

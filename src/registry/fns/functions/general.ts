@@ -584,14 +584,26 @@ const GeneralAPISDK = () => {
       return "";
     }
   };
-  const getMatureInstDetail = async (...ReqData) => {
-    if (!Boolean(ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value)) return [];
-    if (!Boolean(ReqData?.[2]?.["FDACCTS.ACCT_TYPE"]?.value)) return [];
+  const getMatureInstDetail = async (_, __, dependantFields, authState) => {
+    let branchCd = "";
+    let acctType = "";
+    Object.keys(dependantFields).forEach((key) => {
+      if (key.startsWith("FDDTL") || key.startsWith("FDACCT")) {
+        const fieldName = key.split(".")[1];
+        if (fieldName === "BRANCH_CD") {
+          branchCd = dependantFields[key].value;
+        } else if (fieldName === "ACCT_TYPE") {
+          acctType = dependantFields[key].value;
+        }
+      }
+    });
+    if (!Boolean(branchCd)) return [];
+    if (!Boolean(acctType)) return [];
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETMATUREINSTDTL", {
-        COMP_CD: ReqData?.[3]?.companyID ?? "",
-        BRANCH_CD: ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value ?? "",
-        ACCT_TYPE: ReqData?.[2]?.["FDACCTS.ACCT_TYPE"]?.value ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: branchCd ?? "",
+        ACCT_TYPE: acctType ?? "",
       });
     if (status === "0") {
       let responseData = data;

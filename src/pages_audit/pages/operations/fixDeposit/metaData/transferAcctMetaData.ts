@@ -1,3 +1,6 @@
+import { utilFunction } from "components/utils";
+import { validateAccountAndGetDetail } from "../api";
+
 export const TransferAcctDetailFormMetadata = {
   form: {
     name: "transferAcctDetail",
@@ -55,12 +58,67 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "_accountNumber",
           },
           branchCodeMetadata: {
+            name: "DC_BRANCH_CD",
             GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
           },
           accountTypeMetadata: {
+            name: "DC_ACCT_TYPE",
             GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
           },
           accountCodeMetadata: {
+            name: "DC_ACCT_CD",
+            dependentFields: ["DC_BRANCH_CD", "DC_ACCT_TYPE"],
+            postValidationSetCrossFieldValues: async (...arg) => {
+              const branchCode =
+                arg?.[3]?.["TRNDTLS.DC_BRANCH_CD"]?.value ?? "";
+              const accountType =
+                arg?.[3]?.["TRNDTLS.DC_ACCT_TYPE"]?.value ?? "";
+              const accountCode = utilFunction.getPadAccountNumber(
+                arg?.[0]?.value,
+                arg?.[3]?.["TRNDTLS.DC_ACCT_TYPE"]?.optionData
+              );
+
+              if (Boolean(branchCode) && Boolean(accountType) && accountCode) {
+                const apiResponse = await validateAccountAndGetDetail(
+                  arg?.[2]?.companyID,
+                  branchCode,
+                  accountType,
+                  accountCode,
+                  "FD_DR_ACT"
+                );
+                if (apiResponse?.status === "0") {
+                  if (Boolean(apiResponse?.message)) {
+                    arg?.[1]?.MessageBox(
+                      "Information",
+                      apiResponse?.message.startsWith("\n")
+                        ? apiResponse?.message?.slice(1)
+                        : apiResponse?.message
+                    );
+                  }
+                  return {
+                    DC_ACCT_CD: {
+                      value: accountCode,
+                      ignoreUpdate: true,
+                    },
+                    DC_ACCT_NM: {
+                      value: apiResponse?.data?.[0]?.ACCT_NM ?? "",
+                    },
+                    TRAN_BAL: {
+                      value: apiResponse?.data?.[0]?.WIDTH_BAL ?? "",
+                    },
+                  };
+                } else {
+                  return {
+                    DC_ACCT_CD: {
+                      value: "",
+                      error: apiResponse?.message ?? "",
+                      ignoreUpdate: true,
+                    },
+                    DC_ACCT_NM: { value: "" },
+                  };
+                }
+              }
+            },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 3, xl: 1.5 },
           },
         },
@@ -68,7 +126,7 @@ export const TransferAcctDetailFormMetadata = {
           render: {
             componentType: "textField",
           },
-          name: "ACCT_NAME",
+          name: "DC_ACCT_NM",
           label: "AC Name",
           type: "text",
           fullWidth: true,

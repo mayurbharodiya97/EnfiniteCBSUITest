@@ -1,4 +1,8 @@
+import { format } from "date-fns";
+import { AuthSDK } from "registry/fns/auth";
 import { GeneralAPI } from "registry/fns/functions";
+import { validateAccountAndGetDetail } from "../api";
+import { utilFunction } from "components/utils";
 
 export const FixDepositDetailFormMetadata = {
   form: {
@@ -117,6 +121,7 @@ export const FixDepositDetailFormMetadata = {
           },
           name: "FD_NO",
           label: "FD Number",
+          className: "textInputFromRight",
           placeholder: "",
           maxLength: 10,
           FormatProps: {
@@ -144,6 +149,17 @@ export const FixDepositDetailFormMetadata = {
           isReadOnly: true,
 
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
+        },
+        {
+          render: {
+            componentType: "amountField",
+          },
+          name: "FD_AMOUNT",
+          label: "Transfer Amount",
+          placeholder: "",
+          type: "text",
+          isFieldFocused: true,
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
         {
           render: {
@@ -189,7 +205,7 @@ export const FixDepositDetailFormMetadata = {
               { name: "TRAN_DT", params: ["AsOn Date is required."] },
             ],
           },
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
         {
           render: {
@@ -241,6 +257,7 @@ export const FixDepositDetailFormMetadata = {
           },
           name: "PERIOD_NO",
           label: "Tenor",
+          className: "textInputFromRight",
           placeholder: "",
           maxLength: 4,
           FormatProps: {
@@ -276,7 +293,6 @@ export const FixDepositDetailFormMetadata = {
               currField,
               dependentFields
             );
-            console.log(">>postData", postData);
             return postData;
           },
           // schemaValidation: {
@@ -341,7 +357,7 @@ export const FixDepositDetailFormMetadata = {
               { name: "TERM_CD", params: ["Please select Interest Term"] },
             ],
           },
-          GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
           render: {
@@ -351,15 +367,6 @@ export const FixDepositDetailFormMetadata = {
           label: "Month Interest",
           isReadOnly: true,
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-        },
-        {
-          render: {
-            componentType: "amountField",
-          },
-          name: "MATURITY_AMT",
-          label: "Maturity Amount",
-          type: "text",
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
           render: {
@@ -393,9 +400,58 @@ export const FixDepositDetailFormMetadata = {
             name: "CR_ACCT_CD",
             label: "Credit A/c No.",
             required: false,
-            dependentFields: ["CR_BRANCH_CD", "CR_ACCT_TYPE"],
-            postValidationSetCrossFieldValues: () => {
-              console.log(">>accountCode");
+            dependentFields: ["COMP_CD", "CR_BRANCH_CD", "CR_ACCT_TYPE"],
+            postValidationSetCrossFieldValues: async (...arg) => {
+              const companyCode = arg?.[3]?.["FDDTL.COMP_CD"]?.value ?? "";
+              const branchCode = arg?.[3]?.["FDDTL.CR_BRANCH_CD"]?.value ?? "";
+              const accountType = arg?.[3]?.["FDDTL.CR_ACCT_TYPE"]?.value ?? "";
+              const accountCode = utilFunction.getPadAccountNumber(
+                arg?.[0]?.value,
+                arg?.[3]?.["FDDTL.CR_ACCT_TYPE"]?.optionData
+              );
+
+              if (
+                Boolean(companyCode) &&
+                Boolean(branchCode) &&
+                Boolean(accountType) &&
+                accountCode
+              ) {
+                const apiResponse = await validateAccountAndGetDetail(
+                  companyCode,
+                  branchCode,
+                  accountType,
+                  accountCode,
+                  "FD_CR_ACT"
+                );
+                if (apiResponse?.status === "0") {
+                  if (Boolean(apiResponse?.message)) {
+                    arg?.[1]?.MessageBox(
+                      "Information",
+                      apiResponse?.message.startsWith("\n")
+                        ? apiResponse?.message?.slice(1)
+                        : apiResponse?.message
+                    );
+                  }
+                  return {
+                    CR_ACCT_CD: {
+                      value: accountCode,
+                      ignoreUpdate: true,
+                    },
+                    CR_ACCT_NM: {
+                      value: apiResponse?.data?.[0]?.ACCT_NM ?? "",
+                    },
+                  };
+                } else {
+                  return {
+                    CR_ACCT_CD: {
+                      value: "",
+                      error: apiResponse?.message ?? "",
+                      ignoreUpdate: true,
+                    },
+                    CR_ACCT_NM: { value: "" },
+                  };
+                }
+              }
             },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           },
@@ -409,18 +465,16 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           fullWidth: true,
           isReadOnly: true,
-
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
         },
         {
           render: {
             componentType: "amountField",
           },
-          name: "FD_AMOUNT",
-          label: "Transfer Amount",
-          placeholder: "",
+          name: "MATURITY_AMT",
+          label: "Maturity Amount",
           type: "text",
-          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+          GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
           render: {
@@ -433,6 +487,19 @@ export const FixDepositDetailFormMetadata = {
           disableCaching: true,
           options: "getMatureInstDetail",
           fullWidth: true,
+          schemaValidation: {
+            type: "string",
+            rules: [
+              {
+                name: "required",
+                params: ["FD Mature Instruction is required."],
+              },
+              {
+                name: "MATURE_INST",
+                params: ["Please select FD Mature Instruction"],
+              },
+            ],
+          },
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3.5 },
         },
         {
@@ -476,8 +543,79 @@ export const FixDepositDetailFormMetadata = {
           shouldExclude() {
             return true;
           },
-          postValidationSetCrossFieldValues: async (currField) => {
-            console.log(">>GETFDMATUREAMOUNT");
+          dependentFields: [
+            "COMP_CD",
+            "BRANCH_CD",
+            "ACCT_TYPE",
+            "ACCT_CD",
+            "CATEG_CD",
+            "TRAN_DT",
+            "FD_AMOUNT",
+            "PERIOD_CD",
+            "PERIOD_NO",
+            "TERM_CD",
+            "INT_RATE",
+            "MATURITY_DT",
+          ],
+          postValidationSetCrossFieldValues: async (
+            currField,
+            formState,
+            auth,
+            dependentFields
+          ) => {
+            if (!Boolean(dependentFields?.["FDDTL.TRAN_DT"]?.value ?? ""))
+              return {};
+            if (!Boolean(dependentFields?.["FDDTL.FD_AMOUNT"]?.value ?? ""))
+              return {};
+            if (!Boolean(dependentFields?.["FDDTL.PERIOD_CD"]?.value ?? ""))
+              return {};
+            if (!Boolean(dependentFields?.["FDDTL.PERIOD_NO"]?.value ?? ""))
+              return {};
+            if (!Boolean(dependentFields?.["FDDTL.TERM_CD"]?.value ?? ""))
+              return {};
+            if (!Boolean(dependentFields?.["FDDTL.INT_RATE"]?.value ?? ""))
+              return {};
+            if (!Boolean(dependentFields?.["FDDTL.MATURITY_DT"]?.value ?? ""))
+              return {};
+            const { data, status, message } = await AuthSDK.internalFetcher(
+              "GETFDMATUREAMOUNT",
+              {
+                COMP_CD: dependentFields?.["FDDTL.COMP_CD"]?.value ?? "",
+                BRANCH_CD: dependentFields?.["FDDTL.BRANCH_CD"]?.value ?? "",
+                ACCT_TYPE: dependentFields?.["FDDTL.ACCT_TYPE"]?.value ?? "",
+                ACCT_CD: dependentFields?.["FDDTL.ACCT_CD"]?.value ?? "",
+                CATEG_CD: dependentFields?.["FDDTL.CATEG_CD"]?.value ?? "",
+                TRAN_DT: dependentFields?.["FDDTL.TRAN_DT"]?.value ?? "",
+                FD_AMOUNT: dependentFields?.["FDDTL.FD_AMOUNT"]?.value ?? "",
+                PERIOD_CD: dependentFields?.["FDDTL.PERIOD_CD"]?.value ?? "",
+                PERIOD_NO: dependentFields?.["FDDTL.PERIOD_NO"]?.value ?? "",
+                TERM_CD: dependentFields?.["FDDTL.TERM_CD"]?.value ?? "",
+                INT_RATE: dependentFields?.["FDDTL.INT_RATE"]?.value ?? "",
+                MATURITY_DT: format(
+                  dependentFields?.["FDDTL.MATURITY_DT"]?.value ?? "",
+                  "dd/MMM/yyyy"
+                ),
+              }
+            );
+            if (status === "0") {
+              return {
+                MATURITY_AMT: {
+                  value: data?.[0]?.MATURITY_AMT ?? "",
+                },
+                MONTHLY_INT: {
+                  value: data?.[0]?.MONTHLY_INT ?? "",
+                },
+              };
+            } else {
+              return {
+                MATURITY_AMT: {
+                  value: "",
+                },
+                MONTHLY_INT: {
+                  value: "",
+                },
+              };
+            }
           },
         },
       ],

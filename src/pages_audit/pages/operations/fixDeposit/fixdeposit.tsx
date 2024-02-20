@@ -96,7 +96,7 @@ export const FixDepositForm = () => {
   const [steps, setSteps] = useState([
     "FD Parameters",
     "Fixed Deposit Detail(s)",
-    "Transfer A/C Detail(s)",
+    "Source A/C Detail(s)",
   ]);
   const fdParameterformRef: any = useRef(null);
   const fdDetailsformRef: any = useRef(null);
@@ -127,13 +127,13 @@ export const FixDepositForm = () => {
           "FD Parameters",
           "Account Opening",
           "Fixed Deposit Detail(s)",
-          "Transfer A/C Detail(s)",
+          "Source A/C Detail(s)",
         ]);
       } else {
         setSteps([
           "FD Parameters",
           "Fixed Deposit Detail(s)",
-          "Transfer A/C Detail(s)",
+          "Source A/C Detail(s)",
         ]);
       }
     }
@@ -142,7 +142,6 @@ export const FixDepositForm = () => {
   function ColorlibStepIcon(props: StepIconProps) {
     const { active, completed, className } = props;
     const fdType = fdState?.fdParaFormData?.FD_TYPE;
-    console.log(">>fdType", fdType);
     // Object mapping step numbers to corresponding icons
     const icons: { [index: string]: React.ReactElement } = {
       1: <SettingsIcon />,

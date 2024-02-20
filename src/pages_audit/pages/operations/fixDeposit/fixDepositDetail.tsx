@@ -3,10 +3,12 @@ import { Fragment, forwardRef, useContext } from "react";
 import { FixDepositDetailFormMetadata } from "./metaData/fdDetailMetaData";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
+import { AuthContext } from "pages_audit/auth";
 
 export const FixDepositDetailForm = forwardRef<any, any>(({}, ref) => {
   const { fdState, updateFDDetailsFormData, setActiveStep } =
     useContext(FixDepositContext);
+  const { MessageBox } = useContext(AuthContext);
 
   const onSubmitHandler: SubmitFnType = (
     data: any,
@@ -19,7 +21,6 @@ export const FixDepositDetailForm = forwardRef<any, any>(({}, ref) => {
     updateFDDetailsFormData(data);
     setActiveStep(fdState.activeStep + 1);
   };
-  console.log(">>fdState", fdState?.fdDetailFormDa);
   return (
     <Fragment>
       <FormWrapper
@@ -39,6 +40,7 @@ export const FixDepositDetailForm = forwardRef<any, any>(({}, ref) => {
           borderRadius: "10px",
         }}
         ref={ref}
+        formState={{ MessageBox: MessageBox }}
       />
     </Fragment>
   );

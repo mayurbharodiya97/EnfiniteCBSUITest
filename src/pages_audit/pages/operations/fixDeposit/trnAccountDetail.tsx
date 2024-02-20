@@ -1,9 +1,11 @@
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { TransferAcctDetailFormMetadata } from "./metaData/transferAcctMetaData";
 import { InitialValuesType } from "packages/form";
+import { AuthContext } from "pages_audit/auth";
 
 export const TransferAcctDetailForm = () => {
+  const { MessageBox } = useContext(AuthContext);
   return (
     <Fragment>
       <FormWrapper
@@ -30,6 +32,7 @@ export const TransferAcctDetailForm = () => {
           border: "1px solid var(--theme-color4)",
           borderRadius: "10px",
         }}
+        formState={{ MessageBox: MessageBox }}
       />
     </Fragment>
   );

@@ -60,6 +60,7 @@ export const FixDepositParaFormMetadata = {
       ],
       defaultValue: "E",
       required: true,
+      isFieldFocused: true,
       schemaValidation: {
         type: "string",
         rules: [
@@ -300,6 +301,7 @@ export const FixDepositAccountsFormMetadata = {
             "USER_TYPE_ALLOWED",
             "LEAN_FLAG",
           ],
+          isFieldFocused: true,
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
               dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
@@ -558,7 +560,6 @@ export const FixDepositAccountsFormMetadata = {
             //   return "";
             // },
             postValidationSetCrossFieldValues: async (...arg) => {
-              console.log(">>CR_ACCT_CD");
               const companyCode = arg?.[3]?.["FDACCTS.COMP_CD"]?.value ?? "";
               const branchCode =
                 arg?.[3]?.["FDACCTS.CR_BRANCH_CD"]?.value ?? "";
