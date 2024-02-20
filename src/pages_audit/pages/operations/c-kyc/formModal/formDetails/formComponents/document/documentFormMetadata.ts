@@ -1,3 +1,4 @@
+import { addMonths, format, isAfter } from "date-fns";
 import * as API from "../../../../api";
 
 export const DocumentFormMetadata = {
@@ -45,20 +46,32 @@ export const DocumentFormMetadata = {
     },
   },
   fields: [
-    {
-      render: { componentType: "hidden" },
-      name: "TRAN_CD",
-    },
+    // {
+    //   render: { componentType: "hidden" },
+    //   name: "TRAN_CD",
+    // },
     {
       render: { componentType: "hidden" },
       name: "SR_CD",
     },
     {
+      render: { componentType: "hidden" },
+      // name: "VALID_UPTO",
+      name: "VALID_UPTO_HRS",
+    },
+    {
       render: { componentType: "select" },
-      name: "BANK_DOC_TRAN_CD",
+      name: "TEMPLATE_CD",
       // name: "DOC_DESCRIPTION",
       label: "Document",
       // options: "getKYCDocTypes",
+      required: true,
+      schemaValidation: {
+        type: "string",
+        rules: [
+        { name: "required", params: ["ThisFieldisrequired"] },
+        ],
+    },
       dependentFields: ["TRAN_CD", "SR_CD"],
       isReadOnly: false,
       options: (dependentValue?, formState?, _?, authState?) => API.getCustDocumentOpDtl({ COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, formState }),
@@ -66,7 +79,6 @@ export const DocumentFormMetadata = {
       // options: () => [],
       // _optionsKey: "getDocumentOptionsDTL",
       disableCaching: true,
-      required: true,
       GridProps: {
         xs: 12,
         sm: 6,
@@ -95,7 +107,7 @@ export const DocumentFormMetadata = {
     },
     {
       render: { componentType: "textField" },
-      name: "DOCUMENT_NO",
+      name: "DOC_NO",
       label: "Document No",
       required: true,
       GridProps: {
@@ -107,9 +119,11 @@ export const DocumentFormMetadata = {
     {
       render: { componentType: "datePicker" },
       // name: "VALID_TILL_DT",
-      name: "VALID_TILL_DATE",
+      name: "VALID_UPTO",
       label: "Valid Till Date",
       required: true,
+      dependentFields: ["VALID_UPTO_HRS"],
+      minDate: new Date(),
       GridProps: {
         xs: 12,
         md: 2,
@@ -118,26 +132,26 @@ export const DocumentFormMetadata = {
       schemaValidation: {
         type: "string",
         rules: [
-          { name: "required", params: ["From Date is required."] },
+          { name: "required", params: ["Valid Till Date is required."] },
           { name: "typeError", params: ["Must be a valid date"] },
         ],
       },
       validate: (value, data, others) => {
-        console.log("WEfwedqwe", value)
-        if (!Boolean(value)) {
-          return "Must be a valid date.";
+        if(Boolean(value.value)) {
+          // console.log(data, "WEfwedqwe", value)
+          if(data.VALID_UPTO_HRS && Boolean(data.VALID_UPTO_HRS.value)) {
+            const valid_upto = data.VALID_UPTO_HRS.value;
+            const max_date = addMonths(new Date(), !isNaN(parseInt(valid_upto)) ? parseInt(valid_upto) : 0)
+            // console.log(value.value, "dateasdasdas", max_date, isAfter(value.value, max_date))
+            if(isAfter(value.value, max_date)) {
+              return `Maximum allowed date - ${format(new Date(max_date), "dd/MM/yyyy")}`
+            }
+          }
+          return "";
+          // if (!Boolean(value)) {
+          //   return "From Date is required.";
+          // }
         }
-      },
-    },
-    {
-      render: { componentType: "hidden" },
-      name: "ENTERED_DT",
-      label: "Entered Date",
-      // required: true,   
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
       },
     },
     {

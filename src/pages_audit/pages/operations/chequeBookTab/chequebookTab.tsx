@@ -44,6 +44,10 @@ import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
 import { queryClient } from "cache";
 import { format, parse } from "date-fns";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { ChequeDtlGrid } from "./chequeDetail";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const ChequebookTab = () => {
   const ChequeBKPopUpAction: ActionTypes[] = [
@@ -62,18 +66,30 @@ export const ChequebookTab = () => {
       alwaysAvailable: true,
     },
   ];
+
+  const chequeActions: ActionTypes[] = [
+    {
+      actionName: "view-details",
+      actionLabel: "View Detail",
+      multiple: false,
+      rowDoubleClick: true,
+    },
+  ];
+
   const [value, setValue] = useState("chequebookEntry");
-  const myMasterRef = useRef<any>(null);
-  const { authState } = useContext(AuthContext);
   const [isOpenSave, setIsOpenSave] = useState<any>(false);
-  const [popupError, setPopupError] = useState<any>(false);
   const [isTabVisible, setIsTabVisible] = useState<any>(false);
-  let [messageArray, setmessageArray] = useState<any>([]);
+  const [deletePopup, setDeletePopup] = useState<any>(false);
   const [chequeBookData, setChequeBookData] = useState<any>([]);
   const [gridDetailData, setGridDetailData] = useState<any>();
   const [initData, setInitData] = useState<any>({});
+  let [messageArray, setmessageArray] = useState<any>([]);
+  const { authState } = useContext(AuthContext);
+  const { MessageBox } = usePopupContext();
+  const myMasterRef = useRef<any>(null);
+  const deleteDataRef = useRef<any>(null);
+  const navigate = useNavigate();
 
-  console.log("<<<wefuefgefgej", chequeBookData);
   const getChequeDetail: any = useMutation(
     "getChequebookDTL",
     getChequebookDTL,
@@ -85,14 +101,22 @@ export const ChequebookTab = () => {
     }
   );
 
-  const saveChequeData: any = useMutation(
+  const crudChequeData: any = useMutation(
     "saveChequebookData",
     saveChequebookData,
     {
-      onSuccess: (data) => {
-        setInitData({});
-        setIsTabVisible(false);
-        enqueueSnackbar("Data insert successfully", { variant: "success" });
+      onSuccess: (data, variables, datas) => {
+        if (variables?.DETAILS_DATA?.isDeleteRow.length) {
+          setDeletePopup(false);
+          getChequeDetail.mutate({
+            ...deleteDataRef.current,
+          });
+          enqueueSnackbar("Record Delete successfully", { variant: "success" });
+        } else if (variables?.DETAILS_DATA?.isNewRow.length) {
+          setInitData({});
+          setIsTabVisible(false);
+          enqueueSnackbar("Data insert successfully", { variant: "success" });
+        }
       },
     }
   );
@@ -101,10 +125,19 @@ export const ChequebookTab = () => {
     "validateDeleteData",
     validateDeleteData,
     {
-      onSuccess: (data) => {},
+      onSuccess: (data) => {
+        if (data?.[0]?.STATUS === "999" && data?.[0]?.MESSAGE) {
+          setmessageArray([data?.[0]?.MESSAGE]);
+          setIsOpenSave(true);
+        } else if (
+          data?.[0]?.STATUS === "0" &&
+          data?.[0]?.MESSAGE === "SUCCESS"
+        ) {
+          setDeletePopup(true);
+        }
+      },
     }
   );
-  console.log("<<<validateDelete", validateDelete);
 
   useEffect(() => {
     return () => {
@@ -114,119 +147,9 @@ export const ChequebookTab = () => {
     };
   }, []);
 
-  const onSubmitHandler: SubmitFnType = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    value
-  ) => {
-    // @ts-ignore
-    endSubmit(true);
-    console.log("<<sun<<   ", data);
-    if (value === "Save") {
-      let otherAPIRequestPara2 = {
-        ...data,
-        _isNewRow: true,
-        COMP_CD: authState?.companyID,
-        CHEQUE_FROM: Number(data?.CHEQUE_FROM),
-        CHEQUE_TO: Number(data?.CHEQUE_TO),
-        CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
-        LEAF_ARR: Number(data?.LEAF_ARR),
-        TRAN_DT: format(
-          parse(authState?.workingDate, "dd/MM/yyyy", new Date()),
-          "dd-MMM-yyyy"
-        ).toUpperCase(),
-        ENTERED_BRANCH_CD: data?.BRANCH_CD,
-        ENTERED_COMP_CD: authState?.companyID,
-        ACCT_CD: data?.ACCT_CD?.padStart(6, "0").padEnd(20, " "),
-      };
-      let newArray: any = [];
-
-      if (!otherAPIRequestPara2?.LEAF_ARR) {
-        setFieldError({
-          LEAF_ARR: "please select No. of cheque",
-        });
-      } else if (
-        Number(otherAPIRequestPara2.SERVICE_TAX) >
-        Number(otherAPIRequestPara2.ACCT_BAL)
-      ) {
-        setFieldError({
-          ACCT_BAL: "balance is less than service-charge",
-        });
-      } else if (
-        otherAPIRequestPara2.CHEQUE_TOTAL > 1 &&
-        otherAPIRequestPara2?.CHEQUE_TO
-      ) {
-        for (
-          let i = otherAPIRequestPara2.CHEQUE_FROM;
-          i <=
-          otherAPIRequestPara2.CHEQUE_FROM +
-            (otherAPIRequestPara2.CHEQUE_TOTAL - 1) *
-              otherAPIRequestPara2?.LEAF_ARR;
-          i += otherAPIRequestPara2?.LEAF_ARR
-        ) {
-          newArray.push({
-            ...otherAPIRequestPara2,
-            CHEQUE_FROM: i,
-            CHEQUE_TO: i + otherAPIRequestPara2?.LEAF_ARR - 1,
-          });
-        }
-        setChequeBookData(newArray.length > 1 && newArray);
-      } else if (
-        newArray.length < 1 &&
-        Boolean(otherAPIRequestPara2?.LEAF_ARR)
-      ) {
-        otherAPIRequestPara2 = {
-          isNewRow: true,
-          BRANCH_CD: authState.user.branchCode,
-          COMP_CD: authState.companyID,
-          DETAILS_DATA: {
-            isNewRow: [otherAPIRequestPara2],
-            isDeleteRow: [],
-            isUpdatedRow: [],
-          },
-        };
-        saveChequeData.mutate(otherAPIRequestPara2);
-      }
-    }
-  };
-
-  const setChequeBKPopUpActiont = useCallback(
-    (data) => {
-      if (data?.name === "save") {
-        if (
-          chequeBookData?.[0]?.CHEQUE_TOTAL *
-            Number(chequeBookData?.[0]?.SERVICE_TAX) >
-          Number(chequeBookData?.[0]?.ACCT_BAL)
-        ) {
-          setPopupError(true);
-        } else {
-          let chequeBookDatas = {
-            isNewRow: true,
-            BRANCH_CD: authState.user.branchCode,
-            COMP_CD: authState.companyID,
-            DETAILS_DATA: {
-              isNewRow: chequeBookData,
-              isDeleteRow: [],
-              isUpdatedRow: [],
-            },
-          };
-          saveChequeData.mutate(chequeBookDatas);
-          setChequeBookData([]);
-        }
-      } else {
-        setChequeBookData([]);
-        setPopupError(false);
-      }
-    },
-    [chequeBookData]
-  );
-
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "s" && event.ctrlKey) {
-        console.log("<<<key down");
         event.preventDefault();
         myMasterRef?.current?.handleSubmit(
           { preventDefault: () => {} },
@@ -239,6 +162,88 @@ export const ChequebookTab = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  const onSubmitHandler: SubmitFnType = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    value
+  ) => {
+    // @ts-ignore
+    endSubmit(true);
+    console.log("<<<save", data);
+
+    let otherAPIRequestPara2 = {
+      ...data,
+      _isNewRow: true,
+      COMP_CD: authState?.companyID,
+      CHEQUE_FROM: Number(data?.CHEQUE_FROM),
+      CHEQUE_TO: Number(data?.CHEQUE_TO),
+      CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
+      LEAF_ARR: Number(data?.LEAF_ARR),
+    };
+    let newArray: any = [];
+
+    if (
+      otherAPIRequestPara2.CHEQUE_TOTAL > 1 &&
+      otherAPIRequestPara2?.CHEQUE_TO
+    ) {
+      for (
+        let i = otherAPIRequestPara2.CHEQUE_FROM;
+        i <=
+        otherAPIRequestPara2.CHEQUE_FROM +
+          (otherAPIRequestPara2.CHEQUE_TOTAL - 1) *
+            otherAPIRequestPara2?.LEAF_ARR;
+        i += otherAPIRequestPara2?.LEAF_ARR
+      ) {
+        newArray.push({
+          ...otherAPIRequestPara2,
+          CHEQUE_FROM: i,
+          CHEQUE_TO: i + otherAPIRequestPara2?.LEAF_ARR - 1,
+        });
+      }
+      setChequeBookData(newArray.length > 1 && newArray);
+    } else {
+      otherAPIRequestPara2 = {
+        isNewRow: true,
+        BRANCH_CD: authState.user.branchCode,
+        COMP_CD: authState.companyID,
+        DETAILS_DATA: {
+          isNewRow: [otherAPIRequestPara2],
+          isDeleteRow: [],
+          isUpdatedRow: [],
+        },
+      };
+      crudChequeData.mutate(otherAPIRequestPara2);
+    }
+  };
+
+  const setChequeBKPopUpActiont = useCallback(
+    (data) => {
+      if (data?.name === "save") {
+        let chequeBookDatas = {
+          isNewRow: true,
+          BRANCH_CD: authState.user.branchCode,
+          COMP_CD: authState.companyID,
+          DETAILS_DATA: {
+            isNewRow: chequeBookData,
+            isDeleteRow: [],
+            isUpdatedRow: [],
+          },
+        };
+        crudChequeData.mutate(chequeBookDatas);
+        setChequeBookData([]);
+      } else {
+        setChequeBookData([]);
+      }
+
+      navigate(data?.name, {
+        state: data?.rows,
+      });
+    },
+    [chequeBookData, navigate]
+  );
 
   return (
     <>
@@ -254,12 +259,12 @@ export const ChequebookTab = () => {
                 setInitData(res);
 
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-                  ChequebookDtlGridMetaData.gridConfig.gridLabel = `Cheque Book Issued \u00A0\u00A0\u00A0\u00A0 ${
+                  ChequebookDtlGridMetaData.gridConfig.gridLabel = `Cheque Book Issued\u00A0\u00A0 ${(
                     authState?.companyID +
                     res?.BRANCH_CD +
                     res?.ACCT_TYPE +
-                    res?.ACCT_CD
-                  }    \u00A0\u00A0\u00A0\u00A0  ${res?.ACCT_NM}`;
+                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
 
                   const chequeDTLRequestPara = {
                     COMP_CD: authState?.companyID,
@@ -277,7 +282,6 @@ export const ChequebookTab = () => {
           aria-label="secondary tabs example"
         >
           <Tab value="chequebookEntry" label="Chequebook Entry" />
-
           {isTabVisible && (
             <Tab value="chequebookDetail" label="Chequebook Detail" />
           )}
@@ -294,45 +298,38 @@ export const ChequebookTab = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {saveChequeData?.isError ? (
-            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-              <AppBar position="relative" color="primary">
-                <Alert
-                  severity="error"
-                  errorMsg={saveChequeData?.error?.error_msg ?? "Unknow Error"}
-                  errorDetail={saveChequeData?.error?.error_detail ?? ""}
-                  color="error"
-                />
-              </AppBar>
-            </div>
-          ) : null}
           {value === "chequebookEntry" ? (
             <>
-              {saveChequeData.isLoading ? (
+              {crudChequeData.isLoading ? (
+                <LinearProgress color="secondary" />
+              ) : crudChequeData?.isError ? (
+                <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+                  <AppBar position="relative" color="primary">
+                    <Alert
+                      severity="error"
+                      errorMsg={
+                        crudChequeData?.error?.error_msg ?? "Unknow Error"
+                      }
+                      errorDetail={crudChequeData?.error?.error_detail ?? ""}
+                      color="error"
+                    />
+                  </AppBar>
+                </div>
+              ) : null}
+              {/* {crudChequeData.isLoading ? (
                 <LinearProgress color="secondary" />
               ) : (
                 <LinearProgressBarSpacer />
-              )}
+              )} */}
 
               <FormWrapper
-                key={"chequebooksEntry" + saveChequeData.isSuccess + initData}
+                key={"chequebooksEntry" + crudChequeData.isSuccess + initData}
                 metaData={ChequeBookEntryMetaData as MetaDataType}
-                initialValues={saveChequeData.isSuccess ? {} : initData ?? {}}
+                initialValues={initData ?? {}}
                 onSubmitHandler={onSubmitHandler}
-                // loading={true}
                 ref={myMasterRef}
+                formState={{ MessageBox: MessageBox }}
                 setDataOnFieldChange={(action, payload) => {
-                  console.log("<<<action", action, payload);
-                  if (action === "MESSAGE") {
-                    if (payload) {
-                      messageArray = payload.split(", ").map((msg, i) => {
-                        return <p>{`(${i + 1})  ${msg}`}</p>;
-                      });
-                    }
-                    setmessageArray([messageArray]);
-                    setIsOpenSave(() => true);
-                    setIsTabVisible(false);
-                  }
                   if (action === "DTL_TAB") {
                     setIsTabVisible(payload.DTL_TAB);
                   }
@@ -370,24 +367,33 @@ export const ChequebookTab = () => {
                 data={gridDetailData ?? []}
                 setData={setGridDetailData}
                 loading={getChequeDetail.isLoading}
+                actions={chequeActions}
+                // controlsAtBottom={true}
+                setAction={setChequeBKPopUpActiont}
                 onClickActionEvent={(index, id, data) => {
-                  console.log("<<<deletech", index, id, data);
-
                   let apireq = {
-                    BRANCH_CD: "099 ",
-                    COMP_CD: "132 ",
-                    ACCT_TYPE: "001 ",
-                    ACCT_CD: "009154              ",
-                    CHEQUE_FROM: "58",
-                    CHEQUE_TO: "62",
-                    AUTO_CHQBK_FLAG: "Y",
-                    AUTO_CHQBK_PRINT_FLAG: "Y",
-                    SR_CD: "1",
-                    CONFIRMED: "Y",
+                    ...data,
+                    CONFIRMED: data.CONFIRMED === "Pending" ? "N" : "Y",
                   };
+                  console.log("<<<mmm", data, apireq);
+                  deleteDataRef.current = apireq;
+
                   validateDelete.mutate(apireq);
                 }}
               />
+
+              <Routes>
+                <Route
+                  path="view-details/*"
+                  element={
+                    <ChequeDtlGrid
+                      ClosedEventCall={() => {
+                        navigate(".");
+                      }}
+                    />
+                  }
+                />
+              </Routes>
             </>
           ) : null}
         </Grid>
@@ -396,21 +402,12 @@ export const ChequebookTab = () => {
       {chequeBookData.length > 1 && (
         <>
           <Dialog open={true} maxWidth={"lg"}>
-            {Boolean(popupError) && (
-              <AppBar position="relative" color="primary">
-                <Alert
-                  errorMsg="Your account balance is less than the service charge"
-                  errorDetail="Your account balance is less than the service charge, so please upgrade your balance and then try"
-                  severity="error"
-                />
-              </AppBar>
-            )}
             <GridWrapper
-              key={`personalizeQuickView`}
+              key={`ChequeBKPopUpGridDatas`}
               finalMetaData={ChequeBKPopUpGridData as GridMetaDataType}
               data={chequeBookData ?? []}
               setData={() => {}}
-              loading={saveChequeData.isLoading}
+              loading={crudChequeData.isLoading}
               actions={ChequeBKPopUpAction}
               setAction={setChequeBKPopUpActiont}
             />
@@ -442,54 +439,52 @@ export const ChequebookTab = () => {
       )}
 
       {isOpenSave && messageArray?.length > 0 && (
-        <div
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              setIsOpenSave(() => false);
-              setmessageArray([]);
-            }
+        <PopupRequestWrapper
+          MessageTitle="Invalid Delete Operation"
+          Message={messageArray}
+          onClickButton={() => {
+            setIsOpenSave(false);
+            setmessageArray([]);
           }}
-        >
-          {" "}
-          <PopupRequestWrapper
-            MessageTitle="Account Description"
-            Message={messageArray}
-            onClickButton={() => {
-              setIsOpenSave(false);
-              setmessageArray([]);
-            }}
-            buttonNames={["Ok"]}
-            rows={[]}
-            open={isOpenSave}
-          />
-        </div>
+          buttonNames={["Ok"]}
+          rows={[]}
+          open={isOpenSave}
+        />
       )}
 
-      {/* {isOpenSave && (
-        <Dialog
-          // fullScreen={fullScreen}
-          open={true}
-          // onClose={handleClose}
-        >
-          <DialogTitle>{"Use Google's location service?"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <TextField
-                id="standard-size-normal"
-                fullWidth
-                label="Remarks"
-                margin="dense"
-                color="warning"
-                variant="standard"
-              />
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button autoFocus>Disagree</Button>
-            <Button autoFocus>Agree</Button>
-          </DialogActions>
-        </Dialog>
-      )} */}
+      {deletePopup && (
+        <RemarksAPIWrapper
+          TitleText={"Are you sure want to delete this record ..?"}
+          onActionNo={() => setDeletePopup(false)}
+          onActionYes={(val, rows) => {
+            let chequeBookDatas = {
+              BRANCH_CD: rows.BRANCH_CD,
+              COMP_CD: rows.COMP_CD,
+              DETAILS_DATA: {
+                isNewRow: [],
+                isDeleteRow: [
+                  {
+                    ...rows,
+                    ACTIVITY_TYPE: "CHEQUE BOOK ISSUE ",
+                    USER_DEF_REMARKS: val
+                      ? val
+                      : "WRONG ENTRY FROM CHEQUE BOOK ISSUE ENTRY (TRN/045) ",
+                  },
+                ],
+                isUpdatedRow: [],
+              },
+            };
+            crudChequeData.mutate(chequeBookDatas);
+          }}
+          isLoading={crudChequeData?.isLoading}
+          isEntertoSubmit={true}
+          AcceptbuttonLabelText="Ok"
+          CanceltbuttonLabelText="Cancel"
+          open={deletePopup}
+          rows={deleteDataRef.current}
+          defaultValue={"WRONG ENTRY FROM CHEQUE BOOK ISSUE ENTRY (TRN/045)"}
+        />
+      )}
     </>
   );
 };

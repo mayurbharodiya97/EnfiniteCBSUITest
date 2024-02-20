@@ -131,7 +131,7 @@ const CashReceiptEntry = () => {
   //   console.log("asdasdas", secondReferData, formComponentViewRef.current);
   // }, [secondReferData]);
 
-  const getData: any = useMutation(API.CashReceiptEntrysData, {
+  const getData: any = useMutation(API.CashReceiptEntrysData2, {
     onSuccess: (response: any) => {
       setOpenDeno(false);
       setDisplayTable(true);
@@ -622,7 +622,7 @@ const CashReceiptEntry = () => {
             submitSecondButtonHide={false}
             // submitSecondLoading={openAccountDTL}
             firstSubmitButtonHide={true}
-            displayStyle1={"none"}
+            // displayStyle1={"none"}
             displayStyle2={"none"}
             submitThirdAction={setThirdData}
             submitThirdButtonName={"More Details"}
@@ -638,7 +638,7 @@ const CashReceiptEntry = () => {
             onClose={closeAccountDTL}
             // style={{ height: "40vh" }}
           >
-            <AccDetails flag={"TELLER"} />
+            <AccDetails />
           </Dialog>
         ) : null}
 

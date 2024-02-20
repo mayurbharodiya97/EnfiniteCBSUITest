@@ -144,16 +144,16 @@ export const extendFieldTypes = (
   const processExtendedType = (key: string, metadata?: any) => {
     const field = metadata || extendedTypes[key];
     if (typeof field === "object") {
-      // field["label"] = lanTranslate(field["label"]);
-      // field["placeholder"] = lanTranslate(field["placeholder"]);
-      // if (key === "branchCode") {
-      //   // Set the default value for branchCode
-      //   field["defaultValue"] = authState?.user?.branchCode;
-      // } else if (key === "accountType") {
-      //   // Set autofocus on the accountType field
-      //   field["autoFocus"] = true;
-      //   field["defaultValue"] = "000 ";
-      // }
+      field["label"] = lanTranslate(field["label"]);
+      field["placeholder"] = lanTranslate(field["placeholder"]);
+      if (key === "branchCode") {
+        // Set the default value for branchCode
+        field["defaultValue"] = authState?.user?.branchCode;
+      } else if (key === "accountType") {
+        // Set autofocus on the accountType field
+        // field["autoFocus"] = true;
+        // field["defaultValue"] = "0003";
+      }
       newMetaDataFieldsCustom.push(field);
     }
   };

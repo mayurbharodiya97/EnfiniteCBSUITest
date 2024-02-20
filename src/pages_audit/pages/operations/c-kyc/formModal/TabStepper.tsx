@@ -11,75 +11,9 @@ import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
 import { CkycContext } from '../CkycContext';
+import { tabPanelClasses } from '@mui/base';
+import { Icon } from '@mui/material';
 
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 10,
-    left: 'calc(-50% + 16px)',
-    right: 'calc(50% + 16px)',
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
-    borderTopWidth: 3,
-    borderRadius: 1,
-  },
-}));
-
-const QontoStepIconRoot = styled('div')<{ ownerState: { active?: boolean } }>(
-  ({ theme, ownerState }) => ({
-    color: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#eaeaf0',
-    display: 'flex',
-    height: 22,
-    alignItems: 'center',
-    ...(ownerState.active && {
-      color: '#784af4',
-    }),
-    '& .QontoStepIcon-completedIcon': {
-      color: '#784af4',
-      zIndex: 1,
-      fontSize: 28,
-      fontWeight: "bold"
-    },
-    '& .QontoStepIcon-circle': {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      backgroundColor: 'currentColor',
-    },
-    '& .QontoStepIcon-redcircle': {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      backgroundColor: '#d02e2e',
-    },
-  }),
-);
-
-function QontoStepIcon(props: StepIconProps) {
-  const { active, completed, error, className } = props;
-
-  return (
-    <QontoStepIconRoot ownerState={{ active }} className={className}>
-      {error ? (
-        <div className="QontoStepIcon-redcircle" />
-      ) : completed ? (
-        <Check className="QontoStepIcon-completedIcon" />
-      ) : (
-        <div className="QontoStepIcon-circle" />
-      )}
-    </QontoStepIconRoot>
-  );
-}
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -149,15 +83,109 @@ const steps = ['Personal Details', 'KYC', 'Declaration', 'Related Person Details
 
 export default function TabStepper() {
   const { state, handleColTabChangectx } = React.useContext(CkycContext);
+
+  const QontoConnector = styled(StepConnector)(({ theme }) => {
+    // console.log("{stepConnectorClasses", stepConnectorClasses)
+    return {
+    [`&.${stepConnectorClasses.alternativeLabel}`]: {
+      top: 10,
+      left: 'calc(-50% + 16px)',
+      right: 'calc(50% + 16px)',
+    },
+    [`&.${stepConnectorClasses.active}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        borderColor: theme.palette.grey[500],
+      },
+    },
+    [`&.${stepConnectorClasses.completed}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        borderColor: '#784af4',
+      },
+    },
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
+      borderTopWidth: 3,
+      borderRadius: 1,
+    },
+  }});
+
+  const QontoStepIconRoot = styled('div')<{ ownerState: { active?: boolean } }>(
+    ({ theme, ownerState }) => ({
+      color: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#eaeaf0',
+      display: 'flex',
+      height: 22,
+      fontSize: 12,
+      alignItems: 'center',
+      '& .QontoStepIcon-circle': {
+        color: theme.palette.grey[500],
+        ...(ownerState.active && {
+          color: theme.palette.grey[600],
+          "span": {
+            fontSize: 32,
+          }
+        }),
+      },
+      '& .QontoStepIcon-completedIcon': {
+        color: '#784af4',
+        // color: "red",
+        zIndex: 1,
+        fontSize: 28,
+        fontWeight: "bold",
+        ...(ownerState.active && {
+          "span": {
+            fontSize: 32,
+          }
+        }),
+      },
+      '& .QontoStepIcon-redcircle': {
+        color: "#d02e2e",
+        ...(ownerState.active && {
+          "span": {
+            fontSize: 32,
+          }
+        }),
+      },
+    }),
+  );
+  
+  
+  function QontoStepIcon(props: StepIconProps) {
+    const { active, completed, error, className } = props;
+    let icons:{ [index: string]: React.ReactElement } = {}
+    // console.log("wekudiwuegfiwe", state?.tabNameList)
+    state?.tabNameList.forEach((tabEl, i) => {
+      // console.log('dwoeff', element)
+      icons[i+1] = <Icon>{`${tabEl.icon}`}</Icon>
+    });
+    return (
+      <QontoStepIconRoot ownerState={{ active }} className={className}>
+        {error ? (
+          <div className="QontoStepIcon-redcircle">
+            {icons[String(props.icon)]}
+          </div>
+        ) : completed ? (
+          // <Check className="QontoStepIcon-completedIcon" />
+          <div className="QontoStepIcon-completedIcon">
+            {icons[String(props.icon)]}
+          </div>
+        ) : (
+          <div className="QontoStepIcon-circle">
+            {icons[String(props.icon)]}
+          </div>
+        )}
+      </QontoStepIconRoot>
+    );
+  }
+
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
       <Stepper alternativeLabel activeStep={state?.colTabValuectx} connector={<QontoConnector />}>
-        {state?.tabNameList.map((label, i) => {
+        {state?.tabNameList.map((tabEl, i) => {
             // console.log("qwdQDW",)
-          return <Step sx={{}} key={label} 
+          return <Step sx={{}} key={tabEl.tabName} 
           completed={state?.steps?.[i]?.status == "completed"}
           >
-            <StepLabel error={state?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{label}</StepLabel>
+            <StepLabel error={state?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{tabEl.tabName}</StepLabel>
           </Step>
         })}
       </Stepper>

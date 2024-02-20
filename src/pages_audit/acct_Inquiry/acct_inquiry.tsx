@@ -93,7 +93,8 @@ export const Accountinquiry = ({ open, onClose }) => {
       !Boolean(data?.MOBILE) &&
       !Boolean(data?.CUSTOMER) &&
       !Boolean(data?.ACCOUNT) &&
-      !Boolean(data?.PAN)
+      !Boolean(data?.PAN) &&
+      !Boolean(data?.NAME)
     ) {
       //@ts-ignore
       endSubmit(true, "Please enter any value");

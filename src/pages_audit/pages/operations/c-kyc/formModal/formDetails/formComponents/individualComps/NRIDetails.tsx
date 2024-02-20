@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useMemo, useRef, useState } from "react"
+import React, { Fragment, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { Button, Grid, Skeleton, Typography } from "@mui/material"
 import FormWrapper, {MetaDataType} from "components/dyanmicForm"
 import { nri_detail_meta_data } from "../../metadata/individual/nridetails"
@@ -6,14 +6,19 @@ import { CkycContext } from "../../../../CkycContext"
 import { AuthContext } from "pages_audit/auth";
 import { useTranslation } from "react-i18next"
 import _ from "lodash"
+import TabNavigate from "../TabNavigate"
 
 const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
     const { t } = useTranslation();
     const NRIDTLFormRef = useRef<any>("");
     const { authState } = useContext(AuthContext);
     const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+    useEffect(() => {
+        let refs = [NRIDTLFormRef]
+        handleCurrentFormRefctx(refs)
+    }, [])
 
 
     const NRIDTLSubmitHandler = (
@@ -73,63 +78,16 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-            return displayMode == "new"
-            ? <Fragment>
-                <Button
-                sx={{ mr: 2, mb: 2 }}
-                color="secondary"
-                variant="contained"
-                disabled={isNextLoading}
-                onClick={(e) => {
-                    NRIDTLFormRef.current.handleSubmitError(e, "save")
-                }}
-                >
-                {t("Next")}
-                {/* {t("Save & Next")} */}
-                </Button>
-            </Fragment>
-            : displayMode == "edit"
-                ? <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        NRIDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                    >
-                    {t("Update & Next")}
-                    </Button>
-                </Fragment>
-                : displayMode == "view" && <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        handleColTabChangectx(state?.colTabValuectx + 1)
-                    }}
-                    >
-                    {t("Next")}
-                    </Button>
-                </Fragment>
-        }
-    }, [displayMode])
+    const handleSave = (e) => {
+        const refs = [NRIDTLFormRef.current.handleSubmitError(e, "save", false)]
+        handleSavectx(e, refs)
+    }
 
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography> */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -137,8 +95,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     border: "1px solid rgba(0,0,0,0.12)", 
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
-                <Grid item>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("NRIDetails")}</Typography>
+                <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
+                    <Typography sx={{color:"var(--theme-color3)", pl: 2, pt: "6px"}} variant={"h6"}>{t("NRIDetails")}</Typography>
                 </Grid>
                 <Grid container item>
                     <Grid item xs={12}>
@@ -156,28 +114,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     </Grid>                    
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(5)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        NRIDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save & Next")}</Button>}
-                {!state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        NRIDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Update & Next")}</Button>} */}
-            </Grid>
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
         </Grid>
     )
 }

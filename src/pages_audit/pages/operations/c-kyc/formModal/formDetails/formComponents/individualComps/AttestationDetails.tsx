@@ -10,6 +10,9 @@ import { useMutation, useQuery } from "react-query"
 import GridWrapper, { GridMetaDataType } from "components/dataTableStatic";
 import _ from "lodash"
 import { GradientButton } from "components/styledComponent/button"
+import { ConfirmUpdateDialog } from "../../../dialog/ConfirmUpdateDialog"
+import { CustomerSaveDialog } from "../../../dialog/CustomerSave"
+import TabNavigate from "../TabNavigate"
 
 const actions = [
     {
@@ -27,7 +30,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     const [updateDialog, setUpdateDialog] = useState(false)
     const [isUpdated, setIsUpdated] = useState(false)
     const [saveSuccessDialog, setSaveSuccessDialog] = useState<boolean>(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleUpdatectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleUpdatectx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const { t } = useTranslation();
     const AttestationDTLFormRef = useRef<any>("");  
@@ -42,6 +45,12 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     const onCloseSaveSuccessDialog = () => {
         setSaveSuccessDialog(false)
     }    
+
+    useEffect(() => {
+        let refs = [AttestationDTLFormRef]
+        handleCurrentFormRefctx(refs)
+    }, [])
+
 
     // attest.history
     const { data:historyData, isError:isHistoryDataError, isLoading: isHistoryDataLoading, error, refetch: historyDataRefetch } = useQuery<any, any>(
@@ -170,40 +179,10 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     : null;
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes, attestData])
 
-
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-            return displayMode == "new"
-            ? <Fragment>
-                <Button
-                sx={{ mr: 2, mb: 2 }}
-                color="secondary"
-                variant="contained"
-                disabled={isNextLoading}
-                onClick={(e) => {
-                    AttestationDTLFormRef.current.handleSubmitError(e, "save")
-                }}
-                >
-                {t("Save")}
-                </Button>
-            </Fragment>
-            : displayMode == "edit"
-                ? <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        AttestationDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                    >
-                    {t("Update")}
-                    </Button>
-                </Fragment>
-                : displayMode == "view" && null;
-        }
-    }, [displayMode])
+    const handleSave = (e) => {
+        const refs = [AttestationDTLFormRef.current.handleSubmitError(e, "save", false)]
+        handleSavectx(e, refs)
+    }
 
     // useEffect(() => {
     //     if(!isAttestDataLoading && attestData) {
@@ -223,11 +202,6 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography> */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -236,10 +210,10 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid item container direction={"row"} style={{justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("AttestationDetails")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)",  pl: 2, pt: "6px"}} variant={"h6"}>{t("AttestationDetails")}</Typography>
                     {/* <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("AttestationDetails")}</Typography> */}
-                    {!state?.isFreshEntryctx && <Button sx={{mr:2}} 
-                    color="secondary" variant="contained" 
+                    {!state?.isFreshEntryctx && <Button sx={{mr:2, mt: "6px"}} 
+                    color="secondary" variant="contained" size="small"
                     onClick={() => {
                         // historyDataRefetch()
                         if(!isHistoryDataLoading && historyData) {
@@ -266,29 +240,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     </Grid>                    
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(6)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        AttestationDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save")}</Button>}
-                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
-                && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                disabled={isNextLoading}
-                    onClick={(e) => {
-                        AttestationDTLFormRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Update")}</Button>} */}
-            </Grid>
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
             {historyDialog && <AttestHistory 
                 open={historyDialog} 
                 onClose={onCloseSearchDialog} 
@@ -296,7 +248,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 isLoading={isHistoryDataLoading} 
             />}
 
-            {updateDialog && <UpdateDialog 
+            {updateDialog && <ConfirmUpdateDialog 
                 open={updateDialog} 
                 onClose={onCloseUpdateDialog} 
                 mutationFormDTL={retrieveonupdate}
@@ -306,7 +258,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 // mt={updateMutation}
             />}
 
-            {saveSuccessDialog && <SaveSuccessDialog 
+            {saveSuccessDialog && <CustomerSaveDialog 
                 open={saveSuccessDialog} 
                 onClose={onCloseSaveSuccessDialog} 
                 onFormClose={onFormClose}
@@ -351,177 +303,6 @@ const AttestHistory = ({open, onClose, isLoading, data}) => {
             />
         </Dialog>
     )
-}
-
-export const UpdateDialog = ({open, onClose, mutationFormDTL,
-    // isLoading, setIsLoading, data, mt
-}) => {
-    const [shouldUpdate, setShouldUpdate] = useState(false)
-    const { authState } = useContext(AuthContext);
-    const {state, handleUpdatectx, handleFormDataonSavectx, handleModifiedColsctx} = useContext(CkycContext);
-
-
-    const mutation: any = useMutation(handleUpdatectx, {
-        onSuccess: (data:any) => {
-            // setIsUpdated(true)
-            // console.log("data on save", data)
-            handleModifiedColsctx({})
-            handleFormDataonSavectx({})
-
-            // calling this api for getting updated formdata from updated req_cd
-            let reqPayload = {
-                COMP_CD: authState?.companyID ?? "",
-                REQUEST_CD: data[0].REQ_CD ?? "",
-            }
-            mutationFormDTL.mutate(reqPayload)
-            // if(data?.[0]?.REQ_CD) {
-            //     // handleReqCDctx(data?.[0]?.REQ_CD)
-            //     // handleColTabChangectx(state?.colTabValuectx+1)
-            // }
-        },
-        onError: (error: any) => {
-            handleModifiedColsctx({})
-            handleFormDataonSavectx({})
-            // console.log("data on error", error)
-            // setIsUpdated(true)
-        },
-    });
-
-    // useEffect(() => {
-    //         if(mutationFormDTL.isSuccess && mutationFormDTL.data) {
-    //         // on success of form data retrieve            
-    //     }
-    // }, [mutationFormDTL.data, mutationFormDTL.isSuccess])
-
-
-    return <Dialog open={open} maxWidth="sm"
-        PaperProps={{
-            style: {
-                minWidth: "40%",
-                width: "40%",
-            }
-        }}
-    >
-        <DialogTitle
-            sx={{
-                background: "var(--theme-color3)",
-                color: "var(--theme-color2)",
-                letterSpacing: "1.3px",
-                margin: "10px",
-                boxShadow:
-                "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-                fontWeight: 500,
-                borderRadius: "inherit",
-                minWidth: "450px",
-                py: 1,
-            }}
-            id="responsive-dialog-title"
-        >
-            Confirmation
-            {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
-            {/* {"Updating..."} */}
-        </DialogTitle>
-        <DialogContent>
-            <DialogContentText
-                sx={{ fontSize: "19px", display: "flex" }}
-            >
-                {
-                !shouldUpdate 
-                    ? "Are you sure you want to apply changes and update ?"
-                    : mutation.isLoading
-                        ? "Updating..."
-                        : mutation.data 
-                            ? "Your Changes applied successfully.."
-                            : mutation.error && <>
-                                {mutation.error.error_msg}
-                                {mutation.error.error_detail}
-                            </>
-                }
-                {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
-                {/* <HelpIcon color="secondary" fontSize="large" /> */}
-            </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-            {!shouldUpdate && <GradientButton
-                autoFocus
-                onClick={() => {
-                    setShouldUpdate(true)
-                    mutation.mutate({
-                        COMP_CD: authState?.companyID ?? "",
-                    })
-                }}
-            >
-                Yes
-            </GradientButton>}
-            {!shouldUpdate && <GradientButton
-                autoFocus
-                onClick={onClose}
-            >
-                No
-            </GradientButton>}
-            {shouldUpdate && <GradientButton
-                autoFocus
-                disabled={mutation.isLoading}
-                onClick={onClose}
-                endIcon={
-                    mutation.isLoading ? <CircularProgress size={20} /> : null
-                }
-            >
-                OK
-            </GradientButton>}
-        </DialogActions>
-    </Dialog>
-}
-export const SaveSuccessDialog = ({open, onClose, onFormClose}) => {
-    const {state, handleFormModalClosectx} = useContext(CkycContext);
-    return <Dialog open={open} maxWidth="sm"
-        PaperProps={{
-            style: {
-                minWidth: "40%",
-                width: "40%",
-            }
-        }}
-    >
-        <DialogTitle
-            sx={{
-                background: "var(--theme-color3)",
-                color: "var(--theme-color2)",
-                letterSpacing: "1.3px",
-                margin: "10px",
-                boxShadow:
-                "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-                fontWeight: 500,
-                borderRadius: "inherit",
-                minWidth: "450px",
-                py: 1,
-            }}
-            id="responsive-dialog-title"
-        >
-            Customer Saved!
-            {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
-            {/* {"Updating..."} */}
-        </DialogTitle>
-        <DialogContent>
-            <DialogContentText
-                sx={{ fontSize: "19px", display: "flex" }}
-            >
-                Customer Saved SuccessFully!
-                {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
-                {/* <HelpIcon color="secondary" fontSize="large" /> */}
-            </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-            <GradientButton
-                autoFocus
-                onClick={() => {
-                    handleFormModalClosectx()
-                    onFormClose()
-                }}
-            >
-                OK
-            </GradientButton>
-        </DialogActions>
-    </Dialog>
 }
 
 export default AttestationDetails

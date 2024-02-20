@@ -17,6 +17,7 @@ const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
 );
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
+const InwardClearing = lazy(() => import("./inwardClearing"));
 const TellerScreen = lazy(
   () => import("../dashboard/noteDenomination/tellerScreen")
 );
@@ -29,6 +30,7 @@ export const OperationsMenu = () => (
     <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="teller/*" element={<TellerScreen />} />
+    {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}
     <Route
       path="confirm-ckyc/*"
       element={
@@ -52,6 +54,7 @@ export const OperationsMenu = () => (
       path="cts-outward-clearing/*"
       element={<CtsOutwardClearingFormWrapper zoneTranType="S" />}
     />
+    <Route path="inward-clearing-process/*" element={<InwardClearing />} />
     <Route
       path="fix-deposit/*"
       element={

@@ -1,51 +1,19 @@
-import {
-  FC,
-  useEffect,
-  useRef,
-  useCallback,
-  useState,
-  useContext,
-  Fragment,
-} from "react";
+import { FC, useRef, useCallback, useContext, Fragment } from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
-import { ClearCacheContext, ClearCacheProvider } from "cache";
-import { useSnackbar } from "notistack";
-import {
-  RetrieveFormConfigMetaData,
-  RetrieveGridMetaData,
-  SlipJoinDetailGridMetaData,
-} from "./metaData";
-import { makeStyles } from "@mui/styles";
-import { Theme, Dialog, Grid } from "@mui/material";
+import { ClearCacheProvider } from "cache";
+import { RetrieveFormConfigMetaData, RetrieveGridMetaData } from "./metaData";
+import { Dialog } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { SubmitFnType } from "packages/form";
 import { AuthContext } from "pages_audit/auth";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import GridWrapper from "components/dataTableStatic";
-// import { getRetrievalClearingData, getSlipJoinDetail } from "./api";
-
-// import { SlipDetailForm } from "./slipDetailForm";
 import { GradientButton } from "components/styledComponent/button";
 import { format } from "date-fns";
 import { Alert } from "components/common/alert";
-import { RetrieveDataFilterForm } from "../c-kyc/metadata";
 import { ActionTypes } from "components/dataTable";
-import { CtsOutwardClearingForm } from "./ctsOutwardClearing";
-const useTypeStyles = makeStyles((theme: Theme) => ({
-  root: {
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    background: "var(--theme-color5)",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--theme-color2)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-  refreshiconhover: {},
-}));
+import { useLocation, useNavigate } from "react-router";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-details",
@@ -56,25 +24,15 @@ const actions: ActionTypes[] = [
 ];
 export const RetrieveClearing: FC<{
   onClose?: any;
-  setFormMode;
   zoneTranType?: any;
   tranDate?: any;
-}> = ({ onClose, setFormMode, zoneTranType, tranDate }) => {
+}> = ({ onClose, zoneTranType, tranDate }) => {
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
-  const navigate = useNavigate();
-  const location = useLocation();
 
-  const setCurrentAction = useCallback(
-    (data) => {
-      navigate(location.pathname, {
-        state: { rows: data?.rows, formMode: "view" },
-      });
-      setFormMode("view");
-      onClose();
-    },
-    [navigate]
-  );
+  const setCurrentAction = useCallback((data) => {
+    onClose("action", data?.rows);
+  }, []);
 
   const mutation: any = useMutation(
     "getRetrievalClearingData",
@@ -119,9 +77,6 @@ export const RetrieveClearing: FC<{
     }
   };
 
-  if (RetrieveFormConfigMetaData?.fields?.[2]) {
-    RetrieveFormConfigMetaData.fields[2].requestProps = zoneTranType ?? "";
-  }
   return (
     <>
       <>
@@ -135,11 +90,12 @@ export const RetrieveClearing: FC<{
           maxWidth="xl"
         >
           <FormWrapper
-            key={`retrieveFormMetadataConfig`}
+            key={`retrieveForm`}
             metaData={RetrieveFormConfigMetaData as unknown as MetaDataType}
             initialValues={{
-              FROM_TRAN_DT: new Date(tranDate?.[0]?.DATE ?? new Date()),
-              TO_TRAN_DT: new Date(tranDate?.[0]?.DATE ?? new Date()),
+              FROM_TRAN_DT: tranDate,
+              TO_TRAN_DT: tranDate,
+              ZONE_TRAN_TYPE: zoneTranType,
             }}
             onSubmitHandler={onSubmitHandler}
             formStyle={{
@@ -151,6 +107,7 @@ export const RetrieveClearing: FC<{
               formRef?.current?.handleSubmit(event, "RETRIEVE");
               // }
             }}
+            formState={{ ZONE_TRAN_TYPE: zoneTranType }}
             ref={formRef}
           >
             {({ isSubmitting, handleSubmit }) => (
@@ -194,18 +151,12 @@ export const RetrieveClearing: FC<{
   );
 };
 
-export const RetrieveClearingForm = ({
-  zoneTranType,
-  onClose,
-  setFormMode,
-  tranDate,
-}) => {
+export const RetrieveClearingForm = ({ zoneTranType, onClose, tranDate }) => {
   return (
     <ClearCacheProvider>
       <RetrieveClearing
         zoneTranType={zoneTranType}
         onClose={onClose}
-        setFormMode={setFormMode}
         tranDate={tranDate}
       />
     </ClearCacheProvider>
