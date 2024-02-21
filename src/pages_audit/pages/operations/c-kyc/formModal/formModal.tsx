@@ -59,6 +59,8 @@ import { ActionDialog } from './dialog/ActionDialog';
 import { CloseFormDialog } from './dialog/CloseFormDialog';
 import { PreventUpdateDialog } from './dialog/PreventUpdateDialog';
 import { ConfirmUpdateDialog } from './dialog/ConfirmUpdateDialog';
+import { Alert } from 'components/common/alert';
+import HeaderForm from './HeaderForm';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -212,10 +214,10 @@ export default function FormModal({
   // )
 
   // acct type options
-  const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
-    ["getPMISCData", {}],
-    () => API.getPMISCData("CKYC_ACCT_TYPE")
-  );
+  // const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
+  //   ["getPMISCData", {}],
+  //   () => API.getPMISCData("CKYC_ACCT_TYPE")
+  // );
 
   // get customer form details  
   const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
@@ -232,15 +234,15 @@ export default function FormModal({
     onError: (error: any) => {},
   });
 
-  useEffect(() => {
-    if(!mutation.isLoading && mutation.data) {
-      if(AccTypeOptions && !isAccTypeLoading) {
-        let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
-        let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-        setAcctTypeState(acctType[0])
-      }
-    }
-  }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])
+  // useEffect(() => {
+  //   if(!mutation.isLoading && mutation.data) {
+  //     if(AccTypeOptions && !isAccTypeLoading) {
+  //       let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+  //       let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+  //       setAcctTypeState(acctType[0])
+  //     }
+  //   }
+  // }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])
 
   // useEffect(() => {
   //   // if(!location.state) {
@@ -322,86 +324,82 @@ export default function FormModal({
   // }, [isAccTypeLoading, AccTypeOptions])
 
   // cust categ options
-  const { 
-    data: custCategData, 
-    isError: isCustCategError, 
-    isLoading: isCustCategLoading, 
-    error: custCategError, 
-    refetch: custCategRefetch 
-  } = useQuery<any, any>(
-    [
-      "getCIFCategories",
-      state.entityTypectx,
-      // {
-      //   COMP_CD: authState?.companyID ?? "",
-      //   BRANCH_CD: authState?.user?.branchCode ?? "",
-      //   ENTITY_TYPE: state.entityTypectx
-      // }
-    ],
-    () =>
-      API.getCIFCategories({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        ENTITY_TYPE: state?.entityTypectx,
-      })
-  );
+  // const { 
+  //   data: custCategData, 
+  //   isError: isCustCategError, 
+  //   isLoading: isCustCategLoading, 
+  //   error: custCategError, 
+  //   refetch: custCategRefetch 
+  // } = useQuery<any, any>(
+  //   [
+  //     "getCIFCategories",
+  //     state.entityTypectx,
+  //     // {
+  //     //   COMP_CD: authState?.companyID ?? "",
+  //     //   BRANCH_CD: authState?.user?.branchCode ?? "",
+  //     //   ENTITY_TYPE: state.entityTypectx
+  //     // }
+  //   ],
+  //   () =>
+  //     API.getCIFCategories({
+  //       COMP_CD: authState?.companyID ?? "",
+  //       BRANCH_CD: authState?.user?.branchCode ?? "",
+  //       ENTITY_TYPE: state?.entityTypectx,
+  //     })
+  // );
 
-  // get tabs data
-  const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
-    ["getTabsDetail", {
-      ENTITY_TYPE: state?.entityTypectx, 
-      CATEGORY_CD: state?.categoryValuectx, 
-      CONS_TYPE: state?.constitutionValuectx,
-      CONFIRMFLAG: state?.confirmFlagctx,
-    }],
-    () =>
-      API.getTabsDetail(
-      {
-        COMP_CD: authState?.companyID ?? "",
-        ENTITY_TYPE: state?.entityTypectx,
-        CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
-        CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
-        isFreshEntry: state?.isFreshEntryctx,
-        CONFIRMFLAG: state?.confirmFlagctx,
-      }  
-      )
-  );
-  // const handleChangeAccType = (e) => {
-  //   setAccTypeValue(e.target.value)
-  // }
+  // // get tabs data
+  // const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
+  //   ["getTabsDetail", {
+  //     ENTITY_TYPE: state?.entityTypectx, 
+  //     CATEGORY_CD: state?.categoryValuectx, 
+  //     CONS_TYPE: state?.constitutionValuectx,
+  //     CONFIRMFLAG: state?.confirmFlagctx,
+  //   }],
+  //   () =>
+  //     API.getTabsDetail(
+  //     {
+  //       COMP_CD: authState?.companyID ?? "",
+  //       ENTITY_TYPE: state?.entityTypectx,
+  //       CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
+  //       CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
+  //       isFreshEntry: state?.isFreshEntryctx,
+  //       CONFIRMFLAG: state?.confirmFlagctx,
+  //     }  
+  //     )
+  // );
+  // // const handleChangeAccType = (e) => {
+  // //   setAccTypeValue(e.target.value)
+  // // }
 
   // useEffect(() => {
-  //   console.log(formmode, "wfewdeqwqwd", displayMode, state?.confirmFlagctx)
-  // }, [formmode, displayMode, state?.confirmFlagctx])
-
-  useEffect(() => {
-    if(!isLoading) {
-      // console.log("ResultResult", TabsData)
-    // setTabsApiRes(data)
-      let newData:any[] = []
-      if(TabsData && TabsData.length>0) {
-        TabsData.forEach((element:{[k: string]: any}) => {
-          let subtitleinfo = {
-            SUB_TITLE_NAME : element?.SUB_TITLE_NAME,
-            SUB_TITLE_DESC : element?.SUB_TITLE_DESC,
-            SUB_ICON : element?.SUB_ICON,
-          }
-            let index = newData.findIndex((el:any) => el?.TAB_NAME == element?.TAB_NAME)
-            if(index != -1) {
-              // duplicate tab element
-              let subtitles = newData[index].subtitles
-              subtitles.push(subtitleinfo)
-            } else {
-              // new tab element
-              newData.push({...element, subtitles: [subtitleinfo]})
-            }
-          // console.log("filled newdata -aft", element.TAB_NAME , newData)
-        });
-        // setTabsApiRes(newData)
-        handleApiRes(newData)
-      }
-    }
-  }, [TabsData, isLoading])
+  //   if(!isLoading) {
+  //     // console.log("ResultResult", TabsData)
+  //   // setTabsApiRes(data)
+  //     let newData:any[] = []
+  //     if(TabsData && TabsData.length>0) {
+  //       TabsData.forEach((element:{[k: string]: any}) => {
+  //         let subtitleinfo = {
+  //           SUB_TITLE_NAME : element?.SUB_TITLE_NAME,
+  //           SUB_TITLE_DESC : element?.SUB_TITLE_DESC,
+  //           SUB_ICON : element?.SUB_ICON,
+  //         }
+  //           let index = newData.findIndex((el:any) => el?.TAB_NAME == element?.TAB_NAME)
+  //           if(index != -1) {
+  //             // duplicate tab element
+  //             let subtitles = newData[index].subtitles
+  //             subtitles.push(subtitleinfo)
+  //           } else {
+  //             // new tab element
+  //             newData.push({...element, subtitles: [subtitleinfo]})
+  //           }
+  //         // console.log("filled newdata -aft", element.TAB_NAME , newData)
+  //       });
+  //       // setTabsApiRes(newData)
+  //       handleApiRes(newData)
+  //     }
+  //   }
+  // }, [TabsData, isLoading])
 
   // const handleCategoryChange = (e, value, r, d) => {
   //   // console.log("e,v,r,d", value)
@@ -840,193 +838,7 @@ export default function FormModal({
             </Button>
           </Toolbar>
         </AppBar>
-        <AppBar
-              position="sticky"
-              // color=""
-              style={{ marginBottom: "10px", top: "113px" }}
-            >
-              <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
-                {/* common customer fields */}
-                <Grid container columnGap={(theme) => theme.spacing(1)} rowGap={(theme) => theme.spacing(1)} my={1}>
-                  <Grid item xs={12} sm={6} md>
-                    <TextField sx={{width: "100%"}} disabled
-                      id="customer-id"
-                      label="Cust. ID"
-                      // size="small"
-                      value={state?.customerIDctx}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant={"standard"}
-                      color="secondary"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md>
-                    <TextField sx={{width: "100%"}} disabled
-                      id="req-id"
-                      label="Req. ID"
-                      // size="small"
-                      value={state?.req_cd_ctx}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant={"standard"}
-                      color="secondary"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md>
-                    <Autocomplete sx={{width: "100%", minWidth: 350}} 
-                      // disablePortal
-                      disabled={!state?.isFreshEntryctx}
-                      id="cust-categories"
-                      value={state?.categConstitutionValuectx || null}
-                      inputValue={categConstitutionIPValue}
-                      // options={state?.customerCategoriesctx ?? []}
-                      options={custCategData ?? []}
-                      onChange={(e,value:any,r,d) => {
-                        handleCategoryChangectx(e, value)
-                      }}
-                      onInputChange={(e, newInputValue) => {
-                        setCategConstitutionIPValue(newInputValue)
-                      }}
-                      getOptionLabel={(option:any) => `${option?.label} - ${option?.CONSTITUTION_NAME}`}
-                      isOptionEqualToValue={(option, value) => {
-                        return option.value === value.value;
-                      }}
-                      renderInput={(params:any) => (
-                        <TextField {...params} 
-                          label="Category - Constitution"
-                          autoComplete="disabled"
-                          type="text"
-                          required={true}
-                          FormHelperTextProps={{
-                            component: "div",
-                          }}
-                          InputProps={{
-                            ...params.InputProps,
-                            autoFocus: true,
-                            endAdornment: (
-                              <React.Fragment>
-                                {isCustCategLoading ? (
-                                  <CircularProgress
-                                    color="secondary"
-                                    size={20}
-                                    sx={{ marginRight: "8px" }}
-                                    variant="indeterminate"
-                                  />
-                                ) : null}
-                                {params.InputProps.endAdornment}
-                              </React.Fragment>
-                            ),
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          variant={"standard"}
-                          color="secondary"
-                        />
-                      )}
-                      // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
-                    />
-                  </Grid>
-
-                  {/* {entityType == "I" && <TextField
-                    id="customer-acct-type"
-                    label="Acc. Type"
-                    value={accTypeValue}
-                    size="small"
-                  />} */}
-
-                  <Grid item xs={12} sm={6} md>
-                    <Autocomplete sx={{width: "100%"}}
-                      // disablePortal
-                      disabled={!state?.isFreshEntryctx}
-                      id="acc-types"
-                      options={AccTypeOptions ?? []}
-                      getOptionLabel={(option:any) => `${option?.label}`}
-                      // value={state?.accTypeValuectx ?? null}
-                      value={acctTypeState}
-                      onChange={(e,v) => {
-                        // setAccTypeValue(v?.value)
-                        setAcctTypeState(v)
-                        handleAccTypeVal(v?.value)
-                      }}
-                      // sx={{ width: 200 }}
-                      renderInput={(params:any) => (
-                        <TextField {...params} 
-                          label="A/C Type"
-                          autoComplete="disabled"
-                          type="text"
-                          FormHelperTextProps={{
-                            component: "div",
-                          }}
-                          InputProps={{
-                            ...params.InputProps,
-                            autoFocus: true,
-                            endAdornment: (
-                              <React.Fragment>
-                                {isAccTypeLoading ? (
-                                  <CircularProgress
-                                    color="secondary"
-                                    size={20}
-                                    sx={{ marginRight: "8px" }}
-                                    variant="indeterminate"
-                                  />
-                                ) : null}
-                                {params.InputProps.endAdornment}
-                              </React.Fragment>
-                            ),
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          variant={"standard"}
-                          color="secondary"
-                        />
-                      )}
-                      // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md>
-                    <TextField disabled sx={{width: "100%"}}
-                      id="customer-ckyc-number"
-                      name="KYC_NUMBER"
-                      label="CKYC No."
-                      value={state?.kycNoValuectx}
-                      onChange={(e:any) => {
-                        // console.log("e, vasd", e)
-                        handleKycNoValctx(e?.target?.value)
-                      }}
-                      // sx={{ width: {xs: 12, sm: "", md: "", lg: ""}}}
-                      // value={accTypeValue}
-                      // size="small"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant={"standard"}
-                      color="secondary"
-                    />
-                  </Grid>
-                  {!state?.isFreshEntryctx && <FormControlLabel control={<Checkbox checked={true} disabled />} label="Active" />}
-                  {/* <ButtonGroup size="small" variant="outlined" color="secondary">
-                    <Button color="secondary" onClick={() => {
-                        setIsCustomerData(false)
-                        setIsLoadingData(true)
-                    }}>Submit</Button>
-                    <Button color="secondary" onClick={() => {
-                        setIsCustomerData(false)
-                        // setIsLoading(true)
-                    }}>Reset</Button>
-                    <Button color="secondary" onClick={() => {
-                        setIsCustomerData(false)
-                        // setIsLoading(true)
-                    }}>Edit</Button>
-                  </ButtonGroup> */}
-
-                </Grid>
-                {/* common customer fields */}
-              </Toolbar>
-            </AppBar>
+        <HeaderForm onClose={onClose} formmode={formmode} mutation={mutation} />
           <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
 
             
@@ -1084,6 +896,14 @@ export default function FormModal({
               }} item xs>
                 
               {((state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.isFreshEntryctx) && <TabStepper />}
+              {mutation.isError && (
+                <Alert
+                  severity={mutation.error?.severity ?? "error"}
+                  errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+                  errorDetail={mutation.error?.error_detail}
+                  color="error"
+                />
+              )}
               {
                 (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((element, i) => {
                   return <TabPanel key={i} value={state?.colTabValuectx} index={i}>
