@@ -125,6 +125,7 @@ const CommonFooter = ({
       ACTIVITY_TYPE: "DAILY TRANSACTION",
       TRAN_DT: filteredRows[0]?.TRAN_DT,
       CONFIRM_FLAG: filteredRows[0]?.CONFIRMED,
+      CONFIRMED: filteredRows[0]?.CONFIRMED,
     };
     if (!scrollNo) {
       return enqueueSnackbar("Kindly enter Scroll No", {

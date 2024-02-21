@@ -277,6 +277,7 @@ export const Trn002 = () => {
       ACTIVITY_TYPE: "DAILY TRANSACTION",
       TRAN_DT: dataRow?.TRAN_DT,
       CONFIRM_FLAG: "N",
+      CONFIRMED: "N",
       USER_DEF_REMARKS: remarks,
     };
     remarks.length > 5

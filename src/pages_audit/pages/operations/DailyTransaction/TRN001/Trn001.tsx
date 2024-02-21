@@ -1050,14 +1050,6 @@ export const Trn001 = () => {
                             >
                               <CancelIcon />
                             </button>
-                            // <Button
-                            //   color="secondary"
-                            //   onClick={(e) => handleClear(e, i)}
-                            //   size="small"
-                            //   sx={{ width: 20, padding: "0px" }}
-                            // >
-                            //   <CancelIcon onClick={(e) => handleClear(e, i)} />
-                            // </Button>
                           )}
                         </TableCell>
                       </TableRow>
