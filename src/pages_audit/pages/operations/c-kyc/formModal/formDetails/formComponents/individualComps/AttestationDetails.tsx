@@ -24,17 +24,18 @@ const actions = [
     },
 ];
 
-const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode, onFormClose}) => {
+const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode, onFormClose, onUpdateForm}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
     const [historyDialog, setHistoryDialog] = useState(false)
     const [updateDialog, setUpdateDialog] = useState(false)
     const [isUpdated, setIsUpdated] = useState(false)
     const [saveSuccessDialog, setSaveSuccessDialog] = useState<boolean>(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleUpdatectx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleUpdatectx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const { t } = useTranslation();
     const AttestationDTLFormRef = useRef<any>("");  
     const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+    const [formStatus, setFormStatus] = useState<any[]>([])
     const onCloseSearchDialog = () => {
         setHistoryDialog(false)
     }    
@@ -48,9 +49,38 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
 
     useEffect(() => {
         let refs = [AttestationDTLFormRef]
-        handleCurrentFormRefctx(refs)
+        handleCurrFormctx({
+          currentFormRefctx: refs,
+          colTabValuectx: state?.colTabValuectx,
+          currentFormSubmitted: null,
+          isLoading: false,
+        })
     }, [])
 
+    useEffect(() => {
+        // console.log("qweqweqweqwe", formStatus2)
+        if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+          if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+            setIsNextLoading(false)
+            let submitted;
+            submitted = formStatus.filter(form => !Boolean(form))
+            if(submitted && Array.isArray(submitted) && submitted.length>0) {
+              submitted = false;
+            } else {
+              submitted = true;
+              handleStepStatusctx({
+                status: "completed",
+                coltabvalue: state?.colTabValuectx,
+              })
+            }
+            handleCurrFormctx({
+              currentFormSubmitted: submitted,
+              isLoading: false,
+            })
+            setFormStatus([])
+          }
+        }
+    }, [formStatus])
 
     // attest.history
     const { data:historyData, isError:isHistoryDataError, isLoading: isHistoryDataLoading, error, refetch: historyDataRefetch } = useQuery<any, any>(
@@ -77,12 +107,15 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         onSuccess: (data) => {
             // console.log("data on save", data)
             if(data?.[0]?.REQ_CD) {
+                setFormStatus(old => [...old, true])
                 setSaveSuccessDialog(true)
                 // handleReqCDctx(data?.[0]?.REQ_CD)
                 // handleColTabChangectx(state?.colTabValuectx+1)
             }
         },
-        onError: (error: any) => {},
+        onError: (error: any) => {
+            setFormStatus(old => [...old, false])
+        },
     });    
     
     const AttestationDTLSubmitHandler = (
@@ -93,7 +126,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         actionFlag,
         hasError
     ) => {
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         if(data && !hasError) {
             let formFields = Object.keys(data) // array, get all form-fields-name 
             // formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
@@ -128,7 +161,8 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     ...tabModifiedCols,
                     ATTESTATION_DTL: [...updatedCols]
                 }
-                // handleModifiedColsctx(tabModifiedCols)
+                handleModifiedColsctx(tabModifiedCols)
+                setFormStatus(old => [...old, true])
                 // if() {
                 //     setAlertOnUpdate
                 // } else {
@@ -137,6 +171,8 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 // setUpdateDialog(true)
                 // updateMutation.mutate()
             } else {
+                // console.log("acdsvq currentFormctx mutateeee...", state?.steps)
+                // if(state?.req_cd_ctx) {}
                 let data = {
                     CUSTOMER_ID: state?.customerIDctx,
                     CUSTOMER_TYPE: state?.entityTypectx,
@@ -153,9 +189,10 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
             }
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+            setFormStatus(old => [...old, false])
         }
         endSubmit(true)
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
     }
 
     // const initialVal = useMemo(() => {
@@ -180,6 +217,9 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes, attestData])
 
     const handleSave = (e) => {
+        handleCurrFormctx({
+            isLoading: true,
+        })
         const refs = [AttestationDTLFormRef.current.handleSubmitError(e, "save", false)]
         handleSavectx(e, refs)
     }
@@ -240,7 +280,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     </Grid>                    
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
+            <TabNavigate handleSave={displayMode !== "new" ? onUpdateForm : handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
             {historyDialog && <AttestHistory 
                 open={historyDialog} 
                 onClose={onCloseSearchDialog} 

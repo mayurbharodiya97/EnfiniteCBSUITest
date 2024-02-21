@@ -17,11 +17,12 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
   //  const [isLoading, setIsLoading] = useState(false)
     const { authState } = useContext(AuthContext);
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
     const { t } = useTranslation();
     const OtherDTLFormRef = useRef<any>("")
     const [isOtherDetailsExpanded, setIsOtherDetailsExpanded] = useState(true)
     const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+    const [formStatus, setFormStatus] = useState<any[]>([])
     const handleOtherDetailsExpand = () => {
         setIsOtherDetailsExpanded(!isOtherDetailsExpanded)
     }
@@ -31,8 +32,45 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
 
     useEffect(() => {
         let refs = [OtherDTLFormRef]
-        handleCurrentFormRefctx(refs)
-    }, [])
+        handleCurrFormctx({
+          currentFormRefctx: refs,
+          colTabValuectx: state?.colTabValuectx,
+          currentFormSubmitted: null,
+          isLoading: false,
+        })
+    }, [])    
+
+    useEffect(() => {
+        // console.log("qweqweqweqwe", formStatus2)
+        if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+          if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+            setIsNextLoading(false)
+            let submitted;
+            submitted = formStatus.filter(form => !Boolean(form))
+            if(submitted && Array.isArray(submitted) && submitted.length>0) {
+              submitted = false;
+            } else {
+              submitted = true;
+              handleStepStatusctx({
+                status: "completed",
+                coltabvalue: state?.colTabValuectx,
+              })
+            }
+            handleCurrFormctx({
+              currentFormSubmitted: submitted,
+              isLoading: false,
+            })
+            setFormStatus([])
+          } else {
+            handleCurrFormctx({
+                currentFormSubmitted: null,
+                isLoading: false,
+            })
+            setFormStatus([])
+            handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+          }
+        }
+      }, [formStatus])    
     
 
     const OtherDTLSubmitHandler = (
@@ -43,7 +81,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
         actionFlag,
         hasError
     ) => {
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         if(data && !hasError) {
             let formFields = Object.keys(data) // array, get all form-fields-name 
             formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
@@ -93,14 +131,16 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                 }
                 handleModifiedColsctx(tabModifiedCols)
             }
+            setFormStatus(old => [...old, true])
             // handleColTabChangectx(5)
-            handleColTabChangectx(state?.colTabValuectx+1)
-            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            // handleColTabChangectx(state?.colTabValuectx+1)
+            // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+            setFormStatus(old => [...old, false])
         }
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
         endSubmit(true)
     }
     const initialVal = useMemo(() => {
@@ -114,6 +154,9 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
+        handleCurrFormctx({
+            isLoading: true,
+        })
         const refs = [OtherDTLFormRef.current.handleSubmitError(e, "save", false)]
         handleSavectx(e, refs)
     }
@@ -150,7 +193,7 @@ const OtherDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadin
                 </Grid>
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
         </Grid>        
     )
 }
