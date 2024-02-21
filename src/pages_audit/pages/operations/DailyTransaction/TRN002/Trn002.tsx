@@ -102,7 +102,9 @@ export const Trn002 = () => {
   };
   const handleFilterByScroll = (txt) => {
     let arr = refRows?.filter((a) => a?.CONFIRMED == "0");
-    let result = refRows?.filter((item) => item?.SCROLL1 === txt);
+    let result = refRows?.filter(
+      (item) => item?.SCROLL1 != "" && item?.SCROLL1 === txt
+    );
     if (result?.length > 0) {
       console.log("case1");
       setRows2(result);

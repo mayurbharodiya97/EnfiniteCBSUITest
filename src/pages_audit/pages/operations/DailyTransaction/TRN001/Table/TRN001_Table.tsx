@@ -180,7 +180,9 @@ export const TRN001_Table = ({
   };
 
   const handleFilterByScroll = () => {
-    let result = rows2?.filter((item) => item?.SCROLL1 === searchScrollNo);
+    let result = rows2?.filter(
+      (item) => item?.SCROLL1 != "" && item?.SCROLL1 === searchScrollNo
+    );
     if (result?.length > 0) {
       setRows(result);
       console.log("case1");
