@@ -43,6 +43,7 @@ export const CloseFormDialog = ({open, onClose, closeForm}) => {
                 autoFocus
                 onClick={() => {
                   handleFormModalClosectx()
+                  onClose()
                   closeForm()
                 }}
             >OK</GradientButton>
