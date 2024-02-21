@@ -125,8 +125,9 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
 
   // set photo, sign url from retrieve api, history api for hisotry grid
   useEffect(() => {
-    let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-      COMP_CD: authState?.companyID ?? "",
+    let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+      // COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
     }
     const photoPayload = {
       COMP_CD: authState?.companyID ?? "",

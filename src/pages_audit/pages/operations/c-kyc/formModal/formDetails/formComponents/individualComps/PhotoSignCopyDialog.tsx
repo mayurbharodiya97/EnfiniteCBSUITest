@@ -203,8 +203,9 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
   // set photo, sign url from history api active record, on edit
   useEffect(() => {
     // console.log(!Boolean(location.state?.[0]?.data.REQUEST_ID), "asdasdasd1", location.state?.[0]?.data)
-    let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-      COMP_CD: authState?.companyID ?? "",
+    let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+      // COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? ""
     }
     if(Array.isArray(location.state) && location.state.length>0) {
       const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";

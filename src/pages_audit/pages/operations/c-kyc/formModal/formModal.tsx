@@ -231,6 +231,7 @@ export default function FormModal({
       // // handleColTabChangectx(0)
       // // handleFormModalOpenOnEditctx(location?.state)
       handleFormDataonRetrievectx(data[0])
+      onClosePreventUpdateDialog()
     },
     onError: (error: any) => {},
   });
@@ -282,8 +283,9 @@ export default function FormModal({
         handleColTabChangectx(0)
         handleFormModalOpenOnEditctx(location?.state)
   
-        let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-          COMP_CD: authState?.companyID ?? "",
+        let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+          // COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? ""
         }
         if(Array.isArray(location.state) && location.state.length>0) {
           const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
@@ -497,7 +499,7 @@ export default function FormModal({
         return <AttestationDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
         isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
-        />
+        onUpdateForm={onUpdateForm} />
 
       default:
         return <p>Not Found - {tabName}</p>;
@@ -555,7 +557,8 @@ export default function FormModal({
       case "Attestation Details":
         return <AttestationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} onFormClose={onClose} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
+        onUpdateForm={onUpdateForm} />
 
       default:
         return <p>Not Found - {tabName}</p>;

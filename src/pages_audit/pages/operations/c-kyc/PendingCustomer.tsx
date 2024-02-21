@@ -42,6 +42,7 @@ const PendingCustomer = () => {
   } = useQuery<any, any>(["getPendingData", {}], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
       REQ_FLAG: "A",
       ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       // ENTERED_DATE: "26-12-2023"

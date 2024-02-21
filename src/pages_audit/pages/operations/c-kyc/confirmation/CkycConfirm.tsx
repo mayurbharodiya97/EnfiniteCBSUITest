@@ -36,7 +36,7 @@ export const CkycConfirm = () => {
   } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
-      // BRANCH_CD: authState?.user?.branchCode ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
     //   ENTERED_DATE: format(new Date(), "dd-MM-yyyy"),
       REQ_FLAG: "P",
       // ENTERED_DATE:  format(new Date(), "dd-MM-yyyy"),
