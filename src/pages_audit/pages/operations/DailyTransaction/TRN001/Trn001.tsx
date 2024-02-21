@@ -69,27 +69,27 @@ export const Trn001 = () => {
   //variables
   const [defBranch, setDefBranch] = useState<any>({});
 
-  let defErrMsg = { cNo: "", accNo: "" };
   var defTableValue = {
     branch: defBranch,
     accType: { label: "", value: "", info: "" },
     accNo: "",
+    bugAccNo: false,
+    bugMsgAccNo: "",
     trx: { label: "", value: "", code: "" }, //TYPE_CD
     scroll: "", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
     cNo: "0",
+    bugCNo: false,
+    bugMsgCNo: "",
     date: new Date(),
+    bugDate: false,
+    bugMsgDate: "",
+
     debit: "0.00",
     credit: "0.00",
 
     bug: true,
-    bugAccNo: false,
-    bugCNo: false,
-    bugDate: false,
-    bugMsgAccNo: "",
-    bugMsgCNo: "",
-    bugMsgDate: "",
     isCredit: true,
     viewOnly: false,
   };
@@ -104,13 +104,11 @@ export const Trn001 = () => {
   const [totalDebit, setTotalDebit] = useState(0);
   const [totalCredit, setTotalCredit] = useState(0);
   const [isSave, setIsSave] = useState(false);
-  const [diff, setDiff] = useState(0);
+  const [amountDiff, setAmountDiff] = useState(0);
   const [isArray, setIsArray] = useState(false);
-  const [errMsg, setErrMsg] = useState(defErrMsg);
   const [index, setIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [resetDialog, setResetDialog] = useState(false);
-  const [scrollResDialog, setScrollResDialog] = useState([]);
   const [viewOnly, setViewOnly] = useState(false);
   const [saveDialog, setSaveDialog] = useState<boolean>(false);
   const [tabsData, setTabsData] = useState<any>([]);
@@ -149,10 +147,10 @@ export const Trn001 = () => {
     //bug checker on row change
     console.log("rows trn1", rows);
     let i = 0;
+    rows[i].bug = false;
     if (rows.length > 0) {
       i = rows.length - 1;
     }
-    rows[i].bug = false;
     if (
       !rows[i].trx?.code ||
       !rows[i].branch ||
@@ -161,8 +159,7 @@ export const Trn001 = () => {
     ) {
       rows[i].bug = true;
     }
-
-    if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
+    if (rows[i]?.bugAccNo || rows[i]?.bugCNo) {
       rows[i].bug = true;
     }
 
@@ -176,9 +173,6 @@ export const Trn001 = () => {
     }
 
     if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
-      rows[i].bug = true;
-    }
-    if (!rows[i]?.isCredit && rows[i].bugCNo) {
       rows[i].bug = true;
     }
 
@@ -202,6 +196,7 @@ export const Trn001 = () => {
     },
     onError: (error: any) => {},
   });
+
   const getAccTypeOptions = useMutation(API.getAccTypeList, {
     onSuccess: (data) => {
       setAccTypeOptions(data);
@@ -254,29 +249,28 @@ export const Trn001 = () => {
       });
     },
   });
+
   const getAccNoValidation = useMutation(API.getAccNoValidation, {
     onSuccess: (data) => {
       if (data?.MESSAGE1) {
         setAccValidMsg(data?.MESSAGE1);
-        let abc = accValidMsg?.split("\n")[2];
         setAccValidDialog(true);
       }
 
+      const obj = [...rows];
       if (data?.RESTRICTION) {
-        const obj = [...rows];
         obj[index].bug = true;
         obj[index].bugAccNo = true;
         obj[index].bugMsgAccNo = data?.RESTRICTION;
-        setRows(obj);
+
         setAccValidMsg(data?.RESTRICTION);
         setAccValidDialog(true);
       } else {
-        const obj = [...rows];
         obj[index].bug = false;
         obj[index].bugAccNo = false;
         obj[index].bugMsgAccNo = "";
-        setRows(obj);
       }
+      setRows(obj);
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -286,22 +280,20 @@ export const Trn001 = () => {
   });
   const getChqValidation = useMutation(API.getChqValidation, {
     onSuccess: (data) => {
-      if (data.ERR_CODE == "-1") {
+      const obj = [...rows];
+      if (data.ERR_CODE) {
         enqueueSnackbar(data?.ERR_MSG, {
           variant: "error",
         });
-        const obj = [...rows];
         obj[index].bug = true;
         obj[index].bugCNo = true;
         obj[index].bugMsgCNo = data?.ERR_MSG;
-        setRows(obj);
       } else {
-        const obj = [...rows];
         obj[index].bug = false;
         obj[index].bugCNo = false;
         obj[index].bugMsgCNo = "";
-        setRows(obj);
       }
+      setRows(obj);
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -317,8 +309,8 @@ export const Trn001 = () => {
       if (isSuccess) {
         setSaveDialog(false);
         setScrollSaveDialog(true);
-
         let msg = "";
+
         if (isArray) {
           msg = "Scroll Saved Successfully";
         } else {
@@ -349,19 +341,21 @@ export const Trn001 = () => {
     obj[i].branch = value;
     setRows(obj);
     handleTotal(obj);
-    handleGetAccInfo(i);
+    handleGetAccInfo(obj, i);
   };
 
   const handleAccType = (e, value, i) => {
     const obj = [...rows];
     obj[i].accType = value;
     setRows(obj);
-    handleGetAccInfo(i);
+    handleGetAccInfo(obj, i);
     value?.info?.PARENT_TYPE && handleGetHeaderTabs(value?.info?.PARENT_TYPE);
   };
+
   const handleAccNo = (e, i) => {
     setIndex(i);
     let txt = e.target.value;
+
     if (txt.length <= 20) {
       const obj = [...rows];
       obj[i].accNo = txt;
@@ -374,9 +368,10 @@ export const Trn001 = () => {
     if (obj[i].accNo) {
       let abc = obj[i]?.accNo?.padStart(6, "0");
       obj[i].accNo = abc;
-      handleGetAccInfo(i);
+      handleGetAccInfo(obj, i);
     } else {
       obj[i].bugMsgAccNo = "A/C No. Empty";
+      obj[i].bugAccNo = true;
     }
     setRows(obj);
   };
@@ -414,7 +409,6 @@ export const Trn001 = () => {
     } else {
       setIsArray(false);
     }
-    setErrMsg({ ...errMsg, cNo: "" });
     setRows(obj);
     handleTotal(obj);
   };
@@ -440,7 +434,7 @@ export const Trn001 = () => {
   };
 
   const handleCNo = (e, i) => {
-    setErrMsg({ ...errMsg, cNo: "" });
+    setIndex(i);
     const obj = [...rows];
     let txt = e.target.value;
     obj[i].cNo = txt;
@@ -534,6 +528,48 @@ export const Trn001 = () => {
       handleAddRow();
   };
 
+  const handleValidate = (rows) => {
+    //bug checker on row change
+    console.log("rows trn1", rows);
+    let i = 0;
+    rows[i].bug = false;
+    if (rows.length > 0) {
+      i = rows.length - 1;
+    }
+    if (
+      !rows[i].trx?.code ||
+      !rows[i].branch ||
+      !rows[i].accType ||
+      !rows[i].accNo
+    ) {
+      rows[i].bug = true;
+    }
+
+    if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
+      rows[i].bug = true;
+    }
+
+    if (rows[i]?.isCredit && !(Number(rows[i]?.credit) > 0)) {
+      //credit true
+      rows[i].bug = true;
+    }
+    if (!rows[i]?.isCredit && !(Number(rows[i]?.debit) > 0)) {
+      //debit true
+      rows[i].bug = true;
+    }
+
+    if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
+      rows[i].bug = true;
+    }
+
+    if (!rows[i]?.isCredit && rows[i].bugCNo) {
+      rows[i].bug = true;
+    }
+
+    let result = rows?.some((a) => a?.bug);
+    setIsSave(!result);
+  };
+
   //fns > logic> Table=====================================================================
 
   const handleAddRow = () => {
@@ -577,12 +613,7 @@ export const Trn001 = () => {
 
       isCredit: isCred,
     };
-    if (
-      isSave &&
-      totalDebit != totalCredit &&
-      errMsg?.accNo == "" &&
-      errMsg?.cNo == ""
-    ) {
+    if (isSave && totalDebit != totalCredit) {
       let obj = [...rows, defTableValue2];
       setRows(obj);
       handleTotal(obj);
@@ -597,7 +628,6 @@ export const Trn001 = () => {
       handleTotal(obj);
       setRows(obj);
     }
-    setErrMsg(defErrMsg);
   };
 
   const handleTotal = (obj) => {
@@ -612,23 +642,22 @@ export const Trn001 = () => {
       sumCredit += Number(a.credit);
     });
 
-    setDiff(sumDebit - sumCredit);
+    setAmountDiff(sumDebit - sumCredit);
     setTotalDebit(Number(sumDebit.toFixed(3)));
     setTotalCredit(Number(sumCredit.toFixed(3)));
   };
 
   const handleReset = () => {
+    setResetDialog(false);
     let defaultRows = { ...defTableValue };
     setRows([defaultRows]);
     setTotalCredit(0);
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
-    setResetDialog(false);
     setViewOnly(false);
     setTempStore({ ...tempStore, accInfo: {} });
     setCardStore({ ...cardStore, cardsInfo: [] });
     setTabsData([]);
-    setErrMsg(defErrMsg);
   };
 
   const handleFilterTrx = () => {
@@ -637,7 +666,7 @@ export const Trn001 = () => {
     setTrxOptions(result);
   };
 
-  const handleGetAccInfo = (i) => {
+  const handleGetAccInfo = (rows, i) => {
     let data = {
       COMP_CD: rows[i]?.branch?.info?.COMP_CD,
       ACCT_TYPE: rows[i]?.accType?.value,
@@ -650,14 +679,13 @@ export const Trn001 = () => {
 
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
-      rows[i]?.accNo && getAccNoValidation.mutate(data);
+      rows[i]?.accNo && getAccNoValidation.mutate(data, i);
       rows[i]?.accNo && getCarousalCards.mutate(data);
       setTempStore({ ...tempStore, accInfo: data });
     }
   };
 
   const handleScrollSave1 = () => {
-    console.log(errMsg, "errMsg");
     console.log(isSave, "isSave");
     let isErrCNo = rows.some((a) => a.bugCNo);
     let isErrAccNo = rows.some((a) => a.bugAccNo || a.bugMsgAccNo);
@@ -669,11 +697,11 @@ export const Trn001 = () => {
         variant: "error",
       });
     }
-    if (isArray && diff != 0) {
+    if (isArray && amountDiff != 0) {
       enqueueSnackbar("Credit Debit Amount not matched", {
         variant: "error",
       });
-    } else if ((!isArray && diff == 0) || (isArray && rows.length == 1)) {
+    } else if ((!isArray && amountDiff == 0) || (isArray && rows.length == 1)) {
       enqueueSnackbar("Amount cant be Zero", {
         variant: "error",
       });
@@ -696,8 +724,8 @@ export const Trn001 = () => {
 
     if (
       !isSave ||
-      (!isArray && diff == 0) ||
-      (isArray && diff != 0) ||
+      (!isArray && amountDiff == 0) ||
+      (isArray && amountDiff != 0) ||
       isErrAccNo ||
       isErrCNo
     ) {
@@ -778,21 +806,6 @@ export const Trn001 = () => {
                     Total ( Debit:{totalDebit} | Credit:{totalCredit} )
                   </h3>
                 </caption>
-                {errMsg?.cNo ? (
-                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-                    {errMsg?.cNo}
-                  </caption>
-                ) : (
-                  <></>
-                )}
-
-                {errMsg?.accNo ? (
-                  <caption style={{ fontSize: "15px", color: "#ea3a1b" }}>
-                    {errMsg?.accNo}
-                  </caption>
-                ) : (
-                  <></>
-                )}
               </>
 
               <TableHead>
@@ -835,7 +848,6 @@ export const Trn001 = () => {
                               options={branchOptions}
                               onChange={(e, value) => handleBranch(e, value, i)}
                               popupIcon={<></>}
-                              clearIcon={<></>}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
@@ -862,7 +874,6 @@ export const Trn001 = () => {
                               size="small"
                               options={accTypeOptions}
                               popupIcon={<></>}
-                              clearIcon={<></>}
                               onChange={(e, value) =>
                                 handleAccType(e, value, i)
                               }
@@ -909,7 +920,6 @@ export const Trn001 = () => {
                               options={trxOptions}
                               onChange={(e, value) => handleTrx(e, value, i)}
                               popupIcon={<></>}
-                              clearIcon={<></>}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
@@ -953,7 +963,6 @@ export const Trn001 = () => {
                               options={sdcOptions}
                               onChange={(e, value) => handleSdc(e, value, i)}
                               popupIcon={<></>}
-                              clearIcon={<></>}
                               renderInput={(params) => (
                                 <TextField
                                   sx={{ width: 100 }}
@@ -1218,7 +1227,7 @@ export const Trn001 = () => {
               }}
             >
               Ok
-            </Button>{" "}
+            </Button>
           </DialogActions>
         </Dialog>
         <Dialog
@@ -1244,6 +1253,7 @@ export const Trn001 = () => {
 
           <DialogActions className="dialogFooter">
             <Button
+              autoFocus
               className="dialogBtn"
               color="secondary"
               variant="contained"
@@ -1253,9 +1263,9 @@ export const Trn001 = () => {
               }}
             >
               Ok
-            </Button>{" "}
+            </Button>
           </DialogActions>
-        </Dialog>{" "}
+        </Dialog>
       </>
     </>
   );

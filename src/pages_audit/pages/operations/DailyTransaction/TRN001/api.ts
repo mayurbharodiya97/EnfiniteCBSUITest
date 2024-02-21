@@ -178,7 +178,7 @@ export const saveScroll = async (reqData) => {
 
 export const getChqValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCHEQUEBOOK", {
+    await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
       COMP_CD: reqData?.branch?.info?.COMP_CD,
       BRANCH_CD: reqData?.branch?.value,
       ACCT_TYPE: reqData?.accType?.value,
