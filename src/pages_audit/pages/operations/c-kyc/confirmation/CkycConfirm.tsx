@@ -13,6 +13,7 @@ import { Grid, Typography } from "@mui/material";
 import { t } from "i18next";
 import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/individualComps/PhotoSignConfirmDialog";
 import { useSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
 
 
 export const CkycConfirm = () => {
@@ -33,6 +34,7 @@ export const CkycConfirm = () => {
       isLoading: isPendingDataLoading,
       isFetching: isPendingDataFetching,
       refetch: PendingRefetch,
+      error: PendingError,
   } = useQuery<any, any>(["getConfirmPendingData", {}], () =>
     API.getPendingData({
       COMP_CD: authState?.companyID ?? "",
@@ -99,6 +101,14 @@ export const CkycConfirm = () => {
 
   return (
     <Grid sx={{mx:"10px"}}>
+      {isPendingError && (
+        <Alert
+          severity={PendingError?.severity ?? "error"}
+          errorMsg={PendingError?.error_msg ?? "Something went to wrong.."}
+          errorDetail={PendingError?.error_detail}
+          color="error"
+        />
+      )}
         {/* <Typography
           sx={{
             color: (theme) => theme.palette.grey[700],
