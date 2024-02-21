@@ -140,7 +140,7 @@ export const MyDateTimePicker: FC<MyDateTimePickerAllProps> = ({
         {...others}
         key={fieldKey}
         label={label}
-        className={classes.root}
+        // className={classes.root}
         id={fieldKey}
         name={name}
         inputRef={focusRef}

@@ -152,7 +152,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       <KeyboardDatePicker
         {...others}
         key={fieldKey}
-        className={classes.root}
+        // className={classes.root}
         id={fieldKey}
         label={label}
         name={name}
@@ -178,6 +178,9 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
             helperText: !isSubmitting && isError ? error : null,
             onBlur: handleBlur,
             InputLabelProps: { shrink: true },
+          },
+          actionBar: {
+            actions: ["today", "accept", "cancel"],
           },
         }}
         tabIndex={readOnly ? -1 : undefined}
