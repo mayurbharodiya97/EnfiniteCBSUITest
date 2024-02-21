@@ -14,16 +14,16 @@ const TabNavigate = ({handleSave, displayMode, isNextLoading}) => {
     // console.log(state?.colTabValuectx, "wieugufwefw", totalTab, Array.isArray(state?.tabNameList), state?.tabNameList.length, state?.tabNameList)
     return (
         <Grid container item sx={{ justifyContent: "flex-end" }}>
-            {Boolean(state?.colTabValuectx && state?.colTabValuectx>0) && <GradientButton sx={{mr:2, mb:2}} disabled={isNextLoading}
+            {Boolean(state?.colTabValuectx && state?.colTabValuectx>0) && <GradientButton sx={{mr:2, mb:2}} disabled={state?.currentFormctx.isLoading}
                 onClick={(e) => handleColTabChangectx(state?.colTabValuectx-1)}
             >{t("Previous")}</GradientButton>}
             {displayMode === "new"
             ? <GradientButton
                 sx={{ mr: 2, mb: 2 }}
-                disabled={isNextLoading}
+                disabled={state?.currentFormctx.isLoading}
                 onClick={handleSave}
                 endIcon={
-                    isNextLoading ? <CircularProgress size={20} /> : null
+                    state?.currentFormctx.isLoading ? <CircularProgress size={20} /> : null
                 }
                 >
                 {
@@ -35,7 +35,7 @@ const TabNavigate = ({handleSave, displayMode, isNextLoading}) => {
             : displayMode == "edit"
                 ? <GradientButton
                     sx={{ mr: 2, mb: 2 }}
-                    disabled={isNextLoading}
+                    disabled={state?.currentFormctx.isLoading}
                     onClick={handleSave}
                     >
                     {
@@ -46,7 +46,7 @@ const TabNavigate = ({handleSave, displayMode, isNextLoading}) => {
                 </GradientButton>
                 : (displayMode == "view" && totalTab !== (state?.colTabValuectx - 1)) && <GradientButton
                     sx={{ mr: 2, mb: 2 }}
-                    disabled={isNextLoading}
+                    disabled={state?.currentFormctx.isLoading}
                     onClick={(e) => {
                         handleColTabChangectx(state?.colTabValuectx + 1)
                     }}
