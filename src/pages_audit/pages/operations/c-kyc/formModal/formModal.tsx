@@ -181,7 +181,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx } = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
   // const { state: data }: any = useLocation();
   const location: any = useLocation();
   const { t } = useTranslation();
@@ -307,7 +307,32 @@ export default function FormModal({
   }, [])
 
 
-
+  useEffect(() => {
+    if(Boolean(state?.currentFormctx.currentFormSubmitted)) {
+      const totalTab = Array.isArray(state?.tabNameList) && state?.tabNameList.length;
+      // handleCurrFormctx({
+      //   // currentFormRefctx: [],
+      //   currentFormSubmitted: null,
+      //   // colTabValuectx: null,
+      //   // isLoading: false,
+      // })
+      if(Boolean(state?.isFinalUpdatectx)) {
+        if(Object.keys(state?.modifiedFormCols).length >0) {
+          setUpdateDialog(true)
+          // setCancelDialog(true)
+        } else {
+          setAlertOnUpdate(true)
+        }
+      } else {
+        if((totalTab - 1) > state?.colTabValuectx) {
+          handleCurrFormctx({
+            colTabValuectx: state?.colTabValuectx + 1,
+          })
+          handleColTabChangectx(state?.colTabValuectx + 1); 
+        }
+      }      
+    }
+  }, [state?.currentFormctx.currentFormSubmitted, state?.isFinalUpdatectx])
 
 
 
@@ -570,23 +595,26 @@ export default function FormModal({
     onClose()
   }
 
-  const onUpdateForm = () => {
+  const onUpdateForm = React.useCallback((e) => {
+    onFinalUpdatectx(true)
+    // console.log(state?.modifiedFormCols, "wqeudyfgqwudye", displayMode)
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if(displayMode == "new" || displayMode == "edit") {
-      if(Object.keys(state?.modifiedFormCols).length >0) {
-        setUpdateDialog(true)
-        // setCancelDialog(true)
-      } else {
-        setAlertOnUpdate(true)
-      }
+    const refs = state?.currentFormctx.currentFormRefctx;
+    if(Array.isArray(refs) && refs.length>0) {
+      handleCurrFormctx({
+        isLoading: true,
+      })
+      Promise.all(refs.map(ref => ref.current.handleSubmitError(e, "save", false)))
     }
-    // console.log(Object.keys(state?.modifiedFormCols).length >0, "djweijd", displayMode, state?.modifiedFormCols)
-      //  else {
-      //   closeForm()
-      // }
-
-    // setUpdateDialog(true)
-  }
+    // if(displayMode == "new" || displayMode == "edit") {
+    //   if(Object.keys(state?.modifiedFormCols).length >0) {
+    //     setUpdateDialog(true)
+    //     // setCancelDialog(true)
+    //   } else {
+    //     setAlertOnUpdate(true)
+    //   }
+    // }
+  }, [state?.currentFormctx.currentFormRefctx, state?.modifiedFormCols, displayMode])
 
   const onCancelForm = () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
@@ -632,7 +660,7 @@ export default function FormModal({
         >
           {t("Update")}
         </Button>
-  }, [displayMode, from, state?.modifiedFormCols])
+  }, [state?.currentFormctx.currentFormRefctx, displayMode, from, state?.modifiedFormCols])
 
   const HeaderContent = React.useMemo(() => {
     return <React.Fragment>

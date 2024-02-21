@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react'
+import React, {useCallback, useReducer} from 'react'
 import * as API from "./api";
 import { CkycStateType } from './type';
 import { AuthSDK } from 'registry/fns/auth';
@@ -57,10 +57,15 @@ const initialState:any  = {
     steps: {
         0: {status: ""}
     },
-    currentFormRefctx: [],
+    currentFormctx: {
+        currentFormRefctx: [],
+        currentFormSubmitted: null,
+        colTabValuectx: null,
+        isLoading: false,
+    },
     modifiedFormCols: {},
     updateFormDatactx: {},
-    modifiedFormFormat: {}
+    isFinalUpdatectx: false,
 
     // steps: {
     //     error: [],
@@ -166,7 +171,12 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
-        case "set_currentFormRef":
+        case "set_currentFormObj":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "onFinalUpdate":
             return {
                 ...state,
                 ...action.payload
@@ -291,8 +301,13 @@ const CkycProvider = ({children}) => {
                 updateFormDatactx: {},
                 confirmFlagctx: "", 
                 update_casectx: "", 
-                modifiedFormFormat: {},                
-                currentFormRefctx: [],
+                currentFormctx: {
+                    currentFormRefctx: [],
+                    currentFormSubmitted: null,
+                    colTabValuectx: null,
+                    isLoading: false,
+                },
+                isFinalUpdatectx: false,
             }
         })
     }
@@ -559,11 +574,31 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleCurrentFormRefctx = (refs:any[]) => {
+
+
+    // interface CurrFormObj {
+    //     currentFormRefctx?: any,
+    //     currentFormSubmitted?: any,
+    //     colTabValuectx?: any,
+    // }
+    const handleCurrFormctx = useCallback((obj) => {
+        let currVal = state?.currentFormctx
         dispatch({
-            type: "set_currentFormRef",
+            type: "set_currentFormObj",
             payload: {
-                currentFormRefctx: refs
+                currentFormctx: {
+                    ...currVal,
+                    ...obj 
+                }
+            }
+        })
+    }, [state?.currentFormctx])
+
+    const onFinalUpdatectx = (val:boolean) => {
+        dispatch({
+            type: "onFinalUpdate",
+            payload: {
+                isFinalUpdatectx: val
             }
         })
     }
@@ -624,7 +659,6 @@ const CkycProvider = ({children}) => {
 
 
     const handleUpdatectx = async ({COMP_CD, event}) => {
-        // console.log("handleUpdatectx in", Boolean(event), state?.currentFormRefctx)
 
 
 
@@ -864,7 +898,8 @@ const CkycProvider = ({children}) => {
                 handleApiRes, 
                 // handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
-                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, resetCkycctx, handleSavectx, handleUpdatectx, handleCurrentFormRefctx
+                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, 
+                handleStepStatusctx, resetCkycctx, handleSavectx, handleUpdatectx, handleCurrFormctx, onFinalUpdatectx
             }}
         >
             {children}
