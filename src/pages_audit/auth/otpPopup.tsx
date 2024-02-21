@@ -116,7 +116,7 @@ export const OTPModel = ({
     }
     return (
       <span className={clsx(btnshow && classes.btnvisibleoff)}>
-        {t("otp.OtpExpired")} {remainingtime}
+        {t("otp.OtpExpired")} {remainingtime} {t("otp.second")}
         {/* {t("otp.ValidFor")} {remainingtime} */}
       </span>
     );
@@ -492,7 +492,7 @@ export const OTPModelForm = ({
           ) : null}
           {loginState?.auth_type === "TOTP" ? (
             <div style={{ flex: "auto" }}>
-              <a href="forgot-totp">Forgot TOTP</a>
+              <a href="forgot-totp" style={{color:"var(--theme-color3)"}}>Forgot TOTP</a>
             </div>
           ) : (
             <></>
