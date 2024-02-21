@@ -105,10 +105,10 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     justifyContent: "left ",
   },
   navLinks: {
-    // height: "calc(100vh - 78px)",
+    height: "calc(100vh - 78px)",
     overflowY: "auto",
     overflowX: "hidden",
-    height:"auto",
+    // height:"100px",
     backgroundColor: "rgba(250, 251, 255, 0.9);",
     // height: "calc(100vh - 230px)",
     //background: "var(--theme-color1)",
@@ -120,8 +120,8 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   navLinksforseparateView: {
     overflowY: "auto",
     overflowX: "hidden",
-    // height: "calc(100vh - 160px)",
-    height:"auto",
+    height: "calc(100vh - 160px)",
+    // height:"auto",
     paddingTop: "10px",
   },
   nestedMenuLevel1: {
