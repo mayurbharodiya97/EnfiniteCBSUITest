@@ -75,9 +75,8 @@ export const CheckBook = () => {
     getTodayClearing.mutate(tempStore?.accInfo);
   };
   const handleReturnHistory = () => {
-    let obj = { ...tempStore?.accInfo };
-    obj.date = authState.workingDate;
-    getReturnHistory.mutate(tempStore?.accInfo);
+    let obj = { ...tempStore?.accInfo, authState };
+    getReturnHistory.mutate(obj);
   };
   return (
     <>

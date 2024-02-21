@@ -43,7 +43,7 @@ export const deleteScrollByVoucherNo = async (reqData) => {
 export const getAccDetails = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCOUNTDTL", {
-      COMP_CD: reqData.COMP_CD,
+      // COMP_CD: reqData.COMP_CD,
       BRANCH_CD: reqData.BRANCH_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD.padEnd(20, " "),
