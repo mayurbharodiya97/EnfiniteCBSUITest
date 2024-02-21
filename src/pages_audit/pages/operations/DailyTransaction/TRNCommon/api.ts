@@ -69,6 +69,7 @@ export const getCarousalCards = async (reqData) => {
       COMP_CD: reqData?.COMP_CD,
       ACCT_TYPE: reqData?.ACCT_TYPE,
       ACCT_CD: reqData?.ACCT_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
     });
   if (status === "0") {
     data.map((a) => {

@@ -667,6 +667,7 @@ export const Trn001 = () => {
   };
 
   const handleGetAccInfo = (rows, i) => {
+    console.log(rows[i], "rrr");
     let data = {
       COMP_CD: rows[i]?.branch?.info?.COMP_CD,
       ACCT_TYPE: rows[i]?.accType?.value,
