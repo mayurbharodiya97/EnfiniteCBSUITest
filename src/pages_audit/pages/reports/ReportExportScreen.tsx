@@ -281,8 +281,6 @@ const ReportExportScreen = ({
   return (
     <Dialog
       open={true}
-      //@ts-ignore
-      TransitionComponent={Transition}
       PaperProps={{
         style: {
           width: "65%",
