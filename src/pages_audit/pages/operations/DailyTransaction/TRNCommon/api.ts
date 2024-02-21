@@ -23,7 +23,6 @@ export const deleteScrollByScrollNo = async (reqData) => {
 };
 
 export const deleteScrollByVoucherNo = async (reqData) => {
-  console.log(reqData, "deleteScrollByVoucherNo");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
       DETAILS_DATA: { isDeleteRow: [reqData], isUpdatedRow: [], isNewRow: [] },
@@ -62,7 +61,6 @@ export const getAccDetails = async (reqData) => {
 };
 
 export const getCarousalCards = async (reqData) => {
-  console.log(reqData, "reqData");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DAILYTRNCARDDTL", {
       PARENT_TYPE: reqData?.PARENT_TYPE,
@@ -84,14 +82,12 @@ export const getCarousalCards = async (reqData) => {
 };
 
 export const getTabsByParentType = async (reqData) => {
-  console.log(reqData, "reqData");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
       PARENT_TYPE: reqData,
     });
   if (status === "0") {
     let responseData = data;
-    console.log(data, "res data");
     return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);

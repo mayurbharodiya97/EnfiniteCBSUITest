@@ -110,7 +110,6 @@ const CommonFooter = ({
     }
   };
   const handleDeleteScroll = () => {
-    console.log(filteredRows, "filteredRows");
     let data = {
       COMP_CD: authState.companyID,
       BRANCH_CD: authState?.user?.branchCode,
@@ -152,7 +151,6 @@ const CommonFooter = ({
 
   const handleScroll = (txt) => {
     txt.toString();
-    console.log("txt", txt);
     if (!txt) {
       txt = "";
     }
@@ -211,9 +209,7 @@ const CommonFooter = ({
               variant="contained"
               color="primary"
               onClick={() => {
-                tempStore?.accInfo?.ACCT_CD
-                  ? setOtherTrxDialog(true)
-                  : console.log("");
+                tempStore?.accInfo?.ACCT_CD && setOtherTrxDialog(true);
               }}
             >
               Other Trn./Lien/SI Detail

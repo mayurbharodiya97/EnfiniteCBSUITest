@@ -140,9 +140,7 @@ export const Trn001 = () => {
     setCardStore({ ...cardStore, cardsInfo: [] });
     setTabsData([]);
   }, []);
-  useEffect(() => {
-    console.log(index, "index");
-  }, [index]);
+
   useEffect(() => {
     //bug checker on row change
     console.log("rows trn1", rows);
@@ -304,7 +302,6 @@ export const Trn001 = () => {
   const saveScroll = useMutation(API.saveScroll, {
     onSuccess: (res) => {
       setScrollSaveRes(res.data);
-      console.log(res, "savescrollres");
       let isSuccess = res?.data?.some((a) => a?.TRAN_CD);
       if (isSuccess) {
         setSaveDialog(false);
@@ -459,7 +456,6 @@ export const Trn001 = () => {
   };
 
   const handleDate = (e, i) => {
-    console.log(e, "date e");
     const obj = [...rows];
     obj[i].date = e;
     setRows(obj);
@@ -526,48 +522,6 @@ export const Trn001 = () => {
       (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
       handleAddRow();
-  };
-
-  const handleValidate = (rows) => {
-    //bug checker on row change
-    console.log("rows trn1", rows);
-    let i = 0;
-    rows[i].bug = false;
-    if (rows.length > 0) {
-      i = rows.length - 1;
-    }
-    if (
-      !rows[i].trx?.code ||
-      !rows[i].branch ||
-      !rows[i].accType ||
-      !rows[i].accNo
-    ) {
-      rows[i].bug = true;
-    }
-
-    if (!rows[i].isCredit && (!rows[i].date || !rows[i].cNo)) {
-      rows[i].bug = true;
-    }
-
-    if (rows[i]?.isCredit && !(Number(rows[i]?.credit) > 0)) {
-      //credit true
-      rows[i].bug = true;
-    }
-    if (!rows[i]?.isCredit && !(Number(rows[i]?.debit) > 0)) {
-      //debit true
-      rows[i].bug = true;
-    }
-
-    if (rows[i]?.trx?.code == "4" && !rows[i]?.scroll) {
-      rows[i].bug = true;
-    }
-
-    if (!rows[i]?.isCredit && rows[i].bugCNo) {
-      rows[i].bug = true;
-    }
-
-    let result = rows?.some((a) => a?.bug);
-    setIsSave(!result);
   };
 
   //fns > logic> Table=====================================================================
@@ -667,7 +621,6 @@ export const Trn001 = () => {
   };
 
   const handleGetAccInfo = (rows, i) => {
-    console.log(rows[i], "rrr");
     let data = {
       COMP_CD: rows[i]?.branch?.info?.COMP_CD,
       ACCT_TYPE: rows[i]?.accType?.value,
@@ -687,7 +640,6 @@ export const Trn001 = () => {
   };
 
   const handleScrollSave1 = () => {
-    console.log(isSave, "isSave");
     let isErrCNo = rows.some((a) => a.bugCNo);
     let isErrAccNo = rows.some((a) => a.bugAccNo || a.bugMsgAccNo);
     let isErrDate = rows.some((a) => a.bugDate);

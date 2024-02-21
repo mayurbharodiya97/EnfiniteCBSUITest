@@ -41,8 +41,6 @@ export const getTRN002List = async (reqData) => {
 
 //Operations
 export const confirmScroll = async (reqData) => {
-  console.log(reqData, "reqqq");
-
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CONFIRMDAILYTRNDATA", {
       CONFIRMED: "Y",
