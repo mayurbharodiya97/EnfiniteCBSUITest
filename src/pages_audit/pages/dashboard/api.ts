@@ -41,8 +41,8 @@ export const QuickAccessTableGridData = async ({
 export const TodaysTransactionTableGrid = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETTRANSACTIONDETAILS", {
-      COMP_CD: COMP_CD,
-      BRANCH_CD: BRANCH_CD,
+      // COMP_CD: COMP_CD,
+      // BRANCH_CD: BRANCH_CD,
     });
   if (status === "0") {
     return data;

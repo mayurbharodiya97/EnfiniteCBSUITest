@@ -29,7 +29,8 @@ export const en_language_data = {
     ResendOTP: "Resend OTP",
     GetNewOTP: "Get New OTP",
     ValidFor: "Valid for",
-    OtpExpired: "OTP Expired in",
+    OtpExpired: "OTP will expire in",
+    second: "Second(s).",
     Hello: " Hello",
     Back: "Back",
     VerifyOTP: "Verify OTP",
@@ -418,4 +419,30 @@ export const en_language_data = {
   CompanyInfo: "Company Info",
   // tab - controlling person dtl
   ControllingPersonDTL: "Details of Controlling Person",
+
+  sidebar: {
+    Dashboard: "Dashboard",
+
+    Configuration: "Configuration",
+    "Message Language Configuration": "Message Language Configuration",
+    "Select-Get API Configuration": "Select-Get API Configuration",
+    "Limit Security Master": "Limit Security Master",
+    "Common Master Configuration": "Common Master Configuration",
+
+    Master: "Master",
+    "Bank Document Template Entry": "Bank Document Template Entry",
+    "NPA Category Master": "NPA Category Master",
+    "NPA Provision Master": "NPA Provision Master",
+    "Trade Master": "Trade Master",
+
+    Operation: "Operation",
+    "All Screens": "All Screens",
+    "C-KYC Individual/Legal Entry": "C-KYC Individual/Legal Entryss",
+    "Account Opening": "Account Opening",
+    "Teller Transaction(Maker)": "Teller Transaction(Maker)",
+    "Cheque Book Issue Entry": "Cheque Book Issue Entry",
+    "Limit Entry": "Limit Entry",
+    "Stock Entry": "Stock Entry",
+    "Inward Clearing Process": "Inward Clearing Process",
+  },
 };

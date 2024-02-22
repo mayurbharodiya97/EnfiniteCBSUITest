@@ -736,7 +736,7 @@ export const ActionWiseAPIConfiguration = {
   },
 
   ACCTNOVALIDATION: {
-    url: "/accountServiceAPI/ACCTNOVALIDATION",
+    url: "/enfinityCommonServiceAPI/ACCTNOVALIDATION",
     packageName: "",
   },
   GETDLYTRNTABFIELDDISP: {

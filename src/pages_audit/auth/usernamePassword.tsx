@@ -179,7 +179,7 @@ export const UsernamePasswordField = ({
             </div>
             <div style={{ marginTop: "20px", display: "flex" }}>
               <div style={{ flex: "auto", textAlign: "end" }}>
-                <a href="forgotpassword">{t("ForgotPassword")}</a>
+                <a href="forgotpassword" style={{color:"var(--theme-color3)"}}>{t("ForgotPassword")}</a>
               </div>
             </div>
             <div style={{ marginTop: "20px", display: "flex" }}>
