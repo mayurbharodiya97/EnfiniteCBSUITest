@@ -398,7 +398,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                         // color="secondary"
                         sx={{ color: "var(--theme-color1)" }}
                         variant="indeterminate"
-                        size={20}
+                        // size={20}
                         {...CircularProgressProps}
                       />
                     ) : (
