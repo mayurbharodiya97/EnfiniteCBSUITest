@@ -1,7 +1,7 @@
 export const forceExpireMetaData = {
   form: {
     name: "limitEntry",
-    label: "Limit Entry",
+    label: "Force-Expire Limit",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -53,67 +53,27 @@ export const forceExpireMetaData = {
   fields: [
     {
       render: {
-        componentType: "textField",
-      },
-      name: "BRANCH_CD",
-      label: "Branch",
-      placeholder: "Branch Code",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_TYPE",
-      label: "AccountType",
-      placeholder: "EnterAccountType",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_CD",
-      label: "ACNo",
-      placeholder: "EnterAcNo",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
-
-    {
-      render: {
         componentType: "amountField",
       },
       name: "LIMIT_AMOUNT",
       label: "Limit Amount",
-      placeholder: "Limit Amount",
       isReadOnly: true,
+      // textFieldStyle: {
+      //   "& .MuiInputBase-input": {
+      //     textAlign: "right",
+      //     background: "var(--theme-color7)",
+      //   },
+      //   // "& .MuiInputLabel-formControl": {
+      //   //   right: "0",
+      //   //   left: "auto",
+      //   // },
+      // },
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -123,46 +83,53 @@ export const forceExpireMetaData = {
       },
       name: "SECURITY_CD",
       label: "Security Code",
-      placeholder: "Security Code",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "SECURITY",
-      label: "Security ",
-      placeholder: "Security",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "SECURITY",
+    //   label: "Security ",
+    //   isReadOnly: true,
+    //   GridProps: {
+    //     xs: 12,
+    //     md: 3,
+    //     sm: 3,
+    //     lg: 3,
+    //     xl: 3,
+    //   },
+    // },
     {
       render: {
         componentType: "textField",
       },
       name: "FD_BRANCH_CD",
       label: "FD-Branch Code",
-      placeholder: "FD-Branch Code",
+      // textFieldStyle: {
+      //   "& .MuiInputBase-input": {
+      //     textAlign: "right",
+      //     background: "var(--theme-color7)",
+      //   },
+      //   // "& .MuiInputLabel-formControl": {
+      //   //   right: "0",
+      //   //   left: "auto",
+      //   // },
+      // },
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -172,14 +139,23 @@ export const forceExpireMetaData = {
       },
       name: "FD_TYPE",
       label: "FD-Type",
-      placeholder: "FD-Type",
+      // textFieldStyle: {
+      //   "& .MuiInputBase-input": {
+      //     textAlign: "right",
+      //     background: "var(--theme-color7)",
+      //   },
+      //   // "& .MuiInputLabel-formControl": {
+      //   //   right: "0",
+      //   //   left: "auto",
+      //   // },
+      // },
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -188,14 +164,23 @@ export const forceExpireMetaData = {
       },
       name: "FD_ACCT_CD",
       label: "FD-Account No",
-      placeholder: "FD-Account No",
       isReadOnly: true,
+      // textFieldStyle: {
+      //   "& .MuiInputBase-input": {
+      //     textAlign: "right",
+      //     background: "var(--theme-color7)",
+      //   },
+      //   "& .MuiInputLabel-formControl": {
+      //     right: "0",
+      //     left: "auto",
+      //   },
+      // },
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -204,14 +189,23 @@ export const forceExpireMetaData = {
       },
       name: "FD_NO",
       label: "FD Number",
-      placeholder: "FD Number",
       isReadOnly: true,
+      // textFieldStyle: {
+      //   "& .MuiInputBase-input": {
+      //     textAlign: "right",
+      //     background: "var(--theme-color7)",
+      //   },
+      //   // "& .MuiInputLabel-formControl": {
+      //   //   right: "0",
+      //   //   left: "auto",
+      //   // },
+      // },
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -220,14 +214,13 @@ export const forceExpireMetaData = {
       },
       name: "ENTRY_DT",
       label: "Entry Date",
-      placeholder: "Entry Date",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -236,14 +229,13 @@ export const forceExpireMetaData = {
       },
       name: "TRAN_DT",
       label: "Effective Date",
-      placeholder: "Effective Date",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -253,14 +245,13 @@ export const forceExpireMetaData = {
       },
       name: "EXPIRY_DT",
       label: "Expiry Date",
-      placeholder: "Expiry Date",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -269,14 +260,39 @@ export const forceExpireMetaData = {
       },
       name: "SECURITY_VALUE",
       label: "Security Value",
-      placeholder: "Security Value",
+      isReadOnly: true,
+      // textFieldStyle: {
+      //   "& .MuiInputBase-input": {
+      //     textAlign: "right",
+      //     background: "var(--theme-color7)",
+      //   },
+      //   // "& .MuiInputLabel-formControl": {
+      //   //   right: "0",
+      //   //   left: "auto",
+      //   // },
+      // },
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "SECURITY",
+      label: "Security Description",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
     {
@@ -285,14 +301,13 @@ export const forceExpireMetaData = {
       },
       name: "MARGIN",
       label: "Margin",
-      placeholder: "Margin",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -302,14 +317,13 @@ export const forceExpireMetaData = {
       },
       name: "INT_RATE",
       label: "Int. Rate",
-      placeholder: "Int. Rate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -318,14 +332,13 @@ export const forceExpireMetaData = {
       },
       name: "PENAL_RATE",
       label: "Penal Rate",
-      placeholder: "Penal Rate",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -335,14 +348,14 @@ export const forceExpireMetaData = {
       },
       name: "DRAWING_POWER",
       label: "Drawing Power",
-      placeholder: "Drawing Power",
+      defaultValue: "0",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -352,7 +365,7 @@ export const forceExpireMetaData = {
       },
       name: "REMARKS",
       label: "Remarks",
-      placeholder: "Remarks",
+      placeholder: "Enter Remarks",
       dependentFields: ["EXPIRED_FLAG"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
         if (dependentFieldsValues?.EXPIRED_FLAG?.value === "A") {
@@ -367,10 +380,10 @@ export const forceExpireMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
 
@@ -379,34 +392,17 @@ export const forceExpireMetaData = {
         componentType: "datePicker",
       },
       name: "RESOLUTION_DATE",
-      label: "Resolution DT",
-      placeholder: "Resolution DT",
+      label: "Resolution Date",
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "TRAN_CD",
-      label: "Tran CD",
-      placeholder: "Tran CD",
-      isReadOnly: true,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-    },
     {
       render: {
         componentType: "datePicker",
@@ -430,10 +426,10 @@ export const forceExpireMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {

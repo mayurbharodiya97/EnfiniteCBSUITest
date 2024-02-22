@@ -60,6 +60,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
       onlySingleSelectionAllow = false,
       isNewRowStyle = false,
       defaultSelectedRowId = null,
+      ReportExportButton,
     },
     ref
   ) => {
@@ -333,6 +334,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         defaultSelectedRowId={defaultSelectedRowId}
         searchPlaceholder={metaData.gridConfig?.searchPlaceholder ?? "records"}
         paginationText={metaData.gridConfig?.paginationText ?? "records"}
+        ReportExportButton={ReportExportButton}
       />
     );
   }

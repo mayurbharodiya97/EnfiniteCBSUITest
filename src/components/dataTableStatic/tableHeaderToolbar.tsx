@@ -8,6 +8,7 @@ import { TableFilterComponent } from "../dataTable/tableFilterComponent";
 import { ColumnVisibility } from "../dataTable/columnVisibility";
 import { IconButton, Toolbar, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { GradientButton } from "components/styledComponent/button";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -54,6 +55,8 @@ export const TableHeaderToolbar = forwardRef<any, any>(
       allowColumnHiding,
       headerToolbarStyle,
       searchPlaceholder,
+      ReportExportButton,
+      setOpenExport
     },
     ref
     ) => {
@@ -125,6 +128,10 @@ export const TableHeaderToolbar = forwardRef<any, any>(
             searchPlaceholder={searchPlaceholder}
           />
         )}
+        {ReportExportButton && 
+        <GradientButton
+          onClick={() => setOpenExport(true)} endicon="GetApp"
+        >Export</GradientButton>}
         <RenderActions
           key="alwaysRender"
           selectedRows={selectedFlatRows}

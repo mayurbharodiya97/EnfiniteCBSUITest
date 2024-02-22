@@ -113,6 +113,7 @@ export interface GridWrapperPropTypes {
   onlySingleSelectionAllow?: boolean;
   isNewRowStyle?: boolean;
   defaultSelectedRowId?: any;
+  ReportExportButton?:boolean
 }
 
 export interface YupSchemaMetaDataType {

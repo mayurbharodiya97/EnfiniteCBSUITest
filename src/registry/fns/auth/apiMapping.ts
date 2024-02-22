@@ -736,7 +736,7 @@ export const ActionWiseAPIConfiguration = {
   },
 
   ACCTNOVALIDATION: {
-    url: "/accountServiceAPI/ACCTNOVALIDATION",
+    url: "/enfinityCommonServiceAPI/ACCTNOVALIDATION",
     packageName: "",
   },
   GETDLYTRNTABFIELDDISP: {
@@ -928,6 +928,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCHQVIEWDETAILS: {
     url: "chequeServiceAPI/GETCHQVIEWDETAILS",
+    packageName: "",
+  },
+  GETDDDWACCTTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDDWACCTTYPE",
+    packageName: "",
+  },
+  GETLIMITDATAVALIDATE: {
+    url: "loanServiceAPI/GETLIMITDATAVALIDATE",
+    packageName: "",
+  },
+  VALIDDELETELIMITDATA: {
+    url: "loanServiceAPI/VALIDDELETELIMITDATA",
     packageName: "",
   },
 };

@@ -30,7 +30,8 @@ export const fr_language_data = {
     ResendOTP: "Renvoyer OTP",
     GetNewOTP: "Obtenez un nouvel OTP",
     ValidFor: "Valable",
-    OtpExpired: "OTP expiré",
+    OtpExpired: "otp expirera dans",
+    second:"Seconde(s).",
     Hello: " Bonjour",
     Back: "Dos",
     VerifyOTP: "Vérifier OTP",
@@ -335,4 +336,30 @@ export const fr_language_data = {
   PoIOfRelatedPerson: "Preuve d'identité [PoI] de la personne liée",
   AttesDetailsIPVBy:
     "Détails de l'attestation [IPV-Identity Preuve vérifiée par]",
+
+    sidebar: {
+      "Dashboard": "Tableau de bord",
+    
+      "Configuration": "Configuration",
+      "Message Language Configuration": "Configuration de la langue des messages",
+      "Select-Get API Configuration": "Configuration de l'API Select-Get",
+      "Limit Security Master": "Maître de sécurité des limites",
+      "Common Master Configuration": "Configuration du maître commun",
+    
+      "Master": "Maître",
+      "Bank Document Template Entry": "Entrée du modèle de document bancaire",
+      "NPA Category Master": "Maître de catégorie NPA",
+      "NPA Provision Master": "Maître de provision NPA",
+      "Trade Master": "Maître des échanges",
+    
+      "Operation": "Opération",
+      "All Screens": "Tous les écrans",
+      "C-KYC Individual/Legal Entry": "Entrée individuelle/légale C-KYC",
+      "Account Opening": "Ouverture de compte",
+      "Teller Transaction(Maker)": "Transaction au guichet (Créateur)",
+      "Cheque Book Issue Entry": "Entrée de délivrance de chéquier",
+      "Limit Entry": "Entrée de limite",
+      "Stock Entry": "Entrée de stock",
+      "Inward Clearing Process": "Processus de compensation entrante"
+    },
 };
