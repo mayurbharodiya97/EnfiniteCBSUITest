@@ -64,6 +64,9 @@ const StyledRadioField = withStyles({
       //color: "#26A456",
       color: "var(--theme-color1)",
     },
+    "& .css-ih0lv8-MuiButtonBase-root-MuiRadio-root.Mui-checked":{
+      color:"var(--theme-color1)"
+    }
   },
 })(FormControl);
 

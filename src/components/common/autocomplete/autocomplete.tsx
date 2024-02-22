@@ -379,7 +379,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                     {validationRunning || loadingOptions ? (
                       <CircularProgress
                         size={25}
-                        color="secondary"
+                        // color="secondary"
+                        sx={{color:"var(--theme-color1)"}}
                         variant="indeterminate"
                         {...CircularProgressProps}
                       />
