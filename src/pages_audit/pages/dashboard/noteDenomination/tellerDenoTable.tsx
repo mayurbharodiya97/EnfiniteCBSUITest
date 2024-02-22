@@ -23,6 +23,7 @@ import getCurrencySymbol from "components/custom/getCurrencySymbol";
 import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 import { formatCurrency } from "components/tableCellComponents/currencyRowCellRenderer";
 import { GradientButton } from "components/styledComponent/button";
+import { AccDetailContext } from "pages_audit/auth";
 
 const TellerDenoTable = ({
   displayTable,
@@ -44,6 +45,7 @@ const TellerDenoTable = ({
   textFieldRef,
   openAcctDtl,
   handleonFocus,
+  extraAccDtl,
 }) => {
   const fieldRef: any = useRef([]);
   const classes = useStyles();
@@ -64,7 +66,7 @@ const TellerDenoTable = ({
         }}
       >
         <DialogTitle variant="h6" sx={{ color: "var(--theme-color2)" }}>
-          {"View Transaction"}
+          {`Cash Receipt/Payment - ${extraAccDtl?.Name}`}
         </DialogTitle>
         {/* <DialogActions> */}
         <GradientButton
