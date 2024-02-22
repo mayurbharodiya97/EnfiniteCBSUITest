@@ -222,7 +222,7 @@ export const Trn002 = () => {
       if (row.CONFIRMED == "0") {
         setConfirmDialog(true);
       } else {
-        enqueueSnackbar("Scroll Already Confirmed", {
+        enqueueSnackbar("Transaction Already Confirmed", {
           variant: "error",
         });
       }

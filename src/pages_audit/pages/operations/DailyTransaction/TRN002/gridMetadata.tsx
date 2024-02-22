@@ -96,7 +96,7 @@ export const TRN002_TableMetaData: GridMetaDataType = {
       columnName: "Amount",
       sequence: 10,
       componentType: "currency",
-      width: 100,
+      width: 120,
       alignment: "right",
     },
 

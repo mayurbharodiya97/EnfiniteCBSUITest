@@ -72,10 +72,12 @@ export const Trn001 = () => {
   var defTableValue = {
     branch: defBranch,
     accType: { label: "", value: "", info: "" },
+    bugMsgAccType: "",
     accNo: "",
     bugAccNo: false,
     bugMsgAccNo: "",
     trx: { label: "", value: "", code: "" }, //TYPE_CD
+    bugMsgTrx: "",
     scroll: "", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
@@ -341,6 +343,15 @@ export const Trn001 = () => {
     handleGetAccInfo(obj, i);
   };
 
+  const handleAccTypeBlur = (e, i) => {
+    const obj = [...rows];
+    if (obj[i]?.accType?.value) {
+      obj[i].bugMsgAccType = "";
+    } else {
+      obj[i].bugMsgAccType = "AccType empty";
+    }
+    setRows(obj);
+  };
   const handleAccType = (e, value, i) => {
     const obj = [...rows];
     obj[i].accType = value;
@@ -373,6 +384,15 @@ export const Trn001 = () => {
     setRows(obj);
   };
 
+  const handleTrxBlur = (e, i) => {
+    const obj = [...rows];
+    if (obj[i]?.trx?.code) {
+      obj[i].bugMsgTrx = "";
+    } else {
+      obj[i].bugMsgTrx = "Trx empty";
+    }
+    setRows(obj);
+  };
   const handleTrx = (e, value, i) => {
     const obj = [...rows];
 
@@ -410,6 +430,15 @@ export const Trn001 = () => {
     handleTotal(obj);
   };
 
+  const handleScrollBlur = (e, i) => {
+    const obj = [...rows];
+    if (!obj[i].scroll) {
+      obj[i].bugMsgScroll = "scroll empty";
+    } else {
+      obj[i].bugMsgScroll = "";
+    }
+    setRows(obj);
+  };
   const handleScroll = (e, i) => {
     const obj = [...rows];
     obj[i].scroll = e.target.value;
@@ -549,8 +578,10 @@ export const Trn001 = () => {
     let defTableValue2 = {
       branch: defBranch,
       accType: { label: "", value: "", info: "" },
+      bugMsgAccType: "",
       accNo: "",
       trx: trxx,
+      bugMsgTrx: "",
       scroll: "", //token
       sdc: defSdc,
       remark: defSdc?.label,
@@ -640,13 +671,38 @@ export const Trn001 = () => {
   };
 
   const handleScrollSave1 = () => {
-    let isErrCNo = rows.some((a) => a.bugCNo);
-    let isErrAccNo = rows.some((a) => a.bugAccNo || a.bugMsgAccNo);
-    let isErrDate = rows.some((a) => a.bugDate);
-    let isRowBug = rows.some((a) => a.bug);
+    let isErrAccNo = false;
+    let isErrAccType = false;
+    let isErrTrx = false;
+    let isErrCNo = false;
+    let isErrDate = false;
 
-    if (isRowBug) {
-      enqueueSnackbar("Kindly fill all the required Fields", {
+    rows.map((a) => {
+      if (a.bugDate) {
+        isErrDate = true;
+      }
+      if (a.bugCNo) {
+        isErrCNo = true;
+      }
+      if (a.bugMsgTrx) {
+        isErrTrx = true;
+      }
+      if (a.bugMsgAccType) {
+        isErrAccType = true;
+      }
+
+      if (a.bugAccNo || a.bugMsgAccNo) {
+        isErrAccNo = true;
+      }
+    });
+
+    if (isErrTrx) {
+      enqueueSnackbar("Kindly Check, Error in Trx", {
+        variant: "error",
+      });
+    }
+    if (isErrAccType) {
+      enqueueSnackbar("Kindly Check, Error in A/C Type", {
         variant: "error",
       });
     }
@@ -694,8 +750,8 @@ export const Trn001 = () => {
         ENTERED_COMP_CD: a.branch?.info.COMP_CD,
         ACCT_TYPE: a.accType?.value,
         ACCT_CD: a.accNo.padStart(6, "0").padEnd(20, " "),
-        TYPE_CD: a.trx.code + "   ",
-        SCROLL1: a.scroll ?? "0",
+        TYPE_CD: a.trx?.code + "   ",
+        SCROLL1: a?.scroll ? a?.scroll : "0",
         SDC: a.sdc.value,
         REMARKS: a.remark,
         CHEQUE_NO: a.cNo ? a.cNo : "0",
@@ -834,7 +890,8 @@ export const Trn001 = () => {
                                 <TextField
                                   style={{ width: "130px" }}
                                   {...params}
-                                  error={a.accType?.value ? false : true}
+                                  onBlur={(e) => handleAccTypeBlur(e, i)}
+                                  error={a?.bugMsgAccType ? true : false}
                                 />
                               )}
                             />
@@ -848,7 +905,7 @@ export const Trn001 = () => {
                             <TextField
                               value={a.accNo}
                               fullWidth={true}
-                              error={!a.accNo || a.bugAccNo ? true : false}
+                              error={a?.bugMsgAccNo ? true : false}
                               size="small"
                               type="number"
                               onChange={(e) => handleAccNo(e, i)}
@@ -877,7 +934,8 @@ export const Trn001 = () => {
                                 <TextField
                                   {...params}
                                   style={{ width: "75px" }}
-                                  error={a.trx?.value ? false : true}
+                                  onBlur={(e) => handleTrxBlur(e, i)}
+                                  error={a?.bugMsgTrx ? true : false}
                                 />
                               )}
                             />{" "}
@@ -897,6 +955,8 @@ export const Trn001 = () => {
                             }
                             size="small"
                             onChange={(e) => handleScroll(e, i)}
+                            onBlur={(e) => handleScrollBlur(e, i)}
+                            error={a?.bugMsgScroll ? true : false}
                           />
                         </TableCell>
                         <Tooltip
@@ -937,6 +997,7 @@ export const Trn001 = () => {
                         <ErrTooltip
                           disableInteractive={true}
                           title={a?.bugMsgCNo && <h3>{a?.bugMsgCNo}</h3>}
+                          placement="top"
                         >
                           <TableCell
                             sx={{
