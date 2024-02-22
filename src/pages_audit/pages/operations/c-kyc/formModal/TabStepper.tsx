@@ -99,7 +99,8 @@ export default function TabStepper() {
     },
     [`&.${stepConnectorClasses.completed}`]: {
       [`& .${stepConnectorClasses.line}`]: {
-        borderColor: '#784af4',
+        // borderColor: '#784af4',
+        borderColor: 'var(--theme-color3)',
       },
     },
     [`& .${stepConnectorClasses.line}`]: {
@@ -126,7 +127,8 @@ export default function TabStepper() {
         }),
       },
       '& .QontoStepIcon-completedIcon': {
-        color: '#784af4',
+        // color: '#784af4',
+        color: 'var(--theme-color1)',
         // color: "red",
         zIndex: 1,
         fontSize: 28,

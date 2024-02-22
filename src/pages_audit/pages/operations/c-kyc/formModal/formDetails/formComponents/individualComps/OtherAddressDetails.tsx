@@ -17,13 +17,44 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     const { authState } = useContext(AuthContext);
     const [isNextLoading, setIsNextLoading] = useState(false)
     const { t } = useTranslation();
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
     const OtherAddDTLFormRef = useRef<any>("");
+    const [formStatus, setFormStatus] = useState<any[]>([])
     const myGridRef = useRef<any>(null);
     useEffect(() => {
         let refs = [OtherAddDTLFormRef]
-        handleCurrentFormRefctx(refs)
-    }, [])
+        handleCurrFormctx({
+          currentFormRefctx: refs,
+          colTabValuectx: state?.colTabValuectx,
+          currentFormSubmitted: null,
+          isLoading: false,
+        })
+      }, [])
+
+    useEffect(() => {
+        // console.log("qweqweqweqwe", formStatus2)
+        if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+          if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+            setIsNextLoading(false)
+            let submitted;
+            submitted = formStatus.filter(form => !Boolean(form))
+            if(submitted && Array.isArray(submitted) && submitted.length>0) {
+              submitted = false;
+            } else {
+              submitted = true;
+              handleStepStatusctx({
+                status: "completed",
+                coltabvalue: state?.colTabValuectx,
+              })
+            }
+            handleCurrFormctx({
+              currentFormSubmitted: submitted,
+              isLoading: false,
+            })
+            setFormStatus([])
+          }
+        }
+    }, [formStatus])    
 
     const OtherAddDTLSubmitHandler = (
         data: any,
@@ -33,7 +64,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
         actionFlag,
         hasError
     ) => {
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
         if(data && !hasError) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
@@ -62,7 +93,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
         }
         endSubmit(true)
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
     }
     const OtherAddDTLSubmitHandler2 = (
         data: any,
@@ -72,7 +103,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
         actionFlag,
         hasError
     ) => {
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         // console.log("qweqweqweo", data, data.OTHER_ADDRESS)     
         if(data && !hasError) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
@@ -149,19 +180,20 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
 
 
 
-
+            setFormStatus(old => [...old, true])
             // newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...newFormatOtherAdd}
-            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-            handleColTabChangectx(state?.colTabValuectx+1)
+            // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            // handleColTabChangectx(state?.colTabValuectx+1)
             // handleColTabChangectx(6)
             // handleColTabChangectx(state?.colTabValuectx+1)
 
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+            setFormStatus(old => [...old, false])
         }
         endSubmit(true)
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
     }
     // const initialVal = useMemo(() => {
     //     return state?.isFreshEntryctx
@@ -184,6 +216,9 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
+        handleCurrFormctx({
+            isLoading: true,
+        })
         const refs = [OtherAddDTLFormRef.current.handleSubmitError(e, "save", false)]
         handleSavectx(e, refs)
     }
@@ -218,7 +253,7 @@ const OtherAddressDetails = ({isCustomerData, setIsCustomerData, isLoading, setI
                     />
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
         </Grid>        
     )
 }

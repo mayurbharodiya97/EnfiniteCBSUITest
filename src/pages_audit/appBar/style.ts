@@ -74,7 +74,7 @@ export const useStyles = makeStyles((theme: any) => ({
     // cursor: "pointer",
   },
   heading_user_img_border: {
-    border: "2px dashed #4263C7",
+    border: "2px dashed var(--theme-color3)",
     borderRadius: "50%",
     padding: "4px",
   },

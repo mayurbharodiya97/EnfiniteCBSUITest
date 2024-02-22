@@ -95,23 +95,24 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
 };
 
 export const getCustomerDetailsonEdit = async (reqData) => {
+  // console.log("iuehfiwuehfwef", reqData)
   // COMP_CD, CUSTOMER_ID?, REQUEST_CD?}
-  const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
-  let payload = {}
-  // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
-  if(CUSTOMER_ID) {
-    payload = {
-      COMP_CD: COMP_CD,
-      CUSTOMER_ID: CUSTOMER_ID
-    }
-  } else {
-    payload = {
-      COMP_CD: COMP_CD,
-      REQUEST_CD: REQUEST_CD
-    }
-  }
+  // const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
+  // let payload = {}
+  // // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
+  // if(CUSTOMER_ID) {
+  //   payload = {
+  //     COMP_CD: COMP_CD,
+  //     CUSTOMER_ID: CUSTOMER_ID
+  //   }
+  // } else {
+  //   payload = {
+  //     COMP_CD: COMP_CD,
+  //     REQUEST_CD: REQUEST_CD
+  //   }
+  // }
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", payload);
+    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", reqData);
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
@@ -711,20 +712,20 @@ export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
 }
 
 // for getting pending entries, in grid
-export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:string, REQ_FLAG: string}) => {
-  const {COMP_CD, REQ_FLAG, ENTERED_DATE} = reqObj
+export const getPendingData = async (reqObj:{COMP_CD: string, BRANCH_CD: string, ENTERED_DATE?:string, REQ_FLAG: string}) => {
+  const {COMP_CD, BRANCH_CD, REQ_FLAG, ENTERED_DATE} = reqObj
   let payload = {}
   if(ENTERED_DATE) {
     payload = {
-      COMP_CD: COMP_CD, 
-      // BRANCH_CD: BRANCH_CD, 
+      // COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
       // ENTERED_DATE: ENTERED_DATE,
       REQ_FLAG: REQ_FLAG
     }
   } else {
     payload = {
-      COMP_CD: COMP_CD, 
-      // BRANCH_CD: BRANCH_CD, 
+      // COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
       REQ_FLAG: REQ_FLAG
     }
   }

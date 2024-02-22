@@ -60,7 +60,7 @@ export const SearchBar: FC<InputProps> = (props) => {
         placeholder={animatedText}
       />
       <div className={classes.search}>
-        <SearchIcon color="info" />
+        <SearchIcon sx={{ color: "var(--theme-color3)" }} />
       </div>
     </div>
   );

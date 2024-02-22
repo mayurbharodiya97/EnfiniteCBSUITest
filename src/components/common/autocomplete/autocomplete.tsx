@@ -340,7 +340,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         onBlur={handleBlurInterceptor}
         //change by parag  , disabled
         // disabled={isSubmitting}
-        disabled={readOnly}
+        disabled={isSubmitting || readOnly}
         filterOptions={
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"
@@ -394,9 +394,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   <Fragment>
                     {validationRunning || loadingOptions ? (
                       <CircularProgress
-                        color="secondary"
+                        size={25}
+                        // color="secondary"
+                        sx={{ color: "var(--theme-color1)" }}
                         variant="indeterminate"
-                        size={20}
+                        // size={20}
                         {...CircularProgressProps}
                       />
                     ) : (

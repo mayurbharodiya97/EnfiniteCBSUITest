@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react'
+import React, {useCallback, useReducer} from 'react'
 import * as API from "./api";
 import { CkycStateType } from './type';
 import { AuthSDK } from 'registry/fns/auth';
@@ -54,15 +54,18 @@ const initialState:any  = {
 
     confirmFlagctx: null,
     update_casectx: null,
-    isReadyToSavectx: false,
-    isReadyToUpdatectx: false,
     steps: {
         0: {status: ""}
     },
-    currentFormRefctx: [],
+    currentFormctx: {
+        currentFormRefctx: [],
+        currentFormSubmitted: null,
+        colTabValuectx: null,
+        isLoading: false,
+    },
     modifiedFormCols: {},
     updateFormDatactx: {},
-    modifiedFormFormat: {}
+    isFinalUpdatectx: false,
 
     // steps: {
     //     error: [],
@@ -133,16 +136,6 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
-        case "handle_isreadytosave":
-            return {
-                ...state,
-                ...action.payload
-            };
-        case "handle_isreadytoupdate":
-            return {
-                ...state,
-                ...action.payload
-            };
         case "update_formData":
             return {
                 ...state,
@@ -178,7 +171,12 @@ const Reducer = (state, action) => {
                 ...state,
                 ...action.payload
             };
-        case "set_currentFormRef":
+        case "set_currentFormObj":
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "onFinalUpdate":
             return {
                 ...state,
                 ...action.payload
@@ -198,7 +196,7 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleFormModalOpenOnEditctx = (recordData, retrieveFormdata) => {
+    const handleFormModalOpenOnEditctx = (recordData) => {
         // console.log(retrieveFormdata, "qweqeqeqwsxqswq", recordData)
         // required - CATEGORY_CODE, CONSTITUTION_TYPE, CUSTOMER_TYPE
         // if(recordData[0]?.data?.CATEGORY_CONSTITUTIONS) {
@@ -303,10 +301,13 @@ const CkycProvider = ({children}) => {
                 updateFormDatactx: {},
                 confirmFlagctx: "", 
                 update_casectx: "", 
-                isReadyToSavectx: false,
-                isReadyToUpdatectx: false,
-                modifiedFormFormat: {},                
-                currentFormRefctx: [],
+                currentFormctx: {
+                    currentFormRefctx: [],
+                    currentFormSubmitted: null,
+                    colTabValuectx: null,
+                    isLoading: false,
+                },
+                isFinalUpdatectx: false,
             }
         })
     }
@@ -458,24 +459,6 @@ const CkycProvider = ({children}) => {
         // })
     }
 
-    const handleReadyToSavectx = (value:boolean) => {
-        dispatch({
-            type: "handle_isreadytosave",
-            payload: {
-                isReadyToSavectx: value
-            }
-        })
-    }
-
-    const handleReadyToUpdatectx = (value:boolean) => {
-        dispatch({
-            type: "handle_isreadytoupdate",
-            payload: {
-                isReadyToUpdatectx: value
-            }
-        })
-    }
-
     const handleFormDataonSavectx = (data) => {
         dispatch({
             type: "update_formData",
@@ -591,11 +574,31 @@ const CkycProvider = ({children}) => {
         })
     }
 
-    const handleCurrentFormRefctx = (refs:any[]) => {
+
+
+    // interface CurrFormObj {
+    //     currentFormRefctx?: any,
+    //     currentFormSubmitted?: any,
+    //     colTabValuectx?: any,
+    // }
+    const handleCurrFormctx = useCallback((obj) => {
+        let currVal = state?.currentFormctx
         dispatch({
-            type: "set_currentFormRef",
+            type: "set_currentFormObj",
             payload: {
-                currentFormRefctx: refs
+                currentFormctx: {
+                    ...currVal,
+                    ...obj 
+                }
+            }
+        })
+    }, [state?.currentFormctx])
+
+    const onFinalUpdatectx = (val:boolean) => {
+        dispatch({
+            type: "onFinalUpdate",
+            payload: {
+                isFinalUpdatectx: val
             }
         })
     }
@@ -656,7 +659,6 @@ const CkycProvider = ({children}) => {
 
 
     const handleUpdatectx = async ({COMP_CD, event}) => {
-        // console.log("handleUpdatectx in", Boolean(event), state?.currentFormRefctx)
 
 
 
@@ -683,7 +685,7 @@ const CkycProvider = ({children}) => {
         }
         let other_data = {
             IsNewRow: !state?.req_cd_ctx ? true : false,
-            // REQ_CD: state?.req_cd_ctx ?? "",
+            REQ_CD: state?.req_cd_ctx ?? "",
             // COMP_CD: COMP_CD ?? "",
         }
         console.log("feiuqwdwqduyqewd",updated_tabs)
@@ -896,7 +898,8 @@ const CkycProvider = ({children}) => {
                 handleApiRes, 
                 // handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
-                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, handleStepStatusctx, handleReadyToSavectx, handleReadyToUpdatectx, resetCkycctx, handleSavectx, handleUpdatectx, handleCurrentFormRefctx
+                handleFormDataonSavectx, handleFormDataonDraftctx, handleFormDataonRetrievectx, handleEditFormDatactx, handleModifiedColsctx, handlecustomerIDctx, 
+                handleStepStatusctx, resetCkycctx, handleSavectx, handleUpdatectx, handleCurrFormctx, onFinalUpdatectx
             }}
         >
             {children}

@@ -4,7 +4,7 @@ import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } 
 import { GradientButton } from "components/styledComponent/button";
 
 export const CustomerSaveDialog = ({open, onClose, onFormClose}) => {
-    const {state, handleFormModalClosectx} = useContext(CkycContext);
+    const {state, handleFormModalClosectx, handleCurrFormctx} = useContext(CkycContext);
     return <Dialog open={open} maxWidth="sm"
         PaperProps={{
             style: {
@@ -45,6 +45,10 @@ export const CustomerSaveDialog = ({open, onClose, onFormClose}) => {
             <GradientButton
                 autoFocus
                 onClick={() => {
+                    handleCurrFormctx({
+                        currentFormSubmitted: null,
+                        isLoading: false,
+                    })
                     handleFormModalClosectx()
                     onFormClose()
                 }}

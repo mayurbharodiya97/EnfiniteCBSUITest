@@ -31,7 +31,8 @@ export const guj_language_data = {
     ResendOTP: "ઓટીપી ફરીથી મોકલો",
     GetNewOTP: "નવો ઓટીપી મેળવો",
     ValidFor: "માટે માન્ય",
-    OtpExpired: "ઓટીપી સમાપ્ત",
+    OtpExpired: "ઓટીપી સમાપ્ત થશે",
+    second:"સેકન્ડ માં",
     Hello: "નમસ્તે",
     Back: "પાછા",
     VerifyOTP: "ઓટીપી ચકાસો",
@@ -233,4 +234,30 @@ export const guj_language_data = {
   GetDetails: "વિગતો મેળવો",
 
   EnterAcNo: "એકાઉન્ટ નંબર દાખલ કરો.",
+
+  sidebar: {
+    Dashboard:"ડેશબોર્ડ",
+
+    Configuration: "રૂપરેખાંકન",
+    "Message Language Configuration":"સંદેશ ભાષા રૂપરેખાંકન",
+    "Select-Get API Configuration":"એપીઆઈ રૂપરેખાંકન મેળવો પસંદ કરો",
+    "Limit Security Master":"સીમિત સુરક્ષા માસ્ટર",
+    "Common Master Configuration":"સામાન્ય માસ્ટર રૂપરેખાંકન",
+
+    Master:"માસ્ટર્સ",
+    "Bank Document Template Entry":"બેંક ડોક્યુમેન્ટ ટેમ્પલેટ એન્ટ્રી",
+    "NPA Category Master":"એનપીએ કેટેગરી માસ્ટર",
+    "NPA Provision Master":"એનપીએ જોગવાઈ માસ્ટર",
+    "Trade Master":"વેપાર માસ્ટર",
+
+    Operation:"ઓપરેશન",
+    "All Screens":"બધી સ્ક્રીન",
+    "C-KYC Individual/Legal Entry":"સી-કેવાયસી વ્યક્તિગત/કાનૂની પ્રવેશ",
+    "Account Opening":"ખાતું ખોલવાનું",
+    "Teller Transaction(Maker)": "ટેલર ટ્રાન્ઝેક્શન (નિર્માતા)",
+    "Cheque Book Issue Entry":"બુક ઇશ્યુ એન્ટ્રી તપાસો",
+    "Limit Entry":"પ્રવેશ મર્યાદા",
+    "Stock Entry":"સ્ટોક એન્ટ્રી",
+    "Inward Clearing Process":"ઇનવર્ડ ક્લિયરિંગ પ્રક્રિયા",
+  },
 };

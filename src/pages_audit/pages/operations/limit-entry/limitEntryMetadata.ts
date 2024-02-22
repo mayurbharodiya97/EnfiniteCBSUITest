@@ -1,4 +1,6 @@
+import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
+import { utilFunction } from "components/utils";
 
 export const limitEntryMetaData = {
   form: {
@@ -71,21 +73,31 @@ export const limitEntryMetaData = {
       },
       accountTypeMetadata: {
         // disableCaching: true,
+        dependentFields: ["ACCT_TYPE"],
         options: (dependentValue, formState, _, authState) => {
-          return API.securityDropDownListType(
-            authState?.user?.id,
-            authState?.user?.branchCode,
-            authState?.companyID
-          );
+          console.log("<<<<fnef", dependentValue, formState, _, authState);
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "ETRN/046",
+          });
         },
-        _optionsKey: "securityDropDownListType",
-        dependentFields: ["BRANCH_CD", "SECURITY_CD"],
+        // _optionsKey: "get_Account_Type",
 
-        postValidationSetCrossFieldValues: async (field) => {
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          authState,
+          dependentValue
+        ) => {
           if (field?.value) {
             return {
+              PARENT_TYPE: {
+                value:
+                  dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
+              },
               ACCT_CD: { value: "" },
-
               ACCT_NM: { value: "" },
               ACCT_BAL: { value: "" },
             };
@@ -93,7 +105,6 @@ export const limitEntryMetaData = {
         },
       },
       accountCodeMetadata: {
-        dependentFields: ["ACCT_TYPE", "SECURITY_CD", "BRANCH_CD"],
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -109,7 +120,10 @@ export const limitEntryMetaData = {
               COMP_CD: authState?.companyID,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
               ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
-              ACCT_CD: field.value.padStart(6, "0").padEnd(20, " "),
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                field?.value,
+                dependentValue?.ACCT_TYPE?.optionData
+              ),
               GD_TODAY_DT: authState?.workingDate,
               SCREEN_REF: "EMST/046",
             };
@@ -168,9 +182,6 @@ export const limitEntryMetaData = {
                 NSC_FD_BTN: true,
               });
               return {
-                // ACCT_CD: {
-                //   value: postData?.[0]?.ACCT_NM,
-                // },
                 ACCT_NM: {
                   value: postData?.[0]?.ACCT_NM,
                 },
@@ -258,6 +269,13 @@ export const limitEntryMetaData = {
       },
       name: "HIDDEN_TAX_RATE",
     },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "PARENT_TYPE",
+    },
     {
       render: {
         componentType: "textField",
@@ -282,7 +300,6 @@ export const limitEntryMetaData = {
       name: "TRAN_BAL",
       label: "Tran. Balance",
       placeholder: "Balance",
-      // isFieldFocused: false,
       type: "text",
       isReadOnly: true,
       GridProps: {
@@ -326,7 +343,7 @@ export const limitEntryMetaData = {
           { value: "Hoc", label: "Ad-hoc Limit" },
         ];
       },
-      _optionsKey: "getChequeLeavesList",
+      _optionsKey: "limitTypeList",
       GridProps: {
         xs: 12,
         md: 2,
@@ -369,8 +386,7 @@ export const limitEntryMetaData = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
             A_PARENT_TYPE:
-              dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim() ??
-              dependentValue?.PARA_TYPE?.value,
+              dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
           };
           return API.getSecurityListData(apiReq);
         }
@@ -387,8 +403,6 @@ export const limitEntryMetaData = {
         if (field?.value) {
           formState.setDataOnFieldChange("SECURITY_CODE", {
             SECURITY_CD: field?.value,
-            LIMIT_MARGIN:
-              dependentValue?.SECURITY_CD?.optionData?.[0]?.LIMIT_MARGIN,
             HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
             HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
             HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,

@@ -1,8 +1,14 @@
 import * as React from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { GradientButton } from 'components/styledComponent/button';
+import { CkycContext } from '../../CkycContext';
 
 export const PreventUpdateDialog = ({open, onClose}) => {
+    const {onFinalUpdatectx} = React.useContext(CkycContext);
+    const onDialogClose = () => {
+        onFinalUpdatectx(false)
+        onClose()
+    }
     return <Dialog open={open} maxWidth="sm"
     PaperProps={{
         style: {
@@ -47,7 +53,7 @@ export const PreventUpdateDialog = ({open, onClose}) => {
         <DialogActions>
           <GradientButton
               autoFocus
-              onClick={onClose}
+              onClick={onDialogClose}
           >
               Close
           </GradientButton>

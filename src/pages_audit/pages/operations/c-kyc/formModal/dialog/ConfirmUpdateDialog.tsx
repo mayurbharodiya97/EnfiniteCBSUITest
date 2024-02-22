@@ -10,11 +10,16 @@ export const ConfirmUpdateDialog = ({open, onClose, mutationFormDTL,
 }) => {
     const [shouldUpdate, setShouldUpdate] = React.useState(false)
     const { authState } = React.useContext(AuthContext);
-    const {state, handleUpdatectx, handleFormDataonSavectx, handleModifiedColsctx} = React.useContext(CkycContext);
+    const {state, handleUpdatectx, handleFormDataonSavectx, handleModifiedColsctx, onFinalUpdatectx, handleCurrFormctx} = React.useContext(CkycContext);
 
 
     const mutation: any = useMutation(handleUpdatectx, {
         onSuccess: (data:any) => {
+            handleCurrFormctx({
+                currentFormSubmitted: null,
+                isLoading: false,
+            })
+            onFinalUpdatectx(false)
             // setIsUpdated(true)
             // console.log("data on save", data)
             handleModifiedColsctx({})
@@ -32,6 +37,11 @@ export const ConfirmUpdateDialog = ({open, onClose, mutationFormDTL,
             // }
         },
         onError: (error: any) => {
+            handleCurrFormctx({
+                currentFormSubmitted: null,
+                isLoading: false,
+            })
+            onFinalUpdatectx(false)
             handleModifiedColsctx({})
             handleFormDataonSavectx({})
             // console.log("data on error", error)
@@ -44,6 +54,15 @@ export const ConfirmUpdateDialog = ({open, onClose, mutationFormDTL,
     //         // on success of form data retrieve            
     //     }
     // }, [mutationFormDTL.data, mutationFormDTL.isSuccess])
+
+    const abortUpdate = () => {
+        handleCurrFormctx({
+            currentFormSubmitted: null,
+            isLoading: false,
+        })
+        onFinalUpdatectx(false)
+        onClose()
+    }
 
 
     return <Dialog open={open} maxWidth="sm"
@@ -84,10 +103,7 @@ export const ConfirmUpdateDialog = ({open, onClose, mutationFormDTL,
                         ? "Updating..."
                         : mutation.data 
                             ? "Your Changes applied successfully.."
-                            : mutation.error && <>
-                                {mutation.error.error_msg}
-                                {mutation.error.error_detail}
-                            </>
+                            : mutation.error && "Something went wrong!"
                 }
                 {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
                 {/* <HelpIcon color="secondary" fontSize="large" /> */}
@@ -108,14 +124,14 @@ export const ConfirmUpdateDialog = ({open, onClose, mutationFormDTL,
             </GradientButton>}
             {!shouldUpdate && <GradientButton
                 autoFocus
-                onClick={onClose}
+                onClick={abortUpdate}
             >
                 No
             </GradientButton>}
             {shouldUpdate && <GradientButton
                 autoFocus
                 disabled={mutation.isLoading}
-                onClick={onClose}
+                onClick={abortUpdate}
                 endIcon={
                     mutation.isLoading ? <CircularProgress size={20} /> : null
                 }

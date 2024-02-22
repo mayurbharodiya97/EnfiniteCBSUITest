@@ -1,5 +1,5 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-export const FD_gridMetaData: GridMetaDataType = {
+export const FD_gridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "FD Detail",
@@ -133,7 +133,7 @@ export const FD_gridMetaData: GridMetaDataType = {
     },
   ],
 };
-export const NSC_gridMetaData: GridMetaDataType = {
+export const NSC_gridData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "NSC Detail",

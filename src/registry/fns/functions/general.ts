@@ -627,6 +627,30 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
+  const get_Account_Type = async (apiReq) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETDDDWACCTTYPE", {
+        ...apiReq,
+      });
+    if (status === "0") {
+      let responseData = data;
+
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ ACCT_TYPE, PARENT_CODE, DESCRIPTION, ...other }) => {
+            return {
+              value: ACCT_TYPE,
+              label: ACCT_TYPE + " - " + DESCRIPTION,
+              ...other,
+            };
+          }
+        );
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
 
   return {
     GetMiscValue,
@@ -655,6 +679,7 @@ const GeneralAPISDK = () => {
     getZoneListData,
     getMatureInstDetail,
     getAccNoValidation,
+    get_Account_Type,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

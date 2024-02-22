@@ -22,8 +22,7 @@ const StyledToggleButtonGroup = withStyles((theme) => ({
     },
     "&.Mui-selected": {
       border: "1px solid #57D3C3",
-      background:
-        "linear-gradient(0deg, rgba(94,231,131,1) 0%, rgba(74,205,159,1) 10%, rgba(33,150,218,1) 100%)",
+      background: "var(--theme-color5)",
       color: "white",
     },
     "& label": {
