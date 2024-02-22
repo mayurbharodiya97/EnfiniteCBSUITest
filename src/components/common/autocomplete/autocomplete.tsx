@@ -340,7 +340,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         onBlur={handleBlurInterceptor}
         //change by parag  , disabled
         // disabled={isSubmitting}
-        disabled={readOnly}
+        disabled={isSubmitting || readOnly}
         filterOptions={
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"

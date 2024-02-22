@@ -930,6 +930,18 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/GETCHQVIEWDETAILS",
     packageName: "",
   },
+  GETDDDWACCTTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDDWACCTTYPE",
+    packageName: "",
+  },
+  GETLIMITDATAVALIDATE: {
+    url: "loanServiceAPI/GETLIMITDATAVALIDATE",
+    packageName: "",
+  },
+  VALIDDELETELIMITDATA: {
+    url: "loanServiceAPI/VALIDDELETELIMITDATA",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

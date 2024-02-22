@@ -5,7 +5,7 @@ import {
   Dialog,
   LinearProgress,
 } from "@mui/material";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
@@ -25,15 +25,13 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
     ...rows?.[0]?.data,
     FORCE_EXP_DT: authState?.workingDate,
   };
+  console.log("<<<rows", rows);
 
-  console.log("<<<newIntialData", newIntialData, authState?.workingDate);
   const forceExpire: any = useMutation(
     "crudLimitEntryData",
     crudLimitEntryData,
     {
       onSuccess: (data, variables) => {
-        console.log("<<<FONCE", data, variables);
-
         navigate(".");
         enqueueSnackbar("Force-Expired successfully", { variant: "success" });
         getLimitDetail.mutate({
@@ -45,14 +43,19 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
       },
     }
   );
+  useEffect(() => {
+    if (rows?.[0]?.data) {
+      forceExpireMetaData.form.label = `Force-Expire Limit \u00A0\u00A0 
+      ${(
+        rows?.[0]?.data?.COMP_CD +
+        rows?.[0]?.data?.BRANCH_CD +
+        rows?.[0]?.data?.ACCT_TYPE +
+        rows?.[0]?.data?.ACCT_CD
+      ).replace(/\s/g, "")}`;
+    }
+  }, [rows?.[0]?.data]);
 
-  const onSubmitHandler = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    value
-  ) => {
+  const onSubmitHandler = (data: any, displayData, endSubmit) => {
     console.log("<<<savehandle", data);
 
     let apiReq = {
