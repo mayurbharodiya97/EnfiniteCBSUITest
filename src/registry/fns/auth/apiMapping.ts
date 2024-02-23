@@ -930,6 +930,10 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/GETCHQVIEWDETAILS",
     packageName: "",
   },
+  CHEQUESIGNIMG: {
+    url: "chequeServiceAPI/CHEQUESIGNIMG",
+    packageName: "",
+  },
   GETDDDWACCTTYPE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDDWACCTTYPE",
     packageName: "",

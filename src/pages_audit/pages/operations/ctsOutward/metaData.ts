@@ -82,8 +82,10 @@ export const CTSOutwardClearingFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
-      setValueOnDependentFieldsChange: "getSlipNoData",
+      __NEW__: {
+        dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
+        setValueOnDependentFieldsChange: "getSlipNoData",
+      },
       GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
     },
 
@@ -153,12 +155,15 @@ export const CTSOutwardClearingFormMetaData = {
             let postData = await getAccountSlipJoinDetail(Apireq);
 
             if (postData?.[0]?.MESSAGE1) {
-              formState?.MessageBox("Information", postData?.[0]?.MESSAGE1);
+              formState?.MessageBox({
+                messageTitle: "Information",
+                message: postData?.[0]?.MESSAGE1,
+              });
             } else if (postData?.[0]?.RESTRICT_MESSAGE) {
-              formState?.MessageBox(
-                "Account Validation Failed",
-                postData?.[0]?.RESTRICT_MESSAGE
-              );
+              formState?.MessageBox({
+                messageTitle: "Account Validation Failed",
+                message: postData?.[0]?.RESTRICT_MESSAGE,
+              });
               formState.setDataOnFieldChange("ACCT_CD_VALID", []);
               return {
                 ACCT_CD: { value: "", isFieldFocused: true },
