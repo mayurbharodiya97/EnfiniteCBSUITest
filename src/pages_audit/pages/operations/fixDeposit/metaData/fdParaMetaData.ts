@@ -71,6 +71,7 @@ export const FixDepositParaFormMetadata = {
       validationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
         if (formState?.isSubmitting) return {};
+        if (Boolean(formState?.isBackButton)) return {};
         formState.setDataOnFieldChange("FD_TYPE", field?.value);
         return {
           CUSTOMER_ID: { value: "" },
@@ -102,6 +103,7 @@ export const FixDepositParaFormMetadata = {
       validationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
         if (formState?.isSubmitting) return {};
+        if (Boolean(formState?.isBackButton)) return {};
         formState.setDataOnFieldChange("TRAN_MODE", field?.value);
         return {
           CUSTOMER_ID: { value: "" },
@@ -148,6 +150,7 @@ export const FixDepositParaFormMetadata = {
         dependentField
       ) => {
         if (formState?.isSubmitting) return {};
+
         if (dependentField?.FD_TYPE?.value === "E") {
           formState.setDataOnFieldChange("CUSTOMER_ID_FEFORE");
           let Apireq = {
@@ -157,6 +160,7 @@ export const FixDepositParaFormMetadata = {
 
           let resData = await API.getFDAccountsDetail(Apireq);
           resData = resData?.[0];
+
           if (resData?.CONFIRMED === "Y") {
             let fdAccounts = resData?.FD_ACCOUNTS;
             formState.setDataOnFieldChange("CUSTOMER_ID", {
@@ -176,19 +180,23 @@ export const FixDepositParaFormMetadata = {
             } else {
               return {
                 CUSTOMER_ID: {
+                  value: field?.value ?? "",
                   error: "FD Accounts not found for this Customer ID.",
+                  ignoreUpdate: true,
                 },
-                CUSTOMER_NAME: { value: "" },
+                CUSTOMER_NAME: { value: resData?.ACCT_NM ?? "" },
               };
             }
           } else {
             return {
               CUSTOMER_ID: {
+                value: field?.value ?? "",
                 error:
                   "Customer ID is not Confirmed. \n\rLast Modified User: " +
                   (resData?.LAST_ENTERED_BY ?? "") +
                   "\n\rLast Modified Branch: " +
                   (resData?.LAST_ENTERED_BRANCH_CD ?? ""),
+                ignoreUpdate: true,
               },
               CUSTOMER_NAME: { value: "" },
             };
@@ -646,7 +654,6 @@ export const FixDepositAccountsFormMetadata = {
           name: "MATURE_INST",
           label: "Mature Instruction",
           type: "text",
-          defaultValue: "NO",
           dependentFields: [
             "BRANCH_CD",
             "ACCT_TYPE",

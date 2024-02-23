@@ -70,6 +70,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   inputProps,
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
+  isWorkingDate = false,
   //disableTimestamp,
   ...others
 }) => {

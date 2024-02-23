@@ -54,7 +54,7 @@ export const DetailForm = forwardRef<any, any>(
     return (
       <Fragment>
         <FormWrapper
-          key={"FixDepositDetail"}
+          key={"FixDepositParaForm"}
           // metaData={MobileAppReviewMetaData}
           metaData={FixDepositParaFormMetadata as MetaDataType}
           initialValues={fdState?.fdParaFormData as InitialValuesType}
@@ -96,6 +96,7 @@ export const DetailForm = forwardRef<any, any>(
               setDataOnFieldChange(action, payload);
             }
           }}
+          formState={{ isBackButton: fdState?.isBackButton }}
         />
         {fdState?.isOpendfdAcctForm &&
           fdState?.fdParaFormData?.FD_TYPE === "E" && (

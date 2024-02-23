@@ -30,6 +30,7 @@ import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { cloneDeep } from "lodash";
+import { AuthContext } from "pages_audit/auth";
 
 const ColorlibStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
@@ -90,8 +91,11 @@ export const FixDepositForm = () => {
     updateFDAccountsFormData,
     updateFDParaDataOnChange,
     updateFDDetailsFormData,
+    resetAllData,
+    setIsBackButton,
   } = useContext(FixDepositContext);
   const submitEventRef = useRef(null);
+  const { MessageBox } = useContext(AuthContext);
 
   const [steps, setSteps] = useState([
     "FD Parameters",
@@ -100,6 +104,7 @@ export const FixDepositForm = () => {
   ]);
   const fdParameterformRef: any = useRef(null);
   const fdDetailsformRef: any = useRef(null);
+  const sourceAcctformRef: any = useRef(null);
 
   const validFDAccounts = useMutation(API.valiateFDAccounts, {
     onError: (error: any) => {
@@ -119,6 +124,21 @@ export const FixDepositForm = () => {
       }
     },
   });
+
+  const doFixDepositMutation = useMutation(API.doFixDepositCreation, {
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      MessageBox("Error", errorMsg);
+    },
+    onSuccess: (data) => {
+      MessageBox("Success", data);
+      resetAllData();
+    },
+  });
+
   const setDataOnFieldChange = (action, payload) => {
     updateFDParaDataOnChange({ [action]: payload });
     if (action === "FD_TYPE") {
@@ -204,11 +224,29 @@ export const FixDepositForm = () => {
       fdState.activeStep === 1 &&
       fdState?.fdParaFormData?.FD_TYPE === "E"
     ) {
-      setActiveStep(fdState.activeStep + 1);
       fdDetailsformRef.current?.handleSubmit(e);
+    } else if (
+      fdState.activeStep === 2 &&
+      fdState?.fdParaFormData?.FD_TYPE === "E"
+    ) {
+      sourceAcctformRef.current?.handleSubmit(e);
     }
   };
 
+  const finalOnSubmitHandler: SubmitFnType = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag
+  ) => {
+    endSubmit(true);
+    doFixDepositMutation.mutate({
+      ...fdState?.fdParaFormData,
+      FD_ACCOUNTS: fdState?.fdDetailFormData?.FDDTL ?? [],
+      DR_ACCOUNTS: data?.TRNDTLS ?? [],
+    });
+  };
   return (
     <Fragment>
       <AppBar position="relative" style={{ marginBottom: "10px" }}>
@@ -256,7 +294,10 @@ export const FixDepositForm = () => {
           ) : fdState.activeStep === 1 ? (
             <FixDepositDetailForm ref={fdDetailsformRef} />
           ) : fdState.activeStep === 2 ? (
-            <TransferAcctDetailForm />
+            <TransferAcctDetailForm
+              onSubmitHandler={finalOnSubmitHandler}
+              ref={sourceAcctformRef}
+            />
           ) : (
             <></>
           )}
@@ -274,7 +315,10 @@ export const FixDepositForm = () => {
           <div style={{ position: "fixed", bottom: 0, right: "10px" }}>
             {fdState.activeStep === 0 ? null : (
               <GradientButton
-                onClick={() => setActiveStep(fdState.activeStep - 1)}
+                onClick={() => {
+                  setIsBackButton(true);
+                  setActiveStep(fdState.activeStep - 1);
+                }}
               >
                 Back
               </GradientButton>
@@ -300,7 +344,15 @@ export const FixDepositForm = () => {
                       Next
                     </GradientButton>
                   ) : (
-                    <GradientButton onClick={handleComplete}>
+                    <GradientButton
+                      onClick={handleComplete}
+                      endIcon={
+                        doFixDepositMutation?.isLoading ? (
+                          <CircularProgress size={20} />
+                        ) : null
+                      }
+                      disabled={doFixDepositMutation?.isLoading}
+                    >
                       Finish
                     </GradientButton>
                   )}

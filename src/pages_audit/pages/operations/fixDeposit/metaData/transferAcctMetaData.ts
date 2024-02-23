@@ -106,6 +106,9 @@ export const TransferAcctDetailFormMetadata = {
                     TRAN_BAL: {
                       value: apiResponse?.data?.[0]?.WIDTH_BAL ?? "",
                     },
+                    DC_COMP_CD: {
+                      value: arg?.[2]?.companyID ?? "",
+                    },
                   };
                 } else {
                   return {
@@ -154,7 +157,7 @@ export const TransferAcctDetailFormMetadata = {
           placeholder: "Cheque No.",
           type: "text",
           autoComplete: "off",
-          isRequired: true,
+          required: true,
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -174,13 +177,11 @@ export const TransferAcctDetailFormMetadata = {
           name: "CHEQUE_DATE",
           label: "Cheque Date",
           placeholder: "",
-          format: "dd/MM/yyyy",
           defaultValue: new Date(),
+          isWorkingDate: true,
+          format: "dd/MM/yyyy",
           type: "text",
           fullWidth: true,
-          maxDate: new Date(),
-          maxLength: 6,
-          defaultfocus: true,
           GridProps: { xs: 12, sm: 2, md: 1.8, lg: 2, xl: 1.5 },
         },
         {
@@ -195,6 +196,13 @@ export const TransferAcctDetailFormMetadata = {
           type: "text",
           // isReadOnly: true,
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
+        },
+
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "DC_COMP_CD",
         },
       ],
     },

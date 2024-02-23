@@ -7,6 +7,14 @@ const inititalState: FDStateType = {
   isOpendfdAcctForm: false,
   fdAcctFormData: {},
   fdDetailFormData: {},
+  sourceAcctFormData: {
+    TRNDTLS: [
+      {
+        ACCT_NAME: "",
+      },
+    ],
+  },
+  isBackButton: false,
 };
 
 const fdReducer = (state: FDStateType, action: ActionType): FDStateType => {
@@ -16,11 +24,18 @@ const fdReducer = (state: FDStateType, action: ActionType): FDStateType => {
         ...state,
         ...action.payload,
       };
+    case "activeStep":
+      return {
+        ...state,
+        ...action.payload,
+      };
     case "updateFDParaOnChange":
       return {
         ...state,
         fdParaFormData: { ...state?.fdParaFormData, ...action.payload },
       };
+    case "resetAllData":
+      return inititalState;
     default: {
       return state;
     }
@@ -34,7 +49,7 @@ export const FixDepositProvider = ({ children }) => {
 
   const setActiveStep = (value) => {
     dispatch({
-      type: "commonType",
+      type: "activeStep",
       payload: {
         activeStep: value,
       },
@@ -86,6 +101,22 @@ export const FixDepositProvider = ({ children }) => {
     });
   };
 
+  const resetAllData = (data) => {
+    dispatch({
+      type: "resetAllData",
+      payload: {},
+    });
+  };
+
+  const setIsBackButton = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        isBackButton: data,
+      },
+    });
+  };
+
   return (
     <FixDepositContext.Provider
       value={{
@@ -96,6 +127,8 @@ export const FixDepositProvider = ({ children }) => {
         setIsOpendfdAcctForm,
         updateFDAccountsFormData,
         updateFDDetailsFormData,
+        resetAllData,
+        setIsBackButton,
       }}
     >
       {children}

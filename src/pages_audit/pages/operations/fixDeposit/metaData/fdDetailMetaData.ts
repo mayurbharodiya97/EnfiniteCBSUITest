@@ -159,6 +159,15 @@ export const FixDepositDetailFormMetadata = {
           placeholder: "",
           type: "text",
           isFieldFocused: true,
+          required: true,
+          validate: (columnValue) => {
+            if (!Boolean(columnValue.value)) {
+              return "Transfer Amount is Required.";
+            } else if (columnValue.value.length <= 0) {
+              return "Transfer Amount must be greater than zero.";
+            }
+            return "";
+          },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
         {
@@ -295,10 +304,10 @@ export const FixDepositDetailFormMetadata = {
             );
             return postData;
           },
-          // schemaValidation: {
-          //   type: "string",
-          //   rules: [{ name: "required", params: ["Tenor is Required."] }],
-          // },
+          schemaValidation: {
+            type: "string",
+            rules: [{ name: "required", params: ["Tenor is Required."] }],
+          },
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
         },
         {
@@ -382,25 +391,64 @@ export const FixDepositDetailFormMetadata = {
         },
         {
           render: {
+            componentType: "hidden",
+          },
+          name: "CR_COMP_CD",
+        },
+        {
+          render: {
             componentType: "_accountNumber",
           },
           branchCodeMetadata: {
             name: "CR_BRANCH_CD",
             label: "Credit A/c Branch",
             required: false,
+            dependentFields: ["MATURE_INST"],
+            validate: (currField, dependentFields, formState) => {
+              const matureInst =
+                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
+              console.log(
+                ">>matureInst",
+                matureInst,
+                "dfsdfSD=>>>",
+                dependentFields
+              );
+              if (matureInst !== "AM" && matureInst !== "NO") {
+                if (!Boolean(currField?.value ?? "")) {
+                  return "Credit A/c Branch Can't be blank.";
+                }
+              }
+              return "";
+            },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           },
           accountTypeMetadata: {
             name: "CR_ACCT_TYPE",
             label: "Credit A/c Type",
             required: false,
+            dependentFields: ["MATURE_INST"],
+            validate: (currField, dependentFields, formState) => {
+              const matureInst =
+                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
+              if (matureInst !== "AM" && matureInst !== "NO") {
+                if (!Boolean(currField?.value ?? "")) {
+                  return "Credit A/c Type Can't be blank.";
+                }
+              }
+              return "";
+            },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           },
           accountCodeMetadata: {
             name: "CR_ACCT_CD",
             label: "Credit A/c No.",
             required: false,
-            dependentFields: ["COMP_CD", "CR_BRANCH_CD", "CR_ACCT_TYPE"],
+            dependentFields: [
+              "COMP_CD",
+              "CR_BRANCH_CD",
+              "CR_ACCT_TYPE",
+              "MATURE_INST",
+            ],
             postValidationSetCrossFieldValues: async (...arg) => {
               const companyCode = arg?.[3]?.["FDDTL.COMP_CD"]?.value ?? "";
               const branchCode = arg?.[3]?.["FDDTL.CR_BRANCH_CD"]?.value ?? "";
@@ -453,6 +501,16 @@ export const FixDepositDetailFormMetadata = {
                 }
               }
             },
+            validate: (currField, dependentFields, formState) => {
+              const matureInst =
+                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
+              if (matureInst !== "AM" && matureInst !== "NO") {
+                if (!Boolean(currField?.value ?? "")) {
+                  return "Credit Account Can't be blank.";
+                }
+              }
+              return "";
+            },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           },
         },
@@ -474,6 +532,15 @@ export const FixDepositDetailFormMetadata = {
           name: "MATURITY_AMT",
           label: "Maturity Amount",
           type: "text",
+          required: true,
+          validate: (columnValue) => {
+            if (!Boolean(columnValue.value)) {
+              return "Maturity Amount is Required.";
+            } else if (columnValue.value.length <= 0) {
+              return "Maturity Amount must be greater than zero.";
+            }
+            return "";
+          },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
         },
         {
@@ -499,6 +566,21 @@ export const FixDepositDetailFormMetadata = {
                 params: ["Please select FD Mature Instruction"],
               },
             ],
+          },
+          postValidationSetCrossFieldValues: async (currField) => {
+            if (Boolean(currField?.value)) {
+              return {
+                CR_BRANCH_CD: {
+                  isErrorBlank: true,
+                },
+                CR_ACCT_TYPE: {
+                  isErrorBlank: true,
+                },
+                CR_ACCT_CD: {
+                  isErrorBlank: true,
+                },
+              };
+            }
           },
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 3.5 },
         },
