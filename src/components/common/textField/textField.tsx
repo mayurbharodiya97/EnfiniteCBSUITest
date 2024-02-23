@@ -199,11 +199,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
         if (isFieldFocused) {
           getFocus();
         }
-        // if (error) {
-        //   if (whenToRunValidation === "onBlur") {
-        //     runValidation({ value: value }, true);
-        //   }
-        // }
         if (ignoreUpdate) {
           //ignore Validation
         } else if (whenToRunValidation === "onBlur") {

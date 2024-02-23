@@ -942,6 +942,10 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/GETCHQVIEWDETAILS",
     packageName: "",
   },
+  CHEQUESIGNIMG: {
+    url: "chequeServiceAPI/CHEQUESIGNIMG",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

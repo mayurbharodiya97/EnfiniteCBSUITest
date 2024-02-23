@@ -39,6 +39,20 @@ export const getInwardClearingData = async ({ data: formData }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETINWARDCLEARPROCESS", formData);
   if (status === "0") {
+    return data.map((item) => {
+      return {
+        ...item,
+        POST_CONF: item.POST_CONF === "C" ? "Confirm" : "Post",
+      };
+    });
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getInwardChequeSignGridData = async (reqdata) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHEQUESIGNIMG", reqdata);
+  if (status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
