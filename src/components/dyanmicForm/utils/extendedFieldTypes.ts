@@ -151,18 +151,19 @@ export const extendFieldTypes = (
         field["defaultValue"] = authState?.user?.branchCode;
       } else if (key === "accountType") {
         // Set autofocus on the accountType field
-        field["autoFocus"] = true;
-        field["defaultValue"] = "000 ";
+        // field["autoFocus"] = true;
+        // field["defaultValue"] = "0003";
       }
       newMetaDataFieldsCustom.push(field);
     }
   };
 
   newMetaDataFields?.forEach((item) => {
-    if (item?.defaultBranchTrue) {
-      const getBranchVal: string = authState?.user?.branchCode;
-      item.defaultValue = getBranchVal;
-    }
+    // if (item?.defaultBranchTrue) {
+    //   const getBranchVal: string = authState?.user?.branchCode;
+    //   item.defaultValue = getBranchVal;
+    // }
+
     if (item.render.componentType === "_accountNumber") {
       let finalParameter;
       if (paravalue) {

@@ -1,21 +1,15 @@
-import { MasterDetailsMetaData } from "components/formcomponent/masterDetails/types";
-import { GeneralAPI } from "registry/fns/functions";
-import {
-  clearingBankMasterConfigDML,
-  getAccountSlipJoinDetail,
-  getSlipNoData,
-} from "./api";
-import { format, isValid } from "date-fns";
+import { utilFunction } from "components/utils";
+import { clearingBankMasterConfigDML, getAccountSlipJoinDetail } from "./api";
 import { GridMetaDataType } from "components/dataTableStatic";
-import { FilterFormMetaType } from "components/formcomponent";
-export const CtsOutwardClearingMetadata = {
+import { format, isValid } from "date-fns";
+
+export const CTSOutwardClearingFormMetaData = {
   form: {
-    name: "CTS O/W Clearing",
+    name: "ctsOWClearing",
     label: "CTS O/W Clearing",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
-    // allowColumnHiding: true,
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -61,7 +55,7 @@ export const CtsOutwardClearingMetadata = {
       // sequence: 9,
       label: "Presentment Date",
       placeholder: "",
-      GridProps: { xs: 6, sm: 2.2, md: 2.1, lg: 2.1, xl: 1.5 },
+      GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
     },
     {
       render: {
@@ -69,17 +63,15 @@ export const CtsOutwardClearingMetadata = {
       },
       name: "ZONE",
       label: "Zone",
-      placeholder: "Props Value",
       defaultValue: "0   ",
-      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
-      runValidationOnDependentFieldsChange: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+      // runValidationOnDependentFieldsChange: true,
       skipDefaultOption: true,
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
       requestProps: "ZONE_TRAN_TYPE",
       dependentFields: ["TRAN_DT"],
-      postValidationSetCrossFieldValues: "getSlipNoData",
     },
     {
       render: {
@@ -90,128 +82,117 @@ export const CtsOutwardClearingMetadata = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 6, sm: 1.1, md: 1.1, lg: 1.1, xl: 1.1 },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
+      __NEW__: {
+        dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
+        setValueOnDependentFieldsChange: "getSlipNoData",
       },
-      name: "BRANCH_CD",
-      label: "Branch",
-      placeholder: "Branch Code",
-      type: "text",
-      required: true,
-      // maxLength: 16,
-      options: GeneralAPI.getBranchCodeList,
-      _optionsKey: "getBranchCodeList",
-      GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 1.5 },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Branch Code is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "ACCT_TYPE",
-      label: "AccountType",
-      placeholder: "EnterAccountType",
-      type: "text",
-      required: true,
-      options: GeneralAPI.getAccountTypeList,
-      _optionsKey: "getAccountTypeList",
-      GridProps: { xs: 12, sm: 2.6, md: 2.6, lg: 2.6, xl: 1.5 },
-      isFieldFocused: true,
-      defaultfocus: true,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account Type is required."] }],
-      },
+      GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
     },
 
     {
       render: {
-        componentType: "textField",
+        componentType: "_accountNumber",
       },
-      name: "ACCT_CD",
-      label: "ACNo",
-      placeholder: "EnterAcNo",
-      type: "text",
-      fullWidth: true,
-      autoComplete: "off",
-      FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: true,
-        isAllowed: (values) => {
-          if (values?.value?.length > 6) {
-            return false;
-          }
-          // if (values.floatValue === 0) {
-          //   return false;
-          // }
-          return true;
+      branchCodeMetadata: {
+        defaultValue: "099 ",
+        GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
+        postValidationSetCrossFieldValues: () => {
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NAME: { value: "" },
+            TRAN_BAL: { value: "" },
+          };
         },
       },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account no. is required."] }],
-      },
-      dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
-      // validate: (currentField, value) => {
-      //   if (currentField?.value) {
-      //     return;
-      //   }
-      // },
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        auth,
-        dependentFieldsValues
-      ) => {
-        if (field.value) {
-          let Apireq = {
-            COMP_CD: auth?.companyID,
-            ACCT_CD: field?.value?.padStart(6, "0").padEnd(20, " "),
-            ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-            BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-            GD_TODAY_DT: format(new Date(), "dd/MMM/yyyy"),
-            SCREEN_REF: "ETRN/559" ?? "",
+      accountTypeMetadata: {
+        GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
+        isFieldFocused: true,
+        defaultfocus: true,
+        defaultValue: "",
+        dependentFields: ["ACCT_TYPE"],
+        postValidationSetCrossFieldValues: () => {
+          return {
+            ACCT_CD: { value: "" },
+            ACCT_NAME: { value: "" },
+            TRAN_BAL: { value: "" },
           };
+        },
+      },
+      accountCodeMetadata: {
+        fullWidth: true,
+        FormatProps: {
+          isAllowed: (values) => {
+            if (values?.value?.length > 6) {
+              return false;
+            }
+            return true;
+          },
+        },
+        disableCaching: false,
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          if (
+            field.value &&
+            dependentFieldsValues?.["ACCT_TYPE"]?.value &&
+            dependentFieldsValues?.["BRANCH_CD"]?.value
+          ) {
+            let Apireq = {
+              COMP_CD: auth?.companyID,
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                field?.value,
+                dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+              ),
+              ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+              BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+              GD_TODAY_DT: auth?.workingDate,
+              SCREEN_REF: "ETRN/559",
+            };
 
-          let postdata = await getAccountSlipJoinDetail(Apireq);
-          formState.setDataOnFieldChange("ACCT_CD", postdata?.[0]);
-          // console.log(postdata?.[0]?.RESTRICT_MESSAGE);
-          // if (postdata?.[0]?.RESTRICT_MESSAGE) {
-          // return {
-          //   ACCT_CD: { value: "", isFieldFocused: true },
-          //   ACCT_NAME: { value: "" },
-          //   TRAN_BAL: { value: "" },
-          // };
-          // }
-          if (postdata?.length && postdata) {
+            let postData = await getAccountSlipJoinDetail(Apireq);
+
+            if (postData?.[0]?.MESSAGE1) {
+              formState?.MessageBox({
+                messageTitle: "Information",
+                message: postData?.[0]?.MESSAGE1,
+              });
+            } else if (postData?.[0]?.RESTRICT_MESSAGE) {
+              formState?.MessageBox({
+                messageTitle: "Account Validation Failed",
+                message: postData?.[0]?.RESTRICT_MESSAGE,
+              });
+              formState.setDataOnFieldChange("ACCT_CD_VALID", []);
+              return {
+                ACCT_CD: { value: "", isFieldFocused: true },
+                ACCT_NAME: { value: "" },
+                TRAN_BAL: { value: "" },
+              };
+            }
+            formState.setDataOnFieldChange("ACCT_CD_VALID", postData?.[0]);
             return {
               ACCT_CD: {
-                value: postdata?.[0]?.ACCT_NUMBER ?? "",
+                value: postData?.[0]?.ACCT_NUMBER ?? "",
                 ignoreUpdate: true,
               },
               ACCT_NAME: {
-                value: postdata?.[0]?.ACCT_NAME ?? "",
+                value: postData?.[0]?.ACCT_NAME ?? "",
               },
-              TRAN_BAL: { value: postdata?.[0].TRAN_BAL ?? "" },
+              TRAN_BAL: { value: postData?.[0].TRAN_BAL ?? "" },
             };
-            // }
-          } else {
+          } else if (!field?.value) {
+            formState.setDataOnFieldChange("ACCT_CD_BLANK");
             return {
-              ACCT_CD: { value: "", isFieldFocused: true },
               ACCT_NAME: { value: "" },
               TRAN_BAL: { value: "" },
             };
           }
-        }
+        },
+        runPostValidationHookAlways: true,
+        GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
       },
-
-      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 1.5 },
     },
     {
       render: {
@@ -222,8 +203,7 @@ export const CtsOutwardClearingMetadata = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-
-      GridProps: { xs: 12, sm: 3.7, md: 3.7, lg: 3.7, xl: 1.5 },
+      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
     },
     {
       render: {
@@ -234,7 +214,7 @@ export const CtsOutwardClearingMetadata = {
       placeholder: "",
       type: "text",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 12, sm: 2.1, md: 2.1, lg: 2.1, xl: 2 },
     },
     {
       render: {
@@ -243,13 +223,13 @@ export const CtsOutwardClearingMetadata = {
       name: "AMOUNT",
       label: "Slip Amount",
       placeholder: "",
-      // validationRun: "all",
       type: "text",
+      FormatProps: {
+        allowNegative: false,
+      },
       postValidationSetCrossFieldValues: async (
         currentFieldState,
-        formState,
-        auth,
-        dependentFieldState
+        formState
       ) => {
         if (currentFieldState?.value) {
           formState.setDataOnFieldChange(
@@ -258,7 +238,7 @@ export const CtsOutwardClearingMetadata = {
           );
         }
       },
-      GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 1.5 },
+      GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 2 },
     },
     {
       render: {
@@ -270,7 +250,8 @@ export const CtsOutwardClearingMetadata = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 1.5, md: 2, lg: 1.5, xl: 1.5 },
+      __VIEW__: { render: { componentType: "textField" } },
+      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
     },
     {
       render: {
@@ -281,284 +262,28 @@ export const CtsOutwardClearingMetadata = {
       placeholder: "",
       type: "text",
       format: "dd/MM/yyyy HH:mm:ss",
-      defaultValue: new Date(),
+      __VIEW__: { render: { componentType: "datetimePicker" } },
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
     },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "CLEARING_STATUS",
-    //   label: "Entry Status",
-    //   placeholder: "",
-    //   type: "text",
-    //   fullWidth: true,
-    //   isReadOnly: true,
 
-    //   // required: true,
-    //   // maxLength: 20,
-    //   // schemaValidation: {
-    //   //   type: "string",
-    //   //   rules: [{ name: "required", params: ["Slip No. is required."] }],
-    //   // },
-    //   GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-    // },
-  ],
-};
-export const ViewCtsOutwardClearingMetadata = {
-  form: {
-    name: "CTS O/W Clearing",
-    label: "CTS O/W Clearing",
-    resetFieldOnUnmount: false,
-    validationRun: "all",
-    submitAction: "home",
-    // allowColumnHiding: true,
-    render: {
-      ordering: "auto",
-      renderType: "simple",
-      gridConfig: {
-        item: {
-          xs: 12,
-          sm: 4,
-          md: 4,
-        },
-        container: {
-          direction: "row",
-          spacing: 1,
-        },
-      },
-    },
-    componentProps: {
-      textField: {
-        fullWidth: true,
-      },
-      select: {
-        fullWidth: true,
-      },
-      datePicker: {
-        fullWidth: true,
-      },
-      numberFormat: {
-        fullWidth: true,
-      },
-      inputMask: {
-        fullWidth: true,
-      },
-      datetimePicker: {
-        fullWidth: true,
-      },
-    },
-  },
-  fields: [
     {
       render: {
-        componentType: "datePicker",
+        componentType: "hidden",
       },
-      name: "TRAN_DT",
-      // sequence: 9,
-      label: "Presentment Date",
-      placeholder: "",
-      GridProps: { xs: 6, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ZONE",
-      label: "Zone",
-      // defaultValue: "0   ",
-      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
-      runValidationOnDependentFieldsChange: true,
-      skipDefaultOption: true,
-      disableCaching: true,
-      // requestProps: "ZONE_TRAN_TYPE",
-      // dependentFields: ["TRAN_DT"],
-      // postValidationSetCrossFieldValues: "getSlipNoData",
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "SLIP_CD",
-      label: "Slip No.",
-      type: "text",
-      fullWidth: true,
-      isReadOnly: true,
-      GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "BRANCH_CD",
-      label: "Branch",
-      placeholder: "Branch Code",
-      type: "text",
-      required: true,
-      // maxLength: 16,
-      options: GeneralAPI.getBranchCodeList,
-      _optionsKey: "getBranchCodeList",
-      GridProps: { xs: 12, sm: 2.4, md: 2.4, lg: 2.4, xl: 1.5 },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Branch Code is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "ACCT_TYPE",
-      label: "AccountType",
-      placeholder: "EnterAccountType",
-      type: "text",
-      required: true,
-      options: GeneralAPI.getAccountTypeList,
-      _optionsKey: "getAccountTypeList",
-      GridProps: { xs: 12, sm: 2.6, md: 2.6, lg: 2.6, xl: 1.5 },
-      isFieldFocused: true,
-      defaultfocus: true,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Account Type is required."] }],
-      // },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "ACCT_CD",
-      label: "ACNo",
-      placeholder: "EnterAcNo",
-      type: "text",
-      fullWidth: true,
-      autoComplete: "off",
-      FormatProps: {
-        allowNegative: false,
-        allowLeadingZeros: true,
-        isAllowed: (values) => {
-          if (values?.value?.length > 6) {
-            return false;
-          }
-          // if (values.floatValue === 0) {
-          //   return false;
-          // }
-          return true;
-        },
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account no. is required."] }],
-      },
-      dependentFields: ["ACCT_TYPE"],
-      // // validate: (currentField, value) => {
-      // //   if (currentField?.value) {
-      // //     return;
-      // //   }
-      // // },
-      // postValidationSetCrossFieldValues: async (
-      //   field,
-      //   formState,
-      //   auth,
-      //   dependentFieldsValues
-      // ) => {
-      //   let Apireq = {
-      //     COMP_CD: auth?.companyID,
-      //     ACCT_CD: field?.value?.padStart(6, "0").padEnd(20, " "),
-      //     ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
-      //     BRANCH_CD: auth?.user?.branchCode,
-      //     GD_TODAY_DT: format(new Date(), "dd/MMM/yyyy"),
-      //     SCREEN_REF: auth?.menulistdata[4]?.children?.[6]?.user_code,
-      //   };
-
-      //   let postdata = await getAccountSlipJoinDetail(Apireq);
-      //   formState.setDataOnFieldChange("ACCT_CD", postdata?.[0]);
-      //   if (postdata?.length) {
-      //     return {
-      //       ACCT_NAME: {
-      //         value: postdata?.[0]?.ACCT_NAME ?? "",
-      //       },
-      //       TRAN_BAL: { value: postdata?.[0].TRAN_BAL ?? "" },
-      //     };
-      //     // }
-      //   } else {
-      //     return {
-      //       ACCT_NAME: { value: "" },
-      //       TRAN_BAL: { value: "" },
-      //     };
-      //   }
-      // },
-      // postValidationSetCrossFieldValues: "getAccountNumberData",
-
-      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_NM",
-      label: "AC Name",
-      type: "text",
-      fullWidth: true,
-      isReadOnly: true,
-
-      GridProps: { xs: 12, sm: 3.7, md: 3.7, lg: 3.7, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "TRAN_BAL",
-      label: "Trn.Balance",
-      placeholder: "",
-      type: "text",
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 2, md: 1.5, lg: 1.5, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "amountField",
-      },
-      name: "AMOUNT",
-      label: "slip Amount",
-      placeholder: "",
-      // isFieldFocused: true,
-      // autoComplete: false,
-      type: "text",
-      // isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ENTERED_BY",
-      label: "Maker",
+      name: "CONFIRMED",
+      label: "Confirm status",
       placeholder: "",
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 1.5, md: 2, lg: 1.5, xl: 1.5 },
+      __VIEW__: { render: { componentType: "textField" } },
+      GridProps: { xs: 12, sm: 1.1, md: 1.1, lg: 1.1, xl: 1.1 },
     },
     {
       render: {
-        componentType: "textField",
-      },
-      name: "ENTERED_DATE",
-      label: "Maker Time",
-      placeholder: "",
-      type: "text",
-      format: "dd/MM/yyyy HH:mm:ss",
-      defaultValue: new Date(),
-      fullWidth: true,
-      isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
       name: "VERIFIED_BY",
       label: "Checker",
@@ -566,41 +291,45 @@ export const ViewCtsOutwardClearingMetadata = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+      dependentFields: ["CONFIRMED"],
+      __VIEW__: { render: { componentType: "textField" } },
+      shouldExclude: (_, dependentFieldsValues, __) => {
+        if (dependentFieldsValues?.CONFIRMED?.value === "Pending") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      GridProps: { xs: 12, sm: 1.3, md: 1.2, lg: 1.2, xl: 1.5 },
     },
     {
       render: {
-        componentType: "datetimePicker",
+        componentType: "hidden",
       },
       name: "VERIFIED_DATE",
       label: "Checker Time",
       placeholder: "",
       type: "text",
       format: "dd/MM/yyyy HH:mm:ss",
-      // defaultValue: new Date(),
+      __VIEW__: { render: { componentType: "datetimePicker" } },
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 1.5 },
+      dependentFields: ["CONFIRMED"],
+      shouldExclude: (_, dependentFieldsValues, __) => {
+        if (dependentFieldsValues?.CONFIRMED?.value === "Pending") {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
     },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "CLEARING_STATUS",
-    //   label: "Entry Status",
-    //   placeholder: "",
-    //   type: "text",
-    //   fullWidth: true,
-    //   isReadOnly: true,
-
-    //   // required: true,
-    //   // maxLength: 20,
-    //   // schemaValidation: {
-    //   //   type: "string",
-    //   //   rules: [{ name: "required", params: ["Slip No. is required."] }],
-    //   // },
-    //   GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 1.5 },
-    // },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ZONE_TRAN_TYPE",
+    },
   ],
 };
 
@@ -608,7 +337,8 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Joint Detail",
-    rowIdColumn: "SR_CD",
+    rowIdColumn: "GRID_SR_NO",
+    // rowIdColumn: "J_TYPE",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -686,16 +416,6 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
       minWidth: 120,
       maxWidth: 250,
     },
-    // {
-    //   accessor: "REF_ACCT_TYPE",
-    //   columnName: "Reference Account",
-    //   sequence: 8,
-    //   alignment: "center",
-    //   componentType: "default",
-    //   width: 120,
-    //   minWidth: 100,
-    //   maxWidth: 200,
-    // },
     {
       accessor: "MOBILE_NO",
       columnName: "Contact No.",
@@ -708,7 +428,7 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CUSTOMER_ID",
-      columnName: "Customer Id",
+      columnName: "Customer ID",
       sequence: 8,
       alignment: "center",
       componentType: "default",
@@ -718,6 +438,7 @@ export const SlipJoinDetailGridMetaData: GridMetaDataType = {
     },
   ],
 };
+
 export const ChequeDetailFormMetaData: any = {
   form: {
     refID: 1667,
@@ -783,8 +504,19 @@ export const ChequeDetailFormMetaData: any = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   "& .MuiInputBase-input": {
+      //     background: "var(--theme-color5)",
+      //     minHeight: "26px !important",
+      //     fontSize: "15px",
+      //     color: "white",
+      //     boxShadow:
+      //       " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      //   },
+      // },
+      __VIEW__: { render: { componentType: "hidden" } },
 
-      // isReadOnly: true,
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
     },
     {
@@ -796,6 +528,17 @@ export const ChequeDetailFormMetaData: any = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
+
+      defaultValue: "0",
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   minHeight: "40px !important",
+      //   fontSize: "15px",
+      //   color: "white",
+      //   boxShadow:
+      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      // },
+      __VIEW__: { render: { componentType: "hidden" } },
       dependentFields: ["chequeDetails"],
 
       postValidationSetCrossFieldValues: async (
@@ -809,10 +552,7 @@ export const ChequeDetailFormMetaData: any = {
             ? dependentFieldState?.["chequeDetails"]
             : []
         ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
-        formState.setDataOnFieldChange(
-          "FINALAMOUNT",
-          accumulatedTakeoverLoanAmount
-        );
+
         if (
           Number(currentFieldState.value) ===
           Number(accumulatedTakeoverLoanAmount)
@@ -820,20 +560,21 @@ export const ChequeDetailFormMetaData: any = {
           return {};
         }
 
-        return {
-          FINALAMOUNT: {
-            value: accumulatedTakeoverLoanAmount ?? "0",
-          },
-        };
+        if (accumulatedTakeoverLoanAmount) {
+          return {
+            FINALAMOUNT: {
+              value: accumulatedTakeoverLoanAmount ?? 0,
+            },
+          };
+        } else {
+          return {
+            FINALAMOUNT: {
+              value: "",
+            },
+          };
+        }
       },
-      // shouldExclude(fieldData) {
-      //   if (fieldData?.value) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
-      // isReadOnly: true,
+
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
     },
 
@@ -854,8 +595,38 @@ export const ChequeDetailFormMetaData: any = {
 
         return value ?? "0";
       },
-      // isReadOnly: true,
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   minHeight: "40px !important",
+      //   fontSize: "15px",
+      //   color: "white",
+      //   boxShadow:
+      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      // },
+      __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_DT",
+      label: "Cheque Date",
+      placeholder: "",
+      format: "dd/MM/yyyy",
+
+      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "RANGE_DT",
+      label: "Cheque Date",
+      placeholder: "",
+      format: "dd/MM/yyyy",
+
+      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
     },
     {
       render: {
@@ -867,25 +638,28 @@ export const ChequeDetailFormMetaData: any = {
       rotateIcon: "scale(2)",
       placeholder: "",
       type: "text",
+      tabIndex: "-1",
       iconStyle: {
         fontSize: "25px !important",
-
-        // GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },
       },
-      GridProps: { xs: 1.2, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+      __VIEW__: { render: { componentType: "hidden" } },
+      GridProps: { xs: 2.2, sm: 2, md: 1.8, lg: 1.2, xl: 1.2 },
     },
     {
       render: {
         componentType: "arrayField",
       },
       // isCustomStyle: true,
+      isRemoveButton: true,
       displayCountName: "Cheque Detail",
       fixedRows: true,
       isScreenStyle: true,
-      isRemoveButton: true,
+      disagreeButtonName: "No",
+      agreeButtonName: "Yes",
+      errorTitle: "Are you Sure you want to delete this row?",
       name: "chequeDetails",
-      // removeRowFn: "",
-      arrayFieldIDName: "CHEQUE",
+      removeRowFn: "deleteFormArrayFieldData",
+      // arrayFieldIDName: "CHEQUE",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
         {
@@ -907,9 +681,7 @@ export const ChequeDetailFormMetaData: any = {
               if (values?.value?.length > 6) {
                 return false;
               }
-              // if (values.floatValue === 0) {
-              //   return false;
-              // }
+
               return true;
             },
           },
@@ -1050,7 +822,20 @@ export const ChequeDetailFormMetaData: any = {
           defaultValue: new Date(),
           type: "text",
           fullWidth: true,
-          maxDate: new Date(),
+          dependentFields: ["TRAN_DT", "RANGE_DT"],
+          validate: (currentField, dependentField) => {
+            const currentDate = new Date(currentField?.value);
+            const rangeDate = new Date(dependentField?.RANGE_DT?.value);
+            const transDate = new Date(dependentField?.TRAN_DT?.value);
+
+            if (currentDate < rangeDate || currentDate > transDate) {
+              return `Date should be between ${rangeDate.toLocaleDateString(
+                "en-IN"
+              )} - ${transDate.toLocaleDateString("en-IN")}`;
+            }
+            return "";
+          },
+
           required: true,
           maxLength: 6,
 
@@ -1132,7 +917,10 @@ export const ChequeDetailFormMetaData: any = {
           isFieldFocused: true,
           required: true,
           type: "text",
-          validationRun: "onChange",
+          FormatProps: {
+            allowNegative: false,
+          },
+          validationRun: "all",
           validate: (currentField, value) => {
             if (currentField?.value) {
               return;
@@ -1146,9 +934,15 @@ export const ChequeDetailFormMetaData: any = {
           },
 
           postValidationSetCrossFieldValues: async (...arr) => {
-            return {
-              FINALAMOUNT: { value: arr[0].value },
-            };
+            if (arr[0].value) {
+              return {
+                FINALAMOUNT: { value: arr[0].value ?? "0" },
+              };
+            } else {
+              return {
+                FINALAMOUNT: { value: "" },
+              };
+            }
           },
           GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
         },
@@ -1157,7 +951,7 @@ export const ChequeDetailFormMetaData: any = {
   ],
 };
 
-export const ClearingBankMasterFormMetadata = {
+export const AddNewBankMasterFormMetadata = {
   form: {
     name: "ClearingBankMasterForm",
     label: "Clearing Bank Master",
@@ -1216,7 +1010,7 @@ export const ClearingBankMasterFormMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["RBI Code is required."] }],
       },
-      GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
     },
     {
       render: {
@@ -1236,7 +1030,7 @@ export const ClearingBankMasterFormMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["Code is required."] }],
       },
-      GridProps: { xs: 6, sm: 2, md: 2, lg: 1.5, xl: 1.5 },
+      GridProps: { xs: 6, sm: 2, md: 3, lg: 3, xl: 1.5 },
     },
     {
       render: {
@@ -1247,13 +1041,14 @@ export const ClearingBankMasterFormMetadata = {
       placeholder: "",
       type: "text",
       required: true,
+      txtTransform: "uppercase",
       maxLength: 100,
       showMaxLength: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Bank Name is required."] }],
       },
-      GridProps: { xs: 12, sm: 3, md: 4, lg: 4, xl: 1.5 },
+      GridProps: { xs: 12, sm: 3, md: 6, lg: 6, xl: 1.5 },
     },
     {
       render: {
@@ -1262,7 +1057,7 @@ export const ClearingBankMasterFormMetadata = {
       name: "EXCLUDE",
       label: "Exclude",
       // defaultValue: true,
-      GridProps: { xs: 6, sm: 2, md: 1.5, lg: 1.5, xl: 1 },
+      GridProps: { xs: 6, sm: 2, md: 1.5, lg: 4, xl: 1 },
     },
     {
       render: {
@@ -1271,11 +1066,10 @@ export const ClearingBankMasterFormMetadata = {
       name: "CTS",
       label: "CTS",
       defaultValue: true,
-      GridProps: { xs: 6, sm: 2, md: 1.5, lg: 1.5, xl: 1 },
+      GridProps: { xs: 6, sm: 2, md: 1.5, lg: 4, xl: 1 },
     },
   ],
 };
-
 export const RetrieveFormConfigMetaData = {
   form: {
     name: "RetrieveFormConfigMetaData",
@@ -1328,7 +1122,6 @@ export const RetrieveFormConfigMetaData = {
       name: "FROM_TRAN_DT",
       label: "From Date",
       placeholder: "",
-      // defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
@@ -1353,7 +1146,6 @@ export const RetrieveFormConfigMetaData = {
       name: "TO_TRAN_DT",
       label: "To Date",
       placeholder: "",
-      // defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
       schemaValidation: {
@@ -1385,10 +1177,8 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "ZONE",
       label: "Zone",
-      placeholder: "Props Value",
       defaultValue: "0   ",
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
-      runValidationOnDependentFieldsChange: true,
       skipDefaultOption: true,
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
@@ -1401,14 +1191,7 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "SLIP_CD",
       label: "Slip No.",
-      // placeholder: "Form name",
-      // type: "text",
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.5 },
-      // maxLength: 50,
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Slip No. is required."] }],
-      // },
     },
 
     {
@@ -1417,8 +1200,7 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "CHEQUE_NO",
       label: "Cheque No.",
-      // placeholder: "Form label",
-      // type: "text",
+
       FormatProps: {
         allowNegative: false,
         allowLeadingZeros: true,
@@ -1429,10 +1211,6 @@ export const RetrieveFormConfigMetaData = {
           return true;
         },
       },
-      // schemaValidation: {
-      //   type: "string",
-      //   rules: [{ name: "required", params: ["Slip No. is required."] }],
-      // },
       GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.5 },
       // maxLength: 50,
     },
@@ -1451,10 +1229,11 @@ export const RetrieveFormConfigMetaData = {
       },
       name: "AMOUNT",
       label: "Cheque Amount",
-      // placeholder: "Submit Action",
       type: "text",
+      FormatProps: {
+        allowNegative: false,
+      },
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.5 },
-      // maxLength: 10,
     },
 
     {
@@ -1475,7 +1254,7 @@ export const RetrieveFormConfigMetaData = {
 export const RetrieveGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Banner Configuration",
+    gridLabel: "Retrieve Grid",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,

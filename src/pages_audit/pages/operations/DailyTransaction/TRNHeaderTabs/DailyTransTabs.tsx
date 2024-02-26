@@ -78,9 +78,7 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
           navArray?.map((a, i) => (
             <TabPanel value={tabValue} index={Number(a.DISPL_ORDER) - 1}>
               <>
-                {a.TAB_NAME.includes("Account") && (
-                  <AccDetails flag={"DLYTRN"} />
-                )}
+                {a.TAB_NAME.includes("Account") && <AccDetails />}
                 {a.TAB_NAME.includes("Joint") && <JointDetailsForm />}
                 {a.TAB_NAME.includes("Today's") && <TodayTransactionForm />}
                 {a.TAB_NAME.includes("Cheques") && <CheckBook />}
@@ -99,7 +97,7 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
           ))
         ) : (
           <TabPanel value={tabValue} index={0}>
-            <AccDetails flag={"DLYTRN"} />
+            <AccDetails />
           </TabPanel>
         )}
       </>

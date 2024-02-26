@@ -248,12 +248,15 @@ export const OTPModel = ({
                   previousStep(false, "");
                 }}
                 className={classes.otpButtons}
-                color={"var(--theme-color3) !important"}
+                color={"var(--theme-color3) "}
                 style={{
                   border: "var(--theme-color3)1px solid",
                   minWidth: "50%",
                   background: "var(--theme-color2)",
                   borderRadius: "10px",
+                  hover: {
+                    background: "var(--theme-color2) !important",
+                  },
                 }}
                 // customstyle = {{color : "var(--theme-color3) !important"}}
                 starticon={"West"}

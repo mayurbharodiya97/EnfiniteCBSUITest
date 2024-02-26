@@ -81,8 +81,9 @@ export const useStyles = makeStyles((theme: any) => ({
 
   verifybutton: {
     alignSelf: "center",
-    marginBottom: "10px",
-    marginTop: "10px",
+    // marginBottom: "10px",
+    // marginTop: "10px",
+    padding: "5px",
   },
   otpButtons: {
     // padding: "10px",
@@ -141,7 +142,9 @@ export const useStyles = makeStyles((theme: any) => ({
   dialogTitleClass: {
     background: "var(--theme-color5)",
     padding: "8px 15px !important",
+    margin: "15px",
     color: "var(--theme-color2)",
+    borderRadius: "4px",
     "& h2": {
       fontWeight: "500 !important",
     },
@@ -150,5 +153,14 @@ export const useStyles = makeStyles((theme: any) => ({
     marginRight: "10px",
     width: "22px",
     height: "22px",
+  },
+  dialogContent: {
+    padding: "0px 15px",
+    "& p": {
+      whiteSpace: "pre-wrap",
+      color: "black",
+      marginTop: "8px",
+      marginBottom: "6px",
+    },
   },
 }));

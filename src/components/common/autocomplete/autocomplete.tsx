@@ -119,6 +119,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     fieldKey,
     name,
     dependentValues,
+    readOnly,
     excluded,
     incomingMessage,
     whenToRunValidation,
@@ -208,7 +209,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     },
     [setOptions, myGetOptionLabel, myGetOptionValue]
   );
-
+  const handleBlurInterceptor = useCallback(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+    handleBlur();
+  }, [handleBlur, getExtraOptionData, handleOptionValueExtraData, value]);
   // const [lastUpdatedTime, setLastUpdatedTime] = useState(new Date().getTime());
   // const initDoneRef = useRef(false);
   //const defaultValueRef = useRef<any>(null);
@@ -230,6 +235,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     false
   );
 
+  useEffect(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+  }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
@@ -327,8 +336,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
           const extraOptionData = getExtraOptionData(value);
           handleOptionValueExtraData(extraOptionData);
         }}
-        onBlur={handleBlur}
-        disabled={isSubmitting}
+        // onBlur={handleBlur}
+        onBlur={handleBlurInterceptor}
+        //change by parag  , disabled
+        // disabled={isSubmitting}
+        disabled={readOnly}
         filterOptions={
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"
@@ -373,6 +385,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               required={required}
               helperText={!isSubmitting && isError ? error : null}
               InputProps={{
+                style: {
+                  background: Boolean(readOnly) ? "var(--theme-color7)" : "",
+                },
+
                 ...params.InputProps,
                 endAdornment: (
                   <Fragment>
@@ -384,8 +400,9 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                         variant="indeterminate"
                         {...CircularProgressProps}
                       />
-                    ) : null}
-                    {params.InputProps.endAdornment}
+                    ) : (
+                      params.InputProps.endAdornment
+                    )}
                   </Fragment>
                 ),
               }}

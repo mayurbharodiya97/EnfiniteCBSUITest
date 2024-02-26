@@ -44,6 +44,10 @@ interface MySelectExtendedProps {
   CircularProgressProps?: CircularProgressProps;
   GridProps?: GridProps;
   enableGrid: boolean;
+  AlwaysRunPostValidationSetCrossFieldVAlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 export type MySelectAllProps = Merge<MySelectProps, MySelectExtendedProps>;
@@ -79,6 +83,7 @@ const MySelect: FC<MySelectAllProps> = ({
   defaultOptionLabel,
   enableDefaultOption,
   requestProps,
+  AlwaysRunPostValidationSetCrossFieldValues,
   ...others
 }) => {
   const {
@@ -114,6 +119,7 @@ const MySelect: FC<MySelectAllProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
+    AlwaysRunPostValidationSetCrossFieldValues,
   });
 
   const focusRef = useRef();
@@ -193,13 +199,18 @@ const MySelect: FC<MySelectAllProps> = ({
     },
     [handleChange, getLabelFromValuesForOptions, multiple, skipDefaultOption]
   );
+  const handleBlurInterceptor = useCallback(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+    handleBlur();
+  }, [handleBlur, getExtraOptionData, handleOptionValueExtraData, value]);
 
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
       let result = setValueOnDependentFieldsChange(
         transformDependentFieldsState(dependentValues)
       );
-      if (result !== undefined || result !== null) {
+      if (result !== undefined && result !== null) {
         handleChangeInterceptor(result);
       }
     }
@@ -240,6 +251,10 @@ const MySelect: FC<MySelectAllProps> = ({
     enableDefaultOption,
     requestProps
   );
+  useEffect(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+  }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
   //console.log(_options);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
@@ -307,7 +322,8 @@ const MySelect: FC<MySelectAllProps> = ({
       error={!isSubmitting && isError}
       helperText={!isSubmitting && isError ? error : null}
       onChange={handleChangeInterceptor}
-      onBlur={handleBlur}
+      onBlur={handleBlurInterceptor}
+      // onBlur={handleBlur}
       disabled={isSubmitting}
       SelectProps={{
         ...SelectProps,
@@ -322,7 +338,7 @@ const MySelect: FC<MySelectAllProps> = ({
       inputRef={focusRef}
       InputProps={{
         style: {
-          background: Boolean(readOnly) ? "#e7e5e563" : "",
+          background: Boolean(readOnly) ? "var(--theme-color7)" : "",
         },
         endAdornment:
           validationRunning || loadingOptions ? (

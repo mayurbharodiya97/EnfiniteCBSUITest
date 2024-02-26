@@ -23,38 +23,37 @@ const GradientButtonCustom = withStyles({
       backgroundColor: "var(--theme-color3) !important",
       color:"var(--theme-color2) !important",
       boxShadow:
-        "var(--theme-color1) 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--theme-color1) 0 -3px 0 inset",
+        "var(--theme-color3) 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--theme-color3) 0 -3px 0 inset",
     },
     "&:hover": {
-      backgroundColor: "var(--theme-color3) !important",
-      color:"var(--theme-color2) !important",
+      backgroundColor: "var(--theme-color3) ",
       boxShadow:
-        "rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--theme-color1) 0 -3px 0 inset",
+        "rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, var(--theme-color3) 0 -3px 0 inset",
     },
     "&:active": {
       backgroundColor: "var(--theme-color3) !important",
-      color:"var(--theme-color2) !important",
-      boxShadow: "var(--theme-color1) 0 3px 7px inset",
+      boxShadow: "var(--theme-color3) 0 3px 7px inset",
       transform: "translateY(2px)",
     },
   },
 })(Button);
 
 const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
-  const { starticon, endicon, rotateIcon, color, ...other } = props;
+  const { starticon, endicon, rotateIcon, tabIndex, color, ...other } = props;
   const FormContextData = useContext(FormContext);
   let FormButtonCicular =
     FormContextData?.onFormButtonCicular?.onFormButtonCicular;
 
   let StartIcon = Icons[starticon] || null;
   let EndIcon = Icons[endicon] || null;
+
   return (
     <GradientButtonCustom
       sx={{
         color: color ? color : "var(--theme-color2) !important",
         "&:hover": {
           // background: "#4462bbbd",
-          backgroundColor: "var(--theme-color3) !important",
+          backgroundColor: "var(--theme-color3) ",
           boxShadow: "none",
           "& .MuiSvgIcon-root": {
             transform: rotateIcon,
@@ -62,6 +61,7 @@ const GradientButton = forwardRef<any, any>(({ ...props }, ref) => {
           },
         },
       }}
+      tabindex={tabIndex}
       startIcon={StartIcon ? <StartIcon /> : null}
       endIcon={
         FormButtonCicular ? (

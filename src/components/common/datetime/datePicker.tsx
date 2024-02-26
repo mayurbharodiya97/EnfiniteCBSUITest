@@ -23,15 +23,15 @@ const useStyles: any = makeStyles({
     },
   },
 
-  labelStyle: {
-    color: "rgba(0, 0, 0, 0.6)",
-    fontSize: "0.875rem",
-    lineHeight: "1.4375em",
-    fontWeight: "600",
-    transform: "translate(0, 1.5px) scale(1)",
-    marginBottom: "8px",
-    maxWidth: "calc(133% - 32px)",
-  },
+  // labelStyle: {
+  //   color: "rgba(0, 0, 0, 0.6)",
+  //   fontSize: "0.875rem",
+  //   lineHeight: "1.4375em",
+  //   fontWeight: "600",
+  //   transform: "translate(0, 1.5px) scale(1)",
+  //   marginBottom: "8px",
+  //   maxWidth: "calc(133% - 32px)",
+  // },
 });
 
 type KeyboardDatePickerPropsSubset = Omit<
@@ -167,7 +167,13 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         helperText={!isSubmitting && isError ? error : null}
         //@ts-ignore
         onChange={handleChange}
-        sx={{ background: Boolean(readOnly) ? "#e7e5e563" : "" }}
+        sx={{
+          "& .MuiInputBase-root": {
+            background: Boolean(readOnly)
+              ? "var(--theme-color7) !important"
+              : "",
+          },
+        }}
         slots={{
           textField: TextField,
         }}
@@ -194,9 +200,6 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
           }, 1);
         }}
         disabled={isSubmitting}
-        InputLabelProps={{
-          shrink: true,
-        }}
         autoOk={true}
         readOnly={readOnly}
         inputRef={focusRef}

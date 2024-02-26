@@ -12,13 +12,14 @@ import { AuthContext } from "pages_audit/auth";
 import { useMutation } from 'react-query';
 import { personal_individual_detail_metadata } from '../../metadata/individual/personaldetails';
 import _ from 'lodash';
+import TabNavigate from '../TabNavigate';
 
 const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext)
   const formRef = useRef<any>("")
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [acctName, setAcctName] = useState("")
@@ -26,6 +27,10 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
   const onCloseSearchDialog = () => {
     setDialogOpen(false)
   }
+  useEffect(() => {
+    let refs = [formRef]
+    handleCurrentFormRefctx(refs)
+}, [])
   const mutation: any = useMutation(API.getControllCustInfo, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
@@ -147,62 +152,15 @@ const myGridRef = useRef<any>(null);
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+    const handleSave = (e) => {
+        const refs = [formRef.current.handleSubmitError(e, "save", false)]
+        handleSavectx(e, refs)
+    }
 
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-            return displayMode == "new"
-            ? <Fragment>
-                <Button
-                sx={{ mr: 2, mb: 2 }}
-                color="secondary"
-                variant="contained"
-                disabled={isNextLoading}
-                onClick={(e) => {
-                    formRef.current.handleSubmitError(e, "save")
-                }}
-                >
-                {t("Next")}
-                {/* {t("Save & Next")} */}
-                </Button>
-            </Fragment>
-            : displayMode == "edit"
-                ? <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        formRef.current.handleSubmitError(e, "save")
-                    }}
-                    >
-                    {t("Update & Next")}
-                    </Button>
-                </Fragment>
-                : displayMode == "view" && <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        handleColTabChangectx(state?.colTabValuectx + 1)
-                    }}
-                    >
-                    {t("Next")}
-                    </Button>
-                </Fragment>
-        }
-    }, [displayMode])
     
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>             */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -211,7 +169,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("ControllingPersonDTL")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)", pl: 2}} variant={"h6"}>{t("ControllingPersonDTL")}</Typography>
                     <IconButton onClick={handleFormExpand}>
                         {!isFormExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                     </IconButton>
@@ -267,30 +225,8 @@ const myGridRef = useRef<any>(null);
                 data={mutation?.data} 
                 isLoading={mutation?.isLoading} 
             />}
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />            
 
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(1)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-                {/* {state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        formRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Save & Next")}</Button>}
-                {(!state?.isFreshEntryctx && state?.confirmFlagctx && !(state?.confirmFlagctx.includes("Y") || state?.confirmFlagctx.includes("R")))
-                ? <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => {
-                        formRef.current.handleSubmitError(e, "save")
-                    }}
-                >{t("Update & Next")}</Button>
-                : !state?.isFreshEntryctx && <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" disabled={isNextLoading}
-                    onClick={(e) => handleColTabChangectx(state?.colTabValuectx+1)}
-                >{t("Next")}</Button>} */}
-            </Grid>
         </Grid>        
     )
 }

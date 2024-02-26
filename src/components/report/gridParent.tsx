@@ -15,6 +15,7 @@ import { Alert } from "components/common/alert";
 import { attachFilterComponentToMetaData, formatFilterBy } from "./utils";
 import { AmountProvider } from "./amountContext";
 import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 
 export const ReportGrid: FC<any> = ({
   metaData,

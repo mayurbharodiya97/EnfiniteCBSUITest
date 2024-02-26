@@ -174,20 +174,24 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     render: {
       componentType: "numberFormat",
     },
+    className: "textInputFromRight",
+    placeholder: "0",
     FormatProps: {
-      suffix: "%",
+      allowNegative: false,
+      allowLeadingZeros: true,
       decimalScale: 2,
-      fixedDecimalScale: true,
-      allowNegative: true,
-      allowEmptyFormatting: true,
       isAllowed: (values) => {
-        //@ts-ignore
-        if (values.floatValue <= 100) {
-          return true;
+        if (values?.value?.length > 6) {
+          return false;
         }
-        return false;
+        if (parseFloat(values?.value) > 100) {
+          return false;
+        }
+        return true;
       },
     },
+    maxLength: 6,
+    EndAdornment: "%",
     // schemaValidation: {
     //   type: "string",
     //   rules: [
@@ -402,6 +406,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       decimalScale: 2,
       fixedDecimalScale: true,
       autoComplete: "off",
+      placeholder: "0.00",
       isAllowed: (values) => {
         if (values?.value?.length > 14) {
           return false;
@@ -423,6 +428,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     name: "ACCT_CD",
     placeholder: "Enter account number",
     required: true,
+    autoComplete: "off",
     // maxLength: 8,
     dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
     postValidationSetCrossFieldValues: "retrieveStatementDtlAcctCd",
@@ -573,6 +579,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     required: true,
     name: "BRANCH_CD",
     label: "Branch Code",
+    placeholder: "Select branch code",
     defaultValue: "",
     options: GeneralAPI.getBranchCodeList,
     _optionsKey: "getBranchCodeList",
@@ -583,7 +590,6 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       lg: 3,
       xl: 3,
     },
-
     // NOTE : this props only for set default brranch and only use in branchCode component do not use this key any other place or any component
     defaultBranchTrue: true,
   },
@@ -599,6 +605,7 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
     },
     name: "ACCT_TYPE",
     label: "Account Type",
+    placeholder: "Select account type",
     options: GeneralAPI.getAccountTypeList,
     _optionsKey: "getAccountTypeList",
     defaultAcctTypeTrue: true,

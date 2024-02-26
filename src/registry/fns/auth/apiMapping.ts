@@ -235,6 +235,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/RELATIONSHIPMANAGER",
     packageName: "",
   },
+  GETCKYCNRITABRMDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCKYCNRITABRMDDW",
+    packageName: "",
+  },
   GETCUSTOMERLIST: {
     url: "/customerServiceAPI/GETCUSTOMERLIST",
     packageName: "",
@@ -846,6 +850,22 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETPANSTATUS",
     packageName: "",
   },
+  GETCUSTOMERFDACCOUNTS: {
+    url: "/enfinityFDServiceAPI/GETCUSTOMERFDACCOUNTS",
+    packageName: "",
+  },
+  GETMATUREINSTDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETMATUREINSTDTL",
+    packageName: "",
+  },
+  VALIDATEFDACCOUNTS: {
+    url: "/enfinityFDServiceAPI/VALIDATEFDACCOUNTS",
+    packageName: "",
+  },
+  VALIDATEACCOUNT: {
+    url: "/enfinityFDServiceAPI/VALIDATEACCOUNT",
+    packageName: "",
+  },
   GETLIMITGRIDDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITGRIDDATADISP",
     packageName: "",
@@ -878,6 +898,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKUPVEWBTNDOCDTLDISP",
     packageName: "",
   },
+  CHECKCUSTDUPLICATEDATA: {
+    url: "/customerServiceAPI/CHECKCUSTDUPLICATEDATA",
+    packageName: "",
+  },
   GETEXPIRYDATE: {
     url: "accountServiceAPI/GETEXPIRYDATE",
     packageName: "",
@@ -892,6 +916,22 @@ export const ActionWiseAPIConfiguration = {
   },
   VALIDDELETECHQDATA: {
     url: "chequeServiceAPI/VALIDDELETECHQDATA",
+    packageName: "",
+  },
+  GETINWARDCLEARPROCESS: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWARDCLEARPROCESS",
+    packageName: "",
+  },
+  GETTODAYTRANDATA: {
+    url: "/transactionServiceAPI/GETTODAYTRANDATA",
+    packageName: "",
+  },
+  GETCHQVIEWDETAILS: {
+    url: "chequeServiceAPI/GETCHQVIEWDETAILS",
+    packageName: "",
+  },
+  CHEQUESIGNIMG: {
+    url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
 };

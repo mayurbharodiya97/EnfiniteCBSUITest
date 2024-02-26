@@ -65,7 +65,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     marginLeft: "7px",
     marginTop: "6.5px",
     width: "90%",
-    height:"50px",
+    height: "50px",
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     background: "var(--theme-color2)",
@@ -115,6 +115,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     // marginTop: "25px",
     // boxShadow: "0 3px 6px rgba(255, 99, 71, 0.3)",
     borderRadius: "10px",
+    paddingTop: "5px",
     //margin: "5px",
   },
   navLinksforseparateView: {
@@ -127,7 +128,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   nestedMenuLevel1: {
     paddingLeft: "20px",
     paddingRight: theme.spacing(3),
-    height:"auto",
+    height: "auto",
     fontSize: "13px",
     "& div > svg": {
       fontSize: "14px",
@@ -201,7 +202,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   slimList: {
     paddingTop: "15px",
     paddingBottom: "13px",
-    height:"auto",
+    height: "auto",
     paddingLeft: "15px",
     justifyItems: "center",
   },

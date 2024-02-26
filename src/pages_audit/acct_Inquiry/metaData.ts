@@ -273,7 +273,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Search Criteria Data",
-    rowIdColumn: "WITHDRAW_BAL",
+    rowIdColumn: "ACCT_CD",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
       width: 150,
@@ -370,7 +370,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "OPENIND_DT",
+      accessor: "OP_DATE",
       columnName: "Opening Date",
       sequence: 8,
       alignment: "center",
@@ -598,7 +598,6 @@ export const PassbookStatement: any = {
       dependentFields: ["STMT_FROM_DATE"],
       runValidationOnDependentFieldsChange: true,
       // },
-
       // validate: (value, data, others) => {
       //   if (!Boolean(value)) {
       //     return "This field is required.";
@@ -787,8 +786,8 @@ export const PassbookStatementInq = {
         xs: 12,
         md: 11,
         sm: 11,
-        lg:11,
-        xl:11,
+        lg: 11,
+        xl: 11,
       },
     },
     {

@@ -45,6 +45,8 @@ export const useField = ({
   runPostValidationHookAlways,
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
+  txtTransform,
+  AlwaysRunPostValidationSetCrossFieldValues,
 }: UseFieldHookProps) => {
   //formContext provides formName for scoping of fields, and initialValue for the field
   const formContext = useContext(FormContext);
@@ -710,6 +712,14 @@ export const useField = ({
               )
             : displayValue;
         }
+        if (typeof val === "string" && Boolean(txtTransform)) {
+          val =
+            txtTransform === "uppercase"
+              ? val.toUpperCase()
+              : txtTransform === "lowercase"
+              ? val.toLowerCase()
+              : val;
+        }
         setValue(val, displayVal);
         if (
           isValidationFnRef.current &&
@@ -733,7 +743,11 @@ export const useField = ({
         (whenToRunValidation.current === "onBlur" ||
           whenToRunValidation.current === "all")
       ) {
-        runValidation({ touched: true });
+        runValidation(
+          { touched: true },
+          AlwaysRunPostValidationSetCrossFieldValues?.alwaysRun,
+          AlwaysRunPostValidationSetCrossFieldValues?.touchAndValidate
+        );
       }
     }
   }, [setTouched, runValidation, formContext.validationRun]);

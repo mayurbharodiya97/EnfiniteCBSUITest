@@ -540,12 +540,12 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  const getZoneListData = async (...reqData) => {
+  const getZoneListData = async (_, formState, __, auth) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher(`GETCLGZONELIST`, {
-        ZONE_TRAN_TYPE: reqData?.[4] ?? "",
-        COMP_CD: reqData?.[3]?.companyID ?? "",
-        BRANCH_CD: reqData?.[3]?.user?.branchCode ?? "",
+        ZONE_TRAN_TYPE: formState?.ZONE_TRAN_TYPE ?? "",
+        COMP_CD: auth?.companyID ?? "",
+        BRANCH_CD: auth?.user?.branchCode ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -565,25 +565,69 @@ const GeneralAPISDK = () => {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-  const getSlipNoData = async (...reqData) => {
-    const { data, status, message, messageDetails } =
-      await AuthSDK.internalFetcher(`GETSLIPNO`, {
-        COMP_CD: reqData?.[2]?.companyID ?? "",
-        BRANCH_CD: reqData?.[2]?.user?.branchCode,
-        TRAN_DT: format(new Date(reqData?.[3]?.TRAN_DT?.value), "dd/MMM/yyyy"),
-        ZONE: reqData?.[0].value ?? "",
-        TRAN_TYPE: reqData?.[0]?.optionData?.[0]?.ZONE_TRAN_TYPE ?? "S",
-      });
+  const getSlipNoData = async (dependentFields) => {
+    if (
+      !Boolean(dependentFields?.TRAN_DT?.value) ||
+      !Boolean(dependentFields?.TRAN_DT?.value) ||
+      !Boolean(dependentFields?.TRAN_DT?.value)
+    ) {
+      return "";
+    }
+    const { data, status } = await AuthSDK.internalFetcher(`GETSLIPNO`, {
+      TRAN_DT: format(new Date(dependentFields?.TRAN_DT?.value), "dd/MMM/yyyy"),
+      ZONE: dependentFields?.ZONE?.value ?? "0   ",
+      TRAN_TYPE: dependentFields?.ZONE_TRAN_TYPE?.value ?? "S",
+    });
     if (status === "0") {
-      return {
-        SLIP_CD: { value: data?.[0]?.SLIP_NO ?? "" },
-      };
+      return data?.[0]?.SLIP_NO ?? "";
     } else {
-      return {
-        SLIP_CD: { value: "" },
-      };
+      return "";
     }
   };
+  const getMatureInstDetail = async (...ReqData) => {
+    if (!Boolean(ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value)) return [];
+    if (!Boolean(ReqData?.[2]?.["FDACCTS.ACCT_TYPE"]?.value)) return [];
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETMATUREINSTDTL", {
+        COMP_CD: ReqData?.[3]?.companyID ?? "",
+        BRANCH_CD: ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value ?? "",
+        ACCT_TYPE: ReqData?.[2]?.["FDACCTS.ACCT_TYPE"]?.value ?? "",
+      });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ MATURE_INST, DESCRIPTION }) => {
+          return {
+            value: MATURE_INST,
+            label: DESCRIPTION,
+          };
+        });
+      }
+      return responseData;
+    } else {
+    }
+  };
+
+  const getAccNoValidation = async (reqData) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("ACCTNOVALIDATION", {
+        BRANCH_CD: reqData?.BRANCH_CD,
+        COMP_CD: reqData?.COMP_CD,
+        ACCT_TYPE: reqData?.ACCT_TYPE,
+        ACCT_CD: reqData?.ACCT_CD,
+
+        GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
+        SCREEN_REF: reqData?.SCREEN_REF, //depending on screen code
+      });
+    if (status === "0") {
+      let responseData = data;
+
+      return responseData[0];
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+
   return {
     GetMiscValue,
     getValidateValue,
@@ -609,6 +653,8 @@ const GeneralAPISDK = () => {
     getDependentFieldList,
     getProMiscData,
     getZoneListData,
+    getMatureInstDetail,
+    getAccNoValidation,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

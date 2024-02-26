@@ -36,6 +36,10 @@ interface MyGridExtendedProps {
   endsIcon?: any;
   iconStyle?: any;
   textFieldStyle?: any;
+  AlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -73,6 +77,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
   endsIcon,
   iconStyle,
   textFieldStyle,
+  txtTransform,
+  AlwaysRunPostValidationSetCrossFieldValues,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -108,6 +114,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
+    txtTransform,
+    AlwaysRunPostValidationSetCrossFieldValues,
   });
 
   const [currentColor, setCurrentColor] = useState<string>(
@@ -146,30 +154,46 @@ const MyTextField: FC<MyTextFieldProps> = ({
   };
 
   useEffect(() => {
-    if (typeof setValueOnDependentFieldsChange === "function") {
-      let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues),
-        { isSubmitting }
-      );
-      if (result !== undefined && result !== null) {
-        handleChange(result);
+    // if (typeof setValueOnDependentFieldsChange === "function") {
+    //   let result = setValueOnDependentFieldsChange(
+    //     transformDependentFieldsState(dependentValues),
+    //     { isSubmitting }
+    //   );
+
+    //   if (result !== undefined && result !== null) {
+    //     handleChange(result);
+    //   }
+    // }
+    const handleDependentFieldsChange = async () => {
+      if (typeof setValueOnDependentFieldsChange === "function") {
+        try {
+          let result = await setValueOnDependentFieldsChange(
+            transformDependentFieldsState(dependentValues),
+            { isSubmitting }
+          );
+
+          if (result !== undefined && result !== null) {
+            handleChange(result);
+          }
+        } catch (error) {
+          // Handle any errors that occur during the promise execution
+          console.error("An error occurred:", error);
+        }
       }
-    }
+    };
+    handleDependentFieldsChange();
   }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value, ignoreUpdate, isFieldFocused, error } = incomingMessage;
+      console.log(">>incomingMessage", incomingMessage);
+      const { value, error, ignoreUpdate, isFieldFocused } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (isFieldFocused) {
           getFocus();
         }
-        if (error) {
-          if (whenToRunValidation === "onBlur") {
-            runValidation({ value: value }, true);
-          }
-        }
+
         if (ignoreUpdate) {
           //ignore Validation
         } else if (whenToRunValidation === "onBlur") {
@@ -249,7 +273,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         error={!isSubmitting && isError}
         helperText={
           <div style={{ display: "flex" }}>
-            <FormHelperText>
+            <FormHelperText style={{ whiteSpace: "pre-line" }}>
               {!isSubmitting && isError
                 ? myError
                 : Boolean(validationAPIResult)
@@ -273,9 +297,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
           </div>
         }
         sx={{
-          "& .MuiInputBase-root": {
-            ...textFieldStyle,
-          },
+          ...textFieldStyle,
         }}
         FormHelperTextProps={{
           //@ts-ignore
@@ -287,7 +309,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
             background: textFieldStyle
               ? ""
               : Boolean(readOnly)
-              ? "#e7e5e563"
+              ? "var(--theme-color7)"
               : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {
@@ -308,7 +330,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
               />
             </InputAdornment>
           ) : Boolean(EndAdornment) ? (
-            EndAdornment
+            <InputAdornment position="end" className="withBorder">
+              {EndAdornment}
+            </InputAdornment>
           ) : null,
           startAdornment: Boolean(StartAdornment) ? (
             <InputAdornment position="start">{StartAdornment}</InputAdornment>

@@ -9,8 +9,7 @@ import React, {
 import { Button, Dialog } from "@mui/material";
 import { MasterDetailsForm } from "components/formcomponent";
 import { useDialogStyles } from "pages_audit/common/dialogStyles";
-import { cloneDeep } from "lodash";
-import { documentMasterDetailsMetaData } from "../../metadata/documentMasterDetailsMetaData";
+import _, { cloneDeep } from "lodash";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
@@ -132,8 +131,6 @@ const KYCDocumentMasterDetails = ({
   //   }
   // }, [files]);
 
-  let metadataold = {};
-  metadataold = cloneDeep(documentMasterDetailsMetaData);
 
   const AddNewRow = () => {
     myRef.current?.addNewRow(true);
@@ -147,6 +144,8 @@ const KYCDocumentMasterDetails = ({
     actionFlag
   ) => {
     if (data) {
+      // console.log("wadqwdwq. doc formsubmit", data)
+      let filteredData = _.pick(data, ["DOC_DESCRIPTION", "DOC_IMAGE", "DOC_NO", "SR_CD", "SUBMIT", "TEMPLATE_CD", "TRAN_CD", "VALID_UPTO"])
       // console.log(fileRef.current, "sfhweiufhwieufh", files);
       if (fileRef.current && fileRef.current.length > 0) {
         if (fileRef.current[0].blob) {
@@ -155,7 +154,7 @@ const KYCDocumentMasterDetails = ({
           if (base64) {
             // console.log("sfhweiufhwieufh --aft", base64);
             let newData = {
-              ...data,
+              ...filteredData,
               DOC_IMAGE: base64?.[1],
               DOC_OBJ: fileRef.current,
             };
@@ -163,7 +162,7 @@ const KYCDocumentMasterDetails = ({
           }
         }
       } else {
-        let newData = {...data,
+        let newData = {...filteredData,
           DOC_IMAGE: "",
           DOC_OBJ: "",
         }
