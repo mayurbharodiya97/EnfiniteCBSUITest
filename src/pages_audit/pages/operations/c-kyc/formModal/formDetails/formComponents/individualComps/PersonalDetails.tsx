@@ -45,7 +45,8 @@ const PersonalDetails = ({
     handleModifiedColsctx,
     handleCurrentFormRefctx,
     handleSavectx,
-    handleCurrFormctx
+    handleCurrFormctx,
+    handleApiRes,
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
   const [isNextLoading, setIsNextLoading] = useState(false);
@@ -97,6 +98,22 @@ const PersonalDetails = ({
           submitted = false;
         } else {
           submitted = true;
+          let newTabs = state?.tabsApiResctx;          
+          if(Array.isArray(newTabs) && newTabs.length>0) {
+            newTabs = newTabs.map(tab => {
+              if(tab.TAB_NAME === "NRI Details") {
+                if(state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "02" ||
+                  state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "03") {
+                    return {...tab, isVisible: false}
+                } else {
+                  return {...tab, isVisible: true}
+                }
+              } else {
+                return tab;
+              }
+            })
+            handleApiRes(newTabs)
+          }          
           handleStepStatusctx({
             status: "completed",
             coltabvalue: state?.colTabValuectx,

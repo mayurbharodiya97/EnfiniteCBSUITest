@@ -33,7 +33,7 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx, handleApiRes} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -78,6 +78,22 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
           submitted = false;
         } else {
           submitted = true;
+          let newTabs = state?.tabsApiResctx;          
+          if(Array.isArray(newTabs) && newTabs.length>0) {
+            newTabs = newTabs.map(tab => {
+              if(tab.TAB_NAME === "NRI Details") {
+                if(state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "02" ||
+                  state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "03") {
+                    return {...tab, isVisible: false}
+                } else {
+                  return {...tab, isVisible: true}
+                }
+              } else {
+                return tab;
+              }
+            })
+            handleApiRes(newTabs)
+          }
           handleStepStatusctx({
             status: "completed",
             coltabvalue: state?.colTabValuectx,

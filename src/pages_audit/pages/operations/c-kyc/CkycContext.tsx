@@ -316,7 +316,7 @@ const CkycProvider = ({children}) => {
         // console.log("asdasdas>>", apiRes)
         let steps:any[] = [] 
         apiRes.forEach((element:any) => {
-          steps.push({tabName: element?.TAB_DISPL_NAME, icon: element?.ICON})
+          steps.push({tabName: element?.TAB_DISPL_NAME, icon: element?.ICON, isVisible: element?.isVisible ?? true})
         })
         dispatch({
             type: "update_ApiResctx",

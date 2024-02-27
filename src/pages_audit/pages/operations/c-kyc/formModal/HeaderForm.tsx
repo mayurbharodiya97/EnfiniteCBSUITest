@@ -135,7 +135,7 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
                 subtitles.push(subtitleinfo)
                 } else {
                 // new tab element
-                newData.push({...element, subtitles: [subtitleinfo]})
+                newData.push({...element, subtitles: [subtitleinfo], isVisible: true})
                 }
             // console.log("filled newdata -aft", element.TAB_NAME , newData)
             });
