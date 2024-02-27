@@ -1098,7 +1098,8 @@ export const SaveAsDraft = async ({
   CONSTITUTION_TYPE,
   IsNewRow,
   PERSONAL_DETAIL,
-  COMP_CD
+  COMP_CD,
+  BRANCH_CD
 }) => {
   // console.log("reqdataa..",
   //   // `
@@ -1126,8 +1127,8 @@ export const SaveAsDraft = async ({
       // CATEGORY_CD: CATEGORY_CD,
       // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       CONSTITUTION_TYPE: CONSTITUTION_TYPE,
-      COMP_CD: "132 ",
-      BRANCH_CD: "099 ",
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
       ACCT_TYPE: ACCT_TYPE,
       REQ_FLAG: "F",
       CATEG_CD: CATEGORY_CD,
@@ -1546,6 +1547,7 @@ export const SaveEntry = async (reqdata) => {
     REQ_CD,
     formData,
     COMP_CD,
+    BRANCH_CD
   } = reqdata
 
   // console.log("aaaaaaaaa", formData)
@@ -1601,8 +1603,8 @@ export const SaveEntry = async (reqdata) => {
     // CATEGORY_CD: CATEGORY_CD,
     // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
     CONSTITUTION_TYPE: CONSTITUTION_TYPE,
-    COMP_CD: "132 ",
-    BRANCH_CD: "099 ",
+    COMP_CD: COMP_CD,
+    BRANCH_CD: BRANCH_CD,
     ACCT_TYPE: ACCT_TYPE,
     REQ_FLAG: "F",
     CATEG_CD: CATEGORY_CD,
@@ -1613,9 +1615,9 @@ export const SaveEntry = async (reqdata) => {
   }
 
   const ExtraData = {
-    APPLICATION_TYPE: "Y",
+    APPLICATION_TYPE: "01",
     // ENTERED_DATE: format(new Date(), "dd-MMM-yyyy"),
-    ENTERED_DATE: "20-July-2023",
+    // ENTERED_DATE: "20-July-2023",
     // STD_1: "",
     // STD_4: "54890",
     // STD_2: "",

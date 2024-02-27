@@ -178,6 +178,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     CUSTOMER_TYPE: state?.entityTypectx,
                     CATEGORY_CD: state?.categoryValuectx,
                     COMP_CD: authState?.companyID ?? "",
+                    BRANCH_CD: authState?.user?.branchCode ?? "",
                     ACCT_TYPE: state?.accTypeValuectx,
                     KYC_NUMBER: state?.kycNoValuectx,
                     CONSTITUTION_TYPE: state?.constitutionValuectx,

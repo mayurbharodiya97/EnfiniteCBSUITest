@@ -162,6 +162,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 IsNewRow: state?.isFreshEntryctx,
                 PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
                 COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? ""
             }
             mutation.mutate(payload)
             // refetch()
