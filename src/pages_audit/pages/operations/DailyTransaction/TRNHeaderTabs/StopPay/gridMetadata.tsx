@@ -59,7 +59,7 @@ export const stopPayGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Chq Date ",
-      accessor: "chqdate",
+      accessor: "CHEQUE_DT",
       sequence: 5,
       componentType: "date",
       isVisible: true,

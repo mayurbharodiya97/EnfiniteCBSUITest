@@ -44,8 +44,11 @@ export const confirmScroll = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("CONFIRMDAILYTRNDATA", {
       CONFIRMED: "Y",
+      CONFIRM_FLAG: "Y",
       TRAN_CD: reqData?.TRAN_CD,
       COMP_CD: reqData?.COMP_CD,
+      ENTERED_COMP_CD: reqData?.ENTERED_COMP_CD,
+      ENTERED_BRANCH_CD: reqData?.ENTERED_BRANCH_CD,
     });
   if (status === "0") {
     let responseData = data;

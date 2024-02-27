@@ -6,7 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Button, Tabs } from "@mui/material";
 
 //logic
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import JointDetailsForm from "./JointDetails";
@@ -54,6 +54,10 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
+
+  useEffect(() => {
+    setTabValue(0);
+  }, [navArray]);
   return (
     <div style={{ paddingLeft: "8px", paddingRight: "8px" }}>
       <h2>Daily Transaction {heading}</h2>
@@ -74,7 +78,7 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
           </Tabs>
         </Grid>
 
-        {navArray.length > 0 ? (
+        {navArray.length > 0 && navArray ? (
           navArray?.map((a, i) => (
             <TabPanel value={tabValue} index={Number(a.DISPL_ORDER) - 1}>
               <>

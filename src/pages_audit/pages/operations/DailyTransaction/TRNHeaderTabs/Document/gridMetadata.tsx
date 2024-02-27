@@ -59,7 +59,7 @@ export const DocumentGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Entered From",
-      accessor: "Enteredfr",
+      accessor: "DOC_TYPE",
       sequence: 5,
       componentType: "default",
       width: 120,

@@ -20,7 +20,7 @@ export const getTodayTransList = async (reqData) => {
       a.sr = i + 1;
       a.DEBIT = a.DEBIT == "" ? "0.00" : a.DEBIT;
       a.CREDIT = a.CREDIT == "" ? "0.00" : a.CREDIT;
-      a.time = a.ENTERED_DATE.split(" ")[1].substring(0, 5);
+      a.time = a.ENTERED_DATE.split(" ")[1]?.substring(0, 5);
     });
     return responseData;
   } else {

@@ -87,14 +87,14 @@ export const TodayTransGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Status",
-      accessor: "Status",
+      accessor: "CONFIRMED",
       sequence: 9,
       componentType: "default",
       width: 100,
     },
     {
       columnName: "Br",
-      accessor: "Br",
+      accessor: "ENTERED_BRANCH_CD",
       sequence: 10,
       componentType: "default",
       width: 100,

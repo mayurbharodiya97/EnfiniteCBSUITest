@@ -71,14 +71,14 @@ export const CheckBookGridMetaData: GridMetaDataType = {
       width: 120,
     },
     {
-      accessor: "AMOUNT",
+      accessor: "SERVICE_TAX",
       columnName: "Charge",
       sequence: 7,
       componentType: "currency",
       width: 120,
     },
     {
-      accessor: "GST",
+      accessor: "AMOUNT",
       columnName: "GST",
       sequence: 8,
       componentType: "default",
@@ -115,7 +115,7 @@ export const CheckBookGridMetaData: GridMetaDataType = {
       width: 120,
     },
     {
-      accessor: "Pending",
+      accessor: "UNUSED_CHQ",
       columnName: "Pending",
       sequence: 13,
       componentType: "default",

@@ -65,9 +65,10 @@ export const Trn001 = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const { cardStore, setCardStore } = useContext(AccDetailContext);
-
+  console.log(cardStore?.cardsInfo, "cardStore");
   //variables
   const [defBranch, setDefBranch] = useState<any>({});
+  const [withdraw, setWithdraw] = useState<any>({});
 
   var defTableValue = {
     branch: defBranch,
@@ -81,7 +82,7 @@ export const Trn001 = () => {
     scroll: "", //token
     sdc: { label: "", value: "", info: "" },
     remark: "",
-    cNo: "0",
+    cNo: "",
     bugCNo: false,
     bugMsgCNo: "",
     date: new Date(),
@@ -179,6 +180,15 @@ export const Trn001 = () => {
     let result = rows && rows.some((a) => a?.bug);
     setIsSave(!result);
   }, [rows]);
+
+  useEffect(() => {
+    cardStore?.cardsInfo?.length > 0 &&
+      cardStore?.cardsInfo?.map((a) => {
+        if (a?.COL_LABEL == "Withdrawable") {
+          setWithdraw(a);
+        }
+      });
+  }, [cardStore]);
 
   useEffect(() => {
     //getting all options for autocomplete
@@ -348,7 +358,7 @@ export const Trn001 = () => {
     if (obj[i]?.accType?.value) {
       obj[i].bugMsgAccType = "";
     } else {
-      obj[i].bugMsgAccType = "AccType empty";
+      obj[i].bugMsgAccType = "AccType Required";
     }
     setRows(obj);
   };
@@ -378,7 +388,7 @@ export const Trn001 = () => {
       obj[i].accNo = abc;
       handleGetAccInfo(obj, i);
     } else {
-      obj[i].bugMsgAccNo = "A/C No. Empty";
+      obj[i].bugMsgAccNo = "A/C No. Required";
       obj[i].bugAccNo = true;
     }
     setRows(obj);
@@ -389,13 +399,13 @@ export const Trn001 = () => {
     if (obj[i]?.trx?.code) {
       obj[i].bugMsgTrx = "";
     } else {
-      obj[i].bugMsgTrx = "Trx empty";
+      obj[i].bugMsgTrx = "Trx Required";
     }
     setRows(obj);
   };
+
   const handleTrx = (e, value, i) => {
     const obj = [...rows];
-
     let defSdc = sdcOptions.find((a) => a?.value?.trim().includes(value?.code));
     obj?.length == 1 &&
       (value?.code == "3" || value?.code == "6") &&
@@ -433,7 +443,7 @@ export const Trn001 = () => {
   const handleScrollBlur = (e, i) => {
     const obj = [...rows];
     if (!obj[i].scroll) {
-      obj[i].bugMsgScroll = "scroll empty";
+      obj[i].bugMsgScroll = "scroll Required";
     } else {
       obj[i].bugMsgScroll = "";
     }
@@ -505,6 +515,7 @@ export const Trn001 = () => {
   const handleDebit = (e, i) => {
     const obj = [...rows];
     let txt = e.target.value;
+
     if (txt.includes(".")) {
       let a = txt?.split(".")[0];
       let b = txt?.split(".")[1];
@@ -528,19 +539,26 @@ export const Trn001 = () => {
     } else {
       obj[i].credit = txt;
     }
-
     setRows(obj);
     handleTotal(obj);
   };
 
   const handleDebitBlur = (e, i) => {
     const obj = [...rows];
-    obj[i].debit = Number(e.target.value)?.toFixed(2);
     setRows(obj);
-    totalDebit != totalCredit &&
-      (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
-      obj[i].credit != obj[i].debit &&
-      handleAddRow();
+
+    if (Number(totalDebit) <= Number(withdraw?.COL_VALUE)) {
+      obj[i].debit = Number(e.target.value)?.toFixed(2);
+      totalDebit != totalCredit &&
+        (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
+        obj[i].credit != obj[i].debit &&
+        handleAddRow();
+    } else {
+      enqueueSnackbar("Debit more than Withdrable", {
+        variant: "error",
+      });
+      obj[i].debit = Number(0)?.toFixed(2);
+    }
   };
 
   const handleCreditBlur = (e, i) => {
@@ -585,7 +603,7 @@ export const Trn001 = () => {
       scroll: "", //token
       sdc: defSdc,
       remark: defSdc?.label,
-      cNo: "0",
+      cNo: "",
       date: new Date(),
       debit: deb?.toFixed(2),
       credit: cred?.toFixed(2),
@@ -595,9 +613,9 @@ export const Trn001 = () => {
       bugMsgAccNo: "",
       bugMsgCNo: "",
       bugMsgDate: "",
-
       isCredit: isCred,
     };
+
     if (isSave && totalDebit != totalCredit) {
       let obj = [...rows, defTableValue2];
       setRows(obj);
@@ -739,7 +757,7 @@ export const Trn001 = () => {
       isErrCNo
     ) {
     } else {
-      setSaveDialog(true);
+      cardStore?.cardsInfo?.length > 0 && setSaveDialog(true);
     }
   };
 
@@ -1009,6 +1027,7 @@ export const Trn001 = () => {
                               fullWidth={true}
                               error={!a.cNo || a?.bugCNo ? true : false}
                               id="txtRight"
+                              placeholder=""
                               disabled={
                                 a.isCredit ||
                                 !a.branch ||

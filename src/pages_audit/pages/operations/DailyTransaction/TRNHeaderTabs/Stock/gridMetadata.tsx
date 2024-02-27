@@ -35,7 +35,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "St. Date",
-      accessor: "1",
+      accessor: "ENTERED_DATE", //
       sequence: 2,
       componentType: "date",
       isVisible: true,
@@ -44,7 +44,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Stock Till Date",
-      accessor: "2",
+      accessor: "TRAN_DT", //
       sequence: 3,
       componentType: "date",
       isVisible: true,
@@ -53,42 +53,42 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Stock Desc",
-      accessor: "3",
+      accessor: "STOCK_DESC",
       sequence: 3,
       componentType: "default",
       width: 120,
     },
     {
       columnName: "Margin",
-      accessor: "4",
+      accessor: "MARGIN",
       sequence: 4,
       componentType: "default",
       width: 120,
     },
     {
       columnName: "Stock Value",
-      accessor: "5",
+      accessor: "STOCK_VALUE",
       sequence: 5,
       componentType: "default",
       width: 100,
     },
     {
       columnName: "Drawing Power",
-      accessor: "6",
+      accessor: "DRAWING_POWER",
       sequence: 6,
       componentType: "default",
       width: 120,
     },
     {
       columnName: "Security Desc",
-      accessor: "7",
+      accessor: "SECURITY_CD",
       sequence: 7,
       componentType: "default",
       width: 120,
     },
     {
       columnName: "Entered Dt",
-      accessor: "8",
+      accessor: "ENTERED_DATE",
       sequence: 8,
       componentType: "date",
       isVisible: true,
@@ -97,7 +97,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Recieved Dt",
-      accessor: "9",
+      accessor: "RECEIVED_DT",
       sequence: 9,
       componentType: "date",
       isVisible: true,
