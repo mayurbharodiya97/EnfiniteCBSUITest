@@ -1,6 +1,4 @@
-import { errorSelector } from "recoil";
 import * as API from "./api";
-import { format } from "date-fns";
 
 export const limitEntryMetaData = {
   form: {
@@ -55,200 +53,210 @@ export const limitEntryMetaData = {
     },
   },
   fields: [
-    // {
-    //   render: {
-    //     componentType: "_accountNumber",
-    //   },
-    //   // acctFieldPara: "2",
-    //   // postValidationSetCrossFieldValues: "testingFn",
-    //   // name: "ACCT_CD",
-    // },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "FD_BRANCH_CD",
-    //   label: "FD Branch",
-    //   sequence: "9",
-    //   GridProps: {
-    //     xs: "12",
-    //     md: "3",
-    //     sm: "4",
-    //     lg: "3",
-    //     xl: "2",
-    //   },
-    // },
     {
       render: {
-        componentType: "branchCode",
+        componentType: "_accountNumber",
       },
-      name: "BRANCH_CD",
-      label: "Branch",
-      placeholder: "Branch Code",
-      type: "text",
-      required: true,
-      // isFieldFocused: true,
-      // maxLength: 16,
-      // options: GeneralAPI.getBranchCodeList,
-      // _optionsKey: "getBranchCodeList",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Branch Code is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "ACCT_TYPE",
-      label: "AccountType",
-      placeholder: "EnterAccountType",
-      type: "text",
-      required: true,
-      // disableCaching: true,
-      options: (dependentValue, formState, _, authState) => {
-        return API.securityDropDownListType(
-          authState?.user?.id,
-          authState?.user?.branchCode,
-          authState?.companyID
-        );
-      },
-      _optionsKey: "securityDropDownListType",
-      dependentFields: ["BRANCH_CD", "SECURITY_CD"],
-
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentValue
-      ) => {
-        if (field?.value) {
-          return { ACCT_CD: { value: "" } };
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account Type is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_CD",
-      label: "ACNo",
-      placeholder: "EnterAcNo",
-      type: "text",
-      fullWidth: true,
-      required: true,
-      // maxLength: 20,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account No. is required."] }],
-      },
-      dependentFields: ["ACCT_TYPE", "SECURITY_CD"],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentValue
-      ) => {
-        console.log("<<<ppppppppp");
-        if (field?.value) {
-          let otherAPIRequestPara = {
-            COMP_CD: authState?.companyID,
-            ACCT_CD: field.value.padStart(6, "0").padEnd(20, " "),
-            ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
-            BRANCH_CD: authState?.user?.branchCode,
-            GD_TODAY_DT: "17-Jan-2024",
-            SCREEN_REF: "EMST/046",
-          };
-          let postData = await API.getLimitEntryData(otherAPIRequestPara);
-          console.log("<<<postdata", postData);
-          if (postData?.[0]?.MESSAGE1) {
-            formState.setDataOnFieldChange("MESSAGES", {
-              MESSAGES: postData?.[0]?.MESSAGE1,
-              NSC_FD_BTN: true,
-            });
+      branchCodeMetadata: {
+        postValidationSetCrossFieldValues: async (field) => {
+          if (field?.value) {
             return {
-              ACCT_NM: {
-                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
-              },
-              TRAN_BAL: {
-                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
-              },
-              SANCTIONED_AMT: {
-                value: postData?.[0]?.ACCOUNT_DATA?.SANCTIONED_AMT,
-              },
-              BRANCH_CD: {
-                value: postData?.[0]?.ACCOUNT_DATA?.BRANCH_CD,
-              },
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              ACCT_BAL: { value: "" },
             };
-          } else if (postData?.[0]?.RESTRICTION) {
-            formState.setDataOnFieldChange("MESSAGES", {
-              MESSAGES: postData?.[0]?.RESTRICTION,
-              NSC_FD_BTN: true,
-            });
+          }
+        },
+      },
+      accountTypeMetadata: {
+        // disableCaching: true,
+        options: (dependentValue, formState, _, authState) => {
+          return API.securityDropDownListType(
+            authState?.user?.id,
+            authState?.user?.branchCode,
+            authState?.companyID
+          );
+        },
+        _optionsKey: "securityDropDownListType",
+        dependentFields: ["BRANCH_CD", "SECURITY_CD"],
 
+        postValidationSetCrossFieldValues: async (field) => {
+          if (field?.value) {
             return {
-              ACCT_CD: { value: "", isFieldFocused: true },
+              ACCT_CD: { value: "" },
+
+              ACCT_NM: { value: "" },
+              ACCT_BAL: { value: "" },
+            };
+          }
+        },
+      },
+      accountCodeMetadata: {
+        dependentFields: ["ACCT_TYPE", "SECURITY_CD", "BRANCH_CD"],
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          authState,
+          dependentValue
+        ) => {
+          if (
+            field?.value &&
+            dependentValue?.BRANCH_CD?.value &&
+            dependentValue?.ACCT_TYPE?.value
+          ) {
+            let otherAPIRequestPara = {
+              COMP_CD: authState?.companyID,
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+              ACCT_CD: field.value.padStart(6, "0").padEnd(20, " "),
+              GD_TODAY_DT: authState?.workingDate,
+              SCREEN_REF: "EMST/046",
+            };
+            let postData = await API.getLimitEntryData(otherAPIRequestPara);
+
+            if (postData?.[0]?.RESTRICTION) {
+              formState.MessageBox({
+                messageTitle: "Validation Failed...!",
+                message: postData?.[0]?.RESTRICTION,
+                buttonNames: ["Ok"],
+              });
+              return {
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
+                TRAN_BAL: { value: "" },
+                SANCTIONED_AMT: { value: "" },
+              };
+            } else if (postData?.[0]?.MESSAGE1) {
+              formState.setDataOnFieldChange("NSC_FD_BTN", {
+                NSC_FD_BTN: true,
+              });
+
+              formState.MessageBox({
+                messageTitle: "Risk Category Alert",
+                message: postData?.[0]?.MESSAGE1,
+                buttonNames: ["Ok"],
+              });
+              return {
+                ACCT_NM: {
+                  value: postData?.[0]?.ACCT_NM,
+                },
+                TRAN_BAL: {
+                  value: postData?.[0]?.TRAN_BAL,
+                },
+                SANCTIONED_AMT: {
+                  value: postData?.[0]?.SANCTIONED_AMT,
+                },
+                BRANCH_CD: {
+                  value: postData?.[0]?.BRANCH_CD,
+                },
+                HIDDEN_CHARGE_AMT: {
+                  value: postData?.[0]?.CHARGE_AMT,
+                },
+                HIDDEN_GST_AMT: {
+                  value: postData?.[0]?.GST_AMT,
+                },
+                HIDDEN_GST_ROUND: {
+                  value: postData?.[0]?.GST_ROUND,
+                },
+                HIDDEN_TAX_RATE: {
+                  value: postData?.[0]?.TAX_RATE,
+                },
+              };
+            } else {
+              formState.setDataOnFieldChange("NSC_FD_BTN", {
+                NSC_FD_BTN: true,
+              });
+              return {
+                // ACCT_CD: {
+                //   value: postData?.[0]?.ACCT_NM,
+                // },
+                ACCT_NM: {
+                  value: postData?.[0]?.ACCT_NM,
+                },
+                TRAN_BAL: {
+                  value: postData?.[0]?.TRAN_BAL,
+                },
+                SANCTIONED_AMT: {
+                  value: postData?.[0]?.SANCTIONED_AMT,
+                },
+                HIDDEN_CHARGE_AMT: {
+                  value: postData?.[0]?.CHARGE_AMT,
+                },
+                HIDDEN_GST_AMT: {
+                  value: postData?.[0]?.GST_AMT,
+                },
+                HIDDEN_GST_ROUND: {
+                  value: postData?.[0]?.GST_ROUND,
+                },
+                HIDDEN_TAX_RATE: {
+                  value: postData?.[0]?.TAX_RATE,
+                },
+              };
+            }
+          } else if (!field?.value) {
+            formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: false });
+            return {
               ACCT_NM: { value: "" },
               TRAN_BAL: { value: "" },
               SANCTIONED_AMT: { value: "" },
             };
-          } else {
-            formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: true });
-            return {
-              ACCT_NM: {
-                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
-              },
-              TRAN_BAL: {
-                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
-              },
-              SANCTIONED_AMT: {
-                value: postData?.[0]?.ACCOUNT_DATA?.SANCTIONED_AMT,
-              },
-            };
           }
-        } else if (!field?.value) {
-          formState.setDataOnFieldChange("NSC_FD_BTN", { NSC_FD_BTN: false });
-          return {
-            ACCT_NM: { value: "" },
-            TRAN_BAL: { value: "" },
-            SANCTIONED_AMT: { value: "" },
-          };
-        }
-        return {};
+          return {};
+        },
+        runPostValidationHookAlways: true,
       },
-      runPostValidationHookAlways: true,
-      // setValueOnDependentFieldsChange: (dependentFields, others) => {
-      //   console.log("<<<OTH", dependentFields, others);
-      //   if (!others.isSubmitting) {
-      //     return "";
-      //   }
-      // },
+    },
 
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+    {
+      render: {
+        componentType: "hidden",
       },
+      name: "HIDDEN_CHARGE_AMT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_GST_AMT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_GST_ROUND",
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_TAX_RATE",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_CHARGE_AMT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_GST_AMT",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_GST_ROUND",
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "HIDDEN_TAX_RATE",
     },
     {
       render: {
@@ -274,7 +282,7 @@ export const limitEntryMetaData = {
       name: "TRAN_BAL",
       label: "Tran. Balance",
       placeholder: "Balance",
-      isFieldFocused: false,
+      // isFieldFocused: false,
       type: "text",
       isReadOnly: true,
       GridProps: {
@@ -335,14 +343,31 @@ export const limitEntryMetaData = {
       label: "Security Code",
       placeholder: "Security",
       type: "text",
-      disableCaching: true,
-      _optionsKey: "getSecurityListData",
-      dependentFields: ["ACCT_TYPE", "SECURITY_CD"],
-      options: (dependentValue, formState, _, authState, other) => {
+      dependentFields: [
+        "ACCT_CD",
+        "BRANCH_CD",
+        "ACCT_TYPE",
+        "SECURITY_CD",
+        "HIDDEN_CHARGE_AMT",
+        "HIDDEN_GST_AMT",
+        "HIDDEN_GST_ROUND",
+        "HIDDEN_TAX_RATE",
+      ],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (
+          !dependentFieldsValues?.ACCT_CD?.value ||
+          dependentFieldsValues?.ACCT_CD?.error
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      options: (dependentValue, formState, _, authState) => {
         if (dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
           let apiReq = {
             COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
             A_PARENT_TYPE:
               dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim() ??
               dependentValue?.PARA_TYPE?.value,
@@ -351,7 +376,8 @@ export const limitEntryMetaData = {
         }
         return [];
       },
-
+      disableCaching: true,
+      _optionsKey: "getSecurityListData",
       postValidationSetCrossFieldValues: async (
         field,
         formState,
@@ -363,11 +389,19 @@ export const limitEntryMetaData = {
             SECURITY_CD: field?.value,
             LIMIT_MARGIN:
               dependentValue?.SECURITY_CD?.optionData?.[0]?.LIMIT_MARGIN,
+            HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
+            HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
+            HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
+            HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
           });
         }
         return {};
       },
 
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Security Type is required."] }],
+      },
       GridProps: {
         xs: 12,
         md: 3.5,

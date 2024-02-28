@@ -36,6 +36,10 @@ interface MyGridExtendedProps {
   endsIcon?: any;
   iconStyle?: any;
   textFieldStyle?: any;
+  AlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -73,6 +77,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
   endsIcon,
   iconStyle,
   textFieldStyle,
+  txtTransform,
+  AlwaysRunPostValidationSetCrossFieldValues,
   ...others
 }) => {
   let StartIcon = Icons[startsIcon] || startsIcon || null;
@@ -108,6 +114,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
+    txtTransform,
+    AlwaysRunPostValidationSetCrossFieldValues,
   });
 
   const [currentColor, setCurrentColor] = useState<string>(
@@ -185,11 +193,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         if (isFieldFocused) {
           getFocus();
         }
-        if (error) {
-          if (whenToRunValidation === "onBlur") {
-            runValidation({ value: value }, true);
-          }
-        }
+
         if (ignoreUpdate) {
           //ignore Validation
         } else if (whenToRunValidation === "onBlur") {
@@ -293,9 +297,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
           </div>
         }
         sx={{
-          "& .MuiInputBase-root": {
-            ...textFieldStyle,
-          },
+          ...textFieldStyle,
         }}
         FormHelperTextProps={{
           //@ts-ignore
@@ -307,7 +309,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
             background: textFieldStyle
               ? ""
               : Boolean(readOnly)
-              ? "#e7e5e563"
+              ? "var(--theme-color7)"
               : "",
             ...(!isSubmitting && Boolean(currentColor)
               ? {

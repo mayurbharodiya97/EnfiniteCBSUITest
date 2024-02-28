@@ -472,9 +472,9 @@ export const useForm = ({ onSubmit, readOnly = false }: UseFormHookProps) => {
               hasError = false;
             }
             // if(hasError) return hasError;
-            if (hasError) {
-              onSubmit({}, {}, endSubmit, setFieldErrors, actionFlag, hasError);
-            }
+            // if (hasError) {
+            //   onSubmit({}, {}, endSubmit, setFieldErrors, actionFlag, hasError);
+            // }
             if (!hasError || !isValidate) {
               if (typeof onSubmit === "function") {
                 let resultValueObj = {};

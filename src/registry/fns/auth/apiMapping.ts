@@ -235,6 +235,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/RELATIONSHIPMANAGER",
     packageName: "",
   },
+  GETCKYCNRITABRMDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCKYCNRITABRMDDW",
+    packageName: "",
+  },
   GETCUSTOMERLIST: {
     url: "/customerServiceAPI/GETCUSTOMERLIST",
     packageName: "",
@@ -951,6 +955,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTKUPVEWBTNDOCDTLDISP",
     packageName: "",
   },
+  CHECKCUSTDUPLICATEDATA: {
+    url: "/customerServiceAPI/CHECKCUSTDUPLICATEDATA",
+    packageName: "",
+  },
   GETEXPIRYDATE: {
     url: "accountServiceAPI/GETEXPIRYDATE",
     packageName: "",
@@ -969,6 +977,18 @@ export const ActionWiseAPIConfiguration = {
   },
   GETINWARDCLEARPROCESS: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWARDCLEARPROCESS",
+    packageName: "",
+  },
+  GETTODAYTRANDATA: {
+    url: "/transactionServiceAPI/GETTODAYTRANDATA",
+    packageName: "",
+  },
+  GETCHQVIEWDETAILS: {
+    url: "chequeServiceAPI/GETCHQVIEWDETAILS",
+    packageName: "",
+  },
+  CHEQUESIGNIMG: {
+    url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
 };

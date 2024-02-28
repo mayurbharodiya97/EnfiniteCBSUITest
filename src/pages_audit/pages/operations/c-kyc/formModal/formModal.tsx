@@ -12,7 +12,7 @@ import RelatedPersonDetails from './formDetails/formComponents/individualComps/R
 import OtherDetails from './formDetails/formComponents/individualComps/OtherDetails';
 import OtherAddressDetails from './formDetails/formComponents/individualComps/OtherAddressDetails';
 import NRIDetails from './formDetails/formComponents/individualComps/NRIDetails';
-import AttestationDetails, { UpdateDialog } from './formDetails/formComponents/individualComps/AttestationDetails';
+import AttestationDetails from './formDetails/formComponents/individualComps/AttestationDetails';
 
 // import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded'; //personal-details
 // import AddLocationIcon from '@mui/icons-material/AddLocation'; // other-address
@@ -55,6 +55,10 @@ import { format } from 'date-fns';
 import { GradientButton } from 'components/styledComponent/button';
 import { ckyc_confirmation_form_metadata } from './formDetails/metadata/confirmation';
 import { TextField } from 'components/styledComponent';
+import { ActionDialog } from './dialog/ActionDialog';
+import { CloseFormDialog } from './dialog/CloseFormDialog';
+import { PreventUpdateDialog } from './dialog/PreventUpdateDialog';
+import { ConfirmUpdateDialog } from './dialog/ConfirmUpdateDialog';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -135,11 +139,11 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 1 }}>
+        <Grid item xs sx={{ p: 1 }}>
           {/* <Typography> */}
               {children}
           {/* </Typography> */}
-        </Box>
+        </Grid>
       )}
     </div>
   );
@@ -345,29 +349,13 @@ export default function FormModal({
       let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
         COMP_CD: authState?.companyID ?? "",
       }
-      if(formmode == "view") {
-        console.log(from,"statess view", location.state)
-        if(location.state) {
-            const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID
-            payload["REQUEST_CD"] = REQUEST_CD
-        }
-      } else if (formmode == "edit") {
-        console.log("statess edit", location.state)
-        if(from === "pending-entry") {
-          if(location.state) {
-            const confirmedFlag = location.state?.[0]?.data.CONFIRMED
-            const REQUEST_CD = location.state?.[0]?.data.REQUEST_ID
-            payload["REQUEST_CD"] = REQUEST_CD
-            // if(confirmedFlag === "Y" || confirmedFlag === "R") {
-            if(confirmedFlag.includes("Y") || confirmedFlag.includes("R")) {
-              setDisplayMode("view")
-            }
-          }
-        } else if(from === "retrieve-entry") {
-          if(location.state) {
-            const CUSTOMER_ID = location.state?.[0]?.data.CUSTOMER_ID
-            payload["CUSTOMER_ID"] = CUSTOMER_ID
-          }
+      if(Array.isArray(location.state) && location.state.length>0) {
+        const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
+        const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
+        if(Boolean(reqCD)) {
+          payload["REQUEST_CD"] = reqCD;
+        } else if(Boolean(custID)) {
+          payload["CUSTOMER_ID"] = custID;
         }
       }
       if(Object.keys(payload)?.length == 2) {
@@ -511,7 +499,7 @@ export default function FormModal({
 
       case "KYC Document Upload":
         return <Document
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} from={from}
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
 
         // return <KYCDocUpload />
@@ -573,7 +561,7 @@ export default function FormModal({
 
       case "KYC Document Upload":
         return <Document
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
+        isLoading={isLoadingData} setIsLoading={setIsLoadingData} from={from}
         isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
         // return <KYCDocUpload />
   
@@ -746,7 +734,7 @@ export default function FormModal({
           color="inherit"
           variant="subtitle2"
           component="div"
-        >{`Opening Date - ${state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE}`}</Typography>
+        >{`Opening Date - ${format(new Date(state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE), "dd/MM/yyyy")}`}</Typography>
         )
       :""}
     </React.Fragment>
@@ -863,22 +851,15 @@ export default function FormModal({
         <AppBar
           position="sticky"
           color="secondary"
-          style={{ top: "65px" }}
+          style={{ top: "65px", background: "var(--theme-color5)" }}
         >
           <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
-            <Button 
-              color="secondary" 
-              variant="contained" 
+            <GradientButton 
               onClick={handleSidebarExpansionctx} 
               sx={{ border: "1px solid var(--theme-color2)",
-              // height: "40px", width: "40px", minWidth:"40px", borderRadius: "50%", 
-              // mb: "5px", ml: {xs: "2px", sm: "8px"}, alignSelf: "start",
               mx: "10px",
-              // backgroundColor: (theme) => theme.palette.grey[400],
-              minHeight:{xs: "40px", md: "30px"}, 
-              height:{xs: "40px", md: "30px"}, 
-              minWidth: {xs: "40px", md: "30px"}, 
-              width: {xs: "40px", md: "30px"}, 
+              height: "30px",
+              minWidth: "30px !important",
               display: state?.isFreshEntryctx ? "none" : "flex", 
               alignItems:"center", 
               justifyContent: "center",
@@ -892,9 +873,9 @@ export default function FormModal({
               {/* <IconButton color="secondary" onClick={handleSidebarExpansion}
                 sx={{backgroundColor: "#ddd",ml: "20px", mb: "2px", alignSelf: "start"}} 
               > */}
-                {!state?.isSidebarExpandedctx ? <MenuOutlinedIcon /> : <CancelIcon />}
+                {!state?.isSidebarExpandedctx ? <MenuOutlinedIcon sx={{color:"var(--theme-color2)"}} /> : <CancelIcon sx={{color:"var(--theme-color2)"}} />}
               {/* </IconButton> */}
-            </Button>
+            </GradientButton>
             <Typography
               className={classes.title}
               color="inherit"
@@ -978,6 +959,7 @@ export default function FormModal({
                           label="Category - Constitution"
                           autoComplete="disabled"
                           type="text"
+                          required={true}
                           FormHelperTextProps={{
                             component: "div",
                           }}
@@ -1001,16 +983,6 @@ export default function FormModal({
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          helperText={
-                            <div style={{ display: "flex" }}>
-                              <FormHelperText>
-                                {state?.categConstitutionValuectx 
-                                  ? null 
-                                  : "Please Enter Category"
-                                }
-                              </FormHelperText>
-                            </div>
-                          }
                           variant={"standard"}
                           color="secondary"
                         />
@@ -1169,7 +1141,7 @@ export default function FormModal({
               </CustomTabs>}
             </Grid>
             <Grid sx={{
-                "& .MuiBox-root": {
+                "& .MuiGrid-root": {
                   padding: "0px",
                 }
               }} item xs>
@@ -1186,7 +1158,7 @@ export default function FormModal({
           </Grid>
         {/* </Box> */}
 
-        {updateDialog && <UpdateDialog 
+        {updateDialog && <ConfirmUpdateDialog 
             open={updateDialog} 
             onClose={onCloseUpdateDialog} 
             mutationFormDTL={mutation}
@@ -1199,13 +1171,13 @@ export default function FormModal({
             action= {confirmAction}
         />}
 
-        {cancelDialog && <CancelDialolg 
+        {cancelDialog && <CloseFormDialog 
             open={cancelDialog} 
             onClose={onCloseCancelDialog} 
             closeForm = {onClose}
         />}
 
-        {alertOnUpdate && <PreventModificationAlert 
+        {alertOnUpdate && <PreventUpdateDialog 
             open={alertOnUpdate} 
             onClose={onClosePreventUpdateDialog} 
         />}
@@ -1224,219 +1196,3 @@ const Greetings = () => {
 
   return <span>Good {greet},</span>;
 };
-
-export const ActionDialog = ({open, onClose, closeForm, action
-  // isLoading, setIsLoading, data, mt
-}) => {
-  const { authState } = useContext(AuthContext);
-  const {state, handleUpdatectx, handleFormModalClosectx} = useContext(CkycContext);
-  const confirmFormRef = React.useRef<any>("");
-  let initialVal = {}
-  const confirmed = action == "confirm" 
-                                ? "Y" 
-                                : action == "query" 
-                                  ? "M"
-                                  : action == "reject" && "R"
-  const mutation: any = useMutation(API.ConfirmPendingCustomers, {
-      onSuccess: (data) => {
-          // console.log("data o n save", data)
-          handleFormModalClosectx()
-          closeForm()
-      },
-      onError: (error: any) => {
-          // console.log("data o n error", error)
-          // setIsUpdated(true)
-      },
-  });
-
-  const onAction = (e) => {
-    confirmFormRef.current.handleSubmitError(e, "save")
-  }
-
-  const onSubmitFormHandler = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    actionFlag,
-    hasError
-  ) => {
-    if(data && !hasError) {
-        if(data.REMARKS) {
-          mutation.mutate({
-            REQUEST_CD: state?.req_cd_ctx ?? "",
-            REMARKS: data.REMARKS ?? "",
-            CONFIRMED: confirmed
-        })
-      }
-    }
-  };
-
-  return <Dialog open={open} maxWidth="sm"
-      PaperProps={{
-          style: {
-              minWidth: "40%",
-              width: "40%",
-          }
-      }}
-  >
-      <DialogTitle
-          sx={{
-              background: "var(--theme-color3)",
-              color: "var(--theme-color2)",
-              letterSpacing: "1.3px",
-              margin: "10px",
-              boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-              fontWeight: 500,
-              borderRadius: "inherit",
-              minWidth: "450px",
-              py: 1,
-          }}
-          id="responsive-dialog-title"
-      >
-          Confirmation
-          {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
-          {/* {"Updating..."} */}
-      </DialogTitle>
-      <DialogContent>
-
-        <FormWrapper
-          ref={confirmFormRef}
-          key={"pod-form-kyc" + initialVal}
-          metaData={ckyc_confirmation_form_metadata as MetaDataType}
-          // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
-          initialValues={initialVal}
-          formStyle={{}}
-          hideHeader={true}
-          onSubmitHandler={onSubmitFormHandler}
-        />
-      </DialogContent>
-      <DialogActions>
-          <GradientButton
-              autoFocus
-              onClick={onAction}
-          >
-              {action && action == "confirm" 
-                ? "CONFIRM" 
-                : action == "query" 
-                  ? "RAISE QUERY"
-                  : action == "reject" && "REJECT"
-              }
-          </GradientButton>
-          <GradientButton
-              autoFocus
-              onClick={onClose}
-          >
-              CANCEL
-          </GradientButton>
-      </DialogActions> 
-  </Dialog>
-}
-
-export const CancelDialolg = ({open, onClose, closeForm}) => {
-  const {state, handleUpdatectx, handleFormModalClosectx} = useContext(CkycContext);
-
-  return <Dialog open={open} maxWidth="sm"
-      PaperProps={{
-          style: {
-              minWidth: "40%",
-              width: "40%",
-          }
-      }}
-  >
-      <DialogTitle
-          sx={{
-              background: "var(--theme-color3)",
-              color: "var(--theme-color2)",
-              letterSpacing: "1.3px",
-              margin: "10px",
-              boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-              fontWeight: 500,
-              borderRadius: "inherit",
-              minWidth: "450px",
-              py: 1,
-          }}
-          id="responsive-dialog-title"
-      >
-          CONFIRM
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText
-          sx={{ fontSize: "19px", display: "flex" }}
-        >
-          Your Changes will be Lost.
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-          <GradientButton
-              autoFocus
-              onClick={() => {
-                handleFormModalClosectx()
-                closeForm()
-              }}
-          >OK</GradientButton>
-          <GradientButton
-              autoFocus
-              onClick={onClose}
-          >
-              Cancel
-          </GradientButton>
-      </DialogActions> 
-  </Dialog>
-}
-
-export const PreventModificationAlert = ({open, onClose}) => {
-  return <Dialog open={open} maxWidth="sm"
-  PaperProps={{
-      style: {
-          minWidth: "40%",
-          width: "40%",
-      }
-  }}>
-      <DialogTitle
-          sx={{
-              background: "var(--theme-color3)",
-              color: "var(--theme-color2)",
-              letterSpacing: "1.3px",
-              margin: "10px",
-              boxShadow:
-              "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-              fontWeight: 500,
-              borderRadius: "inherit",
-              minWidth: "450px",
-              py: 1,
-          }}
-          id="responsive-dialog-title"
-      >
-          Update Required
-          {/* {isLoading ? "Updating..." : "Updated Successfully"} */}
-          {/* {"Updating..."} */}
-      </DialogTitle>
-      <DialogContent>
-      <DialogContentText
-          sx={{ fontSize: "19px", display: "flex" }}
-      >
-          <p>You have not made any changes yet.</p>
-          {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
-          {/* <HelpIcon color="secondary" fontSize="large" /> */}
-      </DialogContentText>
-      <DialogContentText
-          sx={{ fontSize: "19px", display: "flex" }}
-      >
-          <p>Please kindly make any changes and update.</p>
-          {/* {isLoading ? "Please Wait.. Your Data is getting updated.." : "Data Updated Successfully."}                 */}
-          {/* <HelpIcon color="secondary" fontSize="large" /> */}
-      </DialogContentText>
-      <DialogActions>
-        <GradientButton
-            autoFocus
-            onClick={onClose}
-        >
-            Close
-        </GradientButton>
-      </DialogActions>      
-  </DialogContent>  
-  </Dialog>
-}

@@ -9,13 +9,14 @@ import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../../../../CkycContext';
 import { AuthContext } from "pages_audit/auth";
 import _ from 'lodash';
+import TabNavigate from '../TabNavigate';
 
 const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx} = useContext(CkycContext);
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
   const RelPersonFormRef = useRef<any>("")
   const [isRelatedPDExpanded, setIsRelatedPDExpanded] = useState(true)
   const [isNextLoading, setIsNextLoading] = useState(false)
@@ -23,6 +24,11 @@ const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, set
   const handleRelatedPDExpand = () => {
     setIsRelatedPDExpanded(!isRelatedPDExpanded)
   }
+  useEffect(() => {
+    let refs = [RelPersonFormRef]
+    handleCurrentFormRefctx(refs)
+  }, [])
+
 const myGridRef = useRef<any>(null);
 
     const RelPersonSubmitHandler = (
@@ -87,7 +93,7 @@ const myGridRef = useRef<any>(null);
         
 
         setIsNextLoading(true)
-        console.log("qweqweqwe", data)     
+        // console.log("qweqweqwe", data)     
         if(data && !hasError) {
             let newData = state?.formDatactx
             const commonData = {
@@ -217,64 +223,17 @@ const myGridRef = useRef<any>(null);
                     : {}
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
+    const handleSave = (e) => {
+        const refs = [RelPersonFormRef.current.handleSubmitError(e, "save", false)]
+        handleSavectx(e, refs)
+    }
 
-    const SaveUpdateBTNs = useMemo(() => {
-        if(displayMode) {
-            return displayMode == "new"
-            ? <Fragment>
-                <Button
-                sx={{ mr: 2, mb: 2 }}
-                color="secondary"
-                variant="contained"
-                disabled={isNextLoading}
-                onClick={(e) => {
-                    RelPersonFormRef.current.handleSubmitError(e, "save")
-                }}
-                >
-                {t("Next")}
-                {/* {t("Save & Next")} */}
-                </Button>
-            </Fragment>
-            : displayMode == "edit"
-                ? <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        RelPersonFormRef.current.handleSubmitError(e, "save")
-                    }}
-                    >
-                    {t("Update & Next")}
-                    </Button>
-                </Fragment>
-                : displayMode == "view" && <Fragment>
-                    <Button
-                    sx={{ mr: 2, mb: 2 }}
-                    color="secondary"
-                    variant="contained"
-                    disabled={isNextLoading}
-                    onClick={(e) => {
-                        handleColTabChangectx(state?.colTabValuectx + 1)
-                    }}
-                    >
-                    {t("Next")}
-                    </Button>
-                </Fragment>
-        }
-    }, [displayMode])
 
     return (
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Details of Related Person {`(4/8)`}</Typography> */}
-            <Grid container>
-                {/* <Grid item xs='auto'>
-                    <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Details of Related Person {`(4/8)`}</Typography>
-                </Grid> */}
-            </Grid>
             {isCustomerData ? <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
@@ -283,7 +242,7 @@ const myGridRef = useRef<any>(null);
                     borderRadius: "20px"
                 }} container item xs={12} direction={'column'}>
                 <Grid container item sx={{alignItems: "center", justifyContent: "space-between"}}>
-                    <Typography sx={{color:"var(--theme-color3)"}} gutterBottom={true} variant={"h6"}>{t("DetailsOfRelatedPerson")}</Typography>
+                    <Typography sx={{color:"var(--theme-color3)", pl: 2}} variant={"h6"}>{t("DetailsOfRelatedPerson")}</Typography>
                     <IconButton onClick={handleRelatedPDExpand}>
                         {!isRelatedPDExpanded ? <ExpandMoreIcon /> : <ExpandLessIcon />}       
                     </IconButton>
@@ -304,16 +263,7 @@ const myGridRef = useRef<any>(null);
                     </Grid>                    
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <Grid container item sx={{justifyContent: "flex-end"}}>
-                <Button sx={{mr:2, mb:2}} color="secondary" variant="contained" 
-                // disabled={isNextLoading}
-                    onClick={(e) => {
-                        // handleColTabChangectx(2)
-                        handleColTabChangectx(state?.colTabValuectx-1)
-                    }}
-                >{t("Previous")}</Button>
-                {SaveUpdateBTNs}
-            </Grid>
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
         </Grid>        
     )
 }

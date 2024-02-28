@@ -46,6 +46,7 @@ import "./Trn001.css";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
+import { GeneralAPI } from "registry/fns/functions";
 
 //mui theme
 const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -259,8 +260,7 @@ export const Trn001 = () => {
       });
     },
   });
-
-  const getAccNoValidation = useMutation(API.getAccNoValidation, {
+  const getAccNoValidation = useMutation(GeneralAPI.getAccNoValidation, {
     onSuccess: (data) => {
       if (data?.MESSAGE1) {
         setAccValidMsg(data?.MESSAGE1);
@@ -676,8 +676,8 @@ export const Trn001 = () => {
       ACCT_TYPE: rows[i]?.accType?.value,
       ACCT_CD: rows[i]?.accNo?.padEnd(20, " "),
       PARENT_TYPE: rows[i]?.accType?.info?.PARENT_TYPE ?? "",
-
       BRANCH_CD: rows[i]?.branch?.value,
+      SCREEN_REF: "ETRN/001",
       authState: authState,
     };
 

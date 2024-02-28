@@ -82,8 +82,10 @@ export const CTSOutwardClearingFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
-      setValueOnDependentFieldsChange: "getSlipNoData",
+      __NEW__: {
+        dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
+        setValueOnDependentFieldsChange: "getSlipNoData",
+      },
       GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
     },
 
@@ -153,12 +155,15 @@ export const CTSOutwardClearingFormMetaData = {
             let postData = await getAccountSlipJoinDetail(Apireq);
 
             if (postData?.[0]?.MESSAGE1) {
-              formState?.MessageBox("Information", postData?.[0]?.MESSAGE1);
+              formState?.MessageBox({
+                messageTitle: "Information",
+                message: postData?.[0]?.MESSAGE1,
+              });
             } else if (postData?.[0]?.RESTRICT_MESSAGE) {
-              formState?.MessageBox(
-                "Account Validation Failed",
-                postData?.[0]?.RESTRICT_MESSAGE
-              );
+              formState?.MessageBox({
+                messageTitle: "Account Validation Failed",
+                message: postData?.[0]?.RESTRICT_MESSAGE,
+              });
               formState.setDataOnFieldChange("ACCT_CD_VALID", []);
               return {
                 ACCT_CD: { value: "", isFieldFocused: true },
@@ -198,7 +203,7 @@ export const CTSOutwardClearingFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2 },
+      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
     },
     {
       render: {
@@ -257,7 +262,6 @@ export const CTSOutwardClearingFormMetaData = {
       placeholder: "",
       type: "text",
       format: "dd/MM/yyyy HH:mm:ss",
-      defaultValue: new Date(),
       __VIEW__: { render: { componentType: "datetimePicker" } },
       fullWidth: true,
       isReadOnly: true,
@@ -500,14 +504,17 @@ export const ChequeDetailFormMetaData: any = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
-      textFieldStyle: {
-        background: "var(--theme-color5)",
-        minHeight: "40px !important",
-        fontSize: "15px",
-        color: "white",
-        boxShadow:
-          " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      },
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   "& .MuiInputBase-input": {
+      //     background: "var(--theme-color5)",
+      //     minHeight: "26px !important",
+      //     fontSize: "15px",
+      //     color: "white",
+      //     boxShadow:
+      //       " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      //   },
+      // },
       __VIEW__: { render: { componentType: "hidden" } },
 
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
@@ -523,14 +530,14 @@ export const ChequeDetailFormMetaData: any = {
       type: "text",
 
       defaultValue: "0",
-      textFieldStyle: {
-        background: "var(--theme-color5)",
-        minHeight: "40px !important",
-        fontSize: "15px",
-        color: "white",
-        boxShadow:
-          " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      },
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   minHeight: "40px !important",
+      //   fontSize: "15px",
+      //   color: "white",
+      //   boxShadow:
+      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      // },
       __VIEW__: { render: { componentType: "hidden" } },
       dependentFields: ["chequeDetails"],
 
@@ -552,10 +559,7 @@ export const ChequeDetailFormMetaData: any = {
         ) {
           return {};
         }
-        console.log(
-          "accumulatedTakeoverLoanAmount",
-          accumulatedTakeoverLoanAmount
-        );
+
         if (accumulatedTakeoverLoanAmount) {
           return {
             FINALAMOUNT: {
@@ -591,14 +595,14 @@ export const ChequeDetailFormMetaData: any = {
 
         return value ?? "0";
       },
-      textFieldStyle: {
-        background: "var(--theme-color5)",
-        minHeight: "40px !important",
-        fontSize: "15px",
-        color: "white",
-        boxShadow:
-          " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
-      },
+      // textFieldStyle: {
+      //   background: "var(--theme-color5)",
+      //   minHeight: "40px !important",
+      //   fontSize: "15px",
+      //   color: "white",
+      //   boxShadow:
+      //     " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
+      // },
       __VIEW__: { render: { componentType: "hidden" } },
       GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
     },
@@ -607,6 +611,17 @@ export const ChequeDetailFormMetaData: any = {
         componentType: "hidden",
       },
       name: "TRAN_DT",
+      label: "Cheque Date",
+      placeholder: "",
+      format: "dd/MM/yyyy",
+
+      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "RANGE_DT",
       label: "Cheque Date",
       placeholder: "",
       format: "dd/MM/yyyy",
@@ -795,14 +810,7 @@ export const ChequeDetailFormMetaData: any = {
           },
           GridProps: { xs: 12, sm: 2, md: 1.9, lg: 1.9, xl: 1.5 },
         },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "RANGE_DT",
-          label: "",
-          GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
-        },
+
         {
           render: {
             componentType: "datePicker",
@@ -816,13 +824,18 @@ export const ChequeDetailFormMetaData: any = {
           fullWidth: true,
           dependentFields: ["TRAN_DT", "RANGE_DT"],
           validate: (currentField, dependentField) => {
-            console.log(
-              "currentField",
-              currentField,
-              dependentField,
-              dependentField?.TRAN_DT?.value
-            );
+            const currentDate = new Date(currentField?.value);
+            const rangeDate = new Date(dependentField?.RANGE_DT?.value);
+            const transDate = new Date(dependentField?.TRAN_DT?.value);
+
+            if (currentDate < rangeDate || currentDate > transDate) {
+              return `Date should be between ${rangeDate.toLocaleDateString(
+                "en-IN"
+              )} - ${transDate.toLocaleDateString("en-IN")}`;
+            }
+            return "";
           },
+
           required: true,
           maxLength: 6,
 
@@ -1028,6 +1041,7 @@ export const AddNewBankMasterFormMetadata = {
       placeholder: "",
       type: "text",
       required: true,
+      txtTransform: "uppercase",
       maxLength: 100,
       showMaxLength: true,
       schemaValidation: {
@@ -1108,7 +1122,6 @@ export const RetrieveFormConfigMetaData = {
       name: "FROM_TRAN_DT",
       label: "From Date",
       placeholder: "",
-      // defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
       GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
@@ -1133,7 +1146,6 @@ export const RetrieveFormConfigMetaData = {
       name: "TO_TRAN_DT",
       label: "To Date",
       placeholder: "",
-      // defaultValue: new Date(),
       fullWidth: true,
       format: "dd/MM/yyyy",
       schemaValidation: {

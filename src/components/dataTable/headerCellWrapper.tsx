@@ -14,6 +14,9 @@ export const HeaderCellWrapper = ({ column, children }) => {
     <TableCell
       component="div"
       variant="head"
+      sx={{
+        padding: column?.cellHeaderAlinment ? column?.cellHeaderAlinment : null,
+      }}
       {...column.TableCellProps}
       {...column.getHeaderProps([
         {

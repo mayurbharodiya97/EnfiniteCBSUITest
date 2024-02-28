@@ -2,8 +2,7 @@ import { CommonFetcherPreLoginResponse, CommonFetcherResponse } from "../type";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { GetAPIURLFromAction } from "./apiMapping";
 import { utilFunction } from "components/utils/utilFunctions";
-// import { platform } from "platform";
-
+import { format } from "date-fns";
 const authAPI = () => {
   let baseURL: URL | null = null;
   let PackageName: string = "";
@@ -67,10 +66,10 @@ const authAPI = () => {
   };
   const loginUserDetails = ({
     role,
-    workingDate,
-    companyID,
-    baseCompanyID,
     user: { id, branchCode, baseBranchCode },
+    baseCompanyID,
+    companyID,
+    workingDate,
   }) => {
     loginuserDetailsData = {
       USERNAME: id,
@@ -78,12 +77,12 @@ const authAPI = () => {
       BROWSER_FINGERPRINT: browserFingerPrint,
       MACHINE_NAME: "",
       BRANCH_CD: branchCode,
-      THROUGH_CHANNEL: "E_CBS",
-      WORKING_DATE: workingDate,
-      WORKING_DT: workingDate,
       BASE_BRANCH_CD: baseBranchCode,
       COMP_CD: companyID,
       BASE_COMP_CD: baseCompanyID,
+      THROUGH_CHANNEL: "E_CBS",
+      WORKING_DATE: workingDate ?? "",
+      // WORKING_DT: workingDate ?? "",
     };
   };
   const setToken = (argaccessToken) => {
@@ -128,6 +127,14 @@ const authAPI = () => {
           ACTION: "",
           DISPLAY_LANGUAGE: displayLanguage,
           BROWSER_FINGERPRINT: browserFingerPrint,
+          // LOGINUSERDETAILS: {
+          //   USERNAME: payload.USER_ID ?? loginuserDetailsData?.USERNAME ?? "",
+          //   USERROLE: loginuserDetailsData?.USERROLE ?? "role",
+          //   BROWSER_FINGERPRINT: browserFingerPrint,
+          //   MACHINE_NAME_FRONT: "",
+          //   BRANCH_CD: loginuserDetailsData?.BRANCH_CD ?? "",
+          // },
+
           LOGINUSERDETAILS: {
             USERNAME: payload.USER_ID ?? loginuserDetailsData?.USERNAME ?? "",
             USERROLE: loginuserDetailsData?.USERROLE ?? "role",
@@ -136,7 +143,6 @@ const authAPI = () => {
             BRANCH_CD: loginuserDetailsData?.BRANCH_CD ?? "",
             THROUGH_CHANNEL: "E_CBS",
             WORKING_DATE: loginuserDetailsData?.WORKING_DATE ?? "",
-            WORKING_DT: loginuserDetailsData?.WORKING_DATE ?? "",
             BASE_BRANCH_CD: loginuserDetailsData?.BASE_BRANCH_CD ?? "",
             COMP_CD: loginuserDetailsData?.COMP_CD ?? "",
             BASE_COMP_CD: loginuserDetailsData?.BASE_COMP_CD ?? "",

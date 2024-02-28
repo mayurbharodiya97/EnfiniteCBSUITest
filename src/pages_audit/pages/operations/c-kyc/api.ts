@@ -452,15 +452,14 @@ export const validateEmailID = async (columnValue) => {
   }
 }
 
-export const validateMobileNo = async (columnValue, allField, flag) => {
-  // console.log("columnValue, allField, flag", columnValue, allField, flag)
+export const validateMobileNo = async (columnValue, allField, formState) => {
+  // console.log("columnValue, allField, flag", columnValue, allField, formState)
   const MOBILE_NO = columnValue.value
   const SCREEN = "EMST/707"
   const STD_CD = allField.STD_2.value
   const FLAG = "Y"
 
-  if(MOBILE_NO && MOBILE_NO) {
-
+  if(MOBILE_NO) {
     // console.log("ewqkudiwqehid", EMAIL_ID)
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETMOBILESTATUS", {
@@ -475,14 +474,22 @@ export const validateMobileNo = async (columnValue, allField, flag) => {
       const message = data?.[0]?.MOBILE_STATUS
       if(message) {
         return message;
-      } else return "";
+      } else {
+        const fieldValue = {CONTACT2: MOBILE_NO}
+        const result = await DuplicationValidate(columnValue, allField, formState, fieldValue)
+        if(result) {
+          // formState.setDataOnFieldChange("CONTACT2", result)
+          // return "Contact already exist";
+          return result;
+        } else return "";
+      };
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
   }
 }
 
-export const validateUniqueId = async (columnValue) => {
+export const validateUniqueId = async (columnValue, allField?, formState?) => {
   // console.log("validateUniqueId", columnValue)
   const UNIQUEID = columnValue.value
 
@@ -495,12 +502,21 @@ export const validateUniqueId = async (columnValue) => {
     if (status === "0") {
       // console.log("validateUniqueId data", data)
       const UID_STATUS = data?.[0]?.UID_STATUS
+      // console.log("wekjfhiweufhw",UID_STATUS)
       if(UID_STATUS) {
         if(UID_STATUS === "I") {
           return "Please Enter Valid Unique ID";
         } else if(UID_STATUS === "N") {
           return "Unique ID should be 12 digit";
-        } else return "";
+        } else {
+          const fieldValue = {UNIQUE_ID: UNIQUEID}
+          const result = await DuplicationValidate(columnValue, allField, formState, fieldValue)
+          if(result) {
+            // formState.setDataOnFieldChange("UNIQUEID", result)
+            // return "Unique ID already exist";
+            return result;
+          } else return "";
+        };
       } else return "";
     } else {
       throw DefaultErrorObject(message, messageDetails);
@@ -508,7 +524,8 @@ export const validateUniqueId = async (columnValue) => {
   }
 }
 
-export const validateGSTIN = async (columnValue) => {
+
+export const validateGSTIN = async (columnValue, allField, flag) => {
   // console.log("validateGSTIN", columnValue)
   const GSTIN = columnValue.value
 
@@ -531,8 +548,8 @@ export const validateGSTIN = async (columnValue) => {
   }
 }
 
-export const validatePAN = async (columnValue) => {
-  // console.log("validatePAN", columnValue)
+export const validatePAN = async (columnValue, allField?, formState?) => {
+  // console.log(columnValue, "validatePAN", allField, formState)
   const PAN = columnValue.value
 
   if(PAN) {
@@ -546,9 +563,48 @@ export const validatePAN = async (columnValue) => {
       const PAN_STATUS = data?.[0]?.PAN_STATUS
       if(PAN_STATUS && PAN_STATUS !== "Y") {
         return "Please Enter Valid PAN Number";
-      } else return "";
+      } else {
+        const fieldValue = {PAN_NO: PAN}
+        const result = await DuplicationValidate(columnValue, allField, formState, fieldValue)
+        if(result) {
+          // formState.setDataOnFieldChange("PAN_NO", result)
+          // return "PAN already exist";
+          return result;
+        } else return "";
+      };
     } else {
       throw DefaultErrorObject(message, messageDetails);
+    }
+  } 
+}
+
+export const DuplicationValidate = async (columnValue, allField, formState, fieldValue?) => {
+  const {COMP_CD, CUSTOMER_ID, REQ_FLAG} = formState
+  // console.log("waefdwdqwedqwd ..")
+// export const DuplicationValidate = async (field, formState, authState, dependentFieldsValues, fieldObj) => {
+  if(fieldValue) {
+    let keys = Object.keys(fieldValue)
+    if(keys.length === 1 && (Boolean(fieldValue[keys[0]]))) {
+      const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("CHECKCUSTDUPLICATEDATA", {
+        COMP_CD: COMP_CD, 
+        CUSTOMER_ID: CUSTOMER_ID,
+        REQ_FLAG: REQ_FLAG,
+        ...fieldValue
+      });
+      if (status === "0") {
+        // console.log("waefdwdqwedqwd data success..", data)
+        return "";
+      } else {
+        // console.log("waefdwdqwedqwd e ..", data)
+        const ALLOW_RES = data[0].ALLOW_RES
+        const MESSAGE = data[0].RES_MESSAGE
+        // console.log("poiiuoiujoi", keys[0], Boolean(MESSAGE))
+        formState.setDataOnFieldChange(keys[0], MESSAGE)
+        // return MESSAGE
+        return "Entered value already exist"
+        // throw DefaultErrorObject(message, messageDetails);
+      }
     }
   }
 }
@@ -603,42 +659,42 @@ export const validatePAN = async (columnValue) => {
 //   }
 // }
 
-export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
-  const { data, status, message, messageDetails } =
-  await AuthSDK.internalFetcher("GETAREALIST", {
-    COMP_CD: COMP_CD, 
-    BRANCH_CD: BRANCH_CD,
-    PIN_CODE: "123456"
-  });
+// export const getSubAreaOptions = async (dependentValue, COMP_CD, BRANCH_CD) => {
+//   const { data, status, message, messageDetails } =
+//   await AuthSDK.internalFetcher("GETAREALIST", {
+//     COMP_CD: COMP_CD, 
+//     BRANCH_CD: BRANCH_CD,
+//     PIN_CODE: "123456"
+//   });
 
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      let Parent_Area = null;
-      if(dependentValue?.PAR_AREA_CD?.value) {
-        Parent_Area = dependentValue.PAR_AREA_CD.value
-        responseData = responseData.filter(d => d?.PARENT_AREA == Parent_Area)
-      } else if (dependentValue?.LOC_AREA_CD?.value) {
-        Parent_Area = dependentValue.LOC_AREA_CD.value
-        responseData = responseData.filter(d => d?.PARENT_AREA == Parent_Area)
-      }
+//   if (status === "0") {
+//     let responseData = data;
+//     if (Array.isArray(responseData)) {
+//       let Parent_Area = null;
+//       if(dependentValue?.PAR_AREA_CD?.value) {
+//         Parent_Area = dependentValue.PAR_AREA_CD.value
+//         responseData = responseData.filter(d => d?.PARENT_AREA == Parent_Area)
+//       } else if (dependentValue?.LOC_AREA_CD?.value) {
+//         Parent_Area = dependentValue.LOC_AREA_CD.value
+//         responseData = responseData.filter(d => d?.PARENT_AREA == Parent_Area)
+//       }
 
-      responseData = responseData.map(({ AREA_NM, AREA_CD, ...other }) => {
-          return {
-            ...other,
-            AREA_NM: AREA_NM, 
-            AREA_CD: AREA_CD,
-            value: AREA_CD,
-            label: AREA_NM,
-          };
-        }
-      );
-    }
-    return responseData
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-}
+//       responseData = responseData.map(({ AREA_NM, AREA_CD, ...other }) => {
+//           return {
+//             ...other,
+//             AREA_NM: AREA_NM, 
+//             AREA_CD: AREA_CD,
+//             value: AREA_CD,
+//             label: AREA_NM,
+//           };
+//         }
+//       );
+//     }
+//     return responseData
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// }
 
 // for retrieveing data, in retrieve, personal/entity details, in grid
 export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
@@ -662,7 +718,7 @@ export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:stri
     payload = {
       COMP_CD: COMP_CD, 
       // BRANCH_CD: BRANCH_CD, 
-      ENTERED_DATE: ENTERED_DATE,
+      // ENTERED_DATE: ENTERED_DATE,
       REQ_FLAG: REQ_FLAG
     }
   } else {
@@ -674,9 +730,17 @@ export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:stri
   }
   const { data, status, message, messageDetails } =
   await AuthSDK.internalFetcher("GETPENDINGCUSTLIST", payload);
-  if (status === "0") {
-    return data
-  } else {
+  if (status === "0") { const dataStatus = data;
+    dataStatus.map((item) => {
+      if (item?.CONFIRMED === "Y") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+      }
+      if (item?.CONFIRMED === "R") {
+        item._rowColor = "rgb(152 59 70 / 61%)";
+      }
+    });
+    return dataStatus
+   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
@@ -771,9 +835,34 @@ export const getEduQualiOptions = async (COMP_CD, BRANCH_CD) => {
   }
 }
 
+// export const getRelationshipManagerOptions = async (COMP_CD) => {
+//   const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher("RELATIONSHIPMANAGER", {
+//       COMP_CD: COMP_CD, 
+//     });
+//   if (status === "0") {
+//     let responseData = data;
+//     if (Array.isArray(responseData)) {
+//       responseData = responseData.map(({ FULLNAME, EMP_ID, ...other }) => {
+//           return {
+//             ...other,
+//             FULLNAME:FULLNAME,
+//             EMP_ID: EMP_ID,
+//             label: FULLNAME,
+//             value: EMP_ID,
+//           };
+//         }
+//       );
+//     }
+//     return responseData
+//   } else {
+//     throw DefaultErrorObject(message, messageDetails);
+//   }
+// }
+
 export const getRelationshipManagerOptions = async (COMP_CD) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("RELATIONSHIPMANAGER", {
+    await AuthSDK.internalFetcher("GETCKYCNRITABRMDDW", {
       COMP_CD: COMP_CD, 
     });
   if (status === "0") {
@@ -836,13 +925,13 @@ export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CON
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DOC_DESCRIPTION, BANK_DOC_TRAN_CD, ...other }) => {
+      responseData = responseData.map(({ DOC_DESCRIPTION, TEMPLATE_CD, ...other }) => {
           return {
             ...other,
             DOC_DESCRIPTION:DOC_DESCRIPTION,
-            BANK_DOC_TRAN_CD: BANK_DOC_TRAN_CD,
+            TEMPLATE_CD: TEMPLATE_CD,
             label: DOC_DESCRIPTION,
-            value: BANK_DOC_TRAN_CD,
+            value: TEMPLATE_CD,
           };
         }
       );
@@ -859,11 +948,11 @@ export const getCustDocumentOpDtl = async ({COMP_CD, BRANCH_CD, formState}) => {
   let selectedDoc:any[] = []
   if(rowsData && rowsData.length>0) {
     selectedDoc = rowsData.map(el => {
-      return el.data.BANK_DOC_TRAN_CD ?? "";
+      return el.data.TEMPLATE_CD ?? "";
     })
   } else if(gridData && gridData.length>0) {
     selectedDoc = gridData.map(el => {
-      return el.BANK_DOC_TRAN_CD ?? "";
+      return el.TEMPLATE_CD ?? "";
     })
   }
   // console.log(gridData, "auedhniuwehdwe", formMode)
@@ -2113,29 +2202,23 @@ export const getAttestData = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, USER_NAME}
 } 
 
 export const getOptionsOnPinParentArea = async (dependentValue, formState, _, authState) => {
-  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.PAR_AREA_CD)
+  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE)
   let PIN_CODE = "", PARENT_AREA = ""
-  if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length>5) {
-    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value, dependentValue?.PAR_AREA_CD?.value)
+  if(Boolean(dependentValue?.PIN_CODE) && dependentValue?.PIN_CODE?.value?.length>5) {
+    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value)
     PIN_CODE = dependentValue?.PIN_CODE?.value
-  } else if(dependentValue?.PAR_AREA_CD?.value) {
-    // console.log("getOptionsOnPinParentArea dp parea", dependentValue?.PIN_CODE?.value, dependentValue?.PAR_AREA_CD?.value)
-    PARENT_AREA = dependentValue?.PAR_AREA_CD?.value
   }
-  if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length<5) {
-
-  } else if(PIN_CODE || PARENT_AREA) {
+  if(PIN_CODE) {
     // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)
     const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETAREALIST", {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
       PIN_CODE: PIN_CODE,
-      FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
-      PARENT_AREA: PARENT_AREA,
-      // PIN_CODE: currentField?.value ?? "",
-      // FLAG: "", // P - pincode, A - parent area
-      // PARENT_AREA: "",
+      // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+      // PARENT_AREA: PARENT_AREA,
+      FLAG: "P",
+      PARENT_AREA: "",
     });
 
     if(status == 0) {
@@ -2159,43 +2242,43 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
 }
 
 
-export const getOptionsOnPin = async (dependentValue, formState, _, authState) => {
-  // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.PAR_AREA_CD)
-  let PIN_CODE = "";
-  if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length>5) {
-    // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value, dependentValue?.PAR_AREA_CD?.value)
-    PIN_CODE = dependentValue?.PIN_CODE?.value
-  }
-  if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length<5) {
+// export const getOptionsOnPin = async (dependentValue, formState, _, authState) => {
+//   // console.log("getOptionsOnPinParentArea dp.", dependentValue?.PIN_CODE, dependentValue?.PAR_AREA_CD)
+//   let PIN_CODE = "";
+//   if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length>5) {
+//     // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.PIN_CODE?.value, dependentValue?.PAR_AREA_CD?.value)
+//     PIN_CODE = dependentValue?.PIN_CODE?.value
+//   }
+//   if(dependentValue?.PIN_CODE?.value && dependentValue?.PIN_CODE?.value?.length<5) {
 
-  } else if(PIN_CODE) {
-    const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETAREALIST", {
-      COMP_CD: authState?.companyID ?? "",
-      BRANCH_CD: authState?.user?.branchCode ?? "",
-      PIN_CODE: PIN_CODE,
-      FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
-    });
+//   } else if(PIN_CODE) {
+//     const { data, status, message, messageDetails } =
+//     await AuthSDK.internalFetcher("GETAREALIST", {
+//       COMP_CD: authState?.companyID ?? "",
+//       BRANCH_CD: authState?.user?.branchCode ?? "",
+//       PIN_CODE: PIN_CODE,
+//       FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+//     });
 
-    if(status == 0) {
-      // console.log("getOptionsOnPinParentArea data", data)
-      let responseData = data;
-      if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
-            return {
-              ...other,
-              AREA_CD: AREA_CD,
-              AREA_NM: AREA_NM,
-              label: AREA_NM,
-              value: AREA_CD,
-            };
-          }
-        );
-      }
-      return responseData  
-    }
-    }
-}
+//     if(status == 0) {
+//       // console.log("getOptionsOnPinParentArea data", data)
+//       let responseData = data;
+//       if (Array.isArray(responseData)) {
+//         responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
+//             return {
+//               ...other,
+//               AREA_CD: AREA_CD,
+//               AREA_NM: AREA_NM,
+//               label: AREA_NM,
+//               value: AREA_CD,
+//             };
+//           }
+//         );
+//       }
+//       return responseData  
+//     }
+//     }
+// }
 
 
 export const getOptionsOnLocalPinParentArea = async (dependentValue, formState, _, authState) => {
@@ -2204,24 +2287,18 @@ export const getOptionsOnLocalPinParentArea = async (dependentValue, formState, 
   if(dependentValue.LOC_PIN_CODE && dependentValue?.LOC_PIN_CODE?.value && dependentValue.LOC_PIN_CODE?.value?.length>5) {
     // console.log("getOptionsOnPinParentArea dp pincode", dependentValue?.LOC_PIN_CODE?.value, dependentValue?.LOC_AREA_CD?.value)
     PIN_CODE = dependentValue?.LOC_PIN_CODE?.value
-  } else if(dependentValue?.LOC_AREA_CD?.value) {
-    // console.log("getOptionsOnPinParentArea dp parea", dependentValue?.LOC_PIN_CODE?.value, dependentValue?.LOC_AREA_CD?.value)
-    PARENT_AREA = dependentValue?.LOC_AREA_CD?.value
   }
-  if(dependentValue.LOC_PIN_CODE && dependentValue?.LOC_PIN_CODE?.value && dependentValue?.LOC_PIN_CODE?.value?.length<5) {
-
-  } else if(PIN_CODE || PARENT_AREA) {
+  if(PIN_CODE) {
     // console.log("getOptionsOnPinParentArea dp f", PIN_CODE, PARENT_AREA)
     const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETAREALIST", {
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
       PIN_CODE: PIN_CODE,
-      FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
-      PARENT_AREA: PARENT_AREA,
-      // PIN_CODE: currentField?.value ?? "",
-      // FLAG: "", // P - pincode, A - parent area
-      // PARENT_AREA: "",
+      // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+      // PARENT_AREA: PARENT_AREA,
+      FLAG: "P",
+      PARENT_AREA: "",
     });
 
     if(status == 0) {
