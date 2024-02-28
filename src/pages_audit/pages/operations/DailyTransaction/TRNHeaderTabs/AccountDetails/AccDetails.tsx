@@ -17,31 +17,29 @@ import { AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 
-export const AccDetails = ({ flag }) => {
-  const { cardStore, setCardStore } = useContext(AccDetailContext);
-  const windowWidth = useRef(window.innerWidth);
+const cardDimensions = {
+  superLargeDesktop: {
+    breakpoint: { max: 4000, min: 3000 },
+    items: 2,
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+  },
+};
 
+export const AccDetails = () => {
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
   const [cardName, setCardName] = useState<any>([]);
   let cardsInfo = cardStore?.cardsInfo ?? [];
-
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 2,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: cardName?.length < 3 ? 2 : 3,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
 
   useEffect(() => {
     let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
@@ -73,7 +71,7 @@ export const AccDetails = ({ flag }) => {
                     <div
                       style={{
                         overflowY: "scroll",
-                        height: "26vh" as string,
+                        height: "29vh",
                       }}
                     >
                       <Grid

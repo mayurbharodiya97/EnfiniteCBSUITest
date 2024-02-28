@@ -59,7 +59,6 @@ export const RemarksAPIWrapper = ({
         <DialogContent>
           <br />
           <TextField
-            color="secondary"
             autoFocus={true}
             label={"Remarks"}
             placeholder="Enter Remarks"
@@ -67,9 +66,9 @@ export const RemarksAPIWrapper = ({
             type={"text"}
             name="remarks"
             variant="standard"
+            color="info"
             margin="dense"
             id="standard-size-normal"
-            color="info"
             value={input || ""}
             onChange={handleChange}
             error={loginState.isError}
