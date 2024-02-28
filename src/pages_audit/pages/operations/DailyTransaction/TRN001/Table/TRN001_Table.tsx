@@ -35,7 +35,7 @@ import { useLocation } from "react-router-dom";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "View Detail",
+    actionLabel: "",
     multiple: false,
     rowDoubleClick: true,
   },
@@ -146,6 +146,7 @@ export const TRN001_Table = ({
 
   // fn define-----------------------------
   const setCurrentAction = useCallback((data) => {
+    console.log("something");
     let row = data.rows[0]?.data;
     setDataRow(row);
 
@@ -169,6 +170,10 @@ export const TRN001_Table = ({
       setDeleteDialog(true);
     }
   }, []);
+
+  useEffect(() => {
+    console.log(rows2, "rows2");
+  }, [rows2]);
 
   const handleSetRemarks = () => {
     let msg = "WRONG ENTRY FROM DAILY TRAN";
@@ -239,6 +244,9 @@ export const TRN001_Table = ({
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
+        onlySingleSelectionAllow={true}
+        isNewRowStyle={true}
+        defaultSelectedRowId={0}
       />
       <Grid
         item
@@ -287,6 +295,7 @@ export const TRN001_Table = ({
           {"Do you want to Delete the transaction - VoucherNo." +
             dataRow?.TRAN_CD +
             " ?"}
+          <br />
           <br />
           <br />
           <TextField

@@ -31,7 +31,9 @@ export const LimitGridMetaData: GridMetaDataType = {
       accessor: "sr",
       sequence: 1,
       componentType: "default",
-      width: 120,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Entry Date",
@@ -80,6 +82,7 @@ export const LimitGridMetaData: GridMetaDataType = {
       sequence: 7,
       componentType: "default",
       width: 120,
+      alignment: "right",
     },
     // {
     //   columnName: "Over Rate",
@@ -99,8 +102,9 @@ export const LimitGridMetaData: GridMetaDataType = {
       columnName: "Limit Amount",
       accessor: "LIMIT_AMOUNT",
       sequence: 10,
-      componentType: "default",
+      componentType: "currency",
       width: 120,
+      alignment: "right",
     },
     {
       columnName: "Description",

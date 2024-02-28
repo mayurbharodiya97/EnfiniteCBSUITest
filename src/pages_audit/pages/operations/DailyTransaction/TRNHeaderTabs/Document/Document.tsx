@@ -103,11 +103,15 @@ export const Document = () => {
         finalMetaData={DocumentGridMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        loading={getDocTemplateList.isLoading}
+        loading={getDocTemplateList?.isLoading || getDocView?.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
+        onlySingleSelectionAllow={true}
+        isNewRowStyle={true}
+        // defaultSelectedRowId={1}
+        //  controlsAtBottom={true}
       />
 
       <Dialog

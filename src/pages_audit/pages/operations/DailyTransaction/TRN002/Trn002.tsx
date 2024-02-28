@@ -40,7 +40,7 @@ import CommonFooter from "../TRNCommon/CommonFooter";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "View Detail",
+    actionLabel: "",
     multiple: false,
     rowDoubleClick: true,
     // alwaysAvailable: true,
@@ -232,6 +232,7 @@ export const Trn002 = () => {
       setDeleteDialog(true);
     }
   }, []);
+
   const handleGetTRN002List = () => {
     getTRN002List.mutate(dataObj);
   };
@@ -318,6 +319,14 @@ export const Trn002 = () => {
           refetchData={() => handleGetTRN002List()}
           actions={actions}
           setAction={setCurrentAction}
+          onlySingleSelectionAllow={true}
+          isNewRowStyle={true}
+          defaultSelectedRowId={1}
+          // headerToolbarStyle={{
+          //   background: "var(--theme-color2)",
+          //   color: "black",
+          //   padding: "0",
+          // }}
         />
         <Grid
           item

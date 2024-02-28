@@ -31,7 +31,9 @@ export const HoldChargeGridMetaData: GridMetaDataType = {
       accessor: "sr",
       sequence: 1,
       componentType: "default",
-      width: 100,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Dr.Type",
@@ -97,6 +99,7 @@ export const HoldChargeGridMetaData: GridMetaDataType = {
       sequence: 10,
       componentType: "currency",
       width: 100,
+      alignment: "right",
     },
     {
       columnName: "Paid/Wave",

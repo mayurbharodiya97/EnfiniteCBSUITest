@@ -35,7 +35,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "St. Date",
-      accessor: "ENTERED_DATE", //
+      accessor: "a", //
       sequence: 2,
       componentType: "date",
       isVisible: true,

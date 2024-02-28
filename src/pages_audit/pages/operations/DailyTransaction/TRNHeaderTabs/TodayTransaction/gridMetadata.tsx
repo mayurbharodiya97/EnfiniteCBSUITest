@@ -31,14 +31,18 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       accessor: "sr",
       sequence: 1,
       componentType: "default",
-      width: 100,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Time",
       accessor: "time",
       sequence: 2,
       componentType: "default",
-      width: 100,
+      width: 80,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Chq No.",
@@ -46,13 +50,16 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       sequence: 3,
       componentType: "default",
       width: 100,
+      alignment: "right",
     },
     {
       columnName: "Trx",
       accessor: "TYPE_CD",
       sequence: 4,
       componentType: "default",
-      width: 100,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Remarks",
@@ -68,6 +75,7 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       componentType: "currency",
       width: 120,
       color: "green",
+      alignment: "right",
     },
 
     {
@@ -77,6 +85,7 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       componentType: "currency",
       width: 120,
       color: "red",
+      alignment: "right",
     },
     {
       columnName: "Voucher No",
@@ -87,7 +96,7 @@ export const TodayTransGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Status",
-      accessor: "CONFIRMED",
+      accessor: "STATUS",
       sequence: 9,
       componentType: "default",
       width: 100,
@@ -97,7 +106,9 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       accessor: "ENTERED_BRANCH_CD",
       sequence: 10,
       componentType: "default",
-      width: 100,
+      width: 70,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Scroll",
@@ -105,6 +116,9 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       sequence: 11,
       componentType: "default",
       width: 100,
+      maxWidth: 100,
+      minWidth: 50,
+      alignment: "right",
     },
     {
       columnName: "SDC",
@@ -112,6 +126,8 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       sequence: 12,
       componentType: "default",
       width: 100,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "Maker",

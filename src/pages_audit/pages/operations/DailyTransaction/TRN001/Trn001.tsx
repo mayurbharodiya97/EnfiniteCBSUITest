@@ -661,6 +661,7 @@ export const Trn001 = () => {
     setTempStore({ ...tempStore, accInfo: {} });
     setCardStore({ ...cardStore, cardsInfo: [] });
     setTabsData([]);
+    setLoading(false);
   };
 
   const handleFilterTrx = () => {
@@ -871,6 +872,7 @@ export const Trn001 = () => {
                               value={a.branch}
                               fullWidth={true}
                               autoHighlight
+                              autoSelect
                               size="small"
                               options={branchOptions}
                               onChange={(e, value) => handleBranch(e, value, i)}
@@ -897,6 +899,7 @@ export const Trn001 = () => {
                             <Autocomplete
                               value={a.accType}
                               fullWidth={true}
+                              autoSelect
                               autoHighlight
                               size="small"
                               options={accTypeOptions}
@@ -944,6 +947,7 @@ export const Trn001 = () => {
                               value={a.trx}
                               fullWidth={true}
                               autoHighlight
+                              autoSelect
                               size="small"
                               options={trxOptions}
                               onChange={(e, value) => handleTrx(e, value, i)}
@@ -990,6 +994,7 @@ export const Trn001 = () => {
                               value={a.sdc}
                               fullWidth={true}
                               autoHighlight
+                              autoSelect
                               size="small"
                               options={sdcOptions}
                               onChange={(e, value) => handleSdc(e, value, i)}

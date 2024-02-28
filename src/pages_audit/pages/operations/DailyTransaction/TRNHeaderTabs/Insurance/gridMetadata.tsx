@@ -31,7 +31,9 @@ export const InsuranceGridMetaData: GridMetaDataType = {
       columnName: "Sr",
       sequence: 1,
       componentType: "default",
-      width: 120,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       accessor: "POLICY_NO",
@@ -63,7 +65,8 @@ export const InsuranceGridMetaData: GridMetaDataType = {
       columnName: "Insurance Amount",
       sequence: 5,
       componentType: "currency",
-      width: 120,
+      width: 150,
+      alignment: "right",
     },
     {
       accessor: "TOT_PREMIUM_AMT",
@@ -71,6 +74,7 @@ export const InsuranceGridMetaData: GridMetaDataType = {
       sequence: 6,
       componentType: "currency",
       width: 120,
+      alignment: "right",
     },
     // {
     //   accessor: "NET_PREMIUM_AMOUNT",

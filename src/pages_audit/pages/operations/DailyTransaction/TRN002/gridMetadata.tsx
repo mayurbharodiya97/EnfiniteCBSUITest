@@ -13,6 +13,7 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     disableSorting: false,
     disableGroupBy: true,
     enablePagination: false,
+    // hideHeader: false,
     hideFooter: false,
     // pageSizes: [10, 20, 30],
     // defaultPageSize: 10,

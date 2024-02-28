@@ -31,7 +31,9 @@ export const stopPayGridMetaData: GridMetaDataType = {
       columnName: "Sr ",
       sequence: 1,
       componentType: "default",
-      width: 100,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       accessor: "TRAN_DT",
@@ -49,6 +51,7 @@ export const stopPayGridMetaData: GridMetaDataType = {
       sequence: 3,
       componentType: "default",
       width: 200,
+      alignment: "right",
     },
     {
       columnName: "Chq To ",
@@ -56,6 +59,7 @@ export const stopPayGridMetaData: GridMetaDataType = {
       sequence: 4,
       componentType: "default",
       width: 200,
+      alignment: "right",
     },
     {
       columnName: "Chq Date ",
@@ -76,7 +80,7 @@ export const stopPayGridMetaData: GridMetaDataType = {
 
     {
       accessor: "FLAG",
-      columnName: "FLAG ",
+      columnName: "Flag ",
       sequence: 7,
       componentType: "default",
       width: 120,
