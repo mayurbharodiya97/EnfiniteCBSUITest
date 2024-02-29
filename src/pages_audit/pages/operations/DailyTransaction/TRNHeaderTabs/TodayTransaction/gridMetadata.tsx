@@ -57,9 +57,9 @@ export const TodayTransGridMetaData: GridMetaDataType = {
       accessor: "TYPE_CD",
       sequence: 4,
       componentType: "default",
-      width: 60,
+      width: 70,
       maxWidth: 100,
-      minWidth: 50,
+      minWidth: 70,
     },
     {
       columnName: "Remarks",

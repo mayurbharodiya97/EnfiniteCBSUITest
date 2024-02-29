@@ -321,7 +321,7 @@ export const Trn002 = () => {
           setAction={setCurrentAction}
           onlySingleSelectionAllow={true}
           isNewRowStyle={true}
-          defaultSelectedRowId={1}
+          defaultSelectedRowId={0}
           // headerToolbarStyle={{
           //   background: "var(--theme-color2)",
           //   color: "black",

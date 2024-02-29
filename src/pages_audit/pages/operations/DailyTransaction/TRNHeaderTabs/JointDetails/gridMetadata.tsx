@@ -48,7 +48,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       accessor: "REF_PERSON_NAME",
       sequence: 3,
       componentType: "default",
-      width: 60,
+      width: 200,
     },
     {
       columnName: "Designation",

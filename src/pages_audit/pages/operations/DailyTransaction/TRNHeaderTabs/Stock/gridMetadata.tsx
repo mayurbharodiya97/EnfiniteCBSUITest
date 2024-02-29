@@ -31,11 +31,13 @@ export const StockGridMetaData: GridMetaDataType = {
       accessor: "sr",
       sequence: 1,
       componentType: "default",
-      width: 120,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       columnName: "St. Date",
-      accessor: "a", //
+      accessor: "TRAN_DT", //
       sequence: 2,
       componentType: "date",
       isVisible: true,
@@ -44,7 +46,7 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     {
       columnName: "Stock Till Date",
-      accessor: "TRAN_DT", //
+      accessor: "ASON_DT", //
       sequence: 3,
       componentType: "date",
       isVisible: true,
@@ -71,6 +73,7 @@ export const StockGridMetaData: GridMetaDataType = {
       sequence: 5,
       componentType: "default",
       width: 100,
+      alignment: "right",
     },
     {
       columnName: "Drawing Power",
@@ -78,6 +81,7 @@ export const StockGridMetaData: GridMetaDataType = {
       sequence: 6,
       componentType: "default",
       width: 120,
+      alignment: "right",
     },
     {
       columnName: "Security Desc",
@@ -104,5 +108,14 @@ export const StockGridMetaData: GridMetaDataType = {
       dateFormat: "dd/MM/yyyy",
       width: 120,
     },
+    // {
+    //   columnName: "Max Ason Dt",
+    //   accessor: "ASON_DT",
+    //   sequence: 10,
+    //   componentType: "date",
+    //   isVisible: true,
+    //   dateFormat: "dd/MM/yyyy",
+    //   width: 120,
+    // },
   ],
 };

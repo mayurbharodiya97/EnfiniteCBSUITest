@@ -50,7 +50,7 @@ export const snapShotGridMetaData: GridMetaDataType = {
       accessor: "REMARKS",
       sequence: 2,
       componentType: "default",
-      width: 200,
+      width: 250,
     },
     {
       columnName: "TRX ",
@@ -135,8 +135,6 @@ export const snapShotGridMetaData: GridMetaDataType = {
       isVisible: true,
       dateFormat: "dd/MM/yyyy",
       width: 110,
-      maxWidth: 100,
-      minWidth: 50,
     },
   ],
 };

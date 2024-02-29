@@ -68,6 +68,7 @@ export const LimitGridMetaData: GridMetaDataType = {
       sequence: 5,
       componentType: "default",
       width: 120,
+      alignment: "right",
     },
     {
       columnName: "Margin",
@@ -75,6 +76,7 @@ export const LimitGridMetaData: GridMetaDataType = {
       sequence: 6,
       componentType: "default",
       width: 100,
+      alignment: "right",
     },
     {
       columnName: "Over Rate",
