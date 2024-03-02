@@ -15,7 +15,7 @@ import * as API from "./api";
 import { Alert } from "components/common/alert";
 import FormModal from "./formModal/formModal";
 import { DeactivateCustomer } from "./DeactivateCustomer";
-import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";
+// import { PhotoSignUpdateDialog } from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopy2";
 import InsuranceComp from "./InsuranceComp";
 import BankDTLComp from "./BankDTLComp";
 import CreditCardDTLComp from "./CreditCardDTLComp";
@@ -78,12 +78,12 @@ const RetrieveCustomer = () => {
       multiple: false,
       rowDoubleClick: false,
     },
-    {
-      actionName: "other-address",
-      actionLabel: "Other Address",
-      multiple: false,
-      rowDoubleClick: false,
-    },
+    // {
+    //   actionName: "other-address",
+    //   actionLabel: "Other Address",
+    //   multiple: false,
+    //   rowDoubleClick: false,
+    // },
     // {
     //   actionName: "insurance",
     //   actionLabel: "Insurance",
@@ -146,6 +146,7 @@ const RetrieveCustomer = () => {
       const confirmed = data?.rows?.[0]?.data?.CONFIRMED ?? "";
       const maker = data?.rows?.[0]?.data?.MAKER ?? "";
       const loggedinUser = authState?.user?.id;
+      // console.log("retrievecustomer", confirmed, maker, loggedinUser)
       if(Boolean(confirmed)) {
         if(confirmed.includes("P")) {
           if(maker === loggedinUser) {
@@ -155,7 +156,7 @@ const RetrieveCustomer = () => {
           }
         } else if(confirmed.includes("M")) {
           setFormMode("edit")
-        } else if(confirmed.includes("Y")) {
+        } else if(confirmed.includes("Y") || confirmed.includes("R")) {
           setFormMode("edit")
         } else {
           setFormMode("view")
