@@ -196,6 +196,7 @@ export default function FormModal({
   const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
   const [updateDialog, setUpdateDialog] = useState(false)
   const [actionDialog, setActionDialog] = useState(false)
+  const [confirmMsgDialog, setConfirmMsgDialog] = useState(false)
   const [cancelDialog, setCancelDialog] = useState(false)
   // const [from, setFrom] = useState("");
   const [confirmAction, setConfirmAction] = useState<any>(null);
@@ -331,7 +332,8 @@ export default function FormModal({
 
   useEffect(() => {
     if(Boolean(state?.currentFormctx.currentFormSubmitted)) {
-      const totalTab = Array.isArray(state?.tabNameList) && state?.tabNameList.length;
+      const steps = state?.tabNameList.filter(tab => tab.isVisible) 
+      const totalTab:any = Array.isArray(steps) && steps.length;
       // handleCurrFormctx({
       //   // currentFormRefctx: [],
       //   currentFormSubmitted: null,
@@ -354,7 +356,7 @@ export default function FormModal({
         }
       }      
     }
-  }, [state?.currentFormctx.currentFormSubmitted, state?.isFinalUpdatectx])
+  }, [state?.currentFormctx.currentFormSubmitted, state?.tabNameList, state?.isFinalUpdatectx])
 
 
 
@@ -629,7 +631,12 @@ export default function FormModal({
       handleCurrFormctx({
         isLoading: true,
       })
-      Promise.all(refs.map(ref => ref.current.handleSubmitError(e, "save", false)))
+      Promise.all(refs.map(ref => {
+        return typeof ref === "function" 
+        ? ref() 
+        : (ref.current && ref.current.handleSubmitError) 
+        && ref.current.handleSubmitError(e, "save", false)
+      }))
     }
     // if(displayMode == "new" || displayMode == "edit") {
     //   if(Object.keys(state?.modifiedFormCols).length >0) {
@@ -764,6 +771,7 @@ export default function FormModal({
         />}
     </React.Fragment>
   }, [updateDialog, actionDialog, cancelDialog, alertOnUpdate])
+  const steps:any = state?.tabsApiResctx.filter(tab => tab.isVisible) 
 
   return (
     // <div>
@@ -812,6 +820,15 @@ export default function FormModal({
                 ? t("LegalEntry")
                 : t("IndividualEntry")
               }
+              {formmode === "view" &&
+                <Chip
+                  style={{ color: "white", marginLeft: "8px" }}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  label={`view mode`}
+                />
+              }
             </Typography>
             {HeaderContent}
 
@@ -826,7 +843,7 @@ export default function FormModal({
             </Button>
           </Toolbar>
         </AppBar>
-        <HeaderForm onClose={onClose} formmode={formmode} mutation={mutation} />
+        <HeaderForm />
           <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
 
             
@@ -859,20 +876,22 @@ export default function FormModal({
                 onChange={(e, newValue) => handleColTabChangectx(newValue)}
               >
                 {
-                  (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((el:any, i) => {
+                  (steps && steps.length>0) && steps.map((el:any, i) => {
                     // console.log(typeof WorkspacePremiumIcon, "asdqwewqsxaswweqeqw",WorkspacePremiumIcon)
-                    return (
-                      <Tooltip key={el?.TAB_NAME} placement="left" title={state?.isSidebarExpandedctx ? "" : el?.TAB_NAME}>
-                        <CustomTab isSidebarExpanded={state?.isSidebarExpandedctx} 
-                          label={
-                            <CustomTabLabel 
-                              IconName={el?.ICON} isSidebarExpanded={state?.isSidebarExpandedctx} 
-                              tabLabel={el?.TAB_NAME} subtext={el?.TAB_DESC ?? ""} 
-                            />
-                          } 
-                        />
-                      </Tooltip>
-                    )
+                    // if(el.isVisible) {
+                      return (
+                        <Tooltip key={el?.TAB_NAME} placement="left" title={state?.isSidebarExpandedctx ? "" : el?.TAB_NAME}>
+                          <CustomTab isSidebarExpanded={state?.isSidebarExpandedctx} 
+                            label={
+                              <CustomTabLabel 
+                                IconName={el?.ICON} isSidebarExpanded={state?.isSidebarExpandedctx} 
+                                tabLabel={el?.TAB_NAME} subtext={el?.TAB_DESC ?? ""} 
+                              />
+                            } 
+                          />
+                        </Tooltip>
+                      )                      
+                    // }
                   }) 
                 }
               </CustomTabs>
@@ -884,16 +903,23 @@ export default function FormModal({
               }} item xs>
                 
               {((state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.isFreshEntryctx) && <TabStepper />}
-              {mutation.isError && (
+              {mutation.isError ? (
                 <Alert
                   severity={mutation.error?.severity ?? "error"}
                   errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
                   errorDetail={mutation.error?.error_detail}
                   color="error"
                 />
+              ) : confirmMutation.isError && (
+                <Alert
+                  severity={confirmMutation.error?.severity ?? "error"}
+                  errorMsg={confirmMutation.error?.error_msg ?? "Something went to wrong.."}
+                  errorDetail={confirmMutation.error?.error_detail}
+                  color="error"
+                />
               )}
               {
-                (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((element, i) => {
+                (steps && steps.length>0) && steps.map((element, i) => {
                   return <TabPanel key={i} value={state?.colTabValuectx} index={i}>
                     {state?.entityTypectx==="I" ? getIndividualTabComp(element?.TAB_NAME) : getLegalTabComp(element?.TAB_NAME)}
                   </TabPanel>
