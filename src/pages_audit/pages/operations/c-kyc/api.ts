@@ -2206,6 +2206,47 @@ export const SaveEntry = async (reqdata) => {
   }
 }
 
+export const updateCustomer = async ({
+  COMP_CD,
+  updated_tab_format,
+  update_type,
+  CUSTOMER_ID,
+  REQ_CD,
+  REQ_FLAG,
+  SAVE_FLAG,
+  IsNewRow,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
+      // IsNewRow: true,
+      // // REQ_CD:"734",
+      // REQ_CD:REQ_CD,
+      // REQ_FLAG:"F",
+      // SAVE_FLAG:"F",
+      // ENTRY_TYPE :"1",
+      // CUSTOMER_ID:"",
+      // NRI_DTL: formData["NRI_DTL"], //test-done
+      CUSTOMER_ID: CUSTOMER_ID,
+      REQ_CD: REQ_CD,
+      REQ_FLAG: REQ_FLAG,
+      SAVE_FLAG: SAVE_FLAG,
+      // SAVE_FLAG: "",
+      ENTRY_TYPE: "",
+      // ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
+      IsNewRow: IsNewRow,
+      COMP_CD: COMP_CD,
+      // CUSTOMER_ID:"",
+      // NRI_DTL: formData["NRI_DTL"], //test-done,
+
+      ...updated_tab_format,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const AlphaNumericValidate = (columnValue) => {
   let regex = /^[a-zA-Z0-9 ]*$/;
       // special-character not allowed

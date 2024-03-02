@@ -13,6 +13,7 @@ import { GradientButton } from "components/styledComponent/button"
 import { ConfirmUpdateDialog } from "../../../dialog/ConfirmUpdateDialog"
 import { CustomerSaveDialog } from "../../../dialog/CustomerSave"
 import TabNavigate from "../TabNavigate"
+import { Alert } from "components/common/alert"
 
 const actions = [
     {
@@ -242,6 +243,21 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
+            {mutation.isError ? (
+                <Alert
+                severity={mutation.error?.severity ?? "error"}
+                errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+                errorDetail={mutation.error?.error_detail}
+                color="error"
+                />
+            ) : retrieveonupdate.isError && (
+                <Alert
+                severity={retrieveonupdate.error?.severity ?? "error"}
+                errorMsg={retrieveonupdate.error?.error_msg ?? "Something went to wrong.."}
+                errorDetail={retrieveonupdate.error?.error_detail}
+                color="error"
+                />
+            )}
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography> */}
             {isCustomerData ? <Grid 
                 sx={{
@@ -289,7 +305,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 isLoading={isHistoryDataLoading} 
             />}
 
-            {updateDialog && <ConfirmUpdateDialog 
+            {/* {updateDialog && <ConfirmUpdateDialog 
                 open={updateDialog} 
                 onClose={onCloseUpdateDialog} 
                 mutationFormDTL={retrieveonupdate}
@@ -297,7 +313,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 // isLoading={!isUpdated} 
                 // setIsLoading={setIsUpdated}
                 // mt={updateMutation}
-            />}
+            />} */}
 
             {saveSuccessDialog && <CustomerSaveDialog 
                 open={saveSuccessDialog} 
