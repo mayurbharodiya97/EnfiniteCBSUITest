@@ -315,7 +315,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 // mt={updateMutation}
             />} */}
 
-            {saveSuccessDialog && <CustomerSaveDialog 
+            <CustomerSaveDialog 
                 open={saveSuccessDialog} 
                 onClose={onCloseSaveSuccessDialog} 
                 onFormClose={onFormClose}
@@ -323,7 +323,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 // isLoading={!isUpdated} 
                 // setIsLoading={setIsUpdated}
                 // mt={updateMutation}
-            />}
+            />
         </Grid>
     )
 }
