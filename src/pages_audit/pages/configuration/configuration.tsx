@@ -11,7 +11,7 @@ const LangWiseMessageConfig = lazy(
   () => import("./LangWiseMessageConfig/index")
 );
 const GetApiConfig = lazy(() => import("./getApiConfig"));
-
+const ParameterGrid= lazy(()=> import ("./parameter/parameterGrid"))
 export const Configuration = () => (
   <Routes>
     <Route path="dynamic-grid-config/*" element={<DynamicGridConfig />} />
@@ -23,6 +23,7 @@ export const Configuration = () => (
     <Route path="langWise-msg-config/*" element={<LangWiseMessageConfig />} />
     <Route path="misc-mst-config/*" element={<CommonMSTConfig />} />
     <Route path="get-api-config/*" element={<GetApiConfig />} />
+    <Route path="parameter/*" element={<ParameterGrid />} />
     {/* <Route
       path="misc-mst-config/*"
       element={<StaticAdminUserReports screenFlag="GETPROPMISCDATA" />}

@@ -381,19 +381,11 @@ export const TellerScreenMetadata: any = {
           Boolean(dependentFieldsValues?.ACCT_TYPE?.value) &&
           Boolean(field?.value)
         ) {
-          const buttonNames = await formState.MessageBox({
-            messageTitle: "Denomination confirmation",
-            message: "Are you sure to open denomination",
-            buttonNames: ["Yes", "No"],
-          });
-
           formState.setDataOnFieldChange("RECEIPT", {
             field,
             dependentFieldsValues,
-            buttonNames,
           });
         }
-        return { ACCT_CD: { value: "" } };
       },
       AlwaysRunPostValidationSetCrossFieldValues: {
         alwaysRun: true,
@@ -438,19 +430,15 @@ export const TellerScreenMetadata: any = {
           Boolean(dependentFieldsValues?.ACCT_TYPE?.value) &&
           Boolean(field?.value)
         ) {
-          const buttonNames = await formState.MessageBox({
-            messageTitle: "Denomination confirmation",
-            message: "Are you sure to open denomination",
-            buttonNames: ["Yes", "No"],
-          });
-
           formState.setDataOnFieldChange("PAYMENT", {
             field,
             dependentFieldsValues,
-            buttonNames,
           });
         }
-        return { ACCT_CD: { value: "" } };
+      },
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: false,
       },
       // setValueOnDependentFieldsChange: (dependentFields) => {
       //   return "";

@@ -323,7 +323,7 @@ export const GridTable: FC<GridTableType> = ({
           filters={queryFilters}
         />
       </Paper>
-      {loading && <LinearProgress color="secondary" />}
+      {loading && <LinearProgress sx={{background: "var(--theme-color6)", "& .MuiLinearProgress-bar": {background: "var(--theme-color1) !important"}}}/>}
       <Paper
         style={{
           width: "100%",

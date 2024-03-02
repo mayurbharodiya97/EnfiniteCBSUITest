@@ -970,6 +970,10 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWREASONMSTDDW",
     packageName: "",
   },
+  GETSYSPARAMSTDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSYSPARAMSTDISP",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
