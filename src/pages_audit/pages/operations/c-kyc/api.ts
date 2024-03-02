@@ -580,9 +580,23 @@ export const validatePAN = async (columnValue, allField?, formState?) => {
 }
 
 export const DuplicationValidate = async (columnValue, allField, formState, fieldValue?) => {
+  // console.log("ewoiejfowieijfowiejfwoiejf", columnValue, allField, formState, fieldValue)
   const {COMP_CD, CUSTOMER_ID, REQ_FLAG} = formState
-  // console.log("waefdwdqwedqwd ..")
 // export const DuplicationValidate = async (field, formState, authState, dependentFieldsValues, fieldObj) => {
+  if(
+    !Boolean(columnValue.value) &&
+    (typeof fieldValue === "object" && Object.keys(fieldValue).includes("PASSPORT_NO"))
+  ) {
+      if(
+        formState.RESIDENCE_STATUS &&
+        (formState.RESIDENCE_STATUS === "02" ||
+        formState.RESIDENCE_STATUS === "03")
+      ) {
+        return "This field is required"
+      } else {
+        return "";
+      }
+  }
   if(fieldValue) {
     let keys = Object.keys(fieldValue)
     if(keys.length === 1 && (Boolean(fieldValue[keys[0]]))) {
