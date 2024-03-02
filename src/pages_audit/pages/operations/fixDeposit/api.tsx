@@ -43,3 +43,13 @@ export const valiateFDAccounts = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const doFixDepositCreation = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOFDDEPOSIT", { ...Apireq });
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

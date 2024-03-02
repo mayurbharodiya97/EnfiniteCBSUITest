@@ -126,6 +126,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     value,
     setIncomingMessage,
     handleOptionValueExtraData,
+    setErrorAsCB,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -239,6 +240,17 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     let extraOptionData = getExtraOptionData(value);
     handleOptionValueExtraData(extraOptionData);
   }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
+
+  useEffect(() => {
+    if (incomingMessage !== null && typeof incomingMessage === "object") {
+      const { error, isErrorBlank } = incomingMessage;
+      if (isErrorBlank) {
+        setErrorAsCB("");
+      } else if (Boolean(error)) {
+        setErrorAsCB(error);
+      }
+    }
+  }, [incomingMessage, setErrorAsCB]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {

@@ -4,6 +4,7 @@ import {
   ExtendedFieldMetaDataTypeOptional,
   FieldMetaDataType,
 } from "../types";
+
 export const extendFieldTypes = (
   metaData: MetaDataType,
   extendedTypes: ExtendedFieldMetaDataTypeOptional,
@@ -162,7 +163,7 @@ export const extendFieldTypes = (
     }
   };
 
-  newMetaDataFields?.forEach((item) => {
+  newMetaDataFields?.forEach((item: any) => {
     // if (item?.defaultBranchTrue) {
     //   const getBranchVal: string = authState?.user?.branchCode;
     //   item.defaultValue = getBranchVal;
@@ -220,6 +221,9 @@ export const extendFieldTypes = (
       }
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
+    }
+    if (Boolean(item?.isWorkingDate)) {
+      item["defaultValue"] = new Date(authState?.workingDate);
     }
   });
   return {

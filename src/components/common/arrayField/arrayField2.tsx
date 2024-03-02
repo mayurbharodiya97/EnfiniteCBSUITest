@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   useCallback,
+  useContext,
 } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -34,6 +35,9 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { AuthContext } from "pages_audit/auth";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 export interface ArrayField2Props {
   fieldKey: string;
   name: string;
@@ -63,8 +67,19 @@ export interface ArrayField2Props {
   onFormDataChange?: any;
 }
 
-const metaDataTransform = (metaData: MetaDataType): MetaDataType => {
-  metaData = extendFieldTypes(metaData, extendedMetaData);
+const metaDataTransform = (
+  metaData: MetaDataType,
+  t,
+  authState,
+  customParameters
+): MetaDataType => {
+  metaData = extendFieldTypes(
+    metaData,
+    extendedMetaData,
+    t,
+    authState,
+    customParameters
+  );
   metaData = attachMethodsToMetaData(metaData);
   metaData = MoveSequenceToRender(metaData);
   return metaData;
@@ -98,6 +113,9 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
   // ) as FieldMetaDataType[];
+  const { t } = useTranslation();
+  const { authState } = useContext(AuthContext);
+  const customParameters = useContext(CustomPropertiesConfigurationContext);
   let currentFieldsMeta = cloneDeep(_fields) as FieldMetaDataType[];
   const classes = useStyles();
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -105,7 +123,12 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   let metaData = { form: {}, fields: currentFieldsMeta } as MetaDataType;
   const transformedMetaData = useRef<MetaDataType | null>(null);
   if (transformedMetaData.current === null) {
-    transformedMetaData.current = metaDataTransform(metaData);
+    transformedMetaData.current = metaDataTransform(
+      metaData,
+      t,
+      authState,
+      customParameters
+    );
   }
   const template = useRef(
     transformedMetaData?.current?.fields?.reduce((accum, one) => {

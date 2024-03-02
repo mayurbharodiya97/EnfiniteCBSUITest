@@ -4,6 +4,8 @@ export interface FDStateType {
   isOpendfdAcctForm: boolean;
   fdAcctFormData: object;
   fdDetailFormData: object;
+  sourceAcctFormData: object;
+  isBackButton: boolean;
 }
 
 export interface ActionType {
