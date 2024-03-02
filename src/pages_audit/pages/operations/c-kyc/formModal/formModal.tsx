@@ -62,6 +62,8 @@ import { ConfirmUpdateDialog } from './dialog/ConfirmUpdateDialog';
 import { Alert } from 'components/common/alert';
 import ExtractedHeader from './ExtractedHeader';
 import HeaderForm from './HeaderForm';
+import { RemarksAPIWrapper } from 'components/custom/Remarks';
+import { MessageBoxWrapper } from 'components/custom/messageBox';
 import PhotoSign from './formDetails/formComponents/individualComps/PhotoSign';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
@@ -196,7 +198,7 @@ export default function FormModal({
   const [actionDialog, setActionDialog] = useState(false)
   const [cancelDialog, setCancelDialog] = useState(false)
   // const [from, setFrom] = useState("");
-  const [confirmAction, setConfirmAction] = useState<any>("confirm");
+  const [confirmAction, setConfirmAction] = useState<any>(null);
   const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
   const [displayMode, setDisplayMode] = useState<any>(formmode)
 
@@ -235,6 +237,23 @@ export default function FormModal({
       onClosePreventUpdateDialog()
     },
     onError: (error: any) => {},
+  });
+
+  const confirmMutation: any = useMutation(API.ConfirmPendingCustomers, {
+    onSuccess: (data) => {
+        // console.log("data o n save", data)
+        // handleFormModalClosectx()
+        // closeForm()
+        setActionDialog(false)
+
+        setConfirmMsgDialog(true)
+    },
+    onError: (error: any) => {
+        // console.log("data o n error", error)
+        // setIsUpdated(true)
+        setActionDialog(false)
+        setConfirmAction(null)
+    },
   });
 
   // useEffect(() => {
@@ -639,21 +658,21 @@ export default function FormModal({
     return displayMode == "view"
       ? (from && from == "confirmation-entry") && <React.Fragment>
         <Button
-          onClick={() => openActionDialog("confirm")}
+          onClick={() => openActionDialog("Y")}
           color="primary"
           // disabled={mutation.isLoading}
         >
           {t("Confirm")}
         </Button>
         <Button
-          onClick={() => openActionDialog("query")}
+          onClick={() => openActionDialog("M")}
           color="primary"
           // disabled={mutation.isLoading}
         >
           {t("Raise Query")}
         </Button>
         <Button
-          onClick={() => openActionDialog("reject")}
+          onClick={() => openActionDialog("R")}
           color="primary"
           // disabled={mutation.isLoading}
         >
@@ -712,6 +731,39 @@ export default function FormModal({
     </React.Fragment>
   }, [state?.retrieveFormDataApiRes])
 
+  const dialogsMemo = React.useMemo(() => {
+    // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
+    return <React.Fragment>
+        {/* confirms before updating */}
+        {updateDialog && <ConfirmUpdateDialog 
+            open={updateDialog} 
+            onClose={onCloseUpdateDialog} 
+            mutationFormDTL={mutation}
+            setAlertOnUpdate={setAlertOnUpdate}
+        />}
+
+        {/* confirming action-remark dialog */}
+        {/* {actionDialog && <ActionDialog 
+            open={actionDialog} 
+            setOpen={setActionDialog} 
+            closeForm = {onClose}
+            action= {confirmAction}
+        />} */}
+
+        {/* data lost alert on closing form */}
+        {cancelDialog && <CloseFormDialog 
+            open={cancelDialog} 
+            onClose={onCloseCancelDialog} 
+            closeForm = {onClose}
+        />}
+
+        {/* no change found to update dialog */}
+        {alertOnUpdate && <PreventUpdateDialog 
+            open={alertOnUpdate} 
+            onClose={onClosePreventUpdateDialog} 
+        />}
+    </React.Fragment>
+  }, [updateDialog, actionDialog, cancelDialog, alertOnUpdate])
 
   return (
     // <div>
@@ -849,8 +901,64 @@ export default function FormModal({
               }
             </Grid>
           </Grid>
+              {dialogsMemo}
 
-        {updateDialog && <ConfirmUpdateDialog 
+          <RemarksAPIWrapper
+            TitleText={"Confirmation"}
+            onActionNo={() => {
+              setActionDialog(false)
+              setConfirmAction(null)
+            }}
+            onActionYes={(val, rows) => {
+              // console.log(val, "weiuifuhiwuefefgwef", rows)
+              confirmMutation.mutate({
+                  REQUEST_CD: state?.req_cd_ctx ?? "",
+                  REMARKS: val ?? "",
+                  CONFIRMED: confirmAction
+              })
+            }}
+            isLoading={confirmMutation.isLoading || confirmMutation.isFetching}
+            isEntertoSubmit={true}
+            AcceptbuttonLabelText="Ok"
+            CanceltbuttonLabelText="Cancel"
+            open={actionDialog}
+            rows={{}}
+            isRequired={confirmAction === "Y" ? false : true}
+            // isRequired={false}
+          />
+
+          <MessageBoxWrapper
+            MessageTitle={"SUCCESS"}
+            // Message={`New Request ID created Successfully : ${state?.req_cd_ctx ?? ""}` ?? "No Message"}
+            Message={
+              state?.customerIDctx 
+              ? `Customer ID : ${state?.customerIDctx} ${
+                confirmAction === "Y" 
+                ? "Confirmed" 
+                : confirmAction === "M" 
+                  ? "Query raised" 
+                  : confirmAction === "R" ? "Rejected" : "no value"} Sucessfully`
+              : state?.req_cd_ctx 
+                ? `Request ID : ${state?.req_cd_ctx} ${
+                  confirmAction === "Y" 
+                  ? "Confirmed" 
+                  : confirmAction === "M" 
+                    ? "Query raised" 
+                    : confirmAction === "R" && "Rejected"} Sucessfully`
+                : "No Message"
+            }
+            // onClickButton={() => setConfirmMsgDialog(false)}
+            onClickButton={() => {
+              setConfirmAction(null)
+              setConfirmMsgDialog(false)
+              closeForm()
+            }}
+            rows={[]}
+            buttonNames={["OK"]}
+            open={confirmMsgDialog}
+          />
+
+        {/* {updateDialog && <ConfirmUpdateDialog 
             open={updateDialog} 
             onClose={onCloseUpdateDialog} 
             mutationFormDTL={mutation}
@@ -872,7 +980,7 @@ export default function FormModal({
         {alertOnUpdate && <PreventUpdateDialog 
             open={alertOnUpdate} 
             onClose={onClosePreventUpdateDialog} 
-        />}
+        />} */}
       </Dialog>
     // </div>
   );
