@@ -658,8 +658,7 @@ const CkycProvider = ({children}) => {
     }
 
 
-    const handleUpdatectx = async ({COMP_CD, event}) => {
-
+    const handleUpdatectx = async ({COMP_CD}) => {
 
 
 
@@ -674,19 +673,14 @@ const CkycProvider = ({children}) => {
         let updated_tabs = Object.keys(state?.modifiedFormCols ?? {})
         // let updated_tab_format:any = {}
         let updated_tab_format:any = {}
+        // console.log(state?.modifiedFormCols, ":qweewqasdcde1", updated_tabs.length, updated_tabs)
         if(updated_tabs.length>0) {
 
-        if(updated_tabs.length == 1 && updated_tabs[0] == "PERSONAL_DETAIL") {
-            // if(updated_tabs[0] == "PERSONAL_DETAIL") {
-                update_type = "save_as_draft";
-            // }
-        } else if(updated_tabs.length>0 ) {
-            update_type = "full_save";
-        }
+        // console.log(update_type, ":qweewqasdcde2", "reqcd", state?.req_cd_ctx)
         let other_data = {
             IsNewRow: !state?.req_cd_ctx ? true : false,
             REQ_CD: state?.req_cd_ctx ?? "",
-            // COMP_CD: COMP_CD ?? "",
+            COMP_CD: COMP_CD ?? "",
         }
         console.log("feiuqwdwqduyqewd",updated_tabs)
         let dataa = updated_tabs.map(async (TAB, i) => {
@@ -698,7 +692,7 @@ const CkycProvider = ({children}) => {
 
                 let upd;
 
-                if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "DOC_MST") {
+                if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
                     let oldRow:any[] = []
                     let newRow:any[] = []
                     // if(state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) {
@@ -719,12 +713,14 @@ const CkycProvider = ({children}) => {
                         })
                         console.log(newRow, "wadqwdwq. asdasdawdawqqqqqq new", state?.formDatactx[TAB])
                         console.log("feiuqwdwqduyqewd", TAB)
+                        // console.log(oldRow, ":qweewqasdcde23", "newRow", newRow )
                         upd = utilFunction.transformDetailDataForDML(
                             oldRow ?? [],
                             newRow ?? [],
                             ["SR_CD"]
                         );
                         if(upd) {
+                            // console.log(update_type, ":qweewqasdcde3", "upd", upd )
                             console.log("wadqwdwq. asdasdawdawqqqqqq", upd)
                         }
                     // }
@@ -767,9 +763,10 @@ const CkycProvider = ({children}) => {
                     // }
                 } else {
                     upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+                    // console.log(update_type, ":qweewqasdcde3", "upd else", upd )
                 }
                 if(Object.keys(updated_tab_format).includes(TAB)) {
-                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "DOC_MST") {
+                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
                         updated_tab_format[TAB] = [{
                             ...updated_tab_format.TAB,
                             ...upd,
@@ -785,20 +782,40 @@ const CkycProvider = ({children}) => {
                         }
                     }
                 } else {
-                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "DOC_MST") {
-                        updated_tab_format[TAB] = [{
-                            ...upd,
-                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
-                            ...other_data
-                        }]
+                    if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
+                        // console.log("asdqwezxc arraytabupdate", TAB, upd)
+                        // if(Array.isArray(upd._UPDATEDCOLUMNS) && upd._UPDATEDCOLUMNS?.length>0) {
+                            if(Array.isArray(upd.isDeleteRow) && upd.isDeleteRow?.length>0 ||
+                            Array.isArray(upd.isNewRow) && upd.isNewRow?.length>0 ||
+                            Array.isArray(upd.isUpdatedRow) && upd.isUpdatedRow?.length>0)
+                            updated_tab_format[TAB] = [{
+                                ...upd,
+                                ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                                ...other_data
+                            }]
+                        // }
+                    } else if(TAB == "PHOTO_MST") {
+                        // console.log("asdqwezxc photomst", TAB, upd)
+                        if(Array.isArray(upd._UPDATEDCOLUMNS) && upd._UPDATEDCOLUMNS?.length>0) {
+                            updated_tab_format[TAB] = {
+                                ...upd,
+                                ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                                ...other_data,
+                                SR_CD: state?.retrieveFormDataApiRes[TAB]?.SR_CD ?? ""
+                            }
+                        }
                     } else {
-                        updated_tab_format[TAB] = {
-                            ...upd,
-                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
-                            ...other_data
+                        // console.log("asdqwezxc other", TAB, upd)
+                        if(Array.isArray(upd._UPDATEDCOLUMNS) && upd._UPDATEDCOLUMNS?.length>0) {
+                            updated_tab_format[TAB] = {
+                                ...upd,
+                                ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                                ...other_data
+                            }
                         }
                     }
                 }
+                // console.log(update_type, ":qweewqasdcde3", "updated_tab_format", updated_tab_format )                
                 // console.log("updated_tab_format[TAB]", updated_tab_format[TAB])
                 res(1)
             })
@@ -820,7 +837,16 @@ const CkycProvider = ({children}) => {
             //     }
             // })()
         })
+        // console.log(":qweewqasdcde4", "updated_tab_format", updated_tab_format, Object.keys(updated_tab_format))
+        if(typeof updated_tab_format === "object") {
+            if(Object.keys(updated_tab_format)?.length === 1 && Object.keys(updated_tab_format)?.includes("PERSONAL_DETAIL")) {
+                update_type = "save_as_draft";
+            } else if(Object.keys(updated_tab_format)?.length>0) {
+                update_type = "full_save";
+            }
+        }
 
+        return {updated_tab_format, update_type};
         //     let oldFormData = _.pick(state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}, state?.modifiedFormCols["PERSONAL_DETAIL"])
         //     let newFormData = _.pick(state?.formDatactx["PERSONAL_DETAIL"] ?? {}, state?.modifiedFormCols["PERSONAL_DETAIL"])
         //     let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
@@ -852,42 +878,44 @@ const CkycProvider = ({children}) => {
         // if(dataa) {
         //     console.log(dataa, "updated_tab_format", updated_tab_format, "type ", update_type, "tabs", updated_tabs)
         // }
-        const { data, status, message, messageDetails } =
-        await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
-            // IsNewRow: true,
-            // // REQ_CD:"734",
-            // REQ_CD:REQ_CD,
-            // REQ_FLAG:"F",
-            // SAVE_FLAG:"F",
-            // ENTRY_TYPE :"1",
-            // CUSTOMER_ID:"",
-            // NRI_DTL: formData["NRI_DTL"], //test-done        
-            CUSTOMER_ID: state?.customerIDctx ?? "",
-            REQ_CD: state?.req_cd_ctx ?? "",
-            REQ_FLAG: state?.customerIDctx ? "E" : "F",
-            SAVE_FLAG: state?.customerIDctx 
-                        ? "" 
-                        : update_type == "save_as_draft" 
-                            ? "D" 
-                            : update_type == "full_save" 
-                                ? "F" 
-                                : "",
-            // SAVE_FLAG: "",
-            ENTRY_TYPE : "",
-            // ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
-            IsNewRow: !state?.req_cd_ctx ? true : false,
-            COMP_CD: COMP_CD,
-            // CUSTOMER_ID:"",
-            // NRI_DTL: formData["NRI_DTL"], //test-done,
-            
-            ...updated_tab_format
-
-        });
-        if(status === "0") {
-          return data;
-        } else {
-          throw DefaultErrorObject(message, messageDetails);
-        }   
+        // if(typeof updated_tab_format === "object" && Object.keys(updated_tab_format).length>0) {
+        //     const { data, status, message, messageDetails } =
+        //     await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
+        //         // IsNewRow: true,
+        //         // // REQ_CD:"734",
+        //         // REQ_CD:REQ_CD,
+        //         // REQ_FLAG:"F",
+        //         // SAVE_FLAG:"F",
+        //         // ENTRY_TYPE :"1",
+        //         // CUSTOMER_ID:"",
+        //         // NRI_DTL: formData["NRI_DTL"], //test-done        
+        //         CUSTOMER_ID: state?.customerIDctx ?? "",
+        //         REQ_CD: state?.req_cd_ctx ?? "",
+        //         REQ_FLAG: state?.customerIDctx ? "E" : "F",
+        //         SAVE_FLAG: state?.customerIDctx 
+        //                     ? "" 
+        //                     : update_type == "save_as_draft" 
+        //                         ? "D" 
+        //                         : update_type == "full_save" 
+        //                             ? "F" 
+        //                             : "",
+        //         // SAVE_FLAG: "",
+        //         ENTRY_TYPE : "",
+        //         // ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
+        //         IsNewRow: !state?.req_cd_ctx ? true : false,
+        //         COMP_CD: COMP_CD,
+        //         // CUSTOMER_ID:"",
+        //         // NRI_DTL: formData["NRI_DTL"], //test-done,
+                
+        //         ...updated_tab_format
+    
+        //     });
+        //     if(status === "0") {
+        //       return data;
+        //     } else {
+        //       throw DefaultErrorObject(message, messageDetails);
+        //     }
+        // }
         }
     }
 
