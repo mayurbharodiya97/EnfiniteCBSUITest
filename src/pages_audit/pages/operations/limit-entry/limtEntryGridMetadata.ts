@@ -17,12 +17,13 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "57vh",
-      max: "57vh",
+      min: "53vh",
+      max: "53vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
+    footerNote: "Note : Double-click on row to force-expire the limit.",
   },
   filters: [],
   columns: [
@@ -169,11 +170,17 @@ export const limitEntryGridMetaData: GridMetaDataType = {
       isVisible: true,
     },
     {
-      accessor: "DELETE",
+      accessor: "ALLOW_DELETE",
       columnName: "Delete",
       sequence: 4,
       alignment: "center",
       componentType: "buttonRowCell",
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (initialValue === "Y") {
+          return false;
+        }
+        return true;
+      },
       width: 150,
       minWidth: 100,
       maxWidth: 200,

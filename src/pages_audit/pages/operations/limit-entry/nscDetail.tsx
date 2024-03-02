@@ -8,7 +8,6 @@ import { NSC_FormMetaData } from "./limit_NSC_FD_Metadata";
 export const NSCFormDetail = ({ navigate }) => {
   const { state: rows }: any = useLocation();
 
-  console.log("<<<rows", rows);
   return (
     <Dialog
       open={true}

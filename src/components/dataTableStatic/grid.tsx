@@ -43,6 +43,7 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
 import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
 let data2: any[] = [];
@@ -94,7 +95,8 @@ export const DataGrid = ({
   defaultSelectedRowId,
   searchPlaceholder,
   paginationText,
-  ReportExportButton
+  ReportExportButton,
+  footerNote,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -357,7 +359,14 @@ export const DataGrid = ({
         />
         {!disableLoader ? (
           loading ? (
-            <LinearProgress sx={{background: "var(--theme-color6)", "& .MuiLinearProgress-bar": {background: "var(--theme-color1) !important"}}} />
+            <LinearProgress
+              sx={{
+                background: "var(--theme-color6)",
+                "& .MuiLinearProgress-bar": {
+                  background: "var(--theme-color1) !important",
+                },
+              }}
+            />
           ) : (
             <LinearProgressBarSpacer />
           )
@@ -513,6 +522,11 @@ export const DataGrid = ({
           <CustomBackdrop open={Boolean(loading)} />
         </TableContainer>
 
+        {footerNote && (
+          <Typography variant="h6" component="div" pl={"24px"}>
+            {footerNote}
+          </Typography>
+        )}
         {hideFooter ? null : enablePagination ? (
           <TablePagination
             style={{ display: "flex" }}
@@ -566,17 +580,17 @@ export const DataGrid = ({
       </Paper>
       {isOpenExport && (
         <Dialog open={isOpenExport}>
-         <ReportExportScreen
-          // globalFilter={""}
-          filters={filters}
-          // queryFilters={queryFilters}
-          title={label}
-          rows={rows}
-          columns={columns}
-          onClose={() => {
-            setOpenExport(false);
-          }}
-        />
+          <ReportExportScreen
+            // globalFilter={""}
+            filters={filters}
+            // queryFilters={queryFilters}
+            title={label}
+            rows={rows}
+            columns={columns}
+            onClose={() => {
+              setOpenExport(false);
+            }}
+          />
         </Dialog>
       )}
     </>

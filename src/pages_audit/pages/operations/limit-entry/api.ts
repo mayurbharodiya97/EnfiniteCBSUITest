@@ -11,15 +11,13 @@ export const getSecurityListData = async (apiReq) => {
     let responseData = data;
 
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ SECURITY_TYPE, DISPLAY_NM, ...other }) => {
-          return {
-            value: other.SECURITY_CD,
-            label: DISPLAY_NM,
-            ...other,
-          };
-        }
-      );
+      responseData = responseData.map(({ DISPLAY_NM, ...other }) => {
+        return {
+          value: other.SECURITY_CD,
+          label: DISPLAY_NM,
+          ...other,
+        };
+      });
     }
     return responseData;
   } else {
@@ -40,6 +38,8 @@ export const getLimitEntryData = async (apiReqPara) => {
 };
 
 export const LimitSecurityData = async (apiReqPara) => {
+  console.log("<<<apireq", apiReqPara);
+
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITSECFIELDDISP", {
       // ...apiReqPara,
@@ -48,7 +48,12 @@ export const LimitSecurityData = async (apiReqPara) => {
       BRANCH_CD: apiReqPara?.BRANCH_CD,
     });
   if (status === "0") {
-    const shouldPushWithY = data.some(
+    const filteredData = data;
+    //   .filter((item) => {
+    //   return item.COMPONENT_TYPE !== "hidden";
+    // });
+    console.log("<<<return", filteredData);
+    const shouldPushWithY = filteredData.some(
       (item) =>
         item.COMPONENT_TYPE === "rateOfInt" && item.FIELD_NAME === "PENAL_RATE"
     );
@@ -58,15 +63,12 @@ export const LimitSecurityData = async (apiReqPara) => {
       FIELD_NAME: "PANEL_FLAG",
     };
     const newObject2 = {
-      DEFAULT_VALUE: data?.[0]?.SECURITY_TYPE,
+      DEFAULT_VALUE: apiReqPara?.SECURITY_TYPE,
       COMPONENT_TYPE: "hidden",
       FIELD_NAME: "SECURITY_TYPE",
     };
-
-    const newData = [...data, newObject, newObject2];
-
+    const newData = [...filteredData, newObject, newObject2];
     let transformedSecurityData: any[] = [];
-
     if (Array.isArray(newData)) {
       transformedSecurityData = await Promise.all(
         newData.map(async (val) => {
@@ -93,6 +95,14 @@ export const LimitSecurityData = async (apiReqPara) => {
                 { name: "required", params: ["FD-Branch Code is required."] },
               ],
             };
+            item.validate = (columnValue, allField, flag) => {
+              console.log("<<<valalerr", columnValue, allField, flag);
+              if (!Boolean(columnValue)) {
+                // return "FD-Branch ttt Code is required.";
+                return "";
+              }
+            };
+
             item.options = await getFDbranchDDlist(apiReqPara.COMP_CD);
             item.postValidationSetCrossFieldValues = async (field) => {
               if (field?.value) {
@@ -104,14 +114,11 @@ export const LimitSecurityData = async (apiReqPara) => {
               }
             };
           } else if (item.name === "FD_TYPE") {
-            item.schemaValidation = {
-              type: "string",
-              rules: [{ name: "required", params: ["FD-Type is required."] }],
-            };
-            item.options = await getFDTypeDDlist(
-              apiReqPara,
-              data?.[0]?.SECURITY_TYPE
-            );
+            // item.schemaValidation = {
+            //   type: "string",
+            //   rules: [{ name: "required", params: ["FD-Type is required."] }],
+            // };
+            item.options = await getFDTypeDDlist(apiReqPara);
             item.postValidationSetCrossFieldValues = async (field) => {
               if (field?.value) {
                 return {
@@ -121,12 +128,12 @@ export const LimitSecurityData = async (apiReqPara) => {
               }
             };
           } else if (item.name === "FD_ACCT_CD") {
-            item.schemaValidation = {
-              type: "string",
-              rules: [
-                { name: "required", params: ["FD-Account No. is required."] },
-              ],
-            };
+            // item.schemaValidation = {
+            //   type: "string",
+            //   rules: [
+            //     { name: "required", params: ["FD-Account No. is required."] },
+            //   ],
+            // };
             item.dependentFields = [
               "FD_TYPE",
               "SECURITY_CD",
@@ -140,22 +147,24 @@ export const LimitSecurityData = async (apiReqPara) => {
               authState,
               dependentValue
             ) => {
+              console.log("<<<fdaccct", dependentValue);
               if (
-                field?.value &&
-                dependentValue?.FD_BRANCH_CD?.value &&
-                dependentValue?.FD_TYPE?.value
+                field?.value
+                // &&
+                // dependentValue?.FD_BRANCH_CD?.value &&
+                // dependentValue?.FD_TYPE?.value
               ) {
                 let ApiReq = {
-                  COMP_CD: authState?.companyID,
-                  BRANCH_CD: dependentValue?.FD_BRANCH_CD?.value ?? "",
-                  ACCT_TYPE: dependentValue?.FD_TYPE?.value ?? "",
-                  ACCT_CD: utilFunction.getPadAccountNumber(
+                  FD_COMP_CD: authState?.companyID,
+                  FD_BRANCH_CD: dependentValue?.FD_BRANCH_CD?.value ?? "",
+                  FD_ACCT_TYPE: dependentValue?.FD_TYPE?.value ?? "",
+                  FD_ACCT_CD: utilFunction.getPadAccountNumber(
                     field?.value,
                     dependentValue?.FD_TYPE?.optionData
                   ),
-                  SECURITY_TYPE: dependentValue?.SECURITY_TYPE?.value ?? "",
+                  SECURITY_TYPE: apiReqPara.SECURITY_TYPE ?? "",
+                  // SECURITY_TYPE: dependentValue?.SECURITY_TYPE?.value ?? "",
                   SECURITY_CD: dependentValue?.SECURITY_CD?.value ?? "",
-                  GD_DATE: authState?.workingDate,
                   SCREEN_REF: "ETRN/046",
                   PANEL_FLAG: dependentValue?.PANEL_FLAG?.value ?? "",
                 };
@@ -168,7 +177,6 @@ export const LimitSecurityData = async (apiReqPara) => {
                     message: postData?.[0]?.RESTRICTION,
                     buttonNames: ["Ok"],
                   });
-
                   return {
                     FD_ACCT_CD: {
                       value: "",
@@ -196,6 +204,13 @@ export const LimitSecurityData = async (apiReqPara) => {
                     buttonNames: ["Ok"],
                   });
                   return {
+                    FD_ACCT_CD: {
+                      value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                    },
+                    FD_NO: {
+                      value: "",
+                    },
                     SECURITY_VALUE: {
                       value: postData?.[0]?.SECURITY_VALUE,
                     },
@@ -214,6 +229,13 @@ export const LimitSecurityData = async (apiReqPara) => {
                   };
                 } else {
                   return {
+                    FD_ACCT_CD: {
+                      value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                      ignoreUpdate: true,
+                    },
+                    FD_NO: {
+                      value: "",
+                    },
                     SECURITY_VALUE: {
                       value: postData?.[0]?.SECURITY_VALUE,
                     },
@@ -233,6 +255,7 @@ export const LimitSecurityData = async (apiReqPara) => {
                 }
               } else if (!field?.value) {
                 return {
+                  FD_NO: { value: "" },
                   SECURITY_VALUE: { value: "" },
                   EXPIRY_DT: { value: "" },
                   INT_RATE: { value: "" },
@@ -243,10 +266,10 @@ export const LimitSecurityData = async (apiReqPara) => {
             };
             item.runPostValidationHookAlways = true;
           } else if (item.name === "FD_NO") {
-            item.schemaValidation = {
-              type: "string",
-              rules: [{ name: "required", params: ["FD-Number is required."] }],
-            };
+            // item.schemaValidation = {
+            //   type: "string",
+            //   rules: [{ name: "required", params: ["FD-Number is required."] }],
+            // };
             item.isReadOnly = (fieldData, dependentFieldsValues, formState) => {
               if (dependentFieldsValues?.FD_ACCT_CD?.value) {
                 return false;
@@ -273,10 +296,10 @@ export const LimitSecurityData = async (apiReqPara) => {
             ) => {
               if (field?.value && dependentValue?.FD_ACCT_CD?.value) {
                 let ApiReq = {
-                  COMP_CD: authState?.companyID ?? "",
-                  BRANCH_CD: dependentValue?.FD_BRANCH_CD?.value ?? "",
-                  ACCT_TYPE: dependentValue?.FD_TYPE?.value ?? "",
-                  ACCT_CD: utilFunction.getPadAccountNumber(
+                  FD_COMP_CD: authState?.companyID ?? "",
+                  FD_BRANCH_CD: dependentValue?.FD_BRANCH_CD?.value ?? "",
+                  FD_ACCT_TYPE: dependentValue?.FD_TYPE?.value ?? "",
+                  FD_ACCT_CD: utilFunction.getPadAccountNumber(
                     dependentValue?.FD_ACCT_CD?.value,
                     dependentValue?.FD_TYPE?.optionData
                   ),
@@ -297,14 +320,13 @@ export const LimitSecurityData = async (apiReqPara) => {
                     message: postData?.[0]?.RESTRICTION,
                     buttonNames: ["Ok"],
                   });
-
                   return {
                     SECURITY_VALUE: {
                       value: "",
                     },
-                    // FD_NO: {
-                    //   value: "",
-                    // },
+                    FD_NO: {
+                      value: "",
+                    },
                     EXPIRY_DT: {
                       value: "",
                     },
@@ -354,6 +376,15 @@ export const LimitSecurityData = async (apiReqPara) => {
             item.runPostValidationHookAlways = true;
           } else if (item.name === "ENTRY_DT") {
             item.defaultValue = apiReqPara?.WORKING_DATE;
+          } else if (item.name === "EXPIRY_DT") {
+            item.dependentFields = ["FD_NO"];
+            item.isReadOnly = (fieldData, dependentFieldsValues, formState) => {
+              if (fieldData?.value && dependentFieldsValues?.FD_NO?.value) {
+                return true;
+              } else {
+                return false;
+              }
+            };
           } else if (item.name === "TRAN_DT") {
             item.defaultValue = apiReqPara?.WORKING_DATE;
           } else if (item.name === "MARGIN") {
@@ -431,7 +462,6 @@ export const LimitSecurityData = async (apiReqPara) => {
         })
       );
     }
-
     return transformedSecurityData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
@@ -464,12 +494,12 @@ export const getFDbranchDDlist = async (COMP_CD) => {
   }
 };
 
-export const getFDTypeDDlist = async (apiReqPara, SECURITY_TYPE) => {
+export const getFDTypeDDlist = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITFDTYPEDDW", {
       COMP_CD: apiReqPara.COMP_CD,
       BRANCH_CD: apiReqPara.BRANCH_CD,
-      SECURITY_TYPE: SECURITY_TYPE,
+      SECURITY_TYPE: apiReqPara.SECURITY_TYPE,
     });
   if (status === "0") {
     let responseData = data;
@@ -527,6 +557,7 @@ export const getLimitNSCdetail = async (apiReqPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const getLimitFDdetail = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETFDDTLS", {
@@ -539,18 +570,16 @@ export const getLimitFDdetail = async (apiReqPara) => {
   }
 };
 
-export const getLimitDTL = async (chequeDTLRequestPara) => {
+export const getLimitDTL = async (limitDetail) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITGRIDDATADISP", {
-      ...chequeDTLRequestPara,
+      ...limitDetail,
     });
   if (status === "0") {
     const dataStatus = data;
     dataStatus.map((item) => {
-      if (item?.EXPIRED_FLAG === "A") {
+      if (item?.ALLOW_FORCE_EXP === "Y") {
         item._rowColor = "rgb(152 59 70 / 61%)";
-        // item._rowColor = "rgb(40 142 159 / 60%)";
-        // item._rowColor = "rgb(9 132 3 / 51%)";
       }
     });
     return dataStatus;
@@ -558,6 +587,7 @@ export const getLimitDTL = async (chequeDTLRequestPara) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const crudLimitEntryData = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOLIMITENTRYDML", {
@@ -569,6 +599,7 @@ export const crudLimitEntryData = async (apiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const validateInsert = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITDATAVALIDATE", {
@@ -580,10 +611,22 @@ export const validateInsert = async (apiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const validateDelete = async (apiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("VALIDDELETELIMITDATA", {
-      ...apiReq,
+      // ...apiReq,
+      ENTERED_DATE: apiReq.ENTERED_DATE,
+      TRAN_CD: apiReq.TRAN_CD,
+      EXPIRED_FLAG: apiReq.EXPIRED_FLAG,
+      BRANCH_CD: apiReq.BRANCH_CD,
+      ACCT_TYPE: apiReq.ACCT_TYPE,
+      ACCT_CD: apiReq.ACCT_CD,
+      FD_TYPE: apiReq.FD_TYPE,
+      FD_ACCT_CD: apiReq.FD_ACCT_CD,
+      FD_NO: apiReq.FD_NO,
+      FD_COMP_CD: apiReq.FD_COMP_CD,
+      FD_BRANCH_CD: apiReq.FD_BRANCH_CD,
     });
   if (status === "0") {
     return data;

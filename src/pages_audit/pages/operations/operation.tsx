@@ -9,7 +9,7 @@ import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
 const StockEntry = lazy(() => import("./stockEntry"));
-const StoppaymentEntry = lazy(() => import("./stopPaymentEntry"));
+const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
@@ -27,7 +27,7 @@ export const OperationsMenu = () => (
     <Route path="chequebook-entry/*" element={<ChequebookTab />} />
     <Route path="limit-entry/*" element={<LimitEntry />} />
     <Route path="stock-entry/*" element={<StockEntry />} />
-    <Route path="stop-pay-entry/*" element={<StoppaymentEntry />} />
+    <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="teller/*" element={<TellerScreen />} />
     {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}

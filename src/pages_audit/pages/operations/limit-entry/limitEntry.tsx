@@ -38,6 +38,8 @@ import { useMutation } from "react-query";
 import { queryClient } from "cache";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import * as API from "./api";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { extractMetaData } from "components/utils";
 
 export const LimitEntry = () => {
   const fdAction: ActionTypes[] = [
@@ -77,14 +79,16 @@ export const LimitEntry = () => {
   const [isVisible, setIsVisible] = useState<any>(false);
   const [deletePopup, setDeletePopup] = useState<any>(false);
   const [gridDetailData, setGridDetailData] = useState<any>();
+  const [messageData, setMessageData] = useState<any>();
+  const [isOpenSave, setIsOpenSave] = useState(false);
   const [detailForm, setDetailForm] = useState<any>();
   const [formRefresh, setFormRefresh] = useState(0);
-  const [initData, setInitData] = useState<any>({});
   const [value, setValue] = useState("tab1");
   const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
   const deleteDataRef = useRef<any>(null);
   const myMasterRef = useRef<any>(null);
+  const initialValuesRef = useRef<any>(null);
   const navigate = useNavigate();
 
   const securityLimitData: any = useMutation(
@@ -99,7 +103,7 @@ export const LimitEntry = () => {
         } else {
           newData = { ...limitEntryMetaData };
         }
-        setNewFormMTdata(newData);
+        setNewFormMTdata({ ...newData });
       },
     }
   );
@@ -139,40 +143,30 @@ export const LimitEntry = () => {
     "validateInsert",
     API.validateInsert,
     {
-      onSuccess: async (data, variables) => {
+      onSuccess: (data, variables) => {
         let apiReq = {
           ...variables,
           _isNewRow: true,
-          COMP_CD: authState?.companyID,
-          ENTERED_COMP_CD: authState?.companyID,
-          FD_COMP_CD: authState?.companyID,
-          ENTERED_BRANCH_CD: authState?.user?.branchCode,
         };
         if (data?.[0]?.O_STATUS === "0") {
-          // validateInsertData.isLoading = false;
-          const buttonName = await MessageBox({
+          setMessageData({
             messageTitle: "Validation Successfull..",
             message: "Do you Want to save this data",
-            buttonNames: ["Yes", "No"],
+            apiReq: apiReq,
           });
-          if (buttonName === "Yes") {
-            crudLimitData.mutate(apiReq);
-          }
+          setIsOpenSave(true);
         } else if (data?.[0]?.O_STATUS === "9") {
           MessageBox({
             messageTitle: "Validation Alert..",
             message: data?.[0]?.O_MESSAGE,
           });
         } else if (data?.[0]?.O_STATUS === "99") {
-          // validateInsertData.isLoading = false;
-          let buttonName = await MessageBox({
+          setMessageData({
             messageTitle: "Do you Want to Continue with this Record",
             message: data?.[0]?.O_MESSAGE,
-            buttonNames: ["Yes", "No"],
+            apiReq: apiReq,
           });
-          if (buttonName === "Yes") {
-            crudLimitData.mutate(apiReq);
-          }
+          setIsOpenSave(true);
         } else if (data?.[0]?.O_STATUS === "999") {
           MessageBox({
             messageTitle: "Validation Failed...!",
@@ -210,15 +204,27 @@ export const LimitEntry = () => {
       onSuccess: (data, variables) => {
         if (variables?._isDeleteRow) {
           setDeletePopup(false);
-          getLimitDetail.mutate({ ...deleteDataRef.current });
+          getLimitDetail.mutate({
+            COMP_CD: authState?.companyID,
+            ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+            ACCT_TYPE: variables?.ACCT_TYPE,
+            BRANCH_CD: variables?.BRANCH_CD,
+            ENTERED_DATE: authState?.workingDate,
+            USER_LEVEL: authState?.role,
+          });
           enqueueSnackbar("Data Delete successfully", { variant: "success" });
         } else if (variables?._isNewRow) {
           myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
           setFormRefresh((old) => old + 1);
+          setIsOpenSave(false);
           setIsVisible(false);
-          setNewFormMTdata({ ...limitEntryMetaData });
+          setNewFormMTdata(limitEntryMetaData);
           enqueueSnackbar("Data insert successfully", { variant: "success" });
         }
+      },
+
+      onError: (error: any) => {
+        setIsOpenSave(false);
       },
     }
   );
@@ -233,17 +239,6 @@ export const LimitEntry = () => {
     };
   }, []);
 
-  const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
-    setCloseAlert(true);
-    let apiReq = {
-      ...data,
-      ACCT_CD: data?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
-    };
-    validateInsertData.mutate(apiReq);
-    //@ts-ignore
-    endSubmit(true);
-  };
-
   const setCurrentAction = useCallback(
     async (data) => {
       if (data?.name === "view-detail") {
@@ -251,9 +246,10 @@ export const LimitEntry = () => {
           state: data?.rows,
         });
       } else if (data?.name === "close") {
+        setGridDetailData({});
         setDetailForm("");
       } else if (data?.name === "forceExpire") {
-        if (data?.rows?.[0]?.data?.EXPIRED_FLAG === "A") {
+        if (data?.rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y") {
           let res = await MessageBox({
             messageTitle: "Confirmation..",
             message: "Are you sure to force expire limit ?",
@@ -273,6 +269,7 @@ export const LimitEntry = () => {
     },
     [setDetailForm, navigate]
   );
+
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -281,9 +278,10 @@ export const LimitEntry = () => {
           onChange={(event, newValue) => {
             setValue(newValue);
             setCloseAlert(false);
+            setGridDetailData({});
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
-                setInitData(res);
+                initialValuesRef.current = res;
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   limitEntryGridMetaData.gridConfig.gridLabel = `Limit-Entry Detail \u00A0\u00A0 ${(
                     authState?.companyID +
@@ -297,6 +295,8 @@ export const LimitEntry = () => {
                     ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
                     ACCT_TYPE: res?.ACCT_TYPE,
                     BRANCH_CD: res?.BRANCH_CD,
+                    ENTERED_DATE: authState?.workingDate,
+                    USER_LEVEL: authState?.role,
                   };
                   getLimitDetail.mutate(limitDTLRequestPara);
                 }
@@ -325,7 +325,6 @@ export const LimitEntry = () => {
         >
           {securityLimitData.isLoading ||
           validateInsertData?.isLoading ||
-          crudLimitData.isLoading ||
           fdDetail.isLoading ||
           validateDeleteData.isLoading ? (
             <LinearProgress color="secondary" />
@@ -364,13 +363,25 @@ export const LimitEntry = () => {
               <FormWrapper
                 key={"limitEntryForm" + formRefresh}
                 metaData={newFormMTdata as MetaDataType}
-                initialValues={initData ?? {}}
-                onSubmitHandler={onSubmitHandler}
+                initialValues={initialValuesRef.current ?? {}}
+                onSubmitHandler={(data: any, displayData, endSubmit) => {
+                  console.log("<<<onsumit", data);
+                  setCloseAlert(true);
+                  let apiReq = {
+                    ...data,
+                    ACCT_CD: data?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+                  };
+                  validateInsertData.mutate(apiReq);
+                  //@ts-ignore
+                  endSubmit(true);
+                }}
                 hideHeader={false}
                 ref={myMasterRef}
                 formState={{ MessageBox: MessageBox }}
                 setDataOnFieldChange={(action, payload) => {
                   if (action === "SECURITY_CODE") {
+                    setCloseAlert(false);
+                    setNewFormMTdata({ ...limitEntryMetaData });
                     securityLimitData.mutate({
                       ...payload,
                       COMP_CD: authState?.companyID,
@@ -468,6 +479,8 @@ export const LimitEntry = () => {
 
                       <Button
                         onClick={(event) => {
+                          console.log("<<<eve", event);
+
                           handleSubmit(event, "Save");
                         }}
                         // disabled={isSubmitting}
@@ -609,10 +622,16 @@ export const LimitEntry = () => {
           onActionNo={() => setDeletePopup(false)}
           onActionYes={(val, rows) => {
             let deleteReqPara = {
-              ...rows,
               _isNewRow: false,
               _isDeleteRow: true,
+              BRANCH_CD: rows.BRANCH_CD,
+              TRAN_CD: rows.TRAN_CD,
+              ACCT_TYPE: rows.ACCT_TYPE,
+              ACCT_CD: rows.ACCT_CD,
+              LIMIT_AMOUNT: rows.LIMIT_AMOUNT,
               ACTIVITY_TYPE: "LIMIT ENTRY SCREEN",
+              TRAN_DT: rows.TRAN_DT,
+              CONFIRMED: rows.CONFIRMED,
               USER_DEF_REMARKS: val
                 ? val
                 : "WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)",
@@ -626,6 +645,18 @@ export const LimitEntry = () => {
           open={deletePopup}
           rows={deleteDataRef.current}
           defaultValue={"WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)"}
+        />
+      )}
+
+      {isOpenSave && (
+        <PopupMessageAPIWrapper
+          MessageTitle={messageData.messageTitle}
+          Message={messageData.message}
+          onActionYes={() => crudLimitData.mutate(messageData.apiReq)}
+          onActionNo={() => setIsOpenSave(false)}
+          rows={[]}
+          open={isOpenSave}
+          loading={crudLimitData.isLoading}
         />
       )}
     </>

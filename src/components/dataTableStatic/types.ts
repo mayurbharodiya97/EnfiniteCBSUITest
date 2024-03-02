@@ -81,6 +81,7 @@ export interface GridConfigType {
   hiddenFlag?: string;
   searchPlaceholder?: string;
   paginationText?: any;
+  footerNote?: any;
 }
 
 export interface GridMetaDataType {
@@ -113,7 +114,7 @@ export interface GridWrapperPropTypes {
   onlySingleSelectionAllow?: boolean;
   isNewRowStyle?: boolean;
   defaultSelectedRowId?: any;
-  ReportExportButton?:boolean
+  ReportExportButton?: boolean;
 }
 
 export interface YupSchemaMetaDataType {

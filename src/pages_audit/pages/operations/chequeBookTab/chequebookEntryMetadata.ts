@@ -96,7 +96,7 @@ export const ChequeBookEntryMetaData = {
         },
       },
       accountCodeMetadata: {
-        disableCaching: true,
+        // disableCaching: true,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -107,7 +107,7 @@ export const ChequeBookEntryMetaData = {
           if (
             field?.value &&
             dependentValue?.BRANCH_CD?.value &&
-            dependentValue?.ACCT_TYPE?.value
+            dependentValue?.ACCT_TYPE?.valuez
           ) {
             let otherAPIRequestPara = {
               ACCT_CD: utilFunction.getPadAccountNumber(
@@ -782,29 +782,29 @@ export const ChequeBookEntryMetaData = {
           animation: "5s anim-popoutin ease ",
         },
 
-        "@keyframes anim-popoutin": {
-          "0%": {
-            transform: "scale(0)",
-            opacity: "0",
-            textShadow: "0 0 0 rgba(0, 0, 0, 0)",
-          },
-          "25% ": {
-            color: "var(--theme-color6)",
-            transform: "scale(1.5)",
-            opacity: "1",
-            textShadow: "3px 10px 5px rgba(0, 0, 0, 0.5)",
-          },
-          "50%": {
-            transform: "scale(1)",
-            opacity: "1",
-            textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
-          },
-          "100%": {
-            transform: "scale(1)",
-            opacity: "1",
-            textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
-          },
-        },
+        // "@keyframes anim-popoutin": {
+        //   "0%": {
+        //     transform: "scale(0)",
+        //     opacity: "0",
+        //     textShadow: "0 0 0 rgba(0, 0, 0, 0)",
+        //   },
+        //   "25% ": {
+        //     color: "var(--theme-color6)",
+        //     transform: "scale(1.5)",
+        //     opacity: "1",
+        //     textShadow: "3px 10px 5px rgba(0, 0, 0, 0.5)",
+        //   },
+        //   "50%": {
+        //     transform: "scale(1)",
+        //     opacity: "1",
+        //     textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
+        //   },
+        //   "100%": {
+        //     transform: "scale(1)",
+        //     opacity: "1",
+        //     textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
+        //   },
+        // },
         "& .MuiInputBase-root": {
           marginTop: " 0px !important",
           overflow: "hidden",

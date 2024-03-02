@@ -13,32 +13,27 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { SubmitFnType } from "packages/form";
+import * as API from "./api";
 import { AuthContext } from "pages_audit/auth";
-import { useMutation } from "react-query";
-import { AuthSDK } from "registry/fns/auth";
-import { DefaultErrorObject } from "components/utils";
 import { Alert } from "components/common/alert";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { StopPayEntryMetadata } from "./stopPayEntryMetadata";
 import { StopPayGridMetaData } from "./stopPayGridMetadata";
+import { useMutation } from "react-query";
 
-export const StoppaymentEntry = () => {
+export const StopPaymentEntry = () => {
   const [value, setValue] = useState("tab1");
-  const myMasterRef = useRef<any>(null);
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
   const { authState } = useContext(AuthContext);
+  const [gridDetailData, setGridDetailData] = useState<any>();
+  const myMasterRef = useRef<any>(null);
 
-  const mutation: any = useMutation(GetdetailData, {
-    onSuccess: (data) => {},
+  const getStopPayDetail: any = useMutation("getLimitDTL", API.stopPayDetail, {
+    onSuccess: (data) => {
+      setGridDetailData(data);
+    },
     onError: (error: any) => {},
   });
 
-  const ClickEventManage = () => {
-    let event: any = { preventDefault: () => {} };
-    myMasterRef?.current?.handleSubmit(event, "BUTTON_CLICK");
-  };
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -54,14 +49,39 @@ export const StoppaymentEntry = () => {
       <Box sx={{ width: "100%" }}>
         <Tabs
           value={value}
-          onChange={handleChange}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+            setGridDetailData({});
+            if (newValue === "tab2") {
+              myMasterRef?.current?.getFieldData().then((res) => {
+                // initialValuesRef.current = res;
+                if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
+                  StopPayGridMetaData.gridConfig.gridLabel = `Limit-Entry Detail \u00A0\u00A0 ${(
+                    authState?.companyID +
+                    res?.BRANCH_CD +
+                    res?.ACCT_TYPE +
+                    res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " ")
+                  ).replace(/\s/g, "")} -  ${res?.ACCT_NM}`;
+
+                  const RequestPara = {
+                    COMP_CD: authState?.companyID,
+                    ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+                    ACCT_TYPE: res?.ACCT_TYPE,
+                    BRANCH_CD: res?.BRANCH_CD,
+                    ENTERED_DATE: authState?.workingDate,
+                    USER_LEVEL: authState?.role,
+                  };
+                  getStopPayDetail.mutate(RequestPara);
+                }
+              });
+            }
+          }}
           textColor="secondary"
           indicatorColor="secondary"
           aria-label="secondary tabs example"
         >
           <Tab value="tab1" label="Stop Payment Entry" />
           <Tab value="tab2" label="Stop Payment Detail" />
-          {/* <Tab value="tab3" label="Processed Cheque(s) Detail" /> */}
         </Tabs>
       </Box>
 
@@ -75,7 +95,7 @@ export const StoppaymentEntry = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {mutation?.isError ? (
+          {/* {mutation?.isError ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
@@ -97,69 +117,51 @@ export const StoppaymentEntry = () => {
               </AppBar>
             </div>
           ) : null}
-          {value === "tab1" ? (
-            <div
-              onKeyDown={(e) => {
-                if (e.key === "Tab") {
-                  let target: any = e?.target;
-                  if (
-                    (target?.name ?? "") ===
-                    StopPayEntryMetadata.form.name + "/ACCT_CD"
-                  ) {
-                    ClickEventManage();
-                  }
-                }
-              }}
-            >
-              {mutation.isLoading || mutation.isFetching ? (
+                 {mutation.isLoading || mutation.isFetching ? (
                 <LinearProgress color="secondary" />
               ) : (
                 <LinearProgressBarSpacer />
+              )} */}
+
+          {value === "tab1" ? (
+            <FormWrapper
+              key={"stopPayEntry"}
+              metaData={StopPayEntryMetadata ?? []}
+              initialValues={[]}
+              onSubmitHandler={onSubmitHandler}
+              // displayMode={"view"}
+              // hideDisplayModeInTitle={true}
+              loading={false}
+              // formStyle={{
+              //   background: "white",
+              //   // height: "40vh",
+              //   overflowY: "auto",
+              //   overflowX: "hidden",
+              // }}
+              hideHeader={false}
+              ref={myMasterRef}
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  <Button
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+                    color={"primary"}
+                  >
+                    Save
+                  </Button>
+                </>
               )}
-              <FormWrapper
-                key={
-                  "stopPayEntry" + mutation?.data?.length &&
-                  Boolean(mutation?.isSuccess)
-                    ? mutation?.data
-                    : ""
-                }
-                metaData={StopPayEntryMetadata ?? []}
-                initialValues={mutation?.data?.[0] ?? []}
-                onSubmitHandler={onSubmitHandler}
-                // displayMode={"view"}
-                // hideDisplayModeInTitle={true}
-                loading={mutation.isLoading}
-                // formStyle={{
-                //   background: "white",
-                //   // height: "40vh",
-                //   overflowY: "auto",
-                //   overflowX: "hidden",
-                // }}
-                hideHeader={false}
-                ref={myMasterRef}
-              >
-                {({ isSubmitting, handleSubmit }) => (
-                  <>
-                    <Button
-                      onClick={(event) => {
-                        handleSubmit(event, "Save");
-                      }}
-                      disabled={isSubmitting}
-                      //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                      color={"primary"}
-                    >
-                      Save
-                    </Button>
-                  </>
-                )}
-              </FormWrapper>
-            </div>
+            </FormWrapper>
           ) : value === "tab2" ? (
             <>
               <GridWrapper
-                key={`personalizeQuickView`}
+                key={`stopPayGridData`}
                 finalMetaData={StopPayGridMetaData as GridMetaDataType}
-                data={mutation.data ?? []}
+                data={gridDetailData ?? []}
                 setData={() => {}}
                 // loading={saveQuickData.isLoading}
                 // actions={Quickactions}
@@ -178,15 +180,4 @@ export const StoppaymentEntry = () => {
       </Container>
     </>
   );
-};
-export const GetdetailData = async ({ apiID, otherAPIRequestPara }) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(apiID, {
-      ...otherAPIRequestPara,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
 };

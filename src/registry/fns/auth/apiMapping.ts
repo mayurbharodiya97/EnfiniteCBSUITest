@@ -946,6 +946,14 @@ export const ActionWiseAPIConfiguration = {
     url: "loanServiceAPI/VALIDDELETELIMITDATA",
     packageName: "",
   },
+  GETSTPGENDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPGENDISP",
+    packageName: "",
+  },
+  GETSTPGRIDDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPGRIDDATADISP",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

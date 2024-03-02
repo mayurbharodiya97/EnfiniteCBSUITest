@@ -120,10 +120,16 @@ export const ChequebookDtlGridMetaData = {
       maxWidth: 200,
     },
     {
-      accessor: "DELETE",
+      accessor: "ALLOW_DELETE",
       columnName: "Delete",
       sequence: 8,
       alignment: "center",
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (initialValue === "Y") {
+          return false;
+        }
+        return true;
+      },
       componentType: "buttonRowCell",
       width: 150,
       minWidth: 100,

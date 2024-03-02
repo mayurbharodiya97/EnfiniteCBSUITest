@@ -21,9 +21,9 @@ export const getChequebookDTL = async (chequeDTLRequestPara) => {
     });
   if (status === "0") {
     return data.map((item) => {
-      if (item.CONFIRMED === "N") {
-        item._rowColor = "rgb(152 59 70 / 61%)";
-      }
+      // if (item.CONFIRMED === "N") {
+      //   item._rowColor = "rgb(152 59 70 / 61%)";
+      // }
       return {
         ...item,
         CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",

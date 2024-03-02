@@ -75,7 +75,6 @@ export const limitEntryMetaData = {
         // disableCaching: true,
         dependentFields: ["ACCT_TYPE"],
         options: (dependentValue, formState, _, authState) => {
-          console.log("<<<<fnef", dependentValue, formState, _, authState);
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
@@ -152,6 +151,10 @@ export const limitEntryMetaData = {
                 buttonNames: ["Ok"],
               });
               return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
                 ACCT_NM: {
                   value: postData?.[0]?.ACCT_NM,
                 },
@@ -182,6 +185,10 @@ export const limitEntryMetaData = {
                 NSC_FD_BTN: true,
               });
               return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
                 ACCT_NM: {
                   value: postData?.[0]?.ACCT_NM,
                 },
@@ -361,6 +368,7 @@ export const limitEntryMetaData = {
       placeholder: "Security",
       type: "text",
       dependentFields: [
+        "PARENT_TYPE",
         "ACCT_CD",
         "BRANCH_CD",
         "ACCT_TYPE",
@@ -381,12 +389,16 @@ export const limitEntryMetaData = {
         }
       },
       options: (dependentValue, formState, _, authState) => {
-        if (dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
+        if (
+          dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE ??
+          dependentValue?.PARENT_TYPE?.value
+        ) {
           let apiReq = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
             A_PARENT_TYPE:
-              dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
+              dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim() ??
+              dependentValue?.PARENT_TYPE?.value,
           };
           return API.getSecurityListData(apiReq);
         }
@@ -401,13 +413,22 @@ export const limitEntryMetaData = {
         dependentValue
       ) => {
         if (field?.value) {
-          formState.setDataOnFieldChange("SECURITY_CODE", {
-            SECURITY_CD: field?.value,
-            HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
-            HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
-            HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
-            HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
-          });
+          console.log("<<<sectype", dependentValue);
+
+          if (dependentValue?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE) {
+            formState.setDataOnFieldChange("SECURITY_CODE", {
+              SECURITY_CD: field?.value,
+              SECURITY_TYPE:
+                dependentValue?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE.trim(),
+              HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
+              HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
+              HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
+              HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
+            });
+          }
+          // return {
+          // FD_BRANCH_CD: { isErrorBlank: true },
+          // };
         }
         return {};
       },

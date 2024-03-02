@@ -53,6 +53,18 @@ export const forceExpireMetaData = {
   fields: [
     {
       render: {
+        componentType: "hidden",
+      },
+      name: "BRANCH_CD",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "TRAN_CD",
+    },
+    {
+      render: {
         componentType: "amountField",
       },
       name: "LIMIT_AMOUNT",
@@ -366,9 +378,9 @@ export const forceExpireMetaData = {
       name: "REMARKS",
       label: "Remarks",
       placeholder: "Enter Remarks",
-      dependentFields: ["EXPIRED_FLAG"],
+      dependentFields: ["ALLOW_FORCE_EXP"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.EXPIRED_FLAG?.value === "A") {
+        if (dependentFieldsValues?.ALLOW_FORCE_EXP?.value === "Y") {
           return false;
         } else {
           return true;
@@ -410,9 +422,9 @@ export const forceExpireMetaData = {
       name: "FORCE_EXP_DT",
       label: "Forced Expired Date",
       placeholder: "Forced Expired Date",
-      dependentFields: ["EXPIRED_FLAG"],
+      dependentFields: ["ALLOW_FORCE_EXP"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.EXPIRED_FLAG?.value === "A") {
+        if (dependentFieldsValues?.ALLOW_FORCE_EXP?.value === "Y") {
           return false;
         } else {
           return true;
@@ -431,6 +443,12 @@ export const forceExpireMetaData = {
         lg: 2,
         xl: 2,
       },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ALLOW_FORCE_EXP",
     },
     {
       render: {

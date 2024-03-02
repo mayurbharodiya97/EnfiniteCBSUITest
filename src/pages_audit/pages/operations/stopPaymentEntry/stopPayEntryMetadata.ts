@@ -1,12 +1,13 @@
-import React from "react";
+import { utilFunction } from "components/utils";
 import { GeneralAPI } from "registry/fns/functions";
+import * as API from "./api";
 
 export const StopPayEntryMetadata = {
   form: {
     name: "PRIORITY",
     label: "Stop Payment Entry",
     resetFieldOnUnmount: false,
-    validationRun: "onChange",
+    validationRun: "onBlur",
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -74,6 +75,15 @@ export const StopPayEntryMetadata = {
       required: true,
       options: GeneralAPI.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
+      // options: (dependentValue, formState, _, authState) => {
+      //   return GeneralAPI.get_Account_Type({
+      //     COMP_CD: authState?.companyID,
+      //     BRANCH_CD: authState?.user?.branchCode,
+      //     USER_NAME: authState?.user?.id,
+      //     DOC_CD: "ETRN/048",
+      //   });
+      // },
+      // _optionsKey: "get_Account_Type",
       GridProps: {
         xs: 12,
         md: 3,
@@ -88,7 +98,7 @@ export const StopPayEntryMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "ACCT_CD",
       label: "Account Number",
@@ -101,7 +111,35 @@ export const StopPayEntryMetadata = {
         type: "string",
         rules: [{ name: "required", params: ["Account no. is required."] }],
       },
-      // padEnds: 20,/
+
+      dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        console.log("<<<<dedededee", dependentValue);
+        if (
+          field?.value &&
+          dependentValue?.BRANCH_CD?.value &&
+          dependentValue?.ACCT_TYPE?.value
+        ) {
+          let otherAPIRequestPara = {
+            COMP_CD: "132 ",
+            ACCT_CD: utilFunction.getPadAccountNumber(
+              field?.value,
+              dependentValue?.ACCT_TYPE?.optionData
+            ),
+            ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+            SCREEN_REF: "ETRN/048",
+          };
+          let postData = await API.accountValidate(otherAPIRequestPara);
+
+          console.log("<<<<postData", postData);
+        }
+      },
       GridProps: {
         xs: 12,
         md: 2,
@@ -109,7 +147,6 @@ export const StopPayEntryMetadata = {
         lg: 3,
         xl: 3,
       },
-      // dependentFields: ["BRANCH_CD", "ACCT_TYPE", "FROM_CHEQU"],
     },
     {
       render: {
