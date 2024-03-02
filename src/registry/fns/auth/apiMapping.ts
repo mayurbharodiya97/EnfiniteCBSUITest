@@ -930,6 +930,14 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/GETCHQVIEWDETAILS",
     packageName: "",
   },
+  CHEQUESIGNIMG: {
+    url: "chequeServiceAPI/CHEQUESIGNIMG",
+    packageName: "",
+  },
+  GETSYSPARAMSTDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSYSPARAMSTDISP",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

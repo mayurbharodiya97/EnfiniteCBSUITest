@@ -9,6 +9,7 @@ import { theme2 } from "app/audit/theme";
 import "./styleTimepicker.css";
 import { unstable_createMuiStrictModeTheme } from "@mui/material/styles";
 import { Grid, GridProps } from "@mui/material";
+import { TextField } from "components/styledComponent";
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
 
 type KeyboardTimePickerPropsSubset = Omit<
@@ -113,13 +114,20 @@ export const MyTimePicker: FC<MyTimeTimePickerAllProps> = ({
       onBlur={handleBlur}
       disabled={isSubmitting}
       readOnly={readOnly}
-      InputLabelProps={{
-        shrink: true,
+      slots={{
+        textField: TextField,
       }}
-      InputProps={{
-        readOnly: readOnly,
-        tabIndex: readOnly ? -1 : undefined,
-        ...InputProps,
+      slotProps={{
+        textField: {
+          InputLabelProps: {
+            shrink: true,
+          },
+          InputProps: {
+            readOnly: readOnly,
+            tabIndex: readOnly ? -1 : undefined,
+            ...InputProps,
+          },
+        },
       }}
       inputProps={{
         tabIndex: readOnly ? -1 : undefined,
