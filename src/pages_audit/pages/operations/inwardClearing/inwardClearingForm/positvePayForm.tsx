@@ -11,56 +11,24 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import { ChequeSignImage } from "./chequeSignImage";
 
-export const ChequeSignForm: FC<{
+export const PositivePayFormWrapper: FC<{
   onClose?: any;
-  reqDataRef?: any;
-}> = ({ onClose, reqDataRef }) => {
-  const [rotate, setRotate] = useState<number>(0);
-
-  const handleRotateChange = () => {
-    // Calculate the new rotation angle by adding or subtracting 90 degrees
-    const newRotateValue = (rotate + 90) % 360;
-    setRotate(newRotateValue);
-  };
-
-  const reqData = {
-    COMP_CD: reqDataRef.current?.COMP_CD ?? "",
-    ENTERED_COMP_CD: reqDataRef.current?.ENTERED_COMP_CD ?? "",
-    ENTERED_BRANCH_CD: reqDataRef.current?.ENTERED_BRANCH_CD ?? "",
-    BRANCH_CD: reqDataRef.current?.BRANCH_CD ?? "",
-    ACCT_TYPE: reqDataRef.current?.ACCT_TYPE ?? "",
-    ACCT_CD: reqDataRef.current?.ACCT_CD ?? "",
-    DAILY_TRN_CD: reqDataRef.current?.DAILY_TRN_CD ?? "",
-    TRAN_CD: reqDataRef.current?.TRAN_CD ?? "",
-    TRAN_DT: format(new Date(reqDataRef.current?.TRAN_DT), "dd/MMM/yyyy") ?? "",
-    TRAN_FLAG: "E",
-    WITH_SIGN: "Y",
-    ENTERED_BY: reqDataRef.current?.ENTERED_BY ?? "",
-  };
+  positiveData?: any;
+}> = ({ onClose, positiveData }) => {
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getInwardChequeSignFormData", { reqData }], () =>
-    API.getInwardChequeSignFormData(reqData)
+  >(["getPositivePayData", { ...positiveData }], () =>
+    API.getPositivePayData({
+      COMP_CD: positiveData?.COMP_CD,
+      BRANCH_CD: positiveData?.BRANCH_CD,
+      ACCT_TYPE: positiveData?.ACCT_TYPE,
+      ACCT_CD: positiveData?.ACCT_CD,
+      CHEQUE_NO: positiveData?.CHEQUE_NO,
+    })
   );
-
-  if (chequesignFormMetaData.form.label) {
-    chequesignFormMetaData.form.label =
-      "A/C No:-" +
-      " " +
-      reqDataRef.current?.BRANCH_CD +
-      "-" +
-      reqDataRef.current?.ACCT_TYPE +
-      "-" +
-      reqDataRef.current?.ACCT_CD +
-      "--" +
-      " " +
-      "Press ESC Key to Close" +
-      " - " +
-      "Customer Level Photo/Signature" +
-      " ";
-  }
-
+  // console.log("???positiveData", positiveData);
+  // console.log("???data", data);
   return (
     <>
       <Dialog
@@ -94,7 +62,7 @@ export const ChequeSignForm: FC<{
           <FormWrapper
             key={`chequeSignForm`}
             metaData={chequesignFormMetaData as unknown as MetaDataType}
-            initialValues={reqDataRef.current}
+            initialValues={positiveData}
             onSubmitHandler={{}}
             formStyle={{
               background: "white",
@@ -103,14 +71,10 @@ export const ChequeSignForm: FC<{
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                <GradientButton onClick={handleRotateChange}>
-                  {rotate === 0 ? "Rotate" : "Reset"}
-                </GradientButton>
                 <GradientButton onClick={onClose}>Close</GradientButton>
               </>
             )}
           </FormWrapper>
-          <ChequeSignImage imgData={data} rotate={rotate} />
         </>
         {/* )} */}
       </Dialog>

@@ -60,17 +60,21 @@ const CtsOutwardClearingForm: FC<{
   const [isJointDtlExpand, setJointDtlExpand] = useState(false);
   const [isOpenAddBankForm, setOpenAddBankForm] = useState(false);
   const [isOpenRetrieve, setIsOpenRetrieve] = useState(false);
+  const [isDelete, SetDelete] = useState(false);
+  const [isOpenProceedMsg, setOpenProceedMsg] = useState(false);
   const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
   const [gridData, setGridData] = useState([]);
   const [chequeDetailData, setChequeDetailData] = useState<any>({
-    chequeDetails: [{ ECS_USER_NO: "" }],
+    chequeDetails: [
+      { ECS_USER_NO: "", CHEQUE_DATE: authState?.workingDate ?? "" },
+    ],
     SLIP_AMOUNT: "0",
   });
   const myFormRef: any = useRef(null);
   const myChequeFormRef: any = useRef(null);
   const slipFormDataRef: any = useRef(null);
   const finalReqDataRef: any = useRef(null);
-  const trancdForDeleteRef: any = useRef(null);
+  const retrieveDataRef: any = useRef(null);
   const setCurrentAction = useCallback((data) => {
     if (data.name === "view-details") {
       setChequeDetailData((old) => {
@@ -115,11 +119,14 @@ const CtsOutwardClearingForm: FC<{
       enqueueSnackbar(errorMsg, {
         variant: "error",
       });
+      setOpenProceedMsg(false);
     },
+
     onSuccess: (data) => {
       enqueueSnackbar(data, {
         variant: "success",
       });
+      setOpenProceedMsg(false);
       setGridData([]);
       setChequeDetailData({
         chequeDetails: [{ ECS_USER_NO: "" }],
@@ -131,13 +138,22 @@ const CtsOutwardClearingForm: FC<{
     },
   });
   const deleteMutation = useMutation(API.outwardClearingConfigDML, {
-    onError: (error: any) => {},
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      SetDelete(false);
+    },
     onSuccess: (data) => {
       // isDataChangedRef.current = true;
       enqueueSnackbar("Records successfully deleted", {
         variant: "success",
       });
-
+      SetDelete(false);
       setFormMode("new");
     },
   });
@@ -151,7 +167,7 @@ const CtsOutwardClearingForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
-    console.log(">>data", data);
+
     if (
       !Boolean(data?.SLIP_AMOUNT) ||
       parseFloat(data?.SLIP_AMOUNT ?? 0) <= 0
@@ -187,14 +203,7 @@ const CtsOutwardClearingForm: FC<{
         _isNewRow: true,
         endSubmit,
       };
-      let res = await MessageBox({
-        messageTitle: "Confirmation..",
-        message: " Proceed ?",
-        buttonNames: ["Yes", "No"],
-      });
-      if (res === "Yes") {
-        mutationOutward.mutate(finalReqDataRef.current);
-      }
+      setOpenProceedMsg(true);
     } else if (
       parseFloat(data?.TOTAL_AMOUNT) > 0 &&
       Array.isArray(chequeDetailData?.chequeDetails) &&
@@ -234,6 +243,23 @@ const CtsOutwardClearingForm: FC<{
       });
     }
   };
+  const onAcceptDelete = (rows) => {
+    deleteMutation.mutate({
+      DAILY_CLEARING: {
+        TRAN_CD: retrieveDataRef.current?.TRAN_CD,
+      },
+      DETAILS_DATA: {
+        isNewRow: [],
+        isDeleteRow: [
+          {
+            TRAN_CD: retrieveDataRef.current?.TRAN_CD,
+          },
+        ],
+        isUpdatedRow: [],
+      },
+      _isDeleteRow: true,
+    });
+  };
   useEffect(() => {
     const handleKeyDown = async (event) => {
       if (event.ctrlKey && (event.key === "R" || event.key === "r")) {
@@ -243,7 +269,7 @@ const CtsOutwardClearingForm: FC<{
         if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
           event.preventDefault();
           if (
-            trancdForDeleteRef.current?.CONFIRMED === "Y" &&
+            retrieveDataRef.current?.CONFIRMED === "Y" &&
             authState?.role < "2"
           ) {
             await MessageBox({
@@ -254,7 +280,7 @@ const CtsOutwardClearingForm: FC<{
           } else if (
             !(
               format(
-                new Date(trancdForDeleteRef.current?.TRAN_DT),
+                new Date(retrieveDataRef.current?.TRAN_DT),
                 "dd/MMM/yyyy"
               ) >= format(new Date(authState?.workingDate), "dd/MMM/yyyy")
             )
@@ -265,29 +291,7 @@ const CtsOutwardClearingForm: FC<{
               buttonNames: ["Ok"],
             });
           } else {
-            let res = await MessageBox({
-              messageTitle: "Confirmation..",
-              message: "Do You Want to delete this row?",
-              buttonNames: ["Yes", "No"],
-            });
-
-            if (res === "Yes") {
-              deleteMutation.mutate({
-                DAILY_CLEARING: {
-                  TRAN_CD: trancdForDeleteRef.current,
-                },
-                DETAILS_DATA: {
-                  isNewRow: [],
-                  isDeleteRow: [
-                    {
-                      TRAN_CD: trancdForDeleteRef.current,
-                    },
-                  ],
-                  isUpdatedRow: [],
-                },
-                _isDeleteRow: true,
-              });
-            }
+            SetDelete(true);
           }
         }
       }
@@ -406,7 +410,6 @@ const CtsOutwardClearingForm: FC<{
               padding: "05px",
             }}
             formState={{
-              formMode: formMode,
               ZONE_TRAN_TYPE: zoneTranType,
               MessageBox: MessageBox,
             }}
@@ -445,7 +448,7 @@ const CtsOutwardClearingForm: FC<{
                     <GradientButton
                       onClick={async () => {
                         if (
-                          trancdForDeleteRef.current?.CONFIRMED === "Y" &&
+                          retrieveDataRef.current?.CONFIRMED === "Y" &&
                           authState?.role < "2"
                         ) {
                           await MessageBox({
@@ -456,7 +459,7 @@ const CtsOutwardClearingForm: FC<{
                         } else if (
                           !(
                             format(
-                              new Date(trancdForDeleteRef.current?.TRAN_DT),
+                              new Date(retrieveDataRef.current?.TRAN_DT),
                               "dd/MMM/yyyy"
                             ) >=
                             format(
@@ -471,29 +474,7 @@ const CtsOutwardClearingForm: FC<{
                             buttonNames: ["Ok"],
                           });
                         } else {
-                          let res = await MessageBox({
-                            messageTitle: "Confirmation..",
-                            message: "Do You Want to delete this row?",
-                            buttonNames: ["Yes", "No"],
-                          });
-
-                          if (res === "Yes") {
-                            deleteMutation.mutate({
-                              DAILY_CLEARING: {
-                                TRAN_CD: trancdForDeleteRef.current,
-                              },
-                              DETAILS_DATA: {
-                                isNewRow: [],
-                                isDeleteRow: [
-                                  {
-                                    TRAN_CD: trancdForDeleteRef.current,
-                                  },
-                                ],
-                                isUpdatedRow: [],
-                              },
-                              _isDeleteRow: true,
-                            });
-                          }
+                          SetDelete(true);
                         }
                       }}
                     >
@@ -647,7 +628,7 @@ const CtsOutwardClearingForm: FC<{
               onClose={(flag, rowsData) => {
                 setIsOpenRetrieve(false);
                 if (flag === "action") {
-                  trancdForDeleteRef.current = rowsData?.[0]?.data ?? "";
+                  retrieveDataRef.current = rowsData?.[0]?.data ?? "";
                   getOutwardClearingData.mutate({
                     TRAN_CD: rowsData?.[0]?.data?.TRAN_CD ?? "",
                   });
@@ -655,6 +636,28 @@ const CtsOutwardClearingForm: FC<{
                 }
               }}
               tranDate={data?.[0]?.TRAN_DATE ?? ""}
+            />
+          ) : null}
+          {isOpenProceedMsg ? (
+            <PopupMessageAPIWrapper
+              MessageTitle="Confirmation"
+              Message=" Proceed ?"
+              onActionYes={(rowsVal) => mutationOutward.mutate(rowsVal)}
+              onActionNo={() => setOpenProceedMsg(false)}
+              rows={finalReqDataRef.current}
+              open={isOpenProceedMsg}
+              loading={mutationOutward.isLoading}
+            />
+          ) : null}
+          {isDelete ? (
+            <PopupMessageAPIWrapper
+              MessageTitle="Confirmation"
+              Message="Do You Want to delete this row?"
+              onActionYes={(rows) => onAcceptDelete(rows)}
+              onActionNo={() => SetDelete(false)}
+              rows={{}}
+              open={isDelete}
+              loading={deleteMutation.isLoading}
             />
           ) : null}
         </>

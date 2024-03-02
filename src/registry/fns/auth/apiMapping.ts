@@ -918,8 +918,8 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/VALIDDELETECHQDATA",
     packageName: "",
   },
-  GETINWARDCLEARPROCESS: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWARDCLEARPROCESS",
+  INWARDRETRIVEDATA: {
+    url: "/chequeServiceAPI/INWARDRETRIVEDATA",
     packageName: "",
   },
   GETTODAYTRANDATA: {
@@ -944,6 +944,30 @@ export const ActionWiseAPIConfiguration = {
   },
   VALIDDELETELIMITDATA: {
     url: "loanServiceAPI/VALIDDELETELIMITDATA",
+    packageName: "",
+  },
+  POSTBTNVALIDATE: {
+    url: "chequeServiceAPI/POSTBTNVALIDATE",
+    packageName: "",
+  },
+  RETURNBTNVALIDATE: {
+    url: "chequeServiceAPI/RETURNBTNVALIDATE",
+    packageName: "",
+  },
+  GETPOSITIVEPAYDTL: {
+    url: "chequeServiceAPI/GETPOSITIVEPAYDTL",
+    packageName: "",
+  },
+  DOPOSTDML: {
+    url: "chequeServiceAPI/DOPOSTDML",
+    packageName: "",
+  },
+  GETINWZONEDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWZONEDDW",
+    packageName: "",
+  },
+  GETINWREASONMSTDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWREASONMSTDDW",
     packageName: "",
   },
 };
