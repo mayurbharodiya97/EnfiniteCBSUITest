@@ -9,8 +9,8 @@ const TabNavigate = ({handleSave, displayMode, isNextLoading}) => {
         state,
         handleColTabChangectx,
     } = useContext(CkycContext);
-    const totalTab = Array.isArray(state?.tabNameList) && state?.tabNameList.length
-
+    const steps:any[] = state?.tabsApiResctx.filter(tab => tab.isVisible) 
+    const totalTab:any | number = Array.isArray(steps) && steps.length;
     // console.log(state?.colTabValuectx, "wieugufwefw", totalTab, Array.isArray(state?.tabNameList), state?.tabNameList.length, state?.tabNameList)
     return (
         <Grid container item sx={{ justifyContent: "flex-end" }}>
