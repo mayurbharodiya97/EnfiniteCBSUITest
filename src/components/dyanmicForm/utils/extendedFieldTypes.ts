@@ -18,19 +18,23 @@ export const extendFieldTypes = (
     decimalCount,
     commonDateFormat,
     commonDateTimeFormat,
+    commonTimeFormat,
   } = customParameters;
 
   const newMetaDataFields = metaData?.fields?.map((one) => {
     const extendedType = extendedTypes[one.render.componentType];
     if (
       one?.render?.componentType === "datePicker" ||
-      one?.render?.componentType === "datetimePicker"
+      one?.render?.componentType === "datetimePicker" ||
+      one?.render?.componentType === "timePicker"
     ) {
       if (!one?.format) {
         const format =
           one.render.componentType === "datePicker"
             ? commonDateFormat
-            : commonDateTimeFormat;
+            : one?.render?.componentType === "datetimePicker"
+            ? commonDateTimeFormat
+            : commonTimeFormat;
         one = { ...one, format };
       }
     }

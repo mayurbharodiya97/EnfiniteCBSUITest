@@ -172,7 +172,8 @@ export const DynamicFormConfigMetaData = {
         componentType: "typography",
       },
       name: "RESET_FIELD",
-      label:
+      label: "",
+      defaultValue:
         "Note:Reset Field On Unmount always untick for form does not Re-render. ",
       TypographyProps: { variant: "subtitle2", color: "red" },
       GridProps: { xs: 12, sm: 4, md: 3, lg: 2.5, xl: 1.5 },

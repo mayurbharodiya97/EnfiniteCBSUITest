@@ -145,7 +145,7 @@ const TellerScreen = () => {
     //     ? state?.fieldsData?.PAYMENT
     //     : "0",
     // });
-  }, [data]);
+  }, [data, state?.openDeno]);
 
   //for common function for set required table column totals
   const getInitTotals = (getData) => {
@@ -178,7 +178,18 @@ const TellerScreen = () => {
       type: SingleTableActionTypes?.SET_TOTAL_VAL,
       payload: newValue,
     });
-  }, [state?.availNote, state?.balance]);
+  }, [state?.availNote, state?.balance, state?.openDeno]);
+
+  useEffect(() => {
+    dispatch({
+      type: SingleTableActionTypes?.SET_INPUT_VAL,
+      payload: {},
+    });
+    dispatch({
+      type: SingleTableActionTypes?.SET_AMOUNT_VAL,
+      payload: [],
+    });
+  }, [state?.openDeno]);
 
   //for aceept only numbers (positive and negative) without decimal
   const sanitizedValue = (inputValue) => {
@@ -236,7 +247,7 @@ const TellerScreen = () => {
     });
   };
 
-  const handleBlurLogic = (index) => {
+  const handleBlurLogic = (event, index) => {
     dispatch({
       type: SingleTableActionTypes?.SET_DIS_ERR_VAL,
       payload: {
@@ -340,7 +351,7 @@ const TellerScreen = () => {
       //     message: null,
       //   },
       // });
-      handleBlurLogic(index);
+      handleBlurLogic(event, index);
     }
   };
 
@@ -357,7 +368,7 @@ const TellerScreen = () => {
 
   const handleonFocus = (event, index) => {
     // Call the shared logic for the else part
-    handleBlurLogic(index);
+    // handleBlurLogic(event,index);
   };
 
   useEffect(() => {
@@ -488,27 +499,6 @@ const TellerScreen = () => {
             });
             let event: any = { preventDefault: () => {} };
             formRef?.current?.handleSubmit(event, "SAVE");
-            if (payload?.buttonNames === "Yes") {
-              const formattedDate = format(
-                parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
-                "dd/MMM/yyyy"
-              ).toUpperCase();
-              getData.mutate({
-                COMP_CD: authState?.companyID,
-                BRANCH_CD: authState?.user?.branchCode,
-                USER_NAME: authState?.user?.id,
-                // TRAN_DT: "03/FEB/2024",
-                TRAN_DT: formattedDate,
-              });
-            } else if (payload?.buttonNames === "No") {
-              dispatch({
-                type: SingleTableActionTypes?.SET_OPEN_DENO,
-                payload: false,
-              });
-              // if (Boolean(endSubmitRef.current?.endSubmit)) {
-              //   endSubmitRef.current?.endSubmit(true);
-              // }
-            }
           } else if (action === "TRN") {
             dispatch({
               type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
@@ -642,6 +632,36 @@ const TellerScreen = () => {
           rows={[]}
           loading={{ Yes: getData?.isLoading, No: false }}
           open={Boolean(state?.confirmation)}
+        />
+      ) : null}
+      {Boolean(state?.openDeno) ? (
+        <PopupRequestWrapper
+          MessageTitle={"Denomination confirmation"}
+          Message={"Are you sure to open denomination"}
+          onClickButton={(rows, buttonNames) => {
+            if (Boolean(buttonNames === "Yes")) {
+              const formattedDate = format(
+                parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                "dd/MMM/yyyy"
+              ).toUpperCase();
+              getData.mutate({
+                COMP_CD: authState?.companyID,
+                BRANCH_CD: authState?.user?.branchCode,
+                USER_NAME: authState?.user?.id,
+                // TRAN_DT: "03/FEB/2024",
+                TRAN_DT: formattedDate,
+              });
+            } else if (Boolean(buttonNames === "No")) {
+              dispatch({
+                type: SingleTableActionTypes?.SET_OPEN_DENO,
+                payload: false,
+              });
+            }
+          }}
+          buttonNames={["Yes", "No"]}
+          rows={[]}
+          loading={{ Yes: getData?.isLoading, No: false }}
+          open={Boolean(state?.openDeno)}
         />
       ) : null}
       <TellerDenoTable
