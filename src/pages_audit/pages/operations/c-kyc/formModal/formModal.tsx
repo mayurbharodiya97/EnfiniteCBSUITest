@@ -62,6 +62,7 @@ import { ConfirmUpdateDialog } from './dialog/ConfirmUpdateDialog';
 import { Alert } from 'components/common/alert';
 import ExtractedHeader from './ExtractedHeader';
 import HeaderForm from './HeaderForm';
+import PhotoSign from './formDetails/formComponents/individualComps/PhotoSign';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -470,7 +471,8 @@ export default function FormModal({
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy displayMode={displayMode} />
+        return <PhotoSign displayMode={displayMode} />
+        // return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
@@ -531,7 +533,8 @@ export default function FormModal({
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy displayMode={displayMode} />
+        return <PhotoSign displayMode={displayMode} />
+        // return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
