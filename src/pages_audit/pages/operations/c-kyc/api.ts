@@ -1677,8 +1677,60 @@ export const SaveEntry = async (reqdata) => {
   }
 
 
-  const { data, status, message, messageDetails } =
-  await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
+
+  let payload:any = {}
+  const payloadDt = {
+      IsNewRow: true,
+      // REQ_CD:"734",
+      REQ_CD:REQ_CD,
+      REQ_FLAG:"F",
+      SAVE_FLAG:"F",
+      ENTRY_TYPE :"1",
+      CUSTOMER_ID:"",
+      COMP_CD: COMP_CD,
+  }
+  Object.keys(formData).forEach(tabdata => {
+    if(tabdata === "PERSONAL_DETAIL") {
+      // payload[tabdata] = {
+      //   ...formData[tabdata],
+      //   ...remainingPD
+      // } 
+    } else if(tabdata === "OTHER_DTL") {
+      let otherDTL = formData[tabdata]
+      if(Boolean(otherDTL["POLITICALLY_CONNECTED"])) {
+        otherDTL["POLITICALLY_CONNECTED"] = "Y"
+      } else {
+          otherDTL["POLITICALLY_CONNECTED"] = "N"
+      }
+      if(Boolean(otherDTL["BLINDNESS"])) {
+          otherDTL["BLINDNESS"] = "Y"
+      } else {
+          otherDTL["BLINDNESS"] = "N"
+      }      
+      if(Boolean(otherDTL["REFERRED_BY_STAFF"])) {
+          otherDTL["REFERRED_BY_STAFF"] = "Y"
+      } else {
+          otherDTL["REFERRED_BY_STAFF"] = "N"
+      }
+      
+      payload[tabdata] = {...otherDTL}
+    } else {
+      payload[tabdata] = formData[tabdata]
+    }
+  });
+  payload = {...payload,
+    IsNewRow: true,
+    // REQ_CD:"734",
+    REQ_CD:REQ_CD,
+    REQ_FLAG:"F",
+    SAVE_FLAG:"F",
+    ENTRY_TYPE :"1",
+    CUSTOMER_ID:"",
+    COMP_CD: COMP_CD,
+  }
+
+  // const { data, status, message, messageDetails } =
+  // await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
     // ...remainingData,
     // // PERSONAL_DETAIL: {...PERSONAL_DETAIL, ...remainingPD, ...ExtraData}
     // // ...formData,
@@ -1916,14 +1968,14 @@ export const SaveEntry = async (reqdata) => {
       //     "MACHINE_NAME": "Auto",
       //     "BRANCH_CD": "099 "
       // },
-      IsNewRow: true,
-      // REQ_CD:"734",
-      REQ_CD:REQ_CD,
-      REQ_FLAG:"F",
-      SAVE_FLAG:"F",
-      ENTRY_TYPE :"1",
-      CUSTOMER_ID:"",
-      COMP_CD: COMP_CD,
+      // IsNewRow: true,
+      // // REQ_CD:"734",
+      // REQ_CD:REQ_CD,
+      // REQ_FLAG:"F",
+      // SAVE_FLAG:"F",
+      // ENTRY_TYPE :"1",
+      // CUSTOMER_ID:"",
+      // COMP_CD: COMP_CD,
     //  OTHER_ADDRESS: [
     //    {
     //         IsNewRow:true,
@@ -1942,7 +1994,7 @@ export const SaveEntry = async (reqdata) => {
     //   ENT_COMP_CD:"132 ",
     //       ENT_BRANCH_CD:"099 "}
     //   ],
-          OTHER_ADDRESS: formData["OTHER_ADDRESS"], //test-done
+          // OTHER_ADDRESS: formData["OTHER_ADDRESS"], //test-done
   
   //         RELATED_PERSON_DTL: {
   //          IsNewRow: true,
@@ -1955,7 +2007,7 @@ export const SaveEntry = async (reqdata) => {
   //         ENT_BRANCH_CD:"099 ",
   //         ACTIVE:"Y"
   // },
-  RELATED_PERSON_DTL: formData["RELATED_PERSON_DTL"], // test-done
+  // RELATED_PERSON_DTL: formData["RELATED_PERSON_DTL"], // test-done
   // ATTESTATION_DTL: {
   //          IsNewRow: true,
   //         REQ_FLAG:"F",
@@ -1966,7 +2018,7 @@ export const SaveEntry = async (reqdata) => {
   //          ENT_COMP_CD:"132",
   //         ENT_BRANCH_CD:"099"
   // },
-  ATTESTATION_DTL: formData["ATTESTATION_DTL"], //test-done
+  // ATTESTATION_DTL: formData["ATTESTATION_DTL"], //test-done
   // OTHER_DTL:{
   
   //          IsNewRow: true,
@@ -1999,7 +2051,7 @@ export const SaveEntry = async (reqdata) => {
   //     ENT_BRANCH_CD:"099 "
   // },
   // OTHER_DTL: formData["OTHER_DTL"], //test-done
-  OTHER_DTL: otherDTL, //test-done
+  // OTHER_DTL: otherDTL, //test-done
   // PHOTO_MST:{
   
   //      IsNewRow: true,
@@ -2016,7 +2068,7 @@ export const SaveEntry = async (reqdata) => {
   //      ENT_COMP_CD:"132 ",
   //     ENT_BRANCH_CD:"099 "
   // },
-  PHOTO_MST: formData["PHOTO_MST"], //test-done
+  // PHOTO_MST: formData["PHOTO_MST"], //test-done
   //  DOC_MST:{
   
   //         IsNewRow: true,
@@ -2118,7 +2170,7 @@ export const SaveEntry = async (reqdata) => {
   //     IsNewRow: true
   //   }
   // ],
-  DOC_MST: formData["DOC_MST"],
+  // DOC_MST: formData["DOC_MST"],
   
   
   // NRI_DTL: {
@@ -2142,9 +2194,11 @@ export const SaveEntry = async (reqdata) => {
   // // }
   
   // },
-  NRI_DTL: formData["NRI_DTL"], //test-done
+  // NRI_DTL: formData["NRI_DTL"] ?? {}, //test-done
   
-  });
+  // });
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("SAVECUSTOMERDATA", payload)
   if(status === "0") {
     return data;
   } else {
