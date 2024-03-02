@@ -4,11 +4,12 @@ import Button from "@mui/material/Button";
 
 export const ButtonRowCell = (props) => {
   const {
+    value: initialValue,
     row: {
       index,
       original: { _isNewRow },
     },
-    column: { id, buttonLabel, columnName, isVisible, isVisibleInNew },
+    column: { id, buttonLabel, columnName, isVisible, isVisibleInNew ,shouldExclude},
     updateGridData,
     onButtonActionHandel,
   } = props;
@@ -16,12 +17,18 @@ export const ButtonRowCell = (props) => {
     () => (Boolean(_isNewRow) ? isVisibleInNew : isVisible),
     [isVisible, _isNewRow]
   );
+  const isShouldExclude = useMemo(()=>{ if(typeof shouldExclude === "function"){
+    return shouldExclude(initialValue);
+  } return false; },[initialValue]);
   const handleClick = (e) => {
     //updateGridData(index, id, true, true, "");
     if (typeof onButtonActionHandel === "function") {
       onButtonActionHandel(index, id);
     }
   };
+  if(isShouldExclude){
+    return (<CellWrapper showBorder {...props}></CellWrapper>)
+  }
   return (
     <CellWrapper showBorder {...props}>
       {is_Visible ? (

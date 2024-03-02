@@ -37,6 +37,7 @@ export const HeaderColumnCell = (props) => {
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             paddingRight: "10px",
+            color:"var(--theme-color3)",
           }}
         >
           {column.columnName}

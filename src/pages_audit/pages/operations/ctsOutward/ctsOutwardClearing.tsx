@@ -31,6 +31,8 @@ import { AddNewBankMasterForm } from "./addNewBank";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useSnackbar } from "notistack";
 import { RetrieveClearingForm } from "./retrieveClearing";
+import { usePopupContext } from "components/custom/popupContext";
+import { format } from "date-fns";
 
 const actions: ActionTypes[] = [
   {
@@ -51,26 +53,28 @@ const actions: ActionTypes[] = [
 const CtsOutwardClearingForm: FC<{
   zoneTranType: any;
 }> = ({ zoneTranType }) => {
-  const { authState, MessageBox } = useContext(AuthContext);
+  const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
+  const { MessageBox } = usePopupContext();
   const [formMode, setFormMode] = useState("new");
   const [isJointDtlExpand, setJointDtlExpand] = useState(false);
-  const [isOpenPopupMsg, setOpenPopupMsg] = useState(false);
   const [isOpenAddBankForm, setOpenAddBankForm] = useState(false);
-  const [isOpenProceedMsg, setOpenProceedMsg] = useState(false);
   const [isOpenRetrieve, setIsOpenRetrieve] = useState(false);
   const [isDelete, SetDelete] = useState(false);
+  const [isOpenProceedMsg, setOpenProceedMsg] = useState(false);
   const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
   const [gridData, setGridData] = useState([]);
   const [chequeDetailData, setChequeDetailData] = useState<any>({
-    chequeDetails: [{ ECS_USER_NO: "" }],
+    chequeDetails: [
+      { ECS_USER_NO: "", CHEQUE_DATE: authState?.workingDate ?? "" },
+    ],
     SLIP_AMOUNT: "0",
   });
   const myFormRef: any = useRef(null);
   const myChequeFormRef: any = useRef(null);
   const slipFormDataRef: any = useRef(null);
   const finalReqDataRef: any = useRef(null);
-  const trancdForDeleteRef: any = useRef(null);
+  const retrieveDataRef: any = useRef(null);
   const setCurrentAction = useCallback((data) => {
     if (data.name === "view-details") {
       setChequeDetailData((old) => {
@@ -117,6 +121,7 @@ const CtsOutwardClearingForm: FC<{
       });
       setOpenProceedMsg(false);
     },
+
     onSuccess: (data) => {
       enqueueSnackbar(data, {
         variant: "success",
@@ -133,34 +138,26 @@ const CtsOutwardClearingForm: FC<{
     },
   });
   const deleteMutation = useMutation(API.outwardClearingConfigDML, {
-    onError: (error: any) => {},
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+      SetDelete(false);
+    },
     onSuccess: (data) => {
       // isDataChangedRef.current = true;
       enqueueSnackbar("Records successfully deleted", {
         variant: "success",
       });
-
       SetDelete(false);
       setFormMode("new");
     },
   });
-  const onAcceptDelete = (rows) => {
-    deleteMutation.mutate({
-      DAILY_CLEARING: {
-        TRAN_CD: trancdForDeleteRef.current,
-      },
-      DETAILS_DATA: {
-        isNewRow: [],
-        isDeleteRow: [
-          {
-            TRAN_CD: trancdForDeleteRef.current,
-          },
-        ],
-        isUpdatedRow: [],
-      },
-      _isDeleteRow: true,
-    });
-  };
+
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
@@ -170,12 +167,15 @@ const CtsOutwardClearingForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
-    console.log(">>data", data);
+
     if (
       !Boolean(data?.SLIP_AMOUNT) ||
       parseFloat(data?.SLIP_AMOUNT ?? 0) <= 0
     ) {
-      MessageBox("Validation Failed", "Please Enter Slip Amount");
+      MessageBox({
+        message: "Validation Failed",
+        messageTitle: "Please Enter Slip Amount",
+      });
     } else if (parseFloat(data?.TOTAL_AMOUNT) === 0) {
       const newData = data.chequeDetails?.map((item) => ({
         ...item,
@@ -203,7 +203,6 @@ const CtsOutwardClearingForm: FC<{
         _isNewRow: true,
         endSubmit,
       };
-
       setOpenProceedMsg(true);
     } else if (
       parseFloat(data?.TOTAL_AMOUNT) > 0 &&
@@ -238,18 +237,62 @@ const CtsOutwardClearingForm: FC<{
       }));
       setChequeDtlRefresh((old) => old + 1);
     } else if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
-      MessageBox("Validation Failed", "Please Check Amount");
+      MessageBox({
+        message: "Validation Failed",
+        messageTitle: "Please Check Amount",
+      });
     }
   };
+  const onAcceptDelete = (rows) => {
+    deleteMutation.mutate({
+      DAILY_CLEARING: {
+        TRAN_CD: retrieveDataRef.current?.TRAN_CD,
+      },
+      DETAILS_DATA: {
+        isNewRow: [],
+        isDeleteRow: [
+          {
+            TRAN_CD: retrieveDataRef.current?.TRAN_CD,
+          },
+        ],
+        isUpdatedRow: [],
+      },
+      _isDeleteRow: true,
+    });
+  };
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = async (event) => {
       if (event.ctrlKey && (event.key === "R" || event.key === "r")) {
         event.preventDefault();
         setIsOpenRetrieve(true);
       } else if (formMode === "view") {
         if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
           event.preventDefault();
-          SetDelete(true);
+          if (
+            retrieveDataRef.current?.CONFIRMED === "Y" &&
+            authState?.role < "2"
+          ) {
+            await MessageBox({
+              messageTitle: "Validation Failed..",
+              message: "Cannot Delete Confirmed Transaction",
+              buttonNames: ["Ok"],
+            });
+          } else if (
+            !(
+              format(
+                new Date(retrieveDataRef.current?.TRAN_DT),
+                "dd/MMM/yyyy"
+              ) >= format(new Date(authState?.workingDate), "dd/MMM/yyyy")
+            )
+          ) {
+            await MessageBox({
+              messageTitle: "Validation Failed..",
+              message: "Cannot Delete Back Dated Entry",
+              buttonNames: ["Ok"],
+            });
+          } else {
+            SetDelete(true);
+          }
         }
       }
     };
@@ -300,9 +343,9 @@ const CtsOutwardClearingForm: FC<{
                     TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
                     ZONE_TRAN_TYPE: zoneTranType,
                   }
-                : ({
-                    ...(getOutwardClearingData.data?.[0] || {}),
-                  } as InitialValuesType)
+                : {
+                    ...getOutwardClearingData.data?.[0],
+                  }
             }
             onSubmitHandler={async (
               data: any,
@@ -366,7 +409,10 @@ const CtsOutwardClearingForm: FC<{
               width: "100%",
               padding: "05px",
             }}
-            formState={{ ZONE_TRAN_TYPE: zoneTranType, MessageBox: MessageBox }}
+            formState={{
+              ZONE_TRAN_TYPE: zoneTranType,
+              MessageBox: MessageBox,
+            }}
             ref={myFormRef}
           >
             {({ isSubmitting, handleSubmit }) => (
@@ -400,8 +446,36 @@ const CtsOutwardClearingForm: FC<{
                     </GradientButton>
 
                     <GradientButton
-                      onClick={() => {
-                        SetDelete(true);
+                      onClick={async () => {
+                        if (
+                          retrieveDataRef.current?.CONFIRMED === "Y" &&
+                          authState?.role < "2"
+                        ) {
+                          await MessageBox({
+                            messageTitle: "Validation Failed..",
+                            message: "Cannot Delete Confirmed Transaction",
+                            buttonNames: ["Ok"],
+                          });
+                        } else if (
+                          !(
+                            format(
+                              new Date(retrieveDataRef.current?.TRAN_DT),
+                              "dd/MMM/yyyy"
+                            ) >=
+                            format(
+                              new Date(authState?.workingDate),
+                              "dd/MMM/yyyy"
+                            )
+                          )
+                        ) {
+                          await MessageBox({
+                            messageTitle: "Validation Failed..",
+                            message: "Cannot Delete Back Dated Entry",
+                            buttonNames: ["Ok"],
+                          });
+                        } else {
+                          SetDelete(true);
+                        }
                       }}
                     >
                       Delete
@@ -486,7 +560,6 @@ const CtsOutwardClearingForm: FC<{
                     `[${charAtIndex}]` +
                     ".AMOUNT"
                 ) {
-                  // setIsAddCheque(true);
                   let event: any = { preventDefault: () => {} };
                   myFormRef?.current?.handleSubmit(event, "CHEQUEDTL");
                 }
@@ -517,10 +590,17 @@ const CtsOutwardClearingForm: FC<{
               }
               hideHeader={true}
               containerstyle={{ padding: "0px !important" }}
-              setDataOnFieldChange={(action, paylod) => {
+              setDataOnFieldChange={async (action, paylod) => {
                 if (action === "MESSAGE") {
                   if (paylod?.[0]?.ERROR_MSSAGE) {
-                    setOpenPopupMsg(true);
+                    let res = await MessageBox({
+                      messageTitle: "Confirmation..",
+                      message: "Are You sure To Add Bank?",
+                      buttonNames: ["Yes", "No"],
+                    });
+                    if (res === "Yes") {
+                      setOpenAddBankForm(true);
+                    }
                   }
                 }
               }}
@@ -534,19 +614,6 @@ const CtsOutwardClearingForm: FC<{
               }}
             />
           </div>
-          {isOpenPopupMsg ? (
-            <PopupMessageAPIWrapper
-              MessageTitle="Confirmation"
-              Message="Are You sure To Add Bank?"
-              onActionYes={() => {
-                setOpenPopupMsg(false);
-                setOpenAddBankForm(true);
-              }}
-              onActionNo={() => setOpenPopupMsg(false)}
-              rows={{}}
-              open={isOpenPopupMsg}
-            />
-          ) : null}
           {isOpenAddBankForm ? (
             <AddNewBankMasterForm
               isOpen={isOpenAddBankForm}
@@ -561,8 +628,7 @@ const CtsOutwardClearingForm: FC<{
               onClose={(flag, rowsData) => {
                 setIsOpenRetrieve(false);
                 if (flag === "action") {
-                  trancdForDeleteRef.current =
-                    rowsData?.[0]?.data?.TRAN_CD ?? "";
+                  retrieveDataRef.current = rowsData?.[0]?.data ?? "";
                   getOutwardClearingData.mutate({
                     TRAN_CD: rowsData?.[0]?.data?.TRAN_CD ?? "",
                   });

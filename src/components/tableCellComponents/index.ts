@@ -43,7 +43,9 @@ export type CellComponentType =
   | "editableDatetimePicker"
   | "editableDatePicker"
   | "editableNumberFormatLessValidation"
-  | "disableSelect";
+  | "disableSelect"
+  | "chip"
+  | "multipleValuesCellRenderer";
 
 singletonFunctionRegisrationFactoryForTableCells.registerFn(
   "currency",

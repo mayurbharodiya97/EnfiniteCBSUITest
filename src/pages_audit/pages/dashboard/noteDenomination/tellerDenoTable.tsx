@@ -176,7 +176,7 @@ const TellerDenoTable = ({
                             // onKeyDown={(event) => {
                             //   handleKeyPress(event, index);
                             // }}
-                            onFocus={(event) => handleonFocus(event, index)}
+                            // onFocus={(event) => handleonFocus(event, index)}
                             inputRef={textFieldRef}
                             onBlur={(event) => handleonBlur(event, index)}
                             helperText={displayError[index] || ""}

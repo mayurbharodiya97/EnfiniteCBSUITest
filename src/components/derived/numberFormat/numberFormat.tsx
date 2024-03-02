@@ -1,6 +1,7 @@
 import { NumericFormat } from "react-number-format";
 import { TextField, TextFieldProps } from "components/common/textField";
 import { Merge } from "components/common/types";
+import { useEffect, useRef } from "react";
 
 export function NumberFormatCustom(props) {
   const { inputRef, onChange, FormatProps, ...other } = props;
@@ -23,6 +24,12 @@ export function NumberFormatCustom(props) {
           values.formattedValue
         );
       }}
+      /**
+       * Altaf Shaikh - 15/Feb/2024
+       * added valueIsNumericString prop to avoid issue of zero prefixd and cursor moves to start of field
+       * when pressed decimal point
+       */
+      valueIsNumericString={false}
       {...others}
     />
   );
@@ -31,6 +38,7 @@ export function NumberFormatCustom(props) {
 interface extendedProps {
   FormatProps: any;
   formattedValue?: boolean;
+  isFieldFocused?: boolean;
 }
 
 export type AllNumberFormatProps = Merge<TextFieldProps, extendedProps>;
@@ -38,14 +46,26 @@ export type AllNumberFormatProps = Merge<TextFieldProps, extendedProps>;
 const MyNumberFormat: React.FC<AllNumberFormatProps> = ({
   FormatProps,
   formattedValue,
+  isFieldFocused,
   ...others
 }) => {
+  const ref = useRef<any>(null);
+  useEffect(() => {
+    if (isFieldFocused) {
+      setTimeout(() => {
+        ref?.current?.focus?.();
+      }, 1);
+    }
+  }, [isFieldFocused]);
   return (
     <TextField
       {...others}
       InputProps={{
         inputComponent: NumberFormatCustom,
-        inputProps: { FormatProps: { ...FormatProps, formattedValue } },
+        inputProps: {
+          FormatProps: { ...FormatProps, formattedValue },
+          inputRef: ref,
+        },
       }}
     />
   );
