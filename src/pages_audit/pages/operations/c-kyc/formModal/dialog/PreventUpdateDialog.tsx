@@ -5,9 +5,19 @@ import { CkycContext } from '../../CkycContext';
 import { PopupRequestWrapper } from 'components/custom/popupMessage';
 
 export const PreventUpdateDialog = ({open, onClose}) => {
-    const {onFinalUpdatectx} = React.useContext(CkycContext);
+    const {
+        onFinalUpdatectx,
+        handleCurrFormctx,
+        handleFormDataonSavectx,
+        handleModifiedColsctx
+    } = React.useContext(CkycContext);
     const onDialogClose = () => {
         onFinalUpdatectx(false)
+        handleCurrFormctx({
+            currentFormSubmitted: null,
+        })
+        handleFormDataonSavectx({})
+        handleModifiedColsctx({})
         onClose()
     }
     return <PopupRequestWrapper
