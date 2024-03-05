@@ -1549,6 +1549,27 @@ export const SaveAsDraft = async ({
   }
 }
 
+interface ValidateDocType {
+  PAN_NO: string,
+  UNIQUE_ID: string,
+  ELECTION_CARD_NO: string,
+  NREGA_JOB_CARD: string,
+  PASSPORT_NO: string,
+  DRIVING_LICENSE_NO: string,
+  TEMPLATE_CD: string,
+  CUST_TYP: string,
+}
+export const validateDocData = async (reqObj:ValidateDocType) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("VALIDATEDOCDATA", reqObj);
+  if(status === "0") {
+    let responseData = data;
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
 export const SaveEntry = async (reqdata) => {
   const {
     CUSTOMER_ID,
