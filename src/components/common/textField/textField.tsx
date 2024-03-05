@@ -140,6 +140,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   );
 
   const focusRef = useRef();
+  // const inputfocusRef: any = useRef();
   useEffect(() => {
     if (isFieldFocused) {
       //@ts-ignore
@@ -150,7 +151,12 @@ const MyTextField: FC<MyTextFieldProps> = ({
     setTimeout(() => {
       //@ts-ignore
       focusRef?.current?.focus?.();
-    }, 1);
+      ////////////Below solution is temporary for set focus in numberFormat Component.
+      ////////////Need to find proper solution. If you found proper solution contact Me😎🤷‍♂️.
+      // if (!Boolean(focusRef?.current)) {
+      //   inputfocusRef?.current?.children?.[1]?.firstChild?.focus?.();
+      // }
+    }, 50);
   };
 
   useEffect(() => {
@@ -186,21 +192,22 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      // console.log(">>incomingMessage", incomingMessage);
-      const { value, error, ignoreUpdate, isFieldFocused } = incomingMessage;
+      const { value, error, ignoreUpdate, isFieldFocused, isErrorBlank } =
+        incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
         if (isFieldFocused) {
           getFocus();
         }
-
         if (ignoreUpdate) {
           //ignore Validation
         } else if (whenToRunValidation === "onBlur") {
           runValidation({ value: value }, true);
         }
       }
-      if (Boolean(error)) {
+      if (isErrorBlank) {
+        setErrorAsCB("");
+      } else if (Boolean(error)) {
         setErrorAsCB(error);
       }
     }
@@ -318,7 +325,6 @@ const MyTextField: FC<MyTextFieldProps> = ({
                 }
               : {}),
           },
-
           endAdornment: validationRunning ? (
             <InputAdornment position="end">
               <CircularProgress
@@ -359,6 +365,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         disabled={isSubmitting}
         variant={"standard"}
         color="secondary"
+        // ref={inputfocusRef}
       />
     </>
   );

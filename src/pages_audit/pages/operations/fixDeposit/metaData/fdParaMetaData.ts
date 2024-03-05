@@ -1,5 +1,6 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "../api";
+import { utilFunction } from "components/utils";
 
 export const FixDepositParaFormMetadata = {
   form: {
@@ -59,6 +60,7 @@ export const FixDepositParaFormMetadata = {
       ],
       defaultValue: "E",
       required: true,
+      isFieldFocused: true,
       schemaValidation: {
         type: "string",
         rules: [
@@ -69,6 +71,7 @@ export const FixDepositParaFormMetadata = {
       validationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
         if (formState?.isSubmitting) return {};
+        if (Boolean(formState?.isBackButton)) return {};
         formState.setDataOnFieldChange("FD_TYPE", field?.value);
         return {
           CUSTOMER_ID: { value: "" },
@@ -86,7 +89,7 @@ export const FixDepositParaFormMetadata = {
       options: [
         { label: "Clearing", value: "2" },
         { label: "Transfer", value: "3" },
-        { label: "Cash", value: "4" },
+        { label: "Cash", value: "1" },
       ],
       defaultValue: "3",
       required: true,
@@ -100,6 +103,7 @@ export const FixDepositParaFormMetadata = {
       validationRun: "all",
       postValidationSetCrossFieldValues: async (field, formState) => {
         if (formState?.isSubmitting) return {};
+        if (Boolean(formState?.isBackButton)) return {};
         formState.setDataOnFieldChange("TRAN_MODE", field?.value);
         return {
           CUSTOMER_ID: { value: "" },
@@ -146,6 +150,7 @@ export const FixDepositParaFormMetadata = {
         dependentField
       ) => {
         if (formState?.isSubmitting) return {};
+
         if (dependentField?.FD_TYPE?.value === "E") {
           formState.setDataOnFieldChange("CUSTOMER_ID_FEFORE");
           let Apireq = {
@@ -155,6 +160,7 @@ export const FixDepositParaFormMetadata = {
 
           let resData = await API.getFDAccountsDetail(Apireq);
           resData = resData?.[0];
+
           if (resData?.CONFIRMED === "Y") {
             let fdAccounts = resData?.FD_ACCOUNTS;
             formState.setDataOnFieldChange("CUSTOMER_ID", {
@@ -174,19 +180,23 @@ export const FixDepositParaFormMetadata = {
             } else {
               return {
                 CUSTOMER_ID: {
+                  value: field?.value ?? "",
                   error: "FD Accounts not found for this Customer ID.",
+                  ignoreUpdate: true,
                 },
-                CUSTOMER_NAME: { value: "" },
+                CUSTOMER_NAME: { value: resData?.ACCT_NM ?? "" },
               };
             }
           } else {
             return {
               CUSTOMER_ID: {
+                value: field?.value ?? "",
                 error:
                   "Customer ID is not Confirmed. \n\rLast Modified User: " +
                   (resData?.LAST_ENTERED_BY ?? "") +
                   "\n\rLast Modified Branch: " +
                   (resData?.LAST_ENTERED_BRANCH_CD ?? ""),
+                ignoreUpdate: true,
               },
               CUSTOMER_NAME: { value: "" },
             };
@@ -299,6 +309,7 @@ export const FixDepositAccountsFormMetadata = {
             "USER_TYPE_ALLOWED",
             "LEAN_FLAG",
           ],
+          isFieldFocused: true,
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
               dependentFieldsValues?.["FDACCTS.USER_TYPE_ALLOWED"]?.value ===
@@ -350,11 +361,19 @@ export const FixDepositAccountsFormMetadata = {
                 }
                 return {
                   ACCT_NM: { value: apiResponse?.data?.[0]?.ACCT_NM ?? "" },
+                  NOMINEE_NM: {
+                    value: apiResponse?.data?.[0]?.NOMINEE_NM ?? "",
+                  },
+                  CATEG_CD: {
+                    value: apiResponse?.data?.[0]?.CATEG_CD ?? "",
+                  },
                 };
               } else {
                 return {
                   ACCT_CD: { value: "", error: apiResponse?.message ?? "" },
                   ACCT_NM: { value: "" },
+                  NOMINEE_NM: { value: "" },
+                  CATEG_CD: { value: "" },
                 };
               }
             }
@@ -541,20 +560,24 @@ export const FixDepositAccountsFormMetadata = {
             },
             required: true,
             type: "text",
-            validation: (value, data) => {
-              console.log(">>value", value);
-              if (!Boolean(value)) {
-                return "";
-              }
-              return "";
-            },
+            // validation: (value, data) => {
+            //   console.log(">>value", value);
+            //   if (!Boolean(value)) {
+            //     return "";
+            //   }
+            //   return "";
+            // },
             postValidationSetCrossFieldValues: async (...arg) => {
               const companyCode = arg?.[3]?.["FDACCTS.COMP_CD"]?.value ?? "";
               const branchCode =
                 arg?.[3]?.["FDACCTS.CR_BRANCH_CD"]?.value ?? "";
               const accountType =
                 arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.value ?? "";
-              const accountCode = arg?.[0]?.value ?? "";
+              const accountCode = utilFunction.getPadAccountNumber(
+                arg?.[0]?.value,
+                arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.optionData
+              );
+
               if (
                 Boolean(companyCode) &&
                 Boolean(branchCode) &&
@@ -578,6 +601,10 @@ export const FixDepositAccountsFormMetadata = {
                     );
                   }
                   return {
+                    CR_ACCT_CD: {
+                      value: accountCode,
+                      ignoreUpdate: true,
+                    },
                     CR_ACCT_NM: {
                       value: apiResponse?.data?.[0]?.ACCT_NM ?? "",
                     },
@@ -587,6 +614,7 @@ export const FixDepositAccountsFormMetadata = {
                     CR_ACCT_CD: {
                       value: "",
                       error: apiResponse?.message ?? "",
+                      ignoreUpdate: true,
                     },
                     CR_ACCT_NM: { value: "" },
                   };
@@ -654,7 +682,6 @@ export const FixDepositAccountsFormMetadata = {
           },
           name: "NOMINEE_NM",
           label: "Nominee",
-          type: "text",
           dependentFields: ["USER_TYPE_ALLOWED", "LEAN_FLAG"],
           shouldExclude(fieldData, dependentFieldsValues, formState) {
             if (
@@ -666,12 +693,6 @@ export const FixDepositAccountsFormMetadata = {
             } else {
               return true;
             }
-          },
-          schemaValidation: {
-            type: "string",
-            rules: [
-              { name: "required", params: ["Interest Rate is Required."] },
-            ],
           },
           fullWidth: true,
           GridProps: { xs: 12, sm: 3, md: 3, lg: 2.5, xl: 2.5 },
@@ -702,6 +723,12 @@ export const FixDepositAccountsFormMetadata = {
           },
           name: "ACCOUNT_LIST",
           label: "ACCOUNT_LIST",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "CATEG_CD",
         },
         {
           render: {
