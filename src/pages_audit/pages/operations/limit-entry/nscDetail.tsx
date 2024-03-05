@@ -8,13 +8,15 @@ import { NSC_FormMetaData } from "./limit_NSC_FD_Metadata";
 export const NSCFormDetail = ({ navigate }) => {
   const { state: rows }: any = useLocation();
 
+  console.log("<<<rrrr", rows);
+
   return (
     <Dialog
       open={true}
       fullWidth={true}
       PaperProps={{
         style: {
-          maxWidth: "1150px",
+          maxWidth: "950px",
         },
       }}
     >
@@ -23,6 +25,12 @@ export const NSCFormDetail = ({ navigate }) => {
           key={"nscdetailForm"}
           metaData={NSC_FormMetaData}
           initialValues={rows?.[0]?.data ?? []}
+          formStyle={{
+            background: "white",
+            height: "calc(100vh - 367px)",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
         >
           {({ isSubmitting, handleSubmit }) => {
             console.log("isSubmitting, handleSubmit", isSubmitting);

@@ -38,6 +38,7 @@ import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import { GradientButton } from "components/styledComponent/button";
 import SearchScreen from "./searchScreen";
 import useLogoPics from "components/common/logoPics/logoPics";
+import { format } from "date-fns";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -243,7 +244,12 @@ export const MyAppBar = ({
               <Typography variant="caption" display="inline" fontSize={"11px"}>
                 {t("appBar.WorkingDate")}:{" "}
                 {checkDateAndDisplay(
-                  authController?.authState?.workingDate ?? ""
+                  format(
+                    new Date(authController?.authState?.workingDate),
+                    "dd/MM/yyyy"
+                  )
+
+                  // authController?.authState?.workingDate ?? ""
                 )}
               </Typography>
               <Typography
@@ -412,20 +418,21 @@ export const MyAppBar = ({
                         // marginTop: "15px",
                       }}
                     >
-                      <h2 style={{color:"black"}}>Are you sure want to logout ?</h2>
+                      <h2 style={{ color: "black" }}>
+                        Are you sure want to logout ?
+                      </h2>
                       {/* <HelpIcon color="secondary" fontSize="large" /> */}
                     </DialogContentText>
-                      <DialogContentText
+                    <DialogContentText
                       sx={{
                         fontSize: "20px",
                         display: "flex",
                         justifyContent: "center",
-                        marginTop:"20px",
-                        height:"145px",
+                        marginTop: "20px",
+                        height: "145px",
                       }}
                     >
-                    <img src={Logout} alt="logout-icon" />
-
+                      <img src={Logout} alt="logout-icon" />
                     </DialogContentText>
                     {/* <DialogContentText
                       sx={{
@@ -437,29 +444,44 @@ export const MyAppBar = ({
                     >
                       logout <HelpIcon color="secondary" fontSize="large" />
                     </DialogContentText> */}
-                     <DialogActions style={{ justifyContent: "center", padding:"10px 20px",borderRadius:"5px",marginTop:"-15px"}}>
-                    <Button
-                      // sx={{
-                      //   color: "var(--theme-color2)",
-                      // }}
-                      style={{ background:"#2ecc71", color:"#fff",marginRight:"0", flex: 1}}
-                      // autoFocus
-                      onClick={() => setLogoutOpen(false)}
+                    <DialogActions
+                      style={{
+                        justifyContent: "center",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        marginTop: "-15px",
+                      }}
                     >
-                      No
-                    </Button>
-                    <Button
-                      // sx={{
-                      //   color: "var(--theme-color2)",
-                      // }}
-                      style={{ background: "#e74c3c",
-                        color: "#fff", flex: 1}}
-                      onClick={() => authController?.logout()}
-                      autoFocus
-                    >
-                      Yes
-                    </Button>
-                  </DialogActions>
+                      <Button
+                        // sx={{
+                        //   color: "var(--theme-color2)",
+                        // }}
+                        style={{
+                          background: "#2ecc71",
+                          color: "#fff",
+                          marginRight: "0",
+                          flex: 1,
+                        }}
+                        // autoFocus
+                        onClick={() => setLogoutOpen(false)}
+                      >
+                        No
+                      </Button>
+                      <Button
+                        // sx={{
+                        //   color: "var(--theme-color2)",
+                        // }}
+                        style={{
+                          background: "#e74c3c",
+                          color: "#fff",
+                          flex: 1,
+                        }}
+                        onClick={() => authController?.logout()}
+                        autoFocus
+                      >
+                        Yes
+                      </Button>
+                    </DialogActions>
                   </DialogContent>
                 </Dialog>
               )}

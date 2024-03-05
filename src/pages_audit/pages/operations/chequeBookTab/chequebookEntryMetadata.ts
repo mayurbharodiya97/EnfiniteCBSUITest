@@ -107,7 +107,7 @@ export const ChequeBookEntryMetaData = {
           if (
             field?.value &&
             dependentValue?.BRANCH_CD?.value &&
-            dependentValue?.ACCT_TYPE?.valuez
+            dependentValue?.ACCT_TYPE?.value
           ) {
             let otherAPIRequestPara = {
               ACCT_CD: utilFunction.getPadAccountNumber(

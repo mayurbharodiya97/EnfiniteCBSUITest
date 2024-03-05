@@ -186,7 +186,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      console.log(">>incomingMessage", incomingMessage);
+      // console.log(">>incomingMessage", incomingMessage);
       const { value, error, ignoreUpdate, isFieldFocused } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);

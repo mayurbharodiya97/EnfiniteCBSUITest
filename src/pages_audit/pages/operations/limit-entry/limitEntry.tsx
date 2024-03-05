@@ -78,7 +78,7 @@ export const LimitEntry = () => {
   const [closeAlert, setCloseAlert] = useState<any>(true);
   const [isVisible, setIsVisible] = useState<any>(false);
   const [deletePopup, setDeletePopup] = useState<any>(false);
-  const [gridDetailData, setGridDetailData] = useState<any>();
+  const [gridDetailData, setGridDetailData] = useState<any>([]);
   const [messageData, setMessageData] = useState<any>();
   const [isOpenSave, setIsOpenSave] = useState(false);
   const [detailForm, setDetailForm] = useState<any>();
@@ -214,11 +214,11 @@ export const LimitEntry = () => {
           });
           enqueueSnackbar("Data Delete successfully", { variant: "success" });
         } else if (variables?._isNewRow) {
+          setNewFormMTdata(limitEntryMetaData);
           myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
           setFormRefresh((old) => old + 1);
           setIsOpenSave(false);
           setIsVisible(false);
-          setNewFormMTdata(limitEntryMetaData);
           enqueueSnackbar("Data insert successfully", { variant: "success" });
         }
       },
@@ -246,7 +246,7 @@ export const LimitEntry = () => {
           state: data?.rows,
         });
       } else if (data?.name === "close") {
-        setGridDetailData({});
+        setGridDetailData([]);
         setDetailForm("");
       } else if (data?.name === "forceExpire") {
         if (data?.rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y") {
@@ -278,7 +278,7 @@ export const LimitEntry = () => {
           onChange={(event, newValue) => {
             setValue(newValue);
             setCloseAlert(false);
-            setGridDetailData({});
+            setGridDetailData([]);
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
                 initialValuesRef.current = res;
@@ -559,7 +559,8 @@ export const LimitEntry = () => {
               open={true}
               PaperProps={{
                 style: {
-                  maxWidth: "950px",
+                  maxWidth: "1065px",
+                  padding: "5px",
                 },
               }}
             >
@@ -582,6 +583,7 @@ export const LimitEntry = () => {
           PaperProps={{
             style: {
               maxWidth: "1150px",
+              padding: "5px",
             },
           }}
         >

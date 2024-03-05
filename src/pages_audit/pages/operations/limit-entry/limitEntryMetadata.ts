@@ -115,6 +115,9 @@ export const limitEntryMetaData = {
             dependentValue?.BRANCH_CD?.value &&
             dependentValue?.ACCT_TYPE?.value
           ) {
+            formState.setDataOnFieldChange("NSC_FD_BTN", {
+              NSC_FD_BTN: false,
+            });
             let otherAPIRequestPara = {
               COMP_CD: authState?.companyID,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
@@ -129,6 +132,9 @@ export const limitEntryMetaData = {
             let postData = await API.getLimitEntryData(otherAPIRequestPara);
 
             if (postData?.[0]?.RESTRICTION) {
+              formState.setDataOnFieldChange("NSC_FD_BTN", {
+                NSC_FD_BTN: false,
+              });
               formState.MessageBox({
                 messageTitle: "Validation Failed...!",
                 message: postData?.[0]?.RESTRICTION,
@@ -393,6 +399,17 @@ export const limitEntryMetaData = {
           dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE ??
           dependentValue?.PARENT_TYPE?.value
         ) {
+          if (dependentValue?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE) {
+            formState.setDataOnFieldChange("SECURITY_CODE", {
+              SECURITY_CD: dependentValue?.SECURITY_CD?.value,
+              SECURITY_TYPE:
+                dependentValue?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE.trim(),
+              HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
+              HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
+              HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
+              HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
+            });
+          }
           let apiReq = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
@@ -413,22 +430,11 @@ export const limitEntryMetaData = {
         dependentValue
       ) => {
         if (field?.value) {
-          console.log("<<<sectype", dependentValue);
+          console.log("<<<ffffffffff", dependentValue);
 
-          if (dependentValue?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE) {
-            formState.setDataOnFieldChange("SECURITY_CODE", {
-              SECURITY_CD: field?.value,
-              SECURITY_TYPE:
-                dependentValue?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE.trim(),
-              HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
-              HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
-              HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
-              HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
-            });
-          }
-          // return {
-          // FD_BRANCH_CD: { isErrorBlank: true },
-          // };
+          return {
+            FD_BRANCH_CD: { isErrorBlank: true },
+          };
         }
         return {};
       },
