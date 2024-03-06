@@ -25,6 +25,21 @@ import "./DailyTransTabs.css";
 import { AccDetailContext } from "pages_audit/auth";
 import Limit from "./Limit";
 import Stock from "./Stock";
+//other
+import ACH_IW from "./OtherTrx/ACH_IW";
+import ACH_OW from "./OtherTrx/ACH_OW";
+import APBS from "./OtherTrx/APBS";
+import APY from "./OtherTrx/APY";
+import ASBA from "./OtherTrx/ASBA";
+import ATM from "./OtherTrx/ATM";
+import IMPS from "./OtherTrx/IMPS";
+import Group from "./OtherTrx/Group";
+import Instruction from "./OtherTrx/Instruction";
+import PMBY from "./OtherTrx/PMBY";
+import OW_Chq from "./OtherTrx/OW_Chq";
+import Temp from "./OtherTrx/Temp";
+import LienDetail from "./OtherTrx/Lien_Detail";
+import SIDetail from "./OtherTrx/SI_Detail";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -53,11 +68,15 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
+    console.log(newValue, "newval");
   };
+  console.log(navArray, "navArray");
 
   useEffect(() => {
     setTabValue(0);
   }, [navArray]);
+
+  console.log(tabValue, "tabValue");
   return (
     <div style={{ paddingLeft: "8px", paddingRight: "8px" }}>
       <h2>Daily Transaction {heading}</h2>
@@ -66,12 +85,13 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
         <Grid item xs="auto" id="dailyTabs">
           <Tabs
             textColor="secondary"
-            value={tabValue}
             onChange={handleTabChange}
             aria-label="ant example"
+            variant="scrollable"
+            value={tabValue}
           >
             {navArray.length > 0 ? (
-              navArray?.map((a, i) => <Tab label={a.TAB_DISPL_NAME} />)
+              navArray?.map((a, i) => <Tab label={a?.TAB_DISPL_NAME} />)
             ) : (
               <Tab label="Account" />
             )}
@@ -80,22 +100,41 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
 
         {navArray.length > 0 && navArray ? (
           navArray?.map((a, i) => (
-            <TabPanel value={tabValue} index={Number(a.DISPL_ORDER) - 1}>
+            <TabPanel value={tabValue} index={Number(a?.index1)}>
               <>
-                {a.TAB_NAME.includes("Account") && <AccDetails />}
-                {a.TAB_NAME.includes("Joint") && <JointDetailsForm />}
-                {a.TAB_NAME.includes("Today's") && <TodayTransactionForm />}
-                {a.TAB_NAME.includes("Cheques") && <CheckBook />}
-                {a.TAB_NAME.includes("Snapshot") && <Snapshot />}
-                {a.TAB_NAME.includes("Hold Charges") && <HoldCharge />}
-                {a.TAB_NAME.includes("Documents") && <Document />}
-                {a.TAB_NAME.includes("Stop Payment") && <StopPay />}
-                {a.TAB_NAME.includes("Insurance") && <Insurance />}
-                {a.TAB_NAME.includes("Disbursement") && <Disbursement />}
-                {a.TAB_NAME.includes("Subsidy") && <Subsidyy />}
-                {a.TAB_NAME.includes("Search") && <Search />}
-                {a.TAB_NAME.includes("Limits") && <Limit />}
-                {a.TAB_NAME.includes("Stock") && <Stock />}
+                {a?.TAB_NAME.includes("Account") && <AccDetails />}
+                {a?.TAB_NAME.includes("Joint") && <JointDetailsForm />}
+                {a?.TAB_NAME.includes("Today's") && <TodayTransactionForm />}
+                {a?.TAB_NAME.includes("Cheques") && <CheckBook />}
+                {a?.TAB_NAME.includes("Snapshot") && <Snapshot />}
+                {a?.TAB_NAME.includes("Hold Charges") && <HoldCharge />}
+                {a?.TAB_NAME.includes("Documents") && <Document />}
+                {a?.TAB_NAME.includes("Stop Payment") && <StopPay />}
+                {a?.TAB_NAME.includes("Insurance") && <Insurance />}
+                {a?.TAB_NAME.includes("Disbursement") && <Disbursement />}
+                {a?.TAB_NAME.includes("Subsidy") && <Subsidyy />}
+                {a?.TAB_NAME.includes("Search") && <Search />}
+                {a?.TAB_NAME.includes("Limits") && <Limit />}
+                {a?.TAB_NAME.includes("Stock") && <Stock />}
+                {/* other trx */}
+                {a?.TAB_NAME.includes("Standing") ? <SIDetail /> : <></>}
+                {a?.TAB_NAME.includes("Lien") ? <LienDetail /> : <></>}
+                {a?.TAB_NAME.match("O/w Chq/OBC/IBC") ? <OW_Chq /> : <></>}
+                {a?.TAB_NAME.includes("Temp.OD/Against") ? <Temp /> : <></>}
+                {a?.TAB_NAME.includes("ATM Card") ? <ATM /> : <></>}
+                {a?.TAB_NAME.match("IMPS") ? <IMPS /> : <></>}
+                {a?.TAB_NAME.includes("ASBA") ? <ASBA /> : <></>}
+                {a?.TAB_NAME.includes("ACH I/W") ? <ACH_IW /> : <></>}
+                {a?.TAB_NAME.includes("ACH O/W") ? <ACH_OW /> : <></>}
+                {a?.TAB_NAME.includes("Sp.Instruction") ? (
+                  <Instruction />
+                ) : (
+                  <></>
+                )}
+                {a?.TAB_NAME.includes("Group A/c(s)") ? <Group /> : <></>}
+                {a?.TAB_NAME.includes("APY") ? <APY /> : <></>}
+                {a?.TAB_NAME.includes("APBS") ? <APBS /> : <></>}
+                {a?.TAB_NAME.includes("PMBY") ? <PMBY /> : <></>}
               </>
             </TabPanel>
           ))

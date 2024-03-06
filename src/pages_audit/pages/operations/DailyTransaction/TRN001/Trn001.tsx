@@ -42,11 +42,13 @@ import * as CommonApi from "../TRNCommon/api";
 import { AccDetailContext } from "pages_audit/auth";
 import { AuthContext } from "pages_audit/auth";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { MessageBoxWrapper } from "components/custom/messageBox";
 import "./Trn001.css";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 import { GeneralAPI } from "registry/fns/functions";
+import { useLocation } from "react-router-dom";
 
 //mui theme
 const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -61,6 +63,8 @@ const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 export const Trn001 = () => {
   //hooks
+  let location = useLocation();
+
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
@@ -123,6 +127,9 @@ export const Trn001 = () => {
   const [accValidDialog, setAccValidDialog] = useState<any>(false);
   const [accValidMsg, setAccValidMsg] = useState<any>("");
 
+  useEffect(() => {
+    console.log("loccc", location);
+  }, [location]);
   let scrollSaveHeading =
     "Do you wish to save this " + (isArray ? "Scroll?" : "Transaction?");
 
@@ -367,7 +374,14 @@ export const Trn001 = () => {
     obj[i].accType = value;
     setRows(obj);
     handleGetAccInfo(obj, i);
-    value?.info?.PARENT_TYPE && handleGetHeaderTabs(value?.info?.PARENT_TYPE);
+    let reqData = {
+      PARENT_TYPE: value?.info?.PARENT_TYPE,
+      COMP_CD: obj[i]?.branch?.info?.COMP_CD,
+      ACCT_TYPE: value?.value,
+      BRANCH_CD: obj[i]?.branch?.value,
+    };
+
+    value?.info?.PARENT_TYPE && handleGetHeaderTabs(reqData);
   };
 
   const handleAccNo = (e, i) => {
@@ -515,7 +529,6 @@ export const Trn001 = () => {
   const handleDebit = (e, i) => {
     const obj = [...rows];
     let txt = e.target.value;
-
     if (txt.includes(".")) {
       let a = txt?.split(".")[0];
       let b = txt?.split(".")[1];
@@ -546,7 +559,6 @@ export const Trn001 = () => {
   const handleDebitBlur = (e, i) => {
     const obj = [...rows];
     setRows(obj);
-
     if (Number(totalDebit) <= Number(withdraw?.COL_VALUE)) {
       obj[i].debit = Number(e.target.value)?.toFixed(2);
       totalDebit != totalCredit &&
@@ -801,6 +813,45 @@ export const Trn001 = () => {
   const handleFilteredRows = (rows) => {
     //sending back to commonfooter
     setFilteredRows(rows);
+  };
+
+  const scrollSaveHtml = () => {
+    return (
+      <>
+        {isArray && (
+          <h4 style={{ minWidth: "250px", textAlign: "center" }}>
+            Scroll No. {scrollSaveRes[0]?.SCROLL1}
+          </h4>
+        )}
+        <div id="cardContainer">
+          <h4 style={{ textAlign: "center" }}>Voucher No. </h4>
+
+          {scrollSaveRes &&
+            scrollSaveRes?.map((a) => {
+              return <h4 style={{ textAlign: "center" }}>{a?.TRAN_CD} </h4>;
+            })}
+        </div>
+      </>
+    );
+  };
+
+  const acInfoHtml = () => {
+    return (
+      <>
+        {accValidMsg?.split("\r")?.map((a, i) => {
+          return (
+            <>
+              <div style={{ minWidth: "300px" }}>{a}</div>
+              <br />
+            </>
+          );
+        })}
+      </>
+    );
+  };
+
+  const handleResetMsg = () => {
+    return <div> hello world</div>;
   };
 
   return (
@@ -1085,6 +1136,7 @@ export const Trn001 = () => {
                                 a?.isCredit ||
                                 !a.branch ||
                                 !a.trx?.code ||
+                                a?.bugAccNo ||
                                 viewOnly
                                   ? true
                                   : false
@@ -1115,6 +1167,7 @@ export const Trn001 = () => {
                                 !a?.isCredit ||
                                 !a.branch ||
                                 !a.trx?.code ||
+                                a?.bugAccNo ||
                                 viewOnly
                                   ? true
                                   : false
@@ -1196,7 +1249,7 @@ export const Trn001 = () => {
         {Boolean(resetDialog) ? (
           <PopupMessageAPIWrapper
             MessageTitle="Table Reset"
-            Message="Do you wish to reset?"
+            Message={handleResetMsg}
             onActionYes={() => handleReset()}
             onActionNo={() => setResetDialog(false)}
             rows={[]}
@@ -1215,87 +1268,38 @@ export const Trn001 = () => {
             loading={saveScroll.isLoading}
           />
         ) : null}
-        <Dialog
-          maxWidth="sm"
-          open={scrollSaveDialog}
-          // onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle
-            className="dialogTitle"
-            style={{
-              cursor: "move",
+
+        {scrollSaveDialog ? (
+          <MessageBoxWrapper
+            MessageTitle={isArray ? "Scroll Saved" : "Transaction Saved"}
+            Message={scrollSaveHtml()}
+            buttonNames={["Ok"]}
+            onClickButton={() => {
+              setScrollSaveDialog(false);
+              setScrollSaveRes([]);
             }}
-          >
-            {isArray ? "Scroll" : "Transaction"} Saved
-          </DialogTitle>
-          <DialogContent>
-            <br />
-            {isArray && (
-              <h4 style={{ minWidth: "250px", textAlign: "center" }}>
-                Scroll No. {scrollSaveRes[0]?.SCROLL1}
-              </h4>
-            )}
-            <h4 style={{ textAlign: "center" }}>
-              Voucher No.{" "}
-              {scrollSaveRes &&
-                scrollSaveRes?.map((a) => {
-                  return <span>{a?.TRAN_CD}, </span>;
-                })}
-            </h4>
-          </DialogContent>
+            rows={[]}
+            open={scrollSaveDialog}
+          />
+        ) : (
+          <></>
+        )}
 
-          <DialogActions className="dialogFooter">
-            <Button
-              className="dialogBtn"
-              color="secondary"
-              variant="contained"
-              onClick={() => {
-                setScrollSaveDialog(false);
-                setScrollSaveRes([]);
-              }}
-            >
-              Ok
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          maxWidth="sm"
-          open={accValidDialog}
-          // onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle className="dialogTitle">A/C Info</DialogTitle>
-          <DialogContent>
-            <br />
-
-            {accValidMsg?.split("\r")?.map((a, i) => {
-              return (
-                <>
-                  <div style={{ minWidth: "300px" }}>{a}</div>
-                  <br />
-                </>
-              );
-            })}
-          </DialogContent>
-
-          <DialogActions className="dialogFooter">
-            <Button
-              autoFocus
-              className="dialogBtn"
-              color="secondary"
-              variant="contained"
-              onClick={() => {
-                setAccValidDialog(false);
-                setAccValidMsg("");
-              }}
-            >
-              Ok
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {accValidDialog ? (
+          <MessageBoxWrapper
+            MessageTitle="A/C Info"
+            Message={acInfoHtml()}
+            buttonNames={["Ok"]}
+            onClickButton={() => {
+              setAccValidDialog(false);
+              setAccValidMsg("");
+            }}
+            rows={[]}
+            open={accValidDialog}
+          />
+        ) : (
+          <></>
+        )}
       </>
     </>
   );

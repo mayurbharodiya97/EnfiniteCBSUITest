@@ -17,7 +17,7 @@ export const IMPS = () => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
-
+  console.log("imps calleddddd");
   // api define
   const getIMPSList = useMutation(API.getIMPSList, {
     onSuccess: (data) => {

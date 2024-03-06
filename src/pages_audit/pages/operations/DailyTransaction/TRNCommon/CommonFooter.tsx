@@ -15,11 +15,8 @@ import { useLocation } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { AuthContext, AccDetailContext } from "pages_audit/auth";
 import * as API from "./api";
-import OtherTrxTabs from "../TRNOtherTrx";
 import Paper, { PaperProps } from "@mui/material/Paper";
 import Draggable from "react-draggable";
-import LienDetail from "../TRNOtherTrx/Lien_Detail";
-import SIDetail from "../TRNOtherTrx/SI_Detail";
 
 function PaperComponent(props: PaperProps) {
   return (
@@ -204,19 +201,6 @@ const CommonFooter = ({
             </Button>
           </Grid>
         )}
-        {viewOnly && (
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                tempStore?.accInfo?.ACCT_CD && setOtherTrxDialog(true);
-              }}
-            >
-              Other Trn./Lien/SI Detail
-            </Button>
-          </Grid>
-        )}
       </Grid>
       <br />
       <>
@@ -228,13 +212,13 @@ const CommonFooter = ({
           aria-labelledby="draggable-dialog-title"
         >
           <DialogTitle
-            className="dialogTitle"
+            // className="dialogTitle"
             style={{
               cursor: "move",
             }}
             id="draggable-dialog-title"
           >
-            Scroll Delete
+            <div className="dialogTitle"> Scroll Delete</div>
           </DialogTitle>
           <DialogContent>
             <br />
@@ -290,34 +274,6 @@ const CommonFooter = ({
             <Button
               className="dialogBtn"
               onClick={() => handleCancelDeleteScroll()}
-              variant="contained"
-              color="secondary"
-            >
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Dialog
-          maxWidth="xl"
-          open={otherTrxDialog}
-          // onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title" className="dialogTitle">
-            Other Transaction Details for A/C No. {tempStore?.accInfo?.ACCT_CD}{" "}
-          </DialogTitle>
-          <DialogContent style={{ padding: "0px" }}>
-            <OtherTrxTabs />
-            <LienDetail />
-            <SIDetail />
-          </DialogContent>
-
-          <DialogActions>
-            <Button
-              className="dialogBtn"
-              onClick={() => setOtherTrxDialog(false)}
               variant="contained"
               color="secondary"
             >

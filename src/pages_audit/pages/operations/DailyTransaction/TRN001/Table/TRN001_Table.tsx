@@ -113,7 +113,7 @@ export const TRN001_Table = ({
 
       setTempStore({ ...tempStore, accInfo: data[0] });
       getCarousalCards.mutate(data[0]);
-      handleGetHeaderTabs(data[0]?.PARENT_TYPE ?? "");
+      handleGetHeaderTabs(data[0] ?? "");
     },
     onError: (error) => {},
   });
@@ -163,7 +163,7 @@ export const TRN001_Table = ({
 
       setTempStore({ ...tempStore, accInfo: obj });
       getCarousalCards.mutate(obj);
-      handleGetHeaderTabs(row?.PARENT_TYPE ?? "");
+      handleGetHeaderTabs(row ?? "");
     }
 
     if (data.name === "Delete") {
@@ -321,7 +321,7 @@ export const TRN001_Table = ({
           >
             Yes{" "}
             {!deleteScrollByVoucher?.isLoading ? (
-              ""
+              " "
             ) : (
               <CircularProgress size={20} />
             )}
@@ -348,7 +348,10 @@ export const TRN001_Table = ({
             " ?"
           }
           onActionYes={(input) => handleDelete(input)}
-          onActionNo={() => setDeleteDialog(false)}
+          onActionNo={() => {
+            setDeleteDialog(false);
+            handleSetRemarks();
+          }}
           isLoading={deleteScrollByVoucher.isLoading}
           isEntertoSubmit={true}
           AcceptbuttonLabelText="Ok"
@@ -356,7 +359,8 @@ export const TRN001_Table = ({
           open={deleteDialog}
           rows={dataRow}
         />
-      ) : null} */}
+      ) : null} 
+*/}
     </>
   );
 };

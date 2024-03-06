@@ -193,5 +193,27 @@ export const getChqValidation = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getChqDateValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CHQDATEVALIDATION", {
+      A_COMP_CD: reqData?.branch?.info?.COMP_CD,
+      A_BRANCH_CD: reqData?.branch?.value,
+      A_TYPE_CD: reqData?.accType?.value,
+      ACCT_CD: reqData.accNo.padEnd(20, " "),
+      A_CHEQUE_NO: reqData?.cNo,
+      A_CHEQUE_DT: reqData?.date,
+      // A_GD_DATE
+      // A_USER
+      // A_USER_LEVEL
+      // A_LANG
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 //others

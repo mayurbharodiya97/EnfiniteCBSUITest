@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ACH_OWGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "ACH_OW",
+    gridLabel: "ACH OW",
     rowIdColumn: "index",
     defaultColumnConfig: {
       width: 150,

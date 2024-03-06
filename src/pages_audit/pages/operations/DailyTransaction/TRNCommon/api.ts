@@ -82,13 +82,20 @@ export const getCarousalCards = async (reqData) => {
 };
 
 export const getTabsByParentType = async (reqData) => {
+  console.log(reqData, "reqqq tab");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
-      PARENT_TYPE: reqData,
+      // PARENT_TYPE: reqData?.PARENT_TYPE,
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      BRANCH_CD: reqData?.BRANCH_CD,
     });
   if (status === "0") {
-    let responseData = data;
-    return responseData;
+    data?.map((a, i) => {
+      a.index1 = i;
+    });
+
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

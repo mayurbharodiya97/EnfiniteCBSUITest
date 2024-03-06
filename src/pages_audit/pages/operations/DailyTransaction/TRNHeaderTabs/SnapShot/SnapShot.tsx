@@ -1,9 +1,9 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { snapShotGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
-import { GridMetaDataType } from "components/dataTable/types";
+import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
@@ -22,7 +22,29 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import { format } from "date-fns";
-
+const actions: ActionTypes[] = [
+  {
+    actionName: "view-detail",
+    actionLabel: "Force Expire",
+    multiple: false,
+    // rowDoubleClick: true,
+    // alwaysAvailable: true,
+  },
+  {
+    actionName: "view-detail",
+    actionLabel: "Delete",
+    multiple: false,
+    // rowDoubleClick: true,
+    // alwaysAvailable: true,
+  },
+  {
+    actionName: "view-detail",
+    actionLabel: "Upload Doc",
+    multiple: false,
+    // rowDoubleClick: true,
+    // alwaysAvailable: true,
+  },
+];
 export const SnapShot = () => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
@@ -32,6 +54,7 @@ export const SnapShot = () => {
   const [dateDialog, setDateDialog] = useState(false);
   const [prevDate, setPrevDate] = useState(new Date());
   const [nextDate, setNextDate] = useState(new Date());
+  const [dataRow, setDataRow] = useState<any>({});
 
   // api define
   const getSnapShotList = useMutation(API.getSnapShotList, {
@@ -65,6 +88,7 @@ export const SnapShot = () => {
       setNextDate(e);
     }
   };
+
   const handleDateErr = (e, key) => {
     console.log(e, key, "err");
   };
@@ -73,6 +97,16 @@ export const SnapShot = () => {
     handleGetSnapshot();
     setDateDialog(false);
   };
+
+  const setCurrentAction = useCallback((data) => {
+    let row = data.rows[0]?.data;
+    console.log(row, "rowwww");
+    setDataRow(row);
+
+    if (data.name === "view-detail") {
+      console.log("heloooo");
+    }
+  }, []);
   return (
     <>
       <div></div>
@@ -84,7 +118,11 @@ export const SnapShot = () => {
         loading={getSnapShotList.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
+        setAction={setCurrentAction}
+        onlySingleSelectionAllow={true}
+        isNewRowStyle={true}
       />
+
       <Grid
         item
         xs={12}
@@ -98,7 +136,6 @@ export const SnapShot = () => {
           alignItems: "center",
         }}
       >
-        {" "}
         <div></div>
         <Grid item sx={{ display: "flex", gap: "1rem" }}>
           <Button

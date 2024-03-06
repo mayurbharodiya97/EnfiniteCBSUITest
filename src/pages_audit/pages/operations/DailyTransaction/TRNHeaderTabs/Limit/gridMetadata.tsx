@@ -22,7 +22,10 @@ export const LimitGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: false,
+
+    allowRowSelection: true,
+    hideHeader: false,
+    isCusrsorFocused: true,
   },
   filters: [],
   columns: [

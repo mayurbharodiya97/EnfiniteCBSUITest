@@ -664,7 +664,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/CHEQUENOVALIDATION",
     packageName: "",
   },
-
+  CHQDATEVALIDATION: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/PACK_CHEQUE_BOOK_ISSUE.PROC_VALIDATE_CHQ_DATE",
+    packageName: "",
+  },
   //f1 list
   GETDAILYTRNLIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNLIST",
@@ -747,11 +750,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNINSURANCETAB",
     packageName: "",
   },
-  //chqBook
-  // GETCHEQUEBOOK: {
-  //   url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHEQUEBOOK",
-  //   packageName: "",
-  // },
+
   //chqBtn1
   GETDLYTRNTODAYCLEARBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTODAYCLEARBTN",
