@@ -117,24 +117,20 @@ export const DailyTransTabs = ({ heading, tabsData }) => {
                 {a?.TAB_NAME.includes("Limits") && <Limit />}
                 {a?.TAB_NAME.includes("Stock") && <Stock />}
                 {/* other trx */}
-                {a?.TAB_NAME.includes("Standing") ? <SIDetail /> : <></>}
-                {a?.TAB_NAME.includes("Lien") ? <LienDetail /> : <></>}
-                {a?.TAB_NAME.match("O/w Chq/OBC/IBC") ? <OW_Chq /> : <></>}
-                {a?.TAB_NAME.includes("Temp.OD/Against") ? <Temp /> : <></>}
-                {a?.TAB_NAME.includes("ATM Card") ? <ATM /> : <></>}
-                {a?.TAB_NAME.match("IMPS") ? <IMPS /> : <></>}
-                {a?.TAB_NAME.includes("ASBA") ? <ASBA /> : <></>}
-                {a?.TAB_NAME.includes("ACH I/W") ? <ACH_IW /> : <></>}
-                {a?.TAB_NAME.includes("ACH O/W") ? <ACH_OW /> : <></>}
-                {a?.TAB_NAME.includes("Sp.Instruction") ? (
-                  <Instruction />
-                ) : (
-                  <></>
-                )}
-                {a?.TAB_NAME.includes("Group A/c(s)") ? <Group /> : <></>}
-                {a?.TAB_NAME.includes("APY") ? <APY /> : <></>}
-                {a?.TAB_NAME.includes("APBS") ? <APBS /> : <></>}
-                {a?.TAB_NAME.includes("PMBY") ? <PMBY /> : <></>}
+                {a?.TAB_NAME.includes("Standing") && <SIDetail />}
+                {a?.TAB_NAME.includes("Lien") && <LienDetail />}
+                {a?.TAB_NAME.match("O/w Chq/OBC/IBC") && <OW_Chq />}
+                {a?.TAB_NAME.includes("Temp.OD/Against") && <Temp />}
+                {a?.TAB_NAME.includes("ATM Card") && <ATM />}
+                {a?.TAB_NAME.match("IMPS") && <IMPS />}
+                {a?.TAB_NAME.includes("ASBA") && <ASBA />}
+                {a?.TAB_NAME.includes("ACH I/W") && <ACH_IW />}
+                {a?.TAB_NAME.includes("ACH O/W") && <ACH_OW />}
+                {a?.TAB_NAME.includes("Sp.Instruction") && <Instruction />}
+                {a?.TAB_NAME.includes("Group A/c(s)") && <Group />}
+                {a?.TAB_NAME.includes("APY") && <APY />}
+                {a?.TAB_NAME.includes("APBS") && <APBS />}
+                {a?.TAB_NAME.includes("PMBY") && <PMBY />}
               </>
             </TabPanel>
           ))

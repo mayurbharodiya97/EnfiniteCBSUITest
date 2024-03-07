@@ -195,17 +195,11 @@ export const getChqValidation = async (reqData) => {
 };
 export const getChqDateValidation = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("CHQDATEVALIDATION", {
-      A_COMP_CD: reqData?.branch?.info?.COMP_CD,
-      A_BRANCH_CD: reqData?.branch?.value,
-      A_TYPE_CD: reqData?.accType?.value,
-      ACCT_CD: reqData.accNo.padEnd(20, " "),
-      A_CHEQUE_NO: reqData?.cNo,
-      A_CHEQUE_DT: reqData?.date,
-      // A_GD_DATE
-      // A_USER
-      // A_USER_LEVEL
-      // A_LANG
+    await AuthSDK.internalFetcher("VALIDATECHQDATE", {
+      BRANCH_CD: reqData?.branch?.value, //099
+      TYPE_CD: reqData?.trx?.value, //5
+      CHEQUE_NO: reqData?.cNo, //33
+      CHEQUE_DT: format(new Date(reqData?.date), "dd/MMM/yyyy"), //06/Mar/2024
     });
   if (status === "0") {
     let responseData = data;

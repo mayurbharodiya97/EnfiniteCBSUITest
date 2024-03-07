@@ -218,7 +218,10 @@ const CommonFooter = ({
             }}
             id="draggable-dialog-title"
           >
-            <div className="dialogTitle"> Scroll Delete</div>
+            <div className="dialogTitle" style={{ padding: "10px" }}>
+              {" "}
+              Scroll Delete
+            </div>
           </DialogTitle>
           <DialogContent>
             <br />

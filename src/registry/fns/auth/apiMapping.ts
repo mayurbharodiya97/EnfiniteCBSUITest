@@ -664,8 +664,9 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/CHEQUENOVALIDATION",
     packageName: "",
   },
-  CHQDATEVALIDATION: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/PACK_CHEQUE_BOOK_ISSUE.PROC_VALIDATE_CHQ_DATE",
+  //date validation
+  VALIDATECHQDATE: {
+    url: "/transactionServiceAPI/VALIDATECHQDATE",
     packageName: "",
   },
   //f1 list
@@ -825,11 +826,21 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
   //ach_ow
+  GETDLYTRNNACHOTWRDTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNNACHOTWRDTAB",
+    packageName: "",
+  },
+  //view
   GETDLYTRNACHOTWDTLTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACHOTWDTLTAB",
     packageName: "",
   },
   //ach_iw
+  GETDLYTRNNACHINWRDTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNNACHINWRDTAB",
+    packageName: "",
+  },
+  //view
   GETACHIWIMGDTLTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACHIWIMGDTLTAB",
     packageName: "",

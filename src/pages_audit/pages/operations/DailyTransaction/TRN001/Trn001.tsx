@@ -15,10 +15,6 @@ import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import LinearProgress from "@mui/material/LinearProgress";
 
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
 //date
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -318,6 +314,30 @@ export const Trn001 = () => {
       });
     },
   });
+  const getDateValidation = useMutation(API.getChqDateValidation, {
+    onSuccess: (data) => {
+      console.log(data, "data date valid");
+      const obj = [...rows];
+      // if (data.ERR_CODE) {
+      //   enqueueSnackbar(data?.ERR_MSG, {
+      //     variant: "error",
+      //   });
+      //   obj[index].bug = true;
+      //   obj[index].bugCNo = true;
+      //   obj[index].bugMsgCNo = data?.ERR_MSG;
+      // } else {
+      //   obj[index].bug = false;
+      //   obj[index].bugCNo = false;
+      //   obj[index].bugMsgCNo = "";
+      // }
+      setRows(obj);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
   const saveScroll = useMutation(API.saveScroll, {
     onSuccess: (res) => {
       setScrollSaveRes(res.data);
@@ -512,6 +532,10 @@ export const Trn001 = () => {
     const obj = [...rows];
     obj[i].date = e;
     setRows(obj);
+    obj[i].cNo &&
+      obj[i].trx?.value &&
+      obj[i].branch?.value &&
+      getDateValidation.mutate(obj[i]);
   };
 
   const handleDateErr = (e, i) => {
@@ -823,7 +847,7 @@ export const Trn001 = () => {
             Scroll No. {scrollSaveRes[0]?.SCROLL1}
           </h4>
         )}
-        <div id="cardContainer">
+        <div>
           <h4 style={{ textAlign: "center" }}>Voucher No. </h4>
 
           {scrollSaveRes &&
@@ -923,7 +947,7 @@ export const Trn001 = () => {
                               value={a.branch}
                               fullWidth={true}
                               autoHighlight
-                              autoSelect
+                              // autoSelect
                               size="small"
                               options={branchOptions}
                               onChange={(e, value) => handleBranch(e, value, i)}
@@ -950,7 +974,7 @@ export const Trn001 = () => {
                             <Autocomplete
                               value={a.accType}
                               fullWidth={true}
-                              autoSelect
+                              // autoSelect
                               autoHighlight
                               size="small"
                               options={accTypeOptions}
@@ -998,7 +1022,7 @@ export const Trn001 = () => {
                               value={a.trx}
                               fullWidth={true}
                               autoHighlight
-                              autoSelect
+                              // autoSelect
                               size="small"
                               options={trxOptions}
                               onChange={(e, value) => handleTrx(e, value, i)}
@@ -1045,7 +1069,7 @@ export const Trn001 = () => {
                               value={a.sdc}
                               fullWidth={true}
                               autoHighlight
-                              autoSelect
+                              // autoSelect
                               size="small"
                               options={sdcOptions}
                               onChange={(e, value) => handleSdc(e, value, i)}
