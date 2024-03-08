@@ -163,7 +163,7 @@ export const TRN001_Table = ({
 
       setTempStore({ ...tempStore, accInfo: obj });
       getCarousalCards.mutate(obj);
-      handleGetHeaderTabs(row ?? "");
+      handleGetHeaderTabs(obj ?? "");
     }
 
     if (data.name === "Delete") {

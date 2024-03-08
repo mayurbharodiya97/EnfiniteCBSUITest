@@ -142,7 +142,7 @@ export const Trn002 = () => {
         ? getCarousalCards.mutate(arr[0])
         : setCardStore({ ...cardStore, cardsInfo: [] });
 
-      getTabsByParentType.mutate(arr[0]?.PARENT_TYPE ?? "");
+      getTabsByParentType.mutate(arr[0] ?? "");
       handleUpdateSum(arr);
       setConfirmed(data.length - arr.length);
     },
@@ -215,7 +215,7 @@ export const Trn002 = () => {
       };
       setTempStore({ ...tempStore, accInfo: obj });
       getCarousalCards.mutate(obj);
-      getTabsByParentType.mutate(row?.PARENT_TYPE ?? "");
+      getTabsByParentType.mutate(obj ?? "");
     }
 
     if (data.name === "view") {

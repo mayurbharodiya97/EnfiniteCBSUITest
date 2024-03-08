@@ -42,11 +42,9 @@ const actions: ActionTypes[] = [
 export const JointDetails = () => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
-  const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const { tempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   //api define

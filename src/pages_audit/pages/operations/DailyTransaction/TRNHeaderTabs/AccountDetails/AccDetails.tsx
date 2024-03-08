@@ -5,10 +5,8 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 //logical
 import "./accDetails.css";
