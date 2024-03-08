@@ -170,7 +170,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ALLOW_DELETE",
-      columnName: "Delete",
+      columnName: "Remove",
       sequence: 4,
       alignment: "center",
       componentType: "buttonRowCell",

@@ -407,7 +407,7 @@ export const LimitEntry = () => {
                               const buttonName = await MessageBox({
                                 messageTitle: "Confirmation...",
                                 message: `
-                                    Press 'Yes' then - to view Lien FD(s) against this A/c.                               ,
+                                    Press 'Yes' then - to view Lien FD(s) against this A/c.                               ,                             
                                     Press 'No' then to view all the FD(s) of
                                     this Customer.
                                 `,

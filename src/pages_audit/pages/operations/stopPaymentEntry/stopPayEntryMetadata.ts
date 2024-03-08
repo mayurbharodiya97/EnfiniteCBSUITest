@@ -5,7 +5,7 @@ import * as API from "./api";
 export const StopPayEntryMetadata = {
   form: {
     name: "PRIORITY",
-    label: "Stop Payment Entry",
+    label: "Cheque Stop Entry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -41,124 +41,156 @@ export const StopPayEntryMetadata = {
   fields: [
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "_accountNumber",
       },
-      name: "BRANCH_CD",
-      label: "Branch",
-      placeholder: "Branch",
-      type: "text",
-      isFieldFocused: true,
-      required: true,
-      // maxLength: 16,
-      options: GeneralAPI.getBranchCodeList,
-      _optionsKey: "getBranchCodeList",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+      branchCodeMetadata: {
+        postValidationSetCrossFieldValues: async (field) => {
+          if (field?.value) {
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              AMOUNT: { value: "" },
+              SERVICE_TAX: { value: "" },
+              CHEQUE_DT: { value: "" },
+              CHEQUE_AMOUNT: { value: "" },
+            };
+          }
+        },
       },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Branch Code is required."] }],
+      accountTypeMetadata: {
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "ETRN/048",
+          });
+        },
+        _optionsKey: "get_Account_Type",
+        postValidationSetCrossFieldValues: async (field) => {
+          if (field?.value) {
+            return {
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              AMOUNT: { value: "" },
+              SERVICE_TAX: { value: "" },
+              CHEQUE_DT: { value: "" },
+              CHEQUE_AMOUNT: { value: "" },
+            };
+          }
+        },
       },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "ACCT_TYPE",
-      label: "Account Type",
-      placeholder: "EnterAccountType",
-      type: "text",
-      required: true,
-      options: GeneralAPI.getAccountTypeList,
-      _optionsKey: "getAccountTypeList",
-      // options: (dependentValue, formState, _, authState) => {
-      //   return GeneralAPI.get_Account_Type({
-      //     COMP_CD: authState?.companyID,
-      //     BRANCH_CD: authState?.user?.branchCode,
-      //     USER_NAME: authState?.user?.id,
-      //     DOC_CD: "ETRN/048",
-      //   });
-      // },
-      // _optionsKey: "get_Account_Type",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account Type is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "ACCT_CD",
-      label: "Account Number",
-      placeholder: "EnterAcNo",
-      type: "text",
-      // fullWidth: true,
-      required: true,
-      // maxLength: 20,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account no. is required."] }],
-      },
+      accountCodeMetadata: {
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          authState,
+          dependentValue
+        ) => {
+          if (
+            field?.value &&
+            dependentValue?.BRANCH_CD?.value &&
+            dependentValue?.ACCT_TYPE?.value
+          ) {
+            let otherAPIRequestPara = {
+              COMP_CD: authState?.companyID,
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                field?.value,
+                dependentValue?.ACCT_TYPE?.optionData
+              ),
+              ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              SCREEN_REF: "ETRN/048",
+            };
+            let postData = await GeneralAPI.getAccNoValidation(
+              otherAPIRequestPara
+            );
 
-      dependentFields: ["ACCT_TYPE", "BRANCH_CD"],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentValue
-      ) => {
-        console.log("<<<<dedededee", dependentValue);
-        if (
-          field?.value &&
-          dependentValue?.BRANCH_CD?.value &&
-          dependentValue?.ACCT_TYPE?.value
-        ) {
-          let otherAPIRequestPara = {
-            COMP_CD: "132 ",
-            ACCT_CD: utilFunction.getPadAccountNumber(
-              field?.value,
-              dependentValue?.ACCT_TYPE?.optionData
-            ),
-            ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
-            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-            SCREEN_REF: "ETRN/048",
-          };
-          let postData = await API.accountValidate(otherAPIRequestPara);
-
-          console.log("<<<<postData", postData);
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 3,
-        xl: 3,
+            if (postData?.RESTRICTION) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: false,
+              });
+              formState.MessageBox({
+                messageTitle: "Validation Failed...!",
+                message: postData?.RESTRICTION,
+              });
+              return {
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
+                TRAN_BAL: { value: "" },
+                TRAN_DT: { value: "" },
+              };
+            } else if (postData?.MESSAGE1) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: true,
+              });
+              formState.MessageBox({
+                messageTitle: "Risk Category Alert",
+                message: postData?.MESSAGE1,
+                buttonNames: ["Ok"],
+              });
+              return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                TRAN_DT: {
+                  value: authState?.workingDate ?? "",
+                },
+                ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
+                TRAN_BAL: {
+                  value: postData?.WIDTH_BAL ?? "",
+                },
+              };
+            } else {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: true,
+              });
+              return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                TRAN_DT: {
+                  value: authState?.workingDate ?? "",
+                },
+                ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
+                TRAN_BAL: {
+                  value: postData?.WIDTH_BAL ?? "",
+                },
+              };
+            }
+          } else if (!field?.value) {
+            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            return {
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+            };
+          }
+          return {};
+        },
+        runPostValidationHookAlways: true,
       },
     },
+
     {
       render: {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      // sequence: 1,
       label: "Account Name",
-      placeholder: "Account Name",
       type: "text",
-      // required: true,
-      // maxLength: 16,
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -171,11 +203,11 @@ export const StopPayEntryMetadata = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
       name: "TRAN_BAL",
       label: "Balance",
-      placeholder: "Balance",
+      isReadOnly: true,
       type: "text",
       GridProps: {
         xs: 12,
@@ -191,17 +223,29 @@ export const StopPayEntryMetadata = {
         componentType: "autocomplete",
       },
       name: "FLAG",
-      label: "Flag",
-      defaultValue: "S",
+      label: "Cheque Stop Type",
+      defaultValue: "P",
+      placeholder: "Select one",
       options: () => {
         return [
-          { value: "S", label: "Stop Payment" },
-          { value: "D", label: "Surrender Cheque" },
-          { value: "P", label: "PDC" },
+          { value: "P", label: "Stop Payment" },
+          { value: "S", label: "Surrender Cheque" },
+          { value: "D", label: "PDC" },
         ];
       },
-      _optionsKey: "PAYABLE_AT_PAR",
-      type: "text",
+      _optionsKey: "FLAG",
+      postValidationSetCrossFieldValues: async (field) => {
+        if (field?.value) {
+          return {
+            CHEQUE_FROM: { value: "" },
+            CHEQUE_TO: { value: "" },
+            AMOUNT: { value: "" },
+            SERVICE_TAX: { value: "" },
+            CHEQUE_DT: { value: "" },
+            CHEQUE_AMOUNT: { value: "" },
+          };
+        }
+      },
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -216,8 +260,15 @@ export const StopPayEntryMetadata = {
         componentType: "datePicker",
       },
       name: "TRAN_DT",
-      // sequence: 9,
       label: "Intimate Date",
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields, formState) {
+        if (dependentFields?.FLAG?.value === "S") {
+          return true;
+        } else {
+          return false;
+        }
+      },
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -228,12 +279,92 @@ export const StopPayEntryMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "datePicker",
+      },
+      name: "SURR_DT",
+      label: "Surrender Date",
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields, formState) {
+        if (dependentFields?.FLAG?.value === "S") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
       },
       name: "CHEQUE_FROM",
       label: "Cheque From",
-      type: "text",
-      placeholder: "Stock Description",
+      placeholder: "Enter Cheque-From No.",
+      dependentFields: ["ACCT_TYPE", "BRANCH_CD", "ACCT_CD", "FLAG"],
+      FormatProps: {
+        isAllowed: (values, dependentFields, formState) => {
+          if (values.floatValue === 0 || values.floatValue === "-") {
+            return false;
+          }
+          return true;
+        },
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (
+          field?.value &&
+          dependentValue?.BRANCH_CD?.value &&
+          dependentValue?.ACCT_TYPE?.value &&
+          dependentValue?.ACCT_CD?.value
+        ) {
+          let apiReq = {
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+            ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+            ACCT_CD: dependentValue?.ACCT_CD?.value,
+            SCREEN_REF: "ETRN/048",
+            CHEQUE_FROM: field?.value,
+            CHEQUE_TO: "",
+            CHQ_SERIES: true,
+            CHRG_CAL: false,
+            FLAG: dependentValue?.FLAG?.value,
+          };
+          let postData = await API.chequeValidate(apiReq);
+          console.log("<<<postdata", postData);
+
+          if (postData?.[0]?.ERR_CODE !== "0" && postData?.[0]?.ERR_MSG) {
+            formState.MessageBox({
+              messageTitle: "cheque Validation",
+              message: postData?.[0]?.ERR_MSG,
+            });
+            return {
+              CHEQUE_FROM: { value: "" },
+              SERVICE_TAX: { value: "" },
+              AMOUNT: { value: "" },
+            };
+          } else {
+            return {
+              CHEQUE_TO: { value: field?.value },
+            };
+          }
+        }
+        return {};
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["From Cheque No. is required."] }],
+      },
+      required: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -244,12 +375,103 @@ export const StopPayEntryMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "numberFormat",
       },
       name: "CHEQUE_TO",
       label: "Cheque To",
-      type: "text",
-      placeholder: "Stock Description",
+      placeholder: "Enter Cheque-To No.",
+      dependentFields: [
+        "ACCT_TYPE",
+        "BRANCH_CD",
+        "ACCT_CD",
+        "FLAG",
+        "CHEQUE_FROM",
+      ],
+      validate: (field, dependentFields, formState) => {
+        console.log("<<<valdate", dependentFields);
+        if (
+          field?.value.length <= 0 ||
+          dependentFields?.CHEQUE_FROM?.value < field?.value
+        ) {
+          return "";
+        } else if (dependentFields?.CHEQUE_FROM?.value > field?.value) {
+          return "Please enter a value greater than the Check-From value";
+        }
+        return "";
+      },
+      FormatProps: {
+        isAllowed: (values, dependentFields, formState) => {
+          if (values.floatValue === 0 || values.floatValue === "-") {
+            return false;
+          }
+          return true;
+        },
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (
+          field?.value &&
+          dependentValue?.BRANCH_CD?.value &&
+          dependentValue?.ACCT_TYPE?.value &&
+          dependentValue?.ACCT_CD?.value
+          // && field?.value !== dependentValue?.CHEQUE_FROM?.value
+        ) {
+          let apiReq = {
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+            ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+            ACCT_CD: dependentValue?.ACCT_CD?.value,
+            SCREEN_REF: "ETRN/048",
+            CHEQUE_FROM: dependentValue?.CHEQUE_FROM?.value,
+            CHEQUE_TO: field?.value,
+            CHQ_SERIES: true,
+            CHRG_CAL: true,
+            FLAG: dependentValue?.FLAG?.value,
+          };
+          let postData = await API.chequeValidate(apiReq);
+
+          if (postData?.[0]?.ERR_CODE !== "0" && postData?.[0]?.ERR_MSG) {
+            formState.MessageBox({
+              messageTitle: "cheque Validation",
+              message: postData?.[0]?.ERR_MSG,
+            });
+            return {
+              CHEQUE_TO: { value: "" },
+              SERVICE_TAX: { value: "" },
+              AMOUNT: { value: "" },
+            };
+          } else {
+            return {
+              SERVICE_C_FLAG: {
+                value: postData?.[0]?.FLAG_ENABLE_DISABLE ?? "",
+              },
+              ROUND_OFF_FLAG: {
+                value: postData?.[0]?.GST_ROUND ?? "",
+              },
+              GST: {
+                value: postData?.[0]?.TAX_RATE ?? "",
+              },
+              SERVICE_TAX: {
+                value: postData?.[0]?.CHRG_AMT ?? "",
+              },
+              AMOUNT: {
+                value: postData?.[0]?.GST_AMT,
+              },
+            };
+          }
+        }
+        return {};
+      },
+
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["To Cheque No. is required."] }],
+      },
+      required: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -260,19 +482,32 @@ export const StopPayEntryMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "autocomplete",
       },
       name: "REASON_CD",
       label: "Reason",
-      // options: () => {
-      //   return [
-      //     { value: "", label: " " },
-      //     { value: "", label: " " },
-      //     { value: "", label: "" },
-      //   ];
-      // },
-      // _optionsKey: "PAYAE_AT_PAR",
-      type: "text",
+
+      placeholder: "Select Reason",
+      disableCaching: true,
+      dependentFields: ["FLAG", "BRANCH_CD"],
+      options: (dependentValue, formState, any, authState) => {
+        if (dependentValue?.BRANCH_CD?.value && dependentValue?.FLAG?.value) {
+          return API.reasonDropdown({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+            RETURN_TYPE:
+              dependentValue?.FLAG?.value === "P"
+                ? "STOP"
+                : dependentValue?.FLAG?.value === "S"
+                ? "SURR"
+                : dependentValue?.FLAG?.value === "D"
+                ? "PDC"
+                : null,
+          });
+        }
+        return [];
+      },
+      _optionsKey: "reasonDropdown",
       GridProps: {
         xs: 12,
         md: 4.8,
@@ -283,10 +518,99 @@ export const StopPayEntryMetadata = {
     },
     {
       render: {
+        componentType: "amountField",
+      },
+      name: "SERVICE_TAX",
+      label: "Charge Amount",
+      placeholder: "Enter Charge Amount",
+      dependentFields: ["FLAG", "ROUND_OFF_FLAG", "GST", "SERVICE_C_FLAG"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        console.log("<<<dependentFieldsValues", dependentFieldsValues);
+        if (dependentFieldsValues?.SERVICE_C_FLAG?.value === "N") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentValue
+      ) => {
+        if (field?.value) {
+          return {
+            AMOUNT: {
+              value:
+                dependentValue?.ROUND_OFF_FLAG?.value === "3"
+                  ? Math.floor(
+                      (parseInt(field?.value) *
+                        parseInt(dependentValue?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : dependentValue?.ROUND_OFF_FLAG?.value === "2"
+                  ? Math.ceil(
+                      (parseInt(field?.value) *
+                        parseInt(dependentValue?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : dependentValue?.ROUND_OFF_FLAG?.value === "1"
+                  ? Math.round(
+                      (parseInt(field?.value) *
+                        parseInt(dependentValue?.GST?.value)) /
+                        100
+                    ) ?? ""
+                  : (parseInt(field?.value) *
+                      parseInt(dependentValue?.GST?.value)) /
+                      100 ?? "",
+            },
+          };
+        }
+        return {};
+      },
+      shouldExclude(fieldData, dependentFields, formState) {
+        if (dependentFields?.FLAG?.value === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "AMOUNT",
+      label: "GST-Amount",
+      isReadOnly: true,
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields, formState) {
+        if (dependentFields?.FLAG?.value === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 2.4,
+        sm: 2.4,
+        lg: 2.4,
+        xl: 2.4,
+      },
+    },
+    {
+      render: {
         componentType: "datePicker",
       },
       name: "CHEQUE_DT",
-      // sequence: 9,
       label: "Cheque Date",
       GridProps: {
         xs: 12,
@@ -299,12 +623,19 @@ export const StopPayEntryMetadata = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
       name: "CHEQUE_AMOUNT",
       label: "Cheque Amount",
-      type: "text",
       placeholder: "Cheque Amount",
+      dependentFields: ["FLAG"],
+      shouldExclude(fieldData, dependentFields, formState) {
+        if (dependentFields?.FLAG?.value === "S") {
+          return true;
+        } else {
+          return false;
+        }
+      },
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -313,23 +644,7 @@ export const StopPayEntryMetadata = {
         xl: 2.4,
       },
     },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "AMOUNT",
-      label: "Charge Amount",
-      placeholder: "Charge Amount",
 
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
-      },
-    },
     {
       render: {
         componentType: "textField",
@@ -348,12 +663,11 @@ export const StopPayEntryMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "Remark",
       },
       name: "REMARKS",
       label: "Remarks",
-      type: "text",
-      placeholder: "Remarks",
+      placeholder: "Enter Remarks",
       GridProps: {
         xs: 12,
         md: 4.8,
@@ -365,19 +679,21 @@ export const StopPayEntryMetadata = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "hidden",
       },
-      name: "SERVICE_TAX",
-      label: "GST",
-      placeholder: "GST",
-      type: "text",
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+      name: "SERVICE_C_FLAG",
+    },
+    {
+      render: {
+        componentType: "hidden",
       },
+      name: "GST",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ROUND_OFF_FLAG",
     },
   ],
 };

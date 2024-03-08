@@ -418,7 +418,7 @@ export const ChequeBookEntryMetaData = {
           let postdata = await API.chequebookCharge(Apireq);
 
           return {
-            SERVECE_C_FLAG: {
+            SERVICE_C_FLAG: {
               value: postdata?.[0]?.FLAG_ENABLE_DISABLE ?? "",
             },
             ROUND_OFF_FLAG: {
@@ -499,13 +499,13 @@ export const ChequeBookEntryMetaData = {
         xl: 2,
       },
       dependentFields: [
-        "SERVECE_C_FLAG",
+        "SERVICE_C_FLAG",
         "GST",
         "ROUND_OFF_FLAG",
         "CHEQUE_TOTAL",
       ],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.SERVECE_C_FLAG?.value === "N") {
+        if (dependentFieldsValues?.SERVICE_C_FLAG?.value === "N") {
           return false;
         } else {
           return true;
@@ -836,7 +836,7 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "SERVECE_C_FLAG",
+      name: "SERVICE_C_FLAG",
     },
     {
       render: {

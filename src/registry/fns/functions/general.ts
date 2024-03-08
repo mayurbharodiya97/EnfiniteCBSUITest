@@ -693,8 +693,8 @@ const GeneralAPISDK = () => {
         COMP_CD: reqData?.COMP_CD,
         ACCT_TYPE: reqData?.ACCT_TYPE,
         ACCT_CD: reqData?.ACCT_CD,
-
-        GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
+        //comment by parag
+        // GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
         SCREEN_REF: reqData?.SCREEN_REF, //depending on screen code
       });
     if (status === "0") {
@@ -715,10 +715,10 @@ const GeneralAPISDK = () => {
 
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ ACCT_TYPE, PARENT_CODE, DESCRIPTION, ...other }) => {
+          ({ ACCT_TYPE, PARENT_CODE, CONCDESCRIPTION, ...other }) => {
             return {
               value: ACCT_TYPE,
-              label: ACCT_TYPE + " - " + DESCRIPTION,
+              label: CONCDESCRIPTION,
               ...other,
             };
           }

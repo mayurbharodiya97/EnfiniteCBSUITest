@@ -88,19 +88,12 @@ export const LimitSecurityData = async (apiReqPara) => {
             },
           };
           if (item.name === "FD_BRANCH_CD") {
-            item.schemaValidation = {
-              type: "string",
-              rules: [
-                { name: "required", params: ["FD-Branch Code is required."] },
-              ],
-            };
-            item.validate = (columnValue, allField, flag) => {
-              console.log("<<<valalerr", columnValue, allField, flag);
-              if (!Boolean(columnValue)) {
-                return "FD-Branch ttt Code is required.";
-                return "";
-              }
-            };
+            // item.schemaValidation = {
+            //   type: "string",
+            //   rules: [
+            //     { name: "required", params: ["FD-Branch Code is required."] },
+            //   ],
+            // };
 
             item.options = await getFDbranchDDlist(apiReqPara.COMP_CD);
             item.postValidationSetCrossFieldValues = async (field) => {
@@ -118,6 +111,13 @@ export const LimitSecurityData = async (apiReqPara) => {
             //   rules: [{ name: "required", params: ["FD-Type is required."] }],
             // };
             item.options = await getFDTypeDDlist(apiReqPara);
+            item.validate = (columnValue, allField, flag) => {
+              console.log("<<<valalerr", columnValue, allField, flag);
+              if (!Boolean(columnValue.value)) {
+                return "FD-Account type is required.";
+              }
+              return "";
+            };
             // item.dependentFields = [];
             // item.validate = (columnValue, allField, flag) => {
             //   console.log("<<<valalerr", columnValue, allField, flag);
@@ -606,6 +606,10 @@ export const getLimitDTL = async (limitDetail) => {
       if (item?.ALLOW_FORCE_EXP === "Y") {
         item._rowColor = "rgb(152 59 70 / 61%)";
       }
+      if (item?.CONFIRMED === "Y") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+      }
+
       item.MARGIN = parseFloat(item.MARGIN).toFixed(2);
       item.INT_RATE = parseFloat(item.INT_RATE).toFixed(2);
       item.SECURITY_VALUE = parseFloat(item.SECURITY_VALUE).toFixed(2);

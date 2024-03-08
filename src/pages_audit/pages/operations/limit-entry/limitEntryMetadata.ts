@@ -429,14 +429,12 @@ export const limitEntryMetaData = {
         authState,
         dependentValue
       ) => {
-        if (field?.value) {
-          console.log("<<<ffffffffff", dependentValue);
+        console.log("<<<ffffffffff", dependentValue);
 
-          return {
-            FD_BRANCH_CD: { isErrorBlank: true },
-          };
-        }
-        return {};
+        return {
+          FD_BRANCH_CD: { isErrorBlank: true },
+          FD_TYPE: { isErrorBlank: true },
+        };
       },
 
       schemaValidation: {
