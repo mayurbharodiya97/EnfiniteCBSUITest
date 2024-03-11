@@ -33,6 +33,7 @@ import { TableFilterStatusBar } from "components/dataTable/tableFilterStatusBar"
 import { AuthContext } from "pages_audit/auth";
 import { useStyles } from "./style";
 import {
+  Dialog,
   Grid,
   LinearProgress,
   Paper,
@@ -43,6 +44,7 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
+import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
 let data2: any[] = [];
 
 export const DataGrid = ({
@@ -92,6 +94,7 @@ export const DataGrid = ({
   defaultSelectedRowId,
   searchPlaceholder,
   paginationText,
+  ReportExportButton
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -158,6 +161,7 @@ export const DataGrid = ({
 
   const tbodyRef = useRef(null);
   const submitButtonRef = useRef<any>(null);
+  const [isOpenExport, setOpenExport] = useState(false);
   const tableRowRef = useRef<any>(null);
   const rowsToDisplay = enablePagination ? page : rows;
 
@@ -319,6 +323,8 @@ export const DataGrid = ({
             allowColumnHiding={allowColumnHiding}
             headerToolbarStyle={headerToolbarStyle}
             searchPlaceholder={searchPlaceholder}
+            ReportExportButton={ReportExportButton}
+            setOpenExport={setOpenExport}
           />
         )}
         {Boolean(controlsAtBottom) ? null : (
@@ -351,7 +357,7 @@ export const DataGrid = ({
         />
         {!disableLoader ? (
           loading ? (
-            <LinearProgress color="secondary" />
+            <LinearProgress sx={{background: "var(--theme-color6)", "& .MuiLinearProgress-bar": {background: "var(--theme-color1) !important"}}} />
           ) : (
             <LinearProgressBarSpacer />
           )
@@ -558,6 +564,21 @@ export const DataGrid = ({
           </div>
         ) : null}
       </Paper>
+      {isOpenExport && (
+        <Dialog open={isOpenExport}>
+         <ReportExportScreen
+          // globalFilter={""}
+          filters={filters}
+          // queryFilters={queryFilters}
+          title={label}
+          rows={rows}
+          columns={columns}
+          onClose={() => {
+            setOpenExport(false);
+          }}
+        />
+        </Dialog>
+      )}
     </>
   );
 };

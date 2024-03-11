@@ -126,6 +126,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     value,
     setIncomingMessage,
     handleOptionValueExtraData,
+    setErrorAsCB,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -239,6 +240,17 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     let extraOptionData = getExtraOptionData(value);
     handleOptionValueExtraData(extraOptionData);
   }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
+
+  useEffect(() => {
+    if (incomingMessage !== null && typeof incomingMessage === "object") {
+      const { error, isErrorBlank } = incomingMessage;
+      if (isErrorBlank) {
+        setErrorAsCB("");
+      } else if (Boolean(error)) {
+        setErrorAsCB(error);
+      }
+    }
+  }, [incomingMessage, setErrorAsCB]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
@@ -340,7 +352,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         onBlur={handleBlurInterceptor}
         //change by parag  , disabled
         // disabled={isSubmitting}
-        disabled={readOnly}
+        disabled={isSubmitting || readOnly}
         filterOptions={
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"
@@ -394,9 +406,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   <Fragment>
                     {validationRunning || loadingOptions ? (
                       <CircularProgress
-                        color="secondary"
+                        size={25}
+                        // color="secondary"
+                        sx={{ color: "var(--theme-color1)" }}
                         variant="indeterminate"
-                        size={20}
                         {...CircularProgressProps}
                       />
                     ) : (

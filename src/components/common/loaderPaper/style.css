@@ -1,8 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
 .maindiv {
-  min-height: 100vh;
-  width: 100vw;
+  height: 96vh;
+  width: 100%;
   overflow: hidden;
   display: flex;
   justify-content: center;

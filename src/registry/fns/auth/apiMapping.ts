@@ -259,6 +259,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/DOCCUMENTSCANHISTORY",
     packageName: "",
   },
+  VALIDATEDOCDATA: {
+    url: "/customerServiceAPI/VALIDATEDOCDATA",
+    packageName: "",
+  },
   SAVECUSTOMERDATA: {
     url: "/customerServiceAPI/SAVECUSTOMERDATA",
     packageName: "",
@@ -933,6 +937,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/VALIDATEACCOUNT",
     packageName: "",
   },
+  GETFDINTEREST: {
+    url: "/enfinityFDServiceAPI/GETFDINTEREST",
+    packageName: "",
+  },
+  GETFDMATUREAMOUNT: {
+    url: "/enfinityFDServiceAPI/GETFDMATUREAMOUNT",
+    packageName: "",
+  },
+  DOFDDEPOSIT: {
+    url: "/enfinityFDServiceAPI/DOFDDEPOSIT",
+    packageName: "",
+  },
   GETLIMITGRIDDATADISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITGRIDDATADISP",
     packageName: "",
@@ -985,8 +1001,8 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/VALIDDELETECHQDATA",
     packageName: "",
   },
-  GETINWARDCLEARPROCESS: {
-    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWARDCLEARPROCESS",
+  INWARDRETRIVEDATA: {
+    url: "/chequeServiceAPI/INWARDRETRIVEDATA",
     packageName: "",
   },
   GETTODAYTRANDATA: {
@@ -999,6 +1015,46 @@ export const ActionWiseAPIConfiguration = {
   },
   CHEQUESIGNIMG: {
     url: "chequeServiceAPI/CHEQUESIGNIMG",
+    packageName: "",
+  },
+  GETDDDWACCTTYPE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDDWACCTTYPE",
+    packageName: "",
+  },
+  GETLIMITDATAVALIDATE: {
+    url: "loanServiceAPI/GETLIMITDATAVALIDATE",
+    packageName: "",
+  },
+  VALIDDELETELIMITDATA: {
+    url: "loanServiceAPI/VALIDDELETELIMITDATA",
+    packageName: "",
+  },
+  POSTBTNVALIDATE: {
+    url: "chequeServiceAPI/POSTBTNVALIDATE",
+    packageName: "",
+  },
+  RETURNBTNVALIDATE: {
+    url: "chequeServiceAPI/RETURNBTNVALIDATE",
+    packageName: "",
+  },
+  GETPOSITIVEPAYDTL: {
+    url: "chequeServiceAPI/GETPOSITIVEPAYDTL",
+    packageName: "",
+  },
+  DOPOSTDML: {
+    url: "chequeServiceAPI/DOPOSTDML",
+    packageName: "",
+  },
+  GETINWZONEDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWZONEDDW",
+    packageName: "",
+  },
+  GETINWREASONMSTDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWREASONMSTDDW",
+    packageName: "",
+  },
+  GETSYSPARAMSTDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSYSPARAMSTDISP",
     packageName: "",
   },
 };

@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
 import {
+  AppBar,
   Box,
   CircularProgress,
   Dialog,
@@ -9,6 +10,9 @@ import {
   InputAdornment,
   List,
   ListItem,
+  Toolbar,
+  Theme,
+  Typography,
 } from "@mui/material";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { GradientButton } from "components/styledComponent/button";
@@ -31,6 +35,23 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
 import { ChequeSignForm } from "./inwardClearingForm/chequeSignForm";
 import { format } from "date-fns";
+import { ChequeReturnPostFormWrapper } from "./inwardClearingForm/chequeReturnPostForm";
+import { usePopupContext } from "components/custom/popupContext";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
+
+const useTypeStyles = makeStyles((theme: Theme) => ({
+  root: {
+    background: "var(--theme-color5)",
+  },
+  title: {
+    flex: "1 1 100%",
+    color: "var(--theme-color2)",
+    letterSpacing: "1px",
+    fontSize: "1.5rem",
+  },
+  refreshiconhover: {},
+}));
 const actions: ActionTypes[] = [
   {
     actionName: "retrieve",
@@ -39,58 +60,124 @@ const actions: ActionTypes[] = [
     rowDoubleClick: false,
     alwaysAvailable: true,
   },
+  {
+    actionName: "view-details",
+    actionLabel: "Edit Detail",
+    multiple: false,
+    rowDoubleClick: true,
+  },
 ];
 export const InwardClearing = () => {
   const [isOpenRetrieve, setIsOpenRetrieve] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
+  const headerClasses = useTypeStyles();
   const actionClasses = useStyles();
   const { authState } = useContext(AuthContext);
-  const [selectedRows, setSelectedRows] = useState<any>([]);
+  const [selectedRows, setSelectedRows] = useState<any>(
+    authState?.user?.branchCode ?? []
+  );
+  const [selectedRowsData, setSelectedRowsData] = useState<any>(
+    authState?.user?.branchCode ?? []
+  );
   const selectedRowsRef = useRef<any>(null);
   const myRef = useRef<any>();
   const inputButtonRef = useRef<any>(null);
-  const [selectedRowsData, setSelectedRowsData] = useState<any>([]);
   const [selectAll, setSelectAll] = useState<any>(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState<any>([]);
   const [isChequeSign, setIsChequeSign] = useState<any>(false);
-  const mysubdtlRef = useRef({});
+  const [formData, setFormData] = useState<any>();
+  const [isChequeReturnPost, setIsChequeReturnPost] = useState<any>(false);
+  const mysubdtlRef = useRef<any>({});
+  const { MessageBox } = usePopupContext();
+  const navigate = useNavigate();
   const { data, isLoading, isFetching, refetch, error, isError, status } =
     useQuery<any, any>(["BranchSelectionGridData"], () =>
       API.BranchSelectionGridData()
     );
 
   const getInwardClearingData: any = useMutation(API.getInwardClearingData, {
-    onSuccess: (data) => {
-      refetch();
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
     },
-    onError: (error: any) => {},
+
+    onSuccess: (data) => {},
   });
 
+  const validatePostData: any = useMutation(API.validatePost, {
+    onSuccess: (data, variables) => {
+      let apiReq = {
+        ...variables,
+        _isNewRow: true,
+      };
+      if (data?.[0]?.O_STATUS === "0") {
+        // setMessageData({
+        //   messageTitle: "Validation Successfull..",
+        //   message: "Do you Want to save this data",
+        //   apiReq: apiReq,
+        // });
+        // setIsOpenSave(true);
+      } else if (data?.[0]?.O_STATUS === "9") {
+        MessageBox({
+          messageTitle: "Validation Alert..",
+          message: data?.[0]?.O_MESSAGE,
+        });
+      } else if (data?.[0]?.O_STATUS === "99") {
+        // setMessageData({
+        //   messageTitle: "Are you sure do you want to continue?",
+        //   message: data?.[0]?.O_MESSAGE,
+        //   apiReq: apiReq,
+        // });
+        // setIsOpenSave(true);
+      } else if (data?.[0]?.O_STATUS === "999") {
+        MessageBox({
+          messageTitle: "Validation Failed...!",
+          message: data?.[0]?.O_MESSAGE,
+        });
+      }
+    },
+    // onSuccess: async (data, variables) => {
+    //   console.log("data!!", data, variables);
+    //   if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
+    //     MessageBox({
+    //       messageTitle: "Validation Failed",
+    //       message: data?.[0]?.O_MESSAGE,
+    //     });
+    //   } else if (
+    //     data?.[0]?.O_STATUS === "99" ||
+    //     "9" ||
+    //     ("0" && data?.[0]?.O_MESSAGE)
+    //   ) {
+    //     // setDeletePopup(true);
+    //   }
+    // },
+  });
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "retrieve") {
       setIsOpenRetrieve(true);
+    } else if (data?.name === "view-details") {
+      mysubdtlRef.current = data?.rows?.[0]?.data;
+      setIsChequeReturnPost(true);
     }
-    // else {
-    //   navigate(data?.name, {
-    //     state: data?.rows,
-    //   });
-    // }
   }, []);
   useEffect(() => {
     if (!isLoading && !isFetching) {
-      const filteredData = data?.filter(
-        (item) => item?.value === authState?.user?.branchCode
-      );
       setFilteredData(data);
-      setSelectedRows(filteredData?.map((item) => item?.value));
     }
   }, [isLoading, isFetching]);
+
   useEffect(() => {
     return () => {
       queryClient.removeQueries(["BranchSelectionGridData"]);
     };
   }, []);
+
   const handleRowClick = (event: any, name: string, label: string) => {
     setSelectAll(false);
     if (event.ctrlKey) {
@@ -114,7 +201,6 @@ export const InwardClearing = () => {
     );
     setFilteredData(filtered);
   };
-
   const onSubmitHandler: SubmitFnType = (
     data: any,
     displayData,
@@ -124,16 +210,15 @@ export const InwardClearing = () => {
   ) => {
     // @ts-ignore
     endSubmit(true);
-
     getInwardClearingData.mutate({
       data: {
         ...data,
-        BRANCH_CD: selectedRowsRef.current,
+        BRANCH_CD: selectedRowsRef?.current.toString(),
         COMP_CD: authState?.companyID ?? "",
-        TRAN_DT: authState?.workingDate,
       },
       endSubmit,
     });
+    setFormData(data);
     setIsOpenRetrieve(false);
   };
   return (
@@ -153,13 +238,24 @@ export const InwardClearing = () => {
           PaperProps={{
             style: {
               width: "55%",
-              // minHeight: "36vh",
-              // height: "36vh",
             },
           }}
           maxWidth="md"
         >
           <>
+            {" "}
+            <AppBar position="relative" color="secondary" style={{}}>
+              <Toolbar className={headerClasses.root} variant={"dense"}>
+                <Typography
+                  className={headerClasses.title}
+                  color="inherit"
+                  variant={"h6"}
+                  component="div"
+                >
+                  Parameters
+                </Typography>
+              </Toolbar>
+            </AppBar>
             <FormWrapper
               key={"inwardClearingRetrieval"}
               metaData={InwardClearingRetrievalMetadata as MetaDataType}
@@ -170,7 +266,9 @@ export const InwardClearing = () => {
                 background: "white",
                 padding: "0px",
               }}
+              containerstyle={{ paddingTop: "0px !important" }}
               ref={myRef}
+              hideHeader={true}
             />
             <TextField
               placeholder="Search"
@@ -204,13 +302,19 @@ export const InwardClearing = () => {
                   </div>
                 </>
               ) : (
-                <Grid item xs={12} sm={12} md={12} style={{ padding: "10px" }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  md={12}
+                  style={{ padding: "3px 19px 0px 10px" }}
+                >
                   <Box
                     sx={{
                       width: "100%",
                       // maxWidth: 400,
                       bgcolor: "background.paper",
-                      height: "35vh",
+                      height: "50vh",
                       overflow: "scroll",
                       border: "ridge",
                       borderRadius: "3",
@@ -225,7 +329,7 @@ export const InwardClearing = () => {
                           position: "sticky",
                           top: 0,
                           textAlign: "left",
-                          padding: ".75rem",
+                          padding: ".45rem",
                           fontWeight: 500,
                           fontFamily: "Roboto, Helvetica",
                           background: "var(--theme-color1)",
@@ -259,9 +363,21 @@ export const InwardClearing = () => {
                               handleRowClick(event, item?.value, item?.label)
                             }
                             onDoubleClick={(event) => {
-                              selectedRowsRef.current = selectedRows;
-                              myRef?.current?.handleSubmit(event, "save");
-                              setIsOpenRetrieve(false);
+                              if (
+                                selectedRows?.length === 0 ||
+                                selectedRowsData?.length === 0
+                              ) {
+                                enqueueSnackbar(
+                                  "Please select at least one row.",
+                                  {
+                                    variant: "error",
+                                  }
+                                );
+                              } else {
+                                setIsOpenRetrieve(false);
+                                myRef?.current?.handleSubmit(event, "save");
+                                selectedRowsRef.current = selectedRows;
+                              }
                             }}
                           />
                         ))}
@@ -291,7 +407,7 @@ export const InwardClearing = () => {
                     }
                   }}
                 >
-                  {status === "success" && selectAll
+                  {getInwardClearingData?.status === "success" && selectAll
                     ? "Deselect All"
                     : "Select All"}
                 </GradientButton>
@@ -303,8 +419,8 @@ export const InwardClearing = () => {
                   }
                   onClick={(event) => {
                     if (
-                      (!selectedRows && selectedRows?.length > 0) ||
-                      (!selectedRowsData && selectedRowsData?.length > 0)
+                      selectedRows?.length === 0 ||
+                      selectedRowsData?.length === 0
                     ) {
                       enqueueSnackbar("Please select at least one row.", {
                         variant: "error",
@@ -342,26 +458,42 @@ export const InwardClearing = () => {
           loading={getInwardClearingData.isLoading || isFetching}
           actions={actions}
           setAction={setCurrentAction}
-          refetchData={() => refetch()}
+          ReportExportButton={true}
+          refetchData={() =>
+            getInwardClearingData.mutate({
+              data: {
+                ...formData,
+                BRANCH_CD: selectedRowsRef?.current.toString(),
+                COMP_CD: authState?.companyID ?? "",
+              },
+            })
+          }
           onlySingleSelectionAllow={true}
           onClickActionEvent={(index, id, data) => {
-            console.log("test", id, data);
             if (id === "SIGN_PATH") {
-              mysubdtlRef.current = {
-                COMP_CD: data?.COMP_CD,
-                ENTERED_COMP_CD: data?.ENTERED_COMP_CD,
-                ENTERED_BRANCH_CD: data?.ENTERED_BRANCH_CD,
-                BRANCH_CD: data?.BRANCH_CD,
-                ACCT_TYPE: data?.ACCT_TYPE,
-                ACCT_CD: data?.ACCT_CD,
-                DAILY_TRN_CD: data?.DAILY_TRN_CD,
-                TRAN_CD: data?.TRAN_CD,
-                TRAN_DT: format(new Date(data?.TRAN_DT), "dd/MMM/yyyy"),
-                TRAN_FLAG: "E",
-                WITH_SIGN: "Y",
-                ENTERED_BY: data?.ENTERED_BY,
-              };
+              mysubdtlRef.current = data;
               setIsChequeSign(true);
+            } else if (id === "POST_CONF") {
+              const postData = {
+                COMP_CD: data?.COMP_CD ?? "",
+                BRANCH_CD: data?.BRANCH_CD ?? "",
+                ACCT_TYPE: data?.ACCT_TYPE ?? "",
+                ACCT_CD: data?.ACCT_CD ?? "",
+                ERROR_STATUS: data?.ERR_STATUS ?? "",
+                SCREEN_REF: "TRN/650",
+                ENTERED_BY: data?.ENTERED_BY ?? "",
+                ENTERED_BRANCH_CD: data?.ENTERED_BRANCH_CD ?? "",
+                REMARKS: data?.REMARKS ?? "",
+                CHEQUE_DATE: data?.CHEQUE_DT ?? "",
+                CHEQUE_NO: data?.CHEQUE_NO ?? "",
+                AMOUNT: data?.AMOUNT ?? "",
+                TRAN_CD: data?.TRAN_CD ?? "",
+                MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
+              };
+              validatePostData.mutate(postData);
+            } else if (id === "RETURN") {
+              mysubdtlRef.current = data;
+              setIsChequeReturnPost(true);
             }
           }}
         />
@@ -373,6 +505,17 @@ export const InwardClearing = () => {
               setIsChequeSign(false);
             }}
             reqDataRef={mysubdtlRef}
+          />
+        ) : null}
+      </>
+
+      <>
+        {isChequeReturnPost ? (
+          <ChequeReturnPostFormWrapper
+            onClose={() => {
+              setIsChequeReturnPost(false);
+            }}
+            inwardData={mysubdtlRef}
           />
         ) : null}
       </>
@@ -397,6 +540,8 @@ export const ListItemData = ({
           fontSize: "14px",
           backgroundColor: selected ? "var(--theme-color3)" : "transparent",
           border: "0.5px solid #F3F6F9",
+          paddingTop: "3px",
+          paddingBottom: "3px",
         }}
         onClick={onClick}
         onDoubleClick={onDoubleClick}
@@ -406,7 +551,7 @@ export const ListItemData = ({
             style={{
               textAlign: "left",
               flex: index === 2 ? 1.5 : 0.5,
-              padding: ".35rem 0",
+              // padding: ".35rem 0",
               fontWeight: 400,
               fontFamily: "Roboto, Helvetica",
             }}

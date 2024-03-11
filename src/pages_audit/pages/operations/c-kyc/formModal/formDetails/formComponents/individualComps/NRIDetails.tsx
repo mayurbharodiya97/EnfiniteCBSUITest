@@ -10,16 +10,46 @@ import TabNavigate from "../TabNavigate"
 
 const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
-    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
+    const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
     const { t } = useTranslation();
     const NRIDTLFormRef = useRef<any>("");
     const { authState } = useContext(AuthContext);
     const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+    const [formStatus, setFormStatus] = useState<any[]>([])
     useEffect(() => {
         let refs = [NRIDTLFormRef]
-        handleCurrentFormRefctx(refs)
+        handleCurrFormctx({
+          currentFormRefctx: refs,
+          colTabValuectx: state?.colTabValuectx,
+          currentFormSubmitted: null,
+          isLoading: false,
+        })
     }, [])
 
+    useEffect(() => {
+        // console.log("qweqweqweqwe", formStatus2)
+        if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+          if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+            setIsNextLoading(false)
+            let submitted;
+            submitted = formStatus.filter(form => !Boolean(form))
+            if(submitted && Array.isArray(submitted) && submitted.length>0) {
+              submitted = false;
+            } else {
+              submitted = true;
+              handleStepStatusctx({
+                status: "completed",
+                coltabvalue: state?.colTabValuectx,
+              })
+            }
+            handleCurrFormctx({
+              currentFormSubmitted: submitted,
+              isLoading: false,
+            })
+            setFormStatus([])
+          }
+        }
+    }, [formStatus])
 
     const NRIDTLSubmitHandler = (
         data: any,
@@ -32,7 +62,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
         let formFields = Object.keys(data) // array, get all form-fields-name 
         formFieldsRef.current = [...formFields] // array, added distinct all form-field names
 
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
         if(data && !hasError) {
             // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
@@ -58,15 +88,17 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                 }
                 handleModifiedColsctx(tabModifiedCols)
             }
+            setFormStatus(old => [...old, true])
             // handleColTabChangectx(7)
-            handleColTabChangectx(state?.colTabValuectx+1)
-            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            // handleColTabChangectx(state?.colTabValuectx+1)
+            // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+            setFormStatus(old => [...old, false])
         }
         endSubmit(true)
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
     }
     const initialVal = useMemo(() => {
         return state?.isFreshEntryctx
@@ -79,6 +111,9 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
+        handleCurrFormctx({
+            isLoading: true,
+        })
         const refs = [NRIDTLFormRef.current.handleSubmitError(e, "save", false)]
         handleSavectx(e, refs)
     }
@@ -114,7 +149,7 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                     </Grid>                    
                 </Grid>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
         </Grid>
     )
 }

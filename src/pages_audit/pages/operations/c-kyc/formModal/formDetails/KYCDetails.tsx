@@ -30,6 +30,7 @@ import _ from "lodash";
 import { AuthContext } from "pages_audit/auth";
 import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "./formComponents/TabNavigate";
+import { MessageBoxWrapper } from "components/custom/messageBox";
 
 const KYCDetails = ({
   isCustomerData,
@@ -49,7 +50,8 @@ const KYCDetails = ({
     handleStepStatusctx,
     handleModifiedColsctx,
     handleCurrentFormRefctx,
-    handleSavectx
+    handleSavectx,
+    handleCurrFormctx
   } = useContext(CkycContext);
   const { authState } = useContext(AuthContext);
   const [isPoIExpanded, setIsPoIExpanded] = useState(true);
@@ -95,8 +97,37 @@ const KYCDetails = ({
 
   useEffect(() => {
     let refs = [KyCPoIFormRef, KyCPoAFormRef]
-    handleCurrentFormRefctx(refs)
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: state?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
   }, [])
+  useEffect(() => {
+    // console.log("qweqweqweqwe", formStatus)
+    if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
+        let submitted;
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+          submitted = false;
+        } else {
+          submitted = true;
+          handleStepStatusctx({
+            status: "completed",
+            coltabvalue: state?.colTabValuectx,
+          })
+        }
+        handleCurrFormctx({
+          currentFormSubmitted: submitted,
+          isLoading: false,
+        })
+        setFormStatus([])
+      }
+    }
+  }, [formStatus])
 
   const POIMetadata = state?.entityTypectx === "I" 
     ? kyc_proof_of_identity_meta_data 
@@ -114,7 +145,7 @@ const KYCDetails = ({
     actionFlag,
     hasError
   ) => {
-    setIsNextLoading(true);
+    // setIsNextLoading(true);
 
     if (data && !hasError) {
 
@@ -130,18 +161,29 @@ const KYCDetails = ({
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
+      if(!state?.isFreshEntryctx) {
+        // on edit/view
+        let tabModifiedCols:any = state?.modifiedFormCols
+        let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+        tabModifiedCols = {
+          ...tabModifiedCols,
+          PERSONAL_DETAIL: [...updatedCols]
+        }
+        handleModifiedColsctx(tabModifiedCols)        
+      }
       // if(state?.isFreshEntryctx) {
-        setFormStatus(old => [...old, Promise.resolve(1)])
+        setFormStatus(old => [...old, true])
         // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
         // KyCPoAFormRef.current.handleSubmitError(NextBtnRef.current, "save");
       // }
     } else {
-      // handleStepStatusctx({
-      //   status: "error",
-      //   coltabvalue: state?.colTabValuectx,
-      // });
+      handleStepStatusctx({
+        status: "error",
+        coltabvalue: state?.colTabValuectx,
+      });
+      setFormStatus(old => [...old, false])
     }
-    setIsNextLoading(false);
+    // setIsNextLoading(false);
     endSubmit(true)
   };
   const PoASubmitHandler = (
@@ -153,7 +195,7 @@ const KYCDetails = ({
     hasError
   ) => {
     // console.log("qekdiwqeydwyegdwef", data)
-    setIsNextLoading(true);
+    // setIsNextLoading(true);
     if (data && !hasError) {
       let formFields = Object.keys(data) // array, get all form-fields-name 
       formFields = formFields.filter(field => !(field.includes("_ignoreField") || field.includes("DISTRICT_NM") || field.includes("LOC_DISTRICT_NM"))) // array, removed divider field
@@ -185,17 +227,18 @@ const KYCDetails = ({
         //   status: "completed",
         //   coltabvalue: state?.colTabValuectx,
         // });
-        setFormStatus(old => [...old, Promise.resolve(1)])
+        setFormStatus(old => [...old, true])
       // }
       // setIsNextLoading(false)
     } else {
-      // handleStepStatusctx({
-      //   status: "error",
-      //   coltabvalue: state?.colTabValuectx,
-      // });
+      handleStepStatusctx({
+        status: "error",
+        coltabvalue: state?.colTabValuectx,
+      });
+      setFormStatus(old => [...old, false])
     }
     endSubmit(true);
-    setIsNextLoading(false);
+    // setIsNextLoading(false);
   };
 
   const initialVal = useMemo(() => {
@@ -208,35 +251,10 @@ const KYCDetails = ({
       : {};
   }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes]);
 
-  useEffect(() => {
-    // console.log("evalSave formStatuse", formStatus)
-    if(formStatus.length === 2) {
-      // console.log("evalSave if pro length",formStatus.length)
-      Promise.all(formStatus)
-      .then(res => {
-        // console.log("evalSave in success ",res)
-        handleStepStatusctx({
-          status: "completed",
-          coltabvalue: state?.colTabValuectx,
-        });
-        handleColTabChangectx(state?.colTabValuectx + 1);
-      })
-      .catch(err => {
-        console.log("evalSave in catch", err.message)
-      })
-    } else {
-      // console.log("evalSave pro length else",formStatus.length)
-      if(formStatus.length>0) {
-        handleStepStatusctx({
-          status: "error",
-          coltabvalue: state?.colTabValuectx,
-        })
-      }
-    }
-    setFormStatus([])
-  }, [formStatus.length])
-
   const handleSave = (e) => {
+    handleCurrFormctx({
+      isLoading: true,
+    })
     const refs = [KyCPoIFormRef.current.handleSubmitError(e, "save", false), KyCPoAFormRef.current.handleSubmitError(e, "save", false)]
     handleSavectx(e, refs)
   } 
@@ -294,7 +312,12 @@ const KYCDetails = ({
                 metaData={POIMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
-                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                formState={{
+                  COMP_CD: authState?.companyID ?? "", 
+                  CUSTOMER_ID: state?.customerIDctx ?? "", 
+                  REQ_FLAG: state?.isFreshEntryctx ? "F" : "E",
+                  RESIDENCE_STATUS: state?.formDatactx["PERSONAL_DETAIL"]?.RESIDENCE_STATUS ?? "",
+                }}
                 setDataOnFieldChange={(action, payload) => {
                   // console.log("wekjukfhwiuefadw", action)
                   // const result = payload;
@@ -426,9 +449,23 @@ const KYCDetails = ({
           width="100%"
         ></Skeleton>
       ) : null}
-      <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
+      <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
 
-      <Dialog
+        {
+          openDialog && 
+          <MessageBoxWrapper
+            MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}
+            Message={errMsg ?? "No Message"}
+            onClickButton={() => {
+              setOpenDialog(false)
+              setErrMsg("")
+            }}
+            rows={[]}
+            buttonNames={["OK"]}
+            open={true}
+          />
+        }
+      {/* <Dialog
         open={openDialog}
         maxWidth={"sm"}
         PaperProps={{
@@ -467,7 +504,7 @@ const KYCDetails = ({
             CANCEL
           </GradientButton>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Grid>
   );
 };

@@ -584,14 +584,26 @@ const GeneralAPISDK = () => {
       return "";
     }
   };
-  const getMatureInstDetail = async (...ReqData) => {
-    if (!Boolean(ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value)) return [];
-    if (!Boolean(ReqData?.[2]?.["FDACCTS.ACCT_TYPE"]?.value)) return [];
+  const getMatureInstDetail = async (_, __, dependantFields, authState) => {
+    let branchCd = "";
+    let acctType = "";
+    Object.keys(dependantFields).forEach((key) => {
+      if (key.startsWith("FDDTL") || key.startsWith("FDACCT")) {
+        const fieldName = key.split(".")[1];
+        if (fieldName === "BRANCH_CD") {
+          branchCd = dependantFields[key].value;
+        } else if (fieldName === "ACCT_TYPE") {
+          acctType = dependantFields[key].value;
+        }
+      }
+    });
+    if (!Boolean(branchCd)) return [];
+    if (!Boolean(acctType)) return [];
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETMATUREINSTDTL", {
-        COMP_CD: ReqData?.[3]?.companyID ?? "",
-        BRANCH_CD: ReqData?.[2]?.["FDACCTS.BRANCH_CD"]?.value ?? "",
-        ACCT_TYPE: ReqData?.[2]?.["FDACCTS.ACCT_TYPE"]?.value ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: branchCd ?? "",
+        ACCT_TYPE: acctType ?? "",
       });
     if (status === "0") {
       let responseData = data;
@@ -608,6 +620,72 @@ const GeneralAPISDK = () => {
     }
   };
 
+  const getFDInterest = async (currField, dependentFields) => {
+    let currFieldName = currField?.name?.split(".");
+    let fieldName = currFieldName[currFieldName.length - 1];
+    let tranDate =
+      fieldName === "TRAN_DT"
+        ? currField?.value
+        : dependentFields?.["FDDTL.TRAN_DT"]?.value;
+    let fdAmount =
+      fieldName === "FD_AMOUNT"
+        ? currField?.value
+        : dependentFields?.["FDDTL.FD_AMOUNT"]?.value;
+    let periodCode =
+      fieldName === "PERIOD_CD"
+        ? currField?.value
+        : dependentFields?.["FDDTL.PERIOD_CD"]?.value;
+    let periodNo =
+      fieldName === "PERIOD_NO"
+        ? currField?.value
+        : dependentFields?.["FDDTL.PERIOD_NO"]?.value;
+    if (
+      !Boolean(tranDate) ||
+      !Boolean(fdAmount) ||
+      !Boolean(periodCode) ||
+      !Boolean(periodNo)
+    )
+      return {};
+    const { data, status, message } = await AuthSDK.internalFetcher(
+      "GETFDINTEREST",
+      {
+        COMP_CD: dependentFields?.["FDDTL.COMP_CD"]?.value ?? "",
+        BRANCH_CD: dependentFields?.["FDDTL.BRANCH_CD"]?.value ?? "",
+        ACCT_TYPE: dependentFields?.["FDDTL.ACCT_TYPE"]?.value ?? "",
+        ACCT_CD: dependentFields?.["FDDTL.ACCT_CD"]?.value ?? "",
+        CATEG_CD: dependentFields?.["FDDTL.CATEG_CD"]?.value ?? "",
+        // CATEG_CD: "",
+        TRAN_DT: format(tranDate, "dd/MM/yyyy"),
+        FD_AMOUNT: fdAmount,
+        PERIOD_CD: periodCode,
+        PERIOD_NO: periodNo,
+      }
+    );
+    if (status === "0") {
+      return {
+        INT_RATE: {
+          value: data?.[0]?.INT_RATE ?? "",
+        },
+        MATURITY_DT: {
+          value: data?.[0]?.MATURITY_DT ?? "",
+        },
+      };
+    } else {
+      return {
+        [fieldName]: {
+          value: "",
+          error: message ?? "",
+          ignoreUpdate: true,
+        },
+        INT_RATE: {
+          value: "",
+        },
+        MATURITY_DT: {
+          value: "",
+        },
+      };
+    }
+  };
   const getAccNoValidation = async (reqData) => {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("ACCTNOVALIDATION", {
@@ -615,7 +693,6 @@ const GeneralAPISDK = () => {
         COMP_CD: reqData?.COMP_CD,
         ACCT_TYPE: reqData?.ACCT_TYPE,
         ACCT_CD: reqData?.ACCT_CD,
-
         GD_TODAY_DT: format(new Date(), "dd-MMM-yyyy"),
         SCREEN_REF: reqData?.SCREEN_REF, //depending on screen code
       });
@@ -623,6 +700,30 @@ const GeneralAPISDK = () => {
       let responseData = data;
 
       return responseData[0];
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
+  const get_Account_Type = async (apiReq) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("GETDDDWACCTTYPE", {
+        ...apiReq,
+      });
+    if (status === "0") {
+      let responseData = data;
+
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ ACCT_TYPE, PARENT_CODE, DESCRIPTION, ...other }) => {
+            return {
+              value: ACCT_TYPE,
+              label: ACCT_TYPE + " - " + DESCRIPTION,
+              ...other,
+            };
+          }
+        );
+      }
+      return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
@@ -654,7 +755,9 @@ const GeneralAPISDK = () => {
     getProMiscData,
     getZoneListData,
     getMatureInstDetail,
+    getFDInterest,
     getAccNoValidation,
+    get_Account_Type,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

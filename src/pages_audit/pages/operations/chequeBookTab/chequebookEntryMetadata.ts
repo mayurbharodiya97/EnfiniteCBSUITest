@@ -66,6 +66,16 @@ export const ChequeBookEntryMetaData = {
       },
       accountTypeMetadata: {
         // isFieldFocused: true,
+        options: (dependentValue, formState, _, authState) => {
+          console.log("<<<<fnef", dependentValue, formState, _, authState);
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "ETRN/045",
+          });
+        },
+        _optionsKey: "securityDropDownListType",
         postValidationSetCrossFieldValues: async (field) => {
           if (field?.value) {
             return {
@@ -100,7 +110,6 @@ export const ChequeBookEntryMetaData = {
             dependentValue?.ACCT_TYPE?.value
           ) {
             let otherAPIRequestPara = {
-              COMP_CD: authState?.companyID,
               ACCT_CD: utilFunction.getPadAccountNumber(
                 field?.value,
                 dependentValue?.ACCT_TYPE?.optionData
@@ -147,7 +156,7 @@ export const ChequeBookEntryMetaData = {
                 message: result,
                 buttonNames: ["Ok"],
               });
-              if (res === "Ok") {
+              if (res === "Ok" && postData?.[0]?.MESSAGE1) {
                 formState.MessageBox({
                   messageTitle: "HNI Alert",
                   message: postData?.[0]?.MESSAGE1,
@@ -191,7 +200,7 @@ export const ChequeBookEntryMetaData = {
                   value: postData?.[0]?.SR_CD ?? "",
                 },
                 TOOLBAR_DTL: {
-                  value: `No. of chequebook issued = ${postData?.[0]?.NO_CHEQUEBOOK_ISSUE} , No of cheque used = ${postData?.[0]?.NO_CHEQUE_USED} , No of cheque stop = ${postData?.[0]?.NO_CHEQUE_STOP} , No of cheque surrender = ${postData?.[0]?.NO_CHEQUE_SURRENDER} , No of unused cheque =  ${postData?.[0]?.NO_OF_CHEQUE_UNUSED} `,
+                  value: `No. of chequebook issued = ${postData?.[0]?.NO_CHEQUEBOOK_ISSUE} \u00A0\u00A0\u00A0\u00A0\u00A0 No. of cheque used = ${postData?.[0]?.NO_CHEQUE_USED} \u00A0\u00A0\u00A0\u00A0\u00A0 No. of cheque stop = ${postData?.[0]?.NO_CHEQUE_STOP} \u00A0\u00A0\u00A0\u00A0\u00A0 No. of cheque surrender = ${postData?.[0]?.NO_CHEQUE_SURRENDER} \u00A0\u00A0\u00A0\u00A0\u00A0 No. of unused cheque =  ${postData?.[0]?.NO_OF_CHEQUE_UNUSED} `,
                 },
               };
             } else {
@@ -232,7 +241,7 @@ export const ChequeBookEntryMetaData = {
                   value: postData?.[0]?.SR_CD ?? "",
                 },
                 TOOLBAR_DTL: {
-                  value: `No. of chequebook issued = ${postData?.[0]?.NO_CHEQUEBOOK_ISSUE} , No of cheque used = ${postData?.[0]?.NO_CHEQUE_USED} , No of cheque stop = ${postData?.[0]?.NO_CHEQUE_STOP} , No of cheque surrender = ${postData?.[0]?.NO_CHEQUE_SURRENDER} , No of unused cheque =  ${postData?.[0]?.NO_OF_CHEQUE_UNUSED} `,
+                  value: `No. of chequebook issued = ${postData?.[0]?.NO_CHEQUEBOOK_ISSUE} \u00A0\u00A0\u00A0\u00A0\u00A0 No. of cheque used = ${postData?.[0]?.NO_CHEQUE_USED} \u00A0\u00A0\u00A0\u00A0\u00A0 No. of cheque stop = ${postData?.[0]?.NO_CHEQUE_STOP} \u00A0\u00A0\u00A0\u00A0\u00A0 No. of cheque surrender = ${postData?.[0]?.NO_CHEQUE_SURRENDER} \u00A0\u00A0\u00A0\u00A0\u00A0 No. of unused cheque =  ${postData?.[0]?.NO_OF_CHEQUE_UNUSED} `,
                 },
               };
             }
@@ -264,7 +273,6 @@ export const ChequeBookEntryMetaData = {
       },
       name: "ACCT_NM",
       label: "Account Name",
-      placeholder: "Account Name",
       type: "text",
       isReadOnly: true,
       GridProps: {
@@ -281,7 +289,6 @@ export const ChequeBookEntryMetaData = {
       },
       name: "ACCT_BAL",
       label: "Balance",
-      placeholder: "Enter no of Cheque book",
       type: "text",
       FormatProps: {
         allowNegative: true,
@@ -307,10 +314,10 @@ export const ChequeBookEntryMetaData = {
       },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -319,7 +326,7 @@ export const ChequeBookEntryMetaData = {
       },
       name: "CHEQUE_FROM",
       label: "From Cheque No.",
-      placeholder: "From Cheque No.",
+      required: true,
       type: "text",
       textFieldStyle: {
         "& .MuiInputBase-input": {
@@ -331,13 +338,13 @@ export const ChequeBookEntryMetaData = {
         //   left: "auto",
         // },
       },
-      // isReadOnly: true,
+      isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -347,7 +354,7 @@ export const ChequeBookEntryMetaData = {
       name: "LEAF_ARR",
       label: "No. of Cheque(s)",
       placeholder: "Enter no of Cheque book",
-      type: "text",
+      required: true,
       textFieldStyle: {
         "& .MuiInputBase-input": {
           textAlign: "right",
@@ -357,13 +364,12 @@ export const ChequeBookEntryMetaData = {
         //   left: "auto",
         // },
       },
-      // isFieldFocused: false,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
       validate: (currentField, value, formState, newbal) => {
         if (value?.ACCT_CD?.error) {
@@ -404,14 +410,10 @@ export const ChequeBookEntryMetaData = {
       ) => {
         if (field.value) {
           let Apireq = {
-            COMP_CD: auth.companyID,
             BRANCH_CD: dependentFieldsValues.BRANCH_CD.value,
             ACCT_TYPE: dependentFieldsValues.ACCT_TYPE.value,
             ACCT_CD: dependentFieldsValues.ACCT_CD.value,
             NO_OF_LEAVES: field.value,
-            ENT_COMP: auth.companyID,
-            ENT_BRANCH: dependentFieldsValues.BRANCH_CD.value,
-            SYS_DATE: auth?.workingDate,
           };
           let postdata = await API.chequebookCharge(Apireq);
 
@@ -450,7 +452,6 @@ export const ChequeBookEntryMetaData = {
       },
       name: "CHEQUE_TO",
       label: "To Cheque No.",
-      placeholder: "To Cheque No.",
       type: "text",
       textFieldStyle: {
         "& .MuiInputBase-input": {
@@ -465,61 +466,14 @@ export const ChequeBookEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["To cheque no. is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "numberFormat",
-      },
-      name: "CHEQUE_TOTAL",
-      label: "No of ChequeBooks",
-      textFieldStyle: {
-        "& .MuiInputBase-input": {
-          textAlign: "right",
-        },
-        // "& .MuiInputLabel-formControl": {
-        //   right: "0",
-        //   left: "auto",
-        // },
-      },
-      placeholder: "Enter no of Cheque book",
-      type: "text",
-      defaultValue: "1",
-      FormatProps: {
-        isAllowed: (values) => {
-          if (values?.value?.length > 2) {
-            return false;
-          }
-          return true;
-        },
-      },
-      dependentFields: ["ACCT_BAL"],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentFields
-      ) => {
-        if (field?.value > 1 && Number(!dependentFields?.ACCT_BAL?.error)) {
-          formState.setDataOnFieldChange("CHEQUE_TOTAL", {
-            CHEQUE_TOTAL: true,
-          });
-        }
-      },
-      GridProps: {
-        xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
       },
     },
 
@@ -539,10 +493,10 @@ export const ChequeBookEntryMetaData = {
       // },
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
       dependentFields: [
         "SERVECE_C_FLAG",
@@ -609,7 +563,6 @@ export const ChequeBookEntryMetaData = {
       },
       name: "AMOUNT",
       label: "GST-Amount",
-      placeholder: "GST-AMOUNT",
       type: "text",
       // textFieldStyle: {
       //   "& .MuiInputLabel-formControl": {
@@ -620,12 +573,60 @@ export const ChequeBookEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "CHEQUE_TOTAL",
+      label: "No of ChequeBooks",
+      textFieldStyle: {
+        "& .MuiInputBase-input": {
+          textAlign: "right",
+        },
+        // "& .MuiInputLabel-formControl": {
+        //   right: "0",
+        //   left: "auto",
+        // },
+      },
+      placeholder: "Enter no of Cheque book",
+      type: "text",
+      defaultValue: "1",
+      FormatProps: {
+        isAllowed: (values) => {
+          if (values?.value?.length > 2) {
+            return false;
+          }
+          return true;
+        },
+      },
+      dependentFields: ["ACCT_BAL"],
+      postValidationSetCrossFieldValues: async (
+        field,
+        formState,
+        authState,
+        dependentFields
+      ) => {
+        if (field?.value > 1 && Number(!dependentFields?.ACCT_BAL?.error)) {
+          formState.setDataOnFieldChange("CHEQUE_TOTAL", {
+            CHEQUE_TOTAL: true,
+          });
+        }
+      },
+      GridProps: {
+        xs: 12,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
+      },
+    },
+
     {
       render: {
         componentType: "autocomplete",
@@ -644,10 +645,10 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
 
@@ -656,7 +657,6 @@ export const ChequeBookEntryMetaData = {
         componentType: "autocomplete",
       },
       name: "CHARACTERISTICS",
-      // sequence: 4,
       label: "Characteristics",
       placeholder: "Characteristics",
       type: "text",
@@ -670,10 +670,10 @@ export const ChequeBookEntryMetaData = {
       _optionsKey: "CHARACTERISTICS",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -684,13 +684,12 @@ export const ChequeBookEntryMetaData = {
       label: "Requisition Date",
       isReadOnly: true,
       maxDate: new Date(),
-      placeholder: "",
       GridProps: {
         xs: 12,
-        md: 2.4,
-        sm: 2.4,
-        lg: 2.4,
-        xl: 2.4,
+        md: 2,
+        sm: 2,
+        lg: 2,
+        xl: 2,
       },
     },
     {
@@ -727,7 +726,6 @@ export const ChequeBookEntryMetaData = {
       type: "text",
       shouldExclude(fieldData) {
         if (fieldData?.value) {
-          console.log("<<<fiel", fieldData);
           return false;
         } else {
           return true;
@@ -775,14 +773,41 @@ export const ChequeBookEntryMetaData = {
         "& .MuiInputBase-input": {
           background: "var(--theme-color5)",
           minHeight: "35px !important",
-          fontSize: "15px",
+          fontSize: "17px",
           color: "white",
+          textAlign: "center",
           boxShadow:
             "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px",
           paddingY: "0px !important",
+          animation: "5s anim-popoutin ease ",
+        },
+
+        "@keyframes anim-popoutin": {
+          "0%": {
+            transform: "scale(0)",
+            opacity: "0",
+            textShadow: "0 0 0 rgba(0, 0, 0, 0)",
+          },
+          "25% ": {
+            color: "var(--theme-color6)",
+            transform: "scale(1.5)",
+            opacity: "1",
+            textShadow: "3px 10px 5px rgba(0, 0, 0, 0.5)",
+          },
+          "50%": {
+            transform: "scale(1)",
+            opacity: "1",
+            textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "1",
+            textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
+          },
         },
         "& .MuiInputBase-root": {
           marginTop: " 0px !important",
+          overflow: "hidden",
         },
       },
       shouldExclude(fieldData) {

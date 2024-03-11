@@ -16,18 +16,49 @@ const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, set
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext);
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
   const RelPersonFormRef = useRef<any>("")
   const [isRelatedPDExpanded, setIsRelatedPDExpanded] = useState(true)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+  const [formStatus, setFormStatus] = useState<any[]>([])
   const handleRelatedPDExpand = () => {
     setIsRelatedPDExpanded(!isRelatedPDExpanded)
   }
   useEffect(() => {
     let refs = [RelPersonFormRef]
-    handleCurrentFormRefctx(refs)
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: state?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
   }, [])
+
+  useEffect(() => {
+    // console.log("qweqweqweqwe", formStatus2)
+    if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
+        let submitted;
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+          submitted = false;
+        } else {
+          submitted = true;
+          handleStepStatusctx({
+            status: "completed",
+            coltabvalue: state?.colTabValuectx,
+          })
+        }
+        handleCurrFormctx({
+          currentFormSubmitted: submitted,
+          isLoading: false,
+        })
+        setFormStatus([])
+      }
+    }
+  }, [formStatus])
 
 const myGridRef = useRef<any>(null);
 
@@ -92,7 +123,7 @@ const myGridRef = useRef<any>(null);
 
         
 
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         // console.log("qweqweqwe", data)     
         if(data && !hasError) {
             let newData = state?.formDatactx
@@ -194,13 +225,15 @@ const myGridRef = useRef<any>(null);
                     handleModifiedColsctx(tabModifiedCols)
                 }
             }
-            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-            handleColTabChangectx(state?.colTabValuectx+1)
+            setFormStatus(old => [...old, true])
+            // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            // handleColTabChangectx(state?.colTabValuectx+1)
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+            setFormStatus(old => [...old, false])
         }
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
         endSubmit(true)
     }
 
@@ -224,6 +257,9 @@ const myGridRef = useRef<any>(null);
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
+        handleCurrFormctx({
+            isLoading: true,
+        })
         const refs = [RelPersonFormRef.current.handleSubmitError(e, "save", false)]
         handleSavectx(e, refs)
     }
@@ -263,7 +299,7 @@ const myGridRef = useRef<any>(null);
                     </Grid>                    
                 </Collapse>
             </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />
+            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
         </Grid>        
     )
 }
