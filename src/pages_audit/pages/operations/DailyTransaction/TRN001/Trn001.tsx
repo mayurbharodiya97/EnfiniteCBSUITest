@@ -62,7 +62,6 @@ export const Trn001 = () => {
   let location = useLocation();
 
   const { t } = useTranslation();
-  const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const { cardStore, setCardStore } = useContext(AccDetailContext);
@@ -122,6 +121,10 @@ export const Trn001 = () => {
   const [scrollSaveDialog, setScrollSaveDialog] = useState<any>(false);
   const [accValidDialog, setAccValidDialog] = useState<any>(false);
   const [accValidMsg, setAccValidMsg] = useState<any>("");
+  const [cardsData, setCardsData] = useState<any>([]);
+  const [reqData, setReqData] = useState<any>([]);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     console.log("loccc", location);
@@ -243,6 +246,7 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       setLoading(false);
       setCardStore({ ...cardStore, cardsInfo: data });
+      setCardsData(data);
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -394,8 +398,8 @@ export const Trn001 = () => {
     obj[i].accType = value;
     setRows(obj);
     handleGetAccInfo(obj, i);
+
     let reqData = {
-      PARENT_TYPE: value?.info?.PARENT_TYPE,
       COMP_CD: obj[i]?.branch?.info?.COMP_CD,
       ACCT_TYPE: value?.value,
       BRANCH_CD: obj[i]?.branch?.value,
@@ -698,6 +702,8 @@ export const Trn001 = () => {
     setCardStore({ ...cardStore, cardsInfo: [] });
     setTabsData([]);
     setLoading(false);
+    setReqData({});
+    setCardsData([]);
   };
 
   const handleFilterTrx = () => {
@@ -722,6 +728,7 @@ export const Trn001 = () => {
       rows[i]?.accNo && getAccNoValidation.mutate(data, i);
       rows[i]?.accNo && getCarousalCards.mutate(data);
       setTempStore({ ...tempStore, accInfo: data });
+      setReqData(data);
     }
   };
 
@@ -880,7 +887,12 @@ export const Trn001 = () => {
 
   return (
     <>
-      <DailyTransTabs heading="(Maker) (TRN/001)" tabsData={tabsData} />
+      <DailyTransTabs
+        heading="Daily Transaction (Maker) (TRN/001)"
+        tabsData={tabsData}
+        cardsData={cardsData}
+        reqData={reqData}
+      />
 
       <Card
         sx={{

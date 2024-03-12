@@ -14,8 +14,9 @@ import { AccDetailContext } from "pages_audit/auth";
 import { Button, Grid, Typography } from "@mui/material";
 import { enqueueSnackbar } from "notistack";
 
-export const CheckBook = () => {
+export const CheckBook = ({ reqData }) => {
   const { authState } = useContext(AuthContext);
+  const myGridRef = useRef<any>(null);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [sumAmt, setSumAmt] = useState(0);
@@ -40,13 +41,23 @@ export const CheckBook = () => {
     },
     onError: (error) => {},
   });
+  // const getCheckDetailsList = useMutation(API.getCheckDetailsList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " check detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD &&
-      getCheckDetailsList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD &&
+  //     getCheckDetailsList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
 
-  const myGridRef = useRef<any>(null);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getCheckDetailsList"], () => API.getCheckDetailsList(reqData));
 
   const getTodayClearing = useMutation(API.getTodayClearing, {
     onSuccess: (data) => {
@@ -80,12 +91,23 @@ export const CheckBook = () => {
   };
   return (
     <>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`CheckBookGridMetaData`}
         finalMetaData={CheckBookGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
-        loading={getCheckDetailsList.isLoading}
+        loading={isLoading || isFetching}
         refetchData={() => {}}
         ref={myGridRef}
       />

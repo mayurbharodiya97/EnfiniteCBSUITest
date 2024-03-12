@@ -10,43 +10,58 @@ import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 
-const TodayTransaction = () => {
+const TodayTransaction = ({ reqData }) => {
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
+  const myGridRef = useRef<any>(null);
   const [rows, setRows] = useState([]);
 
-  const getTodayTransList = useMutation(API.getTodayTransList, {
-    onSuccess: (data) => {
-      console.log(data, " getTodayTransList detailssss");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // const getTodayTransList = useMutation(API.getTodayTransList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getTodayTransList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getTodayTransList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getTodayTransList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
 
-  const myGridRef = useRef<any>(null);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getTodayTransList"], () => API.getTodayTransList(reqData));
 
   return (
     <>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`TodayTransGridMetaData`}
         finalMetaData={TodayTransGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
-        loading={getTodayTransList.isLoading}
+        loading={isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />
     </>
   );
 };
-export const TodayTransactionForm = () => {
+export const TodayTransactionForm = ({ reqData }) => {
   return (
     <ClearCacheProvider>
-      <TodayTransaction />
+      <TodayTransaction reqData={reqData} />
     </ClearCacheProvider>
   );
 };

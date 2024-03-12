@@ -1,10 +1,5 @@
 //UI
-import {
-  Button,
-  Card,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Button, Card, Grid, Typography } from "@mui/material";
 
 import "./Trn002.css";
 
@@ -77,6 +72,8 @@ export const Trn002 = () => {
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
   const [remarks, setRemarks] = useState<any>("");
+  const [cardsData, setCardsData] = useState([]);
+  const [reqData, setReqData] = useState([]);
 
   const { enqueueSnackbar } = useSnackbar();
   let dataObj = {
@@ -131,6 +128,7 @@ export const Trn002 = () => {
       setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data?.filter((a) => a.CONFIRMED == "0");
+      arr.map((a, i) => (a.index = i));
       setRows2(arr);
       setRows(data);
       setTempStore({ ...tempStore, accInfo: arr[0] });
@@ -148,6 +146,7 @@ export const Trn002 = () => {
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setCardStore({ ...cardStore, cardsInfo: data });
+      setCardsData(data);
     },
     onError: (error) => {
       setCardStore({ ...cardStore, cardsInfo: [] });
@@ -200,7 +199,7 @@ export const Trn002 = () => {
     let row = data.rows[0]?.data;
     setDataRow(row);
     if (data.name === "view-detail") {
-      let obj = {
+      let obj: any = {
         COMP_CD: row?.COMP_CD,
         ACCT_TYPE: row?.ACCT_TYPE,
         ACCT_CD: row?.ACCT_CD,
@@ -210,8 +209,14 @@ export const Trn002 = () => {
         authState: authState,
       };
       setTempStore({ ...tempStore, accInfo: obj });
+      setReqData(obj);
       getCarousalCards.mutate(obj);
-      getTabsByParentType.mutate(obj ?? "");
+      let reqData = {
+        COMP_CD: obj?.COMP_CD,
+        ACCT_TYPE: obj?.ACCT_TYPE,
+        BRANCH_CD: obj?.BRANCH_CD,
+      };
+      getTabsByParentType.mutate(reqData);
     }
 
     if (data.name === "view") {
@@ -289,12 +294,14 @@ export const Trn002 = () => {
   const handleConfirm = () => {
     confirmScroll.mutate(dataRow);
   };
-
+  console.log(rows2, "rows2");
   return (
     <>
       <DailyTransTabs
-        heading=" Confirmation (F2) (TRN/002)"
+        heading=" Daily Transaction Confirmation (F2) (TRN/002)"
         tabsData={tabsData}
+        cardsData={cardsData}
+        reqData={reqData}
       />
 
       <Card
@@ -368,7 +375,6 @@ export const Trn002 = () => {
         handleRefresh={() => handleGetTRN002List()}
       />
 
-  
       <>
         {Boolean(deleteDialog) ? (
           <RemarksAPIWrapper

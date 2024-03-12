@@ -6,15 +6,16 @@ import { GridMetaDataType } from "components/dataTable/types";
 import GridWrapper from "components/dataTableStatic";
 import { ActionTypes } from "components/dataTable";
 import { useMutation } from "react-query";
-import { useNavigate } from "react-router-dom";
-import { ViewDetail } from "./viewDetail";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ViewStatement } from "./viewStatement";
 import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
+import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import { SubmitFnType } from "packages/form";
 import { Alert } from "components/common/alert";
 import { GradientButton } from "components/styledComponent/button";
 import Dependencies from "./dependencies";
+import * as CommonApi from "../pages/operations/DailyTransaction/TRNCommon/api";
+import { enqueueSnackbar } from "notistack";
 
 // import { Dialog } from "@mui/material";
 const actions: ActionTypes[] = [
@@ -45,12 +46,18 @@ const actions: ActionTypes[] = [
 ];
 export const Accountinquiry = ({ open, onClose }) => {
   const navigate = useNavigate();
-  const [rowsData, setRowsData] = useState([]);
+  const location = useLocation();
+  const [rowsData, setRowsData] = useState<any>([]);
   const [acctOpen, setAcctOpen] = useState(false);
   const [componentToShow, setComponentToShow] = useState("");
   const [showGridData, setShowGridData] = useState(false);
+  const [tabsData, setTabsData] = useState([]);
   const formRef = useRef<any>(null);
   const formbtnRef = useRef<any>(null);
+  const rowsDataRef = useRef<any>(null);
+  const { authState }: any = useContext(AuthContext);
+  const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const { tempStore, setTempStore } = useContext(AccDetailContext);
   // const { t } = useTranslation();
   interface InsertFormDataFnType {
     data: object;
@@ -63,12 +70,65 @@ export const Accountinquiry = ({ open, onClose }) => {
     onError: () => {},
   });
 
+  let finalTabsData;
+  let cardsData;
+
+  const handleApiSuccess = (rowData) => {
+    if (finalTabsData !== undefined && cardsData !== undefined) {
+      openInNewWindow({
+        tabsData: finalTabsData,
+        cardsData: cardsData,
+        rowsData: rowData,
+      });
+    }
+  };
+
+  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
+    onSuccess: (data) => {
+      setTabsData(data);
+      finalTabsData = data;
+      handleApiSuccess(rowsDataRef.current);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
+  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
+    onSuccess: (data) => {
+      setCardStore({ ...cardStore, cardsInfo: data });
+      cardsData = data;
+      handleApiSuccess(rowsDataRef.current);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "view-detail") {
         setComponentToShow("ViewDetail");
         setAcctOpen(true);
         setRowsData(data?.rows);
+        rowsDataRef.current = data?.rows?.[0]?.data;
+        getTabsByParentType.mutate({
+          COMP_CD: authState?.companyID,
+          ACCT_TYPE: data?.rows?.[0]?.data?.ACCT_TYPE,
+          BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD,
+        });
+        getCarousalCards.mutate({
+          PARENT_TYPE: "",
+          COMP_CD: authState?.companyID,
+          ACCT_TYPE: data?.rows?.[0]?.data?.ACCT_TYPE,
+          ACCT_CD: data?.rows?.[0]?.data?.ACCT_CD,
+          BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD,
+        });
+        // openInNewWindow();
       } else if (data.name === "dependencies") {
         setComponentToShow("Dependencies");
         setAcctOpen(true);
@@ -88,6 +148,65 @@ export const Accountinquiry = ({ open, onClose }) => {
     },
     [navigate]
   );
+
+  // useEffect(() => {
+  //   console.log(
+  //     componentToShow,
+  //     "olwshefoiwehfowuef",
+  //     getTabsByParentType.data,
+  //     getCarousalCards.data
+  //   );
+  //   if (
+  //     componentToShow === "ViewDetail" &&
+  //     !getTabsByParentType.isLoading &&
+  //     getTabsByParentType.data &&
+  //     !getCarousalCards.isLoading &&
+  //     getCarousalCards.data
+  //   ) {
+  //     console.log(cardStore, "cardStore");
+  //   }
+  // }, [
+  //   componentToShow,
+  //   getTabsByParentType.isLoading,
+  //   getCarousalCards.isLoading,
+  // ]);
+
+  const openInNewWindow = (data) => {
+    const componentURL = "/cbsenfinity/searching";
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+
+    // Data to be passed to the new window
+
+    const rowInfo = data?.rowsData;
+    const finalRowsData = { ...rowInfo, COMP_CD: authState?.companyID };
+    const dataToSend = {
+      tabsData: data?.tabsData,
+      cardStore: data?.cardsData,
+      rowsData: finalRowsData,
+    };
+
+    // Define the features of the new window (full screen with specified width and height)
+    const windowFeatures = `width=${screenWidth},height=${screenHeight},fullscreen=yes`;
+
+    // Open the new window
+    const newWindow = window.open(componentURL, "_blank", windowFeatures);
+
+    let isOpened = false;
+
+    if (newWindow) {
+      //@ts-ignore
+      window._parentFuntion = () => {
+        if (isOpened) return;
+        //@ts-ignore
+        newWindow.window?._childFunction?.(dataToSend);
+
+        newWindow.focus();
+        isOpened = true;
+      };
+    }
+  };
+
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
     if (
       !Boolean(data?.MOBILE) &&
@@ -103,12 +222,18 @@ export const Accountinquiry = ({ open, onClose }) => {
       //@ts-ignore
       setShowGridData(false);
       endSubmit(true);
-      mutation.mutate(data);
+      const payload = { ...data, COMP_CD: authState?.companyID };
+      mutation.mutate(payload);
     }
   };
   const ClickEventManage = () => {
     let event: any = { preventDefault: () => {} };
     formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
+  };
+
+  const handleClose = () => {
+    setCardStore({ ...cardStore, cardsInfo: [] });
+    setAcctOpen(false);
   };
   return (
     <>
@@ -199,7 +324,11 @@ export const Accountinquiry = ({ open, onClose }) => {
           finalMetaData={AccountInquiryGridMetaData as GridMetaDataType}
           data={showGridData ? [] : mutation.data ?? []}
           setData={() => null}
-          loading={mutation.isLoading}
+          loading={
+            mutation.isLoading ||
+            getTabsByParentType.isLoading ||
+            getCarousalCards.isLoading
+          }
           actions={actions}
           setAction={setCurrentAction}
           headerToolbarStyle={{
@@ -209,12 +338,60 @@ export const Accountinquiry = ({ open, onClose }) => {
           // ref={myGridRef}
         />
 
-        {componentToShow === "ViewDetail" ? (
-          <ViewDetail
-            rowsData={rowsData}
-            open={acctOpen}
-            onClose={() => setAcctOpen(false)}
-          />
+        {componentToShow === "ViewDetail" &&
+        location.pathname === "/cbsenfinity/searching" ? (
+          // <ViewDetail
+          //   rowsData={rowsData}
+          //   open={acctOpen}
+          //   onClose={() => setAcctOpen(false)}
+          // />
+
+          // <Dialog open={acctOpen} fullScreen onClose={handleClose}>
+          //   <DialogTitle
+          //     sx={{
+          //       display: "flex",
+          //       justifyContent: "space-between",
+          //       background: "var(--theme-color5)",
+          //       margin: "10px 10px 0px 10px",
+          //       alignItems: "center",
+          //       height: "7vh",
+          //       boxShadow:
+          //         "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
+          //     }}
+          //   >
+          //     <Typography
+          //       sx={{
+          //         fontWeight: 500,
+          //         fontSize: "1.25rem",
+          //         lineHeight: 1.6,
+          //         letterSpacing: "0.0075em",
+          //         color: "#fff",
+          //       }}
+          //     >
+          //       {`Account Details For Customer ID : ${
+          //         (rowsData as any)?.[0]?.data?.CUSTOMER_ID
+          //       }`}
+          //     </Typography>
+          //     <GradientButton onClick={handleClose} color="primary">
+          //       Close
+          //     </GradientButton>
+          //   </DialogTitle>
+          //   {Boolean(getCarousalCards.isLoading) ||
+          //   Boolean(getTabsByParentType.isLoading) ? (
+          //     <LinearProgress sx={{ margin: "0px 10px" }} color="secondary" />
+          //   ) : null}
+          //   <DialogContent>
+          //     <DailyTransTabs heading="" tabsData={tabsData} />
+          //   </DialogContent>
+          // </Dialog>
+
+          // <Routes>
+          //   <Route
+          //     path="./searching"
+          //     element={<DailyTransTabs heading={""} tabsData={[]} />}
+          //   />
+          // </Routes>
+          <></>
         ) : componentToShow === "Dependencies" ? (
           <Dependencies
             rowsData={rowsData}

@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { DocumentGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
@@ -23,6 +23,7 @@ import DialogContent from "@mui/material/DialogContent";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
+import { Alert } from "components/common/alert";
 
 const actions: ActionTypes[] = [
   {
@@ -33,12 +34,12 @@ const actions: ActionTypes[] = [
     // alwaysAvailable: true,
   },
 ];
-export const Document = () => {
+
+let imgBase = "";
+//=========
+export const Document = ({ reqData }) => {
   const [dataRow, setDataRow] = useState<any>({});
   const imgUrl = useRef<any | null>(null);
-
-  let imgBase = "";
-  //=========
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
@@ -91,19 +92,42 @@ export const Document = () => {
     console.log(imgUrl.current, "imgUrl");
     imgUrl.current && setDetailViewDialog(true);
   };
+  // const getDocTemplateList = useMutation(API.getDocTemplateList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getDocTemplateList");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getDocTemplateList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getDocTemplateList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getDocTemplateList"], () => API.getDocTemplateList(reqData));
 
   return (
     <>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`DocumentGridMetaData`}
         finalMetaData={DocumentGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
-        loading={getDocTemplateList?.isLoading || getDocView?.isLoading}
+        loading={isLoading || isFetching}
         refetchData={() => {}}
         ref={myGridRef}
         actions={actions}

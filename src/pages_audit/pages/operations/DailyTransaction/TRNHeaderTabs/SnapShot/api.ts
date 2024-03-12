@@ -7,7 +7,6 @@ import { AuthSDK } from "registry/fns/auth";
 import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
 export const getSnapShotList = async (reqData) => {
-  console.log(reqData, "reqData getSnapShotList");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSANPSHOTDTL", {
       COMP_CD: reqData.COMP_CD,

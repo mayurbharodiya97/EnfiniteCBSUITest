@@ -30,9 +30,8 @@ const actions: ActionTypes[] = [
     // rowDoubleClick: true,
     alwaysAvailable: true,
   },
- 
 ];
-export const SnapShot = () => {
+export const SnapShot = ({ reqData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -46,28 +45,31 @@ export const SnapShot = () => {
   const [debit, setDebit] = useState<any>(0);
 
   // api define
-  const getSnapShotList = useMutation(API.getSnapShotList, {
-    onSuccess: (data) => {
-      console.log(data, " getSnapShotList detailssss");
-      setRows(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
+  // const getSnapShotList = useMutation(API.getSnapShotList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getSnapShotList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //   },
+  // });
 
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getSnapShotList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
   const handleGetSnapshot = () => {
     let obj = tempStore?.accInfo;
     obj.FROM_DATE = format(prevDate, "dd-MMM-yyyy");
     obj.TO_DATE = format(nextDate, "dd-MMM-yyyy");
-    getSnapShotList.mutate(tempStore.accInfo);
+    // getSnapShotList.mutate(tempStore.accInfo);
   };
-
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && handleGetSnapshot();
-  }, [tempStore]);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getSnapShotList"], () => API.getSnapShotList(reqData));
 
   const handleDate = (e, key) => {
     console.log(e, key, "e date");
@@ -93,60 +95,68 @@ export const SnapShot = () => {
     setDataRow(row);
 
     if (data.name === "view-detail") {
-      console.log("heloooo"); setDateDialog(true)
+      console.log("heloooo");
+      setDateDialog(true);
     }
-
- 
   }, []);
   return (
     <>
-      <div></div>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`snapShotGridMetaData`}
         finalMetaData={snapShotGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
-        loading={getSnapShotList.isLoading}
+        loading={isLoading || isFetching}
         refetchData={() => {}}
-        ref={myGridRef}         
+        ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
         onlySingleSelectionAllow={true}
         isNewRowStyle={true}
       />
 
-<Grid
-          item
-          xs={12}
-          sm={12}
-          sx={{
-            height: "23px",
-            // width: "60%",
-            right: "30px",
-            float: "right",
-            position: "relative",
-            top: "-2.67rem",
-            display: "flex",
-            gap: "4rem",
-            alignItems: "center",
-          }}
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        sx={{
+          height: "23px",
+          // width: "60%",
+          right: "30px",
+          float: "right",
+          position: "relative",
+          top: "-2.67rem",
+          display: "flex",
+          gap: "4rem",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          sx={{ fontWeight: "bold" }}
+          variant="subtitle1"
+          // style={{ color: "green" }}
         >
-        
-          <Typography
-            sx={{ fontWeight: "bold" }}
-            variant="subtitle1"
-            // style={{ color: "green" }}
-          >
-            Credit : ₹ 
-          </Typography>
-          <Typography
-            sx={{ fontWeight: "bold" }}
-            variant="subtitle1"
-            // style={{ color: "tomato" }}
-          >
-            Debit : ₹ 
-          </Typography>
-        </Grid>
+          Credit : ₹
+        </Typography>
+        <Typography
+          sx={{ fontWeight: "bold" }}
+          variant="subtitle1"
+          // style={{ color: "tomato" }}
+        >
+          Debit : ₹
+        </Typography>
+      </Grid>
 
       <Dialog
         maxWidth="sm"

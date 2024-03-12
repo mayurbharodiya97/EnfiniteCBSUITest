@@ -19,27 +19,32 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
     alwaysAvailable: true,
   },
-  
 ];
-export const StopPay = () => {
+export const StopPay = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [dataRow, setDataRow] = useState<any>({});
 
-  // api define
-  const getStopPayList = useMutation(API.getStopPayList, {
-    onSuccess: (data) => {
-      console.log(data, " getStopPayList detailssss");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // // api define
+  // const getStopPayList = useMutation(API.getStopPayList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getStopPayList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getStopPayList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getStopPayList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getStopPayList"], () => API.getStopPayList(reqData));
+
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
     console.log(row, "rowwww");
@@ -51,15 +56,26 @@ export const StopPay = () => {
   }, []);
   return (
     <>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`stopPayGridMetaData`}
         finalMetaData={stopPayGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
-        loading={getStopPayList.isLoading}
+        loading={isLoading || isFetching}
         refetchData={() => {}}
-        ref={myGridRef}       
-         actions={actions}
+        ref={myGridRef}
+        actions={actions}
         setAction={setCurrentAction}
         onlySingleSelectionAllow={true}
         isNewRowStyle={true}

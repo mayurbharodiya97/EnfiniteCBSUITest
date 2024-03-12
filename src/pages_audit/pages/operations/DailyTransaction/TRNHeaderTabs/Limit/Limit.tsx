@@ -20,27 +20,26 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
     // alwaysAvailable: true,
   },
-  
 ];
 
-export const Limit = () => {
+export const Limit = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [dataRow, setDataRow] = useState<any>({});
 
-  const getLimitList = useMutation(API.getLimitList, {
-    onSuccess: (data) => {
-      console.log(data, " getLimitList");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // const getLimitList = useMutation(API.getLimitList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getLimitList");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getLimitList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getLimitList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
@@ -52,16 +51,31 @@ export const Limit = () => {
     }
   }, []);
 
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getLimitList"], () => API.getLimitList(reqData));
   return (
     <>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`LimitGridMetaData`}
         finalMetaData={LimitGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
-        loading={getLimitList.isLoading}
+        loading={isLoading || isFetching}
         refetchData={() => {}}
-        ref={myGridRef}    
+        ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
         onlySingleSelectionAllow={true}

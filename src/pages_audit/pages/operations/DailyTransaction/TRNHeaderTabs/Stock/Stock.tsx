@@ -12,12 +12,11 @@ import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
-
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
     actionLabel: "Force Expire",
-    multiple: false, 
+    multiple: false,
     rowDoubleClick: true,
   },
   {
@@ -31,28 +30,31 @@ const actions: ActionTypes[] = [
     actionLabel: "Upload Doc",
     actionIcon: "detail",
     multiple: false,
-
   },
 ];
 
-export const Stock = () => {
+export const Stock = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [dataRow, setDataRow] = useState<any>({});
 
-  const getStockList = useMutation(API.getStockList, {
-    onSuccess: (data) => {
-      console.log(data, " getStockList");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // const getStockList = useMutation(API.getStockList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getStockList");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getStockList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getStockList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getStockList"], () => API.getStockList(reqData));
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
@@ -63,24 +65,33 @@ export const Stock = () => {
       console.log("heloooo");
     }
   }, []);
-  
-  return (
-                <>
-                  
-                  <GridWrapper
-                    key={`StockGridMetaData`}
-                    finalMetaData={StockGridMetaData as GridMetaDataType}
-                    data={rows}
-                    setData={() => null}
-                    loading={getStockList.isLoading}
-                    refetchData={() => {}}
-                    ref={myGridRef}
-                    actions={actions}
-                    setAction={setCurrentAction}
-                    onlySingleSelectionAllow={true}
-                    isNewRowStyle={true}
-                  />                     
 
-                </>
+  return (
+    <>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
+      <GridWrapper
+        key={`StockGridMetaData`}
+        finalMetaData={StockGridMetaData as GridMetaDataType}
+        data={data ?? []}
+        setData={() => null}
+        loading={isLoading || isFetching}
+        refetchData={() => {}}
+        ref={myGridRef}
+        actions={actions}
+        setAction={setCurrentAction}
+        onlySingleSelectionAllow={true}
+        isNewRowStyle={true}
+      />
+    </>
   );
 };

@@ -34,16 +34,16 @@ const cardDimensions = {
   },
 };
 
-export const AccDetails = () => {
+export const AccDetails = ({ cardsData }) => {
   const { cardStore, setCardStore } = useContext(AccDetailContext);
   const [cardName, setCardName] = useState<any>([]);
-  let cardsInfo = cardStore?.cardsInfo ?? [];
+  let cardsInfo = cardsData ?? [];
 
   useEffect(() => {
     let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
     let arr3 = arr2 && arr2?.filter((a, i) => arr2.indexOf(a) == i);
     setCardName(arr3);
-  }, [cardStore]);
+  }, [cardsData]);
 
   return (
     <>

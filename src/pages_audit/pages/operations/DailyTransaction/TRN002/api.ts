@@ -18,10 +18,10 @@ export const getTRN002List = async (reqData) => {
 
     responseData &&
       responseData.map((a, i) => {
-        a.index = i;
-        a.account1 = a.ACCT_TYPE + a.TYPE_NM;
-        a.trx1 = a.TYPE_CD + a.TYPE_CD_DESC;
-        a.sdc1 = a.SDC + a.SDC_DESC;
+        // a.index = i;
+        a.account1 = a.ACCT_TYPE;
+        a.trx1 = a.TYPE_CD;
+        a.sdc1 = a.SDC;
         a.time = a?.ENTERED_DATE.split(" ")[1].substring(0, 5);
         a.status = a.CONFIRMED == "0" ? "Pending" : "Confirmed";
 
@@ -49,7 +49,7 @@ export const confirmScroll = async (reqData) => {
       COMP_CD: reqData?.COMP_CD,
       ENTERED_COMP_CD: reqData?.ENTERED_COMP_CD,
       ENTERED_BRANCH_CD: reqData?.ENTERED_BRANCH_CD,
-      SCROLL1: reqData?.scrollNo??"",
+      SCROLL1: reqData?.scrollNo ?? "",
     });
   if (status === "0") {
     let responseData = data;

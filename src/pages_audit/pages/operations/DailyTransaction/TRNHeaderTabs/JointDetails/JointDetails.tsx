@@ -39,7 +39,7 @@ const actions: ActionTypes[] = [
     actionBackground: "inherit",
   },
 ];
-export const JointDetails = () => {
+export const JointDetails = ({ reqData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const { tempStore } = useContext(AccDetailContext);
@@ -47,42 +47,57 @@ export const JointDetails = () => {
   const [open, setOpen] = useState(false);
   const handleClose = () => setOpen(false);
 
-  //api define
+  // //api define
 
-  const getJointDetails = useMutation(API.getJointDetailsList, {
-    onSuccess: (data) => {
-      console.log(data, " joint detailssss");
-      setRows(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
+  // const getJointDetails = useMutation(API.getJointDetailsList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " joint detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //   },
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getJointDetails.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getJointDetails.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getJointDetailsList"], () => API.getJointDetailsList(reqData));
 
   const setCurrentAction = useCallback((data) => {
-    console.log(data, "rowdata");
     setOpen(true);
   }, []);
 
   return (
     <>
       <div>
+        {isError ? (
+          <Fragment>
+            <div style={{ width: "100%", paddingTop: "10px" }}>
+              <Alert
+                severity={error?.severity ?? "error"}
+                errorMsg={error?.error_msg ?? "Error"}
+                errorDetail={error?.error_detail ?? ""}
+              />
+            </div>
+          </Fragment>
+        ) : null}
         <GridWrapper
           key={`JointDetailGridMetaData`}
           finalMetaData={JointDetailGridMetaData as GridMetaDataType}
-          data={rows}
+          data={data ?? []}
           setData={() => null}
           actions={actions}
           setAction={setCurrentAction}
           refetchData={() => {}}
           ref={myGridRef}
-          loading={getJointDetails.isLoading}
+          loading={isLoading || isFetching}
         />
       </div>
 
