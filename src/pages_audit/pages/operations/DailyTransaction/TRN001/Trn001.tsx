@@ -246,6 +246,7 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       setLoading(false);
       setCardStore({ ...cardStore, cardsInfo: data });
+      console.log(data, "data getCarousalCards");
       setCardsData(data);
     },
     onError: (error: any) => {
@@ -256,7 +257,9 @@ export const Trn001 = () => {
       setCardStore({ ...cardStore, cardsInfo: [] });
     },
   });
-
+  useEffect(() => {
+    console.log(cardsData, "setCardsData");
+  }, [cardsData]);
   const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
     onSuccess: (data) => {
       setTabsData(data);
@@ -819,7 +822,6 @@ export const Trn001 = () => {
         CHEQUE_NO: a.cNo ? a.cNo : "0",
         VALUE_DT: format(a.date, "dd-MMM-yyyy"),
         AMOUNT: a.isCredit ? a.credit : a.debit,
-
         BRANCH_CD: authState?.user?.branchCode,
         COMP_CD: authState?.companyID,
         CURRENCY_CD: "00  ",
@@ -885,6 +887,12 @@ export const Trn001 = () => {
     return <div> hello world</div>;
   };
 
+  const handleSetCards = (row) => {
+    setCardsData(row);
+  };
+  const handleSetAccInfo = (row) => {
+    setReqData(row);
+  };
   return (
     <>
       <DailyTransTabs
@@ -909,6 +917,8 @@ export const Trn001 = () => {
             searchScrollNo={searchScrollNo}
             handleGetHeaderTabs={handleGetHeaderTabs}
             handleFilteredRows={handleFilteredRows}
+            handleSetCards={handleSetCards}
+            handleSetAccInfo={handleSetAccInfo}
           />
         )}
 

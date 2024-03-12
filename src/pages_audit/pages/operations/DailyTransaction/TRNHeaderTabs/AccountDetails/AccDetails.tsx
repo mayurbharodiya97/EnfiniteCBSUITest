@@ -45,6 +45,7 @@ export const AccDetails = ({ cardsData }) => {
     setCardName(arr3);
   }, [cardsData]);
 
+  console.log(cardsInfo, "cardsInfocardsInfo");
   return (
     <>
       {cardName?.length > 0 ? (

@@ -37,6 +37,8 @@ export const TRN001_Table = ({
   handleGetHeaderTabs,
   searchScrollNo,
   handleFilteredRows,
+  handleSetCards,
+  handleSetAccInfo,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
@@ -106,6 +108,7 @@ export const TRN001_Table = ({
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setCardStore({ ...cardStore, cardsInfo: data });
+      handleSetCards(data);
     },
     onError: (error) => {
       setCardStore({ ...cardStore, cardsInfo: [] });
@@ -149,6 +152,8 @@ export const TRN001_Table = ({
       setTempStore({ ...tempStore, accInfo: obj });
       getCarousalCards.mutate(obj);
       handleGetHeaderTabs(obj ?? "");
+
+      handleSetAccInfo(obj);
     }
 
     if (data.name === "Delete") {
@@ -189,7 +194,7 @@ export const TRN001_Table = ({
   };
 
   const handleDelete = (input) => {
-    console.log(input,"input")
+    console.log(input, "input");
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
@@ -240,8 +245,6 @@ export const TRN001_Table = ({
         xs={12}
         sm={12}
         sx={{
-          // height: "23px",
-          // width: "60%",
           right: "30px",
           float: "right",
           position: "relative",
@@ -289,8 +292,7 @@ export const TRN001_Table = ({
           open={deleteDialog}
           rows={dataRow}
         />
-      ) : null} 
-
+      ) : null}
     </>
   );
 };

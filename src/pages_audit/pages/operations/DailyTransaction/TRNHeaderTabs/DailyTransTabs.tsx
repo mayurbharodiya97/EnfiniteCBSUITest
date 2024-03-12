@@ -99,6 +99,8 @@ export const DailyTransTabs = ({
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const navArray = tabsData ? tabsData : [];
 
+  console.log(cardsData, "cardsDatadailytrans");
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
     console.log(newValue, "newval");
@@ -135,7 +137,7 @@ export const DailyTransTabs = ({
 
         {navArray.length > 0 && navArray ? (
           navArray?.map((a, i) => (
-            <TabPanel value={tabValue} index={Number(a?.index1)}>
+            <TabPanel value={tabValue} index={i}>
               <>
                 {/* other trx */}
                 {a?.TAB_NAME.includes("Standing") && <SIDetail />}
