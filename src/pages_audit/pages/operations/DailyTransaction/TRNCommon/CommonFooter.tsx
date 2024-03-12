@@ -6,7 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-
+import * as trn2Api from "../TRN002/api";
 //logic
 import "./CommonFooter.css";
 import React, { useEffect, useState, useContext, memo } from "react";
@@ -40,6 +40,7 @@ const CommonFooter = ({
   }
 
   const [scrollDeleteDialog, setScrollDeleteDialog] = useState(false);
+  const [scrollConfirmDialog, setScrollConfirmDialog] = useState(false);
   const [otherTrxDialog, setOtherTrxDialog] = useState(false);
 
   const [scrollNo, setScrollNo] = useState("");
@@ -67,7 +68,27 @@ const CommonFooter = ({
   }, [tempStore]);
 
   //api define
-
+  const confirmScroll = useMutation(trn2Api.confirmScroll, {
+    onSuccess: (data) => {
+      setLoading(false);
+      setScrollConfirmDialog(false);
+      setScrollNo("");
+      enqueueSnackbar("Record Confirm", {
+        variant: "success",
+      });
+      if (isTrn1) {
+        viewOnly && setTempStore({ ...tempStore, refresh: Math.random() });
+      } else {
+        handleRefresh();
+      }
+    },
+    onError: (error: any) => {
+      setScrollConfirmDialog(false);
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
   const deleteByScrollNo = useMutation(API.deleteScrollByScrollNo, {
     onSuccess: (data: any) => {
       setLoading(false);
@@ -106,6 +127,19 @@ const CommonFooter = ({
       setIsTrn1(true);
     }
   };
+
+  const handleConfirmScroll = () => {
+    setLoading(true);
+    let data = {
+      TRAN_CD: filteredRows[0]?.TRAN_CD,
+      COMP_CD: filteredRows[0]?.COMP_CD,
+      ENTERED_COMP_CD: filteredRows[0]?.COMP_CD,
+      ENTERED_BRANCH_CD: filteredRows[0]?.BRANCH_CD,
+      scrollNo: scrollNo,
+    };
+    confirmScroll.mutate(data);
+  };
+
   const handleDeleteScroll = () => {
     let data = {
       COMP_CD: authState.companyID,
@@ -158,6 +192,7 @@ const CommonFooter = ({
 
   const handleCancelDeleteScroll = () => {
     setScrollDeleteDialog(false);
+    setScrollConfirmDialog(false);
     setScrollNo("");
     handleScroll("");
   };
@@ -201,18 +236,28 @@ const CommonFooter = ({
             </Button>
           </Grid>
         )}
+        {viewOnly && (
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setScrollConfirmDialog(true)}
+            >
+              Scroll Confirm
+            </Button>
+          </Grid>
+        )}
       </Grid>
       <br />
       <>
         <Dialog
           maxWidth="lg"
-          open={scrollDeleteDialog}
+          open={scrollDeleteDialog || scrollConfirmDialog}
           aria-describedby="alert-dialog-description"
           PaperComponent={PaperComponent}
           aria-labelledby="draggable-dialog-title"
         >
           <DialogTitle
-            // className="dialogTitle"
             style={{
               cursor: "move",
             }}
@@ -220,7 +265,7 @@ const CommonFooter = ({
           >
             <div className="dialogTitle" style={{ padding: "10px" }}>
               {" "}
-              Scroll Delete
+              {scrollConfirmDialog ? "Scroll Confirmation" : " Scroll Delete"}
             </div>
           </DialogTitle>
           <DialogContent>
@@ -240,23 +285,28 @@ const CommonFooter = ({
                 isConfirmedRec && (
                   <h3>
                     Scroll No. {scrollNo} is confirmed. Are you sure you wish to
-                    Delete it ?
+                    Proceed ?
                   </h3>
                 )
               }
             />
             <br />
             <br />
-            <TextField
-              style={{ minWidth: "400px" }}
-              fullWidth={true}
-              value={remarks}
-              placeholder="Enter Remarks"
-              onChange={(e) => setRemarks(e.target.value)}
-              label="Remarks"
-              variant="outlined"
-              color="secondary"
-            />
+
+            {scrollConfirmDialog ? (
+              ""
+            ) : (
+              <TextField
+                style={{ minWidth: "400px" }}
+                fullWidth={true}
+                value={remarks}
+                placeholder="Enter Remarks"
+                onChange={(e) => setRemarks(e.target.value)}
+                label="Remarks"
+                variant="outlined"
+                color="secondary"
+              />
+            )}
           </DialogContent>
 
           <DialogActions className="dialogFooter">
@@ -264,16 +314,21 @@ const CommonFooter = ({
               className="dialogBtn"
               color="secondary"
               variant="contained"
-              onClick={handleDeleteScroll}
+              onClick={() =>
+                scrollConfirmDialog
+                  ? handleConfirmScroll()
+                  : handleDeleteScroll()
+              }
               autoFocus
             >
-              Ok
+              {scrollConfirmDialog ? "Confirm" : "Delete"}
               {!loading ? (
                 ""
               ) : (
                 <CircularProgress size={20} sx={{ marginLeft: "10px" }} />
               )}
             </Button>
+
             <Button
               className="dialogBtn"
               onClick={() => handleCancelDeleteScroll()}

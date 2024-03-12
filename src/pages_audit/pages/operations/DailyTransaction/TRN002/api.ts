@@ -49,7 +49,7 @@ export const confirmScroll = async (reqData) => {
       COMP_CD: reqData?.COMP_CD,
       ENTERED_COMP_CD: reqData?.ENTERED_COMP_CD,
       ENTERED_BRANCH_CD: reqData?.ENTERED_BRANCH_CD,
-      SCROLL1: reqData?.SCROLL1,
+      SCROLL1: reqData?.scrollNo??"",
     });
   if (status === "0") {
     let responseData = data;

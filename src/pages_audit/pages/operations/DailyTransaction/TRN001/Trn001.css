@@ -60,6 +60,7 @@
   align-items: center;
   display: flex;
   margin-bottom: 8px;
+  border-radius: 5px;
 }
 
 .dialogBtn {

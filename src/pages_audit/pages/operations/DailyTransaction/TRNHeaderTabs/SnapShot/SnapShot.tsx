@@ -155,7 +155,6 @@ export const SnapShot = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        {/* <DialogTitle className="dialogTitle">A/C Info</DialogTitle> */}
         <DialogContent>
           <div style={{ display: "flex", alignItems: "center" }}>
             From:{" "}
