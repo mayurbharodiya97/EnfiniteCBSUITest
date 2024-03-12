@@ -281,23 +281,23 @@ const CommonFooter = ({
               label="Scroll No."
               variant="outlined"
               color="secondary"
-              helperText={
-                isConfirmedRec && (
-                  <h3>
-                    Scroll No. {scrollNo} is confirmed. Are you sure you wish to
-                    Proceed ?
-                  </h3>
-                )
-              }
             />
-            <br />
+            {isConfirmedRec && !scrollConfirmDialog && (
+              <h4>
+                Scroll No. {scrollNo} is confirmed. Are you sure you wish to
+                Delete ?
+              </h4>
+            )}
+            {isConfirmedRec && scrollConfirmDialog && (
+              <h4>Scroll No. {scrollNo} is already confirmed</h4>
+            )}
             <br />
 
             {scrollConfirmDialog ? (
               ""
             ) : (
               <TextField
-                style={{ minWidth: "400px" }}
+                style={{ minWidth: "400px", marginTop: "20px" }}
                 fullWidth={true}
                 value={remarks}
                 placeholder="Enter Remarks"
@@ -310,24 +310,28 @@ const CommonFooter = ({
           </DialogContent>
 
           <DialogActions className="dialogFooter">
-            <Button
-              className="dialogBtn"
-              color="secondary"
-              variant="contained"
-              onClick={() =>
-                scrollConfirmDialog
-                  ? handleConfirmScroll()
-                  : handleDeleteScroll()
-              }
-              autoFocus
-            >
-              {scrollConfirmDialog ? "Confirm" : "Delete"}
-              {!loading ? (
-                ""
-              ) : (
-                <CircularProgress size={20} sx={{ marginLeft: "10px" }} />
-              )}
-            </Button>
+            {isConfirmedRec && scrollConfirmDialog ? (
+              <></>
+            ) : (
+              <Button
+                className="dialogBtn"
+                color="secondary"
+                variant="contained"
+                onClick={() =>
+                  scrollConfirmDialog
+                    ? handleConfirmScroll()
+                    : handleDeleteScroll()
+                }
+                autoFocus
+              >
+                {scrollConfirmDialog ? "Confirm" : "Delete"}
+                {!loading ? (
+                  ""
+                ) : (
+                  <CircularProgress size={20} sx={{ marginLeft: "10px" }} />
+                )}
+              </Button>
+            )}
 
             <Button
               className="dialogBtn"
