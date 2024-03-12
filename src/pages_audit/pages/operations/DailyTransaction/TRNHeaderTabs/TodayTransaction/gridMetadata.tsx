@@ -139,3 +139,79 @@ export const TodayTransGridMetaData: GridMetaDataType = {
     },
   ],
 };
+
+//////////////////////////////////////////////////////////////////
+
+export const AccountDetailsGridMetadata: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Account Details",
+    rowIdColumn: "AC_CD",
+    defaultColumnConfig: {
+      width: 120,
+      maxWidth: 250,
+      minWidth: 120,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    disableGroupBy: true,
+    enablePagination: true,
+    hideFooter: false,
+    pageSizes: [10, 20, 30],
+    defaultPageSize: 10,
+    containerHeight: {
+      min: "18vh",
+      max: "18vh",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    isCusrsorFocused: true,
+  },
+  filters: [],
+  columns: [
+    {
+      columnName: "Acct.Status",
+      accessor: "ACCT_STATUS",
+      sequence: 1,
+      componentType: "default",
+      width: 120,
+    },
+    {
+      columnName: "Account No.",
+      accessor: "AC_CD",
+      sequence: 2,
+      componentType: "default",
+      width: 220,
+    },
+    {
+      columnName: "Account Name/Person Name",
+      accessor: "ACCT_NM",
+      sequence: 3,
+      componentType: "default",
+      width: 300,
+    },
+    {
+      columnName: "Opening Date",
+      accessor: "OP_DATE",
+      sequence: 4,
+      componentType: "default",
+      width: 220,
+    },
+    {
+      columnName: "Status",
+      accessor: "ORG_STATUS",
+      sequence: 5,
+      componentType: "default",
+      width: 130,
+    },
+    {
+      columnName: "Close Date",
+      accessor: "CLOSE_DT",
+      sequence: 6,
+      componentType: "currency",
+      width: 220,
+      color: "green",
+    },
+  ],
+};

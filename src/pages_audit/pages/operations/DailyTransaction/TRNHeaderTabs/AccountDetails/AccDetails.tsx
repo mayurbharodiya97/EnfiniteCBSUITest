@@ -17,12 +17,12 @@ import { AuthContext } from "pages_audit/auth";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 
-export const AccDetails = () => {
+export const AccDetails = ({ cardsData }) => {
   const { cardStore, setCardStore } = useContext(AccDetailContext);
   const windowWidth = useRef(window.innerWidth);
 
   const [cardName, setCardName] = useState<any>([]);
-  let cardsInfo = cardStore?.cardsInfo ?? [];
+  let cardsInfo = cardsData ?? [];
 
   const responsive = {
     superLargeDesktop: {
@@ -47,7 +47,7 @@ export const AccDetails = () => {
     let arr2 = cardsInfo?.length > 0 && cardsInfo?.map((a) => a.CARD_NAME);
     let arr3 = arr2 && arr2?.filter((a, i) => arr2.indexOf(a) == i);
     setCardName(arr3);
-  }, [cardStore]);
+  }, [cardsData]);
 
   useEffect(() => {
     console.log(cardName, "cardName");

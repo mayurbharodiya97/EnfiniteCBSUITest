@@ -114,3 +114,19 @@ export const saveCustomerRegisterRequest = async ({ inputData }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const getAcctDtlList = async () => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETSEARCHCOMPONENT", {
+      COMP_CD: "132 ",
+      A_FLAG: "",
+      BRANCH_CD: "",
+      ACCT_TYPE: "",
+      ACCT_CD: "",
+      CUST_ID: "12",
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

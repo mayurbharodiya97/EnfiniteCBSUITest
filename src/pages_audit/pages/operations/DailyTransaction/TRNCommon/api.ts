@@ -141,7 +141,9 @@ export const getCarousalCards = async (reqData) => {
 export const getTabsByParentType = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
-      PARENT_TYPE: reqData,
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      BRANCH_CD: reqData?.BRANCH_CD,
     });
   if (status === "0") {
     let responseData = data;

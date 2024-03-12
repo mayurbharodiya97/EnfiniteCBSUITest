@@ -13,7 +13,7 @@ import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useSnackbar } from "notistack";
 
-export const SnapShot = () => {
+export const SnapShot = ({ reqData }) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
@@ -21,31 +21,46 @@ export const SnapShot = () => {
   const [rows, setRows] = useState([]);
 
   // api define
-  const getSnapShotList = useMutation(API.getSnapShotList, {
-    onSuccess: (data) => {
-      console.log(data, " getSnapShotList detailssss");
-      setRows(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
+  // const getSnapShotList = useMutation(API.getSnapShotList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getSnapShotList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //   },
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getSnapShotList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getSnapShotList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getSnapShotList"], () => API.getSnapShotList(reqData));
 
   return (
     <>
-      <div></div>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`snapShotGridMetaData`}
         finalMetaData={snapShotGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
-        loading={getSnapShotList.isLoading}
+        loading={isLoading || isFetching}
         refetchData={() => {}}
         ref={myGridRef}
       />

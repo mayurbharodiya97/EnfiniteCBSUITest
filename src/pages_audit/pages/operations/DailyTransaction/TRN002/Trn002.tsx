@@ -65,6 +65,8 @@ export const Trn002 = () => {
   const [confirmed, setConfirmed] = useState<number>(0);
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
+  const [cardsData, setCardsData] = useState([]);
+  const [reqData, setReqData] = useState([]);
 
   const { enqueueSnackbar } = useSnackbar();
   let dataObj = {
@@ -119,6 +121,7 @@ export const Trn002 = () => {
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setCardStore({ ...cardStore, cardsInfo: data });
+      setCardsData(data);
     },
     onError: (error) => {},
   });
@@ -162,7 +165,7 @@ export const Trn002 = () => {
     let row = data.rows[0]?.data;
     setDataRow(row);
     if (data.name === "view-detail") {
-      let obj = {
+      let obj: any = {
         COMP_CD: row?.COMP_CD,
         ACCT_TYPE: row?.ACCT_TYPE,
         ACCT_CD: row?.ACCT_CD,
@@ -172,8 +175,14 @@ export const Trn002 = () => {
         authState: authState,
       };
       setTempStore({ ...tempStore, accInfo: obj });
+      setReqData(obj);
       getCarousalCards.mutate(obj);
-      getTabsByParentType.mutate(row?.PARENT_TYPE ?? "");
+      let reqData = {
+        COMP_CD: obj?.COMP_CD,
+        ACCT_TYPE: obj?.ACCT_TYPE,
+        BRANCH_CD: obj?.BRANCH_CD,
+      };
+      getTabsByParentType.mutate(reqData);
     }
 
     if (data.name === "view") {
@@ -257,8 +266,10 @@ export const Trn002 = () => {
   return (
     <>
       <DailyTransTabs
-        heading=" Confirmation (F2) (TRN/002)"
+        heading=" Daily Transaction Confirmation (F2) (TRN/002)"
         tabsData={tabsData}
+        cardsData={cardsData}
+        reqData={reqData}
       />
 
       <Card

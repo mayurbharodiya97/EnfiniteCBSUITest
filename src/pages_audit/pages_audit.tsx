@@ -6,16 +6,15 @@ import { MySideBar } from "./sideBar";
 import { Content } from "./content";
 // import "react-perfect-scrollbar/dist/css/styles.css";
 import { useStyles } from "./style";
-import { AllScreensGridWrapper } from "./pages/allScreens";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
-import { BranchSelectionGridWrapper } from "./auth/branchSelection";
 import { OperationsMenu } from "./pages/operations";
 import AccountDetails from "./pages/STATEMENT/accountDetails";
 import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
+import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
@@ -64,6 +63,10 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="dashboard/*" element={<Dashboard />} />
                 <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
+                <Route
+                  path="searching/*"
+                  element={<DailyTransTabsWithDialog />}
+                />
                 <Route path="configuration/*" element={<Configuration />} />
                 <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
                 <Route path="operation/daily_tran_F1" element={<Trn001 />} />

@@ -12,31 +12,20 @@ import { TellerScreenMetadata } from "./metadataTeller";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { GradientButton } from "components/styledComponent/button";
 import TellerDenoTable from "./tellerDenoTable";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { AccDetailContext, AuthContext } from "pages_audit/auth";
 import * as API from "./api";
-import * as cardAPI from "../../operations/DailyTransaction/TRN001/api";
-import DenoTable from "./denoTable";
-import {
-  PopupMessageAPIWrapper,
-  PopupRequestWrapper,
-} from "components/custom/popupMessage";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 import SingleDeno from "./singleDeno";
-import Grow from "@mui/material/Grow";
-import { Box, Dialog, Grid, Paper, Skeleton, Typography } from "@mui/material";
+import { Dialog, Grid, Paper, Typography } from "@mui/material";
 import { cashReportMetaData } from "./metadataTeller";
-import GridWrapper from "components/dataTableStatic";
-import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
+import { ActionTypes } from "components/dataTable/types";
 import { format, parse } from "date-fns";
-import { isValidDate } from "components/utils/utilFunctions/function";
 import Report from "components/report";
 import AccDetails from "pages_audit/pages/operations/DailyTransaction/TRNHeaderTabs/AccountDetails";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
-import { GeneralAPI } from "registry/fns/functions";
 import AccDtlCardSkeleton from "./acctDtlCardSkeleton";
-import DualPartTable from "./dualPartTable";
-import DualTableCalc from "./dualTableCalc";
 // import { getCarousalCards } from "pages_audit/pages/operations/DailyTransaction/TRN001/Trn001";
 import {
   SingleTableDataReducer,
@@ -53,22 +42,23 @@ const TellerScreen = () => {
     SingleTableDataReducer,
     SingleTableInititalState
   );
+  const [cardDetails, setCardDetails] = useState([]);
   const [extraAccDtl, setExtraAccDtl] = useState({});
   const { authState }: any = useContext(AuthContext);
   const { cardStore, setCardStore } = useContext(AccDetailContext);
   const { MessageBox } = usePopupContext();
 
   useEffect(() => {
-    const extraAccDtl = (cardStore?.cardsInfo || []).reduce(
-      (result, details) => {
+    // Check if cardStore and cardsInfo are present and cardsInfo is an array
+    if (cardStore?.cardsInfo && Array.isArray(cardStore.cardsInfo)) {
+      const extraAccDtl = cardStore.cardsInfo.reduce((result, details) => {
         if (details?.COL_LABEL === "Name") {
           result[details.COL_LABEL] = details.COL_VALUE;
         }
         return result;
-      },
-      {}
-    );
-    setExtraAccDtl(extraAccDtl);
+      }, {});
+      setExtraAccDtl(extraAccDtl);
+    }
   }, [cardStore?.cardsInfo]);
 
   const onSubmitHandler: SubmitFnType = (
@@ -464,7 +454,7 @@ const TellerScreen = () => {
             </Grid>
           ) : (
             // </Box>
-            <AccDetails />
+            <AccDetails cardsData={cardDetails} />
           )
         ) : (
           <Typography
@@ -530,6 +520,7 @@ const TellerScreen = () => {
                 ...cardStore,
                 cardsInfo: payload?.carousalCardData,
               });
+              setCardDetails(payload?.carousalCardData);
               dispatch({
                 type: SingleTableActionTypes?.SET_OPENACCTDTL_VAL,
                 payload: true,

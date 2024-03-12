@@ -112,6 +112,8 @@ export const Trn001 = () => {
   const [viewOnly, setViewOnly] = useState(false);
   const [saveDialog, setSaveDialog] = useState<boolean>(false);
   const [tabsData, setTabsData] = useState<any>([]);
+  const [cardsData, setCardsData] = useState<any>([]);
+  const [reqData, setReqData] = useState<any>([]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -214,6 +216,7 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       setLoading(false);
       setCardStore({ ...cardStore, cardsInfo: data });
+      setCardsData(data);
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -328,7 +331,13 @@ export const Trn001 = () => {
     obj[i].accType = value;
     setRows(obj);
     handleGetAccInfo(i);
-    value?.info?.PARENT_TYPE && handleGetHeaderTabs(value?.info?.PARENT_TYPE);
+    let reqData = {
+      COMP_CD: obj[i]?.branch?.info?.COMP_CD,
+      ACCT_TYPE: value?.value,
+      BRANCH_CD: obj[i]?.branch?.value,
+    };
+
+    value?.info?.PARENT_TYPE && handleGetHeaderTabs(reqData);
   };
 
   const handleGetHeaderTabs = (data) => {
@@ -618,6 +627,7 @@ export const Trn001 = () => {
       rows[i]?.accNo && getAccNoValidation.mutate(data);
       rows[i]?.accNo && getCarousalCards.mutate(data);
       setTempStore({ ...tempStore, accInfo: data });
+      setReqData(data);
     }
   };
 
@@ -701,7 +711,12 @@ export const Trn001 = () => {
 
   return (
     <>
-      <DailyTransTabs heading="(Maker) (TRN/001)" tabsData={tabsData} />
+      <DailyTransTabs
+        heading="Daily Transaction (Maker) (TRN/001)"
+        tabsData={tabsData}
+        cardsData={cardsData}
+        reqData={reqData}
+      />
 
       <Card
         sx={{

@@ -12,33 +12,49 @@ import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
-export const StopPay = () => {
+export const StopPay = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
-  // api define
-  const getStopPayList = useMutation(API.getStopPayList, {
-    onSuccess: (data) => {
-      console.log(data, " getStopPayList detailssss");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // // api define
+  // const getStopPayList = useMutation(API.getStopPayList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getStopPayList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getStopPayList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getStopPayList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getStopPayList"], () => API.getStopPayList(reqData));
 
   return (
     <>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`stopPayGridMetaData`}
         finalMetaData={stopPayGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
-        loading={getStopPayList.isLoading}
+        loading={isLoading || isFetching}
         refetchData={() => {}}
         ref={myGridRef}
       />
