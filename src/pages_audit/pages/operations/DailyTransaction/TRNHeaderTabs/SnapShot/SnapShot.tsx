@@ -25,25 +25,12 @@ import { format } from "date-fns";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
-    actionLabel: "Force Expire",
+    actionLabel: "Back Date",
     multiple: false,
     // rowDoubleClick: true,
-    // alwaysAvailable: true,
+    alwaysAvailable: true,
   },
-  {
-    actionName: "view-detail",
-    actionLabel: "Delete",
-    multiple: false,
-    // rowDoubleClick: true,
-    // alwaysAvailable: true,
-  },
-  {
-    actionName: "view-detail",
-    actionLabel: "Upload Doc",
-    multiple: false,
-    // rowDoubleClick: true,
-    // alwaysAvailable: true,
-  },
+ 
 ];
 export const SnapShot = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -55,6 +42,8 @@ export const SnapShot = () => {
   const [prevDate, setPrevDate] = useState(new Date());
   const [nextDate, setNextDate] = useState(new Date());
   const [dataRow, setDataRow] = useState<any>({});
+  const [credit, setCredit] = useState<any>(0);
+  const [debit, setDebit] = useState<any>(0);
 
   // api define
   const getSnapShotList = useMutation(API.getSnapShotList, {
@@ -104,8 +93,10 @@ export const SnapShot = () => {
     setDataRow(row);
 
     if (data.name === "view-detail") {
-      console.log("heloooo");
+      console.log("heloooo"); setDateDialog(true)
     }
+
+ 
   }, []);
   return (
     <>
@@ -117,39 +108,45 @@ export const SnapShot = () => {
         setData={() => null}
         loading={getSnapShotList.isLoading}
         refetchData={() => {}}
-        ref={myGridRef}
+        ref={myGridRef}         
+        actions={actions}
         setAction={setCurrentAction}
         onlySingleSelectionAllow={true}
         isNewRowStyle={true}
       />
 
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        sx={{
-          position: "relative",
-          top: "-3rem",
-          display: "flex",
-          justifyContent: "space-between",
-          gap: "3rem",
-          alignItems: "center",
-        }}
-      >
-        <div></div>
-        <Grid item sx={{ display: "flex", gap: "1rem" }}>
-          <Button
-            className="dialogBtn"
-            variant="contained"
-            color="secondary"
-            sx={{ margin: "8px" }}
-            onClick={() => setDateDialog(true)}
+<Grid
+          item
+          xs={12}
+          sm={12}
+          sx={{
+            height: "23px",
+            // width: "60%",
+            right: "30px",
+            float: "right",
+            position: "relative",
+            top: "-2.67rem",
+            display: "flex",
+            gap: "4rem",
+            alignItems: "center",
+          }}
+        >
+        
+          <Typography
+            sx={{ fontWeight: "bold" }}
+            variant="subtitle1"
+            // style={{ color: "green" }}
           >
-            Back Date
-          </Button>
+            Credit : ₹ 
+          </Typography>
+          <Typography
+            sx={{ fontWeight: "bold" }}
+            variant="subtitle1"
+            // style={{ color: "tomato" }}
+          >
+            Debit : ₹ 
+          </Typography>
         </Grid>
-        <div></div>
-      </Grid>
 
       <Dialog
         maxWidth="sm"

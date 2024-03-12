@@ -134,7 +134,7 @@ export const snapShotGridMetaData: GridMetaDataType = {
       componentType: "date",
       isVisible: true,
       dateFormat: "dd/MM/yyyy",
-      width: 110,
+      width: 130,
     },
   ],
 };

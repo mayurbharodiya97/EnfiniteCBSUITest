@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { TRN001_TableMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
-import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import * as trn1Api from "../api";
 import * as CommonApi from "../../TRNCommon/api";
@@ -12,24 +11,10 @@ import { Grid, Typography } from "@mui/material";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import {
-  PopupMessageAPIWrapper,
-  PopupRequestWrapper,
-} from "components/custom/popupMessage";
-import {
-  Button,
-  Toolbar,
-  Card,
-  Tooltip,
-  CircularProgress,
-} from "@mui/material";
+
 import Scroll from "pages_audit/pages/dashboard/Today'sTransactionGrid/openScroll/scroll";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
+
 import { useLocation } from "react-router-dom";
 
 const actions: ActionTypes[] = [
@@ -203,7 +188,8 @@ export const TRN001_Table = ({
     handleFilteredRows(result);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (input) => {
+    console.log(input,"input")
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
@@ -218,10 +204,11 @@ export const TRN001_Table = ({
       TRAN_DT: dataRow?.TRAN_DT,
       CONFIRM_FLAG: "N",
       CONFIRMED: "N",
-      USER_DEF_REMARKS: remarks,
+      // USER_DEF_REMARKS: remarks,
+      USER_DEF_REMARKS: input,
     };
 
-    remarks?.length > 5
+    input?.length > 5
       ? deleteScrollByVoucher.mutate(obj)
       : enqueueSnackbar("Kindly Enter Remarks of at least 5 Characters", {
           variant: "error",
@@ -283,64 +270,7 @@ export const TRN001_Table = ({
         />
       )}
 
-      <Dialog
-        maxWidth="sm"
-        open={deleteDialog}
-        // onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle className="dialogTitle">Delete Confirmation</DialogTitle>
-        <DialogContent>
-          {"Do you want to Delete the transaction - VoucherNo." +
-            dataRow?.TRAN_CD +
-            " ?"}
-          <br />
-          <br />
-          <br />
-          <TextField
-            style={{ minWidth: "400px" }}
-            fullWidth={true}
-            value={remarks}
-            placeholder="Enter Remarks"
-            onChange={(e) => setRemarks(e.target.value)}
-            label="Remarks"
-            variant="outlined"
-            color="secondary"
-          />
-          <br />
-        </DialogContent>
-
-        <DialogActions className="dialogFooter">
-          <Button
-            className="dialogBtn"
-            color="secondary"
-            variant="contained"
-            onClick={handleDelete}
-            autoFocus
-          >
-            Yes{" "}
-            {!deleteScrollByVoucher?.isLoading ? (
-              " "
-            ) : (
-              <CircularProgress size={20} />
-            )}
-          </Button>{" "}
-          <Button
-            className="dialogBtn"
-            onClick={() => {
-              setDeleteDialog(false);
-              handleSetRemarks();
-            }}
-            variant="contained"
-            color="secondary"
-          >
-            No
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* {Boolean(deleteDialog) ? (
+      {Boolean(deleteDialog) ? (
         <RemarksAPIWrapper
           TitleText={
             "Do you want to Delete the transaction - VoucherNo." +
@@ -360,7 +290,7 @@ export const TRN001_Table = ({
           rows={dataRow}
         />
       ) : null} 
-*/}
+
     </>
   );
 };

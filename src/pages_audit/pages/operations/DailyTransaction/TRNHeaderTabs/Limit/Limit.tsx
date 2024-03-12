@@ -20,6 +20,7 @@ const actions: ActionTypes[] = [
     rowDoubleClick: true,
     // alwaysAvailable: true,
   },
+  
 ];
 
 export const Limit = () => {
@@ -60,7 +61,8 @@ export const Limit = () => {
         setData={() => null}
         loading={getLimitList.isLoading}
         refetchData={() => {}}
-        ref={myGridRef}
+        ref={myGridRef}    
+        actions={actions}
         setAction={setCurrentAction}
         onlySingleSelectionAllow={true}
         isNewRowStyle={true}

@@ -40,7 +40,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       accessor: "J_TYPE",
       sequence: 2,
       componentType: "default",
-      width: 150,
+      width: 100,
     },
 
     {
@@ -48,7 +48,7 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       accessor: "REF_PERSON_NAME",
       sequence: 3,
       componentType: "default",
-      width: 200,
+      width: 250,
     },
     {
       columnName: "Designation",
@@ -62,14 +62,14 @@ export const JointDetailGridMetaData: GridMetaDataType = {
       accessor: "MEM_ACCT_CD",
       sequence: 5,
       componentType: "default",
-      width: 100,
+      width: 150,
     },
     {
       columnName: "Reference A/C",
       accessor: "REF_ACCT_CD",
       sequence: 6,
       componentType: "default",
-      width: 100,
+      width: 150,
     },
     {
       columnName: "Contact No.",

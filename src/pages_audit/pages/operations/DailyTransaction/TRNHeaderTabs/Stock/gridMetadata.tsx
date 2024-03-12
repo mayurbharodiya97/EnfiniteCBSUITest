@@ -22,7 +22,10 @@ export const StockGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: false,
+    allowRowSelection: true,
+    hideHeader: false,
+    isCusrsorFocused: true,
+
   },
   filters: [],
   columns: [
@@ -58,7 +61,7 @@ export const StockGridMetaData: GridMetaDataType = {
       accessor: "STOCK_DESC",
       sequence: 3,
       componentType: "default",
-      width: 120,
+      width: 150,
     },
     {
       columnName: "Margin",

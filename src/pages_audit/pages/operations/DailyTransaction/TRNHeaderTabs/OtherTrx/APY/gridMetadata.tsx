@@ -31,7 +31,9 @@ export const APYGridMetaData: GridMetaDataType = {
       columnName: "Sr ",
       sequence: 1,
       componentType: "default",
-      width: 100,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       accessor: "ACCT_TYPE",

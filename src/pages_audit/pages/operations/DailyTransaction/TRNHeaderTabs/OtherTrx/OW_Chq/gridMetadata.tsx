@@ -31,7 +31,9 @@ export const OwChqGridMetaData: GridMetaDataType = {
       columnName: "Sr",
       sequence: 0,
       componentType: "default",
-      width: 80,
+      width: 60,
+      maxWidth: 100,
+      minWidth: 50,
     },
     {
       accessor: "TRAN_DT",
