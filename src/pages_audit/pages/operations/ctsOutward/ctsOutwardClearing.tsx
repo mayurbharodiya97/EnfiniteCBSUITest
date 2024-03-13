@@ -374,6 +374,7 @@ const CtsOutwardClearingForm: FC<{
                         return {
                           ...item,
                           ECS_USER_NO: payload?.ACCT_NAME ?? "",
+                          CHEQUE_DATE: authState?.workingDate ?? "",
                         };
                       }),
                     ],
@@ -386,6 +387,7 @@ const CtsOutwardClearingForm: FC<{
                   chequeDetails: [
                     {
                       ECS_USER_NO: "",
+                      CHEQUE_DATE: authState?.workingDate ?? "",
                     },
                   ],
                   SLIP_AMOUNT: "0",
