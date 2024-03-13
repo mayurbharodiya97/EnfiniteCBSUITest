@@ -48,6 +48,7 @@ import { PhotoHistoryMetadata } from "../../metadata/photohistoryMetadata";
 import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
 import { Alert } from "components/common/alert";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 
 interface PhotoSignProps {
   open: boolean;
@@ -578,7 +579,7 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
                 variant={"h6"}
                 component="div"
               >
-                Photo Image
+                Photo Upload
               </Typography>
               <Tooltip
                 key={"tooltip-" + formMode}
@@ -704,7 +705,7 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
                 variant={"h6"}
                 component="div"
               >
-                Signature Image
+                Signature Upload
               </Typography>
               <Tooltip
                 key={"tooltip-" + formMode}
@@ -864,64 +865,25 @@ const PhotoSignatureCpyDialog: FC<PhotoSignProps> = (props) => {
                 // ref={myGridRef}
               />
             )}
-
-            {dialogOpen && (
-              <Dialog
-                open={true}
-                maxWidth="sm"
-                PaperProps={{
-                  style: {
-                    minWidth: "40%",
-                    width: "40%",
-                    // maxWidth: "90%",
-                  },
-                }}
-              >
-                <DialogTitle
-                  sx={{
-                    background: "var(--theme-color3)",
-                    color: "var(--theme-color2)",
-                    letterSpacing: "1.3px",
-                    margin: "10px",
-                    boxShadow:
-                      "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
-                    fontWeight: "light",
-                    borderRadius: "inherit",
-                    minWidth: "450px",
-                    py: 1,
-
-                    display: "flex",
-                    mx: 1,
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                  id="data-lost-confirmation"
-                >
-                  <Typography variant="h6">Confirmation</Typography>
-                </DialogTitle>
-                <DialogContent>
-                  <Typography variant="body1">
-                    Your changes will be removed.
-                  </Typography>
-                </DialogContent>
-                <DialogActions>
-                  <GradientButton
-                    onClick={() => {
+            {
+              <PopupRequestWrapper
+                MessageTitle={"CONFIRM"}
+                Message={"Your changes will be Removed."}
+                onClickButton={(rows, buttonNames, ...others) => {
+                    // console.log(rows, "kjefeiwqf", buttonNames)
+                    if(buttonNames === "Ok") {
+                      onClear()
+                    } else if (buttonNames === "Cancel") {
                       setDialogOpen(false);
                       setDialogAction(null);
-                      // setIsSaveDisabled(true);
-                    }}
-                  >
-                    CANCEL
-                  </GradientButton>
-                  <GradientButton
-                    onClick={onClear}
-                  >
-                    OK
-                  </GradientButton>
-                </DialogActions>
-              </Dialog>
-            )}
+                    }
+                }}
+                buttonNames={["Ok", "Cancel"]}
+                rows={[]}
+                loading={{}}
+                open={dialogOpen}
+            />
+            }
           </Grid>
         </>
       </DialogContent>

@@ -178,17 +178,20 @@ export default function TabStepper() {
       </QontoStepIconRoot>
     );
   }
+  const steps = state?.tabNameList.filter(tab => tab.isVisible) 
 
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
       <Stepper alternativeLabel activeStep={state?.colTabValuectx} connector={<QontoConnector />}>
-        {state?.tabNameList.map((tabEl, i) => {
+        {steps.map((tabEl, i) => {
+          // if(tabEl.isVisible) {
             // console.log("qwdQDW",)
-          return <Step sx={{}} key={tabEl.tabName} 
-          completed={state?.steps?.[i]?.status == "completed"}
-          >
-            <StepLabel error={state?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{tabEl.tabName}</StepLabel>
-          </Step>
+            return <Step sx={{}} key={tabEl.tabName} 
+            completed={state?.steps?.[i]?.status == "completed"}
+            >
+              <StepLabel error={state?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{tabEl.tabName}</StepLabel>
+            </Step>
+          // }
         })}
       </Stepper>
       {/* <Stepper alternativeLabel activeStep={1} connector={<ColorlibConnector />}>

@@ -62,6 +62,9 @@ import { ConfirmUpdateDialog } from './dialog/ConfirmUpdateDialog';
 import { Alert } from 'components/common/alert';
 import ExtractedHeader from './ExtractedHeader';
 import HeaderForm from './HeaderForm';
+import { RemarksAPIWrapper } from 'components/custom/Remarks';
+import { MessageBoxWrapper } from 'components/custom/messageBox';
+import PhotoSign from './formDetails/formComponents/individualComps/PhotoSign';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -181,7 +184,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx, handleUpdatectx } = useContext(CkycContext);
   // const { state: data }: any = useLocation();
   const location: any = useLocation();
   const { t } = useTranslation();
@@ -193,9 +196,10 @@ export default function FormModal({
   const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
   const [updateDialog, setUpdateDialog] = useState(false)
   const [actionDialog, setActionDialog] = useState(false)
+  const [confirmMsgDialog, setConfirmMsgDialog] = useState(false)
   const [cancelDialog, setCancelDialog] = useState(false)
   // const [from, setFrom] = useState("");
-  const [confirmAction, setConfirmAction] = useState<any>("confirm");
+  const [confirmAction, setConfirmAction] = useState<any>(null);
   const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
   const [displayMode, setDisplayMode] = useState<any>(formmode)
 
@@ -234,6 +238,23 @@ export default function FormModal({
       onClosePreventUpdateDialog()
     },
     onError: (error: any) => {},
+  });
+
+  const confirmMutation: any = useMutation(API.ConfirmPendingCustomers, {
+    onSuccess: (data) => {
+        // console.log("data o n save", data)
+        // handleFormModalClosectx()
+        // closeForm()
+        setActionDialog(false)
+
+        setConfirmMsgDialog(true)
+    },
+    onError: (error: any) => {
+        // console.log("data o n error", error)
+        // setIsUpdated(true)
+        setActionDialog(false)
+        setConfirmAction(null)
+    },
   });
 
   // useEffect(() => {
@@ -304,14 +325,14 @@ export default function FormModal({
     } else {
       handleFormModalClosectx()
       onClose()
-    }
-    
+    }    
   }, [])
 
 
   useEffect(() => {
     if(Boolean(state?.currentFormctx.currentFormSubmitted)) {
-      const totalTab = Array.isArray(state?.tabNameList) && state?.tabNameList.length;
+      const steps = state?.tabNameList.filter(tab => tab.isVisible) 
+      const totalTab:any = Array.isArray(steps) && steps.length;
       // handleCurrFormctx({
       //   // currentFormRefctx: [],
       //   currentFormSubmitted: null,
@@ -319,12 +340,26 @@ export default function FormModal({
       //   // isLoading: false,
       // })
       if(Boolean(state?.isFinalUpdatectx)) {
-        if(Object.keys(state?.modifiedFormCols).length >0) {
-          setUpdateDialog(true)
-          // setCancelDialog(true)
-        } else {
-          setAlertOnUpdate(true)
+        const getUpdatedTabs = async () => {
+          const {updated_tab_format, update_type} = await handleUpdatectx({
+            COMP_CD: authState?.companyID ?? ""
+          })
+          if(typeof updated_tab_format === "object") {
+            // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
+            if (Object.keys(updated_tab_format)?.length === 0) {
+                setAlertOnUpdate(true)
+            } else if(Object.keys(updated_tab_format)?.length>0) {
+              setUpdateDialog(true)
+            }
+          }
         }
+        getUpdatedTabs().catch(err => console.log("update error", err.message))
+        // if(Object.keys(state?.modifiedFormCols).length >0) {
+        //   setUpdateDialog(true)
+        //   // setCancelDialog(true)
+        // } else {
+        //   setAlertOnUpdate(true)
+        // }
       } else {
         if((totalTab - 1) > state?.colTabValuectx) {
           handleCurrFormctx({
@@ -334,7 +369,7 @@ export default function FormModal({
         }
       }      
     }
-  }, [state?.currentFormctx.currentFormSubmitted, state?.isFinalUpdatectx])
+  }, [state?.currentFormctx.currentFormSubmitted, state?.tabNameList, state?.isFinalUpdatectx])
 
 
 
@@ -470,7 +505,8 @@ export default function FormModal({
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy displayMode={displayMode} />
+        return <PhotoSign displayMode={displayMode} />
+        // return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
@@ -531,7 +567,8 @@ export default function FormModal({
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy displayMode={displayMode} />
+        return <PhotoSign displayMode={displayMode} />
+        // return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
@@ -607,7 +644,12 @@ export default function FormModal({
       handleCurrFormctx({
         isLoading: true,
       })
-      Promise.all(refs.map(ref => ref.current.handleSubmitError(e, "save", false)))
+      Promise.all(refs.map(ref => {
+        return typeof ref === "function" 
+        ? ref() 
+        : (ref.current && ref.current.handleSubmitError) 
+        && ref.current.handleSubmitError(e, "save", false)
+      }))
     }
     // if(displayMode == "new" || displayMode == "edit") {
     //   if(Object.keys(state?.modifiedFormCols).length >0) {
@@ -636,21 +678,21 @@ export default function FormModal({
     return displayMode == "view"
       ? (from && from == "confirmation-entry") && <React.Fragment>
         <Button
-          onClick={() => openActionDialog("confirm")}
+          onClick={() => openActionDialog("Y")}
           color="primary"
           // disabled={mutation.isLoading}
         >
           {t("Confirm")}
         </Button>
         <Button
-          onClick={() => openActionDialog("query")}
+          onClick={() => openActionDialog("M")}
           color="primary"
           // disabled={mutation.isLoading}
         >
           {t("Raise Query")}
         </Button>
         <Button
-          onClick={() => openActionDialog("reject")}
+          onClick={() => openActionDialog("R")}
           color="primary"
           // disabled={mutation.isLoading}
         >
@@ -709,6 +751,40 @@ export default function FormModal({
     </React.Fragment>
   }, [state?.retrieveFormDataApiRes])
 
+  const dialogsMemo = React.useMemo(() => {
+    // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
+    return <React.Fragment>
+        {/* confirms before updating */}
+        {updateDialog && <ConfirmUpdateDialog 
+            open={updateDialog} 
+            onClose={onCloseUpdateDialog} 
+            mutationFormDTL={mutation}
+            setAlertOnUpdate={setAlertOnUpdate}
+        />}
+
+        {/* confirming action-remark dialog */}
+        {/* {actionDialog && <ActionDialog 
+            open={actionDialog} 
+            setOpen={setActionDialog} 
+            closeForm = {onClose}
+            action= {confirmAction}
+        />} */}
+
+        {/* data lost alert on closing form */}
+        {cancelDialog && <CloseFormDialog 
+            open={cancelDialog} 
+            onClose={onCloseCancelDialog} 
+            closeForm = {onClose}
+        />}
+
+        {/* no change found to update dialog */}
+        {alertOnUpdate && <PreventUpdateDialog 
+            open={alertOnUpdate} 
+            onClose={onClosePreventUpdateDialog} 
+        />}
+    </React.Fragment>
+  }, [updateDialog, actionDialog, cancelDialog, alertOnUpdate])
+  const steps:any = state?.tabsApiResctx.filter(tab => tab.isVisible) 
 
   return (
     // <div>
@@ -757,6 +833,15 @@ export default function FormModal({
                 ? t("LegalEntry")
                 : t("IndividualEntry")
               }
+              {formmode === "view" &&
+                <Chip
+                  style={{ color: "white", marginLeft: "8px" }}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  label={`view mode`}
+                />
+              }
             </Typography>
             {HeaderContent}
 
@@ -771,7 +856,7 @@ export default function FormModal({
             </Button>
           </Toolbar>
         </AppBar>
-        <HeaderForm onClose={onClose} formmode={formmode} mutation={mutation} />
+        <HeaderForm />
           <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
 
             
@@ -804,20 +889,22 @@ export default function FormModal({
                 onChange={(e, newValue) => handleColTabChangectx(newValue)}
               >
                 {
-                  (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((el:any, i) => {
+                  (steps && steps.length>0) && steps.map((el:any, i) => {
                     // console.log(typeof WorkspacePremiumIcon, "asdqwewqsxaswweqeqw",WorkspacePremiumIcon)
-                    return (
-                      <Tooltip key={el?.TAB_NAME} placement="left" title={state?.isSidebarExpandedctx ? "" : el?.TAB_NAME}>
-                        <CustomTab isSidebarExpanded={state?.isSidebarExpandedctx} 
-                          label={
-                            <CustomTabLabel 
-                              IconName={el?.ICON} isSidebarExpanded={state?.isSidebarExpandedctx} 
-                              tabLabel={el?.TAB_NAME} subtext={el?.TAB_DESC ?? ""} 
-                            />
-                          } 
-                        />
-                      </Tooltip>
-                    )
+                    // if(el.isVisible) {
+                      return (
+                        <Tooltip key={el?.TAB_NAME} placement="left" title={state?.isSidebarExpandedctx ? "" : el?.TAB_NAME}>
+                          <CustomTab isSidebarExpanded={state?.isSidebarExpandedctx} 
+                            label={
+                              <CustomTabLabel 
+                                IconName={el?.ICON} isSidebarExpanded={state?.isSidebarExpandedctx} 
+                                tabLabel={el?.TAB_NAME} subtext={el?.TAB_DESC ?? ""} 
+                              />
+                            } 
+                          />
+                        </Tooltip>
+                      )                      
+                    // }
                   }) 
                 }
               </CustomTabs>
@@ -829,16 +916,23 @@ export default function FormModal({
               }} item xs>
                 
               {((state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.isFreshEntryctx) && <TabStepper />}
-              {mutation.isError && (
+              {mutation.isError ? (
                 <Alert
                   severity={mutation.error?.severity ?? "error"}
                   errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
                   errorDetail={mutation.error?.error_detail}
                   color="error"
                 />
+              ) : confirmMutation.isError && (
+                <Alert
+                  severity={confirmMutation.error?.severity ?? "error"}
+                  errorMsg={confirmMutation.error?.error_msg ?? "Something went to wrong.."}
+                  errorDetail={confirmMutation.error?.error_detail}
+                  color="error"
+                />
               )}
               {
-                (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((element, i) => {
+                (steps && steps.length>0) && steps.map((element, i) => {
                   return <TabPanel key={i} value={state?.colTabValuectx} index={i}>
                     {state?.entityTypectx==="I" ? getIndividualTabComp(element?.TAB_NAME) : getLegalTabComp(element?.TAB_NAME)}
                   </TabPanel>
@@ -846,8 +940,64 @@ export default function FormModal({
               }
             </Grid>
           </Grid>
+              {dialogsMemo}
 
-        {updateDialog && <ConfirmUpdateDialog 
+          <RemarksAPIWrapper
+            TitleText={"Confirmation"}
+            onActionNo={() => {
+              setActionDialog(false)
+              setConfirmAction(null)
+            }}
+            onActionYes={(val, rows) => {
+              // console.log(val, "weiuifuhiwuefefgwef", rows)
+              confirmMutation.mutate({
+                  REQUEST_CD: state?.req_cd_ctx ?? "",
+                  REMARKS: val ?? "",
+                  CONFIRMED: confirmAction
+              })
+            }}
+            isLoading={confirmMutation.isLoading || confirmMutation.isFetching}
+            isEntertoSubmit={true}
+            AcceptbuttonLabelText="Ok"
+            CanceltbuttonLabelText="Cancel"
+            open={actionDialog}
+            rows={{}}
+            isRequired={confirmAction === "Y" ? false : true}
+            // isRequired={false}
+          />
+
+          <MessageBoxWrapper
+            MessageTitle={"SUCCESS"}
+            // Message={`New Request ID created Successfully : ${state?.req_cd_ctx ?? ""}` ?? "No Message"}
+            Message={
+              state?.customerIDctx 
+              ? `Customer ID : ${state?.customerIDctx} ${
+                confirmAction === "Y" 
+                ? "Confirmed" 
+                : confirmAction === "M" 
+                  ? "Query raised" 
+                  : confirmAction === "R" ? "Rejected" : "no value"} Sucessfully`
+              : state?.req_cd_ctx 
+                ? `Request ID : ${state?.req_cd_ctx} ${
+                  confirmAction === "Y" 
+                  ? "Confirmed" 
+                  : confirmAction === "M" 
+                    ? "Query raised" 
+                    : confirmAction === "R" && "Rejected"} Sucessfully`
+                : "No Message"
+            }
+            // onClickButton={() => setConfirmMsgDialog(false)}
+            onClickButton={() => {
+              setConfirmAction(null)
+              setConfirmMsgDialog(false)
+              closeForm()
+            }}
+            rows={[]}
+            buttonNames={["OK"]}
+            open={confirmMsgDialog}
+          />
+
+        {/* {updateDialog && <ConfirmUpdateDialog 
             open={updateDialog} 
             onClose={onCloseUpdateDialog} 
             mutationFormDTL={mutation}
@@ -869,7 +1019,7 @@ export default function FormModal({
         {alertOnUpdate && <PreventUpdateDialog 
             open={alertOnUpdate} 
             onClose={onClosePreventUpdateDialog} 
-        />}
+        />} */}
       </Dialog>
     // </div>
   );

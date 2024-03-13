@@ -259,6 +259,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/DOCCUMENTSCANHISTORY",
     packageName: "",
   },
+  VALIDATEDOCDATA: {
+    url: "/customerServiceAPI/VALIDATEDOCDATA",
+    packageName: "",
+  },
   SAVECUSTOMERDATA: {
     url: "/customerServiceAPI/SAVECUSTOMERDATA",
     packageName: "",

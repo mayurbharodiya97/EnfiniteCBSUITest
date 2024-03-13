@@ -30,6 +30,7 @@ import _ from "lodash";
 import { AuthContext } from "pages_audit/auth";
 import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "./formComponents/TabNavigate";
+import { MessageBoxWrapper } from "components/custom/messageBox";
 
 const KYCDetails = ({
   isCustomerData,
@@ -311,9 +312,14 @@ const KYCDetails = ({
                 metaData={POIMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
-                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                formState={{
+                  COMP_CD: authState?.companyID ?? "", 
+                  CUSTOMER_ID: state?.customerIDctx ?? "", 
+                  REQ_FLAG: state?.isFreshEntryctx ? "F" : "E",
+                  RESIDENCE_STATUS: state?.formDatactx["PERSONAL_DETAIL"]?.RESIDENCE_STATUS ?? "",
+                }}
                 setDataOnFieldChange={(action, payload) => {
-                  // console.log("wekjukfhwiuefadw", action)
+                  // console.log(payload, "wekjukfhwiuefadw", action)
                   // const result = payload;
                   if(Boolean(payload) && (
                     action === "PAN_NO" || 
@@ -445,7 +451,18 @@ const KYCDetails = ({
       ) : null}
       <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
 
-      <Dialog
+      <MessageBoxWrapper
+        MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}
+        Message={errMsg ?? "No Message"}
+        onClickButton={() => {
+          setOpenDialog(false)
+          setErrMsg("")
+        }}
+        rows={[]}
+        buttonNames={["OK"]}
+        open={openDialog}
+      />
+      {/* <Dialog
         open={openDialog}
         maxWidth={"sm"}
         PaperProps={{
@@ -484,7 +501,7 @@ const KYCDetails = ({
             CANCEL
           </GradientButton>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Grid>
   );
 };

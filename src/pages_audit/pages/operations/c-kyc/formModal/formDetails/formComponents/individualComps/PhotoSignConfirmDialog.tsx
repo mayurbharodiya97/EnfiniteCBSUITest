@@ -532,7 +532,7 @@ const PhotoSignConfirmDialog: FC<PhotoSignProps> = (props) => {
 
     {actionDialog && <ActionDialog 
         open={actionDialog} 
-        onClose={onCloseActionDialog} 
+        setOpen={setActionDialog} 
         closeForm = {onClose}
         action= {confirmAction}
     />}

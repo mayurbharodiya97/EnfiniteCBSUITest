@@ -14,6 +14,7 @@ import { t } from "i18next";
 import PhotoSignConfirmDialog from "../formModal/formDetails/formComponents/individualComps/PhotoSignConfirmDialog";
 import { useSnackbar } from "notistack";
 import { Alert } from "components/common/alert";
+import { MessageBoxWrapper } from "components/custom/messageBox";
 
 
 export const CkycConfirm = () => {
@@ -26,6 +27,7 @@ export const CkycConfirm = () => {
   // temporary-use-state
   const [isCustomerData, setIsCustomerData] = useState(true);
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const [preventConfirmDialog, setPreventConfirmDialog] = useState(false);
   
 
   const {
@@ -66,6 +68,7 @@ export const CkycConfirm = () => {
       const maker = data.rows?.[0]?.data?.MAKER
       const loggedinUser = authState?.user?.id;
       if(maker === loggedinUser) {
+        setPreventConfirmDialog(true)
         enqueueSnackbar("You can not confirm your own posted transaction", {
           variant: "error",
         })
@@ -128,6 +131,20 @@ export const CkycConfirm = () => {
           setAction={setCurrentAction}
           refetchData={() => PendingRefetch()}
           // ref={myGridRef}
+        />
+
+        <MessageBoxWrapper
+          MessageTitle={"ALERT"}
+          Message={"You can not confirm your own posted transaction"}
+          onClickButton={() => {
+            setPreventConfirmDialog(false)
+            // setConfirmAction(null)
+            // setConfirmMsgDialog(false)
+            // closeForm()
+          }}
+          rows={[]}
+          buttonNames={["OK"]}
+          open={preventConfirmDialog}
         />
 
         <Routes>

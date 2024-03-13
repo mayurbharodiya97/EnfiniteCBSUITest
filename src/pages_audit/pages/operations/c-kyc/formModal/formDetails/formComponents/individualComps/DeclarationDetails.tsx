@@ -52,7 +52,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
     })
   }, [])
   useEffect(() => {
-    // console.log("qweqweqweqwe", formStatus)
+    // console.log("delcatqweqweqweqwe", formStatus)
     if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
       if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
         setIsNextLoading(false)
@@ -83,6 +83,9 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
           handleReqCDctx(req_cd)
           setFormStatus(old => [...old, true])
           // handleColTabChangectx(state?.colTabValuectx+1)
+      } else {
+        setFormStatus(old => [...old, false])
+        console.log("not found req_cd on success", data)
       }
     },
     onError: (error: any) => {
@@ -162,6 +165,7 @@ const DeclarationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 IsNewRow: state?.isFreshEntryctx,
                 PERSONAL_DETAIL: state?.formDatactx?.PERSONAL_DETAIL,
                 COMP_CD: authState?.companyID ?? "",
+                BRANCH_CD: authState?.user?.branchCode ?? ""
             }
             mutation.mutate(payload)
             // refetch()

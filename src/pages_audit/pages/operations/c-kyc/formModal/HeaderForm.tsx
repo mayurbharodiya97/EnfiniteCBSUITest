@@ -7,7 +7,7 @@ import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import { useLocation } from "react-router-dom";
 
-const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:any) {
+const HeaderForm = React.memo(function HeaderForm() {
     const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
     const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
     const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
@@ -43,57 +43,6 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
         ["getPMISCData", {}],
         () => API.getPMISCData("CKYC_ACCT_TYPE")
     );
-
-    //   // get customer form details  
-    // const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
-    //     onSuccess: (data) => {
-    //     // // console.log("on successssss", data, location)
-    //     // handleFormDataonRetrievectx(data[0])
-    //     // let acctTypevalue = data[0]?.PERSONAL_DETAIL.ACCT_TYPE
-    //     // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-    //     // setAcctTypeState(acctType[0])
-    //     // // handleColTabChangectx(0)
-    //     // // handleFormModalOpenOnEditctx(location?.state)
-    //     handleFormDataonRetrievectx(data[0])
-    //     // onClosePreventUpdateDialog()
-    //     },
-    //     onError: (error: any) => {},
-    // });
-    // useEffect(() => {
-    //     console.log(formmode,"asddsaasddsa", location?.state)
-    //     // setDisplayMode(formmode)
-    //     if(Boolean(location.state)) {
-    //       if(formmode == "new") {
-    //         handleFormModalOpenctx(location?.state?.entityType)
-    //         console.log("statess new", location.state)
-    //       } else {
-    //         handleColTabChangectx(0)
-    //         handleFormModalOpenOnEditctx(location?.state)
-      
-    //         let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-    //           COMP_CD: authState?.companyID ?? "",
-    //         }
-    //         if(Array.isArray(location.state) && location.state.length>0) {
-    //           const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-    //           const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-    //           if(Boolean(reqCD)) {
-    //             payload["REQUEST_CD"] = reqCD;
-    //           }
-    //           if(Boolean(custID)) {
-    //             payload["CUSTOMER_ID"] = custID;
-    //           }
-    //         }
-    //         if(Object.keys(payload)?.length > 1) {
-    //           mutation.mutate(payload)
-    //         }
-    //       } 
-    //     } else {
-    //       handleFormModalClosectx()
-    //       onClose()
-    //     }
-        
-    // }, [])
-
 
       // get tabs data
     const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
@@ -135,7 +84,7 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
                 subtitles.push(subtitleinfo)
                 } else {
                 // new tab element
-                newData.push({...element, subtitles: [subtitleinfo]})
+                newData.push({...element, subtitles: [subtitleinfo], isVisible: true})
                 }
             // console.log("filled newdata -aft", element.TAB_NAME , newData)
             });
@@ -148,14 +97,14 @@ const HeaderForm = React.memo(function HeaderForm({onClose, formmode, mutation}:
     
 
     useEffect(() => {
-        if(!mutation.isLoading && mutation.data) {
+        if(state?.accTypeValuectx) {
           if(AccTypeOptions && !isAccTypeLoading) {
-            let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+            let acctTypevalue = state?.accTypeValuectx
             let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
             setAcctTypeState(acctType[0])
           }
         }
-    }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])    
+    }, [state?.accTypeValuectx, AccTypeOptions, isAccTypeLoading])    
 
     return (
         <AppBar
