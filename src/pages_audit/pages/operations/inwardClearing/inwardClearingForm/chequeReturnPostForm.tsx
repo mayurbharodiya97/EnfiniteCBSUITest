@@ -19,20 +19,21 @@ import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { PositivePayFormWrapper } from "./positvePayForm";
 import { CircularProgress } from "@mui/material";
 import { utilFunction } from "components/utils";
+import RecordDialog from "pages_audit/pages/transactionSummeryCard/imagecarousel";
 
 export const ChequeReturnPostForm: FC<{
   onClose?: any;
   inwardData?: any;
-}> = ({ onClose, inwardData }) => {
+  isDataChangedRef?: any;
+}> = ({ onClose, inwardData, isDataChangedRef }) => {
   const formRef = useRef<any>(null);
-  const [rotate, setRotate] = useState<number>(0);
   const { MessageBox } = usePopupContext();
-  const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const [isOpenSave, setIsOpenSave] = useState(false);
   const [messageData, setMessageData] = useState<any>();
+  const [acImageData, setAcImageData] = useState<any>(null);
   const [isPositivePay, setIsPositvePay] = useState(false);
-  const isDataChangedRef = useRef(false);
+
   const result: any = useQueries([
     {
       queryKey: ["getInwardChequeSignFormData"],
@@ -46,26 +47,24 @@ export const ChequeReturnPostForm: FC<{
           ACCT_CD: inwardData.current?.ACCT_CD,
           DAILY_TRN_CD: inwardData.current?.DAILY_TRN_CD,
           TRAN_CD: inwardData.current?.TRAN_CD,
-          TRAN_DT:
-            format(new Date(inwardData.current?.TRAN_DT), "dd/MMM/yyyy") ?? "",
+          TRAN_DT: inwardData.current?.TRAN_DT,
           TRAN_FLAG: "E",
           WITH_SIGN: "Y",
           ENTERED_BY: inwardData.current?.ENTERED_BY,
         }),
     },
-    {
-      queryKey: ["getBussinessDate"],
-      queryFn: () => API.getBussinessDate(),
-    },
+    // {
+    //   queryKey: ["getBussinessDate"],
+    //   queryFn: () => API.getBussinessDate(),
+    // },
   ]);
-  let errorMsg = `${result[1].error?.error_msg}`;
-  errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
-  //@ts-ignore
-  let error_detail = `${result[1]?.error?.error_detail}`;
+  // let errorMsg = `${result[1].error?.error_msg}`;
+  // errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
+  // //@ts-ignore
+  // let error_detail = `${result[1]?.error?.error_detail}`;
 
   useEffect(() => {
     return () => {
-      queryClient.removeQueries(["getBussinessDate"]);
       queryClient.removeQueries(["getInwardChequeSignFormData"]);
     };
   }, []);
@@ -73,18 +72,18 @@ export const ChequeReturnPostForm: FC<{
     onSuccess: (data, variables) => {
       let apiReq = {
         ...variables,
-        _isNewRow: true,
+        action: "P",
       };
       if (data?.[0]?.O_STATUS === "0") {
         setMessageData({
-          messageTitle: "Validation Successfull..",
-          message: "Do you Want to save this data",
+          messageTitle: "Validation Successful",
+          message: "Are you sure to post this Cheque??",
           apiReq: apiReq,
         });
         setIsOpenSave(true);
       } else if (data?.[0]?.O_STATUS === "9") {
         MessageBox({
-          messageTitle: "Validation Alert..",
+          messageTitle: "Validation Alert",
           message: data?.[0]?.O_MESSAGE,
         });
       } else if (data?.[0]?.O_STATUS === "99") {
@@ -96,40 +95,91 @@ export const ChequeReturnPostForm: FC<{
         setIsOpenSave(true);
       } else if (data?.[0]?.O_STATUS === "999") {
         MessageBox({
-          messageTitle: "Validation Failed...!",
+          messageTitle: "Validation Failed",
           message: data?.[0]?.O_MESSAGE,
         });
       }
     },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
   });
   const viewDetailValidateReturnData: any = useMutation(API.validateReturn, {
     onSuccess: async (data, variables) => {
-      if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
+      let apiReq = {
+        ...variables,
+        action: "RETURN",
+      };
+
+      if (data?.[0]?.O_STATUS === "0" && data?.[0]?.O_MESSAGE) {
+        setMessageData({
+          messageTitle: "Validation Successful",
+          message: "Are you sure to return this Cheque??",
+          apiReq: apiReq,
+        });
+        setIsOpenSave(true);
+      } else if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_MESSAGE) {
         MessageBox({
           messageTitle: "Validation Failed",
           message: data?.[0]?.O_MESSAGE,
         });
-      } else if (data?.[0]?.O_STATUS === "0" && data?.[0]?.O_MESSAGE) {
-        enqueueSnackbar(data?.[0]?.O_MESSAGE, {
-          variant: "success",
-        });
-        onClose();
       }
+    },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
     },
   });
 
   const postConfigDML: any = useMutation(API.postConfigDML, {
     onSuccess: (data, variables) => {
+      // enqueueSnackbar(data, { variant: "success" });
+      MessageBox({
+        messageTitle: "Success",
+        message: data,
+      });
       isDataChangedRef.current = true;
-      enqueueSnackbar(data, { variant: "success" });
+      onClose();
     },
 
-    onError: (error: any) => {},
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
   });
-  const handleRotateChange = () => {
-    const newRotateValue = (rotate + 90) % 360;
-    setRotate(newRotateValue);
-  };
+  const returnConfigDML: any = useMutation(API.returnConfigDML, {
+    onSuccess: (data, variables) => {
+      enqueueSnackbar(data, { variant: "success" });
+      isDataChangedRef.current = true;
+      onClose();
+    },
+
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
+  });
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -148,6 +198,9 @@ export const ChequeReturnPostForm: FC<{
         CHEQUE_NO: inwardData.current?.CHEQUE_NO ?? "",
         TRAN_CD: inwardData.current?.TRAN_CD,
         MICR_TRAN_CD: inwardData.current?.MICR_TRAN_CD ?? "",
+        CHEQUE_DT: inwardData.current?.CHEQUE_DT
+          ? format(new Date(inwardData.current?.["CHEQUE_DT"]), "dd/MMM/yyyy")
+          : "",
       };
       const newData = {
         COMP_CD: inwardData.current?.COMP_CD ?? "",
@@ -157,18 +210,24 @@ export const ChequeReturnPostForm: FC<{
         CHEQUE_NO: data?.CHEQUE_NO ?? "",
         TRAN_CD: inwardData.current?.TRAN_CD,
         MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
+        CHEQUE_DT: data?.CHEQUE_DT
+          ? format(new Date(data["CHEQUE_DT"]), "dd/MMM/yyyy")
+          : "",
       };
 
       let upd: any = utilFunction.transformDetailsData(newData ?? {}, oldData);
-      const updateData = {
-        ...newData,
-        ...upd,
-        _isUpdatedRow: true,
-      };
-      endSubmit(true);
-      postConfigDML.mutate(updateData);
+      if (upd?._UPDATEDCOLUMNS?.length > 0) {
+        const updateData = {
+          ...newData,
+          ...upd,
+          _isNewRow: false,
+        };
+        endSubmit(true);
+        postConfigDML.mutate(updateData);
+      }
     } else if (actionFlag === "POST") {
-      const postData = {
+      endSubmit(true);
+      viewDetailValidatePostData.mutate({
         COMP_CD: inwardData.current?.COMP_CD ?? "",
         BRANCH_CD: data?.BRANCH_CD ?? "",
         ACCT_TYPE: data?.ACCT_TYPE ?? "",
@@ -178,45 +237,43 @@ export const ChequeReturnPostForm: FC<{
         ENTERED_BY: inwardData.current?.ENTERED_BY ?? "",
         ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD ?? "",
         REMARKS: data?.REMARKS ?? "",
-        CHEQUE_DATE: format(new Date(data["CHEQUE_DATE"]), "dd/MMM/yyyy"), //data?.CHEQUE_DT,
+        CHEQUE_DT: data?.CHEQUE_DT
+          ? format(new Date(data["CHEQUE_DT"]), "dd/MMM/yyyy")
+          : "", //data?.CHEQUE_DT,
         CHEQUE_NO: data?.CHEQUE_NO ?? "",
         AMOUNT: data?.AMOUNT ?? "",
         TRAN_CD: inwardData.current?.TRAN_CD,
         MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
-      };
-      endSubmit(true);
-      viewDetailValidatePostData.mutate(postData);
+      });
     } else if (actionFlag === "RETURN") {
       viewDetailValidateReturnData.mutate({
-        ...data,
-        CHEQUE_DATE: format(new Date(data["CHEQUE_DATE"]), "dd/MMM/yyyy"),
-        TRAN_DATE: format(new Date(data["TRAN_DATE"]), "dd/MMM/yyyy"),
         COMP_CD: inwardData.current?.COMP_CD ?? "",
+        BRANCH_CD: data?.BRANCH_CD ?? "",
+        ACCT_TYPE: data?.ACCT_TYPE ?? "",
+        ACCT_CD: data?.ACCT_CD ?? "",
+        CHEQUE_NO: data?.CHEQUE_NO ?? "",
+        CHEQUE_DT: data?.CHEQUE_DT
+          ? format(new Date(data["CHEQUE_DT"]), "dd/MMM/yyyy")
+          : "",
         TRAN_CD: inwardData.current?.TRAN_CD,
         RET_COMP_CD: inwardData.current?.RET_COMP_CD,
         ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD,
         ENTERED_BY: inwardData.current?.ENTERED_BY,
         LAST_MACHINE_NM: inwardData.current?.LAST_MACHINE_NM,
+        REASON_CD: data?.REASON_CD ?? "",
+        REASON: data?.REASON ?? "",
+        ZONE_CD: data?.ZONE_CD ?? "",
+        REMARKS: data?.REMARKS ?? "",
+        RET_BRANCH_CD: data?.RET_BRANCH_CD ?? "",
+        RET_ACCT_TYPE: data?.RET_ACCT_TYPE ?? "",
+        RET_ACCT_CD: data?.RET_ACCT_CD ?? "",
       });
     }
   };
 
-  if (chequeReturnPostFormMetaData.form.label) {
-    chequeReturnPostFormMetaData.form.label =
-      "A/C No:-" +
-      " " +
-      inwardData.current?.BRANCH_CD +
-      "-" +
-      inwardData.current?.ACCT_TYPE +
-      "-" +
-      inwardData.current?.ACCT_CD +
-      "--" +
-      "Customer Level Post/Return" +
-      " ";
-  }
   return (
     <>
-      {result?.[1]?.isLoading || result?.[1]?.isFetching ? (
+      {/* {result?.[1]?.isLoading || result?.[1]?.isFetching ? (
         <LoaderPaperComponent />
       ) : result[1].isError ? (
         <Alert
@@ -224,100 +281,189 @@ export const ChequeReturnPostForm: FC<{
           errorMsg={errorMsg}
           errorDetail={error_detail ?? ""}
         />
-      ) : (
-        <>
-          <FormWrapper
-            key={`chequeReturnPost`}
-            metaData={chequeReturnPostFormMetaData as unknown as MetaDataType}
-            initialValues={{
-              ...inwardData.current,
-              RANGE_DATE: result?.[1]?.data?.[0]?.RANGE_DATE ?? "",
-              TRAN_DATE: result?.[1]?.data?.[0]?.TRAN_DATE ?? "",
-              CHEQUE_DATE: authState?.workingDate ?? "",
-            }}
-            onSubmitHandler={onSubmitHandler}
-            formStyle={{
-              background: "white",
-            }}
-            onFormButtonClickHandel={(id, dependentFields) => {
-              if (id === "POST") {
-                let event: any = { preventDefault: () => {} };
-                formRef?.current?.handleSubmit(event, "POST");
-              } else if (
-                id === "RETURN" &&
-                dependentFields?.RETURN?.value.length > 0
-              ) {
-                let event: any = { preventDefault: () => {} };
-                formRef?.current?.handleSubmit(event, "RETURN");
-              } else if (id === "POSITIVE_PAY") {
-                setIsPositvePay(true);
-              }
-            }}
-            formState={{
-              MessageBox: MessageBox,
-            }}
-            // onFormButtonCicular={mutation.isLoading}
-            ref={formRef}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                <GradientButton onClick={handleRotateChange}>
-                  {rotate === 0 ? "Rotate" : "Reset"}
-                </GradientButton>
-                <GradientButton
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  disabled={isSubmitting}
-                  endIcon={
-                    postConfigDML.isLoading ? (
-                      <CircularProgress size={20} />
-                    ) : null
-                  }
-                  color={"primary"}
-                >
-                  Save
-                </GradientButton>
-                <GradientButton onClick={onClose}>Close</GradientButton>
-              </>
-            )}
-          </FormWrapper>
+      ) : ( */}
+      <>
+        <FormWrapper
+          key={`chequeReturnPost`}
+          metaData={chequeReturnPostFormMetaData as unknown as MetaDataType}
+          initialValues={inwardData.current}
+          // initialValues={inwardData.current?.data[currentRecordIndex]}
+          // initialValues={{
+          //   ...inwardData.current,
+          //   RANGE_DATE: result?.[1]?.data?.[0]?.RANGE_DATE ?? "",
+          //   TRAN_DATE: result?.[1]?.data?.[0]?.TRAN_DATE ?? "",
+          // }}
+          onSubmitHandler={onSubmitHandler}
+          formStyle={{
+            background: "white",
+          }}
+          onFormButtonClickHandel={(id) => {
+            if (id === "POST") {
+              let event: any = { preventDefault: () => {} };
+              formRef?.current?.handleSubmit(event, "POST");
+            } else if (id === "RETURN") {
+              let event: any = { preventDefault: () => {} };
+              formRef?.current?.handleSubmit(event, "RETURN");
+            } else if (id === "POSITIVE_PAY") {
+              setIsPositvePay(true);
+            }
+          }}
+          formState={{
+            MessageBox: MessageBox,
+          }}
+          ref={formRef}
+          setDataOnFieldChange={(action, payload) => {
+            if (action === "ACCT_CD_VALID") {
+              setAcImageData(payload?.[0]?.SIGN_IMG);
+            } else if (action === "ACCT_CD_BLANK") {
+              setAcImageData("");
+            }
+          }}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              <GradientButton
+                onClick={(event) => {
+                  handleSubmit(event, "Save");
+                }}
+                disabled={isSubmitting}
+                endIcon={
+                  postConfigDML.isLoading ? (
+                    <CircularProgress size={20} />
+                  ) : null
+                }
+                color={"primary"}
+              >
+                Save & Close
+              </GradientButton>
+              <GradientButton onClick={onClose}>Close</GradientButton>
+              {/* <GradientButton onClick={handleNextClick}>Next</GradientButton> */}
+            </>
+          )}
+        </FormWrapper>
 
-          <>
-            <ChequeSignImage
-              imgData={result?.[0]?.data}
-              rotate={rotate}
-              loading={result[0].isLoading || result[0].isFetching}
-              error={result[0].isError}
-            />
-          </>
-          <>
-            {isOpenSave && (
-              <PopupMessageAPIWrapper
-                MessageTitle={messageData.messageTitle}
-                Message={messageData.message}
-                onActionYes={() => ({})}
-                onActionNo={() => setIsOpenSave(false)}
-                rows={[]}
-                open={isOpenSave}
-                // loading={crudLimitData.isLoading}
-              />
-            )}
-          </>
-          {isPositivePay ? (
-            <PositivePayFormWrapper
-              onClose={() => {
-                setIsPositvePay(false);
-              }}
-              positiveData={inwardData.current}
-            />
-          ) : null}
+        <>
+          <ChequeSignImage
+            imgData={result?.[0]?.data}
+            loading={result[0].isLoading || result[0].isFetching}
+            error={result[0].isError}
+            acSignImage={acImageData}
+          />
         </>
-      )}
+
+        <>
+          {isOpenSave && (
+            <PopupMessageAPIWrapper
+              MessageTitle={messageData.messageTitle}
+              Message={messageData.message}
+              onActionYes={() => {
+                if (messageData?.apiReq?.action === "P") {
+                  const oldData = {
+                    COMP_CD: inwardData.current?.COMP_CD ?? "",
+                    BRANCH_CD: inwardData.current?.BRANCH_CD ?? "",
+                    ACCT_TYPE: inwardData.current?.ACCT_TYPE ?? "",
+                    ACCT_CD: inwardData.current?.ACCT_CD ?? "",
+                    CHEQUE_NO: inwardData.current?.CHEQUE_NO ?? "",
+                    DRAFT_DIV: inwardData.current?.DRAFT_DIV ?? "",
+                    TRAN_CD: inwardData.current?.TRAN_CD,
+                    MICR_TRAN_CD: inwardData.current?.MICR_TRAN_CD ?? "",
+                    CHEQUE_DT:
+                      format(
+                        new Date(inwardData.current?.["CHEQUE_DT"]),
+                        "dd/MMM/yyyy "
+                      ) ?? "",
+                  };
+                  const newData = {
+                    COMP_CD: inwardData.current?.COMP_CD ?? "",
+                    BRANCH_CD: messageData?.apiReq?.BRANCH_CD ?? "",
+                    ACCT_TYPE: messageData?.apiReq?.ACCT_TYPE ?? "",
+                    ACCT_CD: messageData?.apiReq?.ACCT_CD ?? "",
+                    CHEQUE_NO: messageData?.apiReq?.CHEQUE_NO ?? "",
+                    TRAN_CD: inwardData.current?.TRAN_CD,
+                    MICR_TRAN_CD: messageData?.apiReq?.MICR_TRAN_CD ?? "",
+                    CHEQUE_DT:
+                      format(
+                        new Date(messageData?.apiReq["CHEQUE_DT"]),
+                        "dd/MMM/yyyy "
+                      ) ?? "",
+                  };
+
+                  let upd: any = utilFunction.transformDetailsData(
+                    newData ?? {},
+                    oldData
+                  );
+                  postConfigDML.mutate({
+                    ...newData,
+                    ...upd,
+                    _isNewRow: true,
+                  });
+                } else {
+                  const oldData = {
+                    TRAN_CD: inwardData.current?.TRAN_CD,
+                    COMP_CD: inwardData.current?.COMP_CD,
+                    BRANCH_CD: inwardData.current?.BRANCH_CD,
+                    RET_BRANCH_CD: inwardData.current?.RET_BRANCH_CD,
+                    RET_COMP_CD: inwardData.current?.RET_COMP_CD,
+                    RET_ACCT_TYPE: inwardData.current?.RET_ACCT_TYPE,
+                    RET_ACCT_CD: inwardData.current?.RET_ACCT_CD,
+                    ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD,
+                    CHEQUE_DT: inwardData.current?.CHEQUE_DT,
+                    CHEQUE_NO: inwardData.current?.CHEQUE_NO,
+                    ZONE_CD: inwardData.current?.ZONE_CD,
+                    REASON: inwardData.current?.REASON,
+                    REASON_CD: inwardData.current?.REASON_CD,
+                  };
+
+                  const newData = {
+                    TRAN_CD: inwardData.current?.TRAN_CD,
+                    COMP_CD: inwardData.current?.COMP_CD,
+                    BRANCH_CD: inwardData.current?.BRANCH_CD,
+                    RET_BRANCH_CD: messageData?.apiReq?.RET_BRANCH_CD,
+                    RET_ACCT_TYPE: messageData?.apiReq?.RET_ACCT_TYPE,
+                    RET_ACCT_CD: messageData?.apiReq?.RET_ACCT_CD,
+                    RET_COMP_CD: inwardData.current?.RET_COMP_CD,
+                    ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD,
+                    CHEQUE_DT: messageData?.apiReq?.CHEQUE_DT,
+                    CHEQUE_NO: messageData?.apiReq?.CHEQUE_NO,
+                    ZONE_CD: messageData?.apiReq?.ZONE_CD,
+                    REASON: messageData?.apiReq?.REASON,
+                    REASON_CD: messageData?.apiReq?.REASON_CD,
+                  };
+                  let upd: any = utilFunction.transformDetailsData(
+                    newData ?? {},
+                    oldData
+                  );
+                  returnConfigDML.mutate({
+                    ...newData,
+                    ...upd,
+                  });
+                }
+              }}
+              onActionNo={() => setIsOpenSave(false)}
+              rows={[]}
+              open={isOpenSave}
+              loading={postConfigDML?.isLoading || returnConfigDML?.isLoading}
+            />
+          )}
+        </>
+        {isPositivePay ? (
+          <PositivePayFormWrapper
+            onClose={() => {
+              setIsPositvePay(false);
+            }}
+            positiveData={inwardData.current}
+          />
+        ) : null}
+      </>
+      {/* )} */}
     </>
   );
 };
-export const ChequeReturnPostFormWrapper = ({ onClose, inwardData }) => {
+export const ChequeReturnPostFormWrapper = ({
+  onClose,
+  inwardData,
+  isDataChangedRef,
+}) => {
   return (
     <Dialog
       open={true}
@@ -328,7 +474,11 @@ export const ChequeReturnPostFormWrapper = ({ onClose, inwardData }) => {
       }}
       maxWidth="lg"
     >
-      <ChequeReturnPostForm onClose={onClose} inwardData={inwardData} />
+      <ChequeReturnPostForm
+        onClose={onClose}
+        inwardData={inwardData}
+        isDataChangedRef={isDataChangedRef}
+      />
     </Dialog>
   );
 };

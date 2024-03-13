@@ -39,12 +39,7 @@ export const getInwardClearingData = async ({ data: formData }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("INWARDRETRIVEDATA", formData);
   if (status === "0") {
-    return data.map((item) => {
-      return {
-        ...item,
-        POST_CONF: item.POST_CONF === "C" ? "Confirm" : "Post",
-      };
-    });
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -115,6 +110,17 @@ export const validateReturn = async (apiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+export const validateConfirm = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("CONFRIMBTNVALIDATE", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 export const getInwardZoneTypeList = async (ApiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETINWZONEDDW", {
@@ -177,6 +183,38 @@ export const postConfigDML = async (apiReq) => {
     });
   if (status === "0") {
     return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const returnConfigDML = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOUPDATERETRUNDATA", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const confirmPostedConfigDML = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOCONFRIMEDPOSTEDDATA", {
+      ...apiReq,
+    });
+  if (status === "0") {
+    return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getInwardAccountDetail = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETINWARDACCTDTL", { ...Apireq });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

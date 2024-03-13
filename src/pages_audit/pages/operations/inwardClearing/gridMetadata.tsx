@@ -125,6 +125,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     isCusrsorFocused: true,
   },
   filters: [],
+
   columns: [
     {
       accessor: "CHEQUE_NO",
@@ -153,9 +154,9 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       alignment: "center",
       componentType: "default",
       placeholder: "",
-      width: 100,
-      minWidth: 110,
-      maxWidth: 150,
+      width: 120,
+      minWidth: 130,
+      maxWidth: 160,
     },
 
     {
@@ -190,7 +191,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
     },
 
     {
-      columnName: "Cheque/Sign",
+      columnName: "",
       componentType: "buttonRowCell",
       accessor: "SIGN_PATH",
       sequence: 7,
@@ -201,7 +202,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       maxWidth: 140,
     },
     {
-      columnName: "Post",
+      columnName: "",
       componentType: "buttonRowCell",
       accessor: "POST_CONF",
       sequence: 8,
@@ -209,11 +210,16 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       width: 100,
       minWidth: 50,
       maxWidth: 150,
+      isColumnName: (initialValue) => {
+        if (initialValue) {
+          return initialValue === "C" ? "Confirm" : "Post";
+        }
+      },
     },
     {
-      columnName: "View Detail",
+      columnName: "",
       componentType: "buttonRowCell",
-      accessor: "RETURN",
+      accessor: "VIEW_DETAIL",
       sequence: 9,
       buttonLabel: "View Detail",
       isVisible: true,
@@ -266,7 +272,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
       columnName: "Withdraw.Balance",
       sequence: 14,
       alignment: "left",
-      componentType: "default",
+      componentType: "currency",
       width: 170,
       minWidth: 100,
       maxWidth: 250,

@@ -49,6 +49,7 @@ export interface GridColumnType {
   symbolPosi?: any;
   shouldExclude?: any;
   isVisibleInNew?: Boolean;
+  isColumnName?: any;
 }
 
 export interface GridConfigType {
@@ -113,7 +114,7 @@ export interface GridWrapperPropTypes {
   onlySingleSelectionAllow?: boolean;
   isNewRowStyle?: boolean;
   defaultSelectedRowId?: any;
-  ReportExportButton?:boolean
+  ReportExportButton?: boolean;
 }
 
 export interface YupSchemaMetaDataType {

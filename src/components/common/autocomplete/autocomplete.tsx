@@ -68,7 +68,7 @@ export type MyAllAutocompleteProps = Merge<
 >;
 
 const getOptionLabel = (freeSolo: any) => (option: OptionsProps) =>
-  Boolean(freeSolo) ? option : option?.label ?? "";
+  Boolean(freeSolo) ? option : option?.label?.trimStart() ?? "";
 const getOptionValue = (freeSolo: any) => (option: OptionsProps) =>
   Boolean(freeSolo) ? option : option?.value ?? "";
 
@@ -147,6 +147,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   const myGetOptionValue = useCallback(getOptionValue(freeSolo), []);
 
   const transformValues = useCallback((values, freeSolo) => {
+    values = typeof values === "string" ? values.trimStart() : values;
     if (!Array.isArray(values)) {
       values = [values];
     }
@@ -156,7 +157,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     let newValues = values.map((one) => {
       return optionsMapperRef.current.has(`${one}`)
         ? optionsMapperRef.current.get(`${one}`)
-        : { label: "", value: one };
+        : { label: one, value: one };
     });
     return newValues;
   }, []);
@@ -256,6 +257,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   if (excluded) {
     return null;
   }
+
   const isError = touched && (error ?? "") !== "";
   const result = (
     <Suspense fallback={"loading..."}>
