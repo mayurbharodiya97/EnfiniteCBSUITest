@@ -12,35 +12,51 @@ import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
-export const Temp = () => {
+export const Temp = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
   // api define
-  const getTempList = useMutation(API.getTempList, {
-    onSuccess: (data) => {
-      console.log(data, " getTempList detailssss");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // const getTempList = useMutation(API.getTempList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getTempList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getTempList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getTempList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getTempList", { reqData }], () => API.getTempList(reqData));
 
   return (
     <>
+      {" "}
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`TempGridMetaData`}
         finalMetaData={TempGridMetaData as GridMetaDataType}
-        data={rows}
+        loading={isLoading || isFetching}
+        data={data ?? []}
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
-        loading={getTempList.isLoading}
       />
     </>
   );

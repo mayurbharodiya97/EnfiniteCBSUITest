@@ -49,9 +49,9 @@ const TodayTransaction = ({ reqData }) => {
       <GridWrapper
         key={`TodayTransGridMetaData`}
         finalMetaData={TodayTransGridMetaData as GridMetaDataType}
+        loading={isLoading || isFetching}
         data={data ?? []}
         setData={() => null}
-        loading={isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />

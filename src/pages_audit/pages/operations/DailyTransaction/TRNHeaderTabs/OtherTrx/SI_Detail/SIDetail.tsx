@@ -13,35 +13,51 @@ import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { Grid } from "@mui/material";
 
-export const SIDetail = () => {
+export const SIDetail = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
   // api define
-  const getSIDetailList = useMutation(API.getSIDetailList, {
-    onSuccess: (data) => {
-      console.log(data, " getSIDetailList detailssss");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // const getSIDetailList = useMutation(API.getSIDetailList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getSIDetailList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getSIDetailList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getSIDetailList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getSIDetailList", { reqData }], () => API.getSIDetailList(reqData));
 
   return (
     <div style={{ padding: "8px" }}>
+      {" "}
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`SIDetailGridMetaData`}
         finalMetaData={SIDetailGridMetaData as GridMetaDataType}
-        data={rows}
+        loading={isLoading || isFetching}
+        data={data ?? []}
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
-        loading={getSIDetailList.isLoading}
       />
       <Grid
         item
