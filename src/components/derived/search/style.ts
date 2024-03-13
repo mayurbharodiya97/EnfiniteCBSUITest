@@ -16,6 +16,7 @@ export const useStyles = makeStyles((theme: any) => ({
     // "&:hover": {
     //   backgroundColor: alpha(theme.palette.common.white, 0.95),
     // },
+    // overflow: "hidden !important",
     "& $inputInput": {
       transition: theme.transitions.create("width"),
       width: 146,

@@ -1,4 +1,5 @@
 import { OptionsProps, OptionsFn } from "components/common/types";
+import { NumericFormatProps } from "react-number-format";
 export interface FiltergridConfig {
   dense?: boolean;
   title: string;
@@ -7,6 +8,7 @@ export interface FiltergridConfig {
   HideHeader?: boolean;
   submitButtonHide?: boolean;
   isDisplayOnly?: boolean;
+  validationRun?: string;
 }
 export interface FilterFormFieldType {
   accessor?: string;
@@ -29,6 +31,14 @@ export interface FilterFormFieldType {
   validate?: Function;
   dependFields?: String[];
   dependFieldsonchange?: Function;
+  required?: boolean;
+  tabToSubmit?: boolean;
+  options?: any;
+  onBlurHandler?: any;
+  value?: any;
+  dateFormat?: string;
+  StartAdornment?: string;
+  FormatProps?: NumericFormatProps;
 }
 export interface FilterFormMetaType {
   gridConfig: FiltergridConfig;

@@ -1,0 +1,85 @@
+import { GridMetaDataType } from "components/dataTableStatic";
+export const stopPayGridMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Stop Pay",
+    rowIdColumn: "index",
+    defaultColumnConfig: {
+      width: 150,
+      maxWidth: 250,
+      minWidth: 120,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    disableGroupBy: true,
+    enablePagination: true,
+    hideFooter: false,
+    pageSizes: [10, 20, 30],
+    defaultPageSize: 10,
+    containerHeight: {
+      min: "36vh",
+      max: "30vh",
+    },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+  },
+  filters: [],
+  columns: [
+    {
+      accessor: "sr",
+      columnName: "Sr ",
+      sequence: 1,
+      componentType: "default",
+      width: 100,
+    },
+    {
+      accessor: "TRAN_DT",
+      columnName: "Intimate Date",
+      sequence: 2,
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
+      width: 120,
+    },
+
+    {
+      columnName: "Chq From ",
+      accessor: "CHEQUE_FROM",
+      sequence: 3,
+      componentType: "default",
+      width: 200,
+    },
+    {
+      columnName: "Chq To ",
+      accessor: "CHEQUE_TO",
+      sequence: 4,
+      componentType: "default",
+      width: 200,
+    },
+    {
+      columnName: "Chq Date ",
+      accessor: "chqdate",
+      sequence: 5,
+      componentType: "date",
+      isVisible: true,
+      dateFormat: "dd/MM/yyyy",
+      width: 120,
+    },
+    {
+      accessor: "REMARKS",
+      columnName: "Remarks ",
+      sequence: 6,
+      componentType: "default",
+      width: 120,
+    },
+
+    {
+      accessor: "FLAG",
+      columnName: "FLAG ",
+      sequence: 7,
+      componentType: "default",
+      width: 120,
+    },
+  ],
+};

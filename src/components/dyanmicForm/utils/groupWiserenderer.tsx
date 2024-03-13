@@ -22,7 +22,10 @@ const renderByGroup =
           ? oneField.render?.group ?? -1
           : -1;
       }
-      if (oneField?.render?.componentType === "formbutton") {
+      if (
+        oneField?.render?.componentType === "formbutton" ||
+        oneField?.render?.componentType === "arrayField"
+      ) {
         oneField["onFormButtonClickHandel"] = onFormButtonClickHandel;
       }
       const element = renderMethod(

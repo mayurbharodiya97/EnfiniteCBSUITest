@@ -4,6 +4,9 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
+
+import { TextField } from "components/styledComponent";
+
 import { Merge } from "../types";
 import { numWords } from "components/common/utils";
 import {
@@ -13,10 +16,10 @@ import {
   Grid,
   GridProps,
   InputAdornment,
-  TextField,
   TextFieldProps,
 } from "@mui/material";
-
+import { AccountCircle } from "@mui/icons-material";
+import * as Icons from "@mui/icons-material";
 interface MyGridExtendedProps {
   enableNumWords?: boolean;
   maxLength?: number;
@@ -29,6 +32,14 @@ interface MyGridExtendedProps {
   setColor?: any;
   showMaxLength?: boolean;
   allowToggleVisiblity?: boolean;
+  startsIcon?: any;
+  endsIcon?: any;
+  iconStyle?: any;
+  textFieldStyle?: any;
+  AlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 type MyTextFieldAllProps = Merge<TextFieldProps, MyGridExtendedProps>;
@@ -61,8 +72,18 @@ const MyTextField: FC<MyTextFieldProps> = ({
   skipValueUpdateFromCrossFieldWhenReadOnly,
   setColor,
   showMaxLength = true,
+  label,
+  startsIcon,
+  endsIcon,
+  iconStyle,
+  textFieldStyle,
+  txtTransform,
+  AlwaysRunPostValidationSetCrossFieldValues,
   ...others
 }) => {
+  let StartIcon = Icons[startsIcon] || startsIcon || null;
+  let EndIcon = Icons[endsIcon] || endsIcon || null;
+
   const {
     value,
     error,
@@ -80,6 +101,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
     runValidation,
     validationAPIResult,
     dependentValues,
+    setErrorAsCB,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -92,6 +114,8 @@ const MyTextField: FC<MyTextFieldProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
+    txtTransform,
+    AlwaysRunPostValidationSetCrossFieldValues,
   });
 
   const [currentColor, setCurrentColor] = useState<string>(
@@ -116,38 +140,84 @@ const MyTextField: FC<MyTextFieldProps> = ({
   );
 
   const focusRef = useRef();
+  // const inputfocusRef: any = useRef();
   useEffect(() => {
     if (isFieldFocused) {
       //@ts-ignore
-      setTimeout(() => {
-        //@ts-ignore
-        focusRef?.current?.focus?.();
-      }, 1);
+      getFocus();
     }
-  }, [isFieldFocused]);
+  }, [isFieldFocused, value]);
+  const getFocus = () => {
+    setTimeout(() => {
+      //@ts-ignore
+      focusRef?.current?.focus?.();
+      ////////////Below solution is temporary for set focus in numberFormat Component.
+      ////////////Need to find proper solution. If you found proper solution contact Me😎🤷‍♂️.
+      // if (!Boolean(focusRef?.current)) {
+      //   inputfocusRef?.current?.children?.[1]?.firstChild?.focus?.();
+      // }
+    }, 50);
+  };
 
   useEffect(() => {
-    if (typeof setValueOnDependentFieldsChange === "function") {
-      let result = setValueOnDependentFieldsChange(
-        transformDependentFieldsState(dependentValues)
-      );
-      if (result !== undefined && result !== null) {
-        handleChange(result);
+    // if (typeof setValueOnDependentFieldsChange === "function") {
+    //   let result = setValueOnDependentFieldsChange(
+    //     transformDependentFieldsState(dependentValues),
+    //     { isSubmitting }
+    //   );
+
+    //   if (result !== undefined && result !== null) {
+    //     handleChange(result);
+    //   }
+    // }
+    const handleDependentFieldsChange = async () => {
+      if (typeof setValueOnDependentFieldsChange === "function") {
+        try {
+          let result = await setValueOnDependentFieldsChange(
+            transformDependentFieldsState(dependentValues),
+            { isSubmitting }
+          );
+
+          if (result !== undefined && result !== null) {
+            handleChange(result);
+          }
+        } catch (error) {
+          // Handle any errors that occur during the promise execution
+          console.error("An error occurred:", error);
+        }
       }
-    }
+    };
+    handleDependentFieldsChange();
   }, [dependentValues, handleChange, setValueOnDependentFieldsChange]);
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value } = incomingMessage;
+      const { value, error, ignoreUpdate, isFieldFocused, isErrorBlank } =
+        incomingMessage;
       if (Boolean(value) || value === "") {
         handleChange(value);
-        if (whenToRunValidation === "onBlur") {
+        if (isFieldFocused) {
+          getFocus();
+        }
+        if (ignoreUpdate) {
+          //ignore Validation
+        } else if (whenToRunValidation === "onBlur") {
           runValidation({ value: value }, true);
         }
       }
+      if (isErrorBlank) {
+        setErrorAsCB("");
+      } else if (Boolean(error)) {
+        setErrorAsCB(error);
+      }
     }
-  }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+  }, [
+    incomingMessage,
+    handleChange,
+    runValidation,
+    whenToRunValidation,
+    setErrorAsCB,
+  ]);
 
   if (excluded) {
     return null;
@@ -183,82 +253,121 @@ const MyTextField: FC<MyTextFieldProps> = ({
   }
   const isError = myTouch && Boolean(myError);
   const result = (
-    <TextField
-      {...others}
-      key={fieldKey}
-      id={fieldKey}
-      name={name}
-      value={value}
-      error={!isSubmitting && isError}
-      helperText={
-        <div style={{ display: "flex" }}>
-          <FormHelperText>
-            {!isSubmitting && isError
-              ? myError
-              : Boolean(validationAPIResult)
-              ? validationAPIResult
-              : numWordsVar}
-          </FormHelperText>
-          {maxLength > 0 && Boolean(showMaxLength) ? (
-            <FormHelperText
-              error={false}
-              disabled={isSubmitting}
-              style={{
-                flex: 1,
-                textAlign: "right",
-                margin: "5px 15px 0 0",
-              }}
-            >
-              {value.length}/{maxLength}
+    <>
+      {/* Changes for bhavyata textfield label */}
+      {/* <InputAdornment
+        position="start"
+        sx={{
+          alignItems: "baseline",
+          "& svg": {
+            ...iconStyle,
+            // color: "red",
+            // stroke: "green",
+          },
+        }}
+      >
+        {StartIcon ? <StartIcon /> : null}
+        <p style={{ alignSelf: "normal", margin: "2px 5px 0 5px" }}>{label}</p>
+        {EndIcon ? <EndIcon /> : null}
+      </InputAdornment> */}
+      <TextField
+        {...others}
+        key={fieldKey}
+        id={fieldKey}
+        name={name}
+        label={label}
+        value={value}
+        error={!isSubmitting && isError}
+        helperText={
+          <div style={{ display: "flex" }}>
+            <FormHelperText style={{ whiteSpace: "pre-line" }}>
+              {!isSubmitting && isError
+                ? myError
+                : Boolean(validationAPIResult)
+                ? validationAPIResult
+                : numWordsVar}
             </FormHelperText>
-          ) : null}
-        </div>
-      }
-      FormHelperTextProps={{
-        //@ts-ignore
-        component: "div",
-      }}
-      //@ts-ignore
-      InputProps={{
-        style:
-          !isSubmitting && Boolean(currentColor)
-            ? { color: currentColor, fontWeight: "bold" }
-            : {},
-        endAdornment: validationRunning ? (
-          <InputAdornment position="end">
-            <CircularProgress
-              color="primary"
-              variant="indeterminate"
-              {...CircularProgressProps}
-            />
-          </InputAdornment>
-        ) : Boolean(EndAdornment) ? (
-          EndAdornment
-        ) : null,
-        startAdornment: Boolean(StartAdornment) ? (
-          <InputAdornment position="start">{StartAdornment}</InputAdornment>
-        ) : null,
-        ...InputProps,
-      }}
-      InputLabelProps={{
-        shrink: true,
-      }}
-      inputRef={focusRef}
-      onChange={(e) => {
-        if (maxLength === -1) {
-          customHandleChange(e);
-        } else if (e.target.value.length <= maxLength) {
-          customHandleChange(e);
+            {maxLength > 0 && Boolean(showMaxLength) ? (
+              <FormHelperText
+                error={false}
+                disabled={isSubmitting}
+                style={{
+                  flex: 1,
+                  textAlign: "right",
+                  margin: "5px 15px 0 0",
+                  color: "rgba(0, 0, 0, 0.6)",
+                }}
+              >
+                {value.length}/{maxLength}
+              </FormHelperText>
+            ) : null}
+          </div>
         }
-      }}
-      inputProps={{
-        readOnly: readOnly,
-        tabIndex: readOnly ? -1 : undefined,
-        ...inputProps,
-      }}
-      onBlur={handleBlur}
-      disabled={isSubmitting}
-    />
+        sx={{
+          ...textFieldStyle,
+        }}
+        FormHelperTextProps={{
+          //@ts-ignore
+          component: "div",
+        }}
+        //@ts-ignore
+        InputProps={{
+          style: {
+            background: textFieldStyle
+              ? ""
+              : Boolean(readOnly)
+              ? "var(--theme-color7)"
+              : "",
+            ...(!isSubmitting && Boolean(currentColor)
+              ? {
+                  color: currentColor,
+                  fontWeight: "bold",
+                }
+              : {}),
+          },
+          endAdornment: validationRunning ? (
+            <InputAdornment position="end">
+              <CircularProgress
+                color="secondary"
+                variant="indeterminate"
+                size={20}
+                style={{ marginRight: "8px" }}
+                {...CircularProgressProps}
+              />
+            </InputAdornment>
+          ) : Boolean(EndAdornment) ? (
+            <InputAdornment position="end" className="withBorder">
+              {EndAdornment}
+            </InputAdornment>
+          ) : null,
+          startAdornment: Boolean(StartAdornment) ? (
+            <InputAdornment position="start">{StartAdornment}</InputAdornment>
+          ) : null,
+          ...InputProps,
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        inputRef={focusRef}
+        onChange={(e) => {
+          if (maxLength === -1) {
+            customHandleChange(e);
+          } else if (e.target.value.length <= maxLength) {
+            customHandleChange(e);
+          }
+        }}
+        inputProps={{
+          readOnly: readOnly,
+          tabIndex: readOnly ? -1 : undefined,
+          ...inputProps,
+        }}
+        onBlur={handleBlur}
+        disabled={isSubmitting}
+        variant={"standard"}
+        color="secondary"
+        // ref={inputfocusRef}
+      />
+    </>
   );
   if (Boolean(enableGrid)) {
     return <Grid {...GridProps}>{result}</Grid>;

@@ -22,9 +22,11 @@ import { EditableDatePicker } from "./editableDatePicker";
 import { IconRowCellRenderer } from "./iconRowCellRenderer";
 import { ButtonRowCell } from "./ButtonRowCell";
 import { DisableSelect } from "./disableSelect";
+import { DateTimeRowCellRenderer } from "./dateTimeRowCellRenderer";
 export type CellComponentType =
   | "currency"
   | "date"
+  | "dateTime"
   | "default"
   | "icondefault"
   | "action"
@@ -41,7 +43,9 @@ export type CellComponentType =
   | "editableDatetimePicker"
   | "editableDatePicker"
   | "editableNumberFormatLessValidation"
-  | "disableSelect";
+  | "disableSelect"
+  | "chip"
+  | "multipleValuesCellRenderer";
 
 singletonFunctionRegisrationFactoryForTableCells.registerFn(
   "currency",
@@ -50,6 +54,10 @@ singletonFunctionRegisrationFactoryForTableCells.registerFn(
 singletonFunctionRegisrationFactoryForTableCells.registerFn(
   "date",
   DateRowCellRenderer
+);
+singletonFunctionRegisrationFactoryForTableCells.registerFn(
+  "dateTime",
+  DateTimeRowCellRenderer
 );
 singletonFunctionRegisrationFactoryForTableCells.registerFn(
   "default",

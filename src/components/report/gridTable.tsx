@@ -1,4 +1,4 @@
-import { Fragment, useState, useCallback, FC } from "react";
+import { Fragment, useState, useCallback, FC, useContext } from "react";
 import {
   useTable,
   useBlockLayout,
@@ -10,7 +10,7 @@ import {
   useGlobalFilter,
 } from "react-table";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import CloseIcon from "@mui/icons-material/GetApp";
+import CloseIcon from "@mui/icons-material/Close";
 import { FixedSizeList } from "react-window";
 import { createNewWorkbook } from "./export";
 import { useSequenceColumn } from "./components/useSequence";
@@ -31,9 +31,11 @@ import {
   TableHead,
   TableRow,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
-
+import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
+import { t } from "i18next";
 interface GridTableType {
   columns: any;
   defaultColumn: any;
@@ -42,6 +44,7 @@ interface GridTableType {
   initialState?: any;
   filterTypes?: any;
   title?: any;
+  onDoubleClickAction?:any;
   options?: any;
   loading: boolean;
   hideFooter?: boolean;
@@ -52,6 +55,7 @@ interface GridTableType {
   queryFilters?: any;
   hideAmountIn?: boolean;
   retrievalType?: string;
+  isOpenRetrievalDefault?: boolean;
 }
 
 const defaultMaxHeight = 300;
@@ -110,6 +114,7 @@ export const GridTable: FC<GridTableType> = ({
   initialState = {},
   filterTypes,
   title,
+  onDoubleClickAction,
   options,
   loading = false,
   hideFooter = false,
@@ -120,8 +125,10 @@ export const GridTable: FC<GridTableType> = ({
   queryFilters,
   hideAmountIn,
   retrievalType,
+  isOpenRetrievalDefault,
 }) => {
   const [showFilters, setShowFilters] = useState(false);
+  const [isOpenExport, setOpenExport] = useState(false);
   const handleFilterChange = useCallback(() => {
     setShowFilters((old) => !old);
   }, [setShowFilters]);
@@ -172,7 +179,19 @@ export const GridTable: FC<GridTableType> = ({
         };
       }
       return (
-        <TableRow {...row.getRowProps({ style })} component="div">
+        <TableRow {...row.getRowProps({ style })} component="div"  
+          onDoubleClick={() => {
+            if(typeof onDoubleClickAction === "undefined") return
+            onDoubleClickAction({
+              rows: [
+                {
+                  data: row?.original,
+                  id: row?.id,
+                },
+              ],
+            })
+            }
+            }>
           {row.cells.map((cell, index) => {
             return cell.isAggregated
               ? cell.render("Aggregated")
@@ -183,9 +202,8 @@ export const GridTable: FC<GridTableType> = ({
     },
     [prepareRow, rows]
   );
-
   return (
-    <Fragment>
+    <>
       <Paper
         style={{
           width: "100%",
@@ -196,7 +214,7 @@ export const GridTable: FC<GridTableType> = ({
         <Toolbar
           variant="dense"
           style={{
-            backgroundColor: "var(--theme-color1)",
+            background: "var(--theme-color5)",
           }}
         >
           <Typography variant="h5" color="primary">
@@ -208,6 +226,9 @@ export const GridTable: FC<GridTableType> = ({
             filterMeta={filterMeta}
             filterData={queryFilters}
             retrievalType={retrievalType}
+            isOpenRetrievalDefault={isOpenRetrievalDefault}
+            setShowFilters={setShowFilters}
+            setAllFilters={setAllFilters}
           />
           {showFilters && filters.length > 0 && (
             <Button
@@ -234,7 +255,7 @@ export const GridTable: FC<GridTableType> = ({
                 color="primary"
               />
             }
-            style={{ color: "var(--white)" }}
+            style={{ color: "var(--theme-color2)" }}
             label="show Filters"
           />
           <FormControlLabel
@@ -246,26 +267,53 @@ export const GridTable: FC<GridTableType> = ({
                 size="small"
               />
             }
-            style={{ color: "var(--white)" }}
+            style={{ color: "var(--theme-color2)" }}
             label="Expand Rows"
           />
-          <FormControlLabel
+          {
+            rows.length ? (
+              <FormControlLabel
             control={
-              <IconButton
-                onClick={() => createNewWorkbook({ data: data, title: title })}
-                size="small"
-                color="primary"
-              >
-                <GetAppIcon />
-              </IconButton>
+              <Tooltip title="Show export options">
+                <Button
+                  onClick={() => {
+                    setOpenExport(true);
+                  }}
+                  style={{ marginTop: "0px", color: "white" }}
+                >
+                  Export <GetAppIcon />
+                </Button>
+                {/* <IconButton
+                  onClick={() =>
+                    createNewWorkbook({
+                      data: data,
+                      title: title,
+                      columns: columns,
+                    })
+                  }
+                  size="small"
+                  color="primary"
+                >
+                  <GetAppIcon />
+                </IconButton> */}
+              </Tooltip>
             }
-            style={{ color: "var(--white)" }}
-            label="Download"
+            style={{ color: "var(--theme-color2)" }}
+            label=""
           />
+            ): null
+          }
+          
           {typeof onClose === "function" ? (
-            <IconButton onClick={onClose} size="small">
-              <CloseIcon />
-            </IconButton>
+            <Tooltip title="Close">
+              <IconButton
+                onClick={onClose}
+                size="small"
+                style={{ color: "var(--theme-color2)" }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Tooltip>
           ) : null}
         </Toolbar>
 
@@ -275,7 +323,7 @@ export const GridTable: FC<GridTableType> = ({
           filters={queryFilters}
         />
       </Paper>
-      {loading && <LinearProgress color="secondary" />}
+      {loading && <LinearProgress sx={{background: "var(--theme-color6)", "& .MuiLinearProgress-bar": {background: "var(--theme-color1) !important"}}}/>}
       <Paper
         style={{
           width: "100%",
@@ -334,6 +382,8 @@ export const GridTable: FC<GridTableType> = ({
                 style={{
                   boxShadow:
                     "0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12)",
+                  // background: "var(--theme-color3)",
+                  color: "var(--theme-color2)",
                 }}
               >
                 <RenderFooter footerGroup={footerGroups[0]} />
@@ -342,6 +392,19 @@ export const GridTable: FC<GridTableType> = ({
           </Table>
         </TableContainer>
       </Paper>
-    </Fragment>
+      {isOpenExport ? (
+        <ReportExportScreen
+          globalFilter={globalFilter}
+          filters={filters}
+          queryFilters={queryFilters}
+          title={t(title.trim())}
+          rows={rows}
+          columns={columns}
+          onClose={() => {
+            setOpenExport(false);
+          }}
+        />
+      ) : null}
+    </>
   );
 };

@@ -1,12 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import clsx from "clsx";
-import Logo from "assets/images/netbankinglogo.png";
-
 import { useStyles } from "./style";
-import { Divider, Drawer, IconButton } from "@mui/material";
-
-export const MyDrawer = ({ open, handleDrawerClose, children }) => {
+import { Drawer, IconButton } from "@mui/material";
+export const MyDrawer = ({
+  open,
+  handleDrawerClose,
+  handleDrawerOpen,
+  children,
+}) => {
   const classes = useStyles();
   const navigate = useNavigate();
   return (
@@ -17,21 +18,7 @@ export const MyDrawer = ({ open, handleDrawerClose, children }) => {
       }}
       open={open}
     >
-      <div className={classes.toolbarIcon}>
-        <img
-          src={Logo}
-          alt="Netbanking"
-          className={classes.logo}
-          onClick={(e) => {
-            e.preventDefault();
-            navigate("./");
-          }}
-        />
-        <IconButton onClick={handleDrawerClose}>
-          <ChevronLeftIcon style={{ color: "var(--theme-color1)" }} />
-        </IconButton>
-      </div>
-      <Divider className={classes.hrCSS} />
+      <div className={classes.toolbarIcon}></div>
       {children}
     </Drawer>
   );

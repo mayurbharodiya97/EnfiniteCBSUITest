@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   useCallback,
+  useContext,
 } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -28,11 +29,15 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   GridProps,
   IconButton,
   Typography,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { AuthContext } from "pages_audit/auth";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
 export interface ArrayField2Props {
   fieldKey: string;
   name: string;
@@ -48,11 +53,33 @@ export interface ArrayField2Props {
   dependentFields?: string | string[];
   shouldExclude?: any;
   fixedRows?: boolean;
+  isDisplayCount?: boolean;
+  isCustomStyle?: any;
   getFixedRowsCount?: any;
+  onFormButtonClickHandel?: any;
+  disagreeButtonName: any;
+  agreeButtonName: any;
+  errorTitle: string;
+  displayCountName: string;
+  isScreenStyle?: any;
+  runExternalFunction?: Boolean;
+  isRemoveButton?: Boolean;
+  onFormDataChange?: any;
 }
 
-const metaDataTransform = (metaData: MetaDataType): MetaDataType => {
-  metaData = extendFieldTypes(metaData, extendedMetaData);
+const metaDataTransform = (
+  metaData: MetaDataType,
+  t,
+  authState,
+  customParameters
+): MetaDataType => {
+  metaData = extendFieldTypes(
+    metaData,
+    extendedMetaData,
+    t,
+    authState,
+    customParameters
+  );
   metaData = attachMethodsToMetaData(metaData);
   metaData = MoveSequenceToRender(metaData);
   return metaData;
@@ -71,11 +98,24 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   dependentFields,
   shouldExclude,
   fixedRows,
+  isDisplayCount,
+  isCustomStyle,
   getFixedRowsCount,
+  onFormButtonClickHandel,
+  onFormDataChange,
+  disagreeButtonName,
+  agreeButtonName,
+  errorTitle,
+  displayCountName,
+  isScreenStyle,
+  isRemoveButton,
 }) => {
   // let currentFieldsMeta = JSON.parse(
   //   JSON.stringify(_fields)
   // ) as FieldMetaDataType[];
+  const { t } = useTranslation();
+  const { authState } = useContext(AuthContext);
+  const customParameters = useContext(CustomPropertiesConfigurationContext);
   let currentFieldsMeta = cloneDeep(_fields) as FieldMetaDataType[];
   const classes = useStyles();
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -83,7 +123,12 @@ export const ArrayField2: FC<ArrayField2Props> = ({
   let metaData = { form: {}, fields: currentFieldsMeta } as MetaDataType;
   const transformedMetaData = useRef<MetaDataType | null>(null);
   if (transformedMetaData.current === null) {
-    transformedMetaData.current = metaDataTransform(metaData);
+    transformedMetaData.current = metaDataTransform(
+      metaData,
+      t,
+      authState,
+      customParameters
+    );
   }
   const template = useRef(
     transformedMetaData?.current?.fields?.reduce((accum, one) => {
@@ -149,19 +194,32 @@ export const ArrayField2: FC<ArrayField2Props> = ({
       if (!Boolean(currentFieldMetaData)) {
         return null;
       }
+
+      currentFieldMetaData["onFormButtonClickHandel"] = onFormButtonClickHandel;
+      currentFieldMetaData["onFormDataChange"] = onFormDataChange;
+
+      let newMTdata;
+      if (rowIndex === 0) {
+        newMTdata = { ...currentFieldMetaData };
+      } else {
+        newMTdata = { ...currentFieldMetaData, label: null };
+      }
+
       const component = renderField(
-        currentFieldMetaData,
+        isCustomStyle ? newMTdata : currentFieldMetaData,
         //@ts-ignore
         {},
         name,
         componentProps
       );
+
       const clonedComponent = cloneElement(component, {
         fieldKey: row.cells[field].key,
         name: row.cells[field].name,
       });
       return <Fragment key={row.cells[field].key}>{clonedComponent}</Fragment>;
     });
+
     return (
       <ArrayFieldRow
         key={row.fieldIndexKey}
@@ -179,24 +237,63 @@ export const ArrayField2: FC<ArrayField2Props> = ({
         arrayFieldIDName={arrayFieldIDName}
         arrayFieldName={name}
         fixedRows={fixedRows}
+        isDisplayCount={isDisplayCount}
+        isCustomStyle={isCustomStyle}
+        disagreeButtonName={disagreeButtonName}
+        agreeButtonName={agreeButtonName}
+        errorTitle={errorTitle}
+        displayCountName={displayCountName}
+        isScreenStyle={isScreenStyle}
+        isRemoveButton={isRemoveButton}
       />
     );
   });
+
+  const cardHeaderTitleStyle = {
+    background: "var(--theme-color5)",
+    ml: 1.5,
+    mt: 1,
+    p: 1,
+    color: "var(--theme-color2)",
+  };
   let result = (
     <Fragment>
       <Card className={classes.arrayRowCard}>
         <CardHeader
+          style={{ padding: "0px" }}
+          sx={{
+            "& .MuiCardHeader-title": label ? cardHeaderTitleStyle : null,
+            "& .MuiCardHeader-action": {
+              // my: 1,
+              // mr: 0,
+            },
+          }}
           title={label}
           action={
             !Boolean(fixedRows) ? (
-              <IconButton onClick={addNewRow} disabled={isSubmitting}>
+              <IconButton
+                style={{ padding: "5px 10px 0px 10px" }}
+                onClick={addNewRow}
+                disabled={isSubmitting}
+              >
                 <AddCircleOutlineIcon />
               </IconButton>
             ) : null
           }
         />
-        <CardContent className={classes.arrayRowCardContent}>
-          <Grid container item spacing={1} xs={12} md={12} sm={12}>
+        <CardContent
+          className={classes.arrayRowCardContent}
+          style={{ paddingBottom: "0px", paddingTop: "0px" }}
+        >
+          <Grid
+            container
+            item
+            spacing={1}
+            xs={12}
+            md={12}
+            sm={12}
+            style={{ marginTop: "02px" }}
+          >
             {rows}
             {rows.length <= 0 ? (
               <Typography>
@@ -252,6 +349,14 @@ export const ArrayFieldRow = ({
   arrayFieldIDName,
   arrayFieldName,
   fixedRows,
+  isDisplayCount = true,
+  isCustomStyle = false,
+  disagreeButtonName,
+  agreeButtonName,
+  errorTitle,
+  displayCountName,
+  isScreenStyle,
+  isRemoveButton,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -290,6 +395,7 @@ export const ArrayFieldRow = ({
       },
     [setError, setSuccess, setLoading]
   );
+
   const dialogReject = useCallback(() => {
     if (success) {
       removeFn(rowIndex);
@@ -314,22 +420,65 @@ export const ArrayFieldRow = ({
     setIsDialogOpen(true);
   }, [setIsDialogOpen]);
 
+  let finalClass;
+  if (Boolean(isCustomStyle)) {
+    if (rowIndex != 0) {
+      finalClass = classes.newArrayRowContainer;
+    } else {
+      finalClass = classes.newSecondArrayRowContainer;
+    }
+  } else if (Boolean(fixedRows)) {
+    finalClass = classes.newSecondArrayRowContainer;
+  } else if (Boolean(isScreenStyle)) {
+    finalClass = classes.arrayScreenRowContainer;
+  } else {
+    finalClass = classes.arrayRowContainer;
+  }
   return (
     <Fragment key={row.fieldIndexKey}>
-      <Typography gutterBottom className={classes.arrayRowCount}>
-        {rowIndex + 1} of {totalRows}
-      </Typography>
+      {Boolean(isDisplayCount) ? (
+        <>
+          {displayCountName ? (
+            <Typography
+              gutterBottom
+              className={
+                isCustomStyle
+                  ? classes.arrayRowCountCustomStyle
+                  : fixedRows
+                  ? classes.arrayRowCountFixedRows
+                  : classes.arrayRowCount
+              }
+            >
+              {`${displayCountName} ${rowIndex + 1} of ${totalRows}`}
+            </Typography>
+          ) : (
+            <Typography
+              gutterBottom
+              className={
+                isCustomStyle
+                  ? classes.arrayRowCountCustomStyle
+                  : fixedRows
+                  ? classes.arrayRowCountFixedRows
+                  : classes.arrayRowCount
+              }
+            >
+              {`${rowIndex + 1} of ${totalRows}`}
+            </Typography>
+          )}
+        </>
+      ) : null}
       <Grid
         container
         item
         xs={12}
         md={12}
         sm={12}
-        spacing={2}
-        className={classes.arrayRowContainer}
+        spacing={1}
+        className={finalClass}
       >
         {oneRow}
-        {typeof removeFn === "function" && !Boolean(fixedRows) ? (
+        {(typeof removeFn === "function" && !Boolean(fixedRows)) ||
+        Boolean(isRemoveButton) ? (
           <IconButton
             onClick={dialogOpen}
             className={classes.arrayRowRemoveBtn}
@@ -339,6 +488,11 @@ export const ArrayFieldRow = ({
           </IconButton>
         ) : null}
       </Grid>
+      {fixedRows && rowIndex + 1 < totalRows ? (
+        <Divider
+          sx={{ backgroundColor: "rgba(0, 0, 0, 0.6)", width: "100%" }}
+        />
+      ) : null}
       <Dialog
         open={isDialogOpen}
         aria-labelledby="alert-dialog-title"
@@ -351,6 +505,8 @@ export const ArrayFieldRow = ({
             ? "Please wait deleting record"
             : Boolean(error)
             ? error
+            : errorTitle
+            ? errorTitle
             : "Are you Sure you want to delete this record?"}
         </DialogTitle>
         {success || error ? (
@@ -362,10 +518,10 @@ export const ArrayFieldRow = ({
         ) : loading ? null : (
           <DialogActions>
             <Button onClick={dialogReject} color="primary">
-              Disagree
+              {disagreeButtonName ? disagreeButtonName : "Disagree"}
             </Button>
             <Button onClick={dialogAccept} color="primary">
-              Agree
+              {agreeButtonName ? agreeButtonName : "Agree"}
             </Button>
           </DialogActions>
         )}

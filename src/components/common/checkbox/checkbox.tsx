@@ -1,9 +1,9 @@
-import { FC } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
-import { CheckboxProps } from "@material-ui/core/Checkbox";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { Merge } from "../types";
 import {
+  CheckboxProps,
   FormControl,
   FormControlLabel,
   FormControlLabelProps,
@@ -64,6 +64,9 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
     name,
     excluded,
     readOnly,
+    incomingMessage,
+    whenToRunValidation,
+    runValidation,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -77,11 +80,36 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
+
+  useEffect(() => {
+    if (incomingMessage !== null && typeof incomingMessage === "object") {
+      const { value } = incomingMessage;
+      if (typeof value === "boolean") {
+        //console.log("incomingMessage", fieldKey, value);
+        handleChange(value);
+        if (whenToRunValidation === "onBlur") {
+          runValidation({ value: value }, true);
+        }
+      }
+    }
+  }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+  // changes for bhavyata value is gone in array
+  const handelChange = useCallback(
+    (event) => {
+      const { value } = event.target;
+      event.target["value"] = typeof value === "boolean" ? value : "";
+      handleChange(event);
+    },
+    [handleChange]
+  );
+
   if (excluded) {
     return null;
   }
-  //console.log(FormControlLabelProps);
+  // console.log(value, "value");
+  // console.log(!readOnly, "readOnly");
   const isError = touched && (error ?? "") !== "";
+
   const result = (
     // @ts-ignore
     <FormControl
@@ -91,6 +119,9 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
       disabled={isSubmitting}
       error={!isSubmitting && isError}
       onBlur={handleBlur}
+      style={{
+        justifyContent: "center",
+      }}
     >
       <FormControlLabel
         {...FormControlLabelProps}
@@ -102,7 +133,7 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
             tabIndex={readOnly ? -1 : undefined}
           />
         }
-        onChange={handleChange}
+        onChange={handelChange}
         label={label}
         checked={Boolean(value)}
       />
@@ -112,14 +143,23 @@ const MyCheckbox: FC<MyCheckboxAllProps> = ({
       ) : null}
     </FormControl>
   );
+  // if (Boolean(!enableGrid)) {
+  //   return (
+  //     <Grid style={{ justifyContent: "center" }} {...GridProps} key={fieldKey}>
+  //       {result}
+  //     </Grid>
+  //   );
+  // } else {
+  //   return result;
+  // }
   if (Boolean(enableGrid)) {
     return (
-      <Grid style={{ alignSelf: "center" }} {...GridProps} key={fieldKey}>
+      <Grid {...GridProps} style={{ display: "flex" }}>
         {result}
       </Grid>
     );
   } else {
-    return result;
+    return <div style={{ display: "flex" }}>result</div>;
   }
 };
 

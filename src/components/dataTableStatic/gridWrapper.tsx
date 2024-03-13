@@ -26,6 +26,7 @@ import {
   useAutoRefreshControls,
 } from "../utils/autoRefresh";
 import { attachFilterComponentToMetaData } from "components/dataTable/utils";
+import { useTranslation } from "react-i18next";
 export const GridWrapperWithAutoRefresh = forwardRef<any, GridWrapperPropTypes>(
   (props, ref) => {
     return (
@@ -54,12 +55,18 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
       hideFooter = false,
       autoRefreshInterval = 0,
       onClickActionEvent = () => {},
+      controlsAtBottom = false,
+      headerToolbarStyle = {},
+      onlySingleSelectionAllow = false,
+      isNewRowStyle = false,
+      defaultSelectedRowId = null,
+      ReportExportButton,
     },
     ref
   ) => {
-    //console.log(finalMetaData);
     const { pause, resume } = useAutoRefreshControls();
     const metaDataRef = useRef<any>(null);
+    const { t } = useTranslation();
     if (metaDataRef.current === null) {
       metaDataRef.current = transformMetaData({
         metaData: finalMetaData,
@@ -74,7 +81,15 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     // console.table(metaData);
     /* eslint-disable react-hooks/exhaustive-deps */
     //console.log(metaData);
-    const columns = useMemo(() => metaData.columns ?? [], []);
+    const columns = useMemo(() => {
+      //console.log("columns", metaData.columns);
+      if (Array.isArray(metaData.columns)) {
+        return metaData.columns.map((item) => {
+          return { ...item, columnName: t(item.columnName) };
+        });
+      }
+      return metaData.columns ?? [];
+    }, [t]);
     //console.log(columns);
     const filterMeta = useMemo(() => metaData.filters, []);
     const mydefaultFilter = useMemo(() => defaultFilter, []);
@@ -251,9 +266,12 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     const validateData = useCallback(async (ignoreTouch) => {
       return validator(dataRef.current, ignoreTouch);
     }, []);
-    const onButtonActionHandel = useCallback((index, id) => {
-      onClickActionEvent(index, id, data[index]);
-    }, []);
+    const onButtonActionHandel = useCallback(
+      (index, id) => {
+        onClickActionEvent(index, id, data[index]);
+      },
+      [data]
+    );
     useImperativeHandle(ref, () => ({
       validate: (ignoreTouch = false) => validateData(ignoreTouch),
       validator: () => validator,
@@ -270,7 +288,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
     }
     return (
       <DataGrid
-        label={metaData.gridConfig?.gridLabel ?? "NO_NAME"}
+        label={t(metaData.gridConfig?.gridLabel ?? "NO_NAME")}
         dense={true}
         getRowId={getRowId}
         columns={columns}
@@ -309,6 +327,14 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         defaultFilter={mydefaultFilter}
         isCusrsorFocused={metaData.gridConfig?.isCusrsorFocused ?? false}
         onButtonActionHandel={onButtonActionHandel}
+        controlsAtBottom={controlsAtBottom}
+        headerToolbarStyle={headerToolbarStyle}
+        onlySingleSelectionAllow={onlySingleSelectionAllow}
+        isNewRowStyle={isNewRowStyle}
+        defaultSelectedRowId={defaultSelectedRowId}
+        searchPlaceholder={metaData.gridConfig?.searchPlaceholder ?? "records"}
+        paginationText={metaData.gridConfig?.paginationText ?? "records"}
+        ReportExportButton={ReportExportButton}
       />
     );
   }
@@ -330,6 +356,10 @@ const transformMetaData = ({
   columns = attachYupSchemaValidator(columns);
   columns = attachCellComponentsToMetaData(columns);
   columns = attachAlignmentProps(columns);
+  // for language transletion code
+  // columns = columns.map((item) => {
+  //   return { ...item, columnName: lanTranstlet(item.columnName) };
+  // });
   //call this function after attaching yup schema and methods to metaData
   columns = attachcombinedValidationFns(columns);
   columns = sortColumnsBySequence(columns);

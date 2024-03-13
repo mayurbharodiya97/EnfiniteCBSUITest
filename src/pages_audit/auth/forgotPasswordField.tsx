@@ -1,11 +1,20 @@
 import { Fragment, useState, useEffect, useRef } from "react";
 import { TextField } from "components/styledComponent/textfield";
 import { GradientButton } from "components/styledComponent/button";
-import { CircularProgress, FormHelperText } from "@mui/material";
+import {
+  CircularProgress,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
   const [input, setInput] = useState({
-    userName: "",
+    userName: loginState.workingState === 1 ? loginState?.username : "",
     mobileno: "",
     password: "",
     confirmpassword: "",
@@ -13,6 +22,10 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
   const inputRef = useRef<any>(null);
   const inputPassRef = useRef<any>(null);
   const inputButtonRef = useRef<any>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<any>(false);
+  const navigate = useNavigate();
+  const { t } = useTranslation();
   const handleChange = (event) => {
     const name = event.target.name;
     let value = event.target.value;
@@ -39,8 +52,8 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
       <div className={classes.formWrap}>
         <TextField
           autoFocus={true}
-          label={"Username"}
-          placeholder="Enter Username"
+          label={t("UserID")}
+          placeholder={String(t("UserID"))}
           fullWidth
           type={"text"}
           name="userName"
@@ -70,8 +83,9 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
         />
         {loginState.workingState === 0 ? (
           <TextField
-            label={"Mobile No."}
+            label={t("MobileNo")}
             placeholder="Enter Mobile No."
+            // placeholder={String(t("EnterMobileNo"))}
             fullWidth
             type={"text"}
             name="mobileno"
@@ -103,10 +117,10 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
           <>
             <TextField
               autoFocus={true}
-              label={"Password"}
+              label={t("Password")}
               placeholder="Enter Password"
               fullWidth
-              type={"password"}
+              type={showPassword ? "text" : "password"}
               name="password"
               value={input.password || ""}
               onChange={handleChange}
@@ -125,14 +139,32 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                   inputButtonRef?.current?.click?.();
                 }
               }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword((old) => !old)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      disabled={loginState.loading}
+                    >
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               inputProps={{ maxLength: 16 }}
               style={{ paddingBottom: "8px" }}
             />
             <TextField
-              label={"Confirm Password"}
-              placeholder="Enter Confirm Password"
+              label={t("ConfirmPassword")}
+              placeholder={String(t("EnterConfirmPassword"))}
               fullWidth
-              type={"password"}
+              type={showConfirmPassword ? "text" : "password"}
               name="confirmpassword"
               value={input.confirmpassword || ""}
               onChange={handleChange}
@@ -150,16 +182,30 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                   inputButtonRef?.current?.click?.();
                 }
               }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowConfirmPassword((old) => !old)}
+                      onMouseDown={(e) => e.preventDefault()}
+                      disabled={loginState.loading}
+                    >
+                      {showConfirmPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               inputProps={{ maxLength: 16 }}
               style={{ paddingBottom: "8px" }}
             />
           </>
         ) : null}
-        {/* {loginState.isApiError ? (
-          <FormHelperText style={{ color: "red" }}>
-            {loginState.apierrorMessage}
-          </FormHelperText>
-        ) : null} */}
+
         <div
           style={{
             marginTop: "20px",
@@ -167,19 +213,45 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             flexDirection: "row-reverse",
           }}
         >
-          <div>
-            <GradientButton
-              disabled={loginState.loading}
-              endIcon={
-                loginState.loading ? <CircularProgress size={20} /> : null
-              }
-              onClick={() => {
-                onSubmit(input, loginState.workingState);
-              }}
-              ref={inputButtonRef}
-            >
-              Next
-            </GradientButton>
+          <div
+            style={{
+              flex: "auto",
+              textAlign: "center",
+              marginTop: "5px",
+              marginBottom: "17px",
+            }}
+          >
+            <div>
+              <GradientButton
+                style={{ borderRadius: "10px", marginRight: "5px" }}
+                // fullWidth
+
+                disabled={loginState.loading}
+                onClick={() => {
+                  navigate("login");
+                }}
+                starticon={"West"}
+                rotateIcon="scale(1.4) rotateX(360deg)"
+              >
+                {t("backtologin")}
+              </GradientButton>
+
+              <GradientButton
+                style={{ borderRadius: "10px" }}
+                disabled={loginState.loading}
+                onClick={() => {
+                  onSubmit(input, loginState.workingState);
+                  console.log("input", input, loginState.workingState);
+                }}
+                ref={inputButtonRef}
+                endicon={
+                  loginState.loading ? <CircularProgress size={20} /> : "East"
+                }
+                rotateIcon="scale(1.4) rotateX(360deg)"
+              >
+                {t("Next")}
+              </GradientButton>
+            </div>
           </div>
         </div>
       </div>

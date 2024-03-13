@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash-es";
+import { utilFunction } from "./utilFunctions";
 export const CheckObjectAllKeyisEmpty = (data) => {
   if (typeof data === "object") {
     const allKeys = Object.keys(data);
@@ -106,6 +107,7 @@ export const CreateLanguageRequestData = (reqData, languageData) => {
     return reqData;
   }
 };
+
 export const CreateDetailsRequestData = (reqData) => {
   let _isNewRowdata: any[] = [];
   let _isDeleteRowdata: any[] = [];
@@ -142,6 +144,59 @@ export const CreateDetailsRequestData = (reqData) => {
       }
     });
   }
+  return {
+    isNewRow: _isNewRowdata,
+    isDeleteRow: _isDeleteRowdata,
+    isUpdatedRow: _isUpdatedRowdata,
+  };
+};
+
+export const ProcessDetailsData = (newData, oldData) => {
+  let _isNewRowdata: any[] = [];
+  let _isDeleteRowdata: any[] = [];
+  let _isUpdatedRowdata: any[] = [];
+
+  if (!Array.isArray(newData)) {
+    newData = [newData];
+  }
+  if (!Array.isArray(oldData)) {
+    oldData = [oldData];
+  }
+  newData.forEach((newItem) => {
+    const { SR_CD, ...otherNew } = newItem;
+    const oldItem = oldData.find((old) => old.SR_CD === SR_CD);
+
+    if (oldItem) {
+      if (oldItem) {
+        const oldRowValue = oldItem;
+
+        for (const key in oldRowValue) {
+          if (oldRowValue.hasOwnProperty(key)) {
+            // Convert boolean values to "Y" or "N"
+            if (typeof oldRowValue[key] === "boolean") {
+              oldRowValue[key] = oldRowValue[key] ? "Y" : "N";
+            }
+          }
+        }
+      }
+      let upd = utilFunction.transformDetailsData(newItem, oldItem);
+
+      if (upd?._UPDATEDCOLUMNS?.length > 0) {
+        newItem = { ...newItem, ...upd };
+        _isUpdatedRowdata.push(newItem);
+      }
+    } else {
+      _isNewRowdata.push(otherNew);
+    }
+  });
+
+  oldData.forEach((oldItem) => {
+    const { SR_CD, ...otherOld } = oldItem;
+    const newItem = newData.find((newItem) => newItem.SR_CD === SR_CD);
+    if (!newItem) {
+      _isDeleteRowdata.push(oldItem);
+    }
+  });
   return {
     isNewRow: _isNewRowdata,
     isDeleteRow: _isDeleteRowdata,

@@ -2,17 +2,21 @@ import { CommonFetcherPreLoginResponse, CommonFetcherResponse } from "../type";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 import { GetAPIURLFromAction } from "./apiMapping";
 import { utilFunction } from "components/utils/utilFunctions";
+import { format } from "date-fns";
 const authAPI = () => {
   let baseURL: URL | null = null;
   let PackageName: string = "";
   let loginuserDetailsData: any = {};
   let browserFingerPrint = "";
+  // let machineName = "";
   let accessToken: any | null = null;
+  let displayLanguage = "en";
   const inititateAPI = (APIURL: string, PACKAGE_NAME: string) => {
     baseURL = new URL(APIURL);
     PackageName = PACKAGE_NAME;
     GetBrowserFingerPrint();
   };
+
   const Getfingerprintdata = async () => {
     let retvalue = browserFingerPrint;
     if (!Boolean(browserFingerPrint)) {
@@ -33,18 +37,56 @@ const authAPI = () => {
     browserFingerPrint = fingerprintdata;
     return fingerprintdata;
   };
+  // const GetMachineName = () => {
+  //   if (!Boolean(machineName)) {
+  //     // Get browser information
+  //     const browserInfo = platform.name + " " + platform.version;
 
-  const loginUserDetails = ({ role, user: { id } }) => {
+  //     // Get operating system information
+  //     const osInfo = platform.os.family + " " + platform.os.version;
+
+  //     // Get device information
+  //     const deviceInfo = platform.product;
+
+  //     let machineInfo =
+  //       (Boolean(browserInfo) ? browserInfo + "-" : "") +
+  //       (Boolean(osInfo) ? osInfo + "-" : "") +
+  //       (Boolean(deviceInfo) ? deviceInfo : "");
+  //     machineInfo = machineInfo.substring(0, 25);
+  //     machineInfo = machineInfo.endsWith("-")
+  //       ? machineInfo.substring(0, machineInfo?.length - 1)
+  //       : machineInfo;
+  //     machineName = machineInfo;
+  //     return machineInfo;
+  //   }
+  //   return machineName;
+  // };
+  const setDisplayLanguage = (code) => {
+    displayLanguage = code;
+  };
+  const loginUserDetails = ({
+    role,
+    user: { id, branchCode, baseBranchCode },
+    baseCompanyID,
+    companyID,
+    workingDate,
+  }) => {
     loginuserDetailsData = {
       USERNAME: id,
       USERROLE: role,
       BROWSER_FINGERPRINT: browserFingerPrint,
-      MACHINE_NAME: "Auto",
+      MACHINE_NAME: "",
+      BRANCH_CD: branchCode,
+      BASE_BRANCH_CD: baseBranchCode,
+      COMP_CD: companyID,
+      BASE_COMP_CD: baseCompanyID,
+      THROUGH_CHANNEL: "E_CBS",
+      WORKING_DATE: workingDate ?? "",
+      // WORKING_DT: workingDate ?? "",
     };
   };
   const setToken = (argaccessToken) => {
     accessToken = argaccessToken;
-    // console.log(accessToken);
   };
   const removeToken = () => {
     accessToken = null;
@@ -73,13 +115,38 @@ const authAPI = () => {
       if (!Boolean(timeout)) {
         timeout = 120000;
       }
+
       let response = await fetchWithTimeout(new URL(apiurl, baseURL).href, {
         method: "POST",
-        headers: { ...header, "Content-Type": "application/json" },
+        headers: {
+          DISPLAY_LANGUAGE: displayLanguage,
+          ...header,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           ACTION: "",
-          DISPLAY_LANGUAGE: "en",
+          DISPLAY_LANGUAGE: displayLanguage,
           BROWSER_FINGERPRINT: browserFingerPrint,
+          // LOGINUSERDETAILS: {
+          //   USERNAME: payload.USER_ID ?? loginuserDetailsData?.USERNAME ?? "",
+          //   USERROLE: loginuserDetailsData?.USERROLE ?? "role",
+          //   BROWSER_FINGERPRINT: browserFingerPrint,
+          //   MACHINE_NAME_FRONT: "",
+          //   BRANCH_CD: loginuserDetailsData?.BRANCH_CD ?? "",
+          // },
+
+          LOGINUSERDETAILS: {
+            USERNAME: payload.USER_ID ?? loginuserDetailsData?.USERNAME ?? "",
+            USERROLE: loginuserDetailsData?.USERROLE ?? "role",
+            BROWSER_FINGERPRINT: browserFingerPrint,
+            MACHINE_NAME_FRONT: "",
+            BRANCH_CD: loginuserDetailsData?.BRANCH_CD ?? "",
+            THROUGH_CHANNEL: "E_CBS",
+            WORKING_DATE: loginuserDetailsData?.WORKING_DATE ?? "",
+            BASE_BRANCH_CD: loginuserDetailsData?.BASE_BRANCH_CD ?? "",
+            COMP_CD: loginuserDetailsData?.COMP_CD ?? "",
+            BASE_COMP_CD: loginuserDetailsData?.BASE_COMP_CD ?? "",
+          },
           ...payload,
         }),
         timeout: timeout,
@@ -94,11 +161,10 @@ const authAPI = () => {
           message: data?.MESSAGE ?? "",
           data: data?.RESPONSE ?? [],
           messageDetails: data?.RESPONSEMESSAGE ?? "",
-          responseType: data?.RESPONSE_TYPE ?? "",
+          responseType: data?.RESPONSE?.[0]?.RESPONSE_TYPE ?? "",
           access_token: data?.ACCESS_TOKEN ?? data,
         };
       } else {
-        //console.log(response);
         return {
           status: "999",
           message: await GetStatusMessage(response),
@@ -119,6 +185,22 @@ const authAPI = () => {
       };
     }
   };
+
+  const waitForToken = (key: string) => {
+    return new Promise((res) => {
+      if (localStorage.getItem(key) === null) res("no data set yet");
+      const intervalId = setInterval(() => {
+        const localVal = localStorage.getItem(key);
+
+        if (localVal !== "refreshing") {
+          clearInterval(intervalId);
+          localStorage.removeItem(key);
+          res("ok");
+        }
+      }, 200);
+    });
+  };
+
   const internalFetcher = async (
     url: string,
     payload: any,
@@ -148,11 +230,13 @@ const authAPI = () => {
       // ) {
       //   localbaseURL = new URL("http://localhost:8088/");
       // }
+      await waitForToken("token_status");
       let response = await fetchWithTimeout(
         new URL(apiurl, localbaseURL).href,
         {
           method: "POST",
           headers: {
+            DISPLAY_LANGUAGE: displayLanguage,
             ...header,
             "Content-Type": "application/json",
             Authorization: utilFunction.getAuthorizeTokenText(
@@ -164,14 +248,13 @@ const authAPI = () => {
           },
           body: JSON.stringify({
             ACTION: "",
-            DISPLAY_LANGUAGE: "en",
+            DISPLAY_LANGUAGE: displayLanguage,
             LOGINUSERDETAILS: loginuserDetailsData,
             ...payload,
           }),
           timeout: timeout,
         }
       );
-      //console.log(response.headers);
 
       if (String(response.status) === "200") {
         let data = await response.json();
@@ -192,7 +275,7 @@ const authAPI = () => {
               ? true
               : false,
         };
-      } else if (String(response.status) === "401" && url !== "LOGOUTADMIN") {
+      } else if (String(response.status) === "401" && url !== "LOGOUTUSER") {
         //@ts-ignore
         if (typeof window.__logout === "function") {
           //@ts-ignore
@@ -209,7 +292,6 @@ const authAPI = () => {
           ),
         };
       } else {
-        //console.log(response);
         return {
           status: "999",
           message: await GetStatusMessage(response),
@@ -259,7 +341,7 @@ const authAPI = () => {
     let responsedata = await response?.json();
 
     if (response.status === 404 && process.env.NODE_ENV !== "production") {
-      return "'भटकने वाले सभी खो नहीं जाते' वाह, यह काफी गहरा है! सिवाय ... इस बार डेवलपर निश्चित रूप से विचलित है, क्योंकि यह समापन बिंदु नहीं मिला है!";
+      return "'????? ???? ??? ?? ???? ????' ???, ?? ???? ???? ??! ????? ... ?? ??? ?????? ??????? ??? ?? ?????? ??, ??????? ?? ????? ????? ???? ???? ??!";
     } else if (Boolean(responsedata)) {
       let message = Array.isArray(responsedata)
         ? responsedata?.[0]?.MESSAGE
@@ -292,6 +374,7 @@ const authAPI = () => {
     removeToken,
     getToken,
     Getfingerprintdata,
+    setDisplayLanguage,
   };
 };
 

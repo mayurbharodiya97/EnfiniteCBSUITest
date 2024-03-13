@@ -170,7 +170,7 @@ const filterMetaData = (
           newNavItems.push({ ...newItem, children: newChildren });
         }
       } else {
-        newNavItems.push({ ...newItem, secondaryLabel: newItem.user_code });
+        newNavItems.push({ ...newItem, secondaryLabel: newItem.system_code });
       }
     }
   }

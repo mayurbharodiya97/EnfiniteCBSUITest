@@ -8,7 +8,8 @@ export const theme = createTheme({
     },
     //@ts-ignore
     secondary: {
-      main: "rgb(128, 0, 0)",
+      main: "#07288e",
+      // }
     },
   },
   // breakpoints: {
@@ -20,12 +21,25 @@ export const theme = createTheme({
   //     xl: 1920,
   //   },
   // },
+  components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root.Mui-focused": {
+            "& > fieldset": {
+              borderColor: "#07288e",
+            },
+          },
+        },
+      },
+    },
+  },
 });
 export const theme2 = createTheme({
   palette: {
     //@ts-ignore
     primary: {
-      main: "rgb(128, 0, 0)",
+      main: "#07288e",
     },
     //@ts-ignore
     secondary: {

@@ -17,7 +17,7 @@ export const useDialogStyles = makeStyles({
   },
   title: {
     flex: "1 1 100%",
-    color: "var(--white)",
+    color: "var(--theme-color2)",
     letterSpacing: "1px",
     fontSize: "1.5rem",
   },

@@ -2,7 +2,8 @@ import { useEffect, useContext } from "react";
 import { useQuery } from "react-query";
 import { cacheWrapperKeyGen, ClearCacheContext } from "cache";
 import { transformDependentFieldsState } from "packages/form";
-
+import { AuthContext } from "pages_audit/auth";
+import _ from "lodash";
 const computeDependentKey = (dependentValues = {}) => {
   let keys = Object.keys(dependentValues).sort();
   return keys.reduce((accum, one) => {
@@ -25,10 +26,12 @@ export const useOptionsFetcher = (
   setIncomingMessage,
   skipDefaultOption,
   defaultOptionLabel,
-  enableDefaultOption
+  enableDefaultOption,
+  requestProps = {}
 ): { loadingOptions: boolean } => {
   let loadingOptions = false;
   let queryKey: any[] = [];
+  const { authState } = useContext(AuthContext);
   const { addEntry } = useContext(ClearCacheContext);
   const formStateKeys = cacheWrapperKeyGen(
     Object.values(
@@ -37,6 +40,7 @@ export const useOptionsFetcher = (
         : { none: true }
     )
   );
+
   if (Boolean(disableCaching)) {
     const dependentKeys = computeDependentKey(dependentValues);
     queryKey = [_optionsKey, formStateKeys, dependentKeys];
@@ -56,7 +60,9 @@ export const useOptionsFetcher = (
       options(
         dependentValues,
         formState,
-        transformDependentFieldsState(dependentValues)
+        transformDependentFieldsState(dependentValues),
+        authState,
+        requestProps
       ),
     {
       retry: false,
@@ -64,11 +70,19 @@ export const useOptionsFetcher = (
       cacheTime: disableCaching ? 0 : 100000000,
     }
   );
+
   loadingOptions = queryOptions.isLoading;
   /*eslint-disable */
   useEffect(() => {
     if (options === undefined) {
-      setOptions([{ label: "No Data", value: null, disabled: true }]);
+      setOptions([
+        {
+          label: "No Data",
+          value: null,
+          disabled: true,
+          isDefaultOption: true,
+        },
+      ]);
       loadingOptions = false;
     } else if (Array.isArray(options)) {
       if (!Boolean(skipDefaultOption)) {
@@ -77,12 +91,24 @@ export const useOptionsFetcher = (
             label: Boolean(defaultOptionLabel)
               ? defaultOptionLabel
               : "Select Option",
-            value: "",
+            value: " ",
             disabled: Boolean(enableDefaultOption) ? false : true,
           },
           ...options,
         ];
+        // const uniqueOptions = options.filter(
+        //   (option, index, self) =>
+        //     index ===
+        //     self.findIndex(
+        //       (obj) =>
+        //         obj.label === option.label &&
+        //         obj.value === option.value &&
+        //         obj.disabled === option.disabled
+        //     )
+        // );
+        // options = uniqueOptions;
       }
+      options = _.uniqBy(options, "value");
       setOptions(options);
       loadingOptions = false;
     } else if (typeof options === "object") {
@@ -93,14 +119,35 @@ export const useOptionsFetcher = (
           setIncomingMessage(others);
         }
       } else {
-        setOptions([{ label: "Invalid Data", value: null, disabled: true }]);
+        setOptions([
+          {
+            label: "Invalid Data",
+            value: null,
+            disabled: true,
+            isDefaultOption: true,
+          },
+        ]);
       }
       loadingOptions = false;
     } else if (queryOptions.isLoading) {
-      setOptions([{ label: "loading...", value: null, disabled: true }]);
+      setOptions([
+        {
+          label: "loading...",
+          value: null,
+          disabled: true,
+          isDefaultOption: true,
+        },
+      ]);
       loadingOptions = true;
     } else if (queryOptions.isError) {
-      setOptions([{ label: "Couldn't fetch", value: null, disabled: true }]);
+      setOptions([
+        {
+          label: "Couldn't fetch",
+          value: null,
+          disabled: true,
+          isDefaultOption: true,
+        },
+      ]);
       console.log(
         `error occured while fetching data for ${_optionsKey}`,
         queryOptions.error
@@ -114,8 +161,9 @@ export const useOptionsFetcher = (
             label: Boolean(defaultOptionLabel)
               ? defaultOptionLabel
               : "Select Option",
-            value: "",
+            value: " ",
             disabled: Boolean(enableDefaultOption) ? false : true,
+            isDefaultOption: true,
           },
           ...newOptions,
         ];
@@ -134,7 +182,14 @@ export const useOptionsFetcher = (
       }
       loadingOptions = false;
     } else {
-      setOptions([{ label: "Couldn't fetch", value: null, disabled: true }]);
+      setOptions([
+        {
+          label: "Couldn't fetch",
+          value: null,
+          disabled: true,
+          isDefaultOption: true,
+        },
+      ]);
       console.log(
         `expected optionsFunction:${_optionsKey} in select component to return array of OptionsType but got: ${queryOptions.data}`
       );
@@ -144,10 +199,12 @@ export const useOptionsFetcher = (
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { value } = incomingMessage;
+      const { value,ignoreUpdate } = incomingMessage;
       if (Boolean(value) || value === "") {
         handleChangeInterceptor(value);
-        if (whenToRunValidation === "onBlur") {
+        if(ignoreUpdate){
+          //ignore Validation
+        }else if (whenToRunValidation === "onBlur" ) {
           runValidation({ value: value }, true);
         }
       }
@@ -172,9 +229,11 @@ export const useOptionsFetcherSimple = (
   disableCaching,
   optionsProps,
   skipDefaultOption,
-  defaultOptionLabel
+  defaultOptionLabel,
+  enableDefaultOption
 ) => {
   let loadingOptions = false;
+  const { authState } = useContext(AuthContext);
 
   let queryKey: any[] = [];
   if (Boolean(disableCaching)) {
@@ -182,11 +241,15 @@ export const useOptionsFetcherSimple = (
   } else {
     queryKey = [_optionsKey];
   }
-  const queryOptions = useQuery(queryKey, () => options(optionsProps), {
-    retry: false,
-    enabled: typeof options === "function",
-    cacheTime: disableCaching ? 0 : 100000000,
-  });
+  const queryOptions = useQuery(
+    queryKey,
+    () => options(optionsProps, authState),
+    {
+      retry: false,
+      enabled: typeof options === "function",
+      cacheTime: disableCaching ? 0 : 100000000,
+    }
+  );
   loadingOptions = queryOptions.isLoading;
   useEffect(() => {
     if (options === undefined) {
@@ -200,11 +263,13 @@ export const useOptionsFetcherSimple = (
               ? defaultOptionLabel
               : "Select Option",
             value: "00",
-            disabled: true,
+            disabled: Boolean(enableDefaultOption) ? false : true,
+            isDefaultOption: true,
           },
           ...options,
         ];
       }
+      options = _.uniqBy(options, "value");
       setOptions(options);
       loadingOptions = false;
     } else if (queryOptions.isLoading) {
@@ -227,7 +292,8 @@ export const useOptionsFetcherSimple = (
                 ? defaultOptionLabel
                 : "Select Option",
               value: "00",
-              disabled: true,
+              disabled: Boolean(enableDefaultOption) ? false : true,
+              isDefaultOption: true,
             },
             ...newOptions,
           ];

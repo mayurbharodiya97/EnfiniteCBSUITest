@@ -4,10 +4,6 @@ import {
   UseFieldHookProps,
   transformDependentFieldsState,
 } from "packages/form";
-import { SelectProps } from "@material-ui/core/Select";
-import { TextFieldProps } from "@material-ui/core/TextField";
-import { TextField } from "components/styledComponent";
-import MenuItem, { MenuItemProps } from "@material-ui/core/MenuItem";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { OptionsProps, Merge, dependentOptionsFn } from "../types";
 import {
@@ -21,7 +17,12 @@ import {
   Grid,
   GridProps,
   InputAdornment,
+  MenuItem,
+  MenuItemProps,
+  SelectProps,
+  TextFieldProps,
 } from "@mui/material";
+import { TextField } from "components/styledComponent";
 
 interface extendedFieldProps extends UseFieldHookProps {
   options?: OptionsProps[] | dependentOptionsFn;
@@ -33,6 +34,7 @@ interface extendedFieldProps extends UseFieldHookProps {
   defaultOptionLabel?: string;
   enableDefaultOption?: boolean;
   setValueOnDependentFieldsChange?: any;
+  requestProps?: any;
 }
 type MySelectProps = Merge<TextFieldProps, extendedFieldProps>;
 
@@ -42,6 +44,10 @@ interface MySelectExtendedProps {
   CircularProgressProps?: CircularProgressProps;
   GridProps?: GridProps;
   enableGrid: boolean;
+  AlwaysRunPostValidationSetCrossFieldVAlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 export type MySelectAllProps = Merge<MySelectProps, MySelectExtendedProps>;
@@ -76,6 +82,8 @@ const MySelect: FC<MySelectAllProps> = ({
   skipDefaultOption,
   defaultOptionLabel,
   enableDefaultOption,
+  requestProps,
+  AlwaysRunPostValidationSetCrossFieldValues,
   ...others
 }) => {
   const {
@@ -97,6 +105,8 @@ const MySelect: FC<MySelectAllProps> = ({
     formState,
     setIncomingMessage,
     handleOptionValueExtraData,
+
+    ...otherAllData
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -109,7 +119,9 @@ const MySelect: FC<MySelectAllProps> = ({
     shouldExclude,
     runValidationOnDependentFieldsChange,
     skipValueUpdateFromCrossFieldWhenReadOnly,
+    AlwaysRunPostValidationSetCrossFieldValues,
   });
+
   const focusRef = useRef();
   const [_options, setOptions] = useState<OptionsProps[]>([]);
   useEffect(() => {
@@ -159,6 +171,7 @@ const MySelect: FC<MySelectAllProps> = ({
                   : "Select Option",
               ]
             );
+            // console.log("defaultOptionLabel", defaultOptionLabel);
           } else {
             for (let i = 0; i < _options.length; i++) {
               if (_options[i].value === "00") {
@@ -174,20 +187,30 @@ const MySelect: FC<MySelectAllProps> = ({
         //End of select All Code
       }
       let result = getLabelFromValuesForOptions(value);
+      let extraOptionData = getExtraOptionData(value);
+      const isDefaultOption = Boolean(extraOptionData?.[0]?.isDefaultOption);
       //console.log(result, value);
       result = multiple ? result : result[0];
-      handleOptionValueExtraData(getExtraOptionData(value));
+      handleOptionValueExtraData(extraOptionData);
+      if (isDefaultOption) {
+        e.target["value"] = e.target?.value?.trim?.();
+      }
       handleChange(multiple ? value : e, result as any);
     },
     [handleChange, getLabelFromValuesForOptions, multiple, skipDefaultOption]
   );
+  const handleBlurInterceptor = useCallback(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+    handleBlur();
+  }, [handleBlur, getExtraOptionData, handleOptionValueExtraData, value]);
 
   useEffect(() => {
     if (typeof setValueOnDependentFieldsChange === "function") {
       let result = setValueOnDependentFieldsChange(
         transformDependentFieldsState(dependentValues)
       );
-      if (result !== undefined || result !== null) {
+      if (result !== undefined && result !== null) {
         handleChangeInterceptor(result);
       }
     }
@@ -225,8 +248,13 @@ const MySelect: FC<MySelectAllProps> = ({
     setIncomingMessage,
     skipDefaultOption,
     defaultOptionLabel,
-    enableDefaultOption
+    enableDefaultOption,
+    requestProps
   );
+  useEffect(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+  }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
   //console.log(_options);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
@@ -234,12 +262,16 @@ const MySelect: FC<MySelectAllProps> = ({
     return null;
   }
   const isError = touched && (error ?? "") !== "";
+  const isDefaultOption = Boolean(
+    otherAllData?.optionData?.[0]?.isDefaultOption
+  );
+
   const menuItems = _options.map((menuItem, index) => {
     return (
       <MenuItem
         {...MenuItemProps}
         //keep button value to true else keyboard navigation for select will stop working
-        button={true}
+        // button={true}
         key={menuItem.value ?? index}
         value={menuItem.value}
         disabled={menuItem.disabled}
@@ -259,7 +291,11 @@ const MySelect: FC<MySelectAllProps> = ({
   });
   //Remove this to disable select all
   const selectAllMenu = (
-    <MenuItem button={true} key="selectAll" value="all">
+    <MenuItem
+      // button={true}
+      key="selectAll"
+      value="all"
+    >
       <Checkbox checked={isAllSelected} indeterminate={isIndeterminate} />
       Select All
     </MenuItem>
@@ -274,10 +310,20 @@ const MySelect: FC<MySelectAllProps> = ({
       id={fieldKey}
       name={name}
       value={multiple && !Array.isArray(value) ? [value] : value}
+      // value={
+      //   multiple && !Array.isArray(value)
+      //     ? [value]
+      //     : Boolean(value)
+      //     ? value
+      //     : typeof value === "string"
+      //     ? " "
+      //     : value
+      // }
       error={!isSubmitting && isError}
       helperText={!isSubmitting && isError ? error : null}
       onChange={handleChangeInterceptor}
-      onBlur={handleBlur}
+      onBlur={handleBlurInterceptor}
+      // onBlur={handleBlur}
       disabled={isSubmitting}
       SelectProps={{
         ...SelectProps,
@@ -291,6 +337,9 @@ const MySelect: FC<MySelectAllProps> = ({
       }}
       inputRef={focusRef}
       InputProps={{
+        style: {
+          background: Boolean(readOnly) ? "var(--theme-color7)" : "",
+        },
         endAdornment:
           validationRunning || loadingOptions ? (
             <InputAdornment position="end">

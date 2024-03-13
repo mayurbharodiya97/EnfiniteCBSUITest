@@ -1,1 +1,0 @@
-# Netbanking Admin Panel

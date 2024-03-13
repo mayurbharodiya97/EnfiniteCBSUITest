@@ -4,9 +4,7 @@ export const useStyles = makeStyles((theme: any) => ({
   wrapper: {
     minHeight: "100vh",
     boxShadow: "0 3px 6px rgba(0,0,0,0.03)",
-    [theme.breakpoints.down("sm")]: {
-      minHeight: "100vh",
-    },
+    // background: "#fff",
     background: "var(--theme-color2)",
   },
   loginEmp: {
@@ -57,11 +55,8 @@ export const useStyles = makeStyles((theme: any) => ({
   logo: {
     marginBottom: theme.spacing(1),
   },
+
   loginLeft: {
-    display: "flex",
-    justifyContent: "center",
-    padding: "2rem",
-    // background: "var(--theme-color2)",
     [theme.breakpoints.down("sm")]: {
       display: "none",
     },
@@ -81,49 +76,91 @@ export const useStyles = makeStyles((theme: any) => ({
       alignSelf: "center",
     },
   },
-  loginImg: {
-    // maxHeight: "40vh",
-  },
+
+  loginImg: {},
+
   verifybutton: {
     alignSelf: "center",
-    marginBottom: "10px",
-    marginTop: "10px",
+    // marginBottom: "10px",
+    // marginTop: "10px",
+    padding: "5px",
   },
+  otpButtons: {
+    // padding: "10px",
+  },
+
   divflex: {
     display: "flex",
   },
   otpinputpadding: {
     "& input": {
-      marginRight: "8px !important",
+      marginRight: "25px !important",
+      border: "1.42444px solid var(--theme-color3)",
+      borderRadius: "10px",
+      width: "45px !important",
+      height: "45px !important",
+      marginBottom: "15px",
+      boxShadow: "0px 5.69775px 11.3955px rgba(66, 99, 199, 0.16)",
     },
   },
   ibtnvisible: {
-    padding: "7px !important",
+    // padding: "7px !important",
+    // alignItems: "baseline",
+    marginBottom: "15px",
   },
   btnvisibleoff: {
     display: "none",
   },
+  OTPalignName: {
+    display: "flex",
+    alignItems: "center",
+    // justifyContent: "space-between",
+    marginBottom: "12px",
+    color: "#1C1C1C",
+    fonWeight: "400",
+    fontSize: "17px",
+    lineHeight: "33px",
+  },
   resendOTPalign: {
-    textAlign: "center",
-    marginTop: "15px",
-    display: "block !important",
+    color: "var(--theme-color3)",
+    fonWeight: "400",
+    fontSize: "17px",
+    lineHeight: "33px",
+    margin: "0 auto",
+    // marginTop: "15px",
+    // display: "block !important",
   },
   resendbtnLink: {
     textDecoration: "underline",
-    color: "blue",
+    color: "var(--theme-color3)",
     cursor: "pointer",
     "&:hover": {
       textDecoration: "underline",
-      color: "blue",
+      color: "var(--theme-color3)",
     },
   },
   dialogTitleClass: {
-    background: "var(--theme-color1)",
+    background: "var(--theme-color5)",
     padding: "8px 15px !important",
-
+    margin: "15px",
+    color: "var(--theme-color2)",
+    borderRadius: "4px",
     "& h2": {
-      color: "white",
       fontWeight: "500 !important",
+    },
+  },
+  lang_svg: {
+    marginRight: "10px",
+    width: "22px",
+    height: "22px",
+  },
+  dialogContent: {
+    padding: "0px 15px",
+    "& p": {
+      whiteSpace: "pre-wrap",
+      color: "black",
+      marginTop: "8px",
+      marginBottom: "6px",
     },
   },
 }));

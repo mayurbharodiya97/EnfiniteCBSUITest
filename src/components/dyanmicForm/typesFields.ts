@@ -1,6 +1,7 @@
 import { YupSchemaMetaDataType } from "./types";
 import { Merge, Optional } from "components/common/types";
 import { TextFieldProps } from "components/common/textField";
+import { DividerProps } from "components/common/divider";
 import { SelectProps } from "components/common/select";
 import { CheckboxProps, CheckboxGroupProps } from "components/common/checkbox";
 import {
@@ -49,6 +50,23 @@ export interface FieldMetaData<T> {
     | string;
   isReadOnly?: typeof shouldExcludeFnType | CustomRuleType | Boolean | string;
   onFormButtonClickHandel?: any;
+  onFormDataChange?: any;
+  postValidationSetCrossFieldValues?: any;
+  acctFieldPara?: string;
+  FormatProps?: any;
+  isCurrencyCode?: boolean;
+  StartAdornment?: string;
+  thousandsGroupStyle?: string;
+  isCurrencyField?: boolean;
+  format?: string;
+  options?: any;
+  _optionsKey?: string;
+  defaultBranchTrue?: boolean;
+  defaultAcctTypeTrue?: boolean;
+  branchCodeMetadata?: any;
+  accountTypeMetadata?: any;
+  accountCodeMetadata?: any;
+  fullAccountNumberMetadata?: any;
 }
 
 export type Omitted<T> = Omit<T, "fieldKey" | "enableGrid">;
@@ -154,6 +172,12 @@ export type AllTextFieldProps = Merge<
 >;
 export type TextFieldPropsOptional = Optional<AllTextFieldProps>;
 
+export type AllDividerProps = Merge<
+  Omitted<DividerProps>,
+  FieldMetaData<"Divider">
+>;
+export type DividerPropsOptional = Optional<AllTextFieldProps>;
+
 export type ArrayFieldProps = Merge<
   Omitted<ArrayField2Props>,
   FieldMetaData<"arrayField">
@@ -201,4 +225,13 @@ export type AllFormButtonProps = Merge<
   Omitted<FormButtonProps>,
   FieldMetaData<"formbutton">
 >;
+export type CustomAccountProps = Merge<
+  Omitted<TextFieldProps>,
+  FieldMetaData<"_accountNumber">
+>;
+export type CustomReportAccTypeProps = Merge<
+  Omitted<SelectProps>,
+  FieldMetaData<"reportAccType">
+>;
+
 export type DataTablePropsOptional = Optional<AllDataTableProps>;

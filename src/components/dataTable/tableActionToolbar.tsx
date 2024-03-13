@@ -12,6 +12,8 @@ import clsx from "clsx";
 import { TableActionType, RenderActionType } from "./types";
 import { filterAction } from "./utils";
 import { makeStyles } from "@mui/styles";
+import { GradientButton } from "components/styledComponent/button";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -25,8 +27,8 @@ const useStyles = makeStyles((theme: any) => ({
           backgroundColor: lighten(theme.palette.secondary.light, 0.85),
         }
       : {
-          color: theme.palette.secondary.dark,
-          background: theme.palette.secondary.dark,
+          color: "var(--theme-color2)",
+          backgroundColor: "var(--theme-color3)",
         },
   title: {
     flex: "1 1 100%",
@@ -39,6 +41,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
   multipleActions,
   singleActions,
   setGridAction,
+  submitButtonRef,
 }) => {
   const classes = useStyles();
   const selectedCount = selectedFlatRows.length;
@@ -73,7 +76,8 @@ export const TableActionToolbar: FC<TableActionType> = ({
           actions={singleActions}
           setAction={setGridAction}
           selectedRows={selectedRows}
-          buttonTextColor={"var(--theme-color1)"}
+          buttonTextColor={"var(--theme-color2)"}
+          submitButtonRef={submitButtonRef}
         />
       ) : null}
       {selectedCount > 0 ? (
@@ -83,6 +87,7 @@ export const TableActionToolbar: FC<TableActionType> = ({
           setAction={setGridAction}
           selectedRows={selectedRows}
           buttonTextColor={"var(--theme-color1)"}
+          submitButtonRef={submitButtonRef}
         />
       ) : null}
     </Toolbar>
@@ -94,12 +99,19 @@ export const RenderActions: FC<RenderActionType> = ({
   actions,
   setAction,
   selectedRows,
-  buttonTextColor = "var(--white)",
+  buttonTextColor = "var( --theme-color2)",
+  buttonBackground = "inherit",
+  style = {},
+  submitButtonRef,
 }) => {
+  const { t } = useTranslation();
   if (Array.isArray(actions) && actions.length > 0) {
     return actions.map((one) => (
       <Tooltip title={one.tooltip ?? one.actionLabel} key={one.actionName}>
-        <Button
+        <GradientButton
+          rotateIcon={one.rotateIcon}
+          starticon={one.startsIcon}
+          endicon={one.endsIcon}
           onClick={() => {
             setAction({
               name: one.actionName,
@@ -109,17 +121,20 @@ export const RenderActions: FC<RenderActionType> = ({
           //color="secondary"
           // style={{
           //   //background: "var(--theme-color1)",
-          //   color: "var(--theme-color3)", //"var(--white)",
+          //   color: "var(--theme-color3)", //"var(--theme-color2)",
           //   marginRight: "10px",
           // }}
+          color={one.actionTextColor ?? buttonTextColor}
           style={{
-            //background: "rgb(239, 224, 224)",
-            color: buttonTextColor,
+            background: one.actionBackground ?? buttonBackground,
+            color: one.actionTextColor ?? buttonTextColor,
+            ...style,
             //marginRight: "10px",
           }}
+          ref={one.onEnterSubmit ? submitButtonRef : null}
         >
-          {one.actionLabel}
-        </Button>
+          {t(one.actionLabel)}
+        </GradientButton>
       </Tooltip>
     ));
   } else {
@@ -138,6 +153,7 @@ export const ActionContextMenu: FC<TableActionType> = ({
   handleClose,
   authState,
 }) => {
+  const { t } = useTranslation();
   const selectedRows = selectedFlatRows.map((one) => {
     return {
       data: one.original,
@@ -172,7 +188,7 @@ export const ActionContextMenu: FC<TableActionType> = ({
           handleClose();
         }}
       >
-        {one.actionLabel}
+        {t(one.actionLabel)}
       </MenuItem>
     ));
   } else if (
@@ -192,7 +208,7 @@ export const ActionContextMenu: FC<TableActionType> = ({
           handleClose();
         }}
       >
-        {one.actionLabel}
+        {t(one.actionLabel)}
       </MenuItem>
     ));
   }

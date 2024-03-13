@@ -13,8 +13,8 @@ export const constructInitialValue = (
   for (const field of fields) {
     const { defaultValue, name } = field;
     const value = getIn(initialValues, name, undefined);
-    // console.log(">>Value ", value, field, defaultValue);
-    if (Boolean(value)) {
+
+    if (typeof value === "boolean" || Boolean(value)) {
       initialValuesObj = setIn(initialValuesObj, name, value);
     } else if (Boolean(defaultValue)) {
       initialValuesObj = setIn(initialValuesObj, name, defaultValue);

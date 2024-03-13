@@ -6,7 +6,28 @@ export const attachAlignmentProps = (columns: GridColumnType[]) => {
       const { alignment, ...others } = column;
       switch (alignment) {
         case "right":
-          return { ...others, TableCellProps: { align: "right" } };
+          return {
+            ...others,
+
+            cellHeaderAlinment: "0px !important",
+            TableCellProps: { align: "right" },
+          };
+        case "center":
+          return {
+            ...others,
+            TableCellProps: {
+              align: "center",
+              sx: { justifyContent: "center" },
+            },
+          };
+        case "left":
+          return {
+            ...others,
+            cellHeaderAlinment: "0px !important",
+            TableCellProps: {
+              align: "left",
+            },
+          };
         default:
           return others;
       }

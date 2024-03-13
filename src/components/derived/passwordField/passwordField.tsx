@@ -20,6 +20,7 @@ const PasswordField: React.FC<TextFieldProps> = ({
         endAdornment: Boolean(allowToggleVisiblity) ? (
           <InputAdornment position="end">
             <IconButton
+              sx={{ mr: 1 }}
               aria-label="toggle password visibility"
               onClick={handleVisibility}
               edge="end"

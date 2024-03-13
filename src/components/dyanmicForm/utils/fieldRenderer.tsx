@@ -42,6 +42,8 @@ const TimePicker = lazy(() =>
 );
 const Visaversa = lazy(() => import("components/common/visaversa"));
 const TextField = lazy(() => import("components/common/textField"));
+const Divider = lazy(() => import("components/common/divider"));
+
 const Select = lazy(() => import("components/common/select"));
 const Radio = lazy(() => import("components/common/radio"));
 const Slider = lazy(() => import("components/common/slider"));
@@ -72,7 +74,9 @@ const DataTable = lazy(() => import("components/common/dataTable"));
 
 const FormButton = lazy(() => import("components/common/formbutton"));
 
-const EmptyComponent: FC<{ componentType: string }> = ({ componentType }) => {
+const EmptyComponent: FC<{ componentType: string | any }> = ({
+  componentType,
+}) => {
   return <div>No Component of type: ${componentType}</div>;
 };
 
@@ -99,6 +103,9 @@ export const renderField: RenderFunctionType = (
       break;
     case "textField":
       Component = TextField;
+      break;
+    case "Divider":
+      Component = Divider;
       break;
     case "select":
       Component = Select;
@@ -201,11 +208,16 @@ export const renderField: RenderFunctionType = (
         fieldKey={others.name}
         key={`${formName}/${others.name}`}
         enableGrid={true}
+        startsIcon={allProps.startsIcon}
+        endsIcon={allProps.endsIcon}
+        rotateIcon={allProps.rotateIcon}
         GridProps={{
           item: true,
           xs: gridConfigOverrides?.xs ?? "auto",
-          md: gridConfigOverrides?.sm ?? "auto",
-          xl: gridConfigOverrides?.xs ?? "auto",
+          md: gridConfigOverrides?.md ?? "auto",
+          xl: gridConfigOverrides?.xl ?? "auto",
+          sm: gridConfigOverrides?.sm ?? "auto",
+          lg: gridConfigOverrides?.lg ?? "auto",
         }}
         onFormButtonClickHandel={onFormButtonClickHandel}
       />
@@ -229,9 +241,12 @@ export const renderField: RenderFunctionType = (
         GridProps={{
           item: true,
           xs: gridConfigOverrides?.xs ?? "auto",
-          md: gridConfigOverrides?.sm ?? "auto",
-          xl: gridConfigOverrides?.xs ?? "auto",
+          md: gridConfigOverrides?.md ?? "auto",
+          xl: gridConfigOverrides?.xl ?? "auto",
+          sm: gridConfigOverrides?.sm ?? "auto",
+          lg: gridConfigOverrides?.lg ?? "auto",
         }}
+        onFormButtonClickHandel={onFormButtonClickHandel}
       />
     );
   }

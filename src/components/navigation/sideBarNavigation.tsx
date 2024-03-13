@@ -2,8 +2,6 @@ import { FC } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandLess";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NavItemType, SideBarRendererType } from "./types";
 import { useStylesSideBar } from "./style";
@@ -17,6 +15,7 @@ import {
   ListItemText,
   Tooltip,
 } from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 let localdrawerOpen = true;
 export const SideBarNav: FC<SideBarRendererType> = ({
   metaData,
@@ -102,9 +101,11 @@ const SeperateListView: FC<{
   setNewFilterData,
   setNewFilterView,
 }) => {
+  let labelStart: any =
+    (item.label || "").toLowerCase().substring(0, 1) || "circle";
   const icon = item.icon ? (
     <ListItemIcon className={classes.listIcon}>
-      <FontAwesomeIcon icon={["fas", item.icon]} />
+      <FontAwesomeIcon icon={["fas", labelStart]} />
     </ListItemIcon>
   ) : null;
   const levelClassName =
@@ -122,6 +123,7 @@ const SeperateListView: FC<{
         [classes.item]: true,
         [levelClassName]: Boolean(levelClassName),
         [classes.slimList]: Boolean(slimSize),
+        [classes.drawerIconSize]: !localdrawerOpen,
       })}
       onClick={() => {
         if (item.viewName === "newfilterview" && Array.isArray(item.children)) {
@@ -144,8 +146,7 @@ const SeperateListView: FC<{
       >
         <span>{icon}</span>
       </Tooltip>
-      {/* {icon} */}
-      {localdrawerOpen && item.label.length > 27 ? (
+      {(localdrawerOpen && item.label.length > 27) || !Boolean(icon) ? (
         <Tooltip
           title={item.label}
           arrow={true}
@@ -157,13 +158,13 @@ const SeperateListView: FC<{
             secondary={item.secondaryLabel ?? null}
           ></ListItemText>
         </Tooltip>
-      ) : (
+      ) : localdrawerOpen ? (
         <ListItemText
           primary={item.label}
           className={classes.link}
           secondary={item.secondaryLabel ?? null}
         ></ListItemText>
-      )}
+      ) : null}
     </ListItem>
   );
 };
@@ -184,12 +185,18 @@ const SingleListItem: FC<{
   if (isActiveMenu) {
     GeneralAPI.setDocumentName(item.label);
   }
+  let labelStart: any =
+  (item.label || "").toLowerCase().substring(0, 1) || "circle";
 
-  const icon = item.icon ? (
+  const icon = item.icon.toLowerCase() === "process.gif" ? (
     <ListItemIcon className={classes.listIcon}>
-      <FontAwesomeIcon icon={["fas", item.icon]} />
-    </ListItemIcon>
-  ) : null;
+    <FontAwesomeIcon icon={["fas", labelStart]} />
+  </ListItemIcon>
+) : (
+  <ListItemIcon className={classes.listIcon}>
+    <FontAwesomeIcon icon={["fas", item.icon]} />
+  </ListItemIcon>
+);
   const levelClassName =
     level === 1
       ? classes.nestedMenuLevel1
@@ -205,6 +212,7 @@ const SingleListItem: FC<{
         [levelClassName]: Boolean(levelClassName),
         [classes.slimList]: Boolean(slimSize),
         [classes.activeMenuItem]: isActiveMenu,
+        [classes.drawerIconSize]: !localdrawerOpen,
       })}
       onClick={(e) => {
         e.preventDefault();
@@ -235,7 +243,7 @@ const SingleListItem: FC<{
         <span>{icon}</span>
       </Tooltip>
       {/* {console.log(localdrawerOpen, item.label.length)} */}
-      {localdrawerOpen && item.label.length > 27 ? (
+      {(localdrawerOpen && item.label.length > 27) || !Boolean(icon) ? (
         <Tooltip
           title={item.label}
           arrow={true}
@@ -247,13 +255,13 @@ const SingleListItem: FC<{
             secondary={item.secondaryLabel ?? null}
           ></ListItemText>
         </Tooltip>
-      ) : (
+      ) : localdrawerOpen ? (
         <ListItemText
           primary={item.label}
           className={classes.link}
           secondary={item.secondaryLabel ?? null}
         ></ListItemText>
-      )}
+      ) : null}
       {/* <ListItemText
         primary={item.label}
         className={classes.link}
@@ -274,7 +282,7 @@ const NestedListItem: FC<{
   const [open, setOpen] = useState(false);
   const handleClick = () => {
     if (!drawerOpen) {
-      handleDrawerOpen();
+      // handleDrawerOpen();
     }
     setOpen(!open);
   };
@@ -303,12 +311,19 @@ const NestedListItem: FC<{
       );
     }
   });
+  let labelStart: any =
+    (item.label || "").toLowerCase().substring(0, 1) || "circle";
 
-  const icon = item.icon ? (
+    const icon = item.icon === "Process.gif" ? (
+      <ListItemIcon className={classes.listIcon}>
+      <FontAwesomeIcon icon={["fas", labelStart]} />
+    </ListItemIcon>
+  ) : (
     <ListItemIcon className={classes.listIcon}>
       <FontAwesomeIcon icon={["fas", item.icon]} />
     </ListItemIcon>
-  ) : null;
+  );
+
   const levelClassName =
     level === 1
       ? classes.nestedMenuLevel1
@@ -328,11 +343,13 @@ const NestedListItem: FC<{
                 [levelClassName]: Boolean(levelClassName),
                 [classes.slimList]: Boolean(slimSize),
                 [classes.openCurrent]: true,
+                [classes.drawerIconSize]: !localdrawerOpen,
               })
             : clsx({
                 [classes.item]: true,
                 [levelClassName]: Boolean(levelClassName),
                 [classes.slimList]: Boolean(slimSize),
+                [classes.drawerIconSize]: !localdrawerOpen,
               })
         }
       >
@@ -344,13 +361,17 @@ const NestedListItem: FC<{
           <span>{icon}</span>
         </Tooltip>
         {/* {icon} */}
-        <ListItemText
-          primary={item.label}
-          secondary={item.secondaryLabel ?? null}
-          color="primary"
-          className={classes.link}
-        ></ListItemText>
-        {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        {drawerOpen || !Boolean(icon) ? (
+          <>
+            <ListItemText
+              primary={item.label}
+              secondary={item.secondaryLabel ?? null}
+              color="primary"
+              className={classes.link}
+            ></ListItemText>
+            {open ? <ExpandLess /> : <ExpandMore />}
+          </>
+        ) : null}
       </ListItem>
 
       <Collapse in={open} timeout="auto" unmountOnExit>
@@ -367,7 +388,7 @@ const NestedListItem: FC<{
 };
 const isActiveMenuFromhref = (location, menuhref, navigationProps) => {
   if (
-    (location === "/netbanking" || location === "/netbanking/") &&
+    (location === "/cbsenfinity" || location === "/cbsenfinity/") &&
     menuhref === "dashboard"
   ) {
     return true;
@@ -382,7 +403,7 @@ const isActiveMenuFromhref = (location, menuhref, navigationProps) => {
     }
     return false;
   } else if (
-    location !== "/netbanking" &&
+    location !== "/cbsenfinity" &&
     location !== "/" &&
     Boolean(menuhref) &&
     location.includes(menuhref)

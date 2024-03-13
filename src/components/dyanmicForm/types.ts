@@ -1,6 +1,7 @@
 import { GridDirection, GridSize, GridSpacing } from "@mui/material";
 import {
   AllTextFieldProps,
+  AllDividerProps,
   AllSelectFieldProps,
   AllCheckboxGroupProps,
   AllCheckboxProps,
@@ -27,9 +28,12 @@ import {
   AllVisaversaFieldProps,
   AllDataTableProps,
   AllFormButtonProps,
+  CustomAccountProps,
+  CustomReportAccTypeProps,
 } from "./typesFields";
 import {
   TextFieldPropsOptional,
+  DividerPropsOptional,
   SelectPropsOptional,
   CheckboxGroupPropsOptional,
   CheckboxPropsOptional,
@@ -98,10 +102,12 @@ export interface FormMetaDataType {
     name: string;
     label: string;
   };
+  formStyle?: any;
 }
 
 export interface ComponentTypeProps {
   textField?: TextFieldPropsOptional;
+  divider?: DividerPropsOptional;
   select?: SelectPropsOptional;
   checkbox?: CheckboxPropsOptional;
   checkboxGroup?: CheckboxGroupPropsOptional;
@@ -133,6 +139,7 @@ export interface MetaDataType {
 
 export type FieldMetaDataTypeX =
   | AllTextFieldProps
+  | AllDividerProps
   | AllSelectFieldProps
   | AllCheckboxGroupProps
   | AllCheckboxProps
@@ -158,7 +165,9 @@ export type FieldMetaDataTypeX =
   | AllVisaversaFieldProps
   | ArrayFieldProps
   | AllDataTableProps
-  | AllFormButtonProps;
+  | AllFormButtonProps
+  | CustomAccountProps
+  | CustomReportAccTypeProps;
 
 export type FieldMetaDataType = Merge<
   FieldMetaDataTypeX,
@@ -196,6 +205,7 @@ export interface RouterState {
 
 export type FieldMetaDataTypeOptional =
   | TextFieldPropsOptional
+  | DividerPropsOptional
   | SelectPropsOptional
   | CheckboxPropsOptional
   | CheckboxGroupPropsOptional
@@ -242,6 +252,8 @@ export interface FormWrapperProps {
   controlsAtBottom?: boolean;
   formState?: any;
   hideHeader?: boolean;
+  onFormDataChange?: any;
+  setDataOnFieldChange?: Function;
 }
 
 export interface FormProps {

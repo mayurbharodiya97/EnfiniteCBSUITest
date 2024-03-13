@@ -9,31 +9,73 @@ import { useStyles } from "./style";
 import { AllScreensGridWrapper } from "./pages/allScreens";
 import { Profile } from "./pages/profile";
 import Dashboard from "./pages/dashboard/dashboard";
+import { BranchSelectionGridWrapper } from "./auth/branchSelection";
+import { OperationsMenu } from "./pages/operations";
+import AccountDetails from "./pages/STATEMENT/accountDetails";
+import { Configuration } from "./pages/configuration";
+import DynamicGrids from "./pages/configuration/dynamicGrids";
+import Trn001 from "./pages/operations/DailyTransaction/TRN001";
+import Trn002 from "./pages/operations/DailyTransaction/TRN002";
 
-export const PagesAudit = (props) => {
+export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
   const [drawerOpen, setDrawerState] = useState(true);
   const handleDrawerOpen = () => setDrawerState(true);
   const handleDrawerClose = () => setDrawerState(false);
   const isValidURL = props?.isValidURL ?? true;
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/cbsenfinity/dashboard") {
+      handleDrawerOpen();
+    } else if (location.pathname) {
+      handleDrawerClose();
+    } else {
+      handleDrawerOpen();
+    }
+  }, [location.pathname]);
+
   return (
     <Fragment>
       <div className={classes.root}>
         {/* {alert("Test")} */}
-        <AppBar open={drawerOpen} handleDrawerOpen={handleDrawerOpen} />
-        <Drawer open={drawerOpen} handleDrawerClose={handleDrawerClose}>
+        <AppBar
+          open={drawerOpen}
+          handleDrawerOpen={handleDrawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          columns={columns}
+        />
+        <Drawer
+          open={drawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          handleDrawerOpen={handleDrawerOpen}
+        >
           <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
         </Drawer>
         <Content>
           <Routes>
             {isValidURL ? (
               <>
-                <Route
+                {/* <Route
                   path="all-screens/*"
                   element={<AllScreensGridWrapper />}
-                />
+                /> */}
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
+                <Route path="operation/*" element={<OperationsMenu />} />
+                <Route path="view-statement/*" element={<AccountDetails />} />
+                <Route path="configuration/*" element={<Configuration />} />
+                <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
+                <Route path="operation/daily_tran_F1" element={<Trn001 />} />
+                <Route
+                  path="operation/cnf_daily_tran_F2"
+                  element={<Trn002 />}
+                />
+
+                {/* <Route
+                  path="branch-selection/*"
+                  element={<BranchSelectionGridWrapper  />}
+                /> */}
               </>
             ) : null}
             <Route
@@ -61,8 +103,8 @@ const RedirectComponent = ({ isValidURL }) => {
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-    if (location.pathname === "/netbanking") {
-      navigate("/netbanking/dashboard");
+    if (location.pathname === "/cbsenfinity") {
+      navigate("/cbsenfinity/dashboard");
       // } else if (!isValidURL) {
       //   navigate("/error");
     } else {

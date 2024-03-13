@@ -18,8 +18,9 @@ import { useMutation } from "react-query";
 import * as API from "./api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { SelectWithoutOptions } from "components/common/select/render2";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { GradientButton } from "components/styledComponent/button";
+import { useTranslation } from "react-i18next";
 Chart.register(CategoryScale);
 Chart.register(...registerables);
 const getTransactionChartDataFnWrapper =
@@ -27,45 +28,213 @@ const getTransactionChartDataFnWrapper =
   async ({ type }) => {
     return getTransactionChartData(type);
   };
-export const Transactions = (props) => {
+export const Transactions = ({ mutation, ...props }) => {
   const theme = useTheme();
   const [showMore, setShowMore] = useState(false);
-  const [optionValue, setOptionValue] = useState("D");
+  const [optionValue, setOptionValue] = useState("T");
+  const { t } = useTranslation();
 
-  const result = useMutation(
-    getTransactionChartDataFnWrapper(API.getTransactionChartData)
-  );
-  useEffect(() => {
-    result.mutate({ type: "D" });
-  }, []);
   const showErrorData = () => {
     setShowMore(true);
   };
-  const data = {
-    datasets: [
-      {
-        backgroundColor: "green",
-        barPercentage: 1,
-        barThickness: 12,
-        borderRadius: 4,
-        categoryPercentage: 1,
-        data: result?.data?.SUCCESS,
-        label: "Success",
-        maxBarThickness: 10,
-      },
-      {
-        backgroundColor: "#FF3A3A",
-        barPercentage: 1,
-        barThickness: 12,
-        borderRadius: 4,
-        categoryPercentage: 1,
-        data: result?.data?.FAIL,
-        label: "Fail",
-        maxBarThickness: 10,
-      },
-    ],
-    labels: result?.data?.LABELS,
-  };
+  const data = useMemo(() => {
+    if (!optionValue || !mutation?.data) {
+      return { datasets: [], labels: [] };
+    }
+
+    if (optionValue === "T") {
+      let displayConfirmData = [];
+      let displayRejectData = [];
+      let displayPendingData = [];
+      let displayLable = [];
+      let retData = { CONFIRM: {}, REJECT: {}, PENDING: {} };
+      let uniqueType = new Set();
+      mutation?.data?.forEach((item) => {
+        if (item?.CONFIRM === "Y") {
+          retData.CONFIRM[item?.TYPE_CD] =
+            (retData.CONFIRM[item?.TYPE_CD] ?? 0) + 1;
+        } else if (item?.REJECT === "N") {
+          retData.REJECT[item?.TYPE_CD] =
+            (retData.REJECT[item?.TYPE_CD] ?? 0) + 1;
+        } else {
+          retData.PENDING[item?.TYPE_CD] =
+            (retData.PENDING[item?.TYPE_CD] ?? 0) + 1;
+        }
+        uniqueType.add(item?.TYPE_CD);
+      });
+      //console.log(Array.from(uniqueType), retData);
+      Array.from(uniqueType)
+        .sort()
+        .forEach((item) => {
+          displayLable.push(item);
+          displayConfirmData.push(retData.CONFIRM[item] ?? 0);
+          displayRejectData.push(retData.REJECT[item] ?? 0);
+          displayPendingData.push(retData.PENDING[item] ?? 0);
+        });
+      // Object.keys(retData)
+      //   .sort()
+      //   .forEach((item) => {
+      //     displayData.push(retData[item]);
+      //     displayLable.push(item);
+      //   });
+      return {
+        datasets: [
+          {
+            backgroundColor: "#4263c7",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayConfirmData,
+            label: t("Confirmed"),
+            maxBarThickness: 10,
+          },
+          {
+            backgroundColor: "#FB8C00",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayPendingData,
+            label: t("Pending"),
+            maxBarThickness: 10,
+          },
+          {
+            backgroundColor: "red",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayRejectData,
+            label: t("Reject"),
+            maxBarThickness: 10,
+          },
+        ],
+        labels: displayLable,
+      };
+    } else if (optionValue === "U") {
+      let displayCheckerData = [];
+      let displayMakerData = [];
+      let displayLable = [];
+      let retData = { CHECKER: {}, MAKER: {} };
+      let uniqueType = new Set();
+      mutation?.data?.forEach((item) => {
+        if (item?.CHECKER) {
+          retData.CHECKER[item?.CHECKER] =
+            (retData.CHECKER[item?.CHECKER] ?? 0) + 1;
+        }
+        if (item?.MAKER) {
+          retData.MAKER[item?.MAKER] = (retData.MAKER[item?.MAKER] ?? 0) + 1;
+        }
+        uniqueType.add(item?.MAKER);
+        uniqueType.add(item?.CHECKER);
+      });
+
+      Array.from(uniqueType)
+        .sort()
+        .forEach((item) => {
+          displayLable.push(item);
+          displayCheckerData.push(retData.CHECKER[item] ?? 0);
+          displayMakerData.push(retData.MAKER[item] ?? 0);
+        });
+
+      return {
+        datasets: [
+          {
+            backgroundColor: "#4263c7",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayCheckerData,
+            label: t("Checker"),
+            maxBarThickness: 10,
+          },
+          {
+            backgroundColor: "#FB8C00",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: displayMakerData,
+            label: t("Maker"),
+            maxBarThickness: 10,
+          },
+        ],
+        labels: displayLable,
+      };
+    } else if (optionValue === "S") {
+      let displayConfirmData = [];
+      let displayRejectData = [];
+      let displayPendingData = [];
+      let displayLable = [];
+      let retData = { CONFIRM: {}, REJECT: {}, PENDING: {} };
+      let uniqueType = new Set();
+      mutation?.data?.forEach((item) => {
+        if (item?.CONFIRM === "Y") {
+          if (retData.CONFIRM[item]) {
+            retData.CONFIRM[item] += 1;
+          } else {
+            retData.CONFIRM[item] = 1;
+          }
+        } else if (item?.CONFIRM === "N") {
+          if (retData.REJECT[item]) {
+            retData.REJECT[item] += 1;
+          } else {
+            retData.REJECT[item] = 1;
+          }
+        } else {
+          if (retData.PENDING[item]) {
+            retData.PENDING[item] += 1;
+          } else {
+            retData.PENDING[item] = 1;
+          }
+        }
+        uniqueType.add(item?.CONFIRM);
+        uniqueType.add(item?.REJECT);
+        uniqueType.add(item?.PENDING);
+      });
+
+      Array.from(uniqueType)
+        .sort()
+        .forEach((item) => {
+          displayLable.push(item);
+          displayConfirmData.push(retData.CONFIRM[item] ?? 0);
+          displayRejectData.push(retData.REJECT[item] ?? 0);
+          displayPendingData.push(retData.PENDING[item] ?? 0);
+        });
+
+      return {
+        datasets: [
+          {
+            backgroundColor: "#4263c7",
+            barPercentage: 1,
+            barThickness: 12,
+            borderRadius: 4,
+            categoryPercentage: 1,
+            data: [
+              Object.values(retData.CONFIRM).reduce((a, b) => a + b, 0),
+              Object.values(retData.REJECT).reduce((a, b) => a + b, 0),
+              Object.values(retData.PENDING).reduce((a, b) => a + b, 0),
+            ],
+            label: t("Transaction"),
+            maxBarThickness: 10,
+          },
+        ],
+        labels: [
+          "CONFIRM (" +
+            Object.values(retData.CONFIRM).reduce((a, b) => a + b, 0) +
+            ")",
+          "REJECT (" +
+            Object.values(retData.REJECT).reduce((a, b) => a + b, 0) +
+            ")",
+          "PENDING (" +
+            Object.values(retData.PENDING).reduce((a, b) => a + b, 0) +
+            ")",
+        ],
+      };
+    }
+  }, [mutation?.data, optionValue, t]);
   const options = {
     animation: false,
     cornerRadius: 20,
@@ -116,7 +285,7 @@ export const Transactions = (props) => {
   };
 
   return (
-    <Card {...props}>
+    <Card {...props} style={{ borderRadius: "20px" }}>
       <CardHeader
         action={
           <div style={{ width: "200px" }}>
@@ -136,9 +305,9 @@ export const Transactions = (props) => {
               variant="outlined"
               handleChange={(e) => {
                 setOptionValue(e.target.value);
-                if (Boolean(e.target.value)) {
-                  result.mutate({ type: e.target.value });
-                }
+                // if (Boolean(e.target.value)) {
+                //   mutation(e.target.value);
+                // }
 
                 //setCellValue({ [columnName]: e.target.value, ...clearFields });
               }}
@@ -146,23 +315,23 @@ export const Transactions = (props) => {
                 //setCellTouched({ [columnName]: true })
               }}
               options={[
-                { label: "Today", value: "D" },
-                { label: "Last Week", value: "W" },
-                { label: "Last Month", value: "M" },
+                { label: t("TransactionType"), value: "T" },
+                { label: t("TransactionStatus"), value: "S" },
+                { label: t("User"), value: "U" },
               ]}
               loadingOptions={false}
               multiple={false}
               showCheckbox={false}
               fullWidth
-              disabled={result.isLoading || result.isFetching}
+              disabled={mutation.isLoading || mutation.isFetching}
             />
           </div>
         }
-        title="Latest Transactions"
-        style={{ color: "var(--theme-color1)" }}
+        title={t("TodaysTransaction")}
+        style={{ color: "var(--theme-color3)" }}
       />
       <Divider />
-      <CardContent style={{ padding: "10px", height: "43vh" }}>
+      <CardContent style={{ padding: "10px", height: "61vh" }}>
         <Box
           sx={{
             height: "98%",
@@ -179,6 +348,7 @@ export const Transactions = (props) => {
           justifyContent: "flex-end",
           height: "32px",
           pt: 1,
+          marginRight: "10px",
         }}
       >
         {/* <Button
@@ -188,9 +358,9 @@ export const Transactions = (props) => {
         >
           Overview
         </Button> */}
-        {result.isError || result.isLoading || result.isFetching ? (
+        {mutation.isError || mutation.isLoading || mutation.isFetching ? (
           <>
-            {result.isError ? (
+            {mutation.isError ? (
               <>
                 <Tooltip title={"Error"}>
                   <span>
@@ -245,7 +415,7 @@ export const Transactions = (props) => {
           </>
         )}
       </Box>
-      {result.isError ? (
+      {mutation.isError ? (
         <Dialog
           open={showMore}
           fullWidth={false}
@@ -258,7 +428,7 @@ export const Transactions = (props) => {
           <DialogTitle>Error Details</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {result.error?.error_msg ?? "Error"}
+              {mutation.error?.error_msg ?? "Error"}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

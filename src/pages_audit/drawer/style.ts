@@ -1,9 +1,10 @@
 import { makeStyles } from "@mui/styles";
 
-const drawerWidth = 250;
+const drawerWidth = 227;
 
 export const useStyles = makeStyles((theme: any) => ({
   drawerPaper: {
+    margin:"8px",
     position: "relative",
     whiteSpace: "nowrap",
     width: drawerWidth,
@@ -11,6 +12,9 @@ export const useStyles = makeStyles((theme: any) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    border: "none",
+    overflow: "hidden",
+    zIndex: 120,
   },
   drawerPaperClose: {
     overflowX: "hidden",
@@ -18,26 +22,23 @@ export const useStyles = makeStyles((theme: any) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    width: theme.spacing(6),
+    width: theme.spacing(8),
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(6),
+      width: theme.spacing(8),
     },
   },
   toolbarIcon: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: "0 8px",
     zIndex: 9999,
-    height: "70px",
     ...theme.mixins.toolbar,
-    background: "var(--white)",
+    background: "var(--theme-color2)",
+    justifyContent: "center",
+    height: "80px",
+    // borderBottom: "1px dashed #949597",
   },
   hrCSS: {
     zIndex: 9999,
-  },
-  logo: {
-    height: "50px",
   },
   buttonLink: {
     backgroundColor: "transparent",

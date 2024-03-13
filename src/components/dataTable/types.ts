@@ -48,6 +48,9 @@ export interface GridConfigType {
     maxWidth?: number;
     minWidth?: number;
   };
+  style: {
+    backgroundColor: string;
+  };
 }
 
 export interface HeaderFilterType {
@@ -82,6 +85,12 @@ export interface ActionTypes {
   alwaysAvailable?: boolean;
   shouldExclude?: any;
   isNodataThenShow?: boolean;
+  actionTextColor?: string;
+  actionBackground?: string;
+  onEnterSubmit?: boolean;
+  startsIcon?: any;
+  endsIcon?: any;
+  rotateIcon?: any;
 }
 
 export interface RenderActionType {
@@ -89,6 +98,9 @@ export interface RenderActionType {
   setAction: any;
   selectedRows: any;
   buttonTextColor?: string;
+  buttonBackground?: string;
+  style?: {};
+  submitButtonRef?: any;
 }
 
 export interface TableActionType {
@@ -103,6 +115,7 @@ export interface TableActionType {
   dense?: boolean;
   handleClose?: any;
   authState?: any;
+  submitButtonRef?: any;
 }
 
 export interface GridContextType {

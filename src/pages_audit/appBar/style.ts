@@ -1,42 +1,87 @@
 import { alpha } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-const drawerWidth = 250;
+const drawerWidth = 227;
 
 export const useStyles = makeStyles((theme: any) => ({
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    // zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: "var(--white)",
     color: "#0063A3",
+    height: "80px",
+    background: "var(--theme-color2)",
+    boxShadow: "0px 1px 0px -0.5px #DEE0E2",
+  },
+  searchBar: {
+    width: 290,
+    border: "none",
+    color: "rgba(0, 0, 0, 0.87) !important",
+    backgroundColor: "rgb(235 237 238 / 26%)!important",
+
+    "& input": {
+      width: "100% !important",
+    },
+  },
+  searchList: {
+    position: "absolute",
+    background: "#fff",
+    width: "100%",
+    borderRadius: "6px",
+    boxShadow: "0 12px 25px rgba(0,0,0,.3)",
+    top: "120%",
+    height: "auto",
+    maxHeight: "325px",
+    overflowY: "auto",
+
+    "& .list-links": {
+      background: "none",
+      border: "none",
+      outline: "none",
+      cursor: "pointer",
+      textDecoration: "none",
+      padding: "0.7rem 1rem",
+      fontSize: "0.90rem",
+      textAlign: "left",
+      borderBottom: "1px solid #ddd",
+      color: "#222 !important",
+      fontWeight: 500,
+      "&:hover, &.active": {
+        backgroundColor: "#f4f4f4",
+      },
+    },
   },
   appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    paddingLeft: "0px",
+    // width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
+      background: "rgba(250, 251, 255, 0.9)",
     }),
   },
+  heading_user_dtl: {
+    width: "458px",
+    height: "73px",
+    left: "37px",
+    top: "calc(50% - 73px/2)",
+  },
+  heading_user_img: {
+    width: "40px",
+    height: "40px",
+    // cursor: "pointer",
+  },
+  heading_user_img_border: {
+    border: "2px dashed var(--theme-color3)",
+    borderRadius: "50%",
+    padding: "4px",
+  },
   toolbar: {
-    paddingRight: theme.spacing(2),
-    paddingLeft: theme.spacing(2),
-    minHeight: "70px",
-    height: "70px",
-  },
-  menuButton: {
-    marginRight: 0,
-    //background: "var(--theme-color2)",
-    color: "var(--theme-color1)",
-    "&:hover": {
-      background: "var(--theme-color2)",
-    },
-  },
-  menuButtonHidden: {
-    display: "none",
+    minHeight: "80px",
+    paddingLeft: "0px",
+    height: "80px",
   },
   title: {
     flexGrow: 1,
@@ -101,10 +146,6 @@ export const useStyles = makeStyles((theme: any) => ({
     paddingLeft: "4px",
     color: "var(--theme-color1)",
   },
-  logo: {
-    height: "50px",
-    marginRight: theme.spacing(2),
-  },
   userDesignation: {
     margin: "0px",
     fontWeight: 500,
@@ -122,6 +163,47 @@ export const useStyles = makeStyles((theme: any) => ({
   userprofilehover: {
     "&:hover": {
       backgroundColor: "var(--theme-color2)",
+    },
+  },
+  lang_svg: {
+    marginRight: "10px",
+    width: "22px",
+    height: "22px",
+  },
+  logo: {
+    height: "38px",
+  },
+  version01: {
+    margin: "0",
+    textAlign: "center",
+    color: "var(--theme-color3)",
+    fontSize: "9px",
+  },
+  DrawerClose_icon: {
+    color: "var(--theme-color3)",
+    position: "static",
+    background: "transperant",
+    "&:hover": {
+      background: "var(--theme-color4)",
+    },
+    width: "46px",
+    height: "46px",
+  },
+  marquee: {
+    animation: "$marquee 10s linear infinite",
+    animationDelay: "3s",
+  },
+  "@keyframes marquee": {
+    "0%": { transform: "translateX(100%)" },
+    "100%": { transform: "translateX(-100%)" },
+  },
+  popover: {
+    popover: {
+      maxWidth: "100%",
+      width: "fit-content",
+      "& .MuiPopover-paper": {
+        maxWidth: "100%",
+      },
     },
   },
 }));

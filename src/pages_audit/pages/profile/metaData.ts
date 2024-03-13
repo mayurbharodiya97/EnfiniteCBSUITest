@@ -1,9 +1,12 @@
 import { GridMetaDataType } from "components/dataTableStatic";
+import { getdashboxData } from "./api";
+import { GeneralAPI } from "registry/fns/functions";
+import { filter } from "lodash";
 
 export const UserProfileMetaData = {
   form: {
-    name: "profile",
-    label: "User Profile",
+    name: "PRIORITY",
+    label: "UserProfile",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     render: {
@@ -39,95 +42,180 @@ export const UserProfileMetaData = {
   fields: [
     {
       render: { componentType: "textField", group: 0 },
-      name: "USER_NAME",
+      name: "USER_ID",
       sequence: 1,
       type: "text",
-      label: "User ID",
+      label: "UserID",
       isReadOnly: true,
-      placeholder: "First Name",
+      placeholder: "UserID",
       GridProps: { xs: 12, md: 3, sm: 3 },
-    },
-    {
-      render: { componentType: "textField", group: 0 },
-      name: "NAME",
-      sequence: 2,
-      type: "text",
-      label: "Name",
-      isReadOnly: true,
-      placeholder: "Name",
-      GridProps: { xs: 12, md: 6, sm: 6 },
-    },
-    {
-      render: { componentType: "textField", group: 0 },
-      name: "USER_LEVEL",
-      sequence: 3,
-      type: "text",
-      label: "User Level",
-      isReadOnly: true,
-      placeholder: "User Level",
-      GridProps: { xs: 12, md: 3, sm: 3 },
-    },
-
-    {
-      render: { componentType: "phoneNumber", group: 0 },
-      name: "CONTACT2",
-      sequence: 4,
-      type: "text",
-      label: "Mobile Number",
-      isReadOnly: false,
-      required: true,
-      placeholder: "Mobile Number",
-      GridProps: { xs: 12, md: 3, sm: 3 },
-      StartAdornment: "+88",
-    },
-    {
-      render: { componentType: "textField", group: 0 },
-      name: "EMAIL_ID",
-      sequence: 5,
-      type: "text",
-      label: "Email ID",
-      isReadOnly: false,
-      placeholder: "Email ID",
-      GridProps: { xs: 12, md: 6, sm: 6 },
     },
     {
       render: { componentType: "textField", group: 0 },
       name: "GROUP_NAME",
       sequence: 6,
       type: "text",
-      label: "User Group",
+      label: "UserGroup",
       isReadOnly: true,
       placeholder: "User Group",
       GridProps: { xs: 12, md: 3, sm: 3 },
     },
+
     {
       render: { componentType: "textField", group: 0 },
-      name: "USER_SUB_TYPE",
-      sequence: 7,
+      name: "DEFAULT_BRANCH",
+      sequence: 8,
       type: "text",
-      label: "User Sub Type",
+      label: "DefaultBranch",
       isReadOnly: true,
-      placeholder: "User Sub Type",
+      placeholder: "Default Branch",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: { componentType: "phoneNumber", group: 0 },
+      name: "MOBILE_NUMBER",
+      sequence: 4,
+      type: "text",
+      label: "MobileNo",
+      isReadOnly: true,
+      placeholder: "MobileNo",
       GridProps: { xs: 12, md: 3, sm: 3 },
     },
     {
       render: { componentType: "textField", group: 0 },
-      name: "BRANCH_NAME",
+      name: "CUSTOMER_ID",
       sequence: 8,
       type: "text",
-      label: "Branch Name",
+      label: "CustomerId",
       isReadOnly: true,
-      placeholder: "Branch Name",
-      GridProps: { xs: 12, md: 6, sm: 6 },
+      placeholder: "Customer ID",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+
+    {
+      render: { componentType: "textField", group: 0 },
+      name: "EMP_ID",
+      sequence: 8,
+      type: "text",
+      label: "EmployeeId",
+      isReadOnly: true,
+      placeholder: "Employee Id",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: { componentType: "textField", group: 0 },
+      name: "EMAIL_ID",
+      sequence: 8,
+      type: "text",
+      label: "EmailId",
+      isReadOnly: true,
+      placeholder: "EmailID",
+      GridProps: { xs: 12, md: 3, sm: 3 },
     },
     {
       render: { componentType: "checkbox", group: 0 },
       name: "ALLOW_RELEASE",
       sequence: 9,
       type: "text",
-      label: "Allowed Release",
+      label: "AllowedRelease",
       isReadOnly: true,
-      placeholder: "Allowed Release",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: { componentType: "checkbox", group: 0 },
+      name: "VIEW_SIGNATURE",
+      sequence: 9,
+      type: "text",
+      label: "Signature",
+      isReadOnly: true,
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: {
+        componentType: "typography",
+      },
+      name: "CIBVIEW",
+      label: "DebitTransactionLimit",
+      GridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+
+    {
+      render: { componentType: "amountField", group: 0 },
+      name: "DR_CASE_LIMIT",
+      sequence: 8,
+      type: "text",
+      label: "CashwithdrawalLimit",
+      isReadOnly: true,
+      placeholder: "Debit Cash Limit",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+
+    {
+      render: { componentType: "amountField", group: 0 },
+      name: "DR_CLEARING_LIMIT",
+      sequence: 8,
+      type: "text",
+      label: "ClearingLimit",
+      isReadOnly: true,
+      placeholder: "Debit Clearing Limit",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+
+    {
+      render: { componentType: "amountField", group: 0 },
+      name: "DR_TRANSFER_LIMIT",
+      sequence: 8,
+      type: "text",
+      label: "TransferLimit",
+      isReadOnly: true,
+      placeholder: "Debit Transfer Limit",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: {
+        componentType: "typography",
+      },
+      name: "CIBVEW",
+      label: "CreditTransactionLimit",
+      GridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      render: { componentType: "amountField", group: 0 },
+      name: "CR_CASE_LIMIT",
+      sequence: 8,
+      type: "text",
+      label: "CashRecieptLimit",
+      isReadOnly: true,
+      placeholder: "Credit Cash Limit",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: { componentType: "amountField", group: 0 },
+      name: "CR_CLEARING_LIMIT",
+      sequence: 8,
+      type: "text",
+      label: "ClearingLimit",
+      isReadOnly: true,
+      placeholder: "Credit Clearing Limit",
+      GridProps: { xs: 12, md: 3, sm: 3 },
+    },
+    {
+      render: { componentType: "amountField", group: 0 },
+      name: "CR_TRANSFER_LIMIT",
+      sequence: 8,
+      type: "text",
+      label: "TransferLimit",
+      isReadOnly: true,
+      validate: "getValidateValue",
+      placeholder: "Credit Transfer Limit",
       GridProps: { xs: 12, md: 3, sm: 3 },
     },
   ],
@@ -136,7 +224,7 @@ export const UserProfileMetaData = {
 export const UserLoginDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "User Login Details",
+    gridLabel: "UserLoginDetails",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,
@@ -145,16 +233,16 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     allowColumnReordering: true,
     disableSorting: false,
-    hideHeader: true,
+    hideHeader: false,
     hideFooter: true,
     disableGroupBy: true,
     enablePagination: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
-    containerHeight: {
-      min: "30vh",
-      max: "33vh",
-    },
+    // pageSizes: [10, 20, 30],
+    // defaultPageSize: 10,
+    // containerHeight: {
+    //   min: "30vh",
+    //   max: "83vh",
+    // },
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
@@ -164,9 +252,9 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
   columns: [
     {
       accessor: "SR_NO",
-      columnName: "Sr. No.",
+      columnName: "SrNo",
       sequence: 1,
-      alignment: "right",
+      alignment: "center",
       componentType: "default",
       width: 70,
       minWidth: 60,
@@ -175,7 +263,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "USERNAME",
-      columnName: "Login ID",
+      columnName: "LoginID",
       sequence: 2,
       alignment: "left",
       componentType: "default",
@@ -185,7 +273,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LOGIN_DT",
-      columnName: "Login Date",
+      columnName: "LoginDate",
       sequence: 3,
       alignment: "center",
       componentType: "default",
@@ -195,7 +283,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "USER_FLAG",
-      columnName: "Login Flag",
+      columnName: "LoginFlag",
       sequence: 4,
       alignment: "left",
       componentType: "default",
@@ -205,7 +293,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "LOGOUT_DT",
-      columnName: "Logout Date",
+      columnName: "LogoutDate",
       sequence: 5,
       alignment: "center",
       componentType: "default",
@@ -215,7 +303,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "REMARKS",
-      columnName: "Activity Remarks",
+      columnName: "ActivityRemarks",
       sequence: 6,
       alignment: "left",
       componentType: "default",
@@ -225,7 +313,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "IP_ADDR",
-      columnName: "IP Address",
+      columnName: "IPAddress",
       sequence: 7,
       alignment: "left",
       componentType: "default",
@@ -235,7 +323,7 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RELEASED_USER_NAME",
-      columnName: "Released User",
+      columnName: "ReleasedUser",
       sequence: 8,
       alignment: "left",
       componentType: "default",
@@ -245,13 +333,311 @@ export const UserLoginDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "RELEASED_DT",
-      columnName: "Released Date",
+      columnName: "ReleasedDate",
       sequence: 9,
       alignment: "center",
       componentType: "default",
       width: 140,
       minWidth: 130,
       maxWidth: 250,
+    },
+  ],
+};
+export const userAccessbranch: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "BranchAccessRights",
+    rowIdColumn: "BRANCH_CD",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: false,
+    hideFooter: false,
+    disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [20, 30, 40],
+    defaultPageSize: 20,
+    allowRowSelection: false,
+  },
+  // filters: [],
+  columns: [
+    {
+      accessor: "SR_NO",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "center",
+      componentType: "default",
+      width: 70,
+      minWidth: 60,
+      maxWidth: 120,
+      isAutoSequence: true,
+    },
+    {
+      accessor: "BRANCH_CD",
+      columnName: "Branch",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 80,
+      minWidth: 80,
+      maxWidth: 80,
+    },
+    {
+      accessor: "BRANCH_NM",
+      columnName: "Name",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    },
+    {
+      accessor: "LOGIN_ACCESS",
+      columnName: "Login",
+      sequence: 3,
+      alignment: "center",
+      componentType: "editableCheckbox",
+      isReadOnly: true,
+      width: 80,
+      minWidth: 80,
+      maxWidth: 80,
+    },
+    {
+      accessor: "REPORT_ACCESS",
+      columnName: "Report",
+      sequence: 3,
+      alignment: "center",
+      componentType: "editableCheckbox",
+      isReadOnly: true,
+      width: 80,
+      minWidth: 80,
+      maxWidth: 80,
+    },
+  ],
+};
+export const userAccesstype: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "ProductAccessRights",
+    rowIdColumn: "ACCT_TYPE",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: false,
+    hideFooter: false,
+    disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [20, 40, 60],
+    defaultPageSize: 20,
+    // disableGlobalFilter: true,
+    // containerHeight: {
+    //   min: "30vh",
+    //   max: "83vh",
+    // },
+    // allowFilter: false,
+    // allowColumnHiding: false,
+    allowRowSelection: false,
+    // isCusrsorFocused: false,
+  },
+  // filters: [],
+  columns: [
+    {
+      accessor: "SR_NO",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "center",
+      componentType: "default",
+      width: 70,
+      minWidth: 60,
+      maxWidth: 120,
+      isAutoSequence: true,
+    },
+
+    {
+      accessor: "TYPE_NM",
+      columnName: "Product",
+      sequence: 3,
+      alignment: "left",
+      componentType: "default",
+      width: 280,
+      minWidth: 280,
+      maxWidth: 300,
+    },
+    {
+      accessor: "ACCESS",
+      columnName: "Access",
+      sequence: 3,
+      alignment: "center",
+      componentType: "editableCheckbox",
+      isReadOnly: true,
+      width: 100,
+      minWidth: 100,
+      maxWidth: 100,
+    },
+  ],
+};
+
+export const PersonlizationQuickGridMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "QuickView",
+    rowIdColumn: "ID",
+
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableGlobalFilter: true,
+    disableSorting: false,
+    hideHeader: false,
+    hideFooter: true,
+    disableGroupBy: true,
+    allowRowSelection: false,
+    containerHeight: {
+      min: "48vh",
+      max: "65vh",
+    },
+  },
+  // filters: [],
+  columns: [
+    {
+      accessor: "SR_NO",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "center",
+      componentType: "default",
+      width: 80,
+      minWidth: 40,
+      maxWidth: 80,
+      isAutoSequence: true,
+    },
+    {
+      accessor: "DOC_CD",
+      columnName: "",
+      sequence: 2,
+      alignment: "left",
+      componentType: "editableAutocomplete",
+      enableDefaultOption: true,
+      options: GeneralAPI.getquickViewList,
+      _optionsKey: "getquickViewList",
+      validation: (value, data, prev, next) => {
+        // if (!Boolean(value)) {
+        //   return "This field is required";
+        // }
+        if (Array.isArray(prev)) {
+          let lb_error = false;
+          let ls_msg = "";
+          prev.forEach((item, index) => {
+            if (lb_error) {
+              return ls_msg;
+            }
+            if (item?.DOC_CD == "") {
+              return ls_msg;
+            }
+            if (value === item?.DOC_CD) {
+              lb_error = true;
+              // ls_msg = "Option is Already entered at Line " + (index + 1);
+              ls_msg = "Option is Already entered";
+              return ls_msg;
+            }
+          });
+          if (lb_error) {
+            return ls_msg;
+          }
+        }
+        return "";
+      },
+      width: 370,
+      maxWidth: 370,
+      minWidth: 200,
+    },
+  ],
+};
+export const PersonlizationDashboardGridData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "DashboardDataCards",
+    rowIdColumn: "ID",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableGlobalFilter: true,
+    disableSorting: false,
+    hideHeader: false,
+    hideFooter: true,
+    disableGroupBy: true,
+    allowRowSelection: false,
+    containerHeight: {
+      min: "58vh",
+      max: "65vh",
+    },
+  },
+  // filters: [],
+  columns: [
+    {
+      accessor: "SR_NO",
+      columnName: "SrNo",
+      sequence: 1,
+      alignment: "center",
+      componentType: "default",
+      width: 80,
+      minWidth: 40,
+      maxWidth: 80,
+      isAutoSequence: true,
+    },
+    {
+      accessor: "DASH_TRAN_CD",
+      columnName: "",
+      sequence: 2,
+      alignment: "left",
+      componentType: "editableAutocomplete",
+      enableDefaultOption: true,
+      options: getdashboxData,
+      _optionsKey: "getdashboxData",
+      width: 370,
+      maxWidth: 370,
+      minWidth: 200,
+      validation: (value, data, prev, next) => {
+        // if (!Boolean(value)) {
+        //   return "This field is required";
+        // }
+        if (Array.isArray(prev)) {
+          let lb_error = false;
+          let ls_msg = "";
+          prev.forEach((item, index) => {
+            if (lb_error) {
+              return ls_msg;
+            }
+            if (item?.DASH_TRAN_CD == "") {
+              return ls_msg;
+            }
+            if (value === item?.DASH_TRAN_CD) {
+              lb_error = true;
+              // ls_msg = "Option is Already entered at Line " + (index + 1);
+              ls_msg = "Option is Already entered  ";
+              return ls_msg;
+            }
+          });
+          if (lb_error) {
+            return ls_msg;
+          }
+        }
+        return "";
+      },
     },
   ],
 };

@@ -22,6 +22,7 @@ export interface FormContextType {
   validationSchema?: any;
   formState: any;
   defaultArrayFieldValues?: InitialValuesType;
+  onFormButtonCicular?: any;
 }
 
 export type FormFieldRegistryAtomType = string[];
@@ -91,7 +92,14 @@ export interface UseFieldHookProps {
   runPostValidationHookAlways?: boolean;
   runValidationOnDependentFieldsChange?: boolean;
   skipValueUpdateFromCrossFieldWhenReadOnly?: boolean;
+  onFormDataChange?: any;
+  runExternalFunction?: boolean;
   __EDIT__?: any;
+  txtTransform?: "uppercase" | "lowercase";
+  AlwaysRunPostValidationSetCrossFieldValues?: {
+    alwaysRun?: any;
+    touchAndValidate?: any;
+  };
 }
 
 export interface UseFieldArrayHookProps {
@@ -100,6 +108,8 @@ export interface UseFieldArrayHookProps {
   dependentFields?: string[] | string;
   shouldExclude?: typeof shouldExcludeFnType;
   getFixedRowsCount?: typeof getFixedRowsCountFnType;
+  onFormDataChange?: any;
+  runExternalFunction?: Boolean;
 }
 
 export interface SubscritionFieldsType {
@@ -131,7 +141,9 @@ export declare function ValidateFnType(
 
 export declare function PostValidationSetCrossFieldValuesFnType(
   fieldData: FormFieldAtomType,
-  formState: any
+  formState: any,
+  authState?: any,
+  dependentFieldsState?: DependentValuesType
 ):
   | Promise<InitialValuesType | undefined | null>
   | InitialValuesType
@@ -148,7 +160,8 @@ export interface SubmitFnType {
     displayValues: Object,
     endSubmit: (submitSuccessful: boolean, message?: string) => void,
     setFieldErrors: (fieldsErrorObj: FieldsErrorObjType) => void,
-    actionFlag?: String
+    actionFlag?: String,
+    hasError?: boolean
   ): void;
 }
 

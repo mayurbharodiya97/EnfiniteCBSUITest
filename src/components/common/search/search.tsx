@@ -19,7 +19,6 @@ import {
 } from "@mui/material";
 import { Merge } from "../types";
 import { TextField } from "components/styledComponent";
-// import SearchIcon from "@material-ui/icons/Search";
 import Search from "@mui/icons-material/Search";
 
 interface MyGridExtendedProps {
@@ -161,35 +160,46 @@ const MySearchField: FC<MySearchFieldProps> = ({
   const result = (
     <Fragment>
       <TextField
+        style={{ width: "220px" }}
+        placeholder="Search Here..."
         {...others}
         key={fieldKey}
         id={fieldKey}
         name={name}
         value={value}
         error={!isSubmitting && isError}
-        helperText={
-          <div style={{ display: "flex" }}>
-            <FormHelperText>
-              {!isSubmitting && isError
-                ? error
-                : Boolean(validationAPIResult)
-                ? validationAPIResult
-                : null}
-            </FormHelperText>
-          </div>
-        }
-        FormHelperTextProps={{
-          //@ts-ignore
-          component: "div",
-        }}
+        // helperText={
+        //   <div style={{ display: "flex" }}>
+        //     <FormHelperText>
+        //       {!isSubmitting && isError
+        //         ? error
+        //         : Boolean(validationAPIResult)
+        //         ? validationAPIResult
+        //         : null}
+        //     </FormHelperText>
+        //   </div>
+        // }
+        // FormHelperTextProps={{
+        //   //@ts-ignore
+        //   component: "div",
+        // }}
         //@ts-ignore
         InputProps={{
+          disableUnderline: true,
           style:
             !isSubmitting && Boolean(currentColor)
               ? { color: currentColor, fontWeight: "bold" }
-              : {},
-          endAdornment: (
-            <InputAdornment position="end">
+              : {
+                  margin: "0px",
+                  border: "none",
+                  background: " rgba(235, 237, 238, 0.45)",
+                  padding: "0px",
+                },
+          startAdornment: (
+            <InputAdornment
+              style={{ padding: "0px", border: "none", margin: "0px" }}
+              position="start"
+            >
               <IconButton
                 aria-label="toggle password visibility"
                 onClick={() => setOpenSearch(true)}

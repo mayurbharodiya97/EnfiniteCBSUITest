@@ -1,30 +1,90 @@
-import { Transactions } from "../../../components/dashboard/transactions";
-import { TrafficByDevice } from "../../../components/dashboard/traffic-by-device";
 import { DashboardLayout } from "./dashboard-layout";
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Card, CardContent, Fab } from "@mui/material";
 import { DashboardBox } from "components/dashboard/dashboardBox";
 import { Alert } from "components/common/alert";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Fragment } from "react";
+import { Fragment, useContext, useState } from "react";
+import { QuickAccessTableGridWrapper } from "./QuickAccessTableGrid/QuickAccessTableGrid";
+import Grid from "@mui/material/Grid";
+import { TodaysTransactionTableGridWrapper } from "./Today'sTransactionGrid/TodaysTransactionTableGrid";
+import { useEffect } from "react";
+import { queryClient } from "cache";
+import { Transactions } from "components/dashboard/transactions";
+import { AccountStatus } from "components/dashboard/account-status";
+
+import { AuthContext } from "pages_audit/auth";
+import { MessageBox } from "components/dashboard/messageBox/messageBox";
+
+interface updateAUTHDetailDataType {
+  userID: any;
+  COMP_CD: any;
+  BRANCH_CD: any;
+}
+
+const updateAUTHDetailDataWrapperFn =
+  (updateMasterData) =>
+  async ({ userID, COMP_CD, BRANCH_CD }: updateAUTHDetailDataType) => {
+    return updateMasterData({ userID, COMP_CD, BRANCH_CD });
+  };
 
 const Dashboard = () => {
+  const { authState } = useContext(AuthContext);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
-  >(["getDashboardData"], () => API.getDashboardData());
+  >(["getDashboardData"], () =>
+    API.getDashboardData({
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+    })
+  );
+
+  const mutation = useMutation(
+    updateAUTHDetailDataWrapperFn(API.TodaysTransactionTableGrid),
+    {
+      onError: (error: any) => {},
+      onSuccess: (data) => {},
+    }
+  );
+  useEffect(() => {
+    if (data?.[0]?.CHART1?.ISVISIBLE || data?.[0]?.TODAY_TRN?.ISVISIBLE) {
+      const mutationArguments: any = {
+        userID: authState?.user?.id ?? "",
+        COMP_CD: authState?.companyID ?? "",
+        BRANCH_CD: authState?.user?.branchCode ?? "",
+      };
+      mutation.mutate(mutationArguments);
+    }
+  }, [data?.[0]?.CHART1?.ISVISIBLE, data?.[0]?.TODAY_TRN?.ISVISIBLE]);
+  // useEffect(() => {
+  //   return () => {
+  //     queryClient.removeQueries(["getDashboardData"]);
+  //     queryClient.removeQueries(["TodaysTransactionTableGrid"]);
+  //   };
+  // }, []);
+
+  // const handleClick = () => {
+  //   setIsOpenSave(true);
+  //   // console.log("test");
+  // };
+  // const handleDialogClose = () => {
+  //   // console.log("test");
+  //   setIsOpenSave(false);
+  // };
 
   return (
     <>
       <Box
         component="main"
         sx={{
+          background: "rgba(250, 251, 255, 0.9)",
+          // height: "83vh",
           flexGrow: 1,
-          // py: 8,
         }}
       >
-        <Container>
+        <div style={{ padding: "15px 10px 0 10px" }}>
           <Grid container spacing={2}>
             {isLoading || isFetching ? (
               <Grid item lg={12} md={12} xl={12} xs={12}>
@@ -42,39 +102,141 @@ const Dashboard = () => {
               </Fragment>
             ) : (
               <>
-                {data?.[0]?.BOXES?.map((item, index) => (
-                  <Grid key={"grid" + index} item xl={3} lg={3} sm={6} xs={12}>
+                {/* {data?.[0]?.BOXES?.map((item, index) => (
+                  <Grid item xl={3} lg={3} sm={6} md={4} xs={12} key={index}>
                     <DashboardBox
                       key={"board" + index}
+                      body={item?.DEFAULT_VAL}
                       title={item?.TITLE}
-                      body={item?.DEFAULT}
-                      isfooterVisible={item?.ISFOOTERVISIBLE}
+                      isSequencs={item?.DISPLAY_SEQ}
                       icon={item?.ICON}
-                      apiName={item?.APINAME}
+                      isBackground={item?.BACKGROUND_COLOUR}
+                      apiName={item?.API_NAME}
                     />
                   </Grid>
-                ))}
-                {data?.[0]?.CHART1?.ISCHARTVISIBLE ? (
+                ))} */}
+                {Array.from(Array(8)).map((_, index) => {
+                  const item = data?.[0]?.BOXES?.[index];
+                  const isVisible = !!item;
+
+                  if (isVisible) {
+                    return (
+                      <Grid
+                        item
+                        xl={3}
+                        lg={3}
+                        sm={6}
+                        md={4}
+                        xs={12}
+                        key={index}
+                        style={{
+                          borderBottom: "2px solid #EBEDEE",
+                          borderRight: "2px solid #EBEDEE",
+                          // marginBottom: "10px",
+                          paddingRight: "10px",
+                          paddingBottom: "10px",
+                          paddingTop: "10px",
+                        }}
+                      >
+                        <DashboardBox
+                          key={"board" + index}
+                          body={item.DEFAULT_VAL}
+                          title={item.TITLE}
+                          isSequencs={item.DISPLAY_SEQ}
+                          icon={item.ICON}
+                          isBackground={item.BACKGROUND_COLOUR}
+                          apiName={item.API_NAME}
+                          visibility={!isVisible}
+                        />
+                      </Grid>
+                    );
+                  } else {
+                    return (
+                      <Grid
+                        item
+                        xl={3}
+                        lg={3}
+                        sm={6}
+                        md={4}
+                        xs={12}
+                        key={index}
+                      >
+                        <div
+                          style={{
+                            height: "100px",
+                            width: "100%",
+                            backgroundColor: "transparent",
+                          }}
+                        ></div>
+                      </Grid>
+                    );
+                  }
+                })}
+
+                {data?.[0]?.QUICK_ACCESS?.ISVISIBLE ? (
                   <Grid item lg={8} md={12} xl={8} xs={12}>
-                    <Transactions />
+                    <Box
+                      sx={{
+                        background: "var(--theme-color2)",
+                        border: "2px solid #EBEDEE",
+                        borderRadius: "20px",
+                        padding: "05px",
+                      }}
+                    >
+                      <QuickAccessTableGridWrapper />
+                    </Box>
                   </Grid>
                 ) : null}
-                {data?.[0]?.CHART2?.ISCHARTVISIBLE ? (
-                  <Grid item lg={4} md={6} xl={4} xs={12}>
-                    <TrafficByDevice sx={{ height: "100%" }} />
+                {data?.[0]?.MESSAGE_BOX?.ISVISIBLE ? (
+                  <Grid item lg={4} md={12} xl={4} xs={12}>
+                    <Card
+                      style={{
+                        borderRadius: "20px",
+                        boxShadow: "0px 11px 70px rgba(226, 236, 249, 0.5)",
+                        overflowY: "auto",
+                      }}
+                    >
+                      <CardContent style={{ padding: "10px", height: "486px" }}>
+                        <Grid item lg={12} md={12} xl={12} xs={12}>
+                          <MessageBox screenFlag={"Announcement"} />
+                          <MessageBox screenFlag={"Tips"} />
+                          <MessageBox screenFlag={"Notes"} />
+                          <MessageBox screenFlag={"Alert"} />
+                        </Grid>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ) : null}
+                {data?.[0]?.CHART1?.ISVISIBLE ? (
+                  <Grid item lg={8} md={12} xl={8} xs={12}>
+                    <Transactions mutation={mutation} />
+                  </Grid>
+                ) : null}
+                {data?.[0]?.CHART2?.ISVISIBLE ? (
+                  <Grid item lg={4} md={12} xl={4} xs={12}>
+                    <AccountStatus sx={{ height: "100%" }} />
+                  </Grid>
+                ) : null}
+                {data?.[0]?.TODAY_TRN?.ISVISIBLE ? (
+                  <Grid item lg={12} md={12} xl={12} xs={12}>
+                    <Box
+                      sx={{
+                        background: "var(--theme-color2)",
+                        // border: "2px solid #EBEDEE",
+                        boxShadow: "0px 11px 70px rgba(226, 236, 249, 0.5)",
+                        borderRadius: "20px",
+                        marginTop: "10px",
+                        padding: "10px",
+                      }}
+                    >
+                      <TodaysTransactionTableGridWrapper mutation={mutation} />
+                    </Box>
                   </Grid>
                 ) : null}
               </>
             )}
-
-            {/* <Grid item lg={4} md={6} xl={3} xs={12}>
-            <LatestProducts sx={{ height: "100%" }} />
           </Grid>
-          <Grid item lg={8} md={12} xl={9} xs={12}>
-            <LatestOrders />
-          </Grid> */}
-          </Grid>
-        </Container>
+        </div>
       </Box>
     </>
   );

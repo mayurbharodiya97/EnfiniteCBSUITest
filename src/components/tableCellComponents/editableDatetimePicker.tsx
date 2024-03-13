@@ -1,34 +1,53 @@
-import { useState, useEffect, useMemo } from "react";
+import FormHelperText from "@mui/material/FormHelperText";
+import { useState, useEffect, useMemo, useContext } from "react";
 import { CellWrapper } from "./cellWrapper";
 import {
   ThemeProvider,
   unstable_createMuiStrictModeTheme,
 } from "@mui/material/styles";
-import DateFnsUtils from "@date-io/date-fns";
-import { KeyboardDateTimePicker } from "@material-ui/pickers";
+// import DateFnsUtils from "@date-io/date-fns";
+// import {
+//   KeyboardDateTimePicker,
+//   MuiPickersUtilsProvider,
+// } from "@material-ui/pickers";
+// import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { theme2 } from "app/audit/theme";
-import { FormHelperText } from "@mui/material";
-
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-
+import { KeyboardDateTimePicker } from "components/styledComponent/datetime";
+import { makeStyles } from "@mui/styles";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
+const useStyles = makeStyles({
+  root: {
+    "& .MuiInputBase-root.MuiOutlinedInput-root input": {
+      padding: "8px 7px",
+    },
+    "& .css-1sizj2k-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+      {
+        borderColor: "rgba(0, 0, 0, 0.23)",
+      },
+  },
+});
 const themeObj = unstable_createMuiStrictModeTheme(theme2);
 export const EditableDatetimePicker = (props) => {
+  const classes = useStyles();
+  const customParameter = useContext(CustomPropertiesConfigurationContext);
+
+  const {
+    dynamicAccountNumberField,
+    dynamicAmountSymbol,
+    dynamicAmountGroupStyle,
+    decimalCount,
+    commonDateFormat,
+    commonDateTimeFormat,
+  } = customParameter;
+
   const {
     value: initialValue,
     rows,
     row: { index, original },
-    column: {
-      id,
-      options,
-      validation,
-      requestProps,
-      dateFormat,
-      mindate,
-      isReadOnly,
-      __EDIT__,
-    },
+    column: { id, validation, dateFormat, mindate, isReadOnly, __EDIT__ },
     updateGridData,
-    gridProps,
     hiddenFlag,
     loading,
   } = props;
@@ -58,9 +77,9 @@ export const EditableDatetimePicker = (props) => {
   const onChange = (date) => {
     //console.log("e.target.value", e.target.checked);
     setValue(date);
-    setLoading(true);
+    // setLoading(true);
     validation(date, original, prevRows, nextRows).then((result) => {
-      setLoading(false);
+      // setLoading(false);
       updateGridData(index, id, date, true, result);
     });
   };
@@ -72,31 +91,46 @@ export const EditableDatetimePicker = (props) => {
       updateGridData(index, id, value, true, result);
     });
   };
+  // useEffect(() => {
+  //   setValue(initialValue);
+  // }, [initialValue]);
   useEffect(() => {
-    setValue(initialValue);
+    let initialDate = initialValue;
+    if (!initialDate) {
+      initialDate = new Date();
+    }
+    setValue(initialDate);
   }, [initialValue]);
+
   return (
     <CellWrapper showBorder {...props}>
       <ThemeProvider theme={themeObj}>
-        <LocalizationProvider utils={DateFnsUtils}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <KeyboardDateTimePicker
-            format={dateFormat || "dd/MM/yyyy HH:mm:ss"}
-            KeyboardButtonProps={{
-              "aria-label": "Select Date",
-            }}
-            name={id}
+            format={
+              (Boolean(dateFormat) ? dateFormat : commonDateTimeFormat) ||
+              "dd/MM/yyyy HH:mm:ss"
+            }
             onChange={onChange}
-            value={value}
-            InputLabelProps={{ shrink: true }}
-            color="primary"
-            autoComplete="off"
-            autoOk={true}
-            showTodayButton={true}
-            onBlur={onBlur}
+            value={new Date(value)}
             disabled={loadingcall || loading}
             readOnly={isReadOnlyLocal}
+            className={classes.root}
             minDate={mindate || new Date("1900-01-01")}
-            InputProps={{ disableUnderline: true }}
+            slotProps={{
+              textField: {
+                onBlur,
+                name: id,
+                "aria-label": "Select Date",
+                autoComplete: "off",
+                InputProps: { disableUnderline: true },
+                InputLabelProps: { shrink: true },
+              },
+              actionBar: {
+                actions: ["today", "accept", "cancel"],
+              },
+            }}
+            sx={{ width: "100%" }}
           />
         </LocalizationProvider>
       </ThemeProvider>

@@ -30,6 +30,8 @@ import {
 } from "./types";
 import { FormContext } from "./context";
 import { getIn, yupReachAndValidate } from "./util";
+import { useTranslation } from "react-i18next";
+import { AuthContext } from "pages_audit/auth/authContext";
 
 export const useField = ({
   fieldKey,
@@ -43,11 +45,17 @@ export const useField = ({
   runPostValidationHookAlways,
   runValidationOnDependentFieldsChange,
   skipValueUpdateFromCrossFieldWhenReadOnly,
+  txtTransform,
+  AlwaysRunPostValidationSetCrossFieldValues,
 }: UseFieldHookProps) => {
   //formContext provides formName for scoping of fields, and initialValue for the field
   const formContext = useContext(FormContext);
   //formState provides will be used to determine if form is submitting
   const formState = useRecoilValue(formAtom(formContext.formName));
+  //For Language Changes
+  const { t } = useTranslation();
+
+  const { authState } = useContext(AuthContext);
   //fieldKeyRef used to inititalize fieldKey, if fieldKey is not passed
   //fieldName will be used to determine fieldKey, fieldKey will be used to
   //access atom from recoil storing field state
@@ -79,16 +87,16 @@ export const useField = ({
   //updates. ie. arrayFieldName[current-index].fieldName - here currentIndex represents
   //fields current postion in the arrayField
   useEffect(() => {
-    if (name.indexOf(`${formContext.formName}/`) === 0) {
+    if (name?.indexOf(`${formContext?.formName}/`) === 0) {
       setFieldData((currVal) => ({
         ...currVal,
-        name: name,
+        name: name ?? "",
       }));
     } else {
       //remove else if any issue comes up in form - we are putting it here to fix array field issue
       setFieldData((currVal) => ({
         ...currVal,
-        name: `${formContext.formName}/${name}`,
+        name: `${formContext.formName}/${name}` ?? "",
       }));
     }
   }, [name, setFieldData, formContext.formName]);
@@ -143,7 +151,8 @@ export const useField = ({
             null
           )
         : null;
-    if (Boolean(value)) {
+    //console.log("field", value, defaultValueForArrayField, currentfield);
+    if (typeof value === "boolean" || Boolean(value)) {
       defaultValue = { value: value };
     } else if (Boolean(defaultValueForArrayField)) {
       defaultValue = { value: defaultValueForArrayField };
@@ -180,7 +189,8 @@ export const useField = ({
       yupReachAndValidate(formContext.validationSchema, extractedFieldName),
       validate,
       postValidationSetCrossFieldValues,
-      runPostValidationHookAlways
+      runPostValidationHookAlways,
+      authState
     );
     if (typeof wrappedValidation === "function") {
       isValidationFnRef.current = true;
@@ -336,11 +346,20 @@ export const useField = ({
           fields = fieldsLoadable.contents;
         }
         for (const field of Object.entries(fieldsObj)) {
+          // Enhancement for ArrayField: Set value for formField that exist outside the array.
+          let _key = key;
           if (
-            fields.indexOf(`${formContext.formName}/${key}${field[0]}`) >= 0
+            fields.indexOf(`${formContext.formName}/${key}${field[0]}`) ===
+              -1 &&
+            fields.indexOf(`${formContext.formName}/${field[0]}`) >= 0
+          ) {
+            _key = "";
+          }
+          if (
+            fields.indexOf(`${formContext.formName}/${_key}${field[0]}`) >= 0
           ) {
             let result = snapshot.getLoadable(
-              formFieldAtom(`${formContext.formName}/${key}${field[0]}`)
+              formFieldAtom(`${formContext.formName}/${_key}${field[0]}`)
             );
             //we can skip update from cross field if the field is readOnly to prevent value overridden
             if (result.state === "hasValue") {
@@ -352,8 +371,9 @@ export const useField = ({
                 continue;
               }
             }
+            // Updates the formField state.
             set(
-              formFieldAtom(`${formContext.formName}/${key}${field[0]}`),
+              formFieldAtom(`${formContext.formName}/${_key}${field[0]}`),
               (old) => ({
                 ...old,
                 incomingMessage: { ...old.incomingMessage, ...field[1] },
@@ -364,6 +384,47 @@ export const useField = ({
       },
     [formContext.formName]
   );
+
+  // const passCrossFieldMessage = useRecoilCallback(
+  //   ({ snapshot, set }) =>
+  //     (fieldsObj: InitialValuesType) => {
+  //       const key = getFieldKeyForArray(fieldKey);
+  //       const fieldsLoadable = snapshot.getLoadable(
+  //         formFieldRegistryAtom(formContext.formName)
+  //       );
+  //       let fields: FormFieldRegistryAtomType = [];
+  //       if (fieldsLoadable.state === "hasValue") {
+  //         fields = fieldsLoadable.contents;
+  //       }
+  //       for (const field of Object.entries(fieldsObj)) {
+  //         if (
+  //           fields.indexOf(`${formContext.formName}/${key}${field[0]}`) >= 0
+  //         ) {
+  //           let result = snapshot.getLoadable(
+  //             formFieldAtom(`${formContext.formName}/${key}${field[0]}`)
+  //           );
+  //           //we can skip update from cross field if the field is readOnly to prevent value overridden
+  //           if (result.state === "hasValue") {
+  //             let field = result.contents;
+  //             if (
+  //               field.readOnly &&
+  //               field.skipValueUpdateFromCrossFieldWhenReadOnly
+  //             ) {
+  //               continue;
+  //             }
+  //           }
+  //           set(
+  //             formFieldAtom(`${formContext.formName}/${key}${field[0]}`),
+  //             (old) => ({
+  //               ...old,
+  //               incomingMessage: { ...old.incomingMessage, ...field[1] },
+  //             })
+  //           );
+  //         }
+  //       }
+  //     },
+  //   [formContext.formName]
+  // );
 
   /**
    * Start of field Validation Logic
@@ -454,7 +515,7 @@ export const useField = ({
             if (err instanceof Error) {
               finalResult = err.message;
             } else {
-              finalResult = "unkown error type check console";
+              finalResult = err.error_msg ?? "unkown error type check console";
               console.log("unknown error type", err);
             }
             if (!Boolean(touchAndValidate)) {
@@ -651,6 +712,14 @@ export const useField = ({
               )
             : displayValue;
         }
+        if (typeof val === "string" && Boolean(txtTransform)) {
+          val =
+            txtTransform === "uppercase"
+              ? val.toUpperCase()
+              : txtTransform === "lowercase"
+              ? val.toLowerCase()
+              : val;
+        }
         setValue(val, displayVal);
         if (
           isValidationFnRef.current &&
@@ -674,7 +743,11 @@ export const useField = ({
         (whenToRunValidation.current === "onBlur" ||
           whenToRunValidation.current === "all")
       ) {
-        runValidation({ touched: true });
+        runValidation(
+          { touched: true },
+          AlwaysRunPostValidationSetCrossFieldValues?.alwaysRun,
+          AlwaysRunPostValidationSetCrossFieldValues?.touchAndValidate
+        );
       }
     }
   }, [setTouched, runValidation, formContext.validationRun]);
@@ -700,6 +773,8 @@ export const useField = ({
     runValidation,
     dependentValues: dependentFieldsState,
     handleOptionValueExtraData,
+    validationAPIResult: t(fieldData?.validationAPIResult ?? ""),
+    error: t(fieldData?.error ?? ""),
   };
 };
 
@@ -760,7 +835,8 @@ function wrapValidationMethod(
   schemaValidation?: typeof SchemaValidateFnType,
   validationFn?: typeof ValidateFnType,
   postValidationSetCrossFieldValuesFn?: typeof PostValidationSetCrossFieldValuesFnType,
-  runPostValidationHookAlways?: boolean
+  runPostValidationHookAlways?: boolean,
+  authState?: any
 ) {
   if (
     typeof schemaValidation !== "function" &&
@@ -805,7 +881,9 @@ function wrapValidationMethod(
       if (typeof postValidationSetCrossFieldValuesFn === "function") {
         crossFieldMessages = await postValidationSetCrossFieldValuesFn(
           field,
-          formState
+          formState,
+          authState,
+          dependentFieldsState
         );
         if (
           crossFieldMessages === null ||
@@ -831,7 +909,9 @@ function wrapValidationMethod(
       if (typeof postValidationSetCrossFieldValuesFn === "function") {
         crossFieldMessages = await postValidationSetCrossFieldValuesFn(
           field,
-          formState
+          formState,
+          authState,
+          dependentFieldsState
         );
         if (
           crossFieldMessages === null ||

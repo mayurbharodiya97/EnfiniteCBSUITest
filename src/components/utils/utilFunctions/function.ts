@@ -118,7 +118,7 @@ export const GetAllChieldMenuData = (
         newNavItems.push(...newChildren);
       } else {
         if (
-          (!isCheckUserCode || Boolean(newItem.user_code)) &&
+          (!isCheckUserCode || Boolean(newItem.system_code)) &&
           Boolean(newItem.href)
         ) {
           newNavItems.push({ ...newItem });
@@ -185,7 +185,7 @@ export const transformDetailsData = (newData, oldData) => {
   return { _UPDATEDCOLUMNS: _UPDATEDCOLUMNS, _OLDROWVALUE: _OLDROWVALUE };
 };
 
-const isValidDate = (dat) => {
+export const isValidDate = (dat) => {
   try {
     let dt: any = new Date(dat);
     //console.log(dat, dt, !isNaN(dt), isNaN(dat));
@@ -199,4 +199,120 @@ const isValidDate = (dat) => {
     console.log(error);
     return false;
   }
+};
+
+export const blobToFile = (theBlob: Blob, fileName: string): File => {
+  var b: any = theBlob;
+  //A Blob() is almost a File() - it's just missing the two properties below which we will add
+  b.lastModifiedDate = new Date();
+  b.name = fileName;
+
+  //Cast to a File() type
+  return <File>theBlob;
+};
+
+export const getMetadataLabelFromColumnName = (metadata, colomnList) => {
+  if (
+    !Boolean(metadata) ||
+    !Boolean(colomnList) ||
+    !Array.isArray(colomnList)
+  ) {
+    return {};
+  }
+  let outData = {};
+  for (const item of metadata?.fields ?? []) {
+    if (colomnList.includes(item.name)) {
+      outData[item.name] = item.label;
+    }
+  }
+  return outData;
+};
+const getKey = (item, keys) => {
+  return keys.map((key) => item[key]).join("_");
+};
+
+const areObjectsEqual = (obj1, obj2, keys) => {
+  return keys.every((key) => obj1[key] === obj2[key]);
+};
+
+const getChangedColumns = (obj1, obj2, keys) => {
+  return keys.filter((key) => {
+    if (obj1[key] !== obj2[key]) {
+      if (
+        (typeof obj2[key] === "object" ||
+          typeof obj1[key] === "object" ||
+          typeof obj2[key] === "string") &&
+        isValidDate(obj2[key]) &&
+        isValidDate(obj1[key]) &&
+        format(new Date(obj2[key]), "dd/MM/yyyy HH:mm:ss") ===
+          format(new Date(obj1[key]), "dd/MM/yyyy HH:mm:ss")
+      ) {
+      } else {
+        return key;
+      }
+    }
+  });
+};
+
+export const transformDetailDataForDML = (input1, input2, keysToCompare) => {
+  const output: {
+    isNewRow: any[];
+    isUpdatedRow: any[];
+    isDeleteRow: any[];
+  } = {
+    isNewRow: [],
+    isUpdatedRow: [],
+    isDeleteRow: [],
+  };
+
+  const idMapInput1: any = new Map(
+    input1.map((item) => [getKey(item, keysToCompare), item])
+  );
+  const idMapInput2: any = new Map(
+    input2.map((item) => [getKey(item, keysToCompare), item])
+  );
+
+  // Process INSERT and UPDATE operations
+  for (const [id, item2] of idMapInput2) {
+    const item1 = idMapInput1.get(id);
+
+    if (!item1) {
+      output.isNewRow.push(item2);
+    } else if (areObjectsEqual(item1, item2, keysToCompare)) {
+      const changedColumns = getChangedColumns(
+        item1,
+        item2,
+        Object.keys(item2)
+      );
+
+      if (changedColumns.length > 0) {
+        const oldValues = {};
+        for (const key of changedColumns) {
+          if (key in item1) {
+            oldValues[key] = item1[key];
+          }
+        }
+        const updateObj = {
+          ...item2,
+          _OLDROWVALUE: oldValues,
+          _UPDATEDCOLUMNS: changedColumns,
+        };
+
+        output.isUpdatedRow.push(updateObj);
+      }
+    }
+  }
+
+  // Process DELETE operation
+  for (const [id, item1] of idMapInput1) {
+    if (!idMapInput2.has(id)) {
+      output.isDeleteRow.push(item1);
+    }
+  }
+  return output;
+};
+export const getPadAccountNumber = (accountNo, optionData) => {
+  return accountNo
+    ?.padStart(optionData?.PADDING_NUMBER ?? 6, "0")
+    .padEnd(20, " ");
 };

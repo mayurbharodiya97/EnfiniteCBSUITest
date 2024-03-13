@@ -4,6 +4,10 @@ import { GradientButton } from "components/styledComponent/button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
+import { Container } from "@mui/material";
+import { Grid } from "@mui/material";
+import { useTranslation } from "react-i18next";
+// import { Language_App } from "pages_audit/appBar/language";
 export const UsernamePasswordField = ({
   classes,
   loginState,
@@ -11,6 +15,7 @@ export const UsernamePasswordField = ({
 }) => {
   const [input, setInput] = useState({ userName: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const { t } = useTranslation();
 
   const handleChange = (event) => {
     const name = event.target.name;
@@ -21,6 +26,7 @@ export const UsernamePasswordField = ({
     if (name === "password" && value) {
       loginState.isPasswordError = false;
     }
+
     setInput((values) => ({ ...values, [name]: value }));
   };
   const inputRef = useRef<any>(null);
@@ -45,107 +51,176 @@ export const UsernamePasswordField = ({
       }, 1500);
     }
   }, [loginState.otpmodelClose]);
+
   return (
     <Fragment>
-      <div className="text">Login with your userID and Password</div>
-      <div className={classes.formWrap}>
-        <TextField
-          autoFocus={true}
-          label={"Username"}
-          placeholder="Enter Username"
-          fullWidth
-          type={"text"}
-          name="userName"
-          value={input.userName || ""}
-          onChange={handleChange}
-          error={loginState.isUsernameError}
-          helperText={
-            loginState.isUsernameError ? loginState.userMessageforusername : ""
-          }
-          InputLabelProps={{ shrink: true }}
-          disabled={loginState.loading}
-          autoComplete="off"
-          ref={inputRef}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              inputButtonRef?.current?.click?.();
-            }
-          }}
-          inputProps={{ maxLength: "16" }}
-        />
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row-reverse",
-            marginTop: "8px",
-          }}
-        >
-          <TextField
-            key="employee"
-            label="Password"
-            placeholder="Enter Password"
-            InputLabelProps={{
-              shrink: true,
+      <Container maxWidth="xs">
+        <Grid alignItems="center" style={{ paddingTop: "20px" }}>
+          <div
+            style={{
+              color: "#000000 !important",
+              fontSize: "30px",
+              fontWeight: "600",
+              // fontFamily: "Poppins",
+              alignItems: "center",
+              fontStyle: "normal",
+              lineHeight: "150%",
             }}
-            fullWidth
-            type={showPassword ? "text" : "password"}
-            name="password"
-            value={input.password}
-            onChange={handleChange}
-            error={loginState.isPasswordError}
-            helperText={
-              loginState.isPasswordError
-                ? loginState.userMessageforpassword
-                : ""
-            }
-            disabled={loginState.loading}
-            ref={inputPassRef}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                inputButtonRef?.current?.click?.();
-              }
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={() => setShowPassword((old) => !old)}
-                    onMouseDown={(e) => e.preventDefault()}
-                    disabled={loginState.loading}
-                  >
-                    {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            inputProps={{ maxLength: "16" }}
-          />
-        </div>
-        <div style={{ marginTop: "20px", display: "flex" }}>
-          {/* <div style={{ flex: "auto" }}>
-            <a href="forgotpassword">Forgot Password</a>
-          </div> */}
-
-          <div style={{ flex: "auto", textAlign: "end" }}>
-            <GradientButton
-              disabled={loginState.loading}
-              endIcon={
-                loginState.loading ? <CircularProgress size={20} /> : null
-              }
-              onClick={() =>
-                verifyUsernamePassword(
-                  (input.userName || "").toLowerCase(),
-                  input.password
-                )
-              }
-              ref={inputButtonRef}
-            >
-              Login
-            </GradientButton>
+          >
+            <h3>{t("SignIn")}</h3>
           </div>
-        </div>
-      </div>
+          <div
+            className=""
+            style={{
+              color: "#949597",
+              fontSize: "16px",
+              fontWeight: "400",
+              // fontFamily: "Poppins",
+              alignItems: "center",
+              fontStyle: "normal",
+
+              width: "360px",
+            }}
+          >
+            {t("SignInWithUserIDandPassword")}
+          </div>
+          <div className={classes.formWrap}>
+            <TextField
+              // variant="filled"
+              // color="secondary"
+              autoFocus={true}
+              label={t("UserID")}
+              // placeholder="User ID"
+              placeholder={String(t("UserID"))}
+              style={{
+                marginTop: "10px",
+                marginBottom: "17px",
+              }}
+              fullWidth
+              type={"text"}
+              name="userName"
+              value={input.userName || ""}
+              onChange={handleChange}
+              error={loginState.isUsernameError}
+              helperText={
+                loginState.isUsernameError
+                  ? loginState.userMessageforusername
+                  : ""
+              }
+              InputLabelProps={{ shrink: true }}
+              disabled={loginState.loading}
+              autoComplete="off"
+              ref={inputRef}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  inputButtonRef?.current?.click?.();
+                }
+              }}
+              inputProps={{
+                maxLength: "16",
+              }}
+            />
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row-reverse",
+                marginTop: "8px",
+              }}
+            >
+              <TextField
+                key="employee"
+                label={t("Password")}
+                // variant="filled"
+                // color="secondary"
+
+                placeholder={String(t("EnterPassword"))}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={input.password}
+                onChange={handleChange}
+                error={loginState.isPasswordError}
+                helperText={
+                  loginState.isPasswordError
+                    ? loginState.userMessageforpassword
+                    : ""
+                }
+                disabled={loginState.loading}
+                ref={inputPassRef}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    inputButtonRef?.current?.click?.();
+                  }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => setShowPassword((old) => !old)}
+                        onMouseDown={(e) => e.preventDefault()}
+                        disabled={loginState.loading}
+                      >
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                inputProps={{ maxLength: "16" }}
+              />
+            </div>
+            <div style={{ marginTop: "20px", display: "flex" }}>
+              <div style={{ flex: "auto", textAlign: "end" }}>
+                <a href="forgotpassword" style={{color:"var(--theme-color3)"}}>{t("ForgotPassword")}</a>
+              </div>
+            </div>
+            <div style={{ marginTop: "20px", display: "flex" }}>
+              <div
+                style={{
+                  flex: "auto",
+                  textAlign: "center",
+                  marginTop: "5px",
+                  marginBottom: "17px",
+                }}
+              >
+                <GradientButton
+                  style={{
+                    borderRadius: loginState.loading ? "50%" : "10px",
+                    height: loginState.loading ? "40px" : "100%",
+                    width: loginState.loading ? "0px" : "100%",
+                    minWidth: loginState.loading ? "40px" : "80px",
+                  }}
+                  fullWidth
+                  disabled={loginState.loading}
+                  onClick={() =>
+                    verifyUsernamePassword(
+                      (input.userName || "").toLowerCase(),
+                      input.password
+                    )
+                  }
+                  ref={inputButtonRef}
+                  endicon={loginState.loading ? null : "East"}
+                  rotateIcon="scale(1.4) rotateX(360deg)"
+                >
+                  {loginState.loading ? (
+                    <CircularProgress size={25} thickness={4.6} />
+                  ) : (
+                    t("Next")
+                  )}
+                </GradientButton>
+              </div>
+            </div>
+          </div>
+        </Grid>
+      </Container>
     </Fragment>
   );
 };

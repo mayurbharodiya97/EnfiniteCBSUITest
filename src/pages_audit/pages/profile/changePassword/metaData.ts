@@ -33,16 +33,16 @@ export const PasswordChangeMetaData = {
       name: "currentPassword",
       sequence: 1,
       type: "text",
-      label: "Current Password",
-      placeholder: "Current Password",
-      GridProps: { xs: 12, md: 12, sm: 12 },
+      label: "CurrentPassword",
+      placeholder: "CurrentPassword",
+      GridProps: { xs: 12, md: 12, sm: 12, xl: 12, lg: 12 },
       fullWidth: true,
       required: true,
       autoComplete: "off",
       allowToggleVisiblity: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["This is a required field"] }],
+        rules: [{ name: "required", params: ["Thisisarequiredfield"] }],
       },
     },
     {
@@ -50,16 +50,16 @@ export const PasswordChangeMetaData = {
       name: "password",
       sequence: 2,
       type: "password",
-      label: "New Password",
-      placeholder: "New Password",
-      GridProps: { xs: 12, md: 12, sm: 12 },
+      label: "NewPassword",
+      placeholder: "NewPassword",
+      GridProps: { xs: 12, md: 12, sm: 12, xl: 12, lg: 12 },
       fullWidth: true,
       required: true,
       autoComplete: "off",
       allowToggleVisiblity: true,
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["This is a required field"] }],
+        rules: [{ name: "required", params: ["Thisisarequiredfield"] }],
       },
       dependentFields: ["currentPassword"],
       runValidationOnDependentFieldsChange: true,
@@ -68,7 +68,7 @@ export const PasswordChangeMetaData = {
           Boolean(currentField?.value) &&
           currentField?.value === dependentFields?.currentPassword?.value
         ) {
-          return "The new password cannot be the same as the old password";
+          return "newPasswordCantbeSameasOldPassword";
         }
         return utilFunction.ValidatePassword(currentField?.value);
       },
@@ -78,21 +78,21 @@ export const PasswordChangeMetaData = {
       name: "confirmPassword",
       sequence: 3,
       type: "password",
-      label: "Confirm Password",
-      placeholder: "Confirm Password",
-      GridProps: { xs: 12, md: 12, sm: 12 },
+      label: "ConfirmPassword",
+      placeholder: "ConfirmPassword",
+      GridProps: { xs: 12, md: 12, sm: 12, xl: 12, lg: 12 },
       fullWidth: true,
       required: true,
       autoComplete: "off",
       schemaValidation: {
         type: "string",
-        rules: [{ name: "required", params: ["This is a required field"] }],
+        rules: [{ name: "required", params: ["Thisisarequiredfield"] }],
       },
       dependentFields: ["password"],
       runValidationOnDependentFieldsChange: true,
       validate: (currentField, dependentFields) => {
         if (currentField?.value !== dependentFields?.password?.value) {
-          return "New Password and Confirm Password did not matched";
+          return "NewPasswordandConfirmPassworddidnotmatched";
         } else {
           return "";
         }

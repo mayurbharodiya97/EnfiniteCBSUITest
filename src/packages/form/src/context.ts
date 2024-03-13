@@ -8,5 +8,6 @@ export const FormContext = createContext<FormContextType>({
   initialValues: {},
   formState: {},
   defaultArrayFieldValues: {},
+  onFormButtonCicular: false,
 });
 FormContext.displayName = "FormContext";

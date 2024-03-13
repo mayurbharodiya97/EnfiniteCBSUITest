@@ -4,7 +4,6 @@ import {
   TextField3,
   TextField,
 } from "components/styledComponent";
-import MenuItem from "@material-ui/core/MenuItem";
 import { Checkbox } from "components/styledComponent/checkbox";
 import { OptionsProps, Merge, OptionsFn } from "../types";
 import { getLabelFromValues, useOptionsFetcherSimple } from "../utils";
@@ -12,6 +11,7 @@ import {
   CircularProgress,
   CircularProgressProps,
   InputAdornment,
+  MenuItem,
   MenuItemProps,
   SelectProps,
   TextFieldProps,
@@ -38,6 +38,7 @@ interface MySelectExtendedProps {
   skipDefaultOption?: boolean;
   defaultOptionLabel?: string;
   defaultSpaceAdd?: boolean;
+  enableDefaultOption?: boolean;
 }
 type MySelectProps = Merge<TextFieldProps, MySelectExtendedProps>;
 
@@ -65,6 +66,7 @@ export const SelectRenderOnly: FC<MySelectProps> = ({
   defaultOptionLabel,
   defaultSpaceAdd = false,
   InputLabelProps = {},
+  enableDefaultOption = false,
   ...others
 }) => {
   let TextFieldToRender: any;
@@ -86,7 +88,8 @@ export const SelectRenderOnly: FC<MySelectProps> = ({
     disableCaching,
     optionsProps,
     skipDefaultOption,
-    defaultOptionLabel
+    defaultOptionLabel,
+    enableDefaultOption
   );
   const getLabelFromValuesForOptions = useCallback(
     (values) => getLabelFromValues(_options)(values),
@@ -106,7 +109,7 @@ export const SelectRenderOnly: FC<MySelectProps> = ({
       <MenuItem
         {...MenuItemProps}
         //keep button value to true else keyboard navigation for select will stop working
-        button={true}
+        // button={true}
         key={menuItem.value ?? index}
         value={menuItem.value}
         disabled={menuItem.disabled}
@@ -149,7 +152,8 @@ export const SelectRenderOnly: FC<MySelectProps> = ({
           loading || loadingOptions ? (
             <InputAdornment position="end">
               <CircularProgress
-                color="primary"
+                color="secondary"
+                size={24}
                 variant="indeterminate"
                 {...CircularProgressProps}
               />

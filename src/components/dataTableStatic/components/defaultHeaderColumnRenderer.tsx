@@ -55,7 +55,7 @@ export const DefaultHeaderColumnRenderer = ({
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               display: "flex",
-              color: "#0063a3",
+              color: "var(--theme-color3)",
               fontSize: "1 rem",
               fontWeight: "600",
               opacity: isDragging || isOver ? 0.5 : 1,
@@ -70,6 +70,7 @@ export const DefaultHeaderColumnRenderer = ({
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             paddingRight: "10px",
+            paddingLeft: "10px",
           }}
         >
           {column.columnName}

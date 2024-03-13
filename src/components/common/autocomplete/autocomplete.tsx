@@ -10,25 +10,30 @@ import {
   Suspense,
   useCallback,
 } from "react";
-import { Chip, TextFieldProps, ChipProps } from "@material-ui/core";
+
 import { Checkbox } from "components/styledComponent/checkbox";
 import { TextField } from "components/styledComponent/textfield";
 import { useField, UseFieldHookProps } from "packages/form";
 import { Merge, OptionsProps, dependentOptionsFn } from "../types";
+
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { useOptionsFetcher } from "../utils";
-import Autocomplete, {
-  AutocompleteProps,
-} from "@material-ui/lab/Autocomplete/Autocomplete";
+import { getSelectedOptionData, useOptionsFetcher } from "../utils";
+import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 import {
+  Chip,
+  ChipProps,
   CircularProgress,
   CircularProgressProps,
   createFilterOptions,
   CreateFilterOptionsConfig,
   Grid,
   GridProps,
+  TextFieldProps,
+  Theme,
+  Tooltip,
 } from "@mui/material";
+import { makeStyles, withStyles } from "@mui/styles";
 
 const ListBoxComponentVirtualized = lazy(() =>
   import("./virtualized").then((module) => ({
@@ -37,6 +42,17 @@ const ListBoxComponentVirtualized = lazy(() =>
 );
 //will use it if there is a neeed for advance sorter
 //import matchSorter from "match-sorter";
+
+export const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    "& .MuiInputBase-root.MuiAutocomplete-inputRoot": {
+      paddingRight: "0 !important",
+    },
+    "& .MuiInputBase-root > .MuiAutocomplete-endAdornment": {
+      display: "none",
+    },
+  },
+}));
 
 interface AutoCompleteExtendedProps {
   enableGrid: boolean;
@@ -53,6 +69,8 @@ interface AutoCompleteExtendedProps {
   enableVirtualized?: boolean;
   _optionsKey?: string;
   disableCaching?: boolean;
+  requestProps?: any;
+  disableAdornment?: boolean;
 }
 
 type MyAutocompleteProps = Merge<
@@ -102,6 +120,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   isFieldFocused,
   _optionsKey,
   disableCaching,
+  requestProps,
+  disableAdornment,
   ...others
 }) => {
   const {
@@ -116,11 +136,14 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     fieldKey,
     name,
     dependentValues,
+    readOnly,
     excluded,
     incomingMessage,
     whenToRunValidation,
     value,
     setIncomingMessage,
+    handleOptionValueExtraData,
+    setErrorAsCB,
   } = useField({
     name: fieldName,
     fieldKey: fieldID,
@@ -135,6 +158,8 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     skipValueUpdateFromCrossFieldWhenReadOnly,
   });
   const focusRef = useRef();
+  const classes = useStyles();
+  const indexRef = useRef<number>(-1);
   const optionsMapperRef = useRef(new Map());
   /* eslint-disable  react-hooks/exhaustive-deps */
   const myGetOptionLabel = useCallback(getOptionLabel(freeSolo), []);
@@ -150,7 +175,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     let newValues = values.map((one) => {
       return optionsMapperRef.current.has(`${one}`)
         ? optionsMapperRef.current.get(`${one}`)
-        : { label: "", value: one };
+        : { label: one, value: one };
     });
     return newValues;
   }, []);
@@ -165,6 +190,14 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   }, [isFieldFocused]);
 
   const [_options, setOptions] = useState<OptionsProps[]>([]);
+
+  const getExtraOptionData = useCallback(
+    (values) => {
+      return getSelectedOptionData(_options)(values);
+    },
+    [_options]
+  );
+
   /* eslint-disable array-callback-return */
   const setOptionsWrapper = useCallback(
     (value) => {
@@ -196,6 +229,42 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     },
     [setOptions, myGetOptionLabel, myGetOptionValue]
   );
+  const handleBlurInterceptor = useCallback(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+    handleBlur();
+  }, [handleBlur, getExtraOptionData, handleOptionValueExtraData, value]);
+  const handleChangeCustom = (_, value) => {
+    if (!value) indexRef.current = -1;
+    if (!Array.isArray(value)) {
+      value = [value];
+    }
+    if (freeSolo) {
+      //@ts-ignore
+      value = value.map((one) => myGetOptionLabel(one) ?? "");
+    } else {
+      //@ts-ignore
+      value = value.map((one) => myGetOptionValue(one) ?? "");
+    }
+    if (!Boolean(multiple) && Array.isArray(value)) {
+      //@ts-ignore
+      handleChange(value[0]);
+    } else {
+      handleChange(value);
+    }
+  };
+
+  const handleKeyDown = useCallback(
+    (e: any) => {
+      if (e.key.toLowerCase() === "backspace") indexRef.current = -1;
+      if (e.key.toLowerCase() === "tab") {
+        if (indexRef.current !== -1 && _options[indexRef.current]) {
+          handleChangeCustom(e, _options[indexRef.current]);
+        }
+      }
+    },
+    [myGetOptionLabel, _options, handleChangeCustom, indexRef.current]
+  );
 
   // const [lastUpdatedTime, setLastUpdatedTime] = useState(new Date().getTime());
   // const initDoneRef = useRef(false);
@@ -211,12 +280,28 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     whenToRunValidation,
     _optionsKey,
     disableCaching,
+    requestProps,
     setIncomingMessage,
     true,
     "",
     false
   );
 
+  useEffect(() => {
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
+  }, [loadingOptions, getExtraOptionData, handleOptionValueExtraData]);
+
+  useEffect(() => {
+    if (incomingMessage !== null && typeof incomingMessage === "object") {
+      const { error, isErrorBlank } = incomingMessage;
+      if (isErrorBlank) {
+        setErrorAsCB("");
+      } else if (Boolean(error)) {
+        setErrorAsCB(error);
+      }
+    }
+  }, [incomingMessage, setErrorAsCB]);
   //dont move it to top it can mess up with hooks calling mechanism, if there is another
   //hook added move this below all hook calls
   if (excluded) {
@@ -227,14 +312,20 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     <Suspense fallback={"loading..."}>
       <Autocomplete
         {...others}
+        className={disableAdornment ? classes.root : ""}
         key={fieldKey}
         //@ts-ignore
         defaultValue={[]}
+        classes={{
+          paper: others?.classes?.paper,
+        }}
         limitTags={limitTags ?? 2}
         multiple={multiple}
         disableClearable={disableClearable}
         options={_options}
         freeSolo={freeSolo}
+        autoHighlight
+        // autoSelect
         //@ts-ignore
         getOptionLabel={myGetOptionLabel}
         value={
@@ -244,7 +335,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             ? transformValues(value, freeSolo)
             : transformValues(value, freeSolo)[0]
         }
-        getOptionSelected={(option, value) => {
+        isOptionEqualToValue={(option, value) => {
           if (freeSolo) {
             if (option === value) {
               return true;
@@ -264,27 +355,56 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               >)
             : undefined
         }
-        onChange={(_, value) => {
-          //condition for freeSolo functionality with multiple values
-          if (!Array.isArray(value)) {
-            value = [value];
-          }
-          if (freeSolo) {
-            //@ts-ignore
-            value = value.map((one) => myGetOptionLabel(one) ?? "");
-          } else {
-            //@ts-ignore
-            value = value.map((one) => myGetOptionValue(one) ?? "");
-          }
-          if (!Boolean(multiple) && Array.isArray(value)) {
-            //@ts-ignore
-            handleChange(value[0]);
-          } else {
-            handleChange(value);
-          }
+        PaperComponent={({ children }) => {
+          return (
+            <div
+              // style={paperStyles}
+              style={{
+                width: "fit-content",
+                background: "white",
+                boxShadow:
+                  "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
+                overflow: "hidden",
+                maxWidth: "300px",
+              }}
+            >
+              {children}
+            </div>
+          );
         }}
-        onBlur={handleBlur}
-        disabled={isSubmitting}
+        onKeyDown={handleKeyDown}
+        onChange={handleChangeCustom}
+        openOnFocus
+        onHighlightChange={(e, option: any) => {
+          indexRef.current = _options.indexOf(option);
+        }}
+        //onChange={(_, value) => {
+        //   //condition for freeSolo functionality with multiple values
+        //   if (!Array.isArray(value)) {
+        //     value = [value];
+        //   }
+        //   if (freeSolo) {
+        //     //@ts-ignore
+        //     value = value.map((one) => myGetOptionLabel(one) ?? "");
+        //   } else {
+        //     //@ts-ignore
+        //     value = value.map((one) => myGetOptionValue(one) ?? "");
+        //   }
+        //   if (!Boolean(multiple) && Array.isArray(value)) {
+        //     //@ts-ignore
+        //     handleChange(value[0]);
+        //   } else {
+        //     handleChange(value);
+        //   }
+        //   //set option data
+        //   const extraOptionData = getExtraOptionData(value);
+        //   handleOptionValueExtraData(extraOptionData);
+        // }}
+        // onBlur={handleBlur}
+        onBlur={handleBlurInterceptor}
+        //change by parag  , disabled
+        // disabled={isSubmitting}
+        disabled={isSubmitting || readOnly}
         filterOptions={
           Boolean(CreateFilterOptionsConfig) &&
           typeof CreateFilterOptionsConfig === "object"
@@ -296,21 +416,21 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             if (typeof option === "string") {
               return (
                 <Chip
-                  key={option}
                   variant="outlined"
                   {...ChipProps}
                   label={option}
                   {...getTagProps({ index })}
+                  key={option}
                 />
               );
             }
             return (
               <Chip
-                key={`${option.label}-${index}`}
                 variant="outlined"
                 {...ChipProps}
                 label={option.label}
                 {...getTagProps({ index })}
+                key={`${option.label}-${index}`}
               />
             );
           });
@@ -329,31 +449,59 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
               required={required}
               helperText={!isSubmitting && isError ? error : null}
               InputProps={{
+                style: {
+                  background: Boolean(readOnly) ? "var(--theme-color7)" : "",
+                },
+
                 ...params.InputProps,
                 endAdornment: (
                   <Fragment>
                     {validationRunning || loadingOptions ? (
                       <CircularProgress
-                        color="primary"
+                        sx={{
+                          position: "absolute",
+                          right: disableAdornment ? "0.5rem" : "1.5rem",
+                        }}
+                        size={25}
+                        color="secondary"
                         variant="indeterminate"
                         {...CircularProgressProps}
                       />
-                    ) : null}
-                    {params.InputProps.endAdornment}
+                    ) : (
+                      params.InputProps.endAdornment
+                    )}
                   </Fragment>
                 ),
               }}
+              inputRef={focusRef}
+              // InputProps={{
+              //   ...params.InputProps,
+              //   endAdornment:
+              //     validationRunning || loadingOptions ? (
+              //       <InputAdornment position="end">
+              //         <CircularProgress
+              //           color="secondary"
+              //           variant="indeterminate"
+              //           size={24}
+              //           {...CircularProgressProps}
+              //         />
+              //       </InputAdornment>
+              //     ) : null,
+              // }}
               InputLabelProps={{
                 shrink: true,
               }}
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-user-street-address",
-              }}
+
+              // inputProps={{
+              //   ...params.inputProps,
+              //   autoComplete: "new-user-street-address",
+              // }}
             />
           );
         }}
-        renderOption={(option, { selected, inputValue }) => {
+        renderOption={(props, option, other) => {
+          props["key"] = props["id"];
+          let { selected, inputValue } = other;
           let label = myGetOptionLabel(option);
           const matches = match(label, inputValue);
           const parts = parse(label, matches);
@@ -366,10 +514,30 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
             </span>
           ));
           return (
-            <div style={{ whiteSpace: "pre" }}>
-              {showCheckbox ? <Checkbox checked={selected} /> : null}
-              {labelJSX}
-            </div>
+            // <div
+            //   style={{ whiteSpace: "pre" }}
+            //   className={props?.className}
+            //   onClick={props.onClick}
+            //   onMouseMove={props.onMouseMove}
+            //   onTouchStart={props.onTouchStart}
+            // >
+            //   {showCheckbox ? <Checkbox checked={selected} /> : null}
+            //   {labelJSX}
+            // </div>
+            //@ts-ignore
+            <Tooltip title={label}>
+              <li
+                style={{
+                  whiteSpace: "pre",
+                  width: "max-content",
+                  minWidth: "100%",
+                }}
+                {...props}
+              >
+                {showCheckbox ? <Checkbox checked={selected} /> : null}
+                {labelJSX}
+              </li>
+            </Tooltip>
           );
         }}
       />

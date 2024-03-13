@@ -5,10 +5,12 @@ import { useSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
 import { PasswordChangeMetaData } from "./metaData";
 import * as API from "../api";
-import { CircularProgress, Dialog } from "@mui/material";
-import { Transition } from "pages_audit/common";
+import { Box, CircularProgress, Dialog } from "@mui/material";
 import { GradientButton } from "components/styledComponent/button";
 import { DialogActions } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import SyncLockIcon from "@mui/icons-material/SyncLock";
 
 interface UpdatePasswordFnType {
   data: object;
@@ -27,7 +29,11 @@ export const ChangePassword = ({ onClose, showProfile }) => {
   const { enqueueSnackbar } = useSnackbar();
   const authCtx = useContext(AuthContext);
   const formRef = useRef<any>(null);
-
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const handleNavigate = () => {
+    navigate("/cbsenfinity/login");
+  };
   const onSubmitHandler = (data, displayData, endSubmit) => {
     mutation.mutate({
       data,
@@ -46,26 +52,23 @@ export const ChangePassword = ({ onClose, showProfile }) => {
           errorMsg = error?.error_msg ?? errorMsg;
         }
         endSubmit(false, errorMsg, error?.error_detail ?? "");
+        enqueueSnackbar(errorMsg, {
+          variant: "error",
+        });
       },
       onSuccess: (data, { endSubmit }) => {
         endSubmit(true, "");
         enqueueSnackbar("Password changed successfully", {
           variant: "success",
         });
-        onClose();
+        handleNavigate();
       },
     }
   );
 
   return (
     <Fragment>
-      <Dialog
-        open={showProfile}
-        //@ts-ignore
-        TransitionComponent={Transition}
-        fullWidth={false}
-      >
-        {/* <DialogContent> */}
+      <Box sx={{ width: 370, margin: "auto" }}>
         <FormWrapper
           key="passwordChange"
           metaData={PasswordChangeMetaData as MetaDataType}
@@ -78,25 +81,23 @@ export const ChangePassword = ({ onClose, showProfile }) => {
             height: "auto",
           }}
           ref={formRef}
-          hideHeader={false}
+          hideHeader={true}
           containerstyle={{ padding: "11px" }}
         />
-        {/* </DialogContent> */}
         <DialogActions>
-          <GradientButton disabled={mutation.isLoading} onClick={onClose}>
-            Close
-          </GradientButton>
           <GradientButton
             disabled={mutation.isLoading}
             endIcon={mutation.isLoading ? <CircularProgress size={20} /> : null}
+            starticon={"SyncLock"}
+            rotateIcon={"scale(1.4) rotate(360deg)"}
             onClick={(e) => {
               formRef.current?.handleSubmit?.(e);
             }}
           >
-            Change Password
+            {t("profile.ChangePassword")}
           </GradientButton>
         </DialogActions>
-      </Dialog>
+      </Box>
     </Fragment>
   );
 };

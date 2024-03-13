@@ -41,6 +41,14 @@ export interface GridColumnType {
   isReadOnly?: boolean;
   __EDIT__?: any;
   buttonLabel?: string;
+  currencyRefColumn?: string;
+  dependentOptionField?: string;
+  enableDefaultOption?: boolean;
+  skipDefaultOption?: boolean;
+  isCurrencyCode?: boolean;
+  symbolPosi?: any;
+  shouldExclude?: any;
+  isVisibleInNew?: Boolean;
 }
 
 export interface GridConfigType {
@@ -71,6 +79,8 @@ export interface GridConfigType {
   allowColumnHiding?: boolean;
   isCusrsorFocused?: boolean;
   hiddenFlag?: string;
+  searchPlaceholder?: string;
+  paginationText?: any;
 }
 
 export interface GridMetaDataType {
@@ -98,6 +108,12 @@ export interface GridWrapperPropTypes {
   hideFooter?: boolean;
   autoRefreshInterval?: any;
   onClickActionEvent?: any;
+  controlsAtBottom?: boolean;
+  headerToolbarStyle?: {};
+  onlySingleSelectionAllow?: boolean;
+  isNewRowStyle?: boolean;
+  defaultSelectedRowId?: any;
+  ReportExportButton?:boolean
 }
 
 export interface YupSchemaMetaDataType {

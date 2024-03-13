@@ -8,13 +8,14 @@ export const useStylesBootstrapNav = makeStyles((theme: any) => ({
     backgroundColor: "#fff !important",
     minHeight: "64px",
     boxShadow: "0 3px 6px rgba(0,0,0,0.03)",
+    margin: "10px",
   },
   headerDropdown: {
     backgroundColor: "#fff",
     minWidth: "205px",
     boxShadow: "0 3px 6px rgba(0,0,0,0.16)",
+    textDecoration: "none",
     borderBottom: "3px solid  #26A456",
-    marginTop: "0px",
   },
   navLinkHeader: {
     color: "#555",
@@ -52,89 +53,127 @@ export const useStylesBootstrapNav = makeStyles((theme: any) => ({
 
 export const useStylesSideBar = makeStyles((theme: any) => ({
   root: {
-    justifyContent: "left",
+    justifyContent: "center",
   },
   drawer: {
-    paddingTop: "70px",
-    width: "240px",
+    margin: "5px",
   },
   item: {
     display: "flex",
-    borderBottom: "1px solid #ddd",
+    //borderBottom: "2px solid #93242433",
+    borderRadius: "8px",
+    marginLeft: "7px",
+    marginTop: "6.5px",
+    width: "90%",
+    height: "50px",
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-    background: "var(--theme-color1)",
+    paddingRight: theme.spacing(2),
+    background: "var(--theme-color2)",
+    boxShadow: "3px 6px 9px rgba(93, 95, 121, 0.26)",
     "& svg": {
-      color: theme.palette.primary.main,
+      // color: theme.palette.primary.main,
+      color: "var(--theme-color1)",
     },
+    "&:hover": {
+      boxShadow:
+        "6px 6px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 0px 0px rgba(0,0,5,0.12)",
+      background: "var(--theme-color4)",
+      transition: "0.6s ease",
+    },
+  },
+  drawerIconSize: {
+    width: "50px",
+    height: "50px",
+    padding: "18px",
+    justifyItems: "cenetr",
   },
   button: {
     color: "#0063A3",
     padding: "10px 8px",
-    justifyContent: "flex-start",
+    //justifyContent: "flex-start",
     textTransform: "none",
     letterSpacing: 0,
     width: "100%",
     textAlign: "left",
+    "&:hover": {
+      backgroundColor: "var(--theme-color1)",
+      // boxShadow: "0px 15px 20px rgb(221 176 176 / 37%)",
+    },
   },
   btnRoot: {
     paddingLeft: "24px",
     justifyContent: "left ",
   },
   navLinks: {
-    height: "calc(100vh - 71px)",
+    height: "calc(100vh - 78px)",
     overflowY: "auto",
     overflowX: "hidden",
-    background: "var(--theme-color1)",
+    // height:"100px",
+    backgroundColor: "rgba(250, 251, 255, 0.9);",
+    // height: "calc(100vh - 230px)",
+    //background: "var(--theme-color1)",
+    // marginTop: "25px",
+    // boxShadow: "0 3px 6px rgba(255, 99, 71, 0.3)",
+    borderRadius: "10px",
+    paddingTop: "5px",
+    //margin: "5px",
   },
   navLinksforseparateView: {
-    height: "calc(100vh - 150px)",
     overflowY: "auto",
     overflowX: "hidden",
-    background: "var(--theme-color1)",
+    height: "calc(100vh - 160px)",
+    // height:"auto",
+    paddingTop: "10px",
   },
   nestedMenuLevel1: {
     paddingLeft: "20px",
     paddingRight: theme.spacing(3),
+    height: "auto",
     fontSize: "13px",
     "& div > svg": {
       fontSize: "14px",
     },
   },
   nestedMenuLevel2: {
-    paddingLeft: "24px",
+    paddingLeft: "20px",
     fontSize: "12px",
     "& div > svg": {
       fontSize: "9px",
     },
   },
   listIcon: {
-    minWidth: "32px !important",
-    color: "white",
+    minWidth: "30px !important",
+    justifyItems: "center",
+    color: "var(--theme-color6)",
     fontWeight: 700,
-    fontSize: "1.25rem",
+    fontSize: "18px",
   },
   link: {
-    color: "white",
     fontSize: "1rem ",
     marginTop: "2px",
     marginBottom: "2px",
     textOverflow: "ellipsis",
+    color: "var(--theme-color1)",
+    marginLeft: "15px",
+    whiteSpace: "break-spaces",
     "& span": {
-      fontWeight: 500,
+      fontWeight: 400,
+      whiteSpace: "break-spaces",
     },
     "& p": {
-      color: "white",
+      color: "var(--theme-color3)",
+      fontweight: 400,
     },
   },
   linktext: {
-    backgroundColor: "var(--theme-color1)",
+    backgroundColor: "var(--theme-color2)",
     "&:hover": {
+      background: "var(--theme-color1)",
       "& div": {
-        color: "var(--theme-color1) !important",
+        color: "var(--theme-color2) !important",
       },
       "& div > svg": {
-        color: "var(--theme-color1) !important",
+        color: "var(--theme-color2) !important",
       },
     },
   },
@@ -152,30 +191,37 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
     },
   },
   openCurrent: {
-    backgroundColor: "rgba(0, 0, 0, 0.04)",
+    backgroundColor: "var(--theme-color1)",
     "&  *": {
       color: "var(--theme-color2)",
     },
+    "&:hover": {
+      backgroundColor: "var(--theme-color1)",
+    },
   },
   slimList: {
-    paddingTop: "4px",
-    paddingBottom: "4px",
+    paddingTop: "15px",
+    paddingBottom: "13px",
+    height: "auto",
+    paddingLeft: "15px",
+    justifyItems: "center",
   },
   activeMenuItem: {
-    backgroundColor: "var(--white)!important", //"var(--theme-color2)!important",
+    backgroundColor: "var(--theme-color1)!important ", //"var(--theme-color2)!important",
+
     "& > div": {
-      color: "var(--theme-color1)",
+      color: "var(--theme-color2)!important",
     },
     "& svg": {
-      color: theme.palette.secondary.main,
+      color: "var(--theme-color4)",
     },
     "& hover": {
       "& > div": {
-        color: "var(--theme-color1)",
+        color: "var(--theme-color3)",
       },
     },
     "& p": {
-      color: "var(--theme-color1)",
+      color: "var(--theme-color6)",
     },
   },
 }));

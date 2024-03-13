@@ -1,20 +1,34 @@
 export interface AuthStateType {
   access_token: any;
   isLoggedIn: any;
+  isBranchSelect: boolean;
   role: string;
   roleName: string;
   access: any;
   companyName: string;
+  workingDate: string;
   companyID: string;
+  baseCompanyID: string;
+  groupName: string;
   menulistdata: any;
   user: {
     branch: string;
     branchCode: string;
+    baseBranchCode: string;
+    isUpdDefBranch: string;
     lastLogin: string;
     name: string;
     //type: string;
     id: string;
+    employeeID: any;
   };
+}
+
+export interface BranchSelectData {
+  menulistdata: any;
+  branch: string;
+  branchCode: string;
+  baseBranchCode: string;
 }
 
 export interface ActionType {
@@ -27,4 +41,11 @@ export interface AuthContextType {
   login: any;
   logout: any;
   isLoggedIn: any;
+  isBranchSelected: any;
+  branchSelect: any;
+  getProfileImage: any;
+  setProfileImage: any;
+  MessageBox: any;
+  closeMessageBox: any;
+  message: any;
 }

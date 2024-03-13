@@ -4,7 +4,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { Fragment, FC, useEffect, useRef } from "react";
+import { Fragment, FC, useEffect, useState } from "react";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import CloseIcon from "@mui/icons-material/Close";
 import { downloadFile } from "./utils";
@@ -14,18 +14,24 @@ export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
   fileName,
   onClose,
 }) => {
-  const urlObj = useRef(
+  const [urlObj, setUrlObj] = useState(
     typeof blob === "object" && Boolean(blob)
       ? URL.createObjectURL(blob as any)
       : null
   );
-  console.log(blob, urlObj.current);
+  //console.log(blob, urlObj);
   useEffect(() => {
-    let toRemoveURL = urlObj.current ?? "";
+    let toRemoveURL = urlObj ?? "";
     return () => {
       URL.revokeObjectURL(toRemoveURL);
+      // console.log("revokeObjectURL", toRemoveURL);
     };
   }, []);
+  useEffect(() => {
+    setUrlObj(typeof blob === "object" && Boolean(blob)
+    ? URL.createObjectURL(blob as any)
+    : null)
+  }, [blob])
   return (
     <Fragment>
       <DialogActions style={{ display: "flex", padding: "8px 24px" }}>
@@ -49,7 +55,7 @@ export const PDFViewer: FC<{ blob: File; fileName: string; onClose?: any }> = ({
       <DialogContent>
         <iframe
           title="Document Preview"
-          src={`${urlObj.current}`}
+          src={`${urlObj}`}
           style={{ height: "100%", width: "100%" }}
           aria-label="PDF Preview"
         />
@@ -63,13 +69,26 @@ export const ImageViewer: FC<{
   fileName: string;
   onClose?: any;
 }> = ({ blob, fileName, onClose }) => {
-  const urlObj = useRef(
-    typeof blob === "object" && Boolean(blob) ? URL.createObjectURL(blob) : ""
+  const [urlObj, setUrlObj] = useState(
+    typeof blob === "object" && Boolean(blob)
+      ? URL.createObjectURL(blob as any)
+      : ""
   );
+  //console.log(blob, urlObj);
   useEffect(() => {
-    let toRemoveURL = urlObj.current;
-    return () => URL.revokeObjectURL(toRemoveURL);
+    let toRemoveURL = urlObj ?? "";
+    return () => {
+      //URL.revokeObjectURL(toRemoveURL);
+      // console.log("revokeObjectURL", toRemoveURL);
+    };
   }, []);
+
+
+  useEffect(() => {
+    setUrlObj(typeof blob === "object" && Boolean(blob)
+      ? URL.createObjectURL(blob as any)
+      : "")
+  }, [blob])
   return (
     <Fragment>
       <DialogActions style={{ display: "flex", padding: "8px 24px" }}>
@@ -91,7 +110,7 @@ export const ImageViewer: FC<{
         ) : null}
       </DialogActions>
       <DialogContent>
-        <img width="60%" src={urlObj.current} alt="Preview of document" />
+        <img width="60%" src={`${urlObj}`} alt="Preview of document" />
       </DialogContent>
     </Fragment>
   );

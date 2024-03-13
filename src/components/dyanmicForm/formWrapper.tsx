@@ -1,4 +1,10 @@
-import { forwardRef, Suspense, useImperativeHandle } from "react";
+import {
+  forwardRef,
+  Suspense,
+  useContext,
+  useImperativeHandle,
+  useState,
+} from "react";
 import { FormContext, useForm } from "packages/form";
 import { cloneDeep } from "lodash-es";
 import { renderFieldsByGroup } from "./utils/groupWiserenderer";
@@ -16,9 +22,13 @@ import { SimpleFormWrapper } from "./simpleForm";
 import { TabsFormWrapper } from "./tabsForm";
 import { extendedMetaData } from "./extendedTypes";
 import { useStyles } from "./style";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-
+//import { LocalizationProvider } from "@mui/lab";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { useTranslation } from "react-i18next";
+import { AuthContext } from "pages_audit/auth";
+import { CustomPropertiesConfigurationContext } from "components/propertiesconfiguration/customPropertiesConfig";
+// import DateFnsUtils from "@date-io/date-fns";
 export const FormWrapper = forwardRef<FormWrapperProps, any>(
   (
     {
@@ -42,13 +52,26 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
       hideHeader = false,
       containerstyle = { padding: "10px" },
       onFormButtonClickHandel = (id) => {},
+      onFormButtonCicular,
+      subHeaderLable,
+      subHeaderLableStyle,
+      setDataOnFieldChange = (action, payload) => {},
     },
     ref
   ) => {
+    const { t } = useTranslation();
     //this line is very important to preserve our metaData across render - deep clone hack
     let metaData = cloneDeep(freshMetaData) as MetaDataType;
     //let metaData = JSON.parse(JSON.stringify(freshMetaData)) as MetaDataType;
-    metaData = extendFieldTypes(metaData, extendedMetaData);
+    const { authState } = useContext(AuthContext);
+    const customParameters = useContext(CustomPropertiesConfigurationContext);
+    metaData = extendFieldTypes(
+      metaData,
+      extendedMetaData,
+      t,
+      authState,
+      customParameters
+    );
     metaData = attachMethodsToMetaData(metaData);
     metaData = MoveSequenceToRender(metaData);
     const groupWiseFields = renderFieldsByGroup(
@@ -61,46 +84,54 @@ export const FormWrapper = forwardRef<FormWrapperProps, any>(
     );
     const yupValidationSchema = constructYupSchema(metaData.fields);
     const formName = metaData.form.name ?? "NO_NAME";
+
     return (
-      <LocalizationProvider utils={AdapterDateFns}>
-        <FormContext.Provider
-          value={{
-            formName: formName,
-            resetFieldOnUnmount: Boolean(metaData.form.resetFieldOnUnmount),
-            validationRun: metaData.form.validationRun,
-            initialValues: initValues,
-            defaultArrayFieldValues: defaultArrayFieldInitValues,
-            validationSchema: yupValidationSchema,
-            formState: {
-              formCode: metaData.form.name,
-              refID: metaData.form.refID,
-              ...metaData.form?.formState,
-              ...formState,
-            },
-          }}
-        >
-          <ChildFormWrapper
-            //@ts-ignore
-            ref={ref}
-            formName={formName}
-            formDisplayLabel={metaData?.form?.label ?? "NO_LABEL"}
-            formRenderType={metaData.form.render.renderType ?? "simple"}
-            formRenderConfig={metaData.form.render}
-            submitFn={onSubmitHandler}
-            hidden={hidden}
-            displayMode={displayMode}
-            groupWiseFields={groupWiseFields}
-            hideTitleBar={hideTitleBar}
-            hideDisplayModeInTitle={hideDisplayModeInTitle}
-            wrapperChild={children}
-            formStyle={formStyle}
-            controlsAtBottom={controlsAtBottom}
-            defaultActiveStep={defaultActiveStep}
-            hideHeader={hideHeader}
-            containerstyle={containerstyle}
-          />
-        </FormContext.Provider>
-      </LocalizationProvider>
+      <>
+        {/* {console.log("LocalizationProvider", AdapterDateFns)} */}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <FormContext.Provider
+            value={{
+              formName: formName,
+              resetFieldOnUnmount: Boolean(metaData.form.resetFieldOnUnmount),
+              validationRun: metaData.form.validationRun,
+              initialValues: initValues,
+              defaultArrayFieldValues: defaultArrayFieldInitValues,
+              validationSchema: yupValidationSchema,
+              formState: {
+                formCode: metaData.form.name,
+                refID: metaData.form.refID,
+                setDataOnFieldChange,
+                ...metaData.form?.formState,
+                ...formState,
+              },
+              onFormButtonCicular: { onFormButtonCicular },
+            }}
+          >
+            <ChildFormWrapper
+              //@ts-ignore
+              ref={ref}
+              formName={formName}
+              formDisplayLabel={t(metaData?.form?.label ?? "NO_LABEL")}
+              formRenderType={metaData.form.render.renderType ?? "simple"}
+              formRenderConfig={metaData.form.render}
+              submitFn={onSubmitHandler}
+              hidden={hidden}
+              displayMode={displayMode}
+              groupWiseFields={groupWiseFields}
+              hideTitleBar={hideTitleBar}
+              hideDisplayModeInTitle={hideDisplayModeInTitle}
+              wrapperChild={children}
+              formStyle={formStyle}
+              controlsAtBottom={controlsAtBottom}
+              defaultActiveStep={defaultActiveStep}
+              hideHeader={hideHeader}
+              containerstyle={containerstyle}
+              subHeaderLable={subHeaderLable}
+              subHeaderLableStyle={subHeaderLableStyle}
+            />
+          </FormContext.Provider>
+        </LocalizationProvider>
+      </>
     );
   }
 );
@@ -124,16 +155,20 @@ const ChildFormWrapper = forwardRef<any, any>(
       defaultActiveStep,
       hideHeader,
       containerstyle = {},
+      subHeaderLable,
+      subHeaderLableStyle,
     },
     ref
   ) => {
     const {
       handleSubmit,
+      handleSubmitError,
       handleSubmitPartial,
       serverSentError,
       serverSentErrorDetail,
       isSubmitting,
       getFieldData,
+      handleReset,
       ...formState
     } = useForm({
       onSubmit: submitFn,
@@ -144,9 +179,12 @@ const ChildFormWrapper = forwardRef<any, any>(
     //and only get form values
     useImperativeHandle(ref, () => ({
       handleSubmit: handleSubmit,
+      handleSubmitError: handleSubmitError,
       formDisplayLabel: formDisplayLabel,
       getFieldData: getFieldData,
+      handleFormReset: handleReset,
     }));
+
     return formRenderType === "stepper" ? (
       <StepperWrapper
         key={`${formName}-grouped-stepper`}
@@ -210,6 +248,8 @@ const ChildFormWrapper = forwardRef<any, any>(
         controlsAtBottom={controlsAtBottom}
         hideHeader={hideHeader}
         containerstyle={containerstyle}
+        subHeaderLable={subHeaderLable}
+        subHeaderLableStyle={subHeaderLableStyle}
       />
     ) : (
       <div>RenderType {formRenderType} not available</div>

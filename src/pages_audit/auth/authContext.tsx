@@ -7,7 +7,12 @@ import {
 } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { queryClient } from "cache";
-import { AuthContextType, AuthStateType, ActionType } from "./type";
+import {
+  AuthContextType,
+  AuthStateType,
+  ActionType,
+  BranchSelectData,
+} from "./type";
 import * as API from "./api";
 import { AuthSDK } from "registry/fns/auth";
 import { RefreshTokenData } from "./api";
@@ -18,18 +23,25 @@ import { LinearProgress } from "@mui/material";
 const inititalState: AuthStateType = {
   access_token: {},
   isLoggedIn: false,
+  isBranchSelect: false,
   role: "",
   roleName: "",
   companyID: "",
+  baseCompanyID: "",
   companyName: "",
+  workingDate: "",
+  groupName: "",
   access: {},
   menulistdata: [],
   user: {
     branch: "",
     branchCode: "",
+    baseBranchCode: "",
+    isUpdDefBranch: "",
     name: "",
     lastLogin: "",
     id: "",
+    employeeID: "",
   },
 };
 
@@ -44,6 +56,13 @@ const authReducer = (
     case "logout": {
       return inititalState;
     }
+    case "branchselect": {
+      return {
+        ...state,
+        isBranchSelect: true,
+        menulistdata: action.payload?.menulistdata,
+      };
+    }
     default: {
       return state;
     }
@@ -56,14 +75,41 @@ export const AuthContext = createContext<AuthContextType>({
   logout: () => true,
   isLoggedIn: () => false,
   authState: inititalState,
+  isBranchSelected: () => false,
+  branchSelect: () => true,
+  getProfileImage: "",
+  setProfileImage: () => false,
+  MessageBox: () => false,
+  closeMessageBox: () => false,
+  message: {
+    isOpen: false,
+    messageTitle: "",
+    message: "",
+    icon: "",
+    buttonNames: "",
+  },
+});
+
+export const AccDetailContext = createContext<any>({
+  setTempStore: () => false,
+  setCardStore: () => false,
 });
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, inititalState);
+  const [tempStore, setTempStore]: any = useState({});
+  const [cardStore, setCardStore]: any = useState({});
+  const [message, setMessageBox]: any = useState({});
   const [authenticating, setAuthenticating] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const [comingFromRoute] = useState(location.pathname);
+  const [comingFromRoute, setComingFromRoute] = useState(location.pathname);
+  const [profileImage, setProfileImagestate] = useState("");
+  const setProfileImage = (imgData) => {
+    if (Boolean(imgData)) {
+      setProfileImagestate(imgData);
+    }
+  };
 
   /*eslint-disable react-hooks/exhaustive-deps*/
   const login = useCallback(
@@ -86,8 +132,43 @@ export const AuthProvider = ({ children }) => {
       if (stopNavigation) {
         return;
       }
-      if (comingFromRoute === "/netbanking/login") {
-        navigate("/netbanking", {
+      if (comingFromRoute === "/cbsenfinity/login") {
+        navigate("/cbsenfinity/branch-selection", {
+          replace: true,
+        });
+      } else {
+        navigate(comingFromRoute, {
+          replace: true,
+        });
+      }
+    },
+    [dispatch, navigate, comingFromRoute]
+  );
+  const branchSelect = useCallback(
+    (payload: BranchSelectData, stopNavigation?: boolean) => {
+      dispatch({
+        type: "branchselect",
+        payload: { menulistdata: payload.menulistdata },
+      });
+      setLoginDatainLocalStorage({
+        ...state,
+        isBranchSelect: true,
+        user: {
+          ...state.user,
+          branchCode: payload.branchCode,
+          branch: payload.branch,
+          baseBranchCode: payload.baseBranchCode,
+        },
+        menulistdata: payload.menulistdata,
+      });
+      if (stopNavigation) {
+        return;
+      }
+      if (
+        comingFromRoute === "/cbsenfinity/branch-selection" ||
+        comingFromRoute === "/cbsenfinity/change-branch"
+      ) {
+        navigate("/cbsenfinity/dashboard", {
           replace: true,
         });
       } else {
@@ -111,6 +192,7 @@ export const AuthProvider = ({ children }) => {
     }
     localStorage.removeItem("authDetails");
     localStorage.removeItem("tokenchecksum");
+    localStorage.removeItem("token_status");
     dispatch({
       type: "logout",
       payload: {},
@@ -119,14 +201,20 @@ export const AuthProvider = ({ children }) => {
       clearTimeout(timeoutID);
     }
     queryClient.clear();
-    if (window.location.pathname === "/netbanking/forgotpassword") {
+    if (window.location.pathname === "/cbsenfinity/forgotpassword") {
+    } else if (window.location.pathname === "/cbsenfinity/forgot-totp") {
     } else {
-      navigate("/netbanking/login");
+      setComingFromRoute("/cbsenfinity");
+      navigate("/cbsenfinity/login");
     }
   }, [dispatch, navigate]);
 
   const isLoggedIn = () => {
     return state.isLoggedIn;
+  };
+
+  const isBranchSelected = () => {
+    return state.isBranchSelect;
   };
 
   const setLoginDatainLocalStorage = async (payload) => {
@@ -138,22 +226,19 @@ export const AuthProvider = ({ children }) => {
     let result = localStorage.getItem("authDetails");
     if (result === null) {
       //logout();
-      console.log("logout result null");
     } else {
       // localStorage.getItem("tokenchecksum");
       let checksumdata = localStorage.getItem("tokenchecksum");
       let genChecksum = await GenerateCRC32(
         localStorage.getItem("authDetails") || ""
       );
-      //console.log(checksumdata, genChecksum);
       if (checksumdata !== genChecksum) {
         if (Boolean(timeoutLogout)) {
           clearTimeout(timeoutLogout);
         }
         timeoutLogout = setTimeout(() => {
           logout();
-          console.log("logout");
-        }, 1500);
+        }, 500);
       }
     }
   });
@@ -204,10 +289,9 @@ export const AuthProvider = ({ children }) => {
       let geneTime = Number.parseInt(generateTime);
       let exTime = Number.parseInt(expireTime);
       let totalTime = (utilFunction.getCurrentDateinLong() - geneTime) / 1000;
-      exTime = exTime - totalTime - 50;
+      exTime = exTime - totalTime - 10;
       if (exTime > 0) {
         exTime = exTime * 1000;
-        //console.log(exTime);
         if (Boolean(timeoutID)) {
           clearTimeout(timeoutID);
         }
@@ -222,7 +306,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
   const setnewToken = (access_token) => {
-    //console.log(access_token, Boolean(access_token));
     if (!Boolean(access_token)) return;
     let result = localStorage.getItem("authDetails");
     if (result !== null) {
@@ -247,6 +330,29 @@ export const AuthProvider = ({ children }) => {
     let fingerprint = await AuthSDK.Getfingerprintdata();
     return String(CRC32C.str((str || "") + fingerprint));
   };
+  const MessageBox = (
+    messageTitle: String,
+    message: String,
+    icon: "INFO" | "ERROR" | "WARNING" = "INFO",
+    buttonNames: [String] = ["OK"]
+  ) => {
+    setMessageBox({
+      isOpen: true,
+      messageTitle,
+      message,
+      icon,
+      buttonNames: buttonNames ?? ["OK"],
+    });
+  };
+  const closeMessageBox = () => {
+    setMessageBox({
+      isOpen: false,
+      messageTitle: "",
+      message: "",
+      icon: "",
+      buttonNames: ["OK"],
+    });
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -254,9 +360,20 @@ export const AuthProvider = ({ children }) => {
         logout,
         isLoggedIn,
         authState: state,
+        isBranchSelected,
+        branchSelect,
+        getProfileImage: profileImage,
+        setProfileImage,
+        MessageBox,
+        closeMessageBox,
+        message,
       }}
     >
-      {authenticating ? <LinearProgress color="secondary" /> : children}
+      <AccDetailContext.Provider
+        value={{ tempStore, setTempStore, cardStore, setCardStore }}
+      >
+        {authenticating ? <LinearProgress color="secondary" /> : children}
+      </AccDetailContext.Provider>
     </AuthContext.Provider>
   );
 };

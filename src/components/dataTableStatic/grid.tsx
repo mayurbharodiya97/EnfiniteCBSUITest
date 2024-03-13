@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   useTable,
   useSortBy,
@@ -18,6 +18,7 @@ import { HeaderCellWrapper } from "components/dataTable/headerCellWrapper";
 import {
   TableActionToolbar,
   ActionContextMenu,
+  RenderActions,
 } from "components/dataTable/tableActionToolbar";
 import { TablePaginationActions } from "components/dataTable/tablePaginationToolbar";
 import { useCheckboxColumn } from "./components/useCheckbox";
@@ -30,7 +31,9 @@ import {
 } from "components/dataTable/utils";
 import { TableFilterStatusBar } from "components/dataTable/tableFilterStatusBar";
 import { AuthContext } from "pages_audit/auth";
+import { useStyles } from "./style";
 import {
+  Dialog,
   Grid,
   LinearProgress,
   Paper,
@@ -41,7 +44,9 @@ import {
   TablePagination,
   TableRow,
 } from "@mui/material";
+import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
 let data2: any[] = [];
+
 export const DataGrid = ({
   label,
   dense,
@@ -82,12 +87,20 @@ export const DataGrid = ({
   defaultFilter,
   isCusrsorFocused,
   onButtonActionHandel,
+  controlsAtBottom,
+  headerToolbarStyle,
+  onlySingleSelectionAllow,
+  isNewRowStyle,
+  defaultSelectedRowId,
+  searchPlaceholder,
+  paginationText,
+  ReportExportButton
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
 
   data2 = useMemo(() => DataFilterComponents(filters, data), [filters, data]);
-
+  const classes = useStyles();
   const {
     getTableProps,
     getTableBodyProps,
@@ -104,6 +117,7 @@ export const DataGrid = ({
     state: { pageIndex, pageSize },
     setSortBy,
     columns: availableColumns,
+    toggleAllRowsSelected,
   } = useTable(
     {
       initialState: {
@@ -143,12 +157,12 @@ export const DataGrid = ({
     useCheckboxColumn(allowRowSelection)
   );
 
-  //console.log("filter", filter);
-  //console.log("defaultHiddenColumns=>", defaultHiddenColumns);
   const { authState } = useContext(AuthContext);
 
   const tbodyRef = useRef(null);
-
+  const submitButtonRef = useRef<any>(null);
+  const [isOpenExport, setOpenExport] = useState(false);
+  const tableRowRef = useRef<any>(null);
   const rowsToDisplay = enablePagination ? page : rows;
 
   const rowCount = useMemo(() => {
@@ -160,7 +174,6 @@ export const DataGrid = ({
     }, 0);
   }, [rows]);
 
-  // console.log(rowsToDisplay);
   //alert(selectedFlatRows.length);
   singleActions = filterActionWhenNoDataFound(singleActions, rowCount);
   multipleActions = filterActionWhenNoDataFound(multipleActions, rowCount);
@@ -175,14 +188,13 @@ export const DataGrid = ({
   const [contextMenuRow, setContextMenuRow] = useState<null | any>(null);
   const [contextMenuSelectedRowId, setContextMenuSelectedRowId] = useState<
     string | null
-  >(null);
+  >(defaultSelectedRowId);
   const handleContextMenuClose = () => {
     setContextMenuRow(null);
     setContextMenuPosition(null);
     setContextMenuSelectedRowId(null);
   };
   const handleContextMenuOpenforAdd = (event) => {
-    //console.log(rowCount, singleActions, multipleActions);
     if (
       rowCount <= 0 &&
       (singleActions.length > 0 || multipleActions.length > 0)
@@ -209,6 +221,30 @@ export const DataGrid = ({
         : null
     );
   };
+  const handleContextUpDownKey = (rowsToDisplay, _rowindex) => (e) => {
+    if (e?.target?.tagName === "INPUT") {
+      return;
+    }
+    if (e.key !== "Enter" && e.key !== "Tab") {
+      e.preventDefault();
+    }
+
+    if (e.key === "ArrowUp" && _rowindex > 0) {
+      if (rowsToDisplay[_rowindex - 1]?.id) {
+        toggleAllRowsSelected(false);
+        rowsToDisplay[_rowindex - 1].toggleRowSelected(true);
+        setContextMenuSelectedRowId(rowsToDisplay[_rowindex - 1]?.id);
+        e?.target?.previousElementSibling?.focus?.();
+      }
+    } else if (e.key === "ArrowDown" && _rowindex < rowsToDisplay.length - 1) {
+      if (rowsToDisplay[_rowindex + 1]?.id) {
+        toggleAllRowsSelected(false);
+        rowsToDisplay[_rowindex + 1].toggleRowSelected(true);
+        setContextMenuSelectedRowId(rowsToDisplay[_rowindex + 1].id);
+        e?.target?.nextElementSibling?.focus?.();
+      }
+    }
+  };
   const handleRowDoubleClickAction = (row) => (e) => {
     e.preventDefault();
     let result = filterAction(doubleClickAction, [row], authState, true);
@@ -231,208 +267,318 @@ export const DataGrid = ({
   const handleChangeRowsPerPage = (event) => {
     setPageSize(Number(event.target.value));
   };
-  //console.log("rowsToDisplay", rowsToDisplay);
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "Enter") {
+        if (submitButtonRef.current) {
+          submitButtonRef?.current?.click?.();
+        }
+      }
+    };
+    window.document.addEventListener("keypress", handleKeyPress);
+    return () => {
+      window.document.removeEventListener("keypress", handleKeyPress);
+    };
+  }, []);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      tableRowRef.current?.focus?.();
+    }, 200);
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [loading]);
   return (
-    <Paper
-      style={{
-        width: "100%",
-      }}
-    >
-      {Boolean(hideHeader) ? null : (
-        <TableHeaderToolbar
-          label={label}
-          dense={dense}
-          preGlobalFilteredRows={preGlobalFilteredRows}
-          globalFilter={state.globalFilter}
-          setGlobalFilter={setGlobalFilter}
-          alwaysAvailableAction={alwaysAvailableAction}
-          setGridAction={setGridAction} //for always Actions
-          selectedFlatRows={selectedFlatRows}
-          disableGlobalFilter={Boolean(disableGlobalFilter)}
-          refetchData={refetchData}
-          autoRefreshInterval={autoRefreshInterval}
-          gotoPage={gotoPage}
-          setSortBy={setSortBy}
-          allowFilter={allowFilter}
-          filters={filters}
-          setAllFilters={setAllFilters}
-          filterMeta={filterMeta}
-          visibleColumns={availableColumns}
-          defaultHiddenColumns={defaultHiddenColumns}
-          allowColumnHiding={allowColumnHiding}
-        />
-      )}
-      <TableActionToolbar
-        dense={dense}
-        selectedFlatRows={selectedFlatRows}
-        multipleActions={multipleActions}
-        singleActions={singleActions}
-        setGridAction={setGridAction} //for single/multiple actions
-      />
-      <ActionContextMenu
-        contextMenuRow={contextMenuRow}
-        selectedFlatRows={selectedFlatRows}
-        singleActions={singleActions}
-        multipleActions={multipleActions}
-        setGridAction={setGridAction} //for right click actions
-        mouseX={contextMenuPosition?.mouseX ?? null}
-        mouseY={contextMenuPosition?.mouseY ?? null}
-        handleClose={handleContextMenuClose}
-        authState={authState}
-      />
-      <TableFilterStatusBar
-        dense={dense}
-        setAllFilters={setAllFilters}
-        filters={filters}
-        gotoPage={gotoPage}
-        setSortBy={setSortBy}
-      />
-      {!disableLoader ? (
-        loading ? (
-          <LinearProgress color="secondary" />
-        ) : (
-          <LinearProgressBarSpacer />
-        )
-      ) : null}
-      <TableContainer
+    <>
+      <Paper
         style={{
-          position: "relative",
-          display: "inline-block",
-          overflow: "auto",
-          maxHeight: containerHeight?.max ?? "calc(100vh - 33*8px)",
-          minHeight: containerHeight?.min ?? "calc(100vh - 33*8px)",
-          borderBottom: hideFooter ? "" : "1px solid rgba(133, 130, 130, 0.8)",
+          width: "100%",
+          boxShadow: "none",
         }}
       >
-        <Table
-          component="div"
-          {...getTableProps()}
-          size={dense ? "small" : "medium"}
-        >
-          {/*@ts-ignore*/}
-          <StickyTableHead component="div">
-            {headerGroups.map((headerGroup) => {
-              return (
-                <TableRow
-                  component="div"
-                  {...headerGroup.getHeaderGroupProps()}
-                >
-                  {headerGroup.headers.map((column) => {
-                    return (
-                      <HeaderCellWrapper
-                        column={column}
-                        key={column.getHeaderProps().key}
-                      >
-                        {column.render("Header")}
-                      </HeaderCellWrapper>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </StickyTableHead>
-          <TableBody
-            component="div"
-            ref={tbodyRef}
-            {...getTableBodyProps([
-              {
-                style: {
-                  display: "block",
-                },
-              },
-            ])}
-            onContextMenu={handleContextMenuOpenforAdd}
-          >
-            {rowsToDisplay.length <= 0 &&
-            //loading === false &&
-            hideNoDataFound === false ? (
-              <Grid container justifyContent="center">
-                <div
-                  style={{
-                    height: Boolean(containerHeight?.min)
-                      ? "calc(" + containerHeight?.min + " - 50px)"
-                      : "calc(100vh - 33*8px)", //"calc(100vh - 36*10px)",
-                    display: "flex",
-                    alignItems: "center",
-                    // marginLeft: "450px",
-                    fontStyle: "italic",
-                    color: "rgba(133, 130, 130, 0.8)",
-                  }}
-                >
-                  No data found..!
-                </div>
-              </Grid>
-            ) : null}
-            {rowsToDisplay.map((row) => {
-              //console.log(row);
-              if (Boolean(row?.original?.[hiddenFlag])) {
-                return null;
-              }
-              prepareRow(row);
-              const rightClickHandler = handleContextMenuOpen(row);
-              const thisRowDblClickHandler = handleRowDoubleClickAction(row);
-              let rowColorStyle: any[] = [];
-              if (Boolean(row?.original?._rowColor)) {
-                rowColorStyle = [
-                  { style: { background: row?.original?._rowColor } },
-                ];
-              }
-              if (isCusrsorFocused) {
-                if (rowColorStyle.length > 0) {
-                  rowColorStyle[0].style["cursor"] = "pointer";
-                } else {
-                  rowColorStyle = [{ style: { cursor: "pointer" } }];
-                }
-              }
-              return (
-                <MyTableRow
-                  {...row.getRowProps(rowColorStyle)}
-                  id={row.id}
-                  tabIndex={0}
-                  component="div"
-                  selected={
-                    row.isSelected || contextMenuSelectedRowId === row.id
-                  }
-                  onContextMenu={rightClickHandler}
-                  onDoubleClick={
-                    Boolean(doubleClickAction)
-                      ? thisRowDblClickHandler
-                      : undefined
-                  }
-                >
-                  {row.cells.map((cell) => {
-                    const { key } = cell.getCellProps();
-                    return cell.isAggregated
-                      ? cell.render("Aggregated", { key })
-                      : cell.render("Cell", { key });
-                  })}
-                </MyTableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-        <CustomBackdrop open={Boolean(loading)} />
-      </TableContainer>
-
-      {hideFooter ? null : enablePagination ? (
-        <TablePagination
-          style={{ display: "flex" }}
-          variant="body"
-          component="div"
-          rowsPerPageOptions={pageSizes}
-          colSpan={3}
-          count={rows.length}
-          rowsPerPage={Number(pageSize)}
-          page={Number(pageIndex)}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          ActionsComponent={TablePaginationActions}
+        {Boolean(hideHeader) ? null : (
+          <TableHeaderToolbar
+            label={label}
+            dense={dense}
+            preGlobalFilteredRows={preGlobalFilteredRows}
+            globalFilter={state.globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            alwaysAvailableAction={alwaysAvailableAction}
+            setGridAction={setGridAction} //for always Actions
+            selectedFlatRows={selectedFlatRows}
+            disableGlobalFilter={Boolean(disableGlobalFilter)}
+            refetchData={refetchData}
+            autoRefreshInterval={autoRefreshInterval}
+            gotoPage={gotoPage}
+            setSortBy={setSortBy}
+            allowFilter={allowFilter}
+            filters={filters}
+            setAllFilters={setAllFilters}
+            filterMeta={filterMeta}
+            visibleColumns={availableColumns}
+            defaultHiddenColumns={defaultHiddenColumns}
+            allowColumnHiding={allowColumnHiding}
+            headerToolbarStyle={headerToolbarStyle}
+            searchPlaceholder={searchPlaceholder}
+            ReportExportButton={ReportExportButton}
+            setOpenExport={setOpenExport}
+          />
+        )}
+        {Boolean(controlsAtBottom) ? null : (
+          <TableActionToolbar
+            dense={dense}
+            selectedFlatRows={selectedFlatRows}
+            multipleActions={multipleActions}
+            singleActions={singleActions}
+            setGridAction={setGridAction} //for single/multiple actions
+            submitButtonRef={submitButtonRef}
+          />
+        )}
+        <ActionContextMenu
+          contextMenuRow={contextMenuRow}
+          selectedFlatRows={selectedFlatRows}
+          singleActions={singleActions}
+          multipleActions={multipleActions}
+          setGridAction={setGridAction} //for right click actions
+          mouseX={contextMenuPosition?.mouseX ?? null}
+          mouseY={contextMenuPosition?.mouseY ?? null}
+          handleClose={handleContextMenuClose}
+          authState={authState}
         />
-      ) : (
-        <TableCell style={{ display: "flex" }}>
-          Total No of Records: {rowCount}
-        </TableCell>
+        <TableFilterStatusBar
+          dense={dense}
+          setAllFilters={setAllFilters}
+          filters={filters}
+          gotoPage={gotoPage}
+          setSortBy={setSortBy}
+        />
+        {!disableLoader ? (
+          loading ? (
+            <LinearProgress sx={{background: "var(--theme-color6)", "& .MuiLinearProgress-bar": {background: "var(--theme-color1) !important"}}} />
+          ) : (
+            <LinearProgressBarSpacer />
+          )
+        ) : null}
+        <TableContainer
+          style={{
+            position: "relative",
+            display: "inline-block",
+            overflow: "auto",
+            maxHeight: containerHeight?.max ?? "calc(100vh - 33*8px)",
+            minHeight: containerHeight?.min ?? "calc(100vh - 33*8px)",
+            borderBottom: hideFooter
+              ? ""
+              : "1px solid rgba(133, 130, 130, 0.8)",
+          }}
+        >
+          <Table
+            component="div"
+            {...getTableProps()}
+            size={dense ? "small" : "medium"}
+          >
+            {/*@ts-ignore*/}
+            <StickyTableHead component="div">
+              {headerGroups.map((headerGroup) => {
+                return (
+                  <TableRow
+                    component="div"
+                    {...headerGroup.getHeaderGroupProps()}
+                  >
+                    {headerGroup.headers.map((column) => {
+                      return (
+                        <HeaderCellWrapper
+                          column={column}
+                          key={column.getHeaderProps().key}
+                        >
+                          {column.render("Header")}
+                        </HeaderCellWrapper>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </StickyTableHead>
+            <TableBody
+              component="div"
+              ref={tbodyRef}
+              {...getTableBodyProps([
+                {
+                  style: {
+                    display: "block",
+                  },
+                },
+              ])}
+              onContextMenu={handleContextMenuOpenforAdd}
+            >
+              {rowsToDisplay.length <= 0 &&
+              //loading === false &&
+              hideNoDataFound === false ? (
+                <Grid container justifyContent="center">
+                  <div
+                    style={{
+                      height: Boolean(containerHeight?.min)
+                        ? "calc(" + containerHeight?.min + " - 50px)"
+                        : "calc(100vh - 33*8px)", //"calc(100vh - 36*10px)",
+                      display: "flex",
+                      alignItems: "center",
+                      // marginLeft: "450px",
+                      fontStyle: "italic",
+                      color: "rgba(133, 130, 130, 0.8)",
+                    }}
+                  >
+                    No data found..!
+                  </div>
+                </Grid>
+              ) : null}
+              {rowsToDisplay.map((row, _rowindex) => {
+                if (Boolean(row?.original?.[hiddenFlag])) {
+                  return null;
+                }
+                prepareRow(row);
+                const rightClickHandler = handleContextMenuOpen(row);
+                const thisRowDblClickHandler = handleRowDoubleClickAction(row);
+                const thisRowUpDownHandler = handleContextUpDownKey(
+                  rowsToDisplay,
+                  _rowindex
+                );
+                let rowColorStyle: any[] = [];
+                if (Boolean(row?.original?._rowColor)) {
+                  rowColorStyle = [
+                    {
+                      style: {
+                        background: row?.original?._rowColor,
+                        width: "100%",
+                      },
+                    },
+                  ];
+                }
+                if (isCusrsorFocused) {
+                  if (rowColorStyle.length > 0) {
+                    rowColorStyle[0].style["cursor"] = "pointer";
+                  } else {
+                    rowColorStyle = [
+                      { style: { cursor: "pointer", width: "100%" } },
+                    ];
+                  }
+                }
+                return (
+                  <MyTableRow
+                    {...row.getRowProps(rowColorStyle)}
+                    id={row.id}
+                    tabIndex={_rowindex}
+                    component="div"
+                    selected={
+                      // row.isSelected || contextMenuSelectedRowId === row.id
+                      row.isSelected
+                        ? true
+                        : contextMenuSelectedRowId === row.id
+                        ? row.toggleRowSelected(true)
+                        : false
+                    }
+                    onClick={() => {
+                      if (Boolean(onlySingleSelectionAllow)) {
+                        toggleAllRowsSelected(false);
+                        row.toggleRowSelected(true);
+                        setContextMenuSelectedRowId(row.id);
+                      }
+                    }}
+                    onKeyDown={thisRowUpDownHandler}
+                    onContextMenu={rightClickHandler}
+                    onDoubleClick={
+                      Boolean(doubleClickAction)
+                        ? thisRowDblClickHandler
+                        : undefined
+                    }
+                    className={isNewRowStyle ? classes.customClass : null}
+                    ref={
+                      row.isSelected || contextMenuSelectedRowId === row.id
+                        ? tableRowRef
+                        : null
+                    }
+                  >
+                    {row.cells.map((cell) => {
+                      const { key } = cell.getCellProps();
+                      return cell.isAggregated
+                        ? cell.render("Aggregated", { key })
+                        : cell.render("Cell", { key });
+                    })}
+                  </MyTableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+          <CustomBackdrop open={Boolean(loading)} />
+        </TableContainer>
+
+        {hideFooter ? null : enablePagination ? (
+          <TablePagination
+            style={{ display: "flex" }}
+            variant="body"
+            component="div"
+            rowsPerPageOptions={pageSizes}
+            colSpan={3}
+            count={rows.length}
+            rowsPerPage={Number(pageSize)}
+            page={Number(pageIndex)}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            ActionsComponent={TablePaginationActions}
+          />
+        ) : (
+          <TableCell style={{ display: "flex" }}>
+            Total No. of {paginationText}: {rowCount}
+          </TableCell>
+        )}
+
+        {Boolean(controlsAtBottom) ? (
+          <div
+            className="test"
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <RenderActions
+              key="singleFilters"
+              actions={singleActions}
+              setAction={setGridAction}
+              selectedRows={selectedFlatRows.map((one) => {
+                return {
+                  data: one.original,
+                  id: one.id,
+                };
+              })}
+              buttonTextColor={"var(--theme-color2)"}
+              buttonBackground={"var(--theme-color3)"}
+              style={{
+                border: "1px solid var(--theme-color3)",
+                width: "8rem",
+                margin: "5px",
+              }}
+              submitButtonRef={submitButtonRef}
+            />
+          </div>
+        ) : null}
+      </Paper>
+      {isOpenExport && (
+        <Dialog open={isOpenExport}>
+         <ReportExportScreen
+          // globalFilter={""}
+          filters={filters}
+          // queryFilters={queryFilters}
+          title={label}
+          rows={rows}
+          columns={columns}
+          onClose={() => {
+            setOpenExport(false);
+          }}
+        />
+        </Dialog>
       )}
-    </Paper>
+    </>
   );
 };

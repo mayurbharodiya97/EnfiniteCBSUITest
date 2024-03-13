@@ -3,7 +3,7 @@ export const AllScreensGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "All Screens",
-    rowIdColumn: "user_code",
+    rowIdColumn: "system_code",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
@@ -11,7 +11,7 @@ export const AllScreensGridMetaData: GridMetaDataType = {
     },
     allowColumnReordering: true,
     disableSorting: false,
-    hideHeader: false,
+    hideHeader: true,
     disableGroupBy: true,
     enablePagination: true,
     pageSizes: [15, 30, 50],

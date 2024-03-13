@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { GradientButton } from "components/styledComponent/button";
 import { useStyles } from "pages_audit/auth/style";
 import {
@@ -9,6 +9,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { useTranslation } from "react-i18next";
 const inititalState = {
   loading: false,
   isError: false,
@@ -25,6 +26,7 @@ export const RemarksAPIWrapper = ({
   isLoading = false,
   open = false,
   rows,
+  ...other
 }) => {
   //const { state: rows }: any = useLocation();
   const [input, setInput] = useState("");
@@ -32,6 +34,7 @@ export const RemarksAPIWrapper = ({
   const classes = useStyles();
   const inputRef = useRef<any>(null);
   const inputButtonRef = useRef<any>(null);
+  const { t } = useTranslation();
   const handleChange = (event) => {
     setInput(event.target.value);
     if (event.target.value) {
@@ -43,6 +46,10 @@ export const RemarksAPIWrapper = ({
     }
   };
 
+  useEffect(() => {
+    setInput(other.defaultValue);
+  }, [other.defaultValue]);
+
   return (
     <>
       <Dialog fullWidth={true} open={open}>
@@ -50,6 +57,7 @@ export const RemarksAPIWrapper = ({
           {TitleText}
         </DialogTitle>
         <DialogContent>
+          <br />
           <TextField
             autoFocus={true}
             label={"Remarks"}
@@ -57,6 +65,10 @@ export const RemarksAPIWrapper = ({
             fullWidth
             type={"text"}
             name="remarks"
+            variant="standard"
+            margin="dense"
+            id="standard-size-normal"
+            color="info"
             value={input || ""}
             onChange={handleChange}
             error={loginState.isError}
@@ -81,7 +93,7 @@ export const RemarksAPIWrapper = ({
                 setLoginState((values) => ({
                   ...values,
                   isError: true,
-                  userMessage: "This field is required.",
+                  userMessage: t("Thisisarequiredfield"),
                 }));
               } else {
                 onActionYes(input, rows);

@@ -6,6 +6,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import "registry"; //register functions to be used across application
 import "components/tableCellComponents"; //register table cell components
 import "typeface-roboto";
+import "components/multiLanguage/languagesConfiguration";
 import { FullScreenLoader } from "components/common/loaderPaper";
 const AUD = lazy(() => import("app/audit"));
 const ErrorPage = lazy(() => import("app/error"));
@@ -13,29 +14,30 @@ const ErrorPage = lazy(() => import("app/error"));
 const Redirect = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    navigate("netbanking");
+    navigate("cbsenfinity");
   }, [navigate]);
   return null;
 };
 
-const App = () => (
-  <StrictMode>
-    <DndProvider backend={HTML5Backend}>
-      <BrowserRouter>
-        <Suspense fallback={<FullScreenLoader />}>
-          {/* <ErrorBoundary> */}
-          <Routes>
-            <Route path="netbanking/*" element={<AUD />} />
-            <Route path="error/*" element={<ErrorPage />} />
-            <Route path="*" element={<Redirect />} />
-          </Routes>
-          {/* </ErrorBoundary> */}
-        </Suspense>
-      </BrowserRouter>
-    </DndProvider>
-  </StrictMode>
-);
-
+const App = () => {
+  return (
+    <StrictMode>
+      <DndProvider backend={HTML5Backend}>
+        <BrowserRouter>
+          <Suspense fallback={<FullScreenLoader />}>
+            {/* <ErrorBoundary> */}
+            <Routes>
+              <Route path="cbsenfinity/*" element={<AUD />} />
+              <Route path="error/*" element={<ErrorPage />} />
+              <Route path="*" element={<Redirect />} />
+            </Routes>
+            {/* </ErrorBoundary> */}
+          </Suspense>
+        </BrowserRouter>
+      </DndProvider>
+    </StrictMode>
+  );
+};
 const container: any = document.getElementById("root");
 const root = createRoot(container!); // createRoot(container!) if you use TypeScript
 root.render(<App />);
