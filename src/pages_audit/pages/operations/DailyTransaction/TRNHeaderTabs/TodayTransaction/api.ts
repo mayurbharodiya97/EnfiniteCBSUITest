@@ -7,10 +7,11 @@ import { AuthSDK } from "registry/fns/auth";
 
 export const getTodayTransList = async (reqData) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETTODAYTRAN", {
-      COMP_CD: reqData.COMP_CD,
-      ACCT_TYPE: reqData.ACCT_TYPE,
-      ACCT_CD: reqData.ACCT_CD,
+    await AuthSDK.internalFetcher("GETDLYTRNTODAYTAB", {
+      COMP_CD: reqData?.COMP_CD,
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
+      BRANCH_CD: reqData?.BRANCH_CD,
     });
   if (status === "0") {
     let responseData = data;
@@ -19,7 +20,7 @@ export const getTodayTransList = async (reqData) => {
       a.sr = i + 1;
       a.DEBIT = a.DEBIT == "" ? "0.00" : a.DEBIT;
       a.CREDIT = a.CREDIT == "" ? "0.00" : a.CREDIT;
-      a.time = a.ENTERED_DATE.split(" ")[1].substring(0, 5);
+      a.time = a.ENTERED_DATE.split(" ")[1]?.substring(0, 5);
     });
     return responseData;
   } else {
@@ -110,6 +111,22 @@ export const saveCustomerRegisterRequest = async ({ inputData }) => {
     });
   if (status === "0") {
     return message;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getAcctDtlList = async (reqParaMeters) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETSEARCHCOMPONENT", {
+      COMP_CD: reqParaMeters?.COMP_CD,
+      A_FLAG: "A",
+      BRANCH_CD: reqParaMeters?.BRANCH_CD,
+      ACCT_TYPE: reqParaMeters?.ACCT_TYPE,
+      ACCT_CD: reqParaMeters?.ACCT_CD,
+      CUST_ID: reqParaMeters?.CUSTOMER_ID,
+    });
+  if (status === "0") {
+    return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
