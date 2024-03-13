@@ -1,11 +1,11 @@
-import { ClearCacheContext, ClearCacheProvider, queryClient } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import { Fragment, useCallback, useContext, useEffect, useRef, useState } from "react";
 import GridWrapper from "components/dataTableStatic";
 import * as API from "./api";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
 import { ParametersGridMetaData } from "./gridMetadata";
 import { useNavigate } from "react-router-dom";
-import { EditDetail } from "./editDetail";
+import  EditDetail  from "./editParaDetails/editDetail";
 import { useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
@@ -36,7 +36,6 @@ const Parameters = () => {
   const myGridRef = useRef<any>(null);
   const [acctOpen, setAcctOpen] = useState(false);
   const [paraType, setParaType] = useState("H");
-  const { getEntries } = useContext(ClearCacheContext);
   const [componentToShow, setComponentToShow] = useState("");
   const [actionMenu, setActionMenu] = useState(actions);
   const setCurrentAction = useCallback(async (data) => {
@@ -44,15 +43,15 @@ const Parameters = () => {
       setActionMenu((values) =>
         values.map((item) =>
           item.actionName === "global"
-            ? { ...item, actionName: "hopara", actionLabel: "HO Level" }
+            ? { ...item, actionName: "ho", actionLabel: "HO Level" }
             : item
         )
       );
       setParaType("G");
-    } else if (data.name === "hopara") {
+    } else if (data.name === "ho") {
       setActionMenu((values) =>
         values.map((item) =>
-          item.actionName === "hopara"
+          item.actionName === "ho"
             ? { ...item, actionName: "global", actionLabel: "Global Level" }
             : item
         )
@@ -73,17 +72,12 @@ const Parameters = () => {
   );
 
   useEffect(() => {
-    return () => {
-      let entries = getEntries() as any[];
-      if (Array.isArray(entries) && entries.length > 0) {
-        entries.forEach((one) => {
-          queryClient.removeQueries(one);
-        });
-      }
-      queryClient.removeQueries(["getParametersGridData", paraType]);
-    };
-  }, [getEntries, paraType]);
-
+    if (paraType === "H") {
+      ParametersGridMetaData.gridConfig.gridLabel="Parameter Master [Global Level]"
+    } else if (paraType === "G") {
+      ParametersGridMetaData.gridConfig.gridLabel="Parameter Master [HO Level]"
+    }
+  }, [paraType]);
   return (
     <Fragment>
       {isError && (
@@ -98,6 +92,7 @@ const Parameters = () => {
         key={"parametersGrid" + paraType}
         finalMetaData={ParametersGridMetaData as GridMetaDataType}
         data={data ?? []}
+        ReportExportButton={true}
         actions={authState.authState.user.branchCode!==authState.authState.user.baseBranchCode?[]:actionMenu}
         setAction={setCurrentAction}
         setData={() => null}
@@ -110,6 +105,7 @@ const Parameters = () => {
           rowsData={rowsData}
           open={acctOpen}
           onClose={() => setAcctOpen(false)}
+          refetch={refetch}
         />
       ) : null}
     </Fragment>
