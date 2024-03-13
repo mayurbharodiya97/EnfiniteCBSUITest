@@ -138,14 +138,24 @@ export const DailyTransTabs = ({
             <TabPanel value={tabValue} index={i}>
               <>
                 {/* other trx */}
-                {a?.TAB_NAME.includes("Standing") && <SIDetail />}
-                {a?.TAB_NAME.includes("Lien") && <LienDetail />}
-                {a?.TAB_NAME.match("O/w Chq/OBC/IBC") && <OW_Chq />}
-                {a?.TAB_NAME.includes("Temp.OD/Against") && <Temp />}
-                {a?.TAB_NAME.includes("ATM Card") && <ATM />}
-                {a?.TAB_NAME.match("IMPS") && <IMPS />}
-                {a?.TAB_NAME.includes("ASBA") && <ASBA />}
-                {a?.TAB_NAME.includes("ACH I/W") && <ACH_IW />}
+                {a?.TAB_NAME.includes("Standing") && (
+                  <SIDetail reqData={reqData} />
+                )}
+                {a?.TAB_NAME.includes("Lien") && (
+                  <LienDetail reqData={reqData} />
+                )}
+                {a?.TAB_NAME.match("O/w Chq/OBC/IBC") && (
+                  <OW_Chq reqData={reqData} />
+                )}
+                {a?.TAB_NAME.includes("Temp.OD/Against") && (
+                  <Temp reqData={reqData} />
+                )}
+                {a?.TAB_NAME.includes("ATM Card") && <ATM reqData={reqData} />}
+                {a?.TAB_NAME.match("IMPS") && <IMPS reqData={reqData} />}
+                {a?.TAB_NAME.includes("ASBA") && <ASBA reqData={reqData} />}
+                {a?.TAB_NAME.includes("ACH I/W") && (
+                  <ACH_IW reqData={reqData} />
+                )}
                 {a?.TAB_NAME.includes("ACH O/W") && (
                   <ACH_OW reqData={reqData} />
                 )}
@@ -240,7 +250,7 @@ export const DailyTransTabsWithDialog = ({
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getAcctDtlList", { rowsData }], () =>
+  >(["getAcctDtlList"], () =>
     API.getAcctDtlList({
       ...rowsData?.[0]?.data,
       COMP_CD: authState?.companyID,

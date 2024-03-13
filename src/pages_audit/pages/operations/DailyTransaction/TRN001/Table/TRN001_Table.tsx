@@ -99,8 +99,8 @@ export const TRN001_Table = ({
       setRows2(data);
 
       setTempStore({ ...tempStore, accInfo: data[0] });
-      getCarousalCards.mutate(data[0]);
-      handleGetHeaderTabs(data[0] ?? "");
+      data?.length > 0 && getCarousalCards.mutate(data[0]);
+      data?.length > 0 && handleGetHeaderTabs(data[0] ?? "");
     },
     onError: (error) => {},
   });

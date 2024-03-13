@@ -18,7 +18,7 @@ export const Group = ({ reqData }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
-  // // api define
+  // api define
   // const getGroupList = useMutation(API.getGroupList, {
   //   onSuccess: (data) => {
   //     console.log(data, " getGroupList detailssss");
@@ -30,7 +30,6 @@ export const Group = ({ reqData }) => {
   // useEffect(() => {
   //   tempStore?.accInfo?.ACCT_CD && getGroupList.mutate(tempStore.accInfo);
   // }, [tempStore]);
-
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
@@ -38,6 +37,7 @@ export const Group = ({ reqData }) => {
 
   return (
     <>
+      {" "}
       {isError ? (
         <Fragment>
           <div style={{ width: "100%", paddingTop: "10px" }}>
@@ -52,11 +52,11 @@ export const Group = ({ reqData }) => {
       <GridWrapper
         key={`GroupGridMetaData`}
         finalMetaData={GroupGridMetaData as GridMetaDataType}
+        loading={isLoading || isFetching}
         data={data ?? []}
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
-        loading={isLoading || isFetching}
       />
     </>
   );

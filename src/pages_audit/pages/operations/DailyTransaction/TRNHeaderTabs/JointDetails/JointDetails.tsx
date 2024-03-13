@@ -68,7 +68,9 @@ export const JointDetails = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getJointDetailsList"], () => API.getJointDetailsList(reqData));
+  >(["getJointDetailsList", { reqData }], () =>
+    API.getJointDetailsList(reqData)
+  );
 
   const setCurrentAction = useCallback((data) => {
     setOpen(true);

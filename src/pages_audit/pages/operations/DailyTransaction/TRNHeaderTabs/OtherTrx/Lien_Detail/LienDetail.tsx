@@ -12,35 +12,50 @@ import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
-export const LienDetail = () => {
+export const LienDetail = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
   // api define
-  const getLienDetailList = useMutation(API.getLienDetailList, {
-    onSuccess: (data) => {
-      console.log(data, " getLienDetailList detailssss");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // const getLienDetailList = useMutation(API.getLienDetailList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getLienDetailList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getLienDetailList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getLienDetailList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getLienDetailList", { reqData }], () => API.getLienDetailList(reqData));
 
   return (
     <div style={{ padding: "8px" }}>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`LienDetailGridMetaData`}
         finalMetaData={LienDetailGridMetaData as GridMetaDataType}
-        data={rows}
+        loading={isLoading || isFetching}
+        data={data ?? []}
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
-        loading={getLienDetailList.isLoading}
       />
     </div>
   );

@@ -54,7 +54,7 @@ export const Limit = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getLimitList"], () => API.getLimitList(reqData));
+  >(["getLimitList", { reqData }], () => API.getLimitList(reqData));
   return (
     <>
       {isError ? (

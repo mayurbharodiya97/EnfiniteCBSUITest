@@ -18,7 +18,7 @@ export const APBS = ({ reqData }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
-  // // api define
+  // api define
   // const getAPBSList = useMutation(API.getAPBSList, {
   //   onSuccess: (data) => {
   //     console.log(data, " getAPBSList detailssss");
@@ -30,7 +30,6 @@ export const APBS = ({ reqData }) => {
   // useEffect(() => {
   //   tempStore?.accInfo?.ACCT_CD && getAPBSList.mutate(tempStore.accInfo);
   // }, [tempStore]);
-
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
@@ -38,6 +37,7 @@ export const APBS = ({ reqData }) => {
 
   return (
     <>
+      {" "}
       {isError ? (
         <Fragment>
           <div style={{ width: "100%", paddingTop: "10px" }}>
@@ -53,10 +53,10 @@ export const APBS = ({ reqData }) => {
         key={`APBSGridMetaData`}
         finalMetaData={APBSGridMetaData as GridMetaDataType}
         data={data ?? []}
+        loading={isLoading || isFetching}
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
-        loading={isLoading || isFetching}
       />
     </>
   );

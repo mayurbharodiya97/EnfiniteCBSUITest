@@ -54,7 +54,7 @@ export const Stock = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getStockList"], () => API.getStockList(reqData));
+  >(["getStockList", { reqData }], () => API.getStockList(reqData));
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;

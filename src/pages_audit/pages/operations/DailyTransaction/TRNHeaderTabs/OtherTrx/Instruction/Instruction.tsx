@@ -18,7 +18,7 @@ export const Instruction = ({ reqData }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
-  // // api define
+  // api define
   // const getInstructionList = useMutation(API.getInstructionList, {
   //   onSuccess: (data) => {
   //     console.log(data, " getInstructionList detailssss");
@@ -38,6 +38,7 @@ export const Instruction = ({ reqData }) => {
 
   return (
     <>
+      {" "}
       {isError ? (
         <Fragment>
           <div style={{ width: "100%", paddingTop: "10px" }}>
@@ -52,11 +53,11 @@ export const Instruction = ({ reqData }) => {
       <GridWrapper
         key={`InstructionGridMetaData`}
         finalMetaData={InstructionGridMetaData as GridMetaDataType}
+        loading={isLoading || isFetching}
         data={data ?? []}
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
-        loading={isLoading || isFetching}
       />
     </>
   );

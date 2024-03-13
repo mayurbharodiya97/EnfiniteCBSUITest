@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { Mutation, useMutation, useQuery } from "react-query";
 import { snapShotGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
@@ -45,31 +45,33 @@ export const SnapShot = ({ reqData }) => {
   const [debit, setDebit] = useState<any>(0);
 
   // api define
-  // const getSnapShotList = useMutation(API.getSnapShotList, {
-  //   onSuccess: (data) => {
-  //     console.log(data, " getSnapShotList detailssss");
-  //     setRows(data);
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error?.error_msg, {
-  //       variant: "error",
-  //     });
-  //   },
-  // });
+  const getSnapShotList = useMutation(API.getSnapShotList, {
+    onSuccess: (data) => {
+      console.log(data, " getSnapShotList detailssss");
+      setRows(data);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
 
-  // useEffect(() => {
-  //   tempStore?.accInfo?.ACCT_CD && getSnapShotList.mutate(tempStore.accInfo);
-  // }, [tempStore]);
   const handleGetSnapshot = () => {
-    let obj = tempStore?.accInfo;
+    let obj = reqData;
     obj.FROM_DATE = format(prevDate, "dd-MMM-yyyy");
     obj.TO_DATE = format(nextDate, "dd-MMM-yyyy");
-    // getSnapShotList.mutate(tempStore.accInfo);
+    getSnapShotList.mutate(obj);
   };
-  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
-    any,
-    any
-  >(["getSnapShotList"], () => API.getSnapShotList(reqData));
+
+  useEffect(() => {
+    reqData?.ACCT_CD && handleGetSnapshot();
+  }, [reqData]);
+
+  // const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+  //   any,
+  //   any
+  // >(["getSnapShotList"], () => API.getSnapShotList(reqData));
 
   const handleDate = (e, key) => {
     console.log(e, key, "e date");
@@ -101,23 +103,20 @@ export const SnapShot = ({ reqData }) => {
   }, []);
   return (
     <>
-      {isError ? (
-        <Fragment>
-          <div style={{ width: "100%", paddingTop: "10px" }}>
-            <Alert
-              severity={error?.severity ?? "error"}
-              errorMsg={error?.error_msg ?? "Error"}
-              errorDetail={error?.error_detail ?? ""}
-            />
-          </div>
-        </Fragment>
+      {getSnapShotList.isError ? (
+        <Alert
+          severity="error"
+          errorMsg={getSnapShotList.error?.error_msg ?? "Unknown error occured"}
+          errorDetail={getSnapShotList.error?.error_detail ?? ""}
+        />
       ) : null}
+
       <GridWrapper
         key={`snapShotGridMetaData`}
         finalMetaData={snapShotGridMetaData as GridMetaDataType}
-        data={data ?? []}
+        data={rows ?? []}
         setData={() => null}
-        loading={isLoading || isFetching}
+        loading={getSnapShotList?.isLoading}
         refetchData={() => {}}
         ref={myGridRef}
         actions={actions}
@@ -125,37 +124,26 @@ export const SnapShot = ({ reqData }) => {
         onlySingleSelectionAllow={true}
         isNewRowStyle={true}
       />
-
       <Grid
         item
         xs={12}
         sm={12}
         sx={{
-          height: "23px",
-          // width: "60%",
-          right: "30px",
-          float: "right",
           position: "relative",
-          top: "-2.67rem",
+          top: "-3rem",
           display: "flex",
-          gap: "4rem",
+          justifyContent: "space-between",
+          gap: "3rem",
           alignItems: "center",
         }}
       >
-        <Typography
-          sx={{ fontWeight: "bold" }}
-          variant="subtitle1"
-          // style={{ color: "green" }}
-        >
-          Credit : ₹
-        </Typography>
-        <Typography
-          sx={{ fontWeight: "bold" }}
-          variant="subtitle1"
-          // style={{ color: "tomato" }}
-        >
-          Debit : ₹
-        </Typography>
+        <div></div>
+        <div></div>
+
+        <Grid item sx={{ display: "flex", gap: "5rem" }}>
+          <div> Credit : ₹ </div>
+          <div>Debit : ₹</div>
+        </Grid>
       </Grid>
 
       <Dialog

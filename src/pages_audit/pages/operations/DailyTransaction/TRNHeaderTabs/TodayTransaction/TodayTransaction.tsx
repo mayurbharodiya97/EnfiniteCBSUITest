@@ -31,7 +31,7 @@ const TodayTransaction = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getTodayTransList"], () => API.getTodayTransList(reqData));
+  >(["getTodayTransList", { reqData }], () => API.getTodayTransList(reqData));
 
   return (
     <>
@@ -49,9 +49,9 @@ const TodayTransaction = ({ reqData }) => {
       <GridWrapper
         key={`TodayTransGridMetaData`}
         finalMetaData={TodayTransGridMetaData as GridMetaDataType}
+        loading={isLoading || isFetching}
         data={data ?? []}
         setData={() => null}
-        loading={isLoading}
         refetchData={() => {}}
         ref={myGridRef}
       />
