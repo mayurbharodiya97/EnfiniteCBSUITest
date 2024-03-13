@@ -35,7 +35,7 @@ export const HoldCharge = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getHoldChargeList"], () => API.getHoldChargeList(reqData));
+  >(["getHoldChargeList", { reqData }], () => API.getHoldChargeList(reqData));
 
   return (
     <>

@@ -43,7 +43,7 @@ export const StopPay = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getStopPayList"], () => API.getStopPayList(reqData));
+  >(["getStopPayList", { reqData }], () => API.getStopPayList(reqData));
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;

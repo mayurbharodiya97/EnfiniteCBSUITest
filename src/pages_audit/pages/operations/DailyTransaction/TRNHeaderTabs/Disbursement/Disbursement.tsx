@@ -36,7 +36,9 @@ export const Disbursement = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getDisbursementList"], () => API.getDisbursementList(reqData));
+  >(["getDisbursementList", { reqData }], () =>
+    API.getDisbursementList(reqData)
+  );
 
   return (
     <>

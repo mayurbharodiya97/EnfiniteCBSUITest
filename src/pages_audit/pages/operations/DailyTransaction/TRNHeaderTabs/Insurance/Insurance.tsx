@@ -34,7 +34,7 @@ export const Insurance = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getInsuranceList"], () => API.getInsuranceList(reqData));
+  >(["getInsuranceList", { reqData }], () => API.getInsuranceList(reqData));
 
   return (
     <>

@@ -31,7 +31,7 @@ export const Subsidyy = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getSubsidyList"], () => API.getSubsidyList(reqData));
+  >(["getSubsidyList", { reqData }], () => API.getSubsidyList(reqData));
   return (
     <>
       {isError ? (

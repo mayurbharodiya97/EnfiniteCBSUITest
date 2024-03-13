@@ -31,7 +31,7 @@ const TodayTransaction = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getTodayTransList"], () => API.getTodayTransList(reqData));
+  >(["getTodayTransList", { reqData }], () => API.getTodayTransList(reqData));
 
   return (
     <>

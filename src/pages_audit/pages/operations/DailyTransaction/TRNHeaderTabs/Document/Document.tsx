@@ -107,7 +107,7 @@ export const Document = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getDocTemplateList"], () => API.getDocTemplateList(reqData));
+  >(["getDocTemplateList", { reqData }], () => API.getDocTemplateList(reqData));
 
   return (
     <>

@@ -57,7 +57,9 @@ export const CheckBook = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getCheckDetailsList"], () => API.getCheckDetailsList(reqData));
+  >(["getCheckDetailsList", { reqData }], () =>
+    API.getCheckDetailsList(reqData)
+  );
 
   const getTodayClearing = useMutation(API.getTodayClearing, {
     onSuccess: (data) => {
