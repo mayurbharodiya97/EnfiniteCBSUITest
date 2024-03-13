@@ -974,6 +974,22 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/DOPOSTDML",
     packageName: "",
   },
+  DOUPDATERETRUNDATA: {
+    url: "chequeServiceAPI/DOUPDATERETRUNDATA",
+    packageName: "",
+  },
+  GETINWARDACCTDTL: {
+    url: "chequeServiceAPI/GETINWARDACCTDTL",
+    packageName: "",
+  },
+  CONFRIMBTNVALIDATE: {
+    url: "chequeServiceAPI/CONFRIMBTNVALIDATE",
+    packageName: "",
+  },
+  DOCONFRIMEDPOSTEDDATA: {
+    url: "chequeServiceAPI/DOCONFRIMEDPOSTEDDATA",
+    packageName: "",
+  },
   GETINWZONEDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWZONEDDW",
     packageName: "",

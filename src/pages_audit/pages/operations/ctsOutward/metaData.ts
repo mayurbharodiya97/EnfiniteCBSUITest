@@ -723,6 +723,7 @@ export const ChequeDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
+            if (formState?.isSubmitting) return {};
             if (field.value) {
               let formData = {
                 COMP_CD: auth.companyID ?? "",
@@ -832,7 +833,6 @@ export const ChequeDetailFormMetaData: any = {
                 "en-IN"
               )} - ${transDate.toLocaleDateString("en-IN")}`;
             }
-            return "";
           },
 
           required: true,

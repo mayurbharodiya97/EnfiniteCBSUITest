@@ -1,10 +1,11 @@
 import { utilFunction } from "components/utils";
 import * as API from "../api";
 import { GeneralAPI } from "registry/fns/functions";
+import { getInwardAccountDetail } from "../api";
 export const chequeReturnPostFormMetaData = {
   form: {
-    name: "CustomerLevelPostReturn",
-    label: "Customer Level Post/Return",
+    name: "InwardClearingChequeDetail",
+    label: "Inward Clearing Cheque Detail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -112,59 +113,58 @@ export const chequeReturnPostFormMetaData = {
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
 
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "TRAN_DATE",
-      label: "",
-      placeholder: "",
-      format: "dd/MM/yyyy",
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "TRAN_DATE",
+    //   label: "",
+    //   placeholder: "",
+    //   format: "dd/MM/yyyy",
 
-      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "RANGE_DATE",
-      label: "",
-      placeholder: "",
-      format: "dd/MM/yyyy",
+    //   GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+    // },
+    // {
+    //   render: {
+    //     componentType: "hidden",
+    //   },
+    //   name: "RANGE_DATE",
+    //   label: "",
+    //   placeholder: "",
+    //   format: "dd/MM/yyyy",
 
-      GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
-    },
+    //   GridProps: { xs: 12, sm: 2, md: 1.8, lg: 1.8, xl: 1.5 },
+    // },
     {
       render: {
         componentType: "datePicker",
       },
-      name: "CHEQUE_DATE",
+      name: "CHEQUE_DT",
       label: "Cheque Date",
       placeholder: "",
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
-      dependentFields: ["TRAN_DATE", "RANGE_DATE"],
-      validate: (currentField, dependentField) => {
-        const currentDate = new Date(currentField?.value);
-        const rangeDate = new Date(dependentField?.RANGE_DATE?.value);
-        const transDate = new Date(dependentField?.TRAN_DATE?.value);
+      // dependentFields: ["TRAN_DATE", "RANGE_DATE"],
+      // validate: (currentField, dependentField) => {
+      //   const currentDate = new Date(currentField?.value);
+      //   const rangeDate = new Date(dependentField?.RANGE_DATE?.value);
+      //   const transDate = new Date(dependentField?.TRAN_DATE?.value);
 
-        if (currentDate < rangeDate || currentDate > transDate) {
-          return `Date should be between ${rangeDate.toLocaleDateString(
-            "en-IN"
-          )} - ${transDate.toLocaleDateString("en-IN")}`;
-        }
-        return "";
-      },
+      //   if (currentDate < rangeDate || currentDate > transDate) {
+      //     return `Date should be between ${rangeDate.toLocaleDateString(
+      //       "en-IN"
+      //     )} - ${transDate.toLocaleDateString("en-IN")}`;
+      //   }
+      //   return "";
+      // },
 
-      required: true,
       maxLength: 6,
 
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Cheque Date is required."] }],
-      },
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Cheque Date is required."] }],
+      // },
       GridProps: { xs: 12, sm: 2, md: 1.7, lg: 1.7, xl: 1.5 },
     },
     {
@@ -180,7 +180,6 @@ export const chequeReturnPostFormMetaData = {
       FormatProps: {
         allowNegative: false,
       },
-      validationRun: "all",
 
       GridProps: { xs: 6, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
@@ -200,12 +199,16 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
-        // postValidationSetCrossFieldValues: () => {
-        //   return {
-        //     ACCT_CD: { value: "" },
-        //     ACCT_NM: { value: "" },
-        //   };
-        // },
+        postValidationSetCrossFieldValues: (field) => {
+          if (!field?.value.trim()) {
+            return {
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              WIDTH_BAL: { value: "" },
+              OTHER_REMARKS: { value: "" },
+            };
+          }
+        },
       },
       accountTypeMetadata: {
         name: "ACCT_TYPE",
@@ -221,14 +224,25 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
-        // defaultValue: "",
-        // dependentFields: ["ACCT_TYPE"],
-        // postValidationSetCrossFieldValues: () => {
-        //   return { ACCT_CD: { value: "" }, ACCT_NM: { value: "" } };
+        // schemaValidation: {
+        //   type: "string",
+        //   rules: [{ name: "required", params: ["Acct Type is required."] }],
         // },
+        postValidationSetCrossFieldValues: (field) => {
+          console.log("ac type", field?.value, field?.value.length);
+          if (!field?.value) {
+            return {
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              WIDTH_BAL: { value: "" },
+              OTHER_REMARKS: { value: "" },
+            };
+          }
+        },
       },
       accountCodeMetadata: {
         name: "ACCT_CD",
+        label: "A/C Number",
         placeholder: "",
         fullWidth: true,
         required: true,
@@ -249,6 +263,7 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
+
         // disableCaching: false,
         postValidationSetCrossFieldValues: async (
           field,
@@ -256,20 +271,20 @@ export const chequeReturnPostFormMetaData = {
           auth,
           dependentFieldsValues
         ) => {
-          console.log("dependentFieldsValues", dependentFieldsValues);
+          if (formState?.isSubmitting) return {};
           if (
             field.value &&
-            dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-            dependentFieldsValues?.["BRANCH_CD"]?.value
-            // dependentFieldsValues?.["ACCT_TYPE"]?.value.trim() &&
-            // dependentFieldsValues?.["BRANCH_CD"]?.value.trim()
+            // dependentFieldsValues?.["ACCT_TYPE"]?.value &&
+            // dependentFieldsValues?.["BRANCH_CD"]?.value
+            dependentFieldsValues?.["ACCT_TYPE"]?.value.trim() &&
+            dependentFieldsValues?.["BRANCH_CD"]?.value.trim()
           ) {
-            console.log(
-              "test",
-              field.value &&
-                dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-                dependentFieldsValues?.["BRANCH_CD"]?.value
-            );
+            // console.log(
+            //   ">>if value",
+            //   field.value,
+            //   dependentFieldsValues?.["ACCT_TYPE"]?.value,
+            //   dependentFieldsValues?.["BRANCH_CD"]?.value
+            // );
             let Apireq = {
               COMP_CD: auth?.companyID,
               ACCT_CD: utilFunction.getPadAccountNumber(
@@ -278,27 +293,28 @@ export const chequeReturnPostFormMetaData = {
               ),
               ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
               BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
-              GD_TODAY_DT: auth?.workingDate,
               SCREEN_REF: "ETRN/650",
             };
 
-            let postData = await GeneralAPI.getAccNoValidation(Apireq);
-            if (postData?.MESSAGE1) {
+            let postData = await getInwardAccountDetail(Apireq);
+            if (postData?.[0]?.MESSAGE1) {
               formState?.MessageBox({
                 messageTitle: "Information",
-                message: postData?.MESSAGE1,
+                message: postData?.[0]?.MESSAGE1,
               });
-            } else if (postData?.RESTRICT_MESSAGE) {
+            } else if (postData?.[0]?.RESTRICTION) {
               formState?.MessageBox({
                 messageTitle: "Account Validation Failed",
-                message: postData?.RESTRICT_MESSAGE,
+                message: postData?.[0]?.RESTRICTION,
               });
+              formState.setDataOnFieldChange("ACCT_CD_VALID", []);
               return {
                 ACCT_CD: { value: "", isFieldFocused: true },
                 ACCT_NM: { value: "" },
+                WIDTH_BAL: { value: "" },
               };
             }
-
+            formState.setDataOnFieldChange("ACCT_CD_VALID", postData);
             return {
               // ACCT_CD: {
               //   value: postData?.[0]?.ACCT_NUMBER ?? "",
@@ -309,16 +325,21 @@ export const chequeReturnPostFormMetaData = {
                 ignoreUpdate: true,
               },
               ACCT_NM: {
-                value: postData?.ACCT_NM ?? "",
+                value: postData?.[0]?.ACCT_NM ?? "",
               },
+              WIDTH_BAL: { value: postData?.[0]?.WIDTH_BAL ?? "" },
+              OTHER_REMARKS: { value: postData?.[0]?.OTHER_REMARKS ?? "" },
             };
           } else if (!field?.value) {
+            formState.setDataOnFieldChange("ACCT_CD_BLANK");
             return {
               ACCT_NM: { value: "" },
+              WIDTH_BAL: { value: "" },
+              OTHER_REMARKS: { value: "" },
             };
           }
         },
-
+        runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
       },
     },
@@ -366,7 +387,7 @@ export const chequeReturnPostFormMetaData = {
       required: true,
       // maxLength: 20,
 
-      GridProps: { xs: 12, sm: 3.7, md: 3.7, lg: 3.7, xl: 3.7 },
+      GridProps: { xs: 12, sm: 4.3, md: 4.3, lg: 4.3, xl: 4.3 },
     },
     {
       render: {
@@ -377,18 +398,18 @@ export const chequeReturnPostFormMetaData = {
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 3.3 },
+      GridProps: { xs: 12, sm: 3.2, md: 3.2, lg: 3.2, xl: 3.2 },
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
       name: "WIDTH_BAL",
       label: "Withdraw.Balance",
       type: "text",
       fullWidth: true,
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
     {
       render: {
@@ -406,18 +427,6 @@ export const chequeReturnPostFormMetaData = {
       render: {
         componentType: "formbutton",
       },
-      name: "RETURN",
-      label: "Return",
-      rotateIcon: "scale(1.5)",
-      placeholder: "",
-      type: "text",
-      dependentFields: ["RETURN"],
-      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
-    },
-    {
-      render: {
-        componentType: "formbutton",
-      },
       name: "POSITIVE_PAY",
       label: "Positive Pay",
       rotateIcon: "scale(1.5)",
@@ -425,31 +434,31 @@ export const chequeReturnPostFormMetaData = {
       type: "text",
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
-    // {
-    //   render: {
-    //     componentType: "typography",
-    //   },
-    //   name: "DIVIDER",
-    //   label: "",
-    //   // defaultValue: "For Return",
-    //   TypographyProps: {
-    //     style: {
-    //       whiteSpace: "pre-line",
-    //       color: "red",
-    //       fontSize: "1rem",
-    //       border: "1px solid black",
-    //       borderStyle: "dashed",
-    //       width: "100%",
-    //       height: "0px",
-    //     },
-    //   },
-    //   GridProps: {
-    //     xs: 12,
-    //     md: 12,
-    //     sm: 12,
-    //     style: { alignSelf: "center" },
-    //   },
-    // },
+    {
+      render: {
+        componentType: "typography",
+      },
+      name: "DIVIDER",
+      label: "",
+      // defaultValue: "For Return",
+      TypographyProps: {
+        style: {
+          whiteSpace: "pre-line",
+          color: "red",
+          fontSize: "1rem",
+          border: "1px solid black",
+          borderStyle: "dashed",
+          width: "100%",
+          height: "0px",
+        },
+      },
+      GridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+        style: { alignSelf: "center" },
+      },
+    },
 
     {
       render: {
@@ -457,7 +466,7 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "ZONE_CD",
       label: "Zone",
-      dependentFields: ["RETURN", "ACCT_CD", "BRANCH_CD", "ACCT_TYPE"],
+      dependentFields: ["ACCT_CD", "BRANCH_CD", "ACCT_TYPE"],
       // disableCaching: true,
       options: (dependentValue, formState, _, authState) => {
         let ApiReq = {
@@ -469,13 +478,13 @@ export const chequeReturnPostFormMetaData = {
       },
       _optionsKey: "getInwardZoneTypeList",
 
-      shouldExclude: (_, dependentFieldsValues, __) => {
-        if (dependentFieldsValues?.RETURN?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      // shouldExclude: (_, dependentFieldsValues, __) => {
+      //   if (dependentFieldsValues?.RETURN?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
       postValidationSetCrossFieldValues: (
         field,
         __,
@@ -507,7 +516,7 @@ export const chequeReturnPostFormMetaData = {
       runPostValidationHookAlways: false,
       placeholder: "",
       type: "text",
-      GridProps: { xs: 12, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.7 },
+      GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
     },
     {
       render: {
@@ -517,13 +526,12 @@ export const chequeReturnPostFormMetaData = {
       label: "Return Branch",
       placeholder: "Branch",
       type: "text",
-      isFieldFocused: true,
       required: true,
       // maxLength: 16,
       options: GeneralAPI.getBranchCodeList,
       _optionsKey: "getBranchCodeList",
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
-      dependentFields: ["RETURN", "DISABLE_RET_AC"],
+      dependentFields: ["DISABLE_RET_AC"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (dependentFields?.DISABLE_RET_AC?.value === "Y") {
           return true;
@@ -531,17 +539,17 @@ export const chequeReturnPostFormMetaData = {
           return false;
         }
       },
-      shouldExclude: (_, dependentFieldsValues, __) => {
-        if (dependentFieldsValues?.RETURN?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Branch Code is required."] }],
-      },
+      // shouldExclude: (_, dependentFieldsValues, __) => {
+      //   if (dependentFieldsValues?.RETURN?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Branch Code is required."] }],
+      // },
     },
     {
       render: {
@@ -552,7 +560,7 @@ export const chequeReturnPostFormMetaData = {
       type: "text",
       required: true,
       GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
-      dependentFields: ["RETURN", "DISABLE_RET_AC"],
+      dependentFields: ["DISABLE_RET_AC"],
       isReadOnly: (fieldValue, dependentFields, formState) => {
         if (dependentFields?.DISABLE_RET_AC?.value === "Y") {
           return true;
@@ -560,39 +568,40 @@ export const chequeReturnPostFormMetaData = {
           return false;
         }
       },
-      shouldExclude: (_, dependentFieldsValues, __) => {
-        if (dependentFieldsValues?.RETURN?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Return Account Type is required."] },
-        ],
-      },
       options: GeneralAPI.getAccountTypeList,
       _optionsKey: "getAccountTypeList",
+
+      // shouldExclude: (_, dependentFieldsValues, __) => {
+      //   if (dependentFieldsValues?.RETURN?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [
+      //     { name: "required", params: ["Return Account Type is required."] },
+      //   ],
+      // },
     },
     {
       render: {
         componentType: "textField",
       },
       name: "RET_ACCT_CD",
-      label: "Return Account Number",
+      label: "Return A/C Number",
       type: "text",
       // fullWidth: true,
       required: true,
-      dependentFields: ["RETURN", "DISABLE_RET_AC"],
-      shouldExclude: (_, dependentFieldsValues, __) => {
-        if (dependentFieldsValues?.RETURN?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      dependentFields: ["DISABLE_RET_AC"],
+      // shouldExclude: (_, dependentFieldsValues, __) => {
+      //   if (dependentFieldsValues?.RETURN?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
       FormatProps: {
         isAllowed: (values) => {
           if (values?.value?.length > 6) {
@@ -609,12 +618,12 @@ export const chequeReturnPostFormMetaData = {
         }
       },
 
-      schemaValidation: {
-        type: "string",
-        rules: [
-          { name: "required", params: ["Return Account Number is required."] },
-        ],
-      },
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [
+      //     { name: "required", params: ["Return Account Number is required."] },
+      //   ],
+      // },
       GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
     },
     {
@@ -623,7 +632,7 @@ export const chequeReturnPostFormMetaData = {
       },
       name: "REASON_CD",
       label: "Reason",
-      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
       // runValidationOnDependentFieldsChange: true,
       skipDefaultOption: true,
       options: (dependentValue, formState, _, authState) => {
@@ -636,21 +645,21 @@ export const chequeReturnPostFormMetaData = {
       },
       _optionsKey: "getInwardReasonTypeList",
       // disableCaching: true,
-      dependentFields: ["RETURN"],
-      shouldExclude: (_, dependentFieldsValues, __) => {
-        if (dependentFieldsValues?.RETURN?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      // dependentFields: ["RETURN"],
+      // shouldExclude: (_, dependentFieldsValues, __) => {
+      //   if (dependentFieldsValues?.RETURN?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
     },
 
     {
       render: {
         componentType: "textField",
       },
-      name: "OTH_REASON",
+      name: "REASON",
       label: "Other Reason",
       // placeholder: "EnterAcNo",
       type: "text",
@@ -661,22 +670,33 @@ export const chequeReturnPostFormMetaData = {
       //   type: "string",
       //   rules: [{ name: "required", params: ["Other Reason is required."] }],
       // },
-      dependentFields: ["RETURN"],
-      shouldExclude: (_, dependentFieldsValues, __) => {
-        if (dependentFieldsValues?.RETURN?.value) {
-          return false;
-        } else {
-          return true;
-        }
-      },
+      // dependentFields: ["RETURN"],
+      // shouldExclude: (_, dependentFieldsValues, __) => {
+      //   if (dependentFieldsValues?.RETURN?.value) {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
       GridProps: { xs: 12, sm: 3.3, md: 3.3, lg: 3.3, xl: 2.3 },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "RETURN",
+      label: "Return",
+      rotateIcon: "scale(1.5)",
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 0.9, md: 0.9, lg: 0.9, xl: 0.9 },
     },
   ],
 };
 export const chequesignFormMetaData = {
   form: {
-    name: "CustomerLevelPhotoSignature",
-    label: "Customer Level Photo/Signature",
+    name: "InwardClearingChequeDetail",
+    label: "Inward Clearing Cheque Detail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
     submitAction: "home",
@@ -747,13 +767,13 @@ export const chequesignFormMetaData = {
       render: {
         componentType: "datePicker",
       },
-      name: "CHEQUE_DATE",
+      name: "CHEQUE_DT",
       label: "Cheque Date",
       placeholder: "",
       format: "dd/MM/yyyy",
       type: "text",
       fullWidth: true,
-      required: true,
+
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["Cheque Date is required."] }],
@@ -788,10 +808,7 @@ export const chequesignFormMetaData = {
       fullWidth: true,
       required: true,
       // maxLength: 20,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Description is required."] }],
-      },
+
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
@@ -805,10 +822,7 @@ export const chequesignFormMetaData = {
       fullWidth: true,
       required: true,
       // maxLength: 20,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Description is required."] }],
-      },
+
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
@@ -879,6 +893,232 @@ export const chequesignFormMetaData = {
       //   sm: 4,
       //   style: { alignSelf: "center" },
       // },
+    },
+  ],
+};
+export const positivePayFormMetaData = {
+  form: {
+    name: "InwardClearingChequeDetail",
+    label: "Inward Clearing Cheque Detail",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    // allowColumnHiding: true,
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CONFIRMED",
+      label: "Status ",
+      type: "text",
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "BRANCH_CD",
+      label: "Branch Code",
+      // placeholder: "EnterAcNo",
+      type: "text",
+
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_TYPE",
+      label: "Account Type",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_CD",
+      label: "Account Number",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 1.7, md: 1.7, lg: 1.7, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "Account Name",
+      type: "text",
+      fullWidth: true,
+
+      GridProps: { xs: 12, sm: 4.1, md: 4.1, lg: 4.1, xl: 4.1 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "CHEQUE_NO",
+      label: "Cheque No.",
+      placeholder: "Cheque No.",
+      type: "text",
+      GridProps: { xs: 12, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.7 },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "CHEQUE_DT",
+      label: "Cheque Date",
+      placeholder: "",
+      format: "dd/MM/yyyy",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "CHEQUE_AMT",
+      label: "Cheque Amount",
+      placeholder: "",
+      isFieldFocused: true,
+      required: true,
+      type: "text",
+      FormatProps: {
+        allowNegative: false,
+      },
+      validationRun: "all",
+
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "PAYEE_NM",
+      label: "Payee Name",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 4.3, md: 4.3, lg: 4.3, xl: 4.3 },
+    },
+
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "TRAN_DT",
+      label: "Entery Date",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "REMARKS",
+      label: "Remarks",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 4 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ENTERED_BY",
+      label: "Enterd By",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ENTERED_BRANCH_CD",
+      label: "Enterd Branch",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "REQ_CHANNEL",
+      label: "Received From",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
     },
   ],
 };

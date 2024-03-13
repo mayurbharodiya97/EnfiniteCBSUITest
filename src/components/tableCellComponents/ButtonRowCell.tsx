@@ -9,7 +9,15 @@ export const ButtonRowCell = (props) => {
       index,
       original: { _isNewRow },
     },
-    column: { id, buttonLabel, columnName, isVisible, isVisibleInNew ,shouldExclude},
+    column: {
+      id,
+      buttonLabel,
+      columnName,
+      isVisible,
+      isVisibleInNew,
+      shouldExclude,
+      isColumnName,
+    },
     updateGridData,
     onButtonActionHandel,
   } = props;
@@ -17,18 +25,33 @@ export const ButtonRowCell = (props) => {
     () => (Boolean(_isNewRow) ? isVisibleInNew : isVisible),
     [isVisible, _isNewRow]
   );
-  const isShouldExclude = useMemo(()=>{ if(typeof shouldExclude === "function"){
-    return shouldExclude(initialValue);
-  } return false; },[initialValue]);
+  const isShouldExclude = useMemo(() => {
+    if (typeof shouldExclude === "function") {
+      return shouldExclude(initialValue);
+    }
+    return false;
+  }, [initialValue]);
   const handleClick = (e) => {
     //updateGridData(index, id, true, true, "");
     if (typeof onButtonActionHandel === "function") {
       onButtonActionHandel(index, id);
     }
   };
-  if(isShouldExclude){
-    return (<CellWrapper showBorder {...props}></CellWrapper>)
+  const isShouldChangeColumnName = useMemo(() => {
+    if (typeof isColumnName === "function") {
+      return isColumnName(initialValue);
+    }
+    return null;
+  }, [initialValue]);
+
+  const newColumnName = Boolean(isShouldChangeColumnName)
+    ? isShouldChangeColumnName
+    : columnName;
+
+  if (isShouldExclude) {
+    return <CellWrapper showBorder {...props}></CellWrapper>;
   }
+
   return (
     <CellWrapper showBorder {...props}>
       {is_Visible ? (
@@ -38,7 +61,7 @@ export const ButtonRowCell = (props) => {
           onClick={handleClick}
           fullWidth
         >
-          {Boolean(buttonLabel) ? buttonLabel : columnName}
+          {Boolean(buttonLabel) ? buttonLabel : newColumnName}
         </Button>
       ) : null}
     </CellWrapper>

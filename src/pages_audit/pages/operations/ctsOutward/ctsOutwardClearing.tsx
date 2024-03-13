@@ -228,7 +228,6 @@ const CtsOutwardClearingForm: FC<{
         ...old,
         chequeDetails: [
           {
-            CHEQUE_DATE: "",
             ECS_USER_NO: "",
             CHEQUE_NO: "",
           },
