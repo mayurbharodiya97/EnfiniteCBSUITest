@@ -319,7 +319,7 @@ const KYCDetails = ({
                   RESIDENCE_STATUS: state?.formDatactx["PERSONAL_DETAIL"]?.RESIDENCE_STATUS ?? "",
                 }}
                 setDataOnFieldChange={(action, payload) => {
-                  // console.log("wekjukfhwiuefadw", action)
+                  // console.log(payload, "wekjukfhwiuefadw", action)
                   // const result = payload;
                   if(Boolean(payload) && (
                     action === "PAN_NO" || 
@@ -451,20 +451,17 @@ const KYCDetails = ({
       ) : null}
       <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
 
-        {
-          openDialog && 
-          <MessageBoxWrapper
-            MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}
-            Message={errMsg ?? "No Message"}
-            onClickButton={() => {
-              setOpenDialog(false)
-              setErrMsg("")
-            }}
-            rows={[]}
-            buttonNames={["OK"]}
-            open={true}
-          />
-        }
+      <MessageBoxWrapper
+        MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}
+        Message={errMsg ?? "No Message"}
+        onClickButton={() => {
+          setOpenDialog(false)
+          setErrMsg("")
+        }}
+        rows={[]}
+        buttonNames={["OK"]}
+        open={openDialog}
+      />
       {/* <Dialog
         open={openDialog}
         maxWidth={"sm"}

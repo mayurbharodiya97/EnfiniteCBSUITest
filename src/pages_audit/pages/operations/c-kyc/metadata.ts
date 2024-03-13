@@ -160,6 +160,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
+    isCusrsorFocused: true,
   },
   // filters: [],
   columns: [
@@ -297,7 +298,8 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: false
+    allowRowSelection: false,
+    isCusrsorFocused: true,
   },
   // filters: [],
   columns: [

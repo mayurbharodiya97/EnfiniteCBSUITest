@@ -184,7 +184,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx, handleUpdatectx } = useContext(CkycContext);
   // const { state: data }: any = useLocation();
   const location: any = useLocation();
   const { t } = useTranslation();
@@ -325,8 +325,7 @@ export default function FormModal({
     } else {
       handleFormModalClosectx()
       onClose()
-    }
-    
+    }    
   }, [])
 
 
@@ -341,12 +340,26 @@ export default function FormModal({
       //   // isLoading: false,
       // })
       if(Boolean(state?.isFinalUpdatectx)) {
-        if(Object.keys(state?.modifiedFormCols).length >0) {
-          setUpdateDialog(true)
-          // setCancelDialog(true)
-        } else {
-          setAlertOnUpdate(true)
+        const getUpdatedTabs = async () => {
+          const {updated_tab_format, update_type} = await handleUpdatectx({
+            COMP_CD: authState?.companyID ?? ""
+          })
+          if(typeof updated_tab_format === "object") {
+            // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
+            if (Object.keys(updated_tab_format)?.length === 0) {
+                setAlertOnUpdate(true)
+            } else if(Object.keys(updated_tab_format)?.length>0) {
+              setUpdateDialog(true)
+            }
+          }
         }
+        getUpdatedTabs().catch(err => console.log("update error", err.message))
+        // if(Object.keys(state?.modifiedFormCols).length >0) {
+        //   setUpdateDialog(true)
+        //   // setCancelDialog(true)
+        // } else {
+        //   setAlertOnUpdate(true)
+        // }
       } else {
         if((totalTab - 1) > state?.colTabValuectx) {
           handleCurrFormctx({

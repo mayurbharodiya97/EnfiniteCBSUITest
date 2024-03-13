@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC, useState } from "react";
 import { useQuery } from "react-query";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
@@ -7,22 +7,12 @@ import * as API from "../api";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { chequesignFormMetaData } from "./metaData";
 import { format } from "date-fns";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Alert } from "components/common/alert";
 import { ChequeSignImage } from "./chequeSignImage";
 
 export const ChequeSignForm: FC<{
   onClose?: any;
   reqDataRef?: any;
 }> = ({ onClose, reqDataRef }) => {
-  const [rotate, setRotate] = useState<number>(0);
-
-  const handleRotateChange = () => {
-    // Calculate the new rotation angle by adding or subtracting 90 degrees
-    const newRotateValue = (rotate + 90) % 360;
-    setRotate(newRotateValue);
-  };
-
   const reqData = {
     COMP_CD: reqDataRef.current?.COMP_CD ?? "",
     ENTERED_COMP_CD: reqDataRef.current?.ENTERED_COMP_CD ?? "",
@@ -43,23 +33,6 @@ export const ChequeSignForm: FC<{
   >(["getInwardChequeSignFormData", { reqData }], () =>
     API.getInwardChequeSignFormData(reqData)
   );
-
-  if (chequesignFormMetaData.form.label) {
-    chequesignFormMetaData.form.label =
-      "A/C No:-" +
-      " " +
-      reqDataRef.current?.BRANCH_CD +
-      "-" +
-      reqDataRef.current?.ACCT_TYPE +
-      "-" +
-      reqDataRef.current?.ACCT_CD +
-      "--" +
-      " " +
-      "Press ESC Key to Close" +
-      " - " +
-      "Customer Level Photo/Signature" +
-      " ";
-  }
 
   return (
     <>
@@ -103,14 +76,11 @@ export const ChequeSignForm: FC<{
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                <GradientButton onClick={handleRotateChange}>
-                  {rotate === 0 ? "Rotate" : "Reset"}
-                </GradientButton>
                 <GradientButton onClick={onClose}>Close</GradientButton>
               </>
             )}
           </FormWrapper>
-          <ChequeSignImage imgData={data} rotate={rotate} />
+          <ChequeSignImage imgData={data} />
         </>
         {/* )} */}
       </Dialog>

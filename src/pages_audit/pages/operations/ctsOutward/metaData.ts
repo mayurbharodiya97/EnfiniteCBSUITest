@@ -111,7 +111,7 @@ export const CTSOutwardClearingFormMetaData = {
         dependentFields: ["ACCT_TYPE"],
         postValidationSetCrossFieldValues: () => {
           return {
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: true },
             ACCT_NAME: { value: "" },
             TRAN_BAL: { value: "" },
           };
@@ -190,7 +190,7 @@ export const CTSOutwardClearingFormMetaData = {
             };
           }
         },
-        runPostValidationHookAlways: true,
+        // runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
       },
     },
@@ -672,8 +672,8 @@ export const ChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
-          isFieldFocused: true,
-          defaultfocus: true,
+          // isFieldFocused: true,
+          // defaultfocus: true,
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -723,6 +723,7 @@ export const ChequeDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
+            if (formState?.isSubmitting) return {};
             if (field.value) {
               let formData = {
                 COMP_CD: auth.companyID ?? "",
@@ -832,7 +833,6 @@ export const ChequeDetailFormMetaData: any = {
                 "en-IN"
               )} - ${transDate.toLocaleDateString("en-IN")}`;
             }
-            return "";
           },
 
           required: true,
@@ -913,7 +913,7 @@ export const ChequeDetailFormMetaData: any = {
           name: "AMOUNT",
           label: "Cheque Amount",
           placeholder: "",
-          isFieldFocused: true,
+          // isFieldFocused: true,
           required: true,
           type: "text",
           FormatProps: {

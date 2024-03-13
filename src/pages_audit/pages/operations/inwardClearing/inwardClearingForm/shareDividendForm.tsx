@@ -11,24 +11,7 @@ import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import { ChequeSignImage } from "./chequeSignImage";
 
-export const PositivePayFormWrapper: FC<{
-  onClose?: any;
-  positiveData?: any;
-}> = ({ onClose, positiveData }) => {
-  const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
-    any,
-    any
-  >(["getPositivePayData", { ...positiveData }], () =>
-    API.getPositivePayData({
-      COMP_CD: positiveData?.COMP_CD,
-      BRANCH_CD: positiveData?.BRANCH_CD,
-      ACCT_TYPE: positiveData?.ACCT_TYPE,
-      ACCT_CD: positiveData?.ACCT_CD,
-      CHEQUE_NO: positiveData?.CHEQUE_NO,
-    })
-  );
-  // console.log("???positiveData", positiveData);
-  // console.log("???data", data);
+export const ShareDividendFormWrapper: FC<{}> = ({}) => {
   return (
     <>
       <Dialog
@@ -57,7 +40,7 @@ export const PositivePayFormWrapper: FC<{
           <FormWrapper
             key={`positivePayForm`}
             metaData={positivePayFormMetaData as unknown as MetaDataType}
-            initialValues={data?.[0]}
+            initialValues={{}}
             onSubmitHandler={{}}
             formStyle={{
               background: "white",
@@ -66,7 +49,7 @@ export const PositivePayFormWrapper: FC<{
           >
             {({ isSubmitting, handleSubmit }) => (
               <>
-                <GradientButton onClick={onClose}>Close</GradientButton>
+                {/* <GradientButton onClick={onClose}>Close</GradientButton> */}
               </>
             )}
           </FormWrapper>
