@@ -12,35 +12,51 @@ import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 
-export const Group = () => {
+export const Group = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
 
-  // api define
-  const getGroupList = useMutation(API.getGroupList, {
-    onSuccess: (data) => {
-      console.log(data, " getGroupList detailssss");
-      setRows(data);
-    },
-    onError: (error) => {},
-  });
+  // // api define
+  // const getGroupList = useMutation(API.getGroupList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getGroupList detailssss");
+  //     setRows(data);
+  //   },
+  //   onError: (error) => {},
+  // });
 
-  useEffect(() => {
-    tempStore?.accInfo?.ACCT_CD && getGroupList.mutate(tempStore.accInfo);
-  }, [tempStore]);
+  // useEffect(() => {
+  //   tempStore?.accInfo?.ACCT_CD && getGroupList.mutate(tempStore.accInfo);
+  // }, [tempStore]);
+
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getGroupList", { reqData }], () => API.getGroupList(reqData));
 
   return (
     <>
+      {isError ? (
+        <Fragment>
+          <div style={{ width: "100%", paddingTop: "10px" }}>
+            <Alert
+              severity={error?.severity ?? "error"}
+              errorMsg={error?.error_msg ?? "Error"}
+              errorDetail={error?.error_detail ?? ""}
+            />
+          </div>
+        </Fragment>
+      ) : null}
       <GridWrapper
         key={`GroupGridMetaData`}
         finalMetaData={GroupGridMetaData as GridMetaDataType}
-        data={rows}
+        data={data ?? []}
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
-        loading={getGroupList.isLoading}
+        loading={isLoading || isFetching}
       />
     </>
   );

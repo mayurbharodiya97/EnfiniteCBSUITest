@@ -176,8 +176,8 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "18vh",
-      max: "18vh",
+      min: "25.2vh",
+      max: "25.2vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

@@ -32,7 +32,7 @@ import Subsidyy from "./Subsidyy";
 import Disbursement from "./Disbursement";
 import AccDetails from "./AccountDetails";
 import "./DailyTransTabs.css";
-import { AccDetailContext } from "pages_audit/auth";
+import { AccDetailContext, AuthContext, AuthProvider } from "pages_audit/auth";
 import Limit from "./Limit";
 import Stock from "./Stock";
 //other
@@ -61,6 +61,7 @@ import { useMutation, useQuery } from "react-query";
 import { ActionTypes } from "components/dataTable";
 import { enqueueSnackbar } from "notistack";
 import * as CommonApi from "../TRNCommon/api";
+import { GradientButton } from "components/styledComponent/button";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -99,8 +100,6 @@ export const DailyTransTabs = ({
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const navArray = tabsData ? tabsData : [];
 
-  console.log(cardsData, "cardsDatadailytrans");
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
     console.log(newValue, "newval");
@@ -113,9 +112,8 @@ export const DailyTransTabs = ({
 
   console.log(tabValue, "tabValue");
   return (
-    <div style={{ padding: "8px" }}>
-      <h2> {heading}</h2>
-
+    <div style={{ padding: "8px 8px 0px 8px" }}>
+      {Boolean(heading) && <h2> {heading}</h2>}
       <>
         <Grid item xs="auto" id="dailyTabs">
           <Tabs
@@ -148,12 +146,18 @@ export const DailyTransTabs = ({
                 {a?.TAB_NAME.match("IMPS") && <IMPS />}
                 {a?.TAB_NAME.includes("ASBA") && <ASBA />}
                 {a?.TAB_NAME.includes("ACH I/W") && <ACH_IW />}
-                {a?.TAB_NAME.includes("ACH O/W") && <ACH_OW />}
-                {a?.TAB_NAME.includes("Sp.Instruction") && <Instruction />}
-                {a?.TAB_NAME.includes("Group A/c(s)") && <Group />}
-                {a?.TAB_NAME.includes("APY") && <APY />}
-                {a?.TAB_NAME.includes("APBS") && <APBS />}
-                {a?.TAB_NAME.includes("PMBY") && <PMBY />}
+                {a?.TAB_NAME.includes("ACH O/W") && (
+                  <ACH_OW reqData={reqData} />
+                )}
+                {a?.TAB_NAME.includes("Sp.Instruction") && (
+                  <Instruction reqData={reqData} />
+                )}
+                {a?.TAB_NAME.includes("Group A/c(s)") && (
+                  <Group reqData={reqData} />
+                )}
+                {a?.TAB_NAME.includes("APY") && <APY reqData={reqData} />}
+                {a?.TAB_NAME.includes("APBS") && <APBS reqData={reqData} />}
+                {a?.TAB_NAME.includes("PMBY") && <PMBY reqData={reqData} />}
                 {a.TAB_NAME.includes("Account") && (
                   <AccDetails cardsData={cardsData} />
                 )}
@@ -203,30 +207,45 @@ export const DailyTransTabs = ({
   );
 };
 
-export const DailyTransTabsWithDialog = () => {
-  const [tabData, setTabsData] = useState<any>([]);
-  useEffect(() => {
-    // Add event listener for the message event
-    //@ts-ignore
-    window._childFunction = (req) => {
-      if (Boolean(req)) {
-        setTabsData(req);
-      }
-      //@ts-ignore
-      window._childFunction = null;
-    };
-    //@ts-ignore
-    window?.opener?._parentFuntion?.();
-    return () => {
-      //@ts-ignore
-      window._childFunction = null;
-    };
-  }, []);
+export const DailyTransTabsWithDialog = ({
+  tabData,
+  setTabsData,
+  handleClose,
+  rowsData,
+  setRowsData,
+  getTabsByParentType,
+  getCarousalCards,
+}) => {
+  const [newRowsData, setNewRowsData] = useState([]);
+  const { authState } = useContext(AuthContext);
+  // const [tabData, setTabsData] = useState<any>([]);
+  // useEffect(() => {
+  //   // Add event listener for the message event
+  //   //@ts-ignore
+  //   window._childFunction = (req) => {
+  //     if (Boolean(req)) {
+  //       setTabsData(req);
+  //     }
+  //     //@ts-ignore
+  //     window._childFunction = null;
+  //   };
+  //   //@ts-ignore
+  //   window?.opener?._parentFuntion?.();
+  //   return () => {
+  //     //@ts-ignore
+  //     window._childFunction = null;
+  //   };
+  // }, []);
 
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getAcctDtlList"], () => API.getAcctDtlList());
+  >(["getAcctDtlList", { rowsData }], () =>
+    API.getAcctDtlList({
+      ...rowsData?.[0]?.data,
+      COMP_CD: authState?.companyID,
+    })
+  );
 
   const actions: ActionTypes[] = [
     {
@@ -239,71 +258,60 @@ export const DailyTransTabsWithDialog = () => {
       actionBackground: "inherit",
     },
   ];
-  let tabsApiSuccess = [];
-  let cardsApiSuccess = [];
+  // let tabsApiSuccess = [];
+  // let cardsApiSuccess = [];
 
-  const handleBothAPISuccess = () => {
-    if (tabsApiSuccess !== null && cardsApiSuccess !== null) {
-      setTabsData((preTabsData) => ({
-        ...preTabsData,
-        tabsData: tabsApiSuccess,
-      }));
-      setTabsData((preCardsData) => ({
-        ...preCardsData,
-        cardStore: cardsApiSuccess,
-      }));
-    }
-  };
+  // const handleBothAPISuccess = () => {
+  //   if (tabsApiSuccess !== null && cardsApiSuccess !== null) {
+  //     setTabsData((preTabsData) => ({
+  //       ...preTabsData,
+  //       tabsData: tabsApiSuccess,
+  //     }));
+  //     setTabsData((preCardsData) => ({
+  //       ...preCardsData,
+  //       cardStore: cardsApiSuccess,
+  //     }));
+  //   }
+  // };
 
-  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-    onSuccess: (data) => {
-      tabsApiSuccess = data;
-      handleBothAPISuccess();
-      // setTabsData((preTabsData) => ({ ...preTabsData, tabsData: data }));
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-      setTabsData((preTabsData) => ({
-        ...preTabsData,
-        tabsData: [],
-      }));
-      setTabsData((preCardsData) => ({
-        ...preCardsData,
-        cardStore: [],
-      }));
-    },
-  });
+  // const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
+  //   onSuccess: (data) => {
+  //     // tabsApiSuccess = data;
+  //     // handleBothAPISuccess();
+  //     setTabsData((preTabsData) => ({ ...preTabsData, tabsData: data }));
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //     setTabsData((preTabsData) => ({
+  //       ...preTabsData,
+  //       tabsData: [],
+  //     }));
+  //   },
+  // });
 
-  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
-    onSuccess: (data) => {
-      cardsApiSuccess = data;
-      handleBothAPISuccess();
-      // setTabsData((preCardsData) => ({ ...preCardsData, cardStore: data }));
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-      setTabsData((preTabsData) => ({
-        ...preTabsData,
-        tabsData: [],
-      }));
-      setTabsData((preCardsData) => ({
-        ...preCardsData,
-        cardStore: [],
-      }));
-    },
-  });
+  // const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
+  //   onSuccess: (data) => {
+  //     // cardsApiSuccess = data;
+  //     // handleBothAPISuccess();
+  //     setTabsData((preCardsData) => ({ ...preCardsData, cardStore: data }));
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //     setTabsData((preCardsData) => ({
+  //       ...preCardsData,
+  //       cardStore: [],
+  //     }));
+  //   },
+  // });
 
   const setCurrentAction = useCallback((data) => {
     const rowsData = data?.rows?.[0]?.data;
     if (rowsData) {
-      setTabsData((preRowsData) => ({
-        ...preRowsData,
-        rowsData: rowsData,
-      }));
+      setRowsData(data?.rows);
       getTabsByParentType.mutate(rowsData);
       getCarousalCards.mutate({ ...rowsData, PARENT_TYPE: "" });
     }
@@ -315,65 +323,67 @@ export const DailyTransTabsWithDialog = () => {
         cardsData={tabData?.cardStore}
         tabData={tabData?.tabsData}
       /> */}
-      <Box>
-        <DialogTitle
+
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          background: "var(--theme-color5)",
+          margin: "10px 32px 0px 32px",
+          alignItems: "center",
+          height: "7vh",
+          boxShadow:
+            "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
+        }}
+      >
+        <Typography
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            background: "var(--theme-color5)",
-            margin: "10px 32px 0px 32px",
-            alignItems: "center",
-            height: "7vh",
-            boxShadow:
-              "0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)",
+            fontWeight: 500,
+            fontSize: "1.25rem",
+            lineHeight: 1.6,
+            letterSpacing: "0.0075em",
+            color: "#fff",
           }}
         >
-          <Typography
-            sx={{
-              fontWeight: 500,
-              fontSize: "1.25rem",
-              lineHeight: 1.6,
-              letterSpacing: "0.0075em",
-              color: "#fff",
-            }}
-          >
-            {`Account Details For Customer ID : ${
-              tabData?.rowsData?.CUSTOMER_ID ?? ""
-            }`}
-          </Typography>
-        </DialogTitle>
-        {Boolean(getCarousalCards.isLoading) ||
-        Boolean(getTabsByParentType.isLoading) ? (
-          <LinearProgress
-            sx={{
-              margin: "4px 32px 0 32px",
-              background: "var(--theme-color6)",
-              "& .MuiLinearProgress-bar": {
-                background: "var(--theme-color1) !important",
-              },
-            }}
-          />
-        ) : null}
-        <DialogContent sx={{ paddingTop: "10px", paddingBottom: "10px" }}>
-          <DailyTransTabs
-            heading={""}
-            tabsData={tabData?.tabsData}
-            cardsData={tabData?.cardStore}
-            reqData={tabData?.rowsData}
-          />
-          <GridWrapper
-            key={`TodaysTransactionTableGrid`}
-            finalMetaData={AccountDetailsGridMetadata as GridMetaDataType}
-            data={data ?? []}
-            setData={() => null}
-            ReportExportButton={true}
-            actions={actions}
-            setAction={setCurrentAction}
-            refetchData={() => refetch()}
-            loading={isLoading || isFetching}
-          />
-        </DialogContent>
-      </Box>
+          {`Account Details For Customer ID : ${
+            tabData?.rowsData?.CUSTOMER_ID ?? ""
+          }`}
+        </Typography>
+        <GradientButton onClick={handleClose} color="primary">
+          Close
+        </GradientButton>
+      </DialogTitle>
+      {Boolean(getCarousalCards.isLoading) ||
+      Boolean(getTabsByParentType.isLoading) ? (
+        <LinearProgress
+          sx={{
+            margin: "4px 32px 0 32px",
+            background: "var(--theme-color6)",
+            "& .MuiLinearProgress-bar": {
+              background: "var(--theme-color1) !important",
+            },
+          }}
+        />
+      ) : null}
+      <DialogContent sx={{ paddingTop: "10px", paddingBottom: "0px" }}>
+        <DailyTransTabs
+          heading={""}
+          tabsData={tabData?.tabsData}
+          cardsData={tabData?.cardStore}
+          reqData={{ ...rowsData?.[0]?.data, COMP_CD: authState?.companyID }}
+        />
+        <GridWrapper
+          key={`TodaysTransactionTableGrid`}
+          finalMetaData={AccountDetailsGridMetadata as GridMetaDataType}
+          data={data ?? []}
+          setData={() => null}
+          ReportExportButton={true}
+          actions={actions}
+          setAction={setCurrentAction}
+          refetchData={() => refetch()}
+          loading={isLoading || isFetching}
+        />
+      </DialogContent>
     </Dialog>
   );
 };

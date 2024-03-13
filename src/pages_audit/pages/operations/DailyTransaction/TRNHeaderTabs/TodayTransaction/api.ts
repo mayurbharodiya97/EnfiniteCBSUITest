@@ -115,15 +115,15 @@ export const saveCustomerRegisterRequest = async ({ inputData }) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getAcctDtlList = async () => {
+export const getAcctDtlList = async (reqParaMeters) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSEARCHCOMPONENT", {
-      COMP_CD: "132 ",
-      A_FLAG: "",
-      BRANCH_CD: "",
-      ACCT_TYPE: "",
-      ACCT_CD: "",
-      CUST_ID: "12",
+      COMP_CD: reqParaMeters?.COMP_CD,
+      A_FLAG: "A",
+      BRANCH_CD: reqParaMeters?.BRANCH_CD,
+      ACCT_TYPE: reqParaMeters?.ACCT_TYPE,
+      ACCT_CD: reqParaMeters?.ACCT_CD,
+      CUST_ID: reqParaMeters?.CUSTOMER_ID,
     });
   if (status === "0") {
     return data;

@@ -77,10 +77,6 @@ export const PagesAudit = (props, { columns }) => {
                 <Route path="dashboard/*" element={<Dashboard />} />
                 <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
-                <Route
-                  path="searching/*"
-                  element={<DailyTransTabsWithDialog />}
-                />
                 <Route path="configuration/*" element={<Configuration />} />
                 <Route path="dynamicgrid/:id*" element={<DynamicGrids />} />
                 <Route path="operation/daily_tran_F1" element={<Trn001 />} />

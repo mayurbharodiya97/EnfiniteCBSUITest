@@ -3,8 +3,6 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Grid, Card, CardContent } from "@mui/material";
 import { Carousel } from "react-responsive-carousel";
 import { utilFunction } from "components/utils";
-import Zoom from "react-medium-image-zoom";
-import "react-medium-image-zoom/dist/styles.css";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { Alert } from "components/common/alert";
 import noPhotoAvailble from "../../../../../assets/images/noPhotoAvailble.jpg";
@@ -131,13 +129,11 @@ export const ChequeSignImage: FC<{
                           height: "100%",
                         }}
                       >
-                        <Zoom zoomMargin={40}>
-                          <img
-                            src={imageUrl}
-                            alt={`image-${index}`}
-                            style={{ height: "100%", width: "100%" }}
-                          />
-                        </Zoom>
+                        <img
+                          src={imageUrl}
+                          alt={`image-${index}`}
+                          style={{ height: "100%", width: "100%" }}
+                        />
                       </div>
                     </CardContent>
                   </Card>{" "}
@@ -172,12 +168,10 @@ export const ChequeSignImage: FC<{
                       }}
                     >
                       {" "}
-                      <Zoom zoomMargin={40}>
-                        <img
-                          src={noPhotoAvailble}
-                          style={{ height: "100%", width: "100%" }}
-                        />{" "}
-                      </Zoom>
+                      <img
+                        src={noPhotoAvailble}
+                        style={{ height: "100%", width: "100%" }}
+                      />{" "}
                       {/* <h1
                         style={{
                           width: "160px",
@@ -224,17 +218,15 @@ export const ChequeSignImage: FC<{
                         justifyContent: "center",
                       }}
                     >
-                      <Zoom zoomMargin={40}>
-                        <img
-                          src={Boolean(signImageURL) ? signImageURL : ""}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                          alt="Sign"
-                        />
-                      </Zoom>
+                      <img
+                        src={Boolean(signImageURL) ? signImageURL : ""}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                        alt="Sign"
+                      />
                     </div>
                   ) : (
                     <div
@@ -245,12 +237,10 @@ export const ChequeSignImage: FC<{
                         justifyContent: "center",
                       }}
                     >
-                      <Zoom zoomMargin={40}>
-                        <img
-                          src={noPhotoAvailble}
-                          style={{ height: "100%", width: "100%" }}
-                        />{" "}
-                      </Zoom>
+                      <img
+                        src={noPhotoAvailble}
+                        style={{ height: "100%", width: "100%" }}
+                      />{" "}
                     </div>
                   )}
                 </CardContent>
