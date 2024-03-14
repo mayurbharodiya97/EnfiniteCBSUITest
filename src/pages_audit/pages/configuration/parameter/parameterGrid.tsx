@@ -31,11 +31,12 @@ const actions: ActionTypes[] = [
 
 const Parameters = () => {
   const navigate = useNavigate();
-  const authState = useContext(AuthContext);
+  const {authState} = useContext(AuthContext);
   const [rowsData, setRowsData] = useState([]);
   const myGridRef = useRef<any>(null);
   const [acctOpen, setAcctOpen] = useState(false);
   const [paraType, setParaType] = useState("H");
+  // const [conf_type, setConf_Type] = useState("H");
   const [componentToShow, setComponentToShow] = useState("");
   const [actionMenu, setActionMenu] = useState(actions);
   const setCurrentAction = useCallback(async (data) => {
@@ -68,7 +69,12 @@ const Parameters = () => {
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
     ["getParametersGridData", paraType],
-    () => API.getParametersGridData(paraType)
+    () => API.getParametersGridData({
+        para_type: paraType, 
+        comp_cd: authState?.companyID, 
+        branch_cd: authState.user.branchCode,
+        conf_type: "A"
+      })
   );
 
   useEffect(() => {
@@ -93,7 +99,7 @@ const Parameters = () => {
         finalMetaData={ParametersGridMetaData as GridMetaDataType}
         data={data ?? []}
         ReportExportButton={true}
-        actions={authState.authState.user.branchCode!==authState.authState.user.baseBranchCode?[]:actionMenu}
+        actions={authState.user.branchCode!==authState.user.baseBranchCode?[]:actionMenu}
         setAction={setCurrentAction}
         setData={() => null}
         loading={isLoading || isFetching}
