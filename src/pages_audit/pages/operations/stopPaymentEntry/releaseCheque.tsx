@@ -8,13 +8,13 @@ import {
 import React, { useContext, useEffect } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { releaseChequeMetadata } from "./releaseChequeMetadata";
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
-import { useMutation } from "react-query";
+import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { releaseChequeMetadata } from "./releaseChequeMetadata";
+import { useMutation } from "react-query";
 import { crudStopPayment } from "./api";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
@@ -26,21 +26,24 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
     ...rows?.[0]?.data,
     RELEASE_DATE: authState?.workingDate,
   };
-  console.log("<<<rows", rows);
 
   const releaseStpCheque: any = useMutation(
     "crudStopPayment",
     crudStopPayment,
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         navigate(".");
-        enqueueSnackbar("Force-Expired successfully", { variant: "success" });
+        enqueueSnackbar("Cheque released Successfully.", {
+          variant: "success",
+        });
         getStopPayDetail.mutate({
           COMP_CD: authState?.companyID,
           ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
           ACCT_CD: rows?.[0]?.data?.ACCT_CD,
           BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-          ENTERED_DATE: authState?.workingDate,
+          // ENTERED_DATE: authState?.workingDate,
+          GD_TODAY: authState?.workingDate,
+          USER_LEVEL: authState?.role,
         });
       },
     }
@@ -58,7 +61,10 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
   }, [rows?.[0]?.data]);
 
   const onSubmitHandler = (data: any, displayData, endSubmit) => {
-    console.log("<<<savehandle", data);
+    let upd = utilFunction.transformDetailsData(
+      data,
+      newIntialData ?? rows?.[0]?.data
+    );
 
     let apiReq = {
       _isNewRow: false,
@@ -69,13 +75,7 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
       REMARKS: data?.REMARKS,
       REASON_CD: data?.REASON_CD,
       INFAVOUR_OF: data?.INFAVOUR_OF,
-      _UPDATEDCOLUMNS: ["RELEASE_DATE", "REMARKS", "INFAVOUR_OF"],
-      _OLDROWVALUE: {
-        RELEASE_DATE: rows?.[0]?.data?.RELEASE_DATE ?? "",
-        REMARKS: rows?.[0]?.data?.REMARKS ?? "",
-        INFAVOUR_OF: rows?.[0]?.data?.INFAVOUR_OF ?? "",
-        REASON_CD: rows?.[0]?.data?.REASON_CD ?? "",
-      },
+      ...upd,
     };
     releaseStpCheque.mutate(apiReq);
 
@@ -111,7 +111,7 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
           <LinearProgressBarSpacer />
         )}
         <FormWrapper
-          key={"nscdetailForm"}
+          key={"releaseChequeMetadata"}
           metaData={releaseChequeMetadata}
           initialValues={newIntialData ?? []}
           onSubmitHandler={onSubmitHandler}

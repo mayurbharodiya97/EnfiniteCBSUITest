@@ -26,6 +26,11 @@ export const stopPayDetail = async (apiReqPara) => {
       } else {
         item.CONFIRMED = "Pending";
       }
+
+      if (item?.ALLOW_RELEASE === "Y") {
+        item._rowColor = "rgb(241, 171, 245)";
+      }
+
       return item;
     });
     return dataStatus;

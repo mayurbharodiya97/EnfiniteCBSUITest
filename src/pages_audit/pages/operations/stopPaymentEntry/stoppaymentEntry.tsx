@@ -66,6 +66,9 @@ const StopPaymentEntryCustom = () => {
       onSuccess: (data) => {
         setGridDetailData(data);
       },
+      onError: (error: any) => {
+        setCloseAlert(true);
+      },
     }
   );
 
@@ -74,8 +77,6 @@ const StopPaymentEntryCustom = () => {
     API.validateInsert,
     {
       onSuccess: (data) => {
-        console.log("<<<dadada", data);
-
         if (data?.O_STATUS !== "0") {
           setIsOpenSave(true);
         } else {
@@ -97,7 +98,8 @@ const StopPaymentEntryCustom = () => {
           ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
           ACCT_TYPE: variables?.ACCT_TYPE,
           BRANCH_CD: variables?.BRANCH_CD,
-          ENTERED_DATE: authState?.workingDate,
+          // ENTERED_DATE: authState?.workingDate,
+          GD_TODAY: authState?.workingDate,
           USER_LEVEL: authState?.role,
         });
         enqueueSnackbar("Data Delete successfully", { variant: "success" });
@@ -116,6 +118,7 @@ const StopPaymentEntryCustom = () => {
 
   const setCurrentAction = useCallback(
     (data) => {
+      console.log("---setcu", data);
       navigate(data?.name, {
         state: data?.rows,
       });
@@ -173,6 +176,8 @@ const StopPaymentEntryCustom = () => {
                     ACCT_TYPE: res?.ACCT_TYPE,
                     BRANCH_CD: res?.BRANCH_CD,
                     ENTERED_DATE: authState?.workingDate,
+
+                    GD_TODAY: authState?.workingDate,
                     USER_LEVEL: authState?.role,
                   };
                   getStopPayDetail.mutate(RequestPara);
@@ -234,7 +239,10 @@ const StopPaymentEntryCustom = () => {
               metaData={StopPayEntryMetadata ?? []}
               initialValues={initialValuesRef.current ?? {}}
               onSubmitHandler={(data: any, displayData, endSubmit) => {
-                insertDataRef.current = data;
+                insertDataRef.current = {
+                  ...data,
+                  TRAN_DT: data?.TRAN_DT || data?.SURR_DT,
+                };
                 validateInsertData.mutate({
                   BRANCH_CD: data?.BRANCH_CD,
                   ACCT_TYPE: data?.ACCT_TYPE,
@@ -274,7 +282,7 @@ const StopPaymentEntryCustom = () => {
           ) : value === "tab2" ? (
             <>
               <GridWrapper
-                key={`stopPayGridData` + getStopPayDetail.isSuccess}
+                key={`stopPayGridData` + getStopPayDetail.isLoading}
                 finalMetaData={StopPayGridMetaData as GridMetaDataType}
                 data={gridDetailData ?? []}
                 setData={() => {}}
@@ -282,8 +290,10 @@ const StopPaymentEntryCustom = () => {
                 actions={releaseActions}
                 setAction={setCurrentAction}
                 onClickActionEvent={(index, id, data) => {
-                  deleteDataRef.current = data;
-                  setDeletePopup(true);
+                  if (id === "ALLOW_DELETE") {
+                    deleteDataRef.current = data;
+                    setDeletePopup(true);
+                  }
                 }}
               />
               <Routes>
@@ -307,7 +317,6 @@ const StopPaymentEntryCustom = () => {
           TitleText={"Are you sure want to delete this record ..?"}
           onActionNo={() => setDeletePopup(false)}
           onActionYes={(val, rows) => {
-            console.log("<<<rrr", rows);
             let deleteReqPara = {
               _isNewRow: false,
               _isDeleteRow: true,
@@ -317,7 +326,7 @@ const StopPaymentEntryCustom = () => {
               ACCT_CD: rows.ACCT_CD,
               TRAN_AMOUNT: rows.CHEQUE_AMOUNT,
               TRAN_DT: rows.TRAN_DT,
-              CONFIRMED: rows.CONFIRMED,
+              CONFIRMED: rows.CONFIRMED === "Confirm" ? "Y" : "0",
               USER_DEF_REMARKS: val
                 ? val
                 : "WRONG ENTRY FROM STOP PAYMENT ENTRY (TRN/048)",

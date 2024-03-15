@@ -25,7 +25,7 @@ export const StopPayGridMetaData: GridMetaDataType = {
     allowRowSelection: false,
     searchPlaceholder: "Stop Cheque Detail",
     footerNote:
-      "Note : Stop cheque can be Remove on a same working Day and Stop cheque can be Release from next working Day",
+      "Note : Stop cheque can be Remove on a same working Day and Double-click on the Pink row to release Stop-check.",
   },
   filters: [],
   columns: [
@@ -130,33 +130,33 @@ export const StopPayGridMetaData: GridMetaDataType = {
       sequence: 8,
       alignment: "center",
       componentType: "buttonRowCell",
-      // shouldExclude: (initialValue, original, prevRows, nextRows) => {
-      //   if (initialValue === "Y") {
-      //     return false;
-      //   }
-      //   return true;
-      // },
+      shouldExclude: (initialValue, original, prevRows, nextRows) => {
+        if (initialValue === "Y") {
+          return false;
+        }
+        return true;
+      },
       width: 90,
       minWidth: 60,
       maxWidth: 130,
     },
-    {
-      accessor: "RELEASE",
-      columnName: "Release",
-      buttonLabel: "Release",
-      sequence: 8,
-      alignment: "center",
-      componentType: "buttonRowCell",
-      // shouldExclude: (initialValue, original, prevRows, nextRows) => {
-      //   if (initialValue === "Y") {
-      //     return false;
-      //   }
-      //   return true;
-      // },
-      width: 90,
-      minWidth: 60,
-      maxWidth: 130,
-    },
+    // {
+    //   accessor: "RELEASE",
+    //   columnName: "Release",
+    //   buttonLabel: "Release",
+    //   sequence: 8,
+    //   alignment: "center",
+    //   componentType: "buttonRowCell",
+    //   // shouldExclude: (initialValue, original, prevRows, nextRows) => {
+    //   //   if (initialValue === "Y") {
+    //   //     return false;
+    //   //   }
+    //   //   return true;
+    //   // },
+    //   width: 90,
+    //   minWidth: 60,
+    //   maxWidth: 130,
+    // },
     {
       accessor: "PRINT",
       columnName: "Print",

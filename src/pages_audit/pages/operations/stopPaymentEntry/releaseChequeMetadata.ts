@@ -4,7 +4,7 @@ import * as API from "./api";
 
 export const releaseChequeMetadata = {
   form: {
-    name: "PRIORITY",
+    name: "releaseChequeMetadata",
     label: "Release Cheque Detail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -247,7 +247,6 @@ export const releaseChequeMetadata = {
       label: "Charge Amount",
       isReadOnly: true,
       shouldExclude(fieldData, dependentFields, formState) {
-        console.log("<<<should", fieldData, dependentFields, formState);
         if (fieldData?.value) {
           return false;
         } else {
