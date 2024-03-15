@@ -273,7 +273,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Search Criteria Data",
-    rowIdColumn: "ACCT_CD",
+    rowIdColumn: "ACCT_NO",
     searchPlaceholder: "Accounts",
     defaultColumnConfig: {
       width: 150,
@@ -293,6 +293,7 @@ export const AccountInquiryGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
+    isCusrsorFocused: true,
   },
   // filters: [],
   columns: [

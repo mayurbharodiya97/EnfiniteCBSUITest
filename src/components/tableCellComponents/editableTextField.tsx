@@ -80,7 +80,7 @@ export const EditableTextField = (props) => {
     <CellWrapper showBorder {...props}>
       <Input
         name={id}
-        value={value}
+        value={typeof value === "string" ? value.trimStart() : value}
         onChange={onChange}
         onFocus={onFocus}
         type={inputType}

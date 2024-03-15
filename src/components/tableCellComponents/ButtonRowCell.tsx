@@ -16,6 +16,7 @@ export const ButtonRowCell = (props) => {
       isVisible,
       isVisibleInNew,
       shouldExclude,
+      isColumnName,
     },
     updateGridData,
     onButtonActionHandel,
@@ -36,9 +37,21 @@ export const ButtonRowCell = (props) => {
       onButtonActionHandel(index, id);
     }
   };
+  const isShouldChangeColumnName = useMemo(() => {
+    if (typeof isColumnName === "function") {
+      return isColumnName(initialValue);
+    }
+    return null;
+  }, [initialValue]);
+
+  const newColumnName = Boolean(isShouldChangeColumnName)
+    ? isShouldChangeColumnName
+    : columnName;
+
   if (isShouldExclude) {
     return <CellWrapper showBorder {...props}></CellWrapper>;
   }
+
   return (
     <CellWrapper showBorder {...props}>
       {is_Visible ? (
@@ -48,7 +61,7 @@ export const ButtonRowCell = (props) => {
           onClick={handleClick}
           fullWidth
         >
-          {Boolean(buttonLabel) ? buttonLabel : columnName}
+          {Boolean(buttonLabel) ? buttonLabel : newColumnName}
         </Button>
       ) : null}
     </CellWrapper>

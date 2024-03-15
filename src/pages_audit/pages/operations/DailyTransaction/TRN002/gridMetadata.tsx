@@ -12,10 +12,11 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     allowColumnReordering: true,
     disableSorting: false,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
+    // hideHeader: false,
     hideFooter: false,
-    pageSizes: [10, 20, 30],
-    defaultPageSize: 10,
+    // pageSizes: [10, 20, 30],
+    // defaultPageSize: 10,
     containerHeight: {
       min: "26vh",
       max: "30vh",
@@ -23,17 +24,9 @@ export const TRN002_TableMetaData: GridMetaDataType = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: true,
-    // hideHeader: true,
     isCusrsorFocused: true,
   },
   columns: [
-    {
-      accessor: "status",
-      columnName: "Status",
-      sequence: 0,
-      componentType: "default",
-      width: 80,
-    },
     {
       accessor: "TRAN_CD",
       columnName: "Voucher No",
@@ -103,8 +96,8 @@ export const TRN002_TableMetaData: GridMetaDataType = {
       accessor: "AMOUNT",
       columnName: "Amount",
       sequence: 10,
-      componentType: "default",
-      width: 100,
+      componentType: "currency",
+      width: 120,
       alignment: "right",
     },
 

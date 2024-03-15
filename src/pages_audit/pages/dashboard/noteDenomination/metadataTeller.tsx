@@ -1,4 +1,3 @@
-import { GridMetaDataType } from "components/dataTableStatic";
 import { components } from "components/report";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
@@ -99,6 +98,17 @@ export const TellerScreenMetadata: any = {
       render: {
         componentType: "_accountNumber",
       },
+      // fullAccountNumberMetadata: {
+      //   name:"FL_AACT_CD",
+      //   maxLength: 8,
+      //   GridProps: {
+      //     xs: 2,
+      //     sm: 2,
+      //     md: 2,
+      //     lg: 2,
+      //     xl: 2,
+      //   },
+      // },
       branchCodeMetadata: {
         name: "BRANCH_CD",
         dependentFields: ["TRN"],
@@ -163,11 +173,6 @@ export const TellerScreenMetadata: any = {
       accountCodeMetadata: {
         name: "ACCT_CD",
         dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE"],
-        // setValueOnDependentFieldsChange: (dependentFields, others) => {
-        //   if (!others.isSubmitting) {
-        //     return "";
-        //   }
-        // },
         autoComplete: "off",
         GridProps: {
           xs: 6,
@@ -381,19 +386,11 @@ export const TellerScreenMetadata: any = {
           Boolean(dependentFieldsValues?.ACCT_TYPE?.value) &&
           Boolean(field?.value)
         ) {
-          const buttonNames = await formState.MessageBox({
-            messageTitle: "Denomination confirmation",
-            message: "Are you sure to open denomination",
-            buttonNames: ["Yes", "No"],
-          });
-
           formState.setDataOnFieldChange("RECEIPT", {
             field,
             dependentFieldsValues,
-            buttonNames,
           });
         }
-        return { ACCT_CD: { value: "" } };
       },
       AlwaysRunPostValidationSetCrossFieldValues: {
         alwaysRun: true,
@@ -438,19 +435,15 @@ export const TellerScreenMetadata: any = {
           Boolean(dependentFieldsValues?.ACCT_TYPE?.value) &&
           Boolean(field?.value)
         ) {
-          const buttonNames = await formState.MessageBox({
-            messageTitle: "Denomination confirmation",
-            message: "Are you sure to open denomination",
-            buttonNames: ["Yes", "No"],
-          });
-
           formState.setDataOnFieldChange("PAYMENT", {
             field,
             dependentFieldsValues,
-            buttonNames,
           });
         }
-        return { ACCT_CD: { value: "" } };
+      },
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: false,
       },
       // setValueOnDependentFieldsChange: (dependentFields) => {
       //   return "";

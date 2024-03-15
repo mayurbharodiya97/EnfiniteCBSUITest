@@ -59,6 +59,12 @@ import { ActionDialog } from './dialog/ActionDialog';
 import { CloseFormDialog } from './dialog/CloseFormDialog';
 import { PreventUpdateDialog } from './dialog/PreventUpdateDialog';
 import { ConfirmUpdateDialog } from './dialog/ConfirmUpdateDialog';
+import { Alert } from 'components/common/alert';
+import ExtractedHeader from './ExtractedHeader';
+import HeaderForm from './HeaderForm';
+import { RemarksAPIWrapper } from 'components/custom/Remarks';
+import { MessageBoxWrapper } from 'components/custom/messageBox';
+import PhotoSign from './formDetails/formComponents/individualComps/PhotoSign';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
 type Customtabprops = {
   isSidebarExpanded: boolean;
@@ -164,21 +170,6 @@ export const useDialogStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  // width: 400,
-  width: "95vw",
-  bgcolor: 'background.paper',
-  border: '1px solid #000',
-  boxShadow: 24,
-  p: 4,
-
-  height: "95vh",
-  overflow: "auto",
-};
 
 export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
@@ -193,7 +184,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, handleReadyToSavectx, handleReadyToUpdatectx } = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx, handleUpdatectx } = useContext(CkycContext);
   // const { state: data }: any = useLocation();
   const location: any = useLocation();
   const { t } = useTranslation();
@@ -205,9 +196,10 @@ export default function FormModal({
   const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
   const [updateDialog, setUpdateDialog] = useState(false)
   const [actionDialog, setActionDialog] = useState(false)
+  const [confirmMsgDialog, setConfirmMsgDialog] = useState(false)
   const [cancelDialog, setCancelDialog] = useState(false)
   // const [from, setFrom] = useState("");
-  const [confirmAction, setConfirmAction] = useState<any>("confirm");
+  const [confirmAction, setConfirmAction] = useState<any>(null);
   const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
   const [displayMode, setDisplayMode] = useState<any>(formmode)
 
@@ -227,10 +219,10 @@ export default function FormModal({
   // )
 
   // acct type options
-  const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
-    ["getPMISCData", {}],
-    () => API.getPMISCData("CKYC_ACCT_TYPE")
-  );
+  // const {data:AccTypeOptions, isSuccess: isAccTypeSuccess, isLoading: isAccTypeLoading} = useQuery(
+  //   ["getPMISCData", {}],
+  //   () => API.getPMISCData("CKYC_ACCT_TYPE")
+  // );
 
   // get customer form details  
   const mutation: any = useMutation(API.getCustomerDetailsonEdit, {
@@ -242,74 +234,38 @@ export default function FormModal({
       // setAcctTypeState(acctType[0])
       // // handleColTabChangectx(0)
       // // handleFormModalOpenOnEditctx(location?.state)
+      handleFormDataonRetrievectx(data[0])
+      onClosePreventUpdateDialog()
     },
     onError: (error: any) => {},
   });
 
+  const confirmMutation: any = useMutation(API.ConfirmPendingCustomers, {
+    onSuccess: (data) => {
+        // console.log("data o n save", data)
+        // handleFormModalClosectx()
+        // closeForm()
+        setActionDialog(false)
 
-  useEffect(() => {
-    if(!mutation.isLoading && mutation.data) {
-      // console.log("mutation.data, mutation.isLoading", mutation, mutation.data, mutation.isLoading)
-              // console.log("on successssss", data, location)
-            handleFormDataonRetrievectx(mutation.data[0])
-            // let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
-            // let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-            // setAcctTypeState(acctType[0])
-              // handleColTabChangectx(0)
-              // handleFormModalOpenOnEditctx(location?.state)
-    }    
-  }, [mutation.data, mutation.isLoading])
+        setConfirmMsgDialog(true)
+    },
+    onError: (error: any) => {
+        // console.log("data o n error", error)
+        // setIsUpdated(true)
+        setActionDialog(false)
+        setConfirmAction(null)
+    },
+  });
 
-  useEffect(() => {
-    if(!mutation.isLoading && mutation.data) {
-      if(AccTypeOptions && !isAccTypeLoading) {
-        let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
-        let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
-        setAcctTypeState(acctType[0])
-      }
-    }
-  }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])
-
-  useEffect(() => {
-    // state?.tabsApiResctx
-    if(state?.tabsApiResctx && state?.tabsApiResctx.length>0) {
-      let totalStepCount = state?.tabsApiResctx.length
-      let attemptedSteps:any = Object.values(state?.steps ?? {})
-      // console.log("stepssss", state?.steps, attemptedSteps)
-      if(attemptedSteps.length == totalStepCount) {
-        let readyToSave = true;
-        for (let index = 0; index < attemptedSteps.length; index++) {
-          // const element = array[index];
-          // for(let i)
-          if(attemptedSteps[index].steps != "completed") {
-            readyToSave = false
-            // handleReadyToSavectx(false)
-            break;
-          }
-        }
-        handleReadyToSavectx(readyToSave)
-      } else {
-        let readyToUpdate = true;
-        for (let index = 0; index < attemptedSteps.length; index++) {
-          // const element = array[index];
-          // for(let i)
-          if(attemptedSteps[index].steps != "completed") {
-            readyToUpdate = false
-            // handleReadyToSavectx(false)
-            break;
-          }
-        }
-        handleReadyToUpdatectx(readyToUpdate)
-      }
-      // console.log("state?.steps, state?.tabsApiResctx", state?.steps, state?.tabsApiResctx)
-      // attemptedSteps.map((el:any) => {
-      //   if(el.status && el.status != "completed") {
-      //     handleReadyToSavectx(false)
-      //   }
-      // })
-    }
-  }, [state?.steps, state?.tabsApiResctx])
-
+  // useEffect(() => {
+  //   if(!mutation.isLoading && mutation.data) {
+  //     if(AccTypeOptions && !isAccTypeLoading) {
+  //       let acctTypevalue = mutation.data[0]?.PERSONAL_DETAIL.ACCT_TYPE
+  //       let acctType = AccTypeOptions && AccTypeOptions.filter(op => op.value == acctTypevalue)
+  //       setAcctTypeState(acctType[0])
+  //     }
+  //   }
+  // }, [mutation.data, mutation.isLoading, AccTypeOptions, isAccTypeLoading])
 
   // useEffect(() => {
   //   // if(!location.state) {
@@ -338,34 +294,82 @@ export default function FormModal({
 
 
   useEffect(() => {
+    console.log(formmode,"asddsaasddsa", location?.state)
     // setDisplayMode(formmode)
-    if(formmode == "new") {
-      handleFormModalOpenctx(location?.state?.entityType)
-      console.log("statess new", location.state)
-    } else {
-      handleColTabChangectx(0)
-      handleFormModalOpenOnEditctx(location?.state)
-
-      let payload: {COMP_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-        COMP_CD: authState?.companyID ?? "",
-      }
-      if(Array.isArray(location.state) && location.state.length>0) {
-        const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-        const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-        if(Boolean(reqCD)) {
-          payload["REQUEST_CD"] = reqCD;
-        } else if(Boolean(custID)) {
-          payload["CUSTOMER_ID"] = custID;
+    if(Boolean(location.state)) {
+      if(formmode == "new") {
+        handleFormModalOpenctx(location?.state?.entityType)
+        console.log("statess new", location.state)
+      } else {
+        handleColTabChangectx(0)
+        handleFormModalOpenOnEditctx(location?.state)
+  
+        let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+          // COMP_CD: authState?.companyID ?? "",
+          BRANCH_CD: authState?.user?.branchCode ?? ""
         }
-      }
-      if(Object.keys(payload)?.length == 2) {
-        mutation.mutate(payload)
-      }
-    } 
-  }, [location])
+        if(Array.isArray(location.state) && location.state.length>0) {
+          const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
+          const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
+          if(Boolean(reqCD)) {
+            payload["REQUEST_CD"] = reqCD;
+          }
+          if(Boolean(custID)) {
+            payload["CUSTOMER_ID"] = custID;
+          }
+        }
+        if(Object.keys(payload)?.length > 1) {
+          mutation.mutate(payload)
+        }
+      } 
+    } else {
+      handleFormModalClosectx()
+      onClose()
+    }    
+  }, [])
 
 
-
+  useEffect(() => {
+    if(Boolean(state?.currentFormctx.currentFormSubmitted)) {
+      const steps = state?.tabNameList.filter(tab => tab.isVisible) 
+      const totalTab:any = Array.isArray(steps) && steps.length;
+      // handleCurrFormctx({
+      //   // currentFormRefctx: [],
+      //   currentFormSubmitted: null,
+      //   // colTabValuectx: null,
+      //   // isLoading: false,
+      // })
+      if(Boolean(state?.isFinalUpdatectx)) {
+        const getUpdatedTabs = async () => {
+          const {updated_tab_format, update_type} = await handleUpdatectx({
+            COMP_CD: authState?.companyID ?? ""
+          })
+          if(typeof updated_tab_format === "object") {
+            // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
+            if (Object.keys(updated_tab_format)?.length === 0) {
+                setAlertOnUpdate(true)
+            } else if(Object.keys(updated_tab_format)?.length>0) {
+              setUpdateDialog(true)
+            }
+          }
+        }
+        getUpdatedTabs().catch(err => console.log("update error", err.message))
+        // if(Object.keys(state?.modifiedFormCols).length >0) {
+        //   setUpdateDialog(true)
+        //   // setCancelDialog(true)
+        // } else {
+        //   setAlertOnUpdate(true)
+        // }
+      } else {
+        if((totalTab - 1) > state?.colTabValuectx) {
+          handleCurrFormctx({
+            colTabValuectx: state?.colTabValuectx + 1,
+          })
+          handleColTabChangectx(state?.colTabValuectx + 1); 
+        }
+      }      
+    }
+  }, [state?.currentFormctx.currentFormSubmitted, state?.tabNameList, state?.isFinalUpdatectx])
 
 
 
@@ -383,86 +387,82 @@ export default function FormModal({
   // }, [isAccTypeLoading, AccTypeOptions])
 
   // cust categ options
-  const { 
-    data: custCategData, 
-    isError: isCustCategError, 
-    isLoading: isCustCategLoading, 
-    error: custCategError, 
-    refetch: custCategRefetch 
-  } = useQuery<any, any>(
-    [
-      "getCIFCategories",
-      state.entityTypectx,
-      // {
-      //   COMP_CD: authState?.companyID ?? "",
-      //   BRANCH_CD: authState?.user?.branchCode ?? "",
-      //   ENTITY_TYPE: state.entityTypectx
-      // }
-    ],
-    () =>
-      API.getCIFCategories({
-        COMP_CD: authState?.companyID ?? "",
-        BRANCH_CD: authState?.user?.branchCode ?? "",
-        ENTITY_TYPE: state?.entityTypectx,
-      })
-  );
+  // const { 
+  //   data: custCategData, 
+  //   isError: isCustCategError, 
+  //   isLoading: isCustCategLoading, 
+  //   error: custCategError, 
+  //   refetch: custCategRefetch 
+  // } = useQuery<any, any>(
+  //   [
+  //     "getCIFCategories",
+  //     state.entityTypectx,
+  //     // {
+  //     //   COMP_CD: authState?.companyID ?? "",
+  //     //   BRANCH_CD: authState?.user?.branchCode ?? "",
+  //     //   ENTITY_TYPE: state.entityTypectx
+  //     // }
+  //   ],
+  //   () =>
+  //     API.getCIFCategories({
+  //       COMP_CD: authState?.companyID ?? "",
+  //       BRANCH_CD: authState?.user?.branchCode ?? "",
+  //       ENTITY_TYPE: state?.entityTypectx,
+  //     })
+  // );
 
-  // get tabs data
-  const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
-    ["getTabsDetail", {
-      ENTITY_TYPE: state?.entityTypectx, 
-      CATEGORY_CD: state?.categoryValuectx, 
-      CONS_TYPE: state?.constitutionValuectx,
-      CONFIRMFLAG: state?.confirmFlagctx,
-    }],
-    () =>
-      API.getTabsDetail(
-      {
-        COMP_CD: authState?.companyID ?? "",
-        ENTITY_TYPE: state?.entityTypectx,
-        CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
-        CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
-        isFreshEntry: state?.isFreshEntryctx,
-        CONFIRMFLAG: state?.confirmFlagctx,
-      }  
-      )
-  );
-  // const handleChangeAccType = (e) => {
-  //   setAccTypeValue(e.target.value)
-  // }
+  // // get tabs data
+  // const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
+  //   ["getTabsDetail", {
+  //     ENTITY_TYPE: state?.entityTypectx, 
+  //     CATEGORY_CD: state?.categoryValuectx, 
+  //     CONS_TYPE: state?.constitutionValuectx,
+  //     CONFIRMFLAG: state?.confirmFlagctx,
+  //   }],
+  //   () =>
+  //     API.getTabsDetail(
+  //     {
+  //       COMP_CD: authState?.companyID ?? "",
+  //       ENTITY_TYPE: state?.entityTypectx,
+  //       CATEGORY_CD: state?.categoryValuectx, //CATEG_CD
+  //       CONS_TYPE: state?.constitutionValuectx, //CONSTITUTION_TYPE
+  //       isFreshEntry: state?.isFreshEntryctx,
+  //       CONFIRMFLAG: state?.confirmFlagctx,
+  //     }  
+  //     )
+  // );
+  // // const handleChangeAccType = (e) => {
+  // //   setAccTypeValue(e.target.value)
+  // // }
 
   // useEffect(() => {
-  //   console.log(formmode, "wfewdeqwqwd", displayMode, state?.confirmFlagctx)
-  // }, [formmode, displayMode, state?.confirmFlagctx])
-
-  useEffect(() => {
-    if(!isLoading) {
-      // console.log("ResultResult", TabsData)
-    // setTabsApiRes(data)
-      let newData:any[] = []
-      if(TabsData && TabsData.length>0) {
-        TabsData.forEach((element:{[k: string]: any}) => {
-          let subtitleinfo = {
-            SUB_TITLE_NAME : element?.SUB_TITLE_NAME,
-            SUB_TITLE_DESC : element?.SUB_TITLE_DESC,
-            SUB_ICON : element?.SUB_ICON,
-          }
-            let index = newData.findIndex((el:any) => el?.TAB_NAME == element?.TAB_NAME)
-            if(index != -1) {
-              // duplicate tab element
-              let subtitles = newData[index].subtitles
-              subtitles.push(subtitleinfo)
-            } else {
-              // new tab element
-              newData.push({...element, subtitles: [subtitleinfo]})
-            }
-          // console.log("filled newdata -aft", element.TAB_NAME , newData)
-        });
-        // setTabsApiRes(newData)
-        handleApiRes(newData)
-      }
-    }
-  }, [TabsData, isLoading])
+  //   if(!isLoading) {
+  //     // console.log("ResultResult", TabsData)
+  //   // setTabsApiRes(data)
+  //     let newData:any[] = []
+  //     if(TabsData && TabsData.length>0) {
+  //       TabsData.forEach((element:{[k: string]: any}) => {
+  //         let subtitleinfo = {
+  //           SUB_TITLE_NAME : element?.SUB_TITLE_NAME,
+  //           SUB_TITLE_DESC : element?.SUB_TITLE_DESC,
+  //           SUB_ICON : element?.SUB_ICON,
+  //         }
+  //           let index = newData.findIndex((el:any) => el?.TAB_NAME == element?.TAB_NAME)
+  //           if(index != -1) {
+  //             // duplicate tab element
+  //             let subtitles = newData[index].subtitles
+  //             subtitles.push(subtitleinfo)
+  //           } else {
+  //             // new tab element
+  //             newData.push({...element, subtitles: [subtitleinfo]})
+  //           }
+  //         // console.log("filled newdata -aft", element.TAB_NAME , newData)
+  //       });
+  //       // setTabsApiRes(newData)
+  //       handleApiRes(newData)
+  //     }
+  //   }
+  // }, [TabsData, isLoading])
 
   // const handleCategoryChange = (e, value, r, d) => {
   //   // console.log("e,v,r,d", value)
@@ -505,7 +505,8 @@ export default function FormModal({
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy displayMode={displayMode} />
+        return <PhotoSign displayMode={displayMode} />
+        // return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
@@ -534,7 +535,7 @@ export default function FormModal({
         return <AttestationDetails
         isLoading={isLoadingData} setIsLoading={setIsLoadingData}
         isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
-        />
+        onUpdateForm={onUpdateForm} />
 
       default:
         return <p>Not Found - {tabName}</p>;
@@ -566,7 +567,8 @@ export default function FormModal({
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSignatureCpy displayMode={displayMode} />
+        return <PhotoSign displayMode={displayMode} />
+        // return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
@@ -592,7 +594,8 @@ export default function FormModal({
       case "Attestation Details":
         return <AttestationDetails 
         isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} onFormClose={onClose} />
+        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
+        onUpdateForm={onUpdateForm} />
 
       default:
         return <p>Not Found - {tabName}</p>;
@@ -632,23 +635,31 @@ export default function FormModal({
     onClose()
   }
 
-  const onUpdateForm = () => {
+  const onUpdateForm = React.useCallback((e) => {
+    onFinalUpdatectx(true)
+    // console.log(state?.modifiedFormCols, "wqeudyfgqwudye", displayMode)
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if(displayMode == "new" || displayMode == "edit") {
-      if(Object.keys(state?.modifiedFormCols).length >0) {
-        setUpdateDialog(true)
-        // setCancelDialog(true)
-      } else {
-        setAlertOnUpdate(true)
-      }
+    const refs = state?.currentFormctx.currentFormRefctx;
+    if(Array.isArray(refs) && refs.length>0) {
+      handleCurrFormctx({
+        isLoading: true,
+      })
+      Promise.all(refs.map(ref => {
+        return typeof ref === "function" 
+        ? ref() 
+        : (ref.current && ref.current.handleSubmitError) 
+        && ref.current.handleSubmitError(e, "save", false)
+      }))
     }
-    // console.log(Object.keys(state?.modifiedFormCols).length >0, "djweijd", displayMode, state?.modifiedFormCols)
-      //  else {
-      //   closeForm()
-      // }
-
-    // setUpdateDialog(true)
-  }
+    // if(displayMode == "new" || displayMode == "edit") {
+    //   if(Object.keys(state?.modifiedFormCols).length >0) {
+    //     setUpdateDialog(true)
+    //     // setCancelDialog(true)
+    //   } else {
+    //     setAlertOnUpdate(true)
+    //   }
+    // }
+  }, [state?.currentFormctx.currentFormRefctx, state?.modifiedFormCols, displayMode])
 
   const onCancelForm = () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
@@ -667,21 +678,21 @@ export default function FormModal({
     return displayMode == "view"
       ? (from && from == "confirmation-entry") && <React.Fragment>
         <Button
-          onClick={() => openActionDialog("confirm")}
+          onClick={() => openActionDialog("Y")}
           color="primary"
           // disabled={mutation.isLoading}
         >
           {t("Confirm")}
         </Button>
         <Button
-          onClick={() => openActionDialog("query")}
+          onClick={() => openActionDialog("M")}
           color="primary"
           // disabled={mutation.isLoading}
         >
           {t("Raise Query")}
         </Button>
         <Button
-          onClick={() => openActionDialog("reject")}
+          onClick={() => openActionDialog("R")}
           color="primary"
           // disabled={mutation.isLoading}
         >
@@ -694,7 +705,7 @@ export default function FormModal({
         >
           {t("Update")}
         </Button>
-  }, [displayMode, from, state?.modifiedFormCols])
+  }, [state?.currentFormctx.currentFormRefctx, displayMode, from, state?.modifiedFormCols])
 
   const HeaderContent = React.useMemo(() => {
     return <React.Fragment>
@@ -740,6 +751,40 @@ export default function FormModal({
     </React.Fragment>
   }, [state?.retrieveFormDataApiRes])
 
+  const dialogsMemo = React.useMemo(() => {
+    // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
+    return <React.Fragment>
+        {/* confirms before updating */}
+        {updateDialog && <ConfirmUpdateDialog 
+            open={updateDialog} 
+            onClose={onCloseUpdateDialog} 
+            mutationFormDTL={mutation}
+            setAlertOnUpdate={setAlertOnUpdate}
+        />}
+
+        {/* confirming action-remark dialog */}
+        {/* {actionDialog && <ActionDialog 
+            open={actionDialog} 
+            setOpen={setActionDialog} 
+            closeForm = {onClose}
+            action= {confirmAction}
+        />} */}
+
+        {/* data lost alert on closing form */}
+        {cancelDialog && <CloseFormDialog 
+            open={cancelDialog} 
+            onClose={onCloseCancelDialog} 
+            closeForm = {onClose}
+        />}
+
+        {/* no change found to update dialog */}
+        {alertOnUpdate && <PreventUpdateDialog 
+            open={alertOnUpdate} 
+            onClose={onClosePreventUpdateDialog} 
+        />}
+    </React.Fragment>
+  }, [updateDialog, actionDialog, cancelDialog, alertOnUpdate])
+  const steps:any = state?.tabsApiResctx.filter(tab => tab.isVisible) 
 
   return (
     // <div>
@@ -748,106 +793,7 @@ export default function FormModal({
       open={true}
       // open={state?.isFormModalOpenctx}
       >
-        <AppBar
-          position="sticky"
-          color="primary"
-          // style={{ marginBottom: "10px" }}
-        >
-          <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
-            <div>
-              <img
-                src={Logo}
-                alt="Netbanking"
-                className={appBarClasses.logo}
-                onClick={(e) => {
-                  e.preventDefault();
-                }}
-              />
-              <p className={appBarClasses.version01}>V: 1.12.03.1</p>
-            </div>
-            <Stack direction="row" spacing={4} mx={2}>
-              <Box className={appBarClasses.heading_user_img_border}>
-                <Avatar
-                  className={appBarClasses.heading_user_img}
-                  alt="Remy Sharp"
-                  src={bank_logo_default}
-                />
-              </Box>
-            </Stack>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={appBarClasses.title}
-            >
-              <Box
-                style={{
-                  marginBottom: "8px",
-                  fontSize: "17px",
-                  color: "#1C1C1C",
-                  // overflowX: "auto",
-                  width: "555px",
-                }}
-                className={clsx({
-                  [appBarClasses.marquee]:
-                    authState?.companyName.length > 55,
-                })}
-              >
-                {authState?.companyName || ""}
-              </Box>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <div style={{ color: "#949597" }}>
-                  <Typography
-                    variant="caption"
-                    display="block"
-                    lineHeight={0}
-                    fontSize={"11px"}
-                  >
-                    Branch: {authState?.user?.branchCode ?? "001 "}-
-                    {authState?.user?.branch ?? ""}
-                  </Typography>
-                  <Typography variant="caption" display="inline" fontSize={"11px"}>
-                    Working Date:{" "}
-                    {checkDateAndDisplay(
-                      authState?.workingDate ?? ""
-                    )}
-                  </Typography>
-                  <Typography
-                    marginLeft={1}
-                    variant="caption"
-                    display="inline"
-                    fontSize={"11px"}
-                  >
-                    Last Login Date :{" "}
-                    {checkDateAndDisplay(
-                      authState?.user?.lastLogin ?? "Vastrapur"
-                    )}
-                  </Typography>
-                </div>
-              </div>
-            </Typography>
-            <Typography fontSize={"17px"} color={"#1C1C1C"}>
-              {/* Greetings....{" "} */}
-              {Greetings()} {authState.user.id}
-            </Typography>
-            {/* <Typography
-              className={classes.title}
-              color="inherit"
-              variant={"h6"}
-              component="div"
-            >
-              C-KYC Individual/Legal Entry
-            </Typography> */}
-            <Button
-              // onClick={handleFormModalClose}
-              color="primary"
-              // disabled={mutation.isLoading}
-            >
-              Close
-            </Button>
-          </Toolbar>
-        </AppBar>
+        <ExtractedHeader />
         <AppBar
           position="sticky"
           color="secondary"
@@ -887,6 +833,15 @@ export default function FormModal({
                 ? t("LegalEntry")
                 : t("IndividualEntry")
               }
+              {formmode === "view" &&
+                <Chip
+                  style={{ color: "white", marginLeft: "8px" }}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  label={`view mode`}
+                />
+              }
             </Typography>
             {HeaderContent}
 
@@ -901,194 +856,7 @@ export default function FormModal({
             </Button>
           </Toolbar>
         </AppBar>
-        <AppBar
-              position="sticky"
-              // color=""
-              style={{ marginBottom: "10px", top: "113px" }}
-            >
-              <Toolbar variant="dense" sx={{display: "flex", alignItems: "center"}}>
-                {/* common customer fields */}
-                <Grid container columnGap={(theme) => theme.spacing(1)} rowGap={(theme) => theme.spacing(1)} my={1}>
-                  <Grid item xs={12} sm={6} md>
-                    <TextField sx={{width: "100%"}} disabled
-                      id="customer-id"
-                      label="Cust. ID"
-                      // size="small"
-                      value={state?.customerIDctx}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant={"standard"}
-                      color="secondary"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md>
-                    <TextField sx={{width: "100%"}} disabled
-                      id="req-id"
-                      label="Req. ID"
-                      // size="small"
-                      value={state?.req_cd_ctx}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant={"standard"}
-                      color="secondary"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md>
-                    <Autocomplete sx={{width: "100%", minWidth: 350}} 
-                      // disablePortal
-                      disabled={!state?.isFreshEntryctx}
-                      id="cust-categories"
-                      value={state?.categConstitutionValuectx || null}
-                      inputValue={categConstitutionIPValue}
-                      // options={state?.customerCategoriesctx ?? []}
-                      options={custCategData ?? []}
-                      onChange={(e,value:any,r,d) => {
-                        handleCategoryChangectx(e, value)
-                      }}
-                      onInputChange={(e, newInputValue) => {
-                        setCategConstitutionIPValue(newInputValue)
-                      }}
-                      getOptionLabel={(option:any) => `${option?.label} - ${option?.CONSTITUTION_NAME}`}
-                      isOptionEqualToValue={(option, value) => {
-                        return option.value === value.value;
-                      }}
-                      renderInput={(params:any) => (
-                        <TextField {...params} 
-                          label="Category - Constitution"
-                          autoComplete="disabled"
-                          type="text"
-                          required={true}
-                          FormHelperTextProps={{
-                            component: "div",
-                          }}
-                          InputProps={{
-                            ...params.InputProps,
-                            autoFocus: true,
-                            endAdornment: (
-                              <React.Fragment>
-                                {isCustCategLoading ? (
-                                  <CircularProgress
-                                    color="secondary"
-                                    size={20}
-                                    sx={{ marginRight: "8px" }}
-                                    variant="indeterminate"
-                                  />
-                                ) : null}
-                                {params.InputProps.endAdornment}
-                              </React.Fragment>
-                            ),
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          variant={"standard"}
-                          color="secondary"
-                        />
-                      )}
-                      // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
-                    />
-                  </Grid>
-
-                  {/* {entityType == "I" && <TextField
-                    id="customer-acct-type"
-                    label="Acc. Type"
-                    value={accTypeValue}
-                    size="small"
-                  />} */}
-
-                  <Grid item xs={12} sm={6} md>
-                    <Autocomplete sx={{width: "100%"}}
-                      // disablePortal
-                      disabled={!state?.isFreshEntryctx}
-                      id="acc-types"
-                      options={AccTypeOptions ?? []}
-                      getOptionLabel={(option:any) => `${option?.label}`}
-                      // value={state?.accTypeValuectx ?? null}
-                      value={acctTypeState}
-                      onChange={(e,v) => {
-                        // setAccTypeValue(v?.value)
-                        setAcctTypeState(v)
-                        handleAccTypeVal(v?.value)
-                      }}
-                      // sx={{ width: 200 }}
-                      renderInput={(params:any) => (
-                        <TextField {...params} 
-                          label="A/C Type"
-                          autoComplete="disabled"
-                          type="text"
-                          FormHelperTextProps={{
-                            component: "div",
-                          }}
-                          InputProps={{
-                            ...params.InputProps,
-                            autoFocus: true,
-                            endAdornment: (
-                              <React.Fragment>
-                                {isAccTypeLoading ? (
-                                  <CircularProgress
-                                    color="secondary"
-                                    size={20}
-                                    sx={{ marginRight: "8px" }}
-                                    variant="indeterminate"
-                                  />
-                                ) : null}
-                                {params.InputProps.endAdornment}
-                              </React.Fragment>
-                            ),
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          variant={"standard"}
-                          color="secondary"
-                        />
-                      )}
-                      // enableGrid={false} showCheckbox={false} fieldKey={''} name={''}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6} md>
-                    <TextField disabled sx={{width: "100%"}}
-                      id="customer-ckyc-number"
-                      name="KYC_NUMBER"
-                      label="CKYC No."
-                      value={state?.kycNoValuectx}
-                      onChange={(e:any) => {
-                        // console.log("e, vasd", e)
-                        handleKycNoValctx(e?.target?.value)
-                      }}
-                      // sx={{ width: {xs: 12, sm: "", md: "", lg: ""}}}
-                      // value={accTypeValue}
-                      // size="small"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant={"standard"}
-                      color="secondary"
-                    />
-                  </Grid>
-                  {!state?.isFreshEntryctx && <FormControlLabel control={<Checkbox checked={true} disabled />} label="Active" />}
-                  {/* <ButtonGroup size="small" variant="outlined" color="secondary">
-                    <Button color="secondary" onClick={() => {
-                        setIsCustomerData(false)
-                        setIsLoadingData(true)
-                    }}>Submit</Button>
-                    <Button color="secondary" onClick={() => {
-                        setIsCustomerData(false)
-                        // setIsLoading(true)
-                    }}>Reset</Button>
-                    <Button color="secondary" onClick={() => {
-                        setIsCustomerData(false)
-                        // setIsLoading(true)
-                    }}>Edit</Button>
-                  </ButtonGroup> */}
-
-                </Grid>
-                {/* common customer fields */}
-              </Toolbar>
-            </AppBar>
-        {/* <Box sx={style}> */}
+        <HeaderForm />
           <Grid container sx={{transition: "all 0.4s ease-in-out", px:1}} columnGap={(theme) => theme.spacing(1)}>
 
             
@@ -1114,31 +882,32 @@ export default function FormModal({
                 <Tooltip placement="left" title={isSidebarExpanded ? "" : "Attestation"}><CustomTab isSidebarExpanded={isSidebarExpanded} label={<CustomTabLabel IconName={WorkspacePremiumIcon} isSidebarExpanded={isSidebarExpanded} tabLabel={"Attestation"} subtext={"KYC verifcation"} />} /></Tooltip>
               </CustomTabs> */}
 
-              {/* temp ui disabled */}
-              {true && <CustomTabs 
+              <CustomTabs 
                 sx={{height:"calc(100% - 10px)", minWidth: "76px"}}  
                 textColor="secondary" variant="scrollable" scrollButtons={false} orientation="vertical" 
                 value={state?.colTabValuectx} 
                 onChange={(e, newValue) => handleColTabChangectx(newValue)}
               >
                 {
-                  (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((el:any, i) => {
+                  (steps && steps.length>0) && steps.map((el:any, i) => {
                     // console.log(typeof WorkspacePremiumIcon, "asdqwewqsxaswweqeqw",WorkspacePremiumIcon)
-                    return (
-                      <Tooltip key={el?.TAB_NAME} placement="left" title={state?.isSidebarExpandedctx ? "" : el?.TAB_NAME}>
-                        <CustomTab isSidebarExpanded={state?.isSidebarExpandedctx} 
-                          label={
-                            <CustomTabLabel 
-                              IconName={el?.ICON} isSidebarExpanded={state?.isSidebarExpandedctx} 
-                              tabLabel={el?.TAB_NAME} subtext={el?.TAB_DESC ?? ""} 
-                            />
-                          } 
-                        />
-                      </Tooltip>
-                    )
+                    // if(el.isVisible) {
+                      return (
+                        <Tooltip key={el?.TAB_NAME} placement="left" title={state?.isSidebarExpandedctx ? "" : el?.TAB_NAME}>
+                          <CustomTab isSidebarExpanded={state?.isSidebarExpandedctx} 
+                            label={
+                              <CustomTabLabel 
+                                IconName={el?.ICON} isSidebarExpanded={state?.isSidebarExpandedctx} 
+                                tabLabel={el?.TAB_NAME} subtext={el?.TAB_DESC ?? ""} 
+                              />
+                            } 
+                          />
+                        </Tooltip>
+                      )                      
+                    // }
                   }) 
                 }
-              </CustomTabs>}
+              </CustomTabs>
             </Grid>
             <Grid sx={{
                 "& .MuiGrid-root": {
@@ -1147,8 +916,23 @@ export default function FormModal({
               }} item xs>
                 
               {((state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.isFreshEntryctx) && <TabStepper />}
+              {mutation.isError ? (
+                <Alert
+                  severity={mutation.error?.severity ?? "error"}
+                  errorMsg={mutation.error?.error_msg ?? "Something went to wrong.."}
+                  errorDetail={mutation.error?.error_detail}
+                  color="error"
+                />
+              ) : confirmMutation.isError && (
+                <Alert
+                  severity={confirmMutation.error?.severity ?? "error"}
+                  errorMsg={confirmMutation.error?.error_msg ?? "Something went to wrong.."}
+                  errorDetail={confirmMutation.error?.error_detail}
+                  color="error"
+                />
+              )}
               {
-                (state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.tabsApiResctx.map((element, i) => {
+                (steps && steps.length>0) && steps.map((element, i) => {
                   return <TabPanel key={i} value={state?.colTabValuectx} index={i}>
                     {state?.entityTypectx==="I" ? getIndividualTabComp(element?.TAB_NAME) : getLegalTabComp(element?.TAB_NAME)}
                   </TabPanel>
@@ -1156,9 +940,64 @@ export default function FormModal({
               }
             </Grid>
           </Grid>
-        {/* </Box> */}
+              {dialogsMemo}
 
-        {updateDialog && <ConfirmUpdateDialog 
+          <RemarksAPIWrapper
+            TitleText={"Confirmation"}
+            onActionNo={() => {
+              setActionDialog(false)
+              setConfirmAction(null)
+            }}
+            onActionYes={(val, rows) => {
+              // console.log(val, "weiuifuhiwuefefgwef", rows)
+              confirmMutation.mutate({
+                  REQUEST_CD: state?.req_cd_ctx ?? "",
+                  REMARKS: val ?? "",
+                  CONFIRMED: confirmAction
+              })
+            }}
+            isLoading={confirmMutation.isLoading || confirmMutation.isFetching}
+            isEntertoSubmit={true}
+            AcceptbuttonLabelText="Ok"
+            CanceltbuttonLabelText="Cancel"
+            open={actionDialog}
+            rows={{}}
+            isRequired={confirmAction === "Y" ? false : true}
+            // isRequired={false}
+          />
+
+          <MessageBoxWrapper
+            MessageTitle={"SUCCESS"}
+            // Message={`New Request ID created Successfully : ${state?.req_cd_ctx ?? ""}` ?? "No Message"}
+            Message={
+              state?.customerIDctx 
+              ? `Customer ID : ${state?.customerIDctx} ${
+                confirmAction === "Y" 
+                ? "Confirmed" 
+                : confirmAction === "M" 
+                  ? "Query raised" 
+                  : confirmAction === "R" ? "Rejected" : "no value"} Sucessfully`
+              : state?.req_cd_ctx 
+                ? `Request ID : ${state?.req_cd_ctx} ${
+                  confirmAction === "Y" 
+                  ? "Confirmed" 
+                  : confirmAction === "M" 
+                    ? "Query raised" 
+                    : confirmAction === "R" && "Rejected"} Sucessfully`
+                : "No Message"
+            }
+            // onClickButton={() => setConfirmMsgDialog(false)}
+            onClickButton={() => {
+              setConfirmAction(null)
+              setConfirmMsgDialog(false)
+              closeForm()
+            }}
+            rows={[]}
+            buttonNames={["OK"]}
+            open={confirmMsgDialog}
+          />
+
+        {/* {updateDialog && <ConfirmUpdateDialog 
             open={updateDialog} 
             onClose={onCloseUpdateDialog} 
             mutationFormDTL={mutation}
@@ -1180,7 +1019,7 @@ export default function FormModal({
         {alertOnUpdate && <PreventUpdateDialog 
             open={alertOnUpdate} 
             onClose={onClosePreventUpdateDialog} 
-        />}
+        />} */}
       </Dialog>
     // </div>
   );

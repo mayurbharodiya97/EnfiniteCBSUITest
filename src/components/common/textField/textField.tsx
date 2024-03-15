@@ -276,7 +276,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         id={fieldKey}
         name={name}
         label={label}
-        value={value}
+        value={typeof value === "string" ? value.trimStart() : value}
         error={!isSubmitting && isError}
         helperText={
           <div style={{ display: "flex" }}>

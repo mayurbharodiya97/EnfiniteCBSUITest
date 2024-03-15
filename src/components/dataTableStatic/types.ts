@@ -49,6 +49,7 @@ export interface GridColumnType {
   symbolPosi?: any;
   shouldExclude?: any;
   isVisibleInNew?: Boolean;
+  isColumnName?: any;
 }
 
 export interface GridConfigType {
