@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import _ from "lodash"
 import TabNavigate from "../TabNavigate"
 
-const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const NRIDetails = ({displayMode}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
     const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
     const { t } = useTranslation();
@@ -123,7 +123,8 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>NRI Details {`(7/8)`}</Typography> */}
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -148,7 +149,9 @@ const NRIDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading,
                         />
                     </Grid>                    
                 </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
             <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
         </Grid>
     )

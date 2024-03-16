@@ -27,7 +27,7 @@ const actions = [
     },
 ];
 
-const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const EntityDetails = ({displayMode}) => {
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const PDFormRef = useRef<any>("")
@@ -192,7 +192,8 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -248,7 +249,9 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                         </FormWrapper>
                     </Grid>                    
                 </Collapse>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
 
             <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />            
 

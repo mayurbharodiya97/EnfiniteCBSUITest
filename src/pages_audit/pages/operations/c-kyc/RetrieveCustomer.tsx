@@ -34,8 +34,6 @@ const RetrieveCustomer = () => {
   const { authState } = useContext(AuthContext);
   const [rowsData, setRowsData] = useState<any[]>([]);
 
-  const [isLoadingData, setIsLoadingData] = useState(false);
-  const [isCustomerData, setIsCustomerData] = useState(true);
   const [formMode, setFormMode] = useState("new");
   const retrievePayloadRef = useRef<any>(null);
 
@@ -275,10 +273,6 @@ const RetrieveCustomer = () => {
           path="view-detail/*"
           element={
             <FormModal
-              isLoadingData={isLoadingData}
-              setIsLoadingData={setIsLoadingData}
-              isCustomerData={isCustomerData}
-              setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
               formmode={formMode ?? "edit"}
               from={"retrieve-entry"}

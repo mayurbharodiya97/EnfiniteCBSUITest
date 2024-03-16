@@ -175,7 +175,7 @@ export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
   // isSidebarExpanded, setIsSidebarExpanded, handleSidebarExpansion,
   // colTabValue, setColTabValue, handleColTabChange,
-  isLoadingData, setIsLoadingData, isCustomerData, setIsCustomerData, onClose, formmode, from
+  onClose, formmode, from
   // entityType, setEntityType, 
   // customerCategories, 
   // tabsApiRes, setTabsApiRes, 
@@ -483,24 +483,16 @@ export default function FormModal({
   const getIndividualTabComp = (tabName:string) => {
     switch (tabName) {
       case "Personal Details":
-        return <PersonalDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <PersonalDetails displayMode={displayMode} />;
 
       case "KYC Details":
-        return <KYCDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <KYCDetails displayMode={displayMode} />;
       
       case "Declaration Details":
-        return <DeclarationDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <DeclarationDetails displayMode={displayMode} />;
 
       case "KYC Document Upload":
-        return <Document
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} from={from}
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <Document from={from} displayMode={displayMode} />;
 
         // return <KYCDocUpload />
 
@@ -511,31 +503,25 @@ export default function FormModal({
         // return <PhotoSignature />
 
       case "Details of Related Person":
-        return <RelatedPersonDetails
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode}
-        />
+        return <RelatedPersonDetails displayMode={displayMode} />;
 
       case "More Details":
-        return <OtherDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <OtherDetails displayMode={displayMode} />;
 
       case "Other Address":
-        return <OtherAddressDetails
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <OtherAddressDetails displayMode={displayMode} />;
 
       case "NRI Details":
-        return <NRIDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <NRIDetails displayMode={displayMode} />;
 
       case "Attestation Details":
-        return <AttestationDetails
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
-        onUpdateForm={onUpdateForm} />
+        return (
+          <AttestationDetails
+            displayMode={displayMode}
+            onFormClose={onClose}
+            onUpdateForm={onUpdateForm}
+          />
+        );
 
       default:
         return <p>Not Found - {tabName}</p>;
@@ -544,26 +530,19 @@ export default function FormModal({
   const getLegalTabComp = (tabName:string) => {
     switch (tabName) {
       case "Entity Details":
-        return <EntityDetails isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode}  />
+        return <EntityDetails displayMode={displayMode} />;
         // return <PersonalDetails 
         // isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         // isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
       case "KYC Details":
-        return <KYCDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <KYCDetails displayMode={displayMode} />;
       
       case "Declaration Details":
-        return <DeclarationDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <DeclarationDetails displayMode={displayMode} />;
 
       case "KYC Document Upload":
-        return <Document
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} from={from}
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <Document from={from} displayMode={displayMode} />;
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
@@ -572,30 +551,25 @@ export default function FormModal({
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
-        return <ControllingPersonDTL
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData}
-        isCustomerData={isCustomerData} setIsCustomerData={setIsCustomerData} displayMode={displayMode} />
+        return <ControllingPersonDTL displayMode={displayMode} />;
 
       case "More Details":
-        return <OtherDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <OtherDetails displayMode={displayMode} />;
 
       case "Other Address":
-        return <OtherAddressDetails
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <OtherAddressDetails displayMode={displayMode} />;
 
       case "NRI Details":
-        return <NRIDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} />
+        return <NRIDetails displayMode={displayMode} />;
         
       case "Attestation Details":
-        return <AttestationDetails 
-        isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
-        isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} displayMode={displayMode} onFormClose={onClose}
-        onUpdateForm={onUpdateForm} />
+        return (
+          <AttestationDetails
+            displayMode={displayMode}
+            onFormClose={onClose}
+            onUpdateForm={onUpdateForm}
+          />
+        );
 
       default:
         return <p>Not Found - {tabName}</p>;

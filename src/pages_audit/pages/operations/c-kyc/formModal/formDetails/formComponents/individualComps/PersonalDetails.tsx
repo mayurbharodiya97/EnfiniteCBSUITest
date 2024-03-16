@@ -26,10 +26,6 @@ import { SearchListdialog } from "../legalComps/EntityDetails";
 import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "../TabNavigate";
 const PersonalDetails = ({
-  isCustomerData,
-  setIsCustomerData,
-  isLoading,
-  setIsLoading,
   displayMode
 }) => {
   const { t } = useTranslation();
@@ -291,7 +287,7 @@ const PersonalDetails = ({
       rowGap={3}
       // sx={{backgroundColor: "#eee"}}
     >
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -360,16 +356,17 @@ const PersonalDetails = ({
             </Grid>
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="220px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
 
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -415,14 +412,15 @@ const PersonalDetails = ({
             {/* </Grid> */}
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="300px"
           width="100%"
         ></Skeleton>
-    ) : null}
+    ) : null} */}
       <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
 
         {dialogOpen && <SearchListdialog 

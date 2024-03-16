@@ -33,10 +33,6 @@ import TabNavigate from "./formComponents/TabNavigate";
 import { MessageBoxWrapper } from "components/custom/messageBox";
 
 const KYCDetails = ({
-  isCustomerData,
-  setIsCustomerData,
-  isLoading,
-  setIsLoading,
   displayMode,
 }) => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -272,7 +268,7 @@ const KYCDetails = ({
     >
       {/* <Typography variant={"h6"}>Personal Details</Typography> */}
       {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography> */}
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -336,16 +332,17 @@ const KYCDetails = ({
             </Grid>
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="220px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
 
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -394,16 +391,17 @@ const KYCDetails = ({
             </Grid>
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="220px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
 
-      {isCustomerData && false ? (
+      {false ? (
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -441,14 +439,15 @@ const KYCDetails = ({
             </Grid>
           </Grid>
         </Grid>
-      ) : isLoading ? (
+      ) : null}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="300px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
       <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
 
       <MessageBoxWrapper

@@ -190,8 +190,6 @@ export const Ckyc = () => {
   const navigate = useNavigate();
   const { state } = useContext(CkycContext);
   const [tabValue, setTabValue] = React.useState(0);
-  const [isLoadingData, setIsLoadingData] = useState(false);
-  const [isCustomerData, setIsCustomerData] = useState(true);
 
   useEffect(() => {
     console.log(state?.retrieveFormDataApiRes, "wadqwdwq.", state?.formDatactx, "upd ->", state?.modifiedFormCols)
@@ -302,10 +300,6 @@ export const Ckyc = () => {
           path="new-entry/*"
           element={
             <FormModal
-              isLoadingData={isLoadingData}
-              setIsLoadingData={setIsLoadingData}
-              isCustomerData={isCustomerData}
-              setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
               formmode={"new"}
               from={"new-entry"}
