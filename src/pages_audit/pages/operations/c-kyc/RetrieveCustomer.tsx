@@ -27,6 +27,7 @@ import ControllingPersonComp from "./ControllingPersonComp";
 import PhotoSignatureCpyDialog from "./formModal/formDetails/formComponents/individualComps/PhotoSignCopyDialog";
 import ExtDocument from "./formModal/formDetails/formComponents/existingCusstDoc/ExtDocument";
 import _ from "lodash";
+import UpdateDocument from "./formModal/formDetails/formComponents/update-document/Document";
 
 const RetrieveCustomer = () => {
   const navigate = useNavigate();
@@ -313,13 +314,18 @@ const RetrieveCustomer = () => {
         <Route
           path="document/*"
           element={
-            <ExtDocument
+            <UpdateDocument
               open={true}
-              onClose={() => {
-                navigate(".");
-              }}
+              onClose={() => navigate(".")}
               viewMode={formMode ?? "edit"}
             />
+            // <ExtDocument
+            //   open={true}
+            //   onClose={() => {
+            //     navigate(".");
+            //   }}
+            //   viewMode={formMode ?? "edit"}
+            // />
           }
         />
 

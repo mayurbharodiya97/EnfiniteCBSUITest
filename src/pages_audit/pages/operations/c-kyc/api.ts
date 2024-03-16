@@ -134,6 +134,27 @@ export const getCustomerDetailsonEdit = async (reqData) => {
   }
 };
 
+export const getDocumentImagesList = async (payload) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("GETCKYCDOCSCNHISDISP", payload);
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const updateExtDocument = async (payload) => {
+  // console.log("updateExtDocument payload", payload)
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("CUSTDOCUMENTDATADML", payload);
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
 
 export const getCIFCategories = async ({ COMP_CD, BRANCH_CD, ENTITY_TYPE }) => {
   const { data, status, message, messageDetails } =
@@ -927,14 +948,14 @@ export const getDocumentTypes = async ({TRAN_CD, SR_CD, DOC_TYPE}) => {
   }
 }
 
-// retrieving document medatory docs in grid
+// retrieving document medatory docs in grid for new entry
 export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CONSTITUTION_TYPE}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOCTEMPLATEDTL", {
+    await AuthSDK.internalFetcher("GETDOCTEMPLATEDTL", {
       COMP_CD: COMP_CD, 
       BRANCH_CD: BRANCH_CD, 
-      CUST_TYPE: CUST_TYPE, 
-      CONSTITUTION_TYPE: CONSTITUTION_TYPE,
+      CUSTOMER_TYPE: CUST_TYPE, 
+      // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       // TRAN_CD: "42"
     });
   if (status === "0") {
