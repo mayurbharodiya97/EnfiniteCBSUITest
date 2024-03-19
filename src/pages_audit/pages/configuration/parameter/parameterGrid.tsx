@@ -9,6 +9,7 @@ import  EditDetail  from "./editParaDetails/editDetail";
 import { useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
+import { Typography } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {
@@ -33,10 +34,8 @@ const Parameters = () => {
   const navigate = useNavigate();
   const {authState} = useContext(AuthContext);
   const [rowsData, setRowsData] = useState([]);
-  const myGridRef = useRef<any>(null);
   const [acctOpen, setAcctOpen] = useState(false);
   const [paraType, setParaType] = useState("H");
-  // const [conf_type, setConf_Type] = useState("H");
   const [componentToShow, setComponentToShow] = useState("");
   const [actionMenu, setActionMenu] = useState(actions);
   const setCurrentAction = useCallback(async (data) => {
@@ -73,10 +72,10 @@ const Parameters = () => {
         para_type: paraType, 
         comp_cd: authState?.companyID, 
         branch_cd: authState.user.branchCode,
-        conf_type: "A"
+        conf_type: "A",
+        remark: "",
       })
   );
-
   useEffect(() => {
     if (paraType === "H") {
       ParametersGridMetaData.gridConfig.gridLabel="Parameter Master [Global Level]"
@@ -104,13 +103,14 @@ const Parameters = () => {
         setData={() => null}
         loading={isLoading || isFetching}
         refetchData={() => refetch()}
-        ref={myGridRef}
       />
+       <Typography sx={{ fontWeight: "bold",color:"rgb(152 59 70 / 61%)" , marginLeft:"460px",marginTop:"-36.2px"}} variant="subtitle1">Parameters In Red Colour Indicates Pending For Confirmation</Typography>
       {componentToShow === "editDetail" ? (
         <EditDetail
           rowsData={rowsData}
           open={acctOpen}
           onClose={() => setAcctOpen(false)}
+          formView={"view"}
           refetch={refetch}
         />
       ) : null}
