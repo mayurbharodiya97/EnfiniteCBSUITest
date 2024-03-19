@@ -15,8 +15,12 @@ export const getSnapShotList = async (reqData) => {
 
       FROM_ACCT: reqData.ACCT_CD,
       TO_ACCT: reqData.ACCT_CD,
-      FROM_DATE: reqData?.FROM_DATE,
-      TO_DATE: reqData?.TO_DATE,
+      FROM_DATE: reqData?.FROM_DATE
+        ? reqData?.FROM_DATE
+        : format(new Date(), "dd-MMM-yyyy"),
+      TO_DATE: reqData?.TO_DATE
+        ? reqData?.TO_DATE
+        : format(new Date(), "dd-MMM-yyyy"),
     });
   if (status === "0") {
     let responseData = data;

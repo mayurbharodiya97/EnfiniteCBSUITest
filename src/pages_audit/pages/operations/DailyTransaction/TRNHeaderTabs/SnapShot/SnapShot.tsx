@@ -22,6 +22,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import { format } from "date-fns";
+import { DateRetrievalDialog } from "components/custom/dateRetrievalPara";
+import { useStyles } from "pages_audit/style";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -57,39 +60,21 @@ export const SnapShot = ({ reqData }) => {
     },
   });
 
-  const handleGetSnapshot = () => {
+  const handleGetSnapshot = (prevDate, nextDate) => {
     let obj = reqData;
-    obj.FROM_DATE = format(prevDate, "dd-MMM-yyyy");
-    obj.TO_DATE = format(nextDate, "dd-MMM-yyyy");
+    obj.FROM_DATE = prevDate;
+    obj.TO_DATE = nextDate;
     getSnapShotList.mutate(obj);
   };
 
   useEffect(() => {
-    reqData?.ACCT_CD && handleGetSnapshot();
+    reqData?.ACCT_CD && handleGetSnapshot("", "");
   }, [reqData]);
 
   // const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
   //   any,
   //   any
   // >(["getSnapShotList"], () => API.getSnapShotList(reqData));
-
-  const handleDate = (e, key) => {
-    console.log(e, key, "e date");
-    if (key == "prev") {
-      setPrevDate(e);
-    } else {
-      setNextDate(e);
-    }
-  };
-
-  const handleDateErr = (e, key) => {
-    console.log(e, key, "err");
-  };
-
-  const handleRetrieve = () => {
-    handleGetSnapshot();
-    setDateDialog(false);
-  };
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
@@ -101,6 +86,17 @@ export const SnapShot = ({ reqData }) => {
       setDateDialog(true);
     }
   }, []);
+
+  const classes = useStyles();
+  const retrievalParaValues = (retrievalValues) => {
+    setDateDialog(false);
+
+    console.log(retrievalValues, "retrievalValues");
+    handleGetSnapshot(
+      retrievalValues[0]?.value?.value,
+      retrievalValues[1]?.value?.value
+    );
+  };
   return (
     <>
       {getSnapShotList.isError ? (
@@ -121,7 +117,7 @@ export const SnapShot = ({ reqData }) => {
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
-        onlySingleSelectionAllow={true}
+        onlySingleSelectionAllow={false}
         isNewRowStyle={true}
       />
       <Grid
@@ -146,47 +142,16 @@ export const SnapShot = ({ reqData }) => {
         </Grid>
       </Grid>
 
-      <Dialog
-        maxWidth="sm"
-        open={dateDialog}
-        onClose={() => setDateDialog(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            From:{" "}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                format="dd/MM/yyyy"
-                value={prevDate}
-                onChange={(e) => handleDate(e, "prev")}
-                onError={(e) => handleDateErr(e, "prev")}
-              />
-            </LocalizationProvider>
-            &nbsp;To:{" "}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                format="dd/MM/yyyy"
-                value={nextDate}
-                onChange={(e) => handleDate(e, "next")}
-                onError={(e) => handleDateErr(e, "next")}
-              />
-            </LocalizationProvider>
-          </div>
-        </DialogContent>
-        <DialogActions className="dialogFooter">
-          <Button
-            autoFocus
-            className="dialogBtn"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleRetrieve()}
-          >
-            Retrieve
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {dateDialog && (
+        <DateRetrievalDialog
+          classes={classes}
+          open={dateDialog}
+          handleClose={() => setDateDialog(false)}
+          loginState={{}}
+          retrievalParaValues={retrievalParaValues}
+          defaultData={undefined}
+        />
+      )}
     </>
   );
 };

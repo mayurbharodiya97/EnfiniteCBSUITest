@@ -659,11 +659,12 @@ export const ActionWiseAPIConfiguration = {
     url: "/transactionServiceAPI/DODAILYTRNDML",
     packageName: "",
   },
+  //A/C validation
   ACCTNOVALIDATION: {
     url: "/enfinityCommonServiceAPI/ACCTNOVALIDATION",
     packageName: "",
   },
-  // chequeServiceAPI/CHEQUENOVALIDATION
+  // chq validation
   CHEQUENOVALIDATION: {
     url: "/enfinityCommonServiceAPI/CHEQUENOVALIDATION",
     packageName: "",
@@ -834,7 +835,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNNACHOTWRDTAB",
     packageName: "",
   },
-  //view
+  //ach_ow view
   GETDLYTRNACHOTWDTLTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACHOTWDTLTAB",
     packageName: "",
@@ -844,7 +845,7 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNNACHINWRDTAB",
     packageName: "",
   },
-  //view
+  //ach_iw view
   GETACHIWIMGDTLTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACHIWIMGDTLTAB",
     packageName: "",

@@ -16,7 +16,6 @@ export const getACH_OWList = async (reqData) => {
 
       ENT_COMP_CD: reqData.ENTERED_COMP_CD,
       ENT_BRANCH_CD: reqData.ENTERED_BRANCH_CD,
-      TRAN_CD: reqData?.TRAN_CD,
     });
   if (status === "0") {
     let responseData = data;

@@ -18,7 +18,7 @@ export const getTRN002List = async (reqData) => {
 
     responseData &&
       responseData.map((a, i) => {
-        // a.index = i;
+        a.index = i;
         a.account1 = a.ACCT_TYPE;
         a.trx1 = a.TYPE_CD;
         a.sdc1 = a.SDC;
