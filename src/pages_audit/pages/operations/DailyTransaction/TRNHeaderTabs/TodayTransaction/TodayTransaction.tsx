@@ -54,6 +54,7 @@ const TodayTransaction = ({ reqData }) => {
         setData={() => null}
         refetchData={() => {}}
         ref={myGridRef}
+        ReportExportButton={true}
       />
     </>
   );

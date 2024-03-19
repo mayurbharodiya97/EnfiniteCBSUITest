@@ -51,6 +51,17 @@ export const SnapShot = ({ reqData }) => {
   const getSnapShotList = useMutation(API.getSnapShotList, {
     onSuccess: (data) => {
       console.log(data, " getSnapShotList detailssss");
+      let debSum = 0;
+      let credSum = 0;
+
+      data?.map((a, i) => {
+        debSum = debSum + Number(a?.debit1);
+        credSum = credSum + Number(a?.credit1);
+      });
+
+      console.log(credSum, debSum, "aaa");
+      setCredit(credSum?.toFixed(2));
+      setDebit(debSum?.toFixed(2));
       setRows(data);
     },
     onError: (error: any) => {
@@ -59,7 +70,7 @@ export const SnapShot = ({ reqData }) => {
       });
     },
   });
-
+  console.log(rows, "rows");
   const handleGetSnapshot = (prevDate, nextDate) => {
     let obj = reqData;
     obj.FROM_DATE = prevDate;
@@ -69,6 +80,8 @@ export const SnapShot = ({ reqData }) => {
 
   useEffect(() => {
     reqData?.ACCT_CD && handleGetSnapshot("", "");
+    setCredit("0.00");
+    setDebit("0.00");
   }, [reqData]);
 
   // const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
@@ -90,7 +103,8 @@ export const SnapShot = ({ reqData }) => {
   const classes = useStyles();
   const retrievalParaValues = (retrievalValues) => {
     setDateDialog(false);
-
+    setCredit("0.00");
+    setDebit("0.00");
     console.log(retrievalValues, "retrievalValues");
     handleGetSnapshot(
       retrievalValues[0]?.value?.value,
@@ -119,6 +133,7 @@ export const SnapShot = ({ reqData }) => {
         setAction={setCurrentAction}
         onlySingleSelectionAllow={false}
         isNewRowStyle={true}
+        ReportExportButton={true}
       />
       <Grid
         item
@@ -137,8 +152,8 @@ export const SnapShot = ({ reqData }) => {
         <div></div>
 
         <Grid item sx={{ display: "flex", gap: "5rem" }}>
-          <div> Credit : ₹ </div>
-          <div>Debit : ₹</div>
+          <div> Credit : ₹ {credit} </div>
+          <div>Debit : ₹ {debit}</div>
         </Grid>
       </Grid>
 

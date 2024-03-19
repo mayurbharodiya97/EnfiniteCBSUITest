@@ -27,6 +27,9 @@ export const getSnapShotList = async (reqData) => {
     responseData.map((a, i) => {
       a.index = i;
       a.sr = i + 1;
+      a.debit1 = "0.00";
+      a.credit1 = "0.00";
+
       if (
         a.TYPE_CD.includes("1") ||
         a.TYPE_CD.includes("2") ||
@@ -34,10 +37,10 @@ export const getSnapShotList = async (reqData) => {
       ) {
         if (a.COL_TYPE == "A" || a.COL_TYPE == "Z") {
           a.credit1 = Number(a.AMOUNT).toFixed(2);
-          a.debit1 = "-";
+          a.debit1 = "0.00";
         } else {
           a.credit1 = "0.00";
-          a.debit1 = "-";
+          a.debit1 = "0.00";
         }
       }
       if (
@@ -47,10 +50,10 @@ export const getSnapShotList = async (reqData) => {
       ) {
         if (a.COL_TYPE == "A" || a.COL_TYPE == "Z") {
           a.debit1 = Number(a.AMOUNT).toFixed(2);
-          a.credit1 = "-";
+          a.credit1 = "0.00";
         } else {
           a.debit1 = "0.00";
-          a.credit1 = "-";
+          a.credit1 = "0.00";
         }
       }
     });
