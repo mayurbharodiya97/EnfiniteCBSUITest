@@ -73,8 +73,8 @@ export const Trn001 = () => {
   const [withdraw, setWithdraw] = useState<any>({});
 
   var defTableValue = {
-    branch: defBranch,
-    accType: { label: "", value: "", info: "" },
+    branch: defBranch ? defBranch : "",
+    accType: { label: " ", value: "  ", info: "  " },
     bugMsgAccType: "",
     accNo: "",
     bugAccNo: false,

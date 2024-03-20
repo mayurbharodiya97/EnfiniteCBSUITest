@@ -173,12 +173,12 @@ export const Trn002 = () => {
       setReqData(arr[0]);
       console.log(arr, "Arr getTRN002List");
       arr?.length > 0
-        ? getCarousalCards.mutate(arr[0])
+        ? getCarousalCards?.mutate(arr[0])
         : setCardStore({ ...cardStore, cardsInfo: [] });
 
-      getTabsByParentType.mutate(arr[0] ?? "");
+      arr[0] && getTabsByParentType?.mutate(arr[0] ?? "");
       handleUpdateSum(arr);
-      setConfirmed(data.length - arr.length);
+      setConfirmed(data.length - arr?.length);
     },
     onError: (error) => {},
   });
