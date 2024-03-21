@@ -647,236 +647,188 @@ export const ActionWiseAPIConfiguration = {
     packageName: "",
   },
 
-  // ===========DailyTrans APIs
-
-  //header Tabs by ParentType
   GETDLYTRNTABFIELDDISP: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTABFIELDDISP",
     packageName: "",
   },
-  // scroll save/delete by voucher
   DODAILYTRNDML: {
     url: "/transactionServiceAPI/DODAILYTRNDML",
     packageName: "",
   },
-  //A/C validation
   ACCTNOVALIDATION: {
     url: "/enfinityCommonServiceAPI/ACCTNOVALIDATION",
     packageName: "",
   },
-  // chq validation
   CHEQUENOVALIDATION: {
     url: "/enfinityCommonServiceAPI/CHEQUENOVALIDATION",
     packageName: "",
   },
-  //date validation
   VALIDATECHQDATE: {
     url: "/transactionServiceAPI/VALIDATECHQDATE",
     packageName: "",
   },
-  //f1 list
   GETDAILYTRNLIST: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNLIST",
     packageName: "",
   },
-  //f2 list
   GETDAILYTRNCNFF2: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDAILYTRNCNFF2",
     packageName: "",
   },
-  // confirm Trx
   CONFIRMDAILYTRNDATA: {
     url: "/transactionServiceAPI/CONFIRMDAILYTRNDATA",
     packageName: "",
   },
-  //delete by scroll
   DELETESCROLLDATA: {
     url: "/transactionServiceAPI/DELETESCROLLDATA",
     packageName: "",
   },
-  //carousal card
   DAILYTRNCARDDTL: {
     url: "/transactionServiceAPI/DAILYTRNCARDDTL ",
     packageName: "",
   },
 
-  // =======header tabs
   GETDLYTRNJOINTTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNJOINTTAB",
     packageName: "",
   },
-  //todayTrans
   GETDLYTRNTODAYTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTODAYTAB",
     packageName: "",
   },
 
-  //holdCharge
   GETDLYTRNHOLDCHRGF1: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNHOLDCHRGF1",
     packageName: "",
   },
-  //disbursement
   GETDLYTRNACCTDISBDTLF1: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACCTDISBDTLF1",
     packageName: "",
   },
-  //subsidy
   GETDLYTRNSUBSIDYDTLF1: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSUBSIDYDTLF1",
     packageName: "",
   },
-  //limt
   GETDLYTRNLIMITTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNLIMITTAB",
     packageName: "",
   },
-  //stock
   GETDLYTRNSTOCKTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSTOCKTAB",
     packageName: "",
   },
-  //stopPay
   GETDLYTRNSTOPTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSTOPTAB",
     packageName: "",
   },
-  //docs
   GETDLYTRNDOCUMENTTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNDOCUMENTTAB",
     packageName: "",
   },
-  //docView
   GETDOCUMENTIMG: {
     url: "/transactionServiceAPI/GETDOCUMENTIMG",
     packageName: "",
   },
-  //insurance
   GETDLYTRNINSURANCETAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNINSURANCETAB",
     packageName: "",
   },
 
-  //chqBtn1
   GETDLYTRNTODAYCLEARBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTODAYCLEARBTN",
     packageName: "",
   },
-  //chqBtn2
   GETDLYTRNCHQRTNBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNCHQRTNBTN",
     packageName: "",
   },
-  //snapshot
   GETSANPSHOTDTL: {
     url: "/transactionServiceAPI/GETSANPSHOTDTL",
     packageName: "",
   },
-  //search
   GETSEARCHDTL: {
     url: "/transactionServiceAPI/GETSEARCHDTL",
     packageName: "",
   },
 
-  // =======Other trx
-  //OWChq
   GETDLYTRNOWCHQOBCIBCTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNOWCHQOBCIBCTAB",
     packageName: "",
   },
-  //APY
   GETDLYTRNAPYTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNAPYTAB",
     packageName: "",
   },
-  //temp
   GETDLYTRNTEMPODCTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNTEMPODCTAB",
     packageName: "",
   },
-  //atm
   GETDLYTRNATMCARDTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNATMCARDTAB",
     packageName: "",
   },
 
-  //group
   GETDLYTRNGROUPACCTINFOTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNGROUPACCTINFOTAB",
     packageName: "",
   },
-  //asba
   GETDLYTRNASBATAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNASBATAB",
     packageName: "",
   },
-  //pmby
   GETDLYTRNPMBYTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNPMBYTAB",
     packageName: "",
   },
-  //APBS
   GETDLYTRNAPBSTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNAPBSTAB",
     packageName: "",
   },
-  //instruct
   GETDLYTRNSPINSTRUCTTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSPINSTRUCTTAB",
     packageName: "",
   },
-  //imps
   GETDLYTRNIMPSTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNIMPSTAB",
     packageName: "",
   },
-  //ach_ow
   GETDLYTRNNACHOTWRDTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNNACHOTWRDTAB",
     packageName: "",
   },
-  //ach_ow view
   GETDLYTRNACHOTWDTLTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACHOTWDTLTAB",
     packageName: "",
   },
-  //ach_iw
   GETDLYTRNNACHINWRDTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNNACHINWRDTAB",
     packageName: "",
   },
-  //ach_iw view
   GETACHIWIMGDTLTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACHIWIMGDTLTAB",
     packageName: "",
   },
-  // lien
   GETDLYTRNACCTLIENTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNACCTLIENTAB",
     packageName: "",
   },
-  // SI detail
   GETDLYTRNSIDTLTAB: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDLYTRNSIDTLTAB",
     packageName: "",
   },
-  //==============
-  //not used
+
   GETTRANDYNQUERYDATAF1: {
     url: "/transactionServiceAPI/GETTRANDYNQUERYDATAF1",
     packageName: "",
   },
-  //not used
   GETTRANDYNQUERYDATAF2: {
     url: "/transactionServiceAPI/GETTRANDYNQUERYDATAF2",
     packageName: "",
   },
-  //not used
   GETACCOUNTDTL: {
     url: "/transactionServiceAPI/GETACCOUNTDTL",
     packageName: "",
   },
-  // ==========end DailyTrans APIs
 
   GETLIMITFDBRANCHDDW: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIMITFDBRANCHDDW",
