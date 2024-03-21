@@ -184,7 +184,7 @@ export default function FormModal({
   // accTypeValue, setAccTypeValue, 
   // AccTypeOptions
 }) {
-  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx, handleUpdatectx } = useContext(CkycContext);
+  const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx, handleUpdatectx, handleFromFormModectx } = useContext(CkycContext);
   // const { state: data }: any = useLocation();
   const location: any = useLocation();
   const { t } = useTranslation();
@@ -291,42 +291,46 @@ export default function FormModal({
   //   // }
   // }, [location])
 
-
+  useEffect(() => {
+    handleFromFormModectx({formmode, from})
+  }, [])
 
   useEffect(() => {
-    console.log(formmode,"asddsaasddsa", location?.state)
+    // console.log(state?.formmodectx,"asddsaasddsa", location?.state)
     // setDisplayMode(formmode)
     if(Boolean(location.state)) {
-      if(formmode == "new") {
-        handleFormModalOpenctx(location?.state?.entityType)
-        console.log("statess new", location.state)
-      } else {
-        handleColTabChangectx(0)
-        handleFormModalOpenOnEditctx(location?.state)
-  
-        let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
-          // COMP_CD: authState?.companyID ?? "",
-          BRANCH_CD: authState?.user?.branchCode ?? ""
-        }
-        if(Array.isArray(location.state) && location.state.length>0) {
-          const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
-          const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
-          if(Boolean(reqCD)) {
-            payload["REQUEST_CD"] = reqCD;
+      if(!state?.isDraftSavedctx) {
+        if(state?.formmodectx == "new") {
+          handleFormModalOpenctx(location?.state?.entityType)
+          console.log("statess new", location.state)
+        } else {
+          handleColTabChangectx(0)
+          handleFormModalOpenOnEditctx(location?.state)
+    
+          let payload: {COMP_CD?: string, BRANCH_CD: string, REQUEST_CD?:string, CUSTOMER_ID?:string} = {
+            // COMP_CD: authState?.companyID ?? "",
+            BRANCH_CD: authState?.user?.branchCode ?? ""
           }
-          if(Boolean(custID)) {
-            payload["CUSTOMER_ID"] = custID;
+          if(Array.isArray(location.state) && location.state.length>0) {
+            const reqCD = location.state?.[0]?.data.REQUEST_ID ?? "";
+            const custID = location.state?.[0]?.data.CUSTOMER_ID ?? "";
+            if(Boolean(reqCD)) {
+              payload["REQUEST_CD"] = reqCD;
+            }
+            if(Boolean(custID)) {
+              payload["CUSTOMER_ID"] = custID;
+            }
           }
-        }
-        if(Object.keys(payload)?.length > 1) {
-          mutation.mutate(payload)
-        }
-      } 
+          if(Object.keys(payload)?.length > 1) {
+            mutation.mutate(payload)
+          }
+        } 
+      }
     } else {
       handleFormModalClosectx()
       onClose()
     }    
-  }, [])
+  }, [state?.formmodectx])
 
 
   useEffect(() => {
@@ -483,41 +487,40 @@ export default function FormModal({
   const getIndividualTabComp = (tabName:string) => {
     switch (tabName) {
       case "Personal Details":
-        return <PersonalDetails displayMode={displayMode} />;
+        return <PersonalDetails />;
 
       case "KYC Details":
-        return <KYCDetails displayMode={displayMode} />;
+        return <KYCDetails />;
       
       case "Declaration Details":
-        return <DeclarationDetails displayMode={displayMode} />;
+        return <DeclarationDetails />;
 
       case "KYC Document Upload":
-        return <Document from={from} displayMode={displayMode} />;
+        return <Document />;
 
         // return <KYCDocUpload />
 
       case "Photo & Signature Upload":
-        return <PhotoSign displayMode={displayMode} />
+        return <PhotoSign />
         // return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignatureCpy />
         // return <PhotoSignature />
 
       case "Details of Related Person":
-        return <RelatedPersonDetails displayMode={displayMode} />;
+        return <RelatedPersonDetails />;
 
       case "More Details":
-        return <OtherDetails displayMode={displayMode} />;
+        return <OtherDetails />;
 
       case "Other Address":
-        return <OtherAddressDetails displayMode={displayMode} />;
+        return <OtherAddressDetails />;
 
       case "NRI Details":
-        return <NRIDetails displayMode={displayMode} />;
+        return <NRIDetails />;
 
       case "Attestation Details":
         return (
           <AttestationDetails
-            displayMode={displayMode}
             onFormClose={onClose}
             onUpdateForm={onUpdateForm}
           />
@@ -530,42 +533,41 @@ export default function FormModal({
   const getLegalTabComp = (tabName:string) => {
     switch (tabName) {
       case "Entity Details":
-        return <EntityDetails displayMode={displayMode} />;
+        return <EntityDetails />;
         // return <PersonalDetails 
         // isLoading={isLoadingData} setIsLoading={setIsLoadingData} 
         // isCustomerData = {isCustomerData} setIsCustomerData = {setIsCustomerData} />
 
       case "KYC Details":
-        return <KYCDetails displayMode={displayMode} />;
+        return <KYCDetails />;
       
       case "Declaration Details":
-        return <DeclarationDetails displayMode={displayMode} />;
+        return <DeclarationDetails />;
 
       case "KYC Document Upload":
-        return <Document from={from} displayMode={displayMode} />;
+        return <Document />;
         // return <KYCDocUpload />
   
       case "Photo & Signature Upload":
-        return <PhotoSign displayMode={displayMode} />
+        return <PhotoSign />
         // return <PhotoSignatureCpy displayMode={displayMode} />
         // return <PhotoSignature />
 
       case "Details of Controlling Persons":
-        return <ControllingPersonDTL displayMode={displayMode} />;
+        return <ControllingPersonDTL />;
 
       case "More Details":
-        return <OtherDetails displayMode={displayMode} />;
+        return <OtherDetails />;
 
       case "Other Address":
-        return <OtherAddressDetails displayMode={displayMode} />;
+        return <OtherAddressDetails />;
 
       case "NRI Details":
-        return <NRIDetails displayMode={displayMode} />;
+        return <NRIDetails />;
         
       case "Attestation Details":
         return (
           <AttestationDetails
-            displayMode={displayMode}
             onFormClose={onClose}
             onUpdateForm={onUpdateForm}
           />
@@ -633,11 +635,11 @@ export default function FormModal({
     //     setAlertOnUpdate(true)
     //   }
     // }
-  }, [state?.currentFormctx.currentFormRefctx, state?.modifiedFormCols, displayMode])
+  }, [state?.currentFormctx.currentFormRefctx, state?.modifiedFormCols, displayMode, state?.formmodectx])
 
   const onCancelForm = () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
-    if(displayMode == "new" || displayMode == "edit") {
+    if(state?.formmodectx !== "view") {
       if(Object.keys(state?.formDatactx).length >0) {
         setCancelDialog(true)
       } else {
@@ -649,8 +651,8 @@ export default function FormModal({
   }
 
   const ActionBTNs = React.useMemo(() => {
-    return displayMode == "view"
-      ? (from && from == "confirmation-entry") && <React.Fragment>
+    return state?.formmodectx == "view"
+      ? (state?.fromctx && state?.fromctx === "confirmation-entry") && <React.Fragment>
         <Button
           onClick={() => openActionDialog("Y")}
           color="primary"
@@ -673,17 +675,17 @@ export default function FormModal({
           {t("Reject")}
         </Button>
       </React.Fragment>
-      : displayMode == "edit" && <Button
+      : (state?.formmodectx == "edit" && state?.fromctx !== "new-draft") && <Button
           onClick={onUpdateForm}
           color="primary"
         >
           {t("Update")}
         </Button>
-  }, [state?.currentFormctx.currentFormRefctx, displayMode, from, state?.modifiedFormCols])
+  }, [state?.currentFormctx.currentFormRefctx, displayMode, state?.formmodectx, from, state?.fromctx,state?.modifiedFormCols])
 
   const HeaderContent = React.useMemo(() => {
     return <React.Fragment>
-      {(!state?.isFreshEntryctx && state?.retrieveFormDataApiRes)
+      {(!state?.isFreshEntryctx && state?.fromctx !== "new-draft" && state?.retrieveFormDataApiRes)
       ? (
         <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
           // className={classes.title}
@@ -701,7 +703,7 @@ export default function FormModal({
         )
       :""}
       {
-        ((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD)
+        ((!state?.isFreshEntryctx && state?.fromctx !== "new-draft" && state?.retrieveFormDataApiRes) && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.BRANCH_CD)
         ? <Typography sx={{whiteSpace: "nowrap", mx: "30px"}}
             // className={classes.title}
             color="inherit"
@@ -712,7 +714,7 @@ export default function FormModal({
       }
 
 
-      {((!state?.isFreshEntryctx && state?.retrieveFormDataApiRes) && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE)
+      {((!state?.isFreshEntryctx && state?.fromctx !== "new-draft" && state?.retrieveFormDataApiRes) && state?.retrieveFormDataApiRes?.["PERSONAL_DETAIL"]?.ENTERED_DATE)
       ? (
         <Typography sx={{whiteSpace: "nowrap", mr: "30px"}}
           // className={classes.title}
@@ -780,7 +782,7 @@ export default function FormModal({
               mx: "10px",
               height: "30px",
               minWidth: "30px !important",
-              display: state?.isFreshEntryctx ? "none" : "flex", 
+              display: (state?.isFreshEntryctx || state?.fromctx === "new-draft") ? "none" : "flex", 
               alignItems:"center", 
               justifyContent: "center",
               borderRadius: "5px",
@@ -807,7 +809,7 @@ export default function FormModal({
                 ? t("LegalEntry")
                 : t("IndividualEntry")
               }
-              {formmode === "view" &&
+              {state?.formmodectx === "view" &&
                 <Chip
                   style={{ color: "white", marginLeft: "8px" }}
                   variant="outlined"
@@ -836,7 +838,7 @@ export default function FormModal({
             
 
             <Grid container item xs="auto" sx={{
-              display: state?.isFreshEntryctx ? "none" : "flex", flexDirection: "column",alignItems: "center",
+              display: (state?.isFreshEntryctx || state?.fromctx === "new-draft") ? "none" : "flex", flexDirection: "column",alignItems: "center",
               position: "sticky", top:175, height:"calc(95vh - 150px)", 
               boxShadow: "inset 10px 2px 30px #eee",
 
@@ -889,7 +891,7 @@ export default function FormModal({
                 }
               }} item xs>
                 
-              {((state?.tabsApiResctx && state?.tabsApiResctx.length>0) && state?.isFreshEntryctx) && <TabStepper />}
+              {((state?.tabsApiResctx && state?.tabsApiResctx.length>0) && (state?.isFreshEntryctx || state?.fromctx === "new-draft")) && <TabStepper />}
               {mutation.isError ? (
                 <Alert
                   severity={mutation.error?.severity ?? "error"}

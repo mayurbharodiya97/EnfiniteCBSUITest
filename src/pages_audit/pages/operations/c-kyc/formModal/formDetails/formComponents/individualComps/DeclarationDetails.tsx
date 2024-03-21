@@ -14,7 +14,7 @@ import { Alert } from 'components/common/alert';
 import TabNavigate from '../TabNavigate';
 // import { format } from 'date-fns';
 
-const DeclarationDetails = ({displayMode}) => {
+const DeclarationDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { authState } = useContext(AuthContext);
@@ -242,7 +242,7 @@ const myGridRef = useRef<any>(null);
                         onSubmitHandler={DeclarationSubmitHandler}
                         // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                         initialValues={initialVal}
-                        displayMode={displayMode}
+                        displayMode={state?.formmodectx}
                         key={"declaration-form-kyc"+ initialVal}
                         metaData={declaration_meta_data as MetaDataType}
                         formStyle={{}}
@@ -254,7 +254,7 @@ const myGridRef = useRef<any>(null);
              {/* : null} */}
             {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
 
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
         </Grid>        
     )
 }

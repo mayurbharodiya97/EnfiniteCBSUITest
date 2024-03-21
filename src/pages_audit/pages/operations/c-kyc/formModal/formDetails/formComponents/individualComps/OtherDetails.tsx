@@ -12,7 +12,7 @@ import { other_details_legal_meta_data } from '../../metadata/legal/legalotherde
 import TabNavigate from '../TabNavigate';
 
 
-const OtherDetails = ({displayMode}) => {
+const OtherDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
     const { authState } = useContext(AuthContext);
@@ -122,7 +122,7 @@ const OtherDetails = ({displayMode}) => {
             }
             newData["OTHER_DTL"] = {...newData["OTHER_DTL"], ...resData, ...commonData}
             handleFormDataonSavectx(newData)
-            if(!state?.isFreshEntryctx) {
+            if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                 let tabModifiedCols:any = state?.modifiedFormCols
                 let updatedCols = tabModifiedCols.OTHER_DTL ? _.uniq([...tabModifiedCols.OTHER_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
                 tabModifiedCols = {
@@ -185,7 +185,7 @@ const OtherDetails = ({displayMode}) => {
                         onSubmitHandler={OtherDTLSubmitHandler}
                         key={"other-details-form-kyc"+initialVal}
                         metaData={otherDtlMetadata as MetaDataType}
-                        displayMode={displayMode}
+                        displayMode={state?.formmodectx}
                         // initialValues={state?.formDatactx["OTHER_DTL"] ?? {}}
                         initialValues={initialVal}
                         formStyle={{}}
@@ -196,7 +196,7 @@ const OtherDetails = ({displayMode}) => {
             </Grid>
              {/* : null} */}
             {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
         </Grid>        
     )
 }

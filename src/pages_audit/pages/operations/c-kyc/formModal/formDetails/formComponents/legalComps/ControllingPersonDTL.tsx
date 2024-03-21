@@ -14,7 +14,7 @@ import { personal_individual_detail_metadata } from '../../metadata/individual/p
 import _ from 'lodash';
 import TabNavigate from '../TabNavigate';
 
-const ControllingPersonDTL = ({displayMode}) => {
+const ControllingPersonDTL = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
@@ -96,7 +96,7 @@ const ControllingPersonDTL = ({displayMode}) => {
                 let filteredCols:any[]=[]
                 filteredCols = Object.keys(data.RELATED_PERSON_DTL[0])
                 filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
-                if(state?.isFreshEntryctx) {
+                if(state?.isFreshEntryctx || state?.isDraftSavedctx) {
                     filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
                 }
 
@@ -128,7 +128,7 @@ const ControllingPersonDTL = ({displayMode}) => {
                 newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
                 handleFormDataonSavectx(newData)
 
-                if(!state?.isFreshEntryctx) {
+                if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                     let tabModifiedCols:any = state?.modifiedFormCols
                     tabModifiedCols = {
                         ...tabModifiedCols,
@@ -139,7 +139,7 @@ const ControllingPersonDTL = ({displayMode}) => {
             } else {
                 newData["RELATED_PERSON_DTL"] = []
                 handleFormDataonSavectx(newData)
-                if(!state?.isFreshEntryctx) {
+                if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                     let tabModifiedCols:any = state?.modifiedFormCols
                     tabModifiedCols = {
                       ...tabModifiedCols,
@@ -221,7 +221,7 @@ const myGridRef = useRef<any>(null);
                             initialValues={initialVal}
                             key={"controlling-person-form-kyc"+ initialVal}
                             metaData={corporate_control_dtl_meta_data as MetaDataType}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             formStyle={{}}
                             hideHeader={true}
                             onFormButtonClickHandel={(fieldID, dependentFields) => {
@@ -264,7 +264,7 @@ const myGridRef = useRef<any>(null);
                 data={mutation?.data} 
                 isLoading={mutation?.isLoading} 
             />}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />            
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />            
 
         </Grid>        
     )

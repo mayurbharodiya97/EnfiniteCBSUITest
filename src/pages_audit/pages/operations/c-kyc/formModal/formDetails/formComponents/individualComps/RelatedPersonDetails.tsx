@@ -12,7 +12,7 @@ import _ from 'lodash';
 import TabNavigate from '../TabNavigate';
 import { MessageBoxWrapper } from 'components/custom/messageBox';
 
-const RelatedPersonDetails = ({displayMode}) => {
+const RelatedPersonDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
@@ -125,7 +125,7 @@ const RelatedPersonDetails = ({displayMode}) => {
                     })
                     newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
                     handleFormDataonSavectx(newData)
-                    if(!state?.isFreshEntryctx) {
+                    if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
         
                         let tabModifiedCols:any = state?.modifiedFormCols
                         tabModifiedCols = {
@@ -137,7 +137,7 @@ const RelatedPersonDetails = ({displayMode}) => {
                 } else {
                     newData["RELATED_PERSON_DTL"] = []
                     handleFormDataonSavectx(newData)
-                    if(!state?.isFreshEntryctx) {
+                    if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                         let tabModifiedCols:any = state?.modifiedFormCols
                         tabModifiedCols = {
                           ...tabModifiedCols,
@@ -200,7 +200,7 @@ const RelatedPersonDetails = ({displayMode}) => {
                             onSubmitHandler={RelPersonSubmitHandler2}
                             // initialValues={state?.formDatactx["RELATED_PERSON_DTL"] ?? {}}
                             initialValues={initialVal}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             key={"new-form-in-kyc"}
                             metaData={related_person_detail_data as MetaDataType}
                             formStyle={{}}
@@ -211,7 +211,7 @@ const RelatedPersonDetails = ({displayMode}) => {
             </Grid>
              {/* : null} */}
             {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
 
 
             <MessageBoxWrapper

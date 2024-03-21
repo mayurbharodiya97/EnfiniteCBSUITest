@@ -26,7 +26,7 @@ const actions = [
     },
 ];
 
-const AttestationDetails = ({displayMode, onFormClose, onUpdateForm}) => {
+const AttestationDetails = ({onFormClose, onUpdateForm}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
     const [historyDialog, setHistoryDialog] = useState(false)
     const [updateDialog, setUpdateDialog] = useState(false)
@@ -318,7 +318,7 @@ const AttestationDetails = ({displayMode, onFormClose, onUpdateForm}) => {
                             onSubmitHandler={AttestationDTLSubmitHandler}
                             // initialValues={state?.formDatactx["ATTESTATION_DTL"] ?? {}}
                             initialValues={initialVal}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             key={"att-details-form-kyc"+ initialVal}
                             metaData={attestation_detail_meta_data as MetaDataType}
                             formStyle={{}}
@@ -329,7 +329,7 @@ const AttestationDetails = ({displayMode, onFormClose, onUpdateForm}) => {
             </Grid>
              {/* : null} */}
             {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
-            <TabNavigate handleSave={displayMode !== "new" ? onUpdateForm : handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            <TabNavigate handleSave={(state?.formmodectx !== "new" && !state?.isDraftSavedctx) ? onUpdateForm : handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
             {historyDialog && <AttestHistory 
                 open={historyDialog} 
                 onClose={onCloseSearchDialog} 

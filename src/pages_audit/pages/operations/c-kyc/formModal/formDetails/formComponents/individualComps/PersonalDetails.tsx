@@ -25,9 +25,7 @@ import { useMutation } from "react-query";
 import { SearchListdialog } from "../legalComps/EntityDetails";
 import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "../TabNavigate";
-const PersonalDetails = ({
-  displayMode
-}) => {
+const PersonalDetails = () => {
   const { t } = useTranslation();
   const PDFormRef = useRef<any>("");
   const PODFormRef = useRef<any>("");
@@ -165,7 +163,7 @@ const PersonalDetails = ({
         ...commonData,
       };
       handleFormDataonSavectx(newData);
-      if(!state?.isFreshEntryctx) {
+      if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
         let tabModifiedCols:any = state?.modifiedFormCols
         let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
 
@@ -224,7 +222,7 @@ const PersonalDetails = ({
       handleFormDataonSavectx(newData);
       // handleColTabChangectx(1)
 
-      if(!state?.isFreshEntryctx) {
+      if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
         // let oldFormData = _.pick(state?.retrieveFormDataApiRes["PERSONAL_DETAIL"] ?? {}, formFieldsRef.current)
         // let newFormData = _.pick(state?.formDatactx["PERSONAL_DETAIL"] ?? {}, formFieldsRef.current)
         // let upd = utilFunction.transformDetailsData(newFormData, oldFormData);
@@ -326,7 +324,7 @@ const PersonalDetails = ({
                 metaData={personal_detail_prefix_data as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
-                displayMode={displayMode}
+                displayMode={state?.formmodectx}
                 controlsAtBottom={false}
                 onFormButtonClickHandel={(fieldID, dependentFields) => {
                   // console.log("form button clicked...", fieldID, dependentFields, dependentFields?.ACCT_NM?.value, typeof dependentFields?.ACCT_NM?.value)
@@ -403,7 +401,7 @@ const PersonalDetails = ({
                 metaData={personal_other_detail_meta_data as MetaDataType}
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
-                displayMode={displayMode}
+                displayMode={state?.formmodectx}
                 formStyle={{}}
                 hideHeader={true}
                 onSubmitHandler={onSubmitPODHandler}
@@ -421,7 +419,7 @@ const PersonalDetails = ({
           width="100%"
         ></Skeleton>
     ) : null} */}
-      <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
 
         {dialogOpen && <SearchListdialog 
             open={dialogOpen} 

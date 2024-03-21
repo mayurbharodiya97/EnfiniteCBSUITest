@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import _ from "lodash"
 import TabNavigate from "../TabNavigate"
 
-const NRIDetails = ({displayMode}) => {
+const NRIDetails = () => {
     const [isNextLoading, setIsNextLoading] = useState(false)
     const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx} = useContext(CkycContext);
     const { t } = useTranslation();
@@ -79,7 +79,7 @@ const NRIDetails = ({displayMode}) => {
             let newData = state?.formDatactx
             newData["NRI_DTL"] = {...newData["NRI_DTL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            if(!state?.isFreshEntryctx) {
+            if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                 let tabModifiedCols:any = state?.modifiedFormCols
                 let updatedCols = tabModifiedCols.NRI_DTL ? _.uniq([...tabModifiedCols.NRI_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
                 tabModifiedCols = {
@@ -143,7 +143,7 @@ const NRIDetails = ({displayMode}) => {
                             metaData={nri_detail_meta_data as MetaDataType}
                             // initialValues={state?.formDatactx["NRI_DTL"] ?? {}}
                             initialValues={initialVal}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             formStyle={{}}
                             hideHeader={true}
                         />
@@ -152,7 +152,7 @@ const NRIDetails = ({displayMode}) => {
             </Grid>
              {/* : null} */}
             {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
         </Grid>
     )
 }

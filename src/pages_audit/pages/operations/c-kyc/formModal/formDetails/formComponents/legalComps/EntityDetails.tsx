@@ -27,7 +27,7 @@ const actions = [
     },
 ];
 
-const EntityDetails = ({displayMode}) => {
+const EntityDetails = () => {
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const PDFormRef = useRef<any>("")
@@ -218,7 +218,7 @@ const EntityDetails = ({displayMode}) => {
                             formStyle={{}}
                             hideHeader={true}
                             // displayMode={"new"}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             controlsAtBottom={false}
                             onFormButtonClickHandel={(fieldID, dependentFields) => {
                                 // console.log("form button clicked...", fieldID, dependentFields, dependentFields?.SURNAME?.value, typeof dependentFields?.SURNAME?.value)
@@ -253,7 +253,7 @@ const EntityDetails = ({displayMode}) => {
              {/* : null} */}
             {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
 
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />            
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />            
 
             {dialogOpen && <SearchListdialog 
                 open={dialogOpen} 
