@@ -1,7 +1,7 @@
-import { GridMetaDataType } from "components/dataTableStatic";
 import { components } from "components/report";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
+import * as CommonApi from "pages_audit/pages/operations/DailyTransaction/TRNCommon/api";
 export const TellerScreenMetadata: any = {
   form: {
     name: "TellerOperation",
@@ -48,7 +48,7 @@ export const TellerScreenMetadata: any = {
   fields: [
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "TRN",
       label: "Transaction",
@@ -60,6 +60,7 @@ export const TellerScreenMetadata: any = {
         { label: " Cash Payment", value: "P" },
         { label: " Single Denomination", value: "S" },
       ],
+      _optionsKey: "defaultOption",
       postValidationSetCrossFieldValues: (
         currentField,
         formState,
@@ -81,7 +82,6 @@ export const TellerScreenMetadata: any = {
         }
       },
       defaultValue: "R",
-      _optionsKey: "defaultOption",
       GridProps: {
         xs: 6,
         sm: 3,
@@ -98,6 +98,17 @@ export const TellerScreenMetadata: any = {
       render: {
         componentType: "_accountNumber",
       },
+      // fullAccountNumberMetadata: {
+      //   name:"FL_AACT_CD",
+      //   maxLength: 8,
+      //   GridProps: {
+      //     xs: 2,
+      //     sm: 2,
+      //     md: 2,
+      //     lg: 2,
+      //     xl: 2,
+      //   },
+      // },
       branchCodeMetadata: {
         name: "BRANCH_CD",
         dependentFields: ["TRN"],
@@ -161,11 +172,7 @@ export const TellerScreenMetadata: any = {
       },
       accountCodeMetadata: {
         name: "ACCT_CD",
-        // setValueOnDependentFieldsChange: (dependentFields, others) => {
-        //   if (!others.isSubmitting) {
-        //     return "";
-        //   }
-        // },
+        dependentFields: ["TRN", "BRANCH_CD", "ACCT_TYPE"],
         autoComplete: "off",
         GridProps: {
           xs: 6,
@@ -180,40 +187,70 @@ export const TellerScreenMetadata: any = {
           authState,
           dependentFieldValues
         ) => {
-          let paddedAcctcode = (field?.value).padStart(
-            dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PADDING_NUMBER,
+          const paddedAcctcode = (field?.value).padStart(
+            dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PADDING_NUMBER ||
+              0,
             0
           );
-          let reqParameters = {
+          const reqParameters = {
             BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
             COMP_CD: authState?.companyID,
             ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
             ACCT_CD: paddedAcctcode,
             SCREEN_REF: "ETRN/039",
           };
-          // let postData;
-          if (
-            Boolean(paddedAcctcode) &&
-            Boolean(dependentFieldValues?.BRANCH_CD?.value) &&
-            Boolean(dependentFieldValues?.ACCT_TYPE?.value)
-          ) {
-            let postData = await GeneralAPI.getAccNoValidation(reqParameters);
-            formState.setDataOnFieldChange(
-              "ACCT_CD",
-              paddedAcctcode,
-              dependentFieldValues,
-              postData
-            );
 
-            if (Boolean(postData.RESTRICTION)) {
+          if (
+            paddedAcctcode &&
+            dependentFieldValues?.BRANCH_CD?.value &&
+            dependentFieldValues?.ACCT_TYPE?.value
+          ) {
+            const postData = await GeneralAPI.getAccNoValidation(reqParameters);
+
+            if (postData?.RESTRICTION) {
+              formState.MessageBox({
+                messageTitle: "Validation Failed...!",
+                message: postData.RESTRICTION,
+                buttonNames: ["Ok"],
+              });
               return {
                 ACCT_CD: { value: "" },
                 ACCT_TYPE: { value: "" },
-                BRANCH_CD: { value: "" },
+                RECEIPT: { value: "" },
+                PAYMENT: { value: "" },
               };
             }
+
+            if (postData?.MESSAGE1) {
+              formState.MessageBox({
+                messageTitle: "Validation Alert",
+                message: postData.MESSAGE1,
+                buttonNames: ["Ok"],
+              });
+            }
+
+            const carousalCardDataReqParameters = {
+              COMP_CD: authState?.companyID,
+              ACCT_TYPE: dependentFieldValues?.ACCT_TYPE?.value,
+              BRANCH_CD: dependentFieldValues?.BRANCH_CD?.value,
+              ACCT_CD: paddedAcctcode,
+              PARENT_TYPE:
+                dependentFieldValues?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE ||
+                "",
+            };
+
+            const carousalCardData = await CommonApi.getCarousalCards(
+              carousalCardDataReqParameters
+            );
+
+            formState.setDataOnFieldChange("ACCT_CD", {
+              paddedAcctcode,
+              dependentFieldValues,
+              carousalCardData,
+            });
+
             return {
-              ACCT_CD: { value: paddedAcctcode ?? "", ignoreUpdate: true },
+              ACCT_CD: { value: paddedAcctcode || "", ignoreUpdate: true },
             };
           }
         },
@@ -295,6 +332,25 @@ export const TellerScreenMetadata: any = {
         return "";
       },
     },
+    // {
+    //   render: {
+    //     componentType: "checkboxGroup",
+    //   },
+    //   name: "CHEQ_BK_GRP",
+    //   label: "CHEQ_BK_GRP",
+    //   placeholder: "CHEQ_BK_GRP",
+    //   options: GeneralAPI.getBranchCodeList,
+    //   _optionsKey: "defaultOption",
+    // },
+    // {
+    //   render: {
+    //     componentType: "timePicker",
+    //   },
+    //   name: "TM_PKR",
+    //   label: "TM_PKR",
+    //   placeholder: "TM_PKR",
+    //   // format: "hh:mm:ss",
+    // },
     {
       render: {
         componentType: "amountField",
@@ -317,13 +373,24 @@ export const TellerScreenMetadata: any = {
           return true;
         }
       },
-      postValidationSetCrossFieldValues: (
+      postValidationSetCrossFieldValues: async (
         field,
         formState,
         authState,
         dependentFieldsValues
       ) => {
-        formState.setDataOnFieldChange("RECEIPT", field, dependentFieldsValues);
+        if (
+          !dependentFieldsValues?.ACCT_CD?.error &&
+          Boolean(dependentFieldsValues?.ACCT_CD?.value) &&
+          Boolean(dependentFieldsValues?.BRANCH_CD?.value) &&
+          Boolean(dependentFieldsValues?.ACCT_TYPE?.value) &&
+          Boolean(field?.value)
+        ) {
+          formState.setDataOnFieldChange("RECEIPT", {
+            field,
+            dependentFieldsValues,
+          });
+        }
       },
       AlwaysRunPostValidationSetCrossFieldValues: {
         alwaysRun: true,
@@ -355,13 +422,28 @@ export const TellerScreenMetadata: any = {
           return true;
         }
       },
-      postValidationSetCrossFieldValues: (
+      postValidationSetCrossFieldValues: async (
         field,
         formState,
         authState,
         dependentFieldsValues
       ) => {
-        formState.setDataOnFieldChange("PAYMENT", field, dependentFieldsValues);
+        if (
+          !dependentFieldsValues?.ACCT_CD?.error &&
+          Boolean(dependentFieldsValues?.ACCT_CD?.value) &&
+          Boolean(dependentFieldsValues?.BRANCH_CD?.value) &&
+          Boolean(dependentFieldsValues?.ACCT_TYPE?.value) &&
+          Boolean(field?.value)
+        ) {
+          formState.setDataOnFieldChange("PAYMENT", {
+            field,
+            dependentFieldsValues,
+          });
+        }
+      },
+      AlwaysRunPostValidationSetCrossFieldValues: {
+        alwaysRun: true,
+        touchAndValidate: false,
       },
       // setValueOnDependentFieldsChange: (dependentFields) => {
       //   return "";

@@ -2,7 +2,7 @@ import { Dialog } from "@mui/material";
 import { MetaDataType } from "components/dyanmicForm";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { ParaDetailMetadata } from "./metaData";
-import { InitialValuesType,SubmitFnType } from "packages/form";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 import { GradientButton } from "components/styledComponent/button";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { useMemo, useRef, useState } from "react";

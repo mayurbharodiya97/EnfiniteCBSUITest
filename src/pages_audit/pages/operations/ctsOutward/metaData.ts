@@ -59,7 +59,7 @@ export const CTSOutwardClearingFormMetaData = {
     },
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "ZONE",
       label: "Zone",
@@ -70,7 +70,6 @@ export const CTSOutwardClearingFormMetaData = {
       options: "getZoneListData",
       _optionsKey: "getZoneListData",
       disableCaching: true,
-      requestProps: "ZONE_TRAN_TYPE",
       dependentFields: ["TRAN_DT"],
     },
     {
@@ -94,7 +93,7 @@ export const CTSOutwardClearingFormMetaData = {
         componentType: "_accountNumber",
       },
       branchCodeMetadata: {
-        defaultValue: "099 ",
+        // defaultValue: "099 ",
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2.2 },
         postValidationSetCrossFieldValues: () => {
           return {
@@ -112,7 +111,7 @@ export const CTSOutwardClearingFormMetaData = {
         dependentFields: ["ACCT_TYPE"],
         postValidationSetCrossFieldValues: () => {
           return {
-            ACCT_CD: { value: "" },
+            ACCT_CD: { value: "", ignoreUpdate: true },
             ACCT_NAME: { value: "" },
             TRAN_BAL: { value: "" },
           };
@@ -121,6 +120,7 @@ export const CTSOutwardClearingFormMetaData = {
       accountCodeMetadata: {
         fullWidth: true,
         FormatProps: {
+          allowNegative: false,
           isAllowed: (values) => {
             if (values?.value?.length > 6) {
               return false;
@@ -190,7 +190,7 @@ export const CTSOutwardClearingFormMetaData = {
             };
           }
         },
-        runPostValidationHookAlways: true,
+        // runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
       },
     },
@@ -199,7 +199,7 @@ export const CTSOutwardClearingFormMetaData = {
         componentType: "textField",
       },
       name: "ACCT_NAME",
-      label: "AC Name",
+      label: "A/C Name",
       type: "text",
       fullWidth: true,
       isReadOnly: true,
@@ -611,7 +611,7 @@ export const ChequeDetailFormMetaData: any = {
         componentType: "hidden",
       },
       name: "TRAN_DT",
-      label: "Cheque Date",
+      label: "",
       placeholder: "",
       format: "dd/MM/yyyy",
 
@@ -622,7 +622,7 @@ export const ChequeDetailFormMetaData: any = {
         componentType: "hidden",
       },
       name: "RANGE_DT",
-      label: "Cheque Date",
+      label: "",
       placeholder: "",
       format: "dd/MM/yyyy",
 
@@ -672,8 +672,8 @@ export const ChequeDetailFormMetaData: any = {
           type: "text",
           required: true,
           autoComplete: "off",
-          isFieldFocused: true,
-          defaultfocus: true,
+          // isFieldFocused: true,
+          // defaultfocus: true,
           FormatProps: {
             allowNegative: false,
             allowLeadingZeros: true,
@@ -723,6 +723,7 @@ export const ChequeDetailFormMetaData: any = {
             auth,
             dependentFieldsValues
           ) => {
+            if (formState?.isSubmitting) return {};
             if (field.value) {
               let formData = {
                 COMP_CD: auth.companyID ?? "",
@@ -819,7 +820,6 @@ export const ChequeDetailFormMetaData: any = {
           label: "Cheque Date",
           placeholder: "",
           format: "dd/MM/yyyy",
-          defaultValue: new Date(),
           type: "text",
           fullWidth: true,
           dependentFields: ["TRAN_DT", "RANGE_DT"],
@@ -833,7 +833,6 @@ export const ChequeDetailFormMetaData: any = {
                 "en-IN"
               )} - ${transDate.toLocaleDateString("en-IN")}`;
             }
-            return "";
           },
 
           required: true,
@@ -895,7 +894,7 @@ export const ChequeDetailFormMetaData: any = {
             componentType: "textField",
           },
           name: "ECS_USER_NO",
-          label: "Pay Name",
+          label: "Payee Name",
           placeholder: "",
           type: "text",
           required: true,
@@ -903,7 +902,7 @@ export const ChequeDetailFormMetaData: any = {
           // isReadOnly: true,\
           schemaValidation: {
             type: "string",
-            rules: [{ name: "required", params: ["Pay Name is required."] }],
+            rules: [{ name: "required", params: ["Payee Name is required."] }],
           },
           GridProps: { xs: 12, sm: 4, md: 4, lg: 4, xl: 1.5 },
         },
@@ -914,7 +913,7 @@ export const ChequeDetailFormMetaData: any = {
           name: "AMOUNT",
           label: "Cheque Amount",
           placeholder: "",
-          isFieldFocused: true,
+          // isFieldFocused: true,
           required: true,
           type: "text",
           FormatProps: {

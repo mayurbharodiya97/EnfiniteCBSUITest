@@ -95,23 +95,24 @@ export const getTabsDetail = async ({ COMP_CD , ENTITY_TYPE, CATEGORY_CD, CONS_T
 };
 
 export const getCustomerDetailsonEdit = async (reqData) => {
+  // console.log("iuehfiwuehfwef", reqData)
   // COMP_CD, CUSTOMER_ID?, REQUEST_CD?}
-  const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
-  let payload = {}
-  // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
-  if(CUSTOMER_ID) {
-    payload = {
-      COMP_CD: COMP_CD,
-      CUSTOMER_ID: CUSTOMER_ID
-    }
-  } else {
-    payload = {
-      COMP_CD: COMP_CD,
-      REQUEST_CD: REQUEST_CD
-    }
-  }
+  // const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
+  // let payload = {}
+  // // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
+  // if(CUSTOMER_ID) {
+  //   payload = {
+  //     COMP_CD: COMP_CD,
+  //     CUSTOMER_ID: CUSTOMER_ID
+  //   }
+  // } else {
+  //   payload = {
+  //     COMP_CD: COMP_CD,
+  //     REQUEST_CD: REQUEST_CD
+  //   }
+  // }
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", payload);
+    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", reqData);
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
@@ -132,6 +133,27 @@ export const getCustomerDetailsonEdit = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const getDocumentImagesList = async (payload) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("GETCKYCDOCSCNHISDISP", payload);
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
+export const updateExtDocument = async (payload) => {
+  // console.log("updateExtDocument payload", payload)
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("CUSTDOCUMENTDATADML", payload);
+  if (status === "0") {
+    return data
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
 
 
 export const getCIFCategories = async ({ COMP_CD, BRANCH_CD, ENTITY_TYPE }) => {
@@ -579,9 +601,23 @@ export const validatePAN = async (columnValue, allField?, formState?) => {
 }
 
 export const DuplicationValidate = async (columnValue, allField, formState, fieldValue?) => {
+  // console.log("ewoiejfowieijfowiejfwoiejf", columnValue, allField, formState, fieldValue)
   const {COMP_CD, CUSTOMER_ID, REQ_FLAG} = formState
-  // console.log("waefdwdqwedqwd ..")
 // export const DuplicationValidate = async (field, formState, authState, dependentFieldsValues, fieldObj) => {
+  if(
+    !Boolean(columnValue.value) &&
+    (typeof fieldValue === "object" && Object.keys(fieldValue).includes("PASSPORT_NO"))
+  ) {
+      if(
+        formState.RESIDENCE_STATUS &&
+        (formState.RESIDENCE_STATUS === "02" ||
+        formState.RESIDENCE_STATUS === "03")
+      ) {
+        return "This field is required"
+      } else {
+        return "";
+      }
+  }
   if(fieldValue) {
     let keys = Object.keys(fieldValue)
     if(keys.length === 1 && (Boolean(fieldValue[keys[0]]))) {
@@ -711,20 +747,20 @@ export const getRetrieveData = async ({COMP_CD, SELECT_COLUMN}) => {
 }
 
 // for getting pending entries, in grid
-export const getPendingData = async (reqObj:{COMP_CD: string, ENTERED_DATE?:string, REQ_FLAG: string}) => {
-  const {COMP_CD, REQ_FLAG, ENTERED_DATE} = reqObj
+export const getPendingData = async (reqObj:{COMP_CD: string, BRANCH_CD: string, ENTERED_DATE?:string, REQ_FLAG: string}) => {
+  const {COMP_CD, BRANCH_CD, REQ_FLAG, ENTERED_DATE} = reqObj
   let payload = {}
   if(ENTERED_DATE) {
     payload = {
-      COMP_CD: COMP_CD, 
-      // BRANCH_CD: BRANCH_CD, 
+      // COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
       // ENTERED_DATE: ENTERED_DATE,
       REQ_FLAG: REQ_FLAG
     }
   } else {
     payload = {
-      COMP_CD: COMP_CD, 
-      // BRANCH_CD: BRANCH_CD, 
+      // COMP_CD: COMP_CD, 
+      BRANCH_CD: BRANCH_CD, 
       REQ_FLAG: REQ_FLAG
     }
   }
@@ -912,14 +948,14 @@ export const getDocumentTypes = async ({TRAN_CD, SR_CD, DOC_TYPE}) => {
   }
 }
 
-// retrieving document medatory docs in grid
+// retrieving document medatory docs in grid for new entry
 export const getKYCDocumentGridData = async ({COMP_CD, BRANCH_CD, CUST_TYPE, CONSTITUTION_TYPE}) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOCTEMPLATEDTL", {
+    await AuthSDK.internalFetcher("GETDOCTEMPLATEDTL", {
       COMP_CD: COMP_CD, 
       BRANCH_CD: BRANCH_CD, 
-      CUST_TYPE: CUST_TYPE, 
-      CONSTITUTION_TYPE: CONSTITUTION_TYPE,
+      CUSTOMER_TYPE: CUST_TYPE, 
+      // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       // TRAN_CD: "42"
     });
   if (status === "0") {
@@ -1097,7 +1133,8 @@ export const SaveAsDraft = async ({
   CONSTITUTION_TYPE,
   IsNewRow,
   PERSONAL_DETAIL,
-  COMP_CD
+  COMP_CD,
+  BRANCH_CD
 }) => {
   // console.log("reqdataa..",
   //   // `
@@ -1125,8 +1162,8 @@ export const SaveAsDraft = async ({
       // CATEGORY_CD: CATEGORY_CD,
       // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
       CONSTITUTION_TYPE: CONSTITUTION_TYPE,
-      COMP_CD: "132 ",
-      BRANCH_CD: "099 ",
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
       ACCT_TYPE: ACCT_TYPE,
       REQ_FLAG: "F",
       CATEG_CD: CATEGORY_CD,
@@ -1533,6 +1570,27 @@ export const SaveAsDraft = async ({
   }
 }
 
+interface ValidateDocType {
+  PAN_NO: string,
+  UNIQUE_ID: string,
+  ELECTION_CARD_NO: string,
+  NREGA_JOB_CARD: string,
+  PASSPORT_NO: string,
+  DRIVING_LICENSE_NO: string,
+  TEMPLATE_CD: string,
+  CUST_TYP: string,
+}
+export const validateDocData = async (reqObj:ValidateDocType) => {
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("VALIDATEDOCDATA", reqObj);
+  if(status === "0") {
+    let responseData = data;
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+}
+
 export const SaveEntry = async (reqdata) => {
   const {
     CUSTOMER_ID,
@@ -1545,6 +1603,7 @@ export const SaveEntry = async (reqdata) => {
     REQ_CD,
     formData,
     COMP_CD,
+    BRANCH_CD
   } = reqdata
 
   // console.log("aaaaaaaaa", formData)
@@ -1600,8 +1659,8 @@ export const SaveEntry = async (reqdata) => {
     // CATEGORY_CD: CATEGORY_CD,
     // CONSTITUTION_TYPE: CONSTITUTION_TYPE,
     CONSTITUTION_TYPE: CONSTITUTION_TYPE,
-    COMP_CD: "132 ",
-    BRANCH_CD: "099 ",
+    COMP_CD: COMP_CD,
+    BRANCH_CD: BRANCH_CD,
     ACCT_TYPE: ACCT_TYPE,
     REQ_FLAG: "F",
     CATEG_CD: CATEGORY_CD,
@@ -1612,9 +1671,9 @@ export const SaveEntry = async (reqdata) => {
   }
 
   const ExtraData = {
-    APPLICATION_TYPE: "Y",
+    APPLICATION_TYPE: "01",
     // ENTERED_DATE: format(new Date(), "dd-MMM-yyyy"),
-    ENTERED_DATE: "20-July-2023",
+    // ENTERED_DATE: "20-July-2023",
     // STD_1: "",
     // STD_4: "54890",
     // STD_2: "",
@@ -1660,8 +1719,60 @@ export const SaveEntry = async (reqdata) => {
   }
 
 
-  const { data, status, message, messageDetails } =
-  await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
+
+  let payload:any = {}
+  const payloadDt = {
+      IsNewRow: true,
+      // REQ_CD:"734",
+      REQ_CD:REQ_CD,
+      REQ_FLAG:"F",
+      SAVE_FLAG:"F",
+      ENTRY_TYPE :"1",
+      CUSTOMER_ID:"",
+      COMP_CD: COMP_CD,
+  }
+  Object.keys(formData).forEach(tabdata => {
+    if(tabdata === "PERSONAL_DETAIL") {
+      // payload[tabdata] = {
+      //   ...formData[tabdata],
+      //   ...remainingPD
+      // } 
+    } else if(tabdata === "OTHER_DTL") {
+      let otherDTL = formData[tabdata]
+      if(Boolean(otherDTL["POLITICALLY_CONNECTED"])) {
+        otherDTL["POLITICALLY_CONNECTED"] = "Y"
+      } else {
+          otherDTL["POLITICALLY_CONNECTED"] = "N"
+      }
+      if(Boolean(otherDTL["BLINDNESS"])) {
+          otherDTL["BLINDNESS"] = "Y"
+      } else {
+          otherDTL["BLINDNESS"] = "N"
+      }      
+      if(Boolean(otherDTL["REFERRED_BY_STAFF"])) {
+          otherDTL["REFERRED_BY_STAFF"] = "Y"
+      } else {
+          otherDTL["REFERRED_BY_STAFF"] = "N"
+      }
+      
+      payload[tabdata] = {...otherDTL}
+    } else {
+      payload[tabdata] = formData[tabdata]
+    }
+  });
+  payload = {...payload,
+    IsNewRow: true,
+    // REQ_CD:"734",
+    REQ_CD:REQ_CD,
+    REQ_FLAG:"F",
+    SAVE_FLAG:"F",
+    ENTRY_TYPE :"1",
+    CUSTOMER_ID:"",
+    COMP_CD: COMP_CD,
+  }
+
+  // const { data, status, message, messageDetails } =
+  // await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
     // ...remainingData,
     // // PERSONAL_DETAIL: {...PERSONAL_DETAIL, ...remainingPD, ...ExtraData}
     // // ...formData,
@@ -1899,14 +2010,14 @@ export const SaveEntry = async (reqdata) => {
       //     "MACHINE_NAME": "Auto",
       //     "BRANCH_CD": "099 "
       // },
-      IsNewRow: true,
-      // REQ_CD:"734",
-      REQ_CD:REQ_CD,
-      REQ_FLAG:"F",
-      SAVE_FLAG:"F",
-      ENTRY_TYPE :"1",
-      CUSTOMER_ID:"",
-      COMP_CD: COMP_CD,
+      // IsNewRow: true,
+      // // REQ_CD:"734",
+      // REQ_CD:REQ_CD,
+      // REQ_FLAG:"F",
+      // SAVE_FLAG:"F",
+      // ENTRY_TYPE :"1",
+      // CUSTOMER_ID:"",
+      // COMP_CD: COMP_CD,
     //  OTHER_ADDRESS: [
     //    {
     //         IsNewRow:true,
@@ -1925,7 +2036,7 @@ export const SaveEntry = async (reqdata) => {
     //   ENT_COMP_CD:"132 ",
     //       ENT_BRANCH_CD:"099 "}
     //   ],
-          OTHER_ADDRESS: formData["OTHER_ADDRESS"], //test-done
+          // OTHER_ADDRESS: formData["OTHER_ADDRESS"], //test-done
   
   //         RELATED_PERSON_DTL: {
   //          IsNewRow: true,
@@ -1938,7 +2049,7 @@ export const SaveEntry = async (reqdata) => {
   //         ENT_BRANCH_CD:"099 ",
   //         ACTIVE:"Y"
   // },
-  RELATED_PERSON_DTL: formData["RELATED_PERSON_DTL"], // test-done
+  // RELATED_PERSON_DTL: formData["RELATED_PERSON_DTL"], // test-done
   // ATTESTATION_DTL: {
   //          IsNewRow: true,
   //         REQ_FLAG:"F",
@@ -1949,7 +2060,7 @@ export const SaveEntry = async (reqdata) => {
   //          ENT_COMP_CD:"132",
   //         ENT_BRANCH_CD:"099"
   // },
-  ATTESTATION_DTL: formData["ATTESTATION_DTL"], //test-done
+  // ATTESTATION_DTL: formData["ATTESTATION_DTL"], //test-done
   // OTHER_DTL:{
   
   //          IsNewRow: true,
@@ -1982,7 +2093,7 @@ export const SaveEntry = async (reqdata) => {
   //     ENT_BRANCH_CD:"099 "
   // },
   // OTHER_DTL: formData["OTHER_DTL"], //test-done
-  OTHER_DTL: otherDTL, //test-done
+  // OTHER_DTL: otherDTL, //test-done
   // PHOTO_MST:{
   
   //      IsNewRow: true,
@@ -1999,7 +2110,7 @@ export const SaveEntry = async (reqdata) => {
   //      ENT_COMP_CD:"132 ",
   //     ENT_BRANCH_CD:"099 "
   // },
-  PHOTO_MST: formData["PHOTO_MST"], //test-done
+  // PHOTO_MST: formData["PHOTO_MST"], //test-done
   //  DOC_MST:{
   
   //         IsNewRow: true,
@@ -2101,7 +2212,7 @@ export const SaveEntry = async (reqdata) => {
   //     IsNewRow: true
   //   }
   // ],
-  DOC_MST: formData["DOC_MST"],
+  // DOC_MST: formData["DOC_MST"],
   
   
   // NRI_DTL: {
@@ -2125,15 +2236,58 @@ export const SaveEntry = async (reqdata) => {
   // // }
   
   // },
-  NRI_DTL: formData["NRI_DTL"], //test-done
+  // NRI_DTL: formData["NRI_DTL"] ?? {}, //test-done
   
-  });
+  // });
+  const { data, status, message, messageDetails } =
+  await AuthSDK.internalFetcher("SAVECUSTOMERDATA", payload)
   if(status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 }
+
+export const updateCustomer = async ({
+  COMP_CD,
+  updated_tab_format,
+  update_type,
+  CUSTOMER_ID,
+  REQ_CD,
+  REQ_FLAG,
+  SAVE_FLAG,
+  IsNewRow,
+}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("SAVECUSTOMERDATA", {
+      // IsNewRow: true,
+      // // REQ_CD:"734",
+      // REQ_CD:REQ_CD,
+      // REQ_FLAG:"F",
+      // SAVE_FLAG:"F",
+      // ENTRY_TYPE :"1",
+      // CUSTOMER_ID:"",
+      // NRI_DTL: formData["NRI_DTL"], //test-done
+      CUSTOMER_ID: CUSTOMER_ID,
+      REQ_CD: REQ_CD,
+      REQ_FLAG: REQ_FLAG,
+      SAVE_FLAG: SAVE_FLAG,
+      // SAVE_FLAG: "",
+      ENTRY_TYPE: "",
+      // ENTRY_TYPE : state?.req_cd_ctx ? "2" : "1",
+      IsNewRow: IsNewRow,
+      COMP_CD: COMP_CD,
+      // CUSTOMER_ID:"",
+      // NRI_DTL: formData["NRI_DTL"], //test-done,
+
+      ...updated_tab_format,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 export const AlphaNumericValidate = (columnValue) => {
   let regex = /^[a-zA-Z0-9 ]*$/;

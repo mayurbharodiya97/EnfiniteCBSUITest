@@ -38,6 +38,8 @@ export interface MasterDetailsArgumentType {
   onFormButtonClickHandel?: any;
   onClickActionEvent?: any;
   hideHeader?: boolean;
+  formState?: any;
+  isDetailRowRequire?: boolean;
 }
 export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
   (
@@ -65,6 +67,8 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
       onFormButtonClickHandel = (id) => {},
       onClickActionEvent = () => {},
       hideHeader = false,
+      formState,
+      isDetailRowRequire = true,
     },
     ref
   ) => {
@@ -179,14 +183,14 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
         if (!Array.isArray(result)) {
           result = [result];
         }
-        if (result.length === 0) {
+        if (result.length === 0 && isDetailRowRequire) {
           endSubmit(true);
           setServerError("Atleast one row must be in detail.");
         } else {
           let finalResult = result.filter(
             (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
           );
-          if (finalResult.length === 0) {
+          if (finalResult.length === 0 && isDetailRowRequire) {
             endSubmit(true);
             setServerError("Atleast one row must be in detail.");
           } else {
@@ -280,6 +284,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
             onFormButtonClickHandel={onFormButtonClickHandel}
             hideHeader={hideHeader}
             ref={myMasterRef}
+            formState={formState}
           >
             {children}
           </FormWrapper>

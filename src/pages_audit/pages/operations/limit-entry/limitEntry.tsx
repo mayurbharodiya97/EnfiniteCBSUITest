@@ -18,36 +18,26 @@ import React, {
   useState,
 } from "react";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { AuthContext } from "pages_audit/auth";
-import { useMutation, useQuery } from "react-query";
-import { Alert } from "components/common/alert";
-import { limitEntryMetaData } from "./limitEntryMetadata";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
-import { SubmitFnType } from "packages/form";
-import {
-  LimitSecurityData,
-  getLimitDTL,
-  getLimitFDdetail,
-  getLimitNSCdetail,
-  crudLimitEntryData,
-} from "./api";
-import { queryClient } from "cache";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
-import {
-  FD_gridMetaData,
-  NSC_FormMetaData,
-  NSC_gridMetaData,
-} from "./limit_NSC_FD_Metadata";
-import { ActionTypes } from "components/dataTable";
-import { enqueueSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import { FD_gridData, NSC_gridData } from "./limit_NSC_FD_Metadata";
+import { limitEntryGridMetaData } from "./limtEntryGridMetadata";
+import { usePopupContext } from "components/custom/popupContext";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { limitEntryMetaData } from "./limitEntryMetadata";
+import { ActionTypes } from "components/dataTable";
+import { AuthContext } from "pages_audit/auth";
+import { Alert } from "components/common/alert";
+import { SubmitFnType } from "packages/form";
+import { enqueueSnackbar } from "notistack";
 import { NSCFormDetail } from "./nscDetail";
 import { ForceExpire } from "./forceExpire";
-import { usePopupContext } from "components/custom/popupContext";
+import { useMutation } from "react-query";
+import { queryClient } from "cache";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import * as API from "./api";
 
 export const LimitEntry = () => {
   const fdAction: ActionTypes[] = [
@@ -82,24 +72,24 @@ export const LimitEntry = () => {
       rowDoubleClick: true,
     },
   ];
-  const [value, setValue] = useState("tab1");
-  const myMasterRef = useRef<any>(null);
-  const initialValuesRef = useRef<any>(null);
-  const { authState } = useContext(AuthContext);
   const [newFormMTdata, setNewFormMTdata] = useState<any>(limitEntryMetaData);
-  const [isOpenSave, setIsOpenSave] = useState<any>(false);
-  const [nscFDbtn, setNscFDbtn] = useState<any>(false);
-  const [detailForm, setDetailForm] = useState<any>();
+  const [closeAlert, setCloseAlert] = useState<any>(true);
+  const [isVisible, setIsVisible] = useState<any>(false);
+  const [deletePopup, setDeletePopup] = useState<any>(false);
   const [gridDetailData, setGridDetailData] = useState<any>();
-  let [messageArray, setmessageArray] = useState<any>([]);
-  let [fdPopupMessage, setFdPopupMessage] = useState<any>(false);
-  const navigate = useNavigate();
-
+  const [detailForm, setDetailForm] = useState<any>();
+  const [formRefresh, setFormRefresh] = useState(0);
+  const [initData, setInitData] = useState<any>({});
+  const [value, setValue] = useState("tab1");
+  const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
+  const deleteDataRef = useRef<any>(null);
+  const myMasterRef = useRef<any>(null);
+  const navigate = useNavigate();
 
   const securityLimitData: any = useMutation(
     "securityLimitData",
-    LimitSecurityData,
+    API.LimitSecurityData,
     {
       onSuccess: (data) => {
         let newData;
@@ -111,55 +101,124 @@ export const LimitEntry = () => {
         }
         setNewFormMTdata(newData);
       },
-      onError: (error: any) => {},
     }
   );
 
-  console.log("<<<securityLimitData", securityLimitData);
-  const getLimitDetail: any = useMutation("getLimitDTL", getLimitDTL, {
+  const getLimitDetail: any = useMutation("getLimitDTL", API.getLimitDTL, {
     onSuccess: (data) => {
       setGridDetailData(data);
     },
     onError: (error: any) => {},
   });
 
-  const nscDetail: any = useMutation("getLimitNSCdetail", getLimitNSCdetail, {
-    onSuccess: (data) => {
-      setGridDetailData(data);
-    },
-    onError: (error: any) => {},
-  });
+  const nscDetail: any = useMutation(
+    "getLimitNSCdetail",
+    API.getLimitNSCdetail,
+    {
+      onSuccess: (data) => {
+        setGridDetailData(data);
+      },
+    }
+  );
 
-  const fdDetail: any = useMutation("getLimitFDdetail", getLimitFDdetail, {
+  const fdDetail: any = useMutation("getLimitFDdetail", API.getLimitFDdetail, {
     onSuccess: (data) => {
       if (data?.[0]?.MESSAGE) {
-        setIsOpenSave(true);
-        setmessageArray(data?.[0]?.MESSAGE);
-        setFdPopupMessage(false);
+        MessageBox({
+          messageTitle: "Account Description",
+          message: data?.[0]?.MESSAGE,
+        });
       } else {
         setDetailForm("fddetail");
         setGridDetailData(data);
       }
     },
-    onError: (error: any) => {
-      setDetailForm("");
-      setIsOpenSave(false);
-      setFdPopupMessage(false);
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      enqueueSnackbar(errorMsg, { variant: "error" });
-    },
   });
+
+  const validateInsertData: any = useMutation(
+    "validateInsert",
+    API.validateInsert,
+    {
+      onSuccess: async (data, variables) => {
+        let apiReq = {
+          ...variables,
+          _isNewRow: true,
+          COMP_CD: authState?.companyID,
+          ENTERED_COMP_CD: authState?.companyID,
+          FD_COMP_CD: authState?.companyID,
+          ENTERED_BRANCH_CD: authState?.user?.branchCode,
+        };
+        if (data?.[0]?.O_STATUS === "0") {
+          // validateInsertData.isLoading = false;
+          const buttonName = await MessageBox({
+            messageTitle: "Validation Successfull..",
+            message: "Do you Want to save this data",
+            buttonNames: ["Yes", "No"],
+          });
+          if (buttonName === "Yes") {
+            crudLimitData.mutate(apiReq);
+          }
+        } else if (data?.[0]?.O_STATUS === "9") {
+          MessageBox({
+            messageTitle: "Validation Alert..",
+            message: data?.[0]?.O_MESSAGE,
+          });
+        } else if (data?.[0]?.O_STATUS === "99") {
+          // validateInsertData.isLoading = false;
+          let buttonName = await MessageBox({
+            messageTitle: "Do you Want to Continue with this Record",
+            message: data?.[0]?.O_MESSAGE,
+            buttonNames: ["Yes", "No"],
+          });
+          if (buttonName === "Yes") {
+            crudLimitData.mutate(apiReq);
+          }
+        } else if (data?.[0]?.O_STATUS === "999") {
+          MessageBox({
+            messageTitle: "Validation Failed...!",
+            message: data?.[0]?.O_MESSAGE,
+          });
+        }
+      },
+    }
+  );
+
+  const validateDeleteData: any = useMutation(
+    "validateDelete",
+    API.validateDelete,
+    {
+      onSuccess: async (data) => {
+        if (data?.[0]?.O_STATUS === "999" && data?.[0]?.O_RESTRICT) {
+          MessageBox({
+            messageTitle: "Invalid Delete Operation",
+            message: data?.[0]?.O_RESTRICT,
+          });
+        } else if (
+          data?.[0]?.O_STATUS === "0" &&
+          data?.[0]?.O_RESTRICT === "SUCCESS"
+        ) {
+          setDeletePopup(true);
+        }
+      },
+    }
+  );
 
   const crudLimitData: any = useMutation(
     "crudLimitEntryData",
-    crudLimitEntryData,
+    API.crudLimitEntryData,
     {
       onSuccess: (data, variables) => {
-        setNewFormMTdata({ ...limitEntryMetaData });
-        enqueueSnackbar("Data insert successfully", { variant: "success" });
+        if (variables?._isDeleteRow) {
+          setDeletePopup(false);
+          getLimitDetail.mutate({ ...deleteDataRef.current });
+          enqueueSnackbar("Data Delete successfully", { variant: "success" });
+        } else if (variables?._isNewRow) {
+          myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
+          setFormRefresh((old) => old + 1);
+          setIsVisible(false);
+          setNewFormMTdata({ ...limitEntryMetaData });
+          enqueueSnackbar("Data insert successfully", { variant: "success" });
+        }
       },
     }
   );
@@ -174,30 +233,19 @@ export const LimitEntry = () => {
     };
   }, []);
 
-  const onSubmitHandler = (
-    data: any,
-    displayData,
-    endSubmit,
-    setFieldError,
-    value
-  ) => {
-    console.log("<<<savehandle", data);
-
+  const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
+    setCloseAlert(true);
     let apiReq = {
       ...data,
-      _isNewRow: true,
-      COMP_CD: authState?.companyID,
-      ENTERED_COMP_CD: authState?.companyID,
-      FD_COMP_CD: authState?.companyID,
-      ENTERED_BRANCH_CD: authState?.user?.branchCode,
+      ACCT_CD: data?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
     };
-    crudLimitData.mutate(apiReq);
+    validateInsertData.mutate(apiReq);
     //@ts-ignore
     endSubmit(true);
   };
 
   const setCurrentAction = useCallback(
-    (data) => {
+    async (data) => {
       if (data?.name === "view-detail") {
         navigate(data?.name, {
           state: data?.rows,
@@ -205,44 +253,26 @@ export const LimitEntry = () => {
       } else if (data?.name === "close") {
         setDetailForm("");
       } else if (data?.name === "forceExpire") {
-        navigate(data?.name, {
-          state: data?.rows,
-        });
+        if (data?.rows?.[0]?.data?.EXPIRED_FLAG === "A") {
+          let res = await MessageBox({
+            messageTitle: "Confirmation..",
+            message: "Are you sure to force expire limit ?",
+            buttonNames: ["Yes", "No"],
+          });
+          if (res === "Yes") {
+            navigate(data?.name, {
+              state: data?.rows,
+            });
+          }
+        } else {
+          navigate(data?.name, {
+            state: data?.rows,
+          });
+        }
       }
     },
     [setDetailForm, navigate]
   );
-
-  const popupOnclick = (rows, buttonName) => {
-    const handleButtonClick = (flag) => {
-      myMasterRef?.current?.getFieldData().then((res) => {
-        if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
-          const FD_DTLRequestPara = {
-            COMP_CD: authState?.companyID,
-            ACCT_CD: res?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
-            ACCT_TYPE: res?.ACCT_TYPE,
-            BRANCH_CD: res?.BRANCH_CD,
-            LOGIN_COMP_CD: authState?.companyID,
-            FLAG: flag,
-          };
-          fdDetail.mutate(FD_DTLRequestPara);
-        }
-      });
-      setIsOpenSave(false);
-      setmessageArray([]);
-      setFdPopupMessage(false);
-    };
-
-    if (buttonName === "Ok") {
-      setIsOpenSave(false);
-      setmessageArray([]);
-    } else if (buttonName === "Yes") {
-      handleButtonClick("L");
-    } else if (buttonName === "No") {
-      handleButtonClick("C");
-    }
-  };
-
   return (
     <>
       <Box sx={{ width: "100%" }}>
@@ -250,9 +280,10 @@ export const LimitEntry = () => {
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);
+            setCloseAlert(false);
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
-                initialValuesRef.current = res;
+                setInitData(res);
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   limitEntryGridMetaData.gridConfig.gridLabel = `Limit-Entry Detail \u00A0\u00A0 ${(
                     authState?.companyID +
@@ -278,7 +309,7 @@ export const LimitEntry = () => {
         >
           <Tab value="tab1" label="Limit Entry" />
 
-          {nscFDbtn && <Tab value="tab2" label="Limit Detail" />}
+          {isVisible && <Tab value="tab2" label="Limit Detail" />}
         </Tabs>
       </Box>
 
@@ -292,103 +323,114 @@ export const LimitEntry = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {securityLimitData?.isError || crudLimitData?.isError ? (
+          {securityLimitData.isLoading ||
+          validateInsertData?.isLoading ||
+          crudLimitData.isLoading ||
+          fdDetail.isLoading ||
+          validateDeleteData.isLoading ? (
+            <LinearProgress color="secondary" />
+          ) : (securityLimitData?.isError && closeAlert) ||
+            (validateInsertData?.isError && closeAlert) ||
+            (fdDetail?.isError && closeAlert) ||
+            (crudLimitData?.isError && closeAlert) ? (
             <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
               <AppBar position="relative" color="primary">
                 <Alert
                   severity="error"
                   errorMsg={
                     securityLimitData?.error?.error_msg ??
+                    validateInsertData?.error?.error_msg ??
                     crudLimitData?.error?.error_msg ??
+                    fdDetail?.error?.error_msg ??
                     "Unknow Error"
                   }
                   errorDetail={
                     securityLimitData?.error?.error_detail ??
+                    validateInsertData?.error?.error_detail ??
                     crudLimitData?.error?.error_detail ??
+                    fdDetail?.error?.error_detail ??
                     ""
                   }
                   color="error"
                 />
               </AppBar>
             </div>
-          ) : null}
+          ) : (
+            <LinearProgressBarSpacer />
+          )}
+
           {value === "tab1" ? (
             <>
-              {securityLimitData.isLoading ||
-              securityLimitData.isFetching ||
-              crudLimitData?.isLoading ||
-              crudLimitData.isFetching ? (
-                <LinearProgress color="secondary" />
-              ) : (
-                <LinearProgressBarSpacer />
-              )}
-
               <FormWrapper
-                key={
-                  "limitEntryForm" +
-                  newFormMTdata +
-                  setNewFormMTdata +
-                  crudLimitData?.isSuccess
-                }
-                metaData={newFormMTdata}
-                initialValues={initialValuesRef.current ?? {}}
+                key={"limitEntryForm" + formRefresh}
+                metaData={newFormMTdata as MetaDataType}
+                initialValues={initData ?? {}}
                 onSubmitHandler={onSubmitHandler}
-                loading={securityLimitData.isLoading}
                 hideHeader={false}
                 ref={myMasterRef}
                 formState={{ MessageBox: MessageBox }}
                 setDataOnFieldChange={(action, payload) => {
                   if (action === "SECURITY_CODE") {
                     securityLimitData.mutate({
+                      ...payload,
                       COMP_CD: authState?.companyID,
-                      SECURITY_CD: payload?.SECURITY_CD,
                       BRANCH_CD: authState?.user?.branchCode,
                       WORKING_DATE: authState?.workingDate,
-                      LIMIT_MARGIN: payload?.LIMIT_MARGIN,
-                      HDN_CHARGE_AMT: payload?.HDN_CHARGE_AMT,
-                      HDN_GST_AMT: payload?.HDN_GST_AMT,
-                      HDN_GST_ROUND: payload?.HDN_GST_ROUND,
-                      HDN_TAX_RATE: payload?.HDN_TAX_RATE,
                     });
                   }
 
-                  // if (action === "MESSAGES") {
-                  //   if (payload?.MESSAGES) {
-                  //     messageArray = payload?.MESSAGES.split(", ").map(
-                  //       (msg, i) => {
-                  //         return <p>{`(${i + 1})  ${msg}`}</p>;
-                  //       }
-                  //     );
-                  //   }
-                  //   setmessageArray([messageArray]);
-                  //   setIsOpenSave(() => true);
-                  //   setNscFDbtn(payload?.NSC_FD_BTN);
-                  // } else
-
                   if (action === "NSC_FD_BTN") {
-                    setNscFDbtn(payload?.NSC_FD_BTN);
+                    setIsVisible(payload?.NSC_FD_BTN);
                   }
                 }}
               >
                 {({ isSubmitting, handleSubmit }) => {
                   return (
                     <>
-                      {nscFDbtn ? (
+                      {isVisible ? (
                         <>
                           <Button
                             color="primary"
-                            onClick={() => {
-                              setIsOpenSave(true);
-                              setFdPopupMessage(true);
-                              setmessageArray([
-                                <div>
-                                  Press 'Yes' then - to view Lien Marked FD(s)
-                                  against this A/c.
-                                  <br />
-                                  Press 'No' then to view all the FD(s) of this
-                                  Customer.
-                                </div>,
-                              ]);
+                            // disabled={isSubmitting}
+                            onClick={async () => {
+                              const buttonName = await MessageBox({
+                                messageTitle: "Confirmation...",
+                                message: `
+                                    Press 'Yes' then - to view Lien FD(s) against this A/c.                               ,
+                                    Press 'No' then to view all the FD(s) of
+                                    this Customer.
+                                `,
+                                buttonNames: ["Yes", "No"],
+                              });
+
+                              myMasterRef?.current
+                                ?.getFieldData()
+                                .then((res) => {
+                                  if (
+                                    res?.ACCT_CD &&
+                                    res?.ACCT_TYPE &&
+                                    res?.BRANCH_CD
+                                  ) {
+                                    const FD_DTLRequestPara = {
+                                      COMP_CD: authState?.companyID,
+                                      ACCT_CD: res?.ACCT_CD?.padStart(
+                                        6,
+                                        "0"
+                                      )?.padEnd(20, " "),
+                                      ACCT_TYPE: res?.ACCT_TYPE,
+                                      BRANCH_CD: res?.BRANCH_CD,
+                                      LOGIN_COMP_CD: authState?.companyID,
+                                      FLAG:
+                                        buttonName === "Yes"
+                                          ? "L"
+                                          : buttonName === "No"
+                                          ? "C"
+                                          : null,
+                                    };
+
+                                    fdDetail.mutate(FD_DTLRequestPara);
+                                  }
+                                });
                             }}
                           >
                             FD Detail
@@ -413,11 +455,6 @@ export const LimitEntry = () => {
                                       )?.padEnd(20, " "),
                                       ACCT_TYPE: res?.ACCT_TYPE,
                                       BRANCH_CD: res?.BRANCH_CD,
-
-                                      // COMP_CD: "132 ",
-                                      // BRANCH_CD: "099 ",
-                                      // ACCT_TYPE: "301 ",
-                                      // ACCT_CD: "000010              ",
                                     };
                                     nscDetail.mutate(NSC_DTLRequestPara);
                                   }
@@ -448,31 +485,55 @@ export const LimitEntry = () => {
             </>
           ) : value === "tab2" ? (
             <>
+              {getLimitDetail?.isError ||
+                (validateDeleteData?.isError && (
+                  <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+                    <AppBar position="relative" color="primary">
+                      <Alert
+                        severity="error"
+                        errorMsg={
+                          getLimitDetail?.error?.error_msg ??
+                          validateDeleteData?.error?.error_msg ??
+                          "Unknow Error"
+                        }
+                        errorDetail={
+                          getLimitDetail?.error?.error_detail ??
+                          validateDeleteData?.error?.error_detail ??
+                          ""
+                        }
+                        color="error"
+                      />
+                    </AppBar>
+                  </div>
+                ))}
               <GridWrapper
-                key={`limitEntryGridMetaData` + getLimitDetail.isSuccess}
+                key={`limitentrygridMetaData`}
                 finalMetaData={limitEntryGridMetaData as GridMetaDataType}
                 data={gridDetailData ?? []}
-                loading={getLimitDetail?.isLoading}
+                loading={
+                  getLimitDetail?.isLoading ?? validateDeleteData?.isLoading
+                }
                 setData={() => {}}
                 actions={forceExpireActions}
                 setAction={setCurrentAction}
                 onClickActionEvent={(index, id, data) => {
-                  console.log("<<<delete", index, id, data);
+                  deleteDataRef.current = data;
+                  validateDeleteData.mutate(data);
                 }}
               />
+              <Routes>
+                <Route
+                  path="forceExpire/*"
+                  element={
+                    <ForceExpire
+                      navigate={navigate}
+                      getLimitDetail={getLimitDetail}
+                    />
+                  }
+                />
+              </Routes>
             </>
           ) : null}
-          <Routes>
-            <Route
-              path="forceExpire/*"
-              element={
-                <ForceExpire
-                  navigate={navigate}
-                  getLimitDetail={getLimitDetail}
-                />
-              }
-            />
-          </Routes>
         </Grid>
       </Container>
 
@@ -491,7 +552,7 @@ export const LimitEntry = () => {
             >
               <GridWrapper
                 key={`personalizew`}
-                finalMetaData={FD_gridMetaData as GridMetaDataType}
+                finalMetaData={FD_gridData as GridMetaDataType}
                 data={gridDetailData ?? []}
                 setData={() => {}}
                 loading={fdDetail.isLoading}
@@ -511,9 +572,21 @@ export const LimitEntry = () => {
             },
           }}
         >
+          {nscDetail?.isError && (
+            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity="error"
+                  errorMsg={nscDetail?.error?.error_msg ?? "Unknow Error"}
+                  errorDetail={nscDetail?.error?.error_detail ?? ""}
+                  color="error"
+                />
+              </AppBar>
+            </div>
+          )}
           <GridWrapper
             key={`nscGridData`}
-            finalMetaData={NSC_gridMetaData as GridMetaDataType}
+            finalMetaData={NSC_gridData as GridMetaDataType}
             data={gridDetailData ?? []}
             setData={() => {}}
             loading={nscDetail.isLoading}
@@ -530,27 +603,30 @@ export const LimitEntry = () => {
         </Dialog>
       ) : null}
 
-      {isOpenSave && messageArray?.length > 0 && (
-        <div
-          onKeyPress={(e) => {
-            if (e.key === "Enter") {
-              popupOnclick("", "Ok");
-            }
+      {deletePopup && (
+        <RemarksAPIWrapper
+          TitleText={"Are you sure want to delete this record ..?"}
+          onActionNo={() => setDeletePopup(false)}
+          onActionYes={(val, rows) => {
+            let deleteReqPara = {
+              ...rows,
+              _isNewRow: false,
+              _isDeleteRow: true,
+              ACTIVITY_TYPE: "LIMIT ENTRY SCREEN",
+              USER_DEF_REMARKS: val
+                ? val
+                : "WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)",
+            };
+            crudLimitData.mutate(deleteReqPara);
           }}
-        >
-          <PopupRequestWrapper
-            MessageTitle={
-              fdPopupMessage ? "Confirmation" : "Account Description"
-            }
-            Message={messageArray ? messageArray : "something is wrong "}
-            onClickButton={(rows, buttonName) => {
-              popupOnclick(rows, buttonName);
-            }}
-            buttonNames={fdPopupMessage ? ["Yes", "No"] : ["Ok"]}
-            rows={[]}
-            open={isOpenSave}
-          />
-        </div>
+          isLoading={crudLimitData?.isLoading}
+          isEntertoSubmit={true}
+          AcceptbuttonLabelText="Ok"
+          CanceltbuttonLabelText="Cancel"
+          open={deletePopup}
+          rows={deleteDataRef.current}
+          defaultValue={"WRONG ENTRY FROM LIMIT ENTRY SCREEN (TRN/046)"}
+        />
       )}
     </>
   );

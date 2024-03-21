@@ -160,6 +160,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
+    isCusrsorFocused: true,
   },
   // filters: [],
   columns: [
@@ -244,7 +245,7 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       maxWidth: 180,
     },
     {
-      accessor: "REQUEST_CD",
+      accessor: "REQUEST_ID",
       columnName: "ReqNo",
       sequence: 5,
       alignment: "left",
@@ -253,6 +254,16 @@ export const ckyc_retrieved_meta_data: GridMetaDataType = {
       minWidth: 140,
       maxWidth: 180,
     },
+    {
+      accessor: "MAKER",
+      columnName: "Maker",
+      sequence: 10,
+      alignment: "left",
+      componentType: "default",
+      width: 140,
+      minWidth: 140,
+      maxWidth: 180,
+    }
     // {
     //   columnName: "Remarks",
     //   componentType: "buttonRowCell",
@@ -287,7 +298,8 @@ export const ckyc_pending_req_meta_data: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: false
+    allowRowSelection: false,
+    isCusrsorFocused: true,
   },
   // filters: [],
   columns: [

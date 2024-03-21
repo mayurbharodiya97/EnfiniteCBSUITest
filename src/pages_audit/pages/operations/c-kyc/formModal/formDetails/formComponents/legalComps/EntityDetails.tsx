@@ -27,17 +27,18 @@ const actions = [
     },
 ];
 
-const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const EntityDetails = () => {
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const PDFormRef = useRef<any>("")
   const PODFormRef = useRef<any>("")
   const NextBtnRef = useRef<any>("")
-  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx} = useContext(CkycContext)
+  const {state, handleFormDataonSavectx, handleColTabChangectx, handleStepStatusctx, handleModifiedColsctx, handleCurrentFormRefctx, handleSavectx, handleCurrFormctx, handleApiRes} = useContext(CkycContext)
   const [isNextLoading, setIsNextLoading] = useState(false)
   const [isPDExpanded, setIsPDExpanded] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [acctName, setAcctName] = useState("")
+  const [formStatus, setFormStatus] = useState<any[]>([])
   const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
   const handlePDExpand = () => {
     setIsPDExpanded(!isPDExpanded)
@@ -58,8 +59,54 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
 
   useEffect(() => {
     let refs = [PDFormRef]
-    handleCurrentFormRefctx(refs)
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: state?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
   }, [])
+
+  useEffect(() => {
+    // console.log("qweqweqweqwe", formStatus2)
+    if(Boolean(state?.currentFormctx.currentFormRefctx && state?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(state?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
+        let submitted;
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+          submitted = false;
+        } else {
+          submitted = true;
+          let newTabs = state?.tabsApiResctx;          
+          if(Array.isArray(newTabs) && newTabs.length>0) {
+            newTabs = newTabs.map(tab => {
+              if(tab.TAB_NAME === "NRI Details") {
+                if(state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "02" ||
+                  state?.formDatactx.PERSONAL_DETAIL["RESIDENCE_STATUS"] === "03") {
+                    return {...tab, isVisible: false}
+                } else {
+                  return {...tab, isVisible: true}
+                }
+              } else {
+                return tab;
+              }
+            })
+            handleApiRes(newTabs)
+          }
+          handleStepStatusctx({
+            status: "completed",
+            coltabvalue: state?.colTabValuectx,
+          })
+        }
+        handleCurrFormctx({
+          currentFormSubmitted: submitted,
+          isLoading: false,
+        })
+        setFormStatus([])
+      }
+    }
+  }, [formStatus])
 
     // useEffect(() => {
     //     console.log("... personal details", isCustomerData)
@@ -74,7 +121,7 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
         hasError
     ) => {
         // console.log("hasErrorhasError", hasError, data)
-        setIsNextLoading(true)
+        // setIsNextLoading(true)
         // console.log("qweqweqwesdcas", data, displayData, actionFlag)     
         if(data && !hasError) {
             let formFields = Object.keys(data) // array, get all form-fields-name 
@@ -97,14 +144,26 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
             }
             newData["PERSONAL_DETAIL"] = {...newData["PERSONAL_DETAIL"], ...data, ...commonData}
             handleFormDataonSavectx(newData)
-            handleColTabChangectx(state?.colTabValuectx+1)
-            handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
+            if(!state?.isFreshEntryctx) {
+                let tabModifiedCols:any = state?.modifiedFormCols
+                let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+        
+                tabModifiedCols = {
+                  ...tabModifiedCols,
+                  PERSONAL_DETAIL: [...updatedCols]
+                }
+                handleModifiedColsctx(tabModifiedCols)
+            }
+            setFormStatus(old => [...old, true])
+            // handleColTabChangectx(state?.colTabValuectx+1)
+            // handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
             // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save")
             // setIsNextLoading(false)
         } else {
             handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
+            setFormStatus(old => [...old, false])
         }
-        setIsNextLoading(false)
+        // setIsNextLoading(false)
         endSubmit(true)
     }
 
@@ -119,6 +178,9 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
     }, [state?.isFreshEntryctx, state?.retrieveFormDataApiRes])
 
     const handleSave = (e) => {
+        handleCurrFormctx({
+            isLoading: true,
+        })
         const refs = [PDFormRef.current.handleSubmitError(e, "save", false)]
         handleSavectx(e, refs)
     }
@@ -130,7 +192,8 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
         <Grid container rowGap={3}
           // sx={{backgroundColor: "#eee"}}
         >
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -155,7 +218,7 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                             formStyle={{}}
                             hideHeader={true}
                             // displayMode={"new"}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             controlsAtBottom={false}
                             onFormButtonClickHandel={(fieldID, dependentFields) => {
                                 // console.log("form button clicked...", fieldID, dependentFields, dependentFields?.SURNAME?.value, typeof dependentFields?.SURNAME?.value)
@@ -186,9 +249,11 @@ const EntityDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoadi
                         </FormWrapper>
                     </Grid>                    
                 </Collapse>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
 
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading ?? false} />            
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />            
 
             {dialogOpen && <SearchListdialog 
                 open={dialogOpen} 

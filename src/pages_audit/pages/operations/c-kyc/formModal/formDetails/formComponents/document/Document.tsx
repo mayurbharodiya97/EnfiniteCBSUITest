@@ -13,14 +13,8 @@ import { t } from "i18next";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { addMonths, format } from "date-fns";
 import _ from "lodash";
-const Document = ({
-  isCustomerData,
-  setIsCustomerData,
-  isLoading,
-  setIsLoading,
-  displayMode,
-  from,
-}) => {
+import TabNavigate from "../TabNavigate";
+const Document = () => {
   const { authState } = useContext(AuthContext);
   const {
     state,
@@ -28,11 +22,13 @@ const Document = ({
     handleStepStatusctx,
     handleFormDataonSavectx,
     handleModifiedColsctx,
+    handleCurrFormctx,
   } = useContext(CkycContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [rowsData, setRowsData] = useState([]);
   const [data, setData] = useState<any>([]);
+  const dataRef = useRef<any[]>([]);
   const [formMode, setFormMode] = useState<any>("");
   const [isNextLoading, setIsNextLoading] = useState(false);
   const isDataChangedRef = useRef(false);
@@ -45,6 +41,10 @@ const Document = ({
     navigate(".");
   };
   const myGridRef = useRef<any>(null);
+
+  useEffect(() => {
+    dataRef.current = data
+  }, [data,setData])
 
   // useEffect(() => {
   //   console.log('rowsData change', rowsData)
@@ -69,6 +69,16 @@ const Document = ({
     },
     onError: (error: any) => {},
   });
+
+  useEffect(() => {
+    let refs = state?.formmodectx !== "new" ? [onUpdate] : [onSave]
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: state?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
+  }, [])
 
   useEffect(() => {
     // console.log(state?.formDatactx["DOC_MST"], "wadqwdwq. doc", state?.retrieveFormDataApiRes["DOC_MST"])
@@ -170,11 +180,12 @@ const Document = ({
   );
 
     const onSave = () => {
+      // console.log("on save doc data", data, dataRef.current)
       // console.log("wadqwdwq. doc save", data)
-      if(data && data.length>0) {
+      if(dataRef.current && dataRef.current.length>0) {
         let newDocData: any[] = [];
 
-        newDocData = data.map((doc) => {
+        newDocData = dataRef.current.map((doc) => {
           // console.log("wadqwdwq. doc save newdoc", doc);
           const { TEMPLATE_CD, SUBMIT, VALID_UPTO, DOC_NO, DOC_IMAGE, DOC_DESCRIPTION, SR_CD, DOC_WEIGHTAGE } = doc;
           let newObj = {
@@ -202,29 +213,34 @@ const Document = ({
         let newData = state?.formDatactx;
         newData["DOC_MST"] = [...newDocData];
         handleFormDataonSavectx(newData);
-        handleStepStatusctx({
-          status: "completed",
-          coltabvalue: state?.colTabValuectx,
-        });
-        handleColTabChangectx(state?.colTabValuectx + 1);
+        // handleStepStatusctx({
+        //   status: "completed",
+        //   coltabvalue: state?.colTabValuectx,
+        // });
+        // handleColTabChangectx(state?.colTabValuectx + 1);
       } else {
         let newData = state?.formDatactx;
         newData["DOC_MST"] = [];
         handleFormDataonSavectx(newData);
-        handleStepStatusctx({
-          status: "completed",
-          coltabvalue: state?.colTabValuectx,
-        });
-        handleColTabChangectx(state?.colTabValuectx + 1);
       }
+      handleStepStatusctx({
+        status: "completed",
+        coltabvalue: state?.colTabValuectx,
+      });
+      handleCurrFormctx({
+        currentFormSubmitted: true,
+        isLoading: false,
+      })
+      // handleColTabChangectx(state?.colTabValuectx + 1);
     }
 
 
     const onUpdate = () => {
+      // console.log("on update doc data", data, dataRef.current)
       
       setIsNextLoading(true)
       // console.log("qweqweqweo", data, data.OTHER_ADDRESS)     
-      if(data) {
+      if(dataRef.current) {
           // setCurrentTabFormData(formData => ({...formData, "declaration_details": data }))
           // console.log("wadqwdwq. doc update data", data);
           let newData = state?.formDatactx
@@ -239,12 +255,12 @@ const Document = ({
               ENT_COMP_CD: authState?.companyID ?? "",
               ENT_BRANCH_CD: authState?.user?.branchCode ?? "",
           }
-          if(data && data.length>0) {
+          if(dataRef.current && dataRef.current.length>0) {
               let filteredCols:any[]=["VALID_UPTO", "DOC_IMAGE", "SUBMIT", "TEMPLATE_CD", "DOC_NO", "DOC_DESCRIPTION", "SR_CD", "TRAN_CD"]
 
-              let newFormatOtherAdd = data.map((formRow, i) => {
+              let newFormatOtherAdd = dataRef.current.map((formRow, i) => {
                 // console.log("wadqwdwq. doc update formRow", formRow)
-                return {...data[i], ...commonData, SUBMIT: Boolean(formRow?.SUBMIT) ? "Y" : "N"};
+                return {...dataRef.current[i], ...commonData, SUBMIT: Boolean(formRow?.SUBMIT) ? "Y" : "N"};
               })
               // console.log("new", newFormatOtherAdd, "wadqwdwq. doc update old", data)
   
@@ -276,7 +292,11 @@ const Document = ({
 
           // newData["OTHER_ADDRESS"] = {...newData["OTHER_ADDRESS"], ...newFormatOtherAdd}
           handleStepStatusctx({status: "completed", coltabvalue: state?.colTabValuectx})
-          handleColTabChangectx(state?.colTabValuectx+1)
+          handleCurrFormctx({
+            currentFormSubmitted: true,
+            isLoading: false,
+          })
+          // handleColTabChangectx(state?.colTabValuectx+1)
       }
       //  else {
       //     handleStepStatusctx({status: "error", coltabvalue: state?.colTabValuectx})
@@ -286,8 +306,8 @@ const Document = ({
 
 
   const SaveUpdateBTNs = useMemo(() => {
-    if (displayMode) {
-      return displayMode == "new" ? (
+    if (state?.formmodectx) {
+      return state?.formmodectx == "new" ? (
         <Fragment>
           <Button
             sx={{ mr: 2, mb: 2 }}
@@ -300,7 +320,7 @@ const Document = ({
             {/* {t("Save & Next")} */}
           </Button>
         </Fragment>
-      ) : displayMode == "edit" ? (
+      ) : state?.formmodectx == "edit" ? (
         <Fragment>
           <Button
             sx={{ mr: 2, mb: 2 }}
@@ -313,7 +333,7 @@ const Document = ({
           </Button>
         </Fragment>
       ) : (
-        displayMode == "view" && (
+        state?.formmodectx == "view" && (
           <Fragment>
             <Button
               sx={{ mr: 2, mb: 2 }}
@@ -334,7 +354,7 @@ const Document = ({
         )
       );
     }
-  }, [displayMode, data]);
+  }, [state?.formmodectx, data]);
 
   return (
     <Grid
@@ -361,22 +381,7 @@ const Document = ({
           setData([...newData])
         }}
       />
-
-      <Grid container item sx={{ justifyContent: "flex-end" }}>
-        <Button
-          sx={{ mr: 2, mb: 2 }}
-          color="secondary"
-          variant="contained"
-          disabled={isNextLoading}
-          onClick={(e) => {
-            // handleColTabChangectx(1)
-            handleColTabChangectx(state?.colTabValuectx - 1);
-          }}
-        >
-          {t("Previous")}
-        </Button>
-        {SaveUpdateBTNs}
-      </Grid>
+      <TabNavigate handleSave={state?.formmodectx !== "new" ? onUpdate : onSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
 
       {open ? (
         <KYCDocumentMasterDetails
