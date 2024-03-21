@@ -77,7 +77,7 @@
     .wave {
       width: 3px; /* Reduced width */
       height: 60px; /* Reduced height */
-      background: linear-gradient(45deg, cyan, #07288e);
+      background: var(--theme-color5);
       margin: 0 5px; /* Adjusted margin */
       animation: wave 1s linear infinite;
       border-radius: 12px; /* Reduced border-radius */

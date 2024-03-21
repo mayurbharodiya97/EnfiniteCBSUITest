@@ -121,6 +121,16 @@ export const ParametersGridMetaData: GridMetaDataType = {
       maxWidth: 300,
     },
     {
+      accessor: "REMARKS",
+      columnName: "Remarks",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 200,
+      minWidth: 250,
+      maxWidth: 300,
+    },
+    {
       accessor: "CONFIRMED_STATUS",
       columnName: "Confirm Status",
       sequence: 7,

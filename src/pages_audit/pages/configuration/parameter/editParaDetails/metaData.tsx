@@ -75,7 +75,6 @@ export const ParaDetailMetadata = {
         placeholder: "",
         type: "text",
         required: true,
-        isReadOnly: true,
         schemaValidation: {
           type: "string",
           rules: [
@@ -93,11 +92,39 @@ export const ParaDetailMetadata = {
       },
       {
         render: {
+          componentType: "textField",
+        },
+        name: "REMARKS",
+        label: "Remarks",
+        placeholder: "",
+        type: "text",
+        required: true,
+        GridProps: {
+          xs: 12,
+          xl: 8,
+          md: 8,
+          sm: 8,  
+          lg: 8,
+        },
+      },
+      {
+        render: {
+          componentType: "spacer",
+        },
+        GridProps: {
+          xs: 12,
+          xl: 4,
+          md: 4,
+          sm: 4,  
+          lg: 4,
+        },
+      },
+      {
+        render: {
           componentType: "select",
         },
         name: "DATATYPE_CD",
         label: "Data Type",
-        isReadOnly: true,
         required: true,
         options: [
             { label: "NUM/DECIMAL", value: "N" },
