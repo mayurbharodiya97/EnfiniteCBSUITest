@@ -99,7 +99,7 @@ export const TRN001_Table = ({
       setRows2(data);
 
       setTempStore({ ...tempStore, accInfo: data[0] });
-      data?.length > 0 && getCarousalCards.mutate(data[0]);
+      data?.length > 0 && getCarousalCards.mutate({ reqData: data[0] });
       data?.length > 0 && handleGetHeaderTabs(data[0] ?? "");
     },
     onError: (error) => {},
@@ -150,7 +150,7 @@ export const TRN001_Table = ({
       };
 
       setTempStore({ ...tempStore, accInfo: obj });
-      getCarousalCards.mutate(obj);
+      getCarousalCards.mutate({ reqData: obj });
       handleGetHeaderTabs(obj ?? "");
 
       handleSetAccInfo(obj);

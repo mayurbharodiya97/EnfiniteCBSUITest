@@ -98,7 +98,8 @@ const authAPI = () => {
     url: string,
     payload: any,
     header: any = {},
-    timeout: number | null = null
+    timeout: number | null = null,
+    controller: AbortController = new AbortController()
   ): Promise<CommonFetcherPreLoginResponse> => {
     if (baseURL === null) {
       return {
@@ -150,6 +151,7 @@ const authAPI = () => {
           ...payload,
         }),
         timeout: timeout,
+        controller: controller,
       });
       if (String(response.status) === "200") {
         let data = await response.json();
@@ -205,7 +207,8 @@ const authAPI = () => {
     url: string,
     payload: any,
     header: any = {},
-    timeout: number | null = null
+    timeout: number | null = null,
+    controller: AbortController = new AbortController()
   ): Promise<CommonFetcherResponse> => {
     if (baseURL === null) {
       return {
@@ -253,6 +256,7 @@ const authAPI = () => {
             ...payload,
           }),
           timeout: timeout,
+          controller: controller,
         }
       );
 
@@ -313,9 +317,8 @@ const authAPI = () => {
     }
   };
   const fetchWithTimeout = async (resource, options?: any) => {
-    const { timeout = 90000 } = options;
+    const { timeout = 90000, controller = new AbortController() } = options;
 
-    const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
     let response;
     await fetch(resource, {

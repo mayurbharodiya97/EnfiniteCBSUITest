@@ -38,7 +38,11 @@ export const SnapShot = ({ reqData }) => {
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const [rows, setRows] = useState([]);
   const [dateDialog, setDateDialog] = useState(false);
-  const [prevDate, setPrevDate] = useState(new Date());
+  const [prevDate, setPrevDate] = useState(() => {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    return oneMonthAgo;
+  });
   const [nextDate, setNextDate] = useState(new Date());
   const [dataRow, setDataRow] = useState<any>({});
   const [credit, setCredit] = useState<any>(0);
