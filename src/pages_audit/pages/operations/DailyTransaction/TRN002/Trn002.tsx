@@ -413,6 +413,7 @@ export const Trn002 = () => {
         handleViewAll={handleViewAll}
         handleRefresh={() => handleGetTRN002List()}
       />
+
       <>
         {Boolean(deleteDialog) ? (
           <RemarksAPIWrapper
