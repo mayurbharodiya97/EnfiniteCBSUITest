@@ -97,8 +97,10 @@ export const TRN001_Table = ({
       setDebit(drSum);
       setRows(data);
       setRows2(data);
-
+      console.log(data, "data getTRN001List");
+      console.log(data[0], "data[0] getTRN001List");
       setTempStore({ ...tempStore, accInfo: data[0] });
+      handleSetAccInfo(data[0]);
       data?.length > 0 && getCarousalCards.mutate({ reqData: data[0] });
       data?.length > 0 && handleGetHeaderTabs(data[0] ?? "");
     },

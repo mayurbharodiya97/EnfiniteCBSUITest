@@ -81,6 +81,43 @@ export const Trn002 = () => {
     BRANCH_CD: authState?.user?.branchCode,
   };
 
+  const subjectOptions = [
+    { value: "science", label: "science" },
+    { value: "maths", label: "maths" },
+  ];
+
+  const formMetaData: any = [
+    {
+      value: "",
+      label: "Name",
+      type: "text",
+      component: "textField",
+    },
+    {
+      value: "0",
+      label: "Age",
+      type: "Number",
+      component: "textField",
+    },
+    {
+      value: "",
+      label: "subjects",
+      type: "text",
+      component: "autoComplete",
+      options: subjectOptions,
+    },
+    {
+      value: "",
+      label: "X",
+      type: "",
+      component: "clearBtn",
+    },
+  ];
+
+  const handleFormSave = (obj) => {
+    console.log(obj, "objjjj save");
+  };
+
   useEffect(() => {
     handleSetRemarks();
   }, [location]);
@@ -125,6 +162,7 @@ export const Trn002 = () => {
   // api define ========================================================================
   const getTRN002List = useMutation(trn2Api.getTRN002List, {
     onSuccess: (data) => {
+      console.log(data, "dataaa getTRN002List");
       setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data?.filter((a) => a.CONFIRMED == "0");
@@ -132,13 +170,15 @@ export const Trn002 = () => {
       setRows2(arr);
       setRows(data);
       setTempStore({ ...tempStore, accInfo: arr[0] });
+      setReqData(arr[0]);
+      console.log(arr, "Arr getTRN002List");
       arr?.length > 0
         ? getCarousalCards.mutate({ reqData: arr[0] })
         : setCardStore({ ...cardStore, cardsInfo: [] });
 
-      getTabsByParentType.mutate({ reqData: arr[0] ?? "" });
+      arr[0] && getTabsByParentType.mutate({ reqData: arr[0] ?? "" });
       handleUpdateSum(arr);
-      setConfirmed(data.length - arr.length);
+      setConfirmed(data.length - arr?.length);
     },
     onError: (error) => {},
   });
@@ -240,6 +280,7 @@ export const Trn002 = () => {
 
   const handleViewAll = () => {
     let arr = [...rows];
+    console.log(arr, "arr");
     setRows2(arr);
     handleUpdateSum(arr);
   };
@@ -303,7 +344,6 @@ export const Trn002 = () => {
         cardsData={cardsData}
         reqData={reqData}
       />
-
       <Card
         sx={{
           boxShadow: "0px 1px 4px -1px #999999",
@@ -366,7 +406,6 @@ export const Trn002 = () => {
           </Typography>
         </Grid>
       </Card>
-
       <CommonFooter
         viewOnly={true}
         filteredRows={filteredRows}

@@ -24,6 +24,7 @@ export const getACH_IWList = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const getACH_IWDetailView = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACHIWIMGDTLTAB", {

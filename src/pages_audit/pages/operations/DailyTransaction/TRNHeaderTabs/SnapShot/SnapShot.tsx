@@ -22,6 +22,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import { format } from "date-fns";
+import { DateRetrievalDialog } from "components/custom/dateRetrievalPara";
+import { useStyles } from "pages_audit/style";
+
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -52,6 +55,17 @@ export const SnapShot = ({ reqData }) => {
   const getSnapShotList = useMutation(API.getSnapShotList, {
     onSuccess: (data) => {
       console.log(data, " getSnapShotList detailssss");
+      let debSum = 0;
+      let credSum = 0;
+
+      data?.map((a, i) => {
+        debSum = debSum + Number(a?.debit1);
+        credSum = credSum + Number(a?.credit1);
+      });
+
+      console.log(credSum, debSum, "aaa");
+      setCredit(credSum?.toFixed(2));
+      setDebit(debSum?.toFixed(2));
       setRows(data);
     },
     onError: (error: any) => {
@@ -60,40 +74,24 @@ export const SnapShot = ({ reqData }) => {
       });
     },
   });
-
-  const handleGetSnapshot = () => {
+  console.log(rows, "rows");
+  const handleGetSnapshot = (prevDate, nextDate) => {
     let obj = reqData;
-    obj.FROM_DATE = format(prevDate, "dd-MMM-yyyy");
-    obj.TO_DATE = format(nextDate, "dd-MMM-yyyy");
+    obj.FROM_DATE = prevDate;
+    obj.TO_DATE = nextDate;
     getSnapShotList.mutate(obj);
   };
 
   useEffect(() => {
-    reqData?.ACCT_CD && handleGetSnapshot();
+    reqData?.ACCT_CD && handleGetSnapshot("", "");
+    setCredit("0.00");
+    setDebit("0.00");
   }, [reqData]);
 
   // const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
   //   any,
   //   any
   // >(["getSnapShotList"], () => API.getSnapShotList(reqData));
-
-  const handleDate = (e, key) => {
-    console.log(e, key, "e date");
-    if (key == "prev") {
-      setPrevDate(e);
-    } else {
-      setNextDate(e);
-    }
-  };
-
-  const handleDateErr = (e, key) => {
-    console.log(e, key, "err");
-  };
-
-  const handleRetrieve = () => {
-    handleGetSnapshot();
-    setDateDialog(false);
-  };
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
@@ -105,6 +103,18 @@ export const SnapShot = ({ reqData }) => {
       setDateDialog(true);
     }
   }, []);
+
+  const classes = useStyles();
+  const retrievalParaValues = (retrievalValues) => {
+    setDateDialog(false);
+    setCredit("0.00");
+    setDebit("0.00");
+    console.log(retrievalValues, "retrievalValues");
+    handleGetSnapshot(
+      retrievalValues[0]?.value?.value,
+      retrievalValues[1]?.value?.value
+    );
+  };
   return (
     <>
       {getSnapShotList.isError ? (
@@ -125,8 +135,9 @@ export const SnapShot = ({ reqData }) => {
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}
-        onlySingleSelectionAllow={true}
+        onlySingleSelectionAllow={false}
         isNewRowStyle={true}
+        ReportExportButton={true}
       />
       <Grid
         item
@@ -145,52 +156,21 @@ export const SnapShot = ({ reqData }) => {
         <div></div>
 
         <Grid item sx={{ display: "flex", gap: "5rem" }}>
-          <div> Credit : ₹ </div>
-          <div>Debit : ₹</div>
+          <div> Credit : ₹ {credit} </div>
+          <div>Debit : ₹ {debit}</div>
         </Grid>
       </Grid>
 
-      <Dialog
-        maxWidth="sm"
-        open={dateDialog}
-        onClose={() => setDateDialog(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            From:{" "}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                format="dd/MM/yyyy"
-                value={prevDate}
-                onChange={(e) => handleDate(e, "prev")}
-                onError={(e) => handleDateErr(e, "prev")}
-              />
-            </LocalizationProvider>
-            &nbsp;To:{" "}
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                format="dd/MM/yyyy"
-                value={nextDate}
-                onChange={(e) => handleDate(e, "next")}
-                onError={(e) => handleDateErr(e, "next")}
-              />
-            </LocalizationProvider>
-          </div>
-        </DialogContent>
-        <DialogActions className="dialogFooter">
-          <Button
-            autoFocus
-            className="dialogBtn"
-            color="secondary"
-            variant="contained"
-            onClick={() => handleRetrieve()}
-          >
-            Retrieve
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {dateDialog && (
+        <DateRetrievalDialog
+          classes={classes}
+          open={dateDialog}
+          handleClose={() => setDateDialog(false)}
+          loginState={{}}
+          retrievalParaValues={retrievalParaValues}
+          defaultData={undefined}
+        />
+      )}
     </>
   );
 };

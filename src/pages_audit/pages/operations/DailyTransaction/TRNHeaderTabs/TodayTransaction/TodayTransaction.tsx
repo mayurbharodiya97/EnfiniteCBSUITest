@@ -32,7 +32,7 @@ const TodayTransaction = ({ reqData }) => {
     any,
     any
   >(["getTodayTransList", { reqData }], () => API.getTodayTransList(reqData));
-
+  console.log(data, "data!");
   return (
     <>
       {isError ? (
@@ -46,6 +46,7 @@ const TodayTransaction = ({ reqData }) => {
           </div>
         </Fragment>
       ) : null}
+
       <GridWrapper
         key={`TodayTransGridMetaData`}
         finalMetaData={TodayTransGridMetaData as GridMetaDataType}
@@ -54,6 +55,7 @@ const TodayTransaction = ({ reqData }) => {
         setData={() => null}
         refetchData={() => refetch()}
         ref={myGridRef}
+        ReportExportButton={true}
       />
     </>
   );

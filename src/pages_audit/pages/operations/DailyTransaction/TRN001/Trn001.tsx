@@ -28,8 +28,8 @@ import { isValidDate } from "components/utils/utilFunctions/function";
 import React, {
   useEffect,
   useState,
-  useCallback,
   useContext,
+  useCallback,
   useMemo,
 } from "react";
 import { useMutation } from "react-query";
@@ -45,6 +45,7 @@ import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 import { GeneralAPI } from "registry/fns/functions";
 import { useLocation } from "react-router-dom";
+import { usePopupContext } from "components/custom/popupContext";
 
 //mui theme
 const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -60,6 +61,7 @@ const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
 export const Trn001 = () => {
   //hooks
   let location = useLocation();
+  const { MessageBox } = usePopupContext();
 
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
@@ -71,8 +73,8 @@ export const Trn001 = () => {
   const [withdraw, setWithdraw] = useState<any>({});
 
   var defTableValue = {
-    branch: defBranch,
-    accType: { label: "", value: "", info: "" },
+    branch: { label: "", value: "", info: "" },
+    accType: { label: " ", value: "  ", info: "  " },
     bugMsgAccType: "",
     accNo: "",
     bugAccNo: false,
@@ -874,7 +876,7 @@ export const Trn001 = () => {
         {accValidMsg?.split("\r")?.map((a, i) => {
           return (
             <>
-              <div style={{ minWidth: "300px" }}>{a}</div>
+              <div style={{ minWidth: "300px", textAlign: "center" }}>{a}</div>
               <br />
             </>
           );

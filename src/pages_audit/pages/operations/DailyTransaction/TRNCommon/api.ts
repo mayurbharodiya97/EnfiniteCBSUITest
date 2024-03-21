@@ -21,7 +21,6 @@ export const deleteScrollByScrollNo = async (reqData) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
 export const deleteScrollByVoucherNo = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
@@ -82,7 +81,7 @@ export const getCarousalCards = async (reqObj: reqObjTypes) => {
       controllerFinal
     );
   if (status === "0") {
-    data.map((a) => {
+    data?.map((a) => {
       if (a?.COMPONENT_TYPE == "amountField" && !a?.COL_VALUE.includes(".")) {
         a.COL_VALUE = a.COL_VALUE + ".00";
       }

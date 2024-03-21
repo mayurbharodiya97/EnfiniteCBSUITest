@@ -236,7 +236,7 @@ const CommonFooter = ({
             </Button>
           </Grid>
         )}
-        {viewOnly && (
+        {viewOnly && !isTrn1 && (
           <Grid item>
             <Button
               variant="contained"
@@ -282,12 +282,14 @@ const CommonFooter = ({
               variant="outlined"
               color="secondary"
             />
+
             {isConfirmedRec && !scrollConfirmDialog && (
               <h4>
                 Scroll No. {scrollNo} is confirmed. Are you sure you wish to
                 Delete ?
               </h4>
             )}
+
             {isConfirmedRec && scrollConfirmDialog && (
               <h4>Scroll No. {scrollNo} is already confirmed</h4>
             )}
