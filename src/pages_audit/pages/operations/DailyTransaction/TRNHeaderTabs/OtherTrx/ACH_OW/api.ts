@@ -6,7 +6,6 @@ import {
 import { AuthSDK } from "registry/fns/auth";
 
 export const getACH_OWList = async (reqData) => {
-  console.log(reqData, "reqData");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNNACHOTWRDTAB", {
       BRANCH_CD: reqData.BRANCH_CD,
@@ -16,7 +15,6 @@ export const getACH_OWList = async (reqData) => {
 
       ENT_COMP_CD: reqData.ENTERED_COMP_CD,
       ENT_BRANCH_CD: reqData.ENTERED_BRANCH_CD,
-      TRAN_CD: reqData?.TRAN_CD,
     });
   if (status === "0") {
     let responseData = data;

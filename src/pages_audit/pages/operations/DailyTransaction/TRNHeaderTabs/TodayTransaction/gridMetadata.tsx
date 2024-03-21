@@ -162,7 +162,7 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Account Details",
-    rowIdColumn: "AC_CD",
+    rowIdColumn: "SR_NO",
     defaultColumnConfig: {
       width: 120,
       maxWidth: 250,
@@ -181,7 +181,7 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: false,
+    allowRowSelection: true,
     isCusrsorFocused: true,
   },
   filters: [],
@@ -211,7 +211,7 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
       columnName: "Opening Date",
       accessor: "OP_DATE",
       sequence: 4,
-      componentType: "default",
+      componentType: "date",
       width: 220,
     },
     {
@@ -225,9 +225,8 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
       columnName: "Close Date",
       accessor: "CLOSE_DT",
       sequence: 6,
-      componentType: "currency",
+      componentType: "date",
       width: 220,
-      color: "green",
     },
   ],
 };

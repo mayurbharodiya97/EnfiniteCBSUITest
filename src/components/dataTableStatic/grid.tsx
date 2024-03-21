@@ -94,7 +94,7 @@ export const DataGrid = ({
   defaultSelectedRowId,
   searchPlaceholder,
   paginationText,
-  ReportExportButton
+  ReportExportButton,
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -291,6 +291,16 @@ export const DataGrid = ({
       }
     };
   }, [loading]);
+
+  useEffect(() => {
+    if (selectedFlatRows.length > 0 && onlySingleSelectionAllow) {
+      setGridAction({
+        name: "_rowChanged",
+        rows: selectedFlatRows[0]?.original,
+      });
+    }
+  }, [selectedFlatRows]);
+
   return (
     <>
       <Paper
@@ -357,7 +367,14 @@ export const DataGrid = ({
         />
         {!disableLoader ? (
           loading ? (
-            <LinearProgress sx={{background: "var(--theme-color6)", "& .MuiLinearProgress-bar": {background: "var(--theme-color1) !important"}}} />
+            <LinearProgress
+              sx={{
+                background: "var(--theme-color6)",
+                "& .MuiLinearProgress-bar": {
+                  background: "var(--theme-color1) !important",
+                },
+              }}
+            />
           ) : (
             <LinearProgressBarSpacer />
           )
@@ -566,17 +583,17 @@ export const DataGrid = ({
       </Paper>
       {isOpenExport && (
         <Dialog open={isOpenExport}>
-         <ReportExportScreen
-          // globalFilter={""}
-          filters={filters}
-          // queryFilters={queryFilters}
-          title={label}
-          rows={rows}
-          columns={columns}
-          onClose={() => {
-            setOpenExport(false);
-          }}
-        />
+          <ReportExportScreen
+            // globalFilter={""}
+            filters={filters}
+            // queryFilters={queryFilters}
+            title={label}
+            rows={rows}
+            columns={columns}
+            onClose={() => {
+              setOpenExport(false);
+            }}
+          />
         </Dialog>
       )}
     </>

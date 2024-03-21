@@ -53,10 +53,6 @@ export const Accountinquiry = ({ open, onClose }) => {
   const [acctOpen, setAcctOpen] = useState(false);
   const [componentToShow, setComponentToShow] = useState("");
   const [showGridData, setShowGridData] = useState(false);
-  const [tabsData, setTabsData] = useState<any>({
-    tabsData: [],
-    cardStore: [],
-  });
   const formRef = useRef<any>(null);
   const formbtnRef = useRef<any>(null);
   const rowsDataRef = useRef<any>(null);
@@ -88,46 +84,6 @@ export const Accountinquiry = ({ open, onClose }) => {
   //   }
   // };
 
-  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-    onSuccess: (data) => {
-      setTabsData((prevState) => ({
-        ...prevState,
-        tabsData: data,
-      }));
-      // finalTabsData = data;
-      // handleApiSuccess(rowsDataRef.current);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-      setTabsData((preTabsData) => ({
-        ...preTabsData,
-        tabsData: [],
-      }));
-    },
-  });
-
-  const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
-    onSuccess: (data) => {
-      setTabsData((prevState) => ({
-        ...prevState,
-        cardStore: data,
-      }));
-      // cardsData = data;
-      // handleApiSuccess(rowsDataRef.current);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-      setTabsData((preCardsData) => ({
-        ...preCardsData,
-        cardStore: [],
-      }));
-    },
-  });
-
   const setCurrentAction = useCallback(
     (data) => {
       if (data.name === "view-detail") {
@@ -135,18 +91,6 @@ export const Accountinquiry = ({ open, onClose }) => {
         setAcctOpen(true);
         setRowsData(data?.rows);
         rowsDataRef.current = data?.rows?.[0]?.data;
-        getTabsByParentType.mutate({
-          COMP_CD: authState?.companyID,
-          ACCT_TYPE: data?.rows?.[0]?.data?.ACCT_TYPE,
-          BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD,
-        });
-        getCarousalCards.mutate({
-          PARENT_TYPE: "",
-          COMP_CD: authState?.companyID,
-          ACCT_TYPE: data?.rows?.[0]?.data?.ACCT_TYPE,
-          ACCT_CD: data?.rows?.[0]?.data?.ACCT_CD,
-          BRANCH_CD: data?.rows?.[0]?.data?.BRANCH_CD,
-        });
         // openInNewWindow();
       } else if (data.name === "dependencies") {
         setComponentToShow("Dependencies");
@@ -257,7 +201,7 @@ export const Accountinquiry = ({ open, onClose }) => {
     return () => {
       queryClient.removeQueries("getAcctDtlList");
     };
-  }, [handleClose, acctOpen]);
+  }, [acctOpen]);
   return (
     <>
       <Dialog
@@ -347,11 +291,7 @@ export const Accountinquiry = ({ open, onClose }) => {
           finalMetaData={AccountInquiryGridMetaData as GridMetaDataType}
           data={showGridData ? [] : mutation.data ?? []}
           setData={() => null}
-          loading={
-            mutation.isLoading ||
-            getTabsByParentType.isLoading ||
-            getCarousalCards.isLoading
-          }
+          loading={mutation.isLoading}
           actions={actions}
           setAction={setCurrentAction}
           headerToolbarStyle={{
@@ -360,16 +300,11 @@ export const Accountinquiry = ({ open, onClose }) => {
           // refetchData={() => {}}
           // ref={myGridRef}
         />
-
         {componentToShow === "ViewDetail" && Boolean(acctOpen) ? (
           <DailyTransTabsWithDialog
-            tabData={tabsData}
-            setTabsData={setTabsData}
             handleClose={handleClose}
             rowsData={rowsData}
             setRowsData={setRowsData}
-            getTabsByParentType={getTabsByParentType}
-            getCarousalCards={getCarousalCards}
           />
         ) : // <ViewDetail
         //   rowsData={rowsData}

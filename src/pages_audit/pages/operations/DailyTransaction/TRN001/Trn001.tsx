@@ -729,7 +729,7 @@ export const Trn001 = () => {
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
       rows[i]?.accNo && getAccNoValidation.mutate(data, i);
-      rows[i]?.accNo && getCarousalCards.mutate(data);
+      rows[i]?.accNo && getCarousalCards.mutate({ reqData: data });
       setTempStore({ ...tempStore, accInfo: data });
       setReqData(data);
     }
@@ -832,7 +832,7 @@ export const Trn001 = () => {
   };
 
   const handleGetHeaderTabs = (data) => {
-    getTabsByParentType.mutate(data);
+    getTabsByParentType.mutate({ reqData: data });
   };
 
   const handleViewAll = () => {

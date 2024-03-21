@@ -60,15 +60,27 @@ export const getAccDetails = async (reqData) => {
   }
 };
 
-export const getCarousalCards = async (reqData) => {
+interface reqObjTypes {
+  reqData: any;
+  controllerFinal?: any;
+}
+
+export const getCarousalCards = async (reqObj: reqObjTypes) => {
+  const { reqData, controllerFinal } = reqObj;
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DAILYTRNCARDDTL", {
-      PARENT_TYPE: reqData?.PARENT_TYPE,
-      COMP_CD: reqData?.COMP_CD,
-      ACCT_TYPE: reqData?.ACCT_TYPE,
-      ACCT_CD: reqData?.ACCT_CD,
-      BRANCH_CD: reqData?.BRANCH_CD,
-    });
+    await AuthSDK.internalFetcher(
+      "DAILYTRNCARDDTL",
+      {
+        PARENT_TYPE: reqData?.PARENT_TYPE,
+        COMP_CD: reqData?.COMP_CD,
+        ACCT_TYPE: reqData?.ACCT_TYPE,
+        ACCT_CD: reqData?.ACCT_CD,
+        BRANCH_CD: reqData?.BRANCH_CD,
+      },
+      {},
+      null,
+      controllerFinal
+    );
   if (status === "0") {
     data.map((a) => {
       if (a?.COMPONENT_TYPE == "amountField" && !a?.COL_VALUE.includes(".")) {
@@ -81,15 +93,22 @@ export const getCarousalCards = async (reqData) => {
   }
 };
 
-export const getTabsByParentType = async (reqData) => {
-  console.log(reqData, "reqqq tab");
+export const getTabsByParentType = async (reqObj: reqObjTypes) => {
+  const { reqData, controllerFinal } = reqObj;
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETDLYTRNTABFIELDDISP", {
-      // PARENT_TYPE: reqData?.PARENT_TYPE,
-      COMP_CD: reqData?.COMP_CD,
-      ACCT_TYPE: reqData?.ACCT_TYPE,
-      BRANCH_CD: reqData?.BRANCH_CD,
-    });
+    await AuthSDK.internalFetcher(
+      "GETDLYTRNTABFIELDDISP",
+      {
+        // PARENT_TYPE: reqData?.PARENT_TYPE,
+        COMP_CD: reqData?.COMP_CD,
+        ACCT_TYPE: reqData?.ACCT_TYPE,
+        BRANCH_CD: reqData?.BRANCH_CD,
+      },
+      {},
+      null,
+      controllerFinal
+    ); // Pass signal as an option
+
   if (status === "0") {
     data?.map((a, i) => {
       a.index1 = i;
