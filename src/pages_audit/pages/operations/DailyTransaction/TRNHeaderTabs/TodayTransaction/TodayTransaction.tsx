@@ -53,7 +53,7 @@ const TodayTransaction = ({ reqData }) => {
         loading={isLoading || isFetching}
         data={data ?? []}
         setData={() => null}
-        refetchData={() => {}}
+        refetchData={() => refetch()}
         ref={myGridRef}
         ReportExportButton={true}
       />

@@ -147,7 +147,7 @@ const BranchSelectionGrid = ({ selectionMode }) => {
             selectionMode,
           });
         }
-      } else {
+      } else if (data.name === "back") {
         if (selectionMode === "C") {
           navigate("/cbsenfinity/dashboard", {
             replace: true,

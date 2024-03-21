@@ -12,7 +12,7 @@ export const getATMList = async (reqData) => {
       COMP_CD: reqData.COMP_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,
-      SYS_PARENT_TYPE: "CC01",
+      SYS_PARENT_TYPE: reqData?.PARENT_CODE,
     });
   if (status === "0") {
     let responseData = data;

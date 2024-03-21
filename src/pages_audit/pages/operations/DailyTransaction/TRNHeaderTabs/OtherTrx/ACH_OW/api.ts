@@ -6,7 +6,6 @@ import {
 import { AuthSDK } from "registry/fns/auth";
 
 export const getACH_OWList = async (reqData) => {
-  console.log(reqData, "reqData");
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETDLYTRNNACHOTWRDTAB", {
       BRANCH_CD: reqData.BRANCH_CD,

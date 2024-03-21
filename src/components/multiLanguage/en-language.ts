@@ -1,4 +1,5 @@
 export const en_language_data = {
+  Delete:"Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
   SignInWithUserIDandPassword: "Please provide your UserID and password",

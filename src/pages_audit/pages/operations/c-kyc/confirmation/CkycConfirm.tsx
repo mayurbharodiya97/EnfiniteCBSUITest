@@ -25,8 +25,6 @@ export const CkycConfirm = () => {
   const location: any = useLocation();
 
   // temporary-use-state
-  const [isCustomerData, setIsCustomerData] = useState(true);
-  const [isLoadingData, setIsLoadingData] = useState(false);
   const [preventConfirmDialog, setPreventConfirmDialog] = useState(false);
   
 
@@ -152,10 +150,6 @@ export const CkycConfirm = () => {
             path="view-detail/*"
             element={
               <FormModal
-                isLoadingData={isLoadingData}
-                setIsLoadingData={setIsLoadingData}
-                isCustomerData={isCustomerData}
-                setIsCustomerData={setIsCustomerData}
                 onClose={() => navigate(".")}
                 formmode={"view"}
                 from={"confirmation-entry"}

@@ -386,11 +386,12 @@ export const MyAppBar = ({
                   }}
                   aria-labelledby="responsive-dialog-title"
                 >
-                  {/* <DialogTitle
+                  <DialogTitle
                     sx={{
                       background: "var(--theme-color3)",
                       color: "var(--theme-color2)",
-                      letterSpacing: "1.3px",
+                      // letterSpacing: "1.3px",
+                      justifyItems:"center",
                       margin: "10px",
                       boxShadow:
                         "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;",
@@ -401,21 +402,37 @@ export const MyAppBar = ({
                     }}
                     id="responsive-dialog-title"
                   >
-                    {"Log Out"}
-                  </DialogTitle> */}
+                     <Typography variant="h4">Logout</Typography>
+                    {/* <img src={Logout} alt="logout-icon"  style={{height:"100%", paddingLeft:"85px"}}/> */}
+                  </DialogTitle>
                   <DialogContent>
                     <DialogContentText
                       sx={{
                         // fontSize: "22px",
                         display: "flex",
                         justifyContent: "center",
+                        // height:"100px"
                         // marginTop: "15px",
                       }}
                     >
-                      <h2 style={{color:"black"}}>Are you sure want to logout ?</h2>
+                      {/* <h2 style={{color:"black"}}>Are you sure want to </h2> */}
+                      <Typography variant="h5" style={{color:"black"}}>Are you sure want to</Typography>
                       {/* <HelpIcon color="secondary" fontSize="large" /> */}
                     </DialogContentText>
-                      <DialogContentText
+                    <DialogContentText
+                      sx={{
+                        // fontSize: "22px",
+                        display: "flex",
+                        justifyContent: "center",
+                        // height:"100px"
+                        // marginTop: "15px",
+                      }}
+                    >
+                      {/* <h2 style={{color:"black",textAlign:"center"}}>logout.. ?</h2> */}
+                      <Typography variant="h5" style={{color:"black",textAlign:"center"}}>logout.. ?</Typography>
+                      {/* <HelpIcon color="secondary" fontSize="large" /> */}
+                    </DialogContentText>
+                      {/* <DialogContentText
                       sx={{
                         fontSize: "20px",
                         display: "flex",
@@ -426,7 +443,7 @@ export const MyAppBar = ({
                     >
                     <img src={Logout} alt="logout-icon" />
 
-                    </DialogContentText>
+                    </DialogContentText> */}
                     {/* <DialogContentText
                       sx={{
                         fontSize: "20px",
@@ -437,30 +454,30 @@ export const MyAppBar = ({
                     >
                       logout <HelpIcon color="secondary" fontSize="large" />
                     </DialogContentText> */}
+                  </DialogContent>
                      <DialogActions style={{ justifyContent: "center", padding:"10px 20px",borderRadius:"5px",marginTop:"-15px"}}>
-                    <Button
+                    <GradientButton
                       // sx={{
-                      //   color: "var(--theme-color2)",
+                      //   background: "var(--theme-color1)",
                       // }}
-                      style={{ background:"#2ecc71", color:"#fff",marginRight:"0", flex: 1}}
-                      // autoFocus
-                      onClick={() => setLogoutOpen(false)}
-                    >
-                      No
-                    </Button>
-                    <Button
-                      // sx={{
-                      //   color: "var(--theme-color2)",
-                      // }}
-                      style={{ background: "#e74c3c",
-                        color: "#fff", flex: 1}}
+                    
                       onClick={() => authController?.logout()}
                       autoFocus
                     >
                       Yes
-                    </Button>
+                    </GradientButton>
+                    <GradientButton
+                      // sx={{
+                      //   background: "var(--theme-color2)",
+                      //   color:"var(--theme-color3)",
+                      // }}
+                      
+                      // autoFocus
+                      onClick={() => setLogoutOpen(false)}
+                    >
+                      No
+                    </GradientButton>
                   </DialogActions>
-                  </DialogContent>
                 </Dialog>
               )}
             </Box>

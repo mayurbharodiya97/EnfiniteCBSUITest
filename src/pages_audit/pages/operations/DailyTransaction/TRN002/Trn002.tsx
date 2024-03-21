@@ -173,10 +173,10 @@ export const Trn002 = () => {
       setReqData(arr[0]);
       console.log(arr, "Arr getTRN002List");
       arr?.length > 0
-        ? getCarousalCards?.mutate(arr[0])
+        ? getCarousalCards.mutate({ reqData: arr[0] })
         : setCardStore({ ...cardStore, cardsInfo: [] });
 
-      arr[0] && getTabsByParentType?.mutate(arr[0] ?? "");
+      arr[0] && getTabsByParentType.mutate({ reqData: arr[0] ?? "" });
       handleUpdateSum(arr);
       setConfirmed(data.length - arr?.length);
     },
@@ -250,13 +250,13 @@ export const Trn002 = () => {
       };
       setTempStore({ ...tempStore, accInfo: obj });
       setReqData(obj);
-      getCarousalCards.mutate(obj);
+      getCarousalCards.mutate({ reqData: obj });
       let reqData = {
         COMP_CD: obj?.COMP_CD,
         ACCT_TYPE: obj?.ACCT_TYPE,
         BRANCH_CD: obj?.BRANCH_CD,
       };
-      getTabsByParentType.mutate(reqData);
+      getTabsByParentType.mutate({ reqData });
     }
 
     if (data.name === "view") {

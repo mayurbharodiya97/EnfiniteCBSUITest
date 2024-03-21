@@ -239,9 +239,9 @@ export const TellerScreenMetadata: any = {
                 "",
             };
 
-            const carousalCardData = await CommonApi.getCarousalCards(
-              carousalCardDataReqParameters
-            );
+            const carousalCardData = await CommonApi.getCarousalCards({
+              reqData: carousalCardDataReqParameters,
+            });
 
             formState.setDataOnFieldChange("ACCT_CD", {
               paddedAcctcode,

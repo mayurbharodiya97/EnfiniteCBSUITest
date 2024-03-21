@@ -9,6 +9,7 @@ import  EditDetail  from "./editParaDetails/editDetail";
 import { useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
+import { Typography } from "@mui/material";
 
 const actions: ActionTypes[] = [
   {
@@ -31,9 +32,8 @@ const actions: ActionTypes[] = [
 
 const Parameters = () => {
   const navigate = useNavigate();
-  const authState = useContext(AuthContext);
+  const {authState} = useContext(AuthContext);
   const [rowsData, setRowsData] = useState([]);
-  const myGridRef = useRef<any>(null);
   const [acctOpen, setAcctOpen] = useState(false);
   const [paraType, setParaType] = useState("H");
   const [componentToShow, setComponentToShow] = useState("");
@@ -68,9 +68,14 @@ const Parameters = () => {
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<any, any>(
     ["getParametersGridData", paraType],
-    () => API.getParametersGridData(paraType)
+    () => API.getParametersGridData({
+        para_type: paraType, 
+        comp_cd: authState?.companyID, 
+        branch_cd: authState.user.branchCode,
+        conf_type: "A",
+        remark: "",
+      })
   );
-
   useEffect(() => {
     if (paraType === "H") {
       ParametersGridMetaData.gridConfig.gridLabel="Parameter Master [Global Level]"
@@ -93,18 +98,19 @@ const Parameters = () => {
         finalMetaData={ParametersGridMetaData as GridMetaDataType}
         data={data ?? []}
         ReportExportButton={true}
-        actions={authState.authState.user.branchCode!==authState.authState.user.baseBranchCode?[]:actionMenu}
+        actions={authState.user.branchCode!==authState.user.baseBranchCode?[]:actionMenu}
         setAction={setCurrentAction}
         setData={() => null}
         loading={isLoading || isFetching}
         refetchData={() => refetch()}
-        ref={myGridRef}
       />
+       <Typography sx={{ fontWeight: "bold",color:"rgb(152 59 70 / 61%)" , marginLeft:"460px",marginTop:"-36.2px"}} variant="subtitle1">Parameters In Red Colour Indicates Pending For Confirmation</Typography>
       {componentToShow === "editDetail" ? (
         <EditDetail
           rowsData={rowsData}
           open={acctOpen}
           onClose={() => setAcctOpen(false)}
+          formView={"view"}
           refetch={refetch}
         />
       ) : null}

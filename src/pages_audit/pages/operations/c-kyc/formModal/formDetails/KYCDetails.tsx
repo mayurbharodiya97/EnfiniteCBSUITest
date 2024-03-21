@@ -32,13 +32,7 @@ import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "./formComponents/TabNavigate";
 import { MessageBoxWrapper } from "components/custom/messageBox";
 
-const KYCDetails = ({
-  isCustomerData,
-  setIsCustomerData,
-  isLoading,
-  setIsLoading,
-  displayMode,
-}) => {
+const KYCDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   //  const myGridRef = useRef<any>(null);
@@ -161,7 +155,7 @@ const KYCDetails = ({
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
-      if(!state?.isFreshEntryctx) {
+      if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
         // on edit/view
         let tabModifiedCols:any = state?.modifiedFormCols
         let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
@@ -200,8 +194,8 @@ const KYCDetails = ({
       let formFields = Object.keys(data) // array, get all form-fields-name 
       formFields = formFields.filter(field => !(field.includes("_ignoreField") || field.includes("DISTRICT_NM") || field.includes("LOC_DISTRICT_NM"))) // array, removed divider field
       formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
-      const formData = _.pick(data, formFieldsRef.current)
-
+      let formData = _.pick(data, formFieldsRef.current)
+      formData.SAME_AS_PER = Boolean(formData.SAME_AS_PER) ? "Y": "N";
 
       // setCurrentTabFormData((formData) => ({
       //   ...formData,
@@ -211,7 +205,7 @@ const KYCDetails = ({
       let newData = state?.formDatactx;
       newData["PERSONAL_DETAIL"] = { ...newData["PERSONAL_DETAIL"], ...formData };
       handleFormDataonSavectx(newData);
-      if(!state?.isFreshEntryctx) {
+      if(!state?.isFreshEntryctx || state?.fromctx === "new-draft") {
         // on edit/view
         let tabModifiedCols:any = state?.modifiedFormCols
         let updatedCols = tabModifiedCols.PERSONAL_DETAIL ? _.uniq([...tabModifiedCols.PERSONAL_DETAIL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
@@ -272,7 +266,7 @@ const KYCDetails = ({
     >
       {/* <Typography variant={"h6"}>Personal Details</Typography> */}
       {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>KYC Details {`(2/8)`}</Typography> */}
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -307,7 +301,7 @@ const KYCDetails = ({
                 onSubmitHandler={PoISubmitHandler}
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
-                displayMode={displayMode}
+                displayMode={state?.formmodectx}
                 key={"poi-form-kyc" + initialVal}
                 metaData={POIMetadata as MetaDataType}
                 formStyle={{}}
@@ -315,7 +309,7 @@ const KYCDetails = ({
                 formState={{
                   COMP_CD: authState?.companyID ?? "", 
                   CUSTOMER_ID: state?.customerIDctx ?? "", 
-                  REQ_FLAG: state?.isFreshEntryctx ? "F" : "E",
+                  REQ_FLAG: (state?.isFreshEntryctx || state?.isDraftSavedctx) ? "F" : "E",
                   RESIDENCE_STATUS: state?.formDatactx["PERSONAL_DETAIL"]?.RESIDENCE_STATUS ?? "",
                 }}
                 setDataOnFieldChange={(action, payload) => {
@@ -336,16 +330,17 @@ const KYCDetails = ({
             </Grid>
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="220px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
 
-      {isCustomerData ? (
+      {/* {isCustomerData ? ( */}
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -377,12 +372,12 @@ const KYCDetails = ({
                 onSubmitHandler={PoASubmitHandler}
                 // initialValues={state?.formDatactx["PERSONAL_DETAIL"] ?? {}}
                 initialValues={initialVal}
-                displayMode={displayMode}
+                displayMode={state?.formmodectx}
                 key={"poa-form-kyc" + initialVal}
                 metaData={POAMetadata as MetaDataType}
                 formStyle={{}}
                 hideHeader={true}
-                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: state?.isFreshEntryctx ? "F" : "E"}}
+                formState={{COMP_CD: authState?.companyID ?? "", CUSTOMER_ID: state?.customerIDctx ?? "", REQ_FLAG: (state?.isFreshEntryctx || state?.isDraftSavedctx) ? "F" : "E"}}
                 setDataOnFieldChange={(action, payload) => {
                   if(Boolean(payload) && action === "CONTACT2") {
                     // console.log("weiufiwuef", payload)
@@ -394,16 +389,17 @@ const KYCDetails = ({
             </Grid>
           </Collapse>
         </Grid>
-      ) : isLoading ? (
+      {/* ) : null} */}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="220px"
           width="100%"
         ></Skeleton>
-      ) : null}
+      ) : null} */}
 
-      {isCustomerData && false ? (
+      {false ? (
         <Grid
           sx={{
             backgroundColor: "var(--theme-color2)",
@@ -441,15 +437,16 @@ const KYCDetails = ({
             </Grid>
           </Grid>
         </Grid>
-      ) : isLoading ? (
+      ) : null}
+      {/* ) : isLoading ? (
         <Skeleton
           variant="rounded"
           animation="wave"
           height="300px"
           width="100%"
         ></Skeleton>
-      ) : null}
-      <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+      ) : null} */}
+      <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
 
       <MessageBoxWrapper
         MessageTitle={"ALERT - VALUE ALREADY EXISTS" ?? "Information"}

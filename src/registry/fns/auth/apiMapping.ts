@@ -231,6 +231,14 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/GETCUSTOMERDETAILS",
     packageName: "",
   },
+  GETCKYCDOCSCNHISDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCKYCDOCSCNHISDISP",
+    packageName: "",
+  },
+  CUSTDOCUMENTDATADML: {
+    url: "/customerServiceAPI/CUSTDOCUMENTDATADML",
+    packageName: "",
+  },
   RELATIONSHIPMANAGER: {
     url: "/customerServiceAPI/RELATIONSHIPMANAGER",
     packageName: "",
@@ -251,8 +259,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/customerServiceAPI/CONFIRMCUSTOMERDATA",
     packageName: "",
   },
-  DOCTEMPLATEDTL: {
-    url: "/customerServiceAPI/DOCTEMPLATEDTL",
+  GETDOCTEMPLATEDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDOCTEMPLATEDTL",
     packageName: "",
   },
   DOCCUMENTSCANHISTORY: {
