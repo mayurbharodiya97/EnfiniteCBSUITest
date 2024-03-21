@@ -10,6 +10,10 @@ const initialState:any  = {
     handleFormModalOpenctx: () => {},
     handleFormModalClosectx: () => {},
 
+    fromctx: "",
+    formmodectx: "",
+    isDraftSavedctx: false,
+
     isSidebarExpandedctx: false,
     setIsSidebarExpandedctx: () => {},
     handleSidebarExpansionctx: () => {},
@@ -76,7 +80,17 @@ const initialState:any  = {
 
 const Reducer = (state, action) => {
     switch(action.type) {
+        case "handleFromFormMode": 
+            return {
+                ...state,
+                ...action.payload
+            };
         case "handleFormModalOpen": 
+            return {
+                ...state,
+                ...action.payload
+            };
+        case "handleDraftSave": 
             return {
                 ...state,
                 ...action.payload
@@ -189,6 +203,25 @@ export const CkycContext = React.createContext<any>(initialState)
 const CkycProvider = ({children}) => {
     const [state, dispatch] = useReducer(Reducer, initialState)
 
+    interface handleFromFormModeTyoe {
+        formmode?: string | null,
+        from?: string | null
+    } 
+    const handleFromFormModectx = (data:handleFromFormModeTyoe) => {
+        const keys = Object.keys(data)
+        let payload = {};
+        if(keys.includes("formmode")) {
+            payload["formmodectx"] = data["formmode"];
+        }
+        if(keys.includes("from")) {
+            payload["fromctx"] = data["from"];
+        }
+        dispatch({
+            type: "handleFromFormMode", 
+            payload: payload
+        })
+    }
+
     const handleFormModalOpenctx = (entityType) => {
         dispatch({
             type: "handleFormModalOpen", 
@@ -272,6 +305,16 @@ const CkycProvider = ({children}) => {
         }
     }
 
+    const onDraftSavectx = () => {
+        dispatch({
+            type: "handleDraftSave",
+            payload: {
+                isFreshEntryctx: false,
+                isDraftSavedctx: true                                
+            }
+        })
+    }
+
     const handleFormModalClosectx = () => {
         dispatch({
             type: "handleFormModalClose",
@@ -308,6 +351,10 @@ const CkycProvider = ({children}) => {
                     isLoading: false,
                 },
                 isFinalUpdatectx: false,
+
+                fromctx: "",
+                formmodectx: "",        
+                isDraftSavedctx: false,            
             }
         })
     }
@@ -696,7 +743,7 @@ const CkycProvider = ({children}) => {
                     let oldRow:any[] = []
                     let newRow:any[] = []
                     // if(state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) {
-                        oldRow = (state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) && state?.retrieveFormDataApiRes[TAB].map((formRow, i) => {
+                        oldRow = (state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) ? state?.retrieveFormDataApiRes[TAB].map((formRow, i) => {
                             let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
                             if(TAB == "DOC_MST") {
                                 filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N"
@@ -704,13 +751,13 @@ const CkycProvider = ({children}) => {
                             }
                             console.log("wadqwdwq. asdasdawdawqqqqqq filteredrow", filteredRow)
                             return filteredRow;
-                        })
+                        }) : [];
                         console.log(oldRow, "wadqwdwq. asdasdawdawqqqqqq", state?.retrieveFormDataApiRes[TAB])
 
-                        newRow = (state?.formDatactx[TAB] && state?.formDatactx[TAB].length>0) && state?.formDatactx[TAB].map((formRow, i) => {
+                        newRow = (state?.formDatactx[TAB] && state?.formDatactx[TAB].length>0) ? state?.formDatactx[TAB].map((formRow, i) => {
                             let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
                             return filteredRow;
-                        })
+                        }) : [];
                         console.log(newRow, "wadqwdwq. asdasdawdawqqqqqq new", state?.formDatactx[TAB])
                         console.log("feiuqwdwqduyqewd", TAB)
                         // console.log(oldRow, ":qweewqasdcde23", "newRow", newRow )
@@ -922,7 +969,7 @@ const CkycProvider = ({children}) => {
     return (
         <CkycContext.Provider 
             value={{
-                state, dispatch, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx,
+                state, dispatch, handleFromFormModectx, handleFormModalOpenctx, handleFormModalClosectx, handleFormModalOpenOnEditctx, onDraftSavectx,
                 handleApiRes, 
                 // handleCustCategoryRes,
                 handleCategoryChangectx, handleAccTypeVal, handleKycNoValctx, handleReqCDctx, handlePhotoOrSignctx, handleSidebarExpansionctx, handleColTabChangectx, 
