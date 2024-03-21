@@ -570,10 +570,6 @@ export const DailyTransTabsWithDialog = ({
             path="view-details"
             element={
               <FormModal
-                isLoadingData={false}
-                setIsLoadingData={() => {}}
-                isCustomerData={true}
-                setIsCustomerData={() => {}}
                 onClose={() => navigate(".")}
                 formmode={"view"}
                 from={""}
