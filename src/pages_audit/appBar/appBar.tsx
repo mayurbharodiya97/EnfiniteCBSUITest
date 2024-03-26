@@ -243,14 +243,15 @@ export const MyAppBar = ({
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
                 {t("appBar.WorkingDate")}:{" "}
-                {checkDateAndDisplay(
-                  format(
-                    new Date(authController?.authState?.workingDate),
-                    "dd/MM/yyyy"
-                  )
-
-                  // authController?.authState?.workingDate ?? ""
-                )}
+                {Boolean(authController?.authState?.workingDate)
+                  ? checkDateAndDisplay(
+                      format(
+                        new Date(authController?.authState?.workingDate),
+                        "dd/MM/yyyy"
+                      )
+                      // authController?.authState?.workingDate ?? ""
+                    )
+                  : "not found"}
               </Typography>
               <Typography
                 marginLeft={1}

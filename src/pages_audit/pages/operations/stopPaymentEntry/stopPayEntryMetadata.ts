@@ -4,7 +4,7 @@ import * as API from "./api";
 
 export const StopPayEntryMetadata = {
   form: {
-    name: "PRIORITY",
+    name: "Cheque-stop-entry",
     label: "Cheque Stop Entry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -125,7 +125,6 @@ export const StopPayEntryMetadata = {
                 ACCT_CD: { value: "" },
                 ACCT_NM: { value: "" },
                 TRAN_BAL: { value: "" },
-                TRAN_DT: { value: "" },
               };
             } else if (postData?.MESSAGE1) {
               formState.setDataOnFieldChange("IS_VISIBLE", {
@@ -140,9 +139,6 @@ export const StopPayEntryMetadata = {
                 ACCT_CD: {
                   value: field.value.padStart(6, "0")?.padEnd(20, " "),
                   ignoreUpdate: true,
-                },
-                TRAN_DT: {
-                  value: authState?.workingDate ?? "",
                 },
                 ACCT_NM: {
                   value: postData?.ACCT_NM ?? "",
@@ -159,9 +155,6 @@ export const StopPayEntryMetadata = {
                 ACCT_CD: {
                   value: field.value.padStart(6, "0")?.padEnd(20, " "),
                   ignoreUpdate: true,
-                },
-                TRAN_DT: {
-                  value: authState?.workingDate ?? "",
                 },
                 ACCT_NM: {
                   value: postData?.ACCT_NM ?? "",
@@ -261,6 +254,7 @@ export const StopPayEntryMetadata = {
       },
       name: "TRAN_DT",
       label: "Intimate Date",
+      isWorkingDate: true,
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "S") {
@@ -283,6 +277,7 @@ export const StopPayEntryMetadata = {
       },
       name: "SURR_DT",
       label: "Surrender Date",
+      isWorkingDate: true,
       dependentFields: ["FLAG"],
       shouldExclude(fieldData, dependentFields, formState) {
         if (dependentFields?.FLAG?.value === "S") {
@@ -309,7 +304,7 @@ export const StopPayEntryMetadata = {
       dependentFields: ["ACCT_TYPE", "BRANCH_CD", "ACCT_CD", "FLAG"],
       FormatProps: {
         isAllowed: (values, dependentFields, formState) => {
-          if (values.floatValue === 0 || values.floatValue === "-") {
+          if (values.floatValue === 0 || values.value === "-") {
             return false;
           }
           return true;
@@ -340,7 +335,6 @@ export const StopPayEntryMetadata = {
             FLAG: dependentValue?.FLAG?.value,
           };
           let postData = await API.chequeValidate(apiReq);
-          console.log("<<<postdata", postData);
 
           if (postData?.[0]?.ERR_CODE !== "0" && postData?.[0]?.ERR_MSG) {
             formState.MessageBox({
@@ -351,15 +345,21 @@ export const StopPayEntryMetadata = {
               CHEQUE_FROM: { value: "" },
               SERVICE_TAX: { value: "" },
               AMOUNT: { value: "" },
+              CHEQUE_TO: { value: "" },
             };
           } else {
             return {
               CHEQUE_TO: { value: field?.value },
             };
           }
+        } else if (!field?.value) {
+          return {
+            CHEQUE_TO: { value: "", isErrorBlank: true },
+          };
         }
         return {};
       },
+      // runPostValidationHookAlways: true,
       schemaValidation: {
         type: "string",
         rules: [{ name: "required", params: ["From Cheque No. is required."] }],
@@ -388,20 +388,21 @@ export const StopPayEntryMetadata = {
         "CHEQUE_FROM",
       ],
       validate: (field, dependentFields, formState) => {
-        console.log("<<<valdate", dependentFields);
         if (
           field?.value.length <= 0 ||
           dependentFields?.CHEQUE_FROM?.value < field?.value
         ) {
           return "";
-        } else if (dependentFields?.CHEQUE_FROM?.value > field?.value) {
+        } else if (
+          Number(dependentFields?.CHEQUE_FROM?.value) > Number(field?.value)
+        ) {
           return "Please enter a value greater than the Check-From value";
         }
         return "";
       },
       FormatProps: {
         isAllowed: (values, dependentFields, formState) => {
-          if (values.floatValue === 0 || values.floatValue === "-") {
+          if (values.floatValue === 0 || values.value === "-") {
             return false;
           }
           return true;
@@ -463,9 +464,14 @@ export const StopPayEntryMetadata = {
               },
             };
           }
+        } else if (!field?.value) {
+          return {
+            CHEQUE_TO: { value: dependentValue?.CHEQUE_FROM?.value },
+          };
         }
         return {};
       },
+      // runPostValidationHookAlways: true,
 
       schemaValidation: {
         type: "string",
@@ -525,7 +531,6 @@ export const StopPayEntryMetadata = {
       placeholder: "Enter Charge Amount",
       dependentFields: ["FLAG", "ROUND_OFF_FLAG", "GST", "SERVICE_C_FLAG"],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
-        console.log("<<<dependentFieldsValues", dependentFieldsValues);
         if (dependentFieldsValues?.SERVICE_C_FLAG?.value === "N") {
           return false;
         } else {

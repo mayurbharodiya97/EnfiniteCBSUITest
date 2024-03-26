@@ -523,7 +523,7 @@ export const DataGrid = ({
         </TableContainer>
 
         {footerNote && (
-          <Typography variant="h6" component="div" pl={"24px"}>
+          <Typography component="div" fontWeight={500} pl={"24px"}>
             {footerNote}
           </Typography>
         )}

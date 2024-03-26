@@ -15,25 +15,24 @@ import React, {
   useRef,
   useState,
 } from "react";
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
-import { SubmitFnType } from "packages/form";
-import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
-import { Alert } from "components/common/alert";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { StopPayEntryMetadata } from "./stopPayEntryMetadata";
-import { StopPayGridMetaData } from "./stopPayGridMetadata";
-import { useMutation } from "react-query";
-import { usePopupContext } from "components/custom/popupContext";
-import { enqueueSnackbar } from "notistack";
-import { ClearCacheProvider, queryClient } from "cache";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import { ReleaseCheque } from "./releaseCheque";
-import { ActionTypes } from "components/dataTable";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { GridWrapper } from "components/dataTableStatic/gridWrapper";
+import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { usePopupContext } from "components/custom/popupContext";
+import { StopPayEntryMetadata } from "./stopPayEntryMetadata";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { GridMetaDataType } from "components/dataTableStatic";
+import { StopPayGridMetaData } from "./stopPayGridMetadata";
+import { ClearCacheProvider, queryClient } from "cache";
+import { ActionTypes } from "components/dataTable";
+import { Alert } from "components/common/alert";
+import { ReleaseCheque } from "./releaseCheque";
+import { AuthContext } from "pages_audit/auth";
+import { enqueueSnackbar } from "notistack";
+import { useMutation } from "react-query";
+import * as API from "./api";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 const StopPaymentEntryCustom = () => {
   const releaseActions: ActionTypes[] = [
@@ -86,6 +85,9 @@ const StopPaymentEntryCustom = () => {
           });
         }
       },
+      onError: (error: any) => {
+        setCloseAlert(true);
+      },
     }
   );
 
@@ -98,7 +100,6 @@ const StopPaymentEntryCustom = () => {
           ACCT_CD: variables?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
           ACCT_TYPE: variables?.ACCT_TYPE,
           BRANCH_CD: variables?.BRANCH_CD,
-          // ENTERED_DATE: authState?.workingDate,
           GD_TODAY: authState?.workingDate,
           USER_LEVEL: authState?.role,
         });
@@ -113,15 +114,28 @@ const StopPaymentEntryCustom = () => {
     onError: (error: any) => {
       setDeletePopup(false);
       setIsOpenSave(false);
+      setCloseAlert(true);
     },
   });
 
   const setCurrentAction = useCallback(
-    (data) => {
-      console.log("---setcu", data);
-      navigate(data?.name, {
-        state: data?.rows,
-      });
+    async (data) => {
+      if (data?.rows?.[0]?.data?.ALLOW_RELEASE === "Y") {
+        let res = await MessageBox({
+          messageTitle: "Confirmation..",
+          message: "Are you sure to Release ?",
+          buttonNames: ["Yes", "No"],
+        });
+        if (res === "Yes") {
+          navigate(data?.name, {
+            state: data?.rows,
+          });
+        }
+      } else {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
     },
     [navigate]
   );
@@ -154,6 +168,7 @@ const StopPaymentEntryCustom = () => {
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
+          sx={{ ml: "15px" }}
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);
@@ -176,7 +191,6 @@ const StopPaymentEntryCustom = () => {
                     ACCT_TYPE: res?.ACCT_TYPE,
                     BRANCH_CD: res?.BRANCH_CD,
                     ENTERED_DATE: authState?.workingDate,
-
                     GD_TODAY: authState?.workingDate,
                     USER_LEVEL: authState?.role,
                   };
@@ -349,7 +363,7 @@ const StopPaymentEntryCustom = () => {
       {isOpenSave && (
         <PopupMessageAPIWrapper
           MessageTitle={"Confirmation"}
-          Message={"Are you sure to insert data"}
+          Message={"Are you sure you want to stop the selected check-number?"}
           onActionYes={() =>
             crudStopPay.mutate({ ...insertDataRef.current, _isNewRow: true })
           }

@@ -1,30 +1,6 @@
 import { DefaultErrorObject } from "components/utils";
-import { format } from "date-fns";
+import { endOfMonth, format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
-
-export const stockAcctTypeList = async (ApiReq) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETSTKACCTTYPEDDW", {
-      ...ApiReq,
-    });
-  if (status === "0") {
-    let responseData = data;
-    if (Array.isArray(responseData)) {
-      responseData = responseData.map(
-        ({ ACCT_TYPE, DESCRIPTION, ...other }) => {
-          return {
-            value: ACCT_TYPE,
-            label: ACCT_TYPE + " - " + DESCRIPTION + " - " + other.PARENT_TYPE,
-            ...other,
-          };
-        }
-      );
-    }
-    return responseData;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
 
 export const securityListDD = async (ApiReq) => {
   const { data, status, message, messageDetails } =
@@ -49,6 +25,7 @@ export const securityListDD = async (ApiReq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
 export const scriptListDD = async (ApiReq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSTKSCRIPTDDW", {
@@ -72,9 +49,13 @@ export const scriptListDD = async (ApiReq) => {
 };
 
 export const securityFieldDTL = async (apiReqPara) => {
+  console.log("<<<apiReqPara", apiReqPara);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSTKSECFIELDDISP", {
-      ...apiReqPara,
+      // ...apiReqPara,
+      COMP_CD: apiReqPara?.COMP_CD,
+      SECURITY_CD: apiReqPara?.SECURITY_CD,
+      BRANCH_CD: apiReqPara?.BRANCH_CD,
     });
   if (status === "0") {
     // return data;
@@ -105,6 +86,9 @@ export const securityFieldDTL = async (apiReqPara) => {
             if (item.name === "TRAN_DT") {
               return {
                 ...item,
+                required: true,
+                isWorkingDate: true,
+                isMaxWorkingDate: true,
                 dependentFields: ["BRANCH_CD", "SECURITY_CD", "ACCT_MST_LIMIT"],
                 postValidationSetCrossFieldValues: async (
                   field,
@@ -112,26 +96,22 @@ export const securityFieldDTL = async (apiReqPara) => {
                   authState,
                   dependentValue
                 ) => {
-                  if (field?.value) {
+                  if (field?.value && dependentValue?.SECURITY_CD?.value) {
                     const originalDate = new Date(field?.value);
                     const formattedDate = format(
                       originalDate,
                       "dd-MMM-yyyy"
                     ).toUpperCase();
-
                     let APIRequestPara = {
                       COMP_CD: authState?.companyID,
                       BRANCH_CD: dependentValue?.BRANCH_CD?.value,
                       SECURITY_CD: dependentValue?.SECURITY_CD?.value,
                       SCREEN_REF: "ETRN/047",
-                      GD_TD_DATE: "25-Jan-2024",
-                      TRN_DATE: formattedDate,
-
-                      // LIMIT_AMOUNT: dependentValue?.ACCT_MST_LIMIT?.value,
-                      LIMIT_AMOUNT: "100",
+                      GD_TD_DATE: authState?.workingDate,
+                      TRAN_DT: formattedDate,
+                      LIMIT_AMOUNT: apiReqPara?.ACCT_MST_LIMIT ?? "0",
                     };
                     let postData = await expireDate(APIRequestPara);
-                    console.log("<<<dataedata", postData);
                     return {
                       ASON_DT: { value: postData?.[0]?.EXPIRY_DATE },
                       STMT_DT_FLAG: {
@@ -144,7 +124,12 @@ export const securityFieldDTL = async (apiReqPara) => {
             } else if (item.name === "ASON_DT") {
               return {
                 ...item,
+                required: true,
                 dependentFields: ["STMT_DT_FLAG"],
+                defaultValue: format(
+                  endOfMonth(new Date(apiReqPara.WORKING_DATE)),
+                  "dd/MMM/yyyy"
+                ),
                 isReadOnly(fieldData, dependentFieldsValues, formState) {
                   if (dependentFieldsValues?.STMT_DT_FLAG?.value === "N") {
                     return true;
@@ -170,6 +155,7 @@ export const securityFieldDTL = async (apiReqPara) => {
             } else if (item.name === "STOCK_VALUE") {
               return {
                 ...item,
+                required: true,
                 postValidationSetCrossFieldValues: async (
                   field,
                   formState,
@@ -218,27 +204,58 @@ export const securityFieldDTL = async (apiReqPara) => {
             } else if (item.name === "MARGIN") {
               return {
                 ...item,
-                dependentFields: ["NET_VALUE"],
-                postValidationSetCrossFieldValues: async (
-                  field,
-                  formState,
-                  authState,
-                  dependentValue
-                ) => {
-                  if (field?.value) {
-                    let drawingPower =
-                      (Number(dependentValue?.NET_VALUE?.value) *
-                        Number(field?.value)) /
-                      100;
-                    return {
-                      DRAWING_POWER: {
-                        value:
-                          Number(dependentValue?.NET_VALUE?.value) -
-                          drawingPower,
-                      },
-                    };
+                required: true,
+                defaultValue: apiReqPara.STOCK_MARGIN
+                  ? apiReqPara.STOCK_MARGIN
+                  : 0.0,
+                isReadOnly() {
+                  if (apiReqPara?.STK_MRG_DISABLE === "N") {
+                    return true;
+                  } else {
+                    return false;
                   }
                 },
+              };
+            } else if (item.name === "DRAWING_POWER") {
+              return {
+                ...item,
+                isReadOnly: true,
+                dependentFields: ["NET_VALUE", "MARGIN"],
+                setValueOnDependentFieldsChange: (dependentFields) => {
+                  let value =
+                    (Number(dependentFields?.NET_VALUE?.value) *
+                      Number(dependentFields?.MARGIN?.value)) /
+                    100;
+
+                  return value
+                    ? Number(dependentFields?.NET_VALUE?.value) - value
+                    : "";
+                },
+              };
+            } else if (item.name === "STOCK_DESC") {
+              return {
+                ...item,
+                required: true,
+                schemaValidation: {
+                  type: "string",
+                  rules: [
+                    {
+                      name: "required",
+                      params: ["Stock-Decription is required."],
+                    },
+                  ],
+                },
+              };
+            } else if (item.name === "NET_VALUE") {
+              return {
+                ...item,
+                isReadOnly: true,
+              };
+            } else if (item.name === "RECEIVED_DT") {
+              return {
+                ...item,
+                isWorkingDate: true,
+                isMaxWorkingDate: true,
               };
             } else {
               return item;
@@ -256,10 +273,57 @@ export const stockGridData = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSTOCKDATA", {
       ...apiReqPara,
-      // COMP_CD: "132 ",
-      // BRANCH_CD: "099 ",
-      // ACCT_TYPE: "301 ",
-      // ACCT_CD: "000041              ",
+    });
+  if (status === "0") {
+    const dataStatus = data;
+    dataStatus.map((item) => {
+      if (item?.ALLOW_FORCE_EXPIRE_FLAG === "Y") {
+        item._rowColor = "rgb(255, 225, 225)";
+      }
+
+      if (item?.CONFIRMED === "Y") {
+        // item._rowColor = "rgb(9 132 3 / 51%)";
+        item.CONFIRMED = "Confirm";
+      } else {
+        item.CONFIRMED = "Pending";
+      }
+      item.MARGIN = parseFloat(item.MARGIN).toFixed(2);
+      return item;
+    });
+    return dataStatus;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const expireDate = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETEXPIRYDATE", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const insertValidate = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATESTOCKDATA", {
+      ...apiReqPara,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const crudStockData = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOSTOCKDML", {
+      ...apiReqPara,
     });
   if (status === "0") {
     return data;
@@ -277,24 +341,19 @@ export const viewDocument = async (apiReqPara) => {
       // REF_TRAN_CD: "266",
     });
   if (status === "0") {
-    return data;
+    // return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        ACTIVE: item.ACTIVE === "Y" ? true : false,
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
 
-export const expireDate = async (apiReqPara) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETEXPIRYDATE", {
-      ...apiReqPara,
-    });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const crudDocument = async (apiReqPara) => {
+export const uploadDocument = async (apiReqPara) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DOSTOCKDOCUMENTDML", {
       ...apiReqPara,

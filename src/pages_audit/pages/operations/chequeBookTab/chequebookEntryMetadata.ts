@@ -4,7 +4,7 @@ import * as API from "./api";
 
 export const ChequeBookEntryMetaData = {
   form: {
-    name: "PRIORITY",
+    name: "Cheque-book-entry",
     label: "Cheque Book Issue",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -19,7 +19,7 @@ export const ChequeBookEntryMetaData = {
         },
         container: {
           direction: "row",
-          spacing: 2,
+          spacing: 1.5,
         },
       },
     },
@@ -67,7 +67,6 @@ export const ChequeBookEntryMetaData = {
       accountTypeMetadata: {
         // isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
-          console.log("<<<<fnef", dependentValue, formState, _, authState);
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
@@ -682,7 +681,7 @@ export const ChequeBookEntryMetaData = {
       },
       name: "REQUISITION_DT",
       label: "Requisition Date",
-      isReadOnly: true,
+      // isReadOnly: true,
       maxDate: new Date(),
       GridProps: {
         xs: 12,

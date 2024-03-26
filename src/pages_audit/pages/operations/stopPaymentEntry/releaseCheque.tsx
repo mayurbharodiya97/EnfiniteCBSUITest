@@ -17,6 +17,7 @@ import { enqueueSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import { crudStopPayment } from "./api";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { format } from "date-fns";
 
 export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
   const { state: rows }: any = useLocation();
@@ -26,6 +27,8 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
     ...rows?.[0]?.data,
     RELEASE_DATE: authState?.workingDate,
   };
+
+  console.log("<<<rows", rows);
 
   const releaseStpCheque: any = useMutation(
     "crudStopPayment",
@@ -50,28 +53,34 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
   );
   useEffect(() => {
     if (rows?.[0]?.data) {
-      releaseChequeMetadata.form.label = `Release Cheque Detail \u00A0\u00A0
+      releaseChequeMetadata.form.label = `   ${
+        rows?.[0]?.data?.ALLOW_RELEASE === "Y"
+          ? "Release Cheque Detail"
+          : "Stop Cheque Detail"
+      }  \u00A0\u00A0
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
         rows?.[0]?.data?.ACCT_TYPE +
         rows?.[0]?.data?.ACCT_CD
-      ).replace(/\s/g, "")}`;
+      ).replace(/\s/g, "")} - ${rows?.[0]?.data?.ACCT_NM}`;
     }
   }, [rows?.[0]?.data]);
 
   const onSubmitHandler = (data: any, displayData, endSubmit) => {
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value !== "")
+    );
     let upd = utilFunction.transformDetailsData(
-      data,
+      filteredData,
       newIntialData ?? rows?.[0]?.data
     );
-
     let apiReq = {
       _isNewRow: false,
       _isDeleteRow: false,
       BRANCH_CD: data?.BRANCH_CD,
       TRAN_CD: rows?.[0]?.data?.TRAN_CD,
-      RELEASE_DATE: data?.RELEASE_DATE,
+      RELEASE_DATE: format(new Date(data?.RELEASE_DATE), "dd-MMM-yyyy"),
       REMARKS: data?.REMARKS,
       REASON_CD: data?.REASON_CD,
       INFAVOUR_OF: data?.INFAVOUR_OF,
@@ -120,16 +129,20 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
             console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
-                <Button
-                  onClick={(event) => {
-                    handleSubmit(event, "Save");
-                  }}
-                  // disabled={isSubmitting}
-                  endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-                  color={"primary"}
-                >
-                  Release
-                </Button>
+                {newIntialData?.ALLOW_RELEASE === "Y" && (
+                  <Button
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    // disabled={isSubmitting}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
+                    color={"primary"}
+                  >
+                    Release
+                  </Button>
+                )}
 
                 <Button color="primary" onClick={() => navigate(".")}>
                   close

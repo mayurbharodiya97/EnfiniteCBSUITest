@@ -23,7 +23,7 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     allowFilter: false,
     allowColumnHiding: false,
     allowRowSelection: false,
-    footerNote: "Note : Double-click on row to force-expire the limit.",
+    footerNote: "Note : Double-click on Pink row to force-expire the limit.",
   },
   filters: [],
   columns: [
@@ -170,7 +170,9 @@ export const limitEntryGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "ALLOW_DELETE",
-      columnName: "Remove",
+      columnName: "Action",
+      buttonLabel: "Remove",
+
       sequence: 4,
       alignment: "center",
       componentType: "buttonRowCell",

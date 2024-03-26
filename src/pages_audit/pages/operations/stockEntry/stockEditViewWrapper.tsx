@@ -1,31 +1,33 @@
 import {
+  AppBar,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
+  LinearProgress,
   Tooltip,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { stockViewEditMSTMetaData } from "./stockEditViewMetadata";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
-import { crudDocument, viewDocument } from "./api";
+import { uploadDocument, viewDocument } from "./api";
 import { queryClient } from "cache";
 import { MasterDetailsForm } from "components/formcomponent";
 import { transformFileObject } from "components/fileUpload/utils";
 import { utilFunction } from "components/utils";
 import { GradientButton } from "components/styledComponent/button";
 import { useStyles } from "pages_audit/pages/profile/profilePhotoUpload/style";
+import { Alert } from "components/common/alert";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
 
-export const StockEditViewWrapper = ({ ClosedEventCall }) => {
-  const { state: rows }: any = useLocation();
+export const StockEditViewWrapper = ({ navigate }) => {
   const [isopenImgViewer, setOpenImgViewer] = useState(false);
+  const { state: rows }: any = useLocation();
   const myImgRef = useRef<any>(null);
-  const [formMode, setFormMode] = useState("view");
   const myRef = useRef<any>(null);
 
   const viewDocuments = useQuery<any, any>(["viewDocument"], () =>
@@ -36,7 +38,7 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
     })
   );
 
-  const crudDocuments: any = useMutation("uploadDocument", crudDocument, {
+  const uploadDocuments: any = useMutation("uploadDocument", uploadDocument, {
     onSuccess: (data) => {},
     onError: (error: any) => {},
   });
@@ -57,46 +59,24 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
     resultValueObj,
     resultDisplayValueObj,
     endSubmit,
-    setFieldErrors,
-    actionFlag,
-    displayData,
-    setFieldError,
   }) => {
+    if (
+      data?.DETAILS_DATA?.isNewRow.length ||
+      data?.DETAILS_DATA?.isUpdatedRow.length
+    ) {
+      let apiReq = {
+        ENTERED_COMP_CD: data?.ENTERED_COMP_CD,
+        ENTERED_BRANCH_CD: data?.ENTERED_BRANCH_CD,
+        TRAN_CD: data?.TRAN_CD,
+        DETAILS_DATA: data?.DETAILS_DATA,
+      };
+      uploadDocuments.mutate(apiReq);
+    }
+
     //@ts-ignore
     endSubmit(true);
-    console.log("<<<sub", data);
-
-    // let apireq = {
-    //   DETAILS_DATA: {
-    //     isNewRow: [
-    //       ...data?.DETAILS_DATA,
-    //       {
-    //         ENTERED_BRANCH_CD: "099 ",
-    //         COMP_CD: "132 ",
-    //         ACCT_TYPE: data?.ACCT_TYPE,
-    //         ACCT_CD: data?.ACCT_CD,
-    //         REF_TRAN_CD: data?.REF_TRAN_CD,
-    //         ENTERED_COMP_CD: "132 ",
-    //         REF_SR_CD: data?.REF_SR_CD,
-    //         TABLE_NM: "stock",
-    //         // DOC_DEC: "",
-    //         // DOC_DATA: "",
-    //         ACTIVE: "Y",
-    //       },
-    //     ],
-    //     isDeleteRow: [],
-    //     isUpdatedRow: [],
-    //   },
-    // };
-
-    // crudDocuments.mutate(apireq);
   };
 
-  // useEffect(() => {
-  //   if (Boolean(rows?.[0]?.data?.DOC_DATA)) {
-  //     myImgRef.current = rows?.[0]?.data?.DOC_DATA;
-  //   }
-  // }, [rows]);
   return (
     <>
       <Dialog
@@ -109,71 +89,51 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
         }}
       >
         <>
-          {formMode === "view" ? (
+          {uploadDocuments.isLoading ? (
+            <LinearProgress color="secondary" />
+          ) : viewDocuments?.isError || uploadDocuments?.isError ? (
+            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity="error"
+                  errorMsg={
+                    viewDocuments?.error?.error_msg ??
+                    uploadDocuments?.error?.error_msg ??
+                    "Unknow Error"
+                  }
+                  errorDetail={
+                    viewDocuments?.error?.error_detail ??
+                    uploadDocuments?.error?.error_detail ??
+                    ""
+                  }
+                  color="error"
+                />
+              </AppBar>
+            </div>
+          ) : (
+            <LinearProgressBarSpacer />
+          )}
+
+          {viewDocuments.isLoading ? (
+            <div style={{ margin: "2rem" }}>
+              <LoaderPaperComponent />
+            </div>
+          ) : (
             <MasterDetailsForm
-              key={"stockEntryUploadDOC" + formMode + viewDocuments.data}
+              key={"stockEntryUploadDOC" + viewDocuments.isSuccess}
               metaData={stockViewEditMSTMetaData}
               initialData={{
+                _isNewRow: false,
                 ...rows?.[0]?.data,
                 DETAILS_DATA: viewDocuments?.data,
               }}
-              displayMode={formMode}
-              // onSubmitData={}
-              isLoading={viewDocuments?.isLoading}
-              isNewRow={true}
-              ref={myRef}
-              formStyle={{
-                background: "white",
-                height: "40vh",
-                overflowY: "auto",
-                overflowX: "hidden",
-              }}
-              // onFormButtonClickHandel={onFormButtonClickHandel}
-            >
-              {({ isSubmitting, handleSubmit }) => {
-                return (
-                  <>
-                    <Button
-                      onClick={() => {
-                        setFormMode("edit");
-                      }}
-                      // disabled={isSubmitting}
-                      // endIcon={
-                      //   isSubmitting ? <CircularProgress size={20} /> : null
-                      // }
-                      color={"primary"}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={() => ClosedEventCall()}
-                      // disabled={isSubmitting}
-                      color={"primary"}
-                    >
-                      Close
-                    </Button>
-                  </>
-                );
-              }}
-            </MasterDetailsForm>
-          ) : formMode === "edit" ? (
-            <MasterDetailsForm
-              key={"stockEntryUploadDOC" + formMode + viewDocuments.data}
-              metaData={stockViewEditMSTMetaData}
-              initialData={{
-                ...rows?.[0]?.data,
-                DETAILS_DATA: viewDocuments?.data,
-              }}
-              displayMode={formMode}
+              displayMode={"edit"}
               onSubmitData={onSubmitHandler}
               isLoading={viewDocuments?.isLoading}
-              isNewRow={true}
+              isNewRow={false}
               onClickActionEvent={(index, id, data) => {
-                console.log("<<<onclick", index, id, data);
                 setOpenImgViewer(true);
-                if (data?.DOC_DATA) {
-                  myImgRef.current = data?.DOC_DATA;
-                }
+                myImgRef.current = data;
               }}
               ref={myRef}
               formStyle={{
@@ -182,7 +142,6 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
-              // onFormButtonClickHandel={onFormButtonClickHandel}
             >
               {({ isSubmitting, handleSubmit }) => {
                 return (
@@ -206,35 +165,49 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
                       Save
                     </Button>
                     <Button
-                      onClick={() => {
-                        setFormMode("view");
-                      }}
+                      onClick={() => navigate(".")}
                       // disabled={isSubmitting}
                       color={"primary"}
                     >
-                      Cancel
+                      Close
                     </Button>
                   </>
                 );
               }}
             </MasterDetailsForm>
-          ) : null}
+          )}
         </>
       </Dialog>
+
       {isopenImgViewer ? (
         <ImgaeViewerandUpdate
           isOpen={isopenImgViewer}
-          title={"Operator Icon"}
+          title={"Document Image"}
           onClose={() => {
             setOpenImgViewer(false);
           }}
-          onSubmit={(fileData) => {
-            console.log("<<<filrimg", fileData);
-            myImgRef.current = fileData;
+          onSubmit={(fileData: any) => {
             setOpenImgViewer(false);
+            myRef.current.setGridData((old) => {
+              let gridData: any = [];
+              gridData = old.map((row) => {
+                if (row.SR_CD === myImgRef.current.SR_CD) {
+                  return {
+                    ...row,
+                    DOC_DATA: fileData,
+                    _isTouchedCol: {
+                      ...row._isTouchedCol,
+                      DOC_DATA: true,
+                    },
+                  };
+                } else {
+                  return { ...row };
+                }
+              });
+              return [...gridData];
+            });
           }}
-          filedata={myImgRef.current}
-          formMode={formMode}
+          filedata={myImgRef.current.DOC_DATA}
         />
       ) : null}
     </>
@@ -247,7 +220,6 @@ const ImgaeViewerandUpdate = ({
   onClose,
   onSubmit,
   filedata,
-  formMode,
 }) => {
   const classes = useStyles();
   const fileURL = useRef<any | null>(null);
@@ -288,6 +260,9 @@ const ImgaeViewerandUpdate = ({
           ? await URL.createObjectURL(blob as any)
           : null;
       setFilecnt(filecnt + 1);
+    } else {
+      fileURL.current = "";
+      setFilecnt(filecnt + 1);
     }
   };
   useEffect(() => {
@@ -299,27 +274,35 @@ const ImgaeViewerandUpdate = ({
       //@ts-ignore
       // TransitionComponent={Transition}
       fullWidth={false}
+      PaperProps={{
+        style: {
+          minWidth: "530px",
+        },
+      }}
     >
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         <Tooltip
-          key={"tooltip-" + formMode}
-          title={formMode === "view" ? "" : "Double click to change the image"}
+          key={"tooltip-"}
+          title={"Double click to change the image"}
           placement={"top"}
           arrow={true}
         >
           <div
             className={classes.uploadWrapper}
             style={{
-              width: 280,
-              height: 280,
+              width: 480,
+              height: 325,
               background: "#cfcfcf",
-              cursor: formMode === "view" ? "auto" : "pointer",
+              cursor: "pointer",
             }}
             onDoubleClick={() => {
-              if (!(formMode === "view")) {
-                fileUploadControl?.current?.click();
-              }
+              fileUploadControl?.current?.click();
             }}
             ref={submitBtnRef}
             key={"div" + filecnt}
@@ -333,10 +316,10 @@ const ImgaeViewerandUpdate = ({
               <img
                 src={Boolean(fileURL.current) ? fileURL.current : ""}
                 style={{
-                  maxWidth: 250,
-                  maxHeight: 250,
-                  minWidth: 150,
-                  minHeight: 150,
+                  maxWidth: 465,
+                  maxHeight: 368,
+                  minWidth: 225,
+                  minHeight: 308,
                 }}
               />
             </Grid>
@@ -356,27 +339,26 @@ const ImgaeViewerandUpdate = ({
           </div>
         </Tooltip>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ paddingRight: "24px" }}>
         <GradientButton onClick={onClose}>Close</GradientButton>
-        {formMode === "view" ? null : (
-          <>
-            <GradientButton
-              onClick={() => {
-                setFilesData(null);
-                fileURL.current = null;
-              }}
-            >
-              Clear
-            </GradientButton>
-            <GradientButton
-              onClick={() => {
-                onSubmit(filesdata);
-              }}
-            >
-              Update
-            </GradientButton>
-          </>
-        )}
+        <>
+          <GradientButton
+            onClick={() => {
+              setFilesData("");
+              fileURL.current = null;
+              // onSubmit("")
+            }}
+          >
+            Clear
+          </GradientButton>
+          <GradientButton
+            onClick={() => {
+              onSubmit(filesdata);
+            }}
+          >
+            Update
+          </GradientButton>
+        </>
       </DialogActions>
     </Dialog>
   );

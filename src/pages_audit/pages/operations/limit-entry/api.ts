@@ -47,12 +47,8 @@ export const LimitSecurityData = async (apiReqPara) => {
       BRANCH_CD: apiReqPara?.BRANCH_CD,
     });
   if (status === "0") {
-    const filteredData = data;
-    //   .filter((item) => {
-    //   return item.COMPONENT_TYPE !== "hidden";
-    // });
-    console.log("<<<filteredData", filteredData);
-    const shouldPushWithY = filteredData.some(
+    console.log("<<<apiReqParadata", data);
+    const shouldPushWithY = data.some(
       (item) =>
         item.COMPONENT_TYPE === "rateOfInt" && item.FIELD_NAME === "PENAL_RATE"
     );
@@ -66,7 +62,7 @@ export const LimitSecurityData = async (apiReqPara) => {
       COMPONENT_TYPE: "hidden",
       FIELD_NAME: "SECURITY_TYPE",
     };
-    const newData = [...filteredData, newObject, newObject2];
+    const newData = [...data, newObject, newObject2];
     let transformedSecurityData: any[] = [];
     if (Array.isArray(newData)) {
       transformedSecurityData = await Promise.all(
@@ -88,6 +84,7 @@ export const LimitSecurityData = async (apiReqPara) => {
             },
           };
           if (item.name === "FD_BRANCH_CD") {
+            console.log("<<<ititit", item);
             // item.schemaValidation = {
             //   type: "string",
             //   rules: [
@@ -95,7 +92,10 @@ export const LimitSecurityData = async (apiReqPara) => {
             //   ],
             // };
 
-            item.options = await getFDbranchDDlist(apiReqPara.COMP_CD);
+            item.options =
+              item.render.componentType !== "hidden" &&
+              (await getFDbranchDDlist(apiReqPara.COMP_CD));
+
             item.postValidationSetCrossFieldValues = async (field) => {
               if (field?.value) {
                 return {
@@ -110,7 +110,11 @@ export const LimitSecurityData = async (apiReqPara) => {
             //   type: "string",
             //   rules: [{ name: "required", params: ["FD-Type is required."] }],
             // };
-            item.options = await getFDTypeDDlist(apiReqPara);
+            item.options =
+              item.render.componentType !== "hidden" &&
+              apiReqPara.SECURITY_TYPE &&
+              (await getFDTypeDDlist(apiReqPara));
+
             item.validate = (columnValue, allField, flag) => {
               console.log("<<<valalerr", columnValue, allField, flag);
               if (!Boolean(columnValue.value)) {
@@ -221,7 +225,9 @@ export const LimitSecurityData = async (apiReqPara) => {
                         value: postData?.[0]?.EXPIRY_DT,
                       },
                       TRAN_DT: {
-                        value: postData?.[0]?.TRAN_DT,
+                        value: postData?.[0]?.TRAN_DT
+                          ? postData?.[0]?.TRAN_DT
+                          : authState.workingDate,
                       },
                       INT_AMT: {
                         value: postData?.[0]?.INT_AMT,
@@ -253,7 +259,9 @@ export const LimitSecurityData = async (apiReqPara) => {
                         value: postData?.[0]?.EXPIRY_DT,
                       },
                       TRAN_DT: {
-                        value: postData?.[0]?.TRAN_DT,
+                        value: postData?.[0]?.TRAN_DT
+                          ? postData?.[0]?.TRAN_DT
+                          : authState.workingDate,
                       },
                       INT_AMT: {
                         value: postData?.[0]?.INT_AMT,
@@ -390,7 +398,8 @@ export const LimitSecurityData = async (apiReqPara) => {
             };
             item.runPostValidationHookAlways = true;
           } else if (item.name === "ENTRY_DT") {
-            item.defaultValue = apiReqPara?.WORKING_DATE;
+            // item.defaultValue = apiReqPara?.WORKING_DATE;
+            item.isWorkingDate = true;
           } else if (item.name === "EXPIRY_DT") {
             item.dependentFields = ["FD_NO"];
             item.isReadOnly = (fieldData, dependentFieldsValues, formState) => {
@@ -401,7 +410,9 @@ export const LimitSecurityData = async (apiReqPara) => {
               }
             };
           } else if (item.name === "TRAN_DT") {
-            item.defaultValue = apiReqPara?.WORKING_DATE;
+            // item.defaultValue = apiReqPara?.WORKING_DATE;
+
+            item.isWorkingDate = true;
           } else if (item.name === "MARGIN") {
             item.dependentFields = ["SECURITY_CD"];
             item.setValueOnDependentFieldsChange = (dependentFields) => {
@@ -433,9 +444,9 @@ export const LimitSecurityData = async (apiReqPara) => {
                 : "";
             };
           } else if (item.name === "LIMIT_AMOUNT") {
-            item.dependentFields = ["SANCTIONED_AMT"];
+            item.dependentFields = ["SEC_AMT"];
             item.setValueOnDependentFieldsChange = (dependentFields) => {
-              return dependentFields?.SANCTIONED_AMT?.value;
+              return dependentFields?.SEC_AMT?.value;
             };
           } else if (item.name === "CHARGE_AMT") {
             item.defaultValue = apiReqPara?.HDN_CHARGE_AMT;
@@ -489,6 +500,7 @@ export const getFDbranchDDlist = async (COMP_CD) => {
       COMP_CD: COMP_CD,
     });
   if (status === "0") {
+    console.log("<<<<getFDbranchDDlist", data);
     let responseData = data;
 
     if (Array.isArray(responseData)) {
@@ -517,6 +529,7 @@ export const getFDTypeDDlist = async (apiReqPara) => {
       SECURITY_TYPE: apiReqPara.SECURITY_TYPE,
     });
   if (status === "0") {
+    console.log("<<< getFDTypeDDlist ", data);
     let responseData = data;
 
     if (Array.isArray(responseData)) {
@@ -604,7 +617,7 @@ export const getLimitDTL = async (limitDetail) => {
     const dataStatus = data;
     dataStatus.map((item) => {
       if (item?.ALLOW_FORCE_EXP === "Y") {
-        item._rowColor = "rgb(152 59 70 / 61%)";
+        item._rowColor = "rgb(255, 225, 225)";
       }
       if (item?.CONFIRMED === "Y") {
         item._rowColor = "rgb(9 132 3 / 51%)";

@@ -41,6 +41,8 @@ import { ChequeDtlGrid } from "./chequeDetail";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { usePopupContext } from "components/custom/popupContext";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { MessageBoxWrapper } from "components/custom/messageBox";
+import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 
 export const ChequebookTab = () => {
   const ChequeBKPopUpAction: ActionTypes[] = [
@@ -76,11 +78,13 @@ export const ChequebookTab = () => {
   const [chequeBookData, setChequeBookData] = useState<any>([]);
   const [gridDetailData, setGridDetailData] = useState<any>();
   const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
+  const [isOpenSave, setIsOpenSave] = useState(false);
   const [initData, setInitData] = useState<any>({});
   const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
   const myMasterRef = useRef<any>(null);
   const deleteDataRef = useRef<any>(null);
+  const insertDataRef = useRef<any>(null);
   const navigate = useNavigate();
 
   const getChequeDetail: any = useMutation(
@@ -106,11 +110,18 @@ export const ChequebookTab = () => {
           });
           enqueueSnackbar("Record Delete successfully", { variant: "success" });
         } else if (variables?.DETAILS_DATA?.isNewRow.length) {
-          myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
+          setIsOpenSave(false);
+          setChequeBookData([]);
+          setInitData({});
           setChequeDtlRefresh((old) => old + 1);
+          myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
           setIsTabVisible(false);
           enqueueSnackbar("Data insert successfully", { variant: "success" });
         }
+      },
+      onError: (error: any) => {
+        setIsOpenSave(false);
+        setChequeBookData([]);
       },
     }
   );
@@ -199,7 +210,8 @@ export const ChequebookTab = () => {
           isUpdatedRow: [],
         },
       };
-      crudChequeData.mutate(reqPara);
+      setIsOpenSave(true);
+      insertDataRef.current = reqPara;
     }
   };
 
@@ -216,8 +228,8 @@ export const ChequebookTab = () => {
             isUpdatedRow: [],
           },
         };
-        crudChequeData.mutate(multiSaveApiReq);
-        setChequeBookData([]);
+        setIsOpenSave(true);
+        insertDataRef.current = multiSaveApiReq;
       } else {
         setChequeBookData([]);
       }
@@ -229,10 +241,20 @@ export const ChequebookTab = () => {
     [chequeBookData, navigate]
   );
 
+  useEffect(() => {
+    ChequeBKPopUpGridData.gridConfig.footerNote = `Total Cheque : ${
+      chequeBookData?.[0]?.CHEQUE_TOTAL * chequeBookData?.[0]?.LEAF_ARR
+    }  \u00A0\u00A0  Total Charge : 
+    ${
+      chequeBookData?.[0]?.CHEQUE_TOTAL * chequeBookData?.[0]?.SERVICE_TAX
+    }     `;
+  }, [chequeBookData]);
+
   return (
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
+          sx={{ ml: "15px" }}
           value={value}
           onChange={(event, newValue) => {
             setCloseAlert(false);
@@ -283,7 +305,7 @@ export const ChequebookTab = () => {
               "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
           }}
         >
-          {crudChequeData.isLoading || validateDelete?.isLoading ? (
+          {validateDelete?.isLoading ? (
             <LinearProgress color="secondary" />
           ) : (crudChequeData?.isError && closeAlert) ||
             (validateDelete?.isError && closeAlert) ? (
@@ -401,39 +423,24 @@ export const ChequebookTab = () => {
 
       {chequeBookData.length > 1 && (
         <>
-          <Dialog open={true} maxWidth={"lg"}>
+          <Dialog
+            open={true}
+            fullWidth={true}
+            PaperProps={{
+              style: {
+                maxWidth: "567px",
+                padding: "5px",
+              },
+            }}
+          >
             <GridWrapper
               key={`ChequeBKPopUpGridDatas`}
               finalMetaData={ChequeBKPopUpGridData as GridMetaDataType}
               data={chequeBookData ?? []}
               setData={() => {}}
-              loading={crudChequeData.isLoading}
               actions={ChequeBKPopUpAction}
               setAction={setChequeBKPopUpActiont}
             />
-
-            <Grid
-              item
-              xs={12}
-              sm={12}
-              sx={{
-                right: "8px",
-                bottom: "9px",
-                position: "absolute",
-              }}
-            >
-              <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-                {`Total Cheque : ${
-                  chequeBookData?.[0]?.CHEQUE_TOTAL *
-                  chequeBookData?.[0]?.LEAF_ARR
-                }`}
-              </Typography>
-              <Typography sx={{ fontWeight: "bold" }} variant="subtitle1">
-                Total Charge &#160;:&#160;
-                {chequeBookData?.[0]?.CHEQUE_TOTAL *
-                  chequeBookData?.[0]?.SERVICE_TAX}
-              </Typography>
-            </Grid>
           </Dialog>
         </>
       )}
@@ -469,6 +476,35 @@ export const ChequebookTab = () => {
           open={deletePopup}
           rows={deleteDataRef.current}
           defaultValue={"WRONG ENTRY FROM CHEQUE BOOK ISSUE ENTRY (TRN/045)"}
+        />
+      )}
+
+      {/* {isOpenSave && (
+        <MessageBoxWrapper
+          MessageTitle={"Confirmation"}
+          Message={"Are you sure to insert data"}
+          onClickButton={(rows, buttonName) => {
+            if (buttonName === "Yes") {
+              crudChequeData.mutate(rows);
+            } else {
+              setIsOpenSave(false);
+            }
+          }}
+          rows={insertDataRef.current}
+          open={isOpenSave}
+          loading={crudChequeData.isLoading}
+        />
+      )} */}
+
+      {isOpenSave && (
+        <PopupMessageAPIWrapper
+          MessageTitle={"Confirmation"}
+          Message={"Are you sure to insert data"}
+          onActionYes={(rows, buttonName) => crudChequeData.mutate(rows)}
+          onActionNo={() => setIsOpenSave(false)}
+          rows={insertDataRef.current}
+          open={isOpenSave}
+          loading={crudChequeData.isLoading}
         />
       )}
     </>

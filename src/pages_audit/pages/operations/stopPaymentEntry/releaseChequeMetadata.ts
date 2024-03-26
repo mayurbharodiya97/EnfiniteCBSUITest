@@ -1,10 +1,8 @@
-import { utilFunction } from "components/utils";
-import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 
 export const releaseChequeMetadata = {
   form: {
-    name: "releaseChequeMetadata",
+    name: "release-Cheque-Metadata",
     label: "Release Cheque Detail",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -137,6 +135,7 @@ export const releaseChequeMetadata = {
       },
       name: "TRAN_DT",
       label: "Intimate Date",
+      isReadOnly: true,
       shouldExclude(fieldData, dependentFields, formState) {
         if (fieldData?.value) {
           return false;
@@ -210,9 +209,9 @@ export const releaseChequeMetadata = {
       },
       name: "REASON_CD",
       label: "Reason",
-      placeholder: "Select Reason",
+      // placeholder: "Select Reason",
       disableCaching: true,
-      dependentFields: ["FLAG", "BRANCH_CD"],
+      dependentFields: ["FLAG", "BRANCH_CD", "ALLOW_RELEASE"],
       options: (dependentValue, formState, any, authState) => {
         if (dependentValue?.BRANCH_CD?.value && dependentValue?.FLAG?.value) {
           return API.reasonDropdown({
@@ -229,6 +228,13 @@ export const releaseChequeMetadata = {
           });
         }
         return [];
+      },
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {
+          return false;
+        } else {
+          return true;
+        }
       },
       _optionsKey: "reasonDropdown",
       GridProps: {
@@ -329,7 +335,15 @@ export const releaseChequeMetadata = {
       name: "INFAVOUR_OF",
       label: "Infavour",
       type: "text",
-      placeholder: "Infavour",
+      // placeholder: "Infavour",
+      dependentFields: ["ALLOW_RELEASE"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 12,
         md: 4.8,
@@ -344,7 +358,15 @@ export const releaseChequeMetadata = {
       },
       name: "REMARKS",
       label: "Remarks",
-      placeholder: "Enter Remarks",
+      // placeholder: "Enter Remarks",
+      dependentFields: ["ALLOW_RELEASE"],
+      isReadOnly(fieldData, dependentFieldsValues, formState) {
+        if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 12,
         md: 4.8,
@@ -359,6 +381,22 @@ export const releaseChequeMetadata = {
       },
       name: "RELEASE_DATE",
       label: "Release Date",
+      isMaxWorkingDate: true,
+      dependentFields: ["ALLOW_RELEASE"],
+      // isReadOnly(fieldData, dependentFieldsValues, formState) {
+      //   if (dependentFieldsValues?.ALLOW_RELEASE?.value === "Y") {
+      //     return false;
+      //   } else {
+      //     return true;
+      //   }
+      // },
+      shouldExclude(fieldData, dependentFields, formState) {
+        if (dependentFields?.ALLOW_RELEASE?.value === "Y") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -366,6 +404,12 @@ export const releaseChequeMetadata = {
         lg: 2.4,
         xl: 2.4,
       },
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "ALLOW_RELEASE",
     },
   ],
 };

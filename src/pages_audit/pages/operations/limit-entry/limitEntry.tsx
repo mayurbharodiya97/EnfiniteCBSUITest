@@ -274,6 +274,7 @@ export const LimitEntry = () => {
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
+          sx={{ ml: "15px" }}
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);
@@ -365,7 +366,6 @@ export const LimitEntry = () => {
                 metaData={newFormMTdata as MetaDataType}
                 initialValues={initialValuesRef.current ?? {}}
                 onSubmitHandler={(data: any, displayData, endSubmit) => {
-                  console.log("<<<onsumit", data);
                   setCloseAlert(true);
                   let apiReq = {
                     ...data,
@@ -479,8 +479,6 @@ export const LimitEntry = () => {
 
                       <Button
                         onClick={(event) => {
-                          console.log("<<<eve", event);
-
                           handleSubmit(event, "Save");
                         }}
                         // disabled={isSubmitting}

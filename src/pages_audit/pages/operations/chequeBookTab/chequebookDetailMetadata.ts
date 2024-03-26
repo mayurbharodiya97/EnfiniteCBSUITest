@@ -91,7 +91,7 @@ export const ChequebookDtlGridMetaData = {
     },
 
     {
-      accessor: "AMOUNT",
+      accessor: "SERVICE_TAX",
       columnName: "Charge",
       sequence: 7,
       alignment: "right",
@@ -101,7 +101,7 @@ export const ChequebookDtlGridMetaData = {
       maxWidth: 130,
     },
     {
-      accessor: "SERVICE_TAX",
+      accessor: "AMOUNT",
       columnName: "GST",
       sequence: 8,
       alignment: "right",
@@ -121,6 +121,16 @@ export const ChequebookDtlGridMetaData = {
       maxWidth: 100,
     },
     {
+      accessor: "REMARKS",
+      columnName: "Remarks",
+      sequence: 8,
+      alignment: "left",
+      componentType: "default",
+      width: 150,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+    {
       accessor: "ALLOW_DELETE",
       columnName: "Action",
       sequence: 8,
@@ -137,16 +147,7 @@ export const ChequebookDtlGridMetaData = {
       minWidth: 60,
       maxWidth: 130,
     },
-    {
-      accessor: "REMARKS",
-      columnName: "Remarks",
-      sequence: 8,
-      alignment: "left",
-      componentType: "default",
-      width: 150,
-      minWidth: 100,
-      maxWidth: 200,
-    },
+
     {
       accessor: "CHARACTERISTICS",
       columnName: "Characteristics",
@@ -185,9 +186,9 @@ export const ChequebookDtlGridMetaData = {
       sequence: 10,
       alignment: "center",
       componentType: "default",
-      width: 94,
+      width: 115,
       minWidth: 70,
-      maxWidth: 120,
+      maxWidth: 140,
     },
   ],
 };

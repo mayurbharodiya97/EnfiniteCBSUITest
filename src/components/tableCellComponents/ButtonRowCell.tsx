@@ -7,7 +7,9 @@ export const ButtonRowCell = (props) => {
     value: initialValue,
     row: {
       index,
-      original: { _isNewRow },
+      // change by parag
+      original,
+      // original: { _isNewRow },
     },
     column: {
       id,
@@ -20,17 +22,18 @@ export const ButtonRowCell = (props) => {
     },
     updateGridData,
     onButtonActionHandel,
+    data,
   } = props;
   const is_Visible = useMemo(
-    () => (Boolean(_isNewRow) ? isVisibleInNew : isVisible),
-    [isVisible, _isNewRow]
+    () => (Boolean(original?._isNewRow) ? isVisibleInNew : isVisible),
+    [isVisible, original?._isNewRow]
   );
   const isShouldExclude = useMemo(() => {
     if (typeof shouldExclude === "function") {
-      return shouldExclude(initialValue);
+      return shouldExclude(initialValue, original);
     }
     return false;
-  }, [initialValue]);
+  }, [initialValue, original]);
   const handleClick = (e) => {
     //updateGridData(index, id, true, true, "");
     if (typeof onButtonActionHandel === "function") {

@@ -4,7 +4,7 @@ import { utilFunction } from "components/utils";
 
 export const limitEntryMetaData = {
   form: {
-    name: "limitEntry",
+    name: "limit-Entry",
     label: "Limit Entry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -72,8 +72,6 @@ export const limitEntryMetaData = {
         },
       },
       accountTypeMetadata: {
-        // disableCaching: true,
-        dependentFields: ["ACCT_TYPE"],
         options: (dependentValue, formState, _, authState) => {
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
@@ -83,20 +81,20 @@ export const limitEntryMetaData = {
           });
         },
         // _optionsKey: "get_Account_Type",
-
         postValidationSetCrossFieldValues: async (
           field,
           formState,
           authState,
           dependentValue
         ) => {
+          console.log("<<<adadad", dependentValue);
           if (field?.value) {
             return {
               PARENT_TYPE: {
-                value:
-                  dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
+                value: field?.optionData?.[0]?.PARENT_TYPE.trim(),
               },
               ACCT_CD: { value: "" },
+              SECURITY_CD: { value: "" },
               ACCT_NM: { value: "" },
               ACCT_BAL: { value: "" },
             };
@@ -317,10 +315,10 @@ export const limitEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -335,10 +333,10 @@ export const limitEntryMetaData = {
       sequence: 0,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -372,50 +370,20 @@ export const limitEntryMetaData = {
       name: "SECURITY_CD",
       label: "Security Code",
       placeholder: "Security",
-      type: "text",
       dependentFields: [
         "PARENT_TYPE",
-        "ACCT_CD",
         "BRANCH_CD",
-        "ACCT_TYPE",
-        "SECURITY_CD",
         "HIDDEN_CHARGE_AMT",
         "HIDDEN_GST_AMT",
         "HIDDEN_GST_ROUND",
         "HIDDEN_TAX_RATE",
       ],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (
-          !dependentFieldsValues?.ACCT_CD?.value ||
-          dependentFieldsValues?.ACCT_CD?.error
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      },
       options: (dependentValue, formState, _, authState) => {
-        if (
-          dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE ??
-          dependentValue?.PARENT_TYPE?.value
-        ) {
-          if (dependentValue?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE) {
-            formState.setDataOnFieldChange("SECURITY_CODE", {
-              SECURITY_CD: dependentValue?.SECURITY_CD?.value,
-              SECURITY_TYPE:
-                dependentValue?.SECURITY_CD?.optionData?.[0]?.SECURITY_TYPE.trim(),
-              HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
-              HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
-              HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
-              HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
-            });
-          }
+        if (dependentValue?.PARENT_TYPE?.value) {
           let apiReq = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-            A_PARENT_TYPE:
-              dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim() ??
-              dependentValue?.PARENT_TYPE?.value,
+            A_PARENT_TYPE: dependentValue?.PARENT_TYPE?.value,
           };
           return API.getSecurityListData(apiReq);
         }
@@ -429,24 +397,51 @@ export const limitEntryMetaData = {
         authState,
         dependentValue
       ) => {
-        console.log("<<<ffffffffff", dependentValue);
-
+        if (field?.optionData?.[0]?.SECURITY_TYPE && field?.value) {
+          formState.setDataOnFieldChange("SECURITY_CODE", {
+            SECURITY_CD: field?.value,
+            SECURITY_TYPE: field?.optionData?.[0]?.SECURITY_TYPE.trim(),
+            HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
+            HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
+            HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
+            HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
+          });
+        }
         return {
-          FD_BRANCH_CD: { isErrorBlank: true },
-          FD_TYPE: { isErrorBlank: true },
+          FD_BRANCH_CD: { value: "" },
+          FD_TYPE: { value: "" },
+          FD_ACCT_CD: { value: "" },
+          FD_NO: { value: "" },
+          ENTRY_DT: { value: "" },
+          TRAN_DT: { value: "" },
+          EXPIRY_DT: { value: "" },
+          MARGIN: { value: "" },
+          SEC_AMT: { value: "" },
+          SEC_INT_AMT: { value: "" },
+          SECURITY_VALUE: { value: "" },
+          INT_AMT: { value: "" },
+          INT_RATE: { value: "" },
+          PENAL_RATE: { value: "" },
         };
       },
 
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Security Type is required."] }],
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Security Code is required."] }],
+      // },
+
+      validate: (currField, dependentFields, formState) => {
+        if (!Boolean(currField?.value)) {
+          return "Security Code is required.";
+        }
+        return "";
       },
       GridProps: {
         xs: 12,
-        md: 3.5,
-        sm: 3.5,
-        lg: 3.5,
-        xl: 3.5,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
   ],

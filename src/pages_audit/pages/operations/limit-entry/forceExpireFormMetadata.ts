@@ -1,6 +1,6 @@
 export const forceExpireMetaData = {
   form: {
-    name: "limitEntry",
+    name: "limit-force-exp",
     label: "Force-Expire Limit",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",

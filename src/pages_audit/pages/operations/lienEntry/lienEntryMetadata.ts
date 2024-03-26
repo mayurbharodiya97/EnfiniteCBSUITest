@@ -3,7 +3,7 @@ import { GeneralAPI } from "registry/fns/functions";
 
 export const LienEntryMetadata = {
   form: {
-    name: "PRIORITY",
+    name: "Lien-entry",
     label: "Lien Entry",
     resetFieldOnUnmount: false,
     validationRun: "onChange",

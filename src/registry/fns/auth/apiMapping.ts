@@ -1107,6 +1107,18 @@ export const ActionWiseAPIConfiguration = {
     url: "/chequeServiceAPI/VALIDATESTPDATA",
     packageName: "",
   },
+  VALIDATESTOCKDATA: {
+    url: "/accountServiceAPI/VALIDATESTOCKDATA",
+    packageName: "",
+  },
+  DOSTOCKDML: {
+    url: "/accountServiceAPI/DOSTOCKDML",
+    packageName: "",
+  },
+  DOSTOCKDOCUMENTDML: {
+    url: "/accountServiceAPI/DOSTOCKDOCUMENTDML",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -1,10 +1,11 @@
 import { GeneralAPI } from "registry/fns/functions";
 import * as API from "./api";
 import { getLimitEntryData } from "../limit-entry/api";
+import { utilFunction } from "components/utils";
 
 export const StockEntryMetaData = {
   form: {
-    name: "PRIORITY",
+    name: "Stock-entry",
     label: "Stock Entry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -41,164 +42,149 @@ export const StockEntryMetaData = {
   fields: [
     {
       render: {
-        componentType: "branchCode",
+        componentType: "_accountNumber",
       },
-      name: "BRANCH_CD",
-      label: "Branch",
-      placeholder: "Branch",
-      type: "text",
-      isFieldFocused: true,
-      required: true,
-      // maxLength: 16,
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Branch Code is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "ACCT_TYPE",
-      label: "Account Type",
-      placeholder: "EnterAccountType",
-      type: "text",
-      required: true,
-      options: (dependentValue, formState, _, authState) => {
-        let ApiReq = {
-          USER_NAME: authState?.user?.id,
-          BRANCH_CD: authState?.user?.branchCode,
-          COMP_CD: authState?.companyID,
-        };
-        return API.stockAcctTypeList(ApiReq);
-      },
-      _optionsKey: "securityDropDownListType",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account Type is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_CD",
-      label: "Account Number",
-      placeholder: "EnterAcNo",
-      type: "text",
-      // fullWidth: true,
-      required: true,
-      // maxLength: 20,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account no. is required."] }],
-      },
-      dependentFields: ["ACCT_TYPE", "SECURITY_CD"],
-      postValidationSetCrossFieldValues: async (
-        field,
-        formState,
-        authState,
-        dependentValue
-      ) => {
-        if (field?.value) {
-          let otherAPIRequestPara = {
-            COMP_CD: authState?.companyID,
-            ACCT_CD: field.value.padStart(6, "0").padEnd(20, " "),
-            ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
-            BRANCH_CD: authState?.user?.branchCode,
-            GD_TODAY_DT: "17-Jan-2024",
-            SCREEN_REF: "EMST/046",
-          };
-          let postData = await getLimitEntryData(otherAPIRequestPara);
-
-          if (postData?.[0]?.MESSAGE1) {
-            formState.setDataOnFieldChange("MESSAGES", {
-              MESSAGES: postData?.[0]?.MESSAGE1,
-              VISIBLE_TAB: true,
-            });
+      branchCodeMetadata: {
+        postValidationSetCrossFieldValues: async (field) => {
+          if (field?.value) {
             return {
-              ACCT_NM: {
-                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
-              },
-              TRAN_BAL: {
-                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
-              },
-              ACCT_MST_LIMIT: {
-                value: postData?.[0]?.ACCOUNT_DATA?.LIMIT_AMOUNT,
-              },
-            };
-          } else if (postData?.[0]?.RESTRICTION) {
-            formState.setDataOnFieldChange("MESSAGES", {
-              MESSAGES: postData?.[0]?.RESTRICTION,
-              VISIBLE_TAB: false,
-            });
-
-            return {
-              ACCT_CD: { value: "", isFieldFocused: true },
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
-              TRAN_BAL: { value: "" },
-            };
-          } else {
-            formState.setDataOnFieldChange("VISIBLE_TAB", {
-              VISIBLE_TAB: true,
-            });
-            return {
-              ACCT_NM: {
-                value: postData?.[0]?.ACCOUNT_DATA?.ACCT_NM,
-              },
-              TRAN_BAL: {
-                value: postData?.[0]?.ACCOUNT_DATA?.TRAN_BAL,
-              },
-              ACCT_MST_LIMIT: {
-                value: postData?.[0]?.ACCOUNT_DATA?.LIMIT_AMOUNT,
-              },
             };
           }
-        } else if (!field?.value) {
-          formState.setDataOnFieldChange("VISIBLE_TAB", { VISIBLE_TAB: false });
-          return {
-            ACCT_NM: { value: "" },
-            TRAN_BAL: { value: "" },
-          };
-        }
+        },
+      },
+      accountTypeMetadata: {
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "ETRN/047",
+          });
+        },
+        _optionsKey: "get_Account_Type",
+        postValidationSetCrossFieldValues: async (field) => {
+          if (field?.value) {
+            return {
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+            };
+          }
+        },
+      },
+      accountCodeMetadata: {
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          authState,
+          dependentValue
+        ) => {
+          if (
+            field?.value &&
+            dependentValue?.BRANCH_CD?.value &&
+            dependentValue?.ACCT_TYPE?.value
+          ) {
+            let otherAPIRequestPara = {
+              COMP_CD: authState?.companyID,
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                field?.value,
+                dependentValue?.ACCT_TYPE?.optionData
+              ),
+              ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              SCREEN_REF: "ETRN/047",
+            };
+            let postData = await GeneralAPI.getAccNoValidation(
+              otherAPIRequestPara
+            );
 
-        return {};
+            if (postData?.RESTRICTION) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: false,
+              });
+              formState.MessageBox({
+                messageTitle: "Validation Failed...!",
+                message: postData?.RESTRICTION,
+              });
+              return {
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
+                TRAN_BAL: { value: "" },
+                TRAN_DT: { value: "" },
+              };
+            } else if (postData?.MESSAGE1) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: true,
+              });
+              formState.MessageBox({
+                messageTitle: "Risk Category Alert",
+                message: postData?.MESSAGE1,
+                buttonNames: ["Ok"],
+              });
+              return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                TRAN_DT: {
+                  value: authState?.workingDate ?? "",
+                },
+                ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
+                TRAN_BAL: {
+                  value: postData?.WIDTH_BAL ?? "",
+                },
+                ACCT_MST_LIMIT: {
+                  value: postData?.LIMIT_AMT ?? "",
+                },
+              };
+            } else {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: true,
+              });
+              return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                TRAN_DT: {
+                  value: authState?.workingDate ?? "",
+                },
+                ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
+                TRAN_BAL: {
+                  value: postData?.WIDTH_BAL ?? "",
+                },
+                ACCT_MST_LIMIT: {
+                  value: postData?.LIMIT_AMT ?? "",
+                },
+              };
+            }
+          } else if (!field?.value) {
+            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            return {
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              ACCT_MST_LIMIT: { value: "" },
+            };
+          }
+          return {};
+        },
+        runPostValidationHookAlways: true,
       },
-      runPostValidationHookAlways: true,
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 3,
-        xl: 3,
-      },
-      // dependentFields: ["BRANCH_CD", "ACCT_TYPE", "FROM_CHEQU"],
     },
+
     {
       render: {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      // sequence: 1,
       label: "Account Name",
       placeholder: "Account Name",
-      type: "text",
-      // required: true,
-      // maxLength: 16,
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -215,8 +201,6 @@ export const StockEntryMetaData = {
       },
       name: "TRAN_BAL",
       label: "Balance",
-      placeholder: "Balance",
-      type: "text",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -233,10 +217,7 @@ export const StockEntryMetaData = {
       name: "ACCT_MST_LIMIT",
       label: "Account Limit Amount",
       placeholder: "Account Limit AMT",
-      type: "text",
       isReadOnly: true,
-      // defaultValue: "2",
-      // enableDefaultOption: true,
       GridProps: {
         xs: 12,
         md: 3,
@@ -253,20 +234,18 @@ export const StockEntryMetaData = {
       label: "Security",
       disableCaching: true,
       _optionsKey: "securityListDD",
-      dependentFields: ["ACCT_TYPE", "ACCT_CD", "BRANCH_CD"],
-      placeholder: "Security",
+      dependentFields: ["ACCT_TYPE", "ACCT_CD", "BRANCH_CD", "ACCT_MST_LIMIT"],
       options: (dependentValue, formState, _, authState, other) => {
         if (
           dependentValue?.ACCT_TYPE?.value &&
-          dependentValue?.ACCT_CD?.value
+          dependentValue?.ACCT_CD?.value &&
+          dependentValue?.ACCT_CD?.value.length > 10
         ) {
           let apiReq = {
             COMP_CD: authState?.companyID,
-            BRANCH_CD: authState?.user?.branchCode,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
             ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
-            ACCT_CD: dependentValue?.ACCT_CD?.value
-              .padStart(6, "0")
-              .padEnd(20, " "),
+            ACCT_CD: dependentValue?.ACCT_CD?.value,
           };
           return API.securityListDD(apiReq);
         }
@@ -280,11 +259,20 @@ export const StockEntryMetaData = {
         dependentValue
       ) => {
         if (field?.value) {
-          formState.setDataOnFieldChange("SECURITY_CODE", field?.value);
+          formState.setDataOnFieldChange("SECURITY_CODE", {
+            COMP_CD: authState?.companyID,
+            SECURITY_CD: field?.value,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+            ACCT_MST_LIMIT: dependentValue?.ACCT_MST_LIMIT?.value,
+            STOCK_MARGIN: field?.optionData?.[0]?.STOCK_MARGIN,
+            STK_MRG_DISABLE: field?.optionData?.[0]?.STK_MRG_DISABLE,
+            WORKING_DATE: authState?.workingDate,
+          });
         }
-        return {};
+        return {
+          STOCK_MONTH: { value: field?.optionData?.[0]?.STOCK_MONTH },
+        };
       },
-      type: "text",
       GridProps: {
         xs: 12,
         md: 4,
@@ -299,6 +287,13 @@ export const StockEntryMetaData = {
         componentType: "hidden",
       },
       name: "STMT_DT_FLAG",
+    },
+
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "STOCK_MONTH",
     },
   ],
 };

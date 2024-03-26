@@ -247,6 +247,9 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
       //@ts-ignore
       value = value.map((one) => myGetOptionValue(one) ?? "");
     }
+    //inside the postvalidation added option-data in field
+    let extraOptionData = getExtraOptionData(value);
+    handleOptionValueExtraData(extraOptionData);
     if (!Boolean(multiple) && Array.isArray(value)) {
       //@ts-ignore
       handleChange(value[0]);

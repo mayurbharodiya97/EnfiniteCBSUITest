@@ -72,7 +72,6 @@ export const extendFieldTypes = (
       } = extendedType;
       //const result = Object.assign({}, one, others) as FieldMetaDataType;
       const result = Object.assign({}, others, one) as FieldMetaDataType;
-
       result["FormatProps"] = {
         ...FormatProps,
         ...(one?.FormatProps ?? {}),
@@ -222,8 +221,16 @@ export const extendFieldTypes = (
     } else {
       newMetaDataFieldsCustom = [...newMetaDataFieldsCustom, item];
     }
-    if (Boolean(item?.isWorkingDate)) {
-      item["defaultValue"] = new Date(authState?.workingDate);
+    if (item.render.componentType === "datePicker") {
+      if (Boolean(item?.isWorkingDate)) {
+        item["defaultValue"] = new Date(authState?.workingDate);
+      }
+      if (Boolean(item?.isMaxWorkingDate)) {
+        item["maxDate"] = new Date(authState?.workingDate);
+      }
+      if (Boolean(item?.isMinWorkingDate)) {
+        item["minDate"] = new Date(authState?.workingDate);
+      }
     }
   });
   return {
