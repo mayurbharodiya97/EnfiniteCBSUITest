@@ -156,8 +156,8 @@ export default function TabStepper() {
     let icons:{ [index: string]: React.ReactElement } = {}
     // console.log("wekudiwuegfiwe", state?.tabNameList)
     state?.tabNameList.forEach((tabEl, i) => {
-      // console.log('dwoeff', element)
-      icons[i+1] = <Icon>{`${tabEl.icon}`}</Icon>
+      // console.log('dwoeff', tabEl)
+      icons[i+1] = <Icon>{`${tabEl.icon ? tabEl.icon : "person_add_alt_rounded_icon"}`}</Icon>
     });
     return (
       <QontoStepIconRoot ownerState={{ active }} className={className}>
