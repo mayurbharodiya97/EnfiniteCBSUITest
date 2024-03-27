@@ -64,6 +64,7 @@ import QrCode2Icon from "@mui/icons-material/QrCode2";
 import { GradientButton } from "components/styledComponent/button";
 import { useTranslation } from "react-i18next";
 import { enqueueSnackbar } from "notistack";
+import DynamicTheme from "app/audit/dynamictheme";
 // import { t } from "i18next";
 // interface notificationDataType {
 //   activityID: string;
@@ -496,8 +497,11 @@ export const Profile = () => {
                             {queryData?.data?.USER_LEVEL}
                           </Typography>
                         </Grid>
-                        <Grid item xs={9}>
+                        <Grid item xs={9} style={{marginTop:"10px"}}>
                           <About />
+                          <Grid style={{marginTop:"-40px"}}>
+                            <DynamicTheme/>
+                          </Grid>
                         </Grid>
                       </Grid>
                       <Box sx={{ width: "100%", marginTop: "auto" }}>
