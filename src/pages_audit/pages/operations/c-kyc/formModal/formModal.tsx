@@ -640,7 +640,7 @@ export default function FormModal({
   const onCancelForm = () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
     if(state?.formmodectx !== "view") {
-      if(Object.keys(state?.formDatactx).length >0) {
+      if(Array.isArray(state?.formmodectx) && Object.keys(state?.formDatactx).length >0) {
         setCancelDialog(true)
       } else {
         closeForm()
