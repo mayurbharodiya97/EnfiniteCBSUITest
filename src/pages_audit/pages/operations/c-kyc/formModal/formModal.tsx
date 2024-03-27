@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Tab, Stack, Autocomplete, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress, FormHelperText} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import StyledTabs from "components/styledComponent/tabs/tabs";
+import { Typography, Grid, IconButton, Button, Chip, Icon, Tooltip, Dialog, AppBar, Toolbar } from '@mui/material';
+// import StyledTabs from "components/styledComponent/tabs/tabs";
 import { CustomTabs } from "../Ckyc";
-import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import PersonalDetails from './formDetails/formComponents/individualComps/PersonalDetails';
 import KYCDetails from './formDetails/KYCDetails';
 import DeclarationDetails from './formDetails/formComponents/individualComps/DeclarationDetails';
@@ -27,20 +25,16 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 // import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
 // import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
 import CancelIcon from '@mui/icons-material/Cancel'; // close-icon
-import RefreshIcon from '@mui/icons-material/Refresh'; // refresh-icon
-import { makeStyles } from '@mui/styles';
+// import RefreshIcon from '@mui/icons-material/Refresh'; // refresh-icon
 // import { customer_data_meta_data } from '../metadata';
 
 import { AuthContext } from 'pages_audit/auth';
-import Logo from "assets/images/easy_bankcore_Logo.png";
 import { useStyles } from 'pages_audit/appBar/style';
-import bank_logo_default from "assets/images/BecomePartnerImg.svg";
-import clsx from "clsx";
+// import clsx from "clsx";
 
 import * as API from "../api";
 import { useMutation, useQuery } from "react-query";
-import { AutoComplete } from 'components/common';
-import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
+// import { AutoComplete } from 'components/common';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../CkycContext';
 import TabStepper from './TabStepper';
