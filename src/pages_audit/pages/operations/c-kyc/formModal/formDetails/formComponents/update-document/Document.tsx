@@ -14,6 +14,7 @@ import { Alert } from "components/common/alert";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import { CreateDetailsRequestData } from "components/utils";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
+import { enqueueSnackbar } from "notistack";
 
 const UpdateDocument = ({ open, onClose, viewMode }) => {
   const navigate = useNavigate();
@@ -36,8 +37,8 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
     // COMP_CD: authState?.companyID ?? "",
     BRANCH_CD: authState?.user?.branchCode ?? "",
   };
-  const reqCD = state?.[0]?.data.REQUEST_ID ?? "";
-  const custID = state?.[0]?.data.CUSTOMER_ID ?? "";
+  const reqCD = state?.CUSTOMER_DATA?.[0]?.data.REQUEST_ID ?? "";
+  const custID = state?.CUSTOMER_DATA?.[0]?.data.CUSTOMER_ID ?? "";
   // console.log("stateeeeeeee", state);
   if (Boolean(reqCD)) {
     payload["REQUEST_CD"] = reqCD;
@@ -45,6 +46,10 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
   if (Boolean(custID)) {
     payload["CUSTOMER_ID"] = custID;
   }
+
+  // useEffect(() => {
+  //   console.log("on state change", state, state?.[0]?.data.REQUEST_ID, state?.[0]?.data.CUSTOMER_ID)
+  // }, [state])
 
   // get customer form details
   const custDTLMutation: any = useMutation(API.getCustomerDetailsonEdit, {
@@ -54,7 +59,7 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
         if (Boolean(data[0]?.DOC_MST) && Array.isArray(data[0]?.DOC_MST)) {
           let newData: any[] = data[0]?.DOC_MST;
           newData = newData.map((doc) => {
-            return { ...doc, TRANSR_CD: `${doc.TRAN_CD}${doc.SR_CD}` };
+            return { ...doc, TRANSR_CD: `${doc.TRAN_CD}${doc.SR_CD}`, SUBMIT: doc.SUBMIT === "Y" ? true : false };
           });
           // console.log("on successssss., wedqw", newData);
           setGridData([...newData]);
@@ -81,6 +86,9 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
       // }
       custDTLMutation.mutate(payload);
       setIsDelConfirm(false);
+      enqueueSnackbar("Record Deleted successfully.", {
+        variant: "success",
+      });
     },
     onError: (error: any) => {
       setIsDelConfirm(false);
@@ -117,7 +125,7 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
       custDTLMutation.mutate(payload);
       isDataChangedRef.current = false;
     }
-    navigate(".");
+    navigate(".", {state: {...state}});
     // handleFormModalClosectx();
     // onClose();
   };
@@ -213,102 +221,104 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
       else {
         // console.log("qwefhweufhiuwheiufhwef", data?.rows)
         navigate(data?.name, {
-          state: { rows: data?.rows, REQ_CD: reqCD, CUSTOMER_ID: custID },
+          state: { ...state, rows: data?.rows, 
+            // REQ_CD: reqCD, CUSTOMER_ID: custID 
+          },
         });
       }
     },
     [navigate]
   );
 
-  const onSaveRecord = async () => {
-    let { hasError, data: dataold } = await myGridRef.current?.validate();
-    // console.log(hasError, "wefhiwuehf", dataold);
-    if (hasError === true) {
-      if (dataold) {
-        setGridData(dataold);
-      }
-    } else {
-      let result = myGridRef?.current?.cleanData?.();
-      // console.log("wefhiwuehf result", result);
-      if (!Array.isArray(result)) {
-        // console.log("wefhiwuehf result - is not arr", result);
-        result = [result];
-      }
-      let finalResult = result.filter(
-        (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
-      );
-      if (finalResult.length === 0) {
-        onClose();
-      } else {
-        finalResult = CreateDetailsRequestData(finalResult);
-        // console.log("wefhiwuehf finalresult", finalResult);
-        if (
-          finalResult?.isDeleteRow?.length === 0 &&
-          finalResult?.isNewRow?.length === 0 &&
-          finalResult?.isUpdatedRow?.length === 0
-        ) {
-          onClose();
-        } else if (
-          finalResult?.isDeleteRow?.length !== 0 &&
-          finalResult?.isNewRow?.length === 0 &&
-          finalResult?.isUpdatedRow?.length === 0
-        ) {
-          // let reqData = {
-          //   _isNewRow: false,
-          //   _UPDATEDCOLUMNS: [],
-          //   _OLDROWVALUE: {},
-          //   // ...reqDataRef.current,
-          //   DETAILS_DATA: {
+  // const onSaveRecord = async () => {
+  //   let { hasError, data: dataold } = await myGridRef.current?.validate();
+  //   // console.log(hasError, "wefhiwuehf", dataold);
+  //   if (hasError === true) {
+  //     if (dataold) {
+  //       setGridData(dataold);
+  //     }
+  //   } else {
+  //     let result = myGridRef?.current?.cleanData?.();
+  //     // console.log("wefhiwuehf result", result);
+  //     if (!Array.isArray(result)) {
+  //       // console.log("wefhiwuehf result - is not arr", result);
+  //       result = [result];
+  //     }
+  //     let finalResult = result.filter(
+  //       (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
+  //     );
+  //     if (finalResult.length === 0) {
+  //       onClose();
+  //     } else {
+  //       finalResult = CreateDetailsRequestData(finalResult);
+  //       // console.log("wefhiwuehf finalresult", finalResult);
+  //       if (
+  //         finalResult?.isDeleteRow?.length === 0 &&
+  //         finalResult?.isNewRow?.length === 0 &&
+  //         finalResult?.isUpdatedRow?.length === 0
+  //       ) {
+  //         onClose();
+  //       } else if (
+  //         finalResult?.isDeleteRow?.length !== 0 &&
+  //         finalResult?.isNewRow?.length === 0 &&
+  //         finalResult?.isUpdatedRow?.length === 0
+  //       ) {
+  //         // let reqData = {
+  //         //   _isNewRow: false,
+  //         //   _UPDATEDCOLUMNS: [],
+  //         //   _OLDROWVALUE: {},
+  //         //   // ...reqDataRef.current,
+  //         //   DETAILS_DATA: {
 
-          //   },
-          // };
-          let reqData = finalResult?.isDeleteRow.map((deletedRow) => {
-            // console.log("kwehfiuwehfwef", deletedRow);
-            return {
-              TRAN_CD: deletedRow?.TRAN_CD,
-              SR_CD: deletedRow?.SR_CD,
-              IS_MAIN_DATA_DEL: true,
-              DETAILS_DATA: {
-                isDeleteRow: [],
-                isNewRow: [],
-                isUpdatedRow: [],
-              },
-            };
-          });
-          // console.log(
-          //   "wefhiwuehf only-del",
-          //   reqData,
-          //   finalResult,
-          //   "-- ",
-          //   custDTLMutation.data
-          // );
-          deletedDocRef.current = [...reqData];
-          const payload = {
-            DOC_MST: [...reqData],
-            REQ_CD: reqCD,
-            CUSTOMER_ID: custID,
-            COMP_CD: authState?.companyID ?? "",
-            BRANCH_CD: authState?.user?.branchCode ?? "",
-            IS_FROM_MAIN:
-              custDTLMutation.data?.[0]?.DOC_MST?.[0]?.IS_FROM_MAIN ?? "N",
-            NEW_FLAG: "N",
-            REQ_FLAG: "E",
-          };
-          // console.log("wefqwdqwdqwdqwdq", payload)
-          mutation.mutate(payload);
-        } else {
-          // console.log("elseeee..", finalResult);
-          // let reqData = {
-          //   _isNewRow: false,
-          //   _UPDATEDCOLUMNS: [],
-          //   _OLDROWVALUE: {},
-          //   // ...reqDataRef.current,
-          //   DETAILS_DATA: finalResult,
-          // };
-        }
-      }
-    }
-  };
+  //         //   },
+  //         // };
+  //         let reqData = finalResult?.isDeleteRow.map((deletedRow) => {
+  //           // console.log("kwehfiuwehfwef", deletedRow);
+  //           return {
+  //             TRAN_CD: deletedRow?.TRAN_CD,
+  //             SR_CD: deletedRow?.SR_CD,
+  //            IS_MAIN_DATA_DEL: true,
+  //             DETAILS_DATA: {
+  //               isDeleteRow: [],
+  //               isNewRow: [],
+  //               isUpdatedRow: [],
+  //             },
+  //           };
+  //         });
+  //         // console.log(
+  //         //   "wefhiwuehf only-del",
+  //         //   reqData,
+  //         //   finalResult,
+  //         //   "-- ",
+  //         //   custDTLMutation.data
+  //         // );
+  //         deletedDocRef.current = [...reqData];
+  //         const payload = {
+  //           DOC_MST: [...reqData],
+  //           REQ_CD: reqCD,
+  //           CUSTOMER_ID: custID,
+  //           COMP_CD: authState?.companyID ?? "",
+  //           BRANCH_CD: authState?.user?.branchCode ?? "",
+  //           IS_FROM_MAIN:
+  //             custDTLMutation.data?.[0]?.DOC_MST?.[0]?.IS_FROM_MAIN ?? "N",
+  //           NEW_FLAG: "N",
+  //           REQ_FLAG: "E",
+  //         };
+  //         // console.log("wefqwdqwdqwdqwdq", payload)
+  //         mutation.mutate(payload);
+  //       } else {
+  //         // console.log("elseeee..", finalResult);
+  //         // let reqData = {
+  //         //   _isNewRow: false,
+  //         //   _UPDATEDCOLUMNS: [],
+  //         //   _OLDROWVALUE: {},
+  //         //   // ...reqDataRef.current,
+  //         //   DETAILS_DATA: finalResult,
+  //         // };
+  //       }
+  //     }
+  //   }
+  // };
 
   const onDeleteDocument = () => {
     const payload = {
@@ -316,7 +326,11 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
         {
           TRAN_CD: currRowRef.current?.TRAN_CD,
           SR_CD: currRowRef.current?.SR_CD,
-          IS_MAIN_DATA_DEL: true,
+          REQ_CD: reqCD,
+          _isDeleteRow: true,
+          IS_FROM_MAIN:
+          custDTLMutation.data?.[0]?.DOC_MST?.[0]?.IS_FROM_MAIN ?? "N",
+          NEW_FLAG: "N",  
           DETAILS_DATA: {
             isDeleteRow: [],
             isNewRow: [],
@@ -329,11 +343,8 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
       CUSTOMER_ID: custID,
       COMP_CD: authState?.companyID ?? "",
       BRANCH_CD: authState?.user?.branchCode ?? "",
-      IS_FROM_MAIN:
-        custDTLMutation.data?.[0]?.DOC_MST?.[0]?.IS_FROM_MAIN ?? "N",
-      NEW_FLAG: "N",
       REQ_FLAG: "E",
-      ENTRY_TYPE: "",
+      IsNewRow: Boolean(reqCD) ? false : true
     };
     mutation.mutate(payload);
     // console.log("qwieuhdiqwhd", currRowRef.current)
@@ -374,7 +385,7 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
           finalMetaData={DocumentGridMetadata as GridMetaDataType}
           data={girdData ?? []}
           setData={setGridData}
-          loading={custDTLMutation.isLoading}
+          loading={custDTLMutation.isLoading || custDTLMutation.isFetching}
           actions={actions}
           setAction={setCurrentAction}
           // refetchData={() => refetch()}
@@ -397,9 +408,10 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
               // console.log(currentData, "qwefhweufhiuwheiufhwef")
               navigate("edit-details", {
                 state: {
+                  ...state,
                   rows: [{ data: { ...currentData } }],
-                  REQ_CD: reqCD,
-                  CUSTOMER_ID: custID,
+                  // REQ_CD: reqCD,
+                  // CUSTOMER_ID: custID,
                 },
               });
             }

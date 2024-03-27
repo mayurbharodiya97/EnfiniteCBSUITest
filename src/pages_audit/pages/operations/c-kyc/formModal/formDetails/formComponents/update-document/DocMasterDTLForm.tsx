@@ -16,6 +16,7 @@ import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import FilePreviewUpload from "./FilePreviewUpload";
 import { AuthContext } from "pages_audit/auth";
 import { format } from "date-fns";
+import _ from "lodash";
 
 interface updateExtDocumentDataType {
   data: object;
@@ -47,18 +48,21 @@ export const DocMasterDTLForm = ({
   const [isFileViewOpen, setIsFileViewOpen] = useState(false);
   const [formMode, setFormMode] = useState(defaultmode);
   const {
-    state: { rows, REQ_CD, CUSTOMER_ID },
+    state
   }: any = useLocation();
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const [openAccept, setopenAccept] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
   const reqPayloadRef = useRef<any>(null);
-
   const fileRowRef = useRef<any>(null);
+  const { rows, CUSTOMER_DATA } = state;
+  // console.log("stateeeeeeee2", state);
+  const reqCD = state?.CUSTOMER_DATA?.[0]?.data.REQUEST_ID ?? "";
+  const custID = state?.CUSTOMER_DATA?.[0]?.data.CUSTOMER_ID ?? "";
   let newFlag = "";
   DocMasterDTLMetadata.masterForm.form.label = `KYC Document View ${
-    CUSTOMER_ID ? `Customer ID - ${CUSTOMER_ID}` : null
+    custID ? `Customer ID - ${custID}` : null
   } ${
     rows?.[0]?.data?.TEMPLATE_CD
       ? `Document -  ${rows?.[0]?.data?.TEMPLATE_CD}`
@@ -87,6 +91,21 @@ export const DocMasterDTLForm = ({
       onSuccess: (data, { endSubmit, setLoading }) => {
         // setLoading(false);
         // endSubmit(true);
+        // mutationRet.mutate({
+        //   data: {
+        //     TRAN_CD: rows[0]?.data?.TRAN_CD,
+        //     SR_CD: rows[0]?.data?.SR_CD,
+        //     REQ_CD: reqCD,
+        //   },
+        // });
+        // mysubdtlRef.current = {
+        //   ...mysubdtlRef.current,
+        //   TRAN_CD: rows[0]?.data?.TRAN_CD,
+        //   SR_CD: rows[0]?.data?.SR_CD,
+        //   REQ_CD: reqCD,
+        // };
+
+        
         enqueueSnackbar("Record Updated successfully.", {
           variant: "success",
         });
@@ -152,21 +171,63 @@ export const DocMasterDTLForm = ({
     ) {
       setFormMode("view");
     } else {
-      let newData = data;
-      if (Boolean(data._isNewRow)) {
-        newData["IS_MAIN_DATA_ADD"] = true;
+      let newData:any = data;
+      if(Boolean(newData._isNewRow)) {
+        newData = _.omit(newData, ["SR_CD", "TRAN_CD"])
       }
-      if (data.SUBMIT === "Y") {
-        newData["SUBMIT"] = true;
+      // newData["_isNewRow"] = data._isNewRow;
+      // newData["_UPDATEDCOLUMNS"] = data._UPDATEDCOLUMNS;
+      // newData["_OLDROWVALUE"] = data._OLDROWVALUE;
+      // newData["TRAN_CD"] = data.TRAN_CD;
+      // newData["SR_CD"] = data.SR_CD;
+      // if(Array.isArray(data?._UPDATEDCOLUMNS) && data?._UPDATEDCOLUMNS?.length>0) {
+      //   data?._UPDATEDCOLUMNS.forEach(fieldName => {
+      //     if(fieldName === "SUBMIT") {
+      //       if(typeof data.SUBMIT === "boolean") {
+      //         if(Boolean(data.SUBMIT)) {
+      //           newData["SUBMIT"] = "Y";
+      //         } else {
+      //           newData["SUBMIT"] = "N";
+      //         }
+      //       } else {
+      //         newData["SUBMIT"] = data.SUBMIT;
+      //       }
+      //     } else if(fieldName === "VALID_UPTO") {
+      //       newData["VALID_UPTO"] = format(
+      //         new Date(data.VALID_UPTO),
+      //         "dd-MM-yyyy"
+      //       );
+      //     } else {
+      //       newData[fieldName] = data[fieldName]
+      //     }
+      //   });
+      // }
+      // newData["DETAILS_DATA"] = data?.DETAILS_DATA;
+      if(typeof data.SUBMIT === "boolean") {
+        if(Boolean(data.SUBMIT)) {
+          newData["SUBMIT"] = "Y";
+        } else {
+          newData["SUBMIT"] = "N";
+        }
       } else {
-        newData["SUBMIT"] = false;
+        newData["SUBMIT"] = data.SUBMIT;
       }
-      if (Boolean(newData["VALID_UPTO"])) {
-        newData["VALID_UPTO"] = format(
-          new Date(newData["VALID_UPTO"]),
-          "dd-MM-yyyy"
-        );
-      }
+      newData["REQ_CD"] = reqCD ?? "";
+      // if (Boolean(data._isNewRow)) {
+      //   newData["IS_MAIN_DATA_ADD"] = true;
+      // }
+      // if (data.SUBMIT === "Y") {
+      //   newData["SUBMIT"] = true;
+      // } else {
+      //   newData["SUBMIT"] = false;
+      // }
+      
+      // if (Boolean(newData["VALID_UPTO"])) {
+      //   newData["VALID_UPTO"] = format(
+      //     new Date(newData["VALID_UPTO"]),
+      //     "dd-MM-yyyy"
+      //   );
+      // }
       if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
         newData.DETAILS_DATA["isNewRow"] = newData.DETAILS_DATA["isNewRow"].map(
           (row) => {
@@ -180,20 +241,24 @@ export const DocMasterDTLForm = ({
           }
         );
       }
-      if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
-      }
+      // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
+      // }
+      // console.log(data, "dtaa on sibmitg", newData)
+
       const payload = {
-        DOC_MST: [{ ...newData }],
-        REQ_CD: REQ_CD,
-        CUSTOMER_ID: CUSTOMER_ID,
+        DOC_MST: [{
+           ...newData,
+           NEW_FLAG: mutationRet.data?.[0]?.NEW_FLAG ?? "N",
+           IS_FROM_MAIN: girdData?.[0]?.IS_FROM_MAIN ?? "",   
+        }],
+        REQ_CD: reqCD,
+        CUSTOMER_ID: custID,
         COMP_CD: authState?.companyID ?? "",
         BRANCH_CD: authState?.user?.branchCode ?? "",
         // IS_FROM_MAIN:
         //   custDTLMutation.data?.[0]?.DOC_MST?.[0]?.IS_FROM_MAIN ?? "N",
-        NEW_FLAG: mutationRet.data?.[0]?.NEW_FLAG ?? "",
-        IS_FROM_MAIN: girdData?.[0]?.IS_FROM_MAIN ?? "N",
         REQ_FLAG: "E",
-        ENTRY_TYPE: "",
+        IsNewRow: Boolean(reqCD) ? false : true,
       };
       reqPayloadRef.current = payload;
       // console.log("weiuifhoiuewhf", newData, girdData)
@@ -223,14 +288,14 @@ export const DocMasterDTLForm = ({
         data: {
           TRAN_CD: rows[0]?.data?.TRAN_CD,
           SR_CD: rows[0]?.data?.SR_CD,
-          REQ_CD: REQ_CD,
+          REQ_CD: reqCD,
         },
       });
       mysubdtlRef.current = {
         ...mysubdtlRef.current,
         TRAN_CD: rows[0]?.data?.TRAN_CD,
         SR_CD: rows[0]?.data?.SR_CD,
-        REQ_CD: REQ_CD,
+        REQ_CD: reqCD,
       };
     }
   }, []);
