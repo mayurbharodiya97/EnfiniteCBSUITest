@@ -23,7 +23,7 @@ import { transformFileObject } from "components/fileUpload/utils";
 import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import { queryClient } from "cache";
-import { useStyles } from "./style";
+import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";

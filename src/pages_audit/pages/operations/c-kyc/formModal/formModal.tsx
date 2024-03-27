@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress, FormHelperText} from '@mui/material';
+import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Tab, Stack, Autocomplete, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress, FormHelperText} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StyledTabs from "components/styledComponent/tabs/tabs";
 import { CustomTabs } from "../Ckyc";
@@ -65,31 +65,8 @@ import HeaderForm from './HeaderForm';
 import { RemarksAPIWrapper } from 'components/custom/Remarks';
 import { MessageBoxWrapper } from 'components/custom/messageBox';
 import PhotoSign from './formDetails/formComponents/individualComps/PhotoSign';
+import { CustomTab, useDialogStyles } from './style';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
-type Customtabprops = {
-  isSidebarExpanded: boolean;
-}
-const CustomTab = styled(Tab, {shouldForwardProp: (prop) => prop !== "isSidebarExpanded"})<Customtabprops>(({isSidebarExpanded, theme}) => ({
-  minWidth: "60px",
-  maxWidth: "250px",
-  alignItems: "flex-start",
-  // alignItems: isSidebarExpanded ? "flex-start" : "center",
-  ...(isSidebarExpanded ? {
-    // alignItems: "flex-start",
-    width: "100%", 
-    transition: "width 0.2s ease-in-out",
-  } : {
-    // alignItems: "center",
-    minWidth: "60px", 
-    width:"auto", 
-    transition: "width 0.2s ease-in-out",
-  }),
-  [theme.breakpoints.down("md")]: {
-    // backgroundColor: "#ddd",
-    maxWidth: "200px"
-  }
-}))
-
 export const CustomTabLabel = ({IconName, isSidebarExpanded, tabLabel, subtext}) => {
   return (
     <div
@@ -133,7 +110,7 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
-function TabPanel(props: TabPanelProps) {
+export function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other }:any = props;
 
   return (
@@ -154,22 +131,6 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
-export const useDialogStyles = makeStyles((theme: Theme) => ({
-  topScrollPaper: {
-    alignItems: "center",
-  },
-  topPaperScrollBody: {
-    verticalAlign: "top",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-}));
-
 
 export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
