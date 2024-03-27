@@ -300,6 +300,23 @@ export const company_info_meta_data = {
             // validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
             maxLength: 10,
         },
+        {
+            render: {
+                componentType: "textField",
+            },
+            label: 'UDYAM_REG_NO',
+            type: "text",
+            // maxLength: 18,
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            validate: (columnValue, allField, flag) => {
+                let URNRegex = /^UDYAM-[A=Za-z]{2}-\d{2}-\d{7}$/;
+                let UANRegex = /^[A=Za-z]{2}\d{2}[A-Za-z]{1}\d{7}$/;
+                if(columnValue.value && (!URNRegex.test(columnValue.value) && !UANRegex.test(columnValue.value))) {
+                    return "Please Enter Valid Format."
+                }
+                return ""
+            }
+        }
     ]
 }
 
