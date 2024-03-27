@@ -228,7 +228,78 @@ export const company_info_meta_data = {
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
-        
+
+        {
+            render: {
+                componentType: "autocomplete",
+            },
+            name: "FORM_60",
+            label: "Form6061",
+            placeholder: "",
+            defaultValue: "N",
+            type: "text",
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            options: [
+                {label: "Form 61", value: "F"},
+                {label: "No", value: "N"},
+            ],
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "OTHER_DOC",
+            label: "OtherPoI",
+            placeholder: "",
+            type: "text",
+            txtTransform: "uppercase",
+            maxLength: 50,
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            validate: (columnValue, allField, flag) => {
+              let regex = /^[a-zA-Z]+$/;
+              if(columnValue.value && !regex.test(columnValue.value)) {
+                  return "Please Enter Character Value."
+              }
+              return ""
+            }
+        },
+        {
+            render: {
+                componentType: "textField",
+            },
+            name: "OTHER_DOC_NO",
+            label: "PoINo",
+            placeholder: "",
+            maxLength: 20,
+            type: "text",
+            txtTransform: "uppercase",
+            validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+        },
+        {
+            render: {
+                componentType: "panCard",
+            },
+            name: "PAN_NO",
+            label: "PanNo",
+            placeholder: "AAAAA1111A",
+            type: "text",
+            txtTransform: "uppercase",
+            required: true,
+            GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+            schemaValidation: {
+                type: "string",
+                rules: [
+                  { name: "required", params: ["ThisFieldisrequired"] },
+                  {
+                    name: "pancard",
+                    params: ["Please Enter Valid PAN Number"],
+                  },
+                ],
+            },
+            // validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
+            maxLength: 10,
+        },
     ]
 }
 
