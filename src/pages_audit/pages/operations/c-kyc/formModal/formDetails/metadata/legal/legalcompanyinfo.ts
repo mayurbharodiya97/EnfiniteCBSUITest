@@ -304,7 +304,8 @@ export const company_info_meta_data = {
             render: {
                 componentType: "textField",
             },
-            label: 'UDYAM_REG_NO',
+            name: "UDYAM_REG_NO",
+            label: 'URN/UAN',
             type: "text",
             // maxLength: 18,
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
