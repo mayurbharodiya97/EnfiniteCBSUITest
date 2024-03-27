@@ -257,7 +257,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
 
   const handleKeyDown = useCallback(
     (e: any) => {
-      if (e.key.toLowerCase() === "backspace") indexRef.current = -1;
+      if (
+        e.key.toLowerCase() === "backspace" ||
+        e.key.toLowerCase() === "escape"
+      )
+        indexRef.current = -1;
       if (e.key.toLowerCase() === "tab") {
         if (indexRef.current !== -1 && _options[indexRef.current]) {
           handleChangeCustom(e, _options[indexRef.current]);
