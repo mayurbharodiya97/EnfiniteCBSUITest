@@ -14,14 +14,7 @@ import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { addMonths, format } from "date-fns";
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
-const Document = ({
-  isCustomerData,
-  setIsCustomerData,
-  isLoading,
-  setIsLoading,
-  displayMode,
-  from,
-}) => {
+const Document = () => {
   const { authState } = useContext(AuthContext);
   const {
     state,
@@ -78,7 +71,7 @@ const Document = ({
   });
 
   useEffect(() => {
-    let refs = displayMode !== "new" ? [onUpdate] : [onSave]
+    let refs = state?.formmodectx !== "new" ? [onUpdate] : [onSave]
     handleCurrFormctx({
       currentFormRefctx: refs,
       colTabValuectx: state?.colTabValuectx,
@@ -313,8 +306,8 @@ const Document = ({
 
 
   const SaveUpdateBTNs = useMemo(() => {
-    if (displayMode) {
-      return displayMode == "new" ? (
+    if (state?.formmodectx) {
+      return state?.formmodectx == "new" ? (
         <Fragment>
           <Button
             sx={{ mr: 2, mb: 2 }}
@@ -327,7 +320,7 @@ const Document = ({
             {/* {t("Save & Next")} */}
           </Button>
         </Fragment>
-      ) : displayMode == "edit" ? (
+      ) : state?.formmodectx == "edit" ? (
         <Fragment>
           <Button
             sx={{ mr: 2, mb: 2 }}
@@ -340,7 +333,7 @@ const Document = ({
           </Button>
         </Fragment>
       ) : (
-        displayMode == "view" && (
+        state?.formmodectx == "view" && (
           <Fragment>
             <Button
               sx={{ mr: 2, mb: 2 }}
@@ -361,7 +354,7 @@ const Document = ({
         )
       );
     }
-  }, [displayMode, data]);
+  }, [state?.formmodectx, data]);
 
   return (
     <Grid
@@ -388,7 +381,7 @@ const Document = ({
           setData([...newData])
         }}
       />
-      <TabNavigate handleSave={displayMode !== "new" ? onUpdate : onSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+      <TabNavigate handleSave={state?.formmodectx !== "new" ? onUpdate : onSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
 
       {open ? (
         <KYCDocumentMasterDetails

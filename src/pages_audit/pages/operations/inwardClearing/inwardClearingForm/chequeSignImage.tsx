@@ -211,7 +211,7 @@ export const ChequeSignImage: FC<{
                         <img
                           src={imageUrl}
                           alt={`image-${index}`}
-                          // style={{ height: "100%", width: "100%" }}
+                          style={{ height: "100%", width: "100%" }}
                         />
                       </div>
                     </CardContent>
@@ -241,10 +241,11 @@ export const ChequeSignImage: FC<{
                         justifyContent: "center",
                       }}
                     >
+                      {" "}
                       <img
                         src={noPhotoAvailble}
-                        style={{ width: "100%", height: "100%" }} // Set image width and height to 100% to fill its container
-                      />
+                        style={{ height: "100%", width: "100%" }}
+                      />{" "}
                     </div>
                   </CardContent>
                 </Card>
@@ -287,6 +288,11 @@ export const ChequeSignImage: FC<{
                     >
                       <img
                         src={Boolean(signImageURL) ? signImageURL : ""}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
                         alt="Sign"
                       />
                     </div>
@@ -299,7 +305,10 @@ export const ChequeSignImage: FC<{
                         justifyContent: "center",
                       }}
                     >
-                      <img src={noPhotoAvailble} />
+                      <img
+                        src={noPhotoAvailble}
+                        style={{ height: "100%", width: "100%" }}
+                      />{" "}
                     </div>
                   )}
                 </CardContent>

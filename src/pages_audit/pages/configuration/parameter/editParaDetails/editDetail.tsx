@@ -2,20 +2,19 @@ import { Dialog } from "@mui/material";
 import { MetaDataType } from "components/dyanmicForm";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { ParaDetailMetadata } from "./metaData";
-import { InitialValuesType,SubmitFnType } from "packages/form";
+import { InitialValuesType, SubmitFnType } from "packages/form";
 import { GradientButton } from "components/styledComponent/button";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import * as API from "./api"
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
+import { extractMetaData, utilFunction } from "components/utils";
 
- const EditDetail = ({ open, onClose, rowsData ,refetch}) => {
+ const EditDetail = ({ open, onClose, rowsData ,refetch,formView}) => {
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
-
-
-  
+  const [formMode, setFormMode] = useState(formView);
   const mutation = useMutation((API.updateParameterData),{
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -42,23 +41,13 @@ import { enqueueSnackbar } from "notistack";
       isErrorFuncRef.current = true;
       onClose();
       refetch();
+      setIsOpenSave(false);
+      setFormMode("view");
     },
   });
   const onActionCancel = () => {
     setIsOpenSave(false);
   };
-  const onPopupYes = (rowsData1) => {
-    mutation.mutate({
-      datatype_cd: rowsData1?.DATATYPE_CD ?? "",
-      paraValue: rowsData1?.PARA_VALUE ?? "",
-      old_datatype: rowsData[0].data?.DATATYPE_CD ?? "",
-      old_paraValue: rowsData[0].data?.PARA_VALUE ?? "",
-      remarks: rowsData[0].data?.REMARKS ?? "",
-      compCode: rowsData1?.COMP_CD ?? "",
-      branch_cd: rowsData[0].data?.BRANCH_CD ?? "",
-      paraCode: rowsData1?.PARA_CD ?? "",
-    })
-  }
    const onSubmitHandler: SubmitFnType = (
     data,
     displayData,
@@ -68,13 +57,45 @@ import { enqueueSnackbar } from "notistack";
   ) => {
     //@ts-ignore
     endSubmit(true);
-    isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
-    if (isErrorFuncRef.current.displayData.PARA_VALUE === "") {
+    let newData = {
+      ...data
+    };
+    let oldData = {
+      ...rowsData?.[0]?.data
+    };
+    let upd = utilFunction.transformDetailsData(newData, oldData);
+    isErrorFuncRef.current = {   
+      data: {
+        ...newData,
+        ...upd,
+      }, 
+      displayData, 
+      endSubmit, 
+      setFieldError 
+    };
+    if (isErrorFuncRef.current?.data?._UPDATEDCOLUMNS.length === 0) {
       setIsOpenSave(false);
+      setFormMode("view");
     } else {
       setIsOpenSave(true);
     }
   };
+  const onPopupYes = (rowsData1) => {
+    mutation.mutate({
+      datatype_cd: rowsData1?.DATATYPE_CD ?? "",
+      paraValue: rowsData1?.PARA_VALUE ?? "",
+      old_datatype: rowsData[0].data?.DATATYPE_CD ?? "",
+      old_paraValue: rowsData[0].data?.PARA_VALUE ?? "",
+      remark: rowsData1?.REMARKS ?? "",
+      compCode: rowsData1?.COMP_CD ?? "",
+      branch_cd: rowsData[0].data?.BRANCH_CD ?? "",
+      paraCode: rowsData1?.PARA_CD ?? "",
+    })
+  }
+  const masterMetadata: MetaDataType = useMemo(
+    () => extractMetaData(ParaDetailMetadata, formMode),
+    [ParaDetailMetadata, formMode, ""]
+  ) as MetaDataType;
   return (
     <>
     <Dialog
@@ -87,38 +108,61 @@ import { enqueueSnackbar } from "notistack";
       }}
     >
     <FormWrapper
-      key={`paraEditDetail`}
-      metaData={ParaDetailMetadata as MetaDataType}
+      key={`paraEditDetail` + formMode}
+      metaData={masterMetadata as MetaDataType}
       initialValues={rowsData?.[0]?.data as InitialValuesType}
       onSubmitHandler={onSubmitHandler}
+        //@ts-ignore
+      displayMode={formMode}
       formStyle={{
         background: "white",
-        height: "calc(42vh - 100px)",
+        height: "calc(53vh - 100px)",
         overflowY: "auto",
         overflowX: "hidden",
       }}
       containerstyle={{ padding: "10px" }}
-    >
-      {({ isSubmitting, handleSubmit }) => (
-        <>
-          <GradientButton
-            onClick={(event) => {
-              handleSubmit(event, "Save");
-            }}
-            disabled={isSubmitting}
-            color={"primary"}
-          >
-            Save
-          </GradientButton>
-          <GradientButton
-            onClick={onClose}
-            color={"primary"}
-            disabled={isSubmitting}
-          >
-            Close
-          </GradientButton>
-        </>
-      )}
+    >   
+       {({ isSubmitting, handleSubmit }) => (
+            <>
+              {formMode === "edit" ? (
+                <>
+                  <GradientButton
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    color={"primary"}
+                  >
+                    Save
+                  </GradientButton>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("view");
+                    }}
+                    color={"primary"}
+                  >
+                    Cancel
+                  </GradientButton>
+                </>
+              ) : (
+                <>
+                  <GradientButton
+                    onClick={() => {
+                      setFormMode("edit");
+                    }}
+                    color={"primary"}
+                  >
+                    Edit
+                  </GradientButton>
+                  <GradientButton
+                    onClick={onClose}
+                    color={"primary"}
+                  >
+                    Close
+                  </GradientButton>
+                </>
+              )}
+            </>
+          )}
     </FormWrapper>
     {isOpenSave ? (
       <PopupMessageAPIWrapper

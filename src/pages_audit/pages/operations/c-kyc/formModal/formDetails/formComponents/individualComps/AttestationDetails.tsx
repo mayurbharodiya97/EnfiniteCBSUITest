@@ -26,7 +26,7 @@ const actions = [
     },
 ];
 
-const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode, onFormClose, onUpdateForm}) => {
+const AttestationDetails = ({onFormClose, onUpdateForm}) => {
     const [isNextLoading, setIsNextLoading] = useState(false)
     const [historyDialog, setHistoryDialog] = useState(false)
     const [updateDialog, setUpdateDialog] = useState(false)
@@ -200,7 +200,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                     PASSPORT_NO: state?.formDatactx["PERSONAL_DETAIL"]?.PASSPORT_NO,
                     DRIVING_LICENSE_NO: state?.formDatactx["PERSONAL_DETAIL"]?.DRIVING_LICENSE_NO,
                     TEMPLATE_CD: "", //temp
-                    CUST_TYPE: "I",
+                    CUST_TYPE: state?.entityTypectx ?? "",
                     // PAN_NO: "DWIPP9643D",
                     // UNIQUE_ID: "123123123123",
                     // ELECTION_CARD_NO: "",
@@ -272,16 +272,24 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                 errorDetail={mutation.error?.error_detail}
                 color="error"
                 />
-            ) : retrieveonupdate.isError && (
+            ) : retrieveonupdate.isError ? (
                 <Alert
                 severity={retrieveonupdate.error?.severity ?? "error"}
                 errorMsg={retrieveonupdate.error?.error_msg ?? "Something went to wrong.."}
                 errorDetail={retrieveonupdate.error?.error_detail}
                 color="error"
                 />
-            )}
+            ) : docValidationMutation.isError ? (
+                <Alert
+                severity={docValidationMutation.error?.severity ?? "error"}
+                errorMsg={docValidationMutation.error?.error_msg ?? "Something went to wrong.."}
+                errorDetail={docValidationMutation.error?.error_detail}
+                color="error"
+                />
+            ) : null}
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Attestation Details {`(8/8)`}</Typography> */}
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -310,7 +318,7 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                             onSubmitHandler={AttestationDTLSubmitHandler}
                             // initialValues={state?.formDatactx["ATTESTATION_DTL"] ?? {}}
                             initialValues={initialVal}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             key={"att-details-form-kyc"+ initialVal}
                             metaData={attestation_detail_meta_data as MetaDataType}
                             formStyle={{}}
@@ -318,8 +326,10 @@ const AttestationDetails = ({isCustomerData, setIsCustomerData, isLoading, setIs
                         />
                     </Grid>                    
                 </Grid>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={displayMode !== "new" ? onUpdateForm : handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
+            <TabNavigate handleSave={(state?.formmodectx !== "new" && !state?.isDraftSavedctx) ? onUpdateForm : handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
             {historyDialog && <AttestHistory 
                 open={historyDialog} 
                 onClose={onCloseSearchDialog} 

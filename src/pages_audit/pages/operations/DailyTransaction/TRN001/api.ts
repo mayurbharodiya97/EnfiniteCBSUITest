@@ -157,15 +157,18 @@ export const getAccInquiry = async (reqData) => {
   }
 };
 
-export const addDailyTrxScroll = async (reqData) => {
+export const saveScroll = async (reqData) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("DODAILYTRNDML", {
       DETAILS_DATA: { isDeleteRow: [], isUpdatedRow: [], isNewRow: reqData },
     });
   if (status === "0") {
-    let responseData = data;
-    console.log(data, "data");
-    return responseData;
+    let obj = {
+      data,
+      status,
+      messageDetails,
+    };
+    return obj;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -181,6 +184,22 @@ export const getChqValidation = async (reqData) => {
       ACCT_TYPE: reqData?.accType?.value,
       ACCT_CD: reqData.accNo.padEnd(20, " "),
       CHEQUE_NO: reqData?.cNo,
+    });
+  if (status === "0") {
+    let responseData = data;
+
+    return responseData[0];
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getChqDateValidation = async (reqData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATECHQDATE", {
+      BRANCH_CD: reqData?.branch?.value, //099
+      TYPE_CD: reqData?.trx?.value, //5
+      CHEQUE_NO: reqData?.cNo, //33
+      CHEQUE_DT: format(new Date(reqData?.date), "dd/MMM/yyyy"), //06/Mar/2024
     });
   if (status === "0") {
     let responseData = data;

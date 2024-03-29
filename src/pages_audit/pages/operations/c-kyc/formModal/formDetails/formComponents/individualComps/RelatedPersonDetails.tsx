@@ -12,7 +12,7 @@ import _ from 'lodash';
 import TabNavigate from '../TabNavigate';
 import { MessageBoxWrapper } from 'components/custom/messageBox';
 
-const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const RelatedPersonDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
@@ -125,7 +125,7 @@ const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, set
                     })
                     newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
                     handleFormDataonSavectx(newData)
-                    if(!state?.isFreshEntryctx) {
+                    if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
         
                         let tabModifiedCols:any = state?.modifiedFormCols
                         tabModifiedCols = {
@@ -137,7 +137,7 @@ const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, set
                 } else {
                     newData["RELATED_PERSON_DTL"] = []
                     handleFormDataonSavectx(newData)
-                    if(!state?.isFreshEntryctx) {
+                    if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                         let tabModifiedCols:any = state?.modifiedFormCols
                         tabModifiedCols = {
                           ...tabModifiedCols,
@@ -179,7 +179,8 @@ const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, set
           // sx={{backgroundColor: "#eee"}}
         >
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Details of Related Person {`(4/8)`}</Typography> */}
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -199,7 +200,7 @@ const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, set
                             onSubmitHandler={RelPersonSubmitHandler2}
                             // initialValues={state?.formDatactx["RELATED_PERSON_DTL"] ?? {}}
                             initialValues={initialVal}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             key={"new-form-in-kyc"}
                             metaData={related_person_detail_data as MetaDataType}
                             formStyle={{}}
@@ -207,8 +208,10 @@ const RelatedPersonDetails = ({isCustomerData, setIsCustomerData, isLoading, set
                         />
                     </Grid>                    
                 </Collapse>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
 
 
             <MessageBoxWrapper
