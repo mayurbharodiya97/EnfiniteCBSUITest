@@ -30,7 +30,7 @@ import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { cloneDeep } from "lodash";
-import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "components/custom/popupContext";
 
 const ColorlibStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
@@ -95,7 +95,7 @@ export const FixDepositForm = () => {
     setIsBackButton,
   } = useContext(FixDepositContext);
   const submitEventRef = useRef(null);
-  const { MessageBox } = useContext(AuthContext);
+  const { MessageBox } = usePopupContext();
 
   const [steps, setSteps] = useState([
     "FD Parameters",
@@ -131,10 +131,10 @@ export const FixDepositForm = () => {
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      MessageBox("Error", errorMsg);
+      MessageBox({ messageTitle: "Error", message: errorMsg });
     },
     onSuccess: (data) => {
-      MessageBox("Success", data);
+      MessageBox({ messageTitle: "Success", message: data });
       resetAllData();
     },
   });

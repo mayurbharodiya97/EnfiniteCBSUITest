@@ -1,5 +1,5 @@
 export const en_language_data = {
-  Delete:"Remove",
+  Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
   SignInWithUserIDandPassword: "Please provide your UserID and password",
@@ -61,6 +61,9 @@ export const en_language_data = {
     AllowedAccess: "Allowed Access",
     ActivityDetail: "Activity Detail",
     Personalizedashboard: "Personalize dashboard",
+    Searchin: "Search in",
+    screens: "screens",
+    records: "records",
   },
   // For Profile in User Profile
   UserId: "User Id",

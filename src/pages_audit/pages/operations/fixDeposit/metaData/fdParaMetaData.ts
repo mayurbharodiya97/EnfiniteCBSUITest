@@ -53,7 +53,7 @@ export const FixDepositParaFormMetadata = {
       name: "FD_TYPE",
       label: "FD Operation",
       options: [
-        { label: "Fresh FD Account", value: "F" },
+        // { label: "Fresh FD Account", value: "F" },
         { label: "Existing FD Account", value: "E" },
         { label: "FD Payment", value: "P" },
         { label: "FD Payment Instruction", value: "I" },
@@ -74,7 +74,7 @@ export const FixDepositParaFormMetadata = {
         if (Boolean(formState?.isBackButton)) return {};
         formState.setDataOnFieldChange("FD_TYPE", field?.value);
         return {
-          CUSTOMER_ID: { value: "" },
+          CUSTOMER_ID: { value: "", ignoreUpdate: true },
           CUSTOMER_NAME: { value: "" },
         };
       },
@@ -106,7 +106,7 @@ export const FixDepositParaFormMetadata = {
         if (Boolean(formState?.isBackButton)) return {};
         formState.setDataOnFieldChange("TRAN_MODE", field?.value);
         return {
-          CUSTOMER_ID: { value: "" },
+          CUSTOMER_ID: { value: "", ignoreUpdate: true },
           CUSTOMER_NAME: { value: "" },
         };
       },
@@ -352,12 +352,12 @@ export const FixDepositAccountsFormMetadata = {
               );
               if (apiResponse?.status === "0") {
                 if (Boolean(apiResponse?.message)) {
-                  arg?.[1]?.MessageBox(
-                    "Information",
-                    apiResponse?.message.startsWith("\n")
+                  arg?.[1]?.MessageBox({
+                    messageTitle: "Information",
+                    message: apiResponse?.message.startsWith("\n")
                       ? apiResponse?.message?.slice(1)
-                      : apiResponse?.message
-                  );
+                      : apiResponse?.message,
+                  });
                 }
                 return {
                   ACCT_NM: { value: apiResponse?.data?.[0]?.ACCT_NM ?? "" },
@@ -370,7 +370,12 @@ export const FixDepositAccountsFormMetadata = {
                 };
               } else {
                 return {
-                  ACCT_CD: { value: "", error: apiResponse?.message ?? "" },
+                  ACCT_CD: {
+                    value: "",
+                    error: apiResponse?.message ?? "Unknown Error",
+                    ignoreUpdate: true,
+                    isFieldFocused: true,
+                  },
                   ACCT_NM: { value: "" },
                   NOMINEE_NM: { value: "" },
                   CATEG_CD: { value: "" },
@@ -516,6 +521,13 @@ export const FixDepositAccountsFormMetadata = {
               }
             },
             required: false,
+            postValidationSetCrossFieldValues: () => {
+              return {
+                CR_ACCT_TYPE: { value: "" },
+                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_NM: { value: "" },
+              };
+            },
             GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
           },
           accountTypeMetadata: {
@@ -533,6 +545,13 @@ export const FixDepositAccountsFormMetadata = {
               } else {
                 return true;
               }
+            },
+            schemaValidation: {},
+            postValidationSetCrossFieldValues: () => {
+              return {
+                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_NM: { value: "" },
+              };
             },
             GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
           },
@@ -560,30 +579,24 @@ export const FixDepositAccountsFormMetadata = {
             },
             required: true,
             type: "text",
-            // validation: (value, data) => {
-            //   console.log(">>value", value);
-            //   if (!Boolean(value)) {
-            //     return "";
-            //   }
-            //   return "";
-            // },
+            schemaValidation: {},
             postValidationSetCrossFieldValues: async (...arg) => {
               const companyCode = arg?.[3]?.["FDACCTS.COMP_CD"]?.value ?? "";
               const branchCode =
                 arg?.[3]?.["FDACCTS.CR_BRANCH_CD"]?.value ?? "";
               const accountType =
                 arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.value ?? "";
-              const accountCode = utilFunction.getPadAccountNumber(
-                arg?.[0]?.value,
-                arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.optionData
-              );
-
+              let accountCode = arg?.[0]?.value ?? "";
               if (
                 Boolean(companyCode) &&
                 Boolean(branchCode) &&
                 Boolean(accountType) &&
                 accountCode
               ) {
+                accountCode = utilFunction.getPadAccountNumber(
+                  accountCode,
+                  arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.optionData
+                );
                 const apiResponse = await API.validateAccountAndGetDetail(
                   companyCode,
                   branchCode,
@@ -593,16 +606,17 @@ export const FixDepositAccountsFormMetadata = {
                 );
                 if (apiResponse?.status === "0") {
                   if (Boolean(apiResponse?.message)) {
-                    arg?.[1]?.MessageBox(
-                      "Information",
-                      apiResponse?.message.startsWith("\n")
+                    arg?.[1]?.MessageBox({
+                      messageTitle: "Information",
+                      message: apiResponse?.message.startsWith("\n")
                         ? apiResponse?.message?.slice(1)
-                        : apiResponse?.message
-                    );
+                        : apiResponse?.message,
+                    });
                   }
                   return {
                     CR_ACCT_CD: {
                       value: accountCode,
+                      error: "",
                       ignoreUpdate: true,
                     },
                     CR_ACCT_NM: {
@@ -615,6 +629,7 @@ export const FixDepositAccountsFormMetadata = {
                       value: "",
                       error: apiResponse?.message ?? "",
                       ignoreUpdate: true,
+                      isFieldFocused: true,
                     },
                     CR_ACCT_NM: { value: "" },
                   };

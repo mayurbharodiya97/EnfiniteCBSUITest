@@ -98,8 +98,8 @@ export const useStyles = makeStyles((theme: any) => ({
   },
   arrayRowRemoveBtn: {
     position: "absolute",
-    top: -22,
-    right: -22,
+    top: -8,
+    right: -8,
     color: "#f50057",
   },
   arrayRowCard: {

@@ -59,10 +59,23 @@ export const TransferAcctDetailFormMetadata = {
           },
           branchCodeMetadata: {
             name: "DC_BRANCH_CD",
+            postValidationSetCrossFieldValues: () => {
+              return {
+                ACCT_TYPE: { value: "" },
+                ACCT_CD: { value: "", ignoreUpdate: true },
+                ACCT_NM: { value: "" },
+              };
+            },
             GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
           },
           accountTypeMetadata: {
             name: "DC_ACCT_TYPE",
+            postValidationSetCrossFieldValues: () => {
+              return {
+                ACCT_CD: { value: "", ignoreUpdate: true },
+                ACCT_NM: { value: "" },
+              };
+            },
             GridProps: { xs: 12, sm: 1, md: 1, lg: 2.5, xl: 1.5 },
           },
           accountCodeMetadata: {
@@ -73,12 +86,13 @@ export const TransferAcctDetailFormMetadata = {
                 arg?.[3]?.["TRNDTLS.DC_BRANCH_CD"]?.value ?? "";
               const accountType =
                 arg?.[3]?.["TRNDTLS.DC_ACCT_TYPE"]?.value ?? "";
-              const accountCode = utilFunction.getPadAccountNumber(
-                arg?.[0]?.value,
-                arg?.[3]?.["TRNDTLS.DC_ACCT_TYPE"]?.optionData
-              );
+              let accountCode = arg?.[0]?.value ?? "";
 
               if (Boolean(branchCode) && Boolean(accountType) && accountCode) {
+                accountCode = utilFunction.getPadAccountNumber(
+                  accountCode,
+                  arg?.[3]?.["TRNDTLS.DC_ACCT_TYPE"]?.optionData
+                );
                 const apiResponse = await validateAccountAndGetDetail(
                   arg?.[2]?.companyID,
                   branchCode,
@@ -88,16 +102,17 @@ export const TransferAcctDetailFormMetadata = {
                 );
                 if (apiResponse?.status === "0") {
                   if (Boolean(apiResponse?.message)) {
-                    arg?.[1]?.MessageBox(
-                      "Information",
-                      apiResponse?.message.startsWith("\n")
+                    arg?.[1]?.MessageBox({
+                      messageTitle: "Information",
+                      message: apiResponse?.message.startsWith("\n")
                         ? apiResponse?.message?.slice(1)
-                        : apiResponse?.message
-                    );
+                        : apiResponse?.message,
+                    });
                   }
                   return {
                     DC_ACCT_CD: {
                       value: accountCode,
+                      error: "",
                       ignoreUpdate: true,
                     },
                     DC_ACCT_NM: {
@@ -116,6 +131,7 @@ export const TransferAcctDetailFormMetadata = {
                       value: "",
                       error: apiResponse?.message ?? "",
                       ignoreUpdate: true,
+                      isFieldFocused: true,
                     },
                     DC_ACCT_NM: { value: "" },
                   };
@@ -168,6 +184,12 @@ export const TransferAcctDetailFormMetadata = {
               return true;
             },
           },
+          validate: (columnValue) => {
+            if (!Boolean(columnValue.value.trim())) {
+              return "Cheque No. is Required.";
+            }
+            return "";
+          },
           GridProps: { xs: 6, sm: 2, md: 1.5, lg: 2, xl: 1.5 },
         },
         {
@@ -194,7 +216,17 @@ export const TransferAcctDetailFormMetadata = {
           // isFieldFocused: true,
           // autoComplete: false,
           type: "text",
-          // isReadOnly: true,
+          FormatProps: {
+            allowNegative: false,
+          },
+          validate: (columnValue) => {
+            if (!Boolean(columnValue.value)) {
+              return "Amount is Required.";
+            } else if (columnValue.value <= 0) {
+              return "Amount must be greater than zero.";
+            }
+            return "";
+          },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
 

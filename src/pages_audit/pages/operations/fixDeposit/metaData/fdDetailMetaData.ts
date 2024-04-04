@@ -50,6 +50,62 @@ export const FixDepositDetailFormMetadata = {
   fields: [
     {
       render: {
+        componentType: "amountField",
+      },
+      name: "TOTAL_FD_UNIT",
+      label: "Total No. of FD",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TOTAL_FD_AMOUNT",
+      label: "Total FD Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
+      dependentFields: ["FDDTL"],
+      postValidationSetCrossFieldValues: async (
+        currentFieldState,
+        formState,
+        auth,
+        dependentFieldState
+      ) => {
+        let accumulatedTakeoverLoanAmount = (
+          Array.isArray(dependentFieldState?.["FDDTL"])
+            ? dependentFieldState?.["FDDTL"]
+            : []
+        ).reduce((accum, obj) => accum + Number(obj.FD_AMOUNT?.value), 0);
+
+        if (
+          Number(currentFieldState.value) ===
+          Number(accumulatedTakeoverLoanAmount)
+        ) {
+          return {};
+        }
+
+        if (accumulatedTakeoverLoanAmount) {
+          return {
+            FINALAMOUNT: {
+              value: accumulatedTakeoverLoanAmount ?? 0,
+            },
+          };
+        } else {
+          return {
+            FINALAMOUNT: {
+              value: "",
+            },
+          };
+        }
+      },
+    },
+    {
+      render: {
         componentType: "arrayField",
       },
       name: "FDDTL",
@@ -160,10 +216,13 @@ export const FixDepositDetailFormMetadata = {
           type: "text",
           isFieldFocused: true,
           required: true,
+          FormatProps: {
+            allowNegative: false,
+          },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
               return "Transfer Amount is Required.";
-            } else if (columnValue.value.length <= 0) {
+            } else if (columnValue.value <= 0) {
               return "Transfer Amount must be greater than zero.";
             }
             return "";
@@ -404,21 +463,23 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c Branch",
             required: false,
             dependentFields: ["MATURE_INST"],
-            validate: (currField, dependentFields, formState) => {
-              const matureInst =
-                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
-              console.log(
-                ">>matureInst",
-                matureInst,
-                "dfsdfSD=>>>",
-                dependentFields
-              );
+            validate: (currField, dependentFields) => {
+              const depFields =
+                utilFunction.getDependetFieldDataArrayField(dependentFields);
+              const matureInst = depFields?.["MATURE_INST"]?.value ?? "";
               if (matureInst !== "AM" && matureInst !== "NO") {
                 if (!Boolean(currField?.value ?? "")) {
                   return "Credit A/c Branch Can't be blank.";
                 }
               }
               return "";
+            },
+            postValidationSetCrossFieldValues: () => {
+              return {
+                CR_ACCT_TYPE: { value: "" },
+                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_NM: { value: "" },
+              };
             },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           },
@@ -428,14 +489,21 @@ export const FixDepositDetailFormMetadata = {
             required: false,
             dependentFields: ["MATURE_INST"],
             validate: (currField, dependentFields, formState) => {
-              const matureInst =
-                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
+              const depFields =
+                utilFunction.getDependetFieldDataArrayField(dependentFields);
+              const matureInst = depFields?.["MATURE_INST"]?.value ?? "";
               if (matureInst !== "AM" && matureInst !== "NO") {
                 if (!Boolean(currField?.value ?? "")) {
                   return "Credit A/c Type Can't be blank.";
                 }
               }
               return "";
+            },
+            postValidationSetCrossFieldValues: () => {
+              return {
+                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_NM: { value: "" },
+              };
             },
             GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
           },
@@ -453,10 +521,7 @@ export const FixDepositDetailFormMetadata = {
               const companyCode = arg?.[3]?.["FDDTL.COMP_CD"]?.value ?? "";
               const branchCode = arg?.[3]?.["FDDTL.CR_BRANCH_CD"]?.value ?? "";
               const accountType = arg?.[3]?.["FDDTL.CR_ACCT_TYPE"]?.value ?? "";
-              const accountCode = utilFunction.getPadAccountNumber(
-                arg?.[0]?.value,
-                arg?.[3]?.["FDDTL.CR_ACCT_TYPE"]?.optionData
-              );
+              let accountCode = arg?.[0]?.value;
 
               if (
                 Boolean(companyCode) &&
@@ -464,6 +529,10 @@ export const FixDepositDetailFormMetadata = {
                 Boolean(accountType) &&
                 accountCode
               ) {
+                accountCode = utilFunction.getPadAccountNumber(
+                  accountCode,
+                  arg?.[3]?.["FDDTL.CR_ACCT_TYPE"]?.optionData
+                );
                 const apiResponse = await validateAccountAndGetDetail(
                   companyCode,
                   branchCode,
@@ -473,16 +542,17 @@ export const FixDepositDetailFormMetadata = {
                 );
                 if (apiResponse?.status === "0") {
                   if (Boolean(apiResponse?.message)) {
-                    arg?.[1]?.MessageBox(
-                      "Information",
-                      apiResponse?.message.startsWith("\n")
+                    arg?.[1]?.MessageBox({
+                      messageTitle: "Information",
+                      message: apiResponse?.message.startsWith("\n")
                         ? apiResponse?.message?.slice(1)
-                        : apiResponse?.message
-                    );
+                        : apiResponse?.message,
+                    });
                   }
                   return {
                     CR_ACCT_CD: {
                       value: accountCode,
+                      isErrorBlank: true,
                       ignoreUpdate: true,
                     },
                     CR_ACCT_NM: {
@@ -495,15 +565,17 @@ export const FixDepositDetailFormMetadata = {
                       value: "",
                       error: apiResponse?.message ?? "",
                       ignoreUpdate: true,
+                      isFieldFocused: true,
                     },
                     CR_ACCT_NM: { value: "" },
                   };
                 }
               }
             },
-            validate: (currField, dependentFields, formState) => {
-              const matureInst =
-                dependentFields?.["FDDTL.MATURE_INST"]?.value ?? "";
+            validate: (currField, dependentFields) => {
+              const depFields =
+                utilFunction.getDependetFieldDataArrayField(dependentFields);
+              const matureInst = depFields?.["MATURE_INST"]?.value ?? "";
               if (matureInst !== "AM" && matureInst !== "NO") {
                 if (!Boolean(currField?.value ?? "")) {
                   return "Credit Account Can't be blank.";
@@ -533,10 +605,13 @@ export const FixDepositDetailFormMetadata = {
           label: "Maturity Amount",
           type: "text",
           required: true,
+          FormatProps: {
+            allowNegative: false,
+          },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
               return "Maturity Amount is Required.";
-            } else if (columnValue.value.length <= 0) {
+            } else if (columnValue.value <= 0) {
               return "Maturity Amount must be greater than zero.";
             }
             return "";

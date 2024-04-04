@@ -372,6 +372,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
                 overflow: "hidden",
                 maxWidth: "300px",
+                minWidth: "max(120px, 100%)",
               }}
             >
               {children}
@@ -380,7 +381,6 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         }}
         onKeyDown={handleKeyDown}
         onChange={handleChangeCustom}
-        openOnFocus
         onHighlightChange={(e, option: any) => {
           indexRef.current = _options.indexOf(option);
         }}
@@ -407,7 +407,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         //   handleOptionValueExtraData(extraOptionData);
         // }}
         // onBlur={handleBlur}
-        onBlur={handleBlurInterceptor}
+        onBlur={() => {
+          indexRef.current = -1;
+          handleBlurInterceptor();
+        }}
         //change by parag  , disabled
         // disabled={isSubmitting}
         disabled={isSubmitting || readOnly}

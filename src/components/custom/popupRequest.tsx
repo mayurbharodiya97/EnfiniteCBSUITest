@@ -14,6 +14,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import WarningIcon from "@mui/icons-material/Warning";
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { useEffect, useState } from "react";
 
 export const PopupRequestWrapper = ({
   MessageTitle,
@@ -24,9 +25,11 @@ export const PopupRequestWrapper = ({
   open = false,
   loading = false,
   icon = "INFO",
+  defFocusBtnName = "",
 }) => {
   //const { state: rowsdata }: any = useLocation();
   const classes = useStyles();
+  const [buttonRef, setButtonRef] = useState<HTMLButtonElement | null>(null);
   const colorMap = {
     INFO: "#40A2D8",
     SUCCESS: "#0fd643",
@@ -34,13 +37,23 @@ export const PopupRequestWrapper = ({
     ERROR: "#DC143C",
   };
 
-  // const PopupList = popupData.map((key, val) => {
-  //   console.log("key", key, val);
-  //   return;
-  // });
+  useEffect(() => {
+    if (open && buttonRef) {
+      buttonRef.focus();
+    }
+  }, [open, buttonRef]);
   return (
     <>
-      <Dialog fullWidth={false} open={open}>
+      <Dialog
+        maxWidth="md"
+        PaperProps={{
+          style: {
+            minWidth: "30%",
+            maxWidth: "50%",
+          },
+        }}
+        open={open}
+      >
         <DialogTitle
           className={classes.dialogTitleClass}
           style={{ textAlign: "center" }}
@@ -49,14 +62,15 @@ export const PopupRequestWrapper = ({
         </DialogTitle>
         <DialogContent
           sx={{
-            paddingTop: "1rem !important",
-            paddingBottom: "2rem !important",
+            // paddingTop: "1rem !important",
+            // paddingBottom: "2rem !important",
+            paddingLeft: "10px",
             display: "flex",
-            alignItems: "center",
+            // alignItems: "center",
             gap: "0.5rem",
           }}
         >
-          <Box>
+          <Box style={{ position: "fixed" }}>
             {icon === "INFO" ? (
               <InfoIcon fontSize="large" style={{ color: colorMap[icon] }} />
             ) : icon === "WARNING" ? (
@@ -71,13 +85,29 @@ export const PopupRequestWrapper = ({
             ) : null}
           </Box>
           <DialogContentText>
-            <Typography color={"black"}>{Message}</Typography>
+            <Typography
+              style={{
+                color: "black",
+                whiteSpace: "pre-wrap",
+                marginLeft: "3rem",
+                paddingTop: "0.3rem",
+              }}
+            >
+              {Message.startsWith("\n") ? Message?.slice(1) : Message}
+            </Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           {buttonNames.map((buttonName, index) => {
             return (
               <GradientButton
+                ref={
+                  Boolean(defFocusBtnName) && defFocusBtnName === buttonName
+                    ? setButtonRef
+                    : !Boolean(defFocusBtnName) && index === 0
+                    ? setButtonRef
+                    : null
+                }
                 endIcon={loading ? <CircularProgress size={20} /> : null}
                 onClick={() => onClickButton(buttonName)}
               >

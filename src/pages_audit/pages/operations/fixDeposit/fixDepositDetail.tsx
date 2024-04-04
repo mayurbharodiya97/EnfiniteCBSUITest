@@ -3,12 +3,12 @@ import { Fragment, forwardRef, useContext } from "react";
 import { FixDepositDetailFormMetadata } from "./metaData/fdDetailMetaData";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
-import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const FixDepositDetailForm = forwardRef<any, any>(({}, ref) => {
   const { fdState, updateFDDetailsFormData, setActiveStep } =
     useContext(FixDepositContext);
-  const { MessageBox } = useContext(AuthContext);
+  const { MessageBox } = usePopupContext();
 
   const onSubmitHandler: SubmitFnType = (
     data: any,

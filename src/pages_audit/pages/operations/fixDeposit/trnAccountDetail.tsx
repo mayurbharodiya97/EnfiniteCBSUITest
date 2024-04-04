@@ -2,13 +2,13 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { Fragment, forwardRef, useContext } from "react";
 import { TransferAcctDetailFormMetadata } from "./metaData/transferAcctMetaData";
 import { InitialValuesType } from "packages/form";
-import { AuthContext } from "pages_audit/auth";
 import { FixDepositContext } from "./fixDepositContext";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const TransferAcctDetailForm = forwardRef<any, any>(
   ({ onSubmitHandler }, ref) => {
     const { fdState } = useContext(FixDepositContext);
-    const { MessageBox } = useContext(AuthContext);
+    const { MessageBox } = usePopupContext();
     return (
       <Fragment>
         <FormWrapper
