@@ -39,25 +39,6 @@ export const TemporaryOD = () => {
     myRef.current?.addNewRow(true);
   };
 
-  // useEffect(() => {
-  //   console.log("<<<myref", myRef.current);
-
-  //   myRef.current?.setGridData((old) => {
-  //     console.log("<<<old", old);
-  //     if (!Array.isArray(old)) {
-  //       return [
-  //         {
-  //           _isNewRow: true,
-  //           ACTIVE: "Y",
-  //         },
-  //       ];
-  //     }
-  //     //   else {
-  //     //     return [...old];
-  //     //   }
-  //   });
-  //   // myRef.current?.addNewRow(true);
-  // }, []);
 
   const onSubmitHandler = ({ data, displayData, endSubmit, setFieldError }) => {
     console.log("<<<onsub", data);
