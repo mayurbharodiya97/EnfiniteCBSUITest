@@ -50,6 +50,11 @@ export const confirmScroll = async (reqData) => {
       ENTERED_COMP_CD: reqData?.ENTERED_COMP_CD,
       ENTERED_BRANCH_CD: reqData?.ENTERED_BRANCH_CD,
       SCROLL1: reqData?.scrollNo ?? "",
+      ACCT_TYPE: reqData?.ACCT_TYPE,
+      ACCT_CD: reqData?.ACCT_CD,
+      TYPE_CD: reqData?.TYPE_CD,
+      AMOUNT: reqData?.AMOUNT,
+      SCREEN_REF: "ETRN/002",
     });
   if (status === "0") {
     let responseData = data;
