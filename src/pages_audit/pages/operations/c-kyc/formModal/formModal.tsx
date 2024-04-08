@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
-import { Box, Typography, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, IconButton, Container, Button, Divider, Chip, Skeleton, Avatar, ButtonGroup, Icon, Tooltip, Modal, Dialog, AppBar, Toolbar, Theme, Tab, Stack, Autocomplete, Select, MenuItem, Checkbox, FormControlLabel, DialogTitle, DialogContent, DialogContentText, DialogActions, CircularProgress, FormHelperText} from '@mui/material';
-import { styled } from '@mui/material/styles';
-import StyledTabs from "components/styledComponent/tabs/tabs";
+import { Typography, Grid, IconButton, Button, Chip, Icon, Tooltip, Dialog, AppBar, Toolbar } from '@mui/material';
+// import StyledTabs from "components/styledComponent/tabs/tabs";
 import { CustomTabs } from "../Ckyc";
-import FormWrapper, {MetaDataType} from 'components/dyanmicForm';
 import PersonalDetails from './formDetails/formComponents/individualComps/PersonalDetails';
 import KYCDetails from './formDetails/KYCDetails';
 import DeclarationDetails from './formDetails/formComponents/individualComps/DeclarationDetails';
@@ -27,20 +25,16 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 // import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
 // import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded'; // declaration-icon
 import CancelIcon from '@mui/icons-material/Cancel'; // close-icon
-import RefreshIcon from '@mui/icons-material/Refresh'; // refresh-icon
-import { makeStyles } from '@mui/styles';
+// import RefreshIcon from '@mui/icons-material/Refresh'; // refresh-icon
 // import { customer_data_meta_data } from '../metadata';
 
 import { AuthContext } from 'pages_audit/auth';
-import Logo from "assets/images/easy_bankcore_Logo.png";
 import { useStyles } from 'pages_audit/appBar/style';
-import bank_logo_default from "assets/images/BecomePartnerImg.svg";
-import clsx from "clsx";
+// import clsx from "clsx";
 
 import * as API from "../api";
 import { useMutation, useQuery } from "react-query";
-import { AutoComplete } from 'components/common';
-import { checkDateAndDisplay } from 'pages_audit/appBar/appBar';
+// import { AutoComplete } from 'components/common';
 import { useTranslation } from 'react-i18next';
 import { CkycContext } from '../CkycContext';
 import TabStepper from './TabStepper';
@@ -65,31 +59,8 @@ import HeaderForm from './HeaderForm';
 import { RemarksAPIWrapper } from 'components/custom/Remarks';
 import { MessageBoxWrapper } from 'components/custom/messageBox';
 import PhotoSign from './formDetails/formComponents/individualComps/PhotoSign';
+import { CustomTab, useDialogStyles } from './style';
 // import MyAutocomplete from 'components/common/autocomplete/autocomplete';
-type Customtabprops = {
-  isSidebarExpanded: boolean;
-}
-const CustomTab = styled(Tab, {shouldForwardProp: (prop) => prop !== "isSidebarExpanded"})<Customtabprops>(({isSidebarExpanded, theme}) => ({
-  minWidth: "60px",
-  maxWidth: "250px",
-  alignItems: "flex-start",
-  // alignItems: isSidebarExpanded ? "flex-start" : "center",
-  ...(isSidebarExpanded ? {
-    // alignItems: "flex-start",
-    width: "100%", 
-    transition: "width 0.2s ease-in-out",
-  } : {
-    // alignItems: "center",
-    minWidth: "60px", 
-    width:"auto", 
-    transition: "width 0.2s ease-in-out",
-  }),
-  [theme.breakpoints.down("md")]: {
-    // backgroundColor: "#ddd",
-    maxWidth: "200px"
-  }
-}))
-
 export const CustomTabLabel = ({IconName, isSidebarExpanded, tabLabel, subtext}) => {
   return (
     <div
@@ -133,7 +104,7 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
-function TabPanel(props: TabPanelProps) {
+export function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other }:any = props;
 
   return (
@@ -154,22 +125,6 @@ function TabPanel(props: TabPanelProps) {
     </div>
   );
 }
-
-export const useDialogStyles = makeStyles((theme: Theme) => ({
-  topScrollPaper: {
-    alignItems: "center",
-  },
-  topPaperScrollBody: {
-    verticalAlign: "top",
-  },
-  title: {
-    flex: "1 1 100%",
-    color: "var(--white)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
-  },
-}));
-
 
 export default function FormModal({
   // isFormModalOpen, handleFormModalOpen, handleFormModalClose,
@@ -640,7 +595,7 @@ export default function FormModal({
   const onCancelForm = () => {
     // console.log(Object.keys(state?.formDatactx).length >0, Object.keys(state?.steps).length>0, "*0*",state?.formDatactx, Object.keys(state?.formDatactx).length, " - ", state?.steps, Object.keys(state?.steps).length, "aisuhdiuweqhd")
     if(state?.formmodectx !== "view") {
-      if(Object.keys(state?.formDatactx).length >0) {
+      if(Array.isArray(state?.formmodectx) && Object.keys(state?.formDatactx).length >0) {
         setCancelDialog(true)
       } else {
         closeForm()

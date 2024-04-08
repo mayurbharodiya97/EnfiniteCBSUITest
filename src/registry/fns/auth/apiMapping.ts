@@ -1043,6 +1043,78 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/UPDATEPARAMST",
     packageName: "",
   },
+  GETACCTTAB: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTTAB",
+    packageName: "",
+  },
+  GETACCTMSTMODEDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMODEDDW",
+    packageName: "",
+  },
+  GETACCTMSTMORTGAGEDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTMORTGAGEDDW",
+    packageName: "",
+  },
+  GETACCTMSTADVOCATEDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTADVOCATEDDW",
+    packageName: "",
+  },
+  GETACCTMSTVALUERNMDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTVALUERNMDDW",
+    packageName: "",
+  },
+  GETACCTMSTGUARDIANDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTGUARDIANDDW",
+    packageName: "",
+  },
+  GETACCTMSTPTSDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTPTSDDW",
+    packageName: "",
+  },
+  GETACCTMSTNPADDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTNPADDW",
+    packageName: "",
+  },
+  GETACCTMSTPURPOSEDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTPURPOSEDDW",
+    packageName: "",
+  },
+  GETACTPRIORITYPARENTDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTPRIORITYPARENTDDW",
+    packageName: "",
+  },
+  GETACTPRIORITYMAINDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTPRIORITYMAINDDW",
+    packageName: "",
+  },
+  GETACTWEAKERSUBPRIODDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTWEAKERSUBPRIODDW",
+    packageName: "",
+  },
+  GETACCTMSTCATEGORYDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTCATEGORYDDW",
+    packageName: "",
+  },
+  GETACCTMSTAGENTDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTAGENTDDW",
+    packageName: "",
+  },
+  GETACTRISKCLASSDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTRISKCLASSDDW",
+    packageName: "",
+  },
+  GETACCTMSTINDUSTRYDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTINDUSTRYDDW",
+    packageName: "",
+  },
+  GETACCTMSTRECREDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTRECREDDW",
+    packageName: "",
+  },
+  GETACCTMSTBUSINESSDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTBUSINESSDDW",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

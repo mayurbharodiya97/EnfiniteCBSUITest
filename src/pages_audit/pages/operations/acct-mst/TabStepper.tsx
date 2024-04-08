@@ -10,9 +10,9 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
-import { CkycContext } from '../CkycContext';
 import { tabPanelClasses } from '@mui/base';
 import { Icon } from '@mui/material';
+import { AcctMSTContext } from './AcctMSTContext';
 
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
@@ -82,7 +82,8 @@ function ColorlibStepIcon(props: StepIconProps) {
 const steps = ['Personal Details', 'KYC', 'Declaration', 'Related Person Details', 'Other Details', 'Other Address', 'NRI Details', 'Attestation'];
 
 export default function TabStepper() {
-  const { state, handleColTabChangectx } = React.useContext(CkycContext);
+  // const { state, handleColTabChangectx } = React.useContext(CkycContext);
+  const { AcctMSTState, handleColTabChangectx } = React.useContext(AcctMSTContext);
 
   const QontoConnector = styled(StepConnector)(({ theme }) => {
     // console.log("{stepConnectorClasses", stepConnectorClasses)
@@ -155,7 +156,7 @@ export default function TabStepper() {
     const { active, completed, error, className } = props;
     let icons:{ [index: string]: React.ReactElement } = {}
     // console.log("wekudiwuegfiwe", state?.tabNameList)
-    state?.tabNameList.forEach((tabEl, i) => {
+    AcctMSTState?.tabNameList.forEach((tabEl, i) => {
       // console.log('dwoeff', tabEl)
       icons[i+1] = <Icon>{`${tabEl.icon ? tabEl.icon : "person_add_alt_rounded_icon"}`}</Icon>
     });
@@ -178,18 +179,18 @@ export default function TabStepper() {
       </QontoStepIconRoot>
     );
   }
-  const steps = state?.tabNameList.filter(tab => tab.isVisible) 
+  const steps = AcctMSTState?.tabNameList.filter(tab => tab.isVisible) 
 
   return (
     <Stack sx={{ width: '100%' }} spacing={4}>
-      <Stepper alternativeLabel activeStep={state?.colTabValuectx} connector={<QontoConnector />}>
+      <Stepper alternativeLabel activeStep={AcctMSTState?.colTabValuectx} connector={<QontoConnector />}>
         {steps.map((tabEl, i) => {
           // if(tabEl.isVisible) {
             // console.log("qwdQDW",)
             return <Step sx={{}} key={tabEl.tabName} 
-            completed={state?.steps?.[i]?.status == "completed"}
+            completed={AcctMSTState?.steps?.[i]?.status == "completed"}
             >
-              <StepLabel error={state?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{tabEl.tabName}</StepLabel>
+              <StepLabel error={AcctMSTState?.steps?.[i]?.status == "error"} sx={{cursor: "pointer"}} StepIconComponent={QontoStepIcon} onClick={() => {handleColTabChangectx(i)}}>{tabEl.tabName}</StepLabel>
             </Step>
           // }
         })}

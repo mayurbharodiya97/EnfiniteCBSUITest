@@ -1,5 +1,5 @@
 import { useCallback, useContext, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Typograhpy from "components/common/typograhpy";
 import { ActionTypes } from "components/dataTable";
 import GridWrapper from "components/dataTableStatic";
@@ -15,6 +15,8 @@ import { AccountInquiryGridMetaData, AccountInquiryMetadata } from "pages_audit/
 import { ViewDetail } from "pages_audit/acct_Inquiry/viewDetail";
 import Dependencies from "pages_audit/acct_Inquiry/dependencies";
 import { ViewStatement } from "pages_audit/acct_Inquiry/viewStatement";
+import { AuthContext } from "pages_audit/auth";
+import AcctModal from "./AcctModal";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -43,10 +45,6 @@ const actions: ActionTypes[] = [
 ];
 
 const AcctMST = () => {
-  const [open, setOpen] = useState(true);
-  const onClose = () => {
-    setOpen(false);
-  };
   const navigate = useNavigate();
   const [rowsData, setRowsData] = useState([]);
   const [acctOpen, setAcctOpen] = useState(false);
@@ -54,6 +52,7 @@ const AcctMST = () => {
   const [showGridData, setShowGridData] = useState(false);
   const formRef = useRef<any>(null);
   const formbtnRef = useRef<any>(null);
+  const { authState }: any = useContext(AuthContext);
   interface InsertFormDataFnType {
     data: object;
     displayData?: object;
@@ -95,7 +94,8 @@ const AcctMST = () => {
       !Boolean(data?.MOBILE) &&
       !Boolean(data?.CUSTOMER) &&
       !Boolean(data?.ACCOUNT) &&
-      !Boolean(data?.PAN)
+      !Boolean(data?.PAN) &&
+      !Boolean(data?.NAME)
     ) {
       //@ts-ignore
       endSubmit(true, "Please enter any value");
@@ -104,7 +104,8 @@ const AcctMST = () => {
       //@ts-ignore
       setShowGridData(false);
       endSubmit(true);
-      mutation.mutate(data);
+      const payload = { ...data, COMP_CD: authState?.companyID };
+      mutation.mutate(payload);
     }
   };
   const ClickEventManage = () => {
@@ -150,7 +151,14 @@ const AcctMST = () => {
               <>
                 <GradientButton
                   onClick={() => {
-                    onClose();
+                    // onClose();
+                    navigate("new-account", {
+                      state: {
+                        isFormModalOpen: true,
+                        // entityType: "I",
+                        isFreshEntry: true,    
+                      }
+                    })
                   }}
                   // disabled={isSubmitting}
                   color={"primary"}
@@ -200,6 +208,17 @@ const AcctMST = () => {
         // <ViewInterest open={acctOpen} onClose={() => setAcctOpen(false)} />
         // ) :
         null}
+
+        <Routes>
+          <Route
+            path="new-account/*"
+            element={
+              <AcctModal onClose={() => navigate(".")} formmode={"new"} from={"new-entry"} />
+            }
+          />
+        </Routes>
+
+
     </Grid>
   );
 };

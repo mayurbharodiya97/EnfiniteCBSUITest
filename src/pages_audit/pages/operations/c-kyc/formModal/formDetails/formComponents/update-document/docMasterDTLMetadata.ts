@@ -78,9 +78,10 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
         GridProps: { xs: 12, md: 4, sm: 4 },
         autoComplete: "off",
         schemaValidation: {
-          type: "string",
+          type: "date",
           rules: [
             { name: "required", params: ["This field is required"] },
+            { name: "typeError", params: ["Must be a valid date"] },
             {
               name: "min",
               params: [new Date(), "Past Date not allowed."],
@@ -149,6 +150,7 @@ export const DocMasterDTLMetadata: MasterDetailsMetaData = {
           type: "date",
           rules: [
             { name: "required", params: ["This field is required"] },
+            { name: "typeError", params: ["Must be a valid date"] },
             {
               name: "min",
               params: [new Date(), "Past Date not allowed."],

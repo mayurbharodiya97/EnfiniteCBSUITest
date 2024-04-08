@@ -37,7 +37,7 @@ import { DefaultErrorObject, utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import { queryClient } from "cache";
-import { useStyles } from "./style";
+import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
 import AvatarEditor from "react-avatar-editor";
 import { GradientButton } from "components/styledComponent/button";
