@@ -95,6 +95,7 @@ export const DataGrid = ({
   searchPlaceholder,
   paginationText,
   ReportExportButton,
+  finalMetaData
 }) => {
   //@ts-ignore
   const [filters, setAllFilters] = useState(defaultFilter);
@@ -484,7 +485,7 @@ export const DataGrid = ({
                     rowColorStyle[0].style["cursor"] = "pointer";
                   } else {
                     rowColorStyle = [
-                      { style: { cursor: "pointer", width: "100%" } },
+                      { style: { cursor: "pointer"} },
                     ];
                   }
                 }
@@ -596,7 +597,7 @@ export const DataGrid = ({
             // queryFilters={queryFilters}
             title={label}
             rows={rows}
-            columns={columns}
+            columns={finalMetaData}
             onClose={() => {
               setOpenExport(false);
             }}

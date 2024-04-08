@@ -145,14 +145,16 @@ import { extractMetaData, utilFunction } from "components/utils";
                 </>
               ) : (
                 <>
-                  <GradientButton
-                    onClick={() => {
-                      setFormMode("edit");
-                    }}
-                    color={"primary"}
-                  >
-                    Edit
-                  </GradientButton>
+                 {(rowsData?.[0]?.data?.CONFIRMED === "N" || rowsData?.[0]?.data?.ALLOW_VALUE_EDIT_FLAG === "N") ? null : (
+            <GradientButton
+              onClick={() => {
+                setFormMode("edit");
+              }}
+              color={"primary"}
+            >
+              Edit
+            </GradientButton>
+          )}
                   <GradientButton
                     onClick={onClose}
                     color={"primary"}

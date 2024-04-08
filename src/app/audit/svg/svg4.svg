@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="200" height="200">
+  <!-- Define linear gradients for different color transitions -->
+  <defs>
+    <!-- Gradient from red to green -->
+    <linearGradient id="redGreenGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <!-- Modify stop-color values to your own colors -->
+      <stop offset="0%" style="stop-color: #0a5da0;" /> <!-- Your first color -->
+      <stop offset="50%" style="stop-color: #0a5da0;" /> <!-- Your first color -->
+      <stop offset="50%" style="stop-color: #2196f3;" /> <!-- Your second color -->
+      <stop offset="100%" style="stop-color: #2196f3;" /> <!-- Your second color -->
+    </linearGradient>
+    <!-- Gradient from green to blue -->
+    <linearGradient id="greenBlueGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <!-- Modify stop-color values to your own colors -->
+      <stop offset="0%" style="stop-color: #2196f3;" /> <!-- Your second color -->
+      <stop offset="50%" style="stop-color: #2196f3;" /> <!-- Your second color -->
+      <stop offset="50%" style="stop-color: #0a5da0;" /> <!-- Your third color -->
+      <stop offset="100%" style="stop-color: #0a5da0;" /> <!-- Your third color -->
+    </linearGradient>
+    <!-- Gradient from blue to red -->
+    <linearGradient id="blueRedGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <!-- Modify stop-color values to your own colors -->
+      <stop offset="0%" style="stop-color: #2196f3;" /> <!-- Your third color -->
+      <stop offset="50%" style="stop-color: #2196f3;" /> <!-- Your third color -->
+      <stop offset="50%" style="stop-color: #0a5da0;" /> <!-- Your first color -->
+      <stop offset="100%" style="stop-color: #0a5da0;" /> <!-- Your first color -->
+    </linearGradient>
+  </defs>
+  
+  <!-- Circle filled with the gradients -->
+  <circle cx="50" cy="50" r="40" fill="url(#redGreenGradient)" />
+  <circle cx="50" cy="50" r="40" fill="url(#greenBlueGradient)" transform="rotate(120 50 50)" />
+  <circle cx="50" cy="50" r="40" fill="url(#blueRedGradient)" transform="rotate(240 50 50)" />
+</svg>
