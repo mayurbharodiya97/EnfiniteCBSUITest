@@ -38,6 +38,7 @@ import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
 import { GradientButton } from "components/styledComponent/button";
 import SearchScreen from "./searchScreen";
 import useLogoPics from "components/common/logoPics/logoPics";
+import { format } from "date-fns";
 export const MyAppBar = ({
   handleDrawerOpen,
   handleDrawerClose,
@@ -242,9 +243,15 @@ export const MyAppBar = ({
               </Typography>
               <Typography variant="caption" display="inline" fontSize={"11px"}>
                 {t("appBar.WorkingDate")}:{" "}
-                {checkDateAndDisplay(
-                  authController?.authState?.workingDate ?? ""
-                )}
+                {Boolean(authController?.authState?.workingDate)
+                  ? checkDateAndDisplay(
+                      format(
+                        new Date(authController?.authState?.workingDate),
+                        "dd/MM/yyyy"
+                      )
+                      // authController?.authState?.workingDate ?? ""
+                    )
+                  : "not found"}
               </Typography>
               <Typography
                 marginLeft={1}
@@ -437,8 +444,8 @@ export const MyAppBar = ({
                         fontSize: "20px",
                         display: "flex",
                         justifyContent: "center",
-                        marginTop:"20px",
-                        height:"145px",
+                        marginTop: "20px",
+                        height: "145px",
                       }}
                     >
                     <img src={Logout} alt="logout-icon" />

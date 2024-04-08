@@ -39,6 +39,7 @@ export interface MasterDetailsArgumentType {
   onClickActionEvent?: any;
   hideHeader?: boolean;
   formState?: any;
+  setDataOnFieldChange?: any;
   isDetailRowRequire?: boolean;
 }
 export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
@@ -68,6 +69,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
       onClickActionEvent = () => {},
       hideHeader = false,
       formState,
+      setDataOnFieldChange,
       isDetailRowRequire = true,
     },
     ref
@@ -285,6 +287,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
             hideHeader={hideHeader}
             ref={myMasterRef}
             formState={formState}
+            setDataOnFieldChange={setDataOnFieldChange}
           >
             {children}
           </FormWrapper>

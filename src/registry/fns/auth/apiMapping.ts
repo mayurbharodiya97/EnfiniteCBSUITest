@@ -978,6 +978,7 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
+
   GETDDDWACCTTYPE: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETDDDWACCTTYPE",
     packageName: "",
@@ -1041,6 +1042,78 @@ export const ActionWiseAPIConfiguration = {
   },
   UPDATEPARAMST: {
     url: "/enfinityCommonServiceAPI/UPDATEPARAMST",
+    packageName: "",
+  },
+  GETSTPGENDISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPGENDISP",
+    packageName: "",
+  },
+  GETSTPGRIDDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPGRIDDATADISP",
+    packageName: "",
+  },
+  GETSTPREASONDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTPREASONDDW",
+    packageName: "",
+  },
+  GETCHQBKSERIES: {
+    url: "/chequeServiceAPI/GETCHQBKSERIES",
+    packageName: "",
+  },
+  DOSTOPPAYMENTDML: {
+    url: "/chequeServiceAPI/DOSTOPPAYMENTDML",
+    packageName: "",
+  },
+  VALIDATESTPDATA: {
+    url: "/chequeServiceAPI/VALIDATESTPDATA",
+    packageName: "",
+  },
+  VALIDATESTOCKDATA: {
+    url: "/accountServiceAPI/VALIDATESTOCKDATA",
+    packageName: "",
+  },
+  DOSTOCKDML: {
+    url: "/accountServiceAPI/DOSTOCKDML",
+    packageName: "",
+  },
+  DOSTOCKDOCUMENTDML: {
+    url: "/accountServiceAPI/DOSTOCKDOCUMENTDML",
+    packageName: "",
+  },
+  GETLIENCODEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENCODEDDW",
+    packageName: "",
+  },
+  GETLIENLIENREASONDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENLIENREASONDDW",
+    packageName: "",
+  },
+  GETLIENGRIDDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENGRIDDATA",
+    packageName: "",
+  },
+  DOLIENDML: {
+    url: "/transactionServiceAPI/DOLIENDML",
+    packageName: "",
+  },
+  VALIDATELIENDATA: {
+    url: "/transactionServiceAPI/VALIDATELIENDATA",
+    packageName: "",
+  },
+  GETLIMITRATE: {
+    url: "/loanServiceAPI/GETLIMITRATE",
+    packageName: "",
+  },
+  GETACCTODDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTODDATA",
+    packageName: "",
+  },
+  GETACCTODPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTODPARA",
+    packageName: "",
+  },
+  GETACCTODDOCDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTODDOCDDW",
     packageName: "",
   },
   GETACCTTAB: {

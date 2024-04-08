@@ -4,7 +4,7 @@ import { utilFunction } from "components/utils";
 
 export const limitEntryMetaData = {
   form: {
-    name: "limitEntry",
+    name: "limit-Entry",
     label: "Limit Entry",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -72,10 +72,7 @@ export const limitEntryMetaData = {
         },
       },
       accountTypeMetadata: {
-        // disableCaching: true,
-        dependentFields: ["ACCT_TYPE"],
         options: (dependentValue, formState, _, authState) => {
-          console.log("<<<<fnef", dependentValue, formState, _, authState);
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
@@ -84,7 +81,6 @@ export const limitEntryMetaData = {
           });
         },
         // _optionsKey: "get_Account_Type",
-
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -94,10 +90,10 @@ export const limitEntryMetaData = {
           if (field?.value) {
             return {
               PARENT_TYPE: {
-                value:
-                  dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
+                value: field?.optionData?.[0]?.PARENT_TYPE.trim(),
               },
               ACCT_CD: { value: "" },
+              SECURITY_CD: { value: "" },
               ACCT_NM: { value: "" },
               ACCT_BAL: { value: "" },
             };
@@ -116,6 +112,9 @@ export const limitEntryMetaData = {
             dependentValue?.BRANCH_CD?.value &&
             dependentValue?.ACCT_TYPE?.value
           ) {
+            formState.setDataOnFieldChange("NSC_FD_BTN", {
+              NSC_FD_BTN: false,
+            });
             let otherAPIRequestPara = {
               COMP_CD: authState?.companyID,
               BRANCH_CD: dependentValue?.BRANCH_CD?.value,
@@ -130,6 +129,9 @@ export const limitEntryMetaData = {
             let postData = await API.getLimitEntryData(otherAPIRequestPara);
 
             if (postData?.[0]?.RESTRICTION) {
+              formState.setDataOnFieldChange("NSC_FD_BTN", {
+                NSC_FD_BTN: false,
+              });
               formState.MessageBox({
                 messageTitle: "Validation Failed...!",
                 message: postData?.[0]?.RESTRICTION,
@@ -152,6 +154,10 @@ export const limitEntryMetaData = {
                 buttonNames: ["Ok"],
               });
               return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
                 ACCT_NM: {
                   value: postData?.[0]?.ACCT_NM,
                 },
@@ -182,6 +188,10 @@ export const limitEntryMetaData = {
                 NSC_FD_BTN: true,
               });
               return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
                 ACCT_NM: {
                   value: postData?.[0]?.ACCT_NM,
                 },
@@ -217,32 +227,6 @@ export const limitEntryMetaData = {
         },
         runPostValidationHookAlways: true,
       },
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_CHARGE_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_ROUND",
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_TAX_RATE",
     },
     {
       render: {
@@ -304,10 +288,10 @@ export const limitEntryMetaData = {
       isReadOnly: true,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -322,10 +306,10 @@ export const limitEntryMetaData = {
       sequence: 0,
       GridProps: {
         xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 2,
-        xl: 2,
+        md: 3,
+        sm: 3,
+        lg: 3,
+        xl: 3,
       },
     },
     {
@@ -359,34 +343,20 @@ export const limitEntryMetaData = {
       name: "SECURITY_CD",
       label: "Security Code",
       placeholder: "Security",
-      type: "text",
       dependentFields: [
-        "ACCT_CD",
+        "PARENT_TYPE",
         "BRANCH_CD",
-        "ACCT_TYPE",
-        "SECURITY_CD",
         "HIDDEN_CHARGE_AMT",
         "HIDDEN_GST_AMT",
         "HIDDEN_GST_ROUND",
         "HIDDEN_TAX_RATE",
       ],
-      isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (
-          !dependentFieldsValues?.ACCT_CD?.value ||
-          dependentFieldsValues?.ACCT_CD?.error
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      },
       options: (dependentValue, formState, _, authState) => {
-        if (dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
+        if (dependentValue?.PARENT_TYPE?.value) {
           let apiReq = {
             COMP_CD: authState?.companyID,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
-            A_PARENT_TYPE:
-              dependentValue?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE.trim(),
+            A_PARENT_TYPE: dependentValue?.PARENT_TYPE?.value,
           };
           return API.getSecurityListData(apiReq);
         }
@@ -400,28 +370,48 @@ export const limitEntryMetaData = {
         authState,
         dependentValue
       ) => {
-        if (field?.value) {
+        if (field?.optionData?.[0]?.SECURITY_TYPE && field?.value) {
           formState.setDataOnFieldChange("SECURITY_CODE", {
             SECURITY_CD: field?.value,
+            SECURITY_TYPE: field?.optionData?.[0]?.SECURITY_TYPE.trim(),
             HDN_CHARGE_AMT: dependentValue?.HIDDEN_CHARGE_AMT?.value,
             HDN_GST_AMT: dependentValue?.HIDDEN_GST_AMT?.value,
             HDN_GST_ROUND: dependentValue?.HIDDEN_GST_ROUND?.value,
             HDN_TAX_RATE: dependentValue?.HIDDEN_TAX_RATE?.value,
           });
         }
-        return {};
+        return {
+          // FD_BRANCH_CD: { error: "" },
+          // FD_TYPE: { error: "" },
+          // FD_ACCT_CD: { value: "" },
+          // FD_NO: { value: "" },
+          // EXPIRY_DT: { value: "" },
+          // SEC_AMT: { value: "" },
+          // SEC_INT_AMT: { value: "" },
+          // SECURITY_VALUE: { value: "" },
+          // INT_AMT: { value: "" },
+          // INT_RATE: { value: "" },
+          // PENAL_RATE: { value: "" },
+        };
       },
 
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Security Type is required."] }],
+      // schemaValidation: {
+      //   type: "string",
+      //   rules: [{ name: "required", params: ["Security Code is required."] }],
+      // },
+
+      validate: (currField, dependentFields, formState) => {
+        if (!Boolean(currField?.value)) {
+          return "Security Code is required.";
+        }
+        return "";
       },
       GridProps: {
         xs: 12,
-        md: 3.5,
-        sm: 3.5,
-        lg: 3.5,
-        xl: 3.5,
+        md: 4,
+        sm: 4,
+        lg: 4,
+        xl: 4,
       },
     },
   ],

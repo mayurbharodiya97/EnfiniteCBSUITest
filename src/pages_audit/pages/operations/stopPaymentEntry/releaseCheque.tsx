@@ -8,75 +8,85 @@ import {
 import React, { useContext, useEffect } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import { releaseChequeMetadata } from "./releaseChequeMetadata";
 import { useLocation } from "react-router-dom";
-import { forceExpireMetaData } from "./forceExpireFormMetadata";
 import { AuthContext } from "pages_audit/auth";
 import { Alert } from "components/common/alert";
-import { crudLimitEntryData } from "./api";
-import { useMutation } from "react-query";
+import { utilFunction } from "components/utils";
 import { enqueueSnackbar } from "notistack";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { useMutation } from "react-query";
+import { crudStopPayment } from "./api";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { format } from "date-fns";
 
-export const ForceExpire = ({ navigate, getLimitDetail }) => {
+export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
 
   let newIntialData = {
     ...rows?.[0]?.data,
-    FORCE_EXP_DT: authState?.workingDate,
+    RELEASE_DATE: authState?.workingDate,
   };
+
   console.log("<<<rows", rows);
 
-  const forceExpire: any = useMutation(
-    "crudLimitEntryData",
-    crudLimitEntryData,
+  const releaseStpCheque: any = useMutation(
+    "crudStopPayment",
+    crudStopPayment,
     {
-      onSuccess: (data, variables) => {
+      onSuccess: (data) => {
         navigate(".");
-        enqueueSnackbar("Force-Expired successfully", { variant: "success" });
-        getLimitDetail.mutate({
+        enqueueSnackbar("Cheque released Successfully.", {
+          variant: "success",
+        });
+        getStopPayDetail.mutate({
           COMP_CD: authState?.companyID,
           ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
           ACCT_CD: rows?.[0]?.data?.ACCT_CD,
           BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
-          ENTERED_DATE: authState?.workingDate,
+          // ENTERED_DATE: authState?.workingDate,
+          GD_TODAY: authState?.workingDate,
+          USER_LEVEL: authState?.role,
         });
       },
     }
   );
   useEffect(() => {
     if (rows?.[0]?.data) {
-      forceExpireMetaData.form.label = `Force-Expire Limit \u00A0\u00A0 
+      releaseChequeMetadata.form.label = `   ${
+        rows?.[0]?.data?.ALLOW_RELEASE === "Y"
+          ? "Release Cheque Detail"
+          : "Stop Cheque Detail"
+      }  \u00A0\u00A0
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
         rows?.[0]?.data?.ACCT_TYPE +
         rows?.[0]?.data?.ACCT_CD
-      ).replace(/\s/g, "")}`;
+      ).replace(/\s/g, "")} - ${rows?.[0]?.data?.ACCT_NM}`;
     }
   }, [rows?.[0]?.data]);
 
   const onSubmitHandler = (data: any, displayData, endSubmit) => {
-    console.log("<<<savehandle", data);
-
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value !== "")
+    );
+    let upd = utilFunction.transformDetailsData(
+      filteredData,
+      newIntialData ?? rows?.[0]?.data
+    );
     let apiReq = {
-      ...data,
       _isNewRow: false,
       _isDeleteRow: false,
-      _UPDATEDCOLUMNS: [
-        "REMARKS",
-        "FORCE_EXP_VERIFIED_BY",
-        "EXPIRED_FLAG",
-        "FORCE_EXP_DT",
-      ],
-      _OLDROWVALUE: {
-        REMARKS: rows?.[0]?.data?.REMARKS,
-        FORCE_EXP_VERIFIED_BY: "",
-        EXPIRED_FLAG: data?.EXPIRED_FLAG,
-        FORCE_EXP_DT: "",
-      },
+      BRANCH_CD: data?.BRANCH_CD,
+      TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+      RELEASE_DATE: format(new Date(data?.RELEASE_DATE), "dd-MMM-yyyy"),
+      REMARKS: data?.REMARKS,
+      REASON_CD: data?.REASON_CD,
+      INFAVOUR_OF: data?.INFAVOUR_OF,
+      ...upd,
     };
-    forceExpire.mutate(apiReq);
+    releaseStpCheque.mutate(apiReq);
 
     //@ts-ignore
     endSubmit(true);
@@ -88,36 +98,38 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
       PaperProps={{
         style: {
           maxWidth: "1150px",
+          padding: "5px",
         },
       }}
     >
       <>
-        {forceExpire?.isError ? (
+        {releaseStpCheque?.isError ? (
           <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
             <AppBar position="relative" color="primary">
               <Alert
                 severity="error"
-                errorMsg={forceExpire?.error?.error_msg ?? "Unknow Error"}
-                errorDetail={forceExpire?.error?.error_detail ?? ""}
+                errorMsg={releaseStpCheque?.error?.error_msg ?? "Unknow Error"}
+                errorDetail={releaseStpCheque?.error?.error_detail ?? ""}
                 color="error"
               />
             </AppBar>
           </div>
-        ) : forceExpire.isLoading ? (
+        ) : releaseStpCheque.isLoading ? (
           <LinearProgress color="secondary" />
-        ) : null}
+        ) : (
+          <LinearProgressBarSpacer />
+        )}
         <FormWrapper
-          key={"nscdetailForm"}
-          metaData={forceExpireMetaData}
+          key={"releaseChequeMetadata"}
+          metaData={releaseChequeMetadata}
           initialValues={newIntialData ?? []}
           onSubmitHandler={onSubmitHandler}
-          loading={forceExpire.isLoading}
         >
           {({ isSubmitting, handleSubmit }) => {
             console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
-                {rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" && (
+                {newIntialData?.ALLOW_RELEASE === "Y" && (
                   <Button
                     onClick={(event) => {
                       handleSubmit(event, "Save");
@@ -128,9 +140,10 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
                     }
                     color={"primary"}
                   >
-                    Save
+                    Release
                   </Button>
                 )}
+
                 <Button color="primary" onClick={() => navigate(".")}>
                   close
                 </Button>

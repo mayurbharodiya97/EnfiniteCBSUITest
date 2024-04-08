@@ -82,6 +82,7 @@ export interface GridConfigType {
   hiddenFlag?: string;
   searchPlaceholder?: string;
   paginationText?: any;
+  footerNote?: any;
 }
 
 export interface GridMetaDataType {

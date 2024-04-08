@@ -335,6 +335,7 @@ export const GridWrapper = forwardRef<any, GridWrapperPropTypes>(
         searchPlaceholder={metaData.gridConfig?.searchPlaceholder ?? "records"}
         paginationText={metaData.gridConfig?.paginationText ?? "records"}
         ReportExportButton={ReportExportButton}
+        footerNote={metaData.gridConfig?.footerNote ?? false}
         finalMetaData={finalMetaData.columns}
       />
     );

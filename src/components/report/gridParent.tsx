@@ -37,6 +37,7 @@ export const ReportGrid: FC<any> = ({
   reportID,
   retrievalType,
   otherAPIRequestPara = {},
+  searchPlaceholder,
 }) => {
   /* eslint-disable react-hooks/exhaustive-deps */
   const memoizedColumns = useMemo(() => metaData.columns, []);
@@ -119,6 +120,7 @@ export const ReportGrid: FC<any> = ({
           retrievalType={retrievalType}
           isOpenRetrievalDefault={!autoFetch}
           onDoubleClickAction={onDoubleClickAction}
+          searchPlaceholder={searchPlaceholder}
         />
       </AmountProvider>
     </Fragment>

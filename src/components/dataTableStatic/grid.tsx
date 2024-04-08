@@ -43,6 +43,7 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
 import ReportExportScreen from "pages_audit/pages/reports/ReportExportScreen";
 let data2: any[] = [];
@@ -95,6 +96,7 @@ export const DataGrid = ({
   searchPlaceholder,
   paginationText,
   ReportExportButton,
+  footerNote,
   finalMetaData
 }) => {
   //@ts-ignore
@@ -538,6 +540,11 @@ export const DataGrid = ({
           <CustomBackdrop open={Boolean(loading)} />
         </TableContainer>
 
+        {footerNote && (
+          <Typography component="div" fontWeight={500} pl={"24px"}>
+            {footerNote}
+          </Typography>
+        )}
         {hideFooter ? null : enablePagination ? (
           <TablePagination
             style={{ display: "flex" }}
