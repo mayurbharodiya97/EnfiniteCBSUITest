@@ -160,6 +160,7 @@ export const DataGrid = ({
   const { authState } = useContext(AuthContext);
 
   const tbodyRef = useRef(null);
+  const preDataRef = useRef(null);
   const submitButtonRef = useRef<any>(null);
   const [isOpenExport, setOpenExport] = useState(false);
   const tableRowRef = useRef<any>(null);
@@ -293,13 +294,19 @@ export const DataGrid = ({
   }, [loading]);
 
   useEffect(() => {
-    if (selectedFlatRows.length > 0 && onlySingleSelectionAllow) {
+    if (
+      selectedFlatRows.length > 0 &&
+      onlySingleSelectionAllow &&
+      JSON.stringify(selectedFlatRows[0]?.original) !==
+        JSON.stringify(preDataRef.current)
+    ) {
+      preDataRef.current = selectedFlatRows[0]?.original;
       setGridAction({
         name: "_rowChanged",
-        rows: selectedFlatRows[0]?.original,
+        rows: [{ data: selectedFlatRows[0]?.original }],
       });
     }
-  }, [selectedFlatRows]);
+  }, [selectedFlatRows[0]?.original]);
 
   return (
     <>

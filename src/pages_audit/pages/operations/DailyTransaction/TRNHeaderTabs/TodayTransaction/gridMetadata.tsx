@@ -171,7 +171,7 @@ export const AccountDetailsGridMetadata: GridMetaDataType = {
     allowColumnReordering: true,
     disableSorting: false,
     disableGroupBy: true,
-    enablePagination: true,
+    enablePagination: false,
     hideFooter: false,
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,

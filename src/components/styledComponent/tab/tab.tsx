@@ -5,7 +5,7 @@ const StyledTab = withStyles((theme: any) => ({
   root: {
     textTransform: "none",
     minWidth: 72,
-    marginRight: theme.spacing(4),
+    marginRight: 0,
     opacity: 1,
     color: "var(--theme-color1)",
     fontWeight: 600,

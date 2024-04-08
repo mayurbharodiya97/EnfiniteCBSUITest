@@ -97,12 +97,12 @@ export const TRN001_Table = ({
       setDebit(drSum);
       setRows(data);
       setRows2(data);
-      console.log(data, "data getTRN001List");
-      console.log(data[0], "data[0] getTRN001List");
-      setTempStore({ ...tempStore, accInfo: data[0] });
-      handleSetAccInfo(data[0]);
-      data?.length > 0 && getCarousalCards.mutate({ reqData: data[0] });
-      data?.length > 0 && handleGetHeaderTabs(data[0] ?? "");
+      // console.log(data, "data getTRN001List");
+      // console.log(data[0], "data[0] getTRN001List");
+      // setTempStore({ ...tempStore, accInfo: data[0] });
+      // handleSetAccInfo(data[0]);
+      // data?.length > 0 && getCarousalCards.mutate({ reqData: data[0] });
+      // data?.length > 0 && handleGetHeaderTabs(data[0] ?? "");
     },
     onError: (error) => {},
   });
@@ -136,11 +136,10 @@ export const TRN001_Table = ({
 
   // fn define-----------------------------
   const setCurrentAction = useCallback((data) => {
-    console.log("something");
     let row = data.rows[0]?.data;
     setDataRow(row);
 
-    if (data.name === "view-detail") {
+    if (data.name === "_rowChanged") {
       let obj = {
         COMP_CD: row?.COMP_CD,
         ACCT_TYPE: row?.ACCT_TYPE,
@@ -163,10 +162,6 @@ export const TRN001_Table = ({
     }
   }, []);
 
-  useEffect(() => {
-    console.log(rows2, "rows2");
-  }, [rows2]);
-
   const handleSetRemarks = () => {
     let msg = "WRONG ENTRY FROM DAILY TRAN";
     if (location.pathname.includes("/cnf_daily_tran_F2")) {
@@ -182,21 +177,17 @@ export const TRN001_Table = ({
     );
     if (result?.length > 0) {
       setRows(result);
-      console.log("case1");
     } else if (!searchScrollNo) {
       result = [];
       setRows(rows2);
-      console.log("case3");
     } else {
       result = [];
       setRows([]);
-      console.log("case3");
     }
     handleFilteredRows(result);
   };
 
   const handleDelete = (input) => {
-    console.log(input, "input");
     let obj = {
       TRAN_CD: dataRow?.TRAN_CD,
       ENTERED_COMP_CD: dataRow?.COMP_CD,
@@ -229,7 +220,7 @@ export const TRN001_Table = ({
   return (
     <>
       <GridWrapper
-        key={`TRN001_TableMetaData`}
+        key={`TRN001_TableMetaData${getTRN001List?.isLoading}`}
         finalMetaData={TRN001_TableMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
@@ -240,7 +231,7 @@ export const TRN001_Table = ({
         setAction={setCurrentAction}
         onlySingleSelectionAllow={true}
         isNewRowStyle={true}
-        defaultSelectedRowId={0}
+        defaultSelectedRowId={rows?.[0]?.TRAN_CD ? rows?.[0]?.TRAN_CD : ""}
       />
       <Grid
         item
