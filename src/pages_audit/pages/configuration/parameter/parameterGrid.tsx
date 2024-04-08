@@ -83,6 +83,13 @@ const Parameters = () => {
       ParametersGridMetaData.gridConfig.gridLabel="Parameter Master [HO Level]"
     }
   }, [paraType]);
+  const validation = ()=>{
+    if( authState.user.branchCode===authState.user.baseBranchCode){
+      return actionMenu
+      } else {
+        return actionMenu.filter(action => action.actionName === "edit-detail");
+      }
+    };
   return (
     <Fragment>
       {isError && (
@@ -98,7 +105,7 @@ const Parameters = () => {
         finalMetaData={ParametersGridMetaData as GridMetaDataType}
         data={data ?? []}
         ReportExportButton={true}
-        actions={authState.user.branchCode!==authState.user.baseBranchCode?[]:actionMenu}
+        actions={validation()}
         setAction={setCurrentAction}
         setData={() => null}
         loading={isLoading || isFetching}
@@ -118,12 +125,11 @@ const Parameters = () => {
   );
 };
 
-const ParametersGridWrapper = () => {
+export const ParametersGridWrapper = () => {
   return (
     <ClearCacheProvider>
       <Parameters />
     </ClearCacheProvider>
   );
 };
-
-export default ParametersGridWrapper;
+export default Parameters;

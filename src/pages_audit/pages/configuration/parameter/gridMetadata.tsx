@@ -69,7 +69,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
   ],
   columns: [
     {
-      accessor: "id",
+      accessor: "SR_NO",
       columnName: "Sr. No.",
       sequence: 1,
       alignment: "left",
