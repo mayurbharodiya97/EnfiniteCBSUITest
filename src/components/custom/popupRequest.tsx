@@ -31,10 +31,14 @@ export const PopupRequestWrapper = ({
   const classes = useStyles();
   const [buttonRef, setButtonRef] = useState<HTMLButtonElement | null>(null);
   const colorMap = {
-    INFO: "#40A2D8",
-    SUCCESS: "#0fd643",
-    WARNING: "#FFA447",
-    ERROR: "#DC143C",
+    // INFO: "#40A2D8",
+    // SUCCESS: "#0fd643",
+    // WARNING: "#FFA447",
+    // ERROR: "#DC143C",
+    INFO: "dodgerblue",
+    SUCCESS: "green",
+    WARNING: "orange",
+    ERROR: "#f44336",
   };
 
   useEffect(() => {
@@ -56,7 +60,7 @@ export const PopupRequestWrapper = ({
       >
         <DialogTitle
           className={classes.dialogTitleClass}
-          style={{ textAlign: "center" }}
+          style={{ background: colorMap[icon] }}
         >
           {MessageTitle}
         </DialogTitle>
@@ -72,16 +76,41 @@ export const PopupRequestWrapper = ({
         >
           <Box style={{ position: "fixed" }}>
             {icon === "INFO" ? (
-              <InfoIcon fontSize="large" style={{ color: colorMap[icon] }} />
+              <InfoIcon
+                fontSize="large"
+                style={{
+                  color: colorMap[icon],
+                  width: "1.3em",
+                  height: "1.3em",
+                }}
+              />
             ) : icon === "WARNING" ? (
-              <WarningIcon fontSize="large" style={{ color: colorMap[icon] }} />
+              <WarningIcon
+                fontSize="large"
+                style={{
+                  color: colorMap[icon],
+                  width: "1.3em",
+                  height: "1.3em",
+                }}
+              />
             ) : icon === "SUCCESS" ? (
               <CheckCircleIcon
                 fontSize="large"
-                style={{ color: colorMap[icon] }}
+                style={{
+                  color: colorMap[icon],
+                  width: "1.3em",
+                  height: "1.3em",
+                }}
               />
             ) : icon === "ERROR" ? (
-              <ErrorIcon fontSize="large" style={{ color: colorMap[icon] }} />
+              <ErrorIcon
+                fontSize="large"
+                style={{
+                  color: colorMap[icon],
+                  width: "1.3em",
+                  height: "1.3em",
+                }}
+              />
             ) : null}
           </Box>
           <DialogContentText>

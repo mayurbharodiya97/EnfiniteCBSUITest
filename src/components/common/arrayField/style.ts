@@ -31,7 +31,7 @@ export const useStyles = makeStyles((theme: any) => ({
   arrayRowContainer: {
     position: "relative",
     boxShadow: theme.shadows[3],
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1),
     paddingRight: "8px",
   },
   arrayScreenRowContainer: {
@@ -108,12 +108,12 @@ export const useStyles = makeStyles((theme: any) => ({
     // overflow: "auto",
   },
   arrayRowCardContent: {
-    paddingLeft: "32px",
+    paddingLeft: "25px",
   },
   arrayRowCount: {
     display: "flex",
     width: "100%",
-    margin: "8px 0 16px -8px",
+    margin: "0px 0 6px -8px",
   },
   arrayRowCountCustomStyle: {
     display: "flex",

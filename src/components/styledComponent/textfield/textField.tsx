@@ -16,7 +16,8 @@ const StyledTextField = withStyles({
       textTransform: "capitalize",
       fontSize: "1rem",
       whiteSpace: "normal",
-      lineHeight: "0.95",
+      // lineHeight: "0.95",
+      lineHeight: "1.60",
       "@media (max-width: 1200px)": {
         fontSize: "0.75rem",
       },

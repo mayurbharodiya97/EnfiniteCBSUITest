@@ -26,6 +26,7 @@ type TMessageBoxParams = {
   message: string;
   icon?: TIcon;
   buttonNames?: TButtonName[];
+  defFocusBtnName?: string;
 };
 
 type TPopupContextType = {
@@ -61,6 +62,7 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
     message,
     icon = "INFO",
     buttonNames = ["Ok"],
+    defFocusBtnName = "",
   }: TMessageBoxParams) => {
     console.log("in popup");
     return new Promise((resolve) => {
@@ -74,6 +76,7 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
           resolve(buttonName);
           CloseMessageBox();
         },
+        defFocusBtnName,
       });
     });
   };
