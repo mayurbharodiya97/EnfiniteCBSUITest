@@ -11,6 +11,7 @@ const LimitEntry = lazy(() => import("./limit-entry"));
 const StockEntry = lazy(() => import("./stockEntry"));
 const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
+const TemporaryOD = lazy(() => import("./temporaryOD"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
 const CashReceiptEntry = lazy(
@@ -29,6 +30,7 @@ export const OperationsMenu = () => (
     <Route path="stock-entry/*" element={<StockEntry />} />
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
+    <Route path="temp-od-entry/*" element={<TemporaryOD />} />
     <Route path="teller/*" element={<TellerScreen />} />
     {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}
     <Route

@@ -37,8 +37,7 @@ export const getLimitEntryData = async (apiReqPara) => {
 };
 
 export const LimitSecurityData = async (apiReqPara) => {
-  console.log("<<<apireq", apiReqPara);
-
+  // console.log("<<<apireq", apiReqPara);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETLIMITSECFIELDDISP", {
       // ...apiReqPara,
@@ -47,7 +46,6 @@ export const LimitSecurityData = async (apiReqPara) => {
       BRANCH_CD: apiReqPara?.BRANCH_CD,
     });
   if (status === "0") {
-    console.log("<<<apiReqParadata", data);
     const shouldPushWithY = data.some(
       (item) =>
         item.COMPONENT_TYPE === "rateOfInt" && item.FIELD_NAME === "PENAL_RATE"
@@ -84,7 +82,6 @@ export const LimitSecurityData = async (apiReqPara) => {
             },
           };
           if (item.name === "FD_BRANCH_CD") {
-            console.log("<<<ititit", item);
             // item.schemaValidation = {
             //   type: "string",
             //   rules: [
@@ -116,7 +113,6 @@ export const LimitSecurityData = async (apiReqPara) => {
               (await getFDTypeDDlist(apiReqPara));
 
             item.validate = (columnValue, allField, flag) => {
-              console.log("<<<valalerr", columnValue, allField, flag);
               if (!Boolean(columnValue.value)) {
                 return "FD-Account type is required.";
               }
@@ -201,44 +197,71 @@ export const LimitSecurityData = async (apiReqPara) => {
                       TRAN_DT: { value: "" },
                     };
                   } else if (postData?.[0]?.MESSAGE1) {
-                    formState.MessageBox({
-                      messageTitle: "Risk Category Alert",
-                      message: postData?.[0]?.MESSAGE1,
-                      buttonNames: ["Ok"],
-                    });
-                    return {
-                      FD_ACCT_CD: {
-                        value:
-                          apiReqPara?.SECURITY_TYPE !== "BFD" &&
-                          apiReqPara?.SECURITY_TYPE !== "BRD"
-                            ? field?.value
-                            : field.value.padStart(6, "0")?.padEnd(20, " "),
-                        ignoreUpdate: true,
-                      },
-                      FD_NO: {
-                        value: "",
-                      },
-                      SECURITY_VALUE: {
-                        value: postData?.[0]?.SECURITY_VALUE,
-                      },
-                      EXPIRY_DT: {
-                        value: postData?.[0]?.EXPIRY_DT,
-                      },
-                      TRAN_DT: {
-                        value: postData?.[0]?.TRAN_DT
-                          ? postData?.[0]?.TRAN_DT
-                          : authState.workingDate,
-                      },
-                      INT_AMT: {
-                        value: postData?.[0]?.INT_AMT,
-                      },
-                      INT_RATE: {
-                        value: postData?.[0]?.INT_RATE,
-                      },
-                      PENAL_RATE: {
-                        value: postData?.[0]?.PENAL_RATE,
-                      },
-                    };
+                    if (postData?.[0]?.STATUS === "99") {
+                      let res = await formState.MessageBox({
+                        messageTitle: "Risk Category Alert",
+                        message: postData?.[0]?.MESSAGE1,
+                        buttonNames: ["Yes", "No"],
+                      });
+                      if (res === "Yes") {
+                        return {
+                          FD_ACCT_CD: {
+                            value: field?.value,
+                            ignoreUpdate: true,
+                          },
+                        };
+                      } else {
+                        return {
+                          FD_ACCT_CD: {
+                            value: "",
+                            ignoreUpdate: true,
+                          },
+                        };
+                      }
+                    } else {
+                      formState.MessageBox({
+                        messageTitle: "Risk Category Alert",
+                        message: postData?.[0]?.MESSAGE1,
+                        buttonNames: ["Ok"],
+                      });
+                      return {
+                        FD_ACCT_CD: {
+                          value:
+                            apiReqPara?.SECURITY_TYPE !== "BFD" &&
+                            apiReqPara?.SECURITY_TYPE !== "BRD"
+                              ? field?.value
+                              : field.value.padStart(6, "0")?.padEnd(20, " "),
+                          ignoreUpdate: true,
+                        },
+                        FD_NO: {
+                          value: "",
+                          ignoreUpdate: true,
+                        },
+                        SECURITY_VALUE: {
+                          value: postData?.[0]?.SECURITY_VALUE,
+                          // ignoreUpdate: true,
+                        },
+                        EXPIRY_DT: {
+                          value: postData?.[0]?.EXPIRY_DT,
+                        },
+                        TRAN_DT: {
+                          value: postData?.[0]?.TRAN_DT
+                            ? postData?.[0]?.TRAN_DT
+                            : authState.workingDate,
+                        },
+                        INT_AMT: {
+                          value: postData?.[0]?.INT_AMT,
+                        },
+                        INT_RATE: {
+                          value: postData?.[0]?.INT_RATE,
+                          ignoreUpdate: true,
+                        },
+                        PENAL_RATE: {
+                          value: postData?.[0]?.PENAL_RATE,
+                          ignoreUpdate: true,
+                        },
+                      };
+                    }
                   } else {
                     return {
                       FD_ACCT_CD: {
@@ -251,9 +274,11 @@ export const LimitSecurityData = async (apiReqPara) => {
                       },
                       FD_NO: {
                         value: "",
+                        ignoreUpdate: true,
                       },
                       SECURITY_VALUE: {
                         value: postData?.[0]?.SECURITY_VALUE,
+                        // ignoreUpdate: true,
                       },
                       EXPIRY_DT: {
                         value: postData?.[0]?.EXPIRY_DT,
@@ -267,10 +292,16 @@ export const LimitSecurityData = async (apiReqPara) => {
                         value: postData?.[0]?.INT_AMT,
                       },
                       INT_RATE: {
-                        value: postData?.[0]?.INT_RATE,
+                        value:
+                          apiReqPara?.SECURITY_TYPE !== "BFD" &&
+                          apiReqPara?.SECURITY_TYPE !== "BRD"
+                            ? null
+                            : postData?.[0]?.INT_RATE,
+                        ignoreUpdate: true,
                       },
                       PENAL_RATE: {
                         value: postData?.[0]?.PENAL_RATE,
+                        ignoreUpdate: true,
                       },
                     };
                   }
@@ -410,43 +441,281 @@ export const LimitSecurityData = async (apiReqPara) => {
               }
             };
           } else if (item.name === "TRAN_DT") {
-            // item.defaultValue = apiReqPara?.WORKING_DATE;
+            item.defaultValue = apiReqPara?.WORKING_DATE;
 
             item.isWorkingDate = true;
+          } else if (item.name === "SECURITY_VALUE") {
+            item.dependentFields = ["MARGIN", "SEC_INT_AMT"];
+            item.postValidationSetCrossFieldValues = (
+              field,
+              formState,
+              authState,
+              dependentFields
+            ) => {
+              return {
+                SEC_AMT: {
+                  value: dependentFields?.MARGIN?.value
+                    ? Number(field.value) -
+                      (Number(field.value) *
+                        Number(dependentFields?.MARGIN?.value)) /
+                        100
+                    : Number(field.value),
+                  ignoreUpdate: true,
+                },
+                LIMIT_AMOUNT: {
+                  value: dependentFields?.MARGIN?.value
+                    ? Number(field.value) -
+                      (Number(field.value) *
+                        Number(dependentFields?.MARGIN?.value)) /
+                        100 +
+                      Number(dependentFields?.SEC_INT_AMT?.value)
+                    : Number(field.value) +
+                      Number(dependentFields?.SEC_INT_AMT?.value),
+                },
+              };
+            };
           } else if (item.name === "MARGIN") {
-            item.dependentFields = ["SECURITY_CD"];
+            item.dependentFields = [
+              "SECURITY_CD",
+              "SECURITY_VALUE",
+              "SEC_INT_AMT",
+            ];
             item.setValueOnDependentFieldsChange = (dependentFields) => {
               return dependentFields?.SECURITY_CD?.optionData?.[0]
                 ?.LIMIT_MARGIN;
             };
-          } else if (item.name === "SEC_AMT") {
-            item.dependentFields = ["MARGIN", "SECURITY_VALUE"];
-            item.setValueOnDependentFieldsChange = (dependentFields) => {
-              let value =
-                (Number(dependentFields?.SECURITY_VALUE?.value) *
-                  Number(dependentFields?.MARGIN?.value)) /
-                100;
 
-              return value
-                ? Number(dependentFields?.SECURITY_VALUE?.value) - value
-                : "";
+            item.postValidationSetCrossFieldValues = async (
+              field,
+              formState,
+              authState,
+              dependentFields
+            ) => {
+              return {
+                SEC_AMT: {
+                  value:
+                    Number(dependentFields?.SECURITY_VALUE?.value) -
+                    (Number(dependentFields?.SECURITY_VALUE?.value) *
+                      Number(field?.value)) /
+                      100,
+                  ignoreUpdate: true,
+                },
+                LIMIT_AMOUNT: {
+                  value:
+                    Number(dependentFields?.SECURITY_VALUE?.value) -
+                    (Number(dependentFields?.SECURITY_VALUE?.value) *
+                      Number(field?.value)) /
+                      100 +
+                    Number(dependentFields?.SEC_INT_AMT?.value),
+                },
+              };
+            };
+          } else if (item.name === "SEC_AMT") {
+            item.dependentFields = ["SECURITY_VALUE", "SEC_INT_AMT"];
+            item.postValidationSetCrossFieldValues = async (
+              field,
+              formState,
+              authState,
+              dependentFields
+            ) => {
+              if (
+                Number(field.value) <=
+                Number(dependentFields?.SECURITY_VALUE?.value)
+              ) {
+                return {
+                  MARGIN: {
+                    value:
+                      100 -
+                      (Number(field?.value) * 100) /
+                        Number(dependentFields?.SECURITY_VALUE?.value),
+                    ignoreUpdate: true,
+                  },
+                  LIMIT_AMOUNT: {
+                    value:
+                      Number(field.value) +
+                      +Number(dependentFields?.SEC_INT_AMT?.value),
+                  },
+                };
+              }
+            };
+            item.validate = (currentField, dependentFields, formState) => {
+              if (
+                Number(currentField.value) >
+                Number(dependentFields?.SECURITY_VALUE?.value)
+              ) {
+                return "Limit Amount can't be greater than Security value.";
+              }
+              return "";
+            };
+          } else if (item.name === "INT_AMT") {
+            item.dependentFields = ["SEC_INT_MARGIN", "SEC_AMT"];
+            item.postValidationSetCrossFieldValues = (
+              field,
+              formState,
+              authState,
+              dependentFields
+            ) => {
+              return {
+                SEC_INT_AMT: {
+                  value: dependentFields?.SEC_INT_MARGIN?.value
+                    ? Number(field.value) -
+                      (Number(field.value) *
+                        Number(dependentFields?.SEC_INT_MARGIN?.value)) /
+                        100
+                    : Number(field.value),
+                  ignoreUpdate: true,
+                },
+                LIMIT_AMOUNT: {
+                  value: dependentFields?.SEC_INT_MARGIN?.value
+                    ? Number(field.value) -
+                      (Number(field.value) *
+                        Number(dependentFields?.SEC_INT_MARGIN?.value)) /
+                        100 +
+                      Number(dependentFields?.SEC_AMT?.value)
+                    : Number(field.value) +
+                      Number(dependentFields?.SEC_AMT?.value),
+                },
+              };
+            };
+          } else if (item.name === "SEC_INT_MARGIN") {
+            item.dependentFields = ["SECURITY_CD", "INT_AMT", "SEC_AMT"];
+            item.postValidationSetCrossFieldValues = async (
+              field,
+              formState,
+              authState,
+              dependentFields
+            ) => {
+              return {
+                SEC_INT_AMT: {
+                  value:
+                    Number(dependentFields?.INT_AMT?.value) -
+                    (Number(dependentFields?.INT_AMT?.value) *
+                      Number(field?.value)) /
+                      100,
+                  ignoreUpdate: true,
+                },
+                LIMIT_AMOUNT: {
+                  value:
+                    Number(dependentFields?.INT_AMT?.value) -
+                    (Number(dependentFields?.INT_AMT?.value) *
+                      Number(field?.value)) /
+                      100 +
+                    Number(dependentFields?.SEC_AMT?.value),
+                },
+              };
             };
           } else if (item.name === "SEC_INT_AMT") {
-            item.dependentFields = ["SEC_INT_MARGIN", "INT_AMT"];
-            item.setValueOnDependentFieldsChange = (dependentFields) => {
-              let value =
-                (Number(dependentFields?.INT_AMT?.value) *
-                  Number(dependentFields?.SEC_INT_MARGIN?.value)) /
-                100;
-
-              return value
-                ? Number(dependentFields?.INT_AMT?.value) - value
-                : "";
+            item.dependentFields = ["INT_AMT", "SEC_AMT"];
+            item.postValidationSetCrossFieldValues = async (
+              field,
+              formState,
+              authState,
+              dependentFields
+            ) => {
+              if (
+                Number(field.value) <= Number(dependentFields?.INT_AMT?.value)
+              ) {
+                return {
+                  SEC_INT_MARGIN: {
+                    value:
+                      100 -
+                      (Number(field?.value) * 100) /
+                        Number(dependentFields?.INT_AMT?.value),
+                    ignoreUpdate: true,
+                  },
+                  LIMIT_AMOUNT: {
+                    value:
+                      Number(field.value) +
+                      Number(dependentFields?.SEC_AMT?.value),
+                  },
+                };
+              }
             };
-          } else if (item.name === "LIMIT_AMOUNT") {
-            item.dependentFields = ["SEC_AMT"];
-            item.setValueOnDependentFieldsChange = (dependentFields) => {
-              return dependentFields?.SEC_AMT?.value;
+            item.validate = (currentField, dependentFields, formState) => {
+              if (
+                Number(currentField.value) >
+                Number(dependentFields?.INT_AMT?.value)
+              ) {
+                return "Sec. Int Amount can't be greater than Intrest Amount.";
+              }
+              return "";
+            };
+          } else if (item.name === "INT_RATE") {
+            item.dependentFields = [
+              "LIMIT_AMOUNT",
+              "BRANCH_CD",
+              "ACCT_TYPE",
+              "ACCT_CD",
+              "PANEL_FLAG",
+            ];
+            item.setValueOnDependentFieldsChange = async (
+              dependentFields,
+              authState,
+              other
+            ) => {
+              if (
+                dependentFields?.ACCT_CD?.value &&
+                dependentFields?.LIMIT_AMOUNT?.value &&
+                apiReqPara?.SECURITY_CD &&
+                apiReqPara?.SECURITY_TYPE !== "BFD" &&
+                apiReqPara?.SECURITY_TYPE !== "BRD"
+              ) {
+                let ApiReq = {
+                  BRANCH_CD: dependentFields?.BRANCH_CD?.value,
+                  ACCT_TYPE: dependentFields?.ACCT_TYPE?.value,
+                  ACCT_CD: dependentFields?.ACCT_CD?.value,
+                  SECURITY_CD: apiReqPara?.SECURITY_CD,
+                  SECURITY_TYPE: apiReqPara?.SECURITY_TYPE,
+                  LIMIT_AMOUNT: dependentFields?.LIMIT_AMOUNT?.value,
+                  PANEL_FLAG: dependentFields?.PANEL_FLAG?.value,
+                  SCREEN_REF: "ETRN/047",
+                };
+
+                let postData = await limitRate(ApiReq);
+
+                if (postData) {
+                  return apiReqPara?.SECURITY_TYPE !== "BFD" &&
+                    apiReqPara?.SECURITY_TYPE !== "BRD"
+                    ? postData?.[0]?.INT_RATE
+                    : null;
+                }
+              }
+            };
+          } else if (item.name === "PENAL_RATE") {
+            item.dependentFields = [
+              "LIMIT_AMOUNT",
+              "BRANCH_CD",
+              "ACCT_TYPE",
+              "ACCT_CD",
+              "PANEL_FLAG",
+            ];
+            item.setValueOnDependentFieldsChange = async (
+              dependentFields,
+              authState,
+              other
+            ) => {
+              if (
+                dependentFields?.ACCT_CD?.value &&
+                dependentFields?.LIMIT_AMOUNT?.value &&
+                apiReqPara?.SECURITY_CD
+              ) {
+                let ApiReq = {
+                  BRANCH_CD: dependentFields?.BRANCH_CD?.value,
+                  ACCT_TYPE: dependentFields?.ACCT_TYPE?.value,
+                  ACCT_CD: dependentFields?.ACCT_CD?.value,
+                  SECURITY_CD: apiReqPara?.SECURITY_CD,
+                  SECURITY_TYPE: apiReqPara?.SECURITY_TYPE,
+                  LIMIT_AMOUNT: dependentFields?.LIMIT_AMOUNT?.value,
+                  PANEL_FLAG: dependentFields?.PANEL_FLAG?.value,
+                  SCREEN_REF: "ETRN/047",
+                };
+
+                let postData = await limitRate(ApiReq);
+
+                if (postData) {
+                  return postData?.[0]?.PENAL_RATE;
+                }
+              }
             };
           } else if (item.name === "CHARGE_AMT") {
             item.defaultValue = apiReqPara?.HDN_CHARGE_AMT;
@@ -500,7 +769,6 @@ export const getFDbranchDDlist = async (COMP_CD) => {
       COMP_CD: COMP_CD,
     });
   if (status === "0") {
-    console.log("<<<<getFDbranchDDlist", data);
     let responseData = data;
 
     if (Array.isArray(responseData)) {
@@ -529,7 +797,6 @@ export const getFDTypeDDlist = async (apiReqPara) => {
       SECURITY_TYPE: apiReqPara.SECURITY_TYPE,
     });
   if (status === "0") {
-    console.log("<<< getFDTypeDDlist ", data);
     let responseData = data;
 
     if (Array.isArray(responseData)) {
@@ -673,6 +940,17 @@ export const validateDelete = async (apiReq) => {
       FD_NO: apiReq.FD_NO,
       FD_COMP_CD: apiReq.FD_COMP_CD,
       FD_BRANCH_CD: apiReq.FD_BRANCH_CD,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const limitRate = async (apiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETLIMITRATE", {
+      ...apiReq,
     });
   if (status === "0") {
     return data;

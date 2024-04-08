@@ -87,7 +87,6 @@ export const limitEntryMetaData = {
           authState,
           dependentValue
         ) => {
-          console.log("<<<adadad", dependentValue);
           if (field?.value) {
             return {
               PARENT_TYPE: {
@@ -228,32 +227,6 @@ export const limitEntryMetaData = {
         },
         runPostValidationHookAlways: true,
       },
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_CHARGE_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_AMT",
-    },
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_GST_ROUND",
-    },
-
-    {
-      render: {
-        componentType: "hidden",
-      },
-      name: "HIDDEN_TAX_RATE",
     },
     {
       render: {
@@ -408,20 +381,17 @@ export const limitEntryMetaData = {
           });
         }
         return {
-          FD_BRANCH_CD: { value: "" },
-          FD_TYPE: { value: "" },
-          FD_ACCT_CD: { value: "" },
-          FD_NO: { value: "" },
-          ENTRY_DT: { value: "" },
-          TRAN_DT: { value: "" },
-          EXPIRY_DT: { value: "" },
-          MARGIN: { value: "" },
-          SEC_AMT: { value: "" },
-          SEC_INT_AMT: { value: "" },
-          SECURITY_VALUE: { value: "" },
-          INT_AMT: { value: "" },
-          INT_RATE: { value: "" },
-          PENAL_RATE: { value: "" },
+          // FD_BRANCH_CD: { error: "" },
+          // FD_TYPE: { error: "" },
+          // FD_ACCT_CD: { value: "" },
+          // FD_NO: { value: "" },
+          // EXPIRY_DT: { value: "" },
+          // SEC_AMT: { value: "" },
+          // SEC_INT_AMT: { value: "" },
+          // SECURITY_VALUE: { value: "" },
+          // INT_AMT: { value: "" },
+          // INT_RATE: { value: "" },
+          // PENAL_RATE: { value: "" },
         };
       },
 

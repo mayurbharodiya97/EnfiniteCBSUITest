@@ -31,7 +31,7 @@ import { AuthContext } from "pages_audit/auth";
 import { enqueueSnackbar } from "notistack";
 import { SubmitFnType } from "packages/form";
 import { useMutation } from "react-query";
-import { queryClient } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import {
   crudStockData,
   insertValidate,
@@ -42,7 +42,7 @@ import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { format } from "date-fns";
 
-export const StockEntry = () => {
+const StockEntryCustom = () => {
   const [newFormMTdata, setNewFormMTdata] = useState<any>(StockEntryMetaData);
   const [gridDetailData, setGridDetailData] = useState<any>();
   const [isVisible, setIsVisible] = useState<any>(false);
@@ -221,7 +221,7 @@ export const StockEntry = () => {
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
-          sx={{ ml: "15px" }}
+          sx={{ ml: "25px" }}
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);
@@ -243,6 +243,7 @@ export const StockEntry = () => {
                     ACCT_TYPE: res?.ACCT_TYPE,
                     BRANCH_CD: res?.BRANCH_CD,
                     A_USER_LEVEL: authState?.role,
+                    A_GD_DATE: authState?.workingDate,
                   };
                   stockEntryGridData.mutate(RequestPara);
                 }
@@ -331,7 +332,7 @@ export const StockEntry = () => {
                   if (action === "IS_VISIBLE") {
                     setIsVisible(payload.IS_VISIBLE);
                   }
-                  if (action === "SECURITY_CODE") {
+                  if (action === "SECURITY_CD") {
                     securityStoclDTL.mutate(payload);
                   }
                 }}
@@ -363,7 +364,7 @@ export const StockEntry = () => {
                 actions={detailActions}
                 setAction={setCurrentAction}
                 onClickActionEvent={(index, id, data) => {
-                  if (id === "UPLOAD_VIEW") {
+                  if (id === "DOC_FLAG") {
                     setCurrentAction({ rows: [{ data }], name: "view-upload" });
                   }
                   if (id === "ALLOW_DELETE_FLAG") {
@@ -376,7 +377,12 @@ export const StockEntry = () => {
               <Routes>
                 <Route
                   path="view-upload/*"
-                  element={<StockEditViewWrapper navigate={navigate} />}
+                  element={
+                    <StockEditViewWrapper
+                      navigate={navigate}
+                      stockEntryGridData={stockEntryGridData}
+                    />
+                  }
                 />
                 <Route
                   path="force-view-details/*"
@@ -442,5 +448,13 @@ export const StockEntry = () => {
         />
       )}
     </>
+  );
+};
+
+export const StockEntry = () => {
+  return (
+    <ClearCacheProvider>
+      <StockEntryCustom />
+    </ClearCacheProvider>
   );
 };

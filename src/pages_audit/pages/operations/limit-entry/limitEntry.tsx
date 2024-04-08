@@ -35,13 +35,13 @@ import { enqueueSnackbar } from "notistack";
 import { NSCFormDetail } from "./nscDetail";
 import { ForceExpire } from "./forceExpire";
 import { useMutation } from "react-query";
-import { queryClient } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import * as API from "./api";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { extractMetaData } from "components/utils";
 
-export const LimitEntry = () => {
+const LimitEntryCustom = () => {
   const fdAction: ActionTypes[] = [
     {
       actionName: "close",
@@ -100,20 +100,22 @@ export const LimitEntry = () => {
         if (data.length > 0) {
           let newMetadata: any = [...limitEntryMetaData.fields, ...data];
           newData = { ...newFormMTdata, fields: newMetadata };
-        } else {
-          newData = { ...limitEntryMetaData };
         }
         setNewFormMTdata({ ...newData });
       },
     }
   );
 
-  const getLimitDetail: any = useMutation("getLimitDTL", API.getLimitDTL, {
-    onSuccess: (data) => {
-      setGridDetailData(data);
-    },
-    onError: (error: any) => {},
-  });
+  const getLimitDetail: any = useMutation(
+    "getLimitDnewFormMTdataTL",
+    API.getLimitDTL,
+    {
+      onSuccess: (data) => {
+        setGridDetailData(data);
+      },
+      onError: (error: any) => {},
+    }
+  );
 
   const nscDetail: any = useMutation(
     "getLimitNSCdetail",
@@ -366,6 +368,7 @@ export const LimitEntry = () => {
                 metaData={newFormMTdata as MetaDataType}
                 initialValues={initialValuesRef.current ?? {}}
                 onSubmitHandler={(data: any, displayData, endSubmit) => {
+                  console.log("<<<adadaad", data);
                   setCloseAlert(true);
                   let apiReq = {
                     ...data,
@@ -381,7 +384,7 @@ export const LimitEntry = () => {
                 setDataOnFieldChange={(action, payload) => {
                   if (action === "SECURITY_CODE") {
                     setCloseAlert(false);
-                    setNewFormMTdata({ ...limitEntryMetaData });
+                    // setNewFormMTdata({ ...limitEntryMetaData });
                     securityLimitData.mutate({
                       ...payload,
                       COMP_CD: authState?.companyID,
@@ -660,5 +663,13 @@ export const LimitEntry = () => {
         />
       )}
     </>
+  );
+};
+
+export const LimitEntry = () => {
+  return (
+    <ClearCacheProvider>
+      <LimitEntryCustom />
+    </ClearCacheProvider>
   );
 };

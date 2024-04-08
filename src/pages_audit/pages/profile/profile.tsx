@@ -1,54 +1,30 @@
 import { AuthContext } from "pages_audit/auth";
-import {
-  Fragment,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { useMutation, useQuery } from "react-query";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import { useQuery } from "react-query";
 import * as API from "./api";
 import { queryClient } from "cache";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Alert } from "components/common/alert";
-import {
-  PersonlizationDashboardGridData,
-  PersonlizationQuickGridMetaData,
-  UserLoginDtlGridMetaData,
-  UserProfileMetaData,
-  userAccessbranch,
-  userAccesstype,
-} from "./metaData";
+import { UserProfileMetaData } from "./metaData";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
   AppBar,
   Avatar,
-  Button,
   Container,
-  DialogContent,
   Grid,
   IconButton,
-  InputLabel,
   Paper,
-  Stack,
   Tab,
   Tabs,
-  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { utilFunction } from "components/utils/utilFunctions";
-import { GridWrapper } from "components/dataTableStatic/gridWrapper";
-import { GridMetaDataType } from "components/dataTableStatic";
 import { ChangePassword } from "./changePassword";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import "./style.css";
 import { ProfilePhotoUpdate } from "./profilePhotoUpload";
 import { GeneralAPI } from "registry/fns/functions";
-import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
@@ -57,13 +33,13 @@ import SettingsAccessibilityOutlinedIcon from "@mui/icons-material/SettingsAcces
 import { useNavigate } from "react-router-dom";
 import USER_PROFILE_DEFAULT from "assets/images/USER_PROFILE_DEFAULT.png";
 import About from "./about";
-import { ActionTypes } from "components/dataTable";
 import TotpEnbaledDisabled from "./totp/totp-enabled-disable";
-import { CreateDetailsRequestData } from "components/utils";
 import QrCode2Icon from "@mui/icons-material/QrCode2";
 import { GradientButton } from "components/styledComponent/button";
 import { useTranslation } from "react-i18next";
-import { enqueueSnackbar } from "notistack";
+import { PersonalizeDash } from "./personalizeDash";
+import { AllowedAccess } from "./allowedAccess";
+import { UserDetail } from "./userDetail";
 // import { t } from "i18next";
 // interface notificationDataType {
 //   activityID: string;
@@ -79,8 +55,6 @@ import { enqueueSnackbar } from "notistack";
 export const Profile = () => {
   const { authState } = useContext(AuthContext);
   const authController = useContext(AuthContext);
-  const myGridRef = useRef<any>(null);
-  const myGridQuickRef = useRef<any>(null);
   const userID = authState?.user?.id;
   const urlObj = useRef<any>(null);
   const fileUploadControl = useRef<any | null>(null);
@@ -89,42 +63,12 @@ export const Profile = () => {
   const [filesdata, setFilesData] = useState<any>([]);
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
   const [value, setValue] = useState("one");
-  const [dashBoxData, setDashBoxData] = useState<any>([]);
-  const [quickViewData, setQuickViewData] = useState<any>([]);
   const [showTOTP, setshowTOTP] = useState(false);
   const [mode, setMode] = useState<string>("userLogin");
   const [totpAuthStatus, setTotpAuthStatus] = useState<any>("");
   const { t } = useTranslation();
   // const [girdData, setGridData] = useState<any>();
-  const Dashactions: ActionTypes[] = [
-    {
-      actionName: "save",
-      actionLabel: `${t("Save")}`,
-      multiple: false,
-      rowDoubleClick: false,
-      actionTextColor: "var(--theme-color2)",
-      actionBackground: "var(--theme-color3)",
-      alwaysAvailable: true,
-      startsIcon: "Save",
-      rotateIcon: "scale(1.4)",
-    },
-  ];
-  const Quickactions: ActionTypes[] = [
-    {
-      actionName: "save",
-      actionLabel: `${t("Save")}`,
-      multiple: false,
-      rowDoubleClick: false,
-      actionTextColor: "var(--theme-color2)",
-      actionBackground: "var(--theme-color3)",
-      alwaysAvailable: true,
-      startsIcon: "Save",
-      rotateIcon: "scale(1.4)",
-    },
-  ];
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+
   //typeof blob === "object" && Boolean(blob) ? URL.createObjectURL(blob) : ""
   //);
   const navigate = useNavigate();
@@ -136,127 +80,13 @@ export const Profile = () => {
     API.getUserDetails({ userID })
   );
 
-  const userActivityData = useQuery<any, any, any>(["GETUSERACTIVITY"], () =>
-    API.getUserLoginDetails({ userID })
-  );
-
-  const userAccessBranch = useQuery<any, any, any>(["GETUSERACESSBRNCH"], () =>
-    API.getUserAccessBranch({ userID })
-  );
-  const userAccessType = useQuery<any, any, any>(["GETUSERACESSTYPE"], () =>
-    API.getUserAccessType({ userID })
-  );
-  const quickViewUsrData = useQuery<any, any, any>(["GETUSRQUICKVIEW"], () =>
-    API.getquickView({ userID, COMP_CD: authState?.companyID ?? "" })
-  );
-  const dashboxUserData = useQuery<any, any, any>(["GETUSRDASHBOX"], () =>
-    API.getdashUserboxData({ userID, COMP_CD: authState?.companyID ?? "" })
-  );
-  const saveDashData: any = useMutation(API.updateDashboxData, {
-    onSuccess: (data, { endSubmit }) => {
-      enqueueSnackbar("Record save successfully", {
-        variant: "success",
-      });
-      dashboxUserData.refetch();
-    },
-  });
-  const saveQuickData: any = useMutation(API.updateQuickViewData, {
-    // onSuccess: (data) => {},
-    onSuccess: (data, { endSubmit }) => {
-      enqueueSnackbar("Record save successfully", {
-        variant: "success",
-      });
-      quickViewUsrData.refetch();
-    },
-  });
-  const setCurrentAction = useCallback((data) => {
-    handleSubmit();
-  }, []);
-  const setQuickAction = useCallback((data) => {
-    quickSubmit();
-  }, []);
-  const handleSubmit = async () => {
-    let { hasError, data } = await myGridRef.current?.validate(true);
-    let isError = data.filter((item) => {
-      if (item._error.DASH_TRAN_CD.length > 5) {
-        return (item._error.DASH_TRAN_CD = true);
-      }
-    });
-    if (isError[0]?._error?.DASH_TRAN_CD) {
-    } else {
-      let result = myGridRef?.current?.cleanData?.();
-      let finalResult = result.filter((one) => !Boolean(one?._hidden));
-      let newData = finalResult.map((item) => {
-        const newItem = {
-          ...item,
-          _isNewRow: item.IS_DATA === "N" && parseInt(item.DASH_TRAN_CD) > 0,
-          USER_TYPE: "USER",
-        };
-        return newItem;
-      });
-      newData = CreateDetailsRequestData(newData);
-      if (newData.isNewRow) {
-        newData.isNewRow.forEach((item) => {
-          delete item.TRAN_CD;
-        });
-      }
-      let data = {
-        // ...refID,
-        DETAILS_DATA: newData,
-      };
-      saveDashData.mutate(data);
-    }
-  };
-  const quickSubmit = async () => {
-    let { hasError, data } = await myGridQuickRef.current?.validate(true);
-    let isError = data.filter((item) => {
-      if (item._error.DOC_CD) {
-        return item._error.DOC_CD;
-      }
-    });
-
-    if (isError[0]?._error?.DOC_CD) {
-    } else {
-      let result = myGridQuickRef?.current?.cleanData?.();
-      let finalResult = result.filter((one) => !Boolean(one?._hidden));
-      let newData = finalResult.map((item) => {
-        // const trimmedDOC_CD = item.DOC_CD.trim();
-        const newItem = {
-          ...item,
-          _isNewRow: item.IS_DATA === "N" && item.DOC_CD?.length > 0,
-          BRANCH_CD: authState?.user?.branchCode,
-        };
-        return newItem;
-      });
-      newData = CreateDetailsRequestData(newData);
-      if (newData.isNewRow) {
-        newData.isNewRow.forEach((item) => {
-          if ("TRAN_CD" in item) {
-            delete item.TRAN_CD;
-          }
-          if ("LAST_ENTERED_DATE" in item) {
-            delete item.LAST_ENTERED_DATE;
-          }
-        });
-      }
-      let reqData = {
-        // ...refID,
-        DETAILS_DATA: newData,
-      };
-      saveQuickData.mutate(reqData);
-    }
-  };
   useEffect(() => {
     GeneralAPI.setDocumentName("Profile");
     return () => {
       queryClient.removeQueries(["GETEMPLOYEEDTL"]);
-      queryClient.removeQueries(["GETUSERACTIVITY"]);
-      queryClient.removeQueries(["GETUSERACESSBRNCH"]);
-      queryClient.removeQueries(["GETUSERACESSTYPE"]);
-      queryClient.removeQueries(["GETUSRQUICKVIEW"]);
-      queryClient.removeQueries(["GETUSRDASHBOX"]);
     };
   }, []);
+
   useEffect(() => {
     if (Boolean(queryData.data?.PROFILE_PHOTO)) {
       let blob = utilFunction.base64toBlob(queryData.data?.PROFILE_PHOTO);
@@ -269,12 +99,7 @@ export const Profile = () => {
     }
     setTotpAuthStatus(queryData.data?.TOTP_ENABLED);
   }, [queryData.data]);
-  useEffect(() => {
-    setQuickViewData(quickViewUsrData.data);
-  }, [quickViewUsrData.data]);
-  useEffect(() => {
-    setDashBoxData(dashboxUserData.data);
-  }, [dashboxUserData.data]);
+
   const handleProfileUploadClose = (flag, imgdata) => {
     //console.log(Boolean(flag), flag === "Y", typeof imgdata, Boolean(imgdata));
     if (
@@ -292,6 +117,7 @@ export const Profile = () => {
     }
     setProfileUpdate(false);
   };
+
   const handleFileSelect = (e) => {
     const files = e.target.files;
     const filesArray = Array.from(files);
@@ -301,19 +127,10 @@ export const Profile = () => {
       setProfileUpdate(true);
     }
   };
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  }));
+
   return (
     <Fragment>
-      {queryData.isLoading ||
-      queryData.isFetching ||
-      userActivityData.isLoading ||
-      userActivityData.isFetching ? (
+      {queryData.isLoading || queryData.isFetching ? (
         <LoaderPaperComponent />
       ) : (
         <>
@@ -542,7 +359,9 @@ export const Profile = () => {
                             },
                           }}
                           value={value}
-                          onChange={handleChange}
+                          onChange={(event, newValue) => {
+                            setValue(newValue);
+                          }}
                           textColor="secondary"
                           indicatorColor="secondary"
                           aria-label="secondary tabs example"
@@ -618,23 +437,7 @@ export const Profile = () => {
                         }}
                       >
                         {mode === "userDetail" ? (
-                          <GridWrapper
-                            key={`userDetail`}
-                            finalMetaData={
-                              UserLoginDtlGridMetaData as GridMetaDataType
-                            }
-                            data={userActivityData.data ?? []}
-                            setData={() => null}
-                            //loading={result.isLoading}
-                            actions={[]}
-                            setAction={() => {}}
-                            refetchData={() => {}}
-                            ref={myGridRef}
-                            headerToolbarStyle={{
-                              background: "var(--theme-color2)",
-                              color: "black",
-                            }}
-                          />
+                          <UserDetail />
                         ) : mode === "userLogin" ? (
                           <Grid>
                             <FormWrapper
@@ -659,156 +462,9 @@ export const Profile = () => {
                             onClose={() => setShowProfile(false)}
                           />
                         ) : mode === "accessAllow" ? (
-                          <Grid
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              gap: 3,
-                              p: 2,
-                            }}
-                          >
-                            <Grid
-                              container
-                              sx={{
-                                boxShadow:
-                                  "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                              }}
-                            >
-                              <GridWrapper
-                                key={`userAccessbranch`}
-                                finalMetaData={
-                                  userAccessbranch as GridMetaDataType
-                                }
-                                data={userAccessBranch.data || []}
-                                setData={() => null}
-                                headerToolbarStyle={{
-                                  background: "var(--theme-color2)",
-                                  color: "black",
-                                  fontSize: "20px",
-                                }}
-                                //loading={result.isLoading}
-                                // actions={[]}
-                                // setAction={() => {}}
-                                // refetchData={() => {}}
-                                // ref={myGridRef}
-                              />
-                            </Grid>
-                            <Grid
-                              container
-                              sx={{
-                                boxShadow:
-                                  "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                              }}
-                            >
-                              <GridWrapper
-                                key={`userAccesstype`}
-                                finalMetaData={
-                                  userAccesstype as GridMetaDataType
-                                }
-                                data={userAccessType.data || []}
-                                setData={() => null}
-                                headerToolbarStyle={{
-                                  background: "var(--theme-color2)",
-                                  color: "black",
-                                  fontSize: "20px",
-                                }}
-                                //loading={result.isLoading}
-                                // actions={[]}
-                                // setAction={() => {}}
-                                // refetchData={() => {}}
-                                // ref={myGridRef}
-                              />
-                            </Grid>
-                          </Grid>
+                          <AllowedAccess />
                         ) : mode === "personalizedashboard" ? (
-                          <>
-                            <Grid
-                              sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                gap: 3,
-                                p: 2,
-                                height: "fit-content",
-                              }}
-                            >
-                              <Grid
-                                container
-                                sx={{
-                                  boxShadow:
-                                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                                }}
-                              >
-                                {saveQuickData?.isError && (
-                                  <Alert
-                                    severity="error"
-                                    errorMsg={
-                                      saveQuickData.error?.error_msg ??
-                                      "Unknown Error occured"
-                                    }
-                                    errorDetail={
-                                      saveQuickData.error?.error_detail ?? ""
-                                    }
-                                  />
-                                )}
-                                <GridWrapper
-                                  key={`personalizeQuickView`}
-                                  finalMetaData={
-                                    PersonlizationQuickGridMetaData as GridMetaDataType
-                                  }
-                                  data={quickViewData ?? []}
-                                  setData={setQuickViewData}
-                                  loading={saveQuickData.isLoading}
-                                  actions={Quickactions}
-                                  // controlsAtBottom={true}
-                                  setAction={setQuickAction}
-                                  headerToolbarStyle={{
-                                    background: "var(--theme-color2)",
-                                    color: "black",
-                                  }}
-                                  // refetchData={() => {}}
-                                  ref={myGridQuickRef}
-                                />
-                              </Grid>
-                              <Grid
-                                container
-                                sx={{
-                                  boxShadow:
-                                    "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
-                                }}
-                              >
-                                {saveDashData?.isError && (
-                                  <Alert
-                                    severity="error"
-                                    errorMsg={
-                                      saveDashData.error?.error_msg ??
-                                      "Unknown Error occured"
-                                    }
-                                    errorDetail={
-                                      saveDashData.error?.error_detail ?? ""
-                                    }
-                                  />
-                                )}
-                                <GridWrapper
-                                  key={`personalizeDashboardData`}
-                                  finalMetaData={
-                                    PersonlizationDashboardGridData as GridMetaDataType
-                                  }
-                                  data={dashBoxData ?? []}
-                                  headerToolbarStyle={{
-                                    background: "var(--theme-color2)",
-                                    color: "black",
-                                  }}
-                                  setData={setDashBoxData}
-                                  loading={saveDashData.isLoading}
-                                  actions={Dashactions}
-                                  // controlsAtBottom={true}
-                                  setAction={setCurrentAction}
-                                  // refetchData={() => {}}
-                                  ref={myGridRef}
-                                />
-                              </Grid>
-                            </Grid>
-                          </>
+                          <PersonalizeDash />
                         ) : null}
                       </Grid>
                     </Container>

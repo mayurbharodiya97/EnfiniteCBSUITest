@@ -341,13 +341,13 @@ export const viewDocument = async (apiReqPara) => {
       // REF_TRAN_CD: "266",
     });
   if (status === "0") {
-    // return data;
-    return data.map((item) => {
-      return {
-        ...item,
-        ACTIVE: item.ACTIVE === "Y" ? true : false,
-      };
-    });
+    return data;
+    // return data.map((item) => {
+    //   return {
+    //     ...item,
+    //     ACTIVE: item.ACTIVE === "Y" ? true : false,
+    //   };
+    // });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

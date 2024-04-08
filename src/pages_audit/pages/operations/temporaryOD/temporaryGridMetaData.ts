@@ -1,8 +1,8 @@
 import { GridMetaDataType } from "components/dataTableStatic";
-export const StockGridMetaData: GridMetaDataType = {
+export const temporaryODGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Stock Entry Detail",
+    gridLabel: "Temporary OD Detail",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -24,9 +24,7 @@ export const StockGridMetaData: GridMetaDataType = {
     allowColumnHiding: false,
     allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Stock Detail",
-    footerNote:
-      "Note : Stock can be Remove on a same working Day and Double-click on Pink row to force-expire the Stock.",
+    searchPlaceholder: "Temporary-OD Detail",
   },
   filters: [],
   columns: [

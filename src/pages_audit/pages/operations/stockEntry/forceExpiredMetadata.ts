@@ -189,7 +189,7 @@ export const forceExpireStockMetaData = {
       name: "ASON_DT",
       fullWidth: true,
       isReadOnly: true,
-      label: "STMT Valid Till Date",
+      label: "Statement Valid Till Date",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -250,11 +250,11 @@ export const forceExpireStockMetaData = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "rateOfInt",
       },
       name: "MARGIN",
       fullWidth: true,
-      label: "Margin",
+      label: "Margin%",
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -285,7 +285,7 @@ export const forceExpireStockMetaData = {
         componentType: "textField",
       },
       name: "STOCK_DESC",
-      label: "Stock Decription",
+      label: "Stock Description",
       isReadOnly: true,
       fullWidth: true,
       GridProps: {

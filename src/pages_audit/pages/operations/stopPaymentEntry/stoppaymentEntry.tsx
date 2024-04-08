@@ -168,7 +168,7 @@ const StopPaymentEntryCustom = () => {
     <>
       <Box sx={{ width: "100%" }}>
         <Tabs
-          sx={{ ml: "15px" }}
+          sx={{ ml: "25px" }}
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);

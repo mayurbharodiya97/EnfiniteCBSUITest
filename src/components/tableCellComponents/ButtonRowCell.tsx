@@ -42,10 +42,10 @@ export const ButtonRowCell = (props) => {
   };
   const isShouldChangeColumnName = useMemo(() => {
     if (typeof isColumnName === "function") {
-      return isColumnName(initialValue);
+      return isColumnName(initialValue, original);
     }
     return null;
-  }, [initialValue]);
+  }, [initialValue, original]);
 
   const newColumnName = Boolean(isShouldChangeColumnName)
     ? isShouldChangeColumnName

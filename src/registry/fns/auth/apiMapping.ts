@@ -1119,6 +1119,42 @@ export const ActionWiseAPIConfiguration = {
     url: "/accountServiceAPI/DOSTOCKDOCUMENTDML",
     packageName: "",
   },
+  GETLIENCODEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENCODEDDW",
+    packageName: "",
+  },
+  GETLIENLIENREASONDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENLIENREASONDDW",
+    packageName: "",
+  },
+  GETLIENGRIDDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENGRIDDATA",
+    packageName: "",
+  },
+  DOLIENDML: {
+    url: "/transactionServiceAPI/DOLIENDML",
+    packageName: "",
+  },
+  VALIDATELIENDATA: {
+    url: "/transactionServiceAPI/VALIDATELIENDATA",
+    packageName: "",
+  },
+  GETLIMITRATE: {
+    url: "/loanServiceAPI/GETLIMITRATE",
+    packageName: "",
+  },
+  GETACCTODDATA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTODDATA",
+    packageName: "",
+  },
+  GETACCTODPARA: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTODPARA",
+    packageName: "",
+  },
+  GETACCTODDOCDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTODDOCDDW",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -161,7 +161,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         name: "ASON_DT",
         fullWidth: true,
         isReadOnly: true,
-        label: "STMT Valid Till Date",
+        label: "Statement Valid Till Date",
         GridProps: {
           xs: 12,
           md: 2.4,
@@ -333,7 +333,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
       containerHeight: { min: "40vh", max: "40vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
-      disableLoader: true,
+      disableLoader: false,
       // paginationText: "Configured Messages",
     },
     columns: [
@@ -351,7 +351,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
       {
         accessor: "DOC_DEC",
         columnName: "Document Description",
-        componentType: "editableTextField",
+        componentType: "default",
         placeholder: " ",
         sequence: 2,
         alignment: "left",
@@ -362,12 +362,15 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           type: "string",
           rules: [{ name: "required", params: ["This field is required"] }],
         },
+        isReadOnly: true,
+        // __EDIT__: { isReadOnly: false, componentType: "editableTextField" },
       },
       {
         accessor: "ACTIVE",
         columnName: "Active",
         componentType: "editableCheckbox",
         alignment: "center",
+        defaultValue: "Y",
         sequence: 2,
         width: 80,
         minWidth: 70,
@@ -375,24 +378,55 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
       },
       {
         accessor: "DOC_DATA",
-        columnName: "Document Data",
-        componentType: "default",
+        columnName: "Document Image",
+        componentType: "icondefault",
         sequence: 2,
-        isVisible: false,
+        alignment: "center",
+        width: 140,
+        maxWidth: 180,
+        minWidth: 90,
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["This field is required"] }],
+        },
       },
 
       {
-        columnName: "Upload/View",
+        columnName: "Document View",
         componentType: "buttonRowCell",
-        accessor: "VIEW_UPLOAD",
+        accessor: "VIEW_DOC",
+        alignment: "center",
+        buttonLabel: "",
         sequence: 3,
-        width: 140,
+        width: 130,
         maxWidth: 180,
         minWidth: 90,
         isVisible: true,
         isVisibleInNew: true,
+        isColumnName: (initialValue, original) => {
+          return original?.DOC_DATA ? "View" : "Upload";
+        },
         shouldExclude: (initialValue, original) => {
           if (original?.DOC_DEC) {
+            return false;
+          }
+          return true;
+        },
+      },
+      {
+        columnName: "Document Download",
+        componentType: "buttonRowCell",
+        accessor: "DOWNLOAD",
+        alignment: "center",
+        buttonLabel: "Download",
+        sequence: 3,
+        width: 160,
+        maxWidth: 180,
+        minWidth: 120,
+        isVisible: true,
+        isVisibleInNew: true,
+        shouldExclude: (initialValue, original) => {
+          if (original?.DOC_DATA) {
             return false;
           }
           return true;
@@ -404,6 +438,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         accessor: "_hidden",
         sequence: 3,
         width: 90,
+        alignment: "center",
         maxWidth: 120,
         minWidth: 90,
         shouldExclude: (initialValue, original) => {
@@ -413,9 +448,15 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           return true;
         },
       },
-
       {
         accessor: "COMP_CD",
+        columnName: "",
+        componentType: "default",
+        isVisible: false,
+        sequence: 2,
+      },
+      {
+        accessor: "BRANCH_CD",
         columnName: "",
         componentType: "default",
         isVisible: false,
@@ -435,44 +476,11 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         isVisible: false,
         sequence: 2,
       },
+
       {
-        accessor: "ENTERED_BRANCH_CD",
+        accessor: "DOC_CD",
         columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-      {
-        accessor: "ENTERED_COMP_CD",
-        columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-      {
-        accessor: "REF_TRAN_CD",
-        columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-      {
-        accessor: "REF_SR_CD",
-        columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-      {
-        accessor: "SR_CD",
-        columnName: "",
-        componentType: "default",
-        isVisible: false,
-        sequence: 2,
-      },
-      {
-        accessor: "TABLE_NM",
-        columnName: "",
+        defaultValue: "TRN/047     ",
         componentType: "default",
         isVisible: false,
         sequence: 2,

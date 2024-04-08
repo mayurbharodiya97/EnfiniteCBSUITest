@@ -259,7 +259,7 @@ export const StockEntryMetaData = {
         dependentValue
       ) => {
         if (field?.value) {
-          formState.setDataOnFieldChange("SECURITY_CODE", {
+          formState.setDataOnFieldChange("SECURITY_CD", {
             COMP_CD: authState?.companyID,
             SECURITY_CD: field?.value,
             BRANCH_CD: dependentValue?.BRANCH_CD?.value,
