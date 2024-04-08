@@ -5,6 +5,7 @@ import { CkycConfirm } from "./c-kyc/confirmation/CkycConfirm";
 import AcctMST from "./acct-mst/AcctMST";
 import SingleDeno from "../dashboard/noteDenomination/singleDeno";
 import { FixDepositProvider } from "./fixDeposit/fixDepositContext";
+import AcctMSTProvider from "./acct-mst/AcctMSTContext";
 
 const ChequebookTab = lazy(() => import("./chequeBookTab"));
 const LimitEntry = lazy(() => import("./limit-entry"));
@@ -39,7 +40,14 @@ export const OperationsMenu = () => (
         </CkycProvider>
       }
     />
-    <Route path="account-mst/*" element={<AcctMST />} />
+    <Route
+      path="account-mst/*"
+      element={
+        <AcctMSTProvider>
+          <AcctMST />
+        </AcctMSTProvider>
+      }
+    />
     <Route path="single-deno/*" element={<SingleDeno />} />
 
     <Route
