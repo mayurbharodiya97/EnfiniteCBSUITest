@@ -50,14 +50,9 @@ export const FixDepositDetailFormMetadata = {
   fields: [
     {
       render: {
-        componentType: "amountField",
+        componentType: "spacer",
       },
-      name: "TOTAL_FD_UNIT",
-      label: "Total No. of FD",
-      placeholder: "",
-      isReadOnly: true,
-      type: "text",
-      GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
+      GridProps: { xs: 0, md: 10, sm: 10, lg: 10, xl: 10 },
     },
     {
       render: {
@@ -68,7 +63,7 @@ export const FixDepositDetailFormMetadata = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
-      GridProps: { xs: 6, sm: 2, md: 2.2, lg: 2, xl: 1.5 },
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
       dependentFields: ["FDDTL"],
       postValidationSetCrossFieldValues: async (
         currentFieldState,
@@ -88,16 +83,15 @@ export const FixDepositDetailFormMetadata = {
         ) {
           return {};
         }
-
         if (accumulatedTakeoverLoanAmount) {
           return {
-            FINALAMOUNT: {
+            TOTAL_FD_AMOUNT: {
               value: accumulatedTakeoverLoanAmount ?? 0,
             },
           };
         } else {
           return {
-            FINALAMOUNT: {
+            TOTAL_FD_AMOUNT: {
               value: "",
             },
           };
@@ -219,6 +213,7 @@ export const FixDepositDetailFormMetadata = {
           FormatProps: {
             allowNegative: false,
           },
+          validationRun: "all",
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
               return "Transfer Amount is Required.";
@@ -226,6 +221,17 @@ export const FixDepositDetailFormMetadata = {
               return "Transfer Amount must be greater than zero.";
             }
             return "";
+          },
+          postValidationSetCrossFieldValues: async (...arr) => {
+            if (arr[0].value) {
+              return {
+                TOTAL_FD_AMOUNT: { value: arr[0].value ?? "0" },
+              };
+            } else {
+              return {
+                TOTAL_FD_AMOUNT: { value: "" },
+              };
+            }
           },
           GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
         },
@@ -463,6 +469,7 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c Branch",
             required: false,
             dependentFields: ["MATURE_INST"],
+            schemaValidation: {},
             validate: (currField, dependentFields) => {
               const depFields =
                 utilFunction.getDependetFieldDataArrayField(dependentFields);
@@ -488,6 +495,7 @@ export const FixDepositDetailFormMetadata = {
             label: "Credit A/c Type",
             required: false,
             dependentFields: ["MATURE_INST"],
+            schemaValidation: {},
             validate: (currField, dependentFields, formState) => {
               const depFields =
                 utilFunction.getDependetFieldDataArrayField(dependentFields);
@@ -511,6 +519,7 @@ export const FixDepositDetailFormMetadata = {
             name: "CR_ACCT_CD",
             label: "Credit A/c No.",
             required: false,
+            schemaValidation: {},
             dependentFields: [
               "COMP_CD",
               "CR_BRANCH_CD",

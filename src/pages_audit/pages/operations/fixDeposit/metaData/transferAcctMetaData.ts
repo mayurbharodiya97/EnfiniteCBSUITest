@@ -47,9 +47,67 @@ export const TransferAcctDetailFormMetadata = {
   fields: [
     {
       render: {
+        componentType: "spacer",
+      },
+      GridProps: { xs: 0, md: 4, sm: 4, lg: 4, xl: 4 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TOTAL_FD_AMOUNT",
+      label: "Total FD Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TOTAL_DR_AMOUNT",
+      label: "Total Debit Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
+      dependentFields: ["TRNDTLS"],
+      setValueOnDependentFieldsChange: (dependentFieldState) => {
+        let accumulatedTakeoverLoanAmount = (
+          Array.isArray(dependentFieldState?.["TRNDTLS"])
+            ? dependentFieldState?.["TRNDTLS"]
+            : []
+        ).reduce((accum, obj) => accum + Number(obj.AMOUNT?.value), 0);
+
+        return accumulatedTakeoverLoanAmount;
+      },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TOTAL_AMOUNT",
+      label: "Difference Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      dependentFields: ["TOTAL_FD_AMOUNT", "TOTAL_DR_AMOUNT"],
+      setValueOnDependentFieldsChange: (dependentFields) => {
+        let value =
+          Number(dependentFields?.TOTAL_FD_AMOUNT?.value) -
+          Number(dependentFields?.TOTAL_DR_AMOUNT?.value);
+
+        return value ?? "0";
+      },
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 1.5 },
+    },
+    {
+      render: {
         componentType: "arrayField",
       },
       name: "TRNDTLS",
+      enableGrid: true,
       removeRowFn: "deleteFormArrayFieldData",
       GridProps: { xs: 12, sm: 12, md: 12, lg: 12, xl: 12 },
       _fields: [
@@ -59,6 +117,7 @@ export const TransferAcctDetailFormMetadata = {
           },
           branchCodeMetadata: {
             name: "DC_BRANCH_CD",
+            isFieldFocus: true,
             postValidationSetCrossFieldValues: () => {
               return {
                 ACCT_TYPE: { value: "" },
@@ -211,13 +270,30 @@ export const TransferAcctDetailFormMetadata = {
             componentType: "amountField",
           },
           name: "AMOUNT",
-          label: "Amount",
+          label: "Debit Amount",
           placeholder: "",
           // isFieldFocused: true,
           // autoComplete: false,
           type: "text",
           FormatProps: {
             allowNegative: false,
+          },
+          // validationRun: "all",
+          AlwaysRunPostValidationSetCrossFieldValues: {
+            alwaysRun: true,
+            touchAndValidate: false,
+          },
+          postValidationSetCrossFieldValues: async (...arr) => {
+            if (arr[0].value) {
+              arr?.[1].setDataOnFieldChange("AMOUNT", "");
+              // return {
+              //   TOTAL_DR_AMOUNT: { value: arr[0].value ?? "0" },
+              // };
+            } else {
+              // return {
+              //   TOTAL_DR_AMOUNT: { value: "" },
+              // };
+            }
           },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {

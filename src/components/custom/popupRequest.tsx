@@ -119,7 +119,7 @@ export const PopupRequestWrapper = ({
                 color: "black",
                 whiteSpace: "pre-wrap",
                 marginLeft: "3rem",
-                paddingTop: "0.3rem",
+                paddingTop: "0.6rem",
               }}
             >
               {Message.startsWith("\n") ? Message?.slice(1) : Message}

@@ -78,7 +78,7 @@ export const FixDepositParaFormMetadata = {
           CUSTOMER_NAME: { value: "" },
         };
       },
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
     },
     {
       render: {
@@ -110,7 +110,7 @@ export const FixDepositParaFormMetadata = {
           CUSTOMER_NAME: { value: "" },
         };
       },
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
       render: {
@@ -159,51 +159,61 @@ export const FixDepositParaFormMetadata = {
           };
 
           let resData = await API.getFDAccountsDetail(Apireq);
-          resData = resData?.[0];
-
-          if (resData?.CONFIRMED === "Y") {
-            let fdAccounts = resData?.FD_ACCOUNTS;
-            formState.setDataOnFieldChange("CUSTOMER_ID", {
-              ...field,
-              FD_ACCTS: fdAccounts,
-            });
-            if (fdAccounts?.length) {
-              return {
-                CUSTOMER_NAME: {
-                  value: resData?.ACCT_NM ?? "",
-                },
-                FDACCTS: {
-                  value: fdAccounts,
-                },
-              };
-              // }
+          if (resData?.status === "0") {
+            if (resData?.data?.[0]?.CONFIRMED === "Y") {
+              let fdAccounts = resData?.data?.[0]?.FD_ACCOUNTS;
+              formState.setDataOnFieldChange("CUSTOMER_ID", {
+                ...field,
+                FD_ACCTS: fdAccounts,
+              });
+              if (fdAccounts?.length) {
+                return {
+                  CUSTOMER_NAME: {
+                    value: resData?.data?.[0]?.ACCT_NM ?? "",
+                  },
+                  FDACCTS: {
+                    value: fdAccounts,
+                  },
+                };
+                // }
+              } else {
+                return {
+                  CUSTOMER_ID: {
+                    value: field?.value ?? "",
+                    error: "FD Accounts not found for this Customer ID.",
+                    ignoreUpdate: true,
+                  },
+                  CUSTOMER_NAME: { value: resData?.data?.[0]?.ACCT_NM ?? "" },
+                };
+              }
             } else {
               return {
                 CUSTOMER_ID: {
                   value: field?.value ?? "",
-                  error: "FD Accounts not found for this Customer ID.",
+                  error:
+                    "Customer ID is not Confirmed. \n\rLast Modified User: " +
+                    (resData?.data?.[0]?.LAST_ENTERED_BY ?? "") +
+                    "\n\rLast Modified Branch: " +
+                    (resData?.data?.[0]?.LAST_ENTERED_BRANCH_CD ?? ""),
                   ignoreUpdate: true,
                 },
-                CUSTOMER_NAME: { value: resData?.ACCT_NM ?? "" },
+                CUSTOMER_NAME: { value: "" },
               };
             }
           } else {
             return {
               CUSTOMER_ID: {
-                value: field?.value ?? "",
-                error:
-                  "Customer ID is not Confirmed. \n\rLast Modified User: " +
-                  (resData?.LAST_ENTERED_BY ?? "") +
-                  "\n\rLast Modified Branch: " +
-                  (resData?.LAST_ENTERED_BRANCH_CD ?? ""),
+                value: "",
+                error: resData?.message,
                 ignoreUpdate: true,
+                isFieldFocused: true,
               },
               CUSTOMER_NAME: { value: "" },
             };
           }
         }
       },
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
       render: {
@@ -212,7 +222,34 @@ export const FixDepositParaFormMetadata = {
       name: "CUSTOMER_NAME",
       label: "Customer Name",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3.5 },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "PAN_NO",
+      label: "PAN",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "fin_int_amt",
+      label: "Financial Interest Amount",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "liable",
+      label: "TDS Liable(Taxable)",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 3.5 },
     },
   ],
 };
