@@ -17,6 +17,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { WorkerContextProvider } from "pages_audit/pages/reports/context/exportWorkerContext";
 import { CustomSnackbarContent } from "components/customNotification/customNotistack";
 import { PopupContextProvider } from "components/custom/popupContext";
+import { ThemeProviders } from "./ThemeProvider";
 
 const themeObj = unstable_createMuiStrictModeTheme(theme);
 
@@ -35,6 +36,7 @@ export const App = () => {
           <QueryClientProvider client={queryClient}>
             <PopupContextProvider>
               <WorkerContextProvider>
+                <ThemeProviders>
                 <SnackbarProvider
                   maxSnack={3}
                   autoHideDuration={5000}
@@ -42,6 +44,7 @@ export const App = () => {
                 >
                   <IndexPage />
                 </SnackbarProvider>
+                  </ThemeProviders>
               </WorkerContextProvider>
               {/* {process.env.NODE_ENV !== "production" ? (
                 <ReactQueryDevtools />

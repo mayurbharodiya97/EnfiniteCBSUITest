@@ -20,8 +20,6 @@ const PendingCustomer = () => {
 
   const [rowsData, setRowsData] = useState<any[]>([]);
 
-  const [isLoadingData, setIsLoadingData] = useState(false);
-  const [isCustomerData, setIsCustomerData] = useState(true);
   const [formMode, setFormMode] = useState("new");
   // useEffect(() => {
   //   if (isLoadingData) {
@@ -143,10 +141,6 @@ const PendingCustomer = () => {
           path="view-detail/*"
           element={
             <FormModal
-              isLoadingData={isLoadingData}
-              setIsLoadingData={setIsLoadingData}
-              isCustomerData={isCustomerData}
-              setIsCustomerData={setIsCustomerData}
               onClose={() => navigate(".")}
               formmode={formMode ?? "edit"}
               from={"pending-entry"}

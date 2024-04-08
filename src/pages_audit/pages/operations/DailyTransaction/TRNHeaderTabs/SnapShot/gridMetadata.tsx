@@ -89,9 +89,9 @@ export const snapShotGridMetaData: GridMetaDataType = {
 
     {
       columnName: "Closing Bal",
-      accessor: "closing",
+      accessor: "CL_BAL",
       sequence: 7,
-      componentType: "default",
+      componentType: "currency",
       width: 100,
       alignment: "right",
     },

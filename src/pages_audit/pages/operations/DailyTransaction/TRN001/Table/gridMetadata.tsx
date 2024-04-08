@@ -3,7 +3,7 @@ export const TRN001_TableMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Today's Transactions By User",
-    rowIdColumn: "index",
+    rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,

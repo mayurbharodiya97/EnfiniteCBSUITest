@@ -40,6 +40,8 @@ import { useTranslation } from "react-i18next";
 import { PersonalizeDash } from "./personalizeDash";
 import { AllowedAccess } from "./allowedAccess";
 import { UserDetail } from "./userDetail";
+import { enqueueSnackbar } from "notistack";
+import DynamicTheme from "app/audit/dynamictheme";
 // import { t } from "i18next";
 // interface notificationDataType {
 //   activityID: string;
@@ -313,8 +315,11 @@ export const Profile = () => {
                             {queryData?.data?.USER_LEVEL}
                           </Typography>
                         </Grid>
-                        <Grid item xs={9}>
+                        <Grid item xs={9} style={{marginTop:"10px"}}>
                           <About />
+                          <Grid style={{marginTop:"-40px"}}>
+                            <DynamicTheme/>
+                          </Grid>
                         </Grid>
                       </Grid>
                       <Box sx={{ width: "100%", marginTop: "auto" }}>

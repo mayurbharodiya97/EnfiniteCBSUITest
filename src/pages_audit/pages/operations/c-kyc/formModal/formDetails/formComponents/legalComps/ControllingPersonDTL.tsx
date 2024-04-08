@@ -14,7 +14,7 @@ import { personal_individual_detail_metadata } from '../../metadata/individual/p
 import _ from 'lodash';
 import TabNavigate from '../TabNavigate';
 
-const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, setIsLoading, displayMode}) => {
+const ControllingPersonDTL = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
   //  const [isLoading, setIsLoading] = useState(false)
   const { t } = useTranslation();
@@ -96,7 +96,7 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
                 let filteredCols:any[]=[]
                 filteredCols = Object.keys(data.RELATED_PERSON_DTL[0])
                 filteredCols = filteredCols.filter(field => !field.includes("_ignoreField"))
-                if(state?.isFreshEntryctx) {
+                if(state?.isFreshEntryctx || state?.isDraftSavedctx) {
                     filteredCols = filteredCols.filter(field => !field.includes("SR_CD"))
                 }
 
@@ -128,7 +128,7 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
                 newData["RELATED_PERSON_DTL"] = [...newFormatRelPerDtl]
                 handleFormDataonSavectx(newData)
 
-                if(!state?.isFreshEntryctx) {
+                if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                     let tabModifiedCols:any = state?.modifiedFormCols
                     tabModifiedCols = {
                         ...tabModifiedCols,
@@ -139,7 +139,7 @@ const ControllingPersonDTL = ({isCustomerData, setIsCustomerData, isLoading, set
             } else {
                 newData["RELATED_PERSON_DTL"] = []
                 handleFormDataonSavectx(newData)
-                if(!state?.isFreshEntryctx) {
+                if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
                     let tabModifiedCols:any = state?.modifiedFormCols
                     tabModifiedCols = {
                       ...tabModifiedCols,
@@ -197,7 +197,8 @@ const myGridRef = useRef<any>(null);
     return (
         <Grid container rowGap={3}>
             {/* <Typography sx={{color:"var(--theme-color3)"}} variant={"h6"}>Declaration Details {`(3/8)`}</Typography>             */}
-            {isCustomerData ? <Grid 
+            {/* {isCustomerData ?  */}
+            <Grid 
                 sx={{
                     backgroundColor:"var(--theme-color2)", 
                     padding:(theme) => theme.spacing(1), 
@@ -220,7 +221,7 @@ const myGridRef = useRef<any>(null);
                             initialValues={initialVal}
                             key={"controlling-person-form-kyc"+ initialVal}
                             metaData={corporate_control_dtl_meta_data as MetaDataType}
-                            displayMode={displayMode}
+                            displayMode={state?.formmodectx}
                             formStyle={{}}
                             hideHeader={true}
                             onFormButtonClickHandel={(fieldID, dependentFields) => {
@@ -252,7 +253,9 @@ const myGridRef = useRef<any>(null);
                         />
                 </Grid>
                 </Collapse>
-            </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null}
+            </Grid>
+             {/* : null} */}
+            {/* </Grid> : isLoading ? <Skeleton variant='rounded' animation="wave" height="220px" width="100%"></Skeleton> : null} */}
 
 
             {dialogOpen && <EntiyDialog 
@@ -261,7 +264,7 @@ const myGridRef = useRef<any>(null);
                 data={mutation?.data} 
                 isLoading={mutation?.isLoading} 
             />}
-            <TabNavigate handleSave={handleSave} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />            
+            <TabNavigate handleSave={handleSave} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />            
 
         </Grid>        
     )

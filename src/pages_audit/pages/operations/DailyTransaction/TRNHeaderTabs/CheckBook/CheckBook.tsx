@@ -60,6 +60,7 @@ export const CheckBook = ({ reqData }) => {
   >(["getCheckDetailsList", { reqData }], () =>
     API.getCheckDetailsList(reqData)
   );
+  console.log(data, "data!");
 
   const getTodayClearing = useMutation(API.getTodayClearing, {
     onSuccess: (data) => {

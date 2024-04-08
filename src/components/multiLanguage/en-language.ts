@@ -1,4 +1,5 @@
 export const en_language_data = {
+  Delete:"Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
   SignInWithUserIDandPassword: "Please provide your UserID and password",
@@ -419,6 +420,10 @@ export const en_language_data = {
   CompanyInfo: "Company Info",
   // tab - controlling person dtl
   ControllingPersonDTL: "Details of Controlling Person",
+  // account-master
+  AcctMaster: {
+    newAcct: "New Account",
+  },
 
   sidebar: {
     Dashboard: "Dashboard",

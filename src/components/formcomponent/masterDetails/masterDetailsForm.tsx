@@ -40,6 +40,7 @@ export interface MasterDetailsArgumentType {
   hideHeader?: boolean;
   formState?: any;
   setDataOnFieldChange?: any;
+  isDetailRowRequire?: boolean;
 }
 export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
   (
@@ -69,6 +70,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
       hideHeader = false,
       formState,
       setDataOnFieldChange,
+      isDetailRowRequire = true,
     },
     ref
   ) => {
@@ -183,14 +185,14 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
         if (!Array.isArray(result)) {
           result = [result];
         }
-        if (result.length === 0) {
+        if (result.length === 0 && isDetailRowRequire) {
           endSubmit(true);
           setServerError("Atleast one row must be in detail.");
         } else {
           let finalResult = result.filter(
             (one) => !(Boolean(one?._hidden) && Boolean(one?._isNewRow))
           );
-          if (finalResult.length === 0) {
+          if (finalResult.length === 0 && isDetailRowRequire) {
             endSubmit(true);
             setServerError("Atleast one row must be in detail.");
           } else {

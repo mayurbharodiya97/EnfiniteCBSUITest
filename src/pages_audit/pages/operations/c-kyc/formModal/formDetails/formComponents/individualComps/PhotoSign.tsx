@@ -6,14 +6,14 @@ import { transformFileObject } from "components/fileUpload/utils";
 import { utilFunction } from "components/utils";
 import { useSnackbar } from "notistack";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import { useStyles } from "./style";
+import { useStyles } from "../../../style";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { ActionTypes } from "components/dataTable";
 import _ from "lodash";
 import TabNavigate from "../TabNavigate";
 
-const PhotoSign = ({displayMode}) => {
+const PhotoSign = () => {
     const {state, handleFormDataonSavectx, handleColTabChangectx, handlePhotoOrSignctx, handleStepStatusctx, handleModifiedColsctx, handleCurrFormctx} = useContext(CkycContext);
     const { authState } = useContext(AuthContext);
     const classes = useStyles();
@@ -170,7 +170,7 @@ const PhotoSign = ({displayMode}) => {
             newData["PHOTO_MST"] = {...newData["PHOTO_MST"], ...data}
             handleFormDataonSavectx(newData)
         // } else 
-        if(!state?.isFreshEntryctx) {
+        if(!state?.isFreshEntryctx && state?.fromctx !== "new-draft") {
             // let newData = state?.formDatactx
             // let data = {
             //     CUST_PHOTO: state?.photoBase64ctx,
@@ -218,7 +218,7 @@ const PhotoSign = ({displayMode}) => {
                         Photo Image
                         </Typography>
                         <Tooltip
-                        key={"tooltip-" + displayMode}
+                        key={"tooltip-" + state?.formmodectx}
                         title={"Click to upload the Photo Image"} // temp
                         placement={"top"}
                         arrow={true}
@@ -308,7 +308,7 @@ const PhotoSign = ({displayMode}) => {
                         Signature Image
                         </Typography>
                         <Tooltip
-                        key={"tooltip-" + displayMode}
+                        key={"tooltip-" + state?.formmodectx}
                         title={"Click to upload the Signature Image"} // temp
                         placement={"top"}
                         arrow={true}
@@ -417,7 +417,7 @@ const PhotoSign = ({displayMode}) => {
                         </>
                     </Grid>
                 </Grid>
-                <TabNavigate handleSave={handleSavePhotoSign} displayMode={displayMode ?? "new"} isNextLoading={isNextLoading} />
+                <TabNavigate handleSave={handleSavePhotoSign} displayMode={state?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
         </>
     );
 }

@@ -119,11 +119,11 @@ export const getAcctDtlList = async (reqParaMeters) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSEARCHCOMPONENT", {
       COMP_CD: reqParaMeters?.COMP_CD,
-      A_FLAG: "A",
-      BRANCH_CD: reqParaMeters?.BRANCH_CD,
-      ACCT_TYPE: reqParaMeters?.ACCT_TYPE,
-      ACCT_CD: reqParaMeters?.ACCT_CD,
-      CUST_ID: reqParaMeters?.CUSTOMER_ID,
+      A_FLAG: reqParaMeters?.CUSTOMER_ID ? "" : "A",
+      BRANCH_CD: reqParaMeters?.CUSTOMER_ID ? "" : reqParaMeters?.BRANCH_CD,
+      ACCT_TYPE: reqParaMeters?.CUSTOMER_ID ? "" : reqParaMeters?.ACCT_TYPE,
+      ACCT_CD: reqParaMeters?.CUSTOMER_ID ? "" : reqParaMeters?.ACCT_CD,
+      CUST_ID: reqParaMeters?.CUSTOMER_ID ? reqParaMeters?.CUSTOMER_ID : "",
     });
   if (status === "0") {
     return data;

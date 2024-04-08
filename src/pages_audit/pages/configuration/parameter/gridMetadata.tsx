@@ -69,7 +69,7 @@ export const ParametersGridMetaData: GridMetaDataType = {
   ],
   columns: [
     {
-      accessor: "id",
+      accessor: "SR_NO",
       columnName: "Sr. No.",
       sequence: 1,
       alignment: "left",
@@ -113,6 +113,16 @@ export const ParametersGridMetaData: GridMetaDataType = {
     {
       accessor: "PARA_VALUE",
       columnName: "Value",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 200,
+      minWidth: 250,
+      maxWidth: 300,
+    },
+    {
+      accessor: "REMARKS",
+      columnName: "Remarks",
       sequence: 4,
       alignment: "left",
       componentType: "default",

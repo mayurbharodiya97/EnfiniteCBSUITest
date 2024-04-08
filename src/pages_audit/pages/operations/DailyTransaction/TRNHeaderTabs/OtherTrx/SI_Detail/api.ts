@@ -12,7 +12,7 @@ export const getSIDetailList = async (reqData) => {
       COMP_CD: reqData.COMP_CD,
       ACCT_TYPE: reqData.ACCT_TYPE,
       ACCT_CD: reqData.ACCT_CD,
-      TRAN_CD: reqData?.TRAN_CD,
+      // TRAN_CD: reqData?.TRAN_CD,
     });
   if (status === "0") {
     let responseData = data;

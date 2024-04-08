@@ -28,8 +28,8 @@ import { isValidDate } from "components/utils/utilFunctions/function";
 import React, {
   useEffect,
   useState,
-  useCallback,
   useContext,
+  useCallback,
   useMemo,
 } from "react";
 import { useMutation } from "react-query";
@@ -45,6 +45,8 @@ import TRN001_Table from "./Table";
 import DailyTransTabs from "../TRNHeaderTabs";
 import { GeneralAPI } from "registry/fns/functions";
 import { useLocation } from "react-router-dom";
+import { usePopupContext } from "components/custom/popupContext";
+import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
 
 //mui theme
 const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -60,19 +62,19 @@ const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
 export const Trn001 = () => {
   //hooks
   let location = useLocation();
+  const { MessageBox } = usePopupContext();
 
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
   const { cardStore, setCardStore } = useContext(AccDetailContext);
-  console.log(cardStore?.cardsInfo, "cardStore");
   //variables
   const [defBranch, setDefBranch] = useState<any>({});
   const [withdraw, setWithdraw] = useState<any>({});
 
   var defTableValue = {
-    branch: defBranch,
-    accType: { label: "", value: "", info: "" },
+    branch: { label: "", value: "", info: "" },
+    accType: { label: " ", value: "  ", info: "  " },
     bugMsgAccType: "",
     accNo: "",
     bugAccNo: false,
@@ -123,12 +125,18 @@ export const Trn001 = () => {
   const [accValidMsg, setAccValidMsg] = useState<any>("");
   const [cardsData, setCardsData] = useState<any>([]);
   const [reqData, setReqData] = useState<any>([]);
-
   const { enqueueSnackbar } = useSnackbar();
-
-  useEffect(() => {
-    console.log("loccc", location);
-  }, [location]);
+  const {
+    clearCache: clearTabsCache,
+    error: tabsErorr,
+    data: tabsDetails,
+    fetchData: fetchTabsData,
+    isError: isTabsError,
+    isLoading: isTabsLoading,
+  } = useCacheWithMutation(
+    "getTabsByParentTypeKeyTrn001",
+    CommonApi.getTabsByParentType
+  );
   let scrollSaveHeading =
     "Do you wish to save this " + (isArray ? "Scroll?" : "Transaction?");
 
@@ -153,7 +161,6 @@ export const Trn001 = () => {
 
   useEffect(() => {
     //bug checker on row change
-    console.log("rows trn1", rows);
     let i = 0;
     rows[i].bug = false;
     if (rows.length > 0) {
@@ -246,7 +253,6 @@ export const Trn001 = () => {
     onSuccess: (data) => {
       setLoading(false);
       setCardStore({ ...cardStore, cardsInfo: data });
-      console.log(data, "data getCarousalCards");
       setCardsData(data);
     },
     onError: (error: any) => {
@@ -257,19 +263,16 @@ export const Trn001 = () => {
       setCardStore({ ...cardStore, cardsInfo: [] });
     },
   });
-  useEffect(() => {
-    console.log(cardsData, "setCardsData");
-  }, [cardsData]);
-  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-    onSuccess: (data) => {
-      setTabsData(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
+  // const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
+  //   onSuccess: (data) => {
+  //     setTabsData(data);
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //   },
+  // });
   const getAccNoValidation = useMutation(GeneralAPI.getAccNoValidation, {
     onSuccess: (data) => {
       if (data?.MESSAGE1) {
@@ -323,7 +326,6 @@ export const Trn001 = () => {
   });
   const getDateValidation = useMutation(API.getChqDateValidation, {
     onSuccess: (data) => {
-      console.log(data, "data date valid");
       const obj = [...rows];
       // if (data.ERR_CODE) {
       //   enqueueSnackbar(data?.ERR_MSG, {
@@ -729,7 +731,7 @@ export const Trn001 = () => {
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
       rows[i]?.accNo && getAccNoValidation.mutate(data, i);
-      rows[i]?.accNo && getCarousalCards.mutate(data);
+      rows[i]?.accNo && getCarousalCards.mutate({ reqData: data });
       setTempStore({ ...tempStore, accInfo: data });
       setReqData(data);
     }
@@ -832,7 +834,12 @@ export const Trn001 = () => {
   };
 
   const handleGetHeaderTabs = (data) => {
-    getTabsByParentType.mutate(data);
+    // getTabsByParentType.mutate({ reqData: data });
+    fetchTabsData({
+      cacheId: data?.ACCT_TYPE,
+      reqData: data,
+      // controllerFinal: controllerRef.current,
+    });
   };
 
   const handleViewAll = () => {
@@ -874,7 +881,7 @@ export const Trn001 = () => {
         {accValidMsg?.split("\r")?.map((a, i) => {
           return (
             <>
-              <div style={{ minWidth: "300px" }}>{a}</div>
+              <div style={{ minWidth: "300px", textAlign: "center" }}>{a}</div>
               <br />
             </>
           );
@@ -897,7 +904,7 @@ export const Trn001 = () => {
     <>
       <DailyTransTabs
         heading="Daily Transaction (Maker) (TRN/001)"
-        tabsData={tabsData}
+        tabsData={tabsDetails}
         cardsData={cardsData}
         reqData={reqData}
       />
