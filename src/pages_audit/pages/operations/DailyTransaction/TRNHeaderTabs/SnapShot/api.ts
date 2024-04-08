@@ -7,6 +7,9 @@ import { AuthSDK } from "registry/fns/auth";
 import { format } from "date-fns"; //format(new Date(), "dd/MMM/yyyy")
 
 export const getSnapShotList = async (reqData) => {
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSANPSHOTDTL", {
       COMP_CD: reqData.COMP_CD,
@@ -17,7 +20,7 @@ export const getSnapShotList = async (reqData) => {
       TO_ACCT: reqData.ACCT_CD,
       FROM_DATE: reqData?.FROM_DATE
         ? reqData?.FROM_DATE
-        : format(new Date(), "dd-MMM-yyyy"),
+        : format(oneMonthAgo, "dd-MMM-yyyy"),
       TO_DATE: reqData?.TO_DATE
         ? reqData?.TO_DATE
         : format(new Date(), "dd-MMM-yyyy"),
