@@ -21,13 +21,16 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '50%',
     border: '2px solid transparent',
     padding: '6px',
-    width: '56px', // Increased width
-    height: '56px', // Increased height
+    width: '56px',
+    height: '56px',
     margin: '0 5px',
     cursor: 'pointer',
   },
   selectedCircle: {
     border: '2px dashed black',
+    width: '45px',
+    height: '45px',
+    padding: '1px',
   },
 }));
 
@@ -54,13 +57,13 @@ const DynamicTheme = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className={classes.circleContainer}>
       <InputLabel
         id="themeSelector-label"
-        style={{ marginBottom: '7px', fontWeight: 'bold' }}
+        style={{fontWeight: 'bold' }}
       >
         Theme:-
       </InputLabel>
-      <div className={classes.circleContainer}>
         <div className={getCircleStyle('theme1')} onClick={() => handleThemeChange('theme1')}>
           <img src={theme1Icon} alt="Theme 1" style={{ width: '100%', height: '100%' }} />
         </div>

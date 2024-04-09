@@ -497,7 +497,7 @@ export const Profile = () => {
                             {queryData?.data?.USER_LEVEL}
                           </Typography>
                         </Grid>
-                        <Grid item xs={9} style={{marginTop:"10px"}}>
+                        <Grid item xs={9} style={{marginTop:"auto"}}>
                           <About />
                           <Grid style={{marginTop:"-40px"}}>
                             <DynamicTheme/>
