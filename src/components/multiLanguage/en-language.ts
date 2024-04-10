@@ -420,6 +420,10 @@ export const en_language_data = {
   CompanyInfo: "Company Info",
   // tab - controlling person dtl
   ControllingPersonDTL: "Details of Controlling Person",
+  // account-master
+  AcctMaster: {
+    newAcct: "New Account",
+  },
 
   sidebar: {
     Dashboard: "Dashboard",

@@ -1,1 +1,1 @@
-export { StoppaymentEntry as default } from "./stoppaymentEntry";
+export { StopPaymentEntry as default } from "./stoppaymentEntry";

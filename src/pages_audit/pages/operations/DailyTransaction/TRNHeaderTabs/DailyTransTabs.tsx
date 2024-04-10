@@ -70,6 +70,8 @@ import * as CommonApi from "../TRNCommon/api";
 import { GradientButton } from "components/styledComponent/button";
 import FormModal from "../../c-kyc/formModal/formModal";
 import CkycProvider from "../../c-kyc/CkycContext";
+import { useCacheWithMutation } from "./cacheMutate";
+import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -105,7 +107,6 @@ export const DailyTransTabs = ({
   reqData,
 }: DailyTransTabsProps) => {
   const [tabValue, setTabValue] = React.useState(0);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
   const navArray = tabsData ? tabsData : [];
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -131,9 +132,31 @@ export const DailyTransTabs = ({
             variant="scrollable"
           >
             {navArray.length > 0 ? (
-              navArray?.map((a, i) => <Tab label={a?.TAB_DISPL_NAME} />)
+              navArray?.map((a, i) => (
+                <Tab
+                  label={
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <div style={{ marginRight: "0.4rem" }}>
+                        <CommonSvgIcons iconName={a?.ICON} />
+                      </div>
+                      {a?.TAB_DISPL_NAME}
+                    </div>
+                  }
+                  // icon={<CommonSvgIcons iconName={null} />}
+                  // iconPosition="top"
+                />
+              ))
             ) : (
-              <Tab label="Account" />
+              <Tab
+                label={
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ marginRight: "0.4rem" }}>
+                      <CommonSvgIcons iconName={"accountIcon"} />
+                    </div>
+                    {"Account"}
+                  </div>
+                }
+              />
             )}
           </Tabs>
         </Grid>
@@ -243,35 +266,21 @@ export const DailyTransTabsWithDialog = ({
   rowsData,
   setRowsData,
 }) => {
-  const [tabsData, setTabsData] = useState<any>({
-    tabsData: [],
-    cardStore: [],
-  });
+  const [cardData, setCardsData] = useState<any>([]);
   const navigate = useNavigate();
   const previousRowData = useRef(null);
-  const [custDtl, setCustDtl] = useState<any>(false);
-  const { authState } = useContext(AuthContext);
-  const [selectedRowData, setSelectedRowData] = useState(null);
-  const [rowChangeData, SetRowChangeData] = useState<any>();
   const controllerRef = useRef<AbortController>();
-  // const [tabData, setTabsData] = useState<any>([]);
-  // useEffect(() => {
-  //   // Add event listener for the message event
-  //   //@ts-ignore
-  //   window._childFunction = (req) => {
-  //     if (Boolean(req)) {
-  //       setTabsData(req);
-  //     }
-  //     //@ts-ignore
-  //     window._childFunction = null;
-  //   };
-  //   //@ts-ignore
-  //   window?.opener?._parentFuntion?.();
-  //   return () => {
-  //     //@ts-ignore
-  //     window._childFunction = null;
-  //   };
-  // }, []);
+  const {
+    clearCache: clearTabsCache,
+    error: tabsErorr,
+    data: tabsDetails,
+    fetchData: fetchTabsData,
+    isError: isTabsError,
+    isLoading: isTabsLoading,
+  } = useCacheWithMutation(
+    "getTabsByParentTypeKey",
+    CommonApi.getTabsByParentType
+  );
 
   const actions: ActionTypes[] = [
     {
@@ -287,99 +296,13 @@ export const DailyTransTabsWithDialog = ({
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getAcctDtlList"], () =>
-    API.getAcctDtlList({
-      ...rowsData?.[0]?.data,
-      COMP_CD: authState?.companyID,
-    })
-  );
-
-  // let tabsApiSuccess = [];
-  // let cardsApiSuccess = [];
-
-  // const handleBothAPISuccess = () => {
-  //   if (tabsApiSuccess !== null && cardsApiSuccess !== null) {
-  //     setTabsData((preTabsData) => ({
-  //       ...preTabsData,
-  //       tabsData: tabsApiSuccess,
-  //     }));
-  //     setTabsData((preCardsData) => ({
-  //       ...preCardsData,
-  //       cardStore: cardsApiSuccess,
-  //     }));
-  //   }
-  // };
-
-  // const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-  //   onSuccess: (data) => {
-  //     // tabsApiSuccess = data;
-  //     // handleBothAPISuccess();
-  //     setTabsData((preTabsData) => ({ ...preTabsData, tabsData: data }));
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error?.error_msg, {
-  //       variant: "error",
-  //     });
-  //     setTabsData((preTabsData) => ({
-  //       ...preTabsData,
-  //       tabsData: [],
-  //     }));
-  //   },
-  // });
-
-  // const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
-  //   onSuccess: (data) => {
-  //     // cardsApiSuccess = data;
-  //     // handleBothAPISuccess();
-  //     setTabsData((preCardsData) => ({ ...preCardsData, cardStore: data }));
-  //   },
-  //   onError: (error: any) => {
-  //     enqueueSnackbar(error?.error_msg, {
-  //       variant: "error",
-  //     });
-  //     setTabsData((preCardsData) => ({
-  //       ...preCardsData,
-  //       cardStore: [],
-  //     }));
-  //   },
-  // });
-
-  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-    onSuccess: (data) => {
-      setTabsData((prevState) => ({
-        ...prevState,
-        tabsData: data,
-      }));
-      // finalTabsData = data;
-      // handleApiSuccess(rowsDataRef.current);
-    },
-    onError: (error: any) => {
-      if (
-        error?.error_msg !==
-        "Timeout : Your request has been timed out or has been cancelled by the user."
-      ) {
-        enqueueSnackbar(error?.error_msg, {
-          variant: "error",
-        });
-      }
-      setTabsData((preTabsData) => ({
-        ...preTabsData,
-        tabsData: [],
-      }));
-    },
-  });
+  >(["getAcctDtlList"], () => API.getAcctDtlList(rowsData?.[0]?.data));
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
-      setTabsData((prevState) => ({
-        ...prevState,
-        cardStore: data,
-      }));
-      // cardsData = data;
-      // handleApiSuccess(rowsDataRef.current);
+      setCardsData(data);
     },
     onError: (error: any) => {
-      // Check if the error message does not match the specific message to exclude
       if (
         error?.error_msg !==
         "Timeout : Your request has been timed out or has been cancelled by the user."
@@ -388,68 +311,43 @@ export const DailyTransTabsWithDialog = ({
           variant: "error",
         });
       }
-
-      // Update the state regardless of the error
-      setTabsData((preCardsData) => ({
-        ...preCardsData,
-        cardStore: [],
-      }));
+      setCardsData([]);
     },
   });
 
   const setCurrentAction = useCallback((data) => {
     if (data?.name === "_rowChanged") {
-      SetRowChangeData(data?.rows);
-    } else if (data?.name === "view-details") {
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      controllerRef.current = new AbortController();
       const rowsData = data?.rows?.[0]?.data;
-      if (rowsData && rowsData !== previousRowData.current) {
+      if (
+        Boolean(rowsData) &&
+        JSON.stringify(rowsData) !== JSON.stringify(previousRowData?.current)
+      ) {
+        previousRowData.current = rowsData;
         setRowsData(data?.rows);
-        console.log(rowsData, "rowsData==>");
-        getTabsByParentType.mutate({ reqData: rowsData });
-        getCarousalCards.mutate({ reqData: { ...rowsData, PARENT_TYPE: "" } });
+        fetchTabsData({
+          cacheId: rowsData?.SR_NO,
+          reqData: rowsData,
+          controllerFinal: controllerRef.current,
+        });
+        getCarousalCards.mutate({
+          reqData: { ...rowsData, PARENT_TYPE: "" },
+          controllerFinal: controllerRef.current,
+        });
       }
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (data?.length > 0) {
-  //     const reqData = [
-  //       {
-  //         data: {
-  //           BRANCH_CD: data?.[0]?.BRANCH_CD,
-  //           COMP_CD: data?.[0]?.COMP_CD,
-  //           ACCT_TYPE: data?.[0]?.ACCT_TYPE,
-  //           ACCT_CD: data?.[0]?.ACCT_CD,
-  //           ENTERED_COMP_CD: data?.[0]?.ENTERED_COMP_CD,
-  //           ENTERED_BRANCH_CD: data?.[0]?.ENTERED_BRANCH_CD,
-  //           PARENT_TYPE: "",
-  //           PARENT_CODE: data?.[0]?.PARENT_CODE,
-  //         },
-  //       },
-  //     ];
-  //     setRowsData(reqData);
-  //     getTabsByParentType.mutate(reqData?.[0]?.data);
-  //     getCarousalCards.mutate(reqData?.[0]?.data);
-  //     console.log(rowsData, "rowsData---usecheck");
-  //   }
-  // }, [data]);
-
   useEffect(() => {
-    if (controllerRef.current) {
-      controllerRef.current.abort();
+    if (Boolean(isTabsError)) {
+      enqueueSnackbar((tabsErorr as any)?.error_msg, {
+        variant: "error",
+      });
     }
-
-    controllerRef.current = new AbortController();
-    const controllerFinal = controllerRef.current;
-
-    if (Boolean(rowChangeData)) {
-      setRowsData([{ data: rowChangeData }]);
-      //@ts-ignore
-      getTabsByParentType.mutate({ reqData: rowChangeData, controllerFinal });
-      getCarousalCards.mutate({ reqData: rowChangeData, controllerFinal });
-      previousRowData.current = rowChangeData;
-    }
-  }, [rowChangeData]);
+  }, [isTabsError]);
 
   return (
     <Dialog
@@ -457,11 +355,6 @@ export const DailyTransTabsWithDialog = ({
       fullScreen
       PaperProps={{ style: { background: "var(--theme-color4)" } }}
     >
-      {/* <AcctSearchParent
-        cardsData={tabData?.cardStore}
-        tabData={tabData?.tabsData}
-      /> */}
-
       <DialogTitle
         sx={{
           display: "flex",
@@ -488,48 +381,17 @@ export const DailyTransTabsWithDialog = ({
           }`}
         </Typography>
         <Box>
-          {/* <GradientButton
+          <GradientButton
             onClick={() =>
-              navigate("view-details", {
-                state: [
-                  {
-                    data: {
-                      BRANCH: "099 ",
-                      CONFIRMED_FLAG: "CONFIRMED",
-                      CATEGORY_CODE: "01  ",
-                      ACTIVE: "Y",
-                      MOBILE_NUMBER: "7858089344",
-                      CUSTOMER_TYPE: "I",
-                      CUSTOMER_ID: "213951",
-                      KYC_NO: "",
-                      REMARKS: "",
-                      REQUEST_ID: "1492",
-                      CATEG_NM: "INDIVIDUAL PERSON",
-                      UPD_TAB_FLAG_NM: "D",
-                      CONSTITUTION_NAME: "INDIVIDUAL",
-                      CUSTOMER_NAME: "HINAL  ",
-                      CONFIRMED: "Y",
-                      UPD_TAB_NAME: "EXISTING DOC MODIFY",
-                      CATEGORY_CONSTITUTIONS: "INDIVIDUAL PERSON-INDIVIDUAL",
-                      MAKER: "adi",
-                      PAN_NO: "DWIPP9643D",
-                      CONSTITUTION_TYPE: "01",
-                    },
-                  },
-                ],
-              })
+              handleClose(clearTabsCache, rowsData?.[0]?.data?.SR_NO)
             }
             color="primary"
           >
-            Customer Details
-          </GradientButton> */}
-          <GradientButton onClick={handleClose} color="primary">
             Close
           </GradientButton>
         </Box>
       </DialogTitle>
-      {Boolean(getCarousalCards.isLoading) ||
-      Boolean(getTabsByParentType.isLoading) ? (
+      {Boolean(isTabsLoading) || Boolean(getCarousalCards?.isLoading) ? (
         <LinearProgress
           sx={{
             margin: "4px 32px 0 32px",
@@ -544,12 +406,9 @@ export const DailyTransTabsWithDialog = ({
         <>
           <DailyTransTabs
             heading={""}
-            tabsData={tabsData?.tabsData}
-            cardsData={tabsData?.cardStore}
-            reqData={{
-              ...rowsData?.[0]?.data,
-              COMP_CD: authState?.companyID,
-            }}
+            tabsData={tabsDetails}
+            cardsData={cardData}
+            reqData={rowsData?.[0]?.data}
           />
           <GridWrapper
             key={`TodaysTransactionTableGrid${isLoading}`}

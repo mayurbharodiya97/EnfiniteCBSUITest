@@ -24,6 +24,8 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
       if(detailsDataRef.NEW_FLAG === "Y") {
         setAllowUpdate(true)
       }
+    } else {
+      setAllowUpdate(true)
     }
   }, [])
   const validateFilesAndAddToListCB = useCallback(

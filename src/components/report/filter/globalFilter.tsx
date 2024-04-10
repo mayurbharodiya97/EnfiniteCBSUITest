@@ -7,6 +7,7 @@ export const GlobalFilter = ({
   preGlobalFilteredRows,
   globalFilter,
   setGlobalFilter,
+  searchPlaceholder,
 }) => {
   const count = preGlobalFilteredRows.length;
   const [, setValue] = useState(globalFilter);
@@ -22,7 +23,7 @@ export const GlobalFilter = ({
         setValue(e.target.value);
         onChange(e.target.value);
       }}
-      placeholder={`search in ${count} records`}
+      placeholder={`search in ${count} ${searchPlaceholder}`}
     />
   );
 };

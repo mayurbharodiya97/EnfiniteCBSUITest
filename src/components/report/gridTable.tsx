@@ -44,7 +44,7 @@ interface GridTableType {
   initialState?: any;
   filterTypes?: any;
   title?: any;
-  onDoubleClickAction?:any;
+  onDoubleClickAction?: any;
   options?: any;
   loading: boolean;
   hideFooter?: boolean;
@@ -56,6 +56,7 @@ interface GridTableType {
   hideAmountIn?: boolean;
   retrievalType?: string;
   isOpenRetrievalDefault?: boolean;
+  searchPlaceholder?: any;
 }
 
 const defaultMaxHeight = 300;
@@ -126,6 +127,7 @@ export const GridTable: FC<GridTableType> = ({
   hideAmountIn,
   retrievalType,
   isOpenRetrievalDefault,
+  searchPlaceholder,
 }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [isOpenExport, setOpenExport] = useState(false);
@@ -179,9 +181,11 @@ export const GridTable: FC<GridTableType> = ({
         };
       }
       return (
-        <TableRow {...row.getRowProps({ style })} component="div"  
+        <TableRow
+          {...row.getRowProps({ style })}
+          component="div"
           onDoubleClick={() => {
-            if(typeof onDoubleClickAction === "undefined") return
+            if (typeof onDoubleClickAction === "undefined") return;
             onDoubleClickAction({
               rows: [
                 {
@@ -189,9 +193,9 @@ export const GridTable: FC<GridTableType> = ({
                   id: row?.id,
                 },
               ],
-            })
-            }
-            }>
+            });
+          }}
+        >
           {row.cells.map((cell, index) => {
             return cell.isAggregated
               ? cell.render("Aggregated")
@@ -242,6 +246,7 @@ export const GridTable: FC<GridTableType> = ({
             preGlobalFilteredRows={preGlobalFilteredRows}
             setGlobalFilter={setGlobalFilter}
             globalFilter={globalFilter}
+            searchPlaceholder={searchPlaceholder}
           />
           {!Boolean(hideAmountIn) ? <AmountSelect /> : null}
 
@@ -270,20 +275,19 @@ export const GridTable: FC<GridTableType> = ({
             style={{ color: "var(--theme-color2)" }}
             label="Expand Rows"
           />
-          {
-            rows.length ? (
-              <FormControlLabel
-            control={
-              <Tooltip title="Show export options">
-                <Button
-                  onClick={() => {
-                    setOpenExport(true);
-                  }}
-                  style={{ marginTop: "0px", color: "white" }}
-                >
-                  Export <GetAppIcon />
-                </Button>
-                {/* <IconButton
+          {rows.length ? (
+            <FormControlLabel
+              control={
+                <Tooltip title="Show export options">
+                  <Button
+                    onClick={() => {
+                      setOpenExport(true);
+                    }}
+                    style={{ marginTop: "0px", color: "white" }}
+                  >
+                    Export <GetAppIcon />
+                  </Button>
+                  {/* <IconButton
                   onClick={() =>
                     createNewWorkbook({
                       data: data,
@@ -296,14 +300,13 @@ export const GridTable: FC<GridTableType> = ({
                 >
                   <GetAppIcon />
                 </IconButton> */}
-              </Tooltip>
-            }
-            style={{ color: "var(--theme-color2)" }}
-            label=""
-          />
-            ): null
-          }
-          
+                </Tooltip>
+              }
+              style={{ color: "var(--theme-color2)" }}
+              label=""
+            />
+          ) : null}
+
           {typeof onClose === "function" ? (
             <Tooltip title="Close">
               <IconButton

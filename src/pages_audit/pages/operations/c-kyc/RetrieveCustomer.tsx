@@ -164,9 +164,15 @@ const RetrieveCustomer = () => {
 
 
       setRowsData(data?.rows);
-      navigate(data?.name, {
-        state: data?.rows,
-      });
+      if(data?.name === "document") {
+        navigate(data?.name, {
+          state: {CUSTOMER_DATA: data?.rows},
+        })
+      } else {
+        navigate(data?.name, {
+          state: data?.rows,
+        });
+      }
     },
     [navigate]
   );

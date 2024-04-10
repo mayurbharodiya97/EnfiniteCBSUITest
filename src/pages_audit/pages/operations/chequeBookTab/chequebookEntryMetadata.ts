@@ -4,7 +4,7 @@ import * as API from "./api";
 
 export const ChequeBookEntryMetaData = {
   form: {
-    name: "PRIORITY",
+    name: "Cheque-book-entry",
     label: "Cheque Book Issue",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
@@ -19,7 +19,7 @@ export const ChequeBookEntryMetaData = {
         },
         container: {
           direction: "row",
-          spacing: 2,
+          spacing: 1.5,
         },
       },
     },
@@ -67,7 +67,6 @@ export const ChequeBookEntryMetaData = {
       accountTypeMetadata: {
         // isFieldFocused: true,
         options: (dependentValue, formState, _, authState) => {
-          console.log("<<<<fnef", dependentValue, formState, _, authState);
           return GeneralAPI.get_Account_Type({
             COMP_CD: authState?.companyID,
             BRANCH_CD: authState?.user?.branchCode,
@@ -96,7 +95,7 @@ export const ChequeBookEntryMetaData = {
         },
       },
       accountCodeMetadata: {
-        disableCaching: true,
+        // disableCaching: true,
         postValidationSetCrossFieldValues: async (
           field,
           formState,
@@ -418,7 +417,7 @@ export const ChequeBookEntryMetaData = {
           let postdata = await API.chequebookCharge(Apireq);
 
           return {
-            SERVECE_C_FLAG: {
+            SERVICE_C_FLAG: {
               value: postdata?.[0]?.FLAG_ENABLE_DISABLE ?? "",
             },
             ROUND_OFF_FLAG: {
@@ -499,13 +498,13 @@ export const ChequeBookEntryMetaData = {
         xl: 2,
       },
       dependentFields: [
-        "SERVECE_C_FLAG",
+        "SERVICE_C_FLAG",
         "GST",
         "ROUND_OFF_FLAG",
         "CHEQUE_TOTAL",
       ],
       isReadOnly(fieldData, dependentFieldsValues, formState) {
-        if (dependentFieldsValues?.SERVECE_C_FLAG?.value === "N") {
+        if (dependentFieldsValues?.SERVICE_C_FLAG?.value === "N") {
           return false;
         } else {
           return true;
@@ -682,7 +681,7 @@ export const ChequeBookEntryMetaData = {
       },
       name: "REQUISITION_DT",
       label: "Requisition Date",
-      isReadOnly: true,
+      // isReadOnly: true,
       maxDate: new Date(),
       GridProps: {
         xs: 12,
@@ -782,29 +781,29 @@ export const ChequeBookEntryMetaData = {
           animation: "5s anim-popoutin ease ",
         },
 
-        "@keyframes anim-popoutin": {
-          "0%": {
-            transform: "scale(0)",
-            opacity: "0",
-            textShadow: "0 0 0 rgba(0, 0, 0, 0)",
-          },
-          "25% ": {
-            color: "var(--theme-color6)",
-            transform: "scale(1.5)",
-            opacity: "1",
-            textShadow: "3px 10px 5px rgba(0, 0, 0, 0.5)",
-          },
-          "50%": {
-            transform: "scale(1)",
-            opacity: "1",
-            textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
-          },
-          "100%": {
-            transform: "scale(1)",
-            opacity: "1",
-            textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
-          },
-        },
+        // "@keyframes anim-popoutin": {
+        //   "0%": {
+        //     transform: "scale(0)",
+        //     opacity: "0",
+        //     textShadow: "0 0 0 rgba(0, 0, 0, 0)",
+        //   },
+        //   "25% ": {
+        //     color: "var(--theme-color6)",
+        //     transform: "scale(1.5)",
+        //     opacity: "1",
+        //     textShadow: "3px 10px 5px rgba(0, 0, 0, 0.5)",
+        //   },
+        //   "50%": {
+        //     transform: "scale(1)",
+        //     opacity: "1",
+        //     textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
+        //   },
+        //   "100%": {
+        //     transform: "scale(1)",
+        //     opacity: "1",
+        //     textShadow: "1px 0 0 rgba(0, 0, 0, 0)",
+        //   },
+        // },
         "& .MuiInputBase-root": {
           marginTop: " 0px !important",
           overflow: "hidden",
@@ -836,7 +835,7 @@ export const ChequeBookEntryMetaData = {
       render: {
         componentType: "hidden",
       },
-      name: "SERVECE_C_FLAG",
+      name: "SERVICE_C_FLAG",
     },
     {
       render: {

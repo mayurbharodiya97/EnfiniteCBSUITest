@@ -194,12 +194,42 @@ export const Accountinquiry = ({ open, onClose }) => {
     formRef?.current?.handleSubmit(event, "BUTTON_CLICK");
   };
 
-  const handleClose = () => {
+  const handleClose = (clearTabsCache, cacheID) => {
     setAcctOpen(false);
+    clearTabsCache();
   };
   useEffect(() => {
     return () => {
       queryClient.removeQueries("getAcctDtlList");
+      // queryClient.removeQueries("getTabsByParentType");
+      // queryClient.removeQueries("getCarousalCards");
+      queryClient.removeQueries("getSIDetailList");
+      queryClient.removeQueries("getLienDetailList");
+      queryClient.removeQueries("getOWChqList");
+      queryClient.removeQueries("getTempList");
+      queryClient.removeQueries("getATMList");
+      queryClient.removeQueries("getASBAList");
+      queryClient.removeQueries("getACH_IWList");
+      queryClient.removeQueries("getACH_OWList");
+      queryClient.removeQueries("getInstructionList");
+      queryClient.removeQueries("getGroupList");
+      queryClient.removeQueries("getAPYList");
+      queryClient.removeQueries("getAPBSList");
+      queryClient.removeQueries("getPMBYList");
+      queryClient.removeQueries("getJointDetailsList");
+      queryClient.removeQueries("getTodayTransList");
+      queryClient.removeQueries("getCheckDetailsList");
+      queryClient.removeQueries("getSnapShotList");
+      queryClient.removeQueries("getHoldChargeList");
+      queryClient.removeQueries("getDocTemplateList");
+      queryClient.removeQueries("getStopPayList");
+      queryClient.removeQueries("getInsuranceList");
+      queryClient.removeQueries("Disbursement");
+      queryClient.removeQueries("getDisbursementList");
+      queryClient.removeQueries("getSubsidyList");
+      queryClient.removeQueries("getSearchList");
+      queryClient.removeQueries("getLimitList");
+      queryClient.removeQueries("getStockList");
     };
   }, [acctOpen]);
   return (

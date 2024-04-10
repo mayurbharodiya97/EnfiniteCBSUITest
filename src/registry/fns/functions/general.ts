@@ -714,10 +714,10 @@ const GeneralAPISDK = () => {
 
       if (Array.isArray(responseData)) {
         responseData = responseData.map(
-          ({ ACCT_TYPE, PARENT_CODE, DESCRIPTION, ...other }) => {
+          ({ ACCT_TYPE, PARENT_CODE, CONCDESCRIPTION, ...other }) => {
             return {
               value: ACCT_TYPE,
-              label: ACCT_TYPE + " - " + DESCRIPTION,
+              label: CONCDESCRIPTION,
               ...other,
             };
           }

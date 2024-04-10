@@ -39,6 +39,7 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
           ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
           ACCT_CD: rows?.[0]?.data?.ACCT_CD,
           BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+          ENTERED_DATE: authState?.workingDate,
         });
       },
     }
@@ -116,7 +117,7 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
             console.log("isSubmitting, handleSubmit", isSubmitting);
             return (
               <>
-                {rows?.[0]?.data?.EXPIRED_FLAG === "A" && (
+                {rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y" && (
                   <Button
                     onClick={(event) => {
                       handleSubmit(event, "Save");

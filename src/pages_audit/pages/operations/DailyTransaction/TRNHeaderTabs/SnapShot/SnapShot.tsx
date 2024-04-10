@@ -52,54 +52,52 @@ export const SnapShot = ({ reqData }) => {
   const [debit, setDebit] = useState<any>(0);
 
   // api define
-  const getSnapShotList = useMutation(API.getSnapShotList, {
-    onSuccess: (data) => {
-      console.log(data, " getSnapShotList detailssss");
-      let debSum = 0;
-      let credSum = 0;
+  // const getSnapShotList = useMutation(API.getSnapShotList, {
+  //   onSuccess: (data) => {
+  //     console.log(data, " getSnapShotList detailssss");
+  //     let debSum = 0;
+  //     let credSum = 0;
 
-      data?.map((a, i) => {
-        debSum = debSum + Number(a?.debit1);
-        credSum = credSum + Number(a?.credit1);
-      });
+  //     data?.map((a, i) => {
+  //       debSum = debSum + Number(a?.debit1);
+  //       credSum = credSum + Number(a?.credit1);
+  //     });
 
-      console.log(credSum, debSum, "aaa");
-      setCredit(credSum?.toFixed(2));
-      setDebit(debSum?.toFixed(2));
-      setRows(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
-  console.log(rows, "rows");
-  const handleGetSnapshot = (prevDate, nextDate) => {
-    let obj = reqData;
-    obj.FROM_DATE = prevDate;
-    obj.TO_DATE = nextDate;
-    getSnapShotList.mutate(obj);
-  };
+  //     console.log(credSum, debSum, "aaa");
+  //     setCredit(credSum?.toFixed(2));
+  //     setDebit(debSum?.toFixed(2));
+  //     setRows(data);
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //   },
+  // });
+  // console.log(rows, "rows");
+  // const handleGetSnapshot = (prevDate, nextDate) => {
+  //   let obj = reqData;
+  //   obj.FROM_DATE = prevDate;
+  //   obj.TO_DATE = nextDate;
+  //   getSnapShotList.mutate(obj);
+  // };
 
-  useEffect(() => {
-    reqData?.ACCT_CD && handleGetSnapshot("", "");
-    setCredit("0.00");
-    setDebit("0.00");
-  }, [reqData]);
+  // useEffect(() => {
+  //   reqData?.ACCT_CD && handleGetSnapshot("", "");
+  //   setCredit("0.00");
+  //   setDebit("0.00");
+  // }, [reqData]);
 
-  // const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
-  //   any,
-  //   any
-  // >(["getSnapShotList"], () => API.getSnapShotList(reqData));
+  const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
+    any,
+    any
+  >(["getSnapShotList", { reqData }], () => API.getSnapShotList(reqData));
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
-    console.log(row, "rowwww");
     setDataRow(row);
 
     if (data.name === "view-detail") {
-      console.log("heloooo");
       setDateDialog(true);
     }
   }, []);
@@ -109,28 +107,29 @@ export const SnapShot = ({ reqData }) => {
     setDateDialog(false);
     setCredit("0.00");
     setDebit("0.00");
-    console.log(retrievalValues, "retrievalValues");
-    handleGetSnapshot(
-      retrievalValues[0]?.value?.value,
-      retrievalValues[1]?.value?.value
-    );
+    // handleGetSnapshot(
+    //   retrievalValues[0]?.value?.value,
+    //   retrievalValues[1]?.value?.value
+    // );
+    reqData.FROM_DATE = retrievalValues[0]?.value?.value;
+    reqData.TO_DATE = retrievalValues[1]?.value?.value;
   };
   return (
     <>
-      {getSnapShotList.isError ? (
+      {isError ? (
         <Alert
           severity="error"
-          errorMsg={getSnapShotList.error?.error_msg ?? "Unknown error occured"}
-          errorDetail={getSnapShotList.error?.error_detail ?? ""}
+          errorMsg={error?.error_msg ?? "Unknown error occured"}
+          errorDetail={error?.error_detail ?? ""}
         />
       ) : null}
 
       <GridWrapper
         key={`snapShotGridMetaData`}
         finalMetaData={snapShotGridMetaData as GridMetaDataType}
-        data={rows ?? []}
+        data={data ?? []}
         setData={() => null}
-        loading={getSnapShotList?.isLoading}
+        loading={isLoading}
         refetchData={() => {}}
         ref={myGridRef}
         actions={actions}

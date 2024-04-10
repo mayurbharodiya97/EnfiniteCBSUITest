@@ -21,14 +21,14 @@ export const getChequebookDTL = async (chequeDTLRequestPara) => {
     });
   if (status === "0") {
     return data.map((item) => {
-      if (item.CONFIRMED === "N") {
-        item._rowColor = "rgb(152 59 70 / 61%)";
+      if (item?.CONFIRMED === "Y") {
+        item._rowColor = "rgb(9 132 3 / 51%)";
+        item.CONFIRMED = "Confirm";
+      } else {
+        item.CONFIRMED = "Pending";
       }
-      return {
-        ...item,
-        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
-        AUTO_CHQBK_FLAG: item.AUTO_CHQBK_FLAG === "Y" ? "Yes" : "No",
-      };
+      item.AUTO_CHQBK_FLAG = item.AUTO_CHQBK_FLAG === "Y" ? "Yes" : "No";
+      return item;
     });
   } else {
     throw DefaultErrorObject(message, messageDetails);

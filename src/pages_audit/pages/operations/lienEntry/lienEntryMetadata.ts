@@ -1,12 +1,14 @@
+import { utilFunction } from "components/utils";
 import React from "react";
 import { GeneralAPI } from "registry/fns/functions";
+import * as API from "./api";
 
 export const LienEntryMetadata = {
   form: {
-    name: "PRIORITY",
+    name: "Lien-entry",
     label: "Lien Entry",
     resetFieldOnUnmount: false,
-    validationRun: "onChange",
+    validationRun: "onBlur",
     render: {
       ordering: "auto",
       renderType: "simple",
@@ -40,88 +42,148 @@ export const LienEntryMetadata = {
   fields: [
     {
       render: {
-        componentType: "autocomplete",
+        componentType: "_accountNumber",
       },
-      name: "BRANCH_CD",
-      label: "Branch",
-      placeholder: "Branch",
-      type: "text",
-      isFieldFocused: true,
-      required: true,
-      // maxLength: 16,
-      options: GeneralAPI.getBranchCodeList,
-      _optionsKey: "getBranchCodeList",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
+      branchCodeMetadata: {
+        postValidationSetCrossFieldValues: async (field) => {
+          if (field?.value) {
+            return {
+              ACCT_TYPE: { value: "" },
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              AMOUNT: { value: "" },
+              SERVICE_TAX: { value: "" },
+              CHEQUE_DT: { value: "" },
+              CHEQUE_AMOUNT: { value: "" },
+            };
+          }
+        },
       },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Branch Code is required."] }],
+      accountTypeMetadata: {
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "ETRN/652",
+          });
+        },
+        _optionsKey: "get_Account_Type",
+        postValidationSetCrossFieldValues: async (field) => {
+          if (field?.value) {
+            return {
+              ACCT_CD: { value: "" },
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+              CHEQUE_FROM: { value: "" },
+              CHEQUE_TO: { value: "" },
+              AMOUNT: { value: "" },
+              SERVICE_TAX: { value: "" },
+              CHEQUE_DT: { value: "" },
+              CHEQUE_AMOUNT: { value: "" },
+            };
+          }
+        },
+      },
+      accountCodeMetadata: {
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          authState,
+          dependentValue
+        ) => {
+          if (
+            field?.value &&
+            dependentValue?.BRANCH_CD?.value &&
+            dependentValue?.ACCT_TYPE?.value
+          ) {
+            let otherAPIRequestPara = {
+              COMP_CD: authState?.companyID,
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                field?.value,
+                dependentValue?.ACCT_TYPE?.optionData
+              ),
+              ACCT_TYPE: dependentValue?.ACCT_TYPE?.value,
+              BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+              SCREEN_REF: "ETRN/048",
+            };
+            let postData = await GeneralAPI.getAccNoValidation(
+              otherAPIRequestPara
+            );
+
+            if (postData?.RESTRICTION) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: false,
+              });
+              formState.MessageBox({
+                messageTitle: "Validation Failed...!",
+                message: postData?.RESTRICTION,
+              });
+              return {
+                ACCT_CD: { value: "" },
+                ACCT_NM: { value: "" },
+                TRAN_BAL: { value: "" },
+              };
+            } else if (postData?.MESSAGE1) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: true,
+              });
+              formState.MessageBox({
+                messageTitle: "Risk Category Alert",
+                message: postData?.MESSAGE1,
+                buttonNames: ["Ok"],
+              });
+              return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
+                TRAN_BAL: {
+                  value: postData?.WIDTH_BAL ?? "",
+                },
+              };
+            } else {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: true,
+              });
+              return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                ACCT_NM: {
+                  value: postData?.ACCT_NM ?? "",
+                },
+                TRAN_BAL: {
+                  value: postData?.WIDTH_BAL ?? "",
+                },
+              };
+            }
+          } else if (!field?.value) {
+            formState.setDataOnFieldChange("IS_VISIBLE", { IS_VISIBLE: false });
+            return {
+              ACCT_NM: { value: "" },
+              TRAN_BAL: { value: "" },
+            };
+          }
+          return {};
+        },
+        runPostValidationHookAlways: true,
       },
     },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "ACCT_TYPE",
-      label: "Account Type",
-      placeholder: "EnterAccountType",
-      type: "text",
-      required: true,
-      options: GeneralAPI.getAccountTypeList,
-      _optionsKey: "getAccountTypeList",
-      GridProps: {
-        xs: 12,
-        md: 3,
-        sm: 3,
-        lg: 3,
-        xl: 3,
-      },
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account Type is required."] }],
-      },
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "ACCT_CD",
-      label: "Account Number",
-      placeholder: "EnterAcNo",
-      type: "text",
-      // fullWidth: true,
-      required: true,
-      // maxLength: 20,
-      schemaValidation: {
-        type: "string",
-        rules: [{ name: "required", params: ["Account no. is required."] }],
-      },
-      // padEnds: 20,/
-      GridProps: {
-        xs: 12,
-        md: 2,
-        sm: 2,
-        lg: 3,
-        xl: 3,
-      },
-      // dependentFields: ["BRANCH_CD", "ACCT_TYPE", "FROM_CHEQU"],
-    },
+
     {
       render: {
         componentType: "textField",
       },
       name: "ACCT_NM",
-      // sequence: 1,
       label: "Account Name",
-      placeholder: "Account Name",
-      type: "text",
-      // required: true,
-      // maxLength: 16,
       isReadOnly: true,
       GridProps: {
         xs: 12,
@@ -138,16 +200,32 @@ export const LienEntryMetadata = {
       },
       name: "LIEN_CD",
       label: "Lien Code",
-      // defaultValue: "S",
-      // options: () => {
-      //   return [
-      //     { value: "S", label: "Stop Payment" },
-      //     { value: "D", label: "Surrender Cheque" },
-      //     { value: "P", label: "PDC" },
-      //   ];
-      // },
-      // _optionsKey: "PAYLE_AT_PAR",
-      type: "text",
+      placeholder: "Select Lien Code",
+      disableCaching: true,
+      required: true,
+      dependentFields: ["BRANCH_CD"],
+      options: (dependentValue, formState, any, authState) => {
+        if (dependentValue?.BRANCH_CD?.value) {
+          return API.lienCodeDropdown({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+          });
+        }
+        return [];
+      },
+      _optionsKey: "LIEN_CD",
+      postValidationSetCrossFieldValues: async (field) => {
+        if (field?.value) {
+          return {
+            PARENT_CD: { value: field?.optionData?.[0]?.PARENT_NM },
+          };
+        }
+        return {};
+      },
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Lien Code is required."] }],
+      },
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -159,12 +237,10 @@ export const LienEntryMetadata = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "amountField",
       },
       name: "LIEN_AMOUNT",
-      label: "Line Amount",
-      type: "text",
-      placeholder: "Stock Description",
+      label: "Lien Amount",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -179,6 +255,9 @@ export const LienEntryMetadata = {
       },
       name: "LIEN_STATUS",
       label: "Lien Status",
+      isReadOnly: true,
+      required: true,
+      defaultValue: "A",
       options: () => {
         return [
           { value: "A", label: "Active" },
@@ -186,7 +265,6 @@ export const LienEntryMetadata = {
         ];
       },
       _optionsKey: "LIEN_STATUS",
-      type: "text",
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -201,8 +279,7 @@ export const LienEntryMetadata = {
       },
       name: "PARENT_CD",
       label: "Parent Code/Name",
-      type: "text",
-      placeholder: "Stock Description",
+      isReadOnly: true,
       GridProps: {
         xs: 12,
         md: 4.8,
@@ -216,7 +293,9 @@ export const LienEntryMetadata = {
         componentType: "datePicker",
       },
       name: "EFECTIVE_DT",
-      // sequence: 9,
+      isReadOnly: true,
+      required: true,
+      isWorkingDate: true,
       label: "Effective Date",
       GridProps: {
         xs: 12,
@@ -231,8 +310,8 @@ export const LienEntryMetadata = {
         componentType: "datePicker",
       },
       name: "REMOVAL_DT",
-      // sequence: 9,
       label: "Removal Date",
+      isMinWorkingDate: true,
       GridProps: {
         xs: 12,
         md: 2.4,
@@ -247,16 +326,19 @@ export const LienEntryMetadata = {
       },
       name: "LIEN_REASON_CD",
       label: "Reason",
-      // defaultValue: "S",
-      // options: () => {
-      //   return [
-      //     { value: "S", label: "Stop Payment" },
-      //     { value: "D", label: "Surrender Cheque" },
-      //     { value: "P", label: "PDC" },
-      //   ];
-      // },
-      // _optionsKey: "PAYAB_AT_PAR",
-      type: "text",
+      placeholder: "Select Reason",
+      disableCaching: true,
+      dependentFields: ["BRANCH_CD"],
+      options: (dependentValue, formState, any, authState) => {
+        if (dependentValue?.BRANCH_CD?.value) {
+          return API.reasonDropdown({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: dependentValue?.BRANCH_CD?.value,
+          });
+        }
+        return [];
+      },
+      _optionsKey: "LIEN_REASON_CD",
       GridProps: {
         xs: 12,
         md: 3.6,
@@ -268,12 +350,16 @@ export const LienEntryMetadata = {
 
     {
       render: {
-        componentType: "textField",
+        componentType: "Remark",
       },
       name: "REMARKS",
       label: "Remarks",
-      placeholder: "Remarks",
-      type: "text",
+      required: true,
+      placeholder: "Enter Remarks",
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Remarks is required."] }],
+      },
       GridProps: {
         xs: 12,
         md: 3.6,

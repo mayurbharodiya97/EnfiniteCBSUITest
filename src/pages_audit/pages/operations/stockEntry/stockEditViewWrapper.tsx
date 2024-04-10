@@ -1,32 +1,46 @@
 import {
+  AppBar,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
+  LinearProgress,
   Tooltip,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
-
-import FormWrapper, { MetaDataType } from "components/dyanmicForm";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { stockViewEditMSTMetaData } from "./stockEditViewMetadata";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
-import { crudDocument, viewDocument } from "./api";
+import { uploadDocument, viewDocument } from "./api";
 import { queryClient } from "cache";
 import { MasterDetailsForm } from "components/formcomponent";
 import { transformFileObject } from "components/fileUpload/utils";
 import { utilFunction } from "components/utils";
 import { GradientButton } from "components/styledComponent/button";
 import { useStyles } from "pages_audit/pages/profile/profilePhotoUpload/style";
+import { Alert } from "components/common/alert";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { enqueueSnackbar } from "notistack";
+import { AuthContext } from "pages_audit/auth";
 
-export const StockEditViewWrapper = ({ ClosedEventCall }) => {
-  const { state: rows }: any = useLocation();
+export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
   const [isopenImgViewer, setOpenImgViewer] = useState(false);
+  const { state: rows }: any = useLocation();
   const myImgRef = useRef<any>(null);
-  const [formMode, setFormMode] = useState("view");
   const myRef = useRef<any>(null);
+  const { authState } = useContext(AuthContext);
+  // const [formMode, setFormMode] = useState("view");
+  // const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
+  // const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
 
   const viewDocuments = useQuery<any, any>(["viewDocument"], () =>
     viewDocument({
@@ -36,10 +50,36 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
     })
   );
 
-  const crudDocuments: any = useMutation("uploadDocument", crudDocument, {
-    onSuccess: (data) => {},
+  const uploadDocuments: any = useMutation("uploadDocument", uploadDocument, {
+    onSuccess: (data, variables) => {
+      stockEntryGridData.mutate({
+        COMP_CD: rows?.[0]?.data?.COMP_CD,
+        BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+        ACCT_CD: rows?.[0]?.data?.ACCT_CD,
+        ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
+        A_USER_LEVEL: authState?.role,
+        A_GD_DATE: authState?.workingDate,
+      });
+      if (
+        variables?.DETAILS_DATA?.isNewRow.length &&
+        variables?.DETAILS_DATA?.isUpdatedRow.length
+      ) {
+        enqueueSnackbar("Data insert & update successfully", {
+          variant: "success",
+        });
+      } else if (variables?.DETAILS_DATA?.isNewRow.length) {
+        enqueueSnackbar("Document insert successfully", {
+          variant: "success",
+        });
+      } else if (variables?.DETAILS_DATA?.isUpdatedRow.length) {
+        enqueueSnackbar("Data Update successfully", {
+          variant: "success",
+        });
+      }
+    },
     onError: (error: any) => {},
   });
+  console.log("<<<uploadDocuments", uploadDocuments);
 
   useEffect(() => {
     return () => {
@@ -48,8 +88,18 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
     };
   }, []);
 
-  const AddNewRow = () => {
-    myRef.current?.addNewRow(true);
+  const AddNewRow = async () => {
+    myRef.current?.addNewRow(true, {
+      COMP_CD: rows?.[0]?.data?.COMP_CD,
+      BRANCH_CD: rows?.[0]?.data?.BRANCH_CD,
+      REF_TRAN_CD: rows?.[0]?.data?.TRAN_CD,
+      ACCT_TYPE: rows?.[0]?.data?.ACCT_TYPE,
+      ACCT_CD: rows?.[0]?.data?.ACCT_CD,
+      DOC_CD: "TRN/047",
+      ENTERED_COMP_CD: rows?.[0]?.data?.ENTERED_COMP_CD,
+      ENTERED_BRANCH_CD: rows?.[0]?.data?.ENTERED_BRANCH_CD,
+      ACTIVE: "Y",
+    });
   };
 
   const onSubmitHandler = ({
@@ -57,46 +107,92 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
     resultValueObj,
     resultDisplayValueObj,
     endSubmit,
-    setFieldErrors,
-    actionFlag,
-    displayData,
-    setFieldError,
   }) => {
+    const { isNewRow, isUpdatedRow } = data?.DETAILS_DATA || {};
+
+    if (isNewRow?.length || isUpdatedRow?.length) {
+      [isNewRow, isUpdatedRow].forEach((rows) => {
+        if (rows) {
+          rows.forEach(
+            (item) => (item.ACTIVE = Boolean(item.ACTIVE) ? "Y" : "N")
+          );
+        }
+      });
+      const apiReq = {
+        ENTERED_COMP_CD: data?.ENTERED_COMP_CD,
+        ENTERED_BRANCH_CD: data?.ENTERED_BRANCH_CD,
+        TRAN_CD: data?.TRAN_CD,
+        ACCT_TYPE: data?.ACCT_TYPE,
+        ACCT_CD: data?.ACCT_CD,
+        DETAILS_DATA: data?.DETAILS_DATA,
+      };
+      uploadDocuments.mutate(apiReq);
+    }
     //@ts-ignore
     endSubmit(true);
-    console.log("<<<sub", data);
-
-    // let apireq = {
-    //   DETAILS_DATA: {
-    //     isNewRow: [
-    //       ...data?.DETAILS_DATA,
-    //       {
-    //         ENTERED_BRANCH_CD: "099 ",
-    //         COMP_CD: "132 ",
-    //         ACCT_TYPE: data?.ACCT_TYPE,
-    //         ACCT_CD: data?.ACCT_CD,
-    //         REF_TRAN_CD: data?.REF_TRAN_CD,
-    //         ENTERED_COMP_CD: "132 ",
-    //         REF_SR_CD: data?.REF_SR_CD,
-    //         TABLE_NM: "stock",
-    //         // DOC_DEC: "",
-    //         // DOC_DATA: "",
-    //         ACTIVE: "Y",
-    //       },
-    //     ],
-    //     isDeleteRow: [],
-    //     isUpdatedRow: [],
-    //   },
-    // };
-
-    // crudDocuments.mutate(apireq);
   };
 
-  // useEffect(() => {
-  //   if (Boolean(rows?.[0]?.data?.DOC_DATA)) {
-  //     myImgRef.current = rows?.[0]?.data?.DOC_DATA;
-  //   }
-  // }, [rows]);
+  const handleDownloadImage = (DOC_DATA) => {
+    const imageData = DOC_DATA;
+    const byteCharacters = atob(imageData);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "image/jpeg" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "image.jpg";
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  };
+
+  const customTransformFileObj = (currentObj) => {
+    return transformFileObject({})(currentObj);
+  };
+
+  const handleImageChange = async (e) => {
+    const files = e.target.files;
+    const filesArray = Array.from(files);
+    if (filesArray.length > 0) {
+      let resdata = filesArray.map((one) => customTransformFileObj(one));
+      if (resdata.length > 0) {
+        let filesObj: any = await Promise.all(resdata);
+        let base64 = await utilFunction.convertBlobToBase64(
+          filesObj?.[0]?.blob
+        );
+        myRef.current.setGridData((old) => {
+          let gridData: any = [];
+          gridData = old.map((row) => {
+            if (row.SR_CD === myImgRef.current.SR_CD) {
+              return {
+                ...row,
+                DOC_DATA: base64?.[1],
+              };
+            } else {
+              return { ...row };
+            }
+          });
+          return [...gridData];
+        });
+      }
+    }
+  };
+
+  const openFilePicker = () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.style.display = "none";
+    fileInput.addEventListener("change", handleImageChange);
+    document.body.appendChild(fileInput);
+    fileInput.click();
+  };
+
   return (
     <>
       <Dialog
@@ -109,80 +205,66 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
         }}
       >
         <>
-          {formMode === "view" ? (
+          {viewDocuments?.isError || uploadDocuments?.isError ? (
+            <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+              <AppBar position="relative" color="primary">
+                <Alert
+                  severity="error"
+                  errorMsg={
+                    viewDocuments?.error?.error_msg ??
+                    uploadDocuments?.error?.error_msg ??
+                    "Unknow Error"
+                  }
+                  errorDetail={
+                    viewDocuments?.error?.error_detail ??
+                    uploadDocuments?.error?.error_detail ??
+                    ""
+                  }
+                  color="error"
+                />
+              </AppBar>
+            </div>
+          ) : null}
+
+          {viewDocuments.isLoading ? (
+            <div style={{ margin: "2rem" }}>
+              <LoaderPaperComponent />
+            </div>
+          ) : (
             <MasterDetailsForm
-              key={"stockEntryUploadDOC" + formMode + viewDocuments.data}
+              key={"stockEntryUploadDOC" + viewDocuments.isSuccess}
               metaData={stockViewEditMSTMetaData}
               initialData={{
+                _isNewRow: false,
                 ...rows?.[0]?.data,
                 DETAILS_DATA: viewDocuments?.data,
               }}
-              displayMode={formMode}
-              // onSubmitData={}
-              isLoading={viewDocuments?.isLoading}
-              isNewRow={true}
-              ref={myRef}
-              formStyle={{
-                background: "white",
-                height: "40vh",
-                overflowY: "auto",
-                overflowX: "hidden",
-              }}
-              // onFormButtonClickHandel={onFormButtonClickHandel}
-            >
-              {({ isSubmitting, handleSubmit }) => {
-                return (
-                  <>
-                    <Button
-                      onClick={() => {
-                        setFormMode("edit");
-                      }}
-                      // disabled={isSubmitting}
-                      // endIcon={
-                      //   isSubmitting ? <CircularProgress size={20} /> : null
-                      // }
-                      color={"primary"}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={() => ClosedEventCall()}
-                      // disabled={isSubmitting}
-                      color={"primary"}
-                    >
-                      Close
-                    </Button>
-                  </>
-                );
-              }}
-            </MasterDetailsForm>
-          ) : formMode === "edit" ? (
-            <MasterDetailsForm
-              key={"stockEntryUploadDOC" + formMode + viewDocuments.data}
-              metaData={stockViewEditMSTMetaData}
-              initialData={{
-                ...rows?.[0]?.data,
-                DETAILS_DATA: viewDocuments?.data,
-              }}
-              displayMode={formMode}
+              // displayMode={"edit"}
+              // displayMode={formMode}
               onSubmitData={onSubmitHandler}
-              isLoading={viewDocuments?.isLoading}
-              isNewRow={true}
+              isLoading={uploadDocuments?.isLoading}
+              isNewRow={false}
               onClickActionEvent={(index, id, data) => {
-                console.log("<<<onclick", index, id, data);
-                setOpenImgViewer(true);
-                if (data?.DOC_DATA) {
-                  myImgRef.current = data?.DOC_DATA;
+                if (id === "VIEW_DOC") {
+                  if (data?.DOC_DATA) {
+                    myImgRef.current = data;
+                    setOpenImgViewer(true);
+                  } else {
+                    myImgRef.current = data;
+                    openFilePicker();
+                  }
+                }
+                if (id === "DOWNLOAD") {
+                  handleDownloadImage(data?.DOC_DATA);
                 }
               }}
               ref={myRef}
               formStyle={{
                 background: "white",
-                height: "40vh",
+                height: "43vh",
                 overflowY: "auto",
                 overflowX: "hidden",
               }}
-              // onFormButtonClickHandel={onFormButtonClickHandel}
             >
               {({ isSubmitting, handleSubmit }) => {
                 return (
@@ -193,8 +275,18 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
                       //endIcon={isSubmitting ? <CircularProgress size={20} /> : null}
                       color={"primary"}
                     >
-                      Add Row
+                      Add New Document
                     </Button>
+                    {/* <Button onClick={moveToEditMode} color={"primary"}>
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={moveToViewMode}
+                      // disabled={isSubmitting}
+                      // color={"primary"}
+                    >
+                      View
+                    </Button> */}
                     <Button
                       onClick={handleSubmit}
                       // disabled={isSubmitting}
@@ -206,178 +298,119 @@ export const StockEditViewWrapper = ({ ClosedEventCall }) => {
                       Save
                     </Button>
                     <Button
-                      onClick={() => {
-                        setFormMode("view");
-                      }}
+                      onClick={() => navigate(".")}
                       // disabled={isSubmitting}
                       color={"primary"}
                     >
-                      Cancel
+                      Close
                     </Button>
                   </>
                 );
               }}
             </MasterDetailsForm>
-          ) : null}
+          )}
         </>
       </Dialog>
+
       {isopenImgViewer ? (
         <ImgaeViewerandUpdate
-          isOpen={isopenImgViewer}
-          title={"Operator Icon"}
+          title={"Document Image"}
           onClose={() => {
             setOpenImgViewer(false);
           }}
-          onSubmit={(fileData) => {
-            console.log("<<<filrimg", fileData);
-            myImgRef.current = fileData;
-            setOpenImgViewer(false);
-          }}
-          filedata={myImgRef.current}
-          formMode={formMode}
+          filedata={myImgRef.current.DOC_DATA}
         />
       ) : null}
     </>
   );
 };
 
-const ImgaeViewerandUpdate = ({
-  isOpen,
-  title,
-  onClose,
-  onSubmit,
-  filedata,
-  formMode,
-}) => {
-  const classes = useStyles();
+const ImgaeViewerandUpdate = ({ title, onClose, filedata }) => {
   const fileURL = useRef<any | null>(null);
-  const submitBtnRef = useRef<any | null>(null);
-  const fileUploadControl = useRef<any | null>(null);
-  const [filesdata, setFilesData] = useState<any>(filedata);
   const [filecnt, setFilecnt] = useState(0);
-  const customTransformFileObj = (currentObj) => {
-    return transformFileObject({})(currentObj);
-  };
-  const handleFileSelect = async (e) => {
-    const files = e.target.files;
-    const filesArray = Array.from(files);
-    if (filesArray.length > 0) {
-      let resdata = filesArray.map((one) => customTransformFileObj(one));
-      if (resdata.length > 0) {
-        let filesObj: any = await Promise.all(resdata);
-        fileURL.current =
-          typeof filesObj?.[0]?.blob === "object" &&
-          Boolean(filesObj?.[0]?.blob)
-            ? await URL.createObjectURL(filesObj?.[0]?.blob as any)
-            : null;
-        setImageData(filesObj?.[0]?.blob);
-        submitBtnRef.current?.click?.();
-        setFilecnt(filecnt + 1);
-      }
-    }
-  };
-  const setImageData = async (blob) => {
-    let base64 = await utilFunction.convertBlobToBase64(blob);
-    setFilesData(base64?.[1]);
-  };
+
   const setImageURL = async (filedata) => {
-    if (filedata !== null) {
+    if (filedata) {
       let blob = utilFunction.base64toBlob(filedata, "image/png");
       fileURL.current =
         typeof blob === "object" && Boolean(blob)
           ? await URL.createObjectURL(blob as any)
           : null;
       setFilecnt(filecnt + 1);
+    } else {
+      fileURL.current = "";
+      setFilecnt(filecnt + 1);
     }
   };
+
   useEffect(() => {
     setImageURL(filedata);
   }, []);
+
   return (
     <Dialog
       open={true}
       //@ts-ignore
-      // TransitionComponent={Transition}
       fullWidth={false}
+      PaperProps={{
+        style: {
+          minWidth: "530px",
+        },
+      }}
     >
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <Tooltip
-          key={"tooltip-" + formMode}
-          title={formMode === "view" ? "" : "Double click to change the image"}
-          placement={"top"}
-          arrow={true}
+      <DialogActions
+        sx={{
+          paddingRight: "24px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <DialogTitle>{title}</DialogTitle>
+        <GradientButton onClick={onClose}>Close</GradientButton>{" "}
+      </DialogActions>
+      <DialogContent
+        sx={{
+          pt: 0,
+        }}
+      >
+        <div
+          style={{
+            width: 540,
+            height: 357,
+            display: "flex",
+            justifyContent: "center",
+            background: "#cfcfcf",
+          }}
+          key={"div" + filecnt}
         >
-          <div
-            className={classes.uploadWrapper}
-            style={{
-              width: 280,
-              height: 280,
-              background: "#cfcfcf",
-              cursor: formMode === "view" ? "auto" : "pointer",
-            }}
-            onDoubleClick={() => {
-              if (!(formMode === "view")) {
-                fileUploadControl?.current?.click();
-              }
-            }}
-            ref={submitBtnRef}
-            key={"div" + filecnt}
+          <Grid
+            container
+            spacing={0}
+            justifyContent="center"
+            alignItems="center"
           >
-            <Grid
-              container
-              spacing={0}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <img
-                src={Boolean(fileURL.current) ? fileURL.current : ""}
-                style={{
-                  maxWidth: 250,
-                  maxHeight: 250,
-                  minWidth: 150,
-                  minHeight: 150,
-                }}
-              />
-            </Grid>
-            <input
-              name="fileselect"
-              type="file"
-              style={{ display: "none" }}
-              ref={fileUploadControl}
-              onChange={handleFileSelect}
-              accept=".png,.jpg,.jpeg"
-              onClick={(e) => {
-                //to clear the file uploaded state to reupload the same file (AKA allow our handler to handle duplicate file)
-                //@ts-ignore
-                e.target.value = "";
+            <img
+              src={Boolean(fileURL.current) ? fileURL.current : ""}
+              style={{
+                maxWidth: 465,
+                maxHeight: 368,
+                minWidth: 225,
+                minHeight: 308,
               }}
             />
-          </div>
-        </Tooltip>
+          </Grid>
+          <input
+            name="fileselect"
+            type="file"
+            style={{ display: "none" }}
+            accept=".png,.jpg,.jpeg"
+            onClick={(e) => {
+              //@ts-ignore
+              e.target.value = "";
+            }}
+          />
+        </div>
       </DialogContent>
-      <DialogActions>
-        <GradientButton onClick={onClose}>Close</GradientButton>
-        {formMode === "view" ? null : (
-          <>
-            <GradientButton
-              onClick={() => {
-                setFilesData(null);
-                fileURL.current = null;
-              }}
-            >
-              Clear
-            </GradientButton>
-            <GradientButton
-              onClick={() => {
-                onSubmit(filesdata);
-              }}
-            >
-              Update
-            </GradientButton>
-          </>
-        )}
-      </DialogActions>
     </Dialog>
   );
 };

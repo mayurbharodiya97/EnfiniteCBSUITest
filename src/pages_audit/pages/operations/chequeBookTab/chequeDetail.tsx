@@ -1,6 +1,6 @@
-import { AppBar, Button, Dialog } from "@mui/material";
-import React, { useCallback, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { AppBar, Dialog } from "@mui/material";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
 import { GridMetaDataType } from "components/dataTableStatic";
 import { ChequeDtlGridMetaData } from "./chequeDetailGridMetadata";
@@ -59,6 +59,7 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
       PaperProps={{
         style: {
           maxWidth: "750px",
+          padding: "5px",
         },
       }}
     >

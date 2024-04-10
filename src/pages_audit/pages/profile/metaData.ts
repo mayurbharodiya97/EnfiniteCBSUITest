@@ -5,7 +5,7 @@ import { filter } from "lodash";
 
 export const UserProfileMetaData = {
   form: {
-    name: "PRIORITY",
+    name: "user-profile",
     label: "UserProfile",
     resetFieldOnUnmount: false,
     validationRun: "onBlur",
