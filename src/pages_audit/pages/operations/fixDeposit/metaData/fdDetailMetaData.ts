@@ -3,7 +3,20 @@ import { AuthSDK } from "registry/fns/auth";
 import { GeneralAPI } from "registry/fns/functions";
 import { validateAccountAndGetDetail } from "../api";
 import { utilFunction } from "components/utils";
+import {
+  greaterThanInclusiveDate,
+  lessThanInclusiveDate,
+} from "registry/rulesEngine";
+import { isValidDate } from "components/utils/utilFunctions/function";
 
+const getReadOnlyValue = (dependentField, fieldName) => {
+  const newDependentField =
+    utilFunction.getDependetFieldDataArrayField(dependentField);
+  if (newDependentField?.[fieldName]?.value === "Y") {
+    return true;
+  }
+  return false;
+};
 export const FixDepositDetailFormMetadata = {
   form: {
     name: "fixDepositDetail",
@@ -174,6 +187,10 @@ export const FixDepositDetailFormMetadata = {
           className: "textInputFromRight",
           placeholder: "",
           maxLength: 10,
+          dependentFields: ["FD_NO_DISABLED"],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "FD_NO_DISABLED");
+          },
           FormatProps: {
             isAllowed: (values) => {
               if (values?.value?.length > 10) {
@@ -259,7 +276,13 @@ export const FixDepositDetailFormMetadata = {
             "PERIOD_NO",
             "PERIOD_CD",
             "FD_AMOUNT",
+            "TRAN_DT_DISABLED",
+            "FROM_TRAN_DT",
+            "TO_TRAN_DT",
           ],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "TRAN_DT_DISABLED");
+          },
           postValidationSetCrossFieldValues: async (
             currField,
             formState,
@@ -278,6 +301,43 @@ export const FixDepositDetailFormMetadata = {
               { name: "required", params: ["AsOn Date is required."] },
               { name: "TRAN_DT", params: ["AsOn Date is required."] },
             ],
+          },
+          validate: (currField, dependentFields) => {
+            const newDependentField: any =
+              utilFunction.getDependetFieldDataArrayField(dependentFields);
+            let tranDate: any = format(currField?.value, "yyyy/MM/dd");
+            let fromTranDate = newDependentField?.FROM_TRAN_DT?.value;
+            let toTranDate = newDependentField?.TO_TRAN_DT?.value;
+
+            if (isValidDate(fromTranDate)) {
+              fromTranDate = format(new Date(fromTranDate), "yyyy/MM/dd");
+              if (
+                !greaterThanInclusiveDate(
+                  new Date(tranDate),
+                  new Date(fromTranDate)
+                )
+              ) {
+                // Calculate the difference in milliseconds
+                var diffms =
+                  new Date(toTranDate).getTime() -
+                  new Date(fromTranDate).getTime();
+                // Convert milliseconds to days
+                var diffDays = Math.ceil(diffms / (1000 * 60 * 60 * 24));
+                return (
+                  "AsOn Date should not be less than " + diffDays + " days."
+                );
+              }
+            }
+            if (isValidDate(toTranDate)) {
+              toTranDate = format(new Date(toTranDate), "yyyy/MM/dd");
+              if (
+                toTranDate &&
+                !lessThanInclusiveDate(new Date(tranDate), new Date(toTranDate))
+              ) {
+                return "AsOn Date should be less Than or equal to working Date.";
+              }
+            }
+            return "";
           },
           GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
         },
@@ -384,6 +444,10 @@ export const FixDepositDetailFormMetadata = {
           placeholder: "",
           required: true,
           type: "text",
+          dependentFields: ["INT_RATE_DISABLED"],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "INT_RATE_DISABLED");
+          },
           postValidationSetCrossFieldValues: async (currField) => {
             if (Boolean(currField?.value) && currField?.value > 0) {
               return {
@@ -415,6 +479,10 @@ export const FixDepositDetailFormMetadata = {
           ],
           defaultValue: "D",
           required: true,
+          dependentFields: ["TERM_CD_DISABLED"],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "TERM_CD_DISABLED");
+          },
           postValidationSetCrossFieldValues: async (currField) => {
             if (Boolean(currField?.value)) {
               return {
@@ -617,6 +685,10 @@ export const FixDepositDetailFormMetadata = {
           FormatProps: {
             allowNegative: false,
           },
+          dependentFields: ["MATURITY_AMT_DISABLED"],
+          isReadOnly: (field, dependentField) => {
+            return getReadOnlyValue(dependentField, "MATURITY_AMT_DISABLED");
+          },
           validate: (columnValue) => {
             if (!Boolean(columnValue.value)) {
               return "Maturity Amount is Required.";
@@ -783,6 +855,48 @@ export const FixDepositDetailFormMetadata = {
               };
             }
           },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "INT_RATE_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "MATURITY_AMT_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FD_NO_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "TRAN_DT_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "TERM_CD_DISABLED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FROM_TRAN_DT",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "TO_TRAN_DT",
         },
       ],
     },

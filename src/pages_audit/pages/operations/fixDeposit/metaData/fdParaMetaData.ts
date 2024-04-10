@@ -751,39 +751,6 @@ export const FixDepositAccountsFormMetadata = {
         },
         {
           render: {
-            componentType: "hidden",
-          },
-          name: "USER_TYPE_ALLOWED",
-        },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "LEAN_FLAG",
-          label: "LEAN_FLAG",
-        },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "COMP_CD",
-          label: "COMP_CD",
-        },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "ACCOUNT_LIST",
-          label: "ACCOUNT_LIST",
-        },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "CATEG_CD",
-        },
-        {
-          render: {
             componentType: "typography",
           },
           name: "VALIDATEMSG",
@@ -823,6 +790,39 @@ export const FixDepositAccountsFormMetadata = {
             sm: 4,
             style: { alignSelf: "center" },
           },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "USER_TYPE_ALLOWED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "LEAN_FLAG",
+          label: "LEAN_FLAG",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "COMP_CD",
+          label: "COMP_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "ACCOUNT_LIST",
+          label: "ACCOUNT_LIST",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "CATEG_CD",
         },
       ],
     },
