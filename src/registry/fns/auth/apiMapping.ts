@@ -1188,6 +1188,22 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTBUSINESSDDW",
     packageName: "",
   },
+  GETSYSPARAMSTCNF: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSYSPARAMSTCNF",
+    packageName: "",
+  },
+  PARAMSTCONFIRM: {
+    url: "/enfinityCommonServiceAPI/PARAMSTCONFIRM",
+    packageName: "",
+  },
+  VALIDATEPARAVALUE: {
+    url: "/enfinityCommonServiceAPI/VALIDATEPARAVALUE",
+    packageName: "",
+  },
+  GETSYSPARAAUDBTN: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSYSPARAAUDBTN",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
