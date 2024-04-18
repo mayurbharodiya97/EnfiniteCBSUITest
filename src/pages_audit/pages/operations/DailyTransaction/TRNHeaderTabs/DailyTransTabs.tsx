@@ -483,7 +483,7 @@ export const DailyTransTabsWithDialog = ({
             data={data ?? []}
             setData={() => null}
             ReportExportButton={true}
-            actions={actions}
+            actions={[]}
             setAction={setCurrentAction}
             loading={isLoading || isFetching}
             onlySingleSelectionAllow={true}
