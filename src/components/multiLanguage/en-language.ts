@@ -1,5 +1,5 @@
 export const en_language_data = {
-  Delete:"Remove",
+  Delete: "Remove",
   Loading: "Loading..",
   SignIn: "Sign In",
   SignInWithUserIDandPassword: "Please provide your UserID and password",
@@ -19,7 +19,7 @@ export const en_language_data = {
   Confirmpasswordisrequired: "Confirm password is required.",
   UsernamenandPasswordisRequired: "Username and Password is a required",
   Next: "Next",
-  backtologin: "back to login",
+  backtologin: "back to Sign In",
   Save: "Save",
 
   // For OTP Verify
@@ -35,6 +35,7 @@ export const en_language_data = {
     Hello: " Hello",
     Back: "Back",
     VerifyOTP: "Verify OTP",
+    EnterOTPDigit: "Please enter a 6 digit OTP number",
   },
   // For Biometric
   Biometric: {

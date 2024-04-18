@@ -244,11 +244,11 @@ export const ForgotPasswordController = ({ screenFlag }) => {
       };
       if (!Boolean(data.userName)) {
         validationData.isUsernameError = true;
-        validationData.userMessageforusername = t("UsernameisRequired");
+        validationData.userMessageforusername = "UsernameisRequired";
       }
       if (!Boolean(data.mobileno)) {
         validationData.isMobileError = true;
-        validationData.userMessageforMobileno = t("MobileNoisRequired");
+        validationData.userMessageforMobileno = "MobileNoisRequired";
       } else if (
         isNaN(data.mobileno) ||
         (data.mobileno.length !== 10 && data.mobileno.length !== 13)
@@ -392,7 +392,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
                   handleClose={handleClose}
                   loginState={loginState}
                   VerifyOTP={VerifyOTP}
-                  OTPError={loginState?.OtpuserMessage ?? ""}
+                  OTPError={t(loginState?.OtpuserMessage ?? "")}
                   setOTPError={(error) => {
                     dispath({
                       type: "OTPVerificationFailed",

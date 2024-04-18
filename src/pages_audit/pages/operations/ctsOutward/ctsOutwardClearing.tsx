@@ -1,4 +1,4 @@
-import { ClearCacheProvider } from "cache";
+import { ClearCacheProvider, queryClient } from "cache";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { GradientButton } from "components/styledComponent/button";
 import { extractMetaData } from "components/utils";
@@ -13,8 +13,9 @@ import {
 } from "react";
 import {
   CTSOutwardClearingFormMetaData,
-  ChequeDetailFormMetaData,
+  ctsOutwardChequeDetailFormMetaData,
   SlipJoinDetailGridMetaData,
+  inwardReturnChequeDetailFormMetaData,
 } from "./metaData";
 import * as API from "./api";
 import { useMutation, useQuery } from "react-query";
@@ -33,6 +34,7 @@ import { useSnackbar } from "notistack";
 import { RetrieveClearingForm } from "./retrieveClearing";
 import { usePopupContext } from "components/custom/popupContext";
 import { format } from "date-fns";
+import { RemarksAPIWrapper } from "components/custom/Remarks";
 
 const actions: ActionTypes[] = [
   {
@@ -64,6 +66,8 @@ const CtsOutwardClearingForm: FC<{
   const [isOpenProceedMsg, setOpenProceedMsg] = useState(false);
   const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
   const [gridData, setGridData] = useState([]);
+  const [chequeReqData, setChequeReqData] = useState<any>({});
+  const [isDeleteRemark, SetDeleteRemark] = useState(false);
   const [chequeDetailData, setChequeDetailData] = useState<any>({
     chequeDetails: [
       { ECS_USER_NO: "", CHEQUE_DATE: authState?.workingDate ?? "" },
@@ -96,10 +100,14 @@ const CtsOutwardClearingForm: FC<{
   }, []);
 
   const { data, isLoading, isError, error } = useQuery<any, any>(
-    ["getBussinessDate"],
+    ["getBussinessDate", zoneTranType],
     () => API.getBussinessDate()
   );
-
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["getBussinessDate", zoneTranType]);
+    };
+  }, []);
   const getOutwardClearingData: any = useMutation(
     API.getOutwardClearingConfigData,
     {
@@ -182,7 +190,8 @@ const CtsOutwardClearingForm: FC<{
         _isNewRow: formMode === "new" ? true : false,
         BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
         PROCESSED: "N",
-        REASON: "N",
+        REASON: zoneTranType === "S" ? "N" : item?.REASON,
+        CLEARING_STATUS: "C",
       }));
 
       finalReqDataRef.current = {
@@ -190,7 +199,7 @@ const CtsOutwardClearingForm: FC<{
           ...slipFormDataRef?.current,
           _isNewRow: true,
           REQUEST_CD: "",
-          TRAN_TYPE: zoneTranType ?? "",
+          TRAN_TYPE: zoneTranType,
         },
         DETAILS_DATA: {
           isNewRow: [...newData],
@@ -261,11 +270,11 @@ const CtsOutwardClearingForm: FC<{
   };
   useEffect(() => {
     const handleKeyDown = async (event) => {
-      if (event.ctrlKey && (event.key === "R" || event.key === "r")) {
+      if (event.ctrlKey && (event?.key === "R" || event?.key === "r")) {
         event.preventDefault();
         setIsOpenRetrieve(true);
       } else if (formMode === "view") {
-        if (event.ctrlKey && (event.key === "D" || event.key === "d")) {
+        if (event.ctrlKey && (event?.key === "D" || event?.key === "d")) {
           event.preventDefault();
           if (
             retrieveDataRef.current?.CONFIRMED === "Y" &&
@@ -290,13 +299,21 @@ const CtsOutwardClearingForm: FC<{
               buttonNames: ["Ok"],
             });
           } else {
-            SetDelete(true);
+            SetDeleteRemark(true);
           }
         }
       }
     };
     document.addEventListener("keydown", handleKeyDown);
   }, [formMode]);
+
+  if (zoneTranType === "S") {
+    CTSOutwardClearingFormMetaData.form.label = "CTS O/W Clearing";
+    CTSOutwardClearingFormMetaData.fields[1].defaultValue = "0   ";
+  } else if (zoneTranType === "R") {
+    CTSOutwardClearingFormMetaData.form.label = "Inward Return Entry";
+    CTSOutwardClearingFormMetaData.fields[1].defaultValue = "10  ";
+  }
 
   return (
     <Fragment>
@@ -329,17 +346,27 @@ const CtsOutwardClearingForm: FC<{
       ) : (
         <>
           <FormWrapper
-            key={"CTSOutwardForm" + formMode + mutationOutward?.isSuccess}
+            key={
+              "CTSOutwardForm" +
+              formMode +
+              mutationOutward?.isSuccess +
+              zoneTranType
+            }
             metaData={
               extractMetaData(
-                CTSOutwardClearingFormMetaData,
+                zoneTranType === "S"
+                  ? CTSOutwardClearingFormMetaData
+                  : CTSOutwardClearingFormMetaData,
                 formMode
               ) as MetaDataType
             }
             initialValues={
               formMode === "new"
                 ? {
-                    TRAN_DT: data?.[0]?.TRAN_DATE ?? "",
+                    TRAN_DT:
+                      zoneTranType === "S"
+                        ? data?.[0]?.TRAN_DATE
+                        : authState?.workingDate ?? "",
                     ZONE_TRAN_TYPE: zoneTranType,
                   }
                 : {
@@ -362,7 +389,9 @@ const CtsOutwardClearingForm: FC<{
               }
             }}
             setDataOnFieldChange={(action, payload) => {
-              if (action === "ACCT_CD_VALID") {
+              if (action === "API_REQ") {
+                setChequeReqData(payload);
+              } else if (action === "ACCT_CD_VALID") {
                 setJointDtlExpand(true);
                 setGridData(payload?.ACCT_JOIN_DETAILS);
                 setChequeDetailData((old) => {
@@ -475,11 +504,11 @@ const CtsOutwardClearingForm: FC<{
                             buttonNames: ["Ok"],
                           });
                         } else {
-                          SetDelete(true);
+                          SetDeleteRemark(true);
                         }
                       }}
                     >
-                      Delete
+                      Remove
                     </GradientButton>
                   </>
                 ) : null}
@@ -549,15 +578,21 @@ const CtsOutwardClearingForm: FC<{
           <div
             onKeyDown={(e) => {
               let target: any = e?.target;
-              const charAtIndex = target.name.split("").find((char, index) => {
+              const charAtIndex = target.name?.split("").find((char, index) => {
                 return index === 39;
               });
               if (e.key === "Enter" || e.key === "Tab") {
+                let metaData;
+                if (zoneTranType === "S") {
+                  metaData = ctsOutwardChequeDetailFormMetaData;
+                } else if (zoneTranType === "R") {
+                  metaData = inwardReturnChequeDetailFormMetaData;
+                }
                 if (
                   (target?.name ?? "") ===
-                  ChequeDetailFormMetaData.form.name +
+                  metaData.form.name +
                     "/" +
-                    ChequeDetailFormMetaData.fields[7].name +
+                    metaData.fields[7].name +
                     `[${charAtIndex}]` +
                     ".AMOUNT"
                 ) {
@@ -571,7 +606,11 @@ const CtsOutwardClearingForm: FC<{
               key={`ChequeDetails` + chequeDtlRefresh + formMode}
               metaData={
                 extractMetaData(
-                  ChequeDetailFormMetaData,
+                  zoneTranType === "S"
+                    ? ctsOutwardChequeDetailFormMetaData
+                    : zoneTranType === "R"
+                    ? inwardReturnChequeDetailFormMetaData
+                    : inwardReturnChequeDetailFormMetaData,
                   formMode
                 ) as MetaDataType
               }
@@ -613,6 +652,11 @@ const CtsOutwardClearingForm: FC<{
               formStyle={{
                 height: "65%",
               }}
+              formState={{
+                REQ_DATA: chequeReqData,
+                ZONE_TRAN_TYPE: zoneTranType,
+                MessageBox: MessageBox,
+              }}
             />
           </div>
           {isOpenAddBankForm ? (
@@ -632,6 +676,10 @@ const CtsOutwardClearingForm: FC<{
                   retrieveDataRef.current = rowsData?.[0]?.data ?? "";
                   getOutwardClearingData.mutate({
                     TRAN_CD: rowsData?.[0]?.data?.TRAN_CD ?? "",
+                    ENTERED_COMP_CD: rowsData?.[0]?.data?.ENTERED_COMP_CD ?? "",
+                    ENTERED_BRANCH_CD:
+                      rowsData?.[0]?.data?.ENTERED_BRANCH_CD ?? "",
+                    TRAN_TYPE: zoneTranType,
                   });
                   setFormMode("view");
                 }
@@ -650,6 +698,31 @@ const CtsOutwardClearingForm: FC<{
               loading={mutationOutward.isLoading}
             />
           ) : null}
+          {isDeleteRemark && (
+            <RemarksAPIWrapper
+              TitleText={
+                zoneTranType === "S"
+                  ? "Enter Removal Remarks For CTS O/W CLEARING (TRN/559)"
+                  : "Enter Removal Remarks For INWARD RETURN ENTRY (TRN/028)"
+              }
+              onActionNo={() => SetDeleteRemark(false)}
+              onActionYes={(val, rows) => {
+                SetDelete(true);
+              }}
+              // isLoading={crudLimitData?.isLoading}
+              isEntertoSubmit={true}
+              AcceptbuttonLabelText="Ok"
+              CanceltbuttonLabelText="Cancel"
+              open={isDeleteRemark}
+              // rows={deleteDataRef.current}
+              defaultValue={
+                zoneTranType === "S"
+                  ? "WRONG ENTRY FROM CTS O/W CLEARING (TRN/559)"
+                  : "WRONG ENTRY FROM INWARD RETURN ENTRY (TRN/028)"
+              }
+              rows={undefined}
+            />
+          )}
           {isDelete ? (
             <PopupMessageAPIWrapper
               MessageTitle="Confirmation"
