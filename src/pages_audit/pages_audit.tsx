@@ -14,13 +14,13 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
-import { AccDetailContext } from "./auth";
+// import { AccDetailContext } from "./auth";
 import { DailyTransTabsWithDialog } from "./pages/operations/DailyTransaction/TRNHeaderTabs/DailyTransTabs";
 
 export const PagesAudit = (props, { columns }) => {
   const location = useLocation();
   const [drawerOpen, setDrawerState] = useState(true);
-  const { cardStore, setCardStore } = useContext(AccDetailContext);
+  // const { cardStore, setCardStore } = useContext(AccDetailContext);
   const classes = useStyles();
   const isValidURL = props?.isValidURL ?? true;
 
@@ -35,7 +35,7 @@ export const PagesAudit = (props, { columns }) => {
   const handleCardStateUpdate = () => {
     //to update the state once | carousal responsiveness
     let obj = { random: Math.random() };
-    setCardStore({ ...cardStore, obj });
+    // setCardStore({ ...cardStore, obj });
   };
 
   useEffect(() => {

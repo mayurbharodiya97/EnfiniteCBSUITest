@@ -31,6 +31,7 @@ import React, {
   useContext,
   useCallback,
   useMemo,
+  useRef,
 } from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
@@ -47,6 +48,7 @@ import { GeneralAPI } from "registry/fns/functions";
 import { useLocation } from "react-router-dom";
 import { usePopupContext } from "components/custom/popupContext";
 import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
+import { queryClient } from "cache";
 
 //mui theme
 const ErrTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -63,7 +65,6 @@ export const Trn001 = () => {
   //hooks
   let location = useLocation();
   const { MessageBox } = usePopupContext();
-
   const { t } = useTranslation();
   const { authState } = useContext(AuthContext);
   const { tempStore, setTempStore } = useContext(AccDetailContext);
@@ -71,7 +72,6 @@ export const Trn001 = () => {
   //variables
   const [defBranch, setDefBranch] = useState<any>({});
   const [withdraw, setWithdraw] = useState<any>({});
-
   var defTableValue = {
     branch: { label: "", value: "", info: "" },
     accType: { label: " ", value: "  ", info: "  " },
@@ -125,11 +125,13 @@ export const Trn001 = () => {
   const [accValidMsg, setAccValidMsg] = useState<any>("");
   const [cardsData, setCardsData] = useState<any>([]);
   const [reqData, setReqData] = useState<any>([]);
+
   const { enqueueSnackbar } = useSnackbar();
   const {
     clearCache: clearTabsCache,
     error: tabsErorr,
     data: tabsDetails,
+    setData: setTabsDetails,
     fetchData: fetchTabsData,
     isError: isTabsError,
     isLoading: isTabsLoading,
@@ -154,9 +156,11 @@ export const Trn001 = () => {
 
   //useEffects
   useEffect(() => {
-    setTempStore({ ...tempStore, accInfo: {} });
-    setCardStore({ ...cardStore, cardsInfo: [] });
+    // setTempStore({ ...tempStore, accInfo: {} });
+    // setCardStore({ ...cardStore, cardsInfo: [] });
+    setCardsData([]);
     setTabsData([]);
+    setTabsDetails([]);
   }, []);
 
   useEffect(() => {
@@ -196,13 +200,13 @@ export const Trn001 = () => {
   }, [rows]);
 
   useEffect(() => {
-    cardStore?.cardsInfo?.length > 0 &&
-      cardStore?.cardsInfo?.map((a) => {
+    cardsData?.length > 0 &&
+      cardsData?.map((a) => {
         if (a?.COL_LABEL == "Withdrawable") {
           setWithdraw(a);
         }
       });
-  }, [cardStore]);
+  }, [cardsData]);
 
   useEffect(() => {
     //getting all options for autocomplete
@@ -252,7 +256,7 @@ export const Trn001 = () => {
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
       setLoading(false);
-      setCardStore({ ...cardStore, cardsInfo: data });
+      // setCardStore({ ...cardStore, cardsInfo: data });
       setCardsData(data);
     },
     onError: (error: any) => {
@@ -260,7 +264,8 @@ export const Trn001 = () => {
         variant: "error",
       });
       setLoading(false);
-      setCardStore({ ...cardStore, cardsInfo: [] });
+      // setCardStore({ ...cardStore, cardsInfo: [] });
+      setCardsData([]);
     },
   });
   // const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
@@ -703,9 +708,9 @@ export const Trn001 = () => {
     setTotalDebit(0);
     setTrxOptions(trxOptions2);
     setViewOnly(false);
-    setTempStore({ ...tempStore, accInfo: {} });
-    setCardStore({ ...cardStore, cardsInfo: [] });
-    setTabsData([]);
+    // setTempStore({ ...tempStore, accInfo: {} });
+    // setCardStore({ ...cardStore, cardsInfo: [] });
+    setTabsDetails([]);
     setLoading(false);
     setReqData({});
     setCardsData([]);
@@ -725,14 +730,18 @@ export const Trn001 = () => {
       PARENT_TYPE: rows[i]?.accType?.info?.PARENT_TYPE ?? "",
       BRANCH_CD: rows[i]?.branch?.value,
       SCREEN_REF: "ETRN/001",
-      authState: authState,
+      // authState: authState,
     };
 
     if (rows[i]?.accNo && rows[i]?.accType?.value && rows[i]?.branch?.value) {
       setLoading(true);
       rows[i]?.accNo && getAccNoValidation.mutate(data, i);
-      rows[i]?.accNo && getCarousalCards.mutate({ reqData: data });
-      setTempStore({ ...tempStore, accInfo: data });
+
+      rows[i]?.accNo &&
+        getCarousalCards.mutate({
+          reqData: data,
+        });
+      // setTempStore({ ...tempStore, accInfo: data });
       setReqData(data);
     }
   };
@@ -806,7 +815,7 @@ export const Trn001 = () => {
       isErrCNo
     ) {
     } else {
-      cardStore?.cardsInfo?.length > 0 && setSaveDialog(true);
+      cardsData?.length > 0 && setSaveDialog(true);
     }
   };
 
@@ -838,7 +847,6 @@ export const Trn001 = () => {
     fetchTabsData({
       cacheId: data?.ACCT_TYPE,
       reqData: data,
-      // controllerFinal: controllerRef.current,
     });
   };
 
@@ -900,6 +908,39 @@ export const Trn001 = () => {
   const handleSetAccInfo = (row) => {
     setReqData(row);
   };
+
+  useEffect(() => {
+    return () => {
+      clearTabsCache();
+      queryClient.removeQueries("getSIDetailList");
+      queryClient.removeQueries("getLienDetailList");
+      queryClient.removeQueries("getOWChqList");
+      queryClient.removeQueries("getTempList");
+      queryClient.removeQueries("getATMList");
+      queryClient.removeQueries("getASBAList");
+      queryClient.removeQueries("getACH_IWList");
+      queryClient.removeQueries("getACH_OWList");
+      queryClient.removeQueries("getInstructionList");
+      queryClient.removeQueries("getGroupList");
+      queryClient.removeQueries("getAPYList");
+      queryClient.removeQueries("getAPBSList");
+      queryClient.removeQueries("getPMBYList");
+      queryClient.removeQueries("getJointDetailsList");
+      queryClient.removeQueries("getTodayTransList");
+      queryClient.removeQueries("getCheckDetailsList");
+      queryClient.removeQueries("getSnapShotList");
+      queryClient.removeQueries("getHoldChargeList");
+      queryClient.removeQueries("getDocTemplateList");
+      queryClient.removeQueries("getStopPayList");
+      queryClient.removeQueries("getInsuranceList");
+      queryClient.removeQueries("getDisbursementList");
+      queryClient.removeQueries("getSubsidyList");
+      queryClient.removeQueries("getSearchList");
+      queryClient.removeQueries("getLimitList");
+      queryClient.removeQueries("getStockList");
+    };
+  }, []);
+
   return (
     <>
       <DailyTransTabs
@@ -926,6 +967,7 @@ export const Trn001 = () => {
             handleFilteredRows={handleFilteredRows}
             handleSetCards={handleSetCards}
             handleSetAccInfo={handleSetAccInfo}
+            isTabsLoading={isTabsLoading}
           />
         )}
 
@@ -1134,7 +1176,7 @@ export const Trn001 = () => {
                             <TextField
                               value={a.cNo}
                               fullWidth={true}
-                              error={!a.cNo || a?.bugCNo ? true : false}
+                              error={a?.bugCNo ? true : false}
                               id="txtRight"
                               placeholder=""
                               disabled={

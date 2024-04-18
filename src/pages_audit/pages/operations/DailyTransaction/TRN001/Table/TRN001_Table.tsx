@@ -39,13 +39,15 @@ export const TRN001_Table = ({
   handleFilteredRows,
   handleSetCards,
   handleSetAccInfo,
+  isTabsLoading,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const myGridRef = useRef<any>(null);
   const location = useLocation();
   const { authState } = useContext(AuthContext);
-  const { tempStore, setTempStore } = useContext(AccDetailContext);
-  const { cardStore, setCardStore } = useContext(AccDetailContext);
+  const controllerRef = useRef<AbortController>();
+  // const { tempStore, setTempStore } = useContext(AccDetailContext);
+  // const { cardStore, setCardStore } = useContext(AccDetailContext);
 
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
@@ -70,7 +72,7 @@ export const TRN001_Table = ({
 
   useEffect(() => {
     getTRN001List.mutate(objData);
-  }, [tempStore?.refresh]);
+  }, []);
 
   // api define=============================================
   const getTRN001List = useMutation(trn1Api.getTRN001List, {
@@ -109,11 +111,12 @@ export const TRN001_Table = ({
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
-      setCardStore({ ...cardStore, cardsInfo: data });
+      // setCardStore({ ...cardStore, cardsInfo: data });
       handleSetCards(data);
     },
     onError: (error) => {
-      setCardStore({ ...cardStore, cardsInfo: [] });
+      // setCardStore({ ...cardStore, cardsInfo: [] });
+      handleSetCards([]);
     },
   });
 
@@ -139,6 +142,9 @@ export const TRN001_Table = ({
     let row = data.rows[0]?.data;
     setDataRow(row);
 
+    if (data.name === "Delete") {
+      setDeleteDialog(true);
+    }
     if (data.name === "_rowChanged") {
       let obj = {
         COMP_CD: row?.COMP_CD,
@@ -147,18 +153,21 @@ export const TRN001_Table = ({
         PARENT_TYPE: row?.PARENT_TYPE ?? "",
 
         BRANCH_CD: row?.BRANCH_CD,
-        authState: authState,
+        // authState: authState,
       };
 
-      setTempStore({ ...tempStore, accInfo: obj });
-      getCarousalCards.mutate({ reqData: obj });
-      handleGetHeaderTabs(obj ?? "");
-
       handleSetAccInfo(obj);
-    }
-
-    if (data.name === "Delete") {
-      setDeleteDialog(true);
+      // setTempStore({ ...tempStore, accInfo: obj });
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      // Create a new AbortController
+      controllerRef.current = new AbortController();
+      getCarousalCards.mutate({
+        reqData: obj,
+        controllerFinal: controllerRef.current,
+      });
+      handleGetHeaderTabs(obj ?? "");
     }
   }, []);
 
@@ -224,7 +233,9 @@ export const TRN001_Table = ({
         finalMetaData={TRN001_TableMetaData as GridMetaDataType}
         data={rows}
         setData={() => null}
-        loading={getTRN001List.isLoading || getCarousalCards.isLoading}
+        loading={
+          getTRN001List.isLoading || getCarousalCards.isLoading || isTabsLoading
+        }
         refetchData={() => getTRN001List.mutate(objData)}
         ref={myGridRef}
         actions={actions}
