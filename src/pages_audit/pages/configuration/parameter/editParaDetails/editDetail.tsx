@@ -1,4 +1,4 @@
-import { Dialog } from "@mui/material";
+import { CircularProgress, Dialog } from "@mui/material";
 import { MetaDataType } from "components/dyanmicForm";
 import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { ParaDetailMetadata } from "./metaData";
@@ -10,11 +10,34 @@ import * as API from "./api"
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { extractMetaData, utilFunction } from "components/utils";
+import { usePopupContext } from "components/custom/popupContext";
 
  const EditDetail = ({ open, onClose, rowsData ,refetch,formView}) => {
   const [isOpenSave, setIsOpenSave] = useState(false);
   const isErrorFuncRef = useRef<any>(null);
   const [formMode, setFormMode] = useState(formView);
+  const { MessageBox } = usePopupContext();
+  const result = useMutation(API.validateparavalue, {
+    onSuccess: (data) => {
+      if (data?.[0]?.STATUS === "0") {
+        return setIsOpenSave(true);
+      } else if (data?.[0]?.STATUS === "999" && data?.[0]?.MESSAGE) {
+        MessageBox({
+          messageTitle: "Validation Alert..",
+          message: data?.[0]?.MESSAGE,
+        });
+      }
+    },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
+  });
   const mutation = useMutation((API.updateParameterData),{
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -49,7 +72,7 @@ import { extractMetaData, utilFunction } from "components/utils";
     setIsOpenSave(false);
   };
    const onSubmitHandler: SubmitFnType = (
-    data,
+    data:any,
     displayData,
     endSubmit,
     setFieldError,
@@ -77,7 +100,10 @@ import { extractMetaData, utilFunction } from "components/utils";
       setIsOpenSave(false);
       setFormMode("view");
     } else {
-      setIsOpenSave(true);
+      result.mutate({
+        para_cd:data?.PARA_CD ?? "",
+        para_value:data?.PARA_VALUE ?? "",
+      });
     }
   };
   const onPopupYes = (rowsData1) => {
@@ -130,6 +156,12 @@ import { extractMetaData, utilFunction } from "components/utils";
                     onClick={(event) => {
                       handleSubmit(event, "Save");
                     }}
+                    disabled={isSubmitting}
+                    endIcon={
+                      result?.isLoading ? (
+                        <CircularProgress size={20} />
+                      ) : null
+                    }
                     color={"primary"}
                   >
                     Save
