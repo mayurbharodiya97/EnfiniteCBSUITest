@@ -92,12 +92,11 @@ export const savingsDeposit_metadata = {
             name: "INST_NO",
             label: "Chq. Sign Autho",
             placeholder: "",
+            options: (dependentValue, formState, _, authState) => API.getCheqSignAuthoTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "chqSignAuthoSavingsOp",
             // defaultValue: "N",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            options: [
-                {label: "", value: ""}
-            ],
         },
 
         {
@@ -140,10 +139,8 @@ export const savingsDeposit_metadata = {
             },
             name: "CLASS_CD",
             label: "Risk Category",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getRiskCategTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
+            _optionsKey: "riskCategSavingsOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -227,10 +224,8 @@ export const savingsDeposit_metadata = {
             },
             name: "INT_SKIP_REASON_TRAN_CD",
             label: "Interest Skip Reason",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getIntSkipReasonTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "skipReasonSavingsOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}

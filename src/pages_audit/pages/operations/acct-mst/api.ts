@@ -52,7 +52,13 @@ export const getAcctModeOptions = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
-export const getTabsDetail = async ({COMP_CD, BRANCH_CD, ACCT_TYPE, ACCT_MODE, ALLOW_EDIT}) => {
+export const getTabsDetail = async ({
+  COMP_CD,
+  BRANCH_CD,
+  ACCT_TYPE,
+  ACCT_MODE,
+  ALLOW_EDIT,
+}) => {
   if (!ACCT_TYPE) {
     return [];
   }
@@ -71,20 +77,19 @@ export const getTabsDetail = async ({COMP_CD, BRANCH_CD, ACCT_TYPE, ACCT_MODE, A
   }
 };
 
-export const isReadOnlyonParam320 = ({formState}) => {
-  // return true;
+export const isReadOnlyonParam320 = ({ formState }) => {
   const PARAM320 = formState?.PARAM320;
-  if(Boolean(PARAM320)) {
-      if(PARAM320 === "Y") {
-          return true;
-      } else if(PARAM320 === "N") {
-          return false;
-      }
+  if (Boolean(PARAM320)) {
+    if (PARAM320 === "Y") {
+      return true;
+    } else if (PARAM320 === "N") {
+      return false;
+    }
   }
   return false;
-}
+};
 
-export const getMortgageTypeOp = async ({COMP_CD, BRANCH_CD}) => {
+export const getMortgageTypeOp = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTMORTGAGEDDW", {
       COMP_CD: COMP_CD,
@@ -107,9 +112,9 @@ export const getMortgageTypeOp = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getAdvocateTypeOp = async ({COMP_CD, BRANCH_CD}) => {
+export const getAdvocateTypeOp = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTADVOCATEDDW", {
       COMP_CD: COMP_CD,
@@ -132,9 +137,9 @@ export const getAdvocateTypeOp = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getValuerTypeOp = async ({COMP_CD, BRANCH_CD}) => {
+export const getValuerTypeOp = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTVALUERNMDDW", {
       COMP_CD: COMP_CD,
@@ -157,9 +162,9 @@ export const getValuerTypeOp = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getGuardianorRelationTypeOp = async ({COMP_CD, BRANCH_CD}) => {
+export const getGuardianorRelationTypeOp = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTGUARDIANDDW", {
       COMP_CD: COMP_CD,
@@ -182,9 +187,9 @@ export const getGuardianorRelationTypeOp = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getNPATypeOP = async ({COMP_CD, BRANCH_CD}) => {
+export const getNPATypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTNPADDW", {
       COMP_CD: COMP_CD,
@@ -207,9 +212,9 @@ export const getNPATypeOP = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getSegmentPTSOp = async ({COMP_CD, BRANCH_CD}) => {
+export const getSegmentPTSOp = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTPTSDDW", {
       COMP_CD: COMP_CD,
@@ -232,9 +237,9 @@ export const getSegmentPTSOp = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getPurposeTypeOP = async ({COMP_CD, BRANCH_CD}) => {
+export const getPurposeTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTPURPOSEDDW", {
       COMP_CD: COMP_CD,
@@ -257,7 +262,7 @@ export const getPurposeTypeOP = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
 export const getPrioritParentTypeOP = async ({COMP_CD, BRANCH_CD}) => {
   const { data, status, message, messageDetails } =
@@ -282,7 +287,7 @@ export const getPrioritParentTypeOP = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
 export const getPrioritMainTypeOP = async ({COMP_CD, BRANCH_CD, dependentValue}) => {
   // console.log("dependentValuedependentValuedependentValue", dependentValue)
@@ -312,7 +317,7 @@ export const getPrioritMainTypeOP = async ({COMP_CD, BRANCH_CD, dependentValue})
       throw DefaultErrorObject(message, messageDetails);
     }
   }
-}
+};
 
 export const getPriorityWeakerTypeOP = async ({COMP_CD, BRANCH_CD, dependentValue}) => {
   const PARENT_GROUP = dependentValue?.PARENT_GROUP?.value;
@@ -341,10 +346,9 @@ export const getPriorityWeakerTypeOP = async ({COMP_CD, BRANCH_CD, dependentValu
       throw DefaultErrorObject(message, messageDetails);
     }
   }
+};
 
-}
-
-export const getCategoryTypeOP = async ({COMP_CD, BRANCH_CD}) => {
+export const getCategoryTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTCATEGORYDDW", {
       COMP_CD: COMP_CD,
@@ -367,9 +371,9 @@ export const getCategoryTypeOP = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getAgentTypeOP = async ({COMP_CD, BRANCH_CD}) => {
+export const getAgentTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTAGENTDDW", {
       COMP_CD: COMP_CD,
@@ -392,14 +396,20 @@ export const getAgentTypeOP = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getRiskCategTypeOP = async ({COMP_CD, BRANCH_CD}) => {//come back
+interface RiskReqParam {
+  COMP_CD: string,
+  BRANCH_CD: string,
+  FOR_SHARE?: string
+}
+export const getRiskCategTypeOP = async (reqObj:RiskReqParam) => {
+  const { COMP_CD, BRANCH_CD, FOR_SHARE } = reqObj;
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACTRISKCLASSDDW", {
       COMP_CD: COMP_CD,
       BRANCH_CD: BRANCH_CD,
-      FOR_SHARE: "N"
+      FOR_SHARE: FOR_SHARE ?? "N",
     });
   if (status === "0") {
     let responseData = data;
@@ -418,9 +428,9 @@ export const getRiskCategTypeOP = async ({COMP_CD, BRANCH_CD}) => {//come back
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getIndustryTypeOP = async ({COMP_CD, BRANCH_CD}) => {
+export const getIndustryTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTINDUSTRYDDW", {
       COMP_CD: COMP_CD,
@@ -443,9 +453,9 @@ export const getIndustryTypeOP = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getRECRETypeOP = async ({COMP_CD, BRANCH_CD}) => {
+export const getRECRETypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTRECREDDW", {
       COMP_CD: COMP_CD,
@@ -468,9 +478,9 @@ export const getRECRETypeOP = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
 
-export const getBusinessypeOP = async ({COMP_CD, BRANCH_CD}) => {
+export const getBusinessypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTBUSINESSDDW", {
       COMP_CD: COMP_CD,
@@ -479,12 +489,40 @@ export const getBusinessypeOP = async ({COMP_CD, BRANCH_CD}) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ BUSINESS_CD, DISPLAY_NM, ...other }) => {
+      responseData = responseData.map(
+        ({ BUSINESS_CD, DISPLAY_NM, ...other }) => {
+          return {
+            ...other,
+            BUSINESS_CD: BUSINESS_CD,
+            DISPLAY_NM: DISPLAY_NM,
+            value: BUSINESS_CD,
+            label: DISPLAY_NM,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+
+export const getCheqSignAuthoTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETACTCHQSIGNAUTHODDW", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ TRAN_CD, DISPLAY_NM, ...other }) => {
         return {
           ...other,
-          BUSINESS_CD: BUSINESS_CD,
+          TRAN_CD: TRAN_CD,
           DISPLAY_NM: DISPLAY_NM,
-          value: BUSINESS_CD,
+          value: TRAN_CD,
           label: DISPLAY_NM,
         };
       });
@@ -493,4 +531,54 @@ export const getBusinessypeOP = async ({COMP_CD, BRANCH_CD}) => {
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
-}
+};
+
+export const getIntSkipReasonTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETACTINSSKIPREASNDDW", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ TRAN_CD, DESCRIPTION, ...other }) => {
+        return {
+          ...other,
+          TRAN_CD: TRAN_CD,
+          DESCRIPTION: DESCRIPTION,
+          value: TRAN_CD,
+          label: DESCRIPTION,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const getSecurityTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETACCTMSTSECURITYCDDDW", {
+      COMP_CD: COMP_CD,
+      BRANCH_CD: BRANCH_CD,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ SECURITY_CD, DISPLAY_NM, ...other }) => {
+        return {
+          ...other,
+          SECURITY_CD: SECURITY_CD,
+          DISPLAY_NM: DISPLAY_NM,
+          value: SECURITY_CD,
+          label: DISPLAY_NM,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
