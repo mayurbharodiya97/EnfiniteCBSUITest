@@ -39,7 +39,20 @@ export const getInwardClearingData = async ({ data: formData }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("INWARDRETRIVEDATA", formData);
   if (status === "0") {
-    return data;
+    const dataStatus = data;
+    dataStatus.map((item) => {
+      //  rgb(255, 225, 225)    pink
+      if (item?.POST_CONF === "C") {
+        item._rowColor = "rgb(9 132 3 / 51%)"; // green
+      }
+      if (item?.DRAFT_DIV === "DRAFT") {
+        item._rowColor = "rgb(255, 225, 225)"; // pink
+      }
+      if (item?.DRAFT_DIV === "DIVIDEND") {
+        item._rowColor = "rgb(40 142 159 / 60%)"; // blue
+      }
+    });
+    return dataStatus;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
@@ -213,6 +226,42 @@ export const confirmPostedConfigDML = async (apiReq) => {
 export const getInwardAccountDetail = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETINWARDACCTDTL", { ...Apireq });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getDividendViewDetailGridData = async (formData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETINWDIVIDVIEWDTLGRIDTAB", { ...formData });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getDividendViewMasterData = async (formData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETINWDIVIDVEWMSTTAB", { ...formData });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getDividendPaidWarrantGridData = async (formData) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETINWDIVIDPAIDWARNTGRID", { ...formData });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getDividendAccountDetail = async (Apireq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("VALIDATEDIVIDENDDATA", { ...Apireq });
   if (status === "0") {
     return data;
   } else {

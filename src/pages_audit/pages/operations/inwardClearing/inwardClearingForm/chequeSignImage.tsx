@@ -19,22 +19,22 @@ import React from "react";
 import AvatarEditor from "react-avatar-editor";
 import { GradientButton } from "components/styledComponent/button";
 import { makeStyles } from "@mui/styles";
+
 const useTypeStyles = makeStyles((theme: Theme) => ({
-  title: {
-    flex: "1 1 100%",
-    color: "var(--theme-color2)",
-    letterSpacing: "1px",
-    fontSize: "1.5rem",
+  printHidden: {
+    "@media print": {
+      display: "none !important",
+    },
   },
-  refreshiconhover: {},
 }));
 export const ChequeSignImage: FC<{
   imgData?: any;
   loading?: any;
   error?: any;
   acSignImage?: any;
-}> = ({ imgData, loading, error, acSignImage }) => {
-  const headerClasses = useTypeStyles();
+  isVisibleSign?: any;
+}> = ({ imgData, loading, error, acSignImage, isVisibleSign }) => {
+  const classes = useTypeStyles();
   const [chequeImageURL, setChequeImageURL] = useState<any>(null);
   const [signImageURL, setSignImageURL] = useState<any>();
   const urlObj = useRef<any>(null);
@@ -96,19 +96,9 @@ export const ChequeSignImage: FC<{
       setSignImageURL(urlObj.current);
     }
   }, [imgData, acSignImage]);
-
   return (
     <>
       {" "}
-      {/* {loading ? (
-        <LoaderPaperComponent />
-      ) : error ? (
-        <Alert
-          severity={error?.severity ?? "error"}
-          errorMsg={error?.error_msg ?? "Error"}
-          errorDetail={error?.error_detail ?? ""}
-        />
-      ) : ( */}
       <Grid container spacing={0} justifyContent="center" alignItems="center">
         <Grid item xs={12} md={8} sm={8} lg={8} xl={8}>
           <Carousel
@@ -211,7 +201,7 @@ export const ChequeSignImage: FC<{
                         <img
                           src={imageUrl}
                           alt={`image-${index}`}
-                          style={{ height: "100%", width: "100%" }}
+                          // style={{ height: "100%", width: "100%" }}
                         />
                       </div>
                     </CardContent>
@@ -241,11 +231,10 @@ export const ChequeSignImage: FC<{
                         justifyContent: "center",
                       }}
                     >
-                      {" "}
                       <img
                         src={noPhotoAvailble}
-                        style={{ height: "100%", width: "100%" }}
-                      />{" "}
+                        style={{ width: "100%", height: "100%" }} // Set image width and height to 100% to fill its container
+                      />
                     </div>
                   </CardContent>
                 </Card>
@@ -254,7 +243,124 @@ export const ChequeSignImage: FC<{
           </Carousel>{" "}
         </Grid>
         <>
-          <Grid item xs={12} md={4} sm={4} lg={4} xl={4}>
+          {isVisibleSign === undefined ? (
+            <>
+              {console.log("test before", isVisibleSign)}
+              <Grid item xs={12} md={4} sm={4} lg={4} xl={4}>
+                <div style={{ paddingRight: "40px" }}>
+                  <Card
+                    sx={{
+                      color: "white",
+                      background: "var(--theme-color1)",
+                      display: "block",
+                      margin: "0 auto",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    <CardContent
+                      style={{
+                        padding: "2px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {signImageURL ? (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            cursor: "zoom-in",
+                          }}
+                          onClick={() => {
+                            setSelectedImageUrl(signImageURL); // Set the clicked image URL
+                            setIsOpen(true); // Open the dialog
+                          }}
+                        >
+                          <img
+                            src={Boolean(signImageURL) ? signImageURL : ""}
+                            alt="Sign"
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <img src={noPhotoAvailble} alt="No Photo Available" />
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              </Grid>
+            </>
+          ) : null}
+
+          {/* {isVisibleSign && (
+            <>
+              <Grid item xs={12} md={4} sm={4} lg={4} xl={4}>
+                <div style={{ paddingRight: "40px" }}>
+                  <Card
+                    sx={{
+                      color: "white",
+                      background: "var(--theme-color1)",
+                      display: "block",
+                      margin: "0 auto",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    <CardContent
+                      style={{
+                        padding: "2px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {signImageURL ? (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            cursor: "zoom-in",
+                          }}
+                          onClick={() => {
+                            setSelectedImageUrl(signImageURL); // Set the clicked image URL
+                            setIsOpen(true); // Open the dialog
+                          }}
+                        >
+                          <img
+                            src={Boolean(signImageURL) ? signImageURL : ""}
+                            alt="Sign"
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <img src={noPhotoAvailble} />
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              </Grid>
+            </>
+          )} */}
+
+          {/* <Grid item xs={12} md={4} sm={4} lg={4} xl={4}>
             <div style={{ paddingRight: "40px" }}>
               <Card
                 sx={{
@@ -288,11 +394,6 @@ export const ChequeSignImage: FC<{
                     >
                       <img
                         src={Boolean(signImageURL) ? signImageURL : ""}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
                         alt="Sign"
                       />
                     </div>
@@ -305,19 +406,15 @@ export const ChequeSignImage: FC<{
                         justifyContent: "center",
                       }}
                     >
-                      <img
-                        src={noPhotoAvailble}
-                        style={{ height: "100%", width: "100%" }}
-                      />{" "}
+                      <img src={noPhotoAvailble} />
                     </div>
                   )}
                 </CardContent>
               </Card>
             </div>
-          </Grid>
+          </Grid> */}
         </>
       </Grid>
-      {/* )} */}
       <>
         <Dialog
           open={isOpen}
@@ -330,13 +427,17 @@ export const ChequeSignImage: FC<{
           maxWidth="lg"
         >
           <div style={{ display: "flex", justifyContent: "end" }}>
-            <GradientButton onClick={handleRotateChange}>
+            <GradientButton
+              className={classes.printHidden}
+              onClick={handleRotateChange}
+            >
               {rotateImg === 0 ? "Rotate" : "Reset"}
             </GradientButton>
             <GradientButton
               onClick={() => {
                 window.print();
               }}
+              className={classes.printHidden}
             >
               Print
             </GradientButton>

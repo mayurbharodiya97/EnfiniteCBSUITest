@@ -1,4 +1,11 @@
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Grid,
+  IconButton,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import { useContext, useEffect, useState, useRef } from "react";
 import { List, ListItem, ListItemText } from "@mui/material";
 import { useQuery, useMutation } from "react-query";
@@ -33,6 +40,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
   const [isOpenSave, setIsOpenSave] = useState(false);
   const { t } = useTranslation();
   const refData = useRef<any>(null);
+  const isDataChangedRef = useRef(false);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -51,7 +59,6 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
         userID: authState?.user?.id ?? "",
       })
   );
-
   const mutation = useMutation(
     updateAUTHDetailDataWrapperFn(API.getNoteCountData),
     {
@@ -68,8 +75,19 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
     mutation.mutate(mutationArguments);
   }, []);
 
-  const dataLength = data ? data.length : 0;
-  const dataNoteLength = mutation.data?.[0]?.CNT;
+  const dataLength = isLoading ? (
+    <CircularProgress size={20} thickness={4.6} />
+  ) : data ? (
+    data.length
+  ) : (
+    ""
+  );
+
+  const dataNoteLength: any = mutation?.isLoading ? (
+    <CircularProgress size={20} thickness={4.6} />
+  ) : (
+    mutation?.data?.[0]?.CNT
+  );
 
   useEffect(() => {
     return () => {
@@ -81,7 +99,7 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
           // transactionID: data?.transactionID,
         },
       ]);
-      queryClient.removeQueries(["getNoteCountData"]);
+      // queryClient.removeQueries(["getNoteCountData"]);
     };
   }, []);
 
@@ -93,7 +111,18 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
       setToggle(!toggle);
     }
   };
+
   const handleDialogClose = () => {
+    if (isDataChangedRef.current === true) {
+      isDataChangedRef.current = true;
+      screenFlag === "Notes"
+        ? mutation.mutate({
+            userID: authState?.user?.id ?? "",
+            COMP_CD: authState?.companyID ?? "",
+          })
+        : refetch();
+      isDataChangedRef.current = false;
+    }
     setIsOpenSave(false);
   };
   const handleLabelClick = (item) => {
@@ -329,13 +358,19 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
               open={undefined}
               formView={"view"}
               screenFlag={screenFlag}
+              isDataChangedRef={isDataChangedRef}
+              isAnnouncementLoading={isLoading || isFetching}
             />
           ) : null}
         </>
       ) : screenFlag === "Notes" ? (
         <>
           {isOpenSave ? (
-            <StickyNotes open={isOpenSave} closeDialog={handleDialogClose} />
+            <StickyNotes
+              open={isOpenSave}
+              closeDialog={handleDialogClose}
+              isDataChangedRef={isDataChangedRef}
+            />
           ) : null}
         </>
       ) : screenFlag === "Tips" ? (
@@ -346,6 +381,8 @@ export const MessageBox = ({ screenFlag = "" }: any) => {
               closeDialog={handleDialogClose}
               data={refData.current}
               formView={"view"}
+              isLoading={isLoading || isFetching}
+              isDataChangedRef={isDataChangedRef}
             />
           ) : null}
         </>

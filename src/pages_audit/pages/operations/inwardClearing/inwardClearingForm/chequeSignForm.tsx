@@ -8,6 +8,8 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { chequesignFormMetaData } from "./metaData";
 import { format } from "date-fns";
 import { ChequeSignImage } from "./chequeSignImage";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
 
 export const ChequeSignForm: FC<{
   onClose?: any;
@@ -54,7 +56,24 @@ export const ChequeSignForm: FC<{
           },
         }}
       >
-        {/* {isLoading || isFetching ? (
+        {" "}
+        <FormWrapper
+          key={`chequeSignForm`}
+          metaData={chequesignFormMetaData as unknown as MetaDataType}
+          initialValues={reqDataRef.current}
+          onSubmitHandler={{}}
+          formStyle={{
+            background: "white",
+          }}
+          displayMode={"view"}
+        >
+          {({ isSubmitting, handleSubmit }) => (
+            <>
+              <GradientButton onClick={onClose}>Close</GradientButton>
+            </>
+          )}
+        </FormWrapper>
+        {isLoading || isFetching ? (
           <LoaderPaperComponent />
         ) : isError ? (
           <Alert
@@ -62,27 +81,11 @@ export const ChequeSignForm: FC<{
             errorMsg={error?.error_msg ?? "Error"}
             errorDetail={error?.error_detail ?? ""}
           />
-        ) : ( */}
-        <>
-          <FormWrapper
-            key={`chequeSignForm`}
-            metaData={chequesignFormMetaData as unknown as MetaDataType}
-            initialValues={reqDataRef.current}
-            onSubmitHandler={{}}
-            formStyle={{
-              background: "white",
-            }}
-            displayMode={"view"}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                <GradientButton onClick={onClose}>Close</GradientButton>
-              </>
-            )}
-          </FormWrapper>
-          <ChequeSignImage imgData={data} />
-        </>
-        {/* )} */}
+        ) : (
+          <>
+            <ChequeSignImage imgData={data} />
+          </>
+        )}
       </Dialog>
     </>
   );

@@ -19,6 +19,9 @@ const CashReceiptEntry = lazy(
   () => import("pages_audit/pages/dashboard/noteDenomination/cashReceiptEntry")
 );
 const CtsOutwardClearingFormWrapper = lazy(() => import("./ctsOutward"));
+const CtsOutwardClearingConfirmGrid = lazy(
+  () => import("./ctsOutward/confirmation")
+);
 const InwardClearing = lazy(() => import("./inwardClearing"));
 const TellerScreen = lazy(
   () => import("../dashboard/noteDenomination/tellerScreen")
@@ -63,6 +66,22 @@ export const OperationsMenu = () => (
     <Route
       path="cts-outward-clearing/*"
       element={<CtsOutwardClearingFormWrapper zoneTranType="S" />}
+    />
+    <Route
+      path="inward-return-entry/*"
+      element={<CtsOutwardClearingFormWrapper zoneTranType="R" />}
+    />
+    <Route
+      path="cts-o/w-confirmation/*"
+      element={<CtsOutwardClearingConfirmGrid zoneTranType="S" />}
+    />
+    <Route
+      path="inward-return-confirmation/*"
+      element={<CtsOutwardClearingConfirmGrid zoneTranType="R" />}
+    />
+    <Route
+      path="outward-return-confirmation/*"
+      element={<CtsOutwardClearingConfirmGrid zoneTranType="W" />}
     />
     <Route path="inward-clearing-process/*" element={<InwardClearing />} />
     <Route

@@ -61,7 +61,9 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
           onChange={handleChange}
           error={loginState.isUsernameError}
           helperText={
-            loginState.isUsernameError ? loginState.userMessageforusername : ""
+            loginState.isUsernameError
+              ? t(loginState.userMessageforusername)
+              : ""
           }
           InputLabelProps={{ shrink: true }}
           disabled={
@@ -74,7 +76,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
           autoComplete="off"
           ref={inputRef}
           inputProps={{ maxLength: 16 }}
-          onKeyPress={(e) => {
+          onKeyDown={(e) => {
             if (e.key === "Enter") {
               inputButtonRef?.current?.click?.();
             }
@@ -93,7 +95,9 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             onChange={handleChange}
             error={loginState.isMobileError}
             helperText={
-              loginState.isMobileError ? loginState.userMessageforMobileno : ""
+              loginState.isMobileError
+                ? t(loginState.userMessageforMobileno)
+                : ""
             }
             InputLabelProps={{ shrink: true }}
             disabled={
@@ -104,7 +108,7 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                 : true
             }
             autoComplete="off"
-            onKeyPress={(e) => {
+            onKeyDown={(e) => {
               if (e.key === "Enter") {
                 inputButtonRef?.current?.click?.();
               }
@@ -127,14 +131,14 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               error={loginState.isPasswordError}
               helperText={
                 loginState.isPasswordError
-                  ? loginState.userMessageforPassword
+                  ? t(loginState.userMessageforPassword)
                   : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={loginState.loading}
               autoComplete="off"
               ref={inputPassRef}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
@@ -171,13 +175,13 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
               error={loginState.isConfirmPasswordError}
               helperText={
                 loginState.isConfirmPasswordError
-                  ? loginState.userMessageforconfirmPassword
+                  ? t(loginState.userMessageforconfirmPassword)
                   : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={loginState.loading}
               autoComplete="off"
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
@@ -205,7 +209,11 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
             />
           </>
         ) : null}
-
+        {loginState.isApiError ? (
+          <FormHelperText style={{ color: "red" }}>
+            {loginState.apierrorMessage}
+          </FormHelperText>
+        ) : null}
         <div
           style={{
             marginTop: "20px",

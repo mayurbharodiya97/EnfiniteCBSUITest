@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import * as Icons from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 interface MyGridExtendedProps {
   enableNumWords?: boolean;
   maxLength?: number;
@@ -121,6 +122,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   const [currentColor, setCurrentColor] = useState<string>(
     typeof setColor === "string" ? setColor : ""
   );
+  const { t } = useTranslation();
   useEffect(() => {
     if (typeof setColor === "function") {
       let result = setColor(value);
@@ -282,7 +284,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
           <div style={{ display: "flex" }}>
             <FormHelperText style={{ whiteSpace: "pre-line" }}>
               {!isSubmitting && isError
-                ? myError
+                ? t(myError)
                 : Boolean(validationAPIResult)
                 ? validationAPIResult
                 : numWordsVar}

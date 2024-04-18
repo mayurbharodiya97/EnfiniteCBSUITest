@@ -83,7 +83,7 @@ export const MessageDescriptionMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "datePicker",
       },
       name: "EFFECTIVE_DT",
       label: "OpenDate",
@@ -100,7 +100,7 @@ export const MessageDescriptionMetadata = {
     },
     {
       render: {
-        componentType: "textField",
+        componentType: "datePicker",
       },
       name: "ENTERED_DATE",
       label: "ExpiryDate",

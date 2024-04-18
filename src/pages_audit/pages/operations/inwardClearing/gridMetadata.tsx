@@ -88,13 +88,30 @@ export const InwardClearingRetrievalMetadata = {
       ],
 
       GridProps: {
-        xs: 6,
-        sm: 6,
-        md: 6,
-        lg: 6,
-        xl: 6,
+        xs: 5,
+        sm: 5,
+        md: 5,
+        lg: 5,
+        xl: 5,
       },
     },
+    // {
+    //   render: {
+    //     componentType: "typography",
+    //   },
+    //   name: "NOTE",
+    //   label: "",
+    //   defaultValue: "Note :Below one item is selected. Please scroll to view.",
+    //   TypographyProps: {
+    //     style: {
+    //       color: "red",
+    //       whiteSpace: "pre-line",
+    //       fontSize: "1.1rem",
+    //       marginTop: "8px",
+    //     },
+    //   },
+    //   GridProps: { xs: 12, sm: 7, md: 7, lg: 7, xl: 7 },
+    // },
   ],
 };
 
@@ -102,7 +119,7 @@ export const InwardCleaingGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Inward Clearing Process(TRN/650)",
-    rowIdColumn: "TRAN_CD",
+    rowIdColumn: "SR_NO",
     defaultColumnConfig: {
       width: 400,
       maxWidth: 450,
