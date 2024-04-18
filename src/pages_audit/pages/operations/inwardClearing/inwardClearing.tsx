@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "pages_audit/auth";
 import {
   AppBar,
@@ -30,7 +23,6 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useStyles } from "pages_audit/auth/style";
 import SearchIcon from "@mui/icons-material/Search";
 import { TextField } from "components/styledComponent";
-import { SubmitFnType } from "packages/form";
 import { Alert } from "components/common/alert";
 import { queryClient } from "cache";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
@@ -47,8 +39,7 @@ import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { utilFunction } from "components/utils";
-import { PopupRequestWrapper } from "components/custom/popupRequest";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { ShareDividendFormWrapper } from "./inwardClearingForm/shareDividendForm";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
@@ -72,7 +63,7 @@ const actions: ActionTypes[] = [
     alwaysAvailable: true,
   },
   {
-    actionName: "view-details",
+    actionName: "view-detail",
     actionLabel: "Edit Detail",
     multiple: false,
     rowDoubleClick: true,
@@ -103,17 +94,17 @@ export const InwardClearing = () => {
   const [filteredData, setFilteredData] = useState<any>([]);
   const [isChequeSign, setIsChequeSign] = useState<any>(false);
   const [formData, setFormData] = useState<any>();
-  const [isChequeReturnPost, setIsChequeReturnPost] = useState<any>(false);
   const [messageData, setMessageData] = useState<any>();
   const [isOpenSave, setIsOpenSave] = useState(false);
   const [isOpenDraft, setIsOpenDraft] = useState(false);
   const [isOpenDividend, setIsOpenDividend] = useState(false);
+  const indexRef = useRef(0);
+  const navigate = useNavigate();
 
   const { data, isLoading, isFetching, refetch, error, isError, status } =
     useQuery<any, any>(["BranchSelectionGridData"], () =>
       API.BranchSelectionGridData()
     );
-
   const getInwardClearingData: any = useMutation(API.getInwardClearingData, {
     onError: (error: any) => {
       let errorMsg = "Unknown Error occured";
@@ -127,22 +118,76 @@ export const InwardClearing = () => {
 
     onSuccess: (data) => {},
   });
+  const setCurrentAction = useCallback((data) => {
+    if (data?.name === "retrieve") {
+      setIsOpenRetrieve(true);
+    } else if (data?.name === "view-detail") {
+      indexRef.current = Number(data?.rows?.[0].id);
+      navigate("view-detail", {
+        state: {
+          gridData: data?.rows?.[0]?.data,
+          index: indexRef.current,
+        },
+      });
+    }
+    // else if (data?.name === "view-details") {
+    //   mysubdtlRef.current = data?.rows?.[0]?.data;
+    //   setIsChequeReturnPost(true);
+    // }
+  }, []);
+
   const handleDialogClose = () => {
     if (isDataChangedRef.current === true) {
       isDataChangedRef.current = true;
       getInwardClearingData.mutate({
         data: {
           ...formData,
-          BRANCH_CD: selectedRowsRef?.current.toString(),
+          BRANCH_CD: selectedRowsRef?.current?.toString(),
           COMP_CD: authState?.companyID ?? "",
         },
       });
       isDataChangedRef.current = false;
     }
-    setIsChequeReturnPost(false);
+    navigate(".");
+    setIsOpenRetrieve(false);
     setIsOpenSave(false);
     setIsOpenDraft(false);
+    setIsOpenDividend(false);
   };
+
+  const handlePrev = useCallback(() => {
+    navigate(".");
+    setIsOpenRetrieve(false);
+    const index = (indexRef.current -= 1);
+    setTimeout(() => {
+      setCurrentAction({
+        name: "view-detail",
+        rows: [
+          {
+            data: getInwardClearingData?.data[index],
+            id: String(index - 1),
+          },
+        ],
+      });
+    }, 0);
+  }, [getInwardClearingData?.data]);
+  const handleNext = useCallback(() => {
+    navigate(".");
+    setIsOpenRetrieve(false);
+    const index = indexRef.current++;
+    setTimeout(() => {
+      setCurrentAction({
+        name: "view-detail",
+        rows: [
+          {
+            data: getInwardClearingData?.data[index + 1],
+            id: String(index + 1),
+          },
+        ],
+      });
+    }, 0);
+  }, [getInwardClearingData?.data]);
+
   const postConfigDML: any = useMutation(API.postConfigDML, {
     onSuccess: (data, variables) => {
       // enqueueSnackbar(data, { variant: "success" });
@@ -267,19 +312,6 @@ export const InwardClearing = () => {
       });
     },
   });
-  const setCurrentAction = useCallback((data, index) => {
-    if (data?.name === "retrieve") {
-      setIsOpenRetrieve(true);
-    } else if (data?.name === "view-details") {
-      mysubdtlRef.current = data?.rows?.[0]?.data;
-
-      // mysubdtlRef.current = {
-      //   data: data?.rows?.[0]?.data,
-      //   index: data?.rows?.[0]?.id,
-      // };
-      setIsChequeReturnPost(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (!isLoading && !isFetching) {
@@ -367,7 +399,7 @@ export const InwardClearing = () => {
                 getInwardClearingData.mutate({
                   data: {
                     ...data,
-                    BRANCH_CD: selectedRowsRef?.current.toString(),
+                    BRANCH_CD: selectedRowsRef?.current?.toString(),
                     COMP_CD: authState?.companyID ?? "",
                   },
                   endSubmit,
@@ -463,38 +495,57 @@ export const InwardClearing = () => {
                         </>
                       </Box>
                       <List style={{ paddingTop: "0px", paddingBottom: "0px" }}>
-                        {filteredData?.map((item) => (
-                          <ListItemData
-                            key={item?.value}
-                            name={item?.label}
-                            disabled={false}
-                            selected={
-                              selectAll ||
-                              selectedRows.includes(item?.value) ||
-                              selectedRowsData.includes(item.label)
+                        {[...filteredData]
+                          .sort((a, b) => {
+                            // If 'a' is selected and 'b' is not, move 'a' up
+                            if (
+                              selectedRows.includes(a?.value) &&
+                              !selectedRows.includes(b?.value)
+                            ) {
+                              return -1;
                             }
-                            onClick={(event) =>
-                              handleRowClick(event, item?.value, item?.label)
+                            // If 'b' is selected and 'a' is not, move 'b' up
+                            if (
+                              selectedRows.includes(b?.value) &&
+                              !selectedRows.includes(a?.value)
+                            ) {
+                              return 1;
                             }
-                            onDoubleClick={(event) => {
-                              if (
-                                selectedRows?.length === 0 ||
-                                selectedRowsData?.length === 0
-                              ) {
-                                enqueueSnackbar(
-                                  "Please select at least one row.",
-                                  {
-                                    variant: "error",
-                                  }
-                                );
-                              } else {
-                                setIsOpenRetrieve(false);
-                                myRef?.current?.handleSubmit(event, "save");
-                                selectedRowsRef.current = selectedRows;
+                            // Otherwise, maintain the current order
+                            return 0;
+                          })
+                          ?.map((item) => (
+                            <ListItemData
+                              key={item?.value}
+                              name={item?.label}
+                              disabled={false}
+                              selected={
+                                selectAll ||
+                                selectedRows.includes(item?.value) ||
+                                selectedRowsData.includes(item.label)
                               }
-                            }}
-                          />
-                        ))}
+                              onClick={(event) =>
+                                handleRowClick(event, item?.value, item?.label)
+                              }
+                              onDoubleClick={(event) => {
+                                if (
+                                  selectedRows?.length === 0 ||
+                                  selectedRowsData?.length === 0
+                                ) {
+                                  enqueueSnackbar(
+                                    "Please select at least one row.",
+                                    {
+                                      variant: "error",
+                                    }
+                                  );
+                                } else {
+                                  setIsOpenRetrieve(false);
+                                  myRef?.current?.handleSubmit(event, "save");
+                                  selectedRowsRef.current = selectedRows;
+                                }
+                              }}
+                            />
+                          ))}
                       </List>
                     </nav>
                   </Box>
@@ -579,7 +630,7 @@ export const InwardClearing = () => {
             getInwardClearingData.mutate({
               data: {
                 ...formData,
-                BRANCH_CD: selectedRowsRef?.current.toString(),
+                BRANCH_CD: selectedRowsRef?.current?.toString(),
                 COMP_CD: authState?.companyID ?? "",
               },
             })
@@ -636,9 +687,14 @@ export const InwardClearing = () => {
                 }
               }
             } else if (id === "VIEW_DETAIL") {
-              mysubdtlRef.current = data;
+              // mysubdtlRef.current = data;
               // mysubdtlRef.current = { data, index };
-              setIsChequeReturnPost(true);
+              // setIsChequeReturnPost(true);
+              indexRef.current = Number(index);
+              // console.log("indexRef.current", indexRef.current, index, data);
+              navigate("view-detail", {
+                state: { gridData: data, index: indexRef.current },
+              });
             }
           }}
         />
@@ -654,8 +710,23 @@ export const InwardClearing = () => {
           />
         ) : null}
       </>
-
-      <>
+      <Routes>
+        <Route
+          path="view-detail/*"
+          element={
+            <ChequeReturnPostFormWrapper
+              isDataChangedRef={isDataChangedRef}
+              onClose={handleDialogClose}
+              // inwardData={data?.length ?? 0}
+              handlePrev={handlePrev}
+              handleNext={handleNext}
+              currentIndexRef={indexRef}
+              totalData={getInwardClearingData?.data?.length ?? 0}
+            />
+          }
+        />
+      </Routes>
+      {/* <>
         {isChequeReturnPost ? (
           <ChequeReturnPostFormWrapper
             onClose={handleDialogClose}
@@ -663,8 +734,15 @@ export const InwardClearing = () => {
             inwardData={mysubdtlRef}
           />
         ) : null}
+      </> */}
+      <>
+        {isOpenDividend ? (
+          <ShareDividendFormWrapper
+            onClose={handleDialogClose}
+            dividendData={mysubdtlRef.current}
+          />
+        ) : null}
       </>
-      {isOpenDividend ? <ShareDividendFormWrapper /> : null}
       <>
         {isOpenSave && (
           <PopupMessageAPIWrapper
@@ -723,7 +801,7 @@ export const InwardClearing = () => {
       </>
 
       <>
-        {isOpenDraft && (
+        {Boolean(isOpenDraft) && (
           <PopupRequestWrapper
             MessageTitle={"Confirmation"}
             Message={
@@ -734,7 +812,7 @@ export const InwardClearing = () => {
                   "Press Yes to Realize Draft " +
                   "Press No to Direct Post in GL"
             }
-            onClickButton={(buttonNames) => {
+            onClickButton={(rows, buttonNames) => {
               const postData = {
                 COMP_CD: mysubdtlRef.current?.COMP_CD,
                 BRANCH_CD: mysubdtlRef.current?.BRANCH_CD,
@@ -746,6 +824,7 @@ export const InwardClearing = () => {
                 _UPDATEDCOLUMNS: [],
                 _OLDROWVALUE: {},
                 _isNewRow: false,
+                _isUpdateRow: true,
               };
               if (authState?.role < "2") {
                 if (Boolean(buttonNames === "Yes")) {
@@ -784,7 +863,11 @@ export const InwardClearing = () => {
               authState?.role < "2" ? ["Yes", "No"] : ["Yes", "No", "Cancel"]
             }
             rows={[]}
-            loading={postConfigDML?.isLoading}
+            loading={{
+              Yes: postConfigDML?.isLoading,
+              No: false,
+              Cancel: false,
+            }}
             open={isOpenDraft}
           />
         )}

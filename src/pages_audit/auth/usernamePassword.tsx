@@ -1,8 +1,8 @@
 import { Fragment, useState, useEffect, useRef } from "react";
 import { TextField } from "components/styledComponent/textfield";
 import { GradientButton } from "components/styledComponent/button";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
 import { Container } from "@mui/material";
 import { Grid } from "@mui/material";
@@ -14,9 +14,14 @@ export const UsernamePasswordField = ({
   verifyUsernamePassword,
 }) => {
   const [input, setInput] = useState({ userName: "", password: "" });
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordTime, setShowPasswordTime] = useState(0);
+  const showPassword = Date.now() < showPasswordTime;
+  const [, forceUpdate] = useState<any | null>();
+  const timerRef = useRef<any>(null);
   const { t } = useTranslation();
-
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -32,25 +37,57 @@ export const UsernamePasswordField = ({
   const inputRef = useRef<any>(null);
   const inputPassRef = useRef<any>(null);
   const inputButtonRef = useRef<any>(null);
+
   useEffect(() => {
+    let timeoutCd;
     if (loginState.isUsernameError) {
-      setTimeout(() => {
+      timeoutCd = setTimeout(() => {
         inputRef?.current?.focus?.();
       }, 1000);
     } else if (loginState.isPasswordError) {
-      setTimeout(() => {
+      timeoutCd = setTimeout(() => {
         inputPassRef?.current?.focus?.();
       }, 1000);
     }
+    return () => {
+      if (timeoutCd) {
+        clearTimeout(timeoutCd);
+      }
+    };
   }, [loginState.isUsernameError, loginState.isPasswordError]);
   useEffect(() => {
+    let timeoutCd;
     if (loginState?.otpmodelClose ?? false) {
       setInput((values) => ({ ...values, password: "" }));
-      setTimeout(() => {
+      timeoutCd = setTimeout(() => {
         inputPassRef?.current?.focus?.();
       }, 1500);
     }
+    return () => {
+      if (timeoutCd) {
+        clearTimeout(timeoutCd);
+      }
+    };
   }, [loginState.otpmodelClose]);
+  // useEffect(() => {
+  //   if (loginState.isUsernameError) {
+  //     setTimeout(() => {
+  //       inputRef?.current?.focus?.();
+  //     }, 1000);
+  //   } else if (loginState.isPasswordError) {
+  //     setTimeout(() => {
+  //       inputPassRef?.current?.focus?.();
+  //     }, 1000);
+  //   }
+  // }, [loginState.isUsernameError, loginState.isPasswordError]);
+  // useEffect(() => {
+  //   if (loginState?.otpmodelClose ?? false) {
+  //     setInput((values) => ({ ...values, password: "" }));
+  //     setTimeout(() => {
+  //       inputPassRef?.current?.focus?.();
+  //     }, 1500);
+  //   }
+  // }, [loginState.otpmodelClose]);
 
   return (
     <Fragment>
@@ -99,19 +136,19 @@ export const UsernamePasswordField = ({
               fullWidth
               type={"text"}
               name="userName"
-              value={input.userName || ""}
+              value={input.userName.trimStart() || ""}
               onChange={handleChange}
               error={loginState.isUsernameError}
               helperText={
                 loginState.isUsernameError
-                  ? loginState.userMessageforusername
+                  ? t(loginState.userMessageforusername)
                   : ""
               }
               InputLabelProps={{ shrink: true }}
               disabled={loginState.loading}
               autoComplete="off"
               ref={inputRef}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   inputButtonRef?.current?.click?.();
                 }
@@ -146,12 +183,12 @@ export const UsernamePasswordField = ({
                 error={loginState.isPasswordError}
                 helperText={
                   loginState.isPasswordError
-                    ? loginState.userMessageforpassword
+                    ? t(loginState.userMessageforpassword)
                     : ""
                 }
                 disabled={loginState.loading}
                 ref={inputPassRef}
-                onKeyPress={(e) => {
+                onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     inputButtonRef?.current?.click?.();
                   }
@@ -159,7 +196,7 @@ export const UsernamePasswordField = ({
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
+                      {/* <IconButton
                         aria-label="toggle password visibility"
                         onClick={() => setShowPassword((old) => !old)}
                         onMouseDown={(e) => e.preventDefault()}
@@ -170,6 +207,22 @@ export const UsernamePasswordField = ({
                         ) : (
                           <VisibilityOffIcon />
                         )}
+                      </IconButton> */}
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={() => {
+                          if (!showPassword) {
+                            setShowPasswordTime(Date.now() + 5000);
+                            timerRef.current = setTimeout(
+                              () => forceUpdate(Date.now()),
+                              5000
+                            );
+                          } else if (showPassword) setShowPasswordTime(0);
+                        }}
+                        onMouseDown={(e) => e.preventDefault()}
+                        disabled={loginState.loading}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -179,7 +232,12 @@ export const UsernamePasswordField = ({
             </div>
             <div style={{ marginTop: "20px", display: "flex" }}>
               <div style={{ flex: "auto", textAlign: "end" }}>
-                <a href="forgotpassword" style={{color:"var(--theme-color3)"}}>{t("ForgotPassword")}</a>
+                <a
+                  href="forgotpassword"
+                  style={{ color: "var(--theme-color3)" }}
+                >
+                  {t("ForgotPassword")}
+                </a>
               </div>
             </div>
             <div style={{ marginTop: "20px", display: "flex" }}>

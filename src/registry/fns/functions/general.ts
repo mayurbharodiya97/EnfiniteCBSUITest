@@ -723,12 +723,27 @@ const GeneralAPISDK = () => {
           }
         );
       }
+      if (responseData && apiReq?.DOC_CD === "DIV") {
+        responseData.sort((a, b) => {
+          return parseInt(b.label) - parseInt(a.label);
+        });
+      }
       return responseData;
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
   };
-
+  const getChequeNoValidation = async (apiReq) => {
+    const { data, status, message, messageDetails } =
+      await AuthSDK.internalFetcher("CHEQUENOVALIDATION", {
+        ...apiReq,
+      });
+    if (status === "0") {
+      return data;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+  };
   return {
     GetMiscValue,
     getValidateValue,
@@ -758,6 +773,7 @@ const GeneralAPISDK = () => {
     getFDInterest,
     getAccNoValidation,
     get_Account_Type,
+    getChequeNoValidation,
   };
 };
 export const GeneralAPI = GeneralAPISDK();

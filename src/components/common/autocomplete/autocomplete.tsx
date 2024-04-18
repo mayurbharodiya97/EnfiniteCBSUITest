@@ -71,6 +71,7 @@ interface AutoCompleteExtendedProps {
   disableCaching?: boolean;
   requestProps?: any;
   disableAdornment?: boolean;
+  textFieldStyle?: any;
 }
 
 type MyAutocompleteProps = Merge<
@@ -122,6 +123,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
   disableCaching,
   requestProps,
   disableAdornment,
+  textFieldStyle,
   ...others
 }) => {
   const {
@@ -371,7 +373,7 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
                   "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px",
                 overflow: "hidden",
                 maxWidth: "300px",
-                minWidth: "max(120px, 100%)"
+                minWidth: "max(120px, 100%)",
               }}
             >
               {children}
@@ -442,67 +444,79 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
           });
         }}
         renderInput={(params) => {
+          const selectedLabel =
+            _options.find((option) => option.value === value)?.label || "";
           return (
-            <TextField
-              {...TextFieldProps}
-              {...params}
-              name={name}
-              label={label}
-              placeholder={placeholder}
-              autoComplete="disabled"
-              type="text"
-              error={!isSubmitting && isError}
-              required={required}
-              helperText={!isSubmitting && isError ? error : null}
-              InputProps={{
-                style: {
-                  background: Boolean(readOnly) ? "var(--theme-color7)" : "",
-                },
+            <Tooltip title={selectedLabel || ""} placement="top">
+              <TextField
+                {...TextFieldProps}
+                {...params}
+                name={name}
+                label={label}
+                placeholder={placeholder}
+                autoComplete="disabled"
+                type="text"
+                error={!isSubmitting && isError}
+                required={required}
+                helperText={!isSubmitting && isError ? error : null}
+                sx={{
+                  ...textFieldStyle,
+                }}
+                InputProps={{
+                  style: {
+                    background: textFieldStyle
+                      ? ""
+                      : Boolean(readOnly)
+                      ? "var(--theme-color7)"
+                      : "",
+                    // background: Boolean(readOnly) ? "var(--theme-color7)" : "",
+                  },
 
-                ...params.InputProps,
-                endAdornment: (
-                  <Fragment>
-                    {validationRunning || loadingOptions ? (
-                      <CircularProgress
-                        sx={{
-                          position: "absolute",
-                          right: disableAdornment ? "0.5rem" : "1.5rem",
-                        }}
-                        size={25}
-                        color="secondary"
-                        variant="indeterminate"
-                        {...CircularProgressProps}
-                      />
-                    ) : (
-                      params.InputProps.endAdornment
-                    )}
-                  </Fragment>
-                ),
-              }}
-              inputRef={focusRef}
-              // InputProps={{
-              //   ...params.InputProps,
-              //   endAdornment:
-              //     validationRunning || loadingOptions ? (
-              //       <InputAdornment position="end">
-              //         <CircularProgress
-              //           color="secondary"
-              //           variant="indeterminate"
-              //           size={24}
-              //           {...CircularProgressProps}
-              //         />
-              //       </InputAdornment>
-              //     ) : null,
-              // }}
-              InputLabelProps={{
-                shrink: true,
-              }}
+                  ...params.InputProps,
+                  endAdornment: (
+                    <Fragment>
+                      {validationRunning || loadingOptions ? (
+                        <CircularProgress
+                          sx={{
+                            position: "absolute",
+                            right: disableAdornment ? "0.5rem" : "1.5rem",
+                          }}
+                          size={25}
+                          color="secondary"
+                          variant="indeterminate"
+                          {...CircularProgressProps}
+                        />
+                      ) : (
+                        params.InputProps.endAdornment
+                      )}
+                    </Fragment>
+                  ),
+                }}
+                inputRef={focusRef}
+                // InputProps={{
+                //   ...params.InputProps,
+                //   endAdornment:
+                //     validationRunning || loadingOptions ? (
+                //       <InputAdornment position="end">
+                //         <CircularProgress
+                //           color="secondary"
+                //           variant="indeterminate"
+                //           size={24}
+                //           {...CircularProgressProps}
+                //         />
+                //       </InputAdornment>
+                //     ) : null,
+                // }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
 
-              // inputProps={{
-              //   ...params.inputProps,
-              //   autoComplete: "new-user-street-address",
-              // }}
-            />
+                // inputProps={{
+                //   ...params.inputProps,
+                //   autoComplete: "new-user-street-address",
+                // }}
+              />
+            </Tooltip>
           );
         }}
         renderOption={(props, option, other) => {

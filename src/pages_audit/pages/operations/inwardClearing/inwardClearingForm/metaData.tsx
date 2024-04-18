@@ -1,7 +1,12 @@
 import { utilFunction } from "components/utils";
 import * as API from "../api";
 import { GeneralAPI } from "registry/fns/functions";
-import { getInwardAccountDetail } from "../api";
+import {
+  getDividendAccountDetail,
+  getDividendViewMasterData,
+  getInwardAccountDetail,
+} from "../api";
+import { GridMetaDataType } from "components/dataTableStatic";
 export const chequeReturnPostFormMetaData = {
   form: {
     name: "InwardClearingChequeDetail",
@@ -76,6 +81,14 @@ export const chequeReturnPostFormMetaData = {
         componentType: "hidden",
       },
       name: "DISABLE_MAIN_AC",
+      label: "",
+      placeholder: "",
+    },
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "POST_CONF",
       label: "",
       placeholder: "",
     },
@@ -224,12 +237,11 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
-        // schemaValidation: {
-        //   type: "string",
-        //   rules: [{ name: "required", params: ["Acct Type is required."] }],
-        // },
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "", params: "" }],
+        },
         postValidationSetCrossFieldValues: (field) => {
-          console.log("ac type", field?.value, field?.value.length);
           if (!field?.value) {
             return {
               ACCT_CD: { value: "" },
@@ -254,7 +266,10 @@ export const chequeReturnPostFormMetaData = {
             return true;
           },
         },
-
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "", params: "" }],
+        },
         dependentFields: ["DISABLE_MAIN_AC", "ACCT_TYPE", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -411,6 +426,7 @@ export const chequeReturnPostFormMetaData = {
       isReadOnly: true,
       GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
     },
+
     {
       render: {
         componentType: "formbutton",
@@ -420,8 +436,34 @@ export const chequeReturnPostFormMetaData = {
       rotateIcon: "scale(1.5)",
       placeholder: "",
       type: "text",
-
+      dependentFields: ["POST_CONF"],
+      shouldExclude: (_, dependentFieldsValues, __) => {
+        if (dependentFieldsValues?.POST_CONF?.value === "P") {
+          return false;
+        } else {
+          return true;
+        }
+      },
       GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
+    },
+    {
+      render: {
+        componentType: "formbutton",
+      },
+      name: "CONFIRM",
+      label: "Confirm",
+      rotateIcon: "scale(1.5)",
+      placeholder: "",
+      type: "text",
+      dependentFields: ["POST_CONF"],
+      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
+      shouldExclude: (_, dependentFieldsValues, __) => {
+        if (dependentFieldsValues?.POST_CONF?.value === "C") {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
     {
       render: {
@@ -628,7 +670,7 @@ export const chequeReturnPostFormMetaData = {
     },
     {
       render: {
-        componentType: "select",
+        componentType: "autocomplete",
       },
       name: "REASON_CD",
       label: "Reason",
@@ -664,7 +706,14 @@ export const chequeReturnPostFormMetaData = {
       // placeholder: "EnterAcNo",
       type: "text",
       fullWidth: true,
-      required: true,
+      // required: true,
+      validate: (currentField, value) => {
+        console.log("currentField", currentField?.value);
+        if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(currentField?.value)) {
+          return "Special characters are not allowed.";
+        }
+        return "";
+      },
       // maxLength: 20,
       // schemaValidation: {
       //   type: "string",
@@ -1119,6 +1168,1032 @@ export const positivePayFormMetaData = {
       // maxLength: 20,
 
       GridProps: { xs: 12, sm: 2.8, md: 2.8, lg: 2.8, xl: 2.8 },
+    },
+  ],
+};
+export const shareDividendMetaData = {
+  form: {
+    name: "InwardClearingProcess",
+    label: "Inward Clearing Process",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    // allowColumnHiding: true,
+    render: {
+      ordering: "auto",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "hidden",
+      },
+      name: "AMOUNT",
+      label: "",
+      type: "text",
+
+      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "YEAR_CD",
+      label: "Year",
+      type: "text",
+
+      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+    },
+    {
+      render: {
+        componentType: "_accountNumber",
+      },
+      branchCodeMetadata: {
+        name: "BRANCH_CD",
+        required: true,
+        GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+
+        postValidationSetCrossFieldValues: (field) => {
+          if (!field?.value.trim()) {
+            return {
+              WARRANT_NO: { value: "" },
+              DIVIDEND_AMOUNT: { value: "" },
+            };
+          }
+        },
+      },
+      accountTypeMetadata: {
+        name: "ACCT_TYPE",
+        GridProps: { xs: 12, sm: 1.9, md: 1.9, lg: 1.9, xl: 1.9 },
+        isFieldFocused: true,
+        defaultfocus: true,
+        required: true,
+        dependentFields: ["BRANCH_CD"],
+        options: (dependentValue, formState, _, authState) => {
+          return GeneralAPI.get_Account_Type({
+            COMP_CD: authState?.companyID,
+            BRANCH_CD: authState?.user?.branchCode,
+            USER_NAME: authState?.user?.id,
+            DOC_CD: "DIV",
+          });
+        },
+        _optionsKey: "getInwardDividendTypeList",
+        postValidationSetCrossFieldValues: (field) => {
+          if (!field?.value) {
+            return {
+              WARRANT_NO: { value: "" },
+              DIVIDEND_AMOUNT: { value: "" },
+            };
+          }
+        },
+        // CreateFilterOptionsConfig: (field) => {
+        //   console.log("requestProps", field);
+        // },
+      },
+      accountCodeMetadata: {
+        name: "ACCT_CD",
+        label: "A/C Number",
+        placeholder: "",
+        fullWidth: true,
+        required: true,
+        FormatProps: {
+          isAllowed: (values) => {
+            if (values?.value?.length > 6) {
+              return false;
+            }
+            return true;
+          },
+        },
+
+        dependentFields: ["ACCT_TYPE", "BRANCH_CD", "YEAR_CD", "AMOUNT"],
+
+        // disableCaching: false,
+        postValidationSetCrossFieldValues: async (
+          field,
+          formState,
+          auth,
+          dependentFieldsValues
+        ) => {
+          // if (formState?.isSubmitting) return {};
+          if (
+            field.value &&
+            dependentFieldsValues?.["ACCT_TYPE"]?.value.trim() &&
+            dependentFieldsValues?.["BRANCH_CD"]?.value.trim()
+          ) {
+            let Apireq = {
+              ACCT_CD: utilFunction.getPadAccountNumber(
+                field?.value,
+                dependentFieldsValues?.["ACCT_TYPE"]?.optionData
+              ),
+              ACCT_TYPE: dependentFieldsValues?.["ACCT_TYPE"]?.value,
+              BRANCH_CD: dependentFieldsValues?.["BRANCH_CD"]?.value,
+              YEAR_CD: dependentFieldsValues?.["YEAR_CD"]?.value,
+              // SCREEN_REF: "ETRN/650",
+            };
+            formState.setDataOnFieldChange("TAB_REQUEST", Apireq);
+
+            let postData = await getDividendAccountDetail(Apireq);
+            formState.setDataOnFieldChange("POST_DATA", postData);
+            // First, handle "999" status
+            let validationFailedMessageShown = false; // Flag to prevent showing multiple "Account Validation Failed" messages
+            postData = postData?.map((item) => {
+              if (item?.O_STATUS === "999" && !validationFailedMessageShown) {
+                validationFailedMessageShown = true;
+                formState?.MessageBox({
+                  messageTitle: "Account Validation Failed",
+                  message: item?.O_MESSAGE,
+                });
+              }
+              return item; // Return the item in the map function
+            });
+
+            // Then, handle "99" status
+            if (postData && postData?.[0]?.O_STATUS === "99") {
+              if (!validationFailedMessageShown) {
+                // Check if "999" message is not shown yet
+                formState?.MessageBox({
+                  messageTitle: "Information",
+                  message: postData?.[0]?.O_MESSAGE,
+                  buttonNames: ["Ok"],
+                });
+
+                if (postData?.[0]?.RET_FLAG === "Y") {
+                  let viewMasterData = await getDividendViewMasterData({
+                    ...Apireq,
+                    A_ASON_DT: auth?.workingDate,
+                    COMP_CD: auth?.companyID,
+                  });
+                  formState.setDataOnFieldChange("VIEW_MASTER", viewMasterData);
+                }
+              }
+              if (postData?.[0]?.DIVIDEND_AMOUNT) {
+                if (
+                  postData?.[0]?.DIVIDEND_AMOUNT !==
+                  dependentFieldsValues?.["AMOUNT"]?.value
+                ) {
+                  formState?.MessageBox({
+                    messageTitle: "Validation Failed",
+                    message: "Dividend Amount not match ",
+                    buttonNames: ["Ok"],
+                  });
+                }
+              }
+              return {
+                ACCT_CD: {
+                  value: field.value.padStart(6, "0")?.padEnd(20, " "),
+                  ignoreUpdate: true,
+                },
+                WARRANT_NO: {
+                  value: postData?.[0]?.WARRANT_NO ?? "",
+                },
+                DIVIDEND_AMOUNT: {
+                  value: postData?.[0]?.DIVIDEND_AMOUNT ?? "",
+                },
+              };
+            }
+          } else if (!field?.value) {
+            return {
+              WARRANT_NO: { value: "" },
+              DIVIDEND_AMOUNT: { value: "" },
+            };
+          }
+        },
+
+        runPostValidationHookAlways: true,
+        GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      },
+    },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "ACCT_NM",
+    //   label: "Account Name",
+    //   type: "text",
+    //   fullWidth: true,
+
+    //   GridProps: { xs: 12, sm: 4.1, md: 4.1, lg: 4.1, xl: 4.1 },
+    // },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "TYPE_CD",
+      label: "Dr",
+      type: "text",
+      defaultValue: "5",
+      GridProps: { xs: 12, sm: 1.3, md: 1.3, lg: 1.3, xl: 1.3 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "WARRANT_NO",
+      label: "Warrant Number",
+      type: "text",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+    },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "DIVIDEND_AMOUNT",
+      label: "Dividend Amount",
+      placeholder: "",
+      isReadOnly: true,
+      type: "text",
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
+    },
+  ],
+};
+
+export const ViewDetailGridMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Inward Clearing Process(TRN/650)",
+    rowIdColumn: "TRAN_CD",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: true,
+    disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [10, 20, 30, 50],
+    defaultPageSize: 10,
+    containerHeight: { min: "40vh", max: "40vh" },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    isCusrsorFocused: true,
+  },
+  filters: [],
+
+  columns: [
+    {
+      accessor: "ACCT_TYPE",
+      columnName: "Type",
+      sequence: 1,
+      alignment: "right",
+      componentType: "default",
+      width: 90,
+      minWidth: 100,
+      maxWidth: 180,
+    },
+    {
+      accessor: "ACCT_CD",
+      columnName: "Account Number",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "YEAR_CD",
+      columnName: "Year",
+      sequence: 2,
+      alignment: "right",
+      componentType: "default",
+      width: 100,
+      minWidth: 150,
+      maxWidth: 250,
+    },
+    {
+      accessor: "WARRANT_NO",
+      columnName: "Warrant Number",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "TYPE_CD",
+      columnName: "Dr.",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "DIVIDEND_AMOUNT",
+      columnName: "Dividend Amount",
+      sequence: 5,
+      alignment: "center",
+      componentType: "currency",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "NO_OF_SHARE",
+      columnName: "Shares",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "SHARE_AMOUNT",
+      columnName: "Shares Amount",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "AMOUNT",
+      columnName: "Amount",
+      sequence: 5,
+      alignment: "center",
+      componentType: "currency",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "DIVIDEND_RATE",
+      columnName: "Rate",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "PAID",
+      columnName: "Paid",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "PAID_DATE",
+      columnName: "Paid Date",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "CREDIT_ACCOUNT",
+      columnName: "Credit Account",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+  ],
+};
+export const PaidWarrantGridMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Inward Clearing Process(TRN/650)",
+    rowIdColumn: "TRAN_CD",
+    defaultColumnConfig: {
+      width: 400,
+      maxWidth: 450,
+      minWidth: 300,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: true,
+    disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [10, 20, 30, 50],
+    defaultPageSize: 10,
+    containerHeight: { min: "40vh", max: "40vh" },
+    allowFilter: false,
+    allowColumnHiding: false,
+    allowRowSelection: false,
+    isCusrsorFocused: true,
+  },
+  filters: [],
+
+  columns: [
+    {
+      accessor: "ACCT_TYPE",
+      columnName: "Type",
+      sequence: 1,
+      alignment: "right",
+      componentType: "default",
+      width: 90,
+      minWidth: 100,
+      maxWidth: 180,
+    },
+    {
+      accessor: "ACCT_CD",
+      columnName: "Account Number",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "YEAR_CD",
+      columnName: "Year",
+      sequence: 2,
+      alignment: "right",
+      componentType: "default",
+      width: 100,
+      minWidth: 150,
+      maxWidth: 250,
+    },
+    {
+      accessor: "WARRANT_NO",
+      columnName: "Warrant Number",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "TYPE_CD",
+      columnName: "Dr.",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "DIVIDEND_AMOUNT",
+      columnName: "Dividend Amount",
+      sequence: 5,
+      alignment: "center",
+      componentType: "currency",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "NO_OF_SHARE",
+      columnName: "Shares",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "SHARE_AMOUNT",
+      columnName: "Shares Amount",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "AMOUNT",
+      columnName: "Amount",
+      sequence: 5,
+      alignment: "center",
+      componentType: "currency",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "DIVIDEND_RATE",
+      columnName: "Rate",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "PAID",
+      columnName: "Paid",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "PAID_DATE",
+      columnName: "Paid Date",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+    {
+      accessor: "CREDIT_ACCOUNT",
+      columnName: "Credit Account",
+      sequence: 5,
+      alignment: "center",
+      componentType: "default",
+      width: 170,
+      minWidth: 100,
+      maxWidth: 250,
+    },
+  ],
+};
+export const ViewMasterMetaData = {
+  form: {
+    name: "ViewMasterMetaData",
+    label: "",
+    resetFieldOnUnmount: false,
+    validationRun: "onBlur",
+    submitAction: "home",
+    render: {
+      ordering: "sequence",
+      renderType: "simple",
+      gridConfig: {
+        item: {
+          xs: 12,
+          sm: 4,
+          md: 4,
+        },
+        container: {
+          direction: "row",
+          spacing: 1,
+        },
+      },
+    },
+    componentProps: {
+      textField: {
+        fullWidth: true,
+      },
+      select: {
+        fullWidth: true,
+      },
+      datePicker: {
+        fullWidth: true,
+      },
+      numberFormat: {
+        fullWidth: true,
+      },
+      inputMask: {
+        fullWidth: true,
+      },
+      datetimePicker: {
+        fullWidth: true,
+      },
+      Divider: {
+        fullWidth: true,
+      },
+    },
+  },
+  fields: [
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "BRANCH_CD",
+      label: "Branch Code",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_TYPE",
+      label: "Account Type",
+      // placeholder: "EnterAcNo",
+      type: "text",
+
+      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_CD",
+      label: "Account Number",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "Account Name",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CUSTOMER_ID",
+      label: "Id",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 1.4, md: 1.4, lg: 1.4, xl: 1.4 },
+    },
+    {
+      render: {
+        componentType: "datePicker",
+      },
+      name: "OP_DATE",
+      label: "Opening Date",
+      placeholder: "",
+      format: "dd/MM/yyyy",
+      type: "text",
+      fullWidth: true,
+
+      schemaValidation: {
+        type: "string",
+        rules: [{ name: "required", params: ["Cheque Date is required."] }],
+      },
+      GridProps: { xs: 12, sm: 2.3, md: 2.3, lg: 2.3, xl: 2.3 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "JOINT1",
+      label: "Joint Name",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
+    },
+
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "UNCL_BAL",
+      label: "Opening Balance",
+      placeholder: "",
+      isFieldFocused: true,
+      required: true,
+      type: "text",
+      FormatProps: {
+        allowNegative: false,
+      },
+
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "CONF_BAL",
+      label: "Closing Balance",
+      placeholder: "",
+      isFieldFocused: true,
+      required: true,
+      type: "text",
+      FormatProps: {
+        allowNegative: false,
+      },
+
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "TRAN_BAL",
+      label: "Shadow Balance",
+      placeholder: "",
+      isFieldFocused: true,
+      required: true,
+      type: "text",
+      FormatProps: {
+        allowNegative: false,
+      },
+
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "INST_RS",
+      label: "No.of Shares",
+      placeholder: "",
+      isFieldFocused: true,
+      required: true,
+      type: "text",
+      FormatProps: {
+        allowNegative: false,
+      },
+
+      GridProps: { xs: 6, sm: 2, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "NOMI1",
+      label: "Nominee",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 3.9, md: 3.9, lg: 3.9, xl: 3.9 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "MODE_NM",
+      label: "Mode Name",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CATEG_NM",
+      label: "Category",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 3.4, md: 3.4, lg: 3.4, xl: 3.4 },
+    },
+
+    {
+      render: {
+        componentType: "Divider",
+      },
+      dividerText: "Address",
+      name: "Address",
+      label: "Address",
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ADD1",
+      label: "Address",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 4.5, md: 4.5, lg: 4.5, xl: 4.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "AREA_NM",
+      label: "Area",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CITY_NM",
+      label: "City",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
+    },
+    {
+      render: {
+        componentType: "numberFormat",
+      },
+      name: "PIN_CODE",
+      label: "Pin Code",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ADD2",
+      label: "Address2",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 4.5, md: 4.5, lg: 4.5, xl: 4.5 },
+    },
+
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "DIST_NM",
+      label: "District",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "STATE_NM",
+      label: "State",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "COUNTRY_NM",
+      label: "Country",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 2.5 },
+    },
+
+    {
+      render: {
+        componentType: "Divider",
+      },
+      dividerText: "Contacts",
+      name: "Contacts",
+      label: "Contacts",
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CONTACT1",
+      label: "Phone(O)",
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CONTACT4",
+      label: "Phone(R)",
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CONTACT2",
+      label: "Mobile No.",
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "CONTACT3",
+      label: "Alternate Phone",
+      placeholder: "",
+      type: "text",
+      GridProps: { xs: 12, sm: 2.7, md: 2.7, lg: 2.7, xl: 2.7 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ISSUED_BRANCH",
+      label: "Issued Branch",
+      // placeholder: "EnterAcNo",
+      type: "text",
+      fullWidth: true,
+      required: true,
+      // maxLength: 20,
+
+      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
     },
   ],
 };

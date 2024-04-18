@@ -6,6 +6,7 @@ import { acctMSTHeaderFormMetadata } from "./metadata/acctHeaderMetadata";
 import { AuthContext } from "pages_audit/auth";
 import * as API from "./api";
 import { AcctMSTContext } from "./AcctMSTContext";
+import { Alert } from "components/common/alert";
 
 const AcctHeaderForm = React.memo(function HeaderForm() {
   const {
@@ -64,9 +65,10 @@ const AcctHeaderForm = React.memo(function HeaderForm() {
     isSuccess,
     isLoading,
     isFetching,
-    error,
+    isError: isTabError,
+    error: TabError,
     refetch,
-  } = useQuery(
+  } = useQuery<any, any>(
     [
       "getTabsDetail", AcctMSTState?.accTypeValuectx
     ],
@@ -140,6 +142,14 @@ const AcctHeaderForm = React.memo(function HeaderForm() {
           }}
         ></FormWrapper>
         {loader}
+        {isTabError && (
+          <Alert
+            severity={TabError?.severity ?? "error"}
+            errorMsg={TabError?.error_msg ?? "Something went to wrong.."}
+            errorDetail={TabError?.error_detail}
+            color="error"
+          />
+        )}
     </AppBar>
   );
 });

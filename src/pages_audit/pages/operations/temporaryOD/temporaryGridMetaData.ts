@@ -103,7 +103,6 @@ export const tempODGridTodayMetaData: GridMetaDataType = {
       minWidth: 100,
       maxWidth: 150,
     },
-
     {
       accessor: "FORCE_EXP_BY",
       columnName: "Force Exp By",

@@ -18,12 +18,14 @@ export function useCacheWithMutation(queryKey, mutationFn) {
       queryClient.setQueryData([queryKey, { __catchID }], data);
     },
   });
+
   useEffect(() => {
     setIsLoading(mutation.isLoading);
     setData(mutation.data);
     setError(mutation.error);
     setIsError(mutation.isError);
   }, [mutation.isLoading, mutation.data, mutation.isError, mutation.error]);
+
   const fetchData = ({ cacheId, reqData, controllerFinal = {} }) => {
     setIsLoading(true);
     const cachedData = queryClient.getQueryData([
@@ -37,7 +39,7 @@ export function useCacheWithMutation(queryKey, mutationFn) {
       mutation.mutate({ reqData, __catchID: cacheId, controllerFinal });
     }
   };
-  const clearMutationCache = (__catchID) => {
+  const clearMutationCache = (__catchID = null) => {
     if (__catchID) {
       queryClient.removeQueries([queryKey, { __catchID }]);
     } else {
@@ -49,6 +51,7 @@ export function useCacheWithMutation(queryKey, mutationFn) {
     isLoading,
     error,
     data,
+    setData,
     clearCache: clearMutationCache,
     fetchData: fetchData,
   };
