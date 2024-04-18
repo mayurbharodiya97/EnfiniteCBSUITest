@@ -27,6 +27,8 @@ import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import DailyTransTabs from "../TRNHeaderTabs";
 import CommonFooter from "../TRNCommon/CommonFooter";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
+import { useCacheWithMutation } from "../TRNHeaderTabs/cacheMutate";
+import { queryClient } from "cache";
 
 const actions: ActionTypes[] = [
   {
@@ -58,7 +60,7 @@ export const Trn002 = () => {
   const { tempStore, setTempStore } = useContext<any>(AccDetailContext);
   const { cardStore, setCardStore } = useContext<any>(AccDetailContext);
   const myGridRef = useRef<any>(null);
-
+  const controllerRef = useRef<AbortController>();
   const [rows, setRows] = useState<any>([]);
   const [rows2, setRows2] = useState<any>([]);
   const [refRows, setRefRows] = useState<any>([]);
@@ -76,6 +78,19 @@ export const Trn002 = () => {
   const [reqData, setReqData] = useState([]);
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const {
+    clearCache: clearTabsCache,
+    error: tabsErorr,
+    data: tabsDetails,
+    fetchData: fetchTabsData,
+    isError: isTabsError,
+    isLoading: isTabsLoading,
+  } = useCacheWithMutation(
+    "getTabsByParentTypeKeyTrn002",
+    CommonApi.getTabsByParentType
+  );
+
   let dataObj = {
     COMP_CD: authState?.companyID,
     BRANCH_CD: authState?.user?.branchCode,
@@ -114,9 +129,9 @@ export const Trn002 = () => {
     },
   ];
 
-  const handleFormSave = (obj) => {
-    console.log(obj, "objjjj save");
-  };
+  // const handleFormSave = (obj) => {
+
+  // };
 
   useEffect(() => {
     handleSetRemarks();
@@ -136,16 +151,13 @@ export const Trn002 = () => {
       (item) => item?.SCROLL1 != "" && item?.SCROLL1 === txt
     );
     if (result?.length > 0) {
-      console.log("case1");
       setRows2(result);
       handleUpdateSum(result);
     } else if (!txt) {
-      console.log("case2");
       result = [];
       setRows2(arr);
       handleUpdateSum(arr);
     } else {
-      console.log("case3");
       result = [];
       setRows2([]);
       handleUpdateSum(result);
@@ -162,7 +174,6 @@ export const Trn002 = () => {
   // api define ========================================================================
   const getTRN002List = useMutation(trn2Api.getTRN002List, {
     onSuccess: (data) => {
-      console.log(data, "dataaa getTRN002List");
       setRefRows(data);
       //data.sort((a, b) => new Date(a.ENTERED_DATE) - new Date(b.ENTERED_DATE));
       let arr = data?.filter((a) => a.CONFIRMED == "0");
@@ -171,12 +182,12 @@ export const Trn002 = () => {
       setRows(data);
       setTempStore({ ...tempStore, accInfo: arr[0] });
       setReqData(arr[0]);
-      console.log(arr, "Arr getTRN002List");
-      arr?.length > 0
-        ? getCarousalCards.mutate({ reqData: arr[0] })
-        : setCardStore({ ...cardStore, cardsInfo: [] });
+      // console.log(arr, "Arr getTRN002List");
+      // arr?.length > 0
+      //   ? getCarousalCards.mutate({ reqData: arr[0] })
+      //   : setCardStore({ ...cardStore, cardsInfo: [] });
 
-      arr[0] && getTabsByParentType.mutate({ reqData: arr[0] ?? "" });
+      // arr[0] && getTabsByParentType.mutate({ reqData: arr[0] ?? "" });
       handleUpdateSum(arr);
       setConfirmed(data.length - arr?.length);
     },
@@ -185,11 +196,12 @@ export const Trn002 = () => {
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
-      setCardStore({ ...cardStore, cardsInfo: data });
+      // setCardStore({ ...cardStore, cardsInfo: data });
       setCardsData(data);
     },
     onError: (error) => {
-      setCardStore({ ...cardStore, cardsInfo: [] });
+      setCardsData([]);
+      // setCardStore({ ...cardStore, cardsInfo: [] });
     },
   });
 
@@ -223,22 +235,22 @@ export const Trn002 = () => {
       });
     },
   });
-  const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
-    onSuccess: (data) => {
-      setTabsData(data);
-    },
-    onError: (error: any) => {
-      enqueueSnackbar(error?.error_msg, {
-        variant: "error",
-      });
-    },
-  });
+  // const getTabsByParentType = useMutation(CommonApi.getTabsByParentType, {
+  //   onSuccess: (data) => {
+  //     setTabsData(data);
+  //   },
+  //   onError: (error: any) => {
+  //     enqueueSnackbar(error?.error_msg, {
+  //       variant: "error",
+  //     });
+  //   },
+  // });
   // function define  ======================================================================
 
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
     setDataRow(row);
-    if (data.name === "view-detail") {
+    if (data.name === "_rowChanged") {
       let obj: any = {
         COMP_CD: row?.COMP_CD,
         ACCT_TYPE: row?.ACCT_TYPE,
@@ -246,17 +258,30 @@ export const Trn002 = () => {
         PARENT_TYPE: row?.PARENT_TYPE ?? "",
 
         BRANCH_CD: row?.BRANCH_CD,
-        authState: authState,
+        // authState: authState,
       };
       setTempStore({ ...tempStore, accInfo: obj });
       setReqData(obj);
-      getCarousalCards.mutate({ reqData: obj });
       let reqData = {
         COMP_CD: obj?.COMP_CD,
         ACCT_TYPE: obj?.ACCT_TYPE,
         BRANCH_CD: obj?.BRANCH_CD,
       };
-      getTabsByParentType.mutate({ reqData });
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      // Create a new AbortController
+      controllerRef.current = new AbortController();
+      fetchTabsData({
+        cacheId: reqData?.ACCT_TYPE,
+        reqData: reqData,
+        controllerFinal: controllerRef.current,
+      });
+      getCarousalCards.mutate({
+        reqData: obj,
+        controllerFinal: controllerRef.current,
+      });
+      // getTabsByParentType.mutate({ reqData });
     }
 
     if (data.name === "view") {
@@ -280,7 +305,6 @@ export const Trn002 = () => {
 
   const handleViewAll = () => {
     let arr = [...rows];
-    console.log(arr, "arr");
     setRows2(arr);
     handleUpdateSum(arr);
   };
@@ -335,12 +359,51 @@ export const Trn002 = () => {
   const handleConfirm = () => {
     confirmScroll.mutate(dataRow);
   };
-  console.log(rows2, "rows2");
+
+  useEffect(() => {
+    if (Boolean(isTabsError)) {
+      enqueueSnackbar((tabsErorr as any)?.error_msg, {
+        variant: "error",
+      });
+    }
+  }, [isTabsError]);
+
+  useEffect(() => {
+    return () => {
+      clearTabsCache();
+      queryClient.removeQueries("getSIDetailList");
+      queryClient.removeQueries("getLienDetailList");
+      queryClient.removeQueries("getOWChqList");
+      queryClient.removeQueries("getTempList");
+      queryClient.removeQueries("getATMList");
+      queryClient.removeQueries("getASBAList");
+      queryClient.removeQueries("getACH_IWList");
+      queryClient.removeQueries("getACH_OWList");
+      queryClient.removeQueries("getInstructionList");
+      queryClient.removeQueries("getGroupList");
+      queryClient.removeQueries("getAPYList");
+      queryClient.removeQueries("getAPBSList");
+      queryClient.removeQueries("getPMBYList");
+      queryClient.removeQueries("getJointDetailsList");
+      queryClient.removeQueries("getTodayTransList");
+      queryClient.removeQueries("getCheckDetailsList");
+      queryClient.removeQueries("getSnapShotList");
+      queryClient.removeQueries("getHoldChargeList");
+      queryClient.removeQueries("getDocTemplateList");
+      queryClient.removeQueries("getStopPayList");
+      queryClient.removeQueries("getInsuranceList");
+      queryClient.removeQueries("getDisbursementList");
+      queryClient.removeQueries("getSubsidyList");
+      queryClient.removeQueries("getSearchList");
+      queryClient.removeQueries("getLimitList");
+      queryClient.removeQueries("getStockList");
+    };
+  }, []);
   return (
     <>
       <DailyTransTabs
         heading=" Daily Transaction Confirmation (F2) (TRN/002)"
-        tabsData={tabsData}
+        tabsData={tabsDetails}
         cardsData={cardsData}
         reqData={reqData}
       />
@@ -353,18 +416,22 @@ export const Trn002 = () => {
         }}
       >
         <GridWrapper
-          key={`TRN002_TableMetaData`}
+          key={`TRN002_TableMetaData${getTRN002List.isLoading}`}
           finalMetaData={TRN002_TableMetaData as GridMetaDataType}
           data={rows2}
           setData={() => null}
-          loading={getTRN002List.isLoading || getCarousalCards.isLoading}
+          loading={
+            getTRN002List.isLoading ||
+            getCarousalCards.isLoading ||
+            isTabsLoading
+          }
           ref={myGridRef}
           refetchData={() => handleGetTRN002List()}
           actions={actions}
           setAction={setCurrentAction}
           onlySingleSelectionAllow={true}
           isNewRowStyle={true}
-          defaultSelectedRowId={0}
+          defaultSelectedRowId={rows2?.[0]?.TRAN_CD ? rows2?.[0]?.TRAN_CD : ""}
           // headerToolbarStyle={{
           //   background: "var(--theme-color2)",
           //   color: "black",
