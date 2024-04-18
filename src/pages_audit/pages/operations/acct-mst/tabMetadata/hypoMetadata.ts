@@ -171,10 +171,8 @@ export const hypothication_metadata = {
             },
             name: "SECURITY_CD",
             label: "Security",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "securityTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getSecurityTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "securityHypoOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -306,8 +304,8 @@ export const hypothication_metadata = {
             },
             name: "NPA_REASON",
             label: "Forcefully NPA Reason",
-            options: (dependentValue) => getPMISCData("", dependentValue), 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue) => getPMISCData("npa_reason"), 
+            _optionsKey: "npaReasonHypoOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -553,10 +551,8 @@ export const hypothication_metadata = {
             },
             name: "CLASS_CD",
             label: "Risk Category",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getRiskCategTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "riskCategHypoOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -592,10 +588,8 @@ export const hypothication_metadata = {
             },
             name: "INST_NO",
             label: "Chq. Sign Autho",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getCheqSignAuthoTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "chqSignAuthoHypoOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -661,10 +655,8 @@ export const hypothication_metadata = {
             },
             name: "INDUSTRY_CD",
             label: "Industry",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getIndustryTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
+            _optionsKey: "industryHypoOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -675,10 +667,8 @@ export const hypothication_metadata = {
             },
             name: "RECRE_CD",
             label: "RECRE",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getRECRETypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
+            _optionsKey: "RECREHypoOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}

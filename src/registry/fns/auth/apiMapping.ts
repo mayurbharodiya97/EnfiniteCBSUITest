@@ -1188,6 +1188,18 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTBUSINESSDDW",
     packageName: "",
   },
+  GETACTCHQSIGNAUTHODDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTCHQSIGNAUTHODDW",
+    packageName: "",
+  },
+  GETACTINSSKIPREASNDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTINSSKIPREASNDDW",
+    packageName: "",
+  },
+  GETACCTMSTSECURITYCDDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTSECURITYCDDDW",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

@@ -239,10 +239,8 @@ export const termLoan_metadata = {
             },
             name: "SECURITY_CD",
             label: "Security",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "securityTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getSecurityTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "securityTermLoanOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -292,8 +290,8 @@ export const termLoan_metadata = {
             },
             name: "NPA_REASON",
             label: "Forcefully NPA Reason",
-            options: (dependentValue) => getPMISCData("", dependentValue), 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue) => getPMISCData("npa_reason"),
+            _optionsKey: "npaReasonTermLoanOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -385,8 +383,7 @@ export const termLoan_metadata = {
                 {label: "Half-Yearly", value: "H"},
                 {label: "Yearly", value: "Y"},
                 {label: "On Expiry", value: "E"},
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            ],
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -717,9 +714,7 @@ export const termLoan_metadata = {
                 {label: "Half-year(s)", value: "H"},
                 {label: "Year(s)", value: "Y"},
                 {label: "On Expire", value: "E"},
-            ], //api 
-            dependentFields: ['INSTALLMENT_TYPE'],
-            // _optionsKey: "npaReasonTermLoanOp",
+            ],
             placeholder: "",
             type: "text",
             isReadOnly: true,
@@ -878,10 +873,8 @@ export const termLoan_metadata = {
             },
             name: "CLASS_CD",
             label: "Risk Category",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getRiskCategTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
+            _optionsKey: "riskCategTermLoanOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -892,10 +885,8 @@ export const termLoan_metadata = {
             },
             name: "INDUSTRY_CD",
             label: "Industry",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getIndustryTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
+            _optionsKey: "industryTermLoanOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -906,10 +897,8 @@ export const termLoan_metadata = {
             },
             name: "RECRE_CD",
             label: "RECRE",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getRECRETypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
+            _optionsKey: "RECRETermLoanOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}

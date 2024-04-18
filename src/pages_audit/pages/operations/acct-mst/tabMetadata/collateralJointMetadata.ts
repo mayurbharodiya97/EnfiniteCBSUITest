@@ -720,9 +720,8 @@ export const collateraljoint_tab_metadata = {
                     },
                     name: "SECURITY_CD",
                     label: "Security",
-                    options: [
-                        {label: "", value: ""}
-                    ],
+                    options: (dependentValue, formState, _, authState) => API.getSecurityTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+                    _optionsKey: "securityCollateralOp",
                     GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
                 },
                 {

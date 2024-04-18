@@ -129,10 +129,8 @@ export const fixDeposit_tab_metadata = {
             },
             name: "CLASS_CD",
             label: "Risk Category",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getRiskCategTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
+            _optionsKey: "riskCategFDOp", 
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -235,7 +233,6 @@ export const fixDeposit_tab_metadata = {
                 {label: "Yearly", value: "Y"},
                 {label: "On Expiry", value: "E"},
             ], 
-            // _optionsKey: "npaReasonTermLoanOp",
             placeholder: "",
             type: "text",
             // required: true,

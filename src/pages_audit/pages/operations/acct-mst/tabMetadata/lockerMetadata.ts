@@ -140,8 +140,10 @@ export const locker_tab_metadata = {
             },
             name: "TYPE_CD",
             label: "Rent[Y/N]",
-            options: [], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: [
+                {label: "YES", value: "Y"},
+                {label: "NO", value: "N"}
+            ],
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -170,8 +172,8 @@ export const locker_tab_metadata = {
             },
             name: "CLASS_CD",
             label: "Risk Category",
-            options: [], 
-            // _optionsKey: "riskCategCurrentOp",
+            options: (dependentValue, formState, _, authState) => API.getRiskCategTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}), 
+            _optionsKey: "riskCategLockerOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
