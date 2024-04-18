@@ -91,6 +91,7 @@ const HypothicationTab = () => {
     })
   }, [])
   useEffect(() => {
+    console.log("ikufhwheniufhiwehfhwf", formStatus)
     if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
       if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
         setIsNextLoading(false)
