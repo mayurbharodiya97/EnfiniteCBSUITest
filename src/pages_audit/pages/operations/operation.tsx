@@ -13,6 +13,11 @@ const StockEntry = lazy(() => import("./stockEntry"));
 const StopPaymentEntry = lazy(() => import("./stopPaymentEntry"));
 const LienEntry = lazy(() => import("./lienEntry"));
 const TemporaryOD = lazy(() => import("./temporaryOD"));
+const ChequebookConfirm = lazy(() => import("./Confirmations/chequebook"));
+const LimitConfirm = lazy(() => import("./Confirmations/Limit"));
+const StockConfirm = lazy(() => import("./Confirmations/stock"));
+const StopPaymentConfirm = lazy(() => import("./Confirmations/stopPayment"));
+const LienConfirm = lazy(() => import("./Confirmations/lien"));
 const Ckyc = lazy(() => import("./c-kyc"));
 const FixDepositForm = lazy(() => import("./fixDeposit"));
 const CashReceiptEntry = lazy(
@@ -35,6 +40,11 @@ export const OperationsMenu = () => (
     <Route path="stop-payment-entry/*" element={<StopPaymentEntry />} />
     <Route path="lien-entry/*" element={<LienEntry />} />
     <Route path="temp-od-entry/*" element={<TemporaryOD />} />
+    <Route path="chequebook-confirmation/*" element={<ChequebookConfirm />} />
+    <Route path="limit-confirmation/*" element={<LimitConfirm />} />
+    <Route path="stock-confirmation/*" element={<StockConfirm />} />
+    <Route path="stop-pay-confirmation/*" element={<StopPaymentConfirm />} />
+    <Route path="lien-confirmation/*" element={<LienConfirm />} />
     <Route path="teller/*" element={<TellerScreen />} />
     {/* <Route path="teller2/*" element={<CashReceiptEntry />} /> */}
     <Route

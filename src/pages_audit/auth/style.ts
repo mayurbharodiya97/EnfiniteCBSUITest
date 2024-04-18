@@ -163,4 +163,15 @@ export const useStyles = makeStyles((theme: any) => ({
       marginBottom: "6px",
     },
   },
+  button: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    margin: "6px",
+    background: "var(--theme-color1)",
+    "&:hover": {
+      background: "var(--theme-color1) !important",
+    },
+  },
 }));

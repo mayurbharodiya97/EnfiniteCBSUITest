@@ -1204,6 +1204,34 @@ export const ActionWiseAPIConfiguration = {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTBUSINESSDDW",
     packageName: "",
   },
+  DOOVERDRAWNDML: {
+    url: "accountServiceAPI/DOOVERDRAWNDML",
+    packageName: "",
+  },
+  GETRETRIVECHQBKFLAG: {
+    url: "chequeServiceAPI/GETRETRIVECHQBKFLAG",
+    packageName: "",
+  },
+  GETCHQCNFDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCHQCNFDATADISP",
+    packageName: "",
+  },
+  GETLMTCNFDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLMTCNFDATADISP",
+    packageName: "",
+  },
+  GETSTOCKCNFDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOCKCNFDATADISP",
+    packageName: "",
+  },
+  GETSTOPCNFDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSTOPCNFDATADISP",
+    packageName: "",
+  },
+  GETLIENCNFDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENCNFDATADISP",
+    packageName: "",
+  },
   GETSYSPARAMSTCNF: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSYSPARAMSTCNF",
     packageName: "",

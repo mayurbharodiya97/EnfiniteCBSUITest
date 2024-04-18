@@ -1,9 +1,8 @@
 import { AuthContext } from "pages_audit/auth";
 import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import * as API from "./api";
 import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { UserProfileMetaData } from "./metaData";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import {
@@ -12,7 +11,7 @@ import {
   Container,
   Grid,
   IconButton,
-  Paper,
+  LinearProgress,
   Tab,
   Tabs,
   Toolbar,
@@ -23,7 +22,6 @@ import { ChangePassword } from "./changePassword";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import "./style.css";
 import { ProfilePhotoUpdate } from "./profilePhotoUpload";
-import { GeneralAPI } from "registry/fns/functions";
 import Box from "@mui/material/Box";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
@@ -40,54 +38,40 @@ import { useTranslation } from "react-i18next";
 import { PersonalizeDash } from "./personalizeDash";
 import { AllowedAccess } from "./allowedAccess";
 import { UserDetail } from "./userDetail";
-import { enqueueSnackbar } from "notistack";
 import DynamicTheme from "app/audit/dynamictheme";
-// import { t } from "i18next";
-// interface notificationDataType {
-//   activityID: string;
-//   readFlag: string;
-// }
-
-// const notificationDataWrapperFn =
-//   (notificationData) =>
-//   async ({ activityID, readFlag }: notificationDataType) => {
-//     return notificationData({ activityID, readFlag });
-//   };
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
+import { Alert } from "components/common/alert";
 
 export const Profile = () => {
-  const { authState } = useContext(AuthContext);
   const authController = useContext(AuthContext);
-  const userID = authState?.user?.id;
+  const userID = authController.authState?.user?.id;
   const urlObj = useRef<any>(null);
   const fileUploadControl = useRef<any | null>(null);
-  const [showProfile, setShowProfile] = useState(false);
   const [profileUpdate, setProfileUpdate] = useState(false);
   const [filesdata, setFilesData] = useState<any>([]);
   const [ProfilePictureURL, setProfilePictureURL] = useState<any | null>(null);
-  const [value, setValue] = useState("one");
+  const [value, setValue] = useState("tab1");
   const [showTOTP, setshowTOTP] = useState(false);
-  const [mode, setMode] = useState<string>("userLogin");
   const [totpAuthStatus, setTotpAuthStatus] = useState<any>("");
   const { t } = useTranslation();
-  // const [girdData, setGridData] = useState<any>();
-
-  //typeof blob === "object" && Boolean(blob) ? URL.createObjectURL(blob) : ""
-  //);
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate("/cbsenfinity/dashboard");
   };
 
-  const queryData = useQuery<any, any, any>(["GETEMPLOYEEDTL"], () =>
+  const queryData: any = useMutation("GETEMPLOYEEDTL", () =>
     API.getUserDetails({ userID })
   );
-
   useEffect(() => {
-    GeneralAPI.setDocumentName("Profile");
-    return () => {
-      queryClient.removeQueries(["GETEMPLOYEEDTL"]);
-    };
+    queryData.mutate();
   }, []);
+
+  // useEffect(() => {
+  //   // GeneralAPI.setDocumentName("Profile");
+  //   return () => {
+  //     queryClient.removeQueries(["GETEMPLOYEEDTL"]);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (Boolean(queryData.data?.PROFILE_PHOTO)) {
@@ -103,7 +87,6 @@ export const Profile = () => {
   }, [queryData.data]);
 
   const handleProfileUploadClose = (flag, imgdata) => {
-    //console.log(Boolean(flag), flag === "Y", typeof imgdata, Boolean(imgdata));
     if (
       Boolean(flag) &&
       flag === "Y" &&
@@ -124,7 +107,6 @@ export const Profile = () => {
     const files = e.target.files;
     const filesArray = Array.from(files);
     if (filesArray.length > 0) {
-      // console.log(filesArray);
       setFilesData(filesArray);
       setProfileUpdate(true);
     }
@@ -132,9 +114,7 @@ export const Profile = () => {
 
   return (
     <Fragment>
-      {queryData.isLoading || queryData.isFetching ? (
-        <LoaderPaperComponent />
-      ) : (
+      {
         <>
           <Grid
             key={"mainGrid"}
@@ -166,8 +146,8 @@ export const Profile = () => {
                     >
                       <div
                         style={{
-                          width: "150px",
-                          height: "150px",
+                          width: "190px",
+                          height: "180px",
                           margin: "10px auto",
                           cursor: "pointer",
                           display: "flex",
@@ -191,11 +171,7 @@ export const Profile = () => {
                               width: "100%",
                               height: "100%",
                             }}
-                          >
-                            {/* {(queryData.data?.NAME || userID)
-                              .toUpperCase()
-                              .substring(0, 1)} */}
-                          </Avatar>
+                          ></Avatar>
                         </div>
                         <div
                           className="image-upload-icon"
@@ -315,57 +291,22 @@ export const Profile = () => {
                             {queryData?.data?.USER_LEVEL}
                           </Typography>
                         </Grid>
-                        <Grid item xs={9} style={{marginTop:"auto"}}>
+                        <Grid item xs={9} style={{ marginTop: "10px" }}>
                           <About />
-                          <Grid style={{marginTop:"-40px"}}>
-                            <DynamicTheme/>
+                          <Grid style={{ marginTop: "-40px" }}>
+                            <DynamicTheme />
                           </Grid>
                         </Grid>
                       </Grid>
                       <Box sx={{ width: "100%", marginTop: "auto" }}>
                         <Tabs
-                          sx={{
-                            // paddingRight: "15px",
-                            "& .MuiTabs-fixed": {
-                              display: "flex",
-                              // justifyContent: "space-between",
-                            },
-                            "& .MuiTabs-scroller": {
-                              display: "flex",
-                              justifyContent: "flex-end",
-                            },
-                            "& .MuiTabScrollButton-root": {
-                              // background: "var(--theme-color3)",
-                              "& svg": {
-                                fontSize: "2.25rem",
-                                color: "var(--theme-color1)",
-                              },
-                            },
-                            "& .Mui-selected": {
-                              color: "var(--theme-color1)",
-                            },
-                            "& .MuiTabs-indicator": {
-                              backgroundColor: "var(--theme-color1)",
-                            },
-                            "& .MuiButtonBase-root": {
-                              minHeight: "0px",
-                              paddingX: "7px",
-                              fontSize: "12px",
-                            },
-                            "& .MuiButtonBase-root:hover": {
-                              letterSpacing: "0.5px",
-                              boxShadow: "0px 5px 40px -10px rgba(0,0,0,0.57)",
-                              transition: "all 0.4s ease 0s",
-                              fontWeight: "800",
-                              "& .MuiSvgIcon-root": {
-                                transform: "scale(1.4)",
-                                transition: "transform 2s ease-in-out",
-                              },
-                            },
-                          }}
+                          className="tabs"
                           value={value}
                           onChange={(event, newValue) => {
                             setValue(newValue);
+                            if (newValue === "tab1") {
+                              queryData.mutate();
+                            }
                           }}
                           textColor="secondary"
                           indicatorColor="secondary"
@@ -374,57 +315,35 @@ export const Profile = () => {
                           scrollButtons="auto"
                         >
                           <Tab
-                            value="one"
+                            value="tab1"
                             label={t("profile.UserProfile")}
                             icon={<AccountCircleOutlinedIcon />}
                             iconPosition="start"
-                            // onClick={moveToUserDetail}
-                            onClick={() => {
-                              setMode("userLogin");
-                            }}
                           />
                           <Tab
-                            value="two"
+                            value="tab2"
                             label={t("profile.AllowedAccess")}
                             icon={<HowToRegOutlinedIcon />}
                             iconPosition="start"
-                            // onClick={moveToUserDetail}
-                            onClick={() => {
-                              setMode("accessAllow");
-                            }}
                           />
                           <Tab
-                            value="three"
+                            value="tab3"
                             label={t("profile.ActivityDetail")}
                             icon={<ArticleOutlinedIcon />}
                             iconPosition="start"
-                            // onClick={() => {
-                            //   setUserDetail(true);
-                            // }}
-                            onClick={() => {
-                              setMode("userDetail");
-                            }}
                           />
 
                           <Tab
-                            value="four"
+                            value="tab4"
                             label={t("profile.ChangePassword")}
                             icon={<LockResetOutlinedIcon />}
                             iconPosition="start"
-                            onClick={() => {
-                              setMode("changePassword");
-                              setShowProfile(true);
-                            }}
                           />
                           <Tab
-                            value="five"
+                            value="tab5"
                             label={t("profile.Personalizedashboard")}
                             icon={<SettingsAccessibilityOutlinedIcon />}
                             iconPosition="start"
-                            onClick={() => {
-                              setMode("personalizedashboard");
-                              setShowProfile(true);
-                            }}
                           />
                         </Tabs>
                       </Box>
@@ -441,34 +360,42 @@ export const Profile = () => {
                             "rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;",
                         }}
                       >
-                        {mode === "userDetail" ? (
-                          <UserDetail />
-                        ) : mode === "userLogin" ? (
-                          <Grid>
+                        {value === "tab1" ? (
+                          <>
+                            {queryData?.isLoading ? (
+                              <LinearProgress color="secondary" />
+                            ) : queryData?.isError ? (
+                              <Alert
+                                severity="error"
+                                errorMsg={
+                                  queryData.error?.error_msg ??
+                                  "Unknown Error occured"
+                                }
+                                errorDetail={
+                                  queryData.error?.error_detail ?? ""
+                                }
+                              />
+                            ) : (
+                              <LinearProgressBarSpacer />
+                            )}
                             <FormWrapper
-                              key="userLogin"
+                              key={"user-Login" + queryData.isSuccess}
                               metaData={UserProfileMetaData as MetaDataType}
                               initialValues={queryData.data}
                               onSubmitHandler={() => {}}
-                              // displayMode={"view"}
-                              // hideDisplayModeInTitle={true}
-                              formStyle={{
-                                background: "white",
-                                // height: "40vh",
-                                overflowY: "auto",
-                                overflowX: "hidden",
-                              }}
+                              displayMode={"view"}
+                              hideDisplayModeInTitle={true}
+                              formStyle={{}}
                               hideHeader={true}
                             />
-                          </Grid>
-                        ) : mode === "changePassword" ? (
-                          <ChangePassword
-                            showProfile={showProfile}
-                            onClose={() => setShowProfile(false)}
-                          />
-                        ) : mode === "accessAllow" ? (
+                          </>
+                        ) : value === "tab2" ? (
+                          <UserDetail />
+                        ) : value === "tab3" ? (
+                          <ChangePassword />
+                        ) : value === "tab4" ? (
                           <AllowedAccess />
-                        ) : mode === "personalizedashboard" ? (
+                        ) : value === "tab5" ? (
                           <PersonalizeDash />
                         ) : null}
                       </Grid>
@@ -503,14 +430,13 @@ export const Profile = () => {
                         userID={userID}
                       />
                     ) : null}
-                    {/* </Grid> */}
                   </Grid>
                 </Box>
               </Grid>
             </Container>
           </Grid>
         </>
-      )}
+      }
     </Fragment>
   );
 };
