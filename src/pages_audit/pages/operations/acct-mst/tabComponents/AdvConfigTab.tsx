@@ -20,6 +20,15 @@ const AdvConfigTab = () => {
     const refs = [formRef.current.handleSubmitError(e, "save", false)]
     handleSavectx(e, refs)
   }
+  useEffect(() => {
+    let refs = [formRef]
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: AcctMSTState?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
+  }, [])
 
   useEffect(() => {
     if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {

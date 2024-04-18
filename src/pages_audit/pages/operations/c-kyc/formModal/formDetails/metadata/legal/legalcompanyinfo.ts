@@ -65,10 +65,8 @@ export const company_info_meta_data = {
             },
             name: "COMPANY_TYPE",
             label: "Type",
-            options: [
-                {label: "Type 1", value: "type1"},
-                {label: "Type 2", value: "type2"},
-            ],
+            options: (dependentValue, formState, _, authState) => API.getLegalCompanyTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "legalCompanyTypeOP",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
