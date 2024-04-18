@@ -4,13 +4,73 @@ import { AcctMSTContext } from "../AcctMSTContext";
 import { Grid } from "@mui/material";
 import { otherAdd_tab_metadata } from "../tabMetadata/otherAddMetadata";
 import TabNavigate from "../TabNavigate";
+import _ from "lodash";
 
 const OtherAddTab = () => {
-  const { AcctMSTState, handleCurrFormctx, handleSavectx, handleStepStatusctx } = useContext(AcctMSTContext);
+  const { AcctMSTState, handleCurrFormctx, handleSavectx, handleStepStatusctx, handleFormDataonSavectx, handleModifiedColsctx } = useContext(AcctMSTContext);
   const formRef = useRef<any>(null);
   const [isNextLoading, setIsNextLoading] = useState(false);
-  const [formStatus, setFormStatus] = useState<any[]>([])
-  const onSubmitPDHandler = () => {};
+  const [formStatus, setFormStatus] = useState<any[]>([]);
+  const formFieldsRef = useRef<any>([]); // array, all form-field to compare on update
+  const onSubmitPDHandler = (
+    data: any,
+    displayData,
+    endSubmit,
+    setFieldError,
+    actionFlag,
+    hasError
+  ) => {
+    if (data && !hasError) {
+      let formFields = Object.keys(data) // array, get all form-fields-name 
+      formFields = formFields.filter(field => !field.includes("_ignoreField")) // array, removed divider field
+      formFieldsRef.current = _.uniq([...formFieldsRef.current, ...formFields]) // array, added distinct all form-field names
+      const formData = _.pick(data, formFieldsRef.current)
+
+
+
+
+
+      let newData = AcctMSTState?.formDatactx;
+      const commonData = {
+        IsNewRow: true,
+        COMP_CD: "",
+        BRANCH_CD: "",
+        REQ_FLAG: "",
+        REQ_CD: "",
+        // SR_CD: "",
+      };
+      newData["OTHER_ADDRESS_DTL"] = {
+        ...newData["OTHER_ADDRESS_DTL"],
+        ...formData,
+        ...commonData,
+      };
+      handleFormDataonSavectx(newData);
+      if(!AcctMSTState?.isFreshEntryctx || AcctMSTState?.fromctx === "new-draft") {
+        let tabModifiedCols:any = AcctMSTState?.modifiedFormCols
+        let updatedCols = tabModifiedCols.OTHER_ADDRESS_DTL ? _.uniq([...tabModifiedCols.OTHER_ADDRESS_DTL, ...formFieldsRef.current]) : _.uniq([...formFieldsRef.current])
+
+        tabModifiedCols = {
+          ...tabModifiedCols,
+          OTHER_ADDRESS_DTL: [...updatedCols]
+        }
+        handleModifiedColsctx(tabModifiedCols)
+      }
+      // handleStepStatusctx({ status: "", coltabvalue: state?.colTabValuectx });
+      setFormStatus(old => [...old, true])
+      // if(state?.isFreshEntry) {
+        // PODFormRef.current.handleSubmitError(NextBtnRef.current, "save");
+      // }
+      // setIsNextLoading(false)
+    } else {
+      handleStepStatusctx({
+        status: "error",
+        coltabvalue: AcctMSTState?.colTabValuectx,
+      });
+      // setIsNextLoading(false);
+      setFormStatus(old => [...old, false])
+    }
+    endSubmit(true);
+  };
   const initialVal:any= {}
 
   const handleSave = (e) => {
@@ -21,6 +81,15 @@ const OtherAddTab = () => {
     handleSavectx(e, refs)
   }
 
+  useEffect(() => {
+    let refs = [formRef]
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: AcctMSTState?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
+  }, [])
   useEffect(() => {
     if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
       if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
