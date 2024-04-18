@@ -4,7 +4,6 @@ const drawerWidth = 227;
 
 export const useStyles = makeStyles((theme: any) => ({
   drawerPaper: {
-    margin:"8px",
     position: "relative",
     whiteSpace: "nowrap",
     width: drawerWidth,
