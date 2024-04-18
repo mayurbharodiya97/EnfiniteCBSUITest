@@ -9,7 +9,8 @@ import  EditDetail  from "./editParaDetails/editDetail";
 import { useQuery } from "react-query";
 import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
-import { Typography } from "@mui/material";
+import { Dialog, Typography } from "@mui/material";
+import AuditDetail from "./AuditDetail";
 
 const actions: ActionTypes[] = [
   {
@@ -38,6 +39,8 @@ const Parameters = () => {
   const [paraType, setParaType] = useState("H");
   const [componentToShow, setComponentToShow] = useState("");
   const [actionMenu, setActionMenu] = useState(actions);
+  const [openDilogue,setOpenDilogue] = useState(false);
+  const [save,setSave] = useState([]);
   const setCurrentAction = useCallback(async (data) => {
     if (data.name === "global") {
       setActionMenu((values) =>
@@ -110,7 +113,20 @@ const Parameters = () => {
         setData={() => null}
         loading={isLoading || isFetching}
         refetchData={() => refetch()}
+        onClickActionEvent={(index, id, data) => {
+          console.log("index",index)
+          console.log("id",id)
+          console.log("data",data)
+          setOpenDilogue(true)
+          setSave(data)
+        }}
       />
+    {openDilogue ? (
+      <AuditDetail
+      rowsData={save}
+      open={openDilogue}
+      onClose={() => setOpenDilogue(false)}/>
+    ) : null}
        <Typography sx={{ fontWeight: "bold",color:"rgb(152 59 70 / 61%)" , marginLeft:"460px",marginTop:"-36.2px"}} variant="subtitle1">Parameters In Red Colour Indicates Pending For Confirmation</Typography>
       {componentToShow === "editDetail" ? (
         <EditDetail
