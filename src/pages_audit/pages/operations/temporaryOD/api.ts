@@ -1,9 +1,11 @@
 import { DefaultErrorObject } from "components/utils";
 import { AuthSDK } from "registry/fns/auth";
 
-export const parametersListDD = async () => {
+export const parametersListDD = async (PARENT_TYPE) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETACCTODPARA", {});
+    await AuthSDK.internalFetcher("GETACCTODPARA", {
+      PARENT_TYPE: PARENT_TYPE,
+    });
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
@@ -32,9 +34,9 @@ export const documentsListDD = async (reqData) => {
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
-      responseData = responseData.map(({ DESCRIPTION, DOC_TYPE, ...other }) => {
+      responseData = responseData.map(({ DESCRIPTION, SR_CD, ...other }) => {
         return {
-          value: DOC_TYPE,
+          value: SR_CD,
           label: DESCRIPTION,
           ...other,
         };
@@ -51,12 +53,24 @@ export const temporaryODdetails = async (Apireq) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTODDATA", {
       ...Apireq,
-      //   COMP_CD: "132 ",
-      //   BRANCH_CD: "099 ",
-      //   ACCT_TYPE: "301 ",
-      //   ACCT_CD: "000004              ",
-      //   FLAG: "Y",
-      //   ASON_DT: "12-Mar-2024",
+    });
+  if (status === "0") {
+    const dataStatus = data;
+    dataStatus.map((item) => {
+      item.CONFIRMED = item?.CONFIRMED === "Y" ? "Yes" : "No";
+      item.FLAG = item?.FLAG === "Y" ? "Yes" : "No";
+      return item;
+    });
+    return dataStatus;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
+export const crudTemoraryOD = async (apiReqPara) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("DOOVERDRAWNDML", {
+      ...apiReqPara,
     });
   if (status === "0") {
     return data;

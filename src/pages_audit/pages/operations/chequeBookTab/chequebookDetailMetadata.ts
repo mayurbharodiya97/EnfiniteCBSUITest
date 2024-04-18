@@ -1,4 +1,6 @@
-export const ChequebookDtlGridMetaData = {
+import { GridMetaDataType } from "components/dataTableStatic";
+
+export const ChequebookDtlGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
     gridLabel: "Cheque Book Issued",
