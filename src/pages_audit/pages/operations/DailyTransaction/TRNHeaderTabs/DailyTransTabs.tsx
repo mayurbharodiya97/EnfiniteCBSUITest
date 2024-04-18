@@ -72,6 +72,7 @@ import FormModal from "../../c-kyc/formModal/formModal";
 import CkycProvider from "../../c-kyc/CkycContext";
 import { useCacheWithMutation } from "./cacheMutate";
 import CommonSvgIcons from "assets/icons/commonSvg/commonSvgIcons";
+import { queryClient } from "cache";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -137,7 +138,7 @@ export const DailyTransTabs = ({
                   label={
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <div style={{ marginRight: "0.4rem" }}>
-                        <CommonSvgIcons iconName={a?.ICON} />
+                        <CommonSvgIcons iconName={a?.TAB_NAME} />
                       </div>
                       {a?.TAB_DISPL_NAME}
                     </div>
@@ -151,7 +152,7 @@ export const DailyTransTabs = ({
                 label={
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ marginRight: "0.4rem" }}>
-                      <CommonSvgIcons iconName={"accountIcon"} />
+                      <CommonSvgIcons iconName={"Account"} />
                     </div>
                     {"Account"}
                   </div>
@@ -166,7 +167,7 @@ export const DailyTransTabs = ({
             <TabPanel value={tabValue} index={i}>
               <>
                 {/* other trx */}
-                {a?.TAB_NAME.includes("Standing") && (
+                {a?.TAB_NAME.includes("Standing Instruction") && (
                   <SIDetail reqData={reqData} />
                 )}
                 {a?.TAB_NAME.includes("Lien") && (
@@ -223,13 +224,13 @@ export const DailyTransTabs = ({
                 {a.TAB_NAME.includes("Insurance") && (
                   <Insurance reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("Disbursement") && (
+                {a.TAB_NAME.includes("Disbursement Details") && (
                   <Disbursement reqData={reqData} />
                 )}
                 {a.TAB_NAME.includes("Subsidy") && (
                   <Subsidyy reqData={reqData} />
                 )}
-                {a.TAB_NAME.includes("Search") && <Search reqData={reqData} />}
+                {/* {a.TAB_NAME.includes("Search") && <Search reqData={reqData} />} */}
                 {a.TAB_NAME.includes("Limits") && <Limit reqData={reqData} />}
                 {a.TAB_NAME.includes("Stock") && <Stock reqData={reqData} />}
               </>
@@ -349,6 +350,42 @@ export const DailyTransTabsWithDialog = ({
     }
   }, [isTabsError]);
 
+  useEffect(() => {
+    return () => {
+      clearTabsCache();
+      queryClient.removeQueries("getAcctDtlList");
+      // queryClient.removeQueries("getTabsByParentType");
+      // queryClient.removeQueries("getCarousalCards");
+      queryClient.removeQueries("getSIDetailList");
+      queryClient.removeQueries("getLienDetailList");
+      queryClient.removeQueries("getOWChqList");
+      queryClient.removeQueries("getTempList");
+      queryClient.removeQueries("getATMList");
+      queryClient.removeQueries("getASBAList");
+      queryClient.removeQueries("getACH_IWList");
+      queryClient.removeQueries("getACH_OWList");
+      queryClient.removeQueries("getInstructionList");
+      queryClient.removeQueries("getGroupList");
+      queryClient.removeQueries("getAPYList");
+      queryClient.removeQueries("getAPBSList");
+      queryClient.removeQueries("getPMBYList");
+      queryClient.removeQueries("getJointDetailsList");
+      queryClient.removeQueries("getTodayTransList");
+      queryClient.removeQueries("getCheckDetailsList");
+      queryClient.removeQueries("getSnapShotList");
+      queryClient.removeQueries("getHoldChargeList");
+      queryClient.removeQueries("getDocTemplateList");
+      queryClient.removeQueries("getStopPayList");
+      queryClient.removeQueries("getInsuranceList");
+      // queryClient.removeQueries("Disbursement");
+      queryClient.removeQueries("getDisbursementList");
+      queryClient.removeQueries("getSubsidyList");
+      queryClient.removeQueries("getSearchList");
+      queryClient.removeQueries("getLimitList");
+      queryClient.removeQueries("getStockList");
+    };
+  }, []);
+
   return (
     <Dialog
       open={true}
@@ -381,12 +418,42 @@ export const DailyTransTabsWithDialog = ({
           }`}
         </Typography>
         <Box>
-          <GradientButton
+          {/* <GradientButton
             onClick={() =>
-              handleClose(clearTabsCache, rowsData?.[0]?.data?.SR_NO)
+              navigate("view-details", {
+                state: [
+                  {
+                    data: {
+                      BRANCH: "099 ",
+                      CONFIRMED_FLAG: "CONFIRMED",
+                      CATEGORY_CODE: "01  ",
+                      ACTIVE: "Y",
+                      MOBILE_NUMBER: "7858089344",
+                      CUSTOMER_TYPE: "I",
+                      CUSTOMER_ID: "213951",
+                      KYC_NO: "",
+                      REMARKS: "",
+                      REQUEST_ID: "1492",
+                      CATEG_NM: "INDIVIDUAL PERSON",
+                      UPD_TAB_FLAG_NM: "D",
+                      CONSTITUTION_NAME: "INDIVIDUAL",
+                      CUSTOMER_NAME: "HINAL  ",
+                      CONFIRMED: "Y",
+                      UPD_TAB_NAME: "EXISTING DOC MODIFY",
+                      CATEGORY_CONSTITUTIONS: "INDIVIDUAL PERSON-INDIVIDUAL",
+                      MAKER: "adi",
+                      PAN_NO: "DWIPP9643D",
+                      CONSTITUTION_TYPE: "01",
+                    },
+                  },
+                ],
+              })
             }
             color="primary"
           >
+            Customer Details
+          </GradientButton> */}
+          <GradientButton onClick={() => handleClose()} color="primary">
             Close
           </GradientButton>
         </Box>
@@ -431,7 +498,7 @@ export const DailyTransTabsWithDialog = ({
               <FormModal
                 onClose={() => navigate(".")}
                 formmode={"view"}
-                from={""}
+                from={"acct inq"}
               />
             }
           />

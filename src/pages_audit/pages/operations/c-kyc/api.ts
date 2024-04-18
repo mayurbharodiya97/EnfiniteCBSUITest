@@ -239,6 +239,33 @@ export const getRatingOpDTL = async (COMP_CD, BRANCH_CD) => {
     }
 };
 
+export const getLegalCompanyTypeOP = async ({COMP_CD, BRANCH_CD}) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTRATELIST", {
+      COMP_CD: COMP_CD ?? "",
+      BRANCH_CD: BRANCH_CD ?? "",
+    });
+    if (status === "0") {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(
+          ({ RATE_CD, RATE_NM, ...other }) => {
+            return {
+              ...other,
+              RATE_CD: RATE_CD, 
+              RATE_NM: RATE_NM,
+              value: RATE_CD,
+              label: RATE_NM,
+            };
+          }
+        );
+      }
+      return responseData;
+    } else {
+      throw DefaultErrorObject(message, messageDetails);
+    }
+};
+
 export const getPMISCData = async (CATEGORY_CD, dependentValue?, CUST_TYPE?) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETPMISCDATA", {

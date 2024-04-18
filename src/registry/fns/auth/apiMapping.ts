@@ -1023,6 +1023,22 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/DOCONFRIMEDPOSTEDDATA",
     packageName: "",
   },
+  VALIDATEDIVIDENDDATA: {
+    url: "chequeServiceAPI/VALIDATEDIVIDENDDATA",
+    packageName: "",
+  },
+  DOCTSCONFIRMATION: {
+    url: "chequeServiceAPI/DOCTSCONFIRMATION",
+    packageName: "",
+  },
+  BANKCHEQUEALERT: {
+    url: "chequeServiceAPI/BANKCHEQUEALERT",
+    packageName: "",
+  },
+  GETCONFIMEDHISTORY: {
+    url: "chequeServiceAPI/GETCONFIMEDHISTORY",
+    packageName: "",
+  },
   GETINWZONEDDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWZONEDDW",
     packageName: "",
@@ -1202,6 +1218,34 @@ export const ActionWiseAPIConfiguration = {
   },
   GETSYSPARAAUDBTN: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSYSPARAAUDBTN",
+    packageName: "",
+  },
+  GETACTCHQSIGNAUTHODDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTCHQSIGNAUTHODDW",
+    packageName: "",
+  },
+  GETACTINSSKIPREASNDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTINSSKIPREASNDDW",
+    packageName: "",
+  },
+  GETACCTMSTSECURITYCDDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMSTSECURITYCDDDW",
+    packageName: "",
+  },
+  GETINWDIVIDVIEWDTLGRIDTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWDIVIDVIEWDTLGRIDTAB",
+    packageName: "",
+  },
+  GETINWDIVIDVEWMSTTAB: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWDIVIDVEWMSTTAB",
+    packageName: "",
+  },
+  GETINWDIVIDPAIDWARNTGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETINWDIVIDPAIDWARNTGRID",
+    packageName: "",
+  },
+  GETCTSVIEWDELDTL: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSVIEWDELDTL",
     packageName: "",
   },
 };

@@ -99,9 +99,8 @@ export const current_tab_metadata = {
             // defaultValue: "N",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            options: [
-                {label: "", value: ""}
-            ],
+            options: (dependentValue, formState, _, authState) => API.getCheqSignAuthoTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "chqSignAuthoCurrentOp",
         },
 
         {
@@ -353,7 +352,6 @@ export const current_tab_metadata = {
             options: (dependentValue, formState, _, authState) => API.getPriorityWeakerTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, dependentValue:dependentValue}), 
             _optionsKey: "weakerPrioCurrentOp",
             disableCaching: true,
-            // _optionsKey: "weakerTermLoanOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
@@ -373,9 +371,8 @@ export const current_tab_metadata = {
             },
             name: "SECURITY_CD",
             label: "Security",
-            options: [
-                {label: "", value: ""}
-            ],
+            options: (dependentValue, formState, _, authState) => API.getSecurityTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode}),
+            _optionsKey: "securityCurrentOp",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}
         },
         {
@@ -474,8 +471,8 @@ export const current_tab_metadata = {
             },
             name: "NPA_REASON",
             label: "Forcefully NPA Reason",
-            options: (dependentValue) => getPMISCData("", dependentValue), 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue) => getPMISCData("npa_reason"), 
+            _optionsKey: "npaReasonCurrentOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}

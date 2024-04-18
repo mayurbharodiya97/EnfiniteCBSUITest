@@ -230,7 +230,6 @@ export const AuthLoginController = () => {
   const urlObj = useRef<any>(null);
   const { t } = useTranslation();
   const otpResendRef = useRef(1);
-
   // const [image, setImage] = useState<any>(null);
   // let path = require("assets/sound/successSound.mp3").default;
   // let audio = new Audio(path);
@@ -318,24 +317,24 @@ export const AuthLoginController = () => {
         type: "usernameandpasswordrequired",
         payload: {
           error: t("UsernamenandPasswordisRequired"),
-          errorUsername: t("UsernameisRequired"),
-          errorPassword: t("PasswordisRequired"),
+          errorUsername: "UsernameisRequired",
+          errorPassword: "PasswordisRequired",
         },
       });
     } else if (!Boolean(username)) {
       dispath({
         type: "usernameVerificationFailure",
         payload: {
-          error: t("UsernameisRequired"),
-          errorUsername: t("UsernameisRequired"),
+          error: "UsernameisRequired",
+          errorUsername: "UsernameisRequired",
         },
       });
     } else {
       dispath({
         type: "passwordVerificationFailure",
         payload: {
-          error: t("PasswordisRequired"),
-          errorPassword: t("PasswordisRequired"),
+          error: "PasswordisRequired",
+          errorPassword: "PasswordisRequired",
         },
       });
     }
@@ -353,7 +352,7 @@ export const AuthLoginController = () => {
         loginState.token_type,
         loginState.authType
       );
-
+      console.log("menuapierror", message);
       if (status === "0") {
         // try {
         //   audio.play();
@@ -545,10 +544,10 @@ export const AuthLoginController = () => {
                           loginState={loginState}
                           VerifyOTP={VerifyOTP}
                           previousStep={changeUserName}
-                          OTPError={loginState?.OtpuserMessage ?? ""}
+                          OTPError={t(loginState?.OtpuserMessage ?? "")}
                           setOTPError={(error) => {
                             dispath({
-                              type: "OTPVerificattionFailed",
+                              type: "OTPVerificationFailed",
                               payload: { error: error },
                             });
                           }}

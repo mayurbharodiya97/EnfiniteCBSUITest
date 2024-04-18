@@ -131,10 +131,8 @@ export const shareNominal_tab_metadata = {
             },
             name: "CLASS_CD",
             label: "Dividend Class",
-            options: [
-                {label: "", value: ""}
-            ], //api 
-            // _optionsKey: "npaReasonTermLoanOp",
+            options: (dependentValue, formState, _, authState) => API.getRiskCategTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, FOR_SHARE: "Y"}), 
+            _optionsKey: "riskCategShareOp",
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2}

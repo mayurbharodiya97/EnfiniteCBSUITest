@@ -34,7 +34,7 @@ export const Search = ({ reqData }) => {
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
-  >(["getSearchList"], () => API.getSearchList(reqData));
+  >(["getSearchList", { reqData }], () => API.getSearchList(reqData));
 
   return (
     <>

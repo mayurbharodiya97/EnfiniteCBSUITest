@@ -98,7 +98,12 @@ export const getAnnouncementListData = async ({ transactionID, userID }) => {
       TRAN_CD: transactionID,
     });
   if (status === "0") {
-    return data;
+    return data.map((item) => {
+      return {
+        ...item,
+        IS_VIEW_NEXT: item.IS_VIEW_NEXT === "Y" ? true : false,
+      };
+    });
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }

@@ -38,6 +38,9 @@ import LockerTab from "./tabComponents/LockerTab";
 import MobileRegTab from "./tabComponents/MobileRegTab";
 import RelativeDtlTab from "./tabComponents/RelativeDtlTab";
 import ShareNominalTab from "./tabComponents/ShareNominalTab";
+import OtherAddTab from "./tabComponents/OtherAddTab";
+import DocumentTab from "./tabComponents/DocumentTab";
+import AdvConfigTab from "./tabComponents/AdvConfigTab";
 
 const AcctModal = ({ onClose, formmode, from }) => {
   const {
@@ -139,6 +142,12 @@ const AcctModal = ({ onClose, formmode, from }) => {
         return <MobileRegTab />
       case "Relative Details":
         return <RelativeDtlTab />
+      case "Other Address":
+        return <OtherAddTab />
+      case "Documents":
+        return <DocumentTab />
+      case "Advance Configuration":
+        return <AdvConfigTab />
       case "Joint Holder":
         return <JointTab />;
       case "Nominee":

@@ -266,6 +266,58 @@ export const AcctMSTContext = React.createContext<any>({
     })
   }, [])
 
+  const handleCurrFormctx = useCallback((obj) => {
+    let currVal = state?.currentFormctx
+    dispatch({
+        type: "set_currentFormObj",
+        payload: {
+            currentFormctx: {
+                ...currVal,
+                ...obj 
+            }
+        }
+    })
+  }, [state?.currentFormctx])
+  const handleStepStatusctx = ({status= "error", coltabvalue= 0}) => {
+    dispatch({
+        type: "update_stepStatus",
+        payload: {
+            steps: {
+                ...state?.steps,
+                [coltabvalue]: {status: status}
+            }
+        }
+    })
+  }
+
+  const handleFormDataonSavectx = (data) => {
+    dispatch({
+        type: "update_formData",
+        payload: {
+            formDatactx: {...data}
+        }
+    })
+  }
+
+  const handleModifiedColsctx = (tabModifiedCols ) => {    
+    dispatch({
+        type: "modify_tabCols",
+        payload: {
+            modifiedFormCols: {...tabModifiedCols}
+        }
+    })
+  }
+
+  const handleSavectx = (e, refs) => {
+    // ref(e, "save")
+    Promise.all([refs])
+    .then((response) => {
+      // console.log("evalSave in success ", response)
+    }).catch(err => {
+      // console.log("evalSave out catch", err.message)
+    })    
+  }
+
   return (
     <AcctMSTContext.Provider
       value={{
@@ -277,7 +329,12 @@ export const AcctMSTContext = React.createContext<any>({
         handleHeaderFormSubmit,
         handleApiRes,
         handleColTabChangectx,
-        handleFormModalOpenctx
+        handleFormModalOpenctx,
+        handleCurrFormctx,
+        handleStepStatusctx,
+        handleFormDataonSavectx,
+        handleModifiedColsctx,
+        handleSavectx
       }}
     >
       {children}
