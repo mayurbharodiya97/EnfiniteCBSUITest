@@ -25,4 +25,15 @@ export const updateParameterData = async ({
         throw DefaultErrorObject(message, "error", messageDetails);
       }
     };
-  
+    export const validateparavalue = async ({para_cd,para_value}) => {
+      const { status, data, message, messageDetails } =
+        await AuthSDK.internalFetcher("VALIDATEPARAVALUE", {
+          PARA_CD:para_cd,
+          PARA_VALUE:para_value
+        });
+      if (status === "0") {
+        return data;
+      } else {
+        throw DefaultErrorObject(message, messageDetails);
+      }
+    };

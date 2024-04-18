@@ -32,8 +32,11 @@ export const temporaryODentryMetadata = {
         },
         name: "",
         branchCodeMetadata: {
-          postValidationSetCrossFieldValues: async (field) => {
+          postValidationSetCrossFieldValues: async (field, formState) => {
             if (field?.value) {
+              // formState.setDataOnFieldChange("IS_VISIBLE", {
+              //   IS_VISIBLE: false,
+              // });
               return {
                 ACCT_TYPE: { value: "" },
                 ACCT_CD: { value: "" },
@@ -51,8 +54,11 @@ export const temporaryODentryMetadata = {
             });
           },
           _optionsKey: "get_Account_Type",
-          postValidationSetCrossFieldValues: async (field) => {
+          postValidationSetCrossFieldValues: async (field, formState) => {
             if (field?.value) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: false,
+              });
               return {
                 ACCT_CD: { value: "" },
               };
@@ -94,6 +100,13 @@ export const temporaryODentryMetadata = {
                   messageTitle: "Validation Failed...!",
                   message: postData?.RESTRICTION,
                 });
+
+                return {
+                  ACCT_CD: {
+                    value: "",
+                    ignoreUpdate: true,
+                  },
+                };
               } else if (postData?.MESSAGE1) {
                 formState.setDataOnFieldChange("IS_VISIBLE", {
                   IS_VISIBLE: true,
@@ -120,10 +133,14 @@ export const temporaryODentryMetadata = {
                   },
                 };
               }
+            } else if (!field.value) {
+              formState.setDataOnFieldChange("IS_VISIBLE", {
+                IS_VISIBLE: false,
+              });
             }
             return {};
           },
-          // runPostValidationHookAlways: true,
+          runPostValidationHookAlways: true,
           fullWidth: true,
         },
       },
@@ -131,15 +148,26 @@ export const temporaryODentryMetadata = {
         render: {
           componentType: "autocomplete",
         },
-        name: "PARAMETERS",
+        name: "CODE",
         label: "Parameters",
         required: true,
         fullWidth: true,
         placeholder: "Select Parameters",
-        options: () => {
-          return API.parametersListDD() ?? [];
+        disableCaching: true,
+        dependentFields: ["ACCT_TYPE"],
+        options: (dependentFields) => {
+          if (dependentFields?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE) {
+            return API.parametersListDD(
+              dependentFields?.ACCT_TYPE?.optionData?.[0]?.PARENT_TYPE
+            );
+          }
+          return [];
         },
         _optionsKey: "parametersListDD",
+        schemaValidation: {
+          type: "string",
+          rules: [{ name: "required", params: ["Please Select Value"] }],
+        },
         GridProps: {
           xs: 12,
           md: 3,
@@ -153,7 +181,7 @@ export const temporaryODentryMetadata = {
         render: {
           componentType: "datePicker",
         },
-        name: "FROM_DT",
+        name: "FROM_EFF_DATE",
         fullWidth: true,
         isWorkingDate: true,
         isMinWorkingDate: true,
@@ -170,7 +198,7 @@ export const temporaryODentryMetadata = {
         render: {
           componentType: "datePicker",
         },
-        name: "TO_DT",
+        name: "TO_EFF_DATE",
         fullWidth: true,
         isWorkingDate: true,
         isMaxWorkingDate: true,
@@ -188,8 +216,11 @@ export const temporaryODentryMetadata = {
         render: {
           componentType: "amountField",
         },
-        name: "AMOUNT",
+        name: "AMOUNT_UPTO",
         label: "Amount UpTo",
+        FormatProps: {
+          allowNegative: false,
+        },
         fullWidth: true,
         GridProps: {
           xs: 12,
@@ -221,35 +252,37 @@ export const temporaryODentryMetadata = {
   detailsGrid: {
     gridConfig: {
       dense: true,
-      gridLabel: "Temporary OD document",
+      gridLabel: "Documents",
       rowIdColumn: "SR_CD",
       defaultColumnConfig: { width: 150, maxWidth: 250, minWidth: 100 },
       allowColumnReordering: true,
-      hideHeader: true,
+      hideHeader: false,
       disableGroupBy: true,
       enablePagination: false,
-      containerHeight: { min: "40vh", max: "40vh" },
+      disableGlobalFilter: true,
+      containerHeight: { min: "30vh", max: "30vh" },
       allowRowSelection: false,
       hiddenFlag: "_hidden",
       disableLoader: true,
       // paginationText: "Configured Messages",
     },
     columns: [
+      // {
+      //   accessor: "SR_NO",
+      //   columnName: "Sr No.",
+      //   componentType: "default",
+      //   sequence: 1,
+      //   alignment: "center",
+      //   width: 75,
+      //   minWidth: 50,
+      //   maxWidth: 100,
+      //   isAutoSequence: true,
+      // },
       {
-        accessor: "SR_CDZ",
-        columnName: "Sr No.",
-        componentType: "default",
-        sequence: 1,
-        alignment: "center",
-        width: 75,
-        minWidth: 50,
-        maxWidth: 100,
-        isAutoSequence: true,
-      },
-      {
-        accessor: "DOC_DEC",
+        accessor: "TEMPLATE_CD",
         columnName: "Document(s)",
         componentType: "editableAutocomplete",
+        // componentType: "editableSelect",
         options: (_, auth) => {
           return API.documentsListDD({
             COMP_CD: auth?.companyID,
@@ -269,22 +302,28 @@ export const temporaryODentryMetadata = {
         },
       },
       {
-        accessor: "ACTIVE",
-        columnName: "Active",
+        accessor: "SUBMIT",
+        columnName: "Submit",
         componentType: "editableCheckbox",
         alignment: "center",
-        defaultValue: "Y",
+        // defaultValue: "Y",
         sequence: 2,
-        width: 80,
+        width: 85,
         minWidth: 70,
         maxWidth: 120,
       },
 
       {
-        accessor: "VALIDDATE",
+        accessor: "VALID_UPTO",
         columnName: "Valid Till Date",
         componentType: "editableDatePicker",
         alignment: "center",
+        validation: (value, data, prev) => {
+          console.log("<<<valida", value, data, prev);
+          if (!Boolean(value)) {
+            return "This field is required.";
+          }
+        },
         sequence: 2,
         width: 150,
         minWidth: 70,

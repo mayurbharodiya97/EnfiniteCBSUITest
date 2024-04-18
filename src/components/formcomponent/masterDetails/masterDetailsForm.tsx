@@ -243,6 +243,7 @@ export const MasterDetailsForm = forwardRef<any, MasterDetailsArgumentType>(
         myMasterRef.current?.handleSubmit(e, actionFlag, isValidate);
       },
       setGridData: setGridData,
+      getFieldData: myMasterRef?.current?.getFieldData,
     }));
     return (
       <Fragment>

@@ -11,46 +11,63 @@ import { ChequeSignImage } from "./chequeSignImage";
 import { usePopupContext } from "components/custom/popupContext";
 import { SubmitFnType } from "packages/form";
 import { queryClient } from "cache";
-import { LoaderPaperComponent } from "components/common/loaderPaper";
-import { Alert } from "components/common/alert";
 import { AuthContext } from "pages_audit/auth";
 import { useSnackbar } from "notistack";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 import { PositivePayFormWrapper } from "./positvePayForm";
 import { CircularProgress } from "@mui/material";
 import { utilFunction } from "components/utils";
-import RecordDialog from "pages_audit/pages/transactionSummeryCard/imagecarousel";
-
+import { ShareDividendFormWrapper } from "./shareDividendForm";
+import { PopupRequestWrapper } from "components/custom/popupMessage";
+import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { Alert } from "components/common/alert";
+import { useLocation } from "react-router-dom";
 export const ChequeReturnPostForm: FC<{
   onClose?: any;
-  inwardData?: any;
+  inwardGridData?: any;
   isDataChangedRef?: any;
-}> = ({ onClose, inwardData, isDataChangedRef }) => {
+  handlePrev?: any;
+  handleNext?: any;
+  currentIndex?: number;
+  totalData?: number;
+}> = ({
+  onClose,
+  inwardGridData,
+  isDataChangedRef,
+  handlePrev,
+  handleNext,
+  currentIndex,
+  totalData,
+}) => {
   const formRef = useRef<any>(null);
   const { MessageBox } = usePopupContext();
   const { enqueueSnackbar } = useSnackbar();
   const [isOpenSave, setIsOpenSave] = useState(false);
   const [messageData, setMessageData] = useState<any>();
   const [acImageData, setAcImageData] = useState<any>(null);
+  const [isDraft, setIsDraft] = useState(false);
+  const [isDividend, setIsDividend] = useState(false);
   const [isPositivePay, setIsPositvePay] = useState(false);
+  // const [noFlag, setNoFlag] = useState(false);
+  const { authState } = useContext(AuthContext);
 
   const result: any = useQueries([
     {
       queryKey: ["getInwardChequeSignFormData"],
       queryFn: () =>
         API.getInwardChequeSignFormData({
-          COMP_CD: inwardData.current?.COMP_CD,
-          ENTERED_COMP_CD: inwardData.current?.ENTERED_COMP_CD,
-          ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD,
-          BRANCH_CD: inwardData.current?.BRANCH_CD,
-          ACCT_TYPE: inwardData.current?.ACCT_TYPE,
-          ACCT_CD: inwardData.current?.ACCT_CD,
-          DAILY_TRN_CD: inwardData.current?.DAILY_TRN_CD,
-          TRAN_CD: inwardData.current?.TRAN_CD,
-          TRAN_DT: inwardData.current?.TRAN_DT,
+          COMP_CD: inwardGridData?.COMP_CD,
+          ENTERED_COMP_CD: inwardGridData?.ENTERED_COMP_CD,
+          ENTERED_BRANCH_CD: inwardGridData?.ENTERED_BRANCH_CD,
+          BRANCH_CD: inwardGridData?.BRANCH_CD,
+          ACCT_TYPE: inwardGridData?.ACCT_TYPE,
+          ACCT_CD: inwardGridData?.ACCT_CD,
+          DAILY_TRN_CD: inwardGridData?.DAILY_TRN_CD,
+          TRAN_CD: inwardGridData?.TRAN_CD,
+          TRAN_DT: inwardGridData?.TRAN_DT,
           TRAN_FLAG: "E",
           WITH_SIGN: "Y",
-          ENTERED_BY: inwardData.current?.ENTERED_BY,
+          ENTERED_BY: inwardGridData?.ENTERED_BY,
         }),
     },
     // {
@@ -62,6 +79,10 @@ export const ChequeReturnPostForm: FC<{
   // errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
   // //@ts-ignore
   // let error_detail = `${result[1]?.error?.error_detail}`;
+  let errorMsg = `${result[0].error?.error_msg}`;
+  errorMsg = Boolean(errorMsg.trim()) ? errorMsg : "Unknown error occured";
+  //@ts-ignore
+  let error_detail = `${result[0]?.error?.error_detail}`;
 
   useEffect(() => {
     return () => {
@@ -72,7 +93,7 @@ export const ChequeReturnPostForm: FC<{
     onSuccess: (data, variables) => {
       let apiReq = {
         ...variables,
-        action: "P",
+        action: "POST",
       };
       if (data?.[0]?.O_STATUS === "0") {
         setMessageData({
@@ -141,7 +162,51 @@ export const ChequeReturnPostForm: FC<{
       });
     },
   });
-
+  const validateConfirmData: any = useMutation(API.validateConfirm, {
+    onSuccess: (data, variables) => {
+      let apiReq = {
+        ...variables,
+        action: "CONFIRM",
+      };
+      if (data?.[0]?.O_STATUS === "0") {
+        setMessageData({
+          messageTitle: "Validation Successful",
+          message:
+            "Do you want to allow this transaction - Voucher No." +
+            variables?.DAILY_TRN_CD +
+            "?",
+          apiReq: apiReq,
+        });
+        setIsOpenSave(true);
+      } else if (data?.[0]?.O_STATUS === "9") {
+        MessageBox({
+          messageTitle: "Validation Alert",
+          message: data?.[0]?.O_MESSAGE,
+        });
+      } else if (data?.[0]?.O_STATUS === "99") {
+        setMessageData({
+          messageTitle: "Are you sure do you want to continue?",
+          message: data?.[0]?.O_MESSAGE,
+          apiReq: apiReq,
+        });
+        setIsOpenSave(true);
+      } else if (data?.[0]?.O_STATUS === "999") {
+        MessageBox({
+          messageTitle: "Validation Failed",
+          message: data?.[0]?.O_MESSAGE,
+        });
+      }
+    },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
+  });
   const postConfigDML: any = useMutation(API.postConfigDML, {
     onSuccess: (data, variables) => {
       // enqueueSnackbar(data, { variant: "success" });
@@ -149,8 +214,12 @@ export const ChequeReturnPostForm: FC<{
         messageTitle: "Success",
         message: data,
       });
+      // onClose();
       isDataChangedRef.current = true;
-      onClose();
+      if (currentIndex && currentIndex !== totalData) handleNext();
+      if (typeof onClose === "function") {
+        onClose();
+      }
     },
 
     onError: (error: any) => {
@@ -180,7 +249,22 @@ export const ChequeReturnPostForm: FC<{
       });
     },
   });
-
+  const confirmPostedConfigDML: any = useMutation(API.confirmPostedConfigDML, {
+    onSuccess: (data, variables) => {
+      enqueueSnackbar(data, { variant: "success" });
+      isDataChangedRef.current = true;
+      onClose();
+    },
+    onError: (error: any) => {
+      let errorMsg = "Unknown Error occured";
+      if (typeof error === "object") {
+        errorMsg = error?.error_msg ?? errorMsg;
+      }
+      enqueueSnackbar(errorMsg, {
+        variant: "error",
+      });
+    },
+  });
   const onSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
@@ -191,28 +275,30 @@ export const ChequeReturnPostForm: FC<{
     endSubmit(true);
     if (actionFlag === "Save") {
       const oldData = {
-        COMP_CD: inwardData.current?.COMP_CD ?? "",
-        BRANCH_CD: inwardData.current?.BRANCH_CD ?? "",
-        ACCT_TYPE: inwardData.current?.ACCT_TYPE ?? "",
-        ACCT_CD: inwardData.current?.ACCT_CD ?? "",
-        CHEQUE_NO: inwardData.current?.CHEQUE_NO ?? "",
-        TRAN_CD: inwardData.current?.TRAN_CD,
-        MICR_TRAN_CD: inwardData.current?.MICR_TRAN_CD ?? "",
-        CHEQUE_DT: inwardData.current?.CHEQUE_DT
-          ? format(new Date(inwardData.current?.["CHEQUE_DT"]), "dd/MMM/yyyy")
+        COMP_CD: inwardGridData?.COMP_CD ?? "",
+        BRANCH_CD: inwardGridData?.BRANCH_CD ?? "",
+        ACCT_TYPE: inwardGridData?.ACCT_TYPE ?? "",
+        ACCT_CD: inwardGridData?.ACCT_CD ?? "",
+        CHEQUE_NO: inwardGridData?.CHEQUE_NO ?? "",
+        TRAN_CD: inwardGridData?.TRAN_CD,
+        MICR_TRAN_CD: inwardGridData?.MICR_TRAN_CD ?? "",
+        CHEQUE_DT: inwardGridData?.CHEQUE_DT
+          ? format(new Date(inwardGridData?.["CHEQUE_DT"]), "dd/MMM/yyyy")
           : "",
+        DRAFT_DIV: inwardGridData?.DRAFT_DIV,
       };
       const newData = {
-        COMP_CD: inwardData.current?.COMP_CD ?? "",
+        COMP_CD: inwardGridData?.COMP_CD ?? "",
         BRANCH_CD: data?.BRANCH_CD ?? "",
         ACCT_TYPE: data?.ACCT_TYPE ?? "",
         ACCT_CD: data?.ACCT_CD ?? "",
         CHEQUE_NO: data?.CHEQUE_NO ?? "",
-        TRAN_CD: inwardData.current?.TRAN_CD,
+        TRAN_CD: inwardGridData?.TRAN_CD,
         MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
         CHEQUE_DT: data?.CHEQUE_DT
           ? format(new Date(data["CHEQUE_DT"]), "dd/MMM/yyyy")
           : "",
+        DRAFT_DIV: inwardGridData?.DRAFT_DIV,
       };
 
       let upd: any = utilFunction.transformDetailsData(newData ?? {}, oldData);
@@ -225,41 +311,39 @@ export const ChequeReturnPostForm: FC<{
         endSubmit(true);
         postConfigDML.mutate(updateData);
       }
-    } else if (actionFlag === "POST") {
+    } else if (actionFlag === "POST" || actionFlag === "NO") {
       endSubmit(true);
       viewDetailValidatePostData.mutate({
-        COMP_CD: inwardData.current?.COMP_CD ?? "",
+        COMP_CD: inwardGridData?.COMP_CD ?? "",
         BRANCH_CD: data?.BRANCH_CD ?? "",
         ACCT_TYPE: data?.ACCT_TYPE ?? "",
         ACCT_CD: data?.ACCT_CD ?? "",
-        ERROR_STATUS: inwardData.current?.ERR_STATUS ?? "",
+        ERROR_STATUS: inwardGridData?.ERR_STATUS ?? "",
         SCREEN_REF: "TRN/650",
-        ENTERED_BY: inwardData.current?.ENTERED_BY ?? "",
-        ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD ?? "",
+        ENTERED_BY: inwardGridData?.ENTERED_BY ?? "",
+        ENTERED_BRANCH_CD: inwardGridData?.ENTERED_BRANCH_CD ?? "",
         REMARKS: data?.REMARKS ?? "",
-        CHEQUE_DT: data?.CHEQUE_DT
-          ? format(new Date(data["CHEQUE_DT"]), "dd/MMM/yyyy")
-          : "", //data?.CHEQUE_DT,
+        CHEQUE_DT: data?.CHEQUE_DT,
         CHEQUE_NO: data?.CHEQUE_NO ?? "",
         AMOUNT: data?.AMOUNT ?? "",
-        TRAN_CD: inwardData.current?.TRAN_CD,
+        TRAN_CD: inwardGridData?.TRAN_CD,
         MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
       });
     } else if (actionFlag === "RETURN") {
       viewDetailValidateReturnData.mutate({
-        COMP_CD: inwardData.current?.COMP_CD ?? "",
+        COMP_CD: inwardGridData?.COMP_CD ?? "",
         BRANCH_CD: data?.BRANCH_CD ?? "",
         ACCT_TYPE: data?.ACCT_TYPE ?? "",
         ACCT_CD: data?.ACCT_CD ?? "",
         CHEQUE_NO: data?.CHEQUE_NO ?? "",
-        CHEQUE_DT: data?.CHEQUE_DT
-          ? format(new Date(data["CHEQUE_DT"]), "dd/MMM/yyyy")
-          : "",
-        TRAN_CD: inwardData.current?.TRAN_CD,
-        RET_COMP_CD: inwardData.current?.RET_COMP_CD,
-        ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD,
-        ENTERED_BY: inwardData.current?.ENTERED_BY,
-        LAST_MACHINE_NM: inwardData.current?.LAST_MACHINE_NM,
+        CHEQUE_DT: data?.CHEQUE_DT,
+        // ? format(new Date(data["CHEQUE_DT"]), "dd/MMM/yyyy")
+        // : "",
+        TRAN_CD: inwardGridData?.TRAN_CD,
+        RET_COMP_CD: inwardGridData?.RET_COMP_CD,
+        ENTERED_BRANCH_CD: inwardGridData?.ENTERED_BRANCH_CD,
+        ENTERED_BY: inwardGridData?.ENTERED_BY,
+        LAST_MACHINE_NM: inwardGridData?.LAST_MACHINE_NM,
         REASON_CD: data?.REASON_CD ?? "",
         REASON: data?.REASON ?? "",
         ZONE_CD: data?.ZONE_CD ?? "",
@@ -268,9 +352,27 @@ export const ChequeReturnPostForm: FC<{
         RET_ACCT_TYPE: data?.RET_ACCT_TYPE ?? "",
         RET_ACCT_CD: data?.RET_ACCT_CD ?? "",
       });
+    } else if (actionFlag === "CONFIRM") {
+      validateConfirmData.mutate({
+        COMP_CD: inwardGridData?.COMP_CD ?? "",
+        BRANCH_CD: data?.BRANCH_CD ?? "",
+        ACCT_TYPE: data?.ACCT_TYPE ?? "",
+        ACCT_CD: data?.ACCT_CD ?? "",
+        DAILY_TRN_CD: inwardGridData?.DAILY_TRN_CD ?? "",
+        ZONE_CD: data?.ZONE_CD ?? "",
+        ENTERED_COMP_CD: inwardGridData?.ENTERED_COMP_CD ?? "",
+        ENTERED_BY: inwardGridData?.ENTERED_BY ?? "",
+        LAST_ENTERED_BY: inwardGridData?.LAST_ENTERED_BY ?? "",
+        LAST_MACHINE_NM: inwardGridData?.LAST_MACHINE_NM ?? "",
+        REMARKS: data?.REMARKS ?? "",
+        CHEQUE_DT: data?.CHEQUE_DT ?? "",
+        CHEQUE_NO: data?.CHEQUE_NO ?? "",
+        AMOUNT: data?.AMOUNT ?? "",
+        TRAN_CD: inwardGridData?.TRAN_CD,
+        MICR_TRAN_CD: data?.MICR_TRAN_CD ?? "",
+      });
     }
   };
-
   return (
     <>
       {/* {result?.[1]?.isLoading || result?.[1]?.isFetching ? (
@@ -286,10 +388,9 @@ export const ChequeReturnPostForm: FC<{
         <FormWrapper
           key={`chequeReturnPost`}
           metaData={chequeReturnPostFormMetaData as unknown as MetaDataType}
-          initialValues={inwardData.current}
-          // initialValues={inwardData.current?.data[currentRecordIndex]}
+          initialValues={inwardGridData}
           // initialValues={{
-          //   ...inwardData.current,
+          //   ...inwardGridData,
           //   RANGE_DATE: result?.[1]?.data?.[0]?.RANGE_DATE ?? "",
           //   TRAN_DATE: result?.[1]?.data?.[0]?.TRAN_DATE ?? "",
           // }}
@@ -298,14 +399,27 @@ export const ChequeReturnPostForm: FC<{
             background: "white",
           }}
           onFormButtonClickHandel={(id) => {
+            let event: any = { preventDefault: () => {} };
             if (id === "POST") {
-              let event: any = { preventDefault: () => {} };
-              formRef?.current?.handleSubmit(event, "POST");
+              // if (!noFlag) {
+              if (inwardGridData && inwardGridData?.DRAFT_DIV === "DRAFT") {
+                setIsDraft(true);
+              } else if (
+                inwardGridData &&
+                inwardGridData?.DRAFT_DIV === "DIVIDEND"
+              ) {
+                setIsDividend(true);
+              }
+              // }
+              else {
+                formRef?.current?.handleSubmit(event, "POST");
+              }
             } else if (id === "RETURN") {
-              let event: any = { preventDefault: () => {} };
               formRef?.current?.handleSubmit(event, "RETURN");
             } else if (id === "POSITIVE_PAY") {
               setIsPositvePay(true);
+            } else if (id === "CONFIRM") {
+              formRef?.current?.handleSubmit(event, "CONFIRM");
             }
           }}
           formState={{
@@ -323,33 +437,50 @@ export const ChequeReturnPostForm: FC<{
           {({ isSubmitting, handleSubmit }) => (
             <>
               <GradientButton
-                onClick={(event) => {
-                  handleSubmit(event, "Save");
+                onClick={() => {
+                  if (currentIndex && currentIndex !== totalData) handlePrev();
                 }}
-                disabled={isSubmitting}
-                endIcon={
-                  postConfigDML.isLoading ? (
-                    <CircularProgress size={20} />
-                  ) : null
-                }
-                color={"primary"}
               >
-                Save & Close
+                Previous
               </GradientButton>
+              {inwardGridData?.DRAFT_DIV.length === 0 ||
+              inwardGridData?.DRAFT_DIV === "DRAFT" ? (
+                <GradientButton
+                  onClick={(event) => {
+                    handleSubmit(event, "Save");
+                  }}
+                  disabled={isSubmitting}
+                  endIcon={
+                    postConfigDML.isLoading ? (
+                      <CircularProgress size={20} />
+                    ) : null
+                  }
+                  color={"primary"}
+                >
+                  Save & Close
+                </GradientButton>
+              ) : null}
+
               <GradientButton onClick={onClose}>Close</GradientButton>
-              {/* <GradientButton onClick={handleNextClick}>Next</GradientButton> */}
             </>
           )}
         </FormWrapper>
-
-        <>
-          <ChequeSignImage
-            imgData={result?.[0]?.data}
-            loading={result[0].isLoading || result[0].isFetching}
-            error={result[0].isError}
-            acSignImage={acImageData}
+        {result?.[0]?.isLoading || result?.[0]?.isFetching ? (
+          <LoaderPaperComponent />
+        ) : result[0].isError ? (
+          <Alert
+            severity="error"
+            errorMsg={errorMsg}
+            errorDetail={error_detail ?? ""}
           />
-        </>
+        ) : (
+          <>
+            <ChequeSignImage
+              imgData={result?.[0]?.data}
+              acSignImage={acImageData}
+            />
+          </>
+        )}
 
         <>
           {isOpenSave && (
@@ -357,35 +488,33 @@ export const ChequeReturnPostForm: FC<{
               MessageTitle={messageData.messageTitle}
               Message={messageData.message}
               onActionYes={() => {
-                if (messageData?.apiReq?.action === "P") {
+                if (messageData?.apiReq?.action === "POST") {
                   const oldData = {
-                    COMP_CD: inwardData.current?.COMP_CD ?? "",
-                    BRANCH_CD: inwardData.current?.BRANCH_CD ?? "",
-                    ACCT_TYPE: inwardData.current?.ACCT_TYPE ?? "",
-                    ACCT_CD: inwardData.current?.ACCT_CD ?? "",
-                    CHEQUE_NO: inwardData.current?.CHEQUE_NO ?? "",
-                    DRAFT_DIV: inwardData.current?.DRAFT_DIV ?? "",
-                    TRAN_CD: inwardData.current?.TRAN_CD,
-                    MICR_TRAN_CD: inwardData.current?.MICR_TRAN_CD ?? "",
-                    CHEQUE_DT:
-                      format(
-                        new Date(inwardData.current?.["CHEQUE_DT"]),
-                        "dd/MMM/yyyy "
-                      ) ?? "",
+                    COMP_CD: inwardGridData?.COMP_CD ?? "",
+                    BRANCH_CD: inwardGridData?.BRANCH_CD ?? "",
+                    ACCT_TYPE: inwardGridData?.ACCT_TYPE ?? "",
+                    ACCT_CD: inwardGridData?.ACCT_CD ?? "",
+                    CHEQUE_NO: inwardGridData?.CHEQUE_NO ?? "",
+                    DRAFT_DIV: inwardGridData?.DRAFT_DIV ?? "",
+                    TRAN_CD: inwardGridData?.TRAN_CD,
+                    MICR_TRAN_CD: inwardGridData?.MICR_TRAN_CD ?? "",
+                    CHEQUE_DT: inwardGridData?.CHEQUE_DT,
                   };
                   const newData = {
-                    COMP_CD: inwardData.current?.COMP_CD ?? "",
+                    COMP_CD: inwardGridData?.COMP_CD ?? "",
                     BRANCH_CD: messageData?.apiReq?.BRANCH_CD ?? "",
                     ACCT_TYPE: messageData?.apiReq?.ACCT_TYPE ?? "",
                     ACCT_CD: messageData?.apiReq?.ACCT_CD ?? "",
                     CHEQUE_NO: messageData?.apiReq?.CHEQUE_NO ?? "",
-                    TRAN_CD: inwardData.current?.TRAN_CD,
+                    TRAN_CD: inwardGridData?.TRAN_CD,
                     MICR_TRAN_CD: messageData?.apiReq?.MICR_TRAN_CD ?? "",
-                    CHEQUE_DT:
-                      format(
-                        new Date(messageData?.apiReq["CHEQUE_DT"]),
-                        "dd/MMM/yyyy "
-                      ) ?? "",
+                    CHEQUE_DT: messageData?.apiReq?.CHEQUE_DT
+                      ? format(
+                          new Date(messageData?.apiReq["CHEQUE_DT"]),
+                          "dd/MMM/yyyy"
+                        )
+                      : "",
+                    DRAFT_DIV: inwardGridData?.DRAFT_DIV,
                   };
 
                   let upd: any = utilFunction.transformDetailsData(
@@ -397,37 +526,63 @@ export const ChequeReturnPostForm: FC<{
                     ...upd,
                     _isNewRow: true,
                   });
+                } else if (messageData?.apiReq?.action === "CONFIRM") {
+                  confirmPostedConfigDML.mutate({
+                    COMP_CD: inwardGridData?.COMP_CD ?? "",
+                    BRANCH_CD: messageData?.apiReq?.BRANCH_CD ?? "",
+                    ENTERED_BY: inwardGridData?.ENTERED_BY,
+                    TRAN_CD: inwardGridData?.TRAN_CD,
+                    ACCT_TYPE: messageData?.apiReq?.ACCT_TYPE ?? "",
+                    ACCT_CD: messageData?.apiReq?.ACCT_CD ?? "",
+                    CHEQUE_NO: messageData?.apiReq?.CHEQUE_NO ?? "",
+                    AMOUNT: messageData?.apiReq?.AMOUNT,
+                    MICR_TRAN_CD: messageData?.apiReq?.MICR_TRAN_CD,
+                    CHEQUE_DT: messageData?.apiReq?.CHEQUE_DT
+                      ? format(
+                          new Date(messageData?.apiReq["CHEQUE_DT"]),
+                          "dd/MMM/yyyy"
+                        )
+                      : "",
+                    SCREEN_REF: "TRN/650",
+                  });
                 } else {
                   const oldData = {
-                    TRAN_CD: inwardData.current?.TRAN_CD,
-                    COMP_CD: inwardData.current?.COMP_CD,
-                    BRANCH_CD: inwardData.current?.BRANCH_CD,
-                    RET_BRANCH_CD: inwardData.current?.RET_BRANCH_CD,
-                    RET_COMP_CD: inwardData.current?.RET_COMP_CD,
-                    RET_ACCT_TYPE: inwardData.current?.RET_ACCT_TYPE,
-                    RET_ACCT_CD: inwardData.current?.RET_ACCT_CD,
-                    ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD,
-                    CHEQUE_DT: inwardData.current?.CHEQUE_DT,
-                    CHEQUE_NO: inwardData.current?.CHEQUE_NO,
-                    ZONE_CD: inwardData.current?.ZONE_CD,
-                    REASON: inwardData.current?.REASON,
-                    REASON_CD: inwardData.current?.REASON_CD,
+                    TRAN_CD: inwardGridData?.TRAN_CD,
+                    COMP_CD: inwardGridData?.COMP_CD,
+                    BRANCH_CD: inwardGridData?.BRANCH_CD,
+                    RET_BRANCH_CD: inwardGridData?.RET_BRANCH_CD,
+                    RET_COMP_CD: inwardGridData?.RET_COMP_CD,
+                    RET_ACCT_TYPE: inwardGridData?.RET_ACCT_TYPE,
+                    RET_ACCT_CD: inwardGridData?.RET_ACCT_CD,
+                    ENTERED_BRANCH_CD: inwardGridData?.ENTERED_BRANCH_CD,
+                    CHEQUE_DT: inwardGridData?.CHEQUE_DT,
+                    CHEQUE_NO: inwardGridData?.CHEQUE_NO,
+                    ZONE_CD: inwardGridData?.ZONE_CD,
+                    REASON: inwardGridData?.REASON,
+                    REASON_CD: inwardGridData?.REASON_CD,
+                    DRAFT_DIV: inwardGridData?.DRAFT_DIV,
                   };
 
                   const newData = {
-                    TRAN_CD: inwardData.current?.TRAN_CD,
-                    COMP_CD: inwardData.current?.COMP_CD,
-                    BRANCH_CD: inwardData.current?.BRANCH_CD,
+                    TRAN_CD: inwardGridData?.TRAN_CD,
+                    COMP_CD: inwardGridData?.COMP_CD,
+                    BRANCH_CD: messageData?.apiReq?.BRANCH_CD,
                     RET_BRANCH_CD: messageData?.apiReq?.RET_BRANCH_CD,
                     RET_ACCT_TYPE: messageData?.apiReq?.RET_ACCT_TYPE,
                     RET_ACCT_CD: messageData?.apiReq?.RET_ACCT_CD,
-                    RET_COMP_CD: inwardData.current?.RET_COMP_CD,
-                    ENTERED_BRANCH_CD: inwardData.current?.ENTERED_BRANCH_CD,
-                    CHEQUE_DT: messageData?.apiReq?.CHEQUE_DT,
+                    RET_COMP_CD: inwardGridData?.RET_COMP_CD,
+                    ENTERED_BRANCH_CD: inwardGridData?.ENTERED_BRANCH_CD,
+                    CHEQUE_DT: messageData?.apiReq?.CHEQUE_DT
+                      ? format(
+                          new Date(messageData?.apiReq["CHEQUE_DT"]),
+                          "dd/MMM/yyyy"
+                        )
+                      : "",
                     CHEQUE_NO: messageData?.apiReq?.CHEQUE_NO,
                     ZONE_CD: messageData?.apiReq?.ZONE_CD,
                     REASON: messageData?.apiReq?.REASON,
                     REASON_CD: messageData?.apiReq?.REASON_CD,
+                    DRAFT_DIV: inwardGridData?.DRAFT_DIV,
                   };
                   let upd: any = utilFunction.transformDetailsData(
                     newData ?? {},
@@ -451,9 +606,73 @@ export const ChequeReturnPostForm: FC<{
             onClose={() => {
               setIsPositvePay(false);
             }}
-            positiveData={inwardData.current}
+            positiveData={inwardGridData}
           />
         ) : null}
+
+        {isDividend ? (
+          <ShareDividendFormWrapper
+            onClose={onClose()}
+            dividendData={inwardGridData}
+          />
+        ) : null}
+        <>
+          {isDraft ? (
+            <PopupRequestWrapper
+              MessageTitle={"Confirmation"}
+              Message={
+                authState?.role < "2"
+                  ? "Do you want to realize Draft?"
+                  : "Do you want to realize Draft?" +
+                    "Or Want to direct post in GL? " +
+                    "Press Yes to Realize Draft " +
+                    "Press No to Direct Post in GL"
+              }
+              onClickButton={(rows, buttonNames) => {
+                const postData = {
+                  COMP_CD: inwardGridData?.COMP_CD,
+                  BRANCH_CD: inwardGridData?.BRANCH_CD,
+                  ACCT_TYPE: inwardGridData?.ACCT_TYPE,
+                  ACCT_CD: inwardGridData?.ACCT_CD,
+                  TRAN_CD: inwardGridData?.TRAN_CD,
+                  CHEQUE_NO: inwardGridData?.CHEQUE_NO,
+                  DRAFT_DIV: inwardGridData?.DRAFT_DIV,
+                  _UPDATEDCOLUMNS: [],
+                  _OLDROWVALUE: {},
+                  _isNewRow: false,
+                };
+                if (authState?.role < "2") {
+                  if (Boolean(buttonNames === "Yes")) {
+                    postConfigDML.mutate(postData);
+                  } else {
+                    setIsDraft(false);
+                  }
+                } else {
+                  if (Boolean(buttonNames === "Yes")) {
+                    postConfigDML.mutate(postData);
+                  } else if (Boolean(buttonNames === "No")) {
+                    setIsDraft(false);
+                    // setNoFlag(true);
+                    let event: any = { preventDefault: () => {} };
+                    formRef?.current?.handleSubmit(event, "NO");
+                  } else {
+                    setIsDraft(false);
+                  }
+                }
+              }}
+              buttonNames={
+                authState?.role < "2" ? ["Yes", "No"] : ["Yes", "No", "Cancel"]
+              }
+              rows={[]}
+              loading={{
+                Yes: postConfigDML?.isLoading,
+                No: false,
+                Cancel: false,
+              }}
+              open={isDraft}
+            />
+          ) : null}
+        </>
       </>
       {/* )} */}
     </>
@@ -461,9 +680,14 @@ export const ChequeReturnPostForm: FC<{
 };
 export const ChequeReturnPostFormWrapper = ({
   onClose,
-  inwardData,
   isDataChangedRef,
+  handlePrev,
+  handleNext,
+  currentIndexRef,
+  totalData,
 }) => {
+  const { state: rows } = useLocation();
+  currentIndexRef.current = rows.index;
   return (
     <Dialog
       open={true}
@@ -476,8 +700,12 @@ export const ChequeReturnPostFormWrapper = ({
     >
       <ChequeReturnPostForm
         onClose={onClose}
-        inwardData={inwardData}
+        inwardGridData={rows?.gridData}
+        handlePrev={handlePrev}
+        handleNext={handleNext}
+        currentIndex={rows.index}
         isDataChangedRef={isDataChangedRef}
+        totalData={totalData}
       />
     </Dialog>
   );

@@ -16,6 +16,8 @@ export const TipsWrapper = ({
   closeDialog,
   data: mainData,
   formView,
+  isLoading,
+  isDataChangedRef,
 }) => {
   const { authState } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
@@ -46,11 +48,10 @@ export const TipsWrapper = ({
       enqueueSnackbar(data, {
         variant: "success",
       });
-      // isDataChangedRef.current = true;
+      isDataChangedRef.current = true;
       closeDialog();
     },
   });
-  console.log("mutation", mainData);
   const onPopupYes = (rows) => {
     mutation.mutate(rows);
   };
@@ -77,7 +78,7 @@ export const TipsWrapper = ({
     };
 
     let upd: any = utilFunction.transformDetailsData(newData, oldData ?? {});
-    console.log("upd", upd);
+
     // if (upd?._UPDATEDCOLUMNS?.length > 0) {
     isErrorFuncRef.current = {
       data: {
@@ -98,7 +99,7 @@ export const TipsWrapper = ({
   };
   return (
     <>
-      {mutation.isLoading ? (
+      {isLoading ? (
         <LoaderPaperComponent />
       ) : (
         <Dialog

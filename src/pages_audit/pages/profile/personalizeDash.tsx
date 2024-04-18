@@ -58,18 +58,68 @@ export const PersonalizeDash = () => {
     },
   ];
 
-  const quickViewUsrData = useQuery<any, any, any>(["GETUSRQUICKVIEW"], () =>
-    API.getquickView({
-      userID: authState?.user?.id,
-      COMP_CD: authState?.companyID ?? "",
-    })
+  const quickViewUsrData = useQuery<any, any, any>(
+    ["GETUSRQUICKVIEW"],
+    () =>
+      API.getquickView({
+        userID: authState?.user?.id,
+        COMP_CD: authState?.companyID ?? "",
+      }),
+    {
+      onSuccess: (data) => {
+        setQuickViewData(data);
+      },
+    }
   );
-  const dashboxUserData = useQuery<any, any, any>(["GETUSRDASHBOX"], () =>
-    API.getdashUserboxData({
-      userID: authState?.user?.id,
-      COMP_CD: authState?.companyID ?? "",
-    })
+
+  const dashboxUserData = useQuery<any, any, any>(
+    ["GETUSRDASHBOX"],
+    () =>
+      API.getdashUserboxData({
+        userID: authState?.user?.id,
+        COMP_CD: authState?.companyID ?? "",
+      }),
+    {
+      onSuccess: (data) => {
+        setDashBoxData(data);
+      },
+    }
   );
+
+  const saveQuickData: any = useMutation(
+    "updateQuickViewData",
+    API.updateQuickViewData,
+    {
+      onSuccess: () => {
+        enqueueSnackbar("Record save successfully", {
+          variant: "success",
+        });
+        quickViewUsrData.refetch();
+      },
+    }
+  );
+
+  const saveDashData: any = useMutation(
+    "updateDashboxData",
+    API.updateDashboxData,
+    {
+      onSuccess: () => {
+        enqueueSnackbar("Record save successfully", {
+          variant: "success",
+        });
+        dashboxUserData.refetch();
+      },
+    }
+  );
+
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries(["GETUSRQUICKVIEW"]);
+      queryClient.removeQueries(["GETUSRDASHBOX"]);
+      queryClient.removeQueries(["updateDashboxData"]);
+      queryClient.removeQueries(["updateQuickViewData"]);
+    };
+  }, []);
 
   const setCurrentAction = useCallback((data) => {
     handleSubmit();
@@ -78,6 +128,7 @@ export const PersonalizeDash = () => {
   const setQuickAction = useCallback((data) => {
     quickSubmit();
   }, []);
+
   const handleSubmit = async () => {
     let { hasError, data } = await myGridRef.current?.validate(true);
     let isError = data.filter((item) => {
@@ -151,36 +202,6 @@ export const PersonalizeDash = () => {
     }
   };
 
-  const saveDashData: any = useMutation(API.updateDashboxData, {
-    onSuccess: (data, { endSubmit }) => {
-      enqueueSnackbar("Record save successfully", {
-        variant: "success",
-      });
-      dashboxUserData.refetch();
-    },
-  });
-  const saveQuickData: any = useMutation(API.updateQuickViewData, {
-    // onSuccess: (data) => {},
-    onSuccess: (data, { endSubmit }) => {
-      enqueueSnackbar("Record save successfully", {
-        variant: "success",
-      });
-      quickViewUsrData.refetch();
-    },
-  });
-  useEffect(() => {
-    setQuickViewData(quickViewUsrData.data);
-  }, [quickViewUsrData.data]);
-
-  useEffect(() => {
-    setDashBoxData(dashboxUserData.data);
-  }, [dashboxUserData.data]);
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries(["GETUSRQUICKVIEW"]);
-      queryClient.removeQueries(["GETUSRDASHBOX"]);
-    };
-  }, []);
   return (
     <>
       <Grid
@@ -199,29 +220,33 @@ export const PersonalizeDash = () => {
               "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
           }}
         >
-          {saveQuickData?.isError && (
+          {saveQuickData?.isError || quickViewUsrData?.isError ? (
             <Alert
               severity="error"
               errorMsg={
-                saveQuickData.error?.error_msg ?? "Unknown Error occured"
+                saveQuickData.error?.error_msg ??
+                quickViewUsrData.error?.error_msg ??
+                "Unknown Error occured"
               }
-              errorDetail={saveQuickData.error?.error_detail ?? ""}
+              errorDetail={
+                saveQuickData.error?.error_detail ??
+                quickViewUsrData.error?.error_detail ??
+                ""
+              }
             />
-          )}
+          ) : null}
           <GridWrapper
             key={`personalizeQuickView`}
             finalMetaData={PersonlizationQuickGridMetaData as GridMetaDataType}
             data={quickViewData ?? []}
             setData={setQuickViewData}
-            loading={saveQuickData.isLoading}
+            loading={quickViewUsrData.isLoading || saveQuickData?.isLoading}
             actions={Quickactions}
-            // controlsAtBottom={true}
             setAction={setQuickAction}
             headerToolbarStyle={{
               background: "var(--theme-color2)",
               color: "black",
             }}
-            // refetchData={() => {}}
             ref={myGridQuickRef}
           />
         </Grid>
@@ -232,15 +257,21 @@ export const PersonalizeDash = () => {
               "rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset",
           }}
         >
-          {saveDashData?.isError && (
+          {saveDashData?.isError || dashboxUserData?.isError ? (
             <Alert
               severity="error"
               errorMsg={
-                saveDashData.error?.error_msg ?? "Unknown Error occured"
+                saveDashData.error?.error_msg ??
+                dashboxUserData?.error?.error_msg ??
+                "Unknown Error occured"
               }
-              errorDetail={saveDashData.error?.error_detail ?? ""}
+              errorDetail={
+                saveDashData.error?.error_detail ??
+                dashboxUserData.error?.error_detail ??
+                ""
+              }
             />
-          )}
+          ) : null}
           <GridWrapper
             key={`personalizeDashboardData`}
             finalMetaData={PersonlizationDashboardGridData as GridMetaDataType}
@@ -250,11 +281,9 @@ export const PersonalizeDash = () => {
               color: "black",
             }}
             setData={setDashBoxData}
-            loading={saveDashData.isLoading}
+            loading={dashboxUserData.isLoading || saveDashData?.isLoading}
             actions={Dashactions}
-            // controlsAtBottom={true}
             setAction={setCurrentAction}
-            // refetchData={() => {}}
             ref={myGridRef}
           />
         </Grid>

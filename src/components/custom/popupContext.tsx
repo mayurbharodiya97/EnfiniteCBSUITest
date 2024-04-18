@@ -60,7 +60,6 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
     icon = "INFO",
     buttonNames = ["Ok"],
   }: TMessageBoxParams) => {
-    console.log("in popup");
     return new Promise((resolve) => {
       setMessage({
         isOpen: true,
