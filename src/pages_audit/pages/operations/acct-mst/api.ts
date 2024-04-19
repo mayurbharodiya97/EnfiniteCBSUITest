@@ -515,6 +515,31 @@ export const getBusinessypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
+export const getAdvDirectorNameTypeOP = async ({ A_ROLE_IND }) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETDIRECTORLIST", {
+      ROLE: A_ROLE_IND
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ DIRECTOR_CD, DIRECTOR_NM, ...other }) => {
+          return {
+            ...other,
+            DIRECTOR_CD: DIRECTOR_CD,
+            DIRECTOR_NM: DIRECTOR_NM,
+            value: DIRECTOR_CD,
+            label: DIRECTOR_NM,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
 
 export const getCheqSignAuthoTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
