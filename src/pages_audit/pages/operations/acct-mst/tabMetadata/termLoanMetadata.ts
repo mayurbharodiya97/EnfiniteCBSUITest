@@ -215,7 +215,7 @@ export const termLoan_metadata = {
             },
             name: "SUB_PRIO_CD",
             label: "Weaker",
-            dependentFields: ["PARENT_GROUP"],
+            dependentFields: ["PRIO_CD"],
             options: (dependentValue, formState, _, authState) => API.getPriorityWeakerTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, dependentValue:dependentValue}),
             _optionsKey: "weakerPrioTermLoanOp",
             disableCaching: true,

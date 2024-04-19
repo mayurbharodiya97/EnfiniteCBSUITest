@@ -264,7 +264,7 @@ export const getPurposeTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   }
 };
 
-export const getPrioritParentTypeOP = async ({COMP_CD, BRANCH_CD}) => {
+export const getPrioritParentTypeOP = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACTPRIORITYPARENTDDW", {
       COMP_CD: COMP_CD,
@@ -289,10 +289,14 @@ export const getPrioritParentTypeOP = async ({COMP_CD, BRANCH_CD}) => {
   }
 };
 
-export const getPrioritMainTypeOP = async ({COMP_CD, BRANCH_CD, dependentValue}) => {
+export const getPrioritMainTypeOP = async ({
+  COMP_CD,
+  BRANCH_CD,
+  dependentValue,
+}) => {
   // console.log("dependentValuedependentValuedependentValue", dependentValue)
   const PARENT_GROUP = dependentValue?.PARENT_GROUP?.value;
-  if(Boolean(PARENT_GROUP)) {
+  if (Boolean(PARENT_GROUP)) {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETACTPRIORITYMAINDDW", {
         COMP_CD: COMP_CD,
@@ -302,12 +306,12 @@ export const getPrioritMainTypeOP = async ({COMP_CD, BRANCH_CD, dependentValue})
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ CODE, DISPLAY_NM, ...other }) => {
+        responseData = responseData.map(({ PRIORITY_CD, DISPLAY_NM, ...other }) => {
           return {
             ...other,
-            CODE: CODE,
+            PRIORITY_CD: PRIORITY_CD,
             DISPLAY_NM: DISPLAY_NM,
-            value: CODE,
+            value: PRIORITY_CD,
             label: DISPLAY_NM,
           };
         });
@@ -319,25 +323,29 @@ export const getPrioritMainTypeOP = async ({COMP_CD, BRANCH_CD, dependentValue})
   }
 };
 
-export const getPriorityWeakerTypeOP = async ({COMP_CD, BRANCH_CD, dependentValue}) => {
-  const PARENT_GROUP = dependentValue?.PARENT_GROUP?.value;
-  if(Boolean(PARENT_GROUP)) {
+export const getPriorityWeakerTypeOP = async ({
+  COMP_CD,
+  BRANCH_CD,
+  dependentValue,
+}) => {
+  const PRIO_CD = dependentValue?.PRIO_CD?.value;
+  if (Boolean(PRIO_CD)) {
     const { data, status, message, messageDetails } =
       await AuthSDK.internalFetcher("GETACTWEAKERSUBPRIODDW", {
         COMP_CD: COMP_CD,
         BRANCH_CD: BRANCH_CD,
-        PRIORITY_CD: PARENT_GROUP
+        PRIORITY_CD: PRIO_CD,
       });
     if (status === "0") {
       let responseData = data;
       if (Array.isArray(responseData)) {
-        responseData = responseData.map(({ CODE, DISPLAY_NM, ...other }) => {
+        responseData = responseData.map(({ SUB_PRIORITY_CD, DESCRIPTION, ...other }) => {
           return {
             ...other,
-            CODE: CODE,
-            DISPLAY_NM: DISPLAY_NM,
-            value: CODE,
-            label: DISPLAY_NM,
+            SUB_PRIORITY_CD: SUB_PRIORITY_CD,
+            DESCRIPTION: DESCRIPTION,
+            value: SUB_PRIORITY_CD,
+            label: DESCRIPTION,
           };
         });
       }
