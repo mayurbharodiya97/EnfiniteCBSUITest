@@ -645,7 +645,12 @@ export const DuplicationValidate = async (columnValue, allField, formState, fiel
         return "";
       }
   }
-  if(fieldValue) {
+  if(fieldValue && typeof fieldValue === "object") {
+    if(Object.keys(fieldValue).includes("ELECTION_CARD_NO")) {
+      if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(columnValue?.value)) {
+        return "Special characters are not allowed.";
+      }
+    }
     let keys = Object.keys(fieldValue)
     if(keys.length === 1 && (Boolean(fieldValue[keys[0]]))) {
       const { data, status, message, messageDetails } =
