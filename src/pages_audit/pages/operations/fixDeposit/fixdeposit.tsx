@@ -275,7 +275,7 @@ export const FixDepositForm = () => {
   };
   return (
     <Fragment>
-      <AppBar position="relative" style={{ marginBottom: "10px" }}>
+      <AppBar position="relative" style={{ marginBottom: "5px" }}>
         <Toolbar
           variant="dense"
           style={{ background: "var(--theme-color5)", padding: "0px" }}
@@ -359,11 +359,6 @@ export const FixDepositForm = () => {
             )}
             {
               fdState.activeStep !== steps.length && (
-                // (completed[activeStep] ? (
-                //   <Typography variant="caption" sx={{ display: "inline-block" }}>
-                //     Step {activeStep + 1} already completed
-                //   </Typography>
-                // ) : (
                 <>
                   {fdState.activeStep !== steps.length - 1 ? (
                     <GradientButton

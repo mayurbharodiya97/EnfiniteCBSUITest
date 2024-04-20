@@ -894,6 +894,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityFDServiceAPI/VALIDATEFDACCOUNTS",
     packageName: "",
   },
+  GETFDSCHEMELIST: {
+    url: "/enfinityFDServiceAPI/GETFDSCHEMELIST",
+    packageName: "",
+  },
   VALIDATEACCOUNT: {
     url: "/enfinityFDServiceAPI/VALIDATEACCOUNT",
     packageName: "",
