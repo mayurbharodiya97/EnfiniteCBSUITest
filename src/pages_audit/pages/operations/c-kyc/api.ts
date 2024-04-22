@@ -1143,7 +1143,7 @@ export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM
 
 export const TrimSpaceValidation = (columnValue, allField, flag) => {
   if(columnValue.value) {
-      let regex = /^[a-zA-Z]+$/;
+      let regex = /^[a-zA-Z ]+$/;
       if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
           return "Space before name is not allowed.";  
       } else if(columnValue.value !== columnValue.value.trimStart()) {
@@ -1151,8 +1151,8 @@ export const TrimSpaceValidation = (columnValue, allField, flag) => {
       } else if (columnValue.value !== columnValue.value.trimEnd()) {
         return "Space after name is not allowed.";
       } else if(!regex.test(columnValue.value)) {
-          return "Please Enter Character Value without Space.";
-      }                    
+          return "Please Enter Character Value.";
+      }
   }
   return "";
 }

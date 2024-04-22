@@ -57,6 +57,7 @@ export const kyc_proof_of_identity_meta_data = {
             // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             options: [
+                {label: "Form 60", value: "Y"},
                 {label: "Form 61", value: "F"},
                 {label: "No", value: "N"},
             ],
@@ -80,6 +81,7 @@ export const kyc_proof_of_identity_meta_data = {
             placeholder: "AAAAA1111A",
             type: "text",
             txtTransform: "uppercase",
+            dependentFields: ["FORM_60"],
             required: true,
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
             schemaValidation: {
@@ -92,7 +94,13 @@ export const kyc_proof_of_identity_meta_data = {
                   },
                 ],
             },
-            validate: (columnValue, allField, flag) => API.validatePAN(columnValue, allField, flag),
+            shouldExclude:(initialValue,original,prevRows,nextRows)=>{
+                const FORM60 = original?.FORM_60?.value;
+                if(Boolean(FORM60) && (FORM60 === "Y" || FORM60 === "F")) {
+                    return true;
+                }
+                return false;
+            },
             maxLength: 10,
         },
         {
@@ -154,6 +162,12 @@ export const kyc_proof_of_identity_meta_data = {
           type: "text",
           txtTransform: "uppercase",
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
+          validate: (columnValue, allField, flag) => {
+            if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(columnValue?.value)) {
+                return "Special characters are not allowed.";
+            }
+            return "";
+          }
         },
         {
           render: {
@@ -1318,7 +1332,7 @@ export const kyc_proof_of_address_meta_data = {
         placeholder: "",
         type: "text",
         maxLength: 5,
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
         FormatProps: {
             isAllowed: (values) => {
               if (values?.value?.length > 5) {
@@ -1352,7 +1366,7 @@ export const kyc_proof_of_address_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -1372,7 +1386,7 @@ export const kyc_proof_of_address_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -1398,7 +1412,7 @@ export const kyc_proof_of_address_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -1425,7 +1439,7 @@ export const kyc_proof_of_address_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -1460,7 +1474,7 @@ export const kyc_proof_of_address_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -1480,7 +1494,7 @@ export const kyc_proof_of_address_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -2251,7 +2265,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         placeholder: "",
         type: "text",
         maxLength: 5,
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
         FormatProps: {
             isAllowed: (values) => {
               if (values?.value?.length > 5) {
@@ -2285,7 +2299,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -2305,7 +2319,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -2331,7 +2345,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -2352,7 +2366,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
@@ -2379,7 +2393,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             componentType: "spacer"
         },
         GridProps: {
-            xs: 0.2
+            xs: 0.1
         }
     },
     {
@@ -2399,7 +2413,7 @@ export const kyc_legal_proof_of_add_meta_data = {
             },
         },
         type: "text",
-        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.7, xl:0.6},
+        GridProps: {xs:12, sm:4, md: 0.7, lg: 0.8, xl:0.7},
     },
     {
         render: {
