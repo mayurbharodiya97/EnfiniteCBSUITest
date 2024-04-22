@@ -1,3 +1,4 @@
+import { greaterThanInclusiveDate, lessThanDate } from "registry/rulesEngine";
 import * as API from "../../../../api";
 
 export const kyc_proof_of_identity_meta_data = {
@@ -275,6 +276,10 @@ export const kyc_proof_of_identity_meta_data = {
                 if(Boolean(passport)) {
                     return "This field is required"
                 }
+            } else {
+                if(lessThanDate(new Date(), columnValue.value)) {
+                    return `Passport Issue Date can't be greater than today's date.`;
+                }
             }
         },
         runValidationOnDependentFieldsChange: true,
@@ -296,6 +301,10 @@ export const kyc_proof_of_identity_meta_data = {
                 const passport = allField.PASSPORT_NO.value;
                 if(Boolean(passport)) {
                     return "This field is required"
+                }
+            } else {
+                if(greaterThanInclusiveDate(new Date(), columnValue.value)) {
+                    return `Passport Expiry Date can't be less than or equal to Today's Date.`;
                 }
             }
         },
@@ -366,6 +375,10 @@ export const kyc_proof_of_identity_meta_data = {
                 if(Boolean(passport)) {
                     return "This field is required"
                 }
+            } else {
+                if(lessThanDate(new Date(), columnValue.value)) {
+                    return `Driving License Issue Date can't be greater than today's date.`;
+                }
             }
         },
         runValidationOnDependentFieldsChange: true,
@@ -387,6 +400,10 @@ export const kyc_proof_of_identity_meta_data = {
                 const passport = allField.DRIVING_LICENSE_NO.value;
                 if(Boolean(passport)) {
                     return "This field is required"
+                }
+            } else {
+                if(greaterThanInclusiveDate(new Date(), columnValue.value)) {
+                    return `Driving License Expiry Date can't be less than or equal to Today's Date.`;
                 }
             }
         },
