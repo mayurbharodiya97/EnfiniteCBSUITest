@@ -26,6 +26,7 @@ export const PopupRequestWrapper = ({
   loading = false,
   icon = "INFO",
   defFocusBtnName = "",
+  loadingBtnName = "",
 }) => {
   //const { state: rowsdata }: any = useLocation();
   const classes = useStyles();
@@ -137,7 +138,12 @@ export const PopupRequestWrapper = ({
                     ? setButtonRef
                     : null
                 }
-                endIcon={loading ? <CircularProgress size={20} /> : null}
+                disabled={loading}
+                endIcon={
+                  loadingBtnName === buttonName && loading ? (
+                    <CircularProgress size={20} />
+                  ) : null
+                }
                 onClick={() => onClickButton(buttonName)}
               >
                 {buttonName}
