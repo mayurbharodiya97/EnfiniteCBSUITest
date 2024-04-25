@@ -16,6 +16,7 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
+import Master from "./pages/master/master";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
@@ -49,7 +50,7 @@ export const PagesAudit = (props, { columns }) => {
           open={drawerOpen}
           handleDrawerClose={handleDrawerClose}
           handleDrawerOpen={handleDrawerOpen}
-        >
+        > 
           <MySideBar handleDrawerOpen={handleDrawerOpen} open={drawerOpen} />
         </Drawer>
         <Content>
@@ -62,6 +63,7 @@ export const PagesAudit = (props, { columns }) => {
                 /> */}
                 <Route path="profile" element={<Profile />} />
                 <Route path="dashboard/*" element={<Dashboard />} />
+                <Route path="master/*" element={<Master />} />
                 <Route path="operation/*" element={<OperationsMenu />} />
                 <Route path="view-statement/*" element={<AccountDetails />} />
                 <Route path="configuration/*" element={<Configuration />} />

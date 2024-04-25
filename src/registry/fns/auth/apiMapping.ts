@@ -934,6 +934,39 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
+  GETPRIORITYMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPRIORITYMSTDATADISP",
+    packageName: "",
+  },
+  GETPRIORITYMSTPARENTGRPDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPRIORITYMSTPARENTGRPDDW",
+    packageName: "",
+  },
+  GETPRIORITYMSTSUBPRIOGRPDDW: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPRIORITYMSTSUBPRIOGRPDDW",
+    packageName: "",
+  },
+  GETSUBPRIOMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETSUBPRIOMSTDATADISP",
+    packageName: "",
+  },
+  GETTRADEMSTDATADISP:{
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETTRADEMSTDATADISP",
+    packageName: "",
+  },
+  DOTRADEMSTDML:{
+    url: "/commonMasterServiceAPI/DOTRADEMSTDML",
+    packageName: "",
+  },
+  DOSUBPRIORITYMST:{
+    url: "/commonMasterServiceAPI/DOSUBPRIORITYMST",
+    packageName: "",
+  },
+  PRIORITYMASTERMAINDML:{
+    url: "/commonMasterServiceAPI/PRIORITYMASTERMAINDML",
+    packageName: "",
+  }
+  
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
