@@ -934,6 +934,18 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
+  GETCLGBNKMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGBNKMSTDATADISP",
+    packageName: "",
+  },
+  GETLIENRSNMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETLIENRSNMSTDATADISP",
+    packageName: "",
+  },
+  GETADVOCATEMSTDATADISP: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETADVOCATEMSTDATADISP",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

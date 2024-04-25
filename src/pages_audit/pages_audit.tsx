@@ -16,6 +16,7 @@ import { Configuration } from "./pages/configuration";
 import DynamicGrids from "./pages/configuration/dynamicGrids";
 import Trn001 from "./pages/operations/DailyTransaction/TRN001";
 import Trn002 from "./pages/operations/DailyTransaction/TRN002";
+import Master from "./pages/master/master";
 
 export const PagesAudit = (props, { columns }) => {
   const classes = useStyles();
@@ -71,6 +72,7 @@ export const PagesAudit = (props, { columns }) => {
                   path="operation/cnf_daily_tran_F2"
                   element={<Trn002 />}
                 />
+                <Route path="master/*" element={<Master />} />
 
                 {/* <Route
                   path="branch-selection/*"
