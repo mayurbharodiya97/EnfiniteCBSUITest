@@ -934,6 +934,30 @@ export const ActionWiseAPIConfiguration = {
     url: "chequeServiceAPI/CHEQUESIGNIMG",
     packageName: "",
   },
+  GETLEANMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETLEANMSTDATADISP",
+    packageName: "",
+  },
+  GETPERIODMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETPERIODMSTDATADISP",
+    packageName: "",
+  },
+  GETACCTMODEMSTDATADISP: {
+    url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACCTMODEMSTDATADISP",
+    packageName: "",
+  },
+  MODEMASTERDML: {
+    url: "commonMasterServiceAPI/MODEMASTERDML",
+    packageName: "",
+  },
+  DOLEANMSTDM: {
+    url: "commonMasterServiceAPI/DOLEANMSTDML",
+    packageName: "",
+  },
+  DOACCOUNTPERIODMST: {
+    url: "commonMasterServiceAPI/DOACCOUNTPERIODMST",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {
