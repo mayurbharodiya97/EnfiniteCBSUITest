@@ -151,6 +151,38 @@ export const kyc_proof_of_identity_meta_data = {
               {label: "Yes", value: "T"},
               {label: "No", value: "N"},
           ],
+          postValidationSetCrossFieldValues: async (
+            field,
+            formState,
+            ___,
+            dependentFieldsValues
+          ) => {
+            if(Boolean(field?.value)) {
+                if(field?.value === "T") {
+                    const buttonName = await formState.MessageBox({
+                        messageTitle: "CONFIRMATION",
+                        message: "System will Deduct TDS from this Customer's Interest even if it is under TDS Limit.\nAre you sure to Continue?",
+                        buttonNames: ["Yes", "No"],
+                    });
+                    if(buttonName === "No") {
+                        return {
+                            EXPLICIT_TDS: {
+                                value: "N",
+                                ignoreUpdate: true,
+                            }
+                        }
+                    }
+                    if(buttonName === "Yes") {
+                        return {
+                            NREGA_JOB_CARD: {
+                                value: "",
+                                isFieldFocused: true
+                            }
+                        }
+                    }
+                }
+            }
+          },
         },
         {
           render: {
