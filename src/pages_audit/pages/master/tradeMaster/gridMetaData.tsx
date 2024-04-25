@@ -1,0 +1,103 @@
+import { GridMetaDataType } from "components/dataTableStatic";
+
+export const TradeMasterGridMetaData: GridMetaDataType = {
+  gridConfig: {
+    dense: true,
+    gridLabel: "Trade Master (EMST/062)",
+    rowIdColumn: "TRADE_CD",
+    defaultColumnConfig: {
+      width: 200,
+      maxWidth: 450,
+      minWidth: 100,
+    },
+    allowColumnReordering: true,
+    disableSorting: false,
+    hideHeader: false,
+    disableGroupBy: true,
+    enablePagination: true,
+    pageSizes: [20, 30, 50],
+    defaultPageSize: 20,
+    containerHeight: {
+      min: "67vh",
+      max: "67vh",
+    },
+    allowFilter: true,
+    allowColumnHiding: true,
+    allowRowSelection: true,
+    isCusrsorFocused: true,
+  },
+  filters: [
+    {
+      accessor: "TRADE_CD",
+      columnName: "Code",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "TRADE_NM",
+      columnName: "Decscription",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+    {
+      accessor: "C-KYC Group",
+      columnName: "Decscription",
+      filterComponentType: "valueFilter",
+      gridProps: {
+        xs: 12,
+        md: 12,
+        sm: 12,
+      },
+    },
+  ],
+  columns: [
+    {
+      accessor: "TRADE_CD",
+      columnName: "Code",
+      sequence: 2,
+      alignment: "left",
+      componentType: "default",
+      width: 100,
+      minWidth: 100,
+      maxWidth: 200,
+    },
+    {
+      accessor: "TRADE_NM",
+      columnName: "Decscription",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 300,
+      minWidth: 200,
+      maxWidth: 350,
+    },
+    {
+      accessor: "CKYC_OCCUPATION",
+      columnName: "C-KYC Group",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      width: 150,
+      minWidth: 130,
+      maxWidth: 400,
+    },
+    {
+      accessor: "CONST_TYPE_DISP",
+      columnName: "Constitution",
+      sequence: 5,
+      alignment: "left",
+      componentType: "default",
+      width: 300,
+      minWidth: 250,
+      maxWidth: 400,
+    },
+  ],
+};
