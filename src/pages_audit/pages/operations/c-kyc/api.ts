@@ -645,7 +645,12 @@ export const DuplicationValidate = async (columnValue, allField, formState, fiel
         return "";
       }
   }
-  if(fieldValue) {
+  if(fieldValue && typeof fieldValue === "object") {
+    if(Object.keys(fieldValue).includes("ELECTION_CARD_NO")) {
+      if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(columnValue?.value)) {
+        return "Special characters are not allowed.";
+      }
+    }
     let keys = Object.keys(fieldValue)
     if(keys.length === 1 && (Boolean(fieldValue[keys[0]]))) {
       const { data, status, message, messageDetails } =
@@ -1138,7 +1143,7 @@ export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM
 
 export const TrimSpaceValidation = (columnValue, allField, flag) => {
   if(columnValue.value) {
-      let regex = /^[a-zA-Z]+$/;
+      let regex = /^[a-zA-Z ]+$/;
       if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
           return "Space before name is not allowed.";  
       } else if(columnValue.value !== columnValue.value.trimStart()) {
@@ -1146,8 +1151,8 @@ export const TrimSpaceValidation = (columnValue, allField, flag) => {
       } else if (columnValue.value !== columnValue.value.trimEnd()) {
         return "Space after name is not allowed.";
       } else if(!regex.test(columnValue.value)) {
-          return "Please Enter Character Value without Space.";
-      }                    
+          return "Please Enter Character Value.";
+      }
   }
   return "";
 }

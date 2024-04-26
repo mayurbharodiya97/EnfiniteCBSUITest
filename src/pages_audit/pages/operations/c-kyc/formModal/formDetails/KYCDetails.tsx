@@ -31,6 +31,7 @@ import { AuthContext } from "pages_audit/auth";
 import { GradientButton } from "components/styledComponent/button";
 import TabNavigate from "./formComponents/TabNavigate";
 import { MessageBoxWrapper } from "components/custom/messageBox";
+import { usePopupContext } from "components/custom/popupContext";
 
 const KYCDetails = () => {
   //  const [customerDataCurrentStatus, setCustomerDataCurrentStatus] = useState("none")
@@ -62,6 +63,7 @@ const KYCDetails = () => {
   });
   const [openDialog, setOpenDialog] = useState(false);
   const [formStatus, setFormStatus] = useState<any[]>([])
+  const { MessageBox } = usePopupContext();
 
   const [gridData, setGridData] = useState<any>([
     {
@@ -311,6 +313,7 @@ const KYCDetails = () => {
                   CUSTOMER_ID: state?.customerIDctx ?? "", 
                   REQ_FLAG: (state?.isFreshEntryctx || state?.isDraftSavedctx) ? "F" : "E",
                   RESIDENCE_STATUS: state?.formDatactx["PERSONAL_DETAIL"]?.RESIDENCE_STATUS ?? "",
+                  MessageBox: MessageBox
                 }}
                 setDataOnFieldChange={(action, payload) => {
                   // console.log(payload, "wekjukfhwiuefadw", action)

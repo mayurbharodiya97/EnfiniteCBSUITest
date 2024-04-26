@@ -33,7 +33,6 @@ const updateExtDocumentDetailsDataWrapperFn =
 export const DocMasterDTLForm = ({
   ClosedEventCall,
   isDataChangedRef,
-  deletedDocRef,
   defaultmode = "view",
   girdData,
 }) => {
@@ -228,19 +227,19 @@ export const DocMasterDTLForm = ({
       //     "dd-MM-yyyy"
       //   );
       // }
-      if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
-        newData.DETAILS_DATA["isNewRow"] = newData.DETAILS_DATA["isNewRow"].map(
-          (row) => {
-            // VALID_UPTO
-            if (Boolean(row.VALID_UPTO)) {
-              return {
-                ...row,
-                VALID_UPTO: format(new Date(row.VALID_UPTO), "dd-MM-yyyy"),
-              };
-            } else return { ...row };
-          }
-        );
-      }
+      // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
+      //   newData.DETAILS_DATA["isNewRow"] = newData.DETAILS_DATA["isNewRow"].map(
+      //     (row) => {
+      //       // VALID_UPTO
+      //       if (Boolean(row.VALID_UPTO)) {
+      //         return {
+      //           ...row,
+      //           VALID_UPTO: format(new Date(row.VALID_UPTO), "dd-MM-yyyy"),
+      //         };
+      //       } else return { ...row };
+      //     }
+      //   );
+      // }
       // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
       // }
       // console.log(data, "dtaa on sibmitg", newData)
@@ -272,10 +271,6 @@ export const DocMasterDTLForm = ({
       setopenAccept(true);
     }
 
-    // console.log("deletedDocRef.current", deletedDocRef.current)
-    // if(deletedDocRef.current) {
-
-    // }
     // isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
     // setopenAccept(true);
     // mutation.mutate({ data, endSubmit, setLoading });
@@ -574,7 +569,11 @@ export const DocMasterDTLForm = ({
                     </Button>
                     <Button
                       onClick={() => {
-                        setFormMode("view");
+                        if(defaultmode === "new") {
+                          ClosedEventCall();
+                        } else {
+                          setFormMode("view");
+                        }
                       }}
                       // disabled={isSubmitting}
                       color={"primary"}
