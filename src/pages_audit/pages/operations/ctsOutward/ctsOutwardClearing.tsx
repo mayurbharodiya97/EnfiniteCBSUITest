@@ -174,14 +174,17 @@ const CtsOutwardClearingForm: FC<{
   ) => {
     //@ts-ignore
     endSubmit(true);
-    const newData = data.chequeDetails?.map((item) => ({
-      ...item,
-      _isNewRow: formMode === "new" ? true : false,
-      BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
-      PROCESSED: "N",
-      REASON: zoneTranType === "S" ? "N" : item?.REASON,
-      CLEARING_STATUS: "C",
-    }));
+    let newData = [];
+    if (Boolean(data?.chequeDetails) && Array.isArray(data?.chequeDetails)) {
+      newData = data?.chequeDetails?.map((item) => ({
+        ...item,
+        _isNewRow: formMode === "new" ? true : false,
+        BRANCH_CD: slipFormDataRef?.current?.BRANCH_CD,
+        PROCESSED: "N",
+        REASON: zoneTranType === "S" ? "N" : item?.REASON,
+        CLEARING_STATUS: "C",
+      }));
+    }
 
     if (
       !Boolean(data?.SLIP_AMOUNT) ||
