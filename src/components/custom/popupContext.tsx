@@ -19,6 +19,7 @@ type TMessage = {
   buttonNames: TButtonName[];
   callBack?: Function;
   defFocusBtnName?: string;
+  loadingBtnName?: string;
 };
 
 type TMessageBoxParams = {
@@ -27,6 +28,7 @@ type TMessageBoxParams = {
   icon?: TIcon;
   buttonNames?: TButtonName[];
   defFocusBtnName?: string;
+  loadingBtnName?: string;
 };
 
 type TPopupContextType = {
@@ -42,6 +44,7 @@ const initialMessage: TMessage = {
   icon: "INFO",
   buttonNames: ["Ok"],
   defFocusBtnName: "",
+  loadingBtnName: "",
 };
 
 const initialContext: TPopupContextType = {
@@ -56,6 +59,7 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [message, setMessage] = useState<TMessage>(initialMessage);
+  const [isLoading, setIsLoading] = useState(false);
 
   const MessageBox = ({
     messageTitle,
@@ -63,7 +67,9 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
     icon = "INFO",
     buttonNames = ["Ok"],
     defFocusBtnName = "",
+    loadingBtnName = "",
   }: TMessageBoxParams) => {
+    setIsLoading(false);
     return new Promise((resolve) => {
       setMessage({
         isOpen: true,
@@ -73,14 +79,20 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
         buttonNames,
         callBack: (buttonName: TButtonName) => {
           resolve(buttonName);
-          CloseMessageBox();
+          if (loadingBtnName === buttonName) {
+            setIsLoading(true);
+          } else {
+            CloseMessageBox();
+          }
         },
         defFocusBtnName,
+        loadingBtnName,
       });
     });
   };
 
   const CloseMessageBox = () => {
+    setIsLoading(false);
     setMessage(initialMessage);
   };
 
@@ -98,6 +110,8 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
             buttonNames={message.buttonNames}
             icon={message.icon}
             defFocusBtnName={message.defFocusBtnName}
+            loading={isLoading}
+            loadingBtnName={message.loadingBtnName}
           />
         ) : null}
       </>

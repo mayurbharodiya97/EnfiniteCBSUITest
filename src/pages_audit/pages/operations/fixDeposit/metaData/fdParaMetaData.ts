@@ -389,12 +389,56 @@ export const FixDepositAccountsFormMetadata = {
               );
               if (apiResponse?.status === "0") {
                 if (Boolean(apiResponse?.message)) {
-                  arg?.[1]?.MessageBox({
+                  await arg?.[1]?.MessageBox({
                     messageTitle: "Information",
                     message: apiResponse?.message.startsWith("\n")
                       ? apiResponse?.message?.slice(1)
                       : apiResponse?.message,
                   });
+                }
+                if (apiResponse?.data?.[0]?.IS_SCHEME_FD === "Y") {
+                  let fdScheme = await arg?.[1]?.openFDScheme({
+                    fdTranCode: "2",
+                    categCode: "01  ",
+                  });
+                  if (fdScheme?.btnName === "close") {
+                    return {
+                      ACCT_CD: {
+                        value: "",
+                        // ignoreUpdate: true,
+                        isFieldFocused: true,
+                      },
+                      ACCT_NM: { value: "" },
+                      NOMINEE_NM: { value: "" },
+                      CATEG_CD: { value: "" },
+                      IS_SCHEME_FD: {
+                        value: apiResponse?.data?.[0]?.IS_SCHEME_FD ?? "",
+                      },
+                      FD_DOUBLE_TRAN_CD: { value: "" },
+                      FD_DOUBLE_SR_CD: { value: "" },
+                      FD_DOUBLE_LINE_ID: { value: "" },
+                    };
+                  } else {
+                    return {
+                      ACCT_NM: { value: apiResponse?.data?.[0]?.ACCT_NM ?? "" },
+                      NOMINEE_NM: {
+                        value: apiResponse?.data?.[0]?.NOMINEE_NM ?? "",
+                      },
+                      CATEG_CD: {
+                        value: apiResponse?.data?.[0]?.CATEG_CD ?? "",
+                      },
+                      IS_SCHEME_FD: {
+                        value: apiResponse?.data?.[0]?.IS_SCHEME_FD ?? "",
+                      },
+                      FD_DOUBLE_TRAN_CD: {
+                        value: apiResponse?.data?.[0]?.FD_DOUBLE_TRAN_CD ?? "",
+                      },
+                      FD_DOUBLE_SR_CD: { value: fdScheme?.data?.SR_CD ?? "" },
+                      FD_DOUBLE_LINE_ID: {
+                        value: fdScheme?.data?.LINE_ID ?? "",
+                      },
+                    };
+                  }
                 }
                 return {
                   ACCT_NM: { value: apiResponse?.data?.[0]?.ACCT_NM ?? "" },
@@ -404,6 +448,12 @@ export const FixDepositAccountsFormMetadata = {
                   CATEG_CD: {
                     value: apiResponse?.data?.[0]?.CATEG_CD ?? "",
                   },
+                  IS_SCHEME_FD: {
+                    value: apiResponse?.data?.[0]?.IS_SCHEME_FD ?? "",
+                  },
+                  FD_DOUBLE_TRAN_CD: { value: "" },
+                  FD_DOUBLE_SR_CD: { value: "" },
+                  FD_DOUBLE_LINE_ID: { value: "" },
                 };
               } else {
                 return {
@@ -416,6 +466,10 @@ export const FixDepositAccountsFormMetadata = {
                   ACCT_NM: { value: "" },
                   NOMINEE_NM: { value: "" },
                   CATEG_CD: { value: "" },
+                  IS_SCHEME_FD: { value: "" },
+                  FD_DOUBLE_TRAN_CD: { value: "" },
+                  FD_DOUBLE_SR_CD: { value: "" },
+                  FD_DOUBLE_LINE_ID: { value: "" },
                 };
               }
             }
@@ -614,7 +668,7 @@ export const FixDepositAccountsFormMetadata = {
                 return true;
               }
             },
-            required: true,
+            required: false,
             type: "text",
             schemaValidation: {},
             postValidationSetCrossFieldValues: async (...arg) => {
@@ -823,6 +877,30 @@ export const FixDepositAccountsFormMetadata = {
             componentType: "hidden",
           },
           name: "CATEG_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FD_DOUBLE_TRAN_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FD_DOUBLE_SR_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "FD_DOUBLE_LINE_ID",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "IS_SCHEME_FD",
         },
       ],
     },

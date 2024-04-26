@@ -53,3 +53,16 @@ export const doFixDepositCreation = async (Apireq) => {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
+
+export const getFDSchemeData = async (fdTranCode, categCode) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETFDSCHEMELIST", {
+      FD_DOUBLE_TRAN_CD: fdTranCode,
+      CATEG_CD: categCode,
+    });
+  if (status === "0") {
+    return data;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};

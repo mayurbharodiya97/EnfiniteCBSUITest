@@ -1,5 +1,6 @@
 import { createContext, useReducer, useState } from "react";
-import { FDContextType, FDStateType, ActionType } from "./type";
+import { FDStateType, ActionType, FDSchemeType, FDSchemeParams } from "./type";
+import { FDSchemeGrid } from "./fdScheme/fdSchemeGrid";
 
 const inititalState: FDStateType = {
   activeStep: 0,
@@ -15,6 +16,12 @@ const inititalState: FDStateType = {
     ],
   },
   isBackButton: false,
+};
+
+const initialFDScheme: FDSchemeType = {
+  isOpen: false,
+  fdTranCode: "",
+  categCode: "",
 };
 
 const fdReducer = (state: FDStateType, action: ActionType): FDStateType => {
@@ -46,6 +53,7 @@ export const FixDepositContext = createContext<any>(inititalState);
 
 export const FixDepositProvider = ({ children }) => {
   const [state, dispatch] = useReducer(fdReducer, inititalState);
+  const [fdScheme, setFDScheme] = useState<FDSchemeType>(initialFDScheme);
 
   const setActiveStep = (value) => {
     dispatch({
@@ -126,6 +134,25 @@ export const FixDepositProvider = ({ children }) => {
     });
   };
 
+  const openFDScheme = ({ fdTranCode, categCode }: FDSchemeParams) => {
+    console.log("in popup");
+    return new Promise((resolve) => {
+      setFDScheme({
+        isOpen: true,
+        fdTranCode,
+        categCode,
+        callBack: (data) => {
+          resolve(data);
+          closeFDScheme();
+        },
+      });
+    });
+  };
+
+  const closeFDScheme = () => {
+    setFDScheme(initialFDScheme);
+  };
+
   return (
     <FixDepositContext.Provider
       value={{
@@ -139,9 +166,19 @@ export const FixDepositProvider = ({ children }) => {
         updateTransDetailsFormData,
         resetAllData,
         setIsBackButton,
+        openFDScheme,
+        closeFDScheme,
       }}
     >
       {children}
+      {fdScheme.isOpen ? (
+        <FDSchemeGrid
+          isOpen={fdScheme?.isOpen}
+          fdTranCode={fdScheme?.fdTranCode}
+          categCode={fdScheme?.categCode}
+          onClose={fdScheme?.callBack}
+        />
+      ) : null}
     </FixDepositContext.Provider>
   );
 };

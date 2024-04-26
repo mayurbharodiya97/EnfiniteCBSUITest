@@ -183,12 +183,16 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     return newValues;
   }, []);
 
+  const getFocus = () => {
+    setTimeout(() => {
+      //@ts-ignore
+      focusRef?.current?.focus?.();
+    }, 50);
+  };
+
   useEffect(() => {
     if (isFieldFocused) {
-      setTimeout(() => {
-        //@ts-ignore
-        focusRef?.current?.focus?.();
-      }, 1);
+      getFocus();
     }
   }, [isFieldFocused]);
 
@@ -304,7 +308,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { error, isErrorBlank } = incomingMessage;
+      const { error, isErrorBlank, isFieldFocused } = incomingMessage;
+      if (isFieldFocused) {
+        getFocus();
+      }
       if (isErrorBlank) {
         setErrorAsCB("");
       } else if (Boolean(error)) {

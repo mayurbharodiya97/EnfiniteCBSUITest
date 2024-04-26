@@ -23,6 +23,7 @@ export const DetailForm = forwardRef<any, any>(
       updateFDParaDataOnChange,
       setIsOpendfdAcctForm,
       updateFDAccountsFormData,
+      openFDScheme,
     } = useContext(FixDepositContext);
 
     const { MessageBox } = usePopupContext();
@@ -64,7 +65,7 @@ export const DetailForm = forwardRef<any, any>(
             // height: "56vh",
             // overflowY: "auto",
             // overflowX: "hidden",
-            padding: "10px",
+            padding: "5px",
             border: "1px solid var(--theme-color4)",
             borderRadius: "10px",
             boxShadow:
@@ -122,7 +123,7 @@ export const DetailForm = forwardRef<any, any>(
                   "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
               }}
               ref={fdAccountRef}
-              formState={{ MessageBox: MessageBox }}
+              formState={{ MessageBox: MessageBox, openFDScheme: openFDScheme }}
             />
           )}
       </Fragment>
