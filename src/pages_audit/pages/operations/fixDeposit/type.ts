@@ -17,3 +17,15 @@ export interface FDContextType {
   fdState: FDStateType;
   setActiveStep: any;
 }
+
+export interface FDSchemeType {
+  isOpen: boolean;
+  fdTranCode: string;
+  categCode: string;
+  callBack?: Function;
+}
+
+export interface FDSchemeParams {
+  fdTranCode: string;
+  categCode: string;
+}

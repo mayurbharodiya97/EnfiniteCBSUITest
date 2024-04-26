@@ -7,8 +7,8 @@ import {
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -22,8 +22,16 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
   const inputRef = useRef<any>(null);
   const inputPassRef = useRef<any>(null);
   const inputButtonRef = useRef<any>(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<any>(false);
+  const [showPasswordTime, setShowPasswordTime] = useState(0);
+  const [showConfirmPasswordTime, setShowConfirmPasswordTime] = useState(0);
+  const showPassword = Date.now() < showPasswordTime;
+  const showConfirmPassword = Date.now() < showConfirmPasswordTime;
+  const [, forceUpdate] = useState<any | null>();
+  const timerRef = useRef<any>(null);
+
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const handleChange = (event) => {
@@ -148,15 +156,19 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={() => setShowPassword((old) => !old)}
+                      onClick={() => {
+                        if (!showPassword) {
+                          setShowPasswordTime(Date.now() + 5000);
+                          timerRef.current = setTimeout(
+                            () => forceUpdate(Date.now()),
+                            5000
+                          );
+                        } else if (showPassword) setShowPasswordTime(0);
+                      }}
                       onMouseDown={(e) => e.preventDefault()}
                       disabled={loginState.loading}
                     >
-                      {showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -191,15 +203,19 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                   <InputAdornment position="end">
                     <IconButton
                       aria-label="toggle password visibility"
-                      onClick={() => setShowConfirmPassword((old) => !old)}
+                      onClick={() => {
+                        if (!showPassword) {
+                          setShowConfirmPasswordTime(Date.now() + 5000);
+                          timerRef.current = setTimeout(
+                            () => forceUpdate(Date.now()),
+                            5000
+                          );
+                        } else if (showPassword) setShowConfirmPasswordTime(0);
+                      }}
                       onMouseDown={(e) => e.preventDefault()}
                       disabled={loginState.loading}
                     >
-                      {showConfirmPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
+                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -249,15 +265,16 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                 disabled={loginState.loading}
                 onClick={() => {
                   onSubmit(input, loginState.workingState);
-                  console.log("input", input, loginState.workingState);
                 }}
                 ref={inputButtonRef}
-                endicon={
-                  loginState.loading ? <CircularProgress size={20} /> : "East"
-                }
+                endicon={loginState.loading ? null : "East"}
                 rotateIcon="scale(1.4) rotateX(360deg)"
               >
-                {t("Next")}
+                {loginState.loading ? (
+                  <CircularProgress size={25} thickness={4.6} />
+                ) : (
+                  t("Next")
+                )}
               </GradientButton>
             </div>
           </div>

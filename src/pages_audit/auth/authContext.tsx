@@ -30,6 +30,7 @@ const inititalState: AuthStateType = {
   baseCompanyID: "",
   companyName: "",
   workingDate: "",
+  minDate: "",
   groupName: "",
   access: {},
   menulistdata: [],

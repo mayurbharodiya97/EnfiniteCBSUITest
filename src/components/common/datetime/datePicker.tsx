@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect } from "react";
+import { FC, useRef, useEffect, useContext } from "react";
 import { useField, UseFieldHookProps } from "packages/form";
 import { KeyboardDatePicker } from "components/styledComponent/datetime";
 import { Omit, Merge } from "../types";
@@ -11,6 +11,8 @@ import { DatePickerProps } from "@mui/lab/DatePicker";
 import { DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { utilFunction } from "components/utils";
 import { TextField } from "components/styledComponent";
+import { usePopupContext } from "components/custom/popupContext";
+import { AuthContext } from "pages_audit/auth";
 const themeObj: any = unstable_createMuiStrictModeTheme(theme2);
 
 const useStyles: any = makeStyles({
@@ -75,7 +77,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   ...others
 }) => {
   const classes = useStyles();
-
+  const { authState } = useContext(AuthContext);
   const {
     value,
     error,
@@ -168,6 +170,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
   if (excluded) {
     return null;
   }
+
   // console.log(fieldKey, value, touched, isError, error);
   const result = (
     // <ThemeProvider theme={themeObj}>
@@ -205,7 +208,12 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
           textField: {
             fullWidth: true,
             error: !isSubmitting && isError,
-            helperText: !isSubmitting && isError ? error : null,
+            helperText:
+              new Date(value) <= new Date(authState?.minDate)
+                ? "Date is out of period"
+                : !isSubmitting && isError
+                ? error
+                : null,
             onBlur: handleBlur,
             InputLabelProps: { shrink: true },
           },

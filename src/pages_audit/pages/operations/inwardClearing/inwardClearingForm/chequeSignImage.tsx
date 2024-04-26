@@ -184,7 +184,7 @@ export const ChequeSignImage: FC<{
                   >
                     <CardContent
                       style={{
-                        padding: "2px 2px 23px 2px",
+                        padding: "2px 2px 30px 2px",
                       }}
                     >
                       <div

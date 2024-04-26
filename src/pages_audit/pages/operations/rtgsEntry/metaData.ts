@@ -8,6 +8,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 import { format, isValid } from "date-fns";
 import * as API from "./api";
 import { GeneralAPI } from "registry/fns/functions";
+import { isValidDate } from "components/utils/utilFunctions/function";
 export const CTSOutwardClearingFormMetaData = {
   form: {
     name: "ctsOWClearing",
@@ -52,6 +53,21 @@ export const CTSOutwardClearingFormMetaData = {
     },
   },
   fields: [
+    // {
+    //   render: {
+    //     componentType: "autocomplete",
+    //   },
+    //   name: "ENTRY_TYPE",
+    //   label: "RTGS/NEFT",
+    //   defaultValue: "0   ",
+    //   GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    //   // runValidationOnDependentFieldsChange: true,
+    //   skipDefaultOption: true,
+    //   options: "getZoneListData",
+    //   _optionsKey: "getZoneListData",
+    //   disableCaching: true,
+    //   dependentFields: ["TRAN_DT"],
+    // },
     {
       render: {
         componentType: "datePicker",
@@ -60,40 +76,101 @@ export const CTSOutwardClearingFormMetaData = {
       // sequence: 9,
       label: "Presentment Date",
       placeholder: "",
+      // minDate: "01/01/1900",
+      // validate: (value, data) => {
+      //   console.log("value", value);
+      //   if (!isValidDate(value?.value)) {
+      //     return "This field is required";
+      //   }
+      //   // if (!Boolean(value)) {
+      //   //   return "This field is required.";
+      //   // }
+      //   // return "";
+      // },
+      // validation: (value, data, prev) => {
+      //   console.log("value", value);
+      //   if (!isValidDate(new Date(value))) {
+      //     console.log("if value", value);
+      //     return "Invalid date";
+      //   }
+      // },
       GridProps: { xs: 6, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.5 },
     },
-    {
-      render: {
-        componentType: "autocomplete",
-      },
-      name: "ZONE",
-      label: "Zone",
-      defaultValue: "0   ",
-      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
-      // runValidationOnDependentFieldsChange: true,
-      skipDefaultOption: true,
-      options: "getZoneListData",
-      _optionsKey: "getZoneListData",
-      disableCaching: true,
-      dependentFields: ["TRAN_DT"],
-    },
-    {
-      render: {
-        componentType: "textField",
-      },
-      name: "SLIP_CD",
-      label: "Slip No.",
-      type: "text",
-      fullWidth: true,
-      isReadOnly: true,
-      __NEW__: {
-        dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
-        setValueOnDependentFieldsChange: "getSlipNoData",
-        disableCaching: true,
-      },
-      GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
-    },
-
+    // {
+    //   render: {
+    //     componentType: "autocomplete",
+    //   },
+    //   name: "TRAN_TYPE",
+    //   label: "Transaction Type",
+    //   defaultValue: "0   ",
+    //   GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    //   // runValidationOnDependentFieldsChange: true,
+    //   skipDefaultOption: true,
+    //   options: "getZoneListData",
+    //   _optionsKey: "getZoneListData",
+    //   disableCaching: true,
+    //   dependentFields: ["TRAN_DT"],
+    // },
+    // {
+    //   render: {
+    //     componentType: "autocomplete",
+    //   },
+    //   name: "TRAN_TYPE",
+    //   label: "Transaction Type",
+    //   defaultValue: "0   ",
+    //   GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    //   // runValidationOnDependentFieldsChange: true,
+    //   skipDefaultOption: true,
+    //   options: "getZoneListData",
+    //   _optionsKey: "getZoneListData",
+    //   disableCaching: true,
+    //   dependentFields: ["TRAN_DT"],
+    // },
+    // {
+    //   render: {
+    //     componentType: "textField",
+    //   },
+    //   name: "SLIP_NO",
+    //   label: "Slip No.",
+    //   type: "text",
+    //   fullWidth: true,
+    //   // isReadOnly: true,
+    //   __NEW__: {
+    //     dependentFields: ["TRAN_DT", "ZONE", "ZONE_TRAN_TYPE"],
+    //     setValueOnDependentFieldsChange: "getSlipNoData",
+    //   },
+    //   GridProps: { xs: 6, sm: 1, md: 1, lg: 1, xl: 1 },
+    // },
+    // {
+    //   render: {
+    //     componentType: "autocomplete",
+    //   },
+    //   name: "DEF_TRAN_CD",
+    //   label: "Comm. Type",
+    //   defaultValue: "0   ",
+    //   GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    //   // runValidationOnDependentFieldsChange: true,
+    //   skipDefaultOption: true,
+    //   options: "getZoneListData",
+    //   _optionsKey: "getZoneListData",
+    //   disableCaching: true,
+    //   dependentFields: ["TRAN_DT"],
+    // },
+    // {
+    //   render: {
+    //     componentType: "autocomplete",
+    //   },
+    //   name: "BR_IFSC_CODE",
+    //   label: "IFSC",
+    //   defaultValue: "0   ",
+    //   GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
+    //   // runValidationOnDependentFieldsChange: true,
+    //   skipDefaultOption: true,
+    //   options: "getZoneListData",
+    //   _optionsKey: "getZoneListData",
+    //   disableCaching: true,
+    //   dependentFields: ["TRAN_DT"],
+    // },
     {
       render: {
         componentType: "_accountNumber",
@@ -782,7 +859,6 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
           // disableCaching: true,
           // runValidationOnDependentFieldsChange: true,
           dependentFields: ["TRAN_DT", "CHEQUE_NO"],
-
           postValidationSetCrossFieldValues: async (
             field,
             formState,
@@ -799,9 +875,12 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                     ? ""
                     : field.value.padEnd(10, " "),
               };
+
               let postData = await clearingBankMasterConfigDML(formData);
+
               if (postData?.data?.length && postData?.data) {
                 formState.setDataOnFieldChange("MESSAGE", postData?.data);
+
                 if (
                   postData?.status === "0" &&
                   dependentFieldsValues?.["chequeDetails.CHEQUE_NO"]?.value &&
@@ -828,26 +907,12 @@ export const ctsOutwardChequeDetailFormMetaData: any = {
                       message: data?.[0]?.O_MESSAGE,
                       buttonNames: ["Yes", "No"],
                     });
-                    if (buttonNames === "Yes") {
-                      return {
-                        BANK_CD: {
-                          value: field?.value ?? "",
-                          ignoreUpdate: true,
-                          isFieldFocused: false,
-                        },
-                        BANK_NM: {
-                          value: postData?.data?.[0]?.BANK_NM ?? "",
-                        },
-                      };
-                    } else {
+                    if (buttonNames === "No") {
                       return {
                         BANK_CD: {
                           value: "",
-                          ignoreUpdate: true,
                           isFieldFocused: true,
-                        },
-                        BANK_NM: {
-                          value: "",
+                          ignoreUpdate: true,
                         },
                       };
                     }
@@ -1511,11 +1576,25 @@ export const inwardReturnChequeDetailFormMetaData: any = {
             dependentFieldsValues
           ) => {
             if (field.value && Object.keys(formState?.REQ_DATA).length === 0) {
-              formState?.MessageBox({
+              const buttonName = formState?.MessageBox({
                 messageTitle: "Information",
                 message: "Enter Account Information",
                 buttonNames: ["Ok"],
               });
+
+              // if (buttonName === "Ok") {
+              //   let continueButtonName = formState?.MessageBox({
+              //     messageTitle: "Confirmation",
+              //     message: "Are you sure to continue!",
+              //     buttonNames: ["Yes", "No"],
+              //   });
+              //   if (continueButtonName === "No") {
+              //     console.log("field", field?.value);
+              //     return {
+              //       CHEQUE_NO: { value: "" },
+              //     };
+              //   }
+              // }
             } else if (field.value && Object.keys(formState?.REQ_DATA).length) {
               let postData = await GeneralAPI.getChequeNoValidation({
                 COMP_CD: formState?.REQ_DATA?.COMP_CD,
@@ -1537,16 +1616,12 @@ export const inwardReturnChequeDetailFormMetaData: any = {
                 });
                 if (continueButtonName === "Yes") {
                   return {
-                    CHEQUE_NO: { value: field.value, ignoreUpdate: true },
+                    CHEQUE_NO: { value: field.value },
                     AMOUNT: { isFieldFocused: true },
                   };
                 } else {
                   return {
-                    CHEQUE_NO: {
-                      value: "",
-                      isFieldFocused: true,
-                      ignoreUpdate: true,
-                    },
+                    CHEQUE_NO: { value: "", isFieldFocused: true },
                   };
                 }
               }

@@ -4,6 +4,7 @@ import {
   ExtendedFieldMetaDataTypeOptional,
   FieldMetaDataType,
 } from "../types";
+import { cloneDeep } from "lodash";
 
 export const extendFieldTypes = (
   metaData: MetaDataType,
@@ -22,7 +23,21 @@ export const extendFieldTypes = (
     commonTimeFormat,
   } = customParameters;
 
-  const newMetaDataFields = metaData?.fields?.map((one) => {
+  const newMetaDataFields = metaData?.fields?.map((one: any) => {
+    if (one.render.componentType === "arrayField") {
+      let dummyMetaData = cloneDeep({
+        form: metaData.form,
+        fields: one._fields,
+      });
+      let newmetadatArray = extendFieldTypes(
+        dummyMetaData,
+        extendedTypes,
+        lanTranslate,
+        authState,
+        customParameters
+      );
+      one._fields = newmetadatArray.fields;
+    }
     const extendedType = extendedTypes[one.render.componentType];
     if (
       one?.render?.componentType === "datePicker" ||

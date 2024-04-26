@@ -142,7 +142,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
   );
 
   const focusRef = useRef();
-  // const inputfocusRef: any = useRef();
+  const inputfocusRef: any = useRef();
   useEffect(() => {
     if (isFieldFocused) {
       //@ts-ignore
@@ -155,9 +155,9 @@ const MyTextField: FC<MyTextFieldProps> = ({
       focusRef?.current?.focus?.();
       ////////////Below solution is temporary for set focus in numberFormat Component.
       ////////////Need to find proper solution. If you found proper solution contact Me😎🤷‍♂️.
-      // if (!Boolean(focusRef?.current)) {
-      //   inputfocusRef?.current?.children?.[1]?.firstChild?.focus?.();
-      // }
+      if (!Boolean(focusRef?.current)) {
+        inputfocusRef?.current?.children?.[1]?.firstChild?.focus?.();
+      }
     }, 50);
   };
 
@@ -367,7 +367,7 @@ const MyTextField: FC<MyTextFieldProps> = ({
         disabled={isSubmitting}
         variant={"standard"}
         color="secondary"
-        // ref={inputfocusRef}
+        ref={inputfocusRef}
       />
     </>
   );

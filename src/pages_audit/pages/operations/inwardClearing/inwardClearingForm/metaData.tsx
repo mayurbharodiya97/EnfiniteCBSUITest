@@ -212,10 +212,13 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
-        postValidationSetCrossFieldValues: (field) => {
+        runPostValidationHookAlways: true,
+        postValidationSetCrossFieldValues: (field, formState) => {
           if (!field?.value.trim()) {
+            formState.setDataOnFieldChange("ACCT_CD_BLANK");
             return {
               ACCT_CD: { value: "" },
+              ACCT_TYPE: { value: "" },
               ACCT_NM: { value: "" },
               WIDTH_BAL: { value: "" },
               OTHER_REMARKS: { value: "" },
@@ -237,12 +240,14 @@ export const chequeReturnPostFormMetaData = {
             return false;
           }
         },
+        runPostValidationHookAlways: true,
         schemaValidation: {
           type: "string",
           rules: [{ name: "", params: "" }],
         },
-        postValidationSetCrossFieldValues: (field) => {
+        postValidationSetCrossFieldValues: (field, formState) => {
           if (!field?.value) {
+            formState.setDataOnFieldChange("ACCT_CD_BLANK");
             return {
               ACCT_CD: { value: "" },
               ACCT_NM: { value: "" },
@@ -266,10 +271,10 @@ export const chequeReturnPostFormMetaData = {
             return true;
           },
         },
-        schemaValidation: {
-          type: "string",
-          rules: [{ name: "", params: "" }],
-        },
+        // schemaValidation: {
+        //   type: "string",
+        //   rules: [{ name: "", params: "" }],
+        // },
         dependentFields: ["DISABLE_MAIN_AC", "ACCT_TYPE", "BRANCH_CD"],
         isReadOnly: (fieldValue, dependentFields, formState) => {
           if (dependentFields?.DISABLE_MAIN_AC?.value === "Y") {
@@ -1234,7 +1239,7 @@ export const shareDividendMetaData = {
       label: "Year",
       type: "text",
 
-      GridProps: { xs: 12, sm: 1.2, md: 1.2, lg: 1.2, xl: 1.2 },
+      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -1243,7 +1248,7 @@ export const shareDividendMetaData = {
       branchCodeMetadata: {
         name: "BRANCH_CD",
         required: true,
-        GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+        GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
 
         postValidationSetCrossFieldValues: (field) => {
           if (!field?.value.trim()) {
@@ -1256,7 +1261,7 @@ export const shareDividendMetaData = {
       },
       accountTypeMetadata: {
         name: "ACCT_TYPE",
-        GridProps: { xs: 12, sm: 1.9, md: 1.9, lg: 1.9, xl: 1.9 },
+        GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
         isFieldFocused: true,
         defaultfocus: true,
         required: true,
@@ -1392,20 +1397,10 @@ export const shareDividendMetaData = {
         },
 
         runPostValidationHookAlways: true,
-        GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+        GridProps: { xs: 12, sm: 1.6, md: 1.6, lg: 1.6, xl: 1.6 },
       },
     },
-    // {
-    //   render: {
-    //     componentType: "textField",
-    //   },
-    //   name: "ACCT_NM",
-    //   label: "Account Name",
-    //   type: "text",
-    //   fullWidth: true,
 
-    //   GridProps: { xs: 12, sm: 4.1, md: 4.1, lg: 4.1, xl: 4.1 },
-    // },
     {
       render: {
         componentType: "numberFormat",
@@ -1414,7 +1409,7 @@ export const shareDividendMetaData = {
       label: "Dr",
       type: "text",
       defaultValue: "5",
-      GridProps: { xs: 12, sm: 1.3, md: 1.3, lg: 1.3, xl: 1.3 },
+      GridProps: { xs: 12, sm: 1, md: 1, lg: 1, xl: 1 },
     },
     {
       render: {
@@ -1424,7 +1419,7 @@ export const shareDividendMetaData = {
       label: "Warrant Number",
       type: "text",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 1.8, md: 1.8, lg: 1.8, xl: 1.8 },
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
 
     {
@@ -1436,7 +1431,19 @@ export const shareDividendMetaData = {
       placeholder: "",
       isReadOnly: true,
       type: "text",
-      GridProps: { xs: 12, sm: 2.2, md: 2.2, lg: 2.2, xl: 2.2 },
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 2 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "ACCT_NM",
+      label: "",
+      defaultValue: "DEBIT CLEARING",
+      type: "text",
+      fullWidth: true,
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.7, md: 1.7, lg: 1.7, xl: 1.7 },
     },
   ],
 };

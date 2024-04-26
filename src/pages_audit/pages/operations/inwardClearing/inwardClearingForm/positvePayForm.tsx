@@ -15,6 +15,7 @@ export const PositivePayFormWrapper: FC<{
   onClose?: any;
   positiveData?: any;
 }> = ({ onClose, positiveData }) => {
+  console.log("positiveData", positiveData);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -27,8 +28,7 @@ export const PositivePayFormWrapper: FC<{
       CHEQUE_NO: positiveData?.CHEQUE_NO,
     })
   );
-  // console.log("???positiveData", positiveData);
-  // console.log("???data", data);
+  console.log("data", data);
   return (
     <>
       <Dialog
@@ -44,7 +44,7 @@ export const PositivePayFormWrapper: FC<{
           },
         }}
       >
-        {/* {isLoading || isFetching ? (
+        {isLoading || isFetching ? (
           <LoaderPaperComponent />
         ) : isError ? (
           <Alert
@@ -52,26 +52,26 @@ export const PositivePayFormWrapper: FC<{
             errorMsg={error?.error_msg ?? "Error"}
             errorDetail={error?.error_detail ?? ""}
           />
-        ) : ( */}
-        <>
-          <FormWrapper
-            key={`positivePayForm`}
-            metaData={positivePayFormMetaData as unknown as MetaDataType}
-            initialValues={data?.[0]}
-            onSubmitHandler={{}}
-            formStyle={{
-              background: "white",
-            }}
-            displayMode={"view"}
-          >
-            {({ isSubmitting, handleSubmit }) => (
-              <>
-                <GradientButton onClick={onClose}>Close</GradientButton>
-              </>
-            )}
-          </FormWrapper>
-        </>
-        {/* )} */}
+        ) : (
+          <>
+            <FormWrapper
+              key={`positivePayForm`}
+              metaData={positivePayFormMetaData as unknown as MetaDataType}
+              initialValues={data?.[0]}
+              onSubmitHandler={{}}
+              formStyle={{
+                background: "white",
+              }}
+              displayMode={"view"}
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  <GradientButton onClick={onClose}>Close</GradientButton>
+                </>
+              )}
+            </FormWrapper>
+          </>
+        )}
       </Dialog>
     </>
   );

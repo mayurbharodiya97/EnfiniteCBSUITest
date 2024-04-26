@@ -183,12 +183,16 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
     return newValues;
   }, []);
 
+  const getFocus = () => {
+    setTimeout(() => {
+      //@ts-ignore
+      focusRef?.current?.focus?.();
+    }, 50);
+  };
+
   useEffect(() => {
     if (isFieldFocused) {
-      setTimeout(() => {
-        //@ts-ignore
-        focusRef?.current?.focus?.();
-      }, 1);
+      getFocus();
     }
   }, [isFieldFocused]);
 
@@ -262,7 +266,11 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
 
   const handleKeyDown = useCallback(
     (e: any) => {
-      if (e.key.toLowerCase() === "backspace") indexRef.current = -1;
+      if (
+        e.key.toLowerCase() === "backspace" ||
+        e.key.toLowerCase() === "escape"
+      )
+        indexRef.current = -1;
       if (e.key.toLowerCase() === "tab") {
         if (indexRef.current !== -1 && _options[indexRef.current]) {
           handleChangeCustom(e, _options[indexRef.current]);
@@ -300,7 +308,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
 
   useEffect(() => {
     if (incomingMessage !== null && typeof incomingMessage === "object") {
-      const { error, isErrorBlank } = incomingMessage;
+      const { error, isErrorBlank, isFieldFocused } = incomingMessage;
+      if (isFieldFocused) {
+        getFocus();
+      }
       if (isErrorBlank) {
         setErrorAsCB("");
       } else if (Boolean(error)) {
@@ -382,7 +393,6 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         }}
         onKeyDown={handleKeyDown}
         onChange={handleChangeCustom}
-        openOnFocus
         onHighlightChange={(e, option: any) => {
           indexRef.current = _options.indexOf(option);
         }}
@@ -409,7 +419,10 @@ const MyAutocomplete: FC<MyAllAutocompleteProps> = ({
         //   handleOptionValueExtraData(extraOptionData);
         // }}
         // onBlur={handleBlur}
-        onBlur={handleBlurInterceptor}
+        onBlur={() => {
+          indexRef.current = -1;
+          handleBlurInterceptor();
+        }}
         //change by parag  , disabled
         // disabled={isSubmitting}
         disabled={isSubmitting || readOnly}
