@@ -10,7 +10,7 @@ import {
 import ExtractedHeader from "../c-kyc/formModal/ExtractedHeader";
 import { GradientButton } from "components/styledComponent/button";
 import { t } from "i18next";
-import { lazy, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, lazy, useContext, useEffect, useMemo, useRef, useState } from "react";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined"; // sidebar-open-icon
 import CancelIcon from "@mui/icons-material/Cancel"; // sidebar-close-icon
 import { CustomTabLabel, TabPanel } from "../c-kyc/formModal/formModal";
@@ -21,6 +21,7 @@ import { AcctMSTContext } from "./AcctMSTContext";
 import { CustomTabs } from "../c-kyc/Ckyc";
 import TabStepper from "./TabStepper";
 import { useLocation } from "react-router-dom";
+import * as API from "./api";
 import MainTab from "./tabComponents/MainTab";
 import JointTab from "./tabComponents/JointTab";
 import NomineeJointTab from "./tabComponents/NomineeJointTab";
@@ -41,6 +42,10 @@ import ShareNominalTab from "./tabComponents/ShareNominalTab";
 import OtherAddTab from "./tabComponents/OtherAddTab";
 import DocumentTab from "./tabComponents/DocumentTab";
 import AdvConfigTab from "./tabComponents/AdvConfigTab";
+import { PreventUpdateDialog } from "../c-kyc/formModal/dialog/PreventUpdateDialog";
+import { CloseFormDialog } from "../c-kyc/formModal/dialog/CloseFormDialog";
+import { useMutation } from "react-query";
+import { ConfirmUpdateDialog } from "../c-kyc/formModal/dialog/ConfirmUpdateDialog";
 
 const AcctModal = ({ onClose, formmode, from }) => {
   const {
@@ -50,11 +55,34 @@ const AcctModal = ({ onClose, formmode, from }) => {
     handleSidebarExpansionctx,
     handleColTabChangectx,
     handleFormModalOpenctx,
+    handleCurrFormctx,
+    handleUpdatectx,
   } = useContext(AcctMSTContext);
   const { authState } = useContext(AuthContext);
   const location: any = useLocation();
   const classes = useDialogStyles();
+  const [updateDialog, setUpdateDialog] = useState(false)
   const [cancelDialog, setCancelDialog] = useState(false);
+  const [alertOnUpdate, setAlertOnUpdate] = useState<boolean>(false)
+  const onCloseUpdateDialog = () => {
+    setUpdateDialog(false)
+  }
+  const onCloseCancelDialog = () => {
+    setCancelDialog(false)
+  }
+  const onClosePreventUpdateDialog = () => {
+    setAlertOnUpdate(false)
+  }
+
+  // get customer form details  
+  const mutation: any = useMutation(API.getAccountDetails, {
+    onSuccess: (data) => {
+      // handleFormDataonRetrievectx(data[0])
+      onClosePreventUpdateDialog()
+    },
+    onError: (error: any) => {},
+  });  
+
   useEffect(() => {
     handleFromFormModectx({ formmode, from });
   }, []);
@@ -78,6 +106,42 @@ const AcctModal = ({ onClose, formmode, from }) => {
       closeForm();
     }
   };
+
+  const dialogsMemo = useMemo(() => {
+    // console.log("stepperere qiwuhqweqweqsq", updateDialog, actionDialog, cancelDialog, alertOnUpdate)
+    return <Fragment>
+        {/* confirms before updating */}
+        {updateDialog && <ConfirmUpdateDialog 
+            open={updateDialog} 
+            onClose={onCloseUpdateDialog} 
+            mutationFormDTL={mutation}
+            setAlertOnUpdate={setAlertOnUpdate}
+        />}
+
+        {/* confirming action-remark dialog */}
+        {/* {actionDialog && <ActionDialog 
+            open={actionDialog} 
+            setOpen={setActionDialog} 
+            closeForm = {onClose}
+            action= {confirmAction}
+        />} */}
+
+        {/* data lost alert on closing form */}
+        {cancelDialog && <CloseFormDialog 
+            open={cancelDialog} 
+            onClose={onCloseCancelDialog} 
+            closeForm = {onClose}
+        />}
+
+        {/* no change found to update dialog */}
+        {alertOnUpdate && <PreventUpdateDialog 
+            open={alertOnUpdate} 
+            onClose={onClosePreventUpdateDialog} 
+        />}
+    </Fragment>
+  }, [
+    // updateDialog, actionDialog, 
+    cancelDialog, alertOnUpdate])
 
   useEffect(() => {
     // console.log(state?.formmodectx,"asddsaasddsa", location?.state)
@@ -116,6 +180,48 @@ const AcctModal = ({ onClose, formmode, from }) => {
       onClose();
     }
   }, [AcctMSTState?.formmodectx]);
+
+  useEffect(() => {
+    if(Boolean(AcctMSTState?.currentFormctx.currentFormSubmitted)) {
+      const steps = AcctMSTState?.tabNameList.filter(tab => tab.isVisible) 
+      const totalTab:any = Array.isArray(steps) && steps.length;
+      // handleCurrFormctx({
+      //   // currentFormRefctx: [],
+      //   currentFormSubmitted: null,
+      //   // colTabValuectx: null,
+      //   // isLoading: false,
+      // })
+      if(Boolean(AcctMSTState?.isFinalUpdatectx)) {
+        const getUpdatedTabs = async () => {
+          const {updated_tab_format, update_type} = await handleUpdatectx({
+            COMP_CD: authState?.companyID ?? ""
+          })
+          if(typeof updated_tab_format === "object") {
+            // console.log(update_type, "asdqwezxc weoifhwoehfiwoehfwef", typeof updated_tab_format, updated_tab_format)
+            if (Object.keys(updated_tab_format)?.length === 0) {
+                setAlertOnUpdate(true)
+            } else if(Object.keys(updated_tab_format)?.length>0) {
+              setUpdateDialog(true)
+            }
+          }
+        }
+        getUpdatedTabs().catch(err => console.log("update error", err.message))
+        // if(Object.keys(AcctMSTState?.modifiedFormCols).length >0) {
+        //   setUpdateDialog(true)
+        //   // setCancelDialog(true)
+        // } else {
+        //   setAlertOnUpdate(true)
+        // }
+      } else {
+        if((totalTab - 1) > AcctMSTState?.colTabValuectx) {
+          handleCurrFormctx({
+            colTabValuectx: AcctMSTState?.colTabValuectx + 1,
+          })
+          handleColTabChangectx(AcctMSTState?.colTabValuectx + 1); 
+        }
+      }      
+    }
+  }, [AcctMSTState?.currentFormctx.currentFormSubmitted, AcctMSTState?.tabNameList, AcctMSTState?.isFinalUpdatectx])
 
   const steps: any = AcctMSTState?.tabsApiResctx.filter((tab) => tab.isVisible);
 
@@ -338,6 +444,7 @@ const AcctModal = ({ onClose, formmode, from }) => {
             })}
         </Grid>
       </Grid>
+      {dialogsMemo}
     </Dialog>
   );
 };

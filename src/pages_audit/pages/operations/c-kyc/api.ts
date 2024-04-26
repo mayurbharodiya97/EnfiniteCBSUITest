@@ -2424,7 +2424,46 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
       }
       return responseData  
     }
+  }
+}
+
+export const getOptionsOnPinParentAreaOtherAdd = async (dependentValue, formState, _, authState) => {
+  // console.log("getOptionsOnPinParentArea dp.", dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value)
+  let PIN_CODE = "", PARENT_AREA = "";
+  if(Boolean(dependentValue["OTHER_ADDRESS[0].PIN_CODE"]) && dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value?.length>5) {
+    PIN_CODE = dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value
+  }
+  if(PIN_CODE) {
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETAREALIST", {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      PIN_CODE: PIN_CODE,
+      // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+      // PARENT_AREA: PARENT_AREA,
+      FLAG: "P",
+      PARENT_AREA: "",
+    });
+
+    if(status == 0) {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
+            return {
+              ...other,
+              AREA_CD: AREA_CD,
+              AREA_NM: AREA_NM,
+              label: AREA_NM,
+              value: AREA_CD,
+            };
+          }
+        );
+      }
+      return responseData  
     }
+  } else {
+    return [];
+  }
 }
 
 

@@ -246,6 +246,10 @@ const myGridRef = useRef<any>(null);
                         key={"declaration-form-kyc"+ initialVal}
                         metaData={declaration_meta_data as MetaDataType}
                         formStyle={{}}
+                        formState={{
+                          GSTIN: state?.formDatactx["PERSONAL_DETAIL"]?.GSTIN ??
+                          state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.GSTIN,
+                        }}
                         hideHeader={true}
                     />
                 </Grid>

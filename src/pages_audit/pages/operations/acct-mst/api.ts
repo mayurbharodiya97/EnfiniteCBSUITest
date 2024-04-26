@@ -89,6 +89,46 @@ export const isReadOnlyonParam320 = ({ formState }) => {
   return false;
 };
 
+export const getAccountDetails = async (reqData) => {
+  // console.log("iuehfiwuehfwef", reqData)
+  // COMP_CD, CUSTOMER_ID?, REQUEST_CD?}
+  // const {COMP_CD, CUSTOMER_ID, REQUEST_CD} = reqData
+  // let payload = {}
+  // // console.log("req. dataaa COMP_CD", COMP_CD, CUSTOMER_ID, REQUEST_CD)
+  // if(CUSTOMER_ID) {
+  //   payload = {
+  //     COMP_CD: COMP_CD,
+  //     CUSTOMER_ID: CUSTOMER_ID
+  //   }
+  // } else {
+  //   payload = {
+  //     COMP_CD: COMP_CD,
+  //     REQUEST_CD: REQUEST_CD
+  //   }
+  // }
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCUSTOMERDETAILS", reqData);
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(
+        ({ CATEG_CD, CATEG_NM, ...other }) => {
+          return {
+            ...other,
+            CATEG_CD: CATEG_CD,
+            CATEG_NM: CATEG_NM,
+            value: CATEG_CD,
+            label: CATEG_NM,
+          };
+        }
+      );
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+
 export const getMortgageTypeOp = async ({ COMP_CD, BRANCH_CD }) => {
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETACCTMSTMORTGAGEDDW", {
@@ -294,7 +334,6 @@ export const getPrioritMainTypeOP = async ({
   BRANCH_CD,
   dependentValue,
 }) => {
-  // console.log("dependentValuedependentValuedependentValue", dependentValue)
   const PARENT_GROUP = dependentValue?.PARENT_GROUP?.value;
   if (Boolean(PARENT_GROUP)) {
     const { data, status, message, messageDetails } =
@@ -320,6 +359,8 @@ export const getPrioritMainTypeOP = async ({
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  } else {
+    return [];
   }
 };
 
@@ -343,9 +384,9 @@ export const getPriorityWeakerTypeOP = async ({
           return {
             ...other,
             SUB_PRIORITY_CD: SUB_PRIORITY_CD,
-            DESCRIPTION: DESCRIPTION,
+            DESCRIPTION: `${SUB_PRIORITY_CD} ${DESCRIPTION}`,
             value: SUB_PRIORITY_CD,
-            label: DESCRIPTION,
+            label: `${SUB_PRIORITY_CD} ${DESCRIPTION}`,
           };
         });
       }
@@ -353,6 +394,8 @@ export const getPriorityWeakerTypeOP = async ({
     } else {
       throw DefaultErrorObject(message, messageDetails);
     }
+  } else {
+    return [];
   }
 };
 

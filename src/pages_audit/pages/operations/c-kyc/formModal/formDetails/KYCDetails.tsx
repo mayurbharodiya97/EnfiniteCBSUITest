@@ -313,6 +313,12 @@ const KYCDetails = () => {
                   CUSTOMER_ID: state?.customerIDctx ?? "", 
                   REQ_FLAG: (state?.isFreshEntryctx || state?.isDraftSavedctx) ? "F" : "E",
                   RESIDENCE_STATUS: state?.formDatactx["PERSONAL_DETAIL"]?.RESIDENCE_STATUS ?? "",
+                  TIN_ISSUING_COUNTRY: state?.isFreshEntryctx 
+                  ? state?.formDatactx["PERSONAL_DETAIL"]?.TIN_ISSUING_COUNTRY ?? "" 
+                  : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN_ISSUING_COUNTRY ?? "",
+                  TIN: state?.isFreshEntryctx 
+                  ? state?.formDatactx["PERSONAL_DETAIL"]?.TIN ?? "" 
+                  : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN ?? "",
                   MessageBox: MessageBox
                 }}
                 setDataOnFieldChange={(action, payload) => {
