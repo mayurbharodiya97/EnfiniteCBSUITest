@@ -169,6 +169,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
         variant: "error",
       });
       CloseMessageBox();
+      SetDeleteRemark(false);
     },
     onSuccess: (data) => {
       // isDataChangedRef.current = true;
@@ -178,6 +179,7 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
       isDataChangedRef.current = true;
       onClose();
       CloseMessageBox();
+      SetDeleteRemark(false);
     },
   });
 
@@ -493,6 +495,50 @@ const CtsOutwardAndInwardReturnConfirm: FC<{
                       loadingBtnName: "Yes",
                     });
                     if (buttonName === "Yes") {
+                      deleteMutation.mutate({
+                        DAILY_CLEARING: {
+                          _isNewRow: false,
+                          _isDeleteRow: true,
+                          _isUpdateRow: false,
+                          ENTERED_COMP_CD: rowsData?.ENTERED_COMP_CD,
+                          ENTERED_BRANCH_CD: rowsData?.ENTERED_BRANCH_CD,
+                          TRAN_CD: rowsData?.TRAN_CD,
+                          CONFIRMED: rowsData?.CONFIRMED,
+                          ENTERED_BY: rowsData?.ENTERED_BY,
+                        },
+                        BRANCH_CD: data?.[0]?.CHEQUE_DETAIL?.[0]?.BRANCH_CD,
+                        SR_CD: rowsData?.SR_NO,
+                        ACCT_TYPE: data?.[0]?.ACCT_TYPE,
+                        ACCT_CD: data?.[0]?.ACCT_CD,
+                        AMOUNT: data?.[0]?.AMOUNT,
+                        TRAN_DT: data?.[0]?.TRAN_DT,
+                        TRAN_CD: rowsData?.TRAN_CD,
+                        USER_DEF_REMARKS: val
+                          ? val
+                          : zoneTranType === "S"
+                          ? "WRONG ENTRY FROM CTS O/W CONFIRMATION (TRN/560)"
+                          : zoneTranType === "R"
+                          ? "WRONG ENTRY FROM INWARD RETURN CONFIRMATION(TRN/332)"
+                          : "WRONG ENTRY FROM OUTWARD RETURN CONFIRMATION(TRN/346)",
+
+                        ACTIVITY_TYPE:
+                          zoneTranType === "S"
+                            ? "CTS O/W CONFIRMATION (TRN/560)"
+                            : zoneTranType === "R"
+                            ? "INWARD RETURN CONFIRMATION(TRN/332)"
+                            : "OUTWARD RETURN CONFIRMATION(TRN/346)",
+                        DETAILS_DATA: {
+                          isNewRow: [],
+                          isDeleteRow: [
+                            {
+                              TRAN_CD: rowsData?.TRAN_CD,
+                            },
+                          ],
+                          isUpdatedRow: [],
+                        },
+                        _isDeleteRow: true,
+                      });
+
                       deleteMutation.mutate({
                         DAILY_CLEARING: {
                           TRAN_CD: rowsData?.TRAN_CD,
