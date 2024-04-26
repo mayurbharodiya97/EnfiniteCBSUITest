@@ -27,14 +27,14 @@ export function useCacheWithMutation(queryKey, mutationFn) {
   }, [mutation.isLoading, mutation.data, mutation.isError, mutation.error]);
 
   const fetchData = ({ cacheId, reqData, controllerFinal = {} }) => {
-    setIsLoading(true);
+    // setIsLoading(true);
     const cachedData = queryClient.getQueryData([
       queryKey,
       { __catchID: cacheId },
     ]);
     if (cachedData) {
       setData(cachedData);
-      setIsLoading(false);
+      // setIsLoading(false);
     } else {
       mutation.mutate({ reqData, __catchID: cacheId, controllerFinal });
     }

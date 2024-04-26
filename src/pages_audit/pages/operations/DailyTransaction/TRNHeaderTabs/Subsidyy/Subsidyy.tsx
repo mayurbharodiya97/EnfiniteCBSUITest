@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { Fragment, useRef, useState } from "react";
+import { useQuery } from "react-query";
 import { SubsidyGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { GridMetaDataType } from "components/dataTable/types";
@@ -51,7 +51,7 @@ export const Subsidyy = ({ reqData }) => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        refetchData={() => {}}
+        // refetchData={() => {}}
         ref={myGridRef}
       />
     </>

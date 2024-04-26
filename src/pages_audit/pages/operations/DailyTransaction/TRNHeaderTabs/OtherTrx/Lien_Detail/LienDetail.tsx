@@ -1,16 +1,13 @@
-import { Fragment, useEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { Fragment, useRef, useState } from "react";
+import { useQuery } from "react-query";
 import { LienDetailGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 
 export const LienDetail = ({ reqData }) => {
   const myGridRef = useRef<any>(null);
@@ -54,7 +51,7 @@ export const LienDetail = ({ reqData }) => {
         loading={isLoading || isFetching}
         data={data ?? []}
         setData={() => null}
-        refetchData={() => {}}
+        // refetchData={() => {}}
         ref={myGridRef}
       />
     </div>

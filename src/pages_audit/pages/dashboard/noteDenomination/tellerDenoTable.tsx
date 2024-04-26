@@ -70,7 +70,7 @@ const TellerDenoTable = ({
         </DialogTitle>
         {/* <DialogActions> */}
         <GradientButton
-          onClick={() => onCloseTable(false)}
+          onClick={() => onCloseTable(false, "TABLE1")}
           color="primary"
           disabled={false}
           style={{ marginRight: "10px" }}
@@ -97,11 +97,13 @@ const TellerDenoTable = ({
             <TableContainer
               sx={{
                 width: "auto",
+                overflow: "auto",
+                maxHeight: "calc(100vh - 200px)",
               }}
               component={Paper}
             >
               <Table
-                sx={{ minWidth: 650 }}
+                sx={{ minWidth: 650, borderCollapse: "unset !important" }}
                 aria-label="simple table"
                 className={classes.tableBordered}
               >
@@ -223,7 +225,14 @@ const TellerDenoTable = ({
                   })}
                 </TableBody>
                 <TableBody>
-                  <TableRow sx={{ height: "43px" }}>
+                  <TableRow
+                    sx={{
+                      height: "32px",
+                      position: "sticky",
+                      bottom: 0,
+                      background: "var(--theme-color4)",
+                    }}
+                  >
                     <StyledTableCell
                       component="th"
                       scope="row"
@@ -285,22 +294,25 @@ const TellerDenoTable = ({
                 height: "auto",
                 width: "auto",
                 padding: "2px 8px",
-                borderBottom: "2px solid var(--theme-color6)",
-                borderLeft: "2px solid var(--theme-color6)",
-                borderRight: "2px solid var(--theme-color6)",
+                borderBottom: "1px solid var(--theme-color6)",
+                borderLeft: "1px solid var(--theme-color6)",
+                borderRight: "1px solid var(--theme-color6)",
                 borderBottomLeftRadius: "none",
                 borderBottomRightRadius: "none",
                 textAlign: "center",
                 display: "flex",
                 alignItems: "center",
+                position: "sticky",
+                bottom: 0,
+                background: "var(--theme-color4)",
               }}
             >
               <Typography
                 variant="body1"
                 sx={{
-                  backgroundColor: "var(--theme-color2)",
                   padding: "10px 0px",
                   display: "flex",
+                  background: "var(--theme-color4)",
                 }}
               >
                 <Typography
