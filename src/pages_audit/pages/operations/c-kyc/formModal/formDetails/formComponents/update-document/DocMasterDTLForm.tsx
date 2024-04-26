@@ -59,6 +59,7 @@ export const DocMasterDTLForm = ({
   // console.log("stateeeeeeee2", state);
   const reqCD = state?.CUSTOMER_DATA?.[0]?.data.REQUEST_ID ?? "";
   const custID = state?.CUSTOMER_DATA?.[0]?.data.CUSTOMER_ID ?? "";
+  const IS_FROM_MAIN = Boolean(Array.isArray(state?.rows) && state?.rows?.length>0) ? state?.rows?.[0]?.data?.IS_FROM_MAIN : "Y"
   let newFlag = "";
   DocMasterDTLMetadata.masterForm.form.label = `KYC Document View ${
     custID ? `Customer ID - ${custID}` : null
@@ -211,6 +212,9 @@ export const DocMasterDTLForm = ({
       } else {
         newData["SUBMIT"] = data.SUBMIT;
       }
+      if(Object.hasOwn(data._OLDROWVALUE, "SUBMIT") && typeof data._OLDROWVALUE?.SUBMIT !== "undefined") {
+        newData._OLDROWVALUE.SUBMIT = Boolean(data._OLDROWVALUE?.SUBMIT) ? "Y" : "N";
+      }
       newData["REQ_CD"] = reqCD ?? "";
       // if (Boolean(data._isNewRow)) {
       //   newData["IS_MAIN_DATA_ADD"] = true;
@@ -248,7 +252,8 @@ export const DocMasterDTLForm = ({
         DOC_MST: [{
            ...newData,
            NEW_FLAG: mutationRet.data?.[0]?.NEW_FLAG ?? "N",
-           IS_FROM_MAIN: girdData?.[0]?.IS_FROM_MAIN ?? "",   
+           IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : IS_FROM_MAIN,   
+          //  IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : girdData?.[0]?.IS_FROM_MAIN ?? "",   
         }],
         REQ_CD: reqCD,
         CUSTOMER_ID: custID,
@@ -530,7 +535,7 @@ export const DocMasterDTLForm = ({
                 // overflowX: "hidden",
               }}
               isDetailRowRequire={false}
-              formState={{ data: girdData }}
+              formState={{ gridData: girdData }}
               formName={"fromSourceDetailEdit"}
               formNameMaster={"fromSourceMasterEdit"}
               onClickActionEvent={(index, id, data) => {

@@ -14,14 +14,14 @@ import { Fragment, useCallback, useEffect, useState } from "react";
 const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData, mainDocRow }) => {
   const [files, setFiles] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [allowUpdate, setAllowUpdate] = useState<boolean>(false);
+  const [allowUpdate, setAllowUpdate] = useState<boolean>(true);
   // console.log(detailsDataRef, "detailsDataRefdetailsDataRef", filesGridData)
   const customTransformFileObj = (currentObj) => {
     return transformFileObject({})(currentObj);
   };
   useEffect(() => {
     if(Boolean(detailsDataRef && detailsDataRef.NEW_FLAG)) {
-      if(detailsDataRef.NEW_FLAG === "Y") {
+      if(detailsDataRef.NEW_FLAG === "N") {
         setAllowUpdate(true)
       }
     } else {
@@ -77,6 +77,7 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
   // }, [files, setFiles]);
 
   useEffect(() => {
+    // console.log("wehfiuwqefhwiuefhweihfiuwehfu detailsDataRef", detailsDataRef)
     if(detailsDataRef && Boolean(detailsDataRef?.DOC_IMAGE)) {
         const fileBlob = utilFunction.blobToFile(
             utilFunction.base64toBlob(
@@ -104,90 +105,53 @@ const FilePreviewUpload = ({ myRef, open, setOpen, detailsDataRef, filesGridData
 
 
   const onSave = async () => {
-    // console.log(files, "file change... iqwuehfiweufhweif", filesGridData)
-    const DOC_IMAGE = "";
+    let base64Data = "";
+    let docImage = "";
+    let imageType = "";
     if(Boolean(files) && Boolean(files.blob)) {
-        let base64Data = await utilFunction.convertBlobToBase64(files?.blob);
-        // console.log("iqwuehfiweufhweif weioufhwiehfwfwef", base64Data)
-        if(Array.isArray(base64Data) && base64Data.length>1) {
-          // console.log(filesGridData, "mySubGridData")
-            myRef?.current.setGridData(old => {
-              // console.log("olddddd", old)
-
-              let fileRowsResult = filesGridData;
-              if(Array.isArray(filesGridData) && filesGridData.filter(fileRow => fileRow?.LINE_CD === detailsDataRef?.LINE_CD)?.length>0) {
-                fileRowsResult = filesGridData.map(fileRow => {
-                  if(fileRow?.LINE_CD === detailsDataRef?.LINE_CD) {
-                    // console.log(detailsDataRef, "fiwuhefw ext", fileRow)
-                    // console.log('qweqweqweqwe', {/
-                    //   ...fileRow,
-                    //   ...mainDocRow,
-                    //   DOC_IMAGE: base64Data[1],
-                    //   IMG_TYPE: files?.blob?.type,
-                    //   _isTouchedCol: {
-                    //     ...fileRow._isTouchedCol,
-                    //     DOC_IMAGE: true
-                    //   } 
-                    // })
-                    return {
-                      ...fileRow,
-                      ...mainDocRow,
-                      DOC_IMAGE: base64Data[1],
-                      IMG_TYPE: files?.blob?.type,
-                      _isTouchedCol: {
-                        ...fileRow._isTouchedCol,
-                        DOC_IMAGE: true
-                      }
-                    }
-                  } else return fileRow;
-                })
-              } else {
-                // console.log("fiwuhefw new", detailsDataRef)
-                fileRowsResult.push({
-                  ...detailsDataRef,
-                  DOC_IMAGE: base64Data[1],
-                  IMG_TYPE: files?.blob?.type
-                })
-              }
-              return [...fileRowsResult]
-            })
-        }
-    } else {
-      myRef?.current.setGridData(old => {
-        console.log("olddddd else", old)
-        let fileRowsResult = filesGridData;
-        if(Array.isArray(filesGridData) && filesGridData.filter(fileRow => fileRow?.LINE_CD === detailsDataRef?.LINE_CD)?.length>0) {
-          fileRowsResult = filesGridData.map(fileRow => {
-            if(fileRow?.LINE_CD === detailsDataRef?.LINE_CD) {
-              console.log("qweqweqweqwe", {
-                ...fileRow,
-                ...mainDocRow,
-                DOC_IMAGE: "",
-                IMG_TYPE: "",
-                _isTouchedCol: {
-                  ...fileRow._isTouchedCol,
-                  DOC_IMAGE: true
-                }
-              })
-              return {
-                ...fileRow,
-                ...mainDocRow,
-                DOC_IMAGE: "",
-                IMG_TYPE: ""
-              }
-            } else return fileRow;
-          })
-        } else {
-          fileRowsResult.push({
-            ...detailsDataRef,
-            DOC_IMAGE: "",
-            IMG_TYPE: ""
-          })
-        }
-        return [...fileRowsResult]
-      })
+      base64Data = await utilFunction.convertBlobToBase64(files?.blob);
+      if(Array.isArray(base64Data) && base64Data.length>1) {
+        docImage = base64Data[1];
+        imageType = files?.blob?.type;
+      }
     }
-    setOpen(false)
+        myRef?.current.setGridData(old => {
+          let newGridArr = old;
+          if(!Boolean(detailsDataRef.NEW_FLAG)) {
+            newGridArr = old.map(gridRow => {
+              if(gridRow.LINE_CD === detailsDataRef.LINE_CD 
+                && gridRow.DOC_IMAGE !== docImage) {
+                return {
+                  ...gridRow,
+                  DOC_IMAGE: docImage,
+                  IMG_TYPE: imageType,
+                }
+              } else {
+                return gridRow;
+              }
+            })
+          } else {
+            newGridArr = old.map(gridRow => {
+              if(gridRow.LINE_CD === detailsDataRef.LINE_CD
+                && gridRow.DOC_IMAGE !== docImage
+              ) {
+                return {
+                  ...gridRow,
+                  DOC_IMAGE: docImage,
+                  IMG_TYPE: imageType,
+                  _isTouchedCol: {
+                    ...gridRow._isTouchedCol,
+                    DOC_IMAGE: true
+                  }
+                }
+              } else {
+                return gridRow;
+              }
+            })
+          }
+          return newGridArr;
+        })
+        setOpen(false)
   }
 
   const onClose = () => {

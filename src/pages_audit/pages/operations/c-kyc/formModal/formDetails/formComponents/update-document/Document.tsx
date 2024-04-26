@@ -81,7 +81,7 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
   });
 
   useEffect(() => {
-    console.log(">>doc stateeeeeeee", state);
+    // console.log(">>doc stateeeeeeee", state);
     custDTLMutation.mutate(payload);
   }, []);
 
@@ -146,7 +146,7 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
           REQ_CD: reqCD,
           _isDeleteRow: true,
           IS_FROM_MAIN:
-          custDTLMutation.data?.[0]?.DOC_MST?.[0]?.IS_FROM_MAIN ?? "N",
+          currRowRef.current?.IS_FROM_MAIN ?? "N",
           NEW_FLAG: "N",  
           DETAILS_DATA: {
             isDeleteRow: [],
@@ -208,7 +208,7 @@ const UpdateDocument = ({ open, onClose, viewMode }) => {
           // refetchData={() => refetch()}
           ref={myGridRef}
           onClickActionEvent={(index, id, currentData) => {
-            console.log(">>doc onClickActionEvent", index, id, currentData);
+            // console.log(">>doc onClickActionEvent", index, id, currentData);
             if (id === "_hidden") {
               setIsDelConfirm(true);
               currRowRef.current = currentData;
