@@ -17,8 +17,8 @@ export const ChequeDtlGridMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "57vh",
-      max: "57vh",
+      min: "50vh",
+      max: "50vh",
     },
     allowFilter: false,
     allowColumnHiding: false,

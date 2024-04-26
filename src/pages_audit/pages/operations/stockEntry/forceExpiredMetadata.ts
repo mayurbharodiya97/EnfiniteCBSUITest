@@ -336,6 +336,7 @@ export const forceExpireStockMetaData = {
       },
       name: "WITHDRAW_DT",
       label: "Expire Date",
+      isWorkingDate: true,
       fullWidth: true,
       GridProps: {
         xs: 12,

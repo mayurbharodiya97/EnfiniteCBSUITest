@@ -1280,6 +1280,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSVIEWDELDTL",
     packageName: "",
   },
+  DOCHQBKCONFIRMATION: {
+    url: "/chequeServiceAPI/DOCHQBKCONFIRMATION",
+    packageName: "",
+  },
 };
 
 export const GetAPIURLFromAction = (action, pname) => {

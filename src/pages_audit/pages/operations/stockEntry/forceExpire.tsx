@@ -15,21 +15,14 @@ import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { forceExpireStockMetaData } from "./forceExpiredMetadata";
 import { crudStockData } from "./api";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
   const { state: rows }: any = useLocation();
   const { authState } = useContext(AuthContext);
 
-  let newIntialData = {
-    ...rows?.[0]?.data,
-    WITHDRAW_DT: rows?.[0]?.data?.WITHDRAW_DT
-      ? rows?.[0]?.data?.WITHDRAW_DT
-      : authState?.workingDate,
-  };
-  console.log("<<<rows", rows);
-
   const forceExpire: any = useMutation("crudStockData", crudStockData, {
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       navigate(".");
       enqueueSnackbar("Force-Expired successfully", { variant: "success" });
       stockEntryGridData.mutate({
@@ -59,8 +52,6 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
   }, [rows?.[0]?.data]);
 
   const onSubmitHandler = (data: any, displayData, endSubmit) => {
-    console.log("<<<savehandle", data);
-
     let apiReq = {
       // ...data,
       // _isNewRow: false,
@@ -107,7 +98,9 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
           </div>
         ) : forceExpire.isLoading ? (
           <LinearProgress color="secondary" />
-        ) : null}
+        ) : (
+          <LinearProgressBarSpacer />
+        )}
         {/* ALLOW_FORCE_EXPIRE_FLAG */}
         <FormWrapper
           key={"stock-force-exp"}
@@ -115,9 +108,14 @@ export const ForceExpireStock = ({ navigate, stockEntryGridData }) => {
           displayMode={
             rows?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y" ? "view" : null
           }
-          initialValues={newIntialData ?? []}
+          initialValues={rows?.[0]?.data ?? []}
           onSubmitHandler={onSubmitHandler}
-          loading={forceExpire.isLoading}
+          formStyle={{
+            background: "white",
+            height: "calc(100vh - 367px)",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
         >
           {({ isSubmitting, handleSubmit }) => {
             console.log("isSubmitting, handleSubmit", isSubmitting);

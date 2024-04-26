@@ -2,9 +2,8 @@
 
 import { isValid } from "date-fns/esm";
 import { t } from "i18next";
-import * as API from "./api";
 
-export const chequebookRetrievalMetadata = {
+export const chequeBKRetrievalMetadata = {
   form: {
     name: "retrieve-para",
     label: "Retrieve Parameters",
@@ -103,7 +102,6 @@ export const chequebookRetrievalMetadata = {
       },
       name: "FLAG",
       shouldExclude: (fieldData) => {
-        console.log("<<<fi", fieldData);
         if (fieldData?.value === "B" || fieldData?.value === "A") {
           return false;
         } else {

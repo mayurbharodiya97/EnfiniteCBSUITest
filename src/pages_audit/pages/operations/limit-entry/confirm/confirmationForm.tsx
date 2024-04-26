@@ -5,9 +5,8 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { limitconfirmFormMetaData } from "./confirmFormMetadata";
 
-export const LimitConfirmationForm = ({ navigate }) => {
+export const LimitConfirmationForm = ({ closeDialog }) => {
   const { state: rows }: any = useLocation();
-  console.log("<<<rer", rows);
 
   useEffect(() => {
     if (rows?.[0]?.data) {
@@ -52,10 +51,10 @@ export const LimitConfirmationForm = ({ navigate }) => {
                 <Button color="primary" onClick={handleSubmit}>
                   Confirm
                 </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={() => closeDialog()}>
                   Reject
                 </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={() => closeDialog()}>
                   close
                 </Button>
               </>

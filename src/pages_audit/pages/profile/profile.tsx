@@ -391,9 +391,9 @@ export const Profile = () => {
                           </>
                         ) : value === "tab2" ? (
                           <UserDetail />
-                        ) : value === "tab3" ? (
-                          <ChangePassword />
                         ) : value === "tab4" ? (
+                          <ChangePassword />
+                        ) : value === "tab3" ? (
                           <AllowedAccess />
                         ) : value === "tab5" ? (
                           <PersonalizeDash />

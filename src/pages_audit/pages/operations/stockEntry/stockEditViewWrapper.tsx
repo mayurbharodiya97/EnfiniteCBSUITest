@@ -1,21 +1,14 @@
 import {
   AppBar,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
-  LinearProgress,
-  Tooltip,
 } from "@mui/material";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { stockViewEditMSTMetaData } from "./stockEditViewMetadata";
 import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "react-query";
@@ -25,9 +18,7 @@ import { MasterDetailsForm } from "components/formcomponent";
 import { transformFileObject } from "components/fileUpload/utils";
 import { utilFunction } from "components/utils";
 import { GradientButton } from "components/styledComponent/button";
-import { useStyles } from "pages_audit/pages/profile/profilePhotoUpload/style";
 import { Alert } from "components/common/alert";
-import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
 import { enqueueSnackbar } from "notistack";
 import { AuthContext } from "pages_audit/auth";
@@ -38,9 +29,6 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
   const myImgRef = useRef<any>(null);
   const myRef = useRef<any>(null);
   const { authState } = useContext(AuthContext);
-  // const [formMode, setFormMode] = useState("view");
-  // const moveToViewMode = useCallback(() => setFormMode("view"), [setFormMode]);
-  // const moveToEditMode = useCallback(() => setFormMode("edit"), [setFormMode]);
 
   const viewDocuments = useQuery<any, any>(["viewDocument"], () =>
     viewDocument({
@@ -79,7 +67,6 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
     },
     onError: (error: any) => {},
   });
-  console.log("<<<uploadDocuments", uploadDocuments);
 
   useEffect(() => {
     return () => {
@@ -239,8 +226,6 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
                 ...rows?.[0]?.data,
                 DETAILS_DATA: viewDocuments?.data,
               }}
-              // displayMode={"edit"}
-              // displayMode={formMode}
               onSubmitData={onSubmitHandler}
               isLoading={uploadDocuments?.isLoading}
               isNewRow={false}
@@ -277,22 +262,13 @@ export const StockEditViewWrapper = ({ navigate, stockEntryGridData }) => {
                     >
                       Add New Document
                     </Button>
-                    {/* <Button onClick={moveToEditMode} color={"primary"}>
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={moveToViewMode}
-                      // disabled={isSubmitting}
-                      // color={"primary"}
-                    >
-                      View
-                    </Button> */}
+
                     <Button
                       onClick={handleSubmit}
                       // disabled={isSubmitting}
-                      // endIcon={
-                      //   isSubmitting ? <CircularProgress size={20} /> : null
-                      // }
+                      endIcon={
+                        isSubmitting ? <CircularProgress size={20} /> : null
+                      }
                       color={"primary"}
                     >
                       Save

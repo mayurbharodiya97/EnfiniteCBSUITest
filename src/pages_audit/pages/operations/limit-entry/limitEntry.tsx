@@ -88,7 +88,7 @@ const LimitEntryCustom = () => {
   const { MessageBox } = usePopupContext();
   const deleteDataRef = useRef<any>(null);
   const myMasterRef = useRef<any>(null);
-  const initialValuesRef = useRef<any>(null);
+  const acctValidDataRef = useRef<any>({});
   const navigate = useNavigate();
 
   const securityLimitData: any = useMutation(
@@ -284,7 +284,6 @@ const LimitEntryCustom = () => {
             setGridDetailData([]);
             if (newValue === "tab2") {
               myMasterRef?.current?.getFieldData().then((res) => {
-                initialValuesRef.current = res;
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   limitEntryGridMetaData.gridConfig.gridLabel = `Limit-Entry Detail \u00A0\u00A0 ${(
                     authState?.companyID +
@@ -361,193 +360,188 @@ const LimitEntryCustom = () => {
             <LinearProgressBarSpacer />
           )}
 
-          {value === "tab1" ? (
-            <>
-              <FormWrapper
-                key={"limitEntryForm" + formRefresh}
-                metaData={newFormMTdata as MetaDataType}
-                initialValues={initialValuesRef.current ?? {}}
-                onSubmitHandler={(data: any, displayData, endSubmit) => {
-                  console.log("<<<adadaad", data);
-                  setCloseAlert(true);
-                  let apiReq = {
-                    ...data,
-                    ACCT_CD: data?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
-                  };
-                  validateInsertData.mutate(apiReq);
-                  //@ts-ignore
-                  endSubmit(true);
-                }}
-                hideHeader={false}
-                ref={myMasterRef}
-                formState={{ MessageBox: MessageBox }}
-                setDataOnFieldChange={(action, payload) => {
-                  if (action === "SECURITY_CODE") {
-                    setCloseAlert(false);
-                    // setNewFormMTdata({ ...limitEntryMetaData });
-                    securityLimitData.mutate({
-                      ...payload,
-                      COMP_CD: authState?.companyID,
-                      BRANCH_CD: authState?.user?.branchCode,
-                      WORKING_DATE: authState?.workingDate,
-                    });
-                  }
+          <div style={{ display: value === "tab1" ? "inherit" : "none" }}>
+            <FormWrapper
+              key={"limitEntryForm" + formRefresh}
+              metaData={newFormMTdata as MetaDataType}
+              initialValues={{}}
+              onSubmitHandler={(data: any, displayData, endSubmit) => {
+                setCloseAlert(true);
+                let apiReq = {
+                  ...data,
+                  ACCT_CD: data?.ACCT_CD?.padStart(6, "0")?.padEnd(20, " "),
+                };
+                validateInsertData.mutate(apiReq);
+                //@ts-ignore
+                endSubmit(true);
+              }}
+              hideHeader={false}
+              ref={myMasterRef}
+              formState={{ MessageBox: MessageBox }}
+              setDataOnFieldChange={(action, payload) => {
+                setNewFormMTdata({ ...limitEntryMetaData });
 
-                  if (action === "NSC_FD_BTN") {
-                    setIsVisible(payload?.NSC_FD_BTN);
-                  }
-                }}
-              >
-                {({ isSubmitting, handleSubmit }) => {
-                  return (
-                    <>
-                      {isVisible ? (
-                        <>
-                          <Button
-                            color="primary"
-                            // disabled={isSubmitting}
-                            onClick={async () => {
-                              const buttonName = await MessageBox({
-                                messageTitle: "Confirmation...",
-                                message: `
+                if (action === "SECURITY_CODE") {
+                  setCloseAlert(false);
+                  securityLimitData.mutate({
+                    ...payload,
+                    ...acctValidDataRef.current,
+                    COMP_CD: authState?.companyID,
+                    BRANCH_CD: authState?.user?.branchCode,
+                    WORKING_DATE: authState?.workingDate,
+                  });
+                }
+                if (action === "NSC_FD_BTN") {
+                  setIsVisible(payload?.NSC_FD_BTN);
+                  acctValidDataRef.current = { ...payload };
+                }
+              }}
+            >
+              {({ isSubmitting, handleSubmit }) => {
+                return (
+                  <>
+                    {isVisible ? (
+                      <>
+                        <Button
+                          color="primary"
+                          // disabled={isSubmitting}
+                          onClick={async () => {
+                            const buttonName = await MessageBox({
+                              messageTitle: "Confirmation...",
+                              message: `
                                     Press 'Yes' then - to view Lien FD(s) against this A/c.                               ,                             
                                     Press 'No' then to view all the FD(s) of
                                     this Customer.
                                 `,
-                                buttonNames: ["Yes", "No"],
-                              });
+                              buttonNames: ["Yes", "No"],
+                            });
 
-                              myMasterRef?.current
-                                ?.getFieldData()
-                                .then((res) => {
-                                  if (
-                                    res?.ACCT_CD &&
-                                    res?.ACCT_TYPE &&
-                                    res?.BRANCH_CD
-                                  ) {
-                                    const FD_DTLRequestPara = {
-                                      COMP_CD: authState?.companyID,
-                                      ACCT_CD: res?.ACCT_CD?.padStart(
-                                        6,
-                                        "0"
-                                      )?.padEnd(20, " "),
-                                      ACCT_TYPE: res?.ACCT_TYPE,
-                                      BRANCH_CD: res?.BRANCH_CD,
-                                      LOGIN_COMP_CD: authState?.companyID,
-                                      FLAG:
-                                        buttonName === "Yes"
-                                          ? "L"
-                                          : buttonName === "No"
-                                          ? "C"
-                                          : null,
-                                    };
+                            myMasterRef?.current?.getFieldData().then((res) => {
+                              if (
+                                res?.ACCT_CD &&
+                                res?.ACCT_TYPE &&
+                                res?.BRANCH_CD
+                              ) {
+                                const FD_DTLRequestPara = {
+                                  COMP_CD: authState?.companyID,
+                                  ACCT_CD: res?.ACCT_CD?.padStart(
+                                    6,
+                                    "0"
+                                  )?.padEnd(20, " "),
+                                  ACCT_TYPE: res?.ACCT_TYPE,
+                                  BRANCH_CD: res?.BRANCH_CD,
+                                  LOGIN_COMP_CD: authState?.companyID,
+                                  FLAG:
+                                    buttonName === "Yes"
+                                      ? "L"
+                                      : buttonName === "No"
+                                      ? "C"
+                                      : null,
+                                };
 
-                                    fdDetail.mutate(FD_DTLRequestPara);
-                                  }
-                                });
-                            }}
-                          >
-                            FD Detail
-                          </Button>
-                          <Button
-                            color="primary"
-                            onClick={() => {
-                              setDetailForm("nscdetail");
-                              myMasterRef?.current
-                                ?.getFieldData()
-                                .then((res) => {
-                                  if (
-                                    res?.ACCT_CD &&
-                                    res?.ACCT_TYPE &&
-                                    res?.BRANCH_CD
-                                  ) {
-                                    const NSC_DTLRequestPara = {
-                                      COMP_CD: authState?.companyID,
-                                      ACCT_CD: res?.ACCT_CD?.padStart(
-                                        6,
-                                        "0"
-                                      )?.padEnd(20, " "),
-                                      ACCT_TYPE: res?.ACCT_TYPE,
-                                      BRANCH_CD: res?.BRANCH_CD,
-                                    };
-                                    nscDetail.mutate(NSC_DTLRequestPara);
-                                  }
-                                });
-                            }}
-                          >
-                            NSC Detail
-                          </Button>
-                        </>
-                      ) : null}
+                                fdDetail.mutate(FD_DTLRequestPara);
+                              }
+                            });
+                          }}
+                        >
+                          FD Detail
+                        </Button>
+                        <Button
+                          color="primary"
+                          onClick={() => {
+                            setDetailForm("nscdetail");
+                            myMasterRef?.current?.getFieldData().then((res) => {
+                              if (
+                                res?.ACCT_CD &&
+                                res?.ACCT_TYPE &&
+                                res?.BRANCH_CD
+                              ) {
+                                const NSC_DTLRequestPara = {
+                                  COMP_CD: authState?.companyID,
+                                  ACCT_CD: res?.ACCT_CD?.padStart(
+                                    6,
+                                    "0"
+                                  )?.padEnd(20, " "),
+                                  ACCT_TYPE: res?.ACCT_TYPE,
+                                  BRANCH_CD: res?.BRANCH_CD,
+                                };
+                                nscDetail.mutate(NSC_DTLRequestPara);
+                              }
+                            });
+                          }}
+                        >
+                          NSC Detail
+                        </Button>
+                      </>
+                    ) : null}
 
-                      <Button
-                        onClick={(event) => {
-                          handleSubmit(event, "Save");
-                        }}
-                        // disabled={isSubmitting}
-                        endIcon={
-                          isSubmitting ? <CircularProgress size={20} /> : null
-                        }
-                        color={"primary"}
-                      >
-                        Save
-                      </Button>
-                    </>
-                  );
-                }}
-              </FormWrapper>
-            </>
-          ) : value === "tab2" ? (
-            <>
-              {getLimitDetail?.isError ||
-                (validateDeleteData?.isError && (
-                  <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-                    <AppBar position="relative" color="primary">
-                      <Alert
-                        severity="error"
-                        errorMsg={
-                          getLimitDetail?.error?.error_msg ??
-                          validateDeleteData?.error?.error_msg ??
-                          "Unknow Error"
-                        }
-                        errorDetail={
-                          getLimitDetail?.error?.error_detail ??
-                          validateDeleteData?.error?.error_detail ??
-                          ""
-                        }
-                        color="error"
-                      />
-                    </AppBar>
-                  </div>
-                ))}
-              <GridWrapper
-                key={`limitentrygridMetaData`}
-                finalMetaData={limitEntryGridMetaData as GridMetaDataType}
-                data={gridDetailData ?? []}
-                loading={
-                  getLimitDetail?.isLoading ?? validateDeleteData?.isLoading
-                }
-                setData={() => {}}
-                actions={forceExpireActions}
-                setAction={setCurrentAction}
-                onClickActionEvent={(index, id, data) => {
-                  deleteDataRef.current = data;
-                  validateDeleteData.mutate(data);
-                }}
-              />
-              <Routes>
-                <Route
-                  path="forceExpire/*"
-                  element={
-                    <ForceExpire
-                      navigate={navigate}
-                      getLimitDetail={getLimitDetail}
+                    <Button
+                      onClick={(event) => {
+                        handleSubmit(event, "Save");
+                      }}
+                      // disabled={isSubmitting}
+                      endIcon={
+                        isSubmitting ? <CircularProgress size={20} /> : null
+                      }
+                      color={"primary"}
+                    >
+                      Save
+                    </Button>
+                  </>
+                );
+              }}
+            </FormWrapper>
+          </div>
+
+          <div style={{ display: value === "tab2" ? "inherit" : "none" }}>
+            {getLimitDetail?.isError ||
+              (validateDeleteData?.isError && (
+                <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+                  <AppBar position="relative" color="primary">
+                    <Alert
+                      severity="error"
+                      errorMsg={
+                        getLimitDetail?.error?.error_msg ??
+                        validateDeleteData?.error?.error_msg ??
+                        "Unknow Error"
+                      }
+                      errorDetail={
+                        getLimitDetail?.error?.error_detail ??
+                        validateDeleteData?.error?.error_detail ??
+                        ""
+                      }
+                      color="error"
                     />
-                  }
-                />
-              </Routes>
-            </>
-          ) : null}
+                  </AppBar>
+                </div>
+              ))}
+            <GridWrapper
+              key={`limitentrygridMetaData`}
+              finalMetaData={limitEntryGridMetaData as GridMetaDataType}
+              data={gridDetailData ?? []}
+              loading={
+                getLimitDetail?.isLoading ?? validateDeleteData?.isLoading
+              }
+              setData={() => {}}
+              actions={forceExpireActions}
+              setAction={setCurrentAction}
+              onClickActionEvent={(index, id, data) => {
+                deleteDataRef.current = data;
+                validateDeleteData.mutate(data);
+              }}
+            />
+            <Routes>
+              <Route
+                path="forceExpire/*"
+                element={
+                  <ForceExpire
+                    navigate={navigate}
+                    getLimitDetail={getLimitDetail}
+                  />
+                }
+              />
+            </Routes>
+          </div>
         </Grid>
       </Container>
 

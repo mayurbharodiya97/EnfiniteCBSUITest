@@ -319,7 +319,6 @@ export const temporaryODentryMetadata = {
         componentType: "editableDatePicker",
         alignment: "center",
         validation: (value, data, prev) => {
-          console.log("<<<valida", value, data, prev);
           if (!Boolean(value)) {
             return "This field is required.";
           }

@@ -120,7 +120,6 @@ export const LimitSecurityData = async (apiReqPara) => {
             };
             // item.dependentFields = [];
             // item.validate = (columnValue, allField, flag) => {
-            //   console.log("<<<valalerr", columnValue, allField, flag);
             //   if (!Boolean(columnValue)) {
             //     // return "FD-Branch ttt Code is required.";
             //     return "";
@@ -718,7 +717,11 @@ export const LimitSecurityData = async (apiReqPara) => {
               }
             };
           } else if (item.name === "CHARGE_AMT") {
-            item.defaultValue = apiReqPara?.HDN_CHARGE_AMT;
+            // item.defaultValue = apiReqPara?.HDN_CHARGE_AMT;
+            item.dependentFields = ["SECURITY_CD"];
+            item.setValueOnDependentFieldsChange = (dependentFields) => {
+              return apiReqPara?.HDN_CHARGE_AMT;
+            };
             item.postValidationSetCrossFieldValues = (field) => {
               if (field.value) {
                 return {
@@ -751,7 +754,11 @@ export const LimitSecurityData = async (apiReqPara) => {
               return {};
             };
           } else if (item.name === "SERVICE_TAX") {
-            item.defaultValue = apiReqPara?.HDN_GST_AMT;
+            // item.defaultValue = apiReqPara?.HDN_GST_AMT;
+            item.dependentFields = ["SECURITY_CD"];
+            item.setValueOnDependentFieldsChange = (dependentFields) => {
+              return apiReqPara?.HDN_GST_AMT;
+            };
           }
           return item;
         })
@@ -888,6 +895,9 @@ export const getLimitDTL = async (limitDetail) => {
       }
       if (item?.CONFIRMED === "Y") {
         item._rowColor = "rgb(9 132 3 / 51%)";
+        item.CONFIRMED = "Confirmed";
+      } else {
+        item.CONFIRMED = "Pending";
       }
 
       item.MARGIN = parseFloat(item.MARGIN).toFixed(2);
