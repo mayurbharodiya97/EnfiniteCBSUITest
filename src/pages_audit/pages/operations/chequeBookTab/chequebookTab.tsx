@@ -9,7 +9,6 @@ import {
   LinearProgress,
   Tab,
   Tabs,
-  Typography,
 } from "@mui/material";
 import React, {
   useCallback,
@@ -41,7 +40,6 @@ import { ChequeDtlGrid } from "./chequeDetail";
 import { RemarksAPIWrapper } from "components/custom/Remarks";
 import { usePopupContext } from "components/custom/popupContext";
 import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
-import { MessageBoxWrapper } from "components/custom/messageBox";
 import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
 
 export const ChequebookTab = () => {
@@ -77,9 +75,8 @@ export const ChequebookTab = () => {
   const [closeAlert, setCloseAlert] = useState<any>(true);
   const [chequeBookData, setChequeBookData] = useState<any>([]);
   const [gridDetailData, setGridDetailData] = useState<any>();
-  const [chequeDtlRefresh, setChequeDtlRefresh] = useState(0);
+  const [formRefresh, setFormRefresh] = useState(0);
   const [isOpenSave, setIsOpenSave] = useState(false);
-  const [initData, setInitData] = useState<any>({});
   const { authState } = useContext(AuthContext);
   const { MessageBox } = usePopupContext();
   const myMasterRef = useRef<any>(null);
@@ -112,8 +109,8 @@ export const ChequebookTab = () => {
         } else if (variables?.DETAILS_DATA?.isNewRow.length) {
           setIsOpenSave(false);
           setChequeBookData([]);
-          setInitData({});
-          setChequeDtlRefresh((old) => old + 1);
+
+          setFormRefresh((old) => old + 1);
           myMasterRef?.current?.handleFormReset({ preventDefault: () => {} });
           setIsTabVisible(false);
           enqueueSnackbar("Data insert successfully", { variant: "success" });
@@ -180,22 +177,23 @@ export const ChequebookTab = () => {
       COMP_CD: authState?.companyID,
       CHEQUE_FROM: Number(data?.CHEQUE_FROM),
       CHEQUE_TO: Number(data?.CHEQUE_TO),
+      CHEQUE_BK_TOTAL: Number(data?.CHEQUE_BK_TOTAL),
       CHEQUE_TOTAL: Number(data?.CHEQUE_TOTAL),
-      LEAF_ARR: Number(data?.LEAF_ARR),
     };
     let newArray: any = [];
 
-    if (reqPara.CHEQUE_TOTAL > 1 && reqPara?.CHEQUE_TO) {
+    if (reqPara.CHEQUE_BK_TOTAL > 1 && reqPara?.CHEQUE_TO) {
       for (
         let i = reqPara.CHEQUE_FROM;
         i <=
-        reqPara.CHEQUE_FROM + (reqPara.CHEQUE_TOTAL - 1) * reqPara?.LEAF_ARR;
-        i += reqPara?.LEAF_ARR
+        reqPara.CHEQUE_FROM +
+          (reqPara.CHEQUE_BK_TOTAL - 1) * reqPara?.CHEQUE_TOTAL;
+        i += reqPara?.CHEQUE_TOTAL
       ) {
         newArray.push({
           ...reqPara,
           CHEQUE_FROM: i,
-          CHEQUE_TO: i + reqPara?.LEAF_ARR - 1,
+          CHEQUE_TO: i + reqPara?.CHEQUE_TOTAL - 1,
         });
       }
       setChequeBookData(newArray.length > 1 && newArray);
@@ -243,10 +241,10 @@ export const ChequebookTab = () => {
 
   useEffect(() => {
     ChequeBKPopUpGridData.gridConfig.footerNote = `Total Cheque : ${
-      chequeBookData?.[0]?.CHEQUE_TOTAL * chequeBookData?.[0]?.LEAF_ARR
+      chequeBookData?.[0]?.CHEQUE_BK_TOTAL * chequeBookData?.[0]?.CHEQUE_TOTAL
     }  \u00A0\u00A0  Total Charge : 
     ${
-      chequeBookData?.[0]?.CHEQUE_TOTAL * chequeBookData?.[0]?.SERVICE_TAX
+      chequeBookData?.[0]?.CHEQUE_BK_TOTAL * chequeBookData?.[0]?.SERVICE_TAX
     }     `;
   }, [chequeBookData]);
 
@@ -263,8 +261,6 @@ export const ChequebookTab = () => {
 
             if (newValue === "chequebookDetail") {
               myMasterRef?.current?.getFieldData().then((res) => {
-                setInitData(res);
-
                 if (res?.ACCT_CD && res?.ACCT_TYPE && res?.BRANCH_CD) {
                   ChequebookDtlGridMetaData.gridConfig.gridLabel = `Cheque Book Issued\u00A0\u00A0 ${(
                     authState?.companyID +
@@ -330,94 +326,99 @@ export const ChequebookTab = () => {
           ) : (
             <LinearProgressBarSpacer />
           )}
-          {value === "chequebookEntry" ? (
-            <>
-              <FormWrapper
-                key={"chequebooksEntry" + chequeDtlRefresh}
-                metaData={ChequeBookEntryMetaData as MetaDataType}
-                initialValues={initData ?? {}}
-                onSubmitHandler={onSubmitHandler}
-                ref={myMasterRef}
-                formState={{ MessageBox: MessageBox }}
-                setDataOnFieldChange={(action, payload) => {
-                  if (action === "DTL_TAB") {
-                    setIsTabVisible(payload.DTL_TAB);
-                  }
-                  if (action === "CHEQUE_TOTAL") {
-                    myMasterRef?.current?.handleSubmit(
-                      { preventDefault: () => {} },
-                      "Save"
-                    );
-                  }
-                }}
-              >
-                {({ isSubmitting, handleSubmit }) => (
-                  <>
-                    <Button
-                      onClick={(event) => {
-                        handleSubmit(event, "Save");
-                      }}
-                      disabled={isSubmitting}
-                      endIcon={
-                        isSubmitting ? <CircularProgress size={20} /> : null
-                      }
-                      color={"primary"}
-                    >
-                      Save
-                    </Button>
-                  </>
-                )}
-              </FormWrapper>
-            </>
-          ) : value === "chequebookDetail" ? (
-            <>
-              {getChequeDetail?.isError && (
-                <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
-                  <AppBar position="relative" color="primary">
-                    <Alert
-                      severity="error"
-                      errorMsg={
-                        getChequeDetail?.error?.error_msg ?? "Unknow Error"
-                      }
-                      errorDetail={getChequeDetail?.error?.error_detail ?? ""}
-                      color="error"
-                    />
-                  </AppBar>
-                </div>
+          <div
+            style={{
+              display: value === "chequebookEntry" ? "inherit" : "none",
+            }}
+          >
+            <FormWrapper
+              key={"chequebooksEntry" + formRefresh}
+              metaData={ChequeBookEntryMetaData as MetaDataType}
+              initialValues={{}}
+              onSubmitHandler={onSubmitHandler}
+              ref={myMasterRef}
+              formState={{ MessageBox: MessageBox }}
+              setDataOnFieldChange={(action, payload) => {
+                if (action === "DTL_TAB") {
+                  setIsTabVisible(payload.DTL_TAB);
+                }
+                if (action === "CHEQUE_BK_TOTAL") {
+                  myMasterRef?.current?.handleSubmit(
+                    { preventDefault: () => {} },
+                    "Save"
+                  );
+                }
+              }}
+            >
+              {({ isSubmitting, handleSubmit }) => (
+                <>
+                  <Button
+                    onClick={(event) => {
+                      handleSubmit(event, "Save");
+                    }}
+                    disabled={isSubmitting}
+                    endIcon={
+                      isSubmitting ? <CircularProgress size={20} /> : null
+                    }
+                    color={"primary"}
+                  >
+                    Save
+                  </Button>
+                </>
               )}
-              <GridWrapper
-                key={`chequebookDetail` + getChequeDetail.isSuccess}
-                finalMetaData={ChequebookDtlGridMetaData as GridMetaDataType}
-                data={gridDetailData ?? []}
-                setData={setGridDetailData}
-                loading={getChequeDetail.isLoading}
-                actions={chequeActions}
-                setAction={setChequeBKPopUpActiont}
-                onClickActionEvent={(index, id, data) => {
-                  let apireq = {
-                    ...data,
-                    CONFIRMED: data.CONFIRMED === "Pending" ? "N" : "Y",
-                    AUTO_CHQBK_FLAG: data.AUTO_CHQBK_FLAG === "No" ? "N" : "Y",
-                  };
-                  deleteDataRef.current = apireq;
-                  validateDelete.mutate(apireq);
-                }}
-              />
+            </FormWrapper>
+          </div>
+          <div
+            style={{
+              display: value === "chequebookDetail" ? "inherit" : "none",
+            }}
+          >
+            {getChequeDetail?.isError && (
+              <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
+                <AppBar position="relative" color="primary">
+                  <Alert
+                    severity="error"
+                    errorMsg={
+                      getChequeDetail?.error?.error_msg ?? "Unknow Error"
+                    }
+                    errorDetail={getChequeDetail?.error?.error_detail ?? ""}
+                    color="error"
+                  />
+                </AppBar>
+              </div>
+            )}
+            <GridWrapper
+              key={`chequebookDetail` + getChequeDetail.isSuccess}
+              finalMetaData={ChequebookDtlGridMetaData as GridMetaDataType}
+              data={gridDetailData ?? []}
+              setData={setGridDetailData}
+              loading={getChequeDetail.isLoading}
+              actions={chequeActions}
+              setAction={setChequeBKPopUpActiont}
+              onClickActionEvent={(index, id, data) => {
+                let apireq = {
+                  ...data,
+                  CONFIRMED: data.CONFIRMED === "Pending" ? "N" : "Y",
+                  AUTO_CHQBK_FLAG: data.AUTO_CHQBK_FLAG === "No" ? "N" : "Y",
+                };
+                deleteDataRef.current = apireq;
+                validateDelete.mutate(apireq);
+              }}
+            />
 
-              <Routes>
-                <Route
-                  path="view-details/*"
-                  element={
-                    <ChequeDtlGrid
-                      ClosedEventCall={() => {
-                        navigate(".");
-                      }}
-                    />
-                  }
-                />
-              </Routes>
-            </>
-          ) : null}
+            <Routes>
+              <Route
+                path="view-details/*"
+                element={
+                  <ChequeDtlGrid
+                    ClosedEventCall={() => {
+                      navigate(".");
+                    }}
+                  />
+                }
+              />
+            </Routes>
+          </div>
         </Grid>
       </Container>
 
@@ -447,7 +448,10 @@ export const ChequebookTab = () => {
 
       {deletePopup && (
         <RemarksAPIWrapper
-          TitleText={"Are you sure want to delete this record ..?"}
+          TitleText={
+            "Enter Removal Remarks for Chequebook Issue Entry (ETRN/045)"
+          }
+          label={"Removal Remarks"}
           onActionNo={() => setDeletePopup(false)}
           onActionYes={(val, rows) => {
             let deleteReqPara = {
@@ -479,27 +483,10 @@ export const ChequebookTab = () => {
         />
       )}
 
-      {/* {isOpenSave && (
-        <MessageBoxWrapper
-          MessageTitle={"Confirmation"}
-          Message={"Are you sure to insert data"}
-          onClickButton={(rows, buttonName) => {
-            if (buttonName === "Yes") {
-              crudChequeData.mutate(rows);
-            } else {
-              setIsOpenSave(false);
-            }
-          }}
-          rows={insertDataRef.current}
-          open={isOpenSave}
-          loading={crudChequeData.isLoading}
-        />
-      )} */}
-
       {isOpenSave && (
         <PopupMessageAPIWrapper
           MessageTitle={"Confirmation"}
-          Message={"Are you sure to insert data"}
+          Message={"Are you sure to Proceed ?"}
           onActionYes={(rows, buttonName) => crudChequeData.mutate(rows)}
           onActionNo={() => setIsOpenSave(false)}
           rows={insertDataRef.current}

@@ -3,15 +3,14 @@ import React, { useEffect } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
-import { stockconfirmFormMetaData } from "./confirmFormMetadata";
+import { stopPayconfirmFormMetaData } from "./confirmFormMetadata";
 
-export const StockConfirmationForm = ({ navigate }) => {
+export const StopPayConfirmationForm = ({ closeDialog }) => {
   const { state: rows }: any = useLocation();
-  console.log("<<<rer", rows);
 
   useEffect(() => {
     if (rows?.[0]?.data) {
-      stockconfirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
+      stopPayconfirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -33,14 +32,14 @@ export const StockConfirmationForm = ({ navigate }) => {
     >
       <>
         <FormWrapper
-          key={"stock-confirmation-Form"}
-          metaData={stockconfirmFormMetaData}
+          key={"stopPay-confirmation-Form"}
+          metaData={stopPayconfirmFormMetaData}
           initialValues={rows?.[0]?.data ?? []}
           displayMode="view"
           hideDisplayModeInTitle={true}
           formStyle={{
             background: "white",
-            height: "calc(100vh - 543px)",
+            height: "calc(100vh - 483px)",
             overflowY: "auto",
             overflowX: "hidden",
           }}
@@ -52,10 +51,10 @@ export const StockConfirmationForm = ({ navigate }) => {
                 <Button color="primary" onClick={handleSubmit}>
                   Confirm
                 </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={() => closeDialog()}>
                   Reject
                 </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={() => closeDialog()}>
                   close
                 </Button>
               </>

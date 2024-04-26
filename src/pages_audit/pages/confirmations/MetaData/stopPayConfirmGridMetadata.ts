@@ -1,9 +1,9 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 
-export const stockConfirmGridMetaData: GridMetaDataType = {
+export const stopPayConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Stock Confirmation",
+    gridLabel: "Stop Payment Confirmation",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 150,
@@ -23,9 +23,9 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Records of Stock Confirmation",
+    searchPlaceholder: "Records of Stop Payment Confirmation",
   },
   filters: [],
   columns: [
@@ -73,60 +73,38 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
       minWidth: 190,
       maxWidth: 290,
     },
+    {
+      accessor: "CHEQUE_FROM_TO",
+      columnName: "Cheque From - To",
+      sequence: 4,
+      alignment: "center",
+      componentType: "default",
+      width: 142,
+      minWidth: 100,
+      maxWidth: 200,
+    },
 
     {
-      accessor: "ASON_DT",
-      columnName: "Stock Ason Date",
+      accessor: "CHEQUE_DT",
+      columnName: "Cheque Date",
       sequence: 4,
       alignment: "center",
       componentType: "date",
       dateFormat: "dd/MM/yyyy",
-      width: 136,
+      width: 115,
       minWidth: 70,
       maxWidth: 150,
     },
 
     {
-      accessor: "STOCK_DESC",
-      columnName: "Stock Description",
+      accessor: "CHEQUE_AMOUNT",
+      columnName: "Cheque Amount",
       sequence: 4,
-      alignment: "left",
-      componentType: "default",
-      width: 200,
-      minWidth: 150,
-      maxWidth: 290,
-    },
-
-    {
-      accessor: "STOCK_VALUE",
-      columnName: "Stock Value",
-      sequence: 6,
       alignment: "right",
-      componentType: "default",
-      width: 93,
-      minWidth: 50,
-      maxWidth: 120,
-    },
-    {
-      accessor: "MARGIN",
-      columnName: "Margin",
-      sequence: 8,
-      alignment: "right",
-      componentType: "default",
-      width: 62,
-      minWidth: 50,
-      maxWidth: 100,
-    },
-
-    {
-      accessor: "DRAWING_POWER",
-      columnName: "Drawing Power",
-      sequence: 9,
-      alignment: "right",
-      componentType: "default",
-      width: 107,
-      minWidth: 90,
-      maxWidth: 160,
+      componentType: "currency",
+      width: 140,
+      minWidth: 100,
+      maxWidth: 200,
     },
 
     {
@@ -148,16 +126,6 @@ export const stockConfirmGridMetaData: GridMetaDataType = {
       width: 103,
       minWidth: 80,
       maxWidth: 150,
-    },
-    {
-      accessor: "DESCRIPTION",
-      columnName: "Description",
-      sequence: 9,
-      alignment: "left",
-      componentType: "default",
-      width: 180,
-      minWidth: 80,
-      maxWidth: 250,
     },
 
     {

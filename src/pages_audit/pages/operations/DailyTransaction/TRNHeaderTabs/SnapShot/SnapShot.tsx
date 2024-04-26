@@ -1,27 +1,16 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { Mutation, useMutation, useQuery } from "react-query";
+import { useCallback, useRef, useState } from "react";
+import { useQuery } from "react-query";
 import { snapShotGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 import { useSnackbar } from "notistack";
-import { Button, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 //date
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import { format } from "date-fns";
 import { DateRetrievalDialog } from "components/custom/dateRetrievalPara";
 import { useStyles } from "pages_audit/style";
 
@@ -130,7 +119,7 @@ export const SnapShot = ({ reqData }) => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading}
-        refetchData={() => {}}
+        // refetchData={() => {}}
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}

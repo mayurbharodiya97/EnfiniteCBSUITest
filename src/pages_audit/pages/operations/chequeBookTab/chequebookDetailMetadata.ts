@@ -18,8 +18,8 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
     pageSizes: [10, 20, 30],
     defaultPageSize: 10,
     containerHeight: {
-      min: "57vh",
-      max: "57vh",
+      min: "61vh",
+      max: "61vh",
     },
     allowFilter: false,
     allowColumnHiding: false,
@@ -83,7 +83,7 @@ export const ChequebookDtlGridMetaData: GridMetaDataType = {
     },
     {
       accessor: "CHEQUE_TOTAL",
-      columnName: "No of ChequeBK",
+      columnName: "No of Cheque(s)",
       sequence: 6,
       alignment: "center",
       componentType: "default",

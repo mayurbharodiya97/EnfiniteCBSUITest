@@ -64,9 +64,8 @@ export const current_tab_metadata = {
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            options: [
-                {label: "", value: ""}
-            ],
+            options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
+            _optionsKey: "directorNmCurrentOp",
         },
         {
             render: {
@@ -348,7 +347,7 @@ export const current_tab_metadata = {
             },
             name: "SUB_PRIO_CD",
             label: "Weaker",
-            dependentFields: ["PARENT_GROUP"],
+            dependentFields: ["PRIO_CD"],
             options: (dependentValue, formState, _, authState) => API.getPriorityWeakerTypeOP({COMP_CD: authState?.companyID, BRANCH_CD: authState?.user?.branchCode, dependentValue:dependentValue}), 
             _optionsKey: "weakerPrioCurrentOp",
             disableCaching: true,

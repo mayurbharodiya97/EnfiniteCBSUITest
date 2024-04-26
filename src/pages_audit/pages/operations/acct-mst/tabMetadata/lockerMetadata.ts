@@ -63,9 +63,8 @@ export const locker_tab_metadata = {
             placeholder: "",
             type: "text",
             GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
-            options: [
-                {label: "", value: ""}
-            ],
+            options: () => API.getAdvDirectorNameTypeOP({A_ROLE_IND: "D"}),
+            _optionsKey: "directorNmLockerOp",
         },
         {
             render: {

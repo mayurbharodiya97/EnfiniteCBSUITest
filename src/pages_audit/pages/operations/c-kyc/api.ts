@@ -645,7 +645,12 @@ export const DuplicationValidate = async (columnValue, allField, formState, fiel
         return "";
       }
   }
-  if(fieldValue) {
+  if(fieldValue && typeof fieldValue === "object") {
+    if(Object.keys(fieldValue).includes("ELECTION_CARD_NO")) {
+      if (/[~`!@#$%^&*()-+={}:"<>?,._-]/g.test(columnValue?.value)) {
+        return "Special characters are not allowed.";
+      }
+    }
     let keys = Object.keys(fieldValue)
     if(keys.length === 1 && (Boolean(fieldValue[keys[0]]))) {
       const { data, status, message, messageDetails } =
@@ -1138,7 +1143,7 @@ export const getControllCustInfo = async ({COMP_CD, BRANCH_CD, CUSTOMER_ID, FROM
 
 export const TrimSpaceValidation = (columnValue, allField, flag) => {
   if(columnValue.value) {
-      let regex = /^[a-zA-Z]+$/;
+      let regex = /^[a-zA-Z ]+$/;
       if(columnValue.value !== columnValue.value.trimStart() && columnValue.value !== columnValue.value.trimEnd()) {
           return "Space before name is not allowed.";  
       } else if(columnValue.value !== columnValue.value.trimStart()) {
@@ -1146,8 +1151,8 @@ export const TrimSpaceValidation = (columnValue, allField, flag) => {
       } else if (columnValue.value !== columnValue.value.trimEnd()) {
         return "Space after name is not allowed.";
       } else if(!regex.test(columnValue.value)) {
-          return "Please Enter Character Value without Space.";
-      }                    
+          return "Please Enter Character Value.";
+      }
   }
   return "";
 }
@@ -2419,7 +2424,46 @@ export const getOptionsOnPinParentArea = async (dependentValue, formState, _, au
       }
       return responseData  
     }
+  }
+}
+
+export const getOptionsOnPinParentAreaOtherAdd = async (dependentValue, formState, _, authState) => {
+  // console.log("getOptionsOnPinParentArea dp.", dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value)
+  let PIN_CODE = "", PARENT_AREA = "";
+  if(Boolean(dependentValue["OTHER_ADDRESS[0].PIN_CODE"]) && dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value?.length>5) {
+    PIN_CODE = dependentValue["OTHER_ADDRESS[0].PIN_CODE"]?.value
+  }
+  if(PIN_CODE) {
+    const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETAREALIST", {
+      COMP_CD: authState?.companyID ?? "",
+      BRANCH_CD: authState?.user?.branchCode ?? "",
+      PIN_CODE: PIN_CODE,
+      // FLAG: PIN_CODE ? "P" : "A", // P - pincode, A - parent area
+      // PARENT_AREA: PARENT_AREA,
+      FLAG: "P",
+      PARENT_AREA: "",
+    });
+
+    if(status == 0) {
+      let responseData = data;
+      if (Array.isArray(responseData)) {
+        responseData = responseData.map(({ AREA_CD, AREA_NM, ...other }) => {
+            return {
+              ...other,
+              AREA_CD: AREA_CD,
+              AREA_NM: AREA_NM,
+              label: AREA_NM,
+              value: AREA_CD,
+            };
+          }
+        );
+      }
+      return responseData  
     }
+  } else {
+    return [];
+  }
 }
 
 

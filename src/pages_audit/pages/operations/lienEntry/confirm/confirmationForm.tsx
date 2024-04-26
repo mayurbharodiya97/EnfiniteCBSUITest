@@ -5,10 +5,8 @@ import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
 import { lienconfirmFormMetaData } from "./confirmFormMetadata";
 
-export const LienConfirmationForm = ({ navigate }) => {
+export const LienConfirmationForm = ({ closeDialog }) => {
   const { state: rows }: any = useLocation();
-  console.log("<<<rer", rows);
-
   useEffect(() => {
     if (rows?.[0]?.data) {
       lienconfirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
@@ -52,10 +50,10 @@ export const LienConfirmationForm = ({ navigate }) => {
                 <Button color="primary" onClick={handleSubmit}>
                   Confirm
                 </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={() => closeDialog()}>
                   Reject
                 </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={() => closeDialog()}>
                   close
                 </Button>
               </>

@@ -72,7 +72,6 @@ const StockEntryCustom = () => {
     //   multiple: false,
     //   rowDoubleClick: true,
     //   shouldExclude(rowData, authState) {
-    //     console.log("<<<force", rowData);
     //     if (rowData?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y") {
     //       return true;
     //     }
@@ -85,7 +84,6 @@ const StockEntryCustom = () => {
     //   multiple: false,
     //   rowDoubleClick: true,
     //   shouldExclude(rowData, authState) {
-    //     console.log("<<<viewd", rowData);
     //     if (rowData?.[0]?.data?.ALLOW_FORCE_EXPIRE_FLAG !== "Y") {
     //       return false;
     //     }

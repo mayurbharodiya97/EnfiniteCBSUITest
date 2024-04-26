@@ -1,16 +1,13 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { Fragment, useCallback, useRef, useState } from "react";
+import { useQuery } from "react-query";
 import { stopPayGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
 import * as API from "./api";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useContext } from "react";
-import { InitialValuesType, SubmitFnType } from "packages/form";
 const actions: ActionTypes[] = [
   {
     actionName: "view-detail",
@@ -39,7 +36,7 @@ export const StopPay = ({ reqData }) => {
   // useEffect(() => {
   //   tempStore?.accInfo?.ACCT_CD && getStopPayList.mutate(tempStore.accInfo);
   // }, [tempStore]);
-
+  console.log(reqData, "reqDatareqDatareqData]]]]]]");
   const { data, isLoading, isFetching, refetch, error, isError } = useQuery<
     any,
     any
@@ -73,7 +70,7 @@ export const StopPay = ({ reqData }) => {
         data={data ?? []}
         setData={() => null}
         loading={isLoading || isFetching}
-        refetchData={() => {}}
+        // refetchData={() => {}}
         ref={myGridRef}
         actions={actions}
         setAction={setCurrentAction}

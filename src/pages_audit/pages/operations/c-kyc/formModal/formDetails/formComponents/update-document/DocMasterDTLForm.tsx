@@ -33,7 +33,6 @@ const updateExtDocumentDetailsDataWrapperFn =
 export const DocMasterDTLForm = ({
   ClosedEventCall,
   isDataChangedRef,
-  deletedDocRef,
   defaultmode = "view",
   girdData,
 }) => {
@@ -60,6 +59,7 @@ export const DocMasterDTLForm = ({
   // console.log("stateeeeeeee2", state);
   const reqCD = state?.CUSTOMER_DATA?.[0]?.data.REQUEST_ID ?? "";
   const custID = state?.CUSTOMER_DATA?.[0]?.data.CUSTOMER_ID ?? "";
+  const IS_FROM_MAIN = Boolean(Array.isArray(state?.rows) && state?.rows?.length>0) ? state?.rows?.[0]?.data?.IS_FROM_MAIN : "Y"
   let newFlag = "";
   DocMasterDTLMetadata.masterForm.form.label = `KYC Document View ${
     custID ? `Customer ID - ${custID}` : null
@@ -212,6 +212,9 @@ export const DocMasterDTLForm = ({
       } else {
         newData["SUBMIT"] = data.SUBMIT;
       }
+      if(Object.hasOwn(data._OLDROWVALUE, "SUBMIT") && typeof data._OLDROWVALUE?.SUBMIT !== "undefined") {
+        newData._OLDROWVALUE.SUBMIT = Boolean(data._OLDROWVALUE?.SUBMIT) ? "Y" : "N";
+      }
       newData["REQ_CD"] = reqCD ?? "";
       // if (Boolean(data._isNewRow)) {
       //   newData["IS_MAIN_DATA_ADD"] = true;
@@ -228,19 +231,19 @@ export const DocMasterDTLForm = ({
       //     "dd-MM-yyyy"
       //   );
       // }
-      if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
-        newData.DETAILS_DATA["isNewRow"] = newData.DETAILS_DATA["isNewRow"].map(
-          (row) => {
-            // VALID_UPTO
-            if (Boolean(row.VALID_UPTO)) {
-              return {
-                ...row,
-                VALID_UPTO: format(new Date(row.VALID_UPTO), "dd-MM-yyyy"),
-              };
-            } else return { ...row };
-          }
-        );
-      }
+      // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
+      //   newData.DETAILS_DATA["isNewRow"] = newData.DETAILS_DATA["isNewRow"].map(
+      //     (row) => {
+      //       // VALID_UPTO
+      //       if (Boolean(row.VALID_UPTO)) {
+      //         return {
+      //           ...row,
+      //           VALID_UPTO: format(new Date(row.VALID_UPTO), "dd-MM-yyyy"),
+      //         };
+      //       } else return { ...row };
+      //     }
+      //   );
+      // }
       // if (newData.DETAILS_DATA["isNewRow"]?.length > 0) {
       // }
       // console.log(data, "dtaa on sibmitg", newData)
@@ -249,7 +252,8 @@ export const DocMasterDTLForm = ({
         DOC_MST: [{
            ...newData,
            NEW_FLAG: mutationRet.data?.[0]?.NEW_FLAG ?? "N",
-           IS_FROM_MAIN: girdData?.[0]?.IS_FROM_MAIN ?? "",   
+           IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : IS_FROM_MAIN,   
+          //  IS_FROM_MAIN: Boolean(newData?._isNewRow) ? "Y" : girdData?.[0]?.IS_FROM_MAIN ?? "",   
         }],
         REQ_CD: reqCD,
         CUSTOMER_ID: custID,
@@ -272,10 +276,6 @@ export const DocMasterDTLForm = ({
       setopenAccept(true);
     }
 
-    // console.log("deletedDocRef.current", deletedDocRef.current)
-    // if(deletedDocRef.current) {
-
-    // }
     // isErrorFuncRef.current = { data, displayData, endSubmit, setFieldError };
     // setopenAccept(true);
     // mutation.mutate({ data, endSubmit, setLoading });
@@ -535,7 +535,7 @@ export const DocMasterDTLForm = ({
                 // overflowX: "hidden",
               }}
               isDetailRowRequire={false}
-              formState={{ data: girdData }}
+              formState={{ gridData: girdData }}
               formName={"fromSourceDetailEdit"}
               formNameMaster={"fromSourceMasterEdit"}
               onClickActionEvent={(index, id, data) => {
@@ -574,7 +574,11 @@ export const DocMasterDTLForm = ({
                     </Button>
                     <Button
                       onClick={() => {
-                        setFormMode("view");
+                        if(defaultmode === "new") {
+                          ClosedEventCall();
+                        } else {
+                          setFormMode("view");
+                        }
                       }}
                       // disabled={isSubmitting}
                       color={"primary"}

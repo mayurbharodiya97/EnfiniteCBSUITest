@@ -1,3 +1,5 @@
+import { utilFunction } from "components/utils";
+import _ from "lodash";
 import React, { useCallback, useReducer } from "react";
 
 const initialState: any = {
@@ -312,11 +314,148 @@ export const AcctMSTContext = React.createContext<any>({
     // ref(e, "save")
     Promise.all([refs])
     .then((response) => {
-      // console.log("evalSave in success ", response)
+      console.log("evalSave in success ", response)
     }).catch(err => {
-      // console.log("evalSave out catch", err.message)
+      console.log("evalSave out catch", err.message)
     })    
   }
+
+  const handleUpdatectx = async ({COMP_CD}) => {
+
+
+
+
+
+
+
+
+
+
+    let update_type = "";
+    let updated_tabs = Object.keys(state?.modifiedFormCols ?? {})
+    // let updated_tab_format:any = {}
+    let updated_tab_format:any = {}
+    // console.log(state?.modifiedFormCols, ":qweewqasdcde1", updated_tabs.length, updated_tabs)
+    if(updated_tabs.length>0) {
+
+    // console.log(update_type, ":qweewqasdcde2", "reqcd", state?.req_cd_ctx)
+    let other_data = {
+        IsNewRow: !state?.req_cd_ctx ? true : false,
+        REQ_CD: state?.req_cd_ctx ?? "",
+        COMP_CD: COMP_CD ?? "",
+    }
+    // console.log("feiuqwdwqduyqewd",updated_tabs)
+    let dataa = updated_tabs.map(async (TAB, i) => {
+        return new Promise((res, rej) => {
+            let oldFormData = _.pick(state?.retrieveFormDataApiRes[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+            console.log(_.pick(state?.retrieveFormDataApiRes[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? []), "oldddddd", state?.retrieveFormDataApiRes[TAB], state?.modifiedFormCols[TAB])
+            let newFormData = _.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? [])
+            console.log(_.pick(state?.formDatactx[TAB] ?? {}, state?.modifiedFormCols[TAB] ?? []), "oldddddd new", state?.formDatactx[TAB], state?.modifiedFormCols[TAB])
+
+            let upd;
+
+            if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
+                let oldRow:any[] = []
+                let newRow:any[] = []
+                // if(state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) {
+                    oldRow = (state?.retrieveFormDataApiRes[TAB] && state?.retrieveFormDataApiRes[TAB].length>0) ? state?.retrieveFormDataApiRes[TAB].map((formRow, i) => {
+                        let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                        if(TAB == "DOC_MST") {
+                            filteredRow["SUBMIT"] = Boolean(filteredRow.SUBMIT) ? "Y" : "N"
+                            // filteredRow = filteredRow.map(doc => ({...doc, SUBMIT: Boolean(doc.SUBMIT) ? "Y" : "N"}))
+                        }
+                        // console.log("wadqwdwq. asdasdawdawqqqqqq filteredrow", filteredRow)
+                        return filteredRow;
+                    }) : [];
+                    // console.log(oldRow, "wadqwdwq. asdasdawdawqqqqqq", state?.retrieveFormDataApiRes[TAB])
+
+                    newRow = (state?.formDatactx[TAB] && state?.formDatactx[TAB].length>0) ? state?.formDatactx[TAB].map((formRow, i) => {
+                        let filteredRow = _.pick(formRow ?? {}, state?.modifiedFormCols[TAB] ?? [])
+                        return filteredRow;
+                    }) : [];
+                    // console.log(newRow, "wadqwdwq. asdasdawdawqqqqqq new", state?.formDatactx[TAB])
+                    // console.log("feiuqwdwqduyqewd", TAB)
+                    // console.log(oldRow, ":qweewqasdcde23", "newRow", newRow )
+                    upd = utilFunction.transformDetailDataForDML(
+                        oldRow ?? [],
+                        newRow ?? [],
+                        ["SR_CD"]
+                    );
+                    if(upd) {
+                        // console.log(update_type, ":qweewqasdcde3", "upd", upd )
+                        // console.log("wadqwdwq. asdasdawdawqqqqqq", upd)
+                    }
+            } else {
+                upd = utilFunction.transformDetailsData(newFormData, oldFormData);
+                // console.log(update_type, ":qweewqasdcde3", "upd else", upd )
+            }
+            if(Object.keys(updated_tab_format).includes(TAB)) {
+                if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
+                    updated_tab_format[TAB] = [{
+                        ...updated_tab_format.TAB,
+                        ...upd,
+                        ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                        ...other_data
+                    }]
+                } else {
+                    updated_tab_format[TAB] = {
+                        ...updated_tab_format.TAB,
+                        ...upd,
+                        ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                        ...other_data
+                    }
+                }
+            } else {
+                if(TAB == "OTHER_ADDRESS" || TAB == "RELATED_PERSON_DTL" || TAB == "OTHER_ADDRESS" || TAB == "DOC_MST") {
+                    // console.log("asdqwezxc arraytabupdate", TAB, upd)
+                    // if(Array.isArray(upd._UPDATEDCOLUMNS) && upd._UPDATEDCOLUMNS?.length>0) {
+                        if(Array.isArray(upd.isDeleteRow) && upd.isDeleteRow?.length>0 ||
+                        Array.isArray(upd.isNewRow) && upd.isNewRow?.length>0 ||
+                        Array.isArray(upd.isUpdatedRow) && upd.isUpdatedRow?.length>0)
+                        updated_tab_format[TAB] = [{
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }]
+                    // }
+                } else if(TAB == "PHOTO_MST") {
+                    // console.log("asdqwezxc photomst", TAB, upd)
+                    if(Array.isArray(upd._UPDATEDCOLUMNS) && upd._UPDATEDCOLUMNS?.length>0) {
+                        updated_tab_format[TAB] = {
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data,
+                            SR_CD: state?.retrieveFormDataApiRes[TAB]?.SR_CD ?? ""
+                        }
+                    }
+                } else {
+                    // console.log("asdqwezxc other", TAB, upd)
+                    if(Array.isArray(upd._UPDATEDCOLUMNS) && upd._UPDATEDCOLUMNS?.length>0) {
+                        updated_tab_format[TAB] = {
+                            ...upd,
+                            ...(_.pick(state?.formDatactx[TAB], upd._UPDATEDCOLUMNS)),
+                            ...other_data
+                        }
+                    }
+                }
+            }
+            // console.log(update_type, ":qweewqasdcde3", "updated_tab_format", updated_tab_format )                
+            // console.log("updated_tab_format[TAB]", updated_tab_format[TAB])
+            res(1)
+        })
+    })
+    // console.log(":qweewqasdcde4", "updated_tab_format", updated_tab_format, Object.keys(updated_tab_format))
+    if(typeof updated_tab_format === "object") {
+        if(Object.keys(updated_tab_format)?.length === 1 && Object.keys(updated_tab_format)?.includes("PERSONAL_DETAIL")) {
+            update_type = "save_as_draft";
+        } else if(Object.keys(updated_tab_format)?.length>0) {
+            update_type = "full_save";
+        }
+    }
+
+    return {updated_tab_format, update_type};
+    }
+}
 
   return (
     <AcctMSTContext.Provider
@@ -334,7 +473,8 @@ export const AcctMSTContext = React.createContext<any>({
         handleStepStatusctx,
         handleFormDataonSavectx,
         handleModifiedColsctx,
-        handleSavectx
+        handleSavectx,
+        handleUpdatectx,
       }}
     >
       {children}

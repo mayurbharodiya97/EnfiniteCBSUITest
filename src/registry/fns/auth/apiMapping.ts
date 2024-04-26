@@ -1252,6 +1252,10 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETSYSPARAAUDBTN",
     packageName: "",
   },
+  GETDIRECTORLIST: {
+    url: "accountServiceAPI/GETDIRECTORLIST",
+    packageName: "",
+  },
   GETACTCHQSIGNAUTHODDW: {
     url: "enfinityCommonServiceAPI/GETDYNAMICDATA/GETACTCHQSIGNAUTHODDW",
     packageName: "",
@@ -1286,6 +1290,10 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCLGDTTRANSSLIPGRID: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGDTTRANSSLIPGRID",
+    packageName: "",
+  },
+  DOCHQBKCONFIRMATION: {
+    url: "/chequeServiceAPI/DOCHQBKCONFIRMATION",
     packageName: "",
   },
 };

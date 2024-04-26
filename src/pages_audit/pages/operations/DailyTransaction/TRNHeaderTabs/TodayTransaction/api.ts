@@ -126,6 +126,19 @@ export const getAcctDtlList = async (reqParaMeters) => {
       CUST_ID: reqParaMeters?.CUSTOMER_ID ? reqParaMeters?.CUSTOMER_ID : "",
     });
   if (status === "0") {
+    // const dataStatus = data;
+    // dataStatus.map((item) => {
+    //   if (item?.ORG_STATUS === "Close") {
+    //     item._rowColor = "rgb(152 59 70 / 61%)";
+    //   }
+    //   if (item?.ORG_STATUS === "Freezed") {
+    //     item._rowColor = "rgb(40 142 159 / 60%)";
+    //   }
+    //   if (item?.ORG_STATUS === "Un-Claimed") {
+    //     item._rowColor = "rgb(9 132 3 / 51%)";
+    //   }
+    // });
+    // // return dataStatus;
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);

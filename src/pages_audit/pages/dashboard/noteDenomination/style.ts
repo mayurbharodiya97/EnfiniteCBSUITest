@@ -40,11 +40,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     padding: "5px 10px",
     // borderRight: "1px solid var(--theme-color6)",
     // borderLeft: "1px solid var(--theme-color6)",
-    border: "2px solid var(--theme-color6)",
+    border: "1px solid var(--theme-color6)",
   },
   [`&.${tableCellClasses.body}`]: {
     padding: "4px 10px",
-    border: "2px solid var(--theme-color6)",
+    border: "1px solid var(--theme-color6)",
     width: "174px",
     // borderRight: "1px solid var(--theme-color6)",
     // borderLeft: "1px solid var(--theme-color6)",

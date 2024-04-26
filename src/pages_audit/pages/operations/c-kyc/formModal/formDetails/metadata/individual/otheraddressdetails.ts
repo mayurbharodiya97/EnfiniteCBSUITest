@@ -67,10 +67,9 @@ import * as API from "../../../../api";
                     label: "AddressType",
                     placeholder: "",
                     type: "text",
-                    // GridProps: {xs:12, sm:4, md: 3, lg: 2.5, xl:1.5},
                     GridProps: {xs:12, sm:4, md: 2.4, lg: 2.4, xl:2},
                     options: () => API.getPMISCData("ADDRESS_TYPE"),
-                    _optionsKey: "AddTypeOptions",
+                    _optionsKey: "currentAddType",
                     required: true,          
                     schemaValidation: {
                         type: "string",
@@ -85,20 +84,20 @@ import * as API from "../../../../api";
                     },
                     name: "ADD1",
                     label: "Line1",
-                    required: true,          
+                    required: true,      
+                    maxLength: 50,    
                     schemaValidation: {
                         type: "string",
                         rules: [
-                        { name: "required", params: ["ThisFieldisrequired"] },
+                          { name: "required", params: ["ThisFieldisrequired"] },
                         ],
                     },
-                    maxLength: 50,
                     validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
                     placeholder: "",
                     type: "text",
                     txtTransform: "uppercase",
-                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
-                },
+                    GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
+                  },
                 {
                     render: {
                         componentType: "textField",
@@ -106,12 +105,12 @@ import * as API from "../../../../api";
                     name: "ADD2",
                     label: "Line2",
                     placeholder: "",
-                    type: "text",
-                    txtTransform: "uppercase",
                     maxLength: 50,
                     validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
-                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
-                },
+                    type: "text",
+                    txtTransform: "uppercase",
+                    GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
+                  },
                 {
                     render: {
                         componentType: "textField",
@@ -123,72 +122,94 @@ import * as API from "../../../../api";
                     validate: (columnValue, allField, flag) => API.AlphaNumericValidate(columnValue),
                     type: "text",
                     txtTransform: "uppercase",
-                    GridProps: {xs:12, sm:6, md: 3.2, lg: 3.2, xl:3.3},
-                },
-                {
-                    render: {
-                        componentType: "select",
-                    },
-                    options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),  // parent-area
-                    // options: (dependentValue, formState, _, authState) => API.getOptionsOnPin(dependentValue, formState, _, authState),  // parent-area        
-                    // options: (dependentValue, formState, _, authState) => API.getParentAreaOptions(authState?.companyID, authState?.user?.branchCode),        
-                    // _optionsKey: "localParentAreaList",
-                    // options: (dependentValue, formState, _, authState) => API.getSubAreaOptions(dependentValue, authState?.companyID, authState?.user?.branchCode),
-                    _optionsKey: "otherAddSubArea",
-                    name: "AREA_CD",
-                    label: "Area",
-                    postValidationSetCrossFieldValues: (
-                    field,
-                    __,
-                    ___,
-                    dependentFieldsValues
-                    ) => {
-                        if(field.value) {
-                            return {
-                                PIN_CODE: {value: field?.optionData[0]?.PIN_CODE ?? ""},
-                                CITY_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
-                                CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
-                                DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
-                                DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
-                                STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
-                                // STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
-                                COUNTRY_ignoreField: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
-                                STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
-                                COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
-                            }
-                        }
-                        return {}
-                    },
-                    runPostValidationHookAlways: true,    
-                    required: true,
-                    schemaValidation: {
+                    GridProps: {xs:12, sm:5, md: 3.2, lg: 3.2, xl: 3.3},
+                  },
+                  {
+                      render: {
+                          componentType: "numberFormat",
+                      },
+                      name: "PIN_CODE",
+                      label: "PIN",
+                      required: true,
+                      schemaValidation: {
                         type: "string",
                         rules: [
-                        { name: "required", params: ["ThisFieldisrequired"] },
+                          { name: "required", params: ["ThisFieldisrequired"] },
                         ],
-                    },
-                    placeholder: "",
-                    type: "text",
-                    GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
-                },
+                      },
+                      maxLength: 6,
+                      FormatProps: {
+                          isAllowed: (values) => {
+                            if (values?.value?.length > 6) {
+                              return false;
+                            }
+                            return true;
+                          },
+                      },
+                      validate: (columnValue) => {
+                          const PIN = columnValue?.value
+                          if(Boolean(PIN) && PIN.length<6) {
+                              return "Pin code should be of six digits"
+                          }
+                      },
+                      placeholder: "",
+                      type: "text",
+                      GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
+                  },  
                 {
                     render: {
-                        componentType: "numberFormat",
+                        componentType: "autocomplete",
                     },
-                    name: "PIN_CODE",
-                    label: "PIN",
-                    required: true,
+                    runPostValidationHookAlways: false, 
+                    name: "AREA_CD",
+                    label: "SubArea",
+                    dependentFields: ["PIN_CODE"],
+                    disableCaching: true,
+                    options: (dependentValue, formState, _, authState) => API.getOptionsOnPinParentAreaOtherAdd(dependentValue, formState, _, authState),
+                    _optionsKey: "indSubareaOp",
+                    isReadOnly: (fieldValue, dependentFields, formState) => {
+                      const pin_code = dependentFields?.["OTHER_ADDRESS.PIN_CODE"]?.value;
+                      if(!Boolean(pin_code)) {
+                          return true;
+                      } else if(Boolean(pin_code) && pin_code.length<6) {
+                          return true;
+                      }
+                      return false;
+                  },
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                      const pincode = dependentFields?.["OTHER_ADDRESS.PIN_CODE"]?.value
+                      if(Boolean(pincode)) {
+                          if(pincode.length<6) {
+                              return "";
+                          }
+                      } else return null;
+                  },  
+                    postValidationSetCrossFieldValues: (
+                      field,
+                      __,
+                      ___,
+                      dependentFieldsValues
+                    ) => {
+                      // console.log("siudbcsiudbcisbdc postValidationSetCrossFieldValues called", field.value)
+                      // console.log("sdhaiuwqidquwdqwe", dependentFieldsValues)
+                      if(field?.value) {
+                          let values = {
+                              CITY_CD: {value: field?.optionData[0]?.CITY_CD ? field?.optionData[0]?.CITY_CD : ""},
+                              CITY_ignoreField: {value: field?.optionData[0]?.CITY_NM ? field?.optionData[0]?.CITY_NM : ""},
+                              // CITY_CD: {value: (field?.optionData[0]?.CITY_CD || field?.optionData[0]?.CITY_NM) ? `${field?.optionData[0]?.CITY_NM} - ${field?.optionData[0]?.CITY_CD}` : ""},
+                              DISTRICT_CD: {value: field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                              DISTRICT_ignoreField: {value: field?.optionData[0]?.DISTRICT_NM ? field?.optionData[0]?.DISTRICT_NM : field?.optionData[0]?.DISTRICT_CD ? field?.optionData[0]?.DISTRICT_CD : ""},
+                              STATE: {value: field?.optionData[0]?.STATE_NM ?? ""},
+                              COUNTRY: {value: field?.optionData[0]?.COUNTRY_NM ?? ""},
+                              STATE_CD: {value: field?.optionData[0]?.STATE_CD ?? ""},
+                              COUNTRY_CD: {value: field?.optionData[0]?.COUNTRY_CD ?? ""},
+                          }
+                          return values;
+                      }
+                      return {}
+                    },
                     placeholder: "",
                     type: "text",
-                    maxLength: 6,
-                    FormatProps: {
-                        isAllowed: (values) => {
-                          if (values?.value?.length > 6) {
-                            return false;
-                          }
-                          return true;
-                        },
-                    },            
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
@@ -197,34 +218,68 @@ import * as API from "../../../../api";
                     },
                     name: "CITY_ignoreField",
                     label: "City",
-                    required: true,
+                    schemaValidation: {
+                      type: "string",
+                      rules: [
+                        { name: "required", params: ["ThisFieldisrequired"] },
+                      ],
+                    },
                     isReadOnly: true,
                     placeholder: "",
                     type: "text",
+                    dependentFields: ["AREA_CD"],
+                    setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["OTHER_ADDRESS.AREA_CD"]?.optionData;
+                      if(Array.isArray(optionData) && optionData.length>0) {
+                          return optionData[0]?.CITY_NM;
+                      } else return "";
+                    },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
-                    render: {
-                        componentType: "hidden",
-                        name: "CITY_CD"
-                    }
+                  render: {
+                      componentType: "hidden",        
+                  },
+                  name: "CITY_CD",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["OTHER_ADDRESS.AREA_CD"]?.optionData;
+                      if(Array.isArray(optionData) && optionData.length>0) {
+                          return optionData[0]?.CITY_CD;
+                      } else return "";
+                  },
                 },
                 {
                     render: {
                         componentType: "textField",
                     },
                     name: "DISTRICT_ignoreField",
-                    label: "District",
-                    placeholder: "",
+                    label: "District Name",
                     isReadOnly: true,
+                    placeholder: "",
                     type: "text",
+                    dependentFields: ["AREA_CD"],
+                    setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["OTHER_ADDRESS.AREA_CD"]?.optionData;
+                      if(Array.isArray(optionData) && optionData.length>0) {
+                          return optionData[0]?.DISTRICT_NM;
+                      } else return "";
+                    },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
-                    render: {
-                        componentType: "hidden",
-                        name: "DISTRICT_CD"
-                    }
+                  render: {
+                      componentType: "hidden",
+                  },
+                  name: "DISTRICT_CD",
+                  label: "hidden district",
+                  dependentFields: ["AREA_CD"],
+                  setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["OTHER_ADDRESS.AREA_CD"]?.optionData;
+                      if(Array.isArray(optionData) && optionData.length>0) {
+                          return optionData[0]?.DISTRICT_CD;
+                      } else return "";
+                  },
                 },
                 {
                     render: {
@@ -232,18 +287,34 @@ import * as API from "../../../../api";
                     },
                     name: "STATE",
                     label: "State",
+                    isReadOnly: true,
                     placeholder: "",
                     type: "text",
+                    dependentFields: ["AREA_CD"],
+                    setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["OTHER_ADDRESS.AREA_CD"]?.optionData;
+                      if(Array.isArray(optionData) && optionData.length>0) {
+                          return optionData[0]?.STATE_NM;
+                      } else return "";
+                    },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
                     render: {
                         componentType: "textField",
                     },
-                    name: "COUNTRY_ignoreField",
+                    name: "COUNTRY",
                     label: "Country",
+                    isReadOnly: true,
                     placeholder: "",
                     type: "text",
+                    dependentFields: ["AREA_CD"],
+                    setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["OTHER_ADDRESS.AREA_CD"]?.optionData;
+                      if(Array.isArray(optionData) && optionData.length>0) {
+                          return optionData[0]?.COUNTRY_NM;
+                      } else return "";
+                    },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
@@ -251,10 +322,17 @@ import * as API from "../../../../api";
                         componentType: "textField",
                     },
                     name: "STATE_CD",
-                    // label: "UnionTerritoriesCode",
-                    label: "State/U.T(Union Territories) Code",
+                    label: "UnionTerritoriesCode",
+                    isReadOnly: true,
                     placeholder: "",
                     type: "text",
+                    dependentFields: ["AREA_CD"],
+                    setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["OTHER_ADDRESS.AREA_CD"]?.optionData;
+                      if(Array.isArray(optionData) && optionData.length>0) {
+                          return optionData[0]?.STATE_CD;
+                      } else return "";
+                    },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
                 {
@@ -262,14 +340,19 @@ import * as API from "../../../../api";
                         componentType: "textField",
                     },
                     name: "COUNTRY_CD",
-                    label: "ISO-3166 Country Code of Residence",
+                    label: "CountryCode",
+                    isReadOnly: true,
                     placeholder: "",
                     type: "text",
+                    dependentFields: ["AREA_CD"],
+                    setValueOnDependentFieldsChange: (dependentFields) => {
+                      const optionData = dependentFields?.["OTHER_ADDRESS.AREA_CD"]?.optionData;
+                      if(Array.isArray(optionData) && optionData.length>0) {
+                          return optionData[0]?.COUNTRY_CD;
+                      } else return "";
+                    },
                     GridProps: {xs:12, sm:4, md:2.4, lg: 2.4, xl:2},
                 },
-        
-        
-        
                 {
                     render: {
                         componentType: "Divider",
@@ -468,7 +551,7 @@ import * as API from "../../../../api";
                     maxLength: 60,
                     validate: (columnValue, allField, flag) => {
                         let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                        if(columnValue.value && !emailRegex.test(columnValue.value)) {
+                        if(columnValue?.value && !emailRegex.test(columnValue?.value)) {
                             return "Please enter valid Email ID"
                         }
                         return "";

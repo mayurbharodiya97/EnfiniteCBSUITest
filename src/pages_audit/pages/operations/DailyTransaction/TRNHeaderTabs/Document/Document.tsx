@@ -75,9 +75,9 @@ export const Document = ({ reqData }) => {
     let row = data.rows[0]?.data;
     console.log(row, "rowwww");
     setDataRow(row);
-    getDocView.mutate(row);
 
     if (data.name === "view-detail") {
+      getDocView.mutate(row);
       console.log("heloooo");
     }
   }, []);

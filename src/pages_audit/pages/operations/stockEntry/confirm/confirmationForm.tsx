@@ -3,14 +3,14 @@ import React, { useEffect } from "react";
 
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { useLocation } from "react-router-dom";
-import { confirmFormMetaData } from "./confirmationFormMetadata";
+import { stockconfirmFormMetaData } from "./confirmFormMetadata";
 
-export const ConfirmationForm = ({ navigate }) => {
+export const StockConfirmationForm = ({ closeDialog }) => {
   const { state: rows }: any = useLocation();
 
   useEffect(() => {
     if (rows?.[0]?.data) {
-      confirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
+      stockconfirmFormMetaData.form.label = `Confirmation Detail \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -32,8 +32,8 @@ export const ConfirmationForm = ({ navigate }) => {
     >
       <>
         <FormWrapper
-          key={"confirmation-Form"}
-          metaData={confirmFormMetaData}
+          key={"stock-confirmation-Form"}
+          metaData={stockconfirmFormMetaData}
           initialValues={rows?.[0]?.data ?? []}
           displayMode="view"
           hideDisplayModeInTitle={true}
@@ -51,10 +51,10 @@ export const ConfirmationForm = ({ navigate }) => {
                 <Button color="primary" onClick={handleSubmit}>
                   Confirm
                 </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={() => closeDialog()}>
                   Reject
                 </Button>
-                <Button color="primary" onClick={() => navigate(".")}>
+                <Button color="primary" onClick={() => closeDialog()}>
                   close
                 </Button>
               </>

@@ -116,7 +116,6 @@ const LienEntryCustom = () => {
   }, []);
 
   const onSubmitHandler: SubmitFnType = (data: any, displayData, endSubmit) => {
-    console.log("<<<onsub", data);
     let apiReq = {
       REMOVAL_DT: data?.REMOVAL_DT
         ? format(new Date(data?.REMOVAL_DT), "dd-MMM-yyyy")

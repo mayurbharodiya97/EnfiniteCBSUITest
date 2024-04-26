@@ -23,16 +23,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useTranslation } from "react-i18next";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
-import { isValidDate } from "components/utils/utilFunctions/function";
 
-import React, {
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
+import { useEffect, useState, useContext } from "react";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import * as CommonApi from "../TRNCommon/api";
@@ -845,7 +837,7 @@ export const Trn001 = () => {
   const handleGetHeaderTabs = (data) => {
     // getTabsByParentType.mutate({ reqData: data });
     fetchTabsData({
-      cacheId: data?.ACCT_TYPE,
+      cacheId: data,
       reqData: data,
     });
   };
@@ -941,6 +933,14 @@ export const Trn001 = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (Boolean(isTabsError)) {
+      enqueueSnackbar((tabsErorr as any)?.error_msg, {
+        variant: "error",
+      });
+    }
+  }, [isTabsError]);
+
   return (
     <>
       <DailyTransTabs
@@ -959,7 +959,7 @@ export const Trn001 = () => {
           marginBottom: "10px",
         }}
       >
-        {loading && <LinearProgress color="secondary" />}
+        {(loading || isTabsLoading) && <LinearProgress color="secondary" />}
         {viewOnly && (
           <TRN001_Table
             searchScrollNo={searchScrollNo}

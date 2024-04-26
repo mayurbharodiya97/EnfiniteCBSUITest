@@ -1,16 +1,60 @@
-import { useContext, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Grid } from "@mui/material";
 import FormWrapper, { MetaDataType } from "components/dyanmicForm";
 import { AcctMSTContext } from "../AcctMSTContext";
 import { AuthContext } from "pages_audit/auth";
 import { guardianjoint_tab_metadata } from "../tabMetadata/guardianlJointMetadata";
+import TabNavigate from "../TabNavigate";
 
 const GuardianJointTab = () => {
-  const { AcctMSTState } = useContext(AcctMSTContext);
+  const { AcctMSTState, handleCurrFormctx, handleSavectx, handleStepStatusctx } = useContext(AcctMSTContext);
   const { authState } = useContext(AuthContext);
   const formRef = useRef<any>(null);
+  const [isNextLoading, setIsNextLoading] = useState(false);
+  const [formStatus, setFormStatus] = useState<any[]>([])
   const onSubmitPDHandler = () => {};
   const initialVal: any = {};
+
+  const handleSave = (e) => {
+    handleCurrFormctx({
+      isLoading: true,
+    })
+    const refs = [formRef.current.handleSubmitError(e, "save", false)]
+    handleSavectx(e, refs)
+  }
+
+  useEffect(() => {
+    let refs = [formRef]
+    handleCurrFormctx({
+      currentFormRefctx: refs,
+      colTabValuectx: AcctMSTState?.colTabValuectx,
+      currentFormSubmitted: null,
+      isLoading: false,
+    })
+  }, [])
+  useEffect(() => {
+    if(Boolean(AcctMSTState?.currentFormctx.currentFormRefctx && AcctMSTState?.currentFormctx.currentFormRefctx.length>0) && Boolean(formStatus && formStatus.length>0)) {
+      if(AcctMSTState?.currentFormctx.currentFormRefctx.length === formStatus.length) {
+        setIsNextLoading(false)
+        let submitted;
+        submitted = formStatus.filter(form => !Boolean(form))
+        if(submitted && Array.isArray(submitted) && submitted.length>0) {
+          submitted = false;
+        } else {
+          submitted = true;
+          handleStepStatusctx({
+            status: "completed",
+            coltabvalue: AcctMSTState?.colTabValuectx,
+          })
+        }
+        handleCurrFormctx({
+          currentFormSubmitted: submitted,
+          isLoading: false,
+        })
+        setFormStatus([])
+      }
+    }
+  }, [formStatus])
 
   return (
     <Grid sx={{ mb: 4 }}>
@@ -25,6 +69,7 @@ const GuardianJointTab = () => {
         hideHeader={true}
         displayMode={AcctMSTState?.formmodectx}
       ></FormWrapper>
+      <TabNavigate handleSave={handleSave} displayMode={AcctMSTState?.formmodectx ?? "new"} isNextLoading={isNextLoading} />
     </Grid>
   );
 };
