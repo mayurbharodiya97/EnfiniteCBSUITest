@@ -297,7 +297,7 @@ export const kyc_proof_of_identity_meta_data = {
             _optionsKey: "passportAuthority",
             validate: (columnValue, allField, flag) => {
                 if(!Boolean(columnValue.value)) {
-                    const passport = allField.PASSPORT_NO.value;
+                    const passport = allField?.PASSPORT_NO?.value;
                     if(Boolean(passport)) {
                         return "This field is required"
                     }
@@ -316,8 +316,8 @@ export const kyc_proof_of_identity_meta_data = {
           maxDate: new Date(),
           dependentFields: ['PASSPORT_NO'],
           validate: (columnValue, allField, flag) => {
-            if(!Boolean(columnValue.value)) {
-                const passport = allField.PASSPORT_NO.value;
+            if(!Boolean(columnValue?.value)) {
+                const passport = allField?.PASSPORT_NO?.value;
                 if(Boolean(passport)) {
                     return "This field is required"
                 }
@@ -342,8 +342,8 @@ export const kyc_proof_of_identity_meta_data = {
           minDate: new Date(),
           dependentFields: ['PASSPORT_NO'],
           validate: (columnValue, allField, flag) => {
-           if(!Boolean(columnValue.value)) {
-                const passport = allField.PASSPORT_NO.value;
+           if(!Boolean(columnValue?.value)) {
+                const passport = allField?.PASSPORT_NO?.value;
                 if(Boolean(passport)) {
                     return "This field is required"
                 }
@@ -394,8 +394,8 @@ export const kyc_proof_of_identity_meta_data = {
             _optionsKey: "drivingLicenseAuthority",
             dependentFields: ['DRIVING_LICENSE_NO'],
             validate: (columnValue, allField, flag) => {
-                if(!Boolean(columnValue.value)) {
-                    const passport = allField.DRIVING_LICENSE_NO.value;
+                if(!Boolean(columnValue?.value)) {
+                    const passport = allField?.DRIVING_LICENSE_NO?.value;
                     if(Boolean(passport)) {
                         return "This field is required"
                     }
@@ -415,13 +415,13 @@ export const kyc_proof_of_identity_meta_data = {
           maxDate: new Date(),
           dependentFields: ['DRIVING_LICENSE_NO'],
           validate: (columnValue, allField, flag) => {
-            if(!Boolean(columnValue.value)) {
-                const passport = allField.DRIVING_LICENSE_NO.value;
+            if(!Boolean(columnValue?.value)) {
+                const passport = allField?.DRIVING_LICENSE_NO?.value;
                 if(Boolean(passport)) {
                     return "This field is required"
                 }
             } else {
-                if(lessThanDate(new Date(), columnValue.value)) {
+                if(lessThanDate(new Date(), columnValue?.value)) {
                     return `Driving License Issue Date can't be greater than today's date.`;
                 }
             }
@@ -441,13 +441,13 @@ export const kyc_proof_of_identity_meta_data = {
           minDate: new Date(),
           dependentFields: ['DRIVING_LICENSE_NO'],
           validate: (columnValue, allField, flag) => {
-            if(!Boolean(columnValue.value)) {
-                const passport = allField.DRIVING_LICENSE_NO.value;
+            if(!Boolean(columnValue?.value)) {
+                const passport = allField?.DRIVING_LICENSE_NO?.value;
                 if(Boolean(passport)) {
                     return "This field is required"
                 }
             } else {
-                if(greaterThanInclusiveDate(new Date(), columnValue.value)) {
+                if(greaterThanInclusiveDate(new Date(), columnValue?.value)) {
                     return `Driving License Expiry Date can't be less than or equal to Today's Date.`;
                 }
             }
@@ -1595,7 +1595,7 @@ export const kyc_proof_of_address_meta_data = {
         // validate: (columnValue, allField, flag) => API.validateEmailID(columnValue),
         validate: (columnValue, allField, flag) => {
             let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+            if(columnValue?.value && !emailRegex.test(columnValue?.value)) {
                 return "Please enter valid Email ID"
             }
             return "";
@@ -2513,7 +2513,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         maxLength: 60,
         validate: (columnValue, allField, flag) => {
             let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+            if(columnValue?.value && !emailRegex.test(columnValue?.value)) {
                 return "Please enter valid Email ID"
             }
             return "";
@@ -2538,7 +2538,7 @@ export const kyc_legal_proof_of_add_meta_data = {
         maxLength: 60,
         validate: (columnValue, allField, flag) => {
             let emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if(columnValue.value && !emailRegex.test(columnValue.value)) {
+            if(columnValue?.value && !emailRegex.test(columnValue?.value)) {
                 return "Please enter valid Email ID"
             }
             return "";
