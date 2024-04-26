@@ -1,10 +1,10 @@
 import { GridMetaDataType } from "components/dataTableStatic";
 
-export const stopPayConfirmGridMetaData: GridMetaDataType = {
+export const lienConfirmGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Stop Payment Confirmation",
-    rowIdColumn: "TRAN_CD",
+    gridLabel: "Lien Confirmation",
+    rowIdColumn: "SR_CD",
     defaultColumnConfig: {
       width: 150,
       maxWidth: 250,
@@ -23,9 +23,9 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
     },
     allowFilter: false,
     allowColumnHiding: false,
-    allowRowSelection: true,
+    allowRowSelection: false,
     hiddenFlag: "_hidden",
-    searchPlaceholder: "Records of Stop Payment Confirmation",
+    searchPlaceholder: "Records of Lien Confirmation",
   },
   filters: [],
   columns: [
@@ -39,18 +39,6 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
       minWidth: 70,
       maxWidth: 100,
       isAutoSequence: true,
-    },
-
-    {
-      accessor: "TRAN_DT",
-      columnName: "Date",
-      sequence: 2,
-      alignment: "center",
-      componentType: "date",
-      dateFormat: "dd/MM/yyyy",
-      width: 90,
-      minWidth: 70,
-      maxWidth: 120,
     },
 
     {
@@ -74,19 +62,62 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
       maxWidth: 290,
     },
     {
-      accessor: "CHEQUE_FROM_TO",
-      columnName: "Cheque From - To",
+      accessor: "LIEN_CD",
+      columnName: "Lien Code",
       sequence: 4,
       alignment: "center",
       componentType: "default",
-      width: 142,
-      minWidth: 100,
-      maxWidth: 200,
+      width: 100,
+      minWidth: 80,
+      maxWidth: 140,
     },
 
     {
-      accessor: "CHEQUE_DT",
-      columnName: "Cheque Date",
+      accessor: "PARENT_CD_NM",
+      columnName: "Parent Code/Name",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 150,
+      minWidth: 70,
+      maxWidth: 250,
+    },
+    {
+      accessor: "LIEN_STATUS",
+      columnName: "Lien Status",
+      sequence: 4,
+      alignment: "center",
+      componentType: "default",
+      width: 107,
+      minWidth: 70,
+      maxWidth: 150,
+    },
+    {
+      accessor: "REMARKS",
+      columnName: "Remarks",
+      sequence: 4,
+      alignment: "left",
+      componentType: "default",
+      width: 200,
+      minWidth: 70,
+      maxWidth: 250,
+    },
+
+    {
+      accessor: "EFECTIVE_DT",
+      columnName: "Effective Date",
+      sequence: 4,
+      alignment: "center",
+      componentType: "date",
+      dateFormat: "dd/MM/yyyy",
+      width: 120,
+      minWidth: 70,
+      maxWidth: 150,
+    },
+
+    {
+      accessor: "ENTERED_DATE",
+      columnName: "Entered Date",
       sequence: 4,
       alignment: "center",
       componentType: "date",
@@ -97,44 +128,12 @@ export const stopPayConfirmGridMetaData: GridMetaDataType = {
     },
 
     {
-      accessor: "CHEQUE_AMOUNT",
-      columnName: "Cheque Amount",
+      accessor: "LIEN_REASON_NM",
+      columnName: "Lien Reason ",
       sequence: 4,
-      alignment: "right",
-      componentType: "currency",
+      alignment: "left",
+      componentType: "default",
       width: 140,
-      minWidth: 100,
-      maxWidth: 200,
-    },
-
-    {
-      accessor: "LAST_ENTERED_BY",
-      columnName: "Last Entered By",
-      sequence: 9,
-      alignment: "center",
-      componentType: "default",
-      width: 132,
-      minWidth: 80,
-      maxWidth: 150,
-    },
-    {
-      accessor: "TRAN_BAL",
-      columnName: "Balance",
-      sequence: 9,
-      alignment: "right",
-      componentType: "currency",
-      width: 103,
-      minWidth: 80,
-      maxWidth: 150,
-    },
-
-    {
-      accessor: "VERIFIED_BY",
-      columnName: "Verified By",
-      sequence: 9,
-      alignment: "center",
-      componentType: "default",
-      width: 130,
       minWidth: 100,
       maxWidth: 200,
     },

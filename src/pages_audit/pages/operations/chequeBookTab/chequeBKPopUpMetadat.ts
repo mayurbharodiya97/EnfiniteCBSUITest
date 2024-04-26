@@ -49,7 +49,7 @@ export const ChequeBKPopUpGridData: GridMetaDataType = {
       maxWidth: 150,
     },
     {
-      accessor: "LEAF_ARR",
+      accessor: "CHEQUE_TOTAL",
       columnName: "No. Chq(s)",
       sequence: 6,
       alignment: "center",

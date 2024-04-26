@@ -223,7 +223,6 @@ export const TemporaryOD = () => {
               onClickActionEvent={(index, id, data) => {}}
               formState={{ MessageBox: MessageBox }}
               setDataOnFieldChange={(action, payload) => {
-                console.log("<<<act", action, payload);
                 if (action === "IS_VISIBLE") {
                   setIsVisible(payload.IS_VISIBLE);
                 }

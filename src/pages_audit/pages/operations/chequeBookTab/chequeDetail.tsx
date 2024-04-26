@@ -1,4 +1,4 @@
-import { AppBar, Dialog } from "@mui/material";
+import { AppBar, Dialog, Paper } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { GridWrapper } from "components/dataTableStatic/gridWrapper";
@@ -9,6 +9,7 @@ import { ActionTypes } from "components/dataTable";
 import { queryClient } from "cache";
 import { chequeGridDTL } from "./api";
 import { Alert } from "components/common/alert";
+import Draggable from "react-draggable";
 
 export const ChequeDtlGrid = ({ ClosedEventCall }) => {
   const closeAction: ActionTypes[] = [
@@ -62,8 +63,16 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
           padding: "5px",
         },
       }}
+      PaperComponent={(props) => (
+        <Draggable
+          handle="#draggable-dialog-title"
+          cancel={'[class*="MuiDialogContent-root"]'}
+        >
+          <Paper {...props} />
+        </Draggable>
+      )}
     >
-      <>
+      <div id="draggable-dialog-title">
         {chequeDTL?.isError ? (
           <div style={{ paddingRight: "10px", paddingLeft: "10px" }}>
             <AppBar position="relative" color="primary">
@@ -85,7 +94,7 @@ export const ChequeDtlGrid = ({ ClosedEventCall }) => {
           actions={closeAction}
           setAction={() => ClosedEventCall()}
         />
-      </>
+      </div>
     </Dialog>
   );
 };

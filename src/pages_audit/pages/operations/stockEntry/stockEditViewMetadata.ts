@@ -351,7 +351,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
       {
         accessor: "DOC_DEC",
         columnName: "Document Description",
-        componentType: "default",
+        componentType: "editableTextField",
         placeholder: " ",
         sequence: 2,
         alignment: "left",
@@ -362,7 +362,7 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
           type: "string",
           rules: [{ name: "required", params: ["This field is required"] }],
         },
-        isReadOnly: true,
+        // isReadOnly: true,
         // __EDIT__: { isReadOnly: false, componentType: "editableTextField" },
       },
       {
@@ -370,7 +370,8 @@ export const stockViewEditMSTMetaData: MasterDetailsMetaData = {
         columnName: "Active",
         componentType: "editableCheckbox",
         alignment: "center",
-        defaultValue: "Y",
+        // defaultValue: "Y",
+        isReadOnly: true,
         sequence: 2,
         width: 80,
         minWidth: 70,

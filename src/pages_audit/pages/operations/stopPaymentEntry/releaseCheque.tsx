@@ -28,8 +28,6 @@ export const ReleaseCheque = ({ navigate, getStopPayDetail }) => {
     RELEASE_DATE: authState?.workingDate,
   };
 
-  console.log("<<<rows", rows);
-
   const releaseStpCheque: any = useMutation(
     "crudStopPayment",
     crudStopPayment,

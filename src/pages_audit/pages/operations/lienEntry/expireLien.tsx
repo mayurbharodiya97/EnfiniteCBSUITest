@@ -30,7 +30,6 @@ export const ExpireLien = ({ navigate, getLienDetail }) => {
 
   const expireLienData: any = useMutation("crudLien", crudLien, {
     onSuccess: (data) => {
-      console.log("<<<44", data);
       if (data?.[0]?.O_STATUS === "99" && data?.[0]?.O_MESSAGE) {
         MessageBox({
           messageTitle: "Validation Alert",

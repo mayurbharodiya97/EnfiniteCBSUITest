@@ -16,6 +16,7 @@ import { crudLimitEntryData } from "./api";
 import { useMutation } from "react-query";
 import { enqueueSnackbar } from "notistack";
 import { LoaderPaperComponent } from "components/common/loaderPaper";
+import { LinearProgressBarSpacer } from "components/dataTable/linerProgressBarSpacer";
 
 export const ForceExpire = ({ navigate, getLimitDetail }) => {
   const { state: rows }: any = useLocation();
@@ -25,7 +26,6 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
     ...rows?.[0]?.data,
     FORCE_EXP_DT: authState?.workingDate,
   };
-  console.log("<<<rows", rows);
 
   const forceExpire: any = useMutation(
     "crudLimitEntryData",
@@ -46,7 +46,11 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
   );
   useEffect(() => {
     if (rows?.[0]?.data) {
-      forceExpireMetaData.form.label = `Force-Expire Limit \u00A0\u00A0 
+      forceExpireMetaData.form.label = `  ${
+        rows?.[0]?.data?.ALLOW_FORCE_EXP === "Y"
+          ? "Force-Expire Limit"
+          : "Limit Detail"
+      }     \u00A0\u00A0 
       ${(
         rows?.[0]?.data?.COMP_CD +
         rows?.[0]?.data?.BRANCH_CD +
@@ -57,8 +61,6 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
   }, [rows?.[0]?.data]);
 
   const onSubmitHandler = (data: any, displayData, endSubmit) => {
-    console.log("<<<savehandle", data);
-
     let apiReq = {
       ...data,
       _isNewRow: false,
@@ -105,13 +107,21 @@ export const ForceExpire = ({ navigate, getLimitDetail }) => {
           </div>
         ) : forceExpire.isLoading ? (
           <LinearProgress color="secondary" />
-        ) : null}
+        ) : (
+          <LinearProgressBarSpacer />
+        )}
         <FormWrapper
-          key={"nscdetailForm"}
+          key={"limit-force-exp"}
           metaData={forceExpireMetaData}
           initialValues={newIntialData ?? []}
           onSubmitHandler={onSubmitHandler}
           loading={forceExpire.isLoading}
+          formStyle={{
+            background: "white",
+            height: "calc(100vh - 367px)",
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
         >
           {({ isSubmitting, handleSubmit }) => {
             console.log("isSubmitting, handleSubmit", isSubmitting);

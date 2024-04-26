@@ -49,7 +49,6 @@ export const scriptListDD = async (ApiReq) => {
 };
 
 export const securityFieldDTL = async (apiReqPara) => {
-  console.log("<<<apiReqPara", apiReqPara);
   const { data, status, message, messageDetails } =
     await AuthSDK.internalFetcher("GETSTKSECFIELDDISP", {
       // ...apiReqPara,

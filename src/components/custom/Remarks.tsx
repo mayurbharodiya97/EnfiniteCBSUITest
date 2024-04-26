@@ -26,6 +26,7 @@ export const RemarksAPIWrapper = ({
   isLoading = false,
   open = false,
   rows,
+  label = "Remarks",
   ...other
 }) => {
   //const { state: rows }: any = useLocation();
@@ -60,7 +61,7 @@ export const RemarksAPIWrapper = ({
           <br />
           <TextField
             autoFocus={true}
-            label={"Remarks"}
+            label={label}
             placeholder="Enter Remarks"
             fullWidth
             type={"text"}

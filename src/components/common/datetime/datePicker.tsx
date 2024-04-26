@@ -115,6 +115,28 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
         handleChange(result);
       }
     }
+    //chnages for min-max date is not edit
+    if (value) {
+      const selectedDate = new Date(value).toLocaleDateString();
+      const maxDate = new Date(others.maxDate).toLocaleDateString();
+      const minDate = new Date(others.minDate).toLocaleDateString();
+
+      if (
+        new Date(selectedDate) > new Date(maxDate) &&
+        Boolean(others.maxDate)
+      ) {
+        handleChange(new Date(maxDate));
+        return;
+      }
+
+      if (
+        new Date(selectedDate) < new Date(minDate) &&
+        Boolean(others.minDate)
+      ) {
+        handleChange(new Date(minDate));
+        return;
+      }
+    }
   }, [value, handleChange]);
   const focusRef = useRef();
   // console.log("<<focusRef", isFieldFocused);
@@ -140,6 +162,7 @@ export const MyDatePicker: FC<MyDataPickerAllProps> = ({
       }
     }
   }, [incomingMessage, handleChange, runValidation, whenToRunValidation]);
+
   const isError = touched && (error ?? "") !== "";
 
   if (excluded) {
