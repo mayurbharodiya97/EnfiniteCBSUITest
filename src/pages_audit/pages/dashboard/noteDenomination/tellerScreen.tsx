@@ -33,6 +33,8 @@ import {
   SingleTableActionTypes,
 } from "./denoTableActionTypes";
 import { usePopupContext } from "components/custom/popupContext";
+import DualPartTable from "./dualPartTable";
+import DualTableCalc from "./dualTableCalc";
 const TellerScreen = () => {
   const formRef: any = useRef(null);
   const endSubmitRef: any = useRef(null);
@@ -47,6 +49,10 @@ const TellerScreen = () => {
   const { authState }: any = useContext(AuthContext);
   const { cardStore, setCardStore } = useContext(AccDetailContext);
   const { MessageBox } = usePopupContext();
+  const [btnLoading, setBtnLoading] = useState({
+    table1: false,
+    table2: false,
+  });
 
   useEffect(() => {
     // Check if cardStore and cardsInfo are present and cardsInfo is an array
@@ -90,18 +96,41 @@ const TellerScreen = () => {
   };
 
   const getData: any = useMutation(API.CashReceiptEntrysData, {
-    onSuccess: (response: any) => {
+    onSuccess: (response: any, variables?: any) => {
+      // console.log(variables, "variables");
       dispatch({ type: SingleTableActionTypes?.SET_OPEN_DENO, payload: false });
-      dispatch({ type: SingleTableActionTypes?.SET_DISP_TABLE, payload: true });
+      if (variables?.FLAG === "TABLE1") {
+        setBtnLoading((pre) => ({ ...pre, table1: false }));
+        dispatch({
+          type: SingleTableActionTypes?.SET_DISP_TABLE,
+          payload: true,
+        });
+      } else if (variables?.FLAG === "TABLE2") {
+        setBtnLoading((pre) => ({ ...pre, table2: false }));
+
+        dispatch({
+          type: SingleTableActionTypes?.SET_DISP_TABLE_DUAL,
+          payload: true,
+        });
+      }
     },
-    onError: (error: any) => {
+    onError: (error: any, variables?: any) => {
       enqueueSnackbar(error?.error_msg, {
         variant: "error",
       });
-      dispatch({
-        type: SingleTableActionTypes?.SET_DISP_TABLE,
-        payload: false,
-      });
+      if (variables?.FLAG === "TABLE1") {
+        setBtnLoading((pre) => ({ ...pre, table1: false }));
+        dispatch({
+          type: SingleTableActionTypes?.SET_DISP_TABLE,
+          payload: false,
+        });
+      } else if (variables?.FLAG === "TABLE2") {
+        setBtnLoading((pre) => ({ ...pre, table2: false }));
+        dispatch({
+          type: SingleTableActionTypes?.SET_DISP_TABLE_DUAL,
+          payload: true,
+        });
+      }
     },
   });
 
@@ -392,8 +421,18 @@ const TellerScreen = () => {
     }
   }, [state?.remainExcess]);
 
-  const onCloseTable = (newVal) => {
-    dispatch({ type: SingleTableActionTypes?.SET_DISP_TABLE, payload: newVal });
+  const onCloseTable = (newVal, flag) => {
+    if (flag === "TABLE1") {
+      dispatch({
+        type: SingleTableActionTypes?.SET_DISP_TABLE,
+        payload: newVal,
+      });
+    } else if (flag === "TABLE2") {
+      dispatch({
+        type: SingleTableActionTypes?.SET_DISP_TABLE_DUAL,
+        payload: newVal,
+      });
+    }
     // if (Boolean(endSubmitRef.current?.endSubmit)) {
     //   endSubmitRef.current?.endSubmit(true);
     // }
@@ -630,28 +669,42 @@ const TellerScreen = () => {
           MessageTitle={"Denomination confirmation"}
           Message={"Are you sure to open denomination"}
           onClickButton={(rows, buttonNames) => {
-            if (Boolean(buttonNames === "Yes")) {
+            if (Boolean(buttonNames === "Table 1")) {
               const formattedDate = format(
                 parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
                 "dd/MMM/yyyy"
               ).toUpperCase();
+              setBtnLoading((pre) => ({ ...pre, table1: true }));
               getData.mutate({
                 COMP_CD: authState?.companyID,
                 BRANCH_CD: authState?.user?.branchCode,
                 USER_NAME: authState?.user?.id,
                 // TRAN_DT: "03/FEB/2024",
                 TRAN_DT: formattedDate,
+                FLAG: "TABLE1",
               });
-            } else if (Boolean(buttonNames === "No")) {
-              dispatch({
-                type: SingleTableActionTypes?.SET_OPEN_DENO,
-                payload: false,
+            } else if (Boolean(buttonNames === "Table 2")) {
+              const formattedDate = format(
+                parse(authState?.workingDate, "dd/MMM/yyyy", new Date()),
+                "dd/MMM/yyyy"
+              ).toUpperCase();
+              setBtnLoading((pre) => ({ ...pre, table2: true }));
+              getData.mutate({
+                COMP_CD: authState?.companyID,
+                BRANCH_CD: authState?.user?.branchCode,
+                USER_NAME: authState?.user?.id,
+                // TRAN_DT: "03/FEB/2024",
+                TRAN_DT: formattedDate,
+                FLAG: "TABLE2",
               });
             }
           }}
-          buttonNames={["Yes", "No"]}
+          buttonNames={["Table 1", "Table 2"]}
           rows={[]}
-          loading={{ Yes: getData?.isLoading, No: false }}
+          loading={{
+            "Table 1": btnLoading?.table1,
+            "Table 2": btnLoading?.table2,
+          }}
           open={Boolean(state?.openDeno)}
         />
       ) : null}
@@ -678,6 +731,18 @@ const TellerScreen = () => {
         extraAccDtl={extraAccDtl}
       />
       {/* <DualTableCalc data={data ?? []} /> */}
+      <DualTableCalc
+        // columnDefinitions={columnDefinitions}
+        // isLoading={false}
+        // formData={state?.fieldsData}
+        displayTableDual={state?.displayTableDual}
+        openAcctDtl={state?.openAcctDtl}
+        formData={state?.fieldsData}
+        data={data ?? []}
+        isLoading={getData?.isLoading}
+        onCloseTable={onCloseTable}
+        extraAccDtl={extraAccDtl}
+      />
       {Boolean(state?.singleDenoShow) ? <SingleDeno /> : null}
       {state?.viewAcctDetails ? (
         <Dialog open={state?.viewAcctDetails} maxWidth={"xl"}>

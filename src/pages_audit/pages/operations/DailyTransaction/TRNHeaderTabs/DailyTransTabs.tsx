@@ -423,30 +423,31 @@ export const DailyTransTabsWithDialog = ({
               navigate("view-details", {
                 state: [
                   {
-                    data: {
-                      BRANCH: "099 ",
-                      CONFIRMED_FLAG: "CONFIRMED",
-                      CATEGORY_CODE: "01  ",
-                      ACTIVE: "Y",
-                      MOBILE_NUMBER: "7858089344",
-                      CUSTOMER_TYPE: "I",
-                      CUSTOMER_ID: "213951",
-                      KYC_NO: "",
-                      REMARKS: "",
-                      REQUEST_ID: "1492",
-                      CATEG_NM: "INDIVIDUAL PERSON",
-                      UPD_TAB_FLAG_NM: "D",
-                      CONSTITUTION_NAME: "INDIVIDUAL",
-                      CUSTOMER_NAME: "HINAL  ",
-                      CONFIRMED: "Y",
-                      UPD_TAB_NAME: "EXISTING DOC MODIFY",
-                      CATEGORY_CONSTITUTIONS: "INDIVIDUAL PERSON-INDIVIDUAL",
-                      MAKER: "adi",
-                      PAN_NO: "DWIPP9643D",
-                      CONSTITUTION_TYPE: "01",
-                    },
-                  },
-                ],
+                      data: {
+                          BRANCH: "099 ",
+                          CONFIRMED_FLAG: "CONFIRMED",
+                          CATEGORY_CODE: "01  ",
+                          ACTIVE: "Y",
+                          MOBILE_NUMBER: "7858089344",
+                          CUSTOMER_TYPE: "I",
+                          CUSTOMER_ID: "213951",
+                          KYC_NO: "",
+                          REMARKS: "",
+                          REQUEST_ID: "1492",
+                          CATEG_NM: "INDIVIDUAL PERSON",
+                          UPD_TAB_FLAG_NM: "D",
+                          CONSTITUTION_NAME: "INDIVIDUAL",
+                          CUSTOMER_NAME: "HINAL  ",
+                          CONFIRMED: "Y",
+                          UPD_TAB_NAME: "EXISTING DOC MODIFY",
+                          CATEGORY_CONSTITUTIONS: "INDIVIDUAL PERSON-INDIVIDUAL",
+                          MAKER: "adi",
+                          PAN_NO: "DWIPP9643D",
+                          CONSTITUTION_TYPE: "01"
+                      },
+                      id: "213951"
+                  }
+              ],
               })
             }
             color="primary"
@@ -495,11 +496,15 @@ export const DailyTransTabsWithDialog = ({
           <Route
             path="view-details"
             element={
-              <FormModal
-                onClose={() => navigate(".")}
-                formmode={"view"}
-                from={"acct inq"}
-              />
+              <CkycProvider>
+                <FormModal
+                  onClose={() => {
+                    navigate(".");
+                  }}
+                  formmode={"new"}
+                  from={"new-entry"}
+                />
+              </CkycProvider>
             }
           />
         </Routes>

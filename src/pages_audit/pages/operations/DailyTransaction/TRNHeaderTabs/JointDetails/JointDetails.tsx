@@ -1,30 +1,18 @@
 //UI
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import CloseIcon from "@mui/icons-material/Close";
-import { IconButton, Button } from "@mui/material";
+import { IconButton } from "@mui/material";
 
 //logic
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-} from "react";
-import { useMutation, useQuery } from "react-query";
+import { Fragment, useCallback, useRef, useState, useContext } from "react";
+import { useQuery } from "react-query";
 import { JointDetailGridMetaData } from "./gridMetadata";
 import GridWrapper from "components/dataTableStatic";
 import { Alert } from "components/common/alert";
 import { ActionTypes, GridMetaDataType } from "components/dataTable/types";
-import { ClearCacheProvider, queryClient } from "cache";
-import { FormWrapper } from "components/dyanmicForm/formWrapper";
 import * as API from "./api";
-import { AuthContext } from "pages_audit/auth";
 import { AccDetailContext } from "pages_audit/auth";
 import { useSnackbar } from "notistack";
 
@@ -97,7 +85,7 @@ export const JointDetails = ({ reqData }) => {
           setData={() => null}
           actions={actions}
           setAction={setCurrentAction}
-          refetchData={() => {}}
+          // refetchData={() => {}}
           ref={myGridRef}
           loading={isLoading || isFetching}
         />
