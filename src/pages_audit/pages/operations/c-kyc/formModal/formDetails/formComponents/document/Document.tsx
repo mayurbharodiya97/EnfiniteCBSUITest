@@ -189,7 +189,7 @@ const Document = () => {
           // console.log("wadqwdwq. doc save newdoc", doc);
           const { TEMPLATE_CD, SUBMIT, VALID_UPTO, DOC_NO, DOC_IMAGE, DOC_DESCRIPTION, SR_CD, DOC_WEIGHTAGE } = doc;
           let newObj = {
-            IsNewRow: true,
+            _isNewRow: true,
             TEMPLATE_CD: TEMPLATE_CD,
             // SUBMIT: Boolean(SUBMIT) ? "Y" : "N",
             SUBMIT: SUBMIT === true ? "Y" : "N",
