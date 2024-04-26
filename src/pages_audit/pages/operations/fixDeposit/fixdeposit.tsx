@@ -30,7 +30,7 @@ import { useSnackbar } from "notistack";
 import { useMutation } from "react-query";
 import * as API from "./api";
 import { cloneDeep } from "lodash";
-import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "components/custom/popupContext";
 
 const ColorlibStepIconRoot = styled("div")<{
   ownerState: { completed?: boolean; active?: boolean };
@@ -91,11 +91,12 @@ export const FixDepositForm = () => {
     updateFDAccountsFormData,
     updateFDParaDataOnChange,
     updateFDDetailsFormData,
+    updateTransDetailsFormData,
     resetAllData,
     setIsBackButton,
   } = useContext(FixDepositContext);
   const submitEventRef = useRef(null);
-  const { MessageBox } = useContext(AuthContext);
+  const { MessageBox } = usePopupContext();
 
   const [steps, setSteps] = useState([
     "FD Parameters",
@@ -131,24 +132,22 @@ export const FixDepositForm = () => {
       if (typeof error === "object") {
         errorMsg = error?.error_msg ?? errorMsg;
       }
-      MessageBox("Error", errorMsg);
+      MessageBox({ messageTitle: "Error", message: errorMsg, icon: "ERROR" });
     },
     onSuccess: (data) => {
-      MessageBox("Success", data);
+      MessageBox({ messageTitle: "Success", message: data, icon: "SUCCESS" });
       resetAllData();
     },
   });
 
   const setDataOnFieldChange = (action, payload) => {
     updateFDParaDataOnChange({ [action]: payload });
-    if (action === "FD_TYPE") {
-      if (payload === "F") {
-        setSteps([
-          "FD Parameters",
-          "Account Opening",
-          "Fixed Deposit Detail(s)",
-          "Source A/C Detail(s)",
-        ]);
+    if (
+      (action === "FD_TYPE" && payload === "E") ||
+      (action === "TRAN_MODE" && fdState?.fdParaFormData?.FD_TYPE === "E")
+    ) {
+      if (action === "TRAN_MODE" && payload === "1") {
+        setSteps(["FD Parameters", "Fixed Deposit Detail(s)"]);
       } else {
         setSteps([
           "FD Parameters",
@@ -200,7 +199,6 @@ export const FixDepositForm = () => {
         delete obj.ACCOUNT_LIST;
         return obj;
       });
-      console.log(">>fdState?.fdParaFormData", fdState?.fdParaFormData);
       validFDAccounts.mutate({
         CUSTOMER_ID: fdState?.fdParaFormData?.CUSTOMER_ID ?? "",
         TRAN_MODE: fdState?.fdParaFormData?.TRAN_MODE ?? "",
@@ -233,7 +231,7 @@ export const FixDepositForm = () => {
     }
   };
 
-  const finalOnSubmitHandler: SubmitFnType = (
+  const finalOnSubmitHandler: SubmitFnType = async (
     data: any,
     displayData,
     endSubmit,
@@ -241,11 +239,39 @@ export const FixDepositForm = () => {
     actionFlag
   ) => {
     endSubmit(true);
-    doFixDepositMutation.mutate({
-      ...fdState?.fdParaFormData,
-      FD_ACCOUNTS: fdState?.fdDetailFormData?.FDDTL ?? [],
-      DR_ACCOUNTS: data?.TRNDTLS ?? [],
-    });
+    if (parseFloat(data?.TOTAL_AMOUNT) < 0) {
+      MessageBox({
+        messageTitle: "Validation Failed",
+        message: "Total Debit amount can not be greater than Total FD Amount.",
+        icon: "ERROR",
+      });
+    } else if (parseFloat(data?.TOTAL_AMOUNT) > 0) {
+      const buttonName = await MessageBox({
+        messageTitle: "Confirmation",
+        message:
+          "Debit Amount less than Total FD Amount.\nAre you sure to add new row?",
+        buttonNames: ["No", "Yes"],
+        defFocusBtnName: "Yes",
+      });
+      if (buttonName === "Yes") {
+        // const lastRow = data?.TRNDTLS[data?.TRNDTLS?.length - 1];
+        updateTransDetailsFormData([...data?.TRNDTLS, { ACCT_NAME: "" }]);
+      }
+    } else if (parseFloat(data?.TOTAL_AMOUNT) === 0) {
+      const buttonName = await MessageBox({
+        messageTitle: "Confirmation",
+        message: "Are you sure create FD?",
+        buttonNames: ["No", "Yes"],
+        defFocusBtnName: "Yes",
+      });
+      if (buttonName === "Yes") {
+        doFixDepositMutation.mutate({
+          ...fdState?.fdParaFormData,
+          FD_ACCOUNTS: fdState?.fdDetailFormData?.FDDTL ?? [],
+          DR_ACCOUNTS: data?.TRNDTLS ?? [],
+        });
+      }
+    }
   };
   return (
     <Fragment>
@@ -292,10 +318,18 @@ export const FixDepositForm = () => {
               ref={fdParameterformRef}
             />
           ) : fdState.activeStep === 1 ? (
-            <FixDepositDetailForm ref={fdDetailsformRef} />
+            <FixDepositDetailForm
+              doFixDepositMutation={doFixDepositMutation}
+              ref={fdDetailsformRef}
+            />
           ) : fdState.activeStep === 2 ? (
             <TransferAcctDetailForm
               onSubmitHandler={finalOnSubmitHandler}
+              setDataOnFieldChange={(action, payload) => {
+                sourceAcctformRef.current?.handleSubmit({
+                  preventDefault: () => {},
+                });
+              }}
               ref={sourceAcctformRef}
             />
           ) : (

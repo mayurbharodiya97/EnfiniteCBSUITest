@@ -13,8 +13,7 @@ import {
 } from "./metaData/fdParaMetaData";
 import { InitialValuesType, SubmitFnType } from "packages/form";
 import { FixDepositContext } from "./fixDepositContext";
-import { MessageBoxWrapper } from "components/custom/messageBox";
-import { AuthContext } from "pages_audit/auth";
+import { usePopupContext } from "components/custom/popupContext";
 
 export const DetailForm = forwardRef<any, any>(
   ({ onSubmitHandler, setDataOnFieldChange, submitEventRef }, ref) => {
@@ -26,7 +25,7 @@ export const DetailForm = forwardRef<any, any>(
       updateFDAccountsFormData,
     } = useContext(FixDepositContext);
 
-    const { MessageBox } = useContext(AuthContext);
+    const { MessageBox } = usePopupContext();
 
     const fdAccountRef: any = useRef(null);
 

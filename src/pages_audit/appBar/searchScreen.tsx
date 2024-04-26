@@ -49,10 +49,8 @@ const SearchScreen = () => {
       authController?.authState?.menulistdata,
       true
     );
-
     return responseData;
   }, [authController.authState.menulistdata]);
-
   const [screenData, setScreenData] = useState<any>([]);
 
   const handleLinkClick = (data) => {
@@ -119,7 +117,6 @@ const SearchScreen = () => {
           info.toLowerCase().includes(searchText.toLowerCase())
         );
       });
-
       setScreenData(filtredValue);
     }
   }, [searchText]);
@@ -169,8 +166,8 @@ const SearchScreen = () => {
       <Box ref={listRef} position="relative">
         <SearchBar
           ref={inputRef}
-          placeholder={`${t("Search in")} ${allScreenData.length} ${t(
-            "screens"
+          placeholder={`${t("profile.Searchin")} ${allScreenData.length} ${t(
+            "profile.screens"
           )}`}
           className={`${classes.searchBar} route-search-bar`}
           onChange={handleChange}

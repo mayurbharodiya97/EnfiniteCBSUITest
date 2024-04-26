@@ -53,7 +53,7 @@ export const FixDepositParaFormMetadata = {
       name: "FD_TYPE",
       label: "FD Operation",
       options: [
-        { label: "Fresh FD Account", value: "F" },
+        // { label: "Fresh FD Account", value: "F" },
         { label: "Existing FD Account", value: "E" },
         { label: "FD Payment", value: "P" },
         { label: "FD Payment Instruction", value: "I" },
@@ -74,11 +74,11 @@ export const FixDepositParaFormMetadata = {
         if (Boolean(formState?.isBackButton)) return {};
         formState.setDataOnFieldChange("FD_TYPE", field?.value);
         return {
-          CUSTOMER_ID: { value: "" },
+          CUSTOMER_ID: { value: "", ignoreUpdate: true },
           CUSTOMER_NAME: { value: "" },
         };
       },
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
+      GridProps: { xs: 12, sm: 2, md: 2, lg: 2, xl: 1.5 },
     },
     {
       render: {
@@ -106,11 +106,11 @@ export const FixDepositParaFormMetadata = {
         if (Boolean(formState?.isBackButton)) return {};
         formState.setDataOnFieldChange("TRAN_MODE", field?.value);
         return {
-          CUSTOMER_ID: { value: "" },
+          CUSTOMER_ID: { value: "", ignoreUpdate: true },
           CUSTOMER_NAME: { value: "" },
         };
       },
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
       render: {
@@ -159,51 +159,61 @@ export const FixDepositParaFormMetadata = {
           };
 
           let resData = await API.getFDAccountsDetail(Apireq);
-          resData = resData?.[0];
-
-          if (resData?.CONFIRMED === "Y") {
-            let fdAccounts = resData?.FD_ACCOUNTS;
-            formState.setDataOnFieldChange("CUSTOMER_ID", {
-              ...field,
-              FD_ACCTS: fdAccounts,
-            });
-            if (fdAccounts?.length) {
-              return {
-                CUSTOMER_NAME: {
-                  value: resData?.ACCT_NM ?? "",
-                },
-                FDACCTS: {
-                  value: fdAccounts,
-                },
-              };
-              // }
+          if (resData?.status === "0") {
+            if (resData?.data?.[0]?.CONFIRMED === "Y") {
+              let fdAccounts = resData?.data?.[0]?.FD_ACCOUNTS;
+              formState.setDataOnFieldChange("CUSTOMER_ID", {
+                ...field,
+                FD_ACCTS: fdAccounts,
+              });
+              if (fdAccounts?.length) {
+                return {
+                  CUSTOMER_NAME: {
+                    value: resData?.data?.[0]?.ACCT_NM ?? "",
+                  },
+                  FDACCTS: {
+                    value: fdAccounts,
+                  },
+                };
+                // }
+              } else {
+                return {
+                  CUSTOMER_ID: {
+                    value: field?.value ?? "",
+                    error: "FD Accounts not found for this Customer ID.",
+                    ignoreUpdate: true,
+                  },
+                  CUSTOMER_NAME: { value: resData?.data?.[0]?.ACCT_NM ?? "" },
+                };
+              }
             } else {
               return {
                 CUSTOMER_ID: {
                   value: field?.value ?? "",
-                  error: "FD Accounts not found for this Customer ID.",
+                  error:
+                    "Customer ID is not Confirmed. \n\rLast Modified User: " +
+                    (resData?.data?.[0]?.LAST_ENTERED_BY ?? "") +
+                    "\n\rLast Modified Branch: " +
+                    (resData?.data?.[0]?.LAST_ENTERED_BRANCH_CD ?? ""),
                   ignoreUpdate: true,
                 },
-                CUSTOMER_NAME: { value: resData?.ACCT_NM ?? "" },
+                CUSTOMER_NAME: { value: "" },
               };
             }
           } else {
             return {
               CUSTOMER_ID: {
-                value: field?.value ?? "",
-                error:
-                  "Customer ID is not Confirmed. \n\rLast Modified User: " +
-                  (resData?.LAST_ENTERED_BY ?? "") +
-                  "\n\rLast Modified Branch: " +
-                  (resData?.LAST_ENTERED_BRANCH_CD ?? ""),
+                value: "",
+                error: resData?.message,
                 ignoreUpdate: true,
+                isFieldFocused: true,
               },
               CUSTOMER_NAME: { value: "" },
             };
           }
         }
       },
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 1.5 },
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 1.5 },
     },
     {
       render: {
@@ -212,7 +222,34 @@ export const FixDepositParaFormMetadata = {
       name: "CUSTOMER_NAME",
       label: "Customer Name",
       isReadOnly: true,
-      GridProps: { xs: 12, sm: 3, md: 3, lg: 3, xl: 3.5 },
+      GridProps: { xs: 12, sm: 2.5, md: 2.5, lg: 2.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "PAN_NO",
+      label: "PAN",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "amountField",
+      },
+      name: "fin_int_amt",
+      label: "Financial Interest Amount",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 3.5 },
+    },
+    {
+      render: {
+        componentType: "textField",
+      },
+      name: "liable",
+      label: "TDS Liable(Taxable)",
+      isReadOnly: true,
+      GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 3.5 },
     },
   ],
 };
@@ -352,12 +389,12 @@ export const FixDepositAccountsFormMetadata = {
               );
               if (apiResponse?.status === "0") {
                 if (Boolean(apiResponse?.message)) {
-                  arg?.[1]?.MessageBox(
-                    "Information",
-                    apiResponse?.message.startsWith("\n")
+                  arg?.[1]?.MessageBox({
+                    messageTitle: "Information",
+                    message: apiResponse?.message.startsWith("\n")
                       ? apiResponse?.message?.slice(1)
-                      : apiResponse?.message
-                  );
+                      : apiResponse?.message,
+                  });
                 }
                 return {
                   ACCT_NM: { value: apiResponse?.data?.[0]?.ACCT_NM ?? "" },
@@ -370,7 +407,12 @@ export const FixDepositAccountsFormMetadata = {
                 };
               } else {
                 return {
-                  ACCT_CD: { value: "", error: apiResponse?.message ?? "" },
+                  ACCT_CD: {
+                    value: "",
+                    error: apiResponse?.message ?? "Unknown Error",
+                    ignoreUpdate: true,
+                    isFieldFocused: true,
+                  },
                   ACCT_NM: { value: "" },
                   NOMINEE_NM: { value: "" },
                   CATEG_CD: { value: "" },
@@ -516,6 +558,13 @@ export const FixDepositAccountsFormMetadata = {
               }
             },
             required: false,
+            postValidationSetCrossFieldValues: () => {
+              return {
+                CR_ACCT_TYPE: { value: "" },
+                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_NM: { value: "" },
+              };
+            },
             GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
           },
           accountTypeMetadata: {
@@ -533,6 +582,13 @@ export const FixDepositAccountsFormMetadata = {
               } else {
                 return true;
               }
+            },
+            schemaValidation: {},
+            postValidationSetCrossFieldValues: () => {
+              return {
+                CR_ACCT_CD: { value: "", ignoreUpdate: true },
+                CR_ACCT_NM: { value: "" },
+              };
             },
             GridProps: { xs: 12, sm: 1, md: 1, lg: 1.5, xl: 1.5 },
           },
@@ -560,30 +616,24 @@ export const FixDepositAccountsFormMetadata = {
             },
             required: true,
             type: "text",
-            // validation: (value, data) => {
-            //   console.log(">>value", value);
-            //   if (!Boolean(value)) {
-            //     return "";
-            //   }
-            //   return "";
-            // },
+            schemaValidation: {},
             postValidationSetCrossFieldValues: async (...arg) => {
               const companyCode = arg?.[3]?.["FDACCTS.COMP_CD"]?.value ?? "";
               const branchCode =
                 arg?.[3]?.["FDACCTS.CR_BRANCH_CD"]?.value ?? "";
               const accountType =
                 arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.value ?? "";
-              const accountCode = utilFunction.getPadAccountNumber(
-                arg?.[0]?.value,
-                arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.optionData
-              );
-
+              let accountCode = arg?.[0]?.value ?? "";
               if (
                 Boolean(companyCode) &&
                 Boolean(branchCode) &&
                 Boolean(accountType) &&
                 accountCode
               ) {
+                accountCode = utilFunction.getPadAccountNumber(
+                  accountCode,
+                  arg?.[3]?.["FDACCTS.CR_ACCT_TYPE"]?.optionData
+                );
                 const apiResponse = await API.validateAccountAndGetDetail(
                   companyCode,
                   branchCode,
@@ -593,16 +643,17 @@ export const FixDepositAccountsFormMetadata = {
                 );
                 if (apiResponse?.status === "0") {
                   if (Boolean(apiResponse?.message)) {
-                    arg?.[1]?.MessageBox(
-                      "Information",
-                      apiResponse?.message.startsWith("\n")
+                    arg?.[1]?.MessageBox({
+                      messageTitle: "Information",
+                      message: apiResponse?.message.startsWith("\n")
                         ? apiResponse?.message?.slice(1)
-                        : apiResponse?.message
-                    );
+                        : apiResponse?.message,
+                    });
                   }
                   return {
                     CR_ACCT_CD: {
                       value: accountCode,
+                      error: "",
                       ignoreUpdate: true,
                     },
                     CR_ACCT_NM: {
@@ -615,6 +666,7 @@ export const FixDepositAccountsFormMetadata = {
                       value: "",
                       error: apiResponse?.message ?? "",
                       ignoreUpdate: true,
+                      isFieldFocused: true,
                     },
                     CR_ACCT_NM: { value: "" },
                   };
@@ -699,39 +751,6 @@ export const FixDepositAccountsFormMetadata = {
         },
         {
           render: {
-            componentType: "hidden",
-          },
-          name: "USER_TYPE_ALLOWED",
-        },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "LEAN_FLAG",
-          label: "LEAN_FLAG",
-        },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "COMP_CD",
-          label: "COMP_CD",
-        },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "ACCOUNT_LIST",
-          label: "ACCOUNT_LIST",
-        },
-        {
-          render: {
-            componentType: "hidden",
-          },
-          name: "CATEG_CD",
-        },
-        {
-          render: {
             componentType: "typography",
           },
           name: "VALIDATEMSG",
@@ -771,6 +790,39 @@ export const FixDepositAccountsFormMetadata = {
             sm: 4,
             style: { alignSelf: "center" },
           },
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "USER_TYPE_ALLOWED",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "LEAN_FLAG",
+          label: "LEAN_FLAG",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "COMP_CD",
+          label: "COMP_CD",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "ACCOUNT_LIST",
+          label: "ACCOUNT_LIST",
+        },
+        {
+          render: {
+            componentType: "hidden",
+          },
+          name: "CATEG_CD",
         },
       ],
     },

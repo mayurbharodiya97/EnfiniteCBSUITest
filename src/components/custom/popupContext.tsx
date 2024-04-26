@@ -18,6 +18,7 @@ type TMessage = {
   icon: TIcon;
   buttonNames: TButtonName[];
   callBack?: Function;
+  defFocusBtnName?: string;
 };
 
 type TMessageBoxParams = {
@@ -25,6 +26,7 @@ type TMessageBoxParams = {
   message: string;
   icon?: TIcon;
   buttonNames?: TButtonName[];
+  defFocusBtnName?: string;
 };
 
 type TPopupContextType = {
@@ -39,6 +41,7 @@ const initialMessage: TMessage = {
   message: "",
   icon: "INFO",
   buttonNames: ["Ok"],
+  defFocusBtnName: "",
 };
 
 const initialContext: TPopupContextType = {
@@ -59,6 +62,7 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
     message,
     icon = "INFO",
     buttonNames = ["Ok"],
+    defFocusBtnName = "",
   }: TMessageBoxParams) => {
     return new Promise((resolve) => {
       setMessage({
@@ -71,6 +75,7 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
           resolve(buttonName);
           CloseMessageBox();
         },
+        defFocusBtnName,
       });
     });
   };
@@ -92,6 +97,7 @@ export const PopupContextProvider: React.FC<React.PropsWithChildren> = ({
             onClickButton={message.callBack}
             buttonNames={message.buttonNames}
             icon={message.icon}
+            defFocusBtnName={message.defFocusBtnName}
           />
         ) : null}
       </>

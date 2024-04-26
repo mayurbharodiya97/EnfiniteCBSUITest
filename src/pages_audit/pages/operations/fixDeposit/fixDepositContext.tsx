@@ -101,6 +101,15 @@ export const FixDepositProvider = ({ children }) => {
     });
   };
 
+  const updateTransDetailsFormData = (data) => {
+    dispatch({
+      type: "commonType",
+      payload: {
+        sourceAcctFormData: { TRNDTLS: data },
+      },
+    });
+  };
+
   const resetAllData = (data) => {
     dispatch({
       type: "resetAllData",
@@ -127,6 +136,7 @@ export const FixDepositProvider = ({ children }) => {
         setIsOpendfdAcctForm,
         updateFDAccountsFormData,
         updateFDDetailsFormData,
+        updateTransDetailsFormData,
         resetAllData,
         setIsBackButton,
       }}
