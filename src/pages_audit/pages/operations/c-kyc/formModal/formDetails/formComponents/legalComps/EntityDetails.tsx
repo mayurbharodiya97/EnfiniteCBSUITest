@@ -216,6 +216,14 @@ const EntityDetails = () => {
                             key={"pd-form-kyc"+ initialVal}
                             metaData={entity_detail_legal_meta_data as MetaDataType}
                             formStyle={{}}
+                            formState={{
+                              TIN_ISSUING_COUNTRY: state?.isFreshEntryctx 
+                              ? state?.formDatactx["PERSONAL_DETAIL"]?.TIN_ISSUING_COUNTRY ?? "" 
+                              : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN_ISSUING_COUNTRY ?? "",
+                              TIN: state?.isFreshEntryctx 
+                              ? state?.formDatactx["PERSONAL_DETAIL"]?.TIN ?? "" 
+                              : state?.retrieveFormDataApiRes["PERSONAL_DETAIL"]?.TIN ?? "",            
+                            }}
                             hideHeader={true}
                             // displayMode={"new"}
                             displayMode={state?.formmodectx}

@@ -244,7 +244,20 @@ export const kyc_proof_of_identity_meta_data = {
           maxLength: 20,
           type: "text",
           txtTransform: "uppercase",
-          validate: (columnValue, allField, flag) => API.validateGSTIN(columnValue, allField, flag),
+        //   validate: (columnValue, allField, flag) => API.validateGSTIN(columnValue, allField, flag),
+          validate: (columnValue, allField, flag) => {
+            const TIN_ISSUING_COUNTRY = flag?.TIN_ISSUING_COUNTRY;
+            const TIN = flag?.TIN;
+            if(!Boolean(columnValue?.value)) {
+              if(Boolean(TIN_ISSUING_COUNTRY) && !Boolean(TIN)) {
+                return "This field is required";
+              } else {
+                return "";
+              }
+            } else {
+              return API.validateGSTIN(columnValue, allField, flag);
+            }
+          },
           GridProps: {xs:12, sm:4, md: 3, lg: 2.4, xl:2},
         },
 
