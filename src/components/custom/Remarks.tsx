@@ -93,7 +93,7 @@ export const RemarksAPIWrapper = ({
                 setLoginState((values) => ({
                   ...values,
                   isError: true,
-                  userMessage: t("Thisisarequiredfield"),
+                  userMessage: t("ThisFieldisrequired"),
                 }));
               } else {
                 onActionYes(input, rows);

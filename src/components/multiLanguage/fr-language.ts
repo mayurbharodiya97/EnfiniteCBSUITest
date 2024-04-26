@@ -10,6 +10,10 @@ export const fr_language_data = {
   EnterUsername: "ID de l'utilisateur",
   EnterPassword: "Entrer le mot de passe",
   EnterMobileNo: "Entrez le numéro de portable.",
+  EnterPasswordValid:
+    "Le mot de passe doit comporter entre 8 et 16 caractères.",
+  EnterPasswordPolicy:
+    "Le mot de passe doit comporter entre 8 et 16 caractères, contenant au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial, sans espaces autorisés.",
   EnterConfirmPassword: "Entrez confirmer le mot de passe",
   ForgotPassword: "Mot de passe oublié",
   Setnewpassword: "Definir un nouveau mot de passe",
@@ -31,7 +35,7 @@ export const fr_language_data = {
     GetNewOTP: "Obtenez un nouvel OTP",
     ValidFor: "Valable",
     OtpExpired: "otp expirera dans",
-    second:"Seconde(s).",
+    second: "Seconde(s).",
     Hello: " Bonjour",
     Back: "Dos",
     VerifyOTP: "Vérifier OTP",
@@ -337,29 +341,29 @@ export const fr_language_data = {
   AttesDetailsIPVBy:
     "Détails de l'attestation [IPV-Identity Preuve vérifiée par]",
 
-    sidebar: {
-      "Dashboard": "Tableau de bord",
-    
-      "Configuration": "Configuration",
-      "Message Language Configuration": "Configuration de la langue des messages",
-      "Select-Get API Configuration": "Configuration de l'API Select-Get",
-      "Limit Security Master": "Maître de sécurité des limites",
-      "Common Master Configuration": "Configuration du maître commun",
-    
-      "Master": "Maître",
-      "Bank Document Template Entry": "Entrée du modèle de document bancaire",
-      "NPA Category Master": "Maître de catégorie NPA",
-      "NPA Provision Master": "Maître de provision NPA",
-      "Trade Master": "Maître des échanges",
-    
-      "Operation": "Opération",
-      "All Screens": "Tous les écrans",
-      "C-KYC Individual/Legal Entry": "Entrée individuelle/légale C-KYC",
-      "Account Opening": "Ouverture de compte",
-      "Teller Transaction(Maker)": "Transaction au guichet (Créateur)",
-      "Cheque Book Issue Entry": "Entrée de délivrance de chéquier",
-      "Limit Entry": "Entrée de limite",
-      "Stock Entry": "Entrée de stock",
-      "Inward Clearing Process": "Processus de compensation entrante"
-    },
+  sidebar: {
+    Dashboard: "Tableau de bord",
+
+    Configuration: "Configuration",
+    "Message Language Configuration": "Configuration de la langue des messages",
+    "Select-Get API Configuration": "Configuration de l'API Select-Get",
+    "Limit Security Master": "Maître de sécurité des limites",
+    "Common Master Configuration": "Configuration du maître commun",
+
+    Master: "Maître",
+    "Bank Document Template Entry": "Entrée du modèle de document bancaire",
+    "NPA Category Master": "Maître de catégorie NPA",
+    "NPA Provision Master": "Maître de provision NPA",
+    "Trade Master": "Maître des échanges",
+
+    Operation: "Opération",
+    "All Screens": "Tous les écrans",
+    "C-KYC Individual/Legal Entry": "Entrée individuelle/légale C-KYC",
+    "Account Opening": "Ouverture de compte",
+    "Teller Transaction(Maker)": "Transaction au guichet (Créateur)",
+    "Cheque Book Issue Entry": "Entrée de délivrance de chéquier",
+    "Limit Entry": "Entrée de limite",
+    "Stock Entry": "Entrée de stock",
+    "Inward Clearing Process": "Processus de compensation entrante",
+  },
 };

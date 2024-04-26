@@ -1,11 +1,4 @@
-import {
-  FC,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FC, useContext, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
 import { GradientButton } from "components/styledComponent/button";
@@ -26,11 +19,10 @@ import {
   AppBar,
   CircularProgress,
   Grid,
-  TextField,
-  Toolbar,
   Typography,
   Theme,
   IconButton,
+  Toolbar,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { AuthContext } from "pages_audit/auth";
@@ -166,12 +158,12 @@ export const ShareDividendFormWrapper: FC<{
     <>
       <Dialog
         fullWidth
-        maxWidth="md"
+        maxWidth="lg"
         open={true} // Assuming this is controlled by a state
         key="positivePayDialog"
         PaperProps={{
           style: {
-            width: "100%",
+            width: "75%",
             // height: "78%",
             // height: "70%",
           },

@@ -858,8 +858,8 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSCNFRETRIEV",
     packageName: "",
   },
-  GETOWCLEARINGDETAILS: {
-    url: "/chequeServiceAPI/GETOWCLEARINGDETAILS",
+  GETCLEARINGDETAILS: {
+    url: "/chequeServiceAPI/GETCLEARINGDETAILS",
     packageName: "",
   },
   GETEMAILSTATUS: {
@@ -1278,6 +1278,14 @@ export const ActionWiseAPIConfiguration = {
   },
   GETCTSVIEWDELDTL: {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCTSVIEWDELDTL",
+    packageName: "",
+  },
+  GETCLGDTTRANSBANKGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGDTTRANSBANKGRID",
+    packageName: "",
+  },
+  GETCLGDTTRANSSLIPGRID: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGDTTRANSSLIPGRID",
     packageName: "",
   },
 };

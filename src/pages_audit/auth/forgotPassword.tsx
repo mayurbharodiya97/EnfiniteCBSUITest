@@ -275,9 +275,8 @@ export const ForgotPasswordController = ({ screenFlag }) => {
       }
       if (!Boolean(data.confirmpassword)) {
         validationData.isConfirmPasswordError = true;
-        validationData.userMessageforconfirmPassword = t(
-          "Confirmpasswordisrequired"
-        );
+        validationData.userMessageforconfirmPassword =
+          "Confirmpasswordisrequired";
       } else if (
         Boolean(data.password) &&
         data.password !== data.confirmpassword
@@ -319,9 +318,7 @@ export const ForgotPasswordController = ({ screenFlag }) => {
         loginState?.auth_type,
         screenFlag
       );
-      console.log("loginState?.authType", loginState);
       if (status === "0") {
-        console.log(">>screenFlag", screenFlag);
         if (screenFlag === "totp") {
           enqueueSnackbar(message, {
             variant: "success",
