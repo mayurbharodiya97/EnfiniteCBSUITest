@@ -7,7 +7,7 @@ import { useMutation, useQuery } from "react-query";
 import * as API from "../api";
 import { useLocation } from "react-router-dom";
 
-const HeaderForm = React.memo(function HeaderForm() {
+const HeaderForm = () => {
     const {state, handleFormModalOpenctx, handleFormModalClosectx, handleApiRes, handleCategoryChangectx, handleSidebarExpansionctx, handleColTabChangectx, handleAccTypeVal, handleKycNoValctx, handleFormDataonRetrievectx, handleFormModalOpenOnEditctx, handlecustomerIDctx, onFinalUpdatectx, handleCurrFormctx } = useContext(CkycContext);
     const [categConstitutionIPValue, setCategConstitutionIPValue] = useState<any | null>("")
     const [acctTypeState, setAcctTypeState] = useState<any | null>(null)
@@ -45,7 +45,7 @@ const HeaderForm = React.memo(function HeaderForm() {
     );
 
       // get tabs data
-    const {data:TabsData, isSuccess, isLoading, error, refetch} = useQuery(
+    const {data:TabsData, isSuccess, isLoading, isFetching, error, refetch} = useQuery(
         ["getTabsDetail", {
         ENTITY_TYPE: state?.entityTypectx, 
         CATEGORY_CD: state?.categoryValuectx, 
@@ -93,6 +93,16 @@ const HeaderForm = React.memo(function HeaderForm() {
         }
         }
     }, [TabsData, isLoading])
+    
+    useEffect(() => {
+      if((isLoading || isFetching) && state?.categoryValuectx && state?.constitutionValuectx) {
+        handleCurrFormctx({
+          isLoading: true,
+        })
+      }
+    }, [isLoading, isFetching, state?.entityTypectx,
+      state?.categoryValuectx,
+      state?.constitutionValuectx])
 
     
 
@@ -297,6 +307,6 @@ const HeaderForm = React.memo(function HeaderForm() {
         {/* {state?.currentFormctx.isLoading && <LinearProgress color="secondary" />} */}
   </AppBar>
     )
-})
+}
 
 export default HeaderForm;
