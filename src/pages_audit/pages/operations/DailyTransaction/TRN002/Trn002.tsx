@@ -193,6 +193,15 @@ export const Trn002 = () => {
     },
     onError: (error) => {},
   });
+  const getConfirmDataValidation = useMutation(
+    trn2Api.getConfirmDataValidation,
+    {
+      onSuccess: (data) => {
+        console.log(data, "data getConfirmDataValidation");
+      },
+      onError: (error) => {},
+    }
+  );
 
   const getCarousalCards = useMutation(CommonApi.getCarousalCards, {
     onSuccess: (data) => {
@@ -250,6 +259,7 @@ export const Trn002 = () => {
   const setCurrentAction = useCallback((data) => {
     let row = data.rows[0]?.data;
     setDataRow(row);
+    // getConfirmDataValidation.mutate(row);
     if (data.name === "_rowChanged") {
       let obj: any = {
         COMP_CD: row?.COMP_CD,
@@ -357,7 +367,9 @@ export const Trn002 = () => {
   };
 
   const handleConfirm = () => {
+    console.log("abcd");
     confirmScroll.mutate(dataRow);
+    getConfirmDataValidation.mutate(dataRow);
   };
 
   useEffect(() => {

@@ -73,8 +73,8 @@ export const Trn001 = () => {
   const [defBranch, setDefBranch] = useState<any>({});
   const [withdraw, setWithdraw] = useState<any>({});
   var defTableValue = {
-    branch: { label: "", value: "", info: "" },
-    accType: { label: " ", value: "  ", info: "  " },
+    branch: { label: "", value: "", info: {} },
+    accType: { label: " ", value: "  ", info: {} },
     bugMsgAccType: "",
     accNo: "",
     bugAccNo: false,
@@ -82,7 +82,7 @@ export const Trn001 = () => {
     trx: { label: "", value: "", code: "" }, //TYPE_CD
     bugMsgTrx: "",
     scroll: "", //token
-    sdc: { label: "", value: "", info: "" },
+    sdc: { label: "", value: "", info: {} },
     remark: "",
     cNo: "",
     bugCNo: false,
@@ -197,6 +197,7 @@ export const Trn001 = () => {
 
     let result = rows && rows.some((a) => a?.bug);
     setIsSave(!result);
+    console.log(rows, "rows");
   }, [rows]);
 
   useEffect(() => {
@@ -322,6 +323,17 @@ export const Trn001 = () => {
         obj[index].bugMsgCNo = "";
       }
       setRows(obj);
+    },
+    onError: (error: any) => {
+      enqueueSnackbar(error?.error_msg, {
+        variant: "error",
+      });
+    },
+  });
+  const getAmountValidation = useMutation(API.getAmountValidation, {
+    onSuccess: (data) => {
+      const obj = [...rows];
+      console.log(data, "data res getAmountValidation");
     },
     onError: (error: any) => {
       enqueueSnackbar(error?.error_msg, {
@@ -609,6 +621,8 @@ export const Trn001 = () => {
       });
       obj[i].debit = Number(0)?.toFixed(2);
     }
+
+    getAmountValidation.mutate(obj[i]);
   };
 
   const handleCreditBlur = (e, i) => {
@@ -619,6 +633,7 @@ export const Trn001 = () => {
       (obj[i].trx?.code == "3" || obj[i].trx?.code == "6") &&
       obj[i].credit != obj[i].debit &&
       handleAddRow();
+    getAmountValidation.mutate(obj[i]);
   };
 
   //fns > logic> Table=====================================================================
@@ -645,7 +660,7 @@ export const Trn001 = () => {
 
     let defTableValue2 = {
       branch: defBranch,
-      accType: { label: "", value: "", info: "" },
+      accType: { label: "", value: "", info: {} },
       bugMsgAccType: "",
       accNo: "",
       trx: trxx,
@@ -873,7 +888,6 @@ export const Trn001 = () => {
         )}
         <div>
           <h4 style={{ textAlign: "center" }}>Voucher No. </h4>
-
           {scrollSaveRes &&
             scrollSaveRes?.map((a) => {
               return <h4 style={{ textAlign: "center" }}>{a?.TRAN_CD} </h4>;
@@ -1036,7 +1050,7 @@ export const Trn001 = () => {
                         <Tooltip
                           disableInteractive={true}
                           title={
-                            a?.accType?.label && (
+                            a?.accType?.info?.TYPE_NM && (
                               <h3>{a?.accType?.info?.TYPE_NM}</h3>
                             )
                           }

@@ -83,7 +83,6 @@ export const AccDetails = ({ cardsData }) => {
     setCardName(arr3);
   }, [cardsData]);
 
-  console.log(cardsInfo, "cardsInfocardsInfo");
   const filteredCardsInfo1 = cardsInfo.filter((card) => card.CARD_NO === "1");
   const filteredCardsInfo2 = cardsInfo.filter((card) => card.CARD_NO === "2");
   const filteredCardsInfo3 = cardsInfo.filter((card) => card.CARD_NO === "3");
