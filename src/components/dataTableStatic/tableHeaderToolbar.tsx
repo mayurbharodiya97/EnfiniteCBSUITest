@@ -9,7 +9,6 @@ import { ColumnVisibility } from "../dataTable/columnVisibility";
 import { IconButton, Toolbar, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { GradientButton } from "components/styledComponent/button";
-import { color } from "@mui/system";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
