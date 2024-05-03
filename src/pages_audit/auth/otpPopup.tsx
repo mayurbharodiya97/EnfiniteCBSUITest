@@ -374,13 +374,12 @@ export const OTPModelForm = ({
         : loginState?.transactionID,
       loginState?.username,
       resendFlag,
-      loginState.auth_data?.[0]?.companyID,
-      loginState.auth_data?.[0]?.branch_cd
+      loginState?.company_ID,
+      loginState?.branch_cd
     );
     setResendotpLoading(false);
     if (status === "0") {
-      //console.log(data);
-      setNewRequestID(data?.REQUEST_CD);
+      setNewRequestID(data?.TRAN_CD);
       setbtnshow(false);
       enqueueSnackbar(message, { variant: "success" });
     } else {
@@ -409,7 +408,7 @@ export const OTPModelForm = ({
       handleCloseEvent();
     }
   }, [loginState.otpmodelClose]);
-  console.log(">>loginState", loginState);
+
   return (
     <Fragment>
       <Grid alignItems="center">

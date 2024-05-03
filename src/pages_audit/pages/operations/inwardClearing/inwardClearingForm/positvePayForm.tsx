@@ -15,7 +15,6 @@ export const PositivePayFormWrapper: FC<{
   onClose?: any;
   positiveData?: any;
 }> = ({ onClose, positiveData }) => {
-  console.log("positiveData", positiveData);
   const { data, isLoading, isFetching, isError, error, refetch } = useQuery<
     any,
     any
@@ -28,7 +27,6 @@ export const PositivePayFormWrapper: FC<{
       CHEQUE_NO: positiveData?.CHEQUE_NO,
     })
   );
-  console.log("data", data);
   return (
     <>
       <Dialog
@@ -39,8 +37,6 @@ export const PositivePayFormWrapper: FC<{
         PaperProps={{
           style: {
             width: "100%",
-            // height: "78%",
-            // height: "70%",
           },
         }}
       >

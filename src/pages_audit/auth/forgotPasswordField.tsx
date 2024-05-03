@@ -204,13 +204,14 @@ export const ForgotPasswordFields = ({ classes, loginState, onSubmit }) => {
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={() => {
-                        if (!showPassword) {
+                        if (!showConfirmPassword) {
                           setShowConfirmPasswordTime(Date.now() + 5000);
                           timerRef.current = setTimeout(
                             () => forceUpdate(Date.now()),
                             5000
                           );
-                        } else if (showPassword) setShowConfirmPasswordTime(0);
+                        } else if (showConfirmPassword)
+                          setShowConfirmPasswordTime(0);
                       }}
                       onMouseDown={(e) => e.preventDefault()}
                       disabled={loginState.loading}

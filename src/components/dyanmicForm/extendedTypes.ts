@@ -102,6 +102,13 @@ export const extendedMetaData: ExtendedFieldMetaDataTypeOptional = {
       allowNegative: false,
       allowLeadingZeros: true,
       isNumericString: true,
+      isAllowed: (values) => {
+        if (values?.value?.length > 10) {
+          return false;
+        }
+
+        return true;
+      },
     },
     // StartAdornment: "+88",
   },

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { useQuery } from "react-query";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import Dialog from "@mui/material/Dialog";
@@ -51,8 +51,6 @@ export const ChequeSignForm: FC<{
         PaperProps={{
           style: {
             width: "100%",
-            // height: "78%",
-            // height: "70%",
           },
         }}
       >

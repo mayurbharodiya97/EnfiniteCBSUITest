@@ -197,11 +197,6 @@ export const ChequeReturnPostForm: FC<{
   });
   const viewDetailValidateReturnData: any = useMutation(API.validateReturn, {
     onSuccess: async (data, variables) => {
-      // let apiReq = {
-      //   ...variables,
-      //   action: "RETURN",
-      // };
-
       if (data?.[0]?.O_STATUS === "0" && data?.[0]?.O_MESSAGE) {
         const buttonName = await MessageBox({
           messageTitle: "Validation Successful",

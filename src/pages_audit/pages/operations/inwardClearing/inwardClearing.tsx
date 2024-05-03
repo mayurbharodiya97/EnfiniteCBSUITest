@@ -38,8 +38,6 @@ import { ChequeReturnPostFormWrapper } from "./inwardClearingForm/chequeReturnPo
 import { usePopupContext } from "components/custom/popupContext";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
-import { PopupMessageAPIWrapper } from "components/custom/popupMessage";
-import { PopupRequestWrapper } from "components/custom/popupMessage";
 import { ShareDividendFormWrapper } from "./inwardClearingForm/shareDividendForm";
 
 const useTypeStyles = makeStyles((theme: Theme) => ({
@@ -70,7 +68,6 @@ const actions: ActionTypes[] = [
   },
 ];
 export const InwardClearing = () => {
-  const [isOpenRetrieve, setIsOpenRetrieve] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
   const headerClasses = useTypeStyles();
   const actionClasses = useStyles();
@@ -81,23 +78,48 @@ export const InwardClearing = () => {
   const inputButtonRef = useRef<any>(null);
   const isDataChangedRef = useRef(false);
   const mysubdtlRef = useRef<any>({});
-
-  const [selectedRows, setSelectedRows] = useState<any>(
-    authState?.user?.branchCode ?? []
-  );
-  const [selectedRowsData, setSelectedRowsData] = useState<any>(
-    authState?.user?.branchCode ?? []
-  );
-
-  const [selectAll, setSelectAll] = useState<any>(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredData, setFilteredData] = useState<any>([]);
-  const [isChequeSign, setIsChequeSign] = useState<any>(false);
-  const [formData, setFormData] = useState<any>();
-  const [isOpenDividend, setIsOpenDividend] = useState(false);
   const indexRef = useRef(0);
   const navigate = useNavigate();
 
+  const [state, setState] = useState<any>({
+    selectedRows: authState?.user?.branchCode ?? [],
+    selectedRowsData: authState?.user?.branchCode ?? [],
+    isOpenRetrieve: true,
+    selectAll: false,
+    searchQuery: "",
+    filteredData: [],
+    isChequeSign: false,
+    formData: {},
+    isOpenDividend: false,
+  });
+  const {
+    selectedRows,
+    selectedRowsData,
+    isOpenRetrieve,
+    selectAll,
+    searchQuery,
+    filteredData,
+    isChequeSign,
+    formData,
+    isOpenDividend,
+  } = state;
+
+  const setCurrentAction = useCallback((data) => {
+    if (data?.name === "retrieve") {
+      setState((prevState) => ({
+        ...prevState,
+        isOpenRetrieve: true,
+      }));
+    } else if (data?.name === "view-detail") {
+      indexRef.current = Number(data?.rows?.[0].id);
+      navigate("view-detail", {
+        state: {
+          gridData: data?.rows?.[0]?.data,
+          index: indexRef.current,
+        },
+      });
+    }
+  }, []);
   const { data, isLoading, isFetching, refetch, error, isError, status } =
     useQuery<any, any>(["BranchSelectionGridData"], () =>
       API.BranchSelectionGridData()
@@ -115,71 +137,6 @@ export const InwardClearing = () => {
 
     onSuccess: (data) => {},
   });
-  const setCurrentAction = useCallback((data) => {
-    if (data?.name === "retrieve") {
-      setIsOpenRetrieve(true);
-    } else if (data?.name === "view-detail") {
-      indexRef.current = Number(data?.rows?.[0].id);
-      navigate("view-detail", {
-        state: {
-          gridData: data?.rows?.[0]?.data,
-          index: indexRef.current,
-        },
-      });
-    }
-  }, []);
-
-  const handleDialogClose = () => {
-    if (isDataChangedRef.current === true) {
-      isDataChangedRef.current = true;
-      getInwardClearingData.mutate({
-        data: {
-          ...formData,
-          BRANCH_CD: selectedRowsRef?.current?.toString(),
-          COMP_CD: authState?.companyID ?? "",
-        },
-      });
-      isDataChangedRef.current = false;
-    }
-    navigate(".");
-    setIsOpenRetrieve(false);
-    CloseMessageBox();
-    setIsOpenDividend(false);
-  };
-
-  const handlePrev = useCallback(() => {
-    navigate(".");
-    setIsOpenRetrieve(false);
-    const index = (indexRef.current -= 1);
-    setTimeout(() => {
-      setCurrentAction({
-        name: "view-detail",
-        rows: [
-          {
-            data: getInwardClearingData?.data[index],
-            id: String(index - 1),
-          },
-        ],
-      });
-    }, 0);
-  }, [getInwardClearingData?.data]);
-  const handleNext = useCallback(() => {
-    navigate(".");
-    setIsOpenRetrieve(false);
-    const index = indexRef.current++;
-    setTimeout(() => {
-      setCurrentAction({
-        name: "view-detail",
-        rows: [
-          {
-            data: getInwardClearingData?.data[index + 1],
-            id: String(index + 1),
-          },
-        ],
-      });
-    }, 0);
-  }, [getInwardClearingData?.data]);
-
   const postConfigDML: any = useMutation(API.postConfigDML, {
     onSuccess: (data, variables) => {
       // enqueueSnackbar(data, { variant: "success" });
@@ -382,12 +339,77 @@ export const InwardClearing = () => {
       });
     },
   });
+  const handlePrev = useCallback(() => {
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+    const index = (indexRef.current -= 1);
+    setTimeout(() => {
+      setCurrentAction({
+        name: "view-detail",
+        rows: [
+          {
+            data: getInwardClearingData?.data[index],
+            id: String(index - 1),
+          },
+        ],
+      });
+    }, 0);
+  }, [getInwardClearingData?.data]);
+  const handleNext = useCallback(() => {
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+    const index = indexRef.current++;
+    setTimeout(() => {
+      setCurrentAction({
+        name: "view-detail",
+        rows: [
+          {
+            data: getInwardClearingData?.data[index + 1],
+            id: String(index + 1),
+          },
+        ],
+      });
+    }, 0);
+  }, [getInwardClearingData?.data]);
+  const handleDialogClose = () => {
+    if (isDataChangedRef.current === true) {
+      isDataChangedRef.current = true;
+      getInwardClearingData.mutate({
+        data: {
+          ...formData,
+          BRANCH_CD: selectedRowsRef?.current?.toString(),
+          COMP_CD: authState?.companyID ?? "",
+        },
+      });
+      isDataChangedRef.current = false;
+    }
+    navigate(".");
+    setState((prevState) => ({
+      ...prevState,
+      isOpenRetrieve: false,
+    }));
+
+    CloseMessageBox();
+    setState((prevState) => ({
+      ...prevState,
+      isOpenDividend: false,
+    }));
+  };
 
   useEffect(() => {
     if (!isLoading && !isFetching) {
-      setFilteredData(data);
+      setState((prevState) => ({
+        ...prevState,
+        filteredData: data,
+      }));
     }
-  }, [isLoading, isFetching]);
+  }, [isLoading, isFetching, data]);
 
   useEffect(() => {
     return () => {
@@ -396,27 +418,33 @@ export const InwardClearing = () => {
   }, []);
 
   const handleRowClick = (event: any, name: string, label: string) => {
-    setSelectAll(false);
-    if (event.ctrlKey) {
-      if (selectedRows.includes(name) || selectedRowsData.includes(label)) {
-        setSelectedRows((prev) => prev?.filter((row) => row !== name));
-        setSelectedRowsData((prev) => prev?.filter((row) => row !== label));
-      } else {
-        setSelectedRows([...selectedRows, name]);
-        setSelectedRowsData([...selectedRowsData, label]);
-      }
-    } else {
-      setSelectedRows([name]);
-      setSelectedRowsData([label]);
-    }
+    setState((prevState) => ({
+      ...prevState,
+      selectAll: false,
+      selectedRows: event.ctrlKey
+        ? prevState.selectedRows.includes(name) ||
+          prevState.selectedRowsData.includes(label)
+          ? prevState.selectedRows?.filter((row) => row !== name)
+          : [...prevState.selectedRows, name]
+        : [name],
+      selectedRowsData: event.ctrlKey
+        ? prevState.selectedRows.includes(name) ||
+          prevState.selectedRowsData.includes(label)
+          ? prevState.selectedRowsData?.filter((row) => row !== label)
+          : [...prevState.selectedRowsData, label]
+        : [label],
+    }));
   };
+
   const handleSearchInputChange = (event) => {
     const value = event.target.value;
-    setSearchQuery(value);
-    const filtered = data?.filter((item) =>
-      item.label.toLowerCase().includes(value?.toLowerCase())
-    );
-    setFilteredData(filtered);
+    setState((prevState) => ({
+      ...prevState,
+      searchQuery: value,
+      filteredData: data?.filter((item) =>
+        item.label.toLowerCase().includes(value?.toLowerCase())
+      ),
+    }));
   };
 
   return (
@@ -425,7 +453,10 @@ export const InwardClearing = () => {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             inputButtonRef?.current?.click?.();
-            setIsOpenRetrieve(false);
+            setState((prevState) => ({
+              ...prevState,
+              isOpenRetrieve: false,
+            }));
           }
         }}
       >
@@ -474,8 +505,11 @@ export const InwardClearing = () => {
                   },
                   endSubmit,
                 });
-                setFormData(data);
-                setIsOpenRetrieve(false);
+                setState((prevState) => ({
+                  ...prevState,
+                  formData: data, // Update formData in the state
+                  isOpenRetrieve: false, // Close the retrieve dialog
+                }));
               }}
               //@ts-ignore
               formStyle={{
@@ -609,7 +643,10 @@ export const InwardClearing = () => {
                                     }
                                   );
                                 } else {
-                                  setIsOpenRetrieve(false);
+                                  setState((prevState) => ({
+                                    ...prevState,
+                                    isOpenRetrieve: false,
+                                  }));
                                   myRef?.current?.handleSubmit(event, "save");
                                   selectedRowsRef.current = selectedRows;
                                 }
@@ -629,17 +666,16 @@ export const InwardClearing = () => {
               <>
                 <GradientButton
                   onClick={() => {
-                    if (!selectAll) {
-                      setSelectedRows(filteredData?.map((item) => item?.value));
-                      setSelectedRowsData(
-                        filteredData?.map((item) => item?.label)
-                      );
-                      setSelectAll(true);
-                    } else {
-                      setSelectedRows([]);
-                      setSelectedRowsData([]);
-                      setSelectAll(false);
-                    }
+                    setState((prevState) => ({
+                      ...prevState,
+                      selectAll: !prevState.selectAll,
+                      selectedRows: !prevState.selectAll
+                        ? filteredData?.map((item) => item?.value)
+                        : [],
+                      selectedRowsData: !prevState.selectAll
+                        ? filteredData?.map((item) => item?.label)
+                        : [],
+                    }));
                   }}
                 >
                   {getInwardClearingData?.status === "success" && selectAll
@@ -661,7 +697,10 @@ export const InwardClearing = () => {
                         variant: "error",
                       });
                     } else {
-                      setIsOpenRetrieve(false);
+                      setState((prevState) => ({
+                        ...prevState,
+                        isOpenRetrieve: false,
+                      }));
                       myRef?.current?.handleSubmit(event, "save");
                       selectedRowsRef.current = selectedRows;
                     }
@@ -673,7 +712,10 @@ export const InwardClearing = () => {
 
                 <GradientButton
                   onClick={() => {
-                    setIsOpenRetrieve(false);
+                    setState((prevState) => ({
+                      ...prevState,
+                      isOpenRetrieve: false,
+                    }));
                   }}
                 >
                   Close
@@ -709,7 +751,10 @@ export const InwardClearing = () => {
           onClickActionEvent={async (index, id, data) => {
             if (id === "SIGN_PATH") {
               mysubdtlRef.current = data;
-              setIsChequeSign(true);
+              setState((prevState) => ({
+                ...prevState,
+                isChequeSign: true,
+              }));
             } else if (id === "POST_CONF") {
               mysubdtlRef.current = data;
 
@@ -783,7 +828,10 @@ export const InwardClearing = () => {
                     });
                   }
                 } else if (data && data?.DRAFT_DIV === "DIVIDEND") {
-                  setIsOpenDividend(true);
+                  setState((prevState) => ({
+                    ...prevState,
+                    isOpenDividend: true,
+                  }));
                 } else {
                   validatePostData.mutate({
                     COMP_CD: data?.COMP_CD ?? "",
@@ -817,9 +865,20 @@ export const InwardClearing = () => {
         {isChequeSign ? (
           <ChequeSignForm
             onClose={() => {
-              setIsChequeSign(false);
+              setState((prevState) => ({
+                ...prevState,
+                isChequeSign: false,
+              }));
             }}
             reqDataRef={mysubdtlRef}
+          />
+        ) : null}
+      </>
+      <>
+        {isOpenDividend ? (
+          <ShareDividendFormWrapper
+            onClose={handleDialogClose}
+            dividendData={mysubdtlRef.current}
           />
         ) : null}
       </>
@@ -839,14 +898,6 @@ export const InwardClearing = () => {
           }
         />
       </Routes>
-      <>
-        {isOpenDividend ? (
-          <ShareDividendFormWrapper
-            onClose={handleDialogClose}
-            dividendData={mysubdtlRef.current}
-          />
-        ) : null}
-      </>
     </>
   );
 };
