@@ -127,6 +127,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   },
   nestedMenuLevel1: {
     paddingLeft: "20px",
+    marginTop:"11px",
     paddingRight: theme.spacing(3),
     height: "auto",
     fontSize: "13px",
@@ -136,6 +137,7 @@ export const useStylesSideBar = makeStyles((theme: any) => ({
   },
   nestedMenuLevel2: {
     paddingLeft: "20px",
+    marginTop:"11px",
     fontSize: "12px",
     "& div > svg": {
       fontSize: "9px",
