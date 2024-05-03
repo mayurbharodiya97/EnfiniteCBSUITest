@@ -9,6 +9,7 @@ import { ColumnVisibility } from "../dataTable/columnVisibility";
 import { IconButton, Toolbar, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { GradientButton } from "components/styledComponent/button";
+import { color } from "@mui/system";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -130,7 +131,7 @@ export const TableHeaderToolbar = forwardRef<any, any>(
         )}
         {ReportExportButton && 
         <GradientButton
-          onClick={() => setOpenExport(true)} endicon="GetApp"
+          onClick={() => setOpenExport(true)} endicon="GetApp" style={{color:"var(--theme-color2",background:"inherit"}}
         >Export</GradientButton>}
         <RenderActions
           key="alwaysRender"
