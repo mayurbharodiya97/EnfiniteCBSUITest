@@ -136,6 +136,7 @@ export const DataGrid = ({
       getRowId,
       allowColumnReordering: allowColumnReordering,
       autoResetSortBy: false,
+      autoResetGlobalFilter: false,
       disableSortBy: Boolean(disableSorting),
       disableGlobalFilter: Boolean(disableGlobalFilter),
       disableGroupBy: Boolean(disableGroupBy),
