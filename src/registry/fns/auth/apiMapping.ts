@@ -1292,8 +1292,24 @@ export const ActionWiseAPIConfiguration = {
     url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCLGDTTRANSSLIPGRID",
     packageName: "",
   },
+  GETRTGSTRANTYPEDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETRTGSTRANTYPEDDW",
+    packageName: "",
+  },
+  GETCOMMTYPEDDDW: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETCOMMTYPEDDDW",
+    packageName: "",
+  },
+  GETBRANCHIFSCCODE: {
+    url: "/enfinityCommonServiceAPI/GETDYNAMICDATA/GETBRANCHIFSCCODE",
+    packageName: "",
+  },
   DOCHQBKCONFIRMATION: {
     url: "/chequeServiceAPI/DOCHQBKCONFIRMATION",
+    packageName: "",
+  },
+  GETACCOUNTDETAIL: {
+    url: "/transactionServiceAPI/GETACCOUNTDETAIL",
     packageName: "",
   },
 };

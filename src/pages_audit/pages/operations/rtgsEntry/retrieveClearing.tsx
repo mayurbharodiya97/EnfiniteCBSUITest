@@ -34,14 +34,14 @@ export const RetrieveClearing: FC<{
     onClose("action", data?.rows);
   }, []);
 
-  const mutation: any = useMutation(
-    "getRetrievalClearingData",
-    API.getRetrievalClearingData,
-    {
-      onSuccess: (data) => {},
-      onError: (error: any) => {},
-    }
-  );
+  // const mutation: any = useMutation(
+  //   "getRetrievalClearingData",
+  //   API.getRetrievalClearingData,
+  //   {
+  //     onSuccess: (data) => {},
+  //     onError: (error: any) => {},
+  //   }
+  // );
 
   const onSubmitHandler: SubmitFnType = async (
     data: any,
@@ -72,7 +72,7 @@ export const RetrieveClearing: FC<{
         TRAN_TYPE: zoneTranType,
         CONFIRMED: "0",
       };
-      mutation.mutate(data);
+      // mutation.mutate(data);
       endSubmit(true);
     }
   };
@@ -131,7 +131,7 @@ export const RetrieveClearing: FC<{
             )}
           </FormWrapper>
           <Fragment>
-            {mutation.isError && (
+            {/* {mutation.isError && (
               <Alert
                 severity="error"
                 errorMsg={
@@ -140,14 +140,14 @@ export const RetrieveClearing: FC<{
                 errorDetail={mutation.error?.error_detail}
                 color="error"
               />
-            )}
+            )} */}
             {/* {mutation?.data ? ( */}
             <GridWrapper
               key={"RetrieveGridMetaData"}
               finalMetaData={RetrieveGridMetaData}
-              data={mutation?.data ?? []}
+              data={[]}
               setData={() => null}
-              loading={mutation.isLoading || mutation.isFetching}
+              // loading={mutation.isLoading || mutation.isFetching}
               actions={actions}
               setAction={setCurrentAction}
             />

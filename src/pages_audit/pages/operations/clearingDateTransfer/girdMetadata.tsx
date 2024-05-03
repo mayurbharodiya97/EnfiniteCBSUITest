@@ -161,7 +161,7 @@ export const RetrieveFormConfigMetaData = {
 export const clearingDateTransferGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Retrieve Grid",
+    gridLabel: "Clearing Retrieve Grid",
     rowIdColumn: "BANK_CD",
     defaultColumnConfig: {
       width: 400,
@@ -247,7 +247,7 @@ export const clearingDateTransferGridMetaData: GridMetaDataType = {
 export const slipClearingDateTransferGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Retrieve Grid",
+    gridLabel: "Slip Retrieve Grid",
     rowIdColumn: "TRAN_CD",
     defaultColumnConfig: {
       width: 400,

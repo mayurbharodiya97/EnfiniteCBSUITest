@@ -192,6 +192,7 @@ export const CTSOutwardClearingFormMetaData = {
               formState.setDataOnFieldChange("ACCT_CD_VALID", []);
               return {
                 ACCT_CD: { value: "", isFieldFocused: true },
+                AMOUNT: { isFieldFocused: false },
                 ACCT_NAME: { value: "" },
                 TRAN_BAL: { value: "" },
               };
@@ -200,6 +201,7 @@ export const CTSOutwardClearingFormMetaData = {
             return {
               ACCT_CD: {
                 value: postData?.[0]?.ACCT_NUMBER ?? "",
+                isFieldFocused: false,
                 // ||
                 // field.value.padStart(6, "0")?.padEnd(20, " "),
                 ignoreUpdate: true,
@@ -212,26 +214,13 @@ export const CTSOutwardClearingFormMetaData = {
           } else {
             formState.setDataOnFieldChange("ACCT_CD_BLANK");
             return {
+              ACCT_CD: {
+                value: "",
+              },
               ACCT_NAME: { value: "" },
               TRAN_BAL: { value: "" },
             };
           }
-          // else if (
-          //   !field?.value &&
-          //   !dependentFieldsValues?.["ACCT_TYPE"]?.value &&
-          //   !dependentFieldsValues?.["BRANCH_CD"]?.value
-          // ) {
-          //   console.log(
-          //     "",
-          //     field?.value,
-          //     dependentFieldsValues?.["ACCT_TYPE"]?.value
-          //   );
-          //   formState.setDataOnFieldChange("ACCT_CD_BLANK");
-          //   return {
-          //     ACCT_NAME: { value: "" },
-          //     TRAN_BAL: { value: "" },
-          //   };
-          // }
         },
         runPostValidationHookAlways: true,
         GridProps: { xs: 12, sm: 1.5, md: 1.5, lg: 1.5, xl: 2 },

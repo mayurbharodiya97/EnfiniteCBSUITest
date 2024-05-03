@@ -35,21 +35,21 @@ export const AddNewBankMasterForm: FC<{
   const { enqueueSnackbar } = useSnackbar();
   const { authState } = useContext(AuthContext);
 
-  const mutation = useMutation(API.clearingBankMasterConfigDML, {
-    onError: (error: any, { endSubmit }) => {
-      let errorMsg = "Unknown Error occured";
-      if (typeof error === "object") {
-        errorMsg = error?.error_msg ?? errorMsg;
-      }
-      endSubmit(false, errorMsg, error?.error_detail ?? "");
-      // enqueueSnackbar(errorMsg, { variant: "error" });
-    },
-    onSuccess: (data) => {
-      console.log("data", data);
-      enqueueSnackbar("Data insert successfully", { variant: "success" });
-      onClose();
-    },
-  });
+  // const mutation = useMutation(API.clearingBankMasterConfigDML, {
+  //   onError: (error: any, { endSubmit }) => {
+  //     let errorMsg = "Unknown Error occured";
+  //     if (typeof error === "object") {
+  //       errorMsg = error?.error_msg ?? errorMsg;
+  //     }
+  //     endSubmit(false, errorMsg, error?.error_detail ?? "");
+  //     // enqueueSnackbar(errorMsg, { variant: "error" });
+  //   },
+  //   onSuccess: (data) => {
+  //     console.log("data", data);
+  //     enqueueSnackbar("Data insert successfully", { variant: "success" });
+  //     onClose();
+  //   },
+  // });
 
   useEffect(() => {
     return () => {
@@ -80,7 +80,7 @@ export const AddNewBankMasterForm: FC<{
       endSubmit,
       setFieldError,
     };
-    mutation.mutate(isErrorFuncRef?.current?.data);
+    // mutation.mutate(isErrorFuncRef?.current?.data);
   };
 
   return (
@@ -113,9 +113,9 @@ export const AddNewBankMasterForm: FC<{
                   handleSubmit(event, "Save");
                 }}
                 disabled={isSubmitting}
-                endIcon={
-                  mutation?.isLoading ? <CircularProgress size={20} /> : null
-                }
+                // endIcon={
+                //   // mutation?.isLoading ? <CircularProgress size={20} /> : null
+                // }
                 color={"primary"}
               >
                 Save

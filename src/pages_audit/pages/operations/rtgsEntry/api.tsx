@@ -6,96 +6,100 @@ import {
 import { format } from "date-fns";
 import { AuthSDK } from "registry/fns/auth";
 
-export const getBussinessDate = async () => {
+export const getAccountDetail = async (Apireq) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETBUSINESSDATE", {});
+    await AuthSDK.internalFetcher("GETACCOUNTDETAIL", { ...Apireq });
   if (status === "0") {
     return data;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-export const getAccountSlipJoinDetail = async (Apireq) => {
+export const getJointDetailsList = async (Apireq?) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETACCOUNTNM", { ...Apireq });
+    await AuthSDK.internalFetcher("GETDLYTRNJOINTTAB", { ...Apireq });
   if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
+    // return data;
+    let responseData = data;
+    responseData.map((a, i) => {
+      console.log("ai", a, i);
+      a.index = i;
+      a.phone1 = [a.MOBILE_NO, a.PHONE].filter(Boolean).join(", ");
+      a.MEM_DISP_ACCT_TYPE = [a.MEM_ACCT_TYPE, a.MEM_ACCT_CD]
+        .filter(Boolean)
+        .join("-");
+      a.REF_ACCT = [
+        a.REF_BRANCH_CD,
+        a.REF_COMP_CD,
+        a.REF_ACCT_TYPE,
+        a.MEM_ACCT_CD,
+      ]
+        .filter(Boolean)
+        .join("-");
 
-export const clearingBankMasterConfigDML = async (formData) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("DOBANKDETAIL", formData);
-  if (status === "0") {
-    return {
-      data,
-      status,
-    };
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const getBankChequeAlert = async (formData) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("BANKCHEQUEALERT", formData);
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-export const outwardClearingConfigDML = async (formData) => {
-  const { status, message, messageDetails } = await AuthSDK.internalFetcher(
-    "DOOWCLEARINGDML",
-    formData
-  );
-  if (status === "0") {
-    return message;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getRetrievalClearingData = async (Apireq) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher(`GETCTSCNFRETRIEV`, { ...Apireq });
-  if (status === "0") {
-    return data;
-  } else {
-    throw DefaultErrorObject(message, messageDetails);
-  }
-};
-
-export const getOutwardClearingConfigData = async (formData) => {
-  const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETCLEARINGDETAILS", formData);
-  if (status === "0") {
-    return data.map((item) => {
-      return {
-        ...item,
-        CONFIRMED: item.CONFIRMED === "Y" ? "Confirm" : "Pending",
-      };
+      return a;
     });
+    return responseData;
   } else {
     throw DefaultErrorObject(message, messageDetails);
   }
 };
-
-export const getInwardReasonTypeList = async (ApiReq) => {
+export const getRtgsTransactionTypeList = async (ApiReq) => {
   const { data, status, message, messageDetails } =
-    await AuthSDK.internalFetcher("GETINWREASONMSTDDW", {
+    await AuthSDK.internalFetcher("GETRTGSTRANTYPEDDW", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DESCRIPTION, MSG_TYPE, ...other }) => {
+        return {
+          value: MSG_TYPE,
+          label: DESCRIPTION,
+          ...other,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getCommTypeList = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETCOMMTYPEDDDW", {
+      ...ApiReq,
+    });
+  if (status === "0") {
+    let responseData = data;
+    if (Array.isArray(responseData)) {
+      responseData = responseData.map(({ DESCRIPTION, TRAN_CD, ...other }) => {
+        return {
+          value: TRAN_CD,
+          label: DESCRIPTION,
+          ...other,
+        };
+      });
+    }
+    return responseData;
+  } else {
+    throw DefaultErrorObject(message, messageDetails);
+  }
+};
+export const getIfscCodeList = async (ApiReq) => {
+  const { data, status, message, messageDetails } =
+    await AuthSDK.internalFetcher("GETBRANCHIFSCCODE", {
       ...ApiReq,
     });
   if (status === "0") {
     let responseData = data;
     if (Array.isArray(responseData)) {
       responseData = responseData.map(
-        ({ DISLAY_REASON, REASON_CD, ...other }) => {
+        ({ DISPLAY_VALUE, DEFAULT_VALUE, DATA_VALUE, ...other }) => {
           return {
-            value: REASON_CD,
-            label: DISLAY_REASON,
+            DEFAULT_VALUE: DEFAULT_VALUE,
+            value: DATA_VALUE,
+            label: DISPLAY_VALUE,
             ...other,
           };
         }
