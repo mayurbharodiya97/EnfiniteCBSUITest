@@ -74,14 +74,7 @@ export const ParaDetailMetadata = {
         label: "Description",
         placeholder: "",
         type: "text",
-        required: true,
-        schemaValidation: {
-          type: "string",
-          rules: [
-            { name: "required", params: ["Description is required."] },
-            { name: "DATATYPE_CD", params: ["Please enter Description."] },
-          ],
-        },
+        isReadOnly: true,
         GridProps: {
           xs: 12,
           xl: 8,
@@ -98,7 +91,6 @@ export const ParaDetailMetadata = {
         label: "Remarks",
         placeholder: "",
         type: "text",
-        required: true,
         GridProps: {
           xs: 12,
           xl: 8,

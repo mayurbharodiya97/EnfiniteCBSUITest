@@ -37,7 +37,6 @@ const ParameterConfirmGridWrapper = () => {
     (data) => {
       setRowData(data?.rows);
       let check = data?.rows[0]?.data?.LAST_ENTERED_BY;
-      console.log(">>enteredBy", check)
       if (data.name === "accept") {
         if (
           (check || "").toLowerCase() ===
@@ -101,7 +100,6 @@ const ParameterConfirmGridWrapper = () => {
       para_cd: rows[0]?.data?.PARA_CD ?? "",
       branch_cd: rows[0]?.data?.BRANCH_CD ?? "",
     });
-    console.log(">Reject", rows)
   };
   const onAcceptPopupYes = (rows) => {
     result.mutate({
@@ -111,7 +109,6 @@ const ParameterConfirmGridWrapper = () => {
       para_cd: rows[0]?.data?.PARA_CD ?? "",
       branch_cd: rows[0]?.data?.BRANCH_CD ?? "",
     });
-    console.log(">Accept", rows)
   };
   return (
     <Fragment>

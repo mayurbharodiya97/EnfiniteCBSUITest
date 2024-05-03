@@ -7,7 +7,7 @@ export const updateParameterData = async ({
     old_datatype,
     old_paraValue,
     remark,
-    compCode,
+    comp_cd,
     branch_cd,
     paraCode,
   }) => {
@@ -15,7 +15,7 @@ export const updateParameterData = async ({
         "UPDATEPARAMST",
         {
           DATATYPE_CD: datatype_cd,
-          COMP_CD: compCode,
+          COMP_CD: comp_cd,
           REMARKS: remark,BRANCH_CD:branch_cd,OLD_DATATYPE_CD:old_datatype,OLD_PARA_VALUE:old_paraValue,PARA_VALUE:paraValue,PARA_CD:paraCode
         }
       );

@@ -2,7 +2,7 @@ import { GridMetaDataType } from "components/dataTableStatic";
 export const ParametersGridMetaData: GridMetaDataType = {
   gridConfig: {
     dense: true,
-    gridLabel: "Parameter Master [HO Level]",
+    gridLabel: "",
     rowIdColumn: "PARA_CD",
     defaultColumnConfig: {
       width: 400,
@@ -68,6 +68,17 @@ export const ParametersGridMetaData: GridMetaDataType = {
     },
   ],
   columns: [
+    {
+      accessor: "SR_NO",
+      columnName: "Sr No",
+      sequence: 1,
+      alignment: "left",
+      componentType: "default",
+      isAutoSequence:true,
+      width: 80,
+      minWidth: 60,
+      maxWidth: 120,
+  },
     {
       accessor: "PARA_CD",
       columnName: "Code",
